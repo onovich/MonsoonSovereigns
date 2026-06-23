@@ -1,0 +1,115 @@
+{
+  "message_id": "MSG-20260623-FOUNDATION-008-OWNER-REVIEW",
+  "task_id": "FOUNDATION-008",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Rehearsed the current Codex orchestration path for FOUNDATION-008 through real task state updates, real qa_reviewer spawn, registry update, and preparation of this routed owner handoff. No game code, dependency, architecture, or business-content files were modified.",
+  "artifacts": [
+    "project/tasks/active/FOUNDATION-008.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/FOUNDATION-008__MSG-20260623-FOUNDATION-008-OWNER-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/FOUNDATION-001__MSG-20260623-FOUNDATION-001__release_engineer.json",
+    "project/messages/outbox/FOUNDATION-001__MSG-20260623-FOUNDATION-001-REVIEW__systems_architect.json",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MODEL-ROUTING-AMENDMENT-001__lead_orchestrator.json",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MSG-20260623-MODEL-ROUTING-ARCH-ACCEPT__systems_architect.json",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MSG-20260623-MODEL-ROUTING-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/BOOTSTRAP-INTEGRATION-AND-AUTONOMOUS-GOAL-MODE-001__MSG-20260623-BOOTSTRAP-INTEGRATION-QA-ACCEPT__qa_reviewer.json",
+    "project/model-routing-state.json",
+    "docs/26-model-routing-amendment.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md"
+  ],
+  "branch_or_worktree": "chore/foundation-008-orchestration-rehearsal",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git fetch origin",
+      "exit_code": 0,
+      "result": "Fetched origin successfully before starting FOUNDATION-008."
+    },
+    {
+      "command": "git checkout main",
+      "exit_code": 0,
+      "result": "Already on main; branch up to date with origin/main."
+    },
+    {
+      "command": "git pull --ff-only origin main",
+      "exit_code": 0,
+      "result": "Already up to date."
+    },
+    {
+      "command": "git log --oneline --decorate -20",
+      "exit_code": 0,
+      "result": "main includes fbc2db7 chore(tasks): close foundation 001 after integration, 84876d3 Bootstrap approved integration, d7ccbee model routing amendment, and 486ef3c foundation monorepo baseline."
+    },
+    {
+      "command": "git switch -c chore/foundation-008-orchestration-rehearsal",
+      "exit_code": 0,
+      "result": "Created and switched to the dedicated FOUNDATION-008 branch."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status FOUNDATION-008 READY",
+      "exit_code": 0,
+      "result": "FOUNDATION-008 READY."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status FOUNDATION-008 IN_PROGRESS",
+      "exit_code": 0,
+      "result": "FOUNDATION-008 IN_PROGRESS."
+    },
+    {
+      "command": "spawn_agent role=qa_reviewer model=gpt-5.5 effort=xhigh",
+      "exit_code": 0,
+      "result": "Spawned real qa_reviewer subthread with agent_id 019ef4ed-ff31-7df0-89af-30c06222718c and read-only review instructions."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-thread FOUNDATION-008 qa_reviewer 019ef4ed-ff31-7df0-89af-30c06222718c",
+      "exit_code": 0,
+      "result": "Registered qa_reviewer thread ID 019ef4ed-ff31-7df0-89af-30c06222718c in the task file and thread registry."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status FOUNDATION-008 REVIEW",
+      "exit_code": 0,
+      "result": "FOUNDATION-008 REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate FOUNDATION-008",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\FOUNDATION-008.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 CLOSED; FOUNDATION-008 REVIEW; FOUNDATION-002 through FOUNDATION-007 remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Only FOUNDATION-002 remains a dependency-satisfied DRAFT candidate while FOUNDATION-008 is in REVIEW."
+    },
+    {
+      "command": "node -e thread-registry duplicate ID check",
+      "exit_code": 0,
+      "result": "THREAD_REGISTRY_UNIQUE count=4."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On chore/foundation-008-orchestration-rehearsal with modified project/tasks/active/FOUNDATION-008.json and project/tasks/thread-registry.json before writing this handoff."
+    }
+  ],
+  "decisions": [
+    "FOUNDATION-001 is CLOSED on main after verified integration at fbc2db7; FOUNDATION-008 dependency is satisfied and was not used to reopen FOUNDATION-001.",
+    "FOUNDATION-008 owner remains lead_orchestrator and reviewer is qa_reviewer.",
+    "The real qa_reviewer thread ID for this rehearsal is 019ef4ed-ff31-7df0-89af-30c06222718c.",
+    "The current owner handoff routes to qa_reviewer for independent review; lead will not mark ACCEPTED until the reviewer returns ACCEPT and the route evidence is persisted."
+  ],
+  "risks": [
+    "The current lead thread actual model and effort are still not observable from repository state, so model-routing-state keeps them as unknown.",
+    "The native spawn_agent tool exposes model and reasoning overrides but no explicit sandbox_mode parameter; the reviewer was therefore instructed to follow read-only QA posture and not modify game code, architecture, dependencies, docs, or task state."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently verify the FOUNDATION-008 orchestration rehearsal evidence, including task status flow, real qa_reviewer thread registration, handoff validity, route_to correctness, route delivery evidence after send_input, and scope boundaries. Return exactly ACCEPT, REQUEST_CHANGES, or BLOCK, and emit a structured reviewer handoff with route_to=lead_orchestrator.",
+  "created_at": "2026-06-23T14:43:09Z"
+}
