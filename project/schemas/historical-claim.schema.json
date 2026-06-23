@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://monsoon-sovereigns.local/schemas/historical-claim.schema.json",
+  "title": "Historical Claim Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "claim_id",
+    "claim",
+    "entity_ids",
+    "time_span",
+    "source_ids",
+    "source_passages",
+    "confidence",
+    "status",
+    "competing_interpretations",
+    "game_abstraction",
+    "reviewer",
+    "last_reviewed"
+  ],
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "pattern": "^HIST-[A-Za-z0-9._-]+$"
+    },
+    "claim": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entity_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "time_span": {
+      "type": "string"
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "source_passages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "locator",
+          "summary"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string"
+          },
+          "locator": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "confidence": {
+      "enum": [
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "DISPUTED"
+      ]
+    },
+    "status": {
+      "enum": [
+        "HISTORICAL",
+        "INFERRED",
+        "COMPOSITE",
+        "FICTIONAL"
+      ]
+    },
+    "competing_interpretations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "game_abstraction": {
+      "type": "string"
+    },
+    "reviewer": {
+      "type": "string"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date"
+    }
+  }
+}

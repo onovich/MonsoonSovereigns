@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "baseline_date": "2026-06-23",
+  "tasks": [
+    {
+      "id": "FOUNDATION-001",
+      "summary": "建立 pnpm monorepo 与版本基线",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "release_engineer",
+      "reviewer_role": "systems_architect",
+      "risk_level": "R1",
+      "dependencies": [],
+      "scope": {
+        "allowed_paths": [
+          "package.json",
+          "pnpm-workspace.yaml",
+          "apps/**",
+          "packages/**",
+          "tools/**",
+          ".node-version"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "干净 checkout 可 frozen install",
+        "只有空壳/hello，不含玩法"
+      ],
+      "required_tests": [
+        "pnpm install --frozen-lockfile",
+        "pnpm check"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "release_engineer",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "FOUNDATION-002",
+      "summary": "启用严格 TypeScript、lint、format 与依赖边界",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "systems_architect",
+      "reviewer_role": "qa_reviewer",
+      "risk_level": "R2",
+      "dependencies": [
+        "FOUNDATION-001"
+      ],
+      "scope": {
+        "allowed_paths": [
+          "tsconfig*.json",
+          "eslint.config.*",
+          "prettier.config.*",
+          "tools/architecture/**"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "所有包继承 strict 基线",
+        "违规依赖 fixture 会失败"
+      ],
+      "required_tests": [
+        "pnpm typecheck",
+        "pnpm lint",
+        "pnpm architecture:check"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "systems_architect",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "FOUNDATION-003",
+      "summary": "实现跨 Worker/Node 的确定性 hello simulation",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "simulation_engineer",
+      "reviewer_role": "qa_reviewer",
+      "risk_level": "R3",
+      "dependencies": [
+        "FOUNDATION-001",
+        "FOUNDATION-002"
+      ],
+      "scope": {
+        "allowed_paths": [
+          "packages/sim-core/**",
+          "packages/protocol/**",
+          "apps/sim-runner/**",
+          "apps/web/src/worker/**"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "固定 30 日命令序列跨环境 hash 相同",
+        "模拟不引用 DOM/Node IO"
+      ],
+      "required_tests": [
+        "pnpm test",
+        "pnpm sim:determinism"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "simulation_engineer",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "FOUNDATION-004",
+      "summary": "建立 React/Pixi/read-model 客户端空壳",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect",
+      "risk_level": "R2",
+      "dependencies": [
+        "FOUNDATION-003"
+      ],
+      "scope": {
+        "allowed_paths": [
+          "apps/web/**",
+          "packages/client-core/**",
+          "packages/map-renderer/**",
+          "packages/ui/**"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "React 不持有 WorldState",
+        "Pixi 场景可从 read model 重建"
+      ],
+      "required_tests": [
+        "pnpm --filter web test",
+        "pnpm test:e2e --project=chromium"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "client_engineer",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "FOUNDATION-005",
+      "summary": "建立 Vitest/fast-check/Storybook/Playwright 基线",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer",
+      "risk_level": "R2",
+      "dependencies": [
+        "FOUNDATION-001",
+        "FOUNDATION-003"
+      ],
+      "scope": {
+        "allowed_paths": [
+          "tests/**",
+          ".storybook/**",
+          "playwright.config.*",
+          "vitest.config.*",
+          "apps/web/src/dev/**"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "至少一个单元/属性/Story/E2E/hash 测试",
+        "失败测试阻断"
+      ],
+      "required_tests": [
+        "pnpm test",
+        "pnpm storybook:build",
+        "pnpm test:e2e --project=chromium"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "test_engineer",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "FOUNDATION-006",
+      "summary": "建立安全 Electron Windows 空壳",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "client_engineer",
+      "reviewer_role": "security_reviewer",
+      "risk_level": "R3",
+      "dependencies": [
+        "FOUNDATION-001",
+        "FOUNDATION-004"
+      ],
+      "scope": {
+        "allowed_paths": [
+          "apps/desktop/**",
+          "packages/platform/**"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "Renderer 无 Node API",
+        "preload 窄接口",
+        "安全开关由测试断言"
+      ],
+      "required_tests": [
+        "pnpm desktop:security-check",
+        "pnpm desktop:package"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "client_engineer",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "FOUNDATION-007",
+      "summary": "建立 PR/nightly CI 与可追溯 artifact",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "release_engineer",
+      "reviewer_role": "qa_reviewer",
+      "risk_level": "R2",
+      "dependencies": [
+        "FOUNDATION-002",
+        "FOUNDATION-003",
+        "FOUNDATION-004",
+        "FOUNDATION-005",
+        "FOUNDATION-006"
+      ],
+      "scope": {
+        "allowed_paths": [
+          ".github/**",
+          "tools/ci/**",
+          "package.json"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "PR 门禁完整",
+        "Web 与 Windows smoke artifact 可追溯"
+      ],
+      "required_tests": [
+        "pnpm check",
+        "pnpm build:web",
+        "pnpm desktop:package"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "release_engineer",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "FOUNDATION-008",
+      "summary": "演练 Codex 任务、线程、handoff 与 review 路由",
+      "milestone": "M0",
+      "status": "DRAFT",
+      "owner_role": "lead_orchestrator",
+      "reviewer_role": "qa_reviewer",
+      "risk_level": "R1",
+      "dependencies": [
+        "FOUNDATION-001"
+      ],
+      "scope": {
+        "allowed_paths": [
+          "project/tasks/**",
+          "project/messages/**",
+          ".agents/skills/monsoon-studio-orchestrator/**"
+        ],
+        "forbidden_paths": [
+          "docs/decisions/accepted/*",
+          "PROJECT_STATUS.md"
+        ]
+      },
+      "acceptance_criteria": [
+        "完成一次 READY→REVIEW→ACCEPTED 演练",
+        "消息落盘且 send_input 路由有记录"
+      ],
+      "required_tests": [
+        "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list"
+      ],
+      "branch_or_worktree": null,
+      "threads": {},
+      "route_to": "lead_orchestrator",
+      "notes": [],
+      "created_at": "2026-06-23T00:00:00Z",
+      "updated_at": "2026-06-23T00:00:00Z"
+    }
+  ]
+}

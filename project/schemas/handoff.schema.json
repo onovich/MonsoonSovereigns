@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://monsoon-sovereigns.local/schemas/handoff.schema.json",
+  "title": "Codex Task Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "message_id",
+    "task_id",
+    "from_role",
+    "status",
+    "summary",
+    "artifacts",
+    "branch_or_worktree",
+    "commit",
+    "tests_run",
+    "decisions",
+    "risks",
+    "blockers",
+    "route_to",
+    "requested_action",
+    "created_at"
+  ],
+  "properties": {
+    "message_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "from_role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "PARTIAL",
+        "BLOCKED",
+        "REVIEW",
+        "ACCEPT",
+        "REQUEST_CHANGES",
+        "INFO"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "branch_or_worktree": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tests_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "command",
+          "exit_code",
+          "result"
+        ],
+        "properties": {
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exit_code": {
+            "type": "integer"
+          },
+          "result": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {}
+    },
+    "risks": {
+      "type": "array",
+      "items": {}
+    },
+    "blockers": {
+      "type": "array",
+      "items": {}
+    },
+    "route_to": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requested_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "FOUNDATION-005",
+  "summary": "建立 Vitest/fast-check/Storybook/Playwright 基线",
+  "milestone": "M0",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R2",
+  "dependencies": [
+    "FOUNDATION-001",
+    "FOUNDATION-003"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "tests/**",
+      ".storybook/**",
+      "playwright.config.*",
+      "vitest.config.*",
+      "apps/web/src/dev/**"
+    ],
+    "forbidden_paths": [
+      "docs/decisions/accepted/*",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "至少一个单元/属性/Story/E2E/hash 测试",
+    "失败测试阻断"
+  ],
+  "required_tests": [
+    "pnpm test",
+    "pnpm storybook:build",
+    "pnpm test:e2e --project=chromium"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "test_engineer",
+  "notes": [],
+  "created_at": "2026-06-23T00:00:00Z",
+  "updated_at": "2026-06-23T00:00:00Z"
+}

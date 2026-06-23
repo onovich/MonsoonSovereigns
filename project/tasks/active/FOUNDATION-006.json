@@ -1,0 +1,38 @@
+{
+  "id": "FOUNDATION-006",
+  "summary": "建立安全 Electron Windows 空壳",
+  "milestone": "M0",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "security_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "FOUNDATION-001",
+    "FOUNDATION-004"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/desktop/**",
+      "packages/platform/**"
+    ],
+    "forbidden_paths": [
+      "docs/decisions/accepted/*",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Renderer 无 Node API",
+    "preload 窄接口",
+    "安全开关由测试断言"
+  ],
+  "required_tests": [
+    "pnpm desktop:security-check",
+    "pnpm desktop:package"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "client_engineer",
+  "notes": [],
+  "created_at": "2026-06-23T00:00:00Z",
+  "updated_at": "2026-06-23T00:00:00Z"
+}

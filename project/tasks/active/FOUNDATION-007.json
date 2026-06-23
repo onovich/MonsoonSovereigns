@@ -1,0 +1,42 @@
+{
+  "id": "FOUNDATION-007",
+  "summary": "建立 PR/nightly CI 与可追溯 artifact",
+  "milestone": "M0",
+  "status": "DRAFT",
+  "owner_role": "release_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R2",
+  "dependencies": [
+    "FOUNDATION-002",
+    "FOUNDATION-003",
+    "FOUNDATION-004",
+    "FOUNDATION-005",
+    "FOUNDATION-006"
+  ],
+  "scope": {
+    "allowed_paths": [
+      ".github/**",
+      "tools/ci/**",
+      "package.json"
+    ],
+    "forbidden_paths": [
+      "docs/decisions/accepted/*",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "PR 门禁完整",
+    "Web 与 Windows smoke artifact 可追溯"
+  ],
+  "required_tests": [
+    "pnpm check",
+    "pnpm build:web",
+    "pnpm desktop:package"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "release_engineer",
+  "notes": [],
+  "created_at": "2026-06-23T00:00:00Z",
+  "updated_at": "2026-06-23T00:00:00Z"
+}

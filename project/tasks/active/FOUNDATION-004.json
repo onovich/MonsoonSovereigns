@@ -1,0 +1,38 @@
+{
+  "id": "FOUNDATION-004",
+  "summary": "建立 React/Pixi/read-model 客户端空壳",
+  "milestone": "M0",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R2",
+  "dependencies": [
+    "FOUNDATION-003"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**"
+    ],
+    "forbidden_paths": [
+      "docs/decisions/accepted/*",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "React 不持有 WorldState",
+    "Pixi 场景可从 read model 重建"
+  ],
+  "required_tests": [
+    "pnpm --filter web test",
+    "pnpm test:e2e --project=chromium"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "client_engineer",
+  "notes": [],
+  "created_at": "2026-06-23T00:00:00Z",
+  "updated_at": "2026-06-23T00:00:00Z"
+}

@@ -1,0 +1,21 @@
+# Handoff
+
+```text
+TASK_ID:
+MESSAGE_ID:
+FROM_ROLE:
+STATUS: REVIEW | ACCEPT | REQUEST_CHANGES | BLOCKED | PARTIAL | INFO
+SUMMARY:
+ARTIFACTS:
+BRANCH_OR_WORKTREE:
+COMMIT:
+TESTS_RUN:
+DECISIONS:
+RISKS:
+BLOCKERS:
+ROUTE_TO:
+REQUESTED_ACTION:
+CREATED_AT:
+```
+
+同时生成符合 `project/schemas/handoff.schema.json` 的 JSON，并通过 Skill 的 `emit-handoff.mjs` 写入 outbox。
