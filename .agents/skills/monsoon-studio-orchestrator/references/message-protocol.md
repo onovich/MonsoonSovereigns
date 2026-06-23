@@ -46,3 +46,15 @@ project/messages/outbox/<TASK_ID>__<MESSAGE_ID>__<FROM_ROLE>.json
 ```
 
 Use ASCII-safe task/message/role names. The parent may move processed messages to `project/messages/archive` later.
+
+## Autonomous Goal Mode
+
+`AUTONOMOUS-GOAL-MODE-001` does not add required schema fields. Goal-mode handoffs still use the same JSON shape, with mode-specific evidence recorded in existing fields:
+
+- `summary` names the current checkpoint or continuation result;
+- `artifacts` includes `project/goal-mode-state.json` and any touched process documents;
+- `tests_run` records task validation, ready/list checks, state shape checks, and handoff validation;
+- `decisions` cites `AUTONOMOUS-GOAL-MODE-001` and any approval source;
+- `risks` records unresolved continuation risks;
+- `blockers` records any active Human Gate or failed required gate;
+- `route_to` remains the next responsible role, not a direct peer-to-peer delivery guarantee.

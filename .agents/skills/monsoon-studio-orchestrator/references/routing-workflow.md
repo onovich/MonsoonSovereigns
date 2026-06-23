@@ -52,3 +52,17 @@ For independent research, spawn up to four scouts and fan results into one domai
 Spark routes are allowed only for bounded mechanical work with explicit allowed paths, tests, stop conditions, and a required handoff. Spark outputs route to a GPT-5.5 high/xhigh reviewer and cannot mark tasks `ACCEPTED`.
 
 Use `project/model-routing-state.json` to record configured model, actual thread model when known, migration status, and any `MODEL_FALLBACK`. Do not rewrite accepted tasks solely because the configured model changed.
+
+## Autonomous Goal Mode routing
+
+When `AUTONOMOUS-GOAL-MODE-001` is enabled, the parent-owned message bus runs the same state machine repeatedly. The lead recomputes ready tasks, checks `project/goal-mode-state.json`, validates the latest handoff, and routes exactly one next action at a time.
+
+Autonomous routing stops instead of spawning more work when:
+
+- `human_gate.required` is true;
+- a writer or reviewer handoff is missing or invalid;
+- WIP limits would be exceeded;
+- the next task is outside the current milestone or lacks satisfied dependencies;
+- diff scope, required tests, model-routing fallback, security, history, license, or forbidden-path checks fail.
+
+After a restart, thread IDs in the registry are hints only. Resume from persisted handoffs and task state; if a target thread cannot be resumed, spawn a replacement role with the compact route message and record the new thread ID.

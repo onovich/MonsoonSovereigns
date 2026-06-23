@@ -247,3 +247,9 @@ REQUESTED_ACTION
 - 重大文化/历史争议处理；
 - 发行、商业模式、品牌和预算；
 - 启用任意代码 Mod、联网或遥测。
+
+## 10. Autonomous Goal Mode
+
+`AUTONOMOUS-GOAL-MODE-001`（`docs/27-autonomous-goal-mode.md`）在本模型之上增加连续执行循环，但不增加 peer-to-peer 通信能力，也不取消父协调线程的消息总线职责。所有 writer、reviewer、Spark 和 security 约束继续适用。
+
+启用后，`lead_orchestrator` 必须以 `project/goal-mode-state.json`、任务 JSON、thread registry 和 outbox handoff 作为恢复点；线程 ID 仍只是 session-local 线索。WIP 上限保持 `max_threads = 6`、`max_depth = 1`，并且至少保留一个 reviewer 槽位。遇到 Human Gate、失败门禁或范围冲突时，自动连续执行停止并路由给相应决策者。

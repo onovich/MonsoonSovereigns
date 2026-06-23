@@ -1,0 +1,65 @@
+{
+  "id": "PROCESS-001",
+  "summary": "建立受门禁约束的 Autonomous Goal Mode",
+  "milestone": "PROCESS",
+  "status": "ACCEPTED",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "FOUNDATION-008"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/06-delivery-workflow.md",
+      "docs/14-multi-agent-operating-model.md",
+      "docs/15-codex-startup-runbook.md",
+      "docs/25-decision-history-and-rejected-directions.md",
+      "docs/27-autonomous-goal-mode.md",
+      ".agents/skills/monsoon-studio-orchestrator/**",
+      "project/goal-mode-state.json",
+      "PROJECT_STATUS.md",
+      "project/tasks/**",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md",
+      "docs/monsoon-sovereigns-codex-handoff-2026-06-23.zip",
+      "docs/monsoon-sovereigns-codex-handoff-2026-06-23.zip.sha256",
+      "docs/monsoon-studio-orchestrator-skill.zip",
+      "docs/decisions/accepted/*"
+    ]
+  },
+  "acceptance_criteria": [
+    "docs/27-autonomous-goal-mode.md records Decision ID AUTONOMOUS-GOAL-MODE-001, Accepted status, product owner approval source, long-term goal, auto-merge gates, Human Gates, WIP limits, model routing, checkpoint and recovery protocol, continuation protocol, and GitHub automation plan",
+    "project/goal-mode-state.json exists and records enabled, long_term_goal, current_milestone, current_tasks, active_threads, last_integrated_task, last_main_commit, next_ready_tasks, unresolved_risks, human_gate, and last_updated_at",
+    "Delivery workflow, multi-agent operating model, startup runbook, decision history, and orchestrator Skill reference the autonomous goal mode without changing frozen product, platform, or core architecture decisions",
+    "PROJECT_STATUS.md contains only a concise status/link update for the accepted process mode",
+    "Original handoff ZIP, checksum, SHA256SUMS, VALIDATION_REPORT, and provenance files are unchanged",
+    "systems_architect writer and independent qa_reviewer reviewer produce validated handoffs before lead acceptance"
+  ],
+  "required_tests": [
+    "git diff --check",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate PROCESS-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <reviewer-handoff>",
+    "node -e JSON/schema validation for project/goal-mode-state.json, tasks, and handoffs",
+    "pnpm install --frozen-lockfile",
+    "pnpm check"
+  ],
+  "branch_or_worktree": "chore/process-001-autonomous-goal-mode",
+  "threads": {
+    "systems_architect": "019ef4fe-374e-7e11-bec0-666e9de0a02c",
+    "qa_reviewer": "019ef50d-a4fe-72a2-9bf5-c8bddc0ebd6e"
+  },
+  "route_to": "qa_reviewer",
+  "notes": [
+    "R4 approval source: BOOTSTRAP-INTEGRATION-AND-AUTONOMOUS-GOAL-MODE-001 user authorization message, read from C:\\Users\\Administrator\\.codex\\attachments\\abf91ad9-f343-4185-a720-a1225c2ca9cb\\pasted-text.txt on 2026-06-23."
+  ],
+  "created_at": "2026-06-23T14:57:33Z",
+  "updated_at": "2026-06-23T15:25:52.341Z"
+}
