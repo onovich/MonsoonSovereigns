@@ -170,3 +170,7 @@ TypeScript + React + PixiJS + Dedicated Web Worker
 - 商业或法律条件发生足以改变可行性的变化。
 
 更改必须包含：新 ADR、原决定、证据、替代方案、迁移成本、存档/内容影响、独立审查和明确批准。不得以“实现更方便”为由在普通 PR 中偷换产品方向。
+
+## 7. MODEL-ROUTING-AMENDMENT-001
+
+2026-06-23 接受增量模型路由修订。该修订不改变产品、技术栈、架构或 Roadmap 决定，只更新 Codex 角色的模型、推理强度、Spark 使用边界、fallback 记录和线程迁移规则。正式记录见 `docs/26-model-routing-amendment.md`。

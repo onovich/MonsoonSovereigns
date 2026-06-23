@@ -10,6 +10,8 @@
 - Independent acceptance: `qa_reviewer`.
 - Electron/IPC/dependencies: `security_reviewer`.
 - CI/package/release: `release_engineer`.
+- Bounded mechanical execution from an approved task package: `spark_worker`.
 - Scheduling/integration/routing only: `lead_orchestrator`.
 
 Never make the same agent sole designer, implementer, and approver of an R2+ task.
+Spark roles never approve their own output; route to GPT-5.5 high/xhigh review.

@@ -1,0 +1,90 @@
+{
+  "message_id": "MSG-20260623-MODEL-ROUTING-ARCH-ACCEPT",
+  "task_id": "MODEL-ROUTING-AMENDMENT-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "ACCEPT: Read-only review found the model routing amendment consistent with MODEL-ROUTING-AMENDMENT-001. The default config is gpt-5.5 xhigh with multi-agent limits preserved, agent TOMLs match the new matrix, spark_worker exists with bounded mechanical scope, the orchestrator Skill includes Spark boundaries/task package/fallback/migration/reviewer gate language, docs are incremental routing updates only, FOUNDATION-001 remains accepted, and stale old-model mappings are confined to historical handoffs or closed-thread state.",
+  "artifacts": [
+    ".codex/config.toml",
+    ".codex/agents/*.toml",
+    ".codex/agents/spark-worker.toml",
+    ".agents/skills/monsoon-studio-orchestrator/SKILL.md",
+    ".agents/skills/monsoon-studio-orchestrator/references/role-selection.md",
+    ".agents/skills/monsoon-studio-orchestrator/references/routing-workflow.md",
+    ".agents/skills/monsoon-studio-orchestrator/assets/templates/task.json",
+    ".agents/skills/monsoon-studio-orchestrator/assets/templates/handoff.json",
+    "PROJECT_STATUS.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/15-codex-startup-runbook.md",
+    "docs/25-decision-history-and-rejected-directions.md",
+    "docs/26-model-routing-amendment.md",
+    "project/model-routing-state.json",
+    "project/tasks/active/FOUNDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MODEL-ROUTING-AMENDMENT-001__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/model-routing-amendment-001",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Confirmed branch chore/model-routing-amendment-001. Changes are concentrated in model-routing docs/config/orchestrator files plus untracked docs/26, spark-worker TOML, model-routing-state, the lead handoff, and an unrelated untracked node_modules environment artifact."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 ACCEPTED; FOUNDATION-002..008 DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "FOUNDATION-002 and FOUNDATION-008 are dependency-satisfied DRAFT candidates."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs .agents/skills/monsoon-studio-orchestrator/assets/examples/example-handoff.json",
+      "exit_code": 0,
+      "result": "VALID example-handoff.json."
+    },
+    {
+      "command": "node -e JSON parse checks for project/model-routing-state.json and orchestrator task/handoff templates",
+      "exit_code": 0,
+      "result": "json ok."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Root check ran format:check, lint, typecheck, and test across apps/web, packages/core, and tools/hello; all hello-only scripts passed."
+    },
+    {
+      "command": "rg live-rule stale model patterns across docs .agents .codex project",
+      "exit_code": 1,
+      "result": "No stale live-rule matrix entries found for old lead/systems/gameplay/QA/security high, old client medium, or old release_engineer gpt-5.4-mini patterns. Old model mentions remain only in historical handoffs or closed-thread model-routing-state context."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: .codex/config.toml defaults to gpt-5.5 / xhigh and preserves multi_agent=true, max_threads=6, max_depth=1, and job_max_runtime_seconds=1800.",
+    "ACCEPT: .codex/agents TOMLs match the new matrix: lead/systems/gameplay/QA/security gpt-5.5 xhigh, complex writers gpt-5.5 high, support roles gpt-5.4-mini, release_engineer and spark_worker gpt-5.3-codex-spark medium.",
+    "ACCEPT: qa_reviewer and security_reviewer remain read-only; research_scout remains read-only; spark_worker exists and is constrained to explicit mechanical path-limited tasks with required handoff and reviewer routing.",
+    "ACCEPT: The orchestrator Skill and references include Spark boundaries, required task package fields, fallback recording, migration rules, and the rule that Spark output cannot be final acceptance.",
+    "ACCEPT: Documentation changes are incremental model-routing updates and do not alter product pillars, frozen platform/architecture decisions, roadmap scope, historical policy, or M0 task facts.",
+    "ACCEPT: project/model-routing-state.json records current lead actual model/effort as unknown, records no active threads, has fallback_active=false, and its closed thread IDs match project/tasks/thread-registry.json.",
+    "ACCEPT: FOUNDATION-001 remains ACCEPTED in project/tasks/active/FOUNDATION-001.json and was not reopened solely because of routing changes.",
+    "ACCEPT: The lead handoff verification commands are substantially reproducible in read-only review; pnpm install --frozen-lockfile was intentionally not rerun because it writes dependency state."
+  ],
+  "risks": [
+    "pnpm install --frozen-lockfile was not rerun during this review to preserve the user's read-only constraint; it was reported by the lead handoff and no lockfile inconsistency was found in this review.",
+    "Closed-thread actual_model/actual_effort entries in project/model-routing-state.json are not derivable from the persisted handoff JSONs alone. They are acceptable as historical operator-recorded state because thread IDs match the registry, current live actual model/effort is explicitly unknown, and these fields are not used to claim a live model switch.",
+    "Untracked node_modules/ remains present as an environment artifact and should not be staged with the routing amendment."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate this ACCEPT review for MODEL-ROUTING-AMENDMENT-001. Before commit, keep node_modules/ unstaged or ignore it, and route the next dependency-satisfied task according to the accepted model matrix.",
+  "created_at": "2026-06-23T13:01:55Z"
+}

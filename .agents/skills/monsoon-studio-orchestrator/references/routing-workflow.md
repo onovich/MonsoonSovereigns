@@ -46,3 +46,9 @@ Do not forward hidden reasoning or full transcripts.
 ## Fan-out and fan-in
 
 For independent research, spawn up to four scouts and fan results into one domain owner. For code, generally one writer + one test/reviewer. The lead waits for all required messages, consolidates conflicts, then sends one clear instruction downstream.
+
+## Spark routing
+
+Spark routes are allowed only for bounded mechanical work with explicit allowed paths, tests, stop conditions, and a required handoff. Spark outputs route to a GPT-5.5 high/xhigh reviewer and cannot mark tasks `ACCEPTED`.
+
+Use `project/model-routing-state.json` to record configured model, actual thread model when known, migration status, and any `MODEL_FALLBACK`. Do not rewrite accepted tasks solely because the configured model changed.

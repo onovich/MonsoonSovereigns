@@ -1,0 +1,111 @@
+{
+  "message_id": "MSG-20260623-MODEL-ROUTING-QA-ACCEPT",
+  "task_id": "MODEL-ROUTING-AMENDMENT-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Read-only QA review accepts MODEL-ROUTING-AMENDMENT-001. The lead handoff is schema-valid; the diff is limited to model-routing, Skill, documentation, and routing state changes; protected original ZIP/checksum/validation artifacts are untouched; taskctl state remains FOUNDATION-001 ACCEPTED with FOUNDATION-002 and FOUNDATION-008 as ready DRAFT candidates; Spark is constrained from final review; no duplicate lead or active duplicate thread was found; validation commands were re-run successfully; current lead actual model/effort is honestly recorded as unknown.",
+  "artifacts": [
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MODEL-ROUTING-AMENDMENT-001__lead_orchestrator.json",
+    "project/model-routing-state.json",
+    "docs/26-model-routing-amendment.md",
+    ".codex/config.toml",
+    ".codex/agents/*.toml",
+    ".agents/skills/monsoon-studio-orchestrator/SKILL.md",
+    ".agents/skills/monsoon-studio-orchestrator/references/routing-workflow.md",
+    "PROJECT_STATUS.md",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MSG-20260623-MODEL-ROUTING-ARCH-ACCEPT__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/model-routing-amendment-001",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On chore/model-routing-amendment-001. Modified/untracked files are the expected routing config, Skill, docs, project/model-routing-state.json, lead handoff, and pre-existing untracked node_modules."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MODEL-ROUTING-AMENDMENT-001__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID lead handoff."
+    },
+    {
+      "command": "git diff --name-status -- . ':!node_modules'",
+      "exit_code": 0,
+      "result": "Tracked diff is limited to .codex config/agents, monsoon-studio-orchestrator Skill/templates/references, PROJECT_STATUS.md, and docs 06/14/15/25; untracked expected additions are spark-worker.toml, docs/26-model-routing-amendment.md, project/model-routing-state.json, and the lead handoff."
+    },
+    {
+      "command": "git status --short -- ':*.zip' '*sha256*' '*SHA256SUMS*' '*VALIDATION_REPORT*'",
+      "exit_code": 0,
+      "result": "No changes to original ZIP, sha256, SHA256SUMS, or VALIDATION_REPORT artifacts."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 ACCEPTED; FOUNDATION-002 through FOUNDATION-008 remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "FOUNDATION-002 and FOUNDATION-008 are dependency-satisfied DRAFT ready candidates."
+    },
+    {
+      "command": "node -e JSON parse checks for project/model-routing-state.json, handoff/task templates, and project/tasks/thread-registry.json",
+      "exit_code": 0,
+      "result": "json ok."
+    },
+    {
+      "command": "PowerShell duplicate agent/thread checks",
+      "exit_code": 0,
+      "result": "No duplicate .codex agent names; model-routing-state active_threads is empty; thread-registry has three closed FOUNDATION-001 entries, no duplicate thread IDs, and no lead_orchestrator active entry."
+    },
+    {
+      "command": "rg -n \"spark|Spark|final|ACCEPT|accepted|acceptance|reviewer\" .codex .agents docs project/model-routing-state.json -S -g '!node_modules'",
+      "exit_code": 0,
+      "result": "Spark/release_engineer/spark_worker are constrained from architecture, security, and final acceptance; outputs route to GPT-5.5 high/xhigh reviewers."
+    },
+    {
+      "command": "UTF-8 BOM prefix check for changed Skill/template files and spark-worker.toml",
+      "exit_code": 0,
+      "result": "No UTF-8 BOM detected; SKILL.md starts with --- and openai.yaml starts with interface:."
+    },
+    {
+      "command": "git diff --check -- . ':!node_modules'",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Scope: all 4 workspace projects; Already up to date; Done using pnpm v11.0.0."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and test passed across apps/web, packages/core, and tools/hello hello baselines."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Post-validation status remained limited to the reviewed routing/doc/state changes, the lead handoff, a concurrently present valid systems_architect ACCEPT handoff, this QA handoff, project/model-routing-state.json, and untracked node_modules."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MSG-20260623-MODEL-ROUTING-ARCH-ACCEPT__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect ACCEPT handoff observed during final status check."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: MODEL-ROUTING-AMENDMENT-001 is a scoped routing-policy amendment and does not modify frozen product, architecture, roadmap, task facts, or protected import validation artifacts.",
+    "The model matrix is internally consistent: lead/systems/gameplay/QA/security are gpt-5.5 xhigh; simulation/client/historical are gpt-5.5 high; research_scout is gpt-5.4-mini medium; test/balance are gpt-5.4-mini high; release_engineer and spark_worker are gpt-5.3-codex-spark medium.",
+    "Spark is not permitted to be a final reviewer or to ACCEPT work; Spark outputs require GPT-5.5 high/xhigh review.",
+    "The current lead thread actual model and effort remain unobservable and are honestly recorded as unknown in project/model-routing-state.json."
+  ],
+  "risks": [
+    "The repository still has untracked node_modules from validation/install state; this is not a reviewed source artifact and should not be committed.",
+    "No live Spark task has been spawned yet under the amendment; first real Spark use still needs a concrete thread ID and task-scoped handoff record."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate the accepted model-routing amendment, keep protected import artifacts untouched, do not commit node_modules, and continue routing only through GPT-5.5 high/xhigh final review gates.",
+  "created_at": "2026-06-23T13:03:30Z"
+}

@@ -68,3 +68,15 @@
 5. 扩张会增加行政与政治风险，而不是只增加收入和兵力。
 6. AI 能解释“不行动”“撤军”“选择目标”的主要原因。
 7. 同一存档、种子和命令序列在浏览器与 Node Runner 中得到相同状态哈希。
+
+## 6. 当前模型路由
+
+`MODEL-ROUTING-AMENDMENT-001` 已作为增量决策接受，详见 `docs/26-model-routing-amendment.md`。它只修正 Codex 角色模型、推理强度、Spark 使用边界和线程迁移规则，不改变项目阶段、冻结产品决定、技术栈、Roadmap 或任务事实。
+
+当前有效摘要：
+
+- `lead_orchestrator`、`systems_architect`、`gameplay_designer`、`qa_reviewer`、`security_reviewer` 使用 `gpt-5.5` / `xhigh`，其中 QA 和 security 保持只读。
+- `simulation_engineer`、`client_engineer`、`historical_researcher` 使用 `gpt-5.5` / `high`。
+- `research_scout` 使用 `gpt-5.4-mini` / `medium` / read-only；`test_engineer` 与 `balance_analyst` 使用 `gpt-5.4-mini` / `high`。
+- `release_engineer` 与 `spark_worker` 使用 `gpt-5.3-codex-spark` / `medium`，只执行明确、机械、路径受限的任务，不能做最终验收。
+- 若 Spark 不可用，必须记录 `MODEL_FALLBACK`，临时回退到 `gpt-5.4-mini` / `medium`，且不得重做已经验收通过的任务。

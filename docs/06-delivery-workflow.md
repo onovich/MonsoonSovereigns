@@ -77,6 +77,14 @@ Writer：
 5. 运行局部门禁。
 6. 写 handoff，不自行宣布已接受。
 
+Spark writer 额外约束：
+
+- 只能接收已批准、范围明确、路径受限、测试明确的机械任务；
+- 任务包必须列出 stop conditions 和 ROUTE_TO；
+- 不做架构、设计、安全或最终验收；
+- 遇到歧义、公共 API、新生产依赖、路径不足、测试不可执行、安全/确定性/数据损坏风险时，输出 PARTIAL/BLOCKED handoff；
+- Spark 输出至少由 GPT-5.5 high/xhigh reviewer 审查。
+
 ### 3.4 Review
 
 Reviewer 必须独立检查：
@@ -98,6 +106,8 @@ BLOCK
 ```
 
 `REQUEST_CHANGES` 必须按严重度列出可复现问题并路由回原 writer；不得由 reviewer 顺手大改形成双写冲突。
+
+Spark 结果不能由 Spark 自身或其他 Spark 线程最终接受。关键基础设施、跨包接口和里程碑任务由 GPT-5.5 xhigh reviewer 审查。
 
 ### 3.5 Integration
 
