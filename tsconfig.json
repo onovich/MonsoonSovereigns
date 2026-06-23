@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": [
+    "eslint.config.mjs",
+    "prettier.config.mjs",
+    "apps/**/*.js",
+    "apps/**/*.mjs",
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "packages/**/*.js",
+    "packages/**/*.mjs",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "tools/**/*.js",
+    "tools/**/*.mjs",
+    "tools/**/*.ts"
+  ],
+  "exclude": ["node_modules", "tools/architecture/fixtures"]
+}

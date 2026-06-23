@@ -7,10 +7,20 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
-    "format:check": "pnpm -r --if-present format:check",
-    "lint": "pnpm -r --if-present lint",
-    "typecheck": "pnpm -r --if-present typecheck",
-    "test": "pnpm -r --if-present test"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check",
+    "format:check": "prettier --check \"package.json\" \"tsconfig*.json\" \"eslint.config.*\" \"prettier.config.*\" \"tools/architecture/**/*.{json,md,mjs,js,ts}\"",
+    "lint": "eslint --no-error-on-unmatched-pattern \"apps/**/*.{ts,tsx,js,mjs}\" \"packages/**/*.{ts,tsx,js,mjs}\" \"tools/**/*.{ts,js,mjs}\" eslint.config.mjs prettier.config.mjs",
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "architecture:check": "node tools/architecture/check-boundaries.mjs",
+    "test": "pnpm architecture:check"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.0.0",
+    "eslint": "^10.5.0",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.1"
   }
 }
