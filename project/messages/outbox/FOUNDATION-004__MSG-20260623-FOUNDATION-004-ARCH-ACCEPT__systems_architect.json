@@ -1,0 +1,82 @@
+{
+  "message_id": "MSG-20260623-FOUNDATION-004-ARCH-ACCEPT",
+  "task_id": "FOUNDATION-004",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems architecture review accepted FOUNDATION-004. The client shell uses a disposable ClientReadModelSnapshot projection, React holds no authoritative WorldState, map-renderer consumes read-model snapshots and can rebuild its scene shell from them, and the package/dependency shape remains within the F004 scope and frozen React/Pixi/Vite/Vitest stack choices.",
+  "artifacts": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/web/package.json",
+    "apps/web/index.html",
+    "apps/web/tsconfig.json",
+    "apps/web/vite.config.ts",
+    "apps/web/src/main.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "packages/client-core/package.json",
+    "packages/client-core/tsconfig.json",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/package.json",
+    "packages/map-renderer/tsconfig.json",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/package.json",
+    "packages/ui/tsconfig.json",
+    "packages/ui/src/index.tsx",
+    "project/messages/outbox/FOUNDATION-004__MSG-20260623-FOUNDATION-004-ARCH-ACCEPT__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/foundation-004-client-shell",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Confirmed branch chore/foundation-004-client-shell. Source changes are in F004 client/package paths plus lead-owned task/thread/message metadata; no accepted ADR or PROJECT_STATUS.md changes were present."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest completed successfully for apps/web: 1 test file passed, 3 tests passed."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 1 expected violation."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 1,
+      "result": "Command test:e2e not found. This is accepted as a documented deferral because FOUNDATION-005 is the active test-baseline task that owns Playwright setup and has this command in its required tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive workspace typecheck, and architecture:check all passed."
+    },
+    {
+      "command": "rg -n \"WorldState|world|sim-core|@monsoon/sim-core|useState|useReducer|createContext|redux|DisplayObject|PIXI|pixi|Date\\.now|Math\\.random|any| as unknown as |TODO|FIXME|skip\\(\" apps/web packages/client-core packages/map-renderer packages/ui",
+      "exit_code": 0,
+      "result": "Manual scan found no WorldState storage, Redux/global authority store, React-held Pixi DisplayObject state, nondeterministic APIs, banned any/double assertions, or skipped tests in the F004 client packages. Matches were limited to the existing F003 worker-compatible adapter, React useState holding the disposable snapshot, Pixi package naming/dependency, and test assertion text."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: React WebClientShell stores only the projected ClientReadModelSnapshot returned by client-core and passes it to a view component; it does not store authoritative WorldState or domain mutation authority.",
+    "ACCEPT: packages/client-core depends only on @monsoon/protocol, models read-model snapshots/deltas as serializable projection state, and can replace/project snapshots without retaining simulation internals.",
+    "ACCEPT: packages/map-renderer depends on @monsoon/client-core, builds a MapRenderPlan from ClientMapReadModelSnapshot, and its scene shell clears/destroys child nodes before rebuilding from the current read model.",
+    "ACCEPT: packages/ui consumes ClientReadModelSnapshot as view props only; it does not call Worker/simulation APIs, own map scene objects, or become an authority layer.",
+    "ACCEPT: package.json and pnpm-lock.yaml updates are inside the reconciled F004 scope and use frozen stack choices from docs/03: React 19.2, PixiJS 8.19, Vite 8, and Vitest.",
+    "ACCEPT: the missing pnpm test:e2e --project=chromium command is not a blocker for FOUNDATION-004 because FOUNDATION-005 explicitly owns the Vitest/fast-check/Storybook/Playwright baseline and requires that command."
+  ],
+  "risks": [
+    "apps/web still consumes the FOUNDATION-003 Worker-compatible hello adapter, which dynamically imports sim-core rather than proving a real Chrome Dedicated Worker bootstrap. This remains acceptable for F004 because React only receives the DTO-derived read model, but the lead should keep the real Worker boundary/contract coverage on the upcoming client or test-baseline path before gameplay state exists.",
+    "map-renderer declares PixiJS and provides an adapter-oriented scene shell, but the current F004 implementation does not instantiate a real browser Pixi Application or run visual/interaction smoke coverage. That belongs with the Playwright/renderer baseline after FOUNDATION-005.",
+    "The architecture checker passed, but it currently covers sim-core purity and strict TS baseline more than full outward dependency direction; manual review found the F004 package imports acceptable, and future checker expansion should cover app-to-sim and UI/map boundaries explicitly."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Record systems architecture acceptance for FOUNDATION-004, keep the e2e/real Worker/Pixi smoke deferrals attached to FOUNDATION-005 or the next client test-baseline task, and route the next lead-owned workflow step.",
+  "created_at": "2026-06-23T17:03:00Z"
+}

@@ -8,12 +8,12 @@
   },
   "scripts": {
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check",
-    "format:check": "prettier --check \"package.json\" \"tsconfig*.json\" \"eslint.config.*\" \"prettier.config.*\" \"tools/architecture/**/*.{json,md,mjs,js,ts}\"",
+    "format:check": "prettier --check \"package.json\" \"tsconfig*.json\" \"eslint.config.*\" \"prettier.config.*\" \"apps/web/**/*.{css,html,json,md,ts,tsx}\" \"packages/client-core/**/*.{json,md,ts}\" \"packages/map-renderer/**/*.{json,md,ts}\" \"packages/ui/**/*.{json,md,ts,tsx}\" \"tools/architecture/**/*.{json,md,mjs,js,ts}\"",
     "lint": "eslint --no-error-on-unmatched-pattern \"apps/**/*.{ts,tsx,js,mjs}\" \"packages/**/*.{ts,tsx,js,mjs}\" \"tools/**/*.{ts,js,mjs}\" eslint.config.mjs prettier.config.mjs",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "typecheck": "pnpm -r --if-present typecheck",
     "architecture:check": "node tools/architecture/check-boundaries.mjs",
     "sim:determinism": "pnpm --filter @monsoon/sim-runner sim:determinism",
-    "test": "pnpm architecture:check && pnpm sim:determinism"
+    "test": "pnpm architecture:check && pnpm sim:determinism && pnpm --filter web test"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

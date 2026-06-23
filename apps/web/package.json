@@ -1,12 +1,31 @@
 {
-  "name": "@monsoon/web",
+  "name": "web",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "check": "node ../../tools/hello/scripts/run.mjs web check",
-    "format:check": "node ../../tools/hello/scripts/run.mjs web format:check",
-    "lint": "node ../../tools/hello/scripts/run.mjs web lint",
-    "typecheck": "node ../../tools/hello/scripts/run.mjs web typecheck",
-    "test": "node ../../tools/hello/scripts/run.mjs web test"
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "format:check": "prettier --check \"index.html\" \"src/**/*.{css,ts,tsx}\" \"vite.config.ts\" \"tsconfig.json\" \"package.json\"",
+    "lint": "eslint --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx}\" \"vite.config.ts\"",
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@monsoon/client-core": "workspace:*",
+    "@monsoon/map-renderer": "workspace:*",
+    "@monsoon/protocol": "workspace:*",
+    "@monsoon/ui": "workspace:*",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.3",
+    "vite": "8.1.0",
+    "vitest": "4.1.9"
   }
 }
