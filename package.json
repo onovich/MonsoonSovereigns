@@ -8,20 +8,31 @@
   },
   "scripts": {
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check",
-    "format:check": "prettier --check \"package.json\" \"tsconfig*.json\" \"eslint.config.*\" \"prettier.config.*\" \"apps/web/**/*.{css,html,json,md,ts,tsx}\" \"packages/client-core/**/*.{json,md,ts}\" \"packages/map-renderer/**/*.{json,md,ts}\" \"packages/ui/**/*.{json,md,ts,tsx}\" \"tools/architecture/**/*.{json,md,mjs,js,ts}\"",
-    "lint": "eslint --no-error-on-unmatched-pattern \"apps/**/*.{ts,tsx,js,mjs}\" \"packages/**/*.{ts,tsx,js,mjs}\" \"tools/**/*.{ts,js,mjs}\" eslint.config.mjs prettier.config.mjs",
+    "format:check": "prettier --check \"package.json\" \"pnpm-workspace.yaml\" \"tsconfig*.json\" \"eslint.config.*\" \"prettier.config.*\" \"vitest.config.*\" \"playwright.config.*\" \".storybook/**/*.{js,json,md,ts,tsx}\" \"tests/**/*.{json,md,ts,tsx}\" \"apps/web/**/*.{css,html,json,md,ts,tsx}\" \"packages/client-core/**/*.{json,md,ts}\" \"packages/map-renderer/**/*.{json,md,ts}\" \"packages/ui/**/*.{json,md,ts,tsx}\" \"tools/architecture/**/*.{json,md,mjs,js,ts}\"",
+    "lint": "eslint --no-error-on-unmatched-pattern \"apps/**/*.{ts,tsx,js,mjs}\" \"packages/**/*.{ts,tsx,js,mjs}\" \"tests/**/*.{ts,tsx,js,mjs}\" \".storybook/**/*.{ts,tsx,js,mjs}\" \"tools/**/*.{ts,js,mjs}\" eslint.config.mjs prettier.config.mjs vitest.config.ts playwright.config.ts",
     "typecheck": "pnpm -r --if-present typecheck",
     "architecture:check": "node tools/architecture/check-boundaries.mjs",
     "sim:determinism": "pnpm --filter @monsoon/sim-runner sim:determinism",
-    "test": "pnpm architecture:check && pnpm sim:determinism && pnpm --filter web test"
+    "test": "pnpm architecture:check && pnpm sim:determinism && vitest run --config vitest.config.ts && pnpm --filter web test",
+    "storybook:build": "storybook build --config-dir .storybook --output-dir .tmp/storybook-static && node -e \"require('node:fs').rmSync('.tmp/storybook-static',{recursive:true,force:true})\"",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@fast-check/vitest": "^0.4.1",
+    "@playwright/test": "^1.61.0",
+    "@storybook/react-vite": "^10.4.6",
     "@types/node": "^26.0.0",
     "eslint": "^10.5.0",
+    "fast-check": "^4.8.0",
     "globals": "^17.6.0",
     "prettier": "^3.8.4",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "storybook": "^10.4.6",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.1"
+    "typescript-eslint": "^8.61.1",
+    "vite": "8.1.0",
+    "vitest": "4.1.9"
   }
 }
