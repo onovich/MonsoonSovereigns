@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260623-FOUNDATION-005-TEST-REVIEW",
+  "task_id": "FOUNDATION-005",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Established the FOUNDATION-005 test baseline with root Vitest/fast-check coverage, Storybook build coverage, and Playwright Chromium e2e coverage for the existing web shell. The test_engineer thread implemented the baseline; the lead_orchestrator performed scoped integration fixes so the new files are covered by the existing format/lint/typecheck gates and local test outputs do not dirty the workspace.",
+  "artifacts": [
+    ".gitignore",
+    ".storybook/WebClientShell.stories.tsx",
+    ".storybook/main.ts",
+    ".storybook/preview.ts",
+    "package.json",
+    "playwright.config.ts",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "tests/deterministic-hash.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tsconfig.json",
+    "vitest.config.ts",
+    "project/tasks/active/FOUNDATION-005.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "branch_or_worktree": "chore/foundation-005-test-baseline",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm add -Dw react@19.2.7 react-dom@19.2.7 vite@8.1.0 vitest@4.1.9 fast-check @fast-check/vitest @playwright/test storybook @storybook/react-vite",
+      "exit_code": 1,
+      "result": "Initial dependency add was blocked by pnpm 11 build approval for esbuild: ERR_PNPM_IGNORED_BUILDS."
+    },
+    {
+      "command": "pnpm add -Dw --allow-build=esbuild react@19.2.7 react-dom@19.2.7 vite@8.1.0 vitest@4.1.9 fast-check @fast-check/vitest @playwright/test storybook @storybook/react-vite",
+      "exit_code": 0,
+      "result": "Root devDependencies and pnpm-lock.yaml updated; pnpm-workspace.yaml records allowBuilds.esbuild."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Scope all 10 workspace projects; lockfile up to date; esbuild postinstall completed under allowBuilds."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "First lead verification failed because root tsconfig.json did not include the new tests, Storybook files, and Playwright/Vitest configs for ESLint project service."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture check passed after tsconfig/package script coverage fixes."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic hello matched Node and worker-compatible hashes 61e0ba1c; root Vitest passed 1 file/2 tests; web Vitest passed 1 file/3 tests."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook v10.4.6 build completed successfully to .tmp/storybook-static and the script removed the output directory afterwards. Vite emitted a chunk size warning only."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Playwright Chromium ran 1 test and passed. Vite emitted the existing dynamic import analysis warning for apps/web/src/worker/hello-simulation-adapter.mjs."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate FOUNDATION-005",
+      "exit_code": 0,
+      "result": "FOUNDATION-005 task JSON validated successfully."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/FOUNDATION-005__MSG-20260623-FOUNDATION-005-TEST-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/FOUNDATION-005__MSG-20260623-FOUNDATION-005-TEST-REVIEW__test_engineer.json."
+    }
+  ],
+  "decisions": [
+    "Added root Vitest config and tests rather than moving existing app tests, preserving the F004 app shell and adding a separate F005 baseline.",
+    "Used fast-check directly in Vitest to create a property baseline without changing simulation or client implementation code.",
+    "Added Storybook files under .storybook and a single WebClientShell story that reuses the existing read-model shell.",
+    "Added Playwright config with Chromium project and a Vite dev server for the existing web shell.",
+    "Kept package.json, pnpm-lock.yaml, pnpm-workspace.yaml, tsconfig.json, and .gitignore in F005 via explicit lead scope reconciliation because the required root commands, pnpm build approval, ESLint project-service coverage, and test output hygiene depend on them."
+  ],
+  "risks": [
+    "Playwright uses fixed local port 4173; a conflicting process on that port can fail e2e.",
+    "Vite still warns that the existing dynamic import in apps/web/src/worker/hello-simulation-adapter.mjs cannot be statically analyzed. It is pre-existing behavior and did not block e2e.",
+    "Storybook build emits a chunk size warning from generated Storybook assets; it does not fail the build."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the F005 test baseline, the lead scope reconciliations for root tooling files, the command evidence, and decide ACCEPT / REQUEST_CHANGES / BLOCK.",
+  "created_at": "2026-06-23T17:58:00Z"
+}

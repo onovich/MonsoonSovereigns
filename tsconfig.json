@@ -3,6 +3,8 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
@@ -11,6 +13,12 @@
   "include": [
     "eslint.config.mjs",
     "prettier.config.mjs",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
     "apps/**/*.js",
     "apps/**/*.mjs",
     "apps/**/*.ts",

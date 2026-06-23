@@ -2,7 +2,7 @@
   "id": "FOUNDATION-005",
   "summary": "建立 Vitest/fast-check/Storybook/Playwright 基线",
   "milestone": "M0",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R2",
@@ -16,7 +16,12 @@
       ".storybook/**",
       "playwright.config.*",
       "vitest.config.*",
-      "apps/web/src/dev/**"
+      "apps/web/src/dev/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tsconfig.json",
+      ".gitignore"
     ],
     "forbidden_paths": [
       "docs/decisions/accepted/*",
@@ -32,10 +37,50 @@
     "pnpm storybook:build",
     "pnpm test:e2e --project=chromium"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
-  "route_to": "test_engineer",
-  "notes": [],
+  "branch_or_worktree": "chore/foundation-005-test-baseline",
+  "threads": {
+    "writer": {
+      "thread_id": "019ef57a-1f65-7700-9463-7a80d593159d",
+      "role": "test_engineer",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "gpt-5.4-mini",
+      "actual_effort": "high",
+      "status": "closed_after_valid_handoff"
+    },
+    "reviewer": {
+      "thread_id": "019ef58f-fa9b-7632-a608-083b40d61379",
+      "role": "qa_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "status": "closed_after_accept_review"
+    }
+  },
+  "route_to": "lead_orchestrator",
+  "notes": [
+    {
+      "at": "2026-06-23T17:24:00Z",
+      "by": "lead_orchestrator",
+      "note": "Scope reconciled to include root package.json and pnpm-lock.yaml because FOUNDATION-005 required tests are root pnpm commands and need root scripts/devDependencies. Test fixtures and configs remain constrained to the original FOUNDATION-005 paths."
+    },
+    {
+      "at": "2026-06-23T17:36:00Z",
+      "by": "lead_orchestrator",
+      "note": "Scope reconciled to include pnpm-workspace.yaml because pnpm 11 build approval for esbuild is required for frozen install and the Vite/Storybook/Playwright baseline tools."
+    },
+    {
+      "at": "2026-06-23T17:47:00Z",
+      "by": "lead_orchestrator",
+      "note": "Scope reconciled to include root tsconfig.json so ESLint project service covers the new tests, Storybook stories, and Playwright/Vitest configs added by FOUNDATION-005."
+    },
+    {
+      "at": "2026-06-23T17:55:00Z",
+      "by": "lead_orchestrator",
+      "note": "Scope reconciled to include .gitignore so dependency installs and Storybook/Playwright test outputs do not leave recurring untracked artifacts after FOUNDATION-005 commands."
+    }
+  ],
   "created_at": "2026-06-23T00:00:00Z",
-  "updated_at": "2026-06-23T00:00:00Z"
+  "updated_at": "2026-06-23T17:47:27.513Z"
 }
