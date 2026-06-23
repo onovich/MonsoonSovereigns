@@ -1,0 +1,113 @@
+{
+  "message_id": "MSG-20260623-FOUNDATION-004-CLIENT-REVIEW",
+  "task_id": "FOUNDATION-004",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the F004 client shell: a disposable client read-model package, a rebuildable map-renderer scene shell, a modest React UI package, and a Vite/Vitest web app that projects the existing deterministic hello result without storing authoritative WorldState in React.",
+  "artifacts": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/web/package.json",
+    "apps/web/index.html",
+    "apps/web/tsconfig.json",
+    "apps/web/vite.config.ts",
+    "apps/web/src/main.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "packages/client-core/package.json",
+    "packages/client-core/tsconfig.json",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/package.json",
+    "packages/map-renderer/tsconfig.json",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/package.json",
+    "packages/ui/tsconfig.json",
+    "packages/ui/src/index.tsx"
+  ],
+  "branch_or_worktree": "chore/foundation-004-client-shell",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm install",
+      "exit_code": 0,
+      "result": "Updated workspace lockfile for React 19.2.7, React DOM 19.2.7, PixiJS 8.19.0, Vite 8.1.0, Vitest 4.1.9, and related type/plugin packages."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Already up to date."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest: 1 file passed, 3 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 1,
+      "result": "Command \"test:e2e\" not found; Playwright baseline is not present yet and remains deferred to FOUNDATION-005."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed for existing hello packages plus client-core, map-renderer, ui, and web."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed for apps, packages, tools, and root config files."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 1 expected violation."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture check passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate FOUNDATION-004",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/FOUNDATION-004.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; FOUNDATION-004 remains IN_PROGRESS pending review."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "FOUNDATION-005 is the next ready draft task."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/FOUNDATION-004__MSG-20260623-FOUNDATION-004-CLIENT-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Handoff JSON validated successfully."
+    }
+  ],
+  "decisions": [
+    "Used a small explicit read-model store in @monsoon/client-core rather than Redux for this shell, matching docs/03 allowance for an equivalent small explicit store before full UI state selection.",
+    "Declared React/Pixi/Vite/Vitest dependencies that are already frozen stack choices in docs/03; no new ADR was needed for this F004 shell.",
+    "Kept apps/web/src/dev untouched; web tests live under apps/web/src/shell.",
+    "Kept map-renderer authority-free: it consumes ClientMapReadModelSnapshot and can rebuild its scene layer from that snapshot."
+  ],
+  "risks": [
+    "Playwright/e2e remains absent by design until FOUNDATION-005, so pnpm test:e2e --project=chromium fails with command not found.",
+    "PixiJS 8.19.0 currently exposes WebGPU/DOM declarations that conflict with TypeScript 6 DOM library under skipLibCheck=false, so the F004 map-renderer shell uses an adapter-injected Pixi scene host and memory host for tests; the real browser Pixi factory should be added with the F005/Future renderer test baseline."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review architecture boundaries, read-model authority separation, dependency/package shape, and the recorded e2e deferral for FOUNDATION-005.",
+  "created_at": "2026-06-23T16:54:22.1459588Z"
+}
