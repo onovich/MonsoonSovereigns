@@ -2,7 +2,7 @@
   "id": "FOUNDATION-003",
   "summary": "实现跨 Worker/Node 的确定性 hello simulation",
   "milestone": "M0",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -12,6 +12,8 @@
   ],
   "scope": {
     "allowed_paths": [
+      "package.json",
+      "pnpm-lock.yaml",
       "packages/sim-core/**",
       "packages/protocol/**",
       "apps/sim-runner/**",
@@ -31,9 +33,12 @@
     "pnpm sim:determinism"
   ],
   "branch_or_worktree": null,
-  "threads": {},
-  "route_to": "simulation_engineer",
+  "threads": {
+    "simulation_engineer": "019ef53e-26ec-77f2-9460-3e8dad4d364d",
+    "qa_reviewer": "019ef548-9e00-72f3-b998-d3da5ec75958"
+  },
+  "route_to": "qa_reviewer",
   "notes": [],
   "created_at": "2026-06-23T00:00:00Z",
-  "updated_at": "2026-06-23T00:00:00Z"
+  "updated_at": "2026-06-23T16:30:44.733Z"
 }
