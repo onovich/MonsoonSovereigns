@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260624-FOUNDATION-006-CLIENT-REVIEW",
+  "task_id": "FOUNDATION-006",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Established a minimal secure Electron Windows shell with explicit BrowserWindow security preferences, a narrow preload bridge, package/platform adapter types, root desktop security/package scripts, and automated assertions for renderer Node isolation and trusted renderer-root-only file navigation. The client_engineer writer subthread produced the initial shell but ended with an Unsupported content type tool error; lead_orchestrator integrated the partial work, tightened the trusted file URL boundary, and verified the required commands.",
+  "artifacts": [
+    ".gitignore",
+    "apps/desktop/package.json",
+    "apps/desktop/renderer/index.html",
+    "apps/desktop/renderer/renderer.js",
+    "apps/desktop/scripts/copy-renderer.mjs",
+    "apps/desktop/scripts/package.mjs",
+    "apps/desktop/scripts/security-check.mjs",
+    "apps/desktop/src/main/main.ts",
+    "apps/desktop/src/main/security.ts",
+    "apps/desktop/src/preload/global.d.ts",
+    "apps/desktop/src/preload/preload.cts",
+    "apps/desktop/tsconfig.json",
+    "packages/platform/package.json",
+    "packages/platform/src/index.ts",
+    "packages/platform/tsconfig.json",
+    "package.json",
+    "pnpm-lock.yaml",
+    "project/tasks/active/FOUNDATION-006.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/routes/FOUNDATION-006__CLOSE-20260624-CLIENT-ENGINEER.json"
+  ],
+  "branch_or_worktree": "chore/foundation-006-electron-security-shell",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Scope all 12 workspace projects; lockfile already up to date."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Built @monsoon/platform and apps/desktop; asserted nodeIntegration false, contextIsolation true, sandbox true, webSecurity true, insecure content disabled, narrow monsoonDesktop preload bridge, renderer has no require/ipcRenderer, and file navigation is restricted to the packaged renderer root."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Built desktop shell and generated a smoke package under .tmp/desktop-package/MonsoonSovereigns-win32-x64 with main, preload, renderer, and platform adapter artifacts."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "Initial lead verification failed because apps/desktop/scripts/security-check.mjs needed Prettier formatting after the trusted file URL assertions were added."
+    },
+    {
+      "command": "pnpm exec prettier --write apps/desktop/scripts/security-check.mjs",
+      "exit_code": 0,
+      "result": "Formatted the updated security-check script."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive workspace typecheck, and architecture boundaries passed with desktop/platform sources included and generated dist excluded from root globs."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic Node and worker-compatible hash remained 61e0ba1c; root Vitest passed 1 file/2 tests; web Vitest passed 1 file/3 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate FOUNDATION-006",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/FOUNDATION-006.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/FOUNDATION-006__MSG-20260624-FOUNDATION-006-CLIENT-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/FOUNDATION-006__MSG-20260624-FOUNDATION-006-CLIENT-REVIEW__client_engineer.json."
+    }
+  ],
+  "decisions": [
+    "Implemented a self-contained desktop smoke package script instead of introducing Electron Forge in F006, keeping the shell minimal while still building main, preload, renderer, and platform artifacts.",
+    "Kept the preload API narrow: only getRuntimeInfo and setFullscreen are exposed through the named monsoonDesktop bridge; raw ipcRenderer is not exposed.",
+    "Added @monsoon/platform as a platform boundary package for DesktopPlatformBridge, PlatformAdapter types, IPC channel constants, locale/save-slot/external-url constructors, and request validation.",
+    "Kept apps/desktop thin and authority-free: Electron main/preload do not read or mutate game state.",
+    "Added Electron 42.4.1 only to apps/desktop devDependencies, matching the frozen technology stack support line.",
+    "Added root package scripts for pnpm desktop:security-check and pnpm desktop:package because they are the task's required tests.",
+    "Added dist/ to .gitignore and narrowed root lint/format globs so generated desktop/platform build outputs do not enter commits or quality checks."
+  ],
+  "risks": [
+    "The desktop:package command is a smoke package, not a signed or distributable Electron installer. Release artifacts remain FOUNDATION-007 scope.",
+    "The client_engineer writer subthread errored with Unsupported content type after partial implementation; lead integrated and verified the resulting code before review.",
+    "The preload bridge currently exposes only runtime info and fullscreen control. Future file/save APIs must add runtime schema validation and security tests before exposure.",
+    "Renderer DOM smoke is minimal and not yet a Playwright-launched Electron runtime test; current F006 coverage is build-time and script-level security assertion."
+  ],
+  "blockers": [],
+  "route_to": "security_reviewer",
+  "requested_action": "Perform read-only security review of the Electron security configuration, preload/API boundary, IPC channel set, package smoke, scope reconciliations, and command evidence. Return ACCEPT / REQUEST_CHANGES / BLOCK.",
+  "created_at": "2026-06-24T04:06:00Z"
+}

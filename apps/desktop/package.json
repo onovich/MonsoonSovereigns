@@ -1,0 +1,22 @@
+{
+  "name": "desktop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "pnpm --filter @monsoon/platform build && tsc --project tsconfig.json && node scripts/copy-renderer.mjs",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm security-check",
+    "format:check": "prettier --check \"package.json\" \"tsconfig.json\" \"src/**/*.{cts,ts}\" \"renderer/**/*.{html,js}\" \"scripts/**/*.mjs\"",
+    "lint": "eslint --no-error-on-unmatched-pattern \"src/**/*.{cts,ts}\" \"scripts/**/*.mjs\"",
+    "package": "pnpm build && node scripts/package.mjs",
+    "security-check": "pnpm build && node scripts/security-check.mjs",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  },
+  "dependencies": {
+    "@monsoon/platform": "workspace:*"
+  },
+  "devDependencies": {
+    "electron": "42.4.1"
+  }
+}
