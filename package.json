@@ -12,7 +12,8 @@
     "lint": "eslint --no-error-on-unmatched-pattern \"apps/**/*.{ts,tsx,js,mjs}\" \"packages/**/*.{ts,tsx,js,mjs}\" \"tools/**/*.{ts,js,mjs}\" eslint.config.mjs prettier.config.mjs",
     "typecheck": "tsc --noEmit --project tsconfig.json",
     "architecture:check": "node tools/architecture/check-boundaries.mjs",
-    "test": "pnpm architecture:check"
+    "sim:determinism": "pnpm --filter @monsoon/sim-runner sim:determinism",
+    "test": "pnpm architecture:check && pnpm sim:determinism"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

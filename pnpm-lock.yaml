@@ -30,9 +30,26 @@ importers:
         specifier: ^8.61.1
         version: 8.61.1(eslint@10.5.0)(typescript@6.0.3)
 
+  apps/sim-runner:
+    dependencies:
+      '@monsoon/protocol':
+        specifier: workspace:*
+        version: link:../../packages/protocol
+      '@monsoon/sim-core':
+        specifier: workspace:*
+        version: link:../../packages/sim-core
+
   apps/web: {}
 
   packages/core: {}
+
+  packages/protocol: {}
+
+  packages/sim-core:
+    dependencies:
+      '@monsoon/protocol':
+        specifier: workspace:*
+        version: link:../protocol
 
   tools/hello: {}
 
