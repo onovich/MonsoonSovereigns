@@ -1,7 +1,7 @@
 # 26. 模型路由增量修订
 
-Decision ID: MODEL-ROUTING-AMENDMENT-001  
-Date: 2026-06-23  
+Decision ID: MODEL-ROUTING-AMENDMENT-001
+Date: 2026-06-23
 Status: Accepted
 
 ## Context
