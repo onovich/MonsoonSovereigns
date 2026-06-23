@@ -174,3 +174,9 @@ TypeScript + React + PixiJS + Dedicated Web Worker
 ## 7. MODEL-ROUTING-AMENDMENT-001
 
 2026-06-23 接受增量模型路由修订。该修订不改变产品、技术栈、架构或 Roadmap 决定，只更新 Codex 角色的模型、推理强度、Spark 使用边界、fallback 记录和线程迁移规则。正式记录见 `docs/26-model-routing-amendment.md`。
+
+## 8. AUTONOMOUS-GOAL-MODE-001
+
+2026-06-23 接受受门禁约束的 Autonomous Goal Mode。该决策只建立连续执行、checkpoint、handoff、review、Human Gate 和 GitHub automation 的流程规则，正式记录见 `docs/27-autonomous-goal-mode.md`。
+
+它不重新开放本文件记录的题材、平台、技术栈、架构或历史表达决定。若 autonomous continuation 触及这些决定，必须停止并回到 ADR、证据和人工批准流程。

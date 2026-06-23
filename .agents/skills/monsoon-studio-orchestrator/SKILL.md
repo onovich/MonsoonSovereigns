@@ -30,6 +30,7 @@ Classify the request as one of:
 - `RESEARCH`: produce evidence/claim records, not implementation.
 - `BALANCE`: run controlled simulations and report distributions.
 - `RELEASE`: run release gates and package artifacts.
+- `AUTONOMOUS_GOAL_MODE`: continue dependency-ready tasks under `AUTONOMOUS-GOAL-MODE-001` gates after explicit product-owner approval.
 
 If no task ID exists, the root/lead thread creates one. Child agents do not invent broader tasks.
 
@@ -94,6 +95,21 @@ If no task ID exists, the root/lead thread creates one. Child agents do not inve
 10. **Continue the graph**
    - Select the next dependency-satisfied READY task only within the current milestone.
    - Route its kickoff to the owner role. Never silently advance beyond a milestone exit gate.
+
+## Autonomous Goal Mode
+
+When `project/goal-mode-state.json` exists with `enabled: true`, load `docs/27-autonomous-goal-mode.md` before continuing the graph. The mode is a controlled delivery overlay; it does not change frozen decisions, the model matrix, parent-owned routing, reviewer separation, or task scope rules.
+
+Autonomous continuation may proceed only when:
+
+- `human_gate.required` is false;
+- the next task is dependency-satisfied and inside the current milestone;
+- WIP limits from `docs/14-multi-agent-operating-model.md` and `docs/27-autonomous-goal-mode.md` are available;
+- the previous writer/reviewer handoffs have been validated;
+- required tests and diff-scope gates are recorded;
+- no stop condition from this Skill or `docs/27-autonomous-goal-mode.md` is active.
+
+After each writer handoff, review result, or integration checkpoint, update `project/goal-mode-state.json` with the current task, active threads, ready tasks, unresolved risks, Human Gate state, and timestamp. If a restart occurs, recover from the newest validated handoff and current git state; do not continue from memory or stale thread IDs.
 
 ## Current model routing
 

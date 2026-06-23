@@ -260,3 +260,9 @@ pnpm desktop:security-check
 - Web 与 Electron 的模拟 hash 金丝雀必须一致。
 - 生成物签名、哈希、SBOM、许可证清单归档。
 - 发现回归时优先回滚，不在发布分支堆叠即兴补丁。
+
+## 13. Autonomous Goal Mode
+
+`AUTONOMOUS-GOAL-MODE-001`（见 `docs/27-autonomous-goal-mode.md`）是本工作流上的受门禁连续执行模式。它允许 `lead_orchestrator` 在依赖已满足、任务范围明确、writer handoff 和独立 reviewer handoff 均已验证、所列测试真实运行、且没有 Human Gate 时，继续选择下一项当前里程碑内的任务。
+
+该模式不改变任务状态机、风险分级、review gate、ADR 要求、分支纪律或发布纪律。任何失败门禁必须记录为 `BLOCKED` 或 `PARTIAL`，不得用 autonomous continuation 掩盖测试失败、范围不足或冻结决定变更。

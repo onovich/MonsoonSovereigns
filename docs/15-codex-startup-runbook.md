@@ -96,3 +96,9 @@ node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs \
 - handoff 可落盘并路由；
 - M0 未提前引入业务功能；
 - 所有决定仍与 `PROJECT_STATUS.md` 一致。
+
+## 10. Autonomous Goal Mode 恢复
+
+若 `project/goal-mode-state.json` 的 `enabled` 为 `true`，恢复主线程还必须读取 `docs/27-autonomous-goal-mode.md`，比较当前 `HEAD` 与 `last_main_commit`，运行 `taskctl.mjs list` / `taskctl.mjs ready`，并从最新已验证 handoff 继续，而不是凭会话记忆继续。
+
+只要 `human_gate.required` 为 `true`、当前 diff 无法归属到活动任务、必跑门禁失败、或 thread registry 中的目标线程不可恢复且没有可替代路由，主线程必须停止 autonomous continuation，写出 `BLOCKED` 或 `PARTIAL` handoff，并等待人工或 lead 决策。

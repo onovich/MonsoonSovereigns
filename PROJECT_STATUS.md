@@ -80,3 +80,7 @@
 - `research_scout` 使用 `gpt-5.4-mini` / `medium` / read-only；`test_engineer` 与 `balance_analyst` 使用 `gpt-5.4-mini` / `high`。
 - `release_engineer` 与 `spark_worker` 使用 `gpt-5.3-codex-spark` / `medium`，只执行明确、机械、路径受限的任务，不能做最终验收。
 - 若 Spark 不可用，必须记录 `MODEL_FALLBACK`，临时回退到 `gpt-5.4-mini` / `medium`，且不得重做已经验收通过的任务。
+
+## 7. 当前流程模式
+
+`AUTONOMOUS-GOAL-MODE-001` 已作为受门禁约束的流程模式接受，详见 `docs/27-autonomous-goal-mode.md`。它只允许主协调线程在任务、handoff、review、测试和 Human Gates 全部满足时连续推进下一项 dependency-ready 工作；不改变上述冻结产品决定、平台承诺、技术栈、Roadmap、架构边界或历史表达政策。
