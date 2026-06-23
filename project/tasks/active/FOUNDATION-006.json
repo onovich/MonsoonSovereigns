@@ -2,7 +2,7 @@
   "id": "FOUNDATION-006",
   "summary": "建立安全 Electron Windows 空壳",
   "milestone": "M0",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "security_reviewer",
   "risk_level": "R3",
@@ -13,7 +13,10 @@
   "scope": {
     "allowed_paths": [
       "apps/desktop/**",
-      "packages/platform/**"
+      "packages/platform/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      ".gitignore"
     ],
     "forbidden_paths": [
       "docs/decisions/accepted/*",
@@ -29,10 +32,49 @@
     "pnpm desktop:security-check",
     "pnpm desktop:package"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
-  "route_to": "client_engineer",
-  "notes": [],
+  "branch_or_worktree": "chore/foundation-006-electron-security-shell",
+  "threads": {
+    "writer": {
+      "thread_id": "019ef5f0-dea4-7080-b6f3-fff538c9f2c2",
+      "role": "client_engineer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "status": "closed_after_tool_error_and_lead_integration"
+    },
+    "reviewer": {
+      "thread_id": "019ef602-528b-7402-a471-004caf2b1842",
+      "role": "security_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "status": "closed_after_tool_error"
+    },
+    "reviewer_retry": {
+      "thread_id": "019ef606-608e-75f3-b6f6-fbda37cfa62a",
+      "role": "security_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "status": "closed_after_accept_review"
+    }
+  },
+  "route_to": "lead_orchestrator",
+  "notes": [
+    {
+      "at": "2026-06-24T03:38:00Z",
+      "by": "lead_orchestrator",
+      "note": "Scope reconciled to include root package.json and pnpm-lock.yaml because FOUNDATION-006 required tests are root pnpm commands and the Electron shell needs root scripts plus locked dependencies. Implementation remains constrained to apps/desktop/** and packages/platform/**."
+    },
+    {
+      "at": "2026-06-24T03:56:00Z",
+      "by": "lead_orchestrator",
+      "note": "Scope reconciled to include .gitignore so desktop build/package outputs under dist/ do not recur as untracked artifacts after required F006 commands."
+    }
+  ],
   "created_at": "2026-06-23T00:00:00Z",
-  "updated_at": "2026-06-23T00:00:00Z"
+  "updated_at": "2026-06-23T19:53:20.800Z"
 }
