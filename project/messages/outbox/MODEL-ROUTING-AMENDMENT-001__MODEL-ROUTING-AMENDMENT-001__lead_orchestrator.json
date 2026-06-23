@@ -1,0 +1,75 @@
+{
+  "message_id": "MODEL-ROUTING-AMENDMENT-001",
+  "task_id": "MODEL-ROUTING-AMENDMENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Applied the model routing amendment: default GPT-5.5 xhigh, updated role TOMLs, added spark_worker, documented Spark boundaries and migration policy, and recorded model routing state without reopening accepted tasks.",
+  "artifacts": [
+    ".codex/config.toml",
+    ".codex/agents/*.toml",
+    ".agents/skills/monsoon-studio-orchestrator/SKILL.md",
+    ".agents/skills/monsoon-studio-orchestrator/references/role-selection.md",
+    ".agents/skills/monsoon-studio-orchestrator/references/routing-workflow.md",
+    ".agents/skills/monsoon-studio-orchestrator/assets/templates/task.json",
+    ".agents/skills/monsoon-studio-orchestrator/assets/templates/handoff.json",
+    "PROJECT_STATUS.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/15-codex-startup-runbook.md",
+    "docs/25-decision-history-and-rejected-directions.md",
+    "docs/26-model-routing-amendment.md",
+    "project/model-routing-state.json"
+  ],
+  "branch_or_worktree": "chore/model-routing-amendment-001",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 ACCEPTED; FOUNDATION-002..008 DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "FOUNDATION-002 and FOUNDATION-008 are dependency-satisfied DRAFT candidates."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs .agents/skills/monsoon-studio-orchestrator/assets/examples/example-handoff.json",
+      "exit_code": 0,
+      "result": "VALID example-handoff.json"
+    },
+    {
+      "command": "node -e JSON parse checks for model-routing-state and templates",
+      "exit_code": 0,
+      "result": "json ok"
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Scope: all 4 workspace projects; already up to date; pnpm v11.0.0."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "hello-only format:check, lint, typecheck, and test passed across apps/web, packages/core, tools/hello."
+    }
+  ],
+  "decisions": [
+    "Accepted MODEL-ROUTING-AMENDMENT-001 as an incremental routing decision, not a product/architecture rewrite.",
+    "Do not reopen FOUNDATION-001 solely for model differences; defer M0-level recheck to future qa_reviewer xhigh gate.",
+    "Spark is configured and available in the spawn_agent model list; no MODEL_FALLBACK is active."
+  ],
+  "risks": [
+    "Current lead thread cannot self-switch or prove actual model/effort; project config now requires gpt-5.5 xhigh and the user should select it when reopening/continuing if needed.",
+    "No new Spark task has been spawned under the amendment yet; first future Spark use must still be recorded with a real thread ID."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the model routing amendment diff, agent TOML matrix, Spark constraints, fallback state, and verification results. If acceptable, emit ACCEPT handoff to lead_orchestrator; otherwise REQUEST_CHANGES or BLOCK.",
+  "created_at": "2026-06-23T12:55:21Z"
+}

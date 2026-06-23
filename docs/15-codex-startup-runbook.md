@@ -30,13 +30,15 @@ $HOME/.agents/skills/monsoon-studio-orchestrator
 
 Codex 只有在信任项目后才加载 `.codex/config.toml`、项目 agents 和相关规则。检查 `.codex/agents/*.toml` 是否可见。
 
+当前模型配置由 `MODEL-ROUTING-AMENDMENT-001` 约束：默认 `gpt-5.5` / `xhigh`，`max_threads = 6`，`max_depth = 1`。高杠杆 reviewer 使用 GPT-5.5 xhigh；Spark 只用于受约束的机械执行，不能最终验收。若当前主线程无法自行切换到 GPT-5.5 xhigh，应在报告中说明并由用户重新选择模型/effort。
+
 ## 4. 首条主线程提示
 
 ```text
 使用 $monsoon-studio-orchestrator 接管《季风诸王》项目。
 先读取 README.md、PROJECT_STATUS.md、AGENTS.md、docs/11-roadmap.md、docs/14-multi-agent-operating-model.md。
 创建 FOUNDATION-001 任务图，只执行 M0 仓库与工具链基线。
-显式 spawn systems_architect 审查目录与依赖，release_engineer 建立跨平台脚本，qa_reviewer 定义验收。
+显式 spawn systems_architect（gpt-5.5 xhigh）审查目录与依赖，release_engineer（gpt-5.3-codex-spark medium，若不可用则记录 MODEL_FALLBACK）建立跨平台脚本，qa_reviewer（gpt-5.5 xhigh read-only）定义验收。
 不要实现经济、人物、战斗或历史内容。
 所有子线程完成后按 handoff 的 ROUTE_TO 用 send_input 路由；最终给出已运行命令、未决风险和下一任务，不把未审查工作标记 ACCEPTED。
 ```
@@ -88,6 +90,7 @@ node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs \
 
 - Codex 能列出自定义 agents；
 - Skill 可显式调用；
+- 当前模型路由与 `docs/26-model-routing-amendment.md` 一致；
 - 任务脚本可在 Windows/Node 运行；
 - 主线程能 spawn 至少一个只读 reviewer；
 - handoff 可落盘并路由；

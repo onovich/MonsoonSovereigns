@@ -21,24 +21,27 @@ Codex 原生子代理只有在主线程明确要求时才会生成。项目 Skil
 
 ## 2. 模型策略
 
-官方当前建议复杂任务从 `gpt-5.5` 开始，轻量扫描/子任务使用 `gpt-5.4-mini`。项目固定：
+官方当前建议复杂任务从 `gpt-5.5` 开始。`MODEL-ROUTING-AMENDMENT-001` 将高杠杆裁决提升为 xhigh，并引入受约束的 GPT-5.3-Codex-Spark 快速执行通道。项目固定：
 
 | 角色 | 模型 | effort | 原因 |
 |---|---|---|---|
-| lead_orchestrator | gpt-5.5 | high | 跨领域规划、冲突处理、最终判断 |
-| systems_architect | gpt-5.5 | high | 架构、确定性、ADR、公共接口 |
-| gameplay_designer | gpt-5.5 | high | 系统联动、可玩性、反漏洞 |
+| lead_orchestrator | gpt-5.5 | xhigh | 跨领域规划、冲突处理、最终判断 |
+| systems_architect | gpt-5.5 | xhigh | 架构、确定性、ADR、公共接口 |
+| gameplay_designer | gpt-5.5 | xhigh | 系统联动、可玩性、反漏洞 |
 | historical_researcher | gpt-5.5 | high | 史学争议、来源综合、文化风险 |
 | simulation_engineer | gpt-5.5 | high | 权威状态、算法、存档、AI |
-| client_engineer | gpt-5.5 | medium/high | React/Pixi/Worker 集成与 UX |
-| qa_reviewer | gpt-5.5 | high | 独立正确性/回归审查 |
-| security_reviewer | gpt-5.5 | high | Electron/供应链/输入边界 |
+| client_engineer | gpt-5.5 | high | React/Pixi/Worker 集成与 UX |
+| qa_reviewer | gpt-5.5 | xhigh | 独立正确性/回归审查，只读 |
+| security_reviewer | gpt-5.5 | xhigh | Electron/供应链/输入边界，只读 |
 | research_scout | gpt-5.4-mini | medium | 快速检索、文件扫描、证据清单 |
 | test_engineer | gpt-5.4-mini | high | fixture、属性测试、E2E 执行 |
 | balance_analyst | gpt-5.4-mini | high | 批量数据、指标、回放筛选 |
-| release_engineer | gpt-5.4-mini | medium | CI、构建、清单和发布复现 |
+| release_engineer | gpt-5.3-codex-spark | medium | CI、构建、清单和发布复现的机械执行 |
+| spark_worker | gpt-5.3-codex-spark | medium | 受约束的小范围样板、测试、配置和修复 |
 
 R3/R4 决策不得仅由 mini 角色批准。若指定模型不可用，协调者必须记录替代，不静默降低审查等级。
+
+Spark 不可用时，`release_engineer` 或 `spark_worker` 临时回退到 `gpt-5.4-mini` / `medium`，并在 `project/model-routing-state.json` 记录 `MODEL_FALLBACK`。已验收任务不因之后 Spark 可用而自动重做。
 
 ## 3. 并发规则
 
@@ -48,7 +51,8 @@ Codex 默认并发上限约 6，项目保持 `max_threads = 6`、`max_depth = 1`
 - 最多 4 个工作/研究线程；
 - 至少保留 1 个 reviewer 容量；
 - 子代理不得递归大规模再委派；
-- 并行只用于彼此独立的包/文档/研究问题。
+- 并行只用于彼此独立的包/文档/研究问题；
+- 标准槽位为 lead、systems/design、qa、Spark 快速执行、当前主实现者、按需专家或独立 reviewer。
 
 不要同时让 6 个代理写同一个功能。多代理价值来自分离上下文与审查，不是最大化写入数量。
 
@@ -121,6 +125,14 @@ Codex 默认并发上限约 6，项目保持 `max_threads = 6`、`max_depth = 1`
 - CI、可复现构建、artifact、SBOM、平台 smoke；
 - 不在发布流程中顺手改游戏逻辑。
 
+### spark_worker
+
+- 只执行已经批准、路径明确、测试明确的小范围机械任务；
+- 不做架构、设计、安全或最终验收；
+- 任务必须包含 TASK、CONTEXT、ALLOWED_PATHS、FORBIDDEN_PATHS、ACCEPTANCE_CRITERIA、REQUIRED_TESTS、STOP_CONDITIONS、REQUIRED_HANDOFF 和 ROUTE_TO；
+- 遇到公共 API、允许路径不足、需求歧义、新生产依赖、测试不可执行、安全/确定性/数据损坏风险时，输出 PARTIAL 或 BLOCKED handoff 并停止；
+- 所有 Spark 输出必须经 GPT-5.5 high/xhigh reviewer 审查。
+
 ## 5. 典型任务流水线
 
 ### 新模拟系统
@@ -191,6 +203,14 @@ REQUESTED_ACTION
 5. reviewer 结果路由回 writer 或进入集成；
 6. 文件消息存入 `project/messages/outbox` 作为持久审计；
 7. 完成后 `close_agent`，不长期保留陈旧上下文。
+
+模型迁移规则：
+
+- 尚未开始且没有有效 handoff 的线程可关闭并按新模型重建；
+- 正在执行的线程完成当前最小原子修改并 handoff，后续阶段使用新矩阵；
+- REVIEW 中任务使用新规范 reviewer，不要求 writer 重做；
+- ACCEPTED 任务不因模型变化重开，M0 gate 可由 `qa_reviewer` xhigh 复核；
+- 不伪造实际模型、effort 或 thread ID。
 
 子线程不得假设可以直接可靠地 peer-to-peer 通信；父协调线程是消息总线与任务真相源。
 

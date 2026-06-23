@@ -1,0 +1,124 @@
+{
+  "message_id": "MSG-20260623-BOOTSTRAP-INTEGRATION-QA-ACCEPT",
+  "task_id": "BOOTSTRAP-INTEGRATION-AND-AUTONOMOUS-GOAL-MODE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT: Independent read-only QA review accepts the bootstrap integration branch. The topology is origin/main -> 486ef3c -> d7ccbee -> e85b2e2, the origin/main...HEAD diff is limited to the accepted FOUNDATION-001 monorepo baseline, accepted model-routing amendment, whitespace-gate fix, and expected handoff/task state, protected import ZIP/checksum/SHA256SUMS/VALIDATION_REPORT artifacts are untouched, validation commands pass, and no node_modules, untracked temp files, committed secrets, or out-of-scope source changes remain after cleanup.",
+  "artifacts": [
+    "package.json",
+    "pnpm-workspace.yaml",
+    "pnpm-lock.yaml",
+    ".node-version",
+    "apps/web/package.json",
+    "packages/core/package.json",
+    "tools/hello/package.json",
+    "tools/hello/scripts/run.mjs",
+    ".codex/config.toml",
+    ".codex/agents/spark-worker.toml",
+    ".agents/skills/monsoon-studio-orchestrator/SKILL.md",
+    "docs/26-model-routing-amendment.md",
+    "project/model-routing-state.json",
+    "project/tasks/active/FOUNDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/FOUNDATION-001__MSG-20260623-FOUNDATION-001__release_engineer.json",
+    "project/messages/outbox/FOUNDATION-001__MSG-20260623-FOUNDATION-001-REVIEW__systems_architect.json",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MODEL-ROUTING-AMENDMENT-001__lead_orchestrator.json",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MSG-20260623-MODEL-ROUTING-ARCH-ACCEPT__systems_architect.json",
+    "project/messages/outbox/MODEL-ROUTING-AMENDMENT-001__MSG-20260623-MODEL-ROUTING-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/bootstrap-approved-integration",
+  "commit": "e85b2e2b4a344431769fad6618c807e6f851137d",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before writing this handoff, branch was chore/bootstrap-approved-integration...origin/main [ahead 3] with no local tracked or untracked changes."
+    },
+    {
+      "command": "git log --oneline --decorate --graph --boundary origin/main..HEAD && git show -s --format=%H%n%P%n%s e85b2e2 d7ccbee 486ef3c ffb544e",
+      "exit_code": 0,
+      "result": "Confirmed linear topology: origin/main ffb544e -> 486ef3c10b4c418fdafed38cc6514f18ae3f8e49 -> d7ccbee07fea15619ecca5e2867517e7c2500cd5 -> e85b2e2b4a344431769fad6618c807e6f851137d."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD && git diff --stat origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Reviewed complete integration diff: 36 files changed, 857 insertions, 31 deletions, covering FOUNDATION-001 baseline files, model-routing docs/config/Skill/state, accepted handoffs, and the e85b2e2 docs/26 whitespace fix."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --quiet origin/main...HEAD -- MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md docs/monsoon-sovereigns-codex-handoff-2026-06-23.zip docs/monsoon-sovereigns-codex-handoff-2026-06-23.zip.sha256 docs/monsoon-studio-orchestrator-skill.zip",
+      "exit_code": 0,
+      "result": "Protected original handoff ZIP, checksum, SHA256SUMS, VALIDATION_REPORT, and manifest artifacts are unchanged."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Scope: all 4 workspace projects; Already up to date; Done using pnpm v11.0.0. The command generated an untracked node_modules/.pnpm-workspace-state-v1.json validation byproduct, which was removed and rechecked."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and test passed across apps/web, packages/core, and tools/hello hello-only scripts. The pnpm workspace-state byproduct was removed and rechecked."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 ACCEPTED; FOUNDATION-002 through FOUNDATION-008 remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "FOUNDATION-002 and FOUNDATION-008 are dependency-satisfied DRAFT candidates."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs .agents/skills/monsoon-studio-orchestrator/assets/examples/example-handoff.json",
+      "exit_code": 0,
+      "result": "VALID example-handoff.json."
+    },
+    {
+      "command": "validate-handoff for all project/messages/outbox/*.json",
+      "exit_code": 0,
+      "result": "All 6 pre-existing outbox handoffs validated before this handoff was written."
+    },
+    {
+      "command": "taskctl validate for all project/tasks/active/*.json",
+      "exit_code": 0,
+      "result": "All 8 active task JSON files validated."
+    },
+    {
+      "command": "Node JSON parse and agent TOML matrix check",
+      "exit_code": 0,
+      "result": "JSON_PARSE_OK count=28; AGENT_TOML_MATRIX_OK count=13. Config defaults are gpt-5.5/xhigh with multi_agent=true, max_threads=6, max_depth=1."
+    },
+    {
+      "command": "UTF-8 BOM check for changed Skill files and agents/openai.yaml",
+      "exit_code": 0,
+      "result": "No UTF-8 BOM detected. SKILL.md starts directly with front matter and agents/openai.yaml starts with interface:."
+    },
+    {
+      "command": "git ls-files -o --exclude-standard && Test-Path node_modules",
+      "exit_code": 0,
+      "result": "No untracked files before writing this handoff; node_modules was absent after cleanup."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: FOUNDATION-001 acceptance evidence is coherent: task status is ACCEPTED, required tests are recorded and re-run, allowed paths include pnpm-lock.yaml, and the implementation is dependency-free hello-only scaffolding with no gameplay/domain/UI/simulation implementation.",
+    "ACCEPT: MODEL-ROUTING-AMENDMENT-001 is a scoped routing-policy amendment. docs/26, PROJECT_STATUS, docs/06/14/15/25, .codex config/agents, project/model-routing-state.json, and the orchestrator Skill agree on gpt-5.5/xhigh high-judgment roles, gpt-5.5/high complex writers, support mini roles, and bounded Spark roles.",
+    "ACCEPT: spark_worker and release_engineer are constrained to explicit mechanical path-limited tasks and cannot perform architecture, security, or final acceptance; Spark output routes to GPT-5.5 high/xhigh review.",
+    "ACCEPT: e85b2e2 is limited to docs/26 whitespace-gate cleanup and git diff --check now passes.",
+    "ACCEPT: Original import proof artifacts are not modified; no node_modules, temporary files, secrets, or unexpected untracked files remain apart from this required QA handoff."
+  ],
+  "risks": [
+    "Running pnpm commands in this empty workspace creates node_modules/.pnpm-workspace-state-v1.json even without dependencies; I removed that generated validation byproduct. Future reviewers should expect this if rerunning pnpm locally.",
+    "The current live Codex model/effort cannot be independently observed from repository files; project/model-routing-state.json correctly records current lead actual_model and actual_effort as unknown.",
+    "No live Spark task has yet been spawned under the amendment; first real Spark use still needs a concrete task package, thread ID, and reviewer-routed handoff."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate chore/bootstrap-approved-integration into main. Keep this QA handoff as the only new post-review outbox artifact, keep protected import artifacts untouched, do not commit node_modules, and continue with the next dependency-satisfied M0 task under the accepted model-routing matrix.",
+  "created_at": "2026-06-23T14:32:35Z"
+}

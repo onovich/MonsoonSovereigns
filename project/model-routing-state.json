@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "decision_id": "MODEL-ROUTING-AMENDMENT-001",
+  "updated_at": "2026-06-23T00:00:00Z",
+  "default_configured": {
+    "model": "gpt-5.5",
+    "model_reasoning_effort": "xhigh",
+    "multi_agent": true,
+    "max_threads": 6,
+    "max_depth": 1
+  },
+  "spark": {
+    "configured_model": "gpt-5.3-codex-spark",
+    "configured_effort": "medium",
+    "spawn_agent_model_list_includes_spark": true,
+    "fallback_active": false,
+    "fallback": null
+  },
+  "current_lead_thread": {
+    "role": "lead_orchestrator",
+    "actual_model": "unknown",
+    "actual_effort": "unknown",
+    "configured_model": "gpt-5.5",
+    "configured_effort": "xhigh",
+    "migration_status": "continue_current_thread_cannot_self_switch",
+    "note": "Current thread can apply this amendment and spawn agents, but the environment does not expose a reliable self-switch operation for the active lead model/effort. User should select GPT-5.5 xhigh when reopening or continuing as lead if the UI is not already using it."
+  },
+  "closed_threads": [
+    {
+      "thread_id": "019ef478-2900-78e0-b999-c7ee16dbaf47",
+      "role": "release_engineer",
+      "task_id": "FOUNDATION-001",
+      "actual_model": "gpt-5.4-mini",
+      "actual_effort": "medium",
+      "configured_model_after_amendment": "gpt-5.3-codex-spark",
+      "configured_effort_after_amendment": "medium",
+      "migration_status": "closed_after_valid_handoff",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef478-3158-7e23-af25-e126a8430274",
+      "role": "systems_architect",
+      "task_id": "FOUNDATION-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_accept_review",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef478-45b4-78c0-93fe-06ee4e6f329c",
+      "role": "qa_reviewer",
+      "task_id": "FOUNDATION-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_read_only_precheck",
+      "accepted_task_reopened": false
+    }
+  ],
+  "active_threads": [],
+  "task_effects": {
+    "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
+    "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
+    "FOUNDATION-003": "DRAFT; future writer simulation_engineer gpt-5.5 high; architecture review systems_architect gpt-5.5 xhigh; acceptance qa_reviewer gpt-5.5 xhigh.",
+    "FOUNDATION-004": "DRAFT; future writer client_engineer gpt-5.5 high; reviewer systems_architect or qa_reviewer gpt-5.5 xhigh.",
+    "FOUNDATION-005": "DRAFT; test strategy test_engineer gpt-5.4-mini high; bounded implementation may use spark_worker; acceptance qa_reviewer gpt-5.5 xhigh.",
+    "FOUNDATION-006": "DRAFT; writer client_engineer gpt-5.5 high; security review security_reviewer gpt-5.5 xhigh; acceptance qa_reviewer gpt-5.5 xhigh.",
+    "FOUNDATION-007": "DRAFT; writer release_engineer gpt-5.3-codex-spark medium; reviewer systems_architect gpt-5.5 xhigh; acceptance qa_reviewer gpt-5.5 xhigh.",
+    "FOUNDATION-008": "DRAFT; owner lead_orchestrator gpt-5.5 xhigh; acceptance qa_reviewer gpt-5.5 xhigh."
+  }
+}

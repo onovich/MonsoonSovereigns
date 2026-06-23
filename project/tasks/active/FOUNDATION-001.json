@@ -2,7 +2,7 @@
   "id": "FOUNDATION-001",
   "summary": "建立 pnpm monorepo 与版本基线",
   "milestone": "M0",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "release_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R1",
@@ -11,6 +11,7 @@
     "allowed_paths": [
       "package.json",
       "pnpm-workspace.yaml",
+      "pnpm-lock.yaml",
       "apps/**",
       "packages/**",
       "tools/**",
@@ -30,9 +31,13 @@
     "pnpm check"
   ],
   "branch_or_worktree": null,
-  "threads": {},
+  "threads": {
+    "release_engineer": "019ef478-2900-78e0-b999-c7ee16dbaf47",
+    "systems_architect": "019ef478-3158-7e23-af25-e126a8430274",
+    "qa_reviewer": "019ef478-45b4-78c0-93fe-06ee4e6f329c"
+  },
   "route_to": "release_engineer",
   "notes": [],
   "created_at": "2026-06-23T00:00:00Z",
-  "updated_at": "2026-06-23T12:28:09.950Z"
+  "updated_at": "2026-06-23T12:44:05.210Z"
 }
