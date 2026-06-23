@@ -1,0 +1,94 @@
+{
+  "message_id": "MSG-20260623-FOUNDATION-008-QA-ACCEPT",
+  "task_id": "FOUNDATION-008",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Independently reviewed FOUNDATION-008 orchestration rehearsal evidence. Task state, qa_reviewer registration, owner handoff validity, route_to fields, persisted send_input route evidence, and scope boundaries match the requested rehearsal.",
+  "artifacts": [
+    "project/tasks/active/FOUNDATION-008.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/FOUNDATION-008__MSG-20260623-FOUNDATION-008-OWNER-REVIEW__lead_orchestrator.json",
+    "project/messages/routes/FOUNDATION-008__ROUTE-20260623-OWNER-TO-QA.json",
+    "project/messages/outbox/FOUNDATION-008__MSG-20260623-FOUNDATION-008-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/foundation-008-orchestration-rehearsal",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On chore/foundation-008-orchestration-rehearsal. Modified files were project/tasks/active/FOUNDATION-008.json and project/tasks/thread-registry.json; untracked orchestration artifacts were the owner handoff and route log."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate FOUNDATION-008",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\FOUNDATION-008.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 CLOSED; FOUNDATION-008 REVIEW; FOUNDATION-002 through FOUNDATION-007 remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Only FOUNDATION-002 is currently READY-eligible while FOUNDATION-008 is in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/FOUNDATION-008__MSG-20260623-FOUNDATION-008-OWNER-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID owner review handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/FOUNDATION-008__MSG-20260623-FOUNDATION-008-OWNER-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "Rendered ROUTED HANDOFF with TARGET_ROLE qa_reviewer from the owner handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in tracked diffs."
+    },
+    {
+      "command": "git status --porcelain=v1",
+      "exit_code": 0,
+      "result": "Changed paths are limited to project/tasks/active/FOUNDATION-008.json, project/tasks/thread-registry.json, project/messages/outbox/FOUNDATION-008__MSG-20260623-FOUNDATION-008-OWNER-REVIEW__lead_orchestrator.json, and project/messages/routes/FOUNDATION-008__ROUTE-20260623-OWNER-TO-QA.json before writing this reviewer handoff."
+    },
+    {
+      "command": "git diff --name-only",
+      "exit_code": 0,
+      "result": "Tracked modifications are limited to project/tasks/active/FOUNDATION-008.json and project/tasks/thread-registry.json."
+    },
+    {
+      "command": "git ls-files --others --exclude-standard",
+      "exit_code": 0,
+      "result": "Untracked files before this reviewer handoff were the owner handoff and project/messages/routes/FOUNDATION-008__ROUTE-20260623-OWNER-TO-QA.json."
+    },
+    {
+      "command": "node -e structured consistency check (PowerShell wrapper attempt with escaped double-quoted JS strings)",
+      "exit_code": 1,
+      "result": "Harness quoting failure stripped JS string quotes before repository assertions executed; rerun with single-quoted JS literals passed."
+    },
+    {
+      "command": "node -e structured consistency check (single-quoted JS literals)",
+      "exit_code": 0,
+      "result": "Verified task status REVIEW, owner lead_orchestrator, reviewer qa_reviewer, task route_to lead_orchestrator, task and registry qa_reviewer thread ID 019ef4ed-ff31-7df0-89af-30c06222718c, unique thread registry count 4, owner handoff status REVIEW route_to qa_reviewer, no missing owner artifacts, route log to qa_reviewer, route target thread matching task thread, send_input exit_code 0, and existing source handoff."
+    }
+  ],
+  "decisions": [
+    "ACCEPT.",
+    "FOUNDATION-008 is correctly in REVIEW for qa_reviewer validation and routes back to lead_orchestrator.",
+    "The qa_reviewer thread ID is consistently recorded as 019ef4ed-ff31-7df0-89af-30c06222718c in the task file, thread registry, and persisted route log.",
+    "The owner handoff validates against project/schemas/handoff.schema.json and .agents/skills/monsoon-studio-orchestrator/references/message-protocol.md.",
+    "The persisted route log records send_input_result.exit_code 0 for target 019ef4ed-ff31-7df0-89af-30c06222718c, and this qa_reviewer thread received the routed handoff.",
+    "Observed worktree changes remain within the FOUNDATION-008 allowed paths under project/tasks/** and project/messages/**; no game code, architecture docs, dependencies, PROJECT_STATUS.md, or accepted ADR files were modified."
+  ],
+  "risks": [
+    "Native actual model and reasoning effort for spawned threads are not independently observable from repository files; this review confirms the recorded routing evidence and live handoff receipt, not hidden runtime metadata.",
+    "The owner handoff was created before the route log existed, so the route log is included in this reviewer handoff as the persistent delivery evidence."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Persist this ACCEPT review, then have lead_orchestrator perform the lead-owned FOUNDATION-008 status transition and integration steps.",
+  "created_at": "2026-06-23T14:50:00Z"
+}
