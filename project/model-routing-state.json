@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T20:40:48Z",
+  "updated_at": "2026-06-24T20:45:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -531,9 +531,7 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_accept_review",
       "accepted_task_reopened": false
-    }
-  ],
-  "active_threads": [
+    },
     {
       "thread_id": "019efb0d-ce1f-7c50-afeb-05ef589c792c",
       "role": "client_engineer",
@@ -542,7 +540,7 @@
       "actual_effort": "high",
       "configured_model_after_amendment": "gpt-5.5",
       "configured_effort_after_amendment": "high",
-      "migration_status": "accepted_waiting_integration",
+      "migration_status": "closed_after_r4_handoff_accept_and_main_integration",
       "accepted_task_reopened": false
     },
     {
@@ -553,10 +551,11 @@
       "actual_effort": "xhigh",
       "configured_model_after_amendment": "gpt-5.5",
       "configured_effort_after_amendment": "xhigh",
-      "migration_status": "accepted_review_complete",
+      "migration_status": "closed_after_r4_accept_review_and_main_integration",
       "accepted_task_reopened": false
     }
   ],
+  "active_threads": [],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -582,6 +581,6 @@
     "M2-ECON-POP-001": "CLOSED after PR #36 entered main at 9d76b5cc19efaaaec953afbe75a7dbd1e415bcaa. simulation_engineer thread 019efa9c-60e9-7d61-9cba-511c79f6e40b produced a valid REVIEW handoff for M2 agriculture, labor, population, grain, and cash scaffolding on branch feat/m2-economy-population. Lead routed the handoff by send_input submission 019efaae-1864-73a2-b70b-29fb821865e1 to systems_architect thread 019efaad-2aa7-75c3-90df-2a3646240223. systems_architect accepted the R3 scheduler/protocol/world-state changes and recorded a non-blocking follow-up risk for explicit M2 save-format persistence before M2 host hash canary or M2 exit save claims. Next ready task is M2-ROUTE-TRANSPORT-001.",
     "M2-ROUTE-TRANSPORT-001": "CLOSED after PR #38 entered main at 487a3ba4de2882a6ff8e2a1cccec6444125c3e9e. simulation_engineer thread 019efac4-756f-78b3-93ea-882193eaeac9 produced a valid REVIEW handoff for M2 basic route, transport, and seasonal route choice on branch feat/m2-route-transport. Lead routed the handoff by send_input submission 019efad4-5405-71d3-a58a-a08928020ed2 to systems_architect thread 019efad3-9e77-7852-8b8d-137e0f7286f7. systems_architect accepted the R3 WorldState/protocol route transport implementation and kept the M2 save/load omission as an explicit non-blocking follow-up risk.",
     "M2-CLIENT-DISTRICT-LIST-001": "CLOSED after PR #40 entered main at 842e2414bb0c197a355421ee971d77551528859f. client_engineer thread 019efae6-5e34-7893-84d6-c4b31e88b0bf produced a valid REVIEW handoff for the M2 district panel and 4,000-row list pressure fixture on branch feat/m2-client-district-list. Lead routed the handoff by send_input submission 019efaf6-e8cf-79c2-933c-1b24ee4a63bd to qa_reviewer thread 019efaf6-4a87-7fe0-9399-07630ee9f91e. qa_reviewer accepted the UI/read-model/virtualization implementation and recorded non-blocking risks for synthetic-to-live projection and the pre-existing Vite dynamic import warning.",
-    "M2-CLIENT-MAP-001": "ACCEPTED on branch feat/m2-client-map after systems_architect ACCEPT handoff project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R4__systems_architect.json. Lead reran integration gates including pnpm check, build:web, pnpm test, Chromium E2E, repeat Chromium --repeat-each=3 --workers=1, task validation, JSON checks, diff-scope check, and git diff --check. Awaiting commit, PR, merge, and post-merge CLOSED transition."
+    "M2-CLIENT-MAP-001": "CLOSED after PR #42 entered main at d10c3c99673a265a2733f538710bdda68788e7ab. client_engineer thread 019efb0d-ce1f-7c50-afeb-05ef589c792c implemented the M2 client map after four review rounds, including Pixi/MapRenderer visible map ownership and deterministic Chromium mount fixes. Lead routed R4 review by send_input submission 019efb57-27be-7991-9eb3-d0e55415c6af to systems_architect thread 019efb20-2183-7813-bded-2cb0e8d6f7ee, which accepted via handoff project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R4__systems_architect.json. Remaining M2 risk: explicit M2 save-format/schema support or structured unsupported-save policy is required before M2-HOST-HASH-CANARY-001 or M2 exit save claims."
   }
 }
