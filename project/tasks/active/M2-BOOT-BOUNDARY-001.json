@@ -1,0 +1,71 @@
+{
+  "id": "M2-BOOT-BOUNDARY-001",
+  "summary": "Add sim-core/content-runtime boot-boundary contract test",
+  "milestone": "M2",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M2-WORLD-FIXTURE-001",
+    "M2-CONTENT-GUARDS-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/content-runtime/**",
+      "packages/sim-testkit/**",
+      "packages/protocol/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "tools/architecture/**",
+      "project/tasks/active/M2-BOOT-BOUNDARY-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "content-source/historical/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A contract test boots sim-core from a compiled content-runtime M2 content pack through an explicit boot DTO/schema boundary.",
+    "The test proves sim-core does not import content-source files, Node filesystem IO, React, PixiJS, Electron, DOM, or real-time APIs.",
+    "Valid M2 content boots deterministically in Node runner or in-process test host and produces a stable initial state hash.",
+    "Invalid or schema-mismatched content-runtime packs are rejected with structured errors before WorldState mutation.",
+    "This explicitly closes M1-GATE-FOLLOW-UP-002 during M2 world/content integration.",
+    "No economy, population, route-choice, UI, platform-host hash, or product-scope implementation is added beyond the boot boundary contract."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm architecture:check",
+    "pnpm sim:determinism",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-BOOT-BOUNDARY-001",
+    "node -e JSON parse/shape check for M2-BOOT-BOUNDARY-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m2-boot-boundary",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "Keep sim-core as the functional core and content-runtime as a validated read-only pack boundary.",
+    "If this requires a new public boot contract, systems_architect review is mandatory before implementation is considered accepted."
+  ],
+  "created_at": "2026-06-24T11:08:39.037Z",
+  "updated_at": "2026-06-24T11:08:39.037Z"
+}

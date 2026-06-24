@@ -1,0 +1,72 @@
+{
+  "id": "M2-ECON-POP-001",
+  "summary": "Implement M2 agriculture, labor, population, grain, and cash scaffolding",
+  "milestone": "M2",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M2-BOOT-BOUNDARY-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "packages/content-runtime/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/tasks/active/M2-ECON-POP-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform-browser/**",
+      "packages/platform-electron/**",
+      "content-source/historical/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M2 WorldState scaffolding represents population groups, agricultural phases, available/committed labor, grain stock, cash stock, and minimal market/cash-flow state with branded IDs and explicit serializable schema fields.",
+    "All economic and population state mutations occur inside sim-core daily/monthly phases or through versioned GameCommand paths; UI/client stores cannot mutate authoritative state.",
+    "Player and AI actors use the same command type for M2 labor or mobilization decisions, with preview/apply validation and structured rejection reasons.",
+    "Mobilizing labor across farm timing demonstrably affects the next harvest in the 30 District/10 Settlement fixture.",
+    "Resource conservation and non-negative invariants cover population, labor assignment, grain, and cash; deterministic tie-breakers are specified for all ordered work.",
+    "No vassal politics, full war loop, formal historical character database, full diplomacy, runtime SQL/ORM, server, Rust/WASM, or new production dependency is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/invariant tests cover M2 agriculture phase transitions, labor allocation, population/grain/cash conservation, and harvest impact from mistimed mobilization.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-ECON-POP-001",
+    "node -e JSON parse/shape check for M2-ECON-POP-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m2-economy-population",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "This is scaffolding for Roadmap M2 only; do not build complete economy, taxation, war manpower, or balance systems.",
+    "Any save/protocol schema expansion must remain explicit and versioned and must include compatibility test evidence."
+  ],
+  "created_at": "2026-06-24T11:08:39.037Z",
+  "updated_at": "2026-06-24T11:08:39.037Z"
+}

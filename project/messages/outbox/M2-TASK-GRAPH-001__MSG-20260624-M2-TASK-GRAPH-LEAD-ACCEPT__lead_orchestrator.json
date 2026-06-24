@@ -1,0 +1,102 @@
+{
+  "message_id": "MSG-20260624-M2-TASK-GRAPH-LEAD-ACCEPT",
+  "task_id": "M2-TASK-GRAPH-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Accepted M2-TASK-GRAPH-001 after systems_architect created the M2 planning DAG, qa_reviewer requested dependency-order changes, systems_architect added the missing client dependency edges, qa_reviewer accepted Revision 1, and qa_reviewer separately accepted the final allowed_paths coordination-scope metadata. This acceptance covers planning artifacts only and does not accept downstream M2 implementation work.",
+  "artifacts": [
+    "project/tasks/active/M2-TASK-GRAPH-001.json",
+    "project/tasks/active/M2-MAP-SOURCE-POLICY-001.json",
+    "project/tasks/active/M2-WORLD-FIXTURE-001.json",
+    "project/tasks/active/M2-CONTENT-GUARDS-001.json",
+    "project/tasks/active/M2-BOOT-BOUNDARY-001.json",
+    "project/tasks/active/M2-ECON-POP-001.json",
+    "project/tasks/active/M2-ROUTE-TRANSPORT-001.json",
+    "project/tasks/active/M2-CLIENT-MAP-001.json",
+    "project/tasks/active/M2-CLIENT-DISTRICT-LIST-001.json",
+    "project/tasks/active/M2-HOST-HASH-CANARY-001.json",
+    "project/tasks/active/M2-PRESSURE-VALIDATION-001.json",
+    "project/tasks/active/M2-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-ACCEPT__systems_architect.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-REQUEST-CHANGES__qa_reviewer.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-REVISION-1__systems_architect.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-FINAL-ACCEPT__qa_reviewer.json",
+    "project/messages/routes/M2-TASK-GRAPH-001__ROUTE-20260624-LEAD-TO-SYSTEMS.json",
+    "project/messages/routes/M2-TASK-GRAPH-001__ROUTE-20260624-SYSTEMS-TO-QA.json",
+    "project/messages/routes/M2-TASK-GRAPH-001__ROUTE-20260624-QA-TO-SYSTEMS-RC1.json",
+    "project/messages/routes/M2-TASK-GRAPH-001__ROUTE-20260624-SYSTEMS-TO-QA-REVISION-1.json",
+    "project/messages/routes/M2-TASK-GRAPH-001__ROUTE-20260624-LEAD-TO-QA-FINAL-SCOPE.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "branch_or_worktree": "chore/m2-task-graph",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-FINAL-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M2-TASK-GRAPH-001 is REVIEW before lead status update; 11 downstream M2 tasks remain DRAFT; prior tasks remain CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while graph task remained in REVIEW."
+    },
+    {
+      "command": "node -e JSON/DAG validation for all project/tasks/active/M2-*.json",
+      "exit_code": 0,
+      "result": "12 M2 task files parsed; dependencies known; DAG acyclic; 11 downstream tasks remain DRAFT; client map/list tasks include both economy and route dependencies."
+    },
+    {
+      "command": "node -e thread registry duplicate ID and route record check",
+      "exit_code": 0,
+      "result": "35 registry entries with unique thread IDs; M2-TASK-GRAPH route records include required to_thread_id and send_input submission IDs."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Already up to date; completed using pnpm v11.0.0."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    }
+  ],
+  "decisions": [
+    "M2 task graph is accepted as planning infrastructure only; all downstream M2 tasks remain unimplemented and require their own writer/reviewer gates.",
+    "M2-CLIENT-MAP-001 and M2-CLIENT-DISTRICT-LIST-001 intentionally depend on both economy/population and route/transport tasks because their acceptance criteria consume both read-model surfaces.",
+    "M2-TASK-GRAPH-001 allowed_paths intentionally include parent-owned coordination artifacts used for routing, handoffs, thread registry, goal-mode state, and model-routing state.",
+    "No product code, package code, content-source data, docs roadmap, accepted ADR, manifest, checksum, validation report, dependency, or implementation file is accepted by this task."
+  ],
+  "risks": [
+    "M2 task graph acceptance creates DRAFT downstream tasks but does not prove M2 performance, host determinism, content correctness, or simulation behavior.",
+    "The next M2 task should be selected by the lead after integration; no downstream implementation task should be treated as READY merely because this graph is accepted."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit, push, open PR, and integrate M2-TASK-GRAPH-001 if final gates pass; after main integration, close the task and then select the first M2 implementation/planning task without claiming downstream work is complete.",
+  "created_at": "2026-06-24T11:34:24Z"
+}

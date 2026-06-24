@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260624-M2-TASK-GRAPH-QA-REQUEST-CHANGES",
+  "task_id": "M2-TASK-GRAPH-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA review found the M2 task graph broadly covers Roadmap M2, the acceptance matrix, both M1 Gate follow-ups, and stays within planning scope, but two client task dependency edges are missing and can make tasks ready before their required read-model sources exist.",
+  "artifacts": [
+    "project/tasks/active/M2-TASK-GRAPH-001.json",
+    "project/tasks/active/M2-MAP-SOURCE-POLICY-001.json",
+    "project/tasks/active/M2-WORLD-FIXTURE-001.json",
+    "project/tasks/active/M2-CONTENT-GUARDS-001.json",
+    "project/tasks/active/M2-BOOT-BOUNDARY-001.json",
+    "project/tasks/active/M2-ECON-POP-001.json",
+    "project/tasks/active/M2-ROUTE-TRANSPORT-001.json",
+    "project/tasks/active/M2-CLIENT-MAP-001.json",
+    "project/tasks/active/M2-CLIENT-DISTRICT-LIST-001.json",
+    "project/tasks/active/M2-HOST-HASH-CANARY-001.json",
+    "project/tasks/active/M2-PRESSURE-VALIDATION-001.json",
+    "project/tasks/active/M2-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-ACCEPT__systems_architect.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-REQUEST-CHANGES__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/m2-task-graph",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified coordination files present: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json. Untracked systems handoff, two lead-owned route files, and 12 M2 task files are present. No product code or docs outside the planning artifacts appeared in status."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-ACCEPT__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-ACCEPT__systems_architect.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed foundation and SIM tasks as CLOSED, M1-GATE as CLOSED, M2-TASK-GRAPH-001 as REVIEW, and 11 downstream M2 tasks as DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M2-TASK-GRAPH-001 remains in REVIEW."
+    },
+    {
+      "command": "node -e JSON/DAG validation for all project/tasks/active/M2-*.json",
+      "exit_code": 0,
+      "result": "Parsed and shape-checked 12 M2 task files; DAG acyclic; dependencies known. QA review then found two semantically missing dependency edges."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --name-status",
+      "exit_code": 0,
+      "result": "Tracked diffs are limited to coordination state files: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json."
+    },
+    {
+      "command": "git ls-files --others --exclude-standard",
+      "exit_code": 0,
+      "result": "Untracked files are the systems handoff, two lead-owned route files, and 12 M2 active task JSON files."
+    },
+    {
+      "command": "node -e taskctl validate for every project/tasks/active/M2-*.json",
+      "exit_code": 0,
+      "result": "All 12 M2 task JSON files validated individually."
+    }
+  ],
+  "decisions": [
+    "Coverage is otherwise adequate: the DAG represents the 30 District/10 Settlement fixture, seasonal regional curves, agriculture/labor/population/grain/cash scaffolding, market/cash-flow basics, route/transport basics, map rendering, district panel, 4,000-row list pressure fixture, bad-map/bad-reference rejection, H-001/H-002 initial pressure validation, M2 exit validation, and the M2 map source policy.",
+    "M1-GATE-FOLLOW-UP-002 is represented by M2-BOOT-BOUNDARY-001 before economy and route implementation; M1-GATE-FOLLOW-UP-001 is represented by M2-HOST-HASH-CANARY-001 before M2 exit.",
+    "The graph is syntactically valid and acyclic, but semantically incomplete because two client tasks can become ready before all data they promise to display is produced.",
+    "The diff stayed within M2 planning artifacts, with only lead-owned route files and pre-existing coordination-state changes outside the M2-TASK-GRAPH-001 allowed scope."
+  ],
+  "risks": [
+    "If M2-CLIENT-MAP-001 remains dependent only on M2-ROUTE-TRANSPORT-001, lead automation can start it before M2-ECON-POP-001 even though its acceptance criteria require economy map mode/read-model inspection.",
+    "If M2-CLIENT-DISTRICT-LIST-001 remains dependent only on M2-ECON-POP-001, lead automation can start it before M2-ROUTE-TRANSPORT-001 even though its acceptance criteria require route summary fields."
+  ],
+  "blockers": [
+    "DAG dependency ordering is not yet sensible for the two client tasks that consume both economy and route read-model outputs."
+  ],
+  "route_to": "systems_architect",
+  "requested_action": "Update M2-CLIENT-MAP-001 dependencies to include both M2-ROUTE-TRANSPORT-001 and M2-ECON-POP-001, and update M2-CLIENT-DISTRICT-LIST-001 dependencies to include both M2-ECON-POP-001 and M2-ROUTE-TRANSPORT-001, unless the corresponding acceptance criteria are narrowed to remove economy mode and route summary requirements. Then rerun the required M2-TASK-GRAPH-001 validation commands and emit a revised systems handoff for QA review.",
+  "created_at": "2026-06-24T11:30:00Z"
+}
