@@ -26,6 +26,28 @@ export interface HelloSimulationResultDto {
   readonly stateHash: string;
 }
 
+export const DETERMINISTIC_RNG_DOMAIN_KEY_SCHEMA_VERSION = 1;
+export const DETERMINISTIC_RNG_STATE_SCHEMA_VERSION = 1;
+export const DETERMINISTIC_RNG_ALGORITHM = "sfc32-fnv1a32-domain-v1";
+
+export interface DeterministicRngDomainKeyDtoV1 {
+  readonly schemaVersion: typeof DETERMINISTIC_RNG_DOMAIN_KEY_SCHEMA_VERSION;
+  readonly system: string;
+  readonly day: number;
+  readonly entity: string;
+  readonly purpose: string;
+  readonly substream: string;
+}
+
+export interface DeterministicRngStateDtoV1 {
+  readonly schemaVersion: typeof DETERMINISTIC_RNG_STATE_SCHEMA_VERSION;
+  readonly algorithm: typeof DETERMINISTIC_RNG_ALGORITHM;
+  readonly seed: string;
+  readonly domain: DeterministicRngDomainKeyDtoV1;
+  readonly drawIndex: number;
+  readonly state: readonly [number, number, number, number];
+}
+
 const HELLO_TONES: readonly HelloCommandTone[] = ["calm", "watchful", "bright"];
 
 export function createHelloThirtyDayRequest(): HelloSimulationRequestDto {

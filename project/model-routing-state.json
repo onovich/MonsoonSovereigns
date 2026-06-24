@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T06:59:30Z",
+  "updated_at": "2026-06-24T07:39:10Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -234,6 +234,28 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_final_acceptance",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef873-d613-7542-a389-f22832658578",
+      "role": "simulation_engineer",
+      "task_id": "SIM-004",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_qa_accept",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef880-522d-70d3-8f1a-5684281e952e",
+      "role": "qa_reviewer",
+      "task_id": "SIM-004",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_final_acceptance",
+      "accepted_task_reopened": false
     }
   ],
   "active_threads": [],
@@ -248,6 +270,7 @@
     "FOUNDATION-008": "DRAFT; owner lead_orchestrator gpt-5.5 xhigh; acceptance qa_reviewer gpt-5.5 xhigh.",
     "M1-TASK-GRAPH-001": "ACCEPTED; systems_architect gpt-5.5 xhigh created the M1 task DAG; qa_reviewer gpt-5.5 xhigh accepted it; next ready task is SIM-001.",
     "SIM-001": "CLOSED after PR #12 entered main at 1682e5c01d95f273c8400376254cc6718f93cd98; simulation_engineer gpt-5.5 high implemented WorldState v0; systems_architect gpt-5.5 xhigh accepted after REQUEST_CHANGES fixes; qa_reviewer gpt-5.5 xhigh final accepted; next ready tasks are SIM-002, SIM-004, and SIM-006.",
-    "SIM-002": "CLOSED after PR #14 entered main at b95dac1f5c33d2d150c09915cc3c74cbad8b7604; simulation_engineer gpt-5.5 high implemented fixed GameDay scheduler; qa_reviewer gpt-5.5 xhigh final accepted; next ready tasks are SIM-004 and SIM-006."
+    "SIM-002": "CLOSED after PR #14 entered main at b95dac1f5c33d2d150c09915cc3c74cbad8b7604; simulation_engineer gpt-5.5 high implemented fixed GameDay scheduler; qa_reviewer gpt-5.5 xhigh final accepted; next ready tasks are SIM-004 and SIM-006.",
+    "SIM-004": "ACCEPTED on feat/sim-004-deterministic-rng; simulation_engineer gpt-5.5 high thread 019ef873-d613-7542-a389-f22832658578 implemented deterministic RNG domains and fixed the QA-requested formatting issue; qa_reviewer gpt-5.5 xhigh thread 019ef880-522d-70d3-8f1a-5684281e952e returned final ACCEPT. Task remains not CLOSED until merged into main."
   }
 }

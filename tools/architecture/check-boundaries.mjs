@@ -687,9 +687,20 @@ async function main() {
       return;
     }
 
+    const fixtureViolationMessages = fixtureViolations.map((violation) => violation.message);
+    const randomViolation = fixtureViolationMessages.find((message) =>
+      message.includes("Math.random")
+    );
+    if (randomViolation === undefined) {
+      console.error("Architecture checker self-test failed: Math.random fixture passed.");
+      process.exitCode = 1;
+      return;
+    }
+
     console.log(
       `Architecture checker self-test passed with ${fixtureViolations.length} expected violation(s).`
     );
+    console.log(`Authority randomness guard covered: ${randomViolation}`);
     return;
   }
 

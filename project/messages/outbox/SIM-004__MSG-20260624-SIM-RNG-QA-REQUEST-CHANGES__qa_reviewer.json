@@ -1,0 +1,105 @@
+{
+  "task_id": "SIM-004",
+  "message_id": "SIM-004__MSG-20260624-SIM-RNG-QA-REQUEST-CHANGES__qa_reviewer",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA review found no blocking RNG semantics defect in ADR-009 alignment, deterministic domain isolation/replay, DTO serialization readiness, hidden entropy scanning, cross-worker-compatible tests, or Math.random authority guard coverage. REQUEST_CHANGES is required because packages/sim-core/src/deterministic-rng.ts fails a direct Prettier check: pnpm exec prettier --check packages/sim-core/src/deterministic-rng.ts exits 1. The repository pnpm format:check command exits 0 but does not currently cover packages/sim-core or packages/protocol, so the writer's format evidence is a false-negative for this touched source file.",
+  "artifacts": [
+    "project/messages/outbox/SIM-004__MSG-20260624-SIM-RNG-QA-REQUEST-CHANGES__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/sim-004-deterministic-rng",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git branch --show-current",
+      "exit_code": 0,
+      "result": "feat/sim-004-deterministic-rng"
+    },
+    {
+      "command": "git status --short --untracked-files=all",
+      "exit_code": 0,
+      "result": "SIM-004 implementation files are dirty/untracked; coordinator metadata and routing files are also dirty/untracked as disclosed by the writer."
+    },
+    {
+      "command": "node -e \"const fs=require('node:fs'); for (const p of ['project/messages/outbox/SIM-004__MSG-20260624-SIM-RNG-WRITER-REVIEW__simulation_engineer.json','project/tasks/active/SIM-004.json']) JSON.parse(fs.readFileSync(p,'utf8')); console.log('json ok')\"",
+      "exit_code": 0,
+      "result": "Writer handoff JSON and SIM-004 task JSON parsed successfully."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate SIM-004",
+      "exit_code": 0,
+      "result": "SIM-004 task JSON is valid."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed 3 files / 21 tests, including RNG golden/domain/DTO/property/worker-compatible coverage. Node emitted the known MODULE_TYPELESS_PACKAGE_JSON warning for the .ts Worker fixture."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; fixture self-test produced 15 expected violations."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c for the 30-day deterministic hello simulation."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "All workspace package typecheck scripts passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check, sim:determinism, root Vitest 5 files / 24 tests, and web Vitest 1 file / 3 tests passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported violations."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Repository script passed, but it does not cover packages/sim-core or packages/protocol touched by SIM-004."
+    },
+    {
+      "command": "pnpm exec prettier --check docs/decisions/ADR-009-deterministic-rng-domains.md packages/protocol/src/index.ts packages/sim-core/src/index.ts packages/sim-core/src/deterministic-rng.ts tests/sim-core-deterministic-rng.test.ts tests/fixtures/deterministic-rng-worker.ts tests/architecture-authority-randomness.test.ts tools/architecture/check-boundaries.mjs",
+      "exit_code": 1,
+      "result": "Prettier reported packages/sim-core/src/deterministic-rng.ts is not formatted."
+    },
+    {
+      "command": "pnpm exec prettier --check packages/sim-core/src/deterministic-rng.ts",
+      "exit_code": 1,
+      "result": "Prettier reported packages/sim-core/src/deterministic-rng.ts is not formatted."
+    },
+    {
+      "command": "pnpm exec prettier --check packages/protocol/src/index.ts docs/decisions/ADR-009-deterministic-rng-domains.md tests/sim-core-deterministic-rng.test.ts tests/fixtures/deterministic-rng-worker.ts tests/architecture-authority-randomness.test.ts tools/architecture/check-boundaries.mjs",
+      "exit_code": 0,
+      "result": "Other explicitly checked SIM-004 touched files use Prettier code style."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES is limited to the reproducible formatting gate failure in packages/sim-core/src/deterministic-rng.ts; the reviewer did not identify an RNG semantics blocker.",
+    "ADR-009 documents seed/domain semantics, DTO compatibility expectations, no-entropy constraints, and compatibility-sensitive golden-vector policy.",
+    "RNG implementation uses explicit seed plus full domain key, integer uint32 and bounded draws, DTO parse/restore, and no Math.random/Date/crypto/environment entropy was found in inspected authority RNG paths.",
+    "Tests cover golden vectors, domain isolation, mid-stream DTO replay, bounded integer draws, generated domain replay/isolation, Node worker_threads compatibility, deterministic canary hash, and Math.random guard self-test output.",
+    "No forbidden accepted ADR, PROJECT_STATUS, app, UI, platform, or content-source changes were found in the SIM-004 diff inspected during review."
+  ],
+  "risks": [
+    "P3: packages/sim-core/src/deterministic-rng.ts fails pnpm exec prettier --check packages/sim-core/src/deterministic-rng.ts, so SIM-004 cannot be accepted under the frozen formatting/code-style gate until fixed.",
+    "The root pnpm format:check command currently misses packages/sim-core and packages/protocol, creating a false-negative format gate for this task's touched package source files.",
+    "Coordinator metadata changes under project state/routing files remain outside the RNG implementation and should be handled by lead integration policy."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the reproducible SIM-004 formatting gate failure, then rerun the targeted format check and required SIM-004 validation commands before returning to qa_reviewer.",
+  "created_at": "2026-06-24T07:30:00Z"
+}
