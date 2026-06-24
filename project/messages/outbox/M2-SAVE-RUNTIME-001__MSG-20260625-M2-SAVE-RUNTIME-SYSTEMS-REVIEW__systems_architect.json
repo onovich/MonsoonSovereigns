@@ -1,0 +1,116 @@
+{
+  "message_id": "MSG-20260625-M2-SAVE-RUNTIME-SYSTEMS-REVIEW",
+  "task_id": "M2-SAVE-RUNTIME-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Independent architecture review finds the R3 M2 save/load runtime extension acceptable: it keeps the existing Save Envelope v1 boundary, adds explicit serializable M2 DTO state with nested schemaVersion guards, preserves M1 golden/corrupt behavior, rejects missing/malformed/future/cross-manifest M2 data with structured reasons before runtime replacement, and keeps M2-HOST-HASH-CANARY-001 dependency-gated on this task.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M2-HOST-HASH-CANARY-001.json",
+    "project/messages/outbox/M2-SAVE-RUNTIME-001__MSG-20260625-M2-SAVE-RUNTIME-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M2-SAVE-RUNTIME-001__MSG-20260625-M2-SAVE-RUNTIME-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m2-save-runtime",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On branch feat/m2-save-runtime. Implementation changes are confined to packages/save-format/src/index.ts, packages/sim-core/src/command-query-v1.ts, tests/save-load-contract.test.ts, and allowed project orchestration/task/message files; no package manifest or lockfile changes were present."
+    },
+    {
+      "command": "git diff -- packages/save-format/src/index.ts packages/sim-core/src/command-query-v1.ts tests/save-load-contract.test.ts",
+      "exit_code": 0,
+      "result": "Reviewed explicit M2 DTO addition, parser/copy paths, loadSaveV1 missing-state semantic rejection, and M2 contract tests. No React/Pixi/Electron/DOM/Node IO import was added to sim-core or save-format."
+    },
+    {
+      "command": "git diff -- package.json pnpm-lock.yaml pnpm-workspace.yaml packages/save-format/package.json packages/sim-core/package.json packages/protocol/package.json",
+      "exit_code": 0,
+      "result": "No dependency, workspace, package manifest, or lockfile changes."
+    },
+    {
+      "command": "rg -n '^import' -- packages/save-format/src/index.ts packages/sim-core/src/command-query-v1.ts tests/save-load-contract.test.ts",
+      "exit_code": 0,
+      "result": "save-format imports only @monsoon/protocol; sim-core imports protocol, save-format, and local sim modules; Node fs usage is confined to the test file for fixture loading."
+    },
+    {
+      "command": "rg -n 'Math\\.random|Date\\.now|performance\\.now|JSON\\.stringify\\(.*WorldState' -- packages/save-format/src/index.ts packages/sim-core/src/command-query-v1.ts",
+      "exit_code": 1,
+      "result": "No forbidden entropy/time/object-graph serialization patterns found in touched implementation files."
+    },
+    {
+      "command": "rg -n 'react|pixi|electron|node:fs|fs/promises|from fs|from path|from crypto|from os' -- packages/save-format/src/index.ts packages/sim-core/src/command-query-v1.ts",
+      "exit_code": 1,
+      "result": "No UI, renderer, Electron, platform IO, or Node module keyword matches in touched implementation files."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "Vitest passed: 2 files, 10 tests. M1 golden/corrupt behavior and M2 save/load contract tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 9 files, 47 tests. Existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts remains non-blocking."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest passed 19 files/91 tests; web Vitest passed 1 file/3 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-SAVE-RUNTIME-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-SAVE-RUNTIME-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-HOST-HASH-CANARY-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-HOST-HASH-CANARY-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-SAVE-RUNTIME-001__MSG-20260625-M2-SAVE-RUNTIME-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Accepted keeping Save Envelope schemaVersion at v1 because the change is an explicit optional state.m2 extension inside the already approved WorldState v0 snapshot DTO boundary, with M2-specific schemaVersion guards on the M2 DTO and transport DTO.",
+    "Accepted the dependency direction: save-format defines serializable DTO/parser/copy code without sim-core imports; sim-core owns runtime semantic validation and only replaces runtime after decode, semantic validation, event-tail hydration, and invariant checks pass.",
+    "Accepted M1 compatibility evidence: golden save checksum/state hash and corrupt-save rejection tests still pass, and M1 saves continue to omit state.m2.",
+    "Accepted M2 runtime evidence: economy, population, agriculture, market, route, and transport state round-trip through save/load and reproduce the saved state hash.",
+    "Accepted rejection semantics: missing M2 data rejects as semantic-invariant at state.m2; malformed/future M2 schema rejects as invalid-schema under body.authoritativeSnapshot.state.m2; cross-manifest rejects at header.contentManifestHash; all checked rejection paths preserve the original runtime hash.",
+    "Confirmed M2-HOST-HASH-CANARY-001 remains DRAFT and explicitly depends on M2-SAVE-RUNTIME-001 before using save/load hashes."
+  ],
+  "risks": [
+    "No blocking architecture risk found. The remaining scenarioIdForRuntime fallback for non-M1 graph runtimes is acknowledged as outside this task and does not affect the explicit M2 state preservation/rejection contract reviewed here.",
+    "No production dependency, platform persistence, compression, database, IndexedDB, Electron IPC, UI/client/map-renderer, or formal historical content expansion was introduced.",
+    "Future Save Envelope or M2 DTO revisions must add explicit migration or structured rejection tests before loading older/newer M2 state."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may proceed with integration/closure handling for M2-SAVE-RUNTIME-001 and, after closure, route dependency-ready M2-HOST-HASH-CANARY-001 without relying on implicit or omitted M2 save/load state.",
+  "created_at": "2026-06-25T05:53:58.8887258+08:00"
+}

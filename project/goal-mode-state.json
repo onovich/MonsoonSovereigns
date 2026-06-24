@@ -2,13 +2,13 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M2",
-  "current_tasks": [],
+  "current_tasks": [
+    "M2-SAVE-RUNTIME-001"
+  ],
   "active_threads": {},
   "last_integrated_task": "M2-PRESSURE-VALIDATION-001",
   "last_main_commit": "df28472652da7d008088f406d44d5523dae3fd84",
-  "next_ready_tasks": [
-    "M2-HOST-HASH-CANARY-001"
-  ],
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -24,11 +24,6 @@
       "id": "M1-GATE-FOLLOW-UP-001",
       "description": "Literal Chromium and packaged Electron host hash extraction is not yet directly proven; M1 only proves Node plus Worker-compatible hash equality with browser/desktop smoke.",
       "mitigation": "Add an explicit Chromium plus Electron host hash canary before M2 exit or before making any platform-host determinism claim."
-    },
-    {
-      "id": "M2-ECON-POP-FOLLOW-UP-001",
-      "description": "M2 runtime save/load is currently unsupported: the existing save snapshot omits state.m2 and load rejects by state-hash mismatch.",
-      "mitigation": "Before M2-HOST-HASH-CANARY-001 or M2 exit save claims, create or route an R3 follow-up for explicit M2 save-format/schema support or an explicit structured unsupported-save policy."
     }
   ],
   "human_gate": {
@@ -43,5 +38,5 @@
       "major historical/cultural dispute resolution"
     ]
   },
-  "last_updated_at": "2026-06-24T21:26:43Z"
+  "last_updated_at": "2026-06-24T21:56:25Z"
 }

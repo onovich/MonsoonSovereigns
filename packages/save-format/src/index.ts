@@ -83,12 +83,103 @@ export interface SaveSettlementStateDto extends SaveSimpleRuntimeStateDto {
   readonly currentDistrictId: number;
 }
 
+export type SaveM2AgriculturePhaseDto = "fallow" | "planting" | "growing" | "harvest";
+export type SaveM2LaborCommitmentPurposeDto = "mobilized";
+export type SaveM2RouteKindDto = "coast" | "river" | "road";
+
+export interface SaveM2LaborCommitmentStateDto {
+  readonly purpose: SaveM2LaborCommitmentPurposeDto;
+  readonly laborAmount: number;
+  readonly startDay: number;
+  readonly releaseDay: number;
+}
+
+export interface SaveM2PopulationGroupStateDto {
+  readonly id: number;
+  readonly districtId: number;
+  readonly totalPeople: number;
+  readonly workingPeople: number;
+  readonly dependentPeople: number;
+  readonly availableLabor: number;
+  readonly grainStock: number;
+  readonly cashStock: number;
+  readonly committedLabor: readonly SaveM2LaborCommitmentStateDto[];
+}
+
+export interface SaveM2DistrictAgricultureStateDto {
+  readonly districtId: number;
+  readonly phase: SaveM2AgriculturePhaseDto;
+  readonly daysInPhase: number;
+  readonly accumulatedFarmLabor: number;
+  readonly expectedHarvestGrain: number;
+  readonly lastHarvestGrain: number;
+}
+
+export interface SaveM2DistrictMarketStateDto {
+  readonly districtId: number;
+  readonly grainPriceCashPerHundred: number;
+  readonly cashFlow: {
+    readonly cumulativeMobilizationCost: number;
+    readonly lastDailyCashDelta: number;
+  };
+  readonly grainFlow: {
+    readonly lastHarvestDelta: number;
+  };
+}
+
+export interface SaveM2SeasonalMonthStateDto {
+  readonly month: number;
+  readonly monsoonIntensityBps: number;
+  readonly agricultureWorkBps: number;
+  readonly riverNavigabilityBps: number;
+  readonly roadTravelCostBps: number;
+}
+
+export interface SaveM2RegionalSeasonalCurveStateDto {
+  readonly id: number;
+  readonly monthlyValues: readonly SaveM2SeasonalMonthStateDto[];
+}
+
+export interface SaveM2DistrictSeasonalityStateDto {
+  readonly districtId: number;
+  readonly regionalCurveId: number;
+}
+
+export interface SaveM2RouteTransportEdgeStateDto {
+  readonly routeId: number;
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+  readonly routeKind: SaveM2RouteKindDto;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+}
+
+export interface SaveM2TransportStateDto {
+  readonly schemaVersion: 1;
+  readonly routes: readonly SaveM2RouteTransportEdgeStateDto[];
+  readonly districtSeasonality: readonly SaveM2DistrictSeasonalityStateDto[];
+  readonly regionalCurves: readonly SaveM2RegionalSeasonalCurveStateDto[];
+}
+
+export interface SaveM2EconomyPopulationStateDto {
+  readonly schemaVersion: 1;
+  readonly populationGroups: readonly SaveM2PopulationGroupStateDto[];
+  readonly agriculture: {
+    readonly districts: readonly SaveM2DistrictAgricultureStateDto[];
+  };
+  readonly market: {
+    readonly districts: readonly SaveM2DistrictMarketStateDto[];
+  };
+  readonly transport: SaveM2TransportStateDto;
+}
+
 export interface SaveWorldRuntimeStateV0Dto {
   readonly polities: readonly SaveSimpleRuntimeStateDto[];
   readonly persons: readonly SavePersonStateDto[];
   readonly districts: readonly SaveDistrictStateDto[];
   readonly settlements: readonly SaveSettlementStateDto[];
   readonly routes: readonly SaveSimpleRuntimeStateDto[];
+  readonly m2?: SaveM2EconomyPopulationStateDto;
 }
 
 export interface SaveWorldSnapshotV0Dto {
@@ -200,6 +291,7 @@ export interface WorldStateV0ForSave {
     readonly districts: readonly SaveDistrictStateDto[];
     readonly settlements: readonly SaveSettlementStateDto[];
     readonly routes: readonly SaveSimpleRuntimeStateDto[];
+    readonly m2?: SaveM2EconomyPopulationStateDto;
   };
 }
 
@@ -328,6 +420,30 @@ export function decodeSaveEnvelopeV1(
 }
 
 export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnapshotV0Dto {
+  const stateWithoutM2 = {
+    polities: world.state.polities.map(copySimpleRuntimeState),
+    persons: world.state.persons.map((person) => ({
+      definitionId: person.definitionId,
+      currentDistrictId: person.currentDistrictId ?? null
+    })),
+    districts: world.state.districts.map((district) => ({
+      definitionId: district.definitionId,
+      control: copyDistrictControl(district.control)
+    })),
+    settlements: world.state.settlements.map((settlement) => ({
+      definitionId: settlement.definitionId,
+      currentDistrictId: settlement.currentDistrictId
+    })),
+    routes: world.state.routes.map(copySimpleRuntimeState)
+  };
+  const state =
+    world.state.m2 === undefined
+      ? stateWithoutM2
+      : {
+          ...stateWithoutM2,
+          m2: copyM2EconomyPopulationState(world.state.m2)
+        };
+
   return {
     schemaVersion: 0,
     meta: {
@@ -355,22 +471,7 @@ export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnap
         lengthInMapUnits: route.lengthInMapUnits
       }))
     },
-    state: {
-      polities: world.state.polities.map(copySimpleRuntimeState),
-      persons: world.state.persons.map((person) => ({
-        definitionId: person.definitionId,
-        currentDistrictId: person.currentDistrictId ?? null
-      })),
-      districts: world.state.districts.map((district) => ({
-        definitionId: district.definitionId,
-        control: copyDistrictControl(district.control)
-      })),
-      settlements: world.state.settlements.map((settlement) => ({
-        definitionId: settlement.definitionId,
-        currentDistrictId: settlement.currentDistrictId
-      })),
-      routes: world.state.routes.map(copySimpleRuntimeState)
-    }
+    state
   };
 }
 
@@ -396,16 +497,25 @@ export function saveWorldStateV0DtoToCandidate(snapshot: unknown, scheduler?: un
           pendingCommandCount: 0
         };
 
+  const stateWithoutM2 = {
+    ...parsedSnapshot.value.state,
+    persons: parsedSnapshot.value.state.persons.map((person) => ({
+      definitionId: person.definitionId,
+      currentDistrictId: person.currentDistrictId === null ? undefined : person.currentDistrictId
+    }))
+  };
+  const state =
+    parsedSnapshot.value.state.m2 === undefined
+      ? stateWithoutM2
+      : {
+          ...stateWithoutM2,
+          m2: copyM2EconomyPopulationState(parsedSnapshot.value.state.m2)
+        };
+
   return {
     meta: parsedSnapshot.value.meta,
     definitions: parsedSnapshot.value.definitions,
-    state: {
-      ...parsedSnapshot.value.state,
-      persons: parsedSnapshot.value.state.persons.map((person) => ({
-        definitionId: person.definitionId,
-        currentDistrictId: person.currentDistrictId === null ? undefined : person.currentDistrictId
-      }))
-    },
+    state,
     scheduler: candidateScheduler
   };
 }
@@ -782,17 +892,23 @@ function parseWorldRuntimeState(
   const districts = parseDistrictStates(input["districts"], errors);
   const settlements = parseSettlementStates(input["settlements"], errors);
   const routes = parseSimpleRuntimeStates(input["routes"], "routes", errors);
+  const m2 =
+    input["m2"] === undefined
+      ? undefined
+      : parseM2EconomyPopulationState(input["m2"], "body.authoritativeSnapshot.state.m2", errors);
   if (
     polities === undefined ||
     persons === undefined ||
     districts === undefined ||
     settlements === undefined ||
-    routes === undefined
+    routes === undefined ||
+    (input["m2"] !== undefined && m2 === undefined)
   ) {
     return undefined;
   }
 
-  return { polities, persons, districts, settlements, routes };
+  const state = { polities, persons, districts, settlements, routes };
+  return m2 === undefined ? state : { ...state, m2 };
 }
 
 function parseSaveSchedulerV1Dto(
@@ -1145,6 +1261,518 @@ function parseSettlementStates(
   });
 }
 
+function parseM2EconomyPopulationState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2EconomyPopulationStateDto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2 economy population state must be an object."));
+    return undefined;
+  }
+
+  if (input["schemaVersion"] !== 1) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.schemaVersion`,
+        "M2 economy population schemaVersion must be 1."
+      )
+    );
+  }
+
+  const populationGroups = parseM2PopulationGroups(input["populationGroups"], path, errors);
+  const agriculture = parseM2Agriculture(input["agriculture"], path, errors);
+  const market = parseM2Market(input["market"], path, errors);
+  const transport = parseM2Transport(input["transport"], `${path}.transport`, errors);
+
+  if (
+    populationGroups === undefined ||
+    agriculture === undefined ||
+    market === undefined ||
+    transport === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    schemaVersion: 1,
+    populationGroups,
+    agriculture,
+    market,
+    transport
+  };
+}
+
+function parseM2PopulationGroups(
+  input: unknown,
+  basePath: string,
+  errors: SaveLoadRejectionReasonV1[]
+): readonly SaveM2PopulationGroupStateDto[] | undefined {
+  if (!Array.isArray(input)) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${basePath}.populationGroups`,
+        "M2 populationGroups must be an array."
+      )
+    );
+    return undefined;
+  }
+
+  return input.map((entry, index) =>
+    parseM2PopulationGroup(entry, `${basePath}.populationGroups[${index}]`, errors)
+  );
+}
+
+function parseM2PopulationGroup(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2PopulationGroupStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2PopulationGroupState entry must be an object."));
+    return fallbackM2PopulationGroup();
+  }
+
+  const committedLabor = input["committedLabor"];
+  const parsedCommittedLabor = Array.isArray(committedLabor)
+    ? committedLabor.map((entry, index) =>
+        parseM2LaborCommitment(entry, `${path}.committedLabor[${index}]`, errors)
+      )
+    : undefined;
+  if (parsedCommittedLabor === undefined) {
+    errors.push(
+      reason("invalid-schema", `${path}.committedLabor`, "M2 committedLabor must be an array.")
+    );
+  }
+
+  return {
+    id: readPositiveSafeInteger(input, "id", `${path}.id`, errors) ?? 0,
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    totalPeople:
+      readNonnegativeSafeInteger(input, "totalPeople", `${path}.totalPeople`, errors) ?? 0,
+    workingPeople:
+      readNonnegativeSafeInteger(input, "workingPeople", `${path}.workingPeople`, errors) ?? 0,
+    dependentPeople:
+      readNonnegativeSafeInteger(input, "dependentPeople", `${path}.dependentPeople`, errors) ?? 0,
+    availableLabor:
+      readNonnegativeSafeInteger(input, "availableLabor", `${path}.availableLabor`, errors) ?? 0,
+    grainStock: readNonnegativeSafeInteger(input, "grainStock", `${path}.grainStock`, errors) ?? 0,
+    cashStock: readNonnegativeSafeInteger(input, "cashStock", `${path}.cashStock`, errors) ?? 0,
+    committedLabor: parsedCommittedLabor ?? []
+  };
+}
+
+function parseM2LaborCommitment(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2LaborCommitmentStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2LaborCommitmentState entry must be an object."));
+    return { purpose: "mobilized", laborAmount: 0, startDay: 0, releaseDay: 0 };
+  }
+
+  if (input["purpose"] !== "mobilized") {
+    errors.push(
+      reason("invalid-schema", `${path}.purpose`, "M2 labor commitment purpose must be mobilized.")
+    );
+  }
+
+  return {
+    purpose: "mobilized",
+    laborAmount: readPositiveSafeInteger(input, "laborAmount", `${path}.laborAmount`, errors) ?? 0,
+    startDay: readNonnegativeSafeInteger(input, "startDay", `${path}.startDay`, errors) ?? 0,
+    releaseDay: readNonnegativeSafeInteger(input, "releaseDay", `${path}.releaseDay`, errors) ?? 0
+  };
+}
+
+function parseM2Agriculture(
+  input: unknown,
+  basePath: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2EconomyPopulationStateDto["agriculture"] | undefined {
+  const path = `${basePath}.agriculture`;
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2 agriculture must be an object."));
+    return undefined;
+  }
+
+  const districts = input["districts"];
+  if (!Array.isArray(districts)) {
+    errors.push(
+      reason("invalid-schema", `${path}.districts`, "M2 agriculture districts must be an array.")
+    );
+    return undefined;
+  }
+
+  return {
+    districts: districts.map((entry, index) =>
+      parseM2AgricultureDistrict(entry, `${path}.districts[${index}]`, errors)
+    )
+  };
+}
+
+function parseM2AgricultureDistrict(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2DistrictAgricultureStateDto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "M2DistrictAgricultureState entry must be an object.")
+    );
+    return {
+      districtId: 0,
+      phase: "fallow",
+      daysInPhase: 0,
+      accumulatedFarmLabor: 0,
+      expectedHarvestGrain: 0,
+      lastHarvestGrain: 0
+    };
+  }
+
+  return {
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    phase: parseM2AgriculturePhase(input["phase"], `${path}.phase`, errors),
+    daysInPhase:
+      readNonnegativeSafeInteger(input, "daysInPhase", `${path}.daysInPhase`, errors) ?? 0,
+    accumulatedFarmLabor:
+      readNonnegativeSafeInteger(
+        input,
+        "accumulatedFarmLabor",
+        `${path}.accumulatedFarmLabor`,
+        errors
+      ) ?? 0,
+    expectedHarvestGrain:
+      readNonnegativeSafeInteger(
+        input,
+        "expectedHarvestGrain",
+        `${path}.expectedHarvestGrain`,
+        errors
+      ) ?? 0,
+    lastHarvestGrain:
+      readNonnegativeSafeInteger(input, "lastHarvestGrain", `${path}.lastHarvestGrain`, errors) ?? 0
+  };
+}
+
+function parseM2Market(
+  input: unknown,
+  basePath: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2EconomyPopulationStateDto["market"] | undefined {
+  const path = `${basePath}.market`;
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2 market must be an object."));
+    return undefined;
+  }
+
+  const districts = input["districts"];
+  if (!Array.isArray(districts)) {
+    errors.push(
+      reason("invalid-schema", `${path}.districts`, "M2 market districts must be an array.")
+    );
+    return undefined;
+  }
+
+  return {
+    districts: districts.map((entry, index) =>
+      parseM2MarketDistrict(entry, `${path}.districts[${index}]`, errors)
+    )
+  };
+}
+
+function parseM2MarketDistrict(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2DistrictMarketStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2DistrictMarketState entry must be an object."));
+    return fallbackM2MarketDistrict();
+  }
+
+  const cashFlow = parseM2MarketCashFlow(input["cashFlow"], `${path}.cashFlow`, errors);
+  const grainFlow = parseM2MarketGrainFlow(input["grainFlow"], `${path}.grainFlow`, errors);
+
+  return {
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    grainPriceCashPerHundred:
+      readPositiveSafeInteger(
+        input,
+        "grainPriceCashPerHundred",
+        `${path}.grainPriceCashPerHundred`,
+        errors
+      ) ?? 0,
+    cashFlow: cashFlow ?? { cumulativeMobilizationCost: 0, lastDailyCashDelta: 0 },
+    grainFlow: grainFlow ?? { lastHarvestDelta: 0 }
+  };
+}
+
+function parseM2MarketCashFlow(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2DistrictMarketStateDto["cashFlow"] | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2 market cashFlow must be an object."));
+    return undefined;
+  }
+
+  return {
+    cumulativeMobilizationCost:
+      readNonnegativeSafeInteger(
+        input,
+        "cumulativeMobilizationCost",
+        `${path}.cumulativeMobilizationCost`,
+        errors
+      ) ?? 0,
+    lastDailyCashDelta:
+      readNonnegativeSafeInteger(
+        input,
+        "lastDailyCashDelta",
+        `${path}.lastDailyCashDelta`,
+        errors
+      ) ?? 0
+  };
+}
+
+function parseM2MarketGrainFlow(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2DistrictMarketStateDto["grainFlow"] | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2 market grainFlow must be an object."));
+    return undefined;
+  }
+
+  return {
+    lastHarvestDelta:
+      readNonnegativeSafeInteger(input, "lastHarvestDelta", `${path}.lastHarvestDelta`, errors) ?? 0
+  };
+}
+
+function parseM2Transport(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2TransportStateDto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2 transport must be an object."));
+    return undefined;
+  }
+
+  if (input["schemaVersion"] !== 1) {
+    errors.push(
+      reason("invalid-schema", `${path}.schemaVersion`, "M2 transport schemaVersion must be 1.")
+    );
+  }
+
+  const routes = input["routes"];
+  const districtSeasonality = input["districtSeasonality"];
+  const regionalCurves = input["regionalCurves"];
+  if (!Array.isArray(routes)) {
+    errors.push(
+      reason("invalid-schema", `${path}.routes`, "M2 transport routes must be an array.")
+    );
+  }
+  if (!Array.isArray(districtSeasonality)) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.districtSeasonality`,
+        "M2 transport districtSeasonality must be an array."
+      )
+    );
+  }
+  if (!Array.isArray(regionalCurves)) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.regionalCurves`,
+        "M2 transport regionalCurves must be an array."
+      )
+    );
+  }
+  if (
+    !Array.isArray(routes) ||
+    !Array.isArray(districtSeasonality) ||
+    !Array.isArray(regionalCurves)
+  ) {
+    return undefined;
+  }
+
+  return {
+    schemaVersion: 1,
+    routes: routes.map((entry, index) =>
+      parseM2TransportRoute(entry, `${path}.routes[${index}]`, errors)
+    ),
+    districtSeasonality: districtSeasonality.map((entry, index) =>
+      parseM2DistrictSeasonality(entry, `${path}.districtSeasonality[${index}]`, errors)
+    ),
+    regionalCurves: regionalCurves.map((entry, index) =>
+      parseM2RegionalSeasonalCurve(entry, `${path}.regionalCurves[${index}]`, errors)
+    )
+  };
+}
+
+function parseM2TransportRoute(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2RouteTransportEdgeStateDto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "M2RouteTransportEdgeState entry must be an object.")
+    );
+    return {
+      routeId: 0,
+      fromDistrictId: 0,
+      toDistrictId: 0,
+      routeKind: "road",
+      baseTravelCost: 0,
+      baseCapacity: 0
+    };
+  }
+
+  return {
+    routeId: readPositiveSafeInteger(input, "routeId", `${path}.routeId`, errors) ?? 0,
+    fromDistrictId:
+      readPositiveSafeInteger(input, "fromDistrictId", `${path}.fromDistrictId`, errors) ?? 0,
+    toDistrictId:
+      readPositiveSafeInteger(input, "toDistrictId", `${path}.toDistrictId`, errors) ?? 0,
+    routeKind: parseM2RouteKind(input["routeKind"], `${path}.routeKind`, errors),
+    baseTravelCost:
+      readPositiveSafeInteger(input, "baseTravelCost", `${path}.baseTravelCost`, errors) ?? 0,
+    baseCapacity:
+      readPositiveSafeInteger(input, "baseCapacity", `${path}.baseCapacity`, errors) ?? 0
+  };
+}
+
+function parseM2DistrictSeasonality(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2DistrictSeasonalityStateDto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "M2DistrictSeasonalityState entry must be an object.")
+    );
+    return { districtId: 0, regionalCurveId: 0 };
+  }
+
+  return {
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    regionalCurveId:
+      readPositiveSafeInteger(input, "regionalCurveId", `${path}.regionalCurveId`, errors) ?? 0
+  };
+}
+
+function parseM2RegionalSeasonalCurve(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2RegionalSeasonalCurveStateDto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "M2RegionalSeasonalCurveState entry must be an object.")
+    );
+    return { id: 0, monthlyValues: [] };
+  }
+
+  const monthlyValues = input["monthlyValues"];
+  if (!Array.isArray(monthlyValues) || monthlyValues.length !== 12) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.monthlyValues`,
+        "M2 regional seasonal curve monthlyValues must contain 12 months."
+      )
+    );
+    return {
+      id: readPositiveSafeInteger(input, "id", `${path}.id`, errors) ?? 0,
+      monthlyValues: []
+    };
+  }
+
+  return {
+    id: readPositiveSafeInteger(input, "id", `${path}.id`, errors) ?? 0,
+    monthlyValues: monthlyValues.map((entry, index) =>
+      parseM2SeasonalMonth(entry, `${path}.monthlyValues[${index}]`, index + 1, errors)
+    )
+  };
+}
+
+function parseM2SeasonalMonth(
+  input: unknown,
+  path: string,
+  expectedMonth: number,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2SeasonalMonthStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M2SeasonalMonthState entry must be an object."));
+    return {
+      month: expectedMonth,
+      monsoonIntensityBps: 0,
+      agricultureWorkBps: 0,
+      riverNavigabilityBps: 0,
+      roadTravelCostBps: 1
+    };
+  }
+
+  if (input["month"] !== expectedMonth) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.month`,
+        "M2 seasonal month entries must be ordered from month 1 through month 12."
+      )
+    );
+  }
+
+  return {
+    month: readIntegerInRange(input, "month", `${path}.month`, 1, 12, errors) ?? expectedMonth,
+    monsoonIntensityBps:
+      readIntegerInRange(
+        input,
+        "monsoonIntensityBps",
+        `${path}.monsoonIntensityBps`,
+        0,
+        10_000,
+        errors
+      ) ?? 0,
+    agricultureWorkBps:
+      readIntegerInRange(
+        input,
+        "agricultureWorkBps",
+        `${path}.agricultureWorkBps`,
+        0,
+        10_000,
+        errors
+      ) ?? 0,
+    riverNavigabilityBps:
+      readIntegerInRange(
+        input,
+        "riverNavigabilityBps",
+        `${path}.riverNavigabilityBps`,
+        0,
+        10_000,
+        errors
+      ) ?? 0,
+    roadTravelCostBps:
+      readIntegerInRange(
+        input,
+        "roadTravelCostBps",
+        `${path}.roadTravelCostBps`,
+        1,
+        30_000,
+        errors
+      ) ?? 1
+  };
+}
+
 function parseCommandTail(
   input: unknown,
   errors: SaveLoadRejectionReasonV1[]
@@ -1262,6 +1890,30 @@ function checksumSaveBodyV1(body: SaveBodyV1): string {
 }
 
 function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
+  const stateWithoutM2 = {
+    polities: body.authoritativeSnapshot.state.polities.map(copySimpleRuntimeState),
+    persons: body.authoritativeSnapshot.state.persons.map((person) => ({
+      definitionId: person.definitionId,
+      currentDistrictId: person.currentDistrictId
+    })),
+    districts: body.authoritativeSnapshot.state.districts.map((district) => ({
+      definitionId: district.definitionId,
+      control: copyDistrictControl(district.control)
+    })),
+    settlements: body.authoritativeSnapshot.state.settlements.map((settlement) => ({
+      definitionId: settlement.definitionId,
+      currentDistrictId: settlement.currentDistrictId
+    })),
+    routes: body.authoritativeSnapshot.state.routes.map(copySimpleRuntimeState)
+  };
+  const state =
+    body.authoritativeSnapshot.state.m2 === undefined
+      ? stateWithoutM2
+      : {
+          ...stateWithoutM2,
+          m2: copyM2EconomyPopulationState(body.authoritativeSnapshot.state.m2)
+        };
+
   return {
     authoritativeSnapshot: {
       schemaVersion: 0,
@@ -1282,22 +1934,7 @@ function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
           lengthInMapUnits: route.lengthInMapUnits
         }))
       },
-      state: {
-        polities: body.authoritativeSnapshot.state.polities.map(copySimpleRuntimeState),
-        persons: body.authoritativeSnapshot.state.persons.map((person) => ({
-          definitionId: person.definitionId,
-          currentDistrictId: person.currentDistrictId
-        })),
-        districts: body.authoritativeSnapshot.state.districts.map((district) => ({
-          definitionId: district.definitionId,
-          control: copyDistrictControl(district.control)
-        })),
-        settlements: body.authoritativeSnapshot.state.settlements.map((settlement) => ({
-          definitionId: settlement.definitionId,
-          currentDistrictId: settlement.currentDistrictId
-        })),
-        routes: body.authoritativeSnapshot.state.routes.map(copySimpleRuntimeState)
-      }
+      state
     },
     scheduler: { ...body.scheduler },
     rng: {
@@ -1341,6 +1978,133 @@ function copyDistrictControl(control: SaveDistrictControlDto): SaveDistrictContr
         kind: "uncontrolled"
       };
   }
+}
+
+function copyM2EconomyPopulationState(
+  m2: SaveM2EconomyPopulationStateDto
+): SaveM2EconomyPopulationStateDto {
+  return {
+    schemaVersion: 1,
+    populationGroups: m2.populationGroups.map((group) => ({
+      id: group.id,
+      districtId: group.districtId,
+      totalPeople: group.totalPeople,
+      workingPeople: group.workingPeople,
+      dependentPeople: group.dependentPeople,
+      availableLabor: group.availableLabor,
+      grainStock: group.grainStock,
+      cashStock: group.cashStock,
+      committedLabor: group.committedLabor.map((commitment) => ({
+        purpose: commitment.purpose,
+        laborAmount: commitment.laborAmount,
+        startDay: commitment.startDay,
+        releaseDay: commitment.releaseDay
+      }))
+    })),
+    agriculture: {
+      districts: m2.agriculture.districts.map((district) => ({
+        districtId: district.districtId,
+        phase: district.phase,
+        daysInPhase: district.daysInPhase,
+        accumulatedFarmLabor: district.accumulatedFarmLabor,
+        expectedHarvestGrain: district.expectedHarvestGrain,
+        lastHarvestGrain: district.lastHarvestGrain
+      }))
+    },
+    market: {
+      districts: m2.market.districts.map((district) => ({
+        districtId: district.districtId,
+        grainPriceCashPerHundred: district.grainPriceCashPerHundred,
+        cashFlow: {
+          cumulativeMobilizationCost: district.cashFlow.cumulativeMobilizationCost,
+          lastDailyCashDelta: district.cashFlow.lastDailyCashDelta
+        },
+        grainFlow: {
+          lastHarvestDelta: district.grainFlow.lastHarvestDelta
+        }
+      }))
+    },
+    transport: {
+      schemaVersion: 1,
+      routes: m2.transport.routes.map((route) => ({
+        routeId: route.routeId,
+        fromDistrictId: route.fromDistrictId,
+        toDistrictId: route.toDistrictId,
+        routeKind: route.routeKind,
+        baseTravelCost: route.baseTravelCost,
+        baseCapacity: route.baseCapacity
+      })),
+      districtSeasonality: m2.transport.districtSeasonality.map((entry) => ({
+        districtId: entry.districtId,
+        regionalCurveId: entry.regionalCurveId
+      })),
+      regionalCurves: m2.transport.regionalCurves.map((curve) => ({
+        id: curve.id,
+        monthlyValues: curve.monthlyValues.map((month) => ({
+          month: month.month,
+          monsoonIntensityBps: month.monsoonIntensityBps,
+          agricultureWorkBps: month.agricultureWorkBps,
+          riverNavigabilityBps: month.riverNavigabilityBps,
+          roadTravelCostBps: month.roadTravelCostBps
+        }))
+      }))
+    }
+  };
+}
+
+function fallbackM2PopulationGroup(): SaveM2PopulationGroupStateDto {
+  return {
+    id: 0,
+    districtId: 0,
+    totalPeople: 0,
+    workingPeople: 0,
+    dependentPeople: 0,
+    availableLabor: 0,
+    grainStock: 0,
+    cashStock: 0,
+    committedLabor: []
+  };
+}
+
+function fallbackM2MarketDistrict(): SaveM2DistrictMarketStateDto {
+  return {
+    districtId: 0,
+    grainPriceCashPerHundred: 0,
+    cashFlow: { cumulativeMobilizationCost: 0, lastDailyCashDelta: 0 },
+    grainFlow: { lastHarvestDelta: 0 }
+  };
+}
+
+function parseM2AgriculturePhase(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2AgriculturePhaseDto {
+  if (input === "fallow" || input === "planting" || input === "growing" || input === "harvest") {
+    return input;
+  }
+
+  errors.push(
+    reason(
+      "invalid-schema",
+      path,
+      "M2 agriculture phase must be fallow, planting, growing, or harvest."
+    )
+  );
+  return "fallow";
+}
+
+function parseM2RouteKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM2RouteKindDto {
+  if (input === "coast" || input === "river" || input === "road") {
+    return input;
+  }
+
+  errors.push(reason("invalid-schema", path, "M2 routeKind must be coast, river, or road."));
+  return "road";
 }
 
 function readNonEmptyString(
@@ -1396,6 +2160,30 @@ function readNonnegativeSafeInteger(
     return value;
   }
   errors.push(reason("invalid-schema", path, `${path} must be a nonnegative safe integer.`));
+  return undefined;
+}
+
+function readIntegerInRange(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  minimum: number,
+  maximum: number,
+  errors: SaveLoadRejectionReasonV1[]
+): number | undefined {
+  const value = record[key];
+  if (
+    typeof value === "number" &&
+    Number.isSafeInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+  ) {
+    return value;
+  }
+
+  errors.push(
+    reason("invalid-schema", path, `${path} must be a safe integer from ${minimum} to ${maximum}.`)
+  );
   return undefined;
 }
 

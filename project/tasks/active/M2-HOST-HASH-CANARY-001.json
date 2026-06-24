@@ -8,7 +8,8 @@
   "risk_level": "R3",
   "dependencies": [
     "M2-ECON-POP-001",
-    "M2-ROUTE-TRANSPORT-001"
+    "M2-ROUTE-TRANSPORT-001",
+    "M2-SAVE-RUNTIME-001"
   ],
   "scope": {
     "allowed_paths": [
@@ -67,6 +68,7 @@
   "route_to": "test_engineer",
   "notes": [
     "This is an explicit M1 Gate follow-up and must complete before M2 exit.",
+    "M2-SAVE-RUNTIME-001 must close first so this canary can make its required save/load hash comparison over explicit M2 runtime state.",
     "If the canary requires changing Electron IPC or preload authority, stop and route to security_reviewer before implementation continues."
   ],
   "created_at": "2026-06-24T11:08:39.037Z",

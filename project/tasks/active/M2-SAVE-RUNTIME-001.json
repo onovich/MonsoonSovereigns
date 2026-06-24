@@ -1,0 +1,83 @@
+{
+  "id": "M2-SAVE-RUNTIME-001",
+  "summary": "Add explicit M2 runtime save/load support",
+  "milestone": "M2",
+  "status": "ACCEPTED",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "SIM-005",
+    "M2-ECON-POP-001",
+    "M2-ROUTE-TRANSPORT-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/save-format/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M2-SAVE-RUNTIME-001.json",
+      "project/tasks/active/M2-HOST-HASH-CANARY-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform-electron/**",
+      "content-source/historical/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M2 runtime save/load explicitly preserves the M2 economy, population, agriculture, market, and route/transport slices required by M2-ECON-POP-001 and M2-ROUTE-TRANSPORT-001, or it returns a structured unsupported-save rejection before any M2 host hash or exit claim can use save/load.",
+    "Same seed, same M2 fixture, same command sequence, and same saved snapshot produce the same state hash after load as before save in the Node path.",
+    "The existing M1 save/load golden and corrupt-save rejection behavior remains compatible and still passes.",
+    "Malformed, missing, future-version, or cross-manifest M2 save data is rejected with stable reason codes/paths and does not mutate the current runtime.",
+    "Save DTO/schema changes remain explicit, serializable, versioned, and confined to the existing save-format/sim-core boundary; no platform IO, IndexedDB, Electron IPC, compression, database, or production dependency is introduced.",
+    "This task resolves M2-ECON-POP-FOLLOW-UP-001 enough that M2-HOST-HASH-CANARY-001 may perform its required save/load hash comparison without overstating final M2 exit performance."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/save-format typecheck",
+    "pnpm --filter @monsoon/sim-core typecheck",
+    "pnpm sim:determinism",
+    "pnpm sim:perf-baseline",
+    "pnpm test",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-SAVE-RUNTIME-001",
+    "node -e JSON parse/shape check for M2-SAVE-RUNTIME-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m2-save-runtime",
+  "threads": {
+    "simulation_engineer": "019efb8c-e147-7451-9322-72ebc094147f",
+    "systems_architect": "019efb99-fe16-7692-928c-e46c79b12b61"
+  },
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This task exists to resolve the M2 runtime save/load follow-up recorded during M2-ECON-POP-001 and kept through M2 pressure validation.",
+    "Prefer the smallest explicit v1-compatible extension that preserves M2 state hash determinism. If that requires changing a frozen save-format decision instead of extending the existing explicit DTO/codec contract, stop and route to systems_architect before implementation continues.",
+    "Do not use this task to implement platform persistence, IndexedDB, Electron filesystem saves, migrations beyond explicit v1 handling, compression, cloud saves, or gameplay scope beyond persisted M2 slices."
+  ],
+  "created_at": "2026-06-24T21:32:00Z",
+  "updated_at": "2026-06-24T21:56:25Z"
+}
