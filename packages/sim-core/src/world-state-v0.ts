@@ -11,6 +11,8 @@ export type SimulationSeed = Brand<number, "SimulationSeed">;
 export type ContentManifestHash = Brand<string, "ContentManifestHash">;
 
 export const WORLD_STATE_V0_SCHEMA_VERSION = 0;
+export const GAME_DAY_SCHEDULER_VERSION = 1;
+export const DETERMINISTIC_SYSTEM_ORDER_VERSION = 1;
 
 export interface PolityDefinition {
   readonly id: PolityId;
@@ -84,6 +86,10 @@ export interface WorldRuntimeStateV0 {
 }
 
 export interface SchedulerStateV0 {
+  readonly schedulerVersion: typeof GAME_DAY_SCHEDULER_VERSION;
+  readonly systemOrderVersion: typeof DETERMINISTIC_SYSTEM_ORDER_VERSION;
+  readonly fixedStepDurationInDays: 1;
+  readonly lastCompletedDay: GameDay;
   readonly pendingCommandCount: number;
 }
 
@@ -264,6 +270,10 @@ export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0
     definitions,
     state,
     scheduler: {
+      schedulerVersion: GAME_DAY_SCHEDULER_VERSION,
+      systemOrderVersion: DETERMINISTIC_SYSTEM_ORDER_VERSION,
+      fixedStepDurationInDays: 1,
+      lastCompletedDay: parseGameDay(input.currentDay),
       pendingCommandCount: 0
     }
   };
@@ -309,6 +319,18 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     `state.districts=${formatDistrictStates(world.state.districts)}`,
     `state.settlements=${formatSettlementStates(world.state.settlements)}`,
     `state.routes=${formatRouteStates(world.state.routes)}`,
+    `scheduler.schedulerVersion=${formatUnknown(
+      getRecordPath(world, ["scheduler", "schedulerVersion"])
+    )}`,
+    `scheduler.systemOrderVersion=${formatUnknown(
+      getRecordPath(world, ["scheduler", "systemOrderVersion"])
+    )}`,
+    `scheduler.fixedStepDurationInDays=${formatUnknown(
+      getRecordPath(world, ["scheduler", "fixedStepDurationInDays"])
+    )}`,
+    `scheduler.lastCompletedDay=${formatUnknown(
+      getRecordPath(world, ["scheduler", "lastCompletedDay"])
+    )}`,
     `scheduler.pendingCommandCount=${formatUnknown(
       getRecordPath(world, ["scheduler", "pendingCommandCount"])
     )}`
@@ -900,6 +922,53 @@ function toFixedHexHash(hash: number): string {
 }
 
 function validateScheduler(world: WorldStateV0Candidate, errors: WorldInvariantError[]): void {
+  if (getRecordPath(world, ["scheduler", "schedulerVersion"]) !== GAME_DAY_SCHEDULER_VERSION) {
+    errors.push({
+      code: "invalid-schema",
+      path: "scheduler.schedulerVersion",
+      message: `Scheduler schedulerVersion must be ${GAME_DAY_SCHEDULER_VERSION}.`
+    });
+  }
+
+  if (
+    getRecordPath(world, ["scheduler", "systemOrderVersion"]) !== DETERMINISTIC_SYSTEM_ORDER_VERSION
+  ) {
+    errors.push({
+      code: "invalid-schema",
+      path: "scheduler.systemOrderVersion",
+      message: `Scheduler systemOrderVersion must be ${DETERMINISTIC_SYSTEM_ORDER_VERSION}.`
+    });
+  }
+
+  if (getRecordPath(world, ["scheduler", "fixedStepDurationInDays"]) !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "scheduler.fixedStepDurationInDays",
+      message: "Scheduler fixedStepDurationInDays must be 1."
+    });
+  }
+
+  if (!isNonnegativeInteger(getRecordPath(world, ["scheduler", "lastCompletedDay"]))) {
+    errors.push({
+      code: "invalid-day",
+      path: "scheduler.lastCompletedDay",
+      message: "Scheduler lastCompletedDay must be a nonnegative safe integer."
+    });
+  }
+
+  if (
+    isNonnegativeInteger(getRecordPath(world, ["scheduler", "lastCompletedDay"])) &&
+    isNonnegativeInteger(getRecordPath(world, ["meta", "currentDay"])) &&
+    getRecordPath(world, ["scheduler", "lastCompletedDay"]) !==
+      getRecordPath(world, ["meta", "currentDay"])
+  ) {
+    errors.push({
+      code: "invalid-day",
+      path: "scheduler.lastCompletedDay",
+      message: "Scheduler lastCompletedDay must equal WorldState meta.currentDay."
+    });
+  }
+
   if (!isNonnegativeInteger(getRecordPath(world, ["scheduler", "pendingCommandCount"]))) {
     errors.push({
       code: "invalid-schema",

@@ -2,7 +2,7 @@
   "id": "SIM-002",
   "summary": "Implement fixed GameDay scheduler and deterministic system order",
   "milestone": "M1",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -48,13 +48,16 @@
     "Invariant/property tests cover 3650-day advancement and calendar boundaries.",
     "Performance baseline output records fixture, machine/runtime context where available, day throughput, and P50/P95/P99 step timing."
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "feat/sim-002-game-day-scheduler",
+  "threads": {
+    "simulation_engineer": "019ef84e-b2f1-7fe2-a8bc-3fc46f081561",
+    "qa_reviewer": "019ef84e-eaf3-7012-ada8-6e5b64788c2a"
+  },
   "route_to": "simulation_engineer",
   "notes": [
     "Keep scheduler minimal for M1; monthly/yearly hooks may be empty, but their order and determinism contract must be explicit.",
     "Do not introduce real gameplay systems while creating scheduler phases."
   ],
   "created_at": "2026-06-24T04:53:00Z",
-  "updated_at": "2026-06-24T04:53:00Z"
+  "updated_at": "2026-06-24T06:53:44.068Z"
 }
