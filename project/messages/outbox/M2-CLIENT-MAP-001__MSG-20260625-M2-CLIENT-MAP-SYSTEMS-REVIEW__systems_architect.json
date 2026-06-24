@@ -1,0 +1,73 @@
+{
+  "message_id": "MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW",
+  "task_id": "M2-CLIENT-MAP-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Architecture review found the diff scope is confined to the task's allowed paths and no forbidden sim-core, save-format, content, Electron, ADR, gate, manifest, checksum, or validation-report paths were modified. Protocol/client-core additions stay on DTO/read-model projections and do not import WorldState into React/Redux. MapRenderer has render-plan and replace-read-model rebuild tests. However, the browser-visible map surface is implemented as React/SVG per-entity rendering in packages/ui/src/index.tsx, while apps/web only calls buildMapRenderPlan for an anchor count. That does not satisfy the task acceptance criterion requiring the web client to render through MapRenderer deltas, and it conflicts with ADR-008's React/Pixi boundary that React must not create one component per map entity.",
+  "artifacts": [
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW__systems_architect.json",
+    "project/tasks/active/M2-CLIENT-MAP-001.json",
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260624-M2-CLIENT-MAP-CLIENT-REVIEW__client_engineer.json",
+    "packages/protocol/src/index.ts",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "feat/m2-client-map",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m2-client-map. Modified files are within allowed implementation/orchestration paths; untracked writer handoff, route messages, and tests/map-renderer-m2-map.test.ts are also within allowed project/messages or tests paths."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260624-M2-CLIENT-MAP-CLIENT-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-MAP-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed, covering seasonal/economy/routes render plans and replace-read-model cache rebuild."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: Pixi mounting cannot be deferred as a follow-up for this task. M2-CLIENT-MAP-001 acceptance criterion 1 requires web rendering through read models and MapRenderer deltas, and ADR-008 states PixiJS imperatively owns maps, roads, regions, armies, and high-frequency labels while React must not create a component per map entity.",
+    "The protocol result DTO additions are acceptable in scope for this review because they mirror existing sim-core query output shapes and do not add new query kinds, save schema, sim-core rules, Electron IPC, RNG/time, or production dependency expansion.",
+    "The protocol-shaped client fixture remains a known non-blocking M2 risk until live worker query integration is scheduled; it is not the reason for this request-changes result."
+  ],
+  "risks": [
+    "Current UI duplicates map presentation decisions already present in MapRenderer: districtFillColor, seasonalFillColor, routeStrokeColor, route width, label text, and per-entity SVG construction. This risks renderer/UI drift and bypasses MapRenderer ownership of render-plan semantics.",
+    "Current Playwright coverage proves the SVG/DOM surface works, not that the browser-visible map is rebuilt by MapRenderer/Pixi from a read model."
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Revise the implementation before acceptance: 1. Replace the React/SVG per-district/per-route/per-settlement visible map in packages/ui/src/index.tsx with a MapRenderer-owned rendered surface in the web shell. React may own only UI intent state such as mode, zoom, selected entity, filters, sorting, and panel/list state. 2. The visible map must receive read-model replacement through MapRenderer rebuild/applyDelta semantics and a viewport containing mode, zoom, and selected entity. Under the current ADR, this should be Pixi-backed; do not defer Pixi mounting unless lead first creates/approves an explicit architecture deviation. 3. Remove duplicated map presentation formulas from UI and keep color, route width, label, and selected visual instruction generation in packages/map-renderer. 4. Keep dependency direction narrow: sim-core remains untouched; map-renderer must not import React/UI; no Electron IPC, save/schema, production dependency, RNG/time, or domain rule changes. 5. Update focused tests and Playwright coverage so they exercise the browser-visible renderer-owned surface plus zoom, district/settlement selection, seasonal/economy/routes modes, route previews, selected details, and rebuild from read model.",
+  "created_at": "2026-06-25T03:40:30+08:00"
+}

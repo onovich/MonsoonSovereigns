@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T19:08:50Z",
+  "updated_at": "2026-06-24T20:40:48Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -533,7 +533,30 @@
       "accepted_task_reopened": false
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "thread_id": "019efb0d-ce1f-7c50-afeb-05ef589c792c",
+      "role": "client_engineer",
+      "task_id": "M2-CLIENT-MAP-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "accepted_waiting_integration",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efb20-2183-7813-bded-2cb0e8d6f7ee",
+      "role": "systems_architect",
+      "task_id": "M2-CLIENT-MAP-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "accepted_review_complete",
+      "accepted_task_reopened": false
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -558,6 +581,7 @@
     "M2-BOOT-BOUNDARY-001": "CLOSED after PR #34 entered main at 0ce1f79c3e17c0fc9ca7ecbed5e1e2014b770651. simulation_engineer thread 019efa71-42bd-73b1-a5c2-f8493a37115a implemented the sim-core/content-runtime boot-boundary contract, fixed the systems_architect REQUEST_CHANGES mixed boot DTO discriminator bug, and wrote valid REVIEW handoffs. systems_architect thread 019efa7e-c330-76d3-a924-a98f3c525681 accepted on review round 2 via lead-owned send_input routing. This closes M1-GATE-FOLLOW-UP-002. Next ready tasks are M2-ECON-POP-001 and M2-ROUTE-TRANSPORT-001.",
     "M2-ECON-POP-001": "CLOSED after PR #36 entered main at 9d76b5cc19efaaaec953afbe75a7dbd1e415bcaa. simulation_engineer thread 019efa9c-60e9-7d61-9cba-511c79f6e40b produced a valid REVIEW handoff for M2 agriculture, labor, population, grain, and cash scaffolding on branch feat/m2-economy-population. Lead routed the handoff by send_input submission 019efaae-1864-73a2-b70b-29fb821865e1 to systems_architect thread 019efaad-2aa7-75c3-90df-2a3646240223. systems_architect accepted the R3 scheduler/protocol/world-state changes and recorded a non-blocking follow-up risk for explicit M2 save-format persistence before M2 host hash canary or M2 exit save claims. Next ready task is M2-ROUTE-TRANSPORT-001.",
     "M2-ROUTE-TRANSPORT-001": "CLOSED after PR #38 entered main at 487a3ba4de2882a6ff8e2a1cccec6444125c3e9e. simulation_engineer thread 019efac4-756f-78b3-93ea-882193eaeac9 produced a valid REVIEW handoff for M2 basic route, transport, and seasonal route choice on branch feat/m2-route-transport. Lead routed the handoff by send_input submission 019efad4-5405-71d3-a58a-a08928020ed2 to systems_architect thread 019efad3-9e77-7852-8b8d-137e0f7286f7. systems_architect accepted the R3 WorldState/protocol route transport implementation and kept the M2 save/load omission as an explicit non-blocking follow-up risk.",
-    "M2-CLIENT-DISTRICT-LIST-001": "CLOSED after PR #40 entered main at 842e2414bb0c197a355421ee971d77551528859f. client_engineer thread 019efae6-5e34-7893-84d6-c4b31e88b0bf produced a valid REVIEW handoff for the M2 district panel and 4,000-row list pressure fixture on branch feat/m2-client-district-list. Lead routed the handoff by send_input submission 019efaf6-e8cf-79c2-933c-1b24ee4a63bd to qa_reviewer thread 019efaf6-4a87-7fe0-9399-07630ee9f91e. qa_reviewer accepted the UI/read-model/virtualization implementation and recorded non-blocking risks for synthetic-to-live projection and the pre-existing Vite dynamic import warning."
+    "M2-CLIENT-DISTRICT-LIST-001": "CLOSED after PR #40 entered main at 842e2414bb0c197a355421ee971d77551528859f. client_engineer thread 019efae6-5e34-7893-84d6-c4b31e88b0bf produced a valid REVIEW handoff for the M2 district panel and 4,000-row list pressure fixture on branch feat/m2-client-district-list. Lead routed the handoff by send_input submission 019efaf6-e8cf-79c2-933c-1b24ee4a63bd to qa_reviewer thread 019efaf6-4a87-7fe0-9399-07630ee9f91e. qa_reviewer accepted the UI/read-model/virtualization implementation and recorded non-blocking risks for synthetic-to-live projection and the pre-existing Vite dynamic import warning.",
+    "M2-CLIENT-MAP-001": "ACCEPTED on branch feat/m2-client-map after systems_architect ACCEPT handoff project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R4__systems_architect.json. Lead reran integration gates including pnpm check, build:web, pnpm test, Chromium E2E, repeat Chromium --repeat-each=3 --workers=1, task validation, JSON checks, diff-scope check, and git diff --check. Awaiting commit, PR, merge, and post-merge CLOSED transition."
   }
 }

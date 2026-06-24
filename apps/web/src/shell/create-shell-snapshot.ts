@@ -1,8 +1,7 @@
 import {
   applyClientReadModelDelta,
   createInitialClientReadModelSnapshot,
-  createSyntheticDistrictPressureFixture,
-  withDistrictListReadModel,
+  createM2PrototypeClientReadModelSnapshot,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
 import { createHelloThirtyDayRequest } from "@monsoon/protocol";
@@ -12,11 +11,10 @@ import { runHelloSimulationInWorkerCompatibleAdapter } from "../worker/hello-sim
 export function createBootstrappedShellSnapshot(): ClientReadModelSnapshot {
   const initialSnapshot = createInitialClientReadModelSnapshot();
   const result = runHelloSimulationInWorkerCompatibleAdapter(createHelloThirtyDayRequest());
-  const districtList = createSyntheticDistrictPressureFixture();
-  const snapshotWithDistricts = withDistrictListReadModel(initialSnapshot, districtList);
-
-  return applyClientReadModelDelta(snapshotWithDistricts, {
+  const snapshotWithSimulation = applyClientReadModelDelta(initialSnapshot, {
     kind: "hello-result",
     result
   });
+
+  return createM2PrototypeClientReadModelSnapshot(snapshotWithSimulation);
 }

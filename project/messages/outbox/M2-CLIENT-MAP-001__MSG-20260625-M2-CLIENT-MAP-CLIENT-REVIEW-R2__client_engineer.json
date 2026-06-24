@@ -1,0 +1,60 @@
+{
+  "task_id": "M2-CLIENT-MAP-001",
+  "message_id": "MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R2",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R2 revision replaces the React/SVG per-entity visible map with a MapRenderer-owned Pixi-mounted surface in the web shell. React now owns only UI intent and operational DOM state: mode, zoom, selected entity, filters, sorting, list scroll, and details panel state. The browser-visible map receives read-model replacement through MapRenderer applyDelta/rebuild semantics with viewport mode, zoom, and selected entity. Map presentation instructions for colors, route width, labels, and selection visuals remain in packages/map-renderer.",
+  "artifacts": [
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "branch_or_worktree": "feat/m2-client-map",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Moved visible map entity rendering out of packages/ui/src/index.tsx; UI now receives a mapSurface ReactElement slot and renders only controls, list, and details DOM.",
+    "Moved Pixi mounting into apps/web/src/shell/web-client-shell.tsx using MapRenderer mount/applyDelta ownership; React passes read-model snapshot, viewport, and selection callback but does not create per-map-entity display objects.",
+    "Kept map presentation formulas in packages/map-renderer: district fill, seasonal palette, route stroke/width, label generation, and selection styling.",
+    "Kept sim-core, save/schema, Electron IPC, RNG/time, and production dependency scope unchanged."
+  ],
+  "risks": [
+    "The M2 web map still uses the protocol-shaped client fixture pending live worker query integration, matching the existing non-blocking M2 risk.",
+    "Focused gates passed for R2; broader build/typecheck/e2e should be rerun by reviewer/integration if required before final acceptance."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "review the R2 Pixi/MapRenderer-owned visible map fix.",
+  "created_at": "2026-06-25T04:03:30+08:00"
+}

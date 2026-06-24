@@ -1,0 +1,118 @@
+{
+  "message_id": "MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R4",
+  "task_id": "M2-CLIENT-MAP-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R4 resolves the R3 systems_architect blocker. The browser-visible map remains MapRenderer/Pixi-owned, React owns only DOM controls and UI intent, and the R4 lifecycle/sizing fix makes the Pixi surface deterministic under the prior repeat Chromium reproduction. MapRenderer waits for a renderable host, initializes Pixi with explicit WebGL dimensions, supports abortable stale mounts, and reports controlled mount status/error state outside the Pixi-owned host. Diff scope remains within allowed paths, and I found no hidden sim-core rule implementation, save/schema change, Electron IPC expansion, RNG/time authority, full WorldState import into React/Redux, or new production dependency.",
+  "artifacts": [
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R4__systems_architect.json",
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R4__client_engineer.json",
+    "project/tasks/active/M2-CLIENT-MAP-001.json",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/src/pixi-runtime.mjs",
+    "packages/map-renderer/src/pixi-runtime.d.mts",
+    "packages/ui/src/index.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/protocol/src/index.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "branch_or_worktree": "feat/m2-client-map",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m2-client-map. Modified and untracked files are within the task's allowed implementation, test, task, and message/route paths; no forbidden paths were touched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R4__client_engineer.json",
+      "exit_code": 0,
+      "result": "R4 writer handoff JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-MAP-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer typecheck",
+      "exit_code": 0,
+      "result": "MapRenderer strict typecheck passed."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "Web strict typecheck passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed, including render-plan modes and replace-read-model presentation-cache rebuild."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture boundary check passed. Architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build succeeded. Output still includes broad Pixi runtime chunks, matching the recorded non-blocking risk."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic hello, command/query, and save/load hashes matched; root Vitest passed 19 files/89 tests; web Vitest passed 1 file/3 tests."
+    },
+    {
+      "command": "node -e \"JSON.parse(require('fs').readFileSync('project/tasks/active/M2-CLIENT-MAP-001.json','utf8')); console.log('M2-CLIENT-MAP-001 task JSON shape ok')\"",
+      "exit_code": 0,
+      "result": "M2-CLIENT-MAP-001 task JSON parses successfully."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --repeat-each=3 --workers=1",
+      "exit_code": 0,
+      "result": "Prior R3 failure reproduction passed: 6 Chromium tests passed, with repeated page loads reaching renderer-mounted state."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Normal Chromium Playwright run passed: 2 tests passed, covering map load, zoom, district and settlement selection, seasonal/economy/routes mode switching, route previews, selected details, and renderer mount state."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: R4 satisfies the task acceptance criteria and resolves the R3 request-changes item for deterministic browser-visible Pixi mounting.",
+    "The visible map is now acceptable for M2 as a MapRenderer/Pixi-owned surface. React passes snapshot, viewport, selection callback, and abort signal, but does not manage per-map-entity DOM/SVG or Pixi DisplayObjects.",
+    "Map presentation instructions, including district fills, seasonal/economy/routes palette choices, route stroke/width, labels, selection visuals, hit handling, and read-model rebuild/applyDelta semantics, remain in packages/map-renderer.",
+    "The protocol-shaped M2 fixture is acceptable as a non-blocking M2 client risk because live worker query integration is explicitly outside this task and no full WorldState is imported into React/Redux.",
+    "No new ADR is needed for R4; the change implements the existing frozen React/Pixi boundary and WebGL2 Pixi baseline rather than changing architecture."
+  ],
+  "risks": [
+    "The M2 web map still uses a protocol-shaped client fixture until live worker query integration is scheduled.",
+    "pixi.js top-level runtime still emits broad chunks, including WebGPU-related chunks, even though MapRenderer initializes with WebGL preference. A narrower Pixi bundle remains a future package/dependency review topic.",
+    "The pre-existing Vite warning for apps/web/src/worker/hello-simulation-adapter.mjs dynamic import remains visible during e2e and was not changed by this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead should validate this ACCEPT handoff, run any integration-level gates required by the task workflow, and decide task acceptance/integration. Do not mark the task accepted solely from this reviewer handoff without lead validation.",
+  "created_at": "2026-06-25T04:37:18+08:00"
+}

@@ -1,0 +1,96 @@
+{
+  "task_id": "M2-CLIENT-MAP-001",
+  "message_id": "MSG-20260624-M2-CLIENT-MAP-CLIENT-REVIEW",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M2 client map surface over client read-model slices: protocol result DTO types, a 30 district/10 settlement M2 client fixture projected from economy and route-preview DTOs, MapRenderer render plans/deltas with presentation-cache rebuild tests, and web UI controls for seasonal/economy/routes modes, zoom, district selection, and settlement selection.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/package.json",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "feat/m2-client-map",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed task implementation changes plus pre-existing lead-owned orchestration changes in project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M2-CLIENT-MAP-001.json, project/tasks/thread-registry.json, and route message."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed, including M2 30 district/10 settlement protocol read-model projection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed, including mode render plans and replace-read-model presentation-cache rebuild."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed, including M2 map controls and fixture-count render coverage."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build succeeded."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism hashes matched; 19 root Vitest files/89 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "2 Playwright tests passed, covering map load, zoom, district selection, settlement selection, mode switching, and M2 read-model counts."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-MAP-001",
+      "exit_code": 0,
+      "result": "Task JSON validated."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const p='project/tasks/active/M2-CLIENT-MAP-001.json'; const t=JSON.parse(fs.readFileSync(p,'utf8')); const required=['id','summary','status','owner_role','reviewer_role','scope','acceptance_criteria','required_tests','branch_or_worktree']; for (const key of required) { if (!(key in t)) throw new Error('missing '+key); } if (t.id !== 'M2-CLIENT-MAP-001') throw new Error('wrong id'); if (!Array.isArray(t.scope.allowed_paths) || !Array.isArray(t.scope.forbidden_paths)) throw new Error('bad scope'); console.log('M2-CLIENT-MAP-001 task JSON shape ok');\"",
+      "exit_code": 0,
+      "result": "M2-CLIENT-MAP-001 task JSON shape ok."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture check passed."
+    }
+  ],
+  "decisions": [
+    "Kept React state to UI intent only: selected map entity, map mode, zoom, filtering, sorting, and list scroll.",
+    "Added protocol result DTO types matching existing sim-core query outputs without adding new query kinds or changing sim-core.",
+    "Projected selected district details and route summaries from protocol/read-model DTOs in client-core, then consumed those read models in UI.",
+    "Kept MapRenderer as the presentation-cache owner for render plans and replace-read-model rebuild semantics; tests verify cache rebuild without React-managed DisplayObjects.",
+    "Used Playwright rather than adding Storybook files because the root .storybook directory is outside the user-specified allowed paths."
+  ],
+  "risks": [
+    "The web M2 map uses a protocol-shaped client fixture until live worker query integration is scheduled; this follows the known M2 risk that live projection is not fully wired.",
+    "The browser-visible map surface is an SVG/DOM operational surface while MapRenderer render-plan and rebuild behavior is covered in package tests; systems_architect should review whether a follow-up should mount Pixi directly in the web shell.",
+    "Existing Vite warning remains for apps/web/src/worker/hello-simulation-adapter.mjs dynamic import; this was pre-existing and not changed here."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review architecture boundaries, read-model/protocol projection shape, MapRenderer ownership, and whether Pixi mounting should be a follow-up before acceptance.",
+  "created_at": "2026-06-25T03:33:00+08:00"
+}

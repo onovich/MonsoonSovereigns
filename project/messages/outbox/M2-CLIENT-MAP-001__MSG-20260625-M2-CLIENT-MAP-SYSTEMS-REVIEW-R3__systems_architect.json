@@ -1,0 +1,130 @@
+{
+  "message_id": "MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R3",
+  "task_id": "M2-CLIENT-MAP-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R3 fixes the prior R2 architecture and type-surface blockers in shape: packages/ui owns controls/list/details only, apps/web mounts a MapRenderer/Pixi-owned visible map, packages/map-renderer owns render-plan presentation formulas and replace-read-model applyDelta/rebuild semantics, and the Pixi runtime is loaded through a narrow local boundary without exposing pixi.js declarations to project TypeScript. Diff scope remains inside allowed implementation, test, and orchestration paths; no forbidden sim-core, save/schema, Electron IPC, RNG/time, or production dependency expansion was found. However, I cannot accept R3 because the browser-visible Pixi surface is still not reliable: repeated Chromium e2e runs intermittently and then reproducibly failed waiting for .pixi-map__canvas, while the React shell rendered controls/details and no controlled renderer error was visible. This is directly in the acceptance surface for a MapRenderer-owned browser-visible map.",
+  "artifacts": [
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R3__systems_architect.json",
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R3__client_engineer.json",
+    "project/tasks/active/M2-CLIENT-MAP-001.json",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/src/pixi-runtime.mjs",
+    "packages/map-renderer/src/pixi-runtime.d.mts",
+    "packages/ui/src/index.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/protocol/src/index.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "test-results/web-shell-M2-map-zoom-sele-ecd0f-ching-updates-read-model-UI-chromium/error-context.md",
+    "test-results/web-shell-M2-map-zoom-sele-ecd0f-ching-updates-read-model-UI-chromium-repeat1/error-context.md",
+    "test-results/web-shell-M2-map-zoom-sele-ecd0f-ching-updates-read-model-UI-chromium-repeat2/error-context.md"
+  ],
+  "branch_or_worktree": "feat/m2-client-map",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Changed and untracked files are within the task's allowed implementation, test, task, and message/route paths. No forbidden sim-core, sim-ai, save-format, content schema/runtime, desktop, ADR, roadmap/status, manifest, checksum, or validation-report paths were touched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R3__client_engineer.json",
+      "exit_code": 0,
+      "result": "R3 writer handoff JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-MAP-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer typecheck",
+      "exit_code": 0,
+      "result": "Map-renderer strict typecheck passed; the prior Pixi/@webgpu declaration conflict did not recur."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "Web strict typecheck passed; the Pixi runtime boundary avoids leaking the conflicting Pixi type surface into the web package."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed, including render-plan modes and replace-read-model presentation-cache rebuild."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture boundary check passed. Architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build succeeded. Output still includes broad Pixi runtime chunks, matching the writer's recorded non-blocking risk."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic simulation/save-load hashes matched; root Vitest passed 19 files/89 tests; web Vitest passed 1 file/3 tests."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 1,
+      "result": "Reviewer run made concurrently with pnpm test failed: 1 passed, 1 failed. The M2 map interaction test timed out waiting for locator('.pixi-map__canvas') with data-renderer-owner='map-renderer'. Error context showed React controls/list/panel rendered, but no Pixi canvas and no visible renderer error."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Immediate standalone rerun passed: 2 Chromium tests passed."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Second standalone rerun passed: 2 Chromium tests passed."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --repeat-each=3",
+      "exit_code": 1,
+      "result": "Repeat run failed reliably in the interaction test: 3 passed, 3 failed. Each failure timed out waiting for .pixi-map__canvas while the React shell was otherwise rendered."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --repeat-each=3 --workers=1",
+      "exit_code": 1,
+      "result": "Single-worker repeat still failed: 4 passed, 2 failed. This rules out only parallel worker pressure; repeated page-load/mount reliability still needs repair."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: R3 satisfies the main architecture boundary correction but does not yet provide a reliable browser-visible MapRenderer/Pixi surface.",
+    "React no longer creates per-district/per-route/per-settlement DOM/SVG display objects and no longer duplicates district fill, seasonal palette, route stroke/width, label, or selection presentation formulas. Those now live in packages/map-renderer.",
+    "The client-core projection consumes protocol-shaped M2 economy and route-preview DTOs and exposes read models to UI/renderer. I did not find a full WorldState import into React/Redux or duplicated domain formulas in UI.",
+    "No ADR is required for the current shape because it implements the frozen React/Pixi boundary from the existing architecture decisions. A future narrower Pixi bundle/package strategy can be handled as a separate package architecture review.",
+    "The protocol-shaped M2 fixture remains a known non-blocking risk until live worker query integration, but it is not the reason for this request-changes result."
+  ],
+  "risks": [
+    "The visible map mount can leave the shell with controls/details but no .pixi-map__canvas after repeated Chromium page loads. The controlled error path added in R3 was not visible in the failure contexts, so mount failure or mount hang is not yet sufficiently observable.",
+    "The production build includes broad Pixi runtime chunks. This is acceptable for M2 only as a recorded follow-up risk; do not solve it by weakening the React/Pixi/sim-core boundaries or adding unreviewed dependencies."
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Fix R3 before acceptance: 1. Make the browser-visible Pixi map mount deterministic across repeated Chromium page loads. The shell must either append .pixi-map__canvas with MapRenderer-owned data attributes or expose a controlled renderer error state promptly; it must not remain as an empty map surface with only React controls/details. 2. Investigate mount lifecycle cleanup, Pixi app destroy semantics, runtime import/init hangs, WebGL context reuse, and host sizing. Keep React as UI intent/DOM owner only and keep presentation formulas in packages/map-renderer. 3. Add or adjust Playwright coverage so this regression is caught; include a short repeat check such as pnpm test:e2e --project=chromium --repeat-each=3 --workers=1 in the next handoff evidence. 4. Re-run at least pnpm check, pnpm build:web, pnpm test, pnpm test:e2e --project=chromium, the repeat e2e check above, task validation, handoff validation, and git diff --check.",
+  "created_at": "2026-06-25T04:26:00+08:00"
+}

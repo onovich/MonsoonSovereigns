@@ -5,8 +5,10 @@ import {
   calculateClientVirtualWindow,
   createClientDistrictId,
   createInitialClientReadModelSnapshot,
+  createM2PrototypeReadModelFixture,
   createSyntheticDistrictPressureFixture,
   findClientDistrictRow,
+  projectM2DistrictRowsFromProtocolReadModels,
   selectClientDistrictRows,
   withDistrictListReadModel
 } from "../packages/client-core/src/index";
@@ -85,5 +87,33 @@ describe("M2 district list client read model", () => {
     expect(
       findClientDistrictRow(withDistricts.districtList.rows, createClientDistrictId(1))
     ).not.toBeNull();
+  });
+
+  test("projects the M2 30 district and 10 settlement fixture from protocol read models", () => {
+    const fixture = createM2PrototypeReadModelFixture();
+    const projectedRows = projectM2DistrictRowsFromProtocolReadModels({
+      economyResult: fixture.economyResult,
+      routePreviewResults: fixture.routePreviewResults
+    });
+
+    expect(fixture.economyResult.kind).toBe("sim.list-m2-economy-summaries");
+    expect(fixture.routePreviewResults[0]?.kind).toBe("sim.preview-m2-transport-route");
+    expect(fixture.map.districts).toHaveLength(30);
+    expect(fixture.map.settlements).toHaveLength(10);
+    expect(fixture.map.routes).toHaveLength(42);
+    expect(fixture.districtList.rows).toHaveLength(30);
+    expect(projectedRows).toEqual(fixture.districtList.rows);
+    expect(fixture.districtList.rows[0]).toMatchObject({
+      displayName: "Prototype District 001",
+      population: 1_000,
+      labor: {
+        available: 500,
+        committed: 12
+      },
+      route: {
+        destinationDistrictId: createClientDistrictId(6)
+      }
+    });
+    expect(JSON.stringify(fixture)).not.toContain("WorldState");
   });
 });

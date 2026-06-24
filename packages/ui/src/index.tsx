@@ -2,27 +2,45 @@ import {
   calculateClientVirtualWindow,
   findClientDistrictRow,
   selectClientDistrictRows,
-  type ClientDistrictId,
   type ClientDistrictRowReadModel,
   type ClientDistrictSortDirection,
   type ClientDistrictSortKey,
+  type ClientMapEntitySelection,
+  type ClientMapMode,
+  type ClientMapSettlementReadModel,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
 import { useMemo, useState, type ChangeEvent, type ReactElement, type UIEvent } from "react";
 
 export interface ClientShellViewProps {
   readonly snapshot: ClientReadModelSnapshot;
-  readonly mapAnchorCount: number;
+  readonly mapSurface: ReactElement;
+  readonly mapMode: ClientMapMode;
+  readonly zoomLevel: number;
+  readonly selectedEntity: ClientMapEntitySelection | null;
+  readonly onMapModeChange: (mode: ClientMapMode) => void;
+  readonly onZoomLevelChange: (zoomLevel: number) => void;
+  readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
 }
 
 const DISTRICT_ROW_HEIGHT_PX = 44;
 const DISTRICT_TABLE_VIEWPORT_HEIGHT_PX = 352;
 const DISTRICT_TABLE_OVERSCAN_ROWS = 8;
 
-export function ClientShellView({ snapshot, mapAnchorCount }: ClientShellViewProps): ReactElement {
-  const initialSelectedDistrictId = snapshot.districtList.selectedDistrictId;
-  const [selectedDistrictId, setSelectedDistrictId] =
-    useState<ClientDistrictId>(initialSelectedDistrictId);
+export function ClientShellView({
+  snapshot,
+  mapSurface,
+  mapMode,
+  zoomLevel,
+  selectedEntity,
+  onMapModeChange,
+  onZoomLevelChange,
+  onSelectedEntityChange
+}: ClientShellViewProps): ReactElement {
+  const selectedDistrictId =
+    selectedEntity?.kind === "settlement"
+      ? selectedEntity.districtId
+      : (selectedEntity?.districtId ?? snapshot.districtList.selectedDistrictId);
   const [filter, setFilter] = useState("");
   const [sortKey, setSortKey] = useState<ClientDistrictSortKey>("district");
   const [sortDirection, setSortDirection] = useState<ClientDistrictSortDirection>("ascending");
@@ -55,6 +73,12 @@ export function ClientShellView({ snapshot, mapAnchorCount }: ClientShellViewPro
     findClientDistrictRow(snapshot.districtList.rows, selectedDistrictId) ??
     districtProjection.rows[0] ??
     null;
+  const selectedSettlement =
+    selectedEntity?.kind === "settlement"
+      ? (snapshot.map.settlements.find(
+          (settlement) => settlement.settlementId === selectedEntity.settlementId
+        ) ?? null)
+      : null;
   const visibleRows = districtProjection.rows.slice(
     virtualWindow.startIndex,
     virtualWindow.endIndex
@@ -81,21 +105,69 @@ export function ClientShellView({ snapshot, mapAnchorCount }: ClientShellViewPro
 
   function handleSelect(row: ClientDistrictRowReadModel): void {
     const startedAt = getHighResolutionTime();
-    setSelectedDistrictId(row.districtId);
+    onSelectedEntityChange({ kind: "district", districtId: row.districtId });
     setLastSelectionMs(getHighResolutionTime() - startedAt);
+  }
+
+  function handleZoomIn(): void {
+    onZoomLevelChange(clampZoomLevel(zoomLevel + 0.25));
+  }
+
+  function handleZoomOut(): void {
+    onZoomLevelChange(clampZoomLevel(zoomLevel - 0.25));
   }
 
   return (
     <main className="client-shell" aria-label="Monsoon Sovereigns client shell">
       <section className="client-shell__map" aria-label="Map read model projection">
+        <div className="map-toolbar" aria-label="M2 map controls">
+          <div className="map-mode" role="group" aria-label="Map mode">
+            <MapModeButton
+              label="Seasonal"
+              mode="seasonal"
+              activeMode={mapMode}
+              onSelect={onMapModeChange}
+            />
+            <MapModeButton
+              label="Economy"
+              mode="economy"
+              activeMode={mapMode}
+              onSelect={onMapModeChange}
+            />
+            <MapModeButton
+              label="Routes"
+              mode="routes"
+              activeMode={mapMode}
+              onSelect={onMapModeChange}
+            />
+          </div>
+          <div className="map-zoom" role="group" aria-label="Map zoom">
+            <button type="button" aria-label="Zoom out" onClick={handleZoomOut}>
+              -
+            </button>
+            <output aria-label="Map zoom level" data-zoom-level={zoomLevel.toFixed(2)}>
+              {Math.round(zoomLevel * 100)}%
+            </output>
+            <button type="button" aria-label="Zoom in" onClick={handleZoomIn}>
+              +
+            </button>
+          </div>
+        </div>
+
         <div
           className="client-shell__map-surface"
-          data-anchor-count={mapAnchorCount}
+          data-district-count={snapshot.map.districts.length}
+          data-settlement-count={snapshot.map.settlements.length}
+          data-route-count={snapshot.map.routes.length}
+          data-map-mode={mapMode}
+          data-zoom-level={zoomLevel.toFixed(2)}
           data-selected-district-id={selectedDistrict?.districtId ?? "none"}
+          data-selected-entity-kind={selectedEntity?.kind ?? "none"}
         >
           <span className="client-shell__map-revision">Revision {snapshot.revision}</span>
+          {mapSurface}
           <span className="client-shell__map-selection">
-            {selectedDistrict === null ? "No district selected" : selectedDistrict.displayName}
+            {formatMapSelection(selectedDistrict, selectedSettlement)}
           </span>
         </div>
       </section>
@@ -185,7 +257,7 @@ export function ClientShellView({ snapshot, mapAnchorCount }: ClientShellViewPro
 
             <div
               className="district-list__viewport"
-              aria-label="Virtualized 4000 district rows"
+              aria-label="Virtualized district rows"
               data-row-count={snapshot.districtList.rows.length}
               data-filtered-row-count={districtProjection.rows.length}
               data-rendered-row-count={visibleRows.length}
@@ -214,11 +286,32 @@ export function ClientShellView({ snapshot, mapAnchorCount }: ClientShellViewPro
 
           <DistrictPanel
             row={selectedDistrict}
+            selectedSettlement={selectedSettlement}
             provenanceNote={snapshot.districtList.provenance.note}
           />
         </div>
       </section>
     </main>
+  );
+}
+
+interface MapModeButtonProps {
+  readonly label: string;
+  readonly mode: ClientMapMode;
+  readonly activeMode: ClientMapMode;
+  readonly onSelect: (mode: ClientMapMode) => void;
+}
+
+function MapModeButton({ label, mode, activeMode, onSelect }: MapModeButtonProps): ReactElement {
+  return (
+    <button
+      type="button"
+      aria-label={`${label} map mode`}
+      aria-pressed={activeMode === mode}
+      onClick={() => onSelect(mode)}
+    >
+      {label}
+    </button>
   );
 }
 
@@ -283,10 +376,15 @@ function DistrictRowButton({ row, isSelected, onSelect }: DistrictRowButtonProps
 
 interface DistrictPanelProps {
   readonly row: ClientDistrictRowReadModel | null;
+  readonly selectedSettlement: ClientMapSettlementReadModel | null;
   readonly provenanceNote: string;
 }
 
-function DistrictPanel({ row, provenanceNote }: DistrictPanelProps): ReactElement {
+function DistrictPanel({
+  row,
+  selectedSettlement,
+  provenanceNote
+}: DistrictPanelProps): ReactElement {
   if (row === null) {
     return (
       <aside className="district-panel" aria-label="M2 district panel">
@@ -307,6 +405,9 @@ function DistrictPanel({ row, provenanceNote }: DistrictPanelProps): ReactElemen
         <span>{row.seasonal.label}</span>
       </div>
       <dl className="district-panel__metrics">
+        {selectedSettlement === null ? null : (
+          <Metric label="Settlement" value={selectedSettlement.displayName} />
+        )}
         <Metric label="Population" value={formatInteger(row.population)} />
         <Metric
           label="Labor"
@@ -366,6 +467,24 @@ function formatRouteSummary(row: ClientDistrictRowReadModel): string {
   }
 
   return `${row.route.status}; to district ${row.route.destinationDistrictId}; cost ${row.route.totalCost}; bottleneck ${row.route.bottleneckCapacity}; ${routeKinds}`;
+}
+
+function clampZoomLevel(value: number): number {
+  return Math.min(2, Math.max(0.75, value));
+}
+
+function formatMapSelection(
+  selectedDistrict: ClientDistrictRowReadModel | null,
+  selectedSettlement: ClientMapSettlementReadModel | null
+): string {
+  if (selectedDistrict === null) {
+    return "No district selected";
+  }
+  if (selectedSettlement !== null) {
+    return `${selectedSettlement.displayName} / ${selectedDistrict.displayName}`;
+  }
+
+  return selectedDistrict.displayName;
 }
 
 function getHighResolutionTime(): number {

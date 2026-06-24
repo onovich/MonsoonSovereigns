@@ -150,6 +150,86 @@ export type GameQueryV1 =
   | ListM2EconomySummariesQueryV1
   | PreviewM2TransportRouteQueryV1;
 
+export type DistrictControlKindV1 = "controlled" | "uncontrolled";
+
+export interface DistrictControlReadModelV1 {
+  readonly kind: DistrictControlKindV1;
+  readonly controllerPolityId?: number;
+}
+
+export interface DistrictSummaryReadModelV1 {
+  readonly districtId: number;
+  readonly displayNameKey: string;
+  readonly control: DistrictControlReadModelV1;
+}
+
+export interface ListDistrictSummariesResultV1 {
+  readonly kind: "sim.list-district-summaries";
+  readonly day: number;
+  readonly revision: number;
+  readonly districts: readonly DistrictSummaryReadModelV1[];
+}
+
+export interface M2EconomyDistrictSummaryReadModelV1 {
+  readonly districtId: number;
+  readonly population: number;
+  readonly availableLabor: number;
+  readonly committedLabor: number;
+  readonly grainStock: number;
+  readonly cashStock: number;
+  readonly agriculturePhase: string;
+  readonly lastHarvestGrain: number;
+  readonly cumulativeMobilizationCost: number;
+}
+
+export interface ListM2EconomySummariesResultV1 {
+  readonly kind: "sim.list-m2-economy-summaries";
+  readonly day: number;
+  readonly revision: number;
+  readonly districts: readonly M2EconomyDistrictSummaryReadModelV1[];
+}
+
+export type M2TransportRouteKindV1 = "road" | "river" | "coast";
+
+export type M2TransportRoutePreviewReadModelV1 =
+  | {
+      readonly status: "unreachable";
+      readonly originDistrictId: number;
+      readonly destinationDistrictId: number;
+      readonly stockAmount: number;
+      readonly edges: readonly [];
+    }
+  | {
+      readonly status: "capacity-exceeded" | "reachable";
+      readonly originDistrictId: number;
+      readonly destinationDistrictId: number;
+      readonly stockAmount: number;
+      readonly totalCost: number;
+      readonly bottleneckCapacity: number;
+      readonly edges: readonly M2TransportRoutePreviewEdgeReadModelV1[];
+    };
+
+export interface M2TransportRoutePreviewEdgeReadModelV1 {
+  readonly routeId: number;
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+  readonly routeKind: M2TransportRouteKindV1;
+  readonly baseTravelCost: number;
+  readonly seasonalCost: number;
+  readonly baseCapacity: number;
+  readonly seasonalCapacity: number;
+  readonly stockAmount: number;
+  readonly remainingCapacityAfterStock: number;
+}
+
+export interface PreviewM2TransportRouteResultV1 {
+  readonly kind: "sim.preview-m2-transport-route";
+  readonly day: number;
+  readonly revision: number;
+  readonly monthOfYear: number;
+  readonly route: M2TransportRoutePreviewReadModelV1;
+}
+
 export type SimulationFixtureIdV1 = "m1.abstract-graph-30" | "minimal-m1";
 
 export interface FixtureBootSimulationInputV1 {
