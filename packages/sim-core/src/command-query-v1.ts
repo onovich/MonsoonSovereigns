@@ -497,7 +497,18 @@ export function loadSaveV1(
 ): LoadSaveOutputV1 {
   const decoded = decodeSaveEnvelopeV1(bytes, {
     ...options,
-    validateWorldSnapshot: (candidate) => validateWorldStateV0(candidate)
+    validateWorldSnapshot: (candidate) => {
+      if (runtime.world.state.m2 !== undefined && !hasM2RuntimeState(candidate)) {
+        return [
+          {
+            path: "state.m2",
+            message: "Save snapshot is missing required M2 runtime state for this runtime."
+          }
+        ];
+      }
+
+      return validateWorldStateV0(candidate);
+    }
   });
   if (decoded.status === "rejected") {
     return {
@@ -1707,6 +1718,15 @@ function mapProtocolCode(code: ProtocolErrorCodeV1): DomainErrorCodeV1 {
     case "unsupported-message-version":
       return "invalid-payload";
   }
+}
+
+function hasM2RuntimeState(candidate: unknown): boolean {
+  if (!isRecord(candidate)) {
+    return false;
+  }
+
+  const state = candidate["state"];
+  return isRecord(state) && state["m2"] !== undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
