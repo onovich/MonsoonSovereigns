@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T17:04:53Z",
+  "updated_at": "2026-06-24T17:40:16Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -465,6 +465,28 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_accept_review_round_2",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efa9c-60e9-7d61-9cba-511c79f6e40b",
+      "role": "simulation_engineer",
+      "task_id": "M2-ECON-POP-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_valid_handoff_and_systems_accept",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efaad-2aa7-75c3-90df-2a3646240223",
+      "role": "systems_architect",
+      "task_id": "M2-ECON-POP-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_accept_review",
+      "accepted_task_reopened": false
     }
   ],
   "active_threads": [],
@@ -490,7 +512,7 @@
     "M2-WORLD-FIXTURE-001": "CLOSED after PR #30 entered main at e7b9f6f44d607927ce7330de178b002152a8ffbe. Original simulation_engineer thread 019ef98b-237c-7f61-887f-efba8d13819b became unavailable before producing a handoff and was replaced by simulation_engineer thread 019ef9a7-9a41-7f63-bbaa-6545b78308b6. The replacement completed the M2 30 District/10 Settlement fixture and seasonal curves; systems_architect thread 019efa0d-5ebc-7581-82fd-4abcead5ebc6 accepted the architecture review. Next ready task is M2-CONTENT-GUARDS-001.",
     "M2-CONTENT-GUARDS-001": "CLOSED after PR #32 entered main at fb7004b87ce33c6a176af8100fd7dba23dd1943b. simulation_engineer thread 019efa4d-14c7-7030-8594-87aedbd4c43b completed bad M2 map/reference guard coverage and wrote a valid REVIEW handoff. qa_reviewer thread 019efa59-f1ec-7c20-bc7d-d0c9b88ebd5e accepted via lead-owned send_input routing. Next ready task is M2-BOOT-BOUNDARY-001.",
     "M2-BOOT-BOUNDARY-001": "CLOSED after PR #34 entered main at 0ce1f79c3e17c0fc9ca7ecbed5e1e2014b770651. simulation_engineer thread 019efa71-42bd-73b1-a5c2-f8493a37115a implemented the sim-core/content-runtime boot-boundary contract, fixed the systems_architect REQUEST_CHANGES mixed boot DTO discriminator bug, and wrote valid REVIEW handoffs. systems_architect thread 019efa7e-c330-76d3-a924-a98f3c525681 accepted on review round 2 via lead-owned send_input routing. This closes M1-GATE-FOLLOW-UP-002. Next ready tasks are M2-ECON-POP-001 and M2-ROUTE-TRANSPORT-001.",
-    "M2-ECON-POP-001": "READY after M2-BOOT-BOUNDARY-001 closed; next writer is simulation_engineer gpt-5.5 high with systems_architect gpt-5.5 xhigh review.",
+    "M2-ECON-POP-001": "ACCEPTED; simulation_engineer thread 019efa9c-60e9-7d61-9cba-511c79f6e40b produced a valid REVIEW handoff for M2 agriculture, labor, population, grain, and cash scaffolding on branch feat/m2-economy-population. Lead routed the handoff by send_input submission 019efaae-1864-73a2-b70b-29fb821865e1 to systems_architect thread 019efaad-2aa7-75c3-90df-2a3646240223. systems_architect accepted the R3 scheduler/protocol/world-state changes and recorded a non-blocking follow-up risk for explicit M2 save-format persistence before M2 host hash canary or M2 exit save claims.",
     "M2-ROUTE-TRANSPORT-001": "READY after M2-BOOT-BOUNDARY-001 closed; next writer is simulation_engineer gpt-5.5 high with systems_architect gpt-5.5 xhigh review."
   }
 }

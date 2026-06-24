@@ -1,4 +1,5 @@
 import {
+  createM2EconomyPopulationStateV0,
   createWorldStateV0,
   defineDistrict,
   defineRoute,
@@ -84,36 +85,38 @@ export function bootWorldStateFromRuntimeContentPackV1(input: {
     return { status: "rejected", error: parsedPack.error };
   }
 
+  const definitions = {
+    polities: [],
+    persons: [],
+    districts: parsedPack.value.districts.map((district) =>
+      defineDistrict({
+        id: district.id,
+        displayNameKey: district.displayNameKey
+      })
+    ),
+    settlements: parsedPack.value.settlements.map((settlement) =>
+      defineSettlement({
+        id: settlement.id,
+        displayNameKey: settlement.displayNameKey,
+        districtId: settlement.districtId
+      })
+    ),
+    routes: parsedPack.value.routes.map((route) =>
+      defineRoute({
+        id: route.id,
+        fromDistrictId: route.fromDistrictId,
+        toDistrictId: route.toDistrictId,
+        lengthInMapUnits: route.baseTravelCost
+      })
+    )
+  };
   const world = createWorldStateV0({
     seed: seed.value,
     contentManifestHash: parsedPack.value.manifest.manifestHash,
     currentDay: 0,
     revision: 0,
-    definitions: {
-      polities: [],
-      persons: [],
-      districts: parsedPack.value.districts.map((district) =>
-        defineDistrict({
-          id: district.id,
-          displayNameKey: district.displayNameKey
-        })
-      ),
-      settlements: parsedPack.value.settlements.map((settlement) =>
-        defineSettlement({
-          id: settlement.id,
-          displayNameKey: settlement.displayNameKey,
-          districtId: settlement.districtId
-        })
-      ),
-      routes: parsedPack.value.routes.map((route) =>
-        defineRoute({
-          id: route.id,
-          fromDistrictId: route.fromDistrictId,
-          toDistrictId: route.toDistrictId,
-          lengthInMapUnits: route.baseTravelCost
-        })
-      )
-    }
+    definitions,
+    m2: createM2EconomyPopulationStateV0(definitions)
   });
 
   const invariantErrors = validateWorldStateV0(world);

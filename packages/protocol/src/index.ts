@@ -91,9 +91,25 @@ export interface VerifyStateHashCommandV1 {
   readonly expectedHash: string;
 }
 
+export interface CommitLaborCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.commit-labor";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly populationGroupId: number;
+    readonly purpose: "mobilized";
+    readonly laborAmount: number;
+    readonly durationDays: number;
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
+  | CommitLaborCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -111,7 +127,16 @@ export interface ListDistrictSummariesQueryV1 {
   readonly kind: "sim.list-district-summaries";
 }
 
-export type GameQueryV1 = GetStateHashQueryV1 | GetCalendarQueryV1 | ListDistrictSummariesQueryV1;
+export interface ListM2EconomySummariesQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m2-economy-summaries";
+}
+
+export type GameQueryV1 =
+  | GetStateHashQueryV1
+  | GetCalendarQueryV1
+  | ListDistrictSummariesQueryV1
+  | ListM2EconomySummariesQueryV1;
 
 export type SimulationFixtureIdV1 = "m1.abstract-graph-30" | "minimal-m1";
 
@@ -361,6 +386,22 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.commit-labor": {
+      const payload = parseCommitLaborPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -404,6 +445,7 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     case "sim.get-state-hash":
     case "sim.get-calendar":
     case "sim.list-district-summaries":
+    case "sim.list-m2-economy-summaries":
       return {
         ok: true,
         value: {
@@ -734,6 +776,50 @@ function parseSetDistrictControlPayload(
     value: {
       districtId: districtId.value,
       controllerPolityId
+    }
+  };
+}
+
+function parseCommitLaborPayload(
+  input: unknown
+): ProtocolParseResult<CommitLaborCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.commit-labor payload must be an object."
+    );
+  }
+
+  const populationGroupId = parsePositiveSafeInteger(
+    input["populationGroupId"],
+    "payload.populationGroupId"
+  );
+  if (!populationGroupId.ok) {
+    return populationGroupId;
+  }
+
+  if (input["purpose"] !== "mobilized") {
+    return protocolError("invalid-payload", "payload.purpose", "purpose must be mobilized.");
+  }
+
+  const laborAmount = parsePositiveSafeInteger(input["laborAmount"], "payload.laborAmount");
+  if (!laborAmount.ok) {
+    return laborAmount;
+  }
+
+  const durationDays = parsePositiveSafeInteger(input["durationDays"], "payload.durationDays");
+  if (!durationDays.ok) {
+    return durationDays;
+  }
+
+  return {
+    ok: true,
+    value: {
+      populationGroupId: populationGroupId.value,
+      purpose: "mobilized",
+      laborAmount: laborAmount.value,
+      durationDays: durationDays.value
     }
   };
 }
