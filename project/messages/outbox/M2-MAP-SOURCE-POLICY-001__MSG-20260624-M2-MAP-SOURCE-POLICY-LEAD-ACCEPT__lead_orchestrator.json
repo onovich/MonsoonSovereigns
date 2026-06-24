@@ -1,0 +1,81 @@
+{
+  "message_id": "MSG-20260624-M2-MAP-SOURCE-POLICY-LEAD-ACCEPT",
+  "task_id": "M2-MAP-SOURCE-POLICY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Accepted M2-MAP-SOURCE-POLICY-001 after historical_researcher wrote a concise M2 prototype map fixture source policy and qa_reviewer independently accepted it. This acceptance covers source-policy documentation only and does not approve production historical map content, named settlements, polity claims, cultural symbols, or content-source data.",
+  "artifacts": [
+    "docs/research/m2-map-fixture-source-policy.md",
+    "project/tasks/active/M2-MAP-SOURCE-POLICY-001.json",
+    "project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/routes/M2-MAP-SOURCE-POLICY-001__ROUTE-20260624-LEAD-TO-HISTORICAL.json",
+    "project/messages/routes/M2-MAP-SOURCE-POLICY-001__ROUTE-20260624-HISTORICAL-TO-QA.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "branch_or_worktree": "feat/m2-map-source-policy",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-HISTORICAL-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-MAP-SOURCE-POLICY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-MAP-SOURCE-POLICY-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M2-MAP-SOURCE-POLICY-001 was REVIEW before lead status update; other M2 tasks remained DRAFT except the CLOSED graph task."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M2-MAP-SOURCE-POLICY-001 remained in REVIEW."
+    },
+    {
+      "command": "node -e policy content assertions",
+      "exit_code": 0,
+      "result": "Policy contains HISTORICAL, INFERRED, COMPOSITE, FICTIONAL, source_category, confidence, coordinate_geometry_derivation_note, known_limitations, Bad-Map Fixtures, and validation data only."
+    },
+    {
+      "command": "node -e thread registry duplicate ID and route record check",
+      "exit_code": 0,
+      "result": "37 registry entries with unique thread IDs; M2-MAP-SOURCE-POLICY route records include required to_thread_id and send_input submission ID."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    }
+  ],
+  "decisions": [
+    "M2 prototype map fixture data defaults to FICTIONAL and synthetic until a separate historical research/content task authorizes formal historical map content.",
+    "The policy blocks real names, real symbols, polity control, cultural identity, and historical settlement claims from entering M2 fixtures without source and claim records.",
+    "Bad-map fixtures are validation data only, not production, tutorial, screenshot, marketing, or narrative placeholder content."
+  ],
+  "risks": [
+    "Later M2 content/compiler tasks must still enforce this policy in schemas, fixtures, and validation tests.",
+    "This task intentionally does not decide exact historical geography or cultural claims."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit, push, open PR, and integrate M2-MAP-SOURCE-POLICY-001 if final gates pass.",
+  "created_at": "2026-06-24T11:59:47Z"
+}
