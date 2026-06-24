@@ -1,10 +1,19 @@
 import { exit, stdout } from "node:process";
-import { createCommandQueryCanaryScript, createHelloThirtyDayRequest } from "@monsoon/protocol";
-import { runCommandQueryCanaryV1, runHelloSimulation } from "@monsoon/sim-core";
+import {
+  createCommandQueryCanaryScript,
+  createHelloThirtyDayRequest,
+  createSaveLoadCanaryScriptV1
+} from "@monsoon/protocol";
+import {
+  runCommandQueryCanaryV1,
+  runHelloSimulation,
+  runSaveLoadCanaryV1
+} from "@monsoon/sim-core";
 
 const {
   runCommandQueryCanaryInWorkerCompatibleAdapter,
-  runHelloSimulationInWorkerCompatibleAdapter
+  runHelloSimulationInWorkerCompatibleAdapter,
+  runSaveLoadCanaryInWorkerCompatibleAdapter
 } = await import("../../web/src/worker/hello-simulation-adapter.mjs");
 
 const request = createHelloThirtyDayRequest();
@@ -44,3 +53,22 @@ if (nodeCommandResult.finalDay !== 2 || workerCommandResult.finalDay !== 2) {
 }
 
 stdout.write("Deterministic command/query simulation matched.\n");
+
+const saveLoadScript = createSaveLoadCanaryScriptV1();
+const nodeSaveLoadResult = runSaveLoadCanaryV1(saveLoadScript);
+const workerSaveLoadResult = runSaveLoadCanaryInWorkerCompatibleAdapter(saveLoadScript);
+
+stdout.write(`Node save/load hash: ${nodeSaveLoadResult.finalHash}\n`);
+stdout.write(`Worker-compatible save/load hash: ${workerSaveLoadResult.finalHash}\n`);
+stdout.write(`Save/load byte length: ${nodeSaveLoadResult.saveByteLength}\n`);
+
+if (
+  nodeSaveLoadResult.finalHash !== workerSaveLoadResult.finalHash ||
+  nodeSaveLoadResult.loadedHash !== workerSaveLoadResult.loadedHash ||
+  nodeSaveLoadResult.replayedHash !== workerSaveLoadResult.replayedHash
+) {
+  stdout.write("Deterministic save/load simulation hash mismatch.\n");
+  exit(1);
+}
+
+stdout.write("Deterministic save/load simulation matched.\n");

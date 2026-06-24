@@ -1,0 +1,110 @@
+{
+  "message_id": "MSG-20260624-SAVE-ENVELOPE-V1-QA-ACCEPT",
+  "task_id": "SIM-005",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts SIM-005 after second re-review. The previous valid-checksum event-tail crash and unsupported saved DomainEvent schemaVersion coercion blockers are resolved: loadSaveV1 now returns structured invalid-schema rejection reasons, preserves the original runtime on failure, and tests cover unknown event kind, malformed event field, and schemaVersion 999 on a known event kind. Save Envelope v1 DTO/codec, golden fixture workflow, Node/Worker shared canary, package boundaries, and M1 performance baseline meet the SIM-005 acceptance criteria.",
+  "artifacts": [
+    "packages/save-format/package.json",
+    "packages/save-format/tsconfig.json",
+    "packages/save-format/src/index.ts",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/minimal-m1-fixture.ts",
+    "packages/sim-core/scripts/performance-baseline.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "tests/save-format-v1.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/fixtures/save-format/m1-golden-save-v1.json",
+    "tests/fixtures/save-format/README.md",
+    "package.json",
+    "pnpm-lock.yaml",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-2-FIX__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer fix handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 8 tests passed, including golden fixture, corrupt/malformed save rejection, Node/Worker contract, unknown event kind, malformed event field, and unsupported event schemaVersion coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "6 test files passed; 32 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed, including @monsoon/save-format, @monsoon/sim-core, and apps/web declaration coverage."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "QA repro: valid-checksum unknown event kind through loadSaveV1",
+      "exit_code": 0,
+      "result": "Returned status rejected with original runtime hash a38362fd and invalid-schema reason at body.eventTail[0].event.kind; no throw."
+    },
+    {
+      "command": "QA repro: valid-checksum known event kind with event schemaVersion 999 through loadSaveV1",
+      "exit_code": 0,
+      "result": "Returned status rejected with original runtime hash a38362fd and invalid-schema reason at body.eventTail[0].event.schemaVersion; no silent load or coercion."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check, sim determinism, 13 root Vitest files/53 tests, and web Vitest 1 file/3 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning appeared."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "Reviewer handoff validates against project/schemas/handoff.schema.json."
+    }
+  ],
+  "decisions": [
+    "Accepted the simulation_engineer decision to keep saved DomainEvent-tail validation in sim-core because the event DTOs are sim-core-owned semantics while save-format validates the generic envelope and event record shape.",
+    "Accepted v1-only saved DomainEvent tails for SIM-005: unsupported event schemaVersion values now reject rather than migrate or coerce.",
+    "Accepted the pure @monsoon/save-format DTO/codec package boundary for M1; it introduces no platform IO, compression, database, or external production dependency, and architecture:check passes.",
+    "Accepted the refreshed worker-compatible adapter declaration because the public save/load canary export remains and typecheck passes."
+  ],
+  "risks": [
+    "Future Save Envelope or DomainEvent versions will need explicit migration or rejection tests before loading older/newer tails.",
+    "The event tail remains a bounded M1 compatibility/debug tail, not full event sourcing, consistent with ADR-004 and PROJECT_STATUS D-011."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator should run integration gates as required and decide the SIM-005 task state transition. QA found no remaining SIM-005 acceptance blocker.",
+  "created_at": "2026-06-24T10:06:24Z"
+}

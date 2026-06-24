@@ -1,0 +1,109 @@
+{
+  "message_id": "MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES",
+  "task_id": "SIM-005",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "SIM-005 is not accepted because a valid-checksum imported save with an unknown or malformed event tail can throw from sim-core load rehydration instead of returning a structured rejected LoadSaveOutputV1 while preserving the current runtime.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "packages/save-format/package.json",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/minimal-m1-fixture.ts",
+    "packages/sim-core/scripts/performance-baseline.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "tests/save-format-v1.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/fixtures/save-format/m1-golden-save-v1.json",
+    "tests/fixtures/save-format/README.md",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "6 test files passed; 29 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check, sim determinism, 13 root Vitest files/50 tests, and web Vitest 1 file/3 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning appeared."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 baseline on m1.abstract-graph-30: 3650 days, finalDay 3650, finalRevision 3650, throughput 13392 days/sec, p50 58700ns, p95 120600ns, p99 231200ns, saveByteLength 9980, save 2468000ns, load 3158200ns."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "Reviewer handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { bootSimulationV1, requestSaveV1, loadSaveV1 } from './packages/sim-core/src/index.ts'; import { createSaveEnvelopeV1, encodeSaveEnvelopeV1 } from './packages/save-format/src/index.ts'; const boot = bootSimulationV1({ protocolVersion: 1, fixture: 'minimal-m1' }); if (boot.status !== 'booted') throw new Error('boot failed'); const saved = requestSaveV1(boot.runtime, { appVersion: '0.0.0', source: 'test', codecVersion: 'save-envelope-v1' }); const bad = createSaveEnvelopeV1({ build: saved.envelope.header.build, scenarioId: saved.envelope.header.scenarioId, authoritativeSnapshot: saved.envelope.body.authoritativeSnapshot, scheduler: saved.envelope.body.scheduler, rng: saved.envelope.body.rng, commandTail: saved.envelope.body.commandTail, eventTail: [{ sequence: 1, event: { kind: 'sim.future-event', schemaVersion: 1 } }] }); try { const result = loadSaveV1(boot.runtime, encodeSaveEnvelopeV1(bad), { expectedContentManifestHash: saved.envelope.header.contentManifestHash, expectedScenarioId: saved.envelope.header.scenarioId }); console.log(JSON.stringify(result)); } catch (error) { console.log('THREW ' + (error instanceof Error ? error.message : String(error))); }\"",
+      "exit_code": 0,
+      "result": "Reproduced rejection-contract failure: THREW Unsupported saved DomainEvent kind."
+    }
+  ],
+  "decisions": [
+    "The explicit Save Envelope v1 DTO, checksum, size/depth checks, golden fixture, Node/worker canary, and package boundary approach are broadly aligned with SIM-005 and docs/02/docs/04.",
+    "The current load implementation does not satisfy the structured rejection contract for all valid-checksum imported save payloads because event-tail rehydration can throw after decode success.",
+    "The stale apps/web/src/worker/hello-simulation-adapter.d.mts declaration should be updated when the worker-compatible save/load adapter export is kept, even though the current typecheck does not catch it."
+  ],
+  "risks": [
+    "Imported saves are untrusted; FNV checksum is integrity/corruption detection, not authenticity. A user-editable save with recomputed checksum must still be schema-validated and rejected without exceptions.",
+    "The existing tests cover corrupt checksum, unknown schema, bad reference, truncated payload, content mismatch, golden fixture load, and Node/worker hash parity, but they do not cover malformed or unknown saved event-tail DTOs reaching sim-core hydration."
+  ],
+  "blockers": [
+    {
+      "severity": "high",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "symbol": "loadSaveV1 / recordToDomainEvent",
+      "repro": "Create a save envelope with a valid checksum and eventTail [{ sequence: 1, event: { kind: 'sim.future-event', schemaVersion: 1 } }], then call loadSaveV1 with matching expected content/scenario. The call throws 'Unsupported saved DomainEvent kind.' instead of returning { status: 'rejected', runtime, reasons }.",
+      "impact": "Violates SIM-005 structured rejection/no-mutation acceptance for untrusted imported saves and can crash the caller after checksum/schema decode succeeds.",
+      "necessary_fix": "Validate saved DomainEvent DTOs before constructing the loaded runtime, or make event-tail rehydration return structured SaveLoadRejectionReasonV1 values. Add tests that valid-checksum unknown event kinds and malformed event fields reject without throwing and return the original runtime."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Please fix the valid-checksum event-tail load rejection path, update or add tests that would fail on the current throwing implementation, refresh the worker adapter declaration if the new export remains public, then rerun the SIM-005 required validation matrix.",
+  "created_at": "2026-06-24T09:46:49Z"
+}

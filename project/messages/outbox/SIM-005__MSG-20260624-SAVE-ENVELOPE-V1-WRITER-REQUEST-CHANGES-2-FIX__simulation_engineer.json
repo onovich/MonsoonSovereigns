@@ -1,0 +1,83 @@
+{
+  "message_id": "MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-2-FIX",
+  "task_id": "SIM-005",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed the second QA blocker by rejecting unsupported saved DomainEvent schemaVersion values in the sim-core event-tail load parser. Added a valid-checksum regression for schemaVersion 999 on a known event kind and confirmed the loader returns a structured rejection without mutating the current runtime.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/save-load-contract.test.ts",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-2-FIX__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 8 tests passed, including valid-checksum unsupported event-tail schemaVersion rejection coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "6 test files passed; 32 tests passed. Existing warning only: MODULE_TYPELESS_PACKAGE_JSON for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violation(s)."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Root test command passed: architecture check, sim determinism, 13 root Vitest files/53 tests, and web Vitest 1 file/3 tests. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 baseline on m1.abstract-graph-30: 3650 days, finalDay 3650, finalRevision 3650, throughput 9266 days/sec, p50 104100ns, p95 207900ns, p99 278900ns, saveByteLength 9980, save 2163900ns, load 2636200ns."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed, including @monsoon/save-format, @monsoon/sim-core, and apps/web declaration coverage."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "QA schemaVersion 999 repro command from SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES-2__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "loadSaveV1 returned status rejected with original runtime hash a38362fd and reason invalid-schema at body.eventTail[0].event.schemaVersion; no silent load/coercion."
+    }
+  ],
+  "decisions": [
+    "Saved DomainEvent tails remain v1-only for SIM-005; unsupported schemaVersion values are rejected rather than migrated or coerced.",
+    "The schemaVersion check runs before known-kind-specific event hydration so future/corrupted DTOs cannot be loaded as current v1 events."
+  ],
+  "risks": [
+    "Future DomainEvent schema versions will need explicit migration or rejection tests before they can be accepted in save tails.",
+    "Existing unrelated project coordination files and route files remain modified/untracked in the worktree from orchestration activity; this fix only touched sim-core parser/tests plus this handoff."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Please re-review SIM-005 in qa_reviewer thread 019ef8ff-1fe3-72d1-bf3c-fc44b3a8af37, focusing on unsupported saved DomainEvent schemaVersion rejection, no-mutation behavior, and the updated regression coverage.",
+  "created_at": "2026-06-24T10:04:00Z"
+}

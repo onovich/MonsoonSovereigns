@@ -1,0 +1,144 @@
+{
+  "message_id": "MSG-20260624-SAVE-ENVELOPE-V1-LEAD-ACCEPT",
+  "task_id": "SIM-005",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts SIM-005 after independent qa_reviewer ACCEPT and lead integration gates. Save Envelope v1 is implemented as an explicit DTO/codec in @monsoon/save-format, sim-core supports structured save/load rejection without mutating current runtime, Node and Worker save/load canaries share the same core codec, golden fixtures and malformed-save tests cover the M1 contract, and the 3650-day M1 fixture performance baseline is recorded.",
+  "artifacts": [
+    "packages/save-format/package.json",
+    "packages/save-format/tsconfig.json",
+    "packages/save-format/src/index.ts",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/minimal-m1-fixture.ts",
+    "packages/sim-core/scripts/performance-baseline.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "tests/save-format-v1.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/fixtures/save-format/m1-golden-save-v1.json",
+    "tests/fixtures/save-format/README.md",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES__qa_reviewer.json",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-FIX__simulation_engineer.json",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES-2__qa_reviewer.json",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-2-FIX__simulation_engineer.json",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Scope all 16 workspace projects; lockfile install already up to date."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "6 test files passed; 32 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "M1 30-node fixture ran 3650 days; throughput 15207 days/sec; p50 55900ns; p95 98500ns; p99 168100ns; saveByteLength 9980; save 1883600ns; load 2516700ns."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed for 15 of 16 workspace projects."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check and determinism passed; root Vitest 13 files/53 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "m1.abstract-graph-30 validation passed with nodes=30, edges=60, manifestHash=4a438525."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate SIM-005",
+      "exit_code": 0,
+      "result": "SIM-005 task file validates."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "SIM-005 listed as REVIEW before lead acceptance; all prior M1 tasks CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready task listed while SIM-005 remained under review."
+    },
+    {
+      "command": "validate-handoff for all SIM-005 writer/reviewer handoffs",
+      "exit_code": 0,
+      "result": "Initial writer handoff, two QA REQUEST_CHANGES handoffs, two writer fix handoffs, and QA ACCEPT handoff all validate."
+    },
+    {
+      "command": "route and thread registry validation",
+      "exit_code": 0,
+      "result": "All SIM-005 route files parse, referenced handoffs exist, send_input route records have exit_code 0, and duplicateThreadIds is empty."
+    },
+    {
+      "command": "lead QA repro command for valid-checksum eventTail unknown kind and schemaVersion 999",
+      "exit_code": 0,
+      "result": "Both cases returned status rejected, preserved original runtime hash a38362fd, and reported invalid-schema paths body.eventTail[0].event.kind and body.eventTail[0].event.schemaVersion."
+    }
+  ],
+  "decisions": [
+    "SIM-005 remains ACCEPTED, not CLOSED, until its implementation PR is merged into main.",
+    "Accepted v1-only saved DomainEvent tails for M1: future or corrupted event-tail DTOs are rejected with structured invalid-schema reasons unless a future task adds explicit migration.",
+    "Accepted @monsoon/save-format as a pure DTO/codec package with no platform persistence, IndexedDB, Electron filesystem adapter, compression, database, or external production dependency.",
+    "Closed simulation_engineer thread 019ef8ea-061c-7763-b063-86130c02a48f and qa_reviewer thread 019ef8ff-1fe3-72d1-bf3c-fc44b3a8af37 after QA ACCEPT and lead acceptance."
+  ],
+  "risks": [
+    "Save/Event compatibility beyond v1 remains future work and must include explicit migration or rejection tests.",
+    "The event tail is a bounded M1 compatibility/debug tail, not full event sourcing."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit SIM-005, open a PR, wait for checks, merge after green, then mark SIM-005 CLOSED only after the merge reaches main.",
+  "created_at": "2026-06-24T10:11:00Z"
+}

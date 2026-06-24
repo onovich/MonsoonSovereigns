@@ -113,15 +113,25 @@ export interface ListDistrictSummariesQueryV1 {
 
 export type GameQueryV1 = GetStateHashQueryV1 | GetCalendarQueryV1 | ListDistrictSummariesQueryV1;
 
+export type SimulationFixtureIdV1 = "m1.abstract-graph-30" | "minimal-m1";
+
 export interface BootSimulationInputV1 {
   readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
-  readonly fixture: "minimal-m1";
+  readonly fixture: SimulationFixtureIdV1;
 }
 
 export interface CommandQueryCanaryScriptV1 {
   readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
   readonly boot: BootSimulationInputV1;
   readonly commands: readonly GameCommandV1[];
+}
+
+export interface SaveLoadCanaryScriptV1 {
+  readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  readonly boot: BootSimulationInputV1;
+  readonly commands: readonly GameCommandV1[];
+  readonly expectedContentManifestHash: string;
+  readonly expectedScenarioId: SimulationFixtureIdV1;
 }
 
 export type ProtocolErrorCodeV1 =
@@ -167,6 +177,20 @@ export type SimulationMessageV1 =
       readonly requestId: string;
       readonly type: "simulation.query";
       readonly payload: GameQueryV1;
+    }
+  | {
+      readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+      readonly requestId: string;
+      readonly type: "simulation.request-save";
+      readonly payload: Record<string, never>;
+    }
+  | {
+      readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+      readonly requestId: string;
+      readonly type: "simulation.load-save";
+      readonly payload: {
+        readonly bytes: Uint8Array;
+      };
     };
 
 const COMMAND_ID_PATTERN = /^[A-Za-z0-9._:-]{1,96}$/u;
@@ -238,6 +262,40 @@ export function createCommandQueryCanaryScript(): CommandQueryCanaryScriptV1 {
         actor: { kind: "system", id: "scheduler" },
         expectedDay: 1,
         expectedRevision: 2
+      }
+    ]
+  };
+}
+
+export function createSaveLoadCanaryScriptV1(): SaveLoadCanaryScriptV1 {
+  return {
+    protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
+    boot: {
+      protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
+      fixture: "m1.abstract-graph-30"
+    },
+    expectedContentManifestHash: "4a438525",
+    expectedScenarioId: "m1.abstract-graph-30",
+    commands: [
+      {
+        schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+        kind: "debug.set-district-control",
+        commandId: "save.canary.control.1",
+        actor: { kind: "player", id: "player:save-canary" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          districtId: 1,
+          controllerPolityId: 1
+        }
+      },
+      {
+        schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+        kind: "sim.advance-day",
+        commandId: "save.canary.advance.1",
+        actor: { kind: "ai", id: "ai:save-canary" },
+        expectedDay: 0,
+        expectedRevision: 1
       }
     ]
   };
@@ -424,6 +482,46 @@ export function parseSimulationMessageV1(input: unknown): ProtocolParseResult<Si
         }
       };
     }
+    case "simulation.request-save":
+      if (!isRecord(input["payload"])) {
+        return protocolError(
+          "invalid-payload",
+          "payload",
+          "request-save payload must be an object."
+        );
+      }
+
+      return {
+        ok: true,
+        value: {
+          protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
+          requestId,
+          type,
+          payload: {}
+        }
+      };
+    case "simulation.load-save": {
+      const payload = input["payload"];
+      if (!isRecord(payload) || !(payload["bytes"] instanceof Uint8Array)) {
+        return protocolError(
+          "invalid-payload",
+          "payload.bytes",
+          "load-save payload bytes must be a Uint8Array."
+        );
+      }
+
+      return {
+        ok: true,
+        value: {
+          protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
+          requestId,
+          type,
+          payload: {
+            bytes: payload["bytes"]
+          }
+        }
+      };
+    }
     default:
       if (typeof type !== "string") {
         return protocolError(
@@ -456,11 +554,11 @@ export function parseBootSimulationInputV1(
     );
   }
 
-  if (input["fixture"] !== "minimal-m1") {
+  if (input["fixture"] !== "minimal-m1" && input["fixture"] !== "m1.abstract-graph-30") {
     return protocolError(
       "invalid-payload",
       "fixture",
-      "BootSimulationInput fixture must be minimal-m1."
+      "BootSimulationInput fixture must be minimal-m1 or m1.abstract-graph-30."
     );
   }
 
@@ -468,7 +566,7 @@ export function parseBootSimulationInputV1(
     ok: true,
     value: {
       protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
-      fixture: "minimal-m1"
+      fixture: input["fixture"]
     }
   };
 }

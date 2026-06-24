@@ -7,12 +7,29 @@ import {
   type CommandActorV1,
   type GameCommandV1,
   type GameQueryV1,
+  type SaveLoadCanaryScriptV1,
   type ProtocolErrorCodeV1,
   type SerializableProtocolErrorV1
 } from "@monsoon/protocol";
+import {
+  createSaveEnvelopeV1,
+  decodeSaveEnvelopeV1,
+  encodeSaveEnvelopeV1,
+  saveWorldStateV0DtoToCandidate,
+  worldStateV0ToSaveDto,
+  type DecodeSaveEnvelopeV1Options,
+  type SaveBuildMetadataV1,
+  type SaveEnvelopeV1,
+  type SaveLoadRejectionReasonV1
+} from "@monsoon/save-format";
 
 import { advanceWorldByGameDay } from "./scheduler-v0.ts";
-import { createMinimalM1WorldStateV0 } from "./minimal-m1-fixture.ts";
+import {
+  M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH,
+  M1_ABSTRACT_GRAPH_30_SCENARIO_ID,
+  createAbstractGraph30WorldStateV0,
+  createMinimalM1WorldStateV0
+} from "./minimal-m1-fixture.ts";
 import {
   hashWorldStateV0,
   parseDistrictId,
@@ -48,6 +65,8 @@ export interface DomainErrorV1 {
 export interface SimulationRuntimeV1 {
   readonly world: WorldStateV0;
   readonly acceptedCommandIds: readonly string[];
+  readonly commandTail: readonly GameCommandV1[];
+  readonly eventTail: readonly DomainEventV1[];
 }
 
 export type DomainEventV1 =
@@ -144,6 +163,25 @@ export interface SubmitCommandOutputV1 {
   readonly result: CommandResultV1;
 }
 
+export interface RequestSaveOutputV1 {
+  readonly bytes: Uint8Array;
+  readonly envelope: SaveEnvelopeV1;
+  readonly stateHash: string;
+  readonly byteLength: number;
+}
+
+export type LoadSaveOutputV1 =
+  | {
+      readonly status: "loaded";
+      readonly runtime: SimulationRuntimeV1;
+      readonly stateHash: string;
+    }
+  | {
+      readonly status: "rejected";
+      readonly runtime: SimulationRuntimeV1;
+      readonly reasons: readonly SaveLoadRejectionReasonV1[];
+    };
+
 export type BootSimulationResultV1 =
   | {
       readonly status: "booted";
@@ -203,6 +241,14 @@ export interface CommandQueryCanaryResultV1 {
   readonly finalRevision: number;
 }
 
+export interface SaveLoadCanaryResultV1 {
+  readonly status: "ok";
+  readonly finalHash: string;
+  readonly loadedHash: string;
+  readonly replayedHash: string;
+  readonly saveByteLength: number;
+}
+
 export function bootSimulationV1(input: unknown): BootSimulationResultV1 {
   const parsed = parseBootSimulationInputV1(input);
   if (!parsed.ok) {
@@ -255,7 +301,9 @@ export function submitCommandV1(
     acceptedCommandIds: appendAcceptedCommandId(
       runtime.acceptedCommandIds,
       evaluated.value.command.commandId
-    )
+    ),
+    commandTail: appendTail(runtime.commandTail, evaluated.value.command),
+    eventTail: appendTail(runtime.eventTail, ...evaluated.value.events)
   };
 
   return {
@@ -314,27 +362,173 @@ export function runCommandQueryCanaryV1(input: unknown): CommandQueryCanaryResul
   };
 }
 
+export function requestSaveV1(
+  runtime: SimulationRuntimeV1,
+  build: SaveBuildMetadataV1
+): RequestSaveOutputV1 {
+  const envelope = createSaveEnvelopeV1({
+    build,
+    scenarioId: scenarioIdForRuntime(runtime),
+    authoritativeSnapshot: worldStateV0ToSaveDto(runtime.world),
+    scheduler: runtime.world.scheduler,
+    rng: {
+      schemaVersion: 1,
+      algorithm: "sfc32-fnv1a32-domain-v1",
+      savedStreams: []
+    },
+    commandTail: runtime.commandTail.map((command, index) => ({
+      sequence: index + 1,
+      command
+    })),
+    eventTail: runtime.eventTail.map((event, index) => ({
+      sequence: index + 1,
+      event: domainEventToRecord(event)
+    }))
+  });
+  const bytes = encodeSaveEnvelopeV1(envelope);
+
+  return {
+    bytes,
+    envelope,
+    stateHash: runtime.world.meta.stateHash,
+    byteLength: bytes.byteLength
+  };
+}
+
+export function loadSaveV1(
+  runtime: SimulationRuntimeV1,
+  bytes: Uint8Array,
+  options: Pick<
+    DecodeSaveEnvelopeV1Options,
+    "expectedContentManifestHash" | "expectedScenarioId" | "maxBytes" | "maxDepth"
+  > = {}
+): LoadSaveOutputV1 {
+  const decoded = decodeSaveEnvelopeV1(bytes, {
+    ...options,
+    validateWorldSnapshot: (candidate) => validateWorldStateV0(candidate)
+  });
+  if (decoded.status === "rejected") {
+    return {
+      status: "rejected",
+      runtime,
+      reasons: decoded.reasons
+    };
+  }
+
+  const candidate = saveWorldStateV0DtoToCandidate(
+    decoded.envelope.body.authoritativeSnapshot,
+    decoded.envelope.body.scheduler
+  );
+  const invariantErrors = validateWorldStateV0(candidate);
+  if (invariantErrors.length > 0) {
+    return {
+      status: "rejected",
+      runtime,
+      reasons: invariantErrors.map((error) => ({
+        code: "semantic-invariant",
+        path: error.path,
+        message: error.message
+      }))
+    };
+  }
+
+  const loadedWorld = candidate as WorldStateV0;
+  const eventTail = parseSavedEventTail(decoded.envelope.body.eventTail);
+  if (!eventTail.ok) {
+    return {
+      status: "rejected",
+      runtime,
+      reasons: eventTail.reasons
+    };
+  }
+
+  const loadedRuntime: SimulationRuntimeV1 = {
+    world: loadedWorld,
+    acceptedCommandIds: decoded.envelope.body.commandTail.map((entry) => entry.command.commandId),
+    commandTail: decoded.envelope.body.commandTail.map((entry) => entry.command),
+    eventTail: eventTail.value
+  };
+
+  return {
+    status: "loaded",
+    runtime: loadedRuntime,
+    stateHash: loadedWorld.meta.stateHash
+  };
+}
+
+export function runSaveLoadCanaryV1(input: SaveLoadCanaryScriptV1): SaveLoadCanaryResultV1 {
+  const boot = bootSimulationV1(input.boot);
+  if (boot.status !== "booted") {
+    throw new Error(`Save/load canary boot rejected: ${boot.error.code}.`);
+  }
+
+  let runtime = boot.runtime;
+  for (const command of input.commands) {
+    const submitted = submitCommandV1(runtime, command);
+    if (submitted.result.status !== "accepted") {
+      throw new Error(`Save/load canary command rejected: ${submitted.result.error.code}.`);
+    }
+    runtime = submitted.runtime;
+  }
+
+  const saved = requestSaveV1(runtime, {
+    appVersion: "0.0.0",
+    source: "node-runner",
+    codecVersion: "save-envelope-v1"
+  });
+  const loaded = loadSaveV1(boot.runtime, saved.bytes, {
+    expectedContentManifestHash: input.expectedContentManifestHash,
+    expectedScenarioId: input.expectedScenarioId
+  });
+  if (loaded.status !== "loaded") {
+    throw new Error(`Save/load canary load rejected: ${loaded.reasons[0]?.code ?? "unknown"}.`);
+  }
+
+  const verify = submitCommandV1(loaded.runtime, {
+    schemaVersion: 1,
+    kind: "sim.verify-state-hash",
+    commandId: "save.canary.verify.loaded",
+    actor: { kind: "system", id: "save-canary" },
+    expectedDay: loaded.runtime.world.meta.currentDay,
+    expectedRevision: loaded.runtime.world.meta.revision,
+    expectedHash: loaded.runtime.world.meta.stateHash
+  });
+  if (verify.result.status !== "accepted") {
+    throw new Error(`Save/load canary verify rejected: ${verify.result.error.code}.`);
+  }
+
+  return {
+    status: "ok",
+    finalHash: runtime.world.meta.stateHash,
+    loadedHash: loaded.runtime.world.meta.stateHash,
+    replayedHash: verify.runtime.world.meta.stateHash,
+    saveByteLength: saved.byteLength
+  };
+}
+
 function bootParsedSimulationV1(input: BootSimulationInputV1): BootSimulationResultV1 {
-  if (
-    input.protocolVersion !== SIMULATION_MESSAGE_PROTOCOL_VERSION ||
-    input.fixture !== "minimal-m1"
-  ) {
+  if (input.protocolVersion !== SIMULATION_MESSAGE_PROTOCOL_VERSION) {
     return {
       status: "rejected",
       error: {
         code: "invalid-payload",
-        path: "fixture",
-        message: "Only the minimal-m1 simulation fixture can boot in M1."
+        path: "protocolVersion",
+        message: "Unsupported simulation protocol version."
       }
     };
   }
 
-  const world = createMinimalM1WorldStateV0();
+  const world =
+    input.fixture === "m1.abstract-graph-30"
+      ? createAbstractGraph30WorldStateV0()
+      : createMinimalM1WorldStateV0();
   return {
     status: "booted",
     runtime: {
       world,
-      acceptedCommandIds: []
+      acceptedCommandIds: [],
+      commandTail: [],
+      eventTail: []
     },
     stateHash: world.meta.stateHash
   };
@@ -674,6 +868,334 @@ function appendAcceptedCommandId(
   commandId: string
 ): readonly string[] {
   return [...commandIds, commandId].sort(compareText);
+}
+
+function appendTail<TValue>(
+  values: readonly TValue[],
+  ...nextValues: readonly TValue[]
+): readonly TValue[] {
+  return [...values, ...nextValues].slice(-32);
+}
+
+function scenarioIdForRuntime(runtime: SimulationRuntimeV1): string {
+  if (runtime.world.meta.contentManifestHash === M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH) {
+    return M1_ABSTRACT_GRAPH_30_SCENARIO_ID;
+  }
+
+  return "minimal-m1";
+}
+
+function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
+  switch (event.kind) {
+    case "sim.day-advanced":
+      return { ...event };
+    case "sim.district-control-changed":
+      return { ...event };
+    case "sim.state-hash-verified":
+      return { ...event };
+  }
+}
+
+type SavedEventTailParseResult =
+  | { readonly ok: true; readonly value: readonly DomainEventV1[] }
+  | { readonly ok: false; readonly reasons: readonly SaveLoadRejectionReasonV1[] };
+
+type SavedDomainEventParseResult =
+  | { readonly ok: true; readonly value: DomainEventV1 }
+  | { readonly ok: false };
+
+function parseSavedEventTail(
+  entries: readonly { readonly event: Record<string, unknown> }[]
+): SavedEventTailParseResult {
+  const reasons: SaveLoadRejectionReasonV1[] = [];
+  const events: DomainEventV1[] = [];
+
+  entries.forEach((entry, index) => {
+    const parsed = parseSavedDomainEvent(entry.event, `body.eventTail[${index}].event`, reasons);
+    if (parsed.ok) {
+      events.push(parsed.value);
+    }
+  });
+
+  if (reasons.length > 0) {
+    return {
+      ok: false,
+      reasons
+    };
+  }
+
+  return {
+    ok: true,
+    value: events
+  };
+}
+
+function parseSavedDomainEvent(
+  record: Record<string, unknown>,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): SavedDomainEventParseResult {
+  if (record["schemaVersion"] !== 1) {
+    reasons.push({
+      code: "invalid-schema",
+      path: `${path}.schemaVersion`,
+      message: "Saved DomainEvent schemaVersion must be 1."
+    });
+    return { ok: false };
+  }
+
+  const kind = record["kind"];
+  switch (kind) {
+    case "sim.day-advanced": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const fromDay = readNumberRecordField(record, "fromDay", `${path}.fromDay`, reasons);
+      const toDay = readNumberRecordField(record, "toDay", `${path}.toDay`, reasons);
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        fromDay === undefined ||
+        toDay === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          fromDay,
+          toDay,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.district-control-changed": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const districtId = readPositiveIdRecordField(
+        record,
+        "districtId",
+        `${path}.districtId`,
+        reasons
+      );
+      const previousControllerPolityId = readNullablePolityId(
+        record,
+        "previousControllerPolityId",
+        `${path}.previousControllerPolityId`,
+        reasons
+      );
+      const nextControllerPolityId = readNullablePolityId(
+        record,
+        "nextControllerPolityId",
+        `${path}.nextControllerPolityId`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        districtId === undefined ||
+        previousControllerPolityId === undefined ||
+        nextControllerPolityId === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          districtId: parseDistrictId(districtId),
+          previousControllerPolityId,
+          nextControllerPolityId,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.state-hash-verified": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const day = readNumberRecordField(record, "day", `${path}.day`, reasons);
+      const revision = readNumberRecordField(record, "revision", `${path}.revision`, reasons);
+      const stateHash = readStringRecordField(record, "stateHash", `${path}.stateHash`, reasons);
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        day === undefined ||
+        revision === undefined ||
+        stateHash === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          day,
+          revision,
+          stateHash
+        }
+      };
+    }
+    default:
+      reasons.push({
+        code: "invalid-schema",
+        path: `${path}.kind`,
+        message: "Saved DomainEvent kind is not supported."
+      });
+      return { ok: false };
+  }
+}
+
+function readStringRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): string | undefined {
+  const value = record[key];
+  if (typeof value !== "string") {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a string.`
+    });
+    return undefined;
+  }
+  return value;
+}
+
+function readNumberRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): number | undefined {
+  const value = record[key];
+  if (typeof value !== "number" || !Number.isSafeInteger(value)) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a safe integer.`
+    });
+    return undefined;
+  }
+  return value;
+}
+
+function readPositiveIdRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): number | undefined {
+  const value = record[key];
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a positive safe integer.`
+    });
+    return undefined;
+  }
+
+  return value;
+}
+
+function readActorRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): CommandActorV1 | undefined {
+  const value = record[key];
+  if (!isRecord(value)) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be an actor object.`
+    });
+    return undefined;
+  }
+  const kind = value["kind"];
+  if (kind !== "ai" && kind !== "player" && kind !== "system") {
+    reasons.push({
+      code: "invalid-schema",
+      path: `${path}.kind`,
+      message: `Saved event ${key}.kind is invalid.`
+    });
+    return undefined;
+  }
+  const id = readStringRecordField(value, "id", `${path}.id`, reasons);
+  if (id === undefined) {
+    return undefined;
+  }
+  return {
+    kind,
+    id
+  };
+}
+
+function readNullablePolityId(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): PolityId | null | undefined {
+  const value = record[key];
+  if (value === null) {
+    return null;
+  }
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a positive safe integer or null.`
+    });
+    return undefined;
+  }
+
+  return parsePolityId(value);
 }
 
 function compareText(left: string, right: string): number {
