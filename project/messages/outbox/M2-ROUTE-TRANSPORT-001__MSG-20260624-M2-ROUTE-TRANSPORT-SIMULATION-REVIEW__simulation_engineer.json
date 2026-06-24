@@ -1,0 +1,95 @@
+{
+  "task_id": "M2-ROUTE-TRANSPORT-001",
+  "message_id": "MSG-20260624-M2-ROUTE-TRANSPORT-SIMULATION-REVIEW",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M2 route transport state and read-model route preview. Runtime M2 boot now preserves routeKind, explicit baseTravelCost/baseCapacity, district seasonal curve assignments, and monthly seasonal values under state.m2.transport. Added deterministic integer seasonal route evaluation with stable tie-breakers, road/river seasonal route choice tests, capacity/duplicate-edge/order invariants, and protocol query parsing for sim.preview-m2-transport-route.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/src/m2-route-transport-v0.ts",
+    "packages/sim-core/src/scheduler-v0.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts"
+  ],
+  "branch_or_worktree": "feat/m2-route-transport",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Reported implementation changes plus pre-existing lead-owned orchestration changes in project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M2-ROUTE-TRANSPORT-001.json, project/tasks/thread-registry.json, and project/messages/routes/M2-ROUTE-TRANSPORT-001__ROUTE-20260624-LEAD-TO-SIMULATION.json."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "9 test files passed, 45 tests passed, including tests/sim-core-m2-route-transport.test.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 3 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible hello, command/query, and save/load hashes matched. Command/query hash d275faa4; save/load hash 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed, determinism passed, root Vitest 16 files/79 tests passed, web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "Scenario tests proving seasonal road/river route choice changes and route-capacity invariants",
+      "exit_code": 0,
+      "result": "Covered by tests/sim-core-m2-route-transport.test.ts via pnpm --filter @monsoon/sim-core test."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-ROUTE-TRANSPORT-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-ROUTE-TRANSPORT-001.json."
+    },
+    {
+      "command": "node -e \"const fs=require('node:fs'); const p='project/tasks/active/M2-ROUTE-TRANSPORT-001.json'; const task=JSON.parse(fs.readFileSync(p,'utf8')); const required=['id','summary','owner_role','reviewer_role','status','scope','acceptance_criteria','required_tests','risk_level','branch_or_worktree']; for (const key of required) { if (!(key in task)) throw new Error('missing '+key); } if (task.id !== 'M2-ROUTE-TRANSPORT-001') throw new Error('bad id'); if (!Array.isArray(task.scope.allowed_paths) || !Array.isArray(task.scope.forbidden_paths)) throw new Error('bad scope'); console.log('M2-ROUTE-TRANSPORT-001 task JSON shape ok');\"",
+      "exit_code": 0,
+      "result": "M2-ROUTE-TRANSPORT-001 task JSON shape ok."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    }
+  ],
+  "decisions": [
+    "Treated this as R3-sensitive because it changes WorldState canonical M2 state and protocol query surface; routed to systems_architect.",
+    "Kept transport inside state.m2 and did not touch packages/save-format, preserving the known non-blocking M2 save/load omission risk.",
+    "Kept RouteDefinition backward-compatible and stored M2 transport metadata under state.m2.transport to avoid save-format/client changes.",
+    "Used integer-only seasonal cost/capacity formulas and deterministic path tie-breakers: total cost, edge count, route ID sequence, direction, then destination district ID.",
+    "Coast routes are retained in explicit transport state but priced as high-cost fallback so the M2 acceptance scenario demonstrates road versus river seasonal choice."
+  ],
+  "risks": [
+    "Canonical M2 boot state hash changed from d280a188 to 92903cba because state.m2.transport is now included in authoritative hash text.",
+    "Transport preview is read-only and does not implement actual stock transfer commands; this matches task scope but leaves committed stock movement for a later task.",
+    "M2 save/load still omits state.m2 per the known follow-up risk and was intentionally not changed."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R3 WorldState/protocol route transport implementation, deterministic route tie-breakers, seasonal cost/capacity formulas, and read-model query boundary.",
+  "created_at": "2026-06-25T02:08:57.0319670+08:00"
+}

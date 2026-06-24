@@ -117,5 +117,48 @@ describe("SIM-003 protocol command/query schemas", () => {
         kind: "sim.list-m2-economy-summaries"
       }
     });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-m2-transport-route",
+        payload: {
+          queryId: "route.preview.1",
+          originDistrictId: 1,
+          destinationDistrictId: 6,
+          stockAmount: 40
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.preview-m2-transport-route",
+        payload: {
+          queryId: "route.preview.1",
+          originDistrictId: 1,
+          destinationDistrictId: 6,
+          stockAmount: 40
+        }
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-m2-transport-route",
+        payload: {
+          queryId: "route.preview.bad",
+          originDistrictId: 1,
+          destinationDistrictId: 6,
+          stockAmount: 0
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.stockAmount",
+        message: "payload.stockAmount must be a positive safe integer."
+      }
+    });
   });
 });

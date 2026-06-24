@@ -23,8 +23,9 @@ import {
   type SaveLoadRejectionReasonV1
 } from "@monsoon/save-format";
 
-import { advanceWorldByGameDay } from "./scheduler-v0.ts";
+import { advanceWorldByGameDay, getGameCalendarDate } from "./scheduler-v0.ts";
 import { bootWorldStateFromRuntimeContentPackV1 } from "./boot-content-runtime-v1.ts";
+import { previewM2TransportRouteV0 } from "./m2-route-transport-v0.ts";
 import {
   M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH,
   M1_ABSTRACT_GRAPH_30_SCENARIO_ID,
@@ -43,9 +44,11 @@ import {
   type DistrictControlState,
   type DistrictId,
   type M2LaborCommitmentPurposeV0,
+  type M2RouteKindV0,
   type M2PopulationGroupStateV0,
   type PopulationGroupId,
   type PolityId,
+  type RouteId,
   type WorldRevision,
   type WorldStateV0
 } from "./world-state-v0.ts";
@@ -252,6 +255,13 @@ export type QueryResultV1 =
             readonly day: number;
             readonly revision: number;
             readonly districts: readonly M2EconomyDistrictSummaryReadModelV1[];
+          }
+        | {
+            readonly kind: "sim.preview-m2-transport-route";
+            readonly day: number;
+            readonly revision: number;
+            readonly monthOfYear: number;
+            readonly route: M2TransportRoutePreviewReadModelV1;
           };
     }
   | {
@@ -275,6 +285,37 @@ export interface M2EconomyDistrictSummaryReadModelV1 {
   readonly agriculturePhase: string;
   readonly lastHarvestGrain: number;
   readonly cumulativeMobilizationCost: number;
+}
+
+export type M2TransportRoutePreviewReadModelV1 =
+  | {
+      readonly status: "unreachable";
+      readonly originDistrictId: DistrictId;
+      readonly destinationDistrictId: DistrictId;
+      readonly stockAmount: number;
+      readonly edges: readonly [];
+    }
+  | {
+      readonly status: "capacity-exceeded" | "reachable";
+      readonly originDistrictId: DistrictId;
+      readonly destinationDistrictId: DistrictId;
+      readonly stockAmount: number;
+      readonly totalCost: number;
+      readonly bottleneckCapacity: number;
+      readonly edges: readonly M2TransportRoutePreviewEdgeReadModelV1[];
+    };
+
+export interface M2TransportRoutePreviewEdgeReadModelV1 {
+  readonly routeId: RouteId;
+  readonly fromDistrictId: DistrictId;
+  readonly toDistrictId: DistrictId;
+  readonly routeKind: M2RouteKindV0;
+  readonly baseTravelCost: number;
+  readonly seasonalCost: number;
+  readonly baseCapacity: number;
+  readonly seasonalCapacity: number;
+  readonly stockAmount: number;
+  readonly remainingCapacityAfterStock: number;
 }
 
 interface CommandEvaluationV1 {
@@ -1030,6 +1071,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       };
     case "sim.list-m2-economy-summaries":
       return executeM2EconomySummariesQuery(runtime);
+    case "sim.preview-m2-transport-route":
+      return executeM2TransportRoutePreviewQuery(runtime, query);
   }
 }
 
@@ -1072,6 +1115,83 @@ function executeM2EconomySummariesQuery(runtime: SimulationRuntimeV1): QueryResu
           cumulativeMobilizationCost: market?.cashFlow.cumulativeMobilizationCost ?? 0
         };
       })
+    }
+  };
+}
+
+function executeM2TransportRoutePreviewQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.preview-m2-transport-route" }>
+): QueryResultV1 {
+  const m2 = runtime.world.state.m2;
+  if (m2 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m2-state-missing",
+        path: "state.m2",
+        message: "sim.preview-m2-transport-route requires an M2 transport state."
+      }
+    };
+  }
+
+  const originDistrictId = parseDistrictId(query.payload.originDistrictId);
+  const destinationDistrictId = parseDistrictId(query.payload.destinationDistrictId);
+  if (!runtime.world.definitions.districts.some((district) => district.id === originDistrictId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.originDistrictId",
+        message: "sim.preview-m2-transport-route references a missing origin DistrictId."
+      }
+    };
+  }
+  if (
+    !runtime.world.definitions.districts.some((district) => district.id === destinationDistrictId)
+  ) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.destinationDistrictId",
+        message: "sim.preview-m2-transport-route references a missing destination DistrictId."
+      }
+    };
+  }
+
+  const preview = previewM2TransportRouteV0(runtime.world, {
+    originDistrictId,
+    destinationDistrictId,
+    stockAmount: query.payload.stockAmount,
+    day: runtime.world.meta.currentDay
+  });
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.preview-m2-transport-route",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      monthOfYear: getGameCalendarDate(runtime.world.meta.currentDay).monthOfYear,
+      route:
+        preview.status === "unreachable"
+          ? {
+              status: preview.status,
+              originDistrictId: preview.originDistrictId,
+              destinationDistrictId: preview.destinationDistrictId,
+              stockAmount: preview.stockAmount,
+              edges: []
+            }
+          : {
+              status: preview.status,
+              originDistrictId: preview.originDistrictId,
+              destinationDistrictId: preview.destinationDistrictId,
+              stockAmount: preview.stockAmount,
+              totalCost: preview.totalCost,
+              bottleneckCapacity: preview.bottleneckCapacity,
+              edges: preview.edges.map((edge) => ({ ...edge }))
+            }
     }
   };
 }

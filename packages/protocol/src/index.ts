@@ -132,11 +132,23 @@ export interface ListM2EconomySummariesQueryV1 {
   readonly kind: "sim.list-m2-economy-summaries";
 }
 
+export interface PreviewM2TransportRouteQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.preview-m2-transport-route";
+  readonly payload: {
+    readonly queryId: string;
+    readonly originDistrictId: number;
+    readonly destinationDistrictId: number;
+    readonly stockAmount: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
   | ListDistrictSummariesQueryV1
-  | ListM2EconomySummariesQueryV1;
+  | ListM2EconomySummariesQueryV1
+  | PreviewM2TransportRouteQueryV1;
 
 export type SimulationFixtureIdV1 = "m1.abstract-graph-30" | "minimal-m1";
 
@@ -453,6 +465,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
           kind
         }
       };
+    case "sim.preview-m2-transport-route": {
+      const payload = parsePreviewM2TransportRoutePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
     default:
       if (typeof kind !== "string") {
         return protocolError("invalid-payload", "kind", "GameQuery kind must be a string.");
@@ -820,6 +847,58 @@ function parseCommitLaborPayload(
       purpose: "mobilized",
       laborAmount: laborAmount.value,
       durationDays: durationDays.value
+    }
+  };
+}
+
+function parsePreviewM2TransportRoutePayload(
+  input: unknown
+): ProtocolParseResult<PreviewM2TransportRouteQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.preview-m2-transport-route payload must be an object."
+    );
+  }
+
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+
+  const originDistrictId = parsePositiveSafeInteger(
+    input["originDistrictId"],
+    "payload.originDistrictId"
+  );
+  if (!originDistrictId.ok) {
+    return originDistrictId;
+  }
+
+  const destinationDistrictId = parsePositiveSafeInteger(
+    input["destinationDistrictId"],
+    "payload.destinationDistrictId"
+  );
+  if (!destinationDistrictId.ok) {
+    return destinationDistrictId;
+  }
+
+  const stockAmount = parsePositiveSafeInteger(input["stockAmount"], "payload.stockAmount");
+  if (!stockAmount.ok) {
+    return stockAmount;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      originDistrictId: originDistrictId.value,
+      destinationDistrictId: destinationDistrictId.value,
+      stockAmount: stockAmount.value
     }
   };
 }

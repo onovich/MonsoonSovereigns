@@ -211,7 +211,8 @@ function advanceM2EconomyPopulationByGameDay(
       },
       market: {
         districts: market
-      }
+      },
+      transport: m2.transport
     })
   };
 }
