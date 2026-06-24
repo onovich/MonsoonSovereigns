@@ -32,6 +32,7 @@ interface RuntimeM2WorldBootPackV0 {
   };
   readonly districts: readonly RuntimeM2DistrictBootDefinitionV0[];
   readonly settlements: readonly RuntimeM2SettlementBootDefinitionV0[];
+  readonly regionalSeasonalCurves: readonly RuntimeM2CurveBootDefinitionV0[];
   readonly routes: readonly RuntimeM2RouteBootDefinitionV0[];
 }
 
@@ -53,11 +54,21 @@ interface RuntimeM2RouteBootDefinitionV0 {
   readonly id: number;
   readonly fromDistrictId: number;
   readonly toDistrictId: number;
+  readonly routeKind: "coast" | "river" | "road";
   readonly baseTravelCost: number;
 }
 
 interface RuntimeM2CurveBootDefinitionV0 {
   readonly id: number;
+  readonly monthlyValues: readonly RuntimeM2CurveMonthBootDefinitionV0[];
+}
+
+interface RuntimeM2CurveMonthBootDefinitionV0 {
+  readonly month: number;
+  readonly monsoonIntensityBps: number;
+  readonly agricultureWorkBps: number;
+  readonly riverNavigabilityBps: number;
+  readonly roadTravelCostBps: number;
 }
 
 interface RuntimeM2MapGeometryBootDefinitionV0 {
@@ -116,7 +127,24 @@ export function bootWorldStateFromRuntimeContentPackV1(input: {
     currentDay: 0,
     revision: 0,
     definitions,
-    m2: createM2EconomyPopulationStateV0(definitions)
+    m2: createM2EconomyPopulationStateV0(definitions, {
+      routes: parsedPack.value.routes.map((route) => ({
+        routeId: route.id,
+        fromDistrictId: route.fromDistrictId,
+        toDistrictId: route.toDistrictId,
+        routeKind: route.routeKind,
+        baseTravelCost: route.baseTravelCost,
+        baseCapacity: baseCapacityForRouteKind(route.routeKind)
+      })),
+      districtSeasonality: parsedPack.value.districts.map((district) => ({
+        districtId: district.id,
+        regionalCurveId: district.regionalCurveId
+      })),
+      regionalCurves: parsedPack.value.regionalSeasonalCurves.map((curve) => ({
+        id: curve.id,
+        monthlyValues: curve.monthlyValues
+      }))
+    })
   });
 
   const invariantErrors = validateWorldStateV0(world);
@@ -208,6 +236,7 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
       },
       districts: districts.value,
       settlements: settlements.value,
+      regionalSeasonalCurves: curves.value,
       routes: routes.value
     }
   };
@@ -479,7 +508,64 @@ function parseCurves(
       }
     }
 
-    curves.push({ id: id.value });
+    const parsedMonthlyValues: RuntimeM2CurveMonthBootDefinitionV0[] = [];
+    for (let monthIndex = 0; monthIndex < monthlyValues.length; monthIndex += 1) {
+      const month = monthlyValues[monthIndex];
+      const monthPath = `${entryPath}.monthlyValues[${monthIndex}]`;
+      if (!isRecord(month)) {
+        return contentPackError(monthPath, "Runtime M2 seasonal month must be an object.");
+      }
+
+      const monsoonIntensityBps = parseIntegerInRange(
+        month["monsoonIntensityBps"],
+        `${monthPath}.monsoonIntensityBps`,
+        0,
+        10_000
+      );
+      if (!monsoonIntensityBps.ok) {
+        return monsoonIntensityBps;
+      }
+
+      const agricultureWorkBps = parseIntegerInRange(
+        month["agricultureWorkBps"],
+        `${monthPath}.agricultureWorkBps`,
+        0,
+        10_000
+      );
+      if (!agricultureWorkBps.ok) {
+        return agricultureWorkBps;
+      }
+
+      const riverNavigabilityBps = parseIntegerInRange(
+        month["riverNavigabilityBps"],
+        `${monthPath}.riverNavigabilityBps`,
+        0,
+        10_000
+      );
+      if (!riverNavigabilityBps.ok) {
+        return riverNavigabilityBps;
+      }
+
+      const roadTravelCostBps = parseIntegerInRange(
+        month["roadTravelCostBps"],
+        `${monthPath}.roadTravelCostBps`,
+        1,
+        30_000
+      );
+      if (!roadTravelCostBps.ok) {
+        return roadTravelCostBps;
+      }
+
+      parsedMonthlyValues.push({
+        month: monthIndex + 1,
+        monsoonIntensityBps: monsoonIntensityBps.value,
+        agricultureWorkBps: agricultureWorkBps.value,
+        riverNavigabilityBps: riverNavigabilityBps.value,
+        roadTravelCostBps: roadTravelCostBps.value
+      });
+    }
+
+    curves.push({ id: id.value, monthlyValues: parsedMonthlyValues });
   }
 
   return { ok: true, value: curves };
@@ -535,10 +621,16 @@ function parseRoutes(
       return baseTravelCost;
     }
 
+    const routeKind = value["routeKind"];
+    if (routeKind !== "coast" && routeKind !== "river" && routeKind !== "road") {
+      return contentPackError(`${entryPath}.routeKind`, "routeKind must be coast, river, or road.");
+    }
+
     routes.push({
       id: id.value,
       fromDistrictId: fromDistrictId.value,
       toDistrictId: toDistrictId.value,
+      routeKind,
       baseTravelCost: baseTravelCost.value
     });
   }
@@ -790,6 +882,29 @@ function parsePositiveSafeInteger(
   return contentPackError(path, `${path} must be a positive safe integer.`);
 }
 
+function parseIntegerInRange(
+  value: unknown,
+  path: string,
+  minimum: number,
+  maximum: number
+):
+  | { readonly ok: true; readonly value: number }
+  | {
+      readonly ok: false;
+      readonly error: ContentBootErrorV1;
+    } {
+  if (
+    typeof value === "number" &&
+    Number.isSafeInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+  ) {
+    return { ok: true, value };
+  }
+
+  return contentPackError(path, `${path} must be a safe integer from ${minimum} to ${maximum}.`);
+}
+
 function parseNonnegativeSafeInteger(
   value: unknown,
   path: string
@@ -841,6 +956,17 @@ function contentPackError(path: string, message: string): BootPackErrorResult {
       message
     }
   };
+}
+
+function baseCapacityForRouteKind(routeKind: "coast" | "river" | "road"): number {
+  switch (routeKind) {
+    case "road":
+      return 100;
+    case "river":
+      return 180;
+    case "coast":
+      return 140;
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

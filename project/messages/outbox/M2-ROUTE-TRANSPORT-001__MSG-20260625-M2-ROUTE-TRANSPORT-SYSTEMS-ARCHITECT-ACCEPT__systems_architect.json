@@ -1,0 +1,91 @@
+{
+  "task_id": "M2-ROUTE-TRANSPORT-001",
+  "message_id": "MSG-20260625-M2-ROUTE-TRANSPORT-SYSTEMS-ARCHITECT-ACCEPT",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R3 architecture review accepts the M2 route transport implementation. The change keeps transport metadata under explicit state.m2.transport schema, exposes route preview through a read-only protocol query, preserves sim-core isolation from UI/host APIs, and uses deterministic integer seasonal route evaluation with stable tie-breakers. The known M2 save/load omission remains a non-blocking follow-up because this task intentionally did not touch packages/save-format.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/src/m2-route-transport-v0.ts",
+    "packages/sim-core/src/scheduler-v0.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts",
+    "project/messages/outbox/M2-ROUTE-TRANSPORT-001__MSG-20260625-M2-ROUTE-TRANSPORT-SYSTEMS-ARCHITECT-ACCEPT__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m2-route-transport",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Reported expected uncommitted implementation changes in packages/protocol, packages/sim-core, tests, and allowed project orchestration/message paths; no forbidden app/client/desktop paths were listed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No output; whitespace check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-ROUTE-TRANSPORT-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-ROUTE-TRANSPORT-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-ROUTE-TRANSPORT-001__MSG-20260624-M2-ROUTE-TRANSPORT-SIMULATION-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M2-ROUTE-TRANSPORT-001__MSG-20260624-M2-ROUTE-TRANSPORT-SIMULATION-REVIEW__simulation_engineer.json"
+    },
+    {
+      "command": "node -e \"const fs=require('node:fs'); const p='project/tasks/active/M2-ROUTE-TRANSPORT-001.json'; const task=JSON.parse(fs.readFileSync(p,'utf8')); const required=['id','summary','owner_role','reviewer_role','status','scope','acceptance_criteria','required_tests','risk_level','branch_or_worktree']; for (const key of required) { if (!(key in task)) throw new Error('missing '+key); } if (task.id !== 'M2-ROUTE-TRANSPORT-001') throw new Error('bad id'); if (!Array.isArray(task.scope.allowed_paths) || !Array.isArray(task.scope.forbidden_paths)) throw new Error('bad scope'); console.log('M2-ROUTE-TRANSPORT-001 task JSON shape ok');\"",
+      "exit_code": 0,
+      "result": "M2-ROUTE-TRANSPORT-001 task JSON shape ok"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 9 test files, 45 tests. Includes tests/sim-core-m2-route-transport.test.ts proving seasonal road/river choice changes, capacity-exceeded preview, duplicate route edge invariant, and no state hash mutation from preview queries."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 3 tests. Includes parseGameQueryV1 acceptance/rejection coverage for sim.preview-m2-transport-route payloads."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest passed 16 files/79 tests; web Vitest passed 1 file/3 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    }
+  ],
+  "decisions": [
+    "Accepted state.m2.transport shape for this milestone: it is explicit, versioned with schemaVersion 1, canonicalized by stable numeric IDs, and included in canonicalWorldStateV0Text/stateHash.",
+    "Accepted the protocol surface as a read-only GameQueryV1 addition. It does not introduce a separate player/AI command path and it returns copied read-model fields rather than mutable WorldState.",
+    "Accepted the deterministic route selection model for M2: integer BPS formulas, sorted directed edges, and tie-breakers by total cost, edge count, route ID sequence, direction, then destination district ID.",
+    "Accepted the canonical M2 boot hash change to 92903cba because transport routes, district seasonality, and monthly curves are now authoritative M2 state and are covered by boot-boundary tests.",
+    "No new ADR is required for this task because the implementation follows the existing approved Worker-authoritative TypeScript sim-core/protocol architecture and does not change frozen product, platform, save-format, IPC, dependency, or host-boundary decisions."
+  ],
+  "risks": [
+    "M2 save/load still omits state.m2 through packages/save-format. This remains non-blocking for M2-ROUTE-TRANSPORT-001 because save-format was out of scope, but it must be handled before relying on save/load for M2 transport state.",
+    "Transport preview does not commit stock movement and should not be treated as an authoritative transfer command by later UI or AI work.",
+    "Seasonal cost/capacity formulas are fixture-scale M2 assumptions. If future content allows very large base costs/capacities or route counts, add bounded numeric schema limits and measured performance evidence before widening usage."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead integration gates for M2-ROUTE-TRANSPORT-001; keep the M2 save/load omission as an explicit follow-up risk.",
+  "created_at": "2026-06-25T02:16:40.7078689+08:00"
+}

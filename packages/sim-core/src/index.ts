@@ -11,6 +11,7 @@ export * from "./scheduler-v0.ts";
 export * from "./minimal-m1-fixture.ts";
 export * from "./deterministic-rng.ts";
 export * from "./boot-content-runtime-v1.ts";
+export * from "./m2-route-transport-v0.ts";
 export * from "./command-query-v1.ts";
 
 interface HelloSimulationState {

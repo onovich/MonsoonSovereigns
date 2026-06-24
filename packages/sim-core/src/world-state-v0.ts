@@ -5,6 +5,7 @@ export type PolityId = Brand<number, "PolityId">;
 export type DistrictId = Brand<number, "DistrictId">;
 export type SettlementId = Brand<number, "SettlementId">;
 export type RouteId = Brand<number, "RouteId">;
+export type RegionalSeasonalCurveId = Brand<number, "RegionalSeasonalCurveId">;
 export type PopulationGroupId = Brand<number, "PopulationGroupId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
@@ -80,6 +81,7 @@ export interface RouteState {
 
 export type M2AgriculturePhaseV0 = "fallow" | "planting" | "growing" | "harvest";
 export type M2LaborCommitmentPurposeV0 = "mobilized";
+export type M2RouteKindV0 = "coast" | "river" | "road";
 
 export interface M2LaborCommitmentStateV0 {
   readonly purpose: M2LaborCommitmentPurposeV0;
@@ -121,6 +123,40 @@ export interface M2DistrictMarketStateV0 {
   };
 }
 
+export interface M2SeasonalMonthStateV0 {
+  readonly month: number;
+  readonly monsoonIntensityBps: number;
+  readonly agricultureWorkBps: number;
+  readonly riverNavigabilityBps: number;
+  readonly roadTravelCostBps: number;
+}
+
+export interface M2RegionalSeasonalCurveStateV0 {
+  readonly id: RegionalSeasonalCurveId;
+  readonly monthlyValues: readonly M2SeasonalMonthStateV0[];
+}
+
+export interface M2DistrictSeasonalityStateV0 {
+  readonly districtId: DistrictId;
+  readonly regionalCurveId: RegionalSeasonalCurveId;
+}
+
+export interface M2RouteTransportEdgeStateV0 {
+  readonly routeId: RouteId;
+  readonly fromDistrictId: DistrictId;
+  readonly toDistrictId: DistrictId;
+  readonly routeKind: M2RouteKindV0;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+}
+
+export interface M2TransportStateV0 {
+  readonly schemaVersion: 1;
+  readonly routes: readonly M2RouteTransportEdgeStateV0[];
+  readonly districtSeasonality: readonly M2DistrictSeasonalityStateV0[];
+  readonly regionalCurves: readonly M2RegionalSeasonalCurveStateV0[];
+}
+
 export interface M2EconomyPopulationStateV0 {
   readonly schemaVersion: 1;
   readonly populationGroups: readonly M2PopulationGroupStateV0[];
@@ -130,6 +166,7 @@ export interface M2EconomyPopulationStateV0 {
   readonly market: {
     readonly districts: readonly M2DistrictMarketStateV0[];
   };
+  readonly transport: M2TransportStateV0;
 }
 
 export interface WorldRuntimeStateV0 {
@@ -218,6 +255,31 @@ export interface DefineRouteInput {
   readonly lengthInMapUnits: unknown;
 }
 
+export interface CreateM2TransportStateV0Input {
+  readonly routes: readonly {
+    readonly routeId: unknown;
+    readonly fromDistrictId: unknown;
+    readonly toDistrictId: unknown;
+    readonly routeKind: unknown;
+    readonly baseTravelCost: unknown;
+    readonly baseCapacity: unknown;
+  }[];
+  readonly districtSeasonality: readonly {
+    readonly districtId: unknown;
+    readonly regionalCurveId: unknown;
+  }[];
+  readonly regionalCurves: readonly {
+    readonly id: unknown;
+    readonly monthlyValues: readonly {
+      readonly month: unknown;
+      readonly monsoonIntensityBps: unknown;
+      readonly agricultureWorkBps: unknown;
+      readonly riverNavigabilityBps: unknown;
+      readonly roadTravelCostBps: unknown;
+    }[];
+  }[];
+}
+
 export interface CreateWorldStateV0Input {
   readonly seed: unknown;
   readonly contentManifestHash: unknown;
@@ -248,6 +310,10 @@ export function parseSettlementId(value: unknown): SettlementId {
 
 export function parseRouteId(value: unknown): RouteId {
   return parsePositiveInteger(value, "RouteId") as RouteId;
+}
+
+export function parseRegionalSeasonalCurveId(value: unknown): RegionalSeasonalCurveId {
+  return parsePositiveInteger(value, "RegionalSeasonalCurveId") as RegionalSeasonalCurveId;
 }
 
 export function parsePopulationGroupId(value: unknown): PopulationGroupId {
@@ -316,7 +382,8 @@ export function defineRoute(input: DefineRouteInput): RouteDefinition {
 }
 
 export function createM2EconomyPopulationStateV0(
-  definitions: WorldDefinitionsV0
+  definitions: WorldDefinitionsV0,
+  transportInput?: CreateM2TransportStateV0Input
 ): M2EconomyPopulationStateV0 {
   const settlementCountByDistrictId = new Map<number, number>();
   for (const settlement of definitions.settlements) {
@@ -366,8 +433,96 @@ export function createM2EconomyPopulationStateV0(
           lastHarvestDelta: 0
         }
       }))
-    }
+    },
+    transport: createM2RouteTransportStateV0(definitions, transportInput)
   };
+}
+
+export function createM2RouteTransportStateV0(
+  definitions: WorldDefinitionsV0,
+  input?: CreateM2TransportStateV0Input
+): M2TransportStateV0 {
+  if (input !== undefined) {
+    return canonicalizeM2TransportState({
+      schemaVersion: 1,
+      routes: input.routes.map((route) => ({
+        routeId: parseRouteId(route.routeId),
+        fromDistrictId: parseDistrictId(route.fromDistrictId),
+        toDistrictId: parseDistrictId(route.toDistrictId),
+        routeKind: parseM2RouteKind(route.routeKind),
+        baseTravelCost: parsePositiveInteger(route.baseTravelCost, "M2 baseTravelCost"),
+        baseCapacity: parsePositiveInteger(route.baseCapacity, "M2 baseCapacity")
+      })),
+      districtSeasonality: input.districtSeasonality.map((entry) => ({
+        districtId: parseDistrictId(entry.districtId),
+        regionalCurveId: parseRegionalSeasonalCurveId(entry.regionalCurveId)
+      })),
+      regionalCurves: input.regionalCurves.map((curve) => ({
+        id: parseRegionalSeasonalCurveId(curve.id),
+        monthlyValues: curve.monthlyValues.map((month) => ({
+          month: parseIntegerInRange(month.month, "M2 seasonal month", 1, 12),
+          monsoonIntensityBps: parseIntegerInRange(
+            month.monsoonIntensityBps,
+            "M2 monsoonIntensityBps",
+            0,
+            10_000
+          ),
+          agricultureWorkBps: parseIntegerInRange(
+            month.agricultureWorkBps,
+            "M2 agricultureWorkBps",
+            0,
+            10_000
+          ),
+          riverNavigabilityBps: parseIntegerInRange(
+            month.riverNavigabilityBps,
+            "M2 riverNavigabilityBps",
+            0,
+            10_000
+          ),
+          roadTravelCostBps: parseIntegerInRange(
+            month.roadTravelCostBps,
+            "M2 roadTravelCostBps",
+            1,
+            30_000
+          )
+        }))
+      }))
+    });
+  }
+
+  const neutralCurveId = parseRegionalSeasonalCurveId(1);
+  const neutralMonths = Array.from({ length: 12 }, (_unused, index) => ({
+    month: index + 1,
+    monsoonIntensityBps: 0,
+    agricultureWorkBps: 10_000,
+    riverNavigabilityBps: 10_000,
+    roadTravelCostBps: 10_000
+  }));
+
+  return canonicalizeM2TransportState({
+    schemaVersion: 1,
+    routes: definitions.routes.map((route) => ({
+      routeId: route.id,
+      fromDistrictId: route.fromDistrictId,
+      toDistrictId: route.toDistrictId,
+      routeKind: "road",
+      baseTravelCost: route.lengthInMapUnits,
+      baseCapacity: 100
+    })),
+    districtSeasonality: definitions.districts.map((district) => ({
+      districtId: district.id,
+      regionalCurveId: neutralCurveId
+    })),
+    regionalCurves:
+      definitions.districts.length === 0
+        ? []
+        : [
+            {
+              id: neutralCurveId,
+              monthlyValues: neutralMonths
+            }
+          ]
+  });
 }
 
 export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0 {
@@ -832,6 +987,74 @@ function validateM2EntryShapes(input: unknown, errors: WorldInvariantError[]): v
       validateM2MarketDistrictEntry(entry, `state.m2.market.districts[${index}]`, errors)
     );
   }
+
+  validateM2TransportEntryShapes(input["transport"], errors);
+}
+
+function validateM2TransportEntryShapes(input: unknown, errors: WorldInvariantError[]): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.transport",
+      message: "M2 transport must be an object."
+    });
+    return;
+  }
+
+  if (input["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.transport.schemaVersion",
+      message: "M2 transport schemaVersion must be 1."
+    });
+  }
+
+  const routes = input["routes"];
+  if (!Array.isArray(routes)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.transport.routes",
+      message: "M2 transport routes must be an array."
+    });
+  } else {
+    routes.forEach((entry, index) =>
+      validateM2TransportRouteEntry(entry, `state.m2.transport.routes[${index}]`, errors)
+    );
+  }
+
+  const districtSeasonality = input["districtSeasonality"];
+  if (!Array.isArray(districtSeasonality)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.transport.districtSeasonality",
+      message: "M2 transport districtSeasonality must be an array."
+    });
+  } else {
+    districtSeasonality.forEach((entry, index) =>
+      validateM2DistrictSeasonalityEntry(
+        entry,
+        `state.m2.transport.districtSeasonality[${index}]`,
+        errors
+      )
+    );
+  }
+
+  const regionalCurves = input["regionalCurves"];
+  if (!Array.isArray(regionalCurves)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.transport.regionalCurves",
+      message: "M2 transport regionalCurves must be an array."
+    });
+  } else {
+    regionalCurves.forEach((entry, index) =>
+      validateM2RegionalSeasonalCurveEntry(
+        entry,
+        `state.m2.transport.regionalCurves[${index}]`,
+        errors
+      )
+    );
+  }
 }
 
 function validateM2PopulationGroupEntry(
@@ -978,6 +1201,137 @@ function validateM2MarketDistrictEntry(
   }
 }
 
+function validateM2TransportRouteEntry(
+  entry: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2RouteTransportEdgeState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(entry, "routeId", `${path}.routeId`, "RouteId", errors);
+  validatePositiveIntegerField(
+    entry,
+    "fromDistrictId",
+    `${path}.fromDistrictId`,
+    "DistrictId",
+    errors
+  );
+  validatePositiveIntegerField(entry, "toDistrictId", `${path}.toDistrictId`, "DistrictId", errors);
+  const routeKind = entry["routeKind"];
+  if (routeKind !== "coast" && routeKind !== "river" && routeKind !== "road") {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.routeKind`,
+      message: "M2 routeKind must be coast, river, or road."
+    });
+  }
+  validatePositiveIntegerField(
+    entry,
+    "baseTravelCost",
+    `${path}.baseTravelCost`,
+    "Base travel cost",
+    errors
+  );
+  validatePositiveIntegerField(entry, "baseCapacity", `${path}.baseCapacity`, "Capacity", errors);
+}
+
+function validateM2DistrictSeasonalityEntry(
+  entry: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2DistrictSeasonalityState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(entry, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validatePositiveIntegerField(
+    entry,
+    "regionalCurveId",
+    `${path}.regionalCurveId`,
+    "RegionalSeasonalCurveId",
+    errors
+  );
+}
+
+function validateM2RegionalSeasonalCurveEntry(
+  entry: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2RegionalSeasonalCurveState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(entry, "id", `${path}.id`, "RegionalSeasonalCurveId", errors);
+  const monthlyValues = entry["monthlyValues"];
+  if (!Array.isArray(monthlyValues) || monthlyValues.length !== 12) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.monthlyValues`,
+      message: "M2 regional seasonal curve monthlyValues must contain 12 months."
+    });
+    return;
+  }
+
+  monthlyValues.forEach((month, index) =>
+    validateM2SeasonalMonthEntry(month, `${path}.monthlyValues[${index}]`, index + 1, errors)
+  );
+}
+
+function validateM2SeasonalMonthEntry(
+  entry: unknown,
+  path: string,
+  expectedMonth: number,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2SeasonalMonthState", errors)) {
+    return;
+  }
+
+  if (entry["month"] !== expectedMonth) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.month`,
+      message: "M2 seasonal month entries must be ordered from month 1 through month 12."
+    });
+  }
+  validateIntegerFieldInRange(
+    entry,
+    "monsoonIntensityBps",
+    `${path}.monsoonIntensityBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateIntegerFieldInRange(
+    entry,
+    "agricultureWorkBps",
+    `${path}.agricultureWorkBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateIntegerFieldInRange(
+    entry,
+    "riverNavigabilityBps",
+    `${path}.riverNavigabilityBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateIntegerFieldInRange(
+    entry,
+    "roadTravelCostBps",
+    `${path}.roadTravelCostBps`,
+    1,
+    30_000,
+    errors
+  );
+}
+
 function validateSimpleRuntimeEntries(
   entries: readonly unknown[],
   path: string,
@@ -1064,6 +1418,31 @@ function validateNonnegativeIntegerField(
   });
 }
 
+function validateIntegerFieldInRange(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  minimum: number,
+  maximum: number,
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (
+    typeof value === "number" &&
+    Number.isSafeInteger(value) &&
+    value >= minimum &&
+    value <= maximum
+  ) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be a safe integer from ${minimum} to ${maximum}.`
+  });
+}
+
 function validatePositiveIntegerValue(
   value: unknown,
   path: string,
@@ -1140,7 +1519,20 @@ export function canonicalizeM2EconomyPopulationState(
     },
     market: {
       districts: sortM2MarketDistricts(m2.market.districts)
-    }
+    },
+    transport: canonicalizeM2TransportState(m2.transport)
+  };
+}
+
+export function canonicalizeM2TransportState(transport: M2TransportStateV0): M2TransportStateV0 {
+  return {
+    schemaVersion: 1,
+    routes: sortM2TransportRoutes(transport.routes),
+    districtSeasonality: sortM2DistrictSeasonality(transport.districtSeasonality),
+    regionalCurves: sortM2RegionalSeasonalCurves(transport.regionalCurves).map((curve) => ({
+      id: curve.id,
+      monthlyValues: sortM2SeasonalMonths(curve.monthlyValues)
+    }))
   };
 }
 
@@ -1160,12 +1552,38 @@ function parsePositiveInteger(value: unknown, label: string): number {
   return value;
 }
 
+function parseIntegerInRange(
+  value: unknown,
+  label: string,
+  minimum: number,
+  maximum: number
+): number {
+  if (
+    typeof value !== "number" ||
+    !Number.isSafeInteger(value) ||
+    value < minimum ||
+    value > maximum
+  ) {
+    throw new Error(`${label} must be a safe integer from ${minimum} to ${maximum}.`);
+  }
+
+  return value;
+}
+
 function parseNonnegativeInteger(value: unknown, label: string): number {
   if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
     throw new Error(`${label} must be a nonnegative safe integer.`);
   }
 
   return value;
+}
+
+function parseM2RouteKind(value: unknown): M2RouteKindV0 {
+  if (value === "coast" || value === "river" || value === "road") {
+    return value;
+  }
+
+  throw new Error("M2 routeKind must be coast, river, or road.");
 }
 
 function isPositiveInteger(value: unknown): boolean {
@@ -1243,6 +1661,44 @@ function sortM2LaborCommitments(
     .map((entry) => entry.value);
 }
 
+function sortM2TransportRoutes(
+  values: readonly M2RouteTransportEdgeStateV0[]
+): readonly M2RouteTransportEdgeStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort((left, right) => left.value.routeId - right.value.routeId || left.index - right.index)
+    .map((entry) => entry.value);
+}
+
+function sortM2DistrictSeasonality(
+  values: readonly M2DistrictSeasonalityStateV0[]
+): readonly M2DistrictSeasonalityStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort(
+      (left, right) => left.value.districtId - right.value.districtId || left.index - right.index
+    )
+    .map((entry) => entry.value);
+}
+
+function sortM2RegionalSeasonalCurves(
+  values: readonly M2RegionalSeasonalCurveStateV0[]
+): readonly M2RegionalSeasonalCurveStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort((left, right) => left.value.id - right.value.id || left.index - right.index)
+    .map((entry) => entry.value);
+}
+
+function sortM2SeasonalMonths(
+  values: readonly M2SeasonalMonthStateV0[]
+): readonly M2SeasonalMonthStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort((left, right) => left.value.month - right.value.month || left.index - right.index)
+    .map((entry) => entry.value);
+}
+
 function formatPolityDefinitions(values: readonly PolityDefinition[]): string {
   return sortByNumericId(values)
     .map((value) => `${value.id}:${value.displayNameKey}`)
@@ -1315,7 +1771,14 @@ function formatM2CanonicalLines(m2: M2EconomyPopulationStateV0 | undefined): rea
     `state.m2.schemaVersion=${m2.schemaVersion}`,
     `state.m2.populationGroups=${formatM2PopulationGroups(m2.populationGroups)}`,
     `state.m2.agriculture.districts=${formatM2AgricultureDistricts(m2.agriculture.districts)}`,
-    `state.m2.market.districts=${formatM2MarketDistricts(m2.market.districts)}`
+    `state.m2.market.districts=${formatM2MarketDistricts(m2.market.districts)}`,
+    `state.m2.transport.routes=${formatM2TransportRoutes(m2.transport.routes)}`,
+    `state.m2.transport.districtSeasonality=${formatM2DistrictSeasonality(
+      m2.transport.districtSeasonality
+    )}`,
+    `state.m2.transport.regionalCurves=${formatM2RegionalSeasonalCurves(
+      m2.transport.regionalCurves
+    )}`
   ];
 }
 
@@ -1370,6 +1833,47 @@ function formatM2MarketDistricts(values: readonly M2DistrictMarketStateV0[]): st
       ].join(":")
     )
     .join(",");
+}
+
+function formatM2TransportRoutes(values: readonly M2RouteTransportEdgeStateV0[]): string {
+  return sortM2TransportRoutes(values)
+    .map((value) =>
+      [
+        value.routeId,
+        value.fromDistrictId,
+        value.toDistrictId,
+        value.routeKind,
+        value.baseTravelCost,
+        value.baseCapacity
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM2DistrictSeasonality(values: readonly M2DistrictSeasonalityStateV0[]): string {
+  return sortM2DistrictSeasonality(values)
+    .map((value) => `${value.districtId}:${value.regionalCurveId}`)
+    .join(",");
+}
+
+function formatM2RegionalSeasonalCurves(values: readonly M2RegionalSeasonalCurveStateV0[]): string {
+  return sortM2RegionalSeasonalCurves(values)
+    .map((value) => `${value.id}:${formatM2SeasonalMonths(value.monthlyValues)}`)
+    .join(",");
+}
+
+function formatM2SeasonalMonths(values: readonly M2SeasonalMonthStateV0[]): string {
+  return sortM2SeasonalMonths(values)
+    .map((value) =>
+      [
+        value.month,
+        value.monsoonIntensityBps,
+        value.agricultureWorkBps,
+        value.riverNavigabilityBps,
+        value.roadTravelCostBps
+      ].join(":")
+    )
+    .join("+");
 }
 
 function formatDistrictControl(control: DistrictControlState): string {
@@ -1717,6 +2221,13 @@ function validateM2RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
     stateLabel: "M2DistrictMarketState",
     errors
   });
+  validateM2DistrictCoverage({
+    definitionIds: districtIds,
+    runtimeIds: m2.transport.districtSeasonality.map((entry) => entry.districtId),
+    statePath: "state.m2.transport.districtSeasonality",
+    stateLabel: "M2DistrictSeasonalityState",
+    errors
+  });
 
   const populationGroupIds = new Set<number>();
   m2.populationGroups.forEach((group, index) => {
@@ -1765,6 +2276,92 @@ function validateM2RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
         });
       }
     });
+  });
+
+  const routeIds = new Set<number>();
+  const routeDefinitionById = new Map<number, RouteDefinition>();
+  for (const route of world.definitions.routes) {
+    routeDefinitionById.set(route.id, route);
+  }
+  m2.transport.routes.forEach((route, index) => {
+    if (routeIds.has(route.routeId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m2.transport.routes",
+        message: `Duplicate M2RouteTransportEdgeState row for RouteId ${route.routeId}.`
+      });
+    }
+    routeIds.add(route.routeId);
+
+    const definition = routeDefinitionById.get(route.routeId);
+    if (definition === undefined) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m2.transport.routes[${index}].routeId`,
+        message: `M2RouteTransportEdgeState references missing RouteId ${route.routeId}.`
+      });
+    } else {
+      if (route.fromDistrictId !== definition.fromDistrictId) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m2.transport.routes[${index}].fromDistrictId`,
+          message: "M2 route transport fromDistrictId must match RouteDefinition."
+        });
+      }
+      if (route.toDistrictId !== definition.toDistrictId) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m2.transport.routes[${index}].toDistrictId`,
+          message: "M2 route transport toDistrictId must match RouteDefinition."
+        });
+      }
+    }
+
+    if (!districtIds.has(route.fromDistrictId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m2.transport.routes[${index}].fromDistrictId`,
+        message: `M2RouteTransportEdgeState references missing from DistrictId ${route.fromDistrictId}.`
+      });
+    }
+    if (!districtIds.has(route.toDistrictId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m2.transport.routes[${index}].toDistrictId`,
+        message: `M2RouteTransportEdgeState references missing to DistrictId ${route.toDistrictId}.`
+      });
+    }
+  });
+
+  for (const definitionId of routeDefinitionById.keys()) {
+    if (!routeIds.has(definitionId)) {
+      errors.push({
+        code: "missing-runtime-state-row",
+        path: "state.m2.transport.routes",
+        message: `Missing M2RouteTransportEdgeState row for RouteId ${definitionId}.`
+      });
+    }
+  }
+
+  const curveIds = new Set<number>();
+  m2.transport.regionalCurves.forEach((curve) => {
+    if (curveIds.has(curve.id)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m2.transport.regionalCurves",
+        message: `Duplicate M2RegionalSeasonalCurveState row for RegionalSeasonalCurveId ${curve.id}.`
+      });
+    }
+    curveIds.add(curve.id);
+  });
+  m2.transport.districtSeasonality.forEach((entry, index) => {
+    if (!curveIds.has(entry.regionalCurveId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m2.transport.districtSeasonality[${index}].regionalCurveId`,
+        message: `M2DistrictSeasonalityState references missing RegionalSeasonalCurveId ${entry.regionalCurveId}.`
+      });
+    }
   });
 }
 
@@ -1950,13 +2547,18 @@ function isM2StateLike(value: unknown): value is M2EconomyPopulationStateV0 {
 
   const agriculture = value["agriculture"];
   const market = value["market"];
+  const transport = value["transport"];
   return (
     value["schemaVersion"] === 1 &&
     Array.isArray(value["populationGroups"]) &&
     isRecord(agriculture) &&
     Array.isArray(agriculture["districts"]) &&
     isRecord(market) &&
-    Array.isArray(market["districts"])
+    Array.isArray(market["districts"]) &&
+    isRecord(transport) &&
+    Array.isArray(transport["routes"]) &&
+    Array.isArray(transport["districtSeasonality"]) &&
+    Array.isArray(transport["regionalCurves"])
   );
 }
 
