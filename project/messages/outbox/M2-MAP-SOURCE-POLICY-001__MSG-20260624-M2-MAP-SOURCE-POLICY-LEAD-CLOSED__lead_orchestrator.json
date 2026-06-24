@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260624-M2-MAP-SOURCE-POLICY-LEAD-CLOSED",
+  "task_id": "M2-MAP-SOURCE-POLICY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed M2-MAP-SOURCE-POLICY-001 after PR #28 merged into main at 5dac323b7dbd5dfa3d2de6f228bb76c67f32c96b. The M2 map fixture source policy is integrated, both task subthreads are closed, and M2-WORLD-FIXTURE-001 is the next READY task.",
+  "artifacts": [
+    "docs/research/m2-map-fixture-source-policy.md",
+    "project/tasks/active/M2-MAP-SOURCE-POLICY-001.json",
+    "project/tasks/active/M2-WORLD-FIXTURE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/routes/M2-MAP-SOURCE-POLICY-001__CLOSE-20260624-HISTORICAL-RESEARCHER.json",
+    "project/messages/routes/M2-MAP-SOURCE-POLICY-001__CLOSE-20260624-QA-REVIEWER.json",
+    "project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-LEAD-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/m2-map-source-policy-close",
+  "commit": "5dac323b7dbd5dfa3d2de6f228bb76c67f32c96b",
+  "tests_run": [
+    {
+      "command": "gh pr view 28 --json state,mergeCommit,url",
+      "exit_code": 0,
+      "result": "PR #28 MERGED into main with merge commit 5dac323b7dbd5dfa3d2de6f228bb76c67f32c96b."
+    },
+    {
+      "command": "git log --oneline --decorate -5",
+      "exit_code": 0,
+      "result": "HEAD/main/origin/main at 5dac323 docs(research): define M2 map fixture source policy (#28)."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M2-MAP-SOURCE-POLICY-001 is CLOSED and M2-WORLD-FIXTURE-001 is READY."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M2-WORLD-FIXTURE-001 READY simulation_engineer."
+    }
+  ],
+  "decisions": [
+    "Close M2-MAP-SOURCE-POLICY-001 only after confirming PR #28 entered main.",
+    "Clear active task threads after close_agent returned completed statuses for historical_researcher and qa_reviewer.",
+    "Promote M2-WORLD-FIXTURE-001 to READY as the next dependency-satisfied M2 task; do not start implementation in this closure commit."
+  ],
+  "risks": [
+    "M2-WORLD-FIXTURE-001 must follow the newly integrated source policy and still requires its own simulation_engineer handoff and systems_architect review before integration.",
+    "M1 follow-up risks remain active until M2-HOST-HASH-CANARY-001 and M2-BOOT-BOUNDARY-001 are completed."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "After this closure commit is integrated, start M2-WORLD-FIXTURE-001 with simulation_engineer under the current model-routing matrix.",
+  "created_at": "2026-06-24T12:05:09Z"
+}

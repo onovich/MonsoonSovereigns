@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T11:59:47Z",
+  "updated_at": "2026-06-24T12:05:09Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -366,9 +366,7 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_final_accept_review",
       "accepted_task_reopened": false
-    }
-  ],
-  "active_threads": [
+    },
     {
       "thread_id": "019ef974-4285-72a2-a8ac-09005a45e097",
       "role": "historical_researcher",
@@ -377,7 +375,7 @@
       "actual_effort": "high",
       "configured_model_after_amendment": "gpt-5.5",
       "configured_effort_after_amendment": "high",
-      "migration_status": "accepted_pending_close_after_m2_map_source_policy_review",
+      "migration_status": "closed_after_policy_accept_and_main_integration",
       "accepted_task_reopened": false
     },
     {
@@ -388,10 +386,11 @@
       "actual_effort": "xhigh",
       "configured_model_after_amendment": "gpt-5.5",
       "configured_effort_after_amendment": "xhigh",
-      "migration_status": "accepted_pending_close_after_m2_map_source_policy_review",
+      "migration_status": "closed_after_accept_review",
       "accepted_task_reopened": false
     }
   ],
+  "active_threads": [],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -410,6 +409,7 @@
     "SIM-005": "CLOSED after PR #22 entered main at 021c2545438af71455547abf9761cf671f39c280. simulation_engineer gpt-5.5 high implemented Save Envelope v1; qa_reviewer gpt-5.5 xhigh accepted after two REQUEST_CHANGES rounds; lead_orchestrator ran integration gates and closed the task after confirming the merge reached origin/main.",
     "M1-GATE": "CLOSED after PR #24 entered main at cd19e1071d3264c5fd9a2d97bea35d677882d7ec. systems_architect gpt-5.5 xhigh wrote docs/GATE-M1.md; qa_reviewer gpt-5.5 xhigh accepted the gate; lead advanced current_milestone to M2 in the post-merge closure branch.",
     "M2-TASK-GRAPH-001": "CLOSED after PR #26 entered main at 3ded0126d251fc44e0397187750c2fd6c5ebebb6; systems_architect gpt-5.5 xhigh created and revised the M2 task DAG, qa_reviewer gpt-5.5 xhigh accepted Revision 1 and the final allowed_paths scope metadata, and lead_orchestrator closed the task after confirming integration.",
-    "M2-MAP-SOURCE-POLICY-001": "ACCEPTED pending integration; historical_researcher gpt-5.5 high wrote the M2 map fixture source policy, qa_reviewer gpt-5.5 xhigh accepted it, and lead_orchestrator integration gates are in progress."
+    "M2-MAP-SOURCE-POLICY-001": "CLOSED after PR #28 entered main at 5dac323b7dbd5dfa3d2de6f228bb76c67f32c96b; historical_researcher gpt-5.5 high wrote the M2 map fixture source policy, qa_reviewer gpt-5.5 xhigh accepted it, and lead_orchestrator closed the task after confirming integration.",
+    "M2-WORLD-FIXTURE-001": "READY; next M2 task selected after M2-MAP-SOURCE-POLICY-001 integration. Owner simulation_engineer gpt-5.5 high; reviewer systems_architect gpt-5.5 xhigh."
   }
 }
