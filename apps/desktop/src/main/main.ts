@@ -16,6 +16,7 @@ import {
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const rendererRoot = join(currentDir, "../renderer");
+const hostHashCanaryMode = process.env["MONSOON_HOST_HASH_CANARY"] === "1";
 
 function applyContentSecurityPolicy(): void {
   session.defaultSession.webRequest.onHeadersReceived(
@@ -81,7 +82,11 @@ function createMainWindow(): BrowserWindow {
     window.show();
   });
 
-  void window.loadFile(join(rendererRoot, "index.html"));
+  void window.loadFile(
+    hostHashCanaryMode
+      ? join(rendererRoot, "web", "host-hash-canary.html")
+      : join(rendererRoot, "index.html")
+  );
   return window;
 }
 

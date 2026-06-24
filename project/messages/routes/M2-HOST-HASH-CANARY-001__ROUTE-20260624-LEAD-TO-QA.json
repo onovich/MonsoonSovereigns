@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task_id": "M2-HOST-HASH-CANARY-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019efbbf-2992-7b20-95b2-6364133b5307",
+  "branch": "test/m2-host-hash-canary",
+  "source_handoff": "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW__test_engineer.json",
+  "send_input_submission_id": "019efbbf-d3e3-7c62-ae51-4da19b919a1c",
+  "routed_at": "2026-06-24T22:28:42Z",
+  "requested_action": "Review the Chromium and Electron host hash canary and decide ACCEPT, REQUEST_CHANGES, or BLOCK.",
+  "required_handoff": "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-QA-REVIEW__qa_reviewer.json",
+  "route_to_after_accept": "lead_orchestrator",
+  "route_to_after_request_changes": "test_engineer"
+}

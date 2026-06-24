@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-FIX",
+  "task_id": "M2-HOST-HASH-CANARY-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed the strict web typecheck regressions while preserving the real Chromium Dedicated Worker and packaged Electron renderer/Worker host-hash canaries. The browser canary now uses the existing worker-compatible adapter path without adding a direct web dependency on @monsoon/sim-core, the DedicatedWorker typing issue is resolved without weakening strictness, and the host-hash comparison still prints the Node baseline plus Chromium/Electron hashes for hello, command/query, and save/load.",
+  "artifacts": [
+    "apps/web/src/host-hash-canary/compute-host-hash-canary.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-main.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-worker.ts",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/host-hash-canary.html",
+    "apps/web/vite.config.ts",
+    "apps/desktop/scripts/copy-renderer.mjs",
+    "apps/desktop/src/main/main.ts",
+    "apps/sim-runner/src/run-host-hash-canary.mjs",
+    "apps/sim-runner/package.json",
+    "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-FIX__test_engineer.json"
+  ],
+  "branch_or_worktree": "test/m2-host-hash-canary",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree remains dirty only in the intended canary and orchestration paths. Newly written QA review and writer review handoff files are present."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed after removing the direct web package dependency on @monsoon/sim-core and replacing the worker adapter TLA with static imports."
+    },
+    {
+      "command": "pnpm --filter web lint",
+      "exit_code": 0,
+      "result": "ESLint passed for apps/web source and vite.config.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; command/query hash d275faa4 matched Worker-compatible command/query hash d275faa4; save/load hash 28074edd matched Worker-compatible save/load hash 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite built dist/index.html and dist/host-hash-canary.html plus the host-hash-canary worker bundle and shared assets."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only the named monsoonDesktop bridge; renderer file navigation is restricted to the packaged renderer root."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Packaged main, preload, renderer, and platform adapter artifacts to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium",
+      "exit_code": 0,
+      "result": "Command: pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium. Chromium dedicated worker matched Node baseline hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron",
+      "exit_code": 0,
+      "result": "Command: pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron. Electron renderer dedicated worker matched Node baseline hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-HOST-HASH-CANARY-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-HOST-HASH-CANARY-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-FIX__test_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Removed the direct workspace dependency on @monsoon/sim-core from apps/web so the browser package typechecks without traversing sim-core source through the web project.",
+    "Kept the browser canary on the existing worker-compatible adapter path, which still exercises the real deterministic simulation logic while staying inside the browser bundle constraints.",
+    "Replaced the top-level await import in apps/web/src/worker/hello-simulation-adapter.mjs with static imports so Vite can bundle the Dedicated Worker path.",
+    "Kept Electron security unchanged: nodeIntegration remains false, the preload bridge stays narrow, and the canary is activated only by MONSOON_HOST_HASH_CANARY=1."
+  ],
+  "risks": [
+    "apps/web/src/worker/hello-simulation-adapter.mjs still imports sim-core source indirectly, so future type or bundler changes in that adapter should be checked against the canary build path.",
+    "The desktop packaging step still depends on a successful web build so the packaged renderer can include the canary page.",
+    "The repo remains dirty in the lead-owned orchestration files that were already present before this task."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "review",
+  "created_at": "2026-06-24T22:43:03.0276471Z"
+}

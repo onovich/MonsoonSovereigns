@@ -1,7 +1,8 @@
-const simCoreModuleUrl = new URL("../../../../packages/sim-core/src/index.ts", import.meta.url);
-const { runCommandQueryCanaryV1, runHelloSimulation, runSaveLoadCanaryV1 } = await import(
-  simCoreModuleUrl.href
-);
+import {
+  runCommandQueryCanaryV1,
+  runHelloSimulation,
+  runSaveLoadCanaryV1
+} from "../../../../packages/sim-core/src/index.ts";
 
 /**
  * @typedef {import("../../../../packages/protocol/src/index.js").HelloSimulationRequestDto} HelloSimulationRequestDto
