@@ -2,15 +2,16 @@
 
 ## 1. 当前阶段
 
-项目处于 **Pre-production / Foundation Ready**：
+项目处于 **M1 / Deterministic Simulation Kernel**。
 
-- 题材方向已决定。
-- 产品支柱已决定。
-- 首发技术路线已决定。
-- 架构边界已决定。
-- 尚未建立真实代码仓库、可运行原型、历史数据库或美术资产。
+M0 Gate 已通过，见 `docs/GATE-M0.md`：
 
-执行团队的第一职责不是扩写功能，而是按 Roadmap 建立可重复、可测试、可回滚的工程基线。
+- `FOUNDATION-001` 至 `FOUNDATION-008` 均已进入 `CLOSED`。
+- `origin/main` 已包含 M0 工程基线、Codex 编排演练、模型路由修订、PR/nightly CI 与可追溯 artifact。
+- M0 Gate 经 `systems_architect` 与 `qa_reviewer` 独立验收为 `ACCEPT`。
+- Product owner approval：`M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001`。
+
+当前执行重点是按 Roadmap 建立确定性模拟内核；M1 不得扩写正式玩法内容、历史数据库、完整经济/人口/战争系统或未批准的生产依赖。
 
 ## 2. 已冻结决定
 

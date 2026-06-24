@@ -1,0 +1,74 @@
+{
+  "message_id": "MSG-20260624-M0-GATE-SYSTEMS-FINAL-ACCEPT",
+  "task_id": "M0-GATE",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "ACCEPT: Final read-only branch review of chore/m0-exit-enter-m1 finds the M0 exit gate record and MILESTONE-AUTONOMY-AMENDMENT-001 integration acceptable. docs/GATE-M0.md records M0_GATE=PASS with commit, PR, F001-F008 CLOSED, reviewer handoffs, test/CI evidence, risks, and product-owner approval. PROJECT_STATUS.md moves to M1 without changing frozen decisions. goal-mode state clears the M0 human gate, sets current_milestone M1, leaves active_threads empty, and preserves R4/frozen/M5 human gates. docs/27 changes only authorize ordinary M1-M4 auto exits under acceptance matrix, CI/validation, independent reviewer ACCEPT, and no R4/frozen gate; M5 remains a Human Gate.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/GATE-M0.md",
+    "docs/25-decision-history-and-rejected-directions.md",
+    "docs/27-autonomous-goal-mode.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M0-GATE__MSG-20260624-M0-GATE-SYSTEMS-ACCEPT__systems_architect.json",
+    "project/messages/outbox/M0-GATE__MSG-20260624-M0-GATE-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/routes/M0-GATE__CLOSE-20260624-SYSTEMS-ARCHITECT.json",
+    "project/messages/routes/M0-GATE__CLOSE-20260624-QA-REVIEWER.json",
+    "project/messages/routes/M0-GATE__ROUTE-20260624-FINAL-TO-QA.json",
+    "project/messages/routes/M0-GATE__ROUTE-20260624-FINAL-TO-SYSTEMS.json"
+  ],
+  "branch_or_worktree": "chore/m0-exit-enter-m1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "validate-handoff for M0-GATE systems and QA ACCEPT handoffs",
+      "exit_code": 0,
+      "result": "Both M0-GATE handoffs validated."
+    },
+    {
+      "command": "JSON parse for goal-mode, model-routing, thread-registry, and M0-GATE route files",
+      "exit_code": 0,
+      "result": "All reviewed JSON files parsed."
+    },
+    {
+      "command": "taskctl list; taskctl ready",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 through FOUNDATION-008 and PROCESS-001 are CLOSED; ready output empty."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "state shape and duplicate thread checks",
+      "exit_code": 0,
+      "result": "No duplicate thread IDs; active_threads empty; current_milestone=M1; human_gate.required=false with M5/R4/frozen gates preserved."
+    },
+    {
+      "command": "content consistency check for GATE-M0, PROJECT_STATUS, and autonomy amendment text",
+      "exit_code": 0,
+      "result": "Required M0 PASS facts, reviewer IDs, approval ID, PR commit, CI evidence, D-001..D-015 frozen decisions, and M1-M4/M5 autonomy language are present."
+    },
+    {
+      "command": "gh pr checks 9",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: Final systems architecture review approves this branch diff for M0 gate/status integration.",
+    "ACCEPT: MILESTONE-AUTONOMY-AMENDMENT-001 is process-only and does not alter product/platform/core architecture/frozen historical policy decisions.",
+    "ACCEPT: Additional route logs M0-GATE__ROUTE-20260624-FINAL-TO-QA.json and M0-GATE__ROUTE-20260624-FINAL-TO-SYSTEMS.json were reviewed and are valid routing evidence."
+  ],
+  "risks": [
+    "project/model-routing-state.json retains pre-existing historical task_effects text that still says FOUNDATION tasks were DRAFT at amendment time; canonical live task state is taskctl/project/tasks and remains CLOSED, so this is non-blocking.",
+    "Current diff is working-tree/untracked branch payload based on e99b348, not a new commit yet; lead should persist this addendum and commit/integrate normally."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Persist this final systems_architect ACCEPT addendum, then integrate chore/m0-exit-enter-m1 after the standard lead checks. After integration, M1 autonomous execution may proceed under docs/27 constraints.",
+  "created_at": "2026-06-24T04:39:07Z"
+}

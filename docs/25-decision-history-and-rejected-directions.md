@@ -180,3 +180,7 @@ TypeScript + React + PixiJS + Dedicated Web Worker
 2026-06-23 接受受门禁约束的 Autonomous Goal Mode。该决策只建立连续执行、checkpoint、handoff、review、Human Gate 和 GitHub automation 的流程规则，正式记录见 `docs/27-autonomous-goal-mode.md`。
 
 它不重新开放本文件记录的题材、平台、技术栈、架构或历史表达决定。若 autonomous continuation 触及这些决定，必须停止并回到 ADR、证据和人工批准流程。
+
+## 9. MILESTONE-AUTONOMY-AMENDMENT-001
+
+2026-06-24 接受 M1-M4 普通里程碑出口自动化修订。该修订只改变 Autonomous Goal Mode 的流程门禁：当 acceptance matrix 满足、独立 reviewer `ACCEPT`、CI 与验证通过且没有 R4/冻结决策 Human Gate 时，M1-M4 出口可由 `lead_orchestrator` 自动通过。M0 出口已由 `M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001` 授权处理；M5 正式通过仍保留 Human Gate。正式记录见 `docs/27-autonomous-goal-mode.md`。
