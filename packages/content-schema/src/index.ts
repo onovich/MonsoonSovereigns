@@ -294,9 +294,15 @@ function validateM2Root(input: Record<string, unknown>, errors: ContentSchemaErr
 }
 
 function validateM2Provenance(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
-  validateExactString(input, "sourceCategory", "validation-only-fixture", errors);
-  validateExactString(input, "confidence", "LOW", errors);
-  validateExactString(input, "policyId", "M2-MAP-SOURCE-POLICY-001", errors);
+  validateExactString(
+    input,
+    "sourceCategory",
+    "validation-only-fixture",
+    errors,
+    "provenance.sourceCategory"
+  );
+  validateExactString(input, "confidence", "LOW", errors, "provenance.confidence");
+  validateExactString(input, "policyId", "M2-MAP-SOURCE-POLICY-001", errors, "provenance.policyId");
 }
 
 function validateM2District(input: unknown, path: string, errors: ContentSchemaError[]): void {
@@ -379,7 +385,7 @@ function validateM2RegionalCurve(input: unknown, path: string, errors: ContentSc
     /^content\.m2\.prototype\.curve_\d{3}$/u,
     errors
   );
-  validateArray(input, "monthlyValues", errors);
+  validateArray(input, "monthlyValues", errors, `${path}.monthlyValues`);
   const values = input["monthlyValues"];
   if (Array.isArray(values)) {
     if (values.length !== 12) {
@@ -487,7 +493,7 @@ function validateM2MapGeometry(input: unknown, path: string, errors: ContentSche
   } else {
     validateM2Point(input["anchor"], `${path}.anchor`, errors);
   }
-  validateArray(input, "points", errors);
+  validateArray(input, "points", errors, `${path}.points`);
   const points = input["points"];
   if (Array.isArray(points)) {
     points.forEach((point, index) => validateM2Point(point, `${path}.points[${index}]`, errors));
@@ -695,7 +701,8 @@ function validateExactString(
   record: Record<string, unknown>,
   key: string,
   expected: string,
-  errors: ContentSchemaError[]
+  errors: ContentSchemaError[],
+  path = key
 ): void {
   if (record[key] === expected) {
     return;
@@ -703,8 +710,8 @@ function validateExactString(
 
   errors.push({
     code: "invalid-schema",
-    path: key,
-    message: `${key} must be ${expected}.`
+    path,
+    message: `${path} must be ${expected}.`
   });
 }
 
@@ -809,7 +816,8 @@ function validateIntegerInRange(
 function validateArray(
   record: Record<string, unknown>,
   key: string,
-  errors: ContentSchemaError[]
+  errors: ContentSchemaError[],
+  path = key
 ): void {
   if (Array.isArray(record[key])) {
     return;
@@ -817,8 +825,8 @@ function validateArray(
 
   errors.push({
     code: "invalid-schema",
-    path: key,
-    message: `${key} must be an array.`
+    path,
+    message: `${path} must be an array.`
   });
 }
 

@@ -9,6 +9,7 @@ import {
   type M1GraphFixtureSourceV0,
   type M2WorldDistrictSourceV0,
   type M2WorldMapGeometrySourceV0,
+  type M2WorldMapPointSourceV0,
   type M2WorldRegionalSeasonalCurveSourceV0,
   type M2WorldRouteSourceV0,
   type M2WorldSettlementSourceV0,
@@ -45,6 +46,7 @@ export type ContentCompileErrorCode =
   | "invalid-geometry"
   | "invalid-route"
   | "invalid-seasonal-curve"
+  | "isolated-district"
   | "isolated-node"
   | "unstable-order";
 
@@ -233,10 +235,12 @@ function validateM2WorldSemantics(source: M2WorldFixtureSourceV0): readonly Cont
   validateStableOrderAndUniqueIds(source.regionalSeasonalCurves, "regionalSeasonalCurves", errors);
   validateStableOrderAndUniqueIds(source.routes, "routes", errors);
   validateStableOrderAndUniqueIds(source.mapGeometries, "mapGeometries", errors);
+  validateM2DisplayNameKeyReferences(source, errors);
   validateM2References(source, errors);
   validateM2Routes(source, errors);
   validateM2SeasonalCurves(source, errors);
   validateM2Geometries(source, errors);
+  validateM2Connectivity(source, errors);
 
   return errors;
 }
@@ -268,6 +272,53 @@ function validateStableOrderAndUniqueIds(
 
     seen.add(entry.sourceId);
     previousSourceId = entry.sourceId;
+  });
+}
+
+function validateM2DisplayNameKeyReferences(
+  source: M2WorldFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  validateDisplayNameKeyReferences(
+    source.districts,
+    "districts",
+    "district-",
+    "content.m2.prototype.district_",
+    errors
+  );
+  validateDisplayNameKeyReferences(
+    source.settlements,
+    "settlements",
+    "settlement-",
+    "content.m2.prototype.settlement_",
+    errors
+  );
+  validateDisplayNameKeyReferences(
+    source.regionalSeasonalCurves,
+    "regionalSeasonalCurves",
+    "curve-",
+    "content.m2.prototype.curve_",
+    errors
+  );
+}
+
+function validateDisplayNameKeyReferences(
+  entries: readonly { readonly sourceId: string; readonly displayNameKey: string }[],
+  path: string,
+  sourceIdPrefix: string,
+  displayNameKeyPrefix: string,
+  errors: ContentCompileError[]
+): void {
+  entries.forEach((entry, index) => {
+    const ordinal = entry.sourceId.slice(sourceIdPrefix.length);
+    const expectedDisplayNameKey = `${displayNameKeyPrefix}${ordinal}`;
+    if (entry.displayNameKey !== expectedDisplayNameKey) {
+      errors.push({
+        code: "bad-reference",
+        path: `${path}[${index}].displayNameKey`,
+        message: `${path} ${entry.sourceId} displayNameKey must be ${expectedDisplayNameKey}.`
+      });
+    }
   });
 }
 
@@ -460,6 +511,16 @@ function validateM2SeasonalCurves(
 }
 
 function validateM2Geometries(source: M2WorldFixtureSourceV0, errors: ContentCompileError[]): void {
+  const districtBySourceId = new Map(
+    source.districts.map((district) => [district.sourceId, district])
+  );
+  const settlementBySourceId = new Map(
+    source.settlements.map((settlement) => [settlement.sourceId, settlement])
+  );
+  const geometryBySourceId = new Map(
+    source.mapGeometries.map((geometry) => [geometry.sourceId, geometry])
+  );
+
   source.mapGeometries.forEach((geometry, index) => {
     if (geometry.ownerKind === "district" && geometry.geometryKind !== "polygon") {
       errors.push({
@@ -485,6 +546,24 @@ function validateM2Geometries(source: M2WorldFixtureSourceV0, errors: ContentCom
       });
     }
 
+    if (geometry.geometryKind === "polygon" && geometry.points.length >= 3) {
+      if (polygonTwiceArea(geometry.points) === 0) {
+        errors.push({
+          code: "invalid-geometry",
+          path: `mapGeometries[${index}].points`,
+          message: `Polygon geometry ${geometry.sourceId} must enclose non-zero area.`
+        });
+      }
+
+      if (!isPointInOrOnPolygon(geometry.anchor, geometry.points)) {
+        errors.push({
+          code: "invalid-geometry",
+          path: `mapGeometries[${index}].anchor`,
+          message: `Polygon geometry ${geometry.sourceId} anchor must lie inside the polygon.`
+        });
+      }
+    }
+
     if (geometry.geometryKind === "point" && geometry.points.length !== 0) {
       errors.push({
         code: "invalid-geometry",
@@ -492,7 +571,137 @@ function validateM2Geometries(source: M2WorldFixtureSourceV0, errors: ContentCom
         message: `Point geometry ${geometry.sourceId} must not contain polygon points.`
       });
     }
+
+    if (geometry.geometryKind === "point" && geometry.ownerKind === "settlement") {
+      const settlement = settlementBySourceId.get(geometry.ownerId);
+      const district =
+        settlement === undefined ? undefined : districtBySourceId.get(settlement.districtId);
+      const districtGeometry =
+        district === undefined ? undefined : geometryBySourceId.get(district.mapGeometryId);
+      if (
+        districtGeometry !== undefined &&
+        districtGeometry.geometryKind === "polygon" &&
+        districtGeometry.points.length >= 3 &&
+        !isPointInOrOnPolygon(geometry.anchor, districtGeometry.points)
+      ) {
+        errors.push({
+          code: "invalid-geometry",
+          path: `mapGeometries[${index}].anchor`,
+          message: `Settlement geometry ${geometry.sourceId} anchor must lie inside its owning district polygon.`
+        });
+      }
+    }
   });
+}
+
+function validateM2Connectivity(
+  source: M2WorldFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  const adjacency = new Map<string, Set<string>>();
+  for (const district of source.districts) {
+    adjacency.set(district.sourceId, new Set<string>());
+  }
+
+  for (const route of source.routes) {
+    const fromNeighbors = adjacency.get(route.fromDistrictId);
+    const toNeighbors = adjacency.get(route.toDistrictId);
+    if (fromNeighbors !== undefined && toNeighbors !== undefined) {
+      fromNeighbors.add(route.toDistrictId);
+      toNeighbors.add(route.fromDistrictId);
+    }
+  }
+
+  const startDistrict = source.districts[0];
+  const visited = new Set<string>();
+  if (startDistrict !== undefined) {
+    const pending = [startDistrict.sourceId];
+    while (pending.length > 0) {
+      const current = pending.shift();
+      if (current === undefined || visited.has(current)) {
+        continue;
+      }
+      visited.add(current);
+      const neighbors = adjacency.get(current);
+      if (neighbors !== undefined) {
+        for (const neighbor of sortText([...neighbors])) {
+          pending.push(neighbor);
+        }
+      }
+    }
+  }
+
+  source.districts.forEach((district, index) => {
+    const degree = adjacency.get(district.sourceId)?.size ?? 0;
+    if (degree === 0 || !visited.has(district.sourceId)) {
+      errors.push({
+        code: "isolated-district",
+        path: `districts[${index}].sourceId`,
+        message: `District ${district.sourceId} is isolated or disconnected from the M2 route graph.`
+      });
+    }
+  });
+}
+
+function polygonTwiceArea(points: readonly M2WorldMapPointSourceV0[]): number {
+  let twiceArea = 0;
+  for (let index = 0; index < points.length; index += 1) {
+    const current = points[index];
+    const next = points[(index + 1) % points.length];
+    if (current === undefined || next === undefined) {
+      throw new Error("Expected polygon point.");
+    }
+    twiceArea += current.x * next.y - next.x * current.y;
+  }
+
+  return twiceArea;
+}
+
+function isPointInOrOnPolygon(
+  point: M2WorldMapPointSourceV0,
+  polygon: readonly M2WorldMapPointSourceV0[]
+): boolean {
+  let inside = false;
+  for (let index = 0; index < polygon.length; index += 1) {
+    const current = polygon[index];
+    const next = polygon[(index + 1) % polygon.length];
+    if (current === undefined || next === undefined) {
+      throw new Error("Expected polygon point.");
+    }
+
+    if (isPointOnSegment(point, current, next)) {
+      return true;
+    }
+
+    if (current.y > point.y !== next.y > point.y) {
+      const left = (next.x - current.x) * (point.y - current.y);
+      const right = (point.x - current.x) * (next.y - current.y);
+      const crossesRight = next.y > current.y ? left > right : left < right;
+      if (crossesRight) {
+        inside = !inside;
+      }
+    }
+  }
+
+  return inside;
+}
+
+function isPointOnSegment(
+  point: M2WorldMapPointSourceV0,
+  start: M2WorldMapPointSourceV0,
+  end: M2WorldMapPointSourceV0
+): boolean {
+  const cross = (point.x - start.x) * (end.y - start.y) - (point.y - start.y) * (end.x - start.x);
+  if (cross !== 0) {
+    return false;
+  }
+
+  return (
+    point.x >= Math.min(start.x, end.x) &&
+    point.x <= Math.max(start.x, end.x) &&
+    point.y >= Math.min(start.y, end.y) &&
+    point.y <= Math.max(start.y, end.y)
+  );
 }
 
 function validateConnectivity(source: M1GraphFixtureSourceV0, errors: ContentCompileError[]): void {

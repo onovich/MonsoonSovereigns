@@ -1,0 +1,361 @@
+{
+  "message_id": "MSG-20260624-M2-CONTENT-GUARDS-QA-REVIEW",
+  "task_id": "M2-CONTENT-GUARDS-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "route_to": "lead_orchestrator",
+  "summary": "Independent QA review accepts M2-CONTENT-GUARDS-001. The actual diff adds compile/schema guards for malformed and zero-area M2 polygons, invalid district and settlement anchors, duplicate stable IDs, disconnected M2 district route graphs, invalid route endpoint references, cross-content references, displayNameKey/sourceId mismatches, and nested provenance schema paths. Positive tests, bad-map negative tests, bad-reference negative tests, scope/path checks, dependency safety, and M2 world-fixture stability are satisfied.",
+  "artifacts": [
+    "project/messages/outbox/M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-QA-REVIEW__qa_reviewer.json",
+    "packages/content-schema/src/index.ts",
+    "apps/content-tools/src/index.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json"
+  ],
+  "branch_or_worktree": "feat/m2-content-guards / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 5 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 3 tests."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Default content validation passed: m1.abstract-graph-30 nodes=30 edges=60 manifestHash=4a438525."
+    },
+    {
+      "command": "node --experimental-strip-types apps\\content-tools\\src\\cli.ts validate content-source\\m2-fixtures\\prototype-world-30-districts.json",
+      "exit_code": 0,
+      "result": "M2 fixture validation passed: districts=30 settlements=10 regionalSeasonalCurves=4 routes=42 mapGeometries=40 manifestHash=9ab72b0b."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { readFile } from 'node:fs/promises'; import { compileContentPackV0OrThrow } from './apps/content-tools/src/index.ts'; const source=JSON.parse(await readFile('content-source/m2-fixtures/prototype-world-30-districts.json','utf8')); const first=compileContentPackV0OrThrow(source); const second=compileContentPackV0OrThrow(structuredClone(source)); if (first.kind!=='runtime-m2-world-content-pack-v0'||second.kind!=='runtime-m2-world-content-pack-v0') throw new Error('expected M2 runtime packs'); const result={manifestHash:first.manifest.manifestHash,sameHash:first.manifest.manifestHash===second.manifest.manifestHash,sameDistrictOrder:JSON.stringify(first.districts.map(d=>d.sourceId))===JSON.stringify(second.districts.map(d=>d.sourceId)),sameSettlementOrder:JSON.stringify(first.settlements.map(s=>s.sourceId))===JSON.stringify(second.settlements.map(s=>s.sourceId)),sameRouteOrder:JSON.stringify(first.routes.map(r=>r.sourceId))===JSON.stringify(second.routes.map(r=>r.sourceId))}; console.log(JSON.stringify(result)); if(result.manifestHash!=='9ab72b0b'||!result.sameHash||!result.sameDistrictOrder||!result.sameSettlementOrder||!result.sameRouteOrder) process.exitCode=1;\"",
+      "exit_code": 0,
+      "result": "{\"manifestHash\":\"9ab72b0b\",\"sameHash\":true,\"sameDistrictOrder\":true,\"sameSettlementOrder\":true,\"sameRouteOrder\":true}"
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { readFile } from 'node:fs/promises'; import { compileContentPackV0 } from './apps/content-tools/src/index.ts'; const base=JSON.parse(await readFile('content-source/m2-fixtures/prototype-world-30-districts.json','utf8')); const run=(name,mutate,expected)=>{ const source=structuredClone(base); mutate(source); const result=compileContentPackV0(source); const got=new Set(result.errors.map((error)=>error.code+':'+error.path)); const missing=expected.filter(([code,path])=>!got.has(code+':'+path)); if(missing.length>0){ console.error(name+' missing '+JSON.stringify(missing)+' got '+JSON.stringify(result.errors)); process.exitCode=1; } else { console.log(name+' ok '+expected.map(([code,path])=>code+':'+path).join(' | ')); } }; run('malformed-polygon', s=>{ s.mapGeometries[1].points=s.mapGeometries[1].points.slice(0,2); }, [['invalid-geometry','mapGeometries[1].points']]); run('zero-area-polygon', s=>{ s.mapGeometries[0].points=[{x:0,y:0},{x:10,y:10},{x:20,y:20}]; }, [['invalid-geometry','mapGeometries[0].points']]); run('district-anchor-outside', s=>{ s.mapGeometries[0].anchor={x:999999,y:999999}; }, [['invalid-geometry','mapGeometries[0].anchor']]); run('settlement-anchor-outside', s=>{ s.mapGeometries[31].anchor={x:999999,y:999999}; }, [['invalid-geometry','mapGeometries[31].anchor']]); run('duplicate-stable-ids', s=>{ s.routes[1].sourceId='route-001'; }, [['duplicate-id','routes[1].sourceId']]); run('disconnected-route-graph', s=>{ s.routes=s.routes.filter((route)=>route.fromDistrictId!=='district-030'&&route.toDistrictId!=='district-030'); }, [['isolated-district','districts[29].sourceId']]); run('invalid-route-endpoints', s=>{ s.routes[0].fromDistrictId='district-999'; s.routes[1].toDistrictId='district-999'; }, [['bad-reference','routes[0].fromDistrictId'],['bad-reference','routes[1].toDistrictId']]); run('cross-content-refs', s=>{ s.districts[0].regionalCurveId='curve-999'; s.settlements[0].districtId='district-999'; s.mapGeometries[0].ownerId='district-999'; }, [['bad-reference','districts[0].regionalCurveId'],['bad-reference','settlements[0].districtId'],['bad-reference','mapGeometries[0].ownerId']]); run('localization-keys', s=>{ s.districts[0].displayNameKey='content.m2.prototype.district_002'; s.settlements[0].displayNameKey='content.m2.prototype.settlement_002'; s.regionalSeasonalCurves[0].displayNameKey='content.m2.prototype.curve_002'; }, [['bad-reference','districts[0].displayNameKey'],['bad-reference','settlements[0].displayNameKey'],['bad-reference','regionalSeasonalCurves[0].displayNameKey']]); run('manifest-provenance', s=>{ s.provenance={sourceCategory:'production-content',confidence:'HIGH',policyId:'MISSING-POLICY'}; }, [['invalid-schema','provenance.sourceCategory'],['invalid-schema','provenance.confidence'],['invalid-schema','provenance.policyId']]);\"",
+      "exit_code": 0,
+      "result": "All independent negative mutations returned expected code:path pairs."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "Root eslint completed successfully."
+    },
+    {
+      "command": "node .agents\\skills\\monsoon-studio-orchestrator\\scripts\\taskctl.mjs validate M2-CONTENT-GUARDS-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-CONTENT-GUARDS-001.json."
+    },
+    {
+      "command": "node .agents\\skills\\monsoon-studio-orchestrator\\scripts\\validate-handoff.mjs project\\messages\\outbox\\M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff -- apps\\web apps\\desktop packages\\client-core packages\\map-renderer packages\\ui packages\\sim-core content-source\\historical docs\\decisions docs\\GATE-M0.md docs\\GATE-M1.md docs\\11-roadmap.md docs\\23-milestone-acceptance-matrix.md docs\\27-autonomous-goal-mode.md PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md --stat",
+      "exit_code": 0,
+      "result": "No output; forbidden tracked-path diff is empty."
+    },
+    {
+      "command": "git diff -- package.json pnpm-lock.yaml --stat",
+      "exit_code": 0,
+      "result": "No output; no dependency or lockfile changes."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['project/tasks/active/M2-CONTENT-GUARDS-001.json','content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json']; for (const f of files) JSON.parse(fs.readFileSync(f,'utf8')); const manifest=JSON.parse(fs.readFileSync(files[1],'utf8')); const failures=[]; if (manifest.kind!=='m2.validation-only-bad-fixture-manifest') failures.push('kind'); if (manifest.historicity!=='FICTIONAL') failures.push('historicity'); if (manifest.provenance?.sourceCategory!=='validation-only-fixture'||manifest.provenance?.confidence!=='LOW'||manifest.provenance?.policyId!=='M2-MAP-SOURCE-POLICY-001') failures.push('provenance'); if (!Array.isArray(manifest.scopeNotes)||!manifest.scopeNotes.join(' ').includes('Not production content')) failures.push('scopeNotes'); if (!Array.isArray(manifest.cases)||manifest.cases.length!==5) failures.push('cases'); for (const c of manifest.cases||[]) if (!c.caseId||!['bad-map','bad-reference'].includes(c.category)||c.sourceFixture!=='prototype-world-30-districts.json'||!Array.isArray(c.expectedErrorCodes)||!Array.isArray(c.expectedPaths)||c.expectedErrorCodes.length===0||c.expectedPaths.length===0) failures.push('case:'+JSON.stringify(c)); if (failures.length) { console.error(failures.join(',')); process.exit(1); } console.log('JSON parse/shape ok files='+files.length+' cases='+manifest.cases.length);\"",
+      "exit_code": 0,
+      "result": "JSON parse/shape ok files=2 cases=5."
+    },
+    {
+      "command": "node -e \"JSON.parse(require('fs').readFileSync('project/messages/outbox/M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-QA-REVIEW__qa_reviewer.json','utf8')); console.log('qa handoff json ok');\"",
+      "exit_code": 0,
+      "result": "qa handoff json ok."
+    },
+    {
+      "command": "node .agents\\skills\\monsoon-studio-orchestrator\\scripts\\validate-handoff.mjs project\\messages\\outbox\\M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-QA-REVIEW__qa_reviewer.json."
+    }
+  ],
+  "decisions": [
+    "Accepted the implementation because compiler/schema behavior and tests satisfy all M2-CONTENT-GUARDS-001 acceptance criteria.",
+    "Treated validation-only bad fixture material as acceptable because it is a manifest plus test-driven mutations, explicitly FICTIONAL/LOW and tied to M2-MAP-SOURCE-POLICY-001.",
+    "Did not require a writer fix for lead/coordination state diffs because forbidden product/runtime paths, dependency files, sim-core, UI, historical content, and docs gates are unchanged."
+  ],
+  "risks": [
+    "M2 connectivity currently rejects any disconnected district because there is no M2 explicit-isolation marker. This matches the task acceptance criteria; future intentional island support should add an explicit schema marker and tests.",
+    "The validation-only bad fixture material is a manifest and test-driven mutations of the valid fixture, not standalone bad production-like fixtures. The manifest clearly marks the cases as validation-only FICTIONAL data."
+  ],
+  "blockers": [],
+  "reviewed_artifacts": [
+    "project/messages/outbox/M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW__simulation_engineer.json",
+    "project/tasks/active/M2-CONTENT-GUARDS-001.json",
+    "docs/research/m2-map-fixture-source-policy.md",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json",
+    "packages/content-schema/src/index.ts",
+    "apps/content-tools/src/index.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-tools-compiler.test.ts"
+  ],
+  "acceptance": {
+    "actual_diff_satisfied": true,
+    "positive_tests_satisfied": true,
+    "bad_map_negative_tests_satisfied": true,
+    "bad_reference_negative_tests_satisfied": true,
+    "validation_only_fixture_marking_satisfied": true,
+    "path_and_scope_satisfied": true,
+    "dependency_safety_satisfied": true,
+    "world_fixture_stability_satisfied": true,
+    "notes": [
+      "Implementation/test changes are in content-schema, content-tools, tests, task metadata, messages, and the validation-only M2 fixture manifest. Forbidden tracked product/runtime paths have no diff.",
+      "Workspace also contains lead/coordination state diffs in project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, and untracked route messages. These are not implementation artifacts and do not change product/runtime behavior.",
+      "No package.json or pnpm-lock.yaml diff was present. No sim-core, UI, Electron, historical content, ADR, gate, roadmap, manifest checksum, or validation report path changed.",
+      "Valid M2 fixture still validates with manifestHash 9ab72b0b and repeated compile preserves district, settlement, and route order."
+    ]
+  },
+  "commands_run": [
+    {
+      "command": "Get-Content -Raw C:\\Users\\Administrator\\.codex\\skills\\checkandgoal\\SKILL.md",
+      "exit_code": 0,
+      "key_output": "Read checkandgoal acceptance workflow instructions."
+    },
+    {
+      "command": "Get-Content -Raw PROJECT_STATUS.md",
+      "exit_code": 0,
+      "key_output": "Project is in M2; frozen decisions include deterministic simulation, TypeScript stack, no Rust/WASM, no server/ORM/runtime SQL, and historical-policy constraints."
+    },
+    {
+      "command": "Get-Content -Raw project\\tasks\\active\\M2-CONTENT-GUARDS-001.json",
+      "exit_code": 0,
+      "key_output": "Task is REVIEW; acceptance criteria require bad M2 map/reference rejection, validation-only bad fixtures, deterministic valid fixture, and no scope/dependency/runtime expansion."
+    },
+    {
+      "command": "Get-Content -Raw project\\messages\\outbox\\M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "key_output": "Writer handoff is REVIEW and claims guard additions, validation-only bad fixture manifest, tests, and M2 hash 9ab72b0b."
+    },
+    {
+      "command": "Get-Content -Raw docs\\research\\m2-map-fixture-source-policy.md",
+      "exit_code": 0,
+      "key_output": "Policy allows bad-map validation fixtures only as FICTIONAL validation data and blocks treating them as production or historical content."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "key_output": "On feat/m2-content-guards. Modified implementation/test files plus coordination state files; untracked validation-only manifest, writer handoff, and route messages."
+    },
+    {
+      "command": "git diff --name-status",
+      "exit_code": 0,
+      "key_output": "Tracked diffs: apps/content-tools/src/index.ts, packages/content-schema/src/index.ts, project coordination/task files, tests/content-schema-graph-source.test.ts, tests/content-tools-compiler.test.ts."
+    },
+    {
+      "command": "git diff --stat",
+      "exit_code": 0,
+      "key_output": "8 tracked files changed, 561 insertions, 26 deletions; implementation change concentrated in content-tools/content-schema/tests plus coordination metadata."
+    },
+    {
+      "command": "git diff --cached --name-status",
+      "exit_code": 0,
+      "key_output": "No staged changes."
+    },
+    {
+      "command": "git diff -- packages/content-schema/src/index.ts",
+      "exit_code": 0,
+      "key_output": "Schema diff adds nested provenance paths and nested array paths for M2 monthlyValues/mapGeometry points."
+    },
+    {
+      "command": "git diff -- apps/content-tools/src/index.ts",
+      "exit_code": 0,
+      "key_output": "Compiler diff adds M2 displayNameKey/sourceId guard, polygon area/anchor checks, settlement-in-district anchor check, and route graph connectivity guard."
+    },
+    {
+      "command": "Get-Content -Raw content-source\\m2-fixtures\\validation-only-bad-fixtures.manifest.json",
+      "exit_code": 0,
+      "key_output": "Manifest is kind m2.validation-only-bad-fixture-manifest, historicity FICTIONAL, provenance validation-only-fixture/LOW/M2-MAP-SOURCE-POLICY-001, with five bad-map/bad-reference cases and Not production content scope note."
+    },
+    {
+      "command": "git diff -- tests/content-tools-compiler.test.ts",
+      "exit_code": 0,
+      "key_output": "Compiler tests add validation-only manifest test, malformed/anchor geometry negatives, duplicate/disconnected graph negatives, localization key mismatch negatives, nested provenance path negative, and repeated M2 compile stability."
+    },
+    {
+      "command": "git diff -- tests/content-schema-graph-source.test.ts",
+      "exit_code": 0,
+      "key_output": "Schema tests add nested provenance.sourceCategory/confidence/policyId error path coverage."
+    },
+    {
+      "command": "Get-Content -Raw content-source\\m2-fixtures\\prototype-world-30-districts.json",
+      "exit_code": 0,
+      "key_output": "Valid M2 fixture remains FICTIONAL, validation-only-fixture/LOW/M2-MAP-SOURCE-POLICY-001, 30 districts, 10 settlements, 4 curves, 42 routes, and 40 map geometries."
+    },
+    {
+      "command": "rg -n \"function validateM2References|function validateM2Routes|function validateM2SeasonalCurves|function validateM2Geometries|function validateM2Connectivity|function compileContentPackV0\" apps/content-tools/src/index.ts",
+      "exit_code": 0,
+      "key_output": "Located M2 compile and semantic guard functions for direct inspection."
+    },
+    {
+      "command": "rg -n \"function validateM2Root|function validateM2District|function validateM2Settlement|function validateM2Route|function validateM2MapGeometry|function validateExactString|function validateArray\" packages/content-schema/src/index.ts",
+      "exit_code": 0,
+      "key_output": "Located M2 schema and helper validation functions for direct inspection."
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|node:fs|fs/promises|child_process|eval\\(|Function\\(\" packages/content-schema apps/content-tools packages/sim-core",
+      "exit_code": 0,
+      "key_output": "Only apps/content-tools/src/cli.ts imports node:fs/promises; no Math.random, Date.now, child_process, eval, Function, or sim-core fs use found in searched paths."
+    },
+    {
+      "command": "rg -n \"M2-CONTENT-GUARDS-001|bad references|manifest entries|validation-only-bad\" project docs tests packages apps content-source",
+      "exit_code": 0,
+      "key_output": "Confirmed task acceptance wording and references to the validation-only bad fixture manifest and tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "key_output": "Vitest passed: 1 file, 5 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "key_output": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "key_output": "Vitest passed: 1 file, 3 tests."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "key_output": "Default content validation passed: m1.abstract-graph-30 nodes=30 edges=60 manifestHash=4a438525."
+    },
+    {
+      "command": "node .agents\\skills\\monsoon-studio-orchestrator\\scripts\\taskctl.mjs validate M2-CONTENT-GUARDS-001",
+      "exit_code": 0,
+      "key_output": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-CONTENT-GUARDS-001.json."
+    },
+    {
+      "command": "node .agents\\skills\\monsoon-studio-orchestrator\\scripts\\validate-handoff.mjs project\\messages\\outbox\\M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "key_output": "VALID writer handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "key_output": "No whitespace errors."
+    },
+    {
+      "command": "node --experimental-strip-types apps\\content-tools\\src\\cli.ts validate content-source\\m2-fixtures\\prototype-world-30-districts.json",
+      "exit_code": 0,
+      "key_output": "Content validation passed: m2.prototype-world-30-districts districts=30 settlements=10 regionalSeasonalCurves=4 routes=42 mapGeometries=40 manifestHash=9ab72b0b."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { readFile } from 'node:fs/promises'; import { compileContentPackV0OrThrow } from './apps/content-tools/src/index.ts'; const source=JSON.parse(await readFile('content-source/m2-fixtures/prototype-world-30-districts.json','utf8')); const first=compileContentPackV0OrThrow(source); const second=compileContentPackV0OrThrow(structuredClone(source)); if (first.kind!=='runtime-m2-world-content-pack-v0'||second.kind!=='runtime-m2-world-content-pack-v0') throw new Error('expected M2 runtime packs'); const result={manifestHash:first.manifest.manifestHash,sameHash:first.manifest.manifestHash===second.manifest.manifestHash,sameDistrictOrder:JSON.stringify(first.districts.map(d=>d.sourceId))===JSON.stringify(second.districts.map(d=>d.sourceId)),sameSettlementOrder:JSON.stringify(first.settlements.map(s=>s.sourceId))===JSON.stringify(second.settlements.map(s=>s.sourceId)),sameRouteOrder:JSON.stringify(first.routes.map(r=>r.sourceId))===JSON.stringify(second.routes.map(r=>r.sourceId))}; console.log(JSON.stringify(result)); if(result.manifestHash!=='9ab72b0b'||!result.sameHash||!result.sameDistrictOrder||!result.sameSettlementOrder||!result.sameRouteOrder) process.exitCode=1;\"",
+      "exit_code": 0,
+      "key_output": "{\"manifestHash\":\"9ab72b0b\",\"sameHash\":true,\"sameDistrictOrder\":true,\"sameSettlementOrder\":true,\"sameRouteOrder\":true}"
+    },
+    {
+      "command": "git diff -- apps\\web apps\\desktop packages\\client-core packages\\map-renderer packages\\ui packages\\sim-core content-source\\historical docs\\decisions docs\\GATE-M0.md docs\\GATE-M1.md docs\\11-roadmap.md docs\\23-milestone-acceptance-matrix.md docs\\27-autonomous-goal-mode.md PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md --stat",
+      "exit_code": 0,
+      "key_output": "No output; forbidden tracked-path diff is empty."
+    },
+    {
+      "command": "git diff -- package.json pnpm-lock.yaml --stat",
+      "exit_code": 0,
+      "key_output": "No output; no dependency or lockfile changes."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { readFile } from 'node:fs/promises'; import { compileContentPackV0 } from './apps/content-tools/src/index.ts'; const base=JSON.parse(await readFile('content-source/m2-fixtures/prototype-world-30-districts.json','utf8')); const run=(name,mutate,expected)=>{ const source=structuredClone(base); mutate(source); const result=compileContentPackV0(source); const got=new Set(result.errors.map((error)=>error.code+':'+error.path)); const missing=expected.filter(([code,path])=>!got.has(code+':'+path)); if(missing.length>0){ console.error(name+' missing '+JSON.stringify(missing)+' got '+JSON.stringify(result.errors)); process.exitCode=1; } else { console.log(name+' ok '+expected.map(([code,path])=>code+':'+path).join(' | ')); } }; run('malformed-polygon', s=>{ s.mapGeometries[1].points=s.mapGeometries[1].points.slice(0,2); }, [['invalid-geometry','mapGeometries[1].points']]); run('zero-area-polygon', s=>{ s.mapGeometries[0].points=[{x:0,y:0},{x:10,y:10},{x:20,y:20}]; }, [['invalid-geometry','mapGeometries[0].points']]); run('district-anchor-outside', s=>{ s.mapGeometries[0].anchor={x:999999,y:999999}; }, [['invalid-geometry','mapGeometries[0].anchor']]); run('settlement-anchor-outside', s=>{ s.mapGeometries[31].anchor={x:999999,y:999999}; }, [['invalid-geometry','mapGeometries[31].anchor']]); run('duplicate-stable-ids', s=>{ s.routes[1].sourceId='route-001'; }, [['duplicate-id','routes[1].sourceId']]); run('disconnected-route-graph', s=>{ s.routes=s.routes.filter((route)=>route.fromDistrictId!=='district-030'&&route.toDistrictId!=='district-030'); }, [['isolated-district','districts[29].sourceId']]); run('invalid-route-endpoints', s=>{ s.routes[0].fromDistrictId='district-999'; s.routes[1].toDistrictId='district-999'; }, [['bad-reference','routes[0].fromDistrictId'],['bad-reference','routes[1].toDistrictId']]); run('cross-content-refs', s=>{ s.districts[0].regionalCurveId='curve-999'; s.settlements[0].districtId='district-999'; s.mapGeometries[0].ownerId='district-999'; }, [['bad-reference','districts[0].regionalCurveId'],['bad-reference','settlements[0].districtId'],['bad-reference','mapGeometries[0].ownerId']]); run('localization-keys', s=>{ s.districts[0].displayNameKey='content.m2.prototype.district_002'; s.settlements[0].displayNameKey='content.m2.prototype.settlement_002'; s.regionalSeasonalCurves[0].displayNameKey='content.m2.prototype.curve_002'; }, [['bad-reference','districts[0].displayNameKey'],['bad-reference','settlements[0].displayNameKey'],['bad-reference','regionalSeasonalCurves[0].displayNameKey']]); run('manifest-provenance', s=>{ s.provenance={sourceCategory:'production-content',confidence:'HIGH',policyId:'MISSING-POLICY'}; }, [['invalid-schema','provenance.sourceCategory'],['invalid-schema','provenance.confidence'],['invalid-schema','provenance.policyId']]);\"",
+      "exit_code": 0,
+      "key_output": "All independent negative mutations returned expected code:path pairs for malformed/zero-area polygons, anchors, duplicate IDs, disconnected graph, invalid route endpoints, cross-content refs, localization keys, and provenance."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "key_output": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "key_output": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "key_output": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "key_output": "Root eslint command completed successfully."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['project/tasks/active/M2-CONTENT-GUARDS-001.json','content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json']; for (const f of files) JSON.parse(fs.readFileSync(f,'utf8')); const manifest=JSON.parse(fs.readFileSync(files[1],'utf8')); const failures=[]; if (manifest.kind!=='m2.validation-only-bad-fixture-manifest') failures.push('kind'); if (manifest.historicity!=='FICTIONAL') failures.push('historicity'); if (manifest.provenance?.sourceCategory!=='validation-only-fixture'||manifest.provenance?.confidence!=='LOW'||manifest.provenance?.policyId!=='M2-MAP-SOURCE-POLICY-001') failures.push('provenance'); if (!Array.isArray(manifest.scopeNotes)||!manifest.scopeNotes.join(' ').includes('Not production content')) failures.push('scopeNotes'); if (!Array.isArray(manifest.cases)||manifest.cases.length!==5) failures.push('cases'); for (const c of manifest.cases||[]) if (!c.caseId||!['bad-map','bad-reference'].includes(c.category)||c.sourceFixture!=='prototype-world-30-districts.json'||!Array.isArray(c.expectedErrorCodes)||!Array.isArray(c.expectedPaths)||c.expectedErrorCodes.length===0||c.expectedPaths.length===0) failures.push('case:'+JSON.stringify(c)); if (failures.length) { console.error(failures.join(',')); process.exit(1); } console.log('JSON parse/shape ok files='+files.length+' cases='+manifest.cases.length);\"",
+      "exit_code": 0,
+      "key_output": "JSON parse/shape ok files=2 cases=5."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); for (const f of ['content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json','project/messages/outbox/M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW__simulation_engineer.json']) { const b=fs.readFileSync(f); const hasBom=b.length>=3&&b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf; console.log(f+': bom='+hasBom); if (hasBom) process.exitCode=1; }\"",
+      "exit_code": 0,
+      "key_output": "validation-only manifest bom=false; writer handoff bom=false."
+    },
+    {
+      "command": "node -e \"JSON.parse(require('fs').readFileSync('project/messages/outbox/M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-QA-REVIEW__qa_reviewer.json','utf8')); console.log('qa handoff json ok');\"",
+      "exit_code": 0,
+      "key_output": "qa handoff json ok."
+    },
+    {
+      "command": "node .agents\\skills\\monsoon-studio-orchestrator\\scripts\\validate-handoff.mjs project\\messages\\outbox\\M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "key_output": "VALID QA handoff."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "key_output": "Final status includes modified implementation/test files, coordination state files, task file, untracked validation-only manifest, writer handoff, route messages, and this QA handoff."
+    }
+  ],
+  "findings": [],
+  "risks_or_notes": [
+    "M2 connectivity currently rejects any disconnected district because there is no M2 explicit-isolation marker. This matches the task acceptance criteria; future intentional island support should add an explicit schema marker and tests.",
+    "The validation-only bad fixture material is a manifest and test-driven mutations of the valid fixture, not standalone bad production-like fixtures. The manifest clearly marks the cases as validation-only FICTIONAL data."
+  ],
+  "requested_action": "Lead orchestrator should perform final handoff validation and decide task acceptance.",
+  "created_at": "2026-06-24T16:03:00+08:00"
+}

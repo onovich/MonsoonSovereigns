@@ -2,13 +2,11 @@
   "id": "M2-CONTENT-GUARDS-001",
   "summary": "Reject bad M2 maps and bad content references",
   "milestone": "M2",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R2",
-  "dependencies": [
-    "M2-WORLD-FIXTURE-001"
-  ],
+  "dependencies": ["M2-WORLD-FIXTURE-001"],
   "scope": {
     "allowed_paths": [
       "packages/content-schema/**",
@@ -57,12 +55,15 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m2-content-guards",
-  "threads": {},
+  "threads": {
+    "simulation_engineer": "019efa4d-14c7-7030-8594-87aedbd4c43b",
+    "qa_reviewer": "019efa59-f1ec-7c20-bc7d-d0c9b88ebd5e"
+  },
   "route_to": "simulation_engineer",
   "notes": [
     "This task satisfies the Roadmap M2 exit requirement that the content compiler reject bad maps and bad references.",
     "Keep compiler errors explicit and deterministic; do not defer map/reference failures to runtime boot."
   ],
   "created_at": "2026-06-24T11:08:39.037Z",
-  "updated_at": "2026-06-24T14:51:10.668Z"
+  "updated_at": "2026-06-24T16:09:03.230Z"
 }

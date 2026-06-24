@@ -1,0 +1,128 @@
+{
+  "message_id": "MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW",
+  "task_id": "M2-CONTENT-GUARDS-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M2 content compiler guards for bad maps and bad references. The compiler now rejects M2 displayNameKey/sourceId mismatches, malformed or zero-area polygons, district anchors outside their polygons, settlement anchors outside their owning district polygons, and disconnected district route graphs with structured codes and paths. Added a validation-only bad-fixture manifest marked FICTIONAL/LOW/M2-MAP-SOURCE-POLICY-001 and expanded schema/compiler tests while preserving the valid M2 fixture manifest hash.",
+  "artifacts": [
+    "packages/content-schema/src/index.ts",
+    "apps/content-tools/src/index.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json",
+    "project/messages/outbox/M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m2-content-guards / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified implementation/test files for this task plus pre-existing coordination state changes in project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M2-CONTENT-GUARDS-001.json, project/tasks/thread-registry.json, and untracked lead route message."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 1,
+      "result": "Pre-implementation red test failed as expected: invalid M2 provenance paths were reported as sourceCategory/confidence/policyId instead of provenance.*."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 1,
+      "result": "Pre-implementation red tests failed as expected for missing M2 district anchor, settlement anchor, disconnected route graph, and localization-key guards."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "Vitest passed: tests/content-schema-graph-source.test.ts, 5 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed: tests/content-runtime-pack.test.ts, 3 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed: tests/content-tools-compiler.test.ts, 17 tests."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Default content validation passed: m1.abstract-graph-30 nodes=30 edges=60 manifestHash=4a438525."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CONTENT-GUARDS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-CONTENT-GUARDS-001.json."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['project/tasks/active/M2-CONTENT-GUARDS-001.json','content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json']; for (const f of files) JSON.parse(fs.readFileSync(f,'utf8')); const manifest=JSON.parse(fs.readFileSync(files[1],'utf8')); if (manifest.kind!=='m2.validation-only-bad-fixture-manifest') throw new Error('bad manifest kind'); if (manifest.historicity!=='FICTIONAL') throw new Error('bad historicity'); if (manifest.provenance?.sourceCategory!=='validation-only-fixture'||manifest.provenance?.confidence!=='LOW'||manifest.provenance?.policyId!=='M2-MAP-SOURCE-POLICY-001') throw new Error('bad provenance'); if (!Array.isArray(manifest.scopeNotes)||!manifest.scopeNotes.join(' ').includes('Not production content')) throw new Error('bad scope notes'); if (!Array.isArray(manifest.cases)||manifest.cases.length<5) throw new Error('bad cases'); for (const c of manifest.cases) { if (!c.caseId||!['bad-map','bad-reference'].includes(c.category)||c.sourceFixture!=='prototype-world-30-districts.json'||!Array.isArray(c.expectedErrorCodes)||!Array.isArray(c.expectedPaths)||c.expectedErrorCodes.length===0||c.expectedPaths.length===0) throw new Error('bad case shape '+JSON.stringify(c)); } console.log('JSON parse/shape ok', files.length, 'cases='+manifest.cases.length);\"",
+      "exit_code": 0,
+      "result": "JSON parse/shape ok 2 cases=5."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "Root eslint command completed successfully."
+    },
+    {
+      "command": "node --experimental-strip-types apps/content-tools/src/cli.ts validate content-source/m2-fixtures/prototype-world-30-districts.json",
+      "exit_code": 0,
+      "result": "M2 fixture validation passed: districts=30 settlements=10 regionalSeasonalCurves=4 routes=42 mapGeometries=40 manifestHash=9ab72b0b."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { readFile } from 'node:fs/promises'; import { compileContentPackV0OrThrow } from './apps/content-tools/src/index.ts'; const source=JSON.parse(await readFile('content-source/m2-fixtures/prototype-world-30-districts.json','utf8')); const first=compileContentPackV0OrThrow(source); const second=compileContentPackV0OrThrow(structuredClone(source)); if (first.kind!=='runtime-m2-world-content-pack-v0'||second.kind!=='runtime-m2-world-content-pack-v0') throw new Error('expected M2 packs'); const ok=first.manifest.manifestHash===second.manifest.manifestHash&&JSON.stringify(first.districts.map(d=>d.sourceId))===JSON.stringify(second.districts.map(d=>d.sourceId))&&JSON.stringify(first.routes.map(r=>r.sourceId))===JSON.stringify(second.routes.map(r=>r.sourceId)); console.log(JSON.stringify({manifestHash:first.manifest.manifestHash,sameHash:first.manifest.manifestHash===second.manifest.manifestHash,sameDistrictOrder:JSON.stringify(first.districts.map(d=>d.sourceId))===JSON.stringify(second.districts.map(d=>d.sourceId)),sameRouteOrder:JSON.stringify(first.routes.map(r=>r.sourceId))===JSON.stringify(second.routes.map(r=>r.sourceId))})); if(!ok) process.exitCode=1;\"",
+      "exit_code": 0,
+      "result": "Repeated M2 compile deterministic: manifestHash=9ab72b0b, sameHash=true, sameDistrictOrder=true, sameRouteOrder=true."
+    },
+    {
+      "command": "git diff -- apps/web apps/desktop packages/client-core packages/map-renderer packages/ui packages/sim-core content-source/historical docs/decisions docs/GATE-M0.md docs/GATE-M1.md docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md --stat",
+      "exit_code": 0,
+      "result": "No output; tracked forbidden-path diff is empty."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-CONTENT-GUARDS-001__MSG-20260624-M2-CONTENT-GUARDS-SIMULATION-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Final status shows modified apps/content-tools/src/index.ts, packages/content-schema/src/index.ts, tests/content-schema-graph-source.test.ts, tests/content-tools-compiler.test.ts; untracked validation-only bad fixture manifest and writer handoff; plus pre-existing coordination state/route changes."
+    }
+  ],
+  "decisions": [
+    "Kept the change inside content schema/tools, tests, and M2 validation fixture metadata; no sim-core, UI, Electron, historical content, save, scheduler, RNG, or protocol package was modified.",
+    "Used structured compile/schema failures with stable codes and paths: invalid-schema, bad-reference, duplicate-id, invalid-geometry, isolated-district, and existing route/seasonal codes.",
+    "M2 bad fixture material is a manifest of validation-only negative cases, explicitly FICTIONAL/LOW and tied to M2-MAP-SOURCE-POLICY-001 so it cannot be mistaken for production or historical content.",
+    "M2 polygon/anchor checks use integer coordinate arithmetic and deterministic route graph traversal with explicit text sorting."
+  ],
+  "risks": [
+    "The compiler now treats every M2 district route graph disconnection as invalid because the M2 source schema has no explicit isolated-district marker. This matches current acceptance but should be revisited if a later task designs intentional islands.",
+    "Pre-existing coordination-state changes and route message remain in the workspace; they were not created or reverted by this implementation."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review M2-CONTENT-GUARDS-001 for acceptance. Validate the new compiler guards, validation-only fixture manifest, deterministic M2 fixture hash, and forbidden-path boundary.",
+  "created_at": "2026-06-24T23:54:52.5356372+08:00"
+}
