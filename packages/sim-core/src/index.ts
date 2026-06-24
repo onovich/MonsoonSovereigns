@@ -6,6 +6,8 @@ import {
   type HelloSimulationResultDto
 } from "@monsoon/protocol";
 
+export * from "./world-state-v0.ts";
+
 interface HelloSimulationState {
   readonly day: number;
   readonly revision: number;
@@ -19,9 +21,7 @@ interface HelloSimulationState {
 const INITIAL_HASH_OFFSET = 2_166_136_261;
 const HASH_PRIME = 16_777_619;
 
-export function runHelloSimulation(
-  request: HelloSimulationRequestDto
-): HelloSimulationResultDto {
+export function runHelloSimulation(request: HelloSimulationRequestDto): HelloSimulationResultDto {
   validateHelloRequest(request);
 
   let state = createInitialHelloState();
