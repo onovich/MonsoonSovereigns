@@ -1,0 +1,101 @@
+{
+  "task_id": "M2-CLIENT-DISTRICT-LIST-001",
+  "message_id": "MSG-20260625-M2-CLIENT-DISTRICT-LIST-QA-ACCEPT",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA review accepts the M2 district list implementation. The current feat/m2-client-district-list worktree satisfies the district panel read-model fields, 4000-row synthetic pressure fixture, manual virtualization, filtering/sorting/selection handoff, Playwright coverage, performance evidence, and boundary requirements. No client_engineer changes are requested.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/client-core/package.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/package.json",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M2-CLIENT-DISTRICT-LIST-001.json",
+    "project/messages/outbox/M2-CLIENT-DISTRICT-LIST-001__MSG-20260625-M2-CLIENT-DISTRICT-LIST-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m2-client-district-list",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree contained the task client/web/test changes, allowed orchestration state changes, writer handoff/routes, and untracked task test files; no unrelated forbidden-path implementation changes were observed before writing this QA handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-DISTRICT-LIST-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-CLIENT-DISTRICT-LIST-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-CLIENT-DISTRICT-LIST-001__MSG-20260624-M2-CLIENT-DISTRICT-LIST-CLIENT-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "rg 'sim-core|WorldState|Math\\.random|Date\\.now|node:|electron|from \"fs\"|from ''fs''' packages/client-core/src/index.ts packages/ui/src/index.tsx apps/web/src/shell/create-shell-snapshot.ts apps/web/src/shell/web-client-shell.test.tsx tests/client-core-m2-district-list.test.ts tests/ui-m2-district-list.test.tsx tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Only expected WorldState string assertions in tests matched; no production sim-core, Node/Electron, real-time, or RNG imports/usages were found in the task files."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 4 tests, covering the synthetic fixture, filtering/sorting, virtual window, and read-model attachment."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 2 tests, covering district panel fields and initial virtualized rendering."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed; 23 modules transformed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism hashes matched; root Vitest passed 18 files / 85 tests; web Vitest passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium passed 2 tests, including the 4000-row virtualized district list, filtering, sorting, selection handoff to panel/map, and measured timing attributes. The pre-existing Vite dynamic import warning for hello-simulation-adapter.mjs still appeared."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier check, ESLint, recursive typecheck, and architecture check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-CLIENT-DISTRICT-LIST-001__MSG-20260625-M2-CLIENT-DISTRICT-LIST-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA reviewer handoff."
+    }
+  ],
+  "decisions": [
+    "Accepted Playwright coverage as satisfying the task's Storybook-or-Playwright requirement.",
+    "Accepted the manual fixed-row virtualization because it keeps the UI dependency surface unchanged and tests assert rendered row count remains bounded.",
+    "Accepted the district data as synthetic pressure fixture content because naming and provenance explicitly state it is not formal historical district content.",
+    "Accepted boundary compliance because the UI consumes client-core read-model fields and task files do not import sim-core, Electron, Node fs, RNG, or real-time APIs."
+  ],
+  "risks": [
+    "The implementation is still an uncommitted worktree on feat/m2-client-district-list; lead integration must preserve scope and include the untracked test/handoff files intentionally.",
+    "The web shell currently wires a synthetic district fixture rather than a live worker query projection; this remains appropriate for this pressure-fixture task but needs later integration work.",
+    "The selection timing attribute measures click handler/setter overhead rather than full React commit latency; filtering/sorting derivation timing and Playwright interaction coverage are sufficient for this task, but fuller UI profiling can be a future test_engineer follow-up if needed.",
+    "The pre-existing Vite dynamic import warning from apps/web/src/worker/hello-simulation-adapter.mjs remains visible during Playwright and was not modified by this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead integration gates for M2-CLIENT-DISTRICT-LIST-001; no client_engineer repair is requested.",
+  "created_at": "2026-06-25T02:54:26.4079000+08:00"
+}

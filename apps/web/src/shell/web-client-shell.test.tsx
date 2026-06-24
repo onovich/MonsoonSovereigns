@@ -17,6 +17,8 @@ describe("web client shell", () => {
 
     expect(snapshot.status).toBe("ready");
     expect(snapshot.simulation.daysSimulated).toBe(30);
+    expect(snapshot.districtList.rows).toHaveLength(4_000);
+    expect(snapshot.districtList.provenance.kind).toBe("synthetic-pressure-fixture");
     expect(snapshot.revision).toBe(snapshot.simulation.finalRevision);
     expect(JSON.stringify(snapshot)).not.toContain("WorldState");
   });
@@ -29,8 +31,10 @@ describe("web client shell", () => {
     );
 
     expect(markup).toContain("Monsoon Sovereigns");
+    expect(markup).toContain("Synthetic District 0001");
     expect(markup).toContain(snapshot.simulation.stateHash);
     expect(markup).toContain(`data-anchor-count="${plan.anchors.length}"`);
+    expect(markup).toContain('data-row-count="4000"');
   });
 
   it("rebuilds the Pixi scene shell from the read model", () => {
