@@ -1,0 +1,58 @@
+{
+  "id": "M2-MAP-SOURCE-POLICY-001",
+  "summary": "Define M2 map fixture source policy",
+  "milestone": "M2",
+  "status": "DRAFT",
+  "owner_role": "historical_researcher",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R2",
+  "dependencies": [
+    "M2-TASK-GRAPH-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/research/**",
+      "project/tasks/active/M2-MAP-SOURCE-POLICY-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A concise M2 map-fixture source policy exists for the 30 District/10 Settlement prototype fixture and explicitly distinguishes synthetic fixture data from formal historical map content.",
+    "The policy states when HISTORICAL, INFERRED, COMPOSITE, and FICTIONAL labels are required and blocks real cultural symbols, polity claims, or named historical settlements from entering M2 fixtures without a separate research/content task.",
+    "The policy defines minimum provenance fields expected by later map/content tasks, including source category, confidence, coordinate/geometry derivation note, and known limitations.",
+    "The policy covers bad-map test fixtures as validation data only, not production content.",
+    "No package, app, content-source, roadmap, ADR, product-scope, or implementation file is changed."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-MAP-SOURCE-POLICY-001",
+    "node -e JSON parse/shape check for M2-MAP-SOURCE-POLICY-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m2-map-source-policy",
+  "threads": {},
+  "route_to": "historical_researcher",
+  "notes": [
+    "This task exists because the M2 acceptance matrix includes map source policy evidence.",
+    "Keep the output policy-sized; do not start formal map production or historical-content expansion."
+  ],
+  "created_at": "2026-06-24T11:08:39.037Z",
+  "updated_at": "2026-06-24T11:08:39.037Z"
+}

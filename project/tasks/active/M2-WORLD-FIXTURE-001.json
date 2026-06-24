@@ -1,0 +1,69 @@
+{
+  "id": "M2-WORLD-FIXTURE-001",
+  "summary": "Create M2 30 District/10 Settlement world fixture and seasonal curves",
+  "milestone": "M2",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M2-MAP-SOURCE-POLICY-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "apps/content-tools/**",
+      "content-source/m2-fixtures/**",
+      "tests/**",
+      "project/tasks/active/M2-WORLD-FIXTURE-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/sim-core/**",
+      "content-source/historical/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A valid M2 fixture compiles to a runtime content pack with exactly 30 District definitions and 10 Settlement definitions using stable IDs and explicit schemas.",
+    "The fixture includes regional seasonal curves sufficient for later monsoon, agriculture, river, and road behavior tests, with deterministic ordering and integer/fixed-point values where rules will consume them.",
+    "District, settlement, regional curve, route endpoint, and map-geometry references are validated at compile time; runtime lookup by display name is not introduced.",
+    "The fixture follows M2-MAP-SOURCE-POLICY-001 and remains prototype fixture data, not formal historical map content.",
+    "Repeated compiles of the same source produce the same manifest hash and runtime pack ordering.",
+    "No sim-core economy, route-planning, UI, Electron, or product-scope implementation is performed in this task."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/content-schema test",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm --filter @monsoon/content-tools test",
+    "pnpm content:validate",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-WORLD-FIXTURE-001",
+    "node -e JSON parse/shape check for M2-WORLD-FIXTURE-001 and new fixture manifests",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m2-world-fixture",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "This is the first implementation-sized M2 data task and should not add economy, population, route choice, UI, or formal historical content.",
+    "If source-policy ambiguity blocks fixture authoring, route back to historical_researcher before continuing."
+  ],
+  "created_at": "2026-06-24T11:08:39.037Z",
+  "updated_at": "2026-06-24T11:08:39.037Z"
+}

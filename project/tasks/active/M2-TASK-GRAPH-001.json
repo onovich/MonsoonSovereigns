@@ -1,0 +1,71 @@
+{
+  "id": "M2-TASK-GRAPH-001",
+  "summary": "Create minimal M2 task graph",
+  "milestone": "M2",
+  "status": "ACCEPTED",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M1-GATE"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M2-TASK-GRAPH-001.json",
+      "project/tasks/active/M2-*.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Create a minimal, dependency-ordered M2 task DAG under project/tasks/active with explicit owner_role, reviewer_role, risk_level, dependencies, allowed_paths, forbidden_paths, acceptance_criteria, required_tests, route_to, and notes for every M2 task.",
+    "The M2 DAG covers Roadmap M2 goals without implementing them: 30 District/10 Settlement fixture, seasonal regional curves, agriculture/labor/population/grain/cash scaffolding, route/transport basics, map/list client pressure fixtures, content compiler bad-map/bad-reference rejection, and M2 exit validation.",
+    "The DAG schedules M1-GATE follow-ups: Chromium/Electron host hash canary before M2 exit and sim-core/content-runtime boot-boundary contract test during M2 world/content integration.",
+    "Tasks are small enough for independent writer/reviewer routing and do not create a single giant M2 implementation task.",
+    "No product code, package code, content-source data, docs/roadmap edits, frozen ADR changes, or M2 implementation work is performed by this task.",
+    "systems_architect writer and independent qa_reviewer reviewer produce validated handoffs before lead acceptance."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-TASK-GRAPH-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-ACCEPT__systems_architect.json",
+    "node -e JSON validation for all new M2 task files and the systems handoff",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m2-task-graph",
+  "threads": {
+    "systems_architect": "019ef94c-f274-7643-9b04-5138472ff65d",
+    "qa_reviewer": "019ef958-c9a0-7811-9396-f74604f71b37"
+  },
+  "route_to": "qa_reviewer",
+  "notes": [
+    "M2 is world, economy, and population vertical slice planning. Do not implement M2 functionality in this task.",
+    "M2 task graph must preserve frozen decisions in PROJECT_STATUS.md and M5 Human Gate policy.",
+    "Created a dependency-ordered M2 DAG with all downstream implementation and validation tasks left in DRAFT for lead selection after QA review.",
+    "Revision 1 addressed QA dependency findings: M2-CLIENT-MAP-001 now depends on both route/transport and economy/population scaffolding; M2-CLIENT-DISTRICT-LIST-001 now depends on both economy/population and route/transport scaffolding.",
+    "No product, package, content, roadmap, architecture, or implementation files were changed."
+  ],
+  "created_at": "2026-06-24T11:00:33.977Z",
+  "updated_at": "2026-06-24T11:31:15.019Z"
+}

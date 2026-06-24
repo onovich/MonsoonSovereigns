@@ -1,0 +1,71 @@
+{
+  "message_id": "MSG-20260624-M2-TASK-GRAPH-SYSTEMS-REVISION-1",
+  "task_id": "M2-TASK-GRAPH-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Addressed QA REQUEST_CHANGES by adding the missing client task dependency edges while keeping the M2 task graph in planning scope and leaving downstream implementation tasks in DRAFT.",
+  "artifacts": [
+    "project/tasks/active/M2-CLIENT-MAP-001.json",
+    "project/tasks/active/M2-CLIENT-DISTRICT-LIST-001.json",
+    "project/tasks/active/M2-TASK-GRAPH-001.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-REVISION-1__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m2-task-graph",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Existing modified coordination files remain: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json. Untracked M2 task files, previous systems/QA handoffs, route files, and this revision handoff are present; no product code/package/app/content/docs files were modified by this revision."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M2-TASK-GRAPH-001 is REVIEW; all 11 downstream M2 tasks remain DRAFT; prior foundation/SIM/M1 tasks remain CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M2-TASK-GRAPH-001 remains in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-REQUEST-CHANGES__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-REQUEST-CHANGES__qa_reviewer.json"
+    },
+    {
+      "command": "node -e JSON/DAG validation for all project/tasks/active/M2-*.json",
+      "exit_code": 0,
+      "result": "Parsed and shape-checked 12 M2 task files; DAG acyclic; dependencies known; requested client dependency edges present."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-SYSTEMS-REVISION-1__systems_architect.json",
+      "exit_code": 0,
+      "result": "Revision handoff schema validation passes."
+    }
+  ],
+  "decisions": [
+    "M2-CLIENT-MAP-001 now depends on both M2-ROUTE-TRANSPORT-001 and M2-ECON-POP-001 because its acceptance criteria require seasonal/economy/route inspection.",
+    "M2-CLIENT-DISTRICT-LIST-001 now depends on both M2-ECON-POP-001 and M2-ROUTE-TRANSPORT-001 because its acceptance criteria require district economy fields and route summary fields.",
+    "Acceptance criteria were not narrowed; the fix is dependency-order only.",
+    "M2-TASK-GRAPH-001 is set back to REVIEW and routes to qa_reviewer."
+  ],
+  "risks": [
+    "Pre-existing coordination-state changes and route files remain in the worktree and were not modified by this revision.",
+    "The downstream client tasks remain R3 and still require independent review when implemented because they touch read models, UI pressure, and sim-core/client boundary assumptions."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Re-review the revised M2 task graph dependency edges and accept or request further changes.",
+  "created_at": "2026-06-24T11:25:34.772Z"
+}

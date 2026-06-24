@@ -1,0 +1,72 @@
+{
+  "id": "M2-ROUTE-TRANSPORT-001",
+  "summary": "Implement M2 basic route, transport, and seasonal route choice",
+  "milestone": "M2",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M2-BOOT-BOUNDARY-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "packages/content-runtime/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/tasks/active/M2-ROUTE-TRANSPORT-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform-browser/**",
+      "packages/platform-electron/**",
+      "content-source/historical/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M2 route and transport state uses compiled road and river definitions from the M2 fixture with stable IDs, explicit capacities/costs, and deterministic tie-breakers.",
+    "Seasonal regional curves alter road and river costs/capacities so that at least one fixture origin/destination pair chooses different road versus river routes in different seasons.",
+    "Route queries and any movement/transport previews are read-model safe and do not expose mutable WorldState to UI code.",
+    "Transport capacity and stock movement invariants prevent negative capacity, duplicate edge use, and order-dependent results.",
+    "No full campaign system, army battle loop, siege, diplomacy, or AI strategic planning is implemented in this task.",
+    "The task preserves sim-core isolation from React, PixiJS, Electron, DOM, Node filesystem IO, and real-time APIs."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Scenario tests prove seasonal road/river route choice changes and route-capacity invariants.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-ROUTE-TRANSPORT-001",
+    "node -e JSON parse/shape check for M2-ROUTE-TRANSPORT-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m2-route-transport",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "Keep this to basic route and transport scaffolding needed for M2 choices; do not start M4 campaign planning.",
+    "If route search introduces a new algorithmic performance assumption, include measured evidence in the handoff."
+  ],
+  "created_at": "2026-06-24T11:08:39.037Z",
+  "updated_at": "2026-06-24T11:08:39.037Z"
+}

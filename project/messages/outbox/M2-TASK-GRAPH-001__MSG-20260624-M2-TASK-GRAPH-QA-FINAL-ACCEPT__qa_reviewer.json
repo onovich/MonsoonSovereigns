@@ -1,0 +1,57 @@
+{
+  "message_id": "MSG-20260624-M2-TASK-GRAPH-QA-FINAL-ACCEPT",
+  "task_id": "M2-TASK-GRAPH-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Final narrow QA scope review accepts the lead metadata correction: M2-TASK-GRAPH-001 allowed_paths now covers the parent-owned coordination artifacts used by this planning task while forbidden_paths still excludes product code, packages, content, roadmap, gate docs, and validation artifacts. This does not change the prior M2 DAG ACCEPT conclusion.",
+  "artifacts": [
+    "project/tasks/active/M2-TASK-GRAPH-001.json",
+    "project/messages/outbox/M2-TASK-GRAPH-001__MSG-20260624-M2-TASK-GRAPH-QA-FINAL-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/m2-task-graph",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node -e read project/tasks/active/M2-TASK-GRAPH-001.json",
+      "exit_code": 0,
+      "result": "Task status is ACCEPTED; allowed_paths include project/tasks/active/M2-TASK-GRAPH-001.json, project/tasks/active/M2-*.json, project/tasks/thread-registry.json, project/messages/**, project/goal-mode-state.json, and project/model-routing-state.json; forbidden_paths still include apps/**, packages/**, content-source/**, tools/**, .github/**, roadmap/gate docs, PROJECT_STATUS.md, MANIFEST.md, SHA256SUMS.txt, and VALIDATION_REPORT.md."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Tracked modifications are limited to project/goal-mode-state.json, project/model-routing-state.json, and project/tasks/thread-registry.json. Untracked files are M2 task JSON files plus M2-TASK-GRAPH handoffs and route records; no product code, package, content, roadmap, or implementation files appeared."
+    },
+    {
+      "command": "git diff -- project/tasks/active/M2-TASK-GRAPH-001.json",
+      "exit_code": 0,
+      "result": "No output because project/tasks/active/M2-TASK-GRAPH-001.json is currently untracked in this worktree; raw file read and explicit scope assertion were used to verify the metadata."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e exact allowed_paths and key forbidden_paths assertion for M2-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "allowed_paths match expected coordination scope; key forbidden paths remain present."
+    }
+  ],
+  "decisions": [
+    "The restored allowed_paths are consistent with the task's accepted planning and parent-owned coordination scope.",
+    "The metadata correction does not hide product, package, content-source, roadmap, gate-doc, ADR, manifest, checksum, or validation-report changes.",
+    "The prior QA ACCEPT for the M2 DAG remains valid."
+  ],
+  "risks": [
+    "The task JSON and related M2 artifacts are still untracked pending lead integration, so git diff for the task file itself is empty until the files are staged or otherwise compared."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead integration gates for M2-TASK-GRAPH-001 using the restored coordination-scope allowed_paths; do not treat this final metadata acceptance as acceptance of downstream M2 implementation work.",
+  "created_at": "2026-06-24T11:45:00Z"
+}

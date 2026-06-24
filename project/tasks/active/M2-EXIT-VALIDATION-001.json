@@ -1,0 +1,86 @@
+{
+  "id": "M2-EXIT-VALIDATION-001",
+  "summary": "Validate M2 milestone exit gate",
+  "milestone": "M2",
+  "status": "DRAFT",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M2-CONTENT-GUARDS-001",
+    "M2-BOOT-BOUNDARY-001",
+    "M2-ECON-POP-001",
+    "M2-ROUTE-TRANSPORT-001",
+    "M2-CLIENT-MAP-001",
+    "M2-CLIENT-DISTRICT-LIST-001",
+    "M2-HOST-HASH-CANARY-001",
+    "M2-PRESSURE-VALIDATION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/GATE-M2.md",
+      "PROJECT_STATUS.md",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/active/M2-EXIT-VALIDATION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "docs/GATE-M2.md records M2 Roadmap and acceptance-matrix evidence for season/economy choices, agriculture/population/road-network conservation, map/list client behavior, H-001/H-002 initial validation, and map source policy.",
+    "M2 exit evidence proves mobilization across farm timing affects the next harvest and seasonal roads/rivers produce different route choices.",
+    "M2 exit evidence proves normal speed UI has no main-thread simulation stutter and the 4,000-row list pressure fixture is covered.",
+    "M2 exit evidence proves the content compiler rejects bad maps and bad references.",
+    "M1-GATE follow-ups are explicitly closed or the gate blocks: Chromium plus Electron host hash canary, and sim-core/content-runtime boot-boundary contract test.",
+    "No product code, package code, content-source data, roadmap edits, accepted ADR changes, or M3+ scope is modified by this validation task.",
+    "systems_architect writer and independent qa_reviewer reviewer produce validated handoffs before lead marks M2 accepted."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-EXIT-VALIDATION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <qa-handoff>",
+    "node -e JSON validation for M2 gate task, goal-mode-state, model-routing-state, relevant M2 handoffs, and systems handoff",
+    "pnpm install --frozen-lockfile",
+    "pnpm check",
+    "pnpm test",
+    "pnpm content:validate",
+    "pnpm sim:determinism",
+    "pnpm sim:perf-baseline",
+    "pnpm build:web",
+    "pnpm desktop:security-check",
+    "pnpm desktop:package",
+    "M2 Chromium host hash canary command",
+    "M2 Electron host hash canary command",
+    "M2 map/list pressure command including 4,000-row list evidence",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m2-exit-gate",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "MILESTONE-AUTONOMY-AMENDMENT-001 allows ordinary M2 exit only when the acceptance matrix, tests, independent review, and no R4/frozen-decision Human Gate conditions are satisfied.",
+    "This task validates M2 only; it must not start M3 polity, office, character, vassal, or succession work."
+  ],
+  "created_at": "2026-06-24T11:08:39.037Z",
+  "updated_at": "2026-06-24T11:08:39.037Z"
+}
