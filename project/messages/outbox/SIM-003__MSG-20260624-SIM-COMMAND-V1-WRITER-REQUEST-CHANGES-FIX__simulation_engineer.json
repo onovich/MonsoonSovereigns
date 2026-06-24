@@ -1,0 +1,79 @@
+{
+  "task_id": "SIM-003",
+  "message_id": "MSG-20260624-SIM-COMMAND-V1-WRITER-REQUEST-CHANGES-FIX",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed systems_architect REQUEST_CHANGES by copying DistrictControlState at Query v1 and StateDelta read-model boundaries. Added regression coverage proving mutating returned district summary and delta control DTOs cannot mutate runtime.world or invalidate WorldState invariants.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-command-query.test.ts",
+    "project/messages/outbox/SIM-003__MSG-20260624-SIM-COMMAND-V1-WRITER-REQUEST-CHANGES-FIX__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/sim-003-command-query-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 1,
+      "result": "Pre-fix regression run failed as expected: mutating state.district-control-updated delta control changed runtime.world.state.districts[0].control.controllerPolityId from 1 to 999."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Test Files 5 passed (5); Tests 27 passed (27). Includes new alias isolation regression for query and delta control DTOs."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Test Files 1 passed (1); Tests 3 passed (3)."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash: 61e0ba1c; Worker-compatible hash: 61e0ba1c; Node command/query hash: d275faa4; Worker-compatible command/query hash: d275faa4; Deterministic command/query simulation matched."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed. Self-test fixture produced 15 expected violation(s)."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check and sim:determinism passed; root Vitest Test Files 8 passed (8), Tests 33 passed (33); web Vitest Test Files 1 passed (1), Tests 3 passed (3)."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "pnpm -r --if-present typecheck completed successfully, including sim-core and web."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/SIM-003__MSG-20260624-SIM-COMMAND-V1-WRITER-REQUEST-CHANGES-FIX__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/SIM-003__MSG-20260624-SIM-COMMAND-V1-WRITER-REQUEST-CHANGES-FIX__simulation_engineer.json"
+    }
+  ],
+  "decisions": [
+    "Added copyDistrictControlState as the explicit DistrictControlState DTO boundary helper.",
+    "WorldState, StateDelta, and Query read-model district control objects now receive separate object instances.",
+    "No command semantics, protocol schema, scheduler order, RNG, save schema, task status, or forbidden paths were changed."
+  ],
+  "risks": [
+    "R3 remains active because SIM-003 command/query authority behavior still requires systems_architect review.",
+    "This fix covers the current nested DistrictControlState DTO; future read-model DTOs with nested objects should use explicit copy helpers at the boundary."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the alias isolation fix and rerun/inspect the added regression coverage for Query v1 and StateDelta read-model boundary safety.",
+  "created_at": "2026-06-24T08:16:00Z"
+}
