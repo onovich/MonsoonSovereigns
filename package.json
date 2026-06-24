@@ -8,13 +8,15 @@
   },
   "scripts": {
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm architecture:check",
-    "format:check": "prettier --check \"package.json\" \"pnpm-workspace.yaml\" \"tsconfig*.json\" \"eslint.config.*\" \"prettier.config.*\" \"vitest.config.*\" \"playwright.config.*\" \".storybook/**/*.{js,json,md,ts,tsx}\" \"tests/**/*.{json,md,ts,tsx}\" \"apps/desktop/package.json\" \"apps/desktop/tsconfig.json\" \"apps/desktop/src/**/*.{cts,ts}\" \"apps/desktop/renderer/**/*.{html,js}\" \"apps/desktop/scripts/**/*.mjs\" \"apps/web/**/*.{css,html,json,md,ts,tsx}\" \"packages/client-core/**/*.{json,md,ts}\" \"packages/map-renderer/**/*.{json,md,ts}\" \"packages/platform/package.json\" \"packages/platform/tsconfig.json\" \"packages/platform/src/**/*.ts\" \"packages/ui/**/*.{json,md,ts,tsx}\" \"tools/architecture/**/*.{json,md,mjs,js,ts}\"",
+    "format:check": "prettier --check \"package.json\" \"pnpm-workspace.yaml\" \"tsconfig*.json\" \"eslint.config.*\" \"prettier.config.*\" \"vitest.config.*\" \"playwright.config.*\" \".github/workflows/*.{yml,yaml}\" \".storybook/**/*.{js,json,md,ts,tsx}\" \"tests/**/*.{json,md,ts,tsx}\" \"apps/desktop/package.json\" \"apps/desktop/tsconfig.json\" \"apps/desktop/src/**/*.{cts,ts}\" \"apps/desktop/renderer/**/*.{html,js}\" \"apps/desktop/scripts/**/*.mjs\" \"apps/web/**/*.{css,html,json,md,ts,tsx}\" \"packages/client-core/**/*.{json,md,ts}\" \"packages/map-renderer/**/*.{json,md,ts}\" \"packages/platform/package.json\" \"packages/platform/tsconfig.json\" \"packages/platform/src/**/*.ts\" \"packages/ui/**/*.{json,md,ts,tsx}\" \"tools/architecture/**/*.{json,md,mjs,js,ts}\" \"tools/ci/**/*.{json,md,mjs,js,ts,yml,yaml}\"",
     "lint": "eslint --no-error-on-unmatched-pattern \"apps/web/src/**/*.{ts,tsx,js,mjs}\" \"apps/web/vite.config.ts\" \"apps/desktop/src/**/*.{cts,ts,tsx,js,mjs}\" \"apps/desktop/scripts/**/*.mjs\" \"apps/desktop/renderer/**/*.js\" \"packages/*/src/**/*.{cts,ts,tsx,js,mjs}\" \"tests/**/*.{cts,ts,tsx,js,mjs}\" \".storybook/**/*.{cts,ts,tsx,js,mjs}\" \"tools/**/*.{cts,ts,js,mjs}\" eslint.config.mjs prettier.config.mjs vitest.config.ts playwright.config.ts",
     "typecheck": "pnpm -r --if-present typecheck",
     "architecture:check": "node tools/architecture/check-boundaries.mjs",
     "sim:determinism": "pnpm --filter @monsoon/sim-runner sim:determinism",
     "test": "pnpm architecture:check && pnpm sim:determinism && vitest run --config vitest.config.ts && pnpm --filter web test",
+    "build:web": "pnpm --filter web build",
     "storybook:build": "storybook build --config-dir .storybook --output-dir .tmp/storybook-static && node -e \"require('node:fs').rmSync('.tmp/storybook-static',{recursive:true,force:true})\"",
+    "ci:artifact-manifest": "node tools/ci/write-artifact-manifest.mjs",
     "test:e2e": "playwright test",
     "desktop:security-check": "pnpm --filter desktop security-check",
     "desktop:package": "pnpm --filter desktop package"
