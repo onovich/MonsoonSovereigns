@@ -1,0 +1,68 @@
+{
+  "id": "SIM-001",
+  "summary": "Define stable IDs, Definition/Runtime State separation, and WorldState v0",
+  "milestone": "M1",
+  "status": "READY",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "FOUNDATION-001",
+    "FOUNDATION-002",
+    "FOUNDATION-003",
+    "FOUNDATION-004",
+    "FOUNDATION-005",
+    "FOUNDATION-006",
+    "FOUNDATION-007",
+    "FOUNDATION-008"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "tests/**",
+      "vitest.config.*",
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tools/architecture/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/platform/**",
+      "packages/ui/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M1 entity references use stable branded primitive IDs; raw numbers/strings cannot cross into authoritative state without parser/schema validation.",
+    "Immutable Definition records are separate from mutable runtime State tables; runtime rules do not look up core entities by display name.",
+    "WorldState v0 contains only M1 kernel fields: meta, current GameDay, revision, seed/content manifest references, minimal entity/graph tables, scheduler hooks, and state hash inputs.",
+    "WorldState v0 avoids cyclic object graphs and object-identity serialization; relationships use IDs or explicit edge tables.",
+    "A canonical deterministic state hash is defined over WorldState v0 with stable field order, stable entity order, and documented compatibility expectations.",
+    "Basic semantic invariants exist for duplicate IDs, bad references, missing definitions, invalid current day/revision, and hash stability.",
+    "No full economy, population, vassal politics, diplomacy, war, siege, combat, map geometry, historical database, Rust/WASM, server, runtime SQL database, arbitrary-code mod support, or new production dependency is introduced."
+  ],
+  "required_tests": [
+    "pnpm --filter @monsoon/sim-core typecheck",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm architecture:check",
+    "pnpm test",
+    "Unit and property tests cover branded ID construction, schema rejection of invalid IDs, Definition/State separation, duplicate/bad references, and canonical hash stability.",
+    "Architecture/static guard proves packages/sim-core imports no React, PixiJS, Electron, DOM, Node fs/path IO, real-time authority API, or render-frame API."
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "M0 gate is dependency-satisfied by FOUNDATION-001 through FOUNDATION-008 all being CLOSED.",
+    "If implementation requires changing accepted ADR semantics or frozen PROJECT_STATUS decisions, stop and route to systems_architect before writing code."
+  ],
+  "created_at": "2026-06-24T04:53:00Z",
+  "updated_at": "2026-06-24T04:53:00Z"
+}

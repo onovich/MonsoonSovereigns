@@ -1,0 +1,60 @@
+{
+  "id": "SIM-002",
+  "summary": "Implement fixed GameDay scheduler and deterministic system order",
+  "milestone": "M1",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "SIM-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "tests/**",
+      "vitest.config.*",
+      "package.json",
+      "pnpm-lock.yaml",
+      "tools/architecture/**"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/platform/**",
+      "packages/ui/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Authority advances in whole fixed GameDay steps; UI speed, render framerate, wall-clock time, locale, and timezone cannot affect committed state.",
+    "System execution order is explicit, versioned, exported for tests, and locked by a golden/order test with stable tie-breakers.",
+    "Day, month, year, and 3650-day boundary behavior is covered without using real Date objects in authority logic.",
+    "Scheduler state is part of WorldState v0 or an explicit child state and participates in deterministic hash inputs where relevant.",
+    "A 3650-day headless run over the minimal M1 state completes with no invariant violation.",
+    "A static guard rejects Date.now, performance.now, new Date, setTimeout/setInterval scheduling, or render-frame inputs in authoritative sim-core logic.",
+    "A baseline performance command records day throughput and step timing distribution for the minimal M1 fixture; no optimization-specific abstraction is added without measured need."
+  ],
+  "required_tests": [
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm sim:determinism",
+    "pnpm architecture:check",
+    "pnpm test",
+    "Golden/order tests cover fixed system order and stable tie-breakers.",
+    "Invariant/property tests cover 3650-day advancement and calendar boundaries.",
+    "Performance baseline output records fixture, machine/runtime context where available, day throughput, and P50/P95/P99 step timing."
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "Keep scheduler minimal for M1; monthly/yearly hooks may be empty, but their order and determinism contract must be explicit.",
+    "Do not introduce real gameplay systems while creating scheduler phases."
+  ],
+  "created_at": "2026-06-24T04:53:00Z",
+  "updated_at": "2026-06-24T04:53:00Z"
+}
