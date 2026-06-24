@@ -2,7 +2,7 @@
 
 ## 1. 当前阶段
 
-项目处于 **M1 / Deterministic Simulation Kernel**。
+项目处于 **M2 / World, Economy, and Population Vertical Slice**。
 
 M0 Gate 已通过，见 `docs/GATE-M0.md`：
 
@@ -11,7 +11,16 @@ M0 Gate 已通过，见 `docs/GATE-M0.md`：
 - M0 Gate 经 `systems_architect` 与 `qa_reviewer` 独立验收为 `ACCEPT`。
 - Product owner approval：`M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001`。
 
-当前执行重点是按 Roadmap 建立确定性模拟内核；M1 不得扩写正式玩法内容、历史数据库、完整经济/人口/战争系统或未批准的生产依赖。
+M1 阶段的执行重点曾是按 Roadmap 建立确定性模拟内核；该阶段不得扩写正式玩法内容、历史数据库、完整经济/人口/战争系统或未批准的生产依赖。
+
+M1 Gate 已通过，见 `docs/GATE-M1.md`：
+
+- `SIM-001` 至 `SIM-006` 均已进入 `CLOSED`。
+- `origin/main` 已包含确定性 WorldState、GameDay scheduler、Command/Event/Query v1、确定性 RNG、Content Compiler v0、Save Envelope v1、M1 golden fixtures 与 3650-day baseline。
+- M1 Gate 经 `systems_architect` 与 `qa_reviewer` 独立验收为 `ACCEPT`。
+- M1 Gate 记录了非阻塞 follow-up：在 M2 exit 前补显式 Chromium + Electron host hash canary，并在 M2 内容/世界集成时补 sim-core/content-runtime boot-boundary contract test。
+
+当前执行重点是按 Roadmap 建立世界、经济与人口纵切；M2 不得扩写臣属政治、完整战争闭环、正式历史人物数据库、完整外交、生产地图内容或未批准的生产依赖。
 
 ## 2. 已冻结决定
 
