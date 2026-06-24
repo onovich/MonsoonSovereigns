@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "task_id": "M2-CLIENT-DISTRICT-LIST-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019efaf6-4a87-7fe0-9399-07630ee9f91e",
+  "source_handoff": "project/messages/outbox/M2-CLIENT-DISTRICT-LIST-001__MSG-20260624-M2-CLIENT-DISTRICT-LIST-CLIENT-REVIEW__client_engineer.json",
+  "route_render_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M2-CLIENT-DISTRICT-LIST-001__MSG-20260624-M2-CLIENT-DISTRICT-LIST-CLIENT-REVIEW__client_engineer.json",
+  "send_input_submission_id": "019efaf6-e8cf-79c2-933c-1b24ee4a63bd",
+  "sent_at": "2026-06-24T18:48:41Z",
+  "requested_action": "Review M2 district list implementation, virtualization behavior, performance evidence, and boundary compliance.",
+  "route_to_after_review": {
+    "ACCEPT": "lead_orchestrator",
+    "REQUEST_CHANGES": "client_engineer",
+    "BLOCKED": "lead_orchestrator"
+  }
+}

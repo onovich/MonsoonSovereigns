@@ -1,0 +1,104 @@
+{
+  "task_id": "M2-CLIENT-DISTRICT-LIST-001",
+  "message_id": "MSG-20260624-M2-CLIENT-DISTRICT-LIST-CLIENT-REVIEW",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M2 district operations surface with a client-core district read-model slice, a 4,000-row synthetic pressure fixture, manual virtualization, filtering, sorting, selection handoff to the map and panel, and Playwright coverage with measured UI derivation/selection timing.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/client-core/package.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/package.json",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M2-CLIENT-DISTRICT-LIST-001.json"
+  ],
+  "branch_or_worktree": "feat/m2-client-district-list",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed task client/test changes plus pre-existing lead-owned orchestration changes in project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, and project/messages/routes."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 1,
+      "result": "Initial attempt failed because package-local src test files were outside the root Vitest include; tests were moved under tests/** and scripts updated."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 1,
+      "result": "Initial attempt failed for the same package-local Vitest include issue; tests were moved under tests/** and scripts updated."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed, 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed, 2 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; 23 modules transformed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed, determinism hashes matched, root Vitest passed 18 files/85 tests, web Vitest passed 1 file/3 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 1,
+      "result": "Initial Playwright run found sort buttons hidden from the accessibility tree by aria-hidden on the header; fixed before rerun."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Chromium Playwright passed 2 tests, including 4,000-row virtualization, filtering, sorting, selection handoff, and measured derivation/selection timing assertions."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier check, ESLint, recursive typecheck, and architecture check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-DISTRICT-LIST-001",
+      "exit_code": 0,
+      "result": "Task JSON validated successfully."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M2-CLIENT-DISTRICT-LIST-001",
+      "exit_code": 0,
+      "result": "Parsed task and handoff JSON; verified task id/status/route and required handoff fields."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    }
+  ],
+  "decisions": [
+    "Used Playwright coverage instead of Storybook because apps/storybook does not exist in this checkout and root .storybook config is outside the task allowed paths.",
+    "Added manual fixed-row virtualization in @monsoon/ui rather than introducing a production dependency.",
+    "Kept the 4,000-row fixture explicitly synthetic with display names like Synthetic District 0001 and a provenance note stating it is not formal historical district content.",
+    "Kept UI logic on read-model fields only; no sim-core formulas or WorldState snapshots were copied into client storage."
+  ],
+  "risks": [
+    "The district list currently uses a synthetic pressure read-model slice in the web shell; a later integration task should replace it with live worker query projection when the client worker query adapter is expanded.",
+    "Playwright still reports the pre-existing Vite dynamic import warning from apps/web/src/worker/hello-simulation-adapter.mjs; this task did not modify that adapter.",
+    "Known non-blocking M2 save/load state.m2 omission remains unchanged as required."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review M2 district list implementation, virtualization behavior, performance evidence, and boundary compliance.",
+  "created_at": "2026-06-24T18:46:30.000Z"
+}
