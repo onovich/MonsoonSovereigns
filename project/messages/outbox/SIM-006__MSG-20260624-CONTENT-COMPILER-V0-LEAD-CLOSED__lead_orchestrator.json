@@ -1,0 +1,55 @@
+{
+  "message_id": "SIM-006__MSG-20260624-CONTENT-COMPILER-V0-LEAD-CLOSED",
+  "task_id": "SIM-006",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed SIM-006 after PR #20 merged into main. The reviewed Content Compiler v0, synthetic 30-node/60-edge fixture, runtime content pack parser/index, and CLI validator implementation is integrated at main merge commit a1b0471e91612362165dad40447a597630902bbb, and the dependency-ready follow-up task on this branch is SIM-005.",
+  "artifacts": [
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "apps/content-tools/src/index.ts",
+    "apps/content-tools/src/cli.ts",
+    "content-source/m1-fixtures/abstract-graph-30.json",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "project/tasks/active/SIM-006.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "branch_or_worktree": "chore/sim-006-close-after-integration",
+  "commit": "a1b0471e91612362165dad40447a597630902bbb",
+  "tests_run": [
+    {
+      "command": "gh pr view 20 --json state,mergedAt,mergeCommit,url,statusCheckRollup",
+      "exit_code": 0,
+      "result": "PR #20 MERGED at 2026-06-24T09:08:16Z with merge commit a1b0471e91612362165dad40447a597630902bbb; Quality/Web and Windows Desktop Smoke checks both succeeded."
+    },
+    {
+      "command": "git merge-base --is-ancestor a1b0471e91612362165dad40447a597630902bbb origin/main",
+      "exit_code": 0,
+      "result": "SIM-006 merge commit is an ancestor of origin/main."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "SIM-006 was ACCEPTED on main before closure; after this closure branch it is CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Dependency-ready follow-up task is SIM-005."
+    }
+  ],
+  "decisions": [
+    "Close SIM-006 only after confirming the accepted implementation entered main through PR #20.",
+    "Do not start SIM-005 in this closure commit."
+  ],
+  "risks": [
+    "Content-runtime is intentionally not wired into sim-core in SIM-006 because sim-core was outside the allowed paths; later integration should add contract tests at the sim-core boot boundary."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "After this closure commit is integrated, continue M1 autonomous execution by selecting the dependency-ready next task.",
+  "created_at": "2026-06-24T09:09:35Z"
+}
