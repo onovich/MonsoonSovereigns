@@ -1,0 +1,53 @@
+{
+  "message_id": "MSG-20260624-M2-MAP-SOURCE-POLICY-HISTORICAL-REVIEW",
+  "task_id": "M2-MAP-SOURCE-POLICY-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "Created a concise M2 prototype map fixture source policy that keeps M2 map data synthetic, defines historicity label requirements, blocks real historical/cultural map claims without a separate task, records later provenance expectations, and limits bad-map fixtures to validation use.",
+  "artifacts": [
+    "docs/research/m2-map-fixture-source-policy.md",
+    "project/tasks/active/M2-MAP-SOURCE-POLICY-001.json",
+    "project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-HISTORICAL-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "feat/m2-map-source-policy in D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed this task's modified task JSON, new docs/research directory, and new handoff file, plus pre-existing unrelated coordination changes in project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, and an untracked route message."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-MAP-SOURCE-POLICY-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-MAP-SOURCE-POLICY-001.json"
+    },
+    {
+      "command": "node -e JSON parse/shape check for M2-MAP-SOURCE-POLICY-001",
+      "exit_code": 0,
+      "result": "OK task shape M2-MAP-SOURCE-POLICY-001 REVIEW historical_researcher -> qa_reviewer"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-HISTORICAL-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M2-MAP-SOURCE-POLICY-001__MSG-20260624-M2-MAP-SOURCE-POLICY-HISTORICAL-REVIEW__historical_researcher.json"
+    }
+  ],
+  "decisions": [
+    "M2 prototype map fixture data should default to FICTIONAL and remain synthetic unless a separate historical research/content task authorizes formal historical map content.",
+    "Bad-map fixtures are validation data only and must not become production, tutorial, screenshot, or narrative placeholder content."
+  ],
+  "risks": [
+    "The policy intentionally does not decide exact historical geography, named settlements, polity claims, or cultural symbols; later content tasks still require source and claim records.",
+    "Pre-existing unrelated coordination-state changes remain in the worktree and were not modified by this task."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M2 map fixture source policy for scope discipline, historical/cultural guardrails, provenance expectations, and handoff/test evidence.",
+  "created_at": "2026-06-24T19:50:01.754+08:00"
+}
