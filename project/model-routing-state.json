@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T10:17:22Z",
+  "updated_at": "2026-06-24T10:50:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -322,6 +322,28 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_accept_review",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef928-9fe5-7402-9535-455ef447bce1",
+      "role": "systems_architect",
+      "task_id": "M1-GATE",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_gate_accept_and_lead_acceptance",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef935-cf7b-7a01-84ad-8481eeeed937",
+      "role": "qa_reviewer",
+      "task_id": "M1-GATE",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_gate_accept_review",
+      "accepted_task_reopened": false
     }
   ],
   "active_threads": [],
@@ -340,6 +362,7 @@
     "SIM-004": "CLOSED after PR #16 entered main at 63d21336d0de313ee33c0a17f1ce2a665c72e34f; simulation_engineer gpt-5.5 high implemented deterministic RNG domains and fixed the QA-requested formatting issue; qa_reviewer gpt-5.5 xhigh final accepted; next ready tasks are SIM-003 and SIM-006.",
     "SIM-003": "CLOSED after PR #18 entered main at 1c22cd872ef93e53e804d36d9610e178d73c6d62; simulation_engineer gpt-5.5 high implemented GameCommand v1, Query v1, DomainEvent/StateDelta boundaries, and shared Node/Worker command-query canaries; systems_architect gpt-5.5 xhigh accepted after the read-model aliasing fix; next ready task is SIM-006.",
     "SIM-006": "CLOSED after PR #20 entered main at a1b0471e91612362165dad40447a597630902bbb; simulation_engineer gpt-5.5 high implemented Content Compiler v0 and the synthetic 30-node graph fixture; qa_reviewer gpt-5.5 xhigh final accepted; next ready task is SIM-005.",
-    "SIM-005": "CLOSED after PR #22 entered main at 021c2545438af71455547abf9761cf671f39c280. simulation_engineer gpt-5.5 high implemented Save Envelope v1; qa_reviewer gpt-5.5 xhigh accepted after two REQUEST_CHANGES rounds; lead_orchestrator ran integration gates and closed the task after confirming the merge reached origin/main."
+    "SIM-005": "CLOSED after PR #22 entered main at 021c2545438af71455547abf9761cf671f39c280. simulation_engineer gpt-5.5 high implemented Save Envelope v1; qa_reviewer gpt-5.5 xhigh accepted after two REQUEST_CHANGES rounds; lead_orchestrator ran integration gates and closed the task after confirming the merge reached origin/main.",
+    "M1-GATE": "ACCEPTED on chore/m1-exit-gate after systems_architect thread 019ef928-9fe5-7402-9535-455ef447bce1 wrote docs/GATE-M1.md and qa_reviewer thread 019ef935-cf7b-7a01-84ad-8481eeeed937 accepted the gate. Both threads were closed. Task remains ACCEPTED, not CLOSED, until the gate PR enters main."
   }
 }

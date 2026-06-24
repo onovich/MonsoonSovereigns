@@ -1,0 +1,80 @@
+{
+  "id": "M1-GATE",
+  "summary": "Validate M1 milestone exit gate",
+  "milestone": "M1",
+  "status": "ACCEPTED",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "SIM-001",
+    "SIM-002",
+    "SIM-003",
+    "SIM-004",
+    "SIM-005",
+    "SIM-006"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/GATE-M1.md",
+      "PROJECT_STATUS.md",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/active/M1-GATE.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "docs/GATE-M1.md exists and records Gate ID, main commit, task status evidence for SIM-001 through SIM-006, reviewer thread IDs, handoff paths, CI evidence, local validation commands, known risks, and a PASS/BLOCK conclusion.",
+    "M1 acceptance matrix evidence is checked against docs/11-roadmap.md and docs/23-milestone-acceptance-matrix.md, including command semantics, deterministic 3650-day run, save v1, minimal read model, invariant/golden/protocol tests, corrupt save rejection, and key API tests.",
+    "Any gap between Roadmap wording and actual evidence is explicitly classified as PASS_WITH_INTERPRETATION, FOLLOW_UP_REQUIRED, or BLOCKED; no evidence is invented.",
+    "M1 exit does not change frozen product/platform/core architecture decisions, does not introduce implementation code, and does not start M2 implementation work.",
+    "systems_architect produces a validated gate writer handoff and independent qa_reviewer produces a validated ACCEPT handoff before lead marks the gate accepted.",
+    "If the gate passes, project state may advance current_milestone from M1 to M2 only after PR/CI/merge; M5 remains a Human Gate."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M1-GATE",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <qa-handoff>",
+    "node -e JSON validation for gate task, goal-mode-state, model-routing-state, and relevant handoffs",
+    "pnpm install --frozen-lockfile",
+    "pnpm check",
+    "pnpm test",
+    "pnpm sim:perf-baseline",
+    "pnpm build:web",
+    "pnpm desktop:security-check",
+    "pnpm desktop:package",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m1-exit-gate",
+  "threads": {
+    "systems_architect": "019ef928-9fe5-7402-9535-455ef447bce1",
+    "qa_reviewer": "019ef935-cf7b-7a01-84ad-8481eeeed937"
+  },
+  "route_to": "systems_architect",
+  "notes": [
+    "MILESTONE-AUTONOMY-AMENDMENT-001 allows ordinary M1-M4 milestone exits to pass autonomously only when the acceptance matrix is satisfied, CI and validation pass, independent reviewers ACCEPT, and no R4/frozen-decision Human Gate is active.",
+    "Roadmap M1 says Chrome/Node/Electron hash consistency; verify whether existing Worker/Web-compatible hash plus Windows Desktop Smoke is sufficient or whether this should become a follow-up/blocker."
+  ],
+  "created_at": "2026-06-24T10:22:52.634Z",
+  "updated_at": "2026-06-24T10:45:40.126Z"
+}
