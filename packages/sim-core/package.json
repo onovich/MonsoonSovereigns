@@ -6,6 +6,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run --root ../.. tests/sim-core-world-state.test.ts"
+  },
   "dependencies": {
     "@monsoon/protocol": "workspace:*"
   }

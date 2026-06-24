@@ -51,6 +51,21 @@ const simCorePathPrefixes = [
 const simCorePackageNames = new Set(["@monsoon/core", "@monsoon/sim-core"]);
 const simCoreForbiddenPackages = new Set(["electron", "pixi.js", "react", "react-dom"]);
 const simCoreForbiddenPrefixes = ["@pixi/"];
+const forbiddenSimCoreGlobalCalls = new Set([
+  "cancelAnimationFrame",
+  "clearInterval",
+  "clearTimeout",
+  "requestAnimationFrame",
+  "setInterval",
+  "setTimeout"
+]);
+const forbiddenSimCoreGlobalIdentifiers = new Set([
+  "document",
+  "localStorage",
+  "navigator",
+  "sessionStorage",
+  "window"
+]);
 
 /**
  * @typedef {{ filePath: string, message: string }} Violation
@@ -361,6 +376,62 @@ function collectImportSpecifiers(sourceFile) {
 }
 
 /**
+ * @param {ts.SourceFile} sourceFile
+ * @returns {string[]}
+ */
+function collectForbiddenSimCoreApis(sourceFile) {
+  /** @type {string[]} */
+  const usages = [];
+
+  /**
+   * @param {ts.Node} node
+   * @returns {void}
+   */
+  function visit(node) {
+    if (ts.isIdentifier(node) && forbiddenSimCoreGlobalIdentifiers.has(node.text)) {
+      usages.push(node.text);
+    }
+
+    if (ts.isCallExpression(node)) {
+      if (ts.isPropertyAccessExpression(node.expression)) {
+        const receiver = node.expression.expression;
+        const propertyName = node.expression.name.text;
+        if (ts.isIdentifier(receiver)) {
+          const receiverName = receiver.text;
+          if (
+            (receiverName === "Math" && propertyName === "random") ||
+            (receiverName === "Date" && propertyName === "now") ||
+            (receiverName === "performance" && propertyName === "now")
+          ) {
+            usages.push(`${receiverName}.${propertyName}`);
+          }
+        }
+      }
+
+      if (
+        ts.isIdentifier(node.expression) &&
+        forbiddenSimCoreGlobalCalls.has(node.expression.text)
+      ) {
+        usages.push(node.expression.text);
+      }
+    }
+
+    if (
+      ts.isNewExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === "Date"
+    ) {
+      usages.push("new Date");
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+  return usages;
+}
+
+/**
  * @param {string} specifier
  * @returns {boolean}
  */
@@ -426,6 +497,52 @@ async function validateSourceImports(rootPath, options = {}) {
           message: `sim-core/core source must not import platform or presentation dependency "${specifier}".`
         });
       }
+    }
+  }
+
+  return violations;
+}
+
+/**
+ * @param {string} rootPath
+ * @param {ScanOptions} [options]
+ * @returns {Promise<Violation[]>}
+ */
+async function validateSimCoreAuthorityApis(rootPath, options = {}) {
+  const excludeFixtures = options.excludeFixtures === true;
+  /** @type {Violation[]} */
+  const violations = [];
+  const files = await collectFiles(rootPath, (relativePath) => {
+    if (excludeFixtures && relativePath.startsWith("tools/architecture/fixtures/")) {
+      return true;
+    }
+    return false;
+  });
+
+  for (const filePath of files) {
+    if (!isSourcePath(filePath)) {
+      continue;
+    }
+
+    const relativePath = relativeFrom(rootPath, filePath);
+    if (!isSimCoreSource(relativePath)) {
+      continue;
+    }
+
+    const text = await readFile(filePath, "utf8");
+    const sourceFile = ts.createSourceFile(
+      filePath,
+      text,
+      ts.ScriptTarget.Latest,
+      true,
+      getScriptKind(filePath)
+    );
+
+    for (const usage of collectForbiddenSimCoreApis(sourceFile)) {
+      violations.push({
+        filePath,
+        message: `sim-core/core source must not use platform, clock, or render-frame API "${usage}".`
+      });
     }
   }
 
@@ -510,6 +627,7 @@ async function validateActualRepository() {
   return [
     ...(await validateTypeScriptBaseline(repoRoot)),
     ...(await validateSourceImports(repoRoot, { excludeFixtures: true })),
+    ...(await validateSimCoreAuthorityApis(repoRoot, { excludeFixtures: true })),
     ...(await validatePackageDependencies(repoRoot, { excludeFixtures: true }))
   ];
 }
@@ -520,6 +638,7 @@ async function validateActualRepository() {
 async function validateViolatingFixture() {
   return [
     ...(await validateSourceImports(fixtureRoot)),
+    ...(await validateSimCoreAuthorityApis(fixtureRoot)),
     ...(await validatePackageDependencies(fixtureRoot))
   ];
 }

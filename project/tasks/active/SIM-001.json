@@ -2,7 +2,7 @@
   "id": "SIM-001",
   "summary": "Define stable IDs, Definition/Runtime State separation, and WorldState v0",
   "milestone": "M1",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -56,13 +56,17 @@
     "Unit and property tests cover branded ID construction, schema rejection of invalid IDs, Definition/State separation, duplicate/bad references, and canonical hash stability.",
     "Architecture/static guard proves packages/sim-core imports no React, PixiJS, Electron, DOM, Node fs/path IO, real-time authority API, or render-frame API."
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "feat/sim-001-world-state-v0",
+  "threads": {
+    "simulation_engineer": "019ef80e-9f3d-7641-b609-36a14e656904",
+    "systems_architect": "019ef80e-c801-73a1-9965-87643f55d62e",
+    "qa_reviewer": "019ef837-70a0-7ee0-abb7-18000b509b2e"
+  },
   "route_to": "simulation_engineer",
   "notes": [
     "M0 gate is dependency-satisfied by FOUNDATION-001 through FOUNDATION-008 all being CLOSED.",
     "If implementation requires changing accepted ADR semantics or frozen PROJECT_STATUS decisions, stop and route to systems_architect before writing code."
   ],
   "created_at": "2026-06-24T04:53:00Z",
-  "updated_at": "2026-06-24T04:53:00Z"
+  "updated_at": "2026-06-24T06:12:12.071Z"
 }
