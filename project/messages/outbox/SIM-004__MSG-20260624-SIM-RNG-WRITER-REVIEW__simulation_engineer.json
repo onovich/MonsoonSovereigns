@@ -1,0 +1,79 @@
+{
+  "task_id": "SIM-004",
+  "message_id": "SIM-004__MSG-20260624-SIM-RNG-WRITER-REVIEW__simulation_engineer",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented deterministic RNG domains for M1 authority randomness. Added ADR-009 documenting SFC32/FNV-1a domain seeding, canonical seed/domain semantics, versioned DTO compatibility expectations, and no-entropy constraints. Added protocol DTOs, sim-core pure integer RNG construction/draw/DTO replay APIs, golden/property/cross-worker-compatible tests, and an explicit architecture self-test assertion that Math.random is rejected in authoritative sim-core paths.",
+  "artifacts": [
+    "docs/decisions/ADR-009-deterministic-rng-domains.md",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/src/deterministic-rng.ts",
+    "tests/sim-core-deterministic-rng.test.ts",
+    "tests/fixtures/deterministic-rng-worker.ts",
+    "tests/architecture-authority-randomness.test.ts",
+    "tools/architecture/check-boundaries.mjs",
+    "project/messages/outbox/SIM-004__MSG-20260624-SIM-RNG-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/sim-004-deterministic-rng",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed 3 files / 21 tests including SIM-004 golden vector, domain isolation, DTO replay, bounded integer draws, property replay/isolation, and Worker-compatible RNG sequence tests. Node emitted a non-blocking MODULE_TYPELESS_PACKAGE_JSON warning for the .ts Worker fixture executed with --experimental-strip-types."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; deterministic hello simulation matched for 30 days."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations. The dedicated architecture-authority-randomness Vitest also verified self-test output includes Math.random coverage."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check passed; sim:determinism matched hash 61e0ba1c; root Vitest passed 5 files / 24 tests; web Vitest passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "All workspace package typecheck scripts passed, including @monsoon/sim-core."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported violations."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier reported all matched files use configured code style."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    }
+  ],
+  "decisions": [
+    "Added ADR-009 because accepted ADR-003/ADR-004 did not specify PRNG algorithm, seed format, fork/domain semantics, or compatibility expectations.",
+    "Selected sfc32-fnv1a32-domain-v1 with FNV-1a 32-bit expansion into four SFC32 state words and integer-only bounded draws; no crypto RNG, real time, environment entropy, external service, floating-point draw API, or new production dependency was introduced.",
+    "Protocol owns the versioned serializable DTO constants/types; sim-core owns validation, canonical domain construction, stream stepping, and DTO replay.",
+    "Domain keys are explicit system/day/entity/purpose/substream records. Streams are constructed from seed plus full domain key, so unrelated random calls in one domain do not perturb another.",
+    "The static guard already rejected Math.random in authoritative sim-core; SIM-004 strengthened the self-test output and added a Vitest assertion for that coverage."
+  ],
+  "risks": [
+    "R3 task: RNG algorithm/canonicalization changes are compatibility-sensitive and should be independently checked by qa_reviewer.",
+    "The Worker-compatible RNG test uses a Node worker_threads fixture with --experimental-strip-types, matching the repository's current M0/M1 Worker-compatible testing level rather than a real browser Dedicated Worker bootstrap.",
+    "Repository still contains pre-existing/coordinator metadata changes under project/goal-mode-state.json, project/model-routing-state.json, project/tasks/*, and project/messages/routes/* that were not part of the SIM-004 implementation artifacts."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Perform independent QA review for SIM-004, including ADR-009 compatibility semantics, deterministic RNG domain isolation/replay, DTO serialization readiness for SIM-005, cross-environment test sufficiency, and Math.random authority guard coverage. Do not mark SIM-004 ACCEPTED/CLOSED without reviewer approval.",
+  "created_at": "2026-06-24T07:18:05Z"
+}

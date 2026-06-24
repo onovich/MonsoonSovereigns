@@ -9,6 +9,7 @@ import {
 export * from "./world-state-v0.ts";
 export * from "./scheduler-v0.ts";
 export * from "./minimal-m1-fixture.ts";
+export * from "./deterministic-rng.ts";
 
 interface HelloSimulationState {
   readonly day: number;

@@ -2,7 +2,7 @@
   "id": "SIM-004",
   "summary": "Implement deterministic RNG domains and authority randomness guard",
   "milestone": "M1",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -58,13 +58,16 @@
     "Property tests prove domain isolation and stable replay for generated domain keys.",
     "Static guard test fails on Math.random in authoritative simulation paths."
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "feat/sim-004-deterministic-rng",
+  "threads": {
+    "simulation_engineer": "019ef873-d613-7542-a389-f22832658578",
+    "qa_reviewer": "019ef880-522d-70d3-8f1a-5684281e952e"
+  },
   "route_to": "simulation_engineer",
   "notes": [
     "This task may create a new ADR only if required to lock PRNG algorithm/compatibility semantics; it must not modify accepted ADR files.",
     "Do not implement gameplay randomness beyond minimal deterministic test surfaces."
   ],
   "created_at": "2026-06-24T04:53:00Z",
-  "updated_at": "2026-06-24T04:53:00Z"
+  "updated_at": "2026-06-24T07:38:55.041Z"
 }
