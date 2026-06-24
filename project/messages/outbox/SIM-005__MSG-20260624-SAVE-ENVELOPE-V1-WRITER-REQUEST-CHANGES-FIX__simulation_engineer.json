@@ -1,0 +1,85 @@
+{
+  "message_id": "MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-FIX",
+  "task_id": "SIM-005",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed QA-blocked valid-checksum event-tail load path so malformed or unknown saved DomainEvent DTOs return structured load-save rejections without mutating the current runtime. Added regression tests for unknown event kind and malformed event field, and refreshed the worker-compatible adapter declaration for the public save/load canary export.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/save-load-contract.test.ts",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-FIX__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 7 tests passed, including valid-checksum unknown event-tail kind and malformed event-tail field rejection coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "6 test files passed; 31 tests passed. Existing warning only: MODULE_TYPELESS_PACKAGE_JSON for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violation(s)."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Root test command passed: architecture check, sim determinism, 13 root Vitest files/52 tests, and web Vitest 1 file/3 tests. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 baseline on m1.abstract-graph-30: 3650 days, finalDay 3650, finalRevision 3650, throughput 15304 days/sec, p50 56000ns, p95 96900ns, p99 147300ns, saveByteLength 9980, save 1448800ns, load 2860000ns."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed, including @monsoon/save-format, @monsoon/sim-core, and apps/web declaration coverage."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "QA repro command from SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "No THREW output. loadSaveV1 returned status rejected with original runtime hash a38362fd and reason invalid-schema at body.eventTail[0].event.kind."
+    }
+  ],
+  "decisions": [
+    "Kept event-tail validation in sim-core load hydration because event-tail DomainEvent DTOs are sim-core-owned semantics, while save-format continues to validate the envelope and generic event record shape.",
+    "Unknown or malformed saved event-tail entries now map to SaveLoadRejectionReasonV1 with code invalid-schema and body.eventTail paths, preserving the current runtime on failure.",
+    "Updated apps/web/src/worker/hello-simulation-adapter.d.mts to declare runSaveLoadCanaryInWorkerCompatibleAdapter because the public MJS adapter export remains."
+  ],
+  "risks": [
+    "Event-tail compatibility remains intentionally v1-only; future DomainEvent versions should add explicit migration or rejection tests before accepting new kinds.",
+    "Existing unrelated project coordination files and route files remain modified/untracked in the worktree from orchestration activity; this fix did not edit them."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Please re-review SIM-005 in qa_reviewer thread 019ef8ff-1fe3-72d1-bf3c-fc44b3a8af37, focusing on the valid-checksum event-tail rejection contract, no-mutation behavior, and refreshed worker adapter declaration.",
+  "created_at": "2026-06-24T09:54:00Z"
+}

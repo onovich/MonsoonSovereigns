@@ -2,7 +2,7 @@
   "id": "SIM-005",
   "summary": "Define Save Envelope v1, snapshot schema, round-trip load/save, and M1 golden fixtures",
   "milestone": "M1",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -69,13 +69,16 @@
     "Malformed/corrupt save tests cover checksum, unknown schema, bad reference, truncated payload, and contentManifestHash mismatch.",
     "Cross-environment contract tests cover Node runner and Worker save/load producing identical final hashes."
   ],
-  "branch_or_worktree": null,
-  "threads": {},
-  "route_to": "simulation_engineer",
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "threads": {
+    "simulation_engineer": "019ef8ea-061c-7763-b063-86130c02a48f",
+    "qa_reviewer": "019ef8ff-1fe3-72d1-bf3c-fc44b3a8af37"
+  },
+  "route_to": "qa_reviewer",
   "notes": [
     "Save schema is R3. If implementation changes compatibility strategy beyond docs/02 and ADR-004, write a new ADR before the codec implementation and route architecture questions to systems_architect.",
     "Do not implement platform file IO, IndexedDB persistence, cloud saves, migrations beyond v1 scaffolding, compression, or full event sourcing in this task."
   ],
   "created_at": "2026-06-24T04:53:00Z",
-  "updated_at": "2026-06-24T04:53:00Z"
+  "updated_at": "2026-06-24T10:10:54.084Z"
 }

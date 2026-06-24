@@ -1,0 +1,91 @@
+{
+  "message_id": "MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REVIEW",
+  "task_id": "SIM-005",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented Save Envelope v1 as an explicit DTO/codec package with schema, checksum, size/depth, semantic validation hooks, M1 golden fixture, sim-core request-save/load-save integration, Node/worker save-load canary, and 30-node M1 performance baseline.",
+  "artifacts": [
+    "packages/save-format/package.json",
+    "packages/save-format/tsconfig.json",
+    "packages/save-format/src/index.ts",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/minimal-m1-fixture.ts",
+    "packages/sim-core/scripts/performance-baseline.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "tests/save-format-v1.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/fixtures/save-format/m1-golden-save-v1.json",
+    "tests/fixtures/save-format/README.md",
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 5 tests passed. Covers golden round-trip, hash preservation, corrupt checksum, unknown schema, bad reference, truncated payload, contentManifestHash mismatch, and Node/Worker save-load contract."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "6 test files passed; 29 tests passed. Existing warning only: MODULE_TYPELESS_PACKAGE_JSON for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Root test command passed: architecture check, sim determinism, 13 root Vitest files/50 tests, and web Vitest 1 file/3 tests. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 baseline on m1.abstract-graph-30: 3650 days, finalDay 3650, finalRevision 3650, throughput 13068 days/sec, p50 59700ns, p95 135300ns, p99 224300ns, saveByteLength 9980, save 2349700ns, load 3377400ns."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed, including @monsoon/save-format and @monsoon/sim-core."
+    }
+  ],
+  "decisions": [
+    "Added @monsoon/save-format as a pure TypeScript DTO/codec package with no platform IO, no compression, no database, and no new external production dependency.",
+    "Save Envelope v1 uses explicit magic, schemaVersion, build metadata, contentManifestHash, scenarioId, seed, currentDay, checksumAlgorithm, checksum, authoritative WorldState v0 snapshot DTO, scheduler DTO, RNG compatibility hook, and bounded command/event tails.",
+    "Checksum is FNV-1a over canonical save body JSON. Header contentManifestHash/scenario mismatches remain structured load rejections instead of being hidden by checksum failures.",
+    "Load rejects malformed JSON, size/depth violations, unsupported versions, checksum mismatch, content/scenario mismatch, schema errors, and sim-core semantic invariant failures without mutating the caller's current runtime.",
+    "Added synthetic m1.abstract-graph-30 sim-core fixture using manifest hash 4a438525 and kept the pre-existing minimal-m1 canary intact.",
+    "Golden fixture checksum is e6588316 and initial M1 graph state hash is f336958d; tests/fixtures/save-format/README.md records the intentional update workflow."
+  ],
+  "risks": [
+    "R3 save/schema change requires qa_reviewer scrutiny.",
+    "Save event tail validation is intentionally narrow for M1: it preserves known current DomainEvent DTOs but does not introduce full event sourcing or migration beyond v1 rejection scaffolding.",
+    "Sim-core now depends on the pure save-format package for request-save/load-save helpers; architecture:check passes, but QA should verify this package boundary is acceptable under docs/04."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Please review SIM-005 for save envelope schema correctness, rejection safety/no-mutation behavior, golden fixture workflow, Node/Worker shared codec coverage, and R3 compatibility risk.",
+  "created_at": "2026-06-24T09:37:00Z"
+}

@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES-2",
+  "task_id": "SIM-005",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "The original valid-checksum event-tail crash is fixed, and malformed unknown event kinds now reject without mutating. SIM-005 is still not accepted because a valid-checksum saved DomainEvent with an unsupported schemaVersion is silently loaded and coerced to schemaVersion 1 instead of being rejected as a versioned save-tail schema error.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/save-load-contract.test.ts",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES-2__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/sim-005-save-envelope-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-WRITER-REQUEST-CHANGES-FIX__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer fix handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "6 test files passed; 31 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed, including apps/web declaration coverage."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "Prior QA repro: valid-checksum unknown event kind through loadSaveV1",
+      "exit_code": 0,
+      "result": "Resolved: returned status rejected with original runtime hash a38362fd and reason invalid-schema at body.eventTail[0].event.kind; no THREW output."
+    },
+    {
+      "command": "New QA repro: valid-checksum known event kind with event schemaVersion 999 through loadSaveV1",
+      "exit_code": 0,
+      "result": "Still failing: returned status loaded with loadedEventSchema 1, silently accepting unsupported saved event schemaVersion 999."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check, sim determinism, 13 root Vitest files/52 tests, and web Vitest 1 file/3 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning appeared."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/SIM-005__MSG-20260624-SAVE-ENVELOPE-V1-QA-REQUEST-CHANGES-2__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "Reviewer handoff validates against project/schemas/handoff.schema.json."
+    }
+  ],
+  "decisions": [
+    "The first REQUEST_CHANGES blocker is fixed for unknown event kinds and malformed event fields: the loader now returns structured invalid-schema reasons and preserves the original runtime.",
+    "The worker-compatible adapter declaration has been refreshed for runSaveLoadCanaryInWorkerCompatibleAdapter and typecheck passes.",
+    "Because SIM-005 is R3 save/schema work and event tails are versioned DomainEvent DTOs, an unsupported event schemaVersion must be explicitly rejected or migrated; silently coercing it to v1 is not acceptable."
+  ],
+  "risks": [
+    "The current parser does not check saved DomainEvent schemaVersion. Future or corrupted event-tail DTOs with known kind names can be accepted as v1, which weakens save compatibility guarantees even though the authoritative world snapshot is not mutated."
+  ],
+  "blockers": [
+    {
+      "severity": "medium",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "symbol": "parseSavedDomainEvent",
+      "repro": "Create a valid-checksum save envelope with eventTail [{ sequence: 1, event: { schemaVersion: 999, kind: 'sim.state-hash-verified', commandId: 'bad.version', actor: { kind: 'system', id: 'save-contract' }, day: 0, revision: 0, stateHash: saved.stateHash } }] and load it with matching expected content/scenario. loadSaveV1 returns status loaded and runtime.eventTail[0].schemaVersion is 1.",
+      "impact": "Unsupported saved DomainEvent schema versions are silently accepted and coerced, contrary to the explicit v1-only compatibility/rejection model for save tails.",
+      "necessary_fix": "Validate event.schemaVersion === 1 for every saved DomainEvent before constructing the loaded runtime, return an invalid-schema SaveLoadRejectionReasonV1 on mismatch, preserve the original runtime, and add a regression test for a valid-checksum known event kind with unsupported event schemaVersion."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Please reject or explicitly migrate unsupported saved DomainEvent schemaVersion values in the sim-core event-tail load parser, add a regression test for schemaVersion 999 on a known event kind, then rerun the SIM-005 validation matrix.",
+  "created_at": "2026-06-24T09:58:41Z"
+}

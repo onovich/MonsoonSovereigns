@@ -151,11 +151,20 @@ importers:
 
   packages/protocol: {}
 
+  packages/save-format:
+    dependencies:
+      '@monsoon/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+
   packages/sim-core:
     dependencies:
       '@monsoon/protocol':
         specifier: workspace:*
         version: link:../protocol
+      '@monsoon/save-format':
+        specifier: workspace:*
+        version: link:../save-format
 
   packages/ui:
     dependencies:

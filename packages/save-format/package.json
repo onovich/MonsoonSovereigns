@@ -1,0 +1,16 @@
+{
+  "name": "@monsoon/save-format",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run --root ../.. tests/save-format-v1.test.ts tests/save-load-contract.test.ts"
+  },
+  "dependencies": {
+    "@monsoon/protocol": "workspace:*"
+  }
+}
