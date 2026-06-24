@@ -1,0 +1,104 @@
+{
+  "message_id": "MSG-20260624-M2-BOOT-BOUNDARY-ARCH-REVIEW-2",
+  "task_id": "M2-BOOT-BOUNDARY-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Second architecture review accepts the REQUEST_CHANGES fixes. BootSimulationInputV1 now rejects mixed fixture and runtime-content-pack mode fields before branch selection; the concrete ambiguous payload rejects with invalid-payload at path $ and returns no runtime/hash. Regression coverage exists in the sim-core boot-boundary contract test. The prior scope finding is resolved by explicit task allowed_paths authorization for lead-owned orchestration recovery files with a limiting note.",
+  "artifacts_reviewed": [
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW-2__simulation_engineer.json",
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-ARCH-REVIEW__systems_architect.json",
+    "project/messages/routes/M2-BOOT-BOUNDARY-001__ROUTE-20260624-LEAD-TO-ARCH-REVIEW-2.json",
+    "project/tasks/active/M2-BOOT-BOUNDARY-001.json",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json"
+  ],
+  "artifacts": [
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW-2__simulation_engineer.json",
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-ARCH-REVIEW__systems_architect.json",
+    "project/messages/routes/M2-BOOT-BOUNDARY-001__ROUTE-20260624-LEAD-TO-ARCH-REVIEW-2.json",
+    "project/tasks/active/M2-BOOT-BOUNDARY-001.json",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json"
+  ],
+  "branch_or_worktree": "feat/m2-boot-boundary @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW-2__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID revised REVIEW-2 writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-BOOT-BOUNDARY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-BOOT-BOUNDARY-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree contains protocol/sim-core/test changes, lead-authorized orchestration state files, prior and revised handoff/route messages, and this pending second architect review handoff."
+    },
+    {
+      "command": "node --experimental-strip-types ambiguous boot DTO probe",
+      "exit_code": 0,
+      "result": "Concrete mixed payload { protocolVersion: 1, fixture: minimal-m1, source: runtime-content-pack, seed: 1531, runtimeContentPack: { invalid: true } } returned status rejected with error code invalid-payload at path $, and did not return runtime or hash."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "7 test files passed; 35 tests passed. Regression coverage in tests/sim-core-boot-boundary.test.ts confirms mixed fixture plus runtime-content-pack payload rejects. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "node allowed-path check from task scope",
+      "exit_code": 0,
+      "result": "17 changed/untracked files checked against task allowed_paths and forbidden_paths; disallowed=[], forbiddenHits=[]."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 protocol schema test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed. Self-test fixture produced 15 expected violation(s)."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    }
+  ],
+  "findings": [],
+  "decisions": [
+    "ACCEPT: ARCH-BOOT-001 is resolved by mutually exclusive boot-mode validation and bootSimulationV1-level regression coverage.",
+    "ACCEPT: ARCH-SCOPE-001 is resolved for this review package because the task allowed_paths now explicitly include project/goal-mode-state.json, project/model-routing-state.json, and project/tasks/thread-registry.json, with a note limiting them to orchestration recovery evidence only.",
+    "The sim-core/content-runtime boundary remains acceptable: sim-core receives a plain runtimeContentPack DTO, validates it internally, and does not import content-runtime/content-source or host/presentation APIs.",
+    "No economy, population, route-choice, UI, desktop, or broader product scope expansion was observed in the reviewed changes."
+  ],
+  "risks": [
+    "The public boot DTO still relies on convention rather than a named mode field, but the parser now enforces mutually exclusive fixture versus runtime-content-pack fields before branch selection.",
+    "Lead-owned orchestration state files are in this task scope only for recovery evidence; they should not be treated as precedent for implementation-scope expansion in future tasks.",
+    "The M2 boot adapter still maps route baseTravelCost into existing RouteDefinition.lengthInMapUnits as a boundary placeholder; future transport/route-choice behavior needs a separate spec and task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead integration routing for M2-BOOT-BOUNDARY-001. Architecture review accepts the second package; keep QA/release checks separate per normal task flow.",
+  "created_at": "2026-06-25T00:56:13.7394192+08:00"
+}

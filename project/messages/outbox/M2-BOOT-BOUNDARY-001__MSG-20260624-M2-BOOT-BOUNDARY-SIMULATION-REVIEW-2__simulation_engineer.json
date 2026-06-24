@@ -1,0 +1,94 @@
+{
+  "message_id": "MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW-2",
+  "task_id": "M2-BOOT-BOUNDARY-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "branch_or_worktree": "feat/m2-boot-boundary",
+  "commit": null,
+  "summary": "Addressed systems_architect REQUEST_CHANGES for ambiguous BootSimulationInputV1 payloads. parseBootSimulationInputV1 now rejects mixed fixture-mode and runtime-content-pack-mode fields before selecting a boot path, so the concrete payload with fixture minimal-m1 plus source runtime-content-pack, seed, and invalid runtimeContentPack no longer boots a fixture or returns a runtime/hash. Added regression coverage in the M2 boot-boundary contract test.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW-2__simulation_engineer.json"
+  ],
+  "files_changed": [
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW-2__simulation_engineer.json"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Current status includes protocol/sim-core/test changes, lead-authorized orchestration state changes, prior review/route messages, and the new REVIEW-2 handoff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "7 test files passed; 35 tests passed. Regression confirms mixed fixture plus runtime-content-pack payload rejects with invalid-payload at path $. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed. Self-test fixture produced 15 expected violation(s)."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-BOOT-BOUNDARY-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-BOOT-BOUNDARY-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M2-BOOT-BOUNDARY-001",
+      "exit_code": 0,
+      "result": "M2-BOOT-BOUNDARY-001 JSON shape ok: IN_PROGRESS, R3, 6 acceptance criteria."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 protocol schema test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "All workspace typecheck scripts passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style after formatting the updated regression test."
+    }
+  ],
+  "decisions": [
+    "Boot DTO mode fields are now mutually exclusive: any payload with fixture plus source, seed, or runtimeContentPack is rejected before boot selection.",
+    "The regression is asserted at bootSimulationV1 level so rejection is proven to return no SimulationRuntime, no WorldState, and no state hash.",
+    "No UI, client, desktop, content-source/historical, docs gate, economy, population, route-choice, or product-scope changes were made."
+  ],
+  "risks": [
+    "R3 public boot contract still requires systems_architect acceptance.",
+    "The REVIEW-2 handoff includes files_changed per lead route instruction; the older project/schemas/handoff.schema.json does not currently define that field."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Re-review the BootSimulationInputV1 mutually exclusive mode validation and regression test for ARCH-BOOT-001 closure.",
+  "created_at": "2026-06-24T16:52:00Z"
+}

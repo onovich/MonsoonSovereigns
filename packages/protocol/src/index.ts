@@ -115,10 +115,21 @@ export type GameQueryV1 = GetStateHashQueryV1 | GetCalendarQueryV1 | ListDistric
 
 export type SimulationFixtureIdV1 = "m1.abstract-graph-30" | "minimal-m1";
 
-export interface BootSimulationInputV1 {
+export interface FixtureBootSimulationInputV1 {
   readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
   readonly fixture: SimulationFixtureIdV1;
 }
+
+export interface RuntimeContentPackBootSimulationInputV1 {
+  readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  readonly source: "runtime-content-pack";
+  readonly seed: number;
+  readonly runtimeContentPack: Record<string, unknown>;
+}
+
+export type BootSimulationInputV1 =
+  | FixtureBootSimulationInputV1
+  | RuntimeContentPackBootSimulationInputV1;
 
 export interface CommandQueryCanaryScriptV1 {
   readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
@@ -554,21 +565,69 @@ export function parseBootSimulationInputV1(
     );
   }
 
-  if (input["fixture"] !== "minimal-m1" && input["fixture"] !== "m1.abstract-graph-30") {
+  const hasFixtureMode = input["fixture"] !== undefined;
+  const hasRuntimeContentPackMode =
+    input["source"] !== undefined ||
+    input["seed"] !== undefined ||
+    input["runtimeContentPack"] !== undefined;
+
+  if (hasFixtureMode && hasRuntimeContentPackMode) {
     return protocolError(
       "invalid-payload",
-      "fixture",
-      "BootSimulationInput fixture must be minimal-m1 or m1.abstract-graph-30."
+      "$",
+      "BootSimulationInput must specify either fixture or runtime-content-pack source, not both."
     );
   }
 
-  return {
-    ok: true,
-    value: {
-      protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
-      fixture: input["fixture"]
+  if (input["fixture"] === "minimal-m1" || input["fixture"] === "m1.abstract-graph-30") {
+    return {
+      ok: true,
+      value: {
+        protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
+        fixture: input["fixture"]
+      }
+    };
+  }
+
+  if (input["source"] === "runtime-content-pack") {
+    const seed = parseNonnegativeSafeInteger(input["seed"], "seed");
+    if (!seed.ok) {
+      return seed;
     }
-  };
+
+    const runtimeContentPack = input["runtimeContentPack"];
+    if (!isRecord(runtimeContentPack)) {
+      return protocolError(
+        "invalid-payload",
+        "runtimeContentPack",
+        "BootSimulationInput runtimeContentPack must be an object."
+      );
+    }
+
+    return {
+      ok: true,
+      value: {
+        protocolVersion: SIMULATION_MESSAGE_PROTOCOL_VERSION,
+        source: "runtime-content-pack",
+        seed: seed.value,
+        runtimeContentPack
+      }
+    };
+  }
+
+  if (input["source"] !== undefined) {
+    return protocolError(
+      "invalid-payload",
+      "source",
+      "BootSimulationInput source must be runtime-content-pack."
+    );
+  }
+
+  return protocolError(
+    "invalid-payload",
+    "fixture",
+    "BootSimulationInput fixture must be minimal-m1 or m1.abstract-graph-30."
+  );
 }
 
 interface ParsedCommandBase {

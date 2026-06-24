@@ -1,0 +1,21 @@
+{
+  "route_id": "ROUTE-20260624-LEAD-TO-SIMULATION-FIX",
+  "task_id": "M2-BOOT-BOUNDARY-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "simulation_engineer",
+  "to_thread_id": "019efa71-42bd-73b1-a5c2-f8493a37115a",
+  "delivery": "send_input",
+  "send_input_submission_id": "019efa89-068e-7182-ad86-79b27bb476b2",
+  "branch_or_worktree": "feat/m2-boot-boundary",
+  "status": "DELIVERED",
+  "summary": "Routed systems_architect REQUEST_CHANGES back to the original simulation_engineer for the BootSimulationInputV1 mixed discriminator rejection and regression test.",
+  "artifacts": [
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-ARCH-REVIEW__systems_architect.json",
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW__simulation_engineer.json",
+    "project/tasks/active/M2-BOOT-BOUNDARY-001.json",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-boot-boundary.test.ts"
+  ],
+  "requested_action": "Fix the ambiguous boot DTO parser path so mixed fixture plus runtime-content-pack payloads are rejected without runtime, add regression coverage, rerun required tests, and write a revised REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-24T16:43:00Z"
+}

@@ -24,6 +24,7 @@ import {
 } from "@monsoon/save-format";
 
 import { advanceWorldByGameDay } from "./scheduler-v0.ts";
+import { bootWorldStateFromRuntimeContentPackV1 } from "./boot-content-runtime-v1.ts";
 import {
   M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH,
   M1_ABSTRACT_GRAPH_30_SCENARIO_ID,
@@ -47,6 +48,7 @@ export type DomainErrorCodeV1 =
   | "bad-id"
   | "duplicate-command"
   | "hash-mismatch"
+  | "invalid-content-pack"
   | "invalid-payload"
   | "invariant-violation"
   | "stale-day"
@@ -518,10 +520,28 @@ function bootParsedSimulationV1(input: BootSimulationInputV1): BootSimulationRes
     };
   }
 
-  const world =
-    input.fixture === "m1.abstract-graph-30"
-      ? createAbstractGraph30WorldStateV0()
-      : createMinimalM1WorldStateV0();
+  const worldResult =
+    "source" in input
+      ? bootWorldStateFromRuntimeContentPackV1({
+          seed: input.seed,
+          runtimeContentPack: input.runtimeContentPack
+        })
+      : {
+          status: "booted" as const,
+          world:
+            input.fixture === "m1.abstract-graph-30"
+              ? createAbstractGraph30WorldStateV0()
+              : createMinimalM1WorldStateV0()
+        };
+
+  if (worldResult.status === "rejected") {
+    return {
+      status: "rejected",
+      error: worldResult.error
+    };
+  }
+
+  const world = worldResult.world;
   return {
     status: "booted",
     runtime: {
