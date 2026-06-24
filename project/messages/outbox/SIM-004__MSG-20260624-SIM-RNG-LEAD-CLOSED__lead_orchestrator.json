@@ -1,0 +1,46 @@
+{
+  "message_id": "SIM-004__MSG-20260624-SIM-RNG-LEAD-CLOSED",
+  "task_id": "SIM-004",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed SIM-004 after PR #16 merged into main. The reviewed deterministic RNG domain implementation is integrated at main merge commit 63d21336d0de313ee33c0a17f1ce2a665c72e34f, and dependency-ready follow-up tasks on this branch are SIM-003 and SIM-006.",
+  "artifacts": [
+    "docs/decisions/ADR-009-deterministic-rng-domains.md",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/deterministic-rng.ts",
+    "tests/sim-core-deterministic-rng.test.ts",
+    "project/tasks/active/SIM-004.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "branch_or_worktree": "chore/sim-004-close-after-integration",
+  "commit": "63d21336d0de313ee33c0a17f1ce2a665c72e34f",
+  "tests_run": [
+    {
+      "command": "gh pr view 16 --json state,mergedAt,mergeCommit,url,headRefName,statusCheckRollup",
+      "exit_code": 0,
+      "result": "PR #16 MERGED at 2026-06-24T07:44:38Z with merge commit 63d21336d0de313ee33c0a17f1ce2a665c72e34f; Quality/Web and Windows Desktop Smoke checks both succeeded."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "SIM-004 was ACCEPTED on main before closure; after this closure branch it is CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Dependency-ready follow-up tasks are SIM-003 and SIM-006."
+    }
+  ],
+  "decisions": [
+    "Close SIM-004 only after confirming the accepted implementation entered main through PR #16.",
+    "Do not start SIM-003 or SIM-006 in this closure commit."
+  ],
+  "risks": [
+    "Root pnpm format:check still omits packages/sim-core and packages/protocol globs; SIM-004 itself used targeted touched-file Prettier checks."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "After this closure commit is integrated, continue M1 autonomous execution by selecting a dependency-ready next task.",
+  "created_at": "2026-06-24T07:45:31Z"
+}
