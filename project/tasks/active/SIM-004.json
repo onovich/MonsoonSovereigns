@@ -1,0 +1,70 @@
+{
+  "id": "SIM-004",
+  "summary": "Implement deterministic RNG domains and authority randomness guard",
+  "milestone": "M1",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "SIM-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "tests/**",
+      "vitest.config.*",
+      "package.json",
+      "pnpm-lock.yaml",
+      "tools/architecture/**",
+      "docs/decisions/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/platform/**",
+      "packages/ui/**",
+      "content-source/**",
+      "docs/decisions/ADR-000-decision-policy.md",
+      "docs/decisions/ADR-001-web-first.md",
+      "docs/decisions/ADR-002-typescript-only-first.md",
+      "docs/decisions/ADR-003-worker-authoritative-simulation.md",
+      "docs/decisions/ADR-004-deterministic-command-model.md",
+      "docs/decisions/ADR-005-platform-priority.md",
+      "docs/decisions/ADR-006-polity-control-model.md",
+      "docs/decisions/ADR-007-no-runtime-database.md",
+      "docs/decisions/ADR-008-react-pixi-boundary.md",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "DeterministicRng exposes stable domain/substream construction from seed plus explicit domain keys such as system, day, entity, and purpose.",
+    "The selected PRNG algorithm, seed format, fork/domain semantics, and compatibility expectations are documented; if this is not fully covered by accepted ADRs, a new ADR is written before implementation.",
+    "Unrelated random calls in one domain do not perturb outcomes in another domain.",
+    "Authority logic cannot call Math.random; static guard and tests cover sim-core and other authority packages touched by M1.",
+    "RNG values, domain keys, and any persisted state are serializable through explicit versioned DTOs, ready for SIM-005 save integration.",
+    "Cross-environment tests prove the same seed/domain call sequence returns the same values in Node and Worker-capable builds.",
+    "No crypto RNG, real time, environment entropy, external RNG service, or new production dependency is used for authority randomness."
+  ],
+  "required_tests": [
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm sim:determinism",
+    "pnpm architecture:check",
+    "pnpm test",
+    "Golden vector tests lock the PRNG output for documented seeds and domains.",
+    "Property tests prove domain isolation and stable replay for generated domain keys.",
+    "Static guard test fails on Math.random in authoritative simulation paths."
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "This task may create a new ADR only if required to lock PRNG algorithm/compatibility semantics; it must not modify accepted ADR files.",
+    "Do not implement gameplay randomness beyond minimal deterministic test surfaces."
+  ],
+  "created_at": "2026-06-24T04:53:00Z",
+  "updated_at": "2026-06-24T04:53:00Z"
+}

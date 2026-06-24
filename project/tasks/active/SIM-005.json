@@ -1,0 +1,81 @@
+{
+  "id": "SIM-005",
+  "summary": "Define Save Envelope v1, snapshot schema, round-trip load/save, and M1 golden fixtures",
+  "milestone": "M1",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "SIM-001",
+    "SIM-002",
+    "SIM-003",
+    "SIM-004",
+    "SIM-006"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/save-format/**",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "apps/sim-runner/**",
+      "apps/web/src/worker/**",
+      "tests/**",
+      "vitest.config.*",
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tools/architecture/**",
+      "docs/decisions/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/src/**/*.tsx",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/platform/**",
+      "packages/ui/**",
+      "content-source/historical/**",
+      "docs/decisions/ADR-000-decision-policy.md",
+      "docs/decisions/ADR-001-web-first.md",
+      "docs/decisions/ADR-002-typescript-only-first.md",
+      "docs/decisions/ADR-003-worker-authoritative-simulation.md",
+      "docs/decisions/ADR-004-deterministic-command-model.md",
+      "docs/decisions/ADR-005-platform-priority.md",
+      "docs/decisions/ADR-006-polity-control-model.md",
+      "docs/decisions/ADR-007-no-runtime-database.md",
+      "docs/decisions/ADR-008-react-pixi-boundary.md",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Save Envelope v1 has explicit magic, schemaVersion, build/source metadata, contentManifestHash, scenario ID, seed, currentDay, checksum, authoritative snapshot DTO, scheduler data, and short command/event tail.",
+    "Permanent save format is an explicit DTO/codec with schema validation; directly JSON.stringify-ing hydrated WorldState object graphs is forbidden.",
+    "Load path validates envelope, checksum, schema version, size/depth limits, references, semantic invariants, and returns structured rejection reasons without mutating the current committed state on failure.",
+    "Minimal save/load round-trip over the M1 graph fixture preserves state hash and scheduler/RNG compatibility hooks.",
+    "Corrupt checksum, unknown version, malformed payload, bad ID reference, and contentManifestHash mismatch are safely rejected.",
+    "Golden save fixture and compatibility test plan exist; intentional schema/hash changes require a recorded reason and golden update.",
+    "Node runner and Worker request-save/load-save paths share the same core save codec; browser IndexedDB and Electron filesystem adapters are out of scope.",
+    "Same seed, initial state, command tail, and loaded snapshot produce the same hash in Node and Worker path.",
+    "M1 performance baseline records 3650-day headless run timing plus save size and save/load timing for the 30-node fixture; no premature optimization or new runtime database is introduced."
+  ],
+  "required_tests": [
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm sim:determinism",
+    "pnpm architecture:check",
+    "pnpm test",
+    "Golden fixture tests cover save round-trip, hash preservation, and intentional fixture update workflow.",
+    "Malformed/corrupt save tests cover checksum, unknown schema, bad reference, truncated payload, and contentManifestHash mismatch.",
+    "Cross-environment contract tests cover Node runner and Worker save/load producing identical final hashes."
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "Save schema is R3. If implementation changes compatibility strategy beyond docs/02 and ADR-004, write a new ADR before the codec implementation and route architecture questions to systems_architect.",
+    "Do not implement platform file IO, IndexedDB persistence, cloud saves, migrations beyond v1 scaffolding, compression, or full event sourcing in this task."
+  ],
+  "created_at": "2026-06-24T04:53:00Z",
+  "updated_at": "2026-06-24T04:53:00Z"
+}

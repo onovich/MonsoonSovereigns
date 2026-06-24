@@ -1,0 +1,75 @@
+{
+  "id": "SIM-003",
+  "summary": "Build GameCommand validation/application plus DomainEvent, StateDelta, and Query v1",
+  "milestone": "M1",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "SIM-001",
+    "SIM-002",
+    "SIM-004"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "apps/sim-runner/**",
+      "apps/web/src/worker/**",
+      "tests/**",
+      "vitest.config.*",
+      "package.json",
+      "pnpm-lock.yaml",
+      "tools/architecture/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/src/**/*.tsx",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/platform/**",
+      "packages/ui/**",
+      "content-source/**",
+      "docs/decisions/ADR-000-decision-policy.md",
+      "docs/decisions/ADR-001-web-first.md",
+      "docs/decisions/ADR-002-typescript-only-first.md",
+      "docs/decisions/ADR-003-worker-authoritative-simulation.md",
+      "docs/decisions/ADR-004-deterministic-command-model.md",
+      "docs/decisions/ADR-005-platform-priority.md",
+      "docs/decisions/ADR-006-polity-control-model.md",
+      "docs/decisions/ADR-007-no-runtime-database.md",
+      "docs/decisions/ADR-008-react-pixi-boundary.md",
+      "PROJECT_STATUS.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "GameCommand v1 is a versioned discriminated union with only minimal M1 kernel commands needed for boot, deterministic advancement, fixture/debug commands, and hash verification.",
+    "Player and AI callers use the same command type, validator, apply path, and result shape; no player-only or AI-only authority mutation path exists.",
+    "previewCommand validates without mutating state; applyCommand re-validates at commit time and atomically accepts or rejects with stable reason codes.",
+    "Expected command failures use structured CommandRejected/DomainError outcomes, not exceptions or text matching.",
+    "Committed changes emit a clear DomainEvent and/or StateDelta boundary suitable for read models; UI, Pixi, Electron, and Node IO do not receive mutable WorldState authority.",
+    "Minimal Query v1 exposes read-model-safe data and state hash queries without letting UI traverse or mutate WorldState internals.",
+    "Node runner and Web Worker path share the same sim-core boot/preview/submit/query/advance implementation; duplicated authority logic in adapters is forbidden.",
+    "Same seed, initial state, command sequence, and scheduler order produce the same state hash in Node runner and Worker path."
+  ],
+  "required_tests": [
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm architecture:check",
+    "pnpm test",
+    "Command tests cover valid, invalid, duplicate/replayed, stale-day, bad-ID, and boundary payload cases.",
+    "Contract tests cover Node runner and Worker boot/submit/preview/query producing identical hashes for the same command sequence.",
+    "Protocol/schema tests reject unknown message types and malformed command/query payloads with serializable errors."
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "ADR-004 already decides explicit GameCommand, semantic Domain Events/ReadModelDelta, and snapshot plus short tail; do not expand to full event sourcing.",
+    "If command/protocol semantics exceed ADR-004, write a new ADR before implementation."
+  ],
+  "created_at": "2026-06-24T04:53:00Z",
+  "updated_at": "2026-06-24T04:53:00Z"
+}
