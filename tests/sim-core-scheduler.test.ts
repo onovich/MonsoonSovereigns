@@ -20,12 +20,13 @@ describe("SIM-002 fixed GameDay scheduler", () => {
     expect(DETERMINISTIC_SYSTEM_ORDER_V1.map((entry) => entry.systemId)).toEqual([
       "scheduler.command-buffer",
       "scheduler.daily-authority-step",
+      "scheduler.m2-economy-population",
       "scheduler.month-boundary-hooks",
       "scheduler.year-boundary-hooks",
       "scheduler.invariant-validation"
     ]);
     expect(DETERMINISTIC_SYSTEM_ORDER_V1.map((entry) => entry.order)).toEqual([
-      100, 200, 300, 400, 900
+      100, 200, 250, 300, 400, 900
     ]);
     expect(DETERMINISTIC_SYSTEM_ORDER_V1.every((entry) => entry.tieBreaker === "systemId")).toBe(
       true

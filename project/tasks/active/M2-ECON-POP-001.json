@@ -2,11 +2,13 @@
   "id": "M2-ECON-POP-001",
   "summary": "Implement M2 agriculture, labor, population, grain, and cash scaffolding",
   "milestone": "M2",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
-  "dependencies": ["M2-BOOT-BOUNDARY-001"],
+  "dependencies": [
+    "M2-BOOT-BOUNDARY-001"
+  ],
   "scope": {
     "allowed_paths": [
       "packages/sim-core/**",
@@ -15,6 +17,9 @@
       "packages/content-runtime/**",
       "apps/sim-runner/**",
       "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
       "project/tasks/active/M2-ECON-POP-001.json",
       "project/messages/**"
     ],
@@ -59,12 +64,16 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m2-economy-population",
-  "threads": {},
+  "threads": {
+    "simulation_engineer": "019efa9c-60e9-7d61-9cba-511c79f6e40b",
+    "systems_architect": "019efaad-2aa7-75c3-90df-2a3646240223"
+  },
   "route_to": "simulation_engineer",
   "notes": [
     "This is scaffolding for Roadmap M2 only; do not build complete economy, taxation, war manpower, or balance systems.",
-    "Any save/protocol schema expansion must remain explicit and versioned and must include compatibility test evidence."
+    "Any save/protocol schema expansion must remain explicit and versioned and must include compatibility test evidence.",
+    "Lead-owned goal-mode, model-routing, and thread-registry updates are allowed only as orchestration recovery evidence for this task; they must not expand implementation scope."
   ],
   "created_at": "2026-06-24T11:08:39.037Z",
-  "updated_at": "2026-06-24T17:04:41.411Z"
+  "updated_at": "2026-06-24T17:40:04.539Z"
 }

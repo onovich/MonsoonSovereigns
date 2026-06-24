@@ -5,6 +5,7 @@ export type PolityId = Brand<number, "PolityId">;
 export type DistrictId = Brand<number, "DistrictId">;
 export type SettlementId = Brand<number, "SettlementId">;
 export type RouteId = Brand<number, "RouteId">;
+export type PopulationGroupId = Brand<number, "PopulationGroupId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -77,12 +78,67 @@ export interface RouteState {
   readonly definitionId: RouteId;
 }
 
+export type M2AgriculturePhaseV0 = "fallow" | "planting" | "growing" | "harvest";
+export type M2LaborCommitmentPurposeV0 = "mobilized";
+
+export interface M2LaborCommitmentStateV0 {
+  readonly purpose: M2LaborCommitmentPurposeV0;
+  readonly laborAmount: number;
+  readonly startDay: GameDay;
+  readonly releaseDay: GameDay;
+}
+
+export interface M2PopulationGroupStateV0 {
+  readonly id: PopulationGroupId;
+  readonly districtId: DistrictId;
+  readonly totalPeople: number;
+  readonly workingPeople: number;
+  readonly dependentPeople: number;
+  readonly availableLabor: number;
+  readonly committedLabor: readonly M2LaborCommitmentStateV0[];
+  readonly grainStock: number;
+  readonly cashStock: number;
+}
+
+export interface M2DistrictAgricultureStateV0 {
+  readonly districtId: DistrictId;
+  readonly phase: M2AgriculturePhaseV0;
+  readonly daysInPhase: number;
+  readonly accumulatedFarmLabor: number;
+  readonly expectedHarvestGrain: number;
+  readonly lastHarvestGrain: number;
+}
+
+export interface M2DistrictMarketStateV0 {
+  readonly districtId: DistrictId;
+  readonly grainPriceCashPerHundred: number;
+  readonly cashFlow: {
+    readonly cumulativeMobilizationCost: number;
+    readonly lastDailyCashDelta: number;
+  };
+  readonly grainFlow: {
+    readonly lastHarvestDelta: number;
+  };
+}
+
+export interface M2EconomyPopulationStateV0 {
+  readonly schemaVersion: 1;
+  readonly populationGroups: readonly M2PopulationGroupStateV0[];
+  readonly agriculture: {
+    readonly districts: readonly M2DistrictAgricultureStateV0[];
+  };
+  readonly market: {
+    readonly districts: readonly M2DistrictMarketStateV0[];
+  };
+}
+
 export interface WorldRuntimeStateV0 {
   readonly polities: readonly PolityState[];
   readonly persons: readonly PersonState[];
   readonly districts: readonly DistrictState[];
   readonly settlements: readonly SettlementState[];
   readonly routes: readonly RouteState[];
+  readonly m2?: M2EconomyPopulationStateV0;
 }
 
 export interface SchedulerStateV0 {
@@ -168,6 +224,7 @@ export interface CreateWorldStateV0Input {
   readonly currentDay: unknown;
   readonly revision: unknown;
   readonly definitions: WorldDefinitionsV0;
+  readonly m2?: M2EconomyPopulationStateV0;
 }
 
 const INITIAL_HASH_OFFSET = 2_166_136_261;
@@ -191,6 +248,10 @@ export function parseSettlementId(value: unknown): SettlementId {
 
 export function parseRouteId(value: unknown): RouteId {
   return parsePositiveInteger(value, "RouteId") as RouteId;
+}
+
+export function parsePopulationGroupId(value: unknown): PopulationGroupId {
+  return parsePositiveInteger(value, "PopulationGroupId") as PopulationGroupId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -254,9 +315,64 @@ export function defineRoute(input: DefineRouteInput): RouteDefinition {
   };
 }
 
+export function createM2EconomyPopulationStateV0(
+  definitions: WorldDefinitionsV0
+): M2EconomyPopulationStateV0 {
+  const settlementCountByDistrictId = new Map<number, number>();
+  for (const settlement of definitions.settlements) {
+    settlementCountByDistrictId.set(
+      settlement.districtId,
+      (settlementCountByDistrictId.get(settlement.districtId) ?? 0) + 1
+    );
+  }
+
+  return {
+    schemaVersion: 1,
+    populationGroups: sortByNumericId(definitions.districts).map((district) => {
+      const settlementCount = settlementCountByDistrictId.get(district.id) ?? 0;
+      const totalPeople = 1_000 + settlementCount * 250;
+      const workingPeople = Math.floor(totalPeople / 2);
+      return {
+        id: parsePopulationGroupId(district.id),
+        districtId: district.id,
+        totalPeople,
+        workingPeople,
+        dependentPeople: totalPeople - workingPeople,
+        availableLabor: workingPeople,
+        committedLabor: [],
+        grainStock: totalPeople * 3,
+        cashStock: totalPeople
+      };
+    }),
+    agriculture: {
+      districts: sortByNumericId(definitions.districts).map((district) => ({
+        districtId: district.id,
+        phase: "fallow",
+        daysInPhase: 0,
+        accumulatedFarmLabor: 0,
+        expectedHarvestGrain: 0,
+        lastHarvestGrain: 0
+      }))
+    },
+    market: {
+      districts: sortByNumericId(definitions.districts).map((district) => ({
+        districtId: district.id,
+        grainPriceCashPerHundred: 100,
+        cashFlow: {
+          cumulativeMobilizationCost: 0,
+          lastDailyCashDelta: 0
+        },
+        grainFlow: {
+          lastHarvestDelta: 0
+        }
+      }))
+    }
+  };
+}
+
 export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0 {
   const definitions = canonicalizeDefinitions(input.definitions);
-  const state = createRuntimeState(definitions);
+  const state = createRuntimeState(definitions, input.m2);
   const stateWithoutHash: WorldStateV0 = {
     meta: {
       schemaVersion: WORLD_STATE_V0_SCHEMA_VERSION,
@@ -319,6 +435,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     `state.districts=${formatDistrictStates(world.state.districts)}`,
     `state.settlements=${formatSettlementStates(world.state.settlements)}`,
     `state.routes=${formatRouteStates(world.state.routes)}`,
+    ...formatM2CanonicalLines(world.state.m2),
     `scheduler.schedulerVersion=${formatUnknown(
       getRecordPath(world, ["scheduler", "schedulerVersion"])
     )}`,
@@ -358,6 +475,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateScheduler(world, errors);
   validateDefinitionEntryShapes(world.definitions, errors);
   validateRuntimeEntryShapes(world.state, errors);
+  validateM2EntryShapes(getRecordPath(world, ["state", "m2"]), errors);
   if (errors.some((error) => error.code === "invalid-schema")) {
     return errors;
   }
@@ -365,6 +483,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateDefinitions(world.definitions, errors);
   validateDefinitionReferences(world.definitions, errors);
   validateRuntimeState(world, errors);
+  validateM2RuntimeState(world, errors);
   validateRuntimeTableCoverage(world, errors);
   validateStateHash(world, errors);
   return errors;
@@ -641,6 +760,224 @@ function validateRuntimeEntryShapes(
   });
 }
 
+function validateM2EntryShapes(input: unknown, errors: WorldInvariantError[]): void {
+  if (input === undefined) {
+    return;
+  }
+
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2",
+      message: "M2 economy population state must be an object."
+    });
+    return;
+  }
+
+  if (input["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.schemaVersion",
+      message: "M2 economy population schemaVersion must be 1."
+    });
+  }
+
+  const populationGroups = input["populationGroups"];
+  if (!Array.isArray(populationGroups)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.populationGroups",
+      message: "M2 populationGroups must be an array."
+    });
+  } else {
+    populationGroups.forEach((entry, index) =>
+      validateM2PopulationGroupEntry(entry, `state.m2.populationGroups[${index}]`, errors)
+    );
+  }
+
+  const agriculture = input["agriculture"];
+  if (!isRecord(agriculture)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.agriculture",
+      message: "M2 agriculture must be an object."
+    });
+  } else if (!Array.isArray(agriculture["districts"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.agriculture.districts",
+      message: "M2 agriculture districts must be an array."
+    });
+  } else {
+    agriculture["districts"].forEach((entry, index) =>
+      validateM2AgricultureDistrictEntry(entry, `state.m2.agriculture.districts[${index}]`, errors)
+    );
+  }
+
+  const market = input["market"];
+  if (!isRecord(market)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.market",
+      message: "M2 market must be an object."
+    });
+  } else if (!Array.isArray(market["districts"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m2.market.districts",
+      message: "M2 market districts must be an array."
+    });
+  } else {
+    market["districts"].forEach((entry, index) =>
+      validateM2MarketDistrictEntry(entry, `state.m2.market.districts[${index}]`, errors)
+    );
+  }
+}
+
+function validateM2PopulationGroupEntry(
+  entry: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2PopulationGroupState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(entry, "id", `${path}.id`, "PopulationGroupId", errors);
+  validatePositiveIntegerField(entry, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validateNonnegativeIntegerField(entry, "totalPeople", `${path}.totalPeople`, errors);
+  validateNonnegativeIntegerField(entry, "workingPeople", `${path}.workingPeople`, errors);
+  validateNonnegativeIntegerField(entry, "dependentPeople", `${path}.dependentPeople`, errors);
+  validateNonnegativeIntegerField(entry, "availableLabor", `${path}.availableLabor`, errors);
+  validateNonnegativeIntegerField(entry, "grainStock", `${path}.grainStock`, errors);
+  validateNonnegativeIntegerField(entry, "cashStock", `${path}.cashStock`, errors);
+
+  const committedLabor = entry["committedLabor"];
+  if (!Array.isArray(committedLabor)) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.committedLabor`,
+      message: "M2 committedLabor must be an array."
+    });
+    return;
+  }
+
+  committedLabor.forEach((commitment, index) =>
+    validateM2LaborCommitmentEntry(commitment, `${path}.committedLabor[${index}]`, errors)
+  );
+}
+
+function validateM2LaborCommitmentEntry(
+  entry: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2LaborCommitmentState", errors)) {
+    return;
+  }
+
+  if (entry["purpose"] !== "mobilized") {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.purpose`,
+      message: "M2 labor commitment purpose must be mobilized."
+    });
+  }
+  validatePositiveIntegerField(entry, "laborAmount", `${path}.laborAmount`, "Labor", errors);
+  validateNonnegativeIntegerField(entry, "startDay", `${path}.startDay`, errors);
+  validateNonnegativeIntegerField(entry, "releaseDay", `${path}.releaseDay`, errors);
+}
+
+function validateM2AgricultureDistrictEntry(
+  entry: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2DistrictAgricultureState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(entry, "districtId", `${path}.districtId`, "DistrictId", errors);
+  const phase = entry["phase"];
+  if (phase !== "fallow" && phase !== "planting" && phase !== "growing" && phase !== "harvest") {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.phase`,
+      message: "M2 agriculture phase must be fallow, planting, growing, or harvest."
+    });
+  }
+  validateNonnegativeIntegerField(entry, "daysInPhase", `${path}.daysInPhase`, errors);
+  validateNonnegativeIntegerField(
+    entry,
+    "accumulatedFarmLabor",
+    `${path}.accumulatedFarmLabor`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    entry,
+    "expectedHarvestGrain",
+    `${path}.expectedHarvestGrain`,
+    errors
+  );
+  validateNonnegativeIntegerField(entry, "lastHarvestGrain", `${path}.lastHarvestGrain`, errors);
+}
+
+function validateM2MarketDistrictEntry(
+  entry: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(entry, path, "M2DistrictMarketState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(entry, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validatePositiveIntegerField(
+    entry,
+    "grainPriceCashPerHundred",
+    `${path}.grainPriceCashPerHundred`,
+    "Grain price",
+    errors
+  );
+  const cashFlow = entry["cashFlow"];
+  if (!isRecord(cashFlow)) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.cashFlow`,
+      message: "M2 market cashFlow must be an object."
+    });
+  } else {
+    validateNonnegativeIntegerField(
+      cashFlow,
+      "cumulativeMobilizationCost",
+      `${path}.cashFlow.cumulativeMobilizationCost`,
+      errors
+    );
+    validateNonnegativeIntegerField(
+      cashFlow,
+      "lastDailyCashDelta",
+      `${path}.cashFlow.lastDailyCashDelta`,
+      errors
+    );
+  }
+
+  const grainFlow = entry["grainFlow"];
+  if (!isRecord(grainFlow)) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.grainFlow`,
+      message: "M2 market grainFlow must be an object."
+    });
+  } else {
+    validateNonnegativeIntegerField(
+      grainFlow,
+      "lastHarvestDelta",
+      `${path}.grainFlow.lastHarvestDelta`,
+      errors
+    );
+  }
+}
+
 function validateSimpleRuntimeEntries(
   entries: readonly unknown[],
   path: string,
@@ -710,6 +1047,23 @@ function validatePositiveIntegerField(
   validatePositiveIntegerValue(entry[key], path, label, errors);
 }
 
+function validateNonnegativeIntegerField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (isNonnegativeInteger(entry[key])) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be a nonnegative safe integer.`
+  });
+}
+
 function validatePositiveIntegerValue(
   value: unknown,
   path: string,
@@ -727,8 +1081,11 @@ function validatePositiveIntegerValue(
   });
 }
 
-function createRuntimeState(definitions: WorldDefinitionsV0): WorldRuntimeStateV0 {
-  return {
+function createRuntimeState(
+  definitions: WorldDefinitionsV0,
+  m2: M2EconomyPopulationStateV0 | undefined
+): WorldRuntimeStateV0 {
+  const state: WorldRuntimeStateV0 = {
     polities: sortByNumericId(definitions.polities).map((definition) => ({
       definitionId: definition.id
     })),
@@ -748,6 +1105,15 @@ function createRuntimeState(definitions: WorldDefinitionsV0): WorldRuntimeStateV
       definitionId: definition.id
     }))
   };
+
+  if (m2 === undefined) {
+    return state;
+  }
+
+  return {
+    ...state,
+    m2: canonicalizeM2EconomyPopulationState(m2)
+  };
 }
 
 function canonicalizeDefinitions(definitions: WorldDefinitionsV0): WorldDefinitionsV0 {
@@ -757,6 +1123,24 @@ function canonicalizeDefinitions(definitions: WorldDefinitionsV0): WorldDefiniti
     districts: sortByNumericId(definitions.districts),
     settlements: sortByNumericId(definitions.settlements),
     routes: sortByNumericId(definitions.routes)
+  };
+}
+
+export function canonicalizeM2EconomyPopulationState(
+  m2: M2EconomyPopulationStateV0
+): M2EconomyPopulationStateV0 {
+  return {
+    schemaVersion: 1,
+    populationGroups: sortM2PopulationGroups(m2.populationGroups).map((group) => ({
+      ...group,
+      committedLabor: sortM2LaborCommitments(group.committedLabor)
+    })),
+    agriculture: {
+      districts: sortM2AgricultureDistricts(m2.agriculture.districts)
+    },
+    market: {
+      districts: sortM2MarketDistricts(m2.market.districts)
+    }
   };
 }
 
@@ -809,6 +1193,52 @@ function sortByDefinitionId<TValue extends { readonly definitionId: number }>(
     .sort(
       (left, right) =>
         left.value.definitionId - right.value.definitionId || left.index - right.index
+    )
+    .map((entry) => entry.value);
+}
+
+function sortM2PopulationGroups(
+  values: readonly M2PopulationGroupStateV0[]
+): readonly M2PopulationGroupStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort((left, right) => left.value.id - right.value.id || left.index - right.index)
+    .map((entry) => entry.value);
+}
+
+function sortM2AgricultureDistricts(
+  values: readonly M2DistrictAgricultureStateV0[]
+): readonly M2DistrictAgricultureStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort(
+      (left, right) => left.value.districtId - right.value.districtId || left.index - right.index
+    )
+    .map((entry) => entry.value);
+}
+
+function sortM2MarketDistricts(
+  values: readonly M2DistrictMarketStateV0[]
+): readonly M2DistrictMarketStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort(
+      (left, right) => left.value.districtId - right.value.districtId || left.index - right.index
+    )
+    .map((entry) => entry.value);
+}
+
+function sortM2LaborCommitments(
+  values: readonly M2LaborCommitmentStateV0[]
+): readonly M2LaborCommitmentStateV0[] {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort(
+      (left, right) =>
+        left.value.releaseDay - right.value.releaseDay ||
+        left.value.startDay - right.value.startDay ||
+        compareText(left.value.purpose, right.value.purpose) ||
+        left.index - right.index
     )
     .map((entry) => entry.value);
 }
@@ -873,6 +1303,72 @@ function formatSettlementStates(values: readonly SettlementState[]): string {
 function formatRouteStates(values: readonly RouteState[]): string {
   return sortByDefinitionId(values)
     .map((value) => `${value.definitionId}`)
+    .join(",");
+}
+
+function formatM2CanonicalLines(m2: M2EconomyPopulationStateV0 | undefined): readonly string[] {
+  if (m2 === undefined) {
+    return [];
+  }
+
+  return [
+    `state.m2.schemaVersion=${m2.schemaVersion}`,
+    `state.m2.populationGroups=${formatM2PopulationGroups(m2.populationGroups)}`,
+    `state.m2.agriculture.districts=${formatM2AgricultureDistricts(m2.agriculture.districts)}`,
+    `state.m2.market.districts=${formatM2MarketDistricts(m2.market.districts)}`
+  ];
+}
+
+function formatM2PopulationGroups(values: readonly M2PopulationGroupStateV0[]): string {
+  return sortM2PopulationGroups(values)
+    .map((value) =>
+      [
+        value.id,
+        value.districtId,
+        value.totalPeople,
+        value.workingPeople,
+        value.dependentPeople,
+        value.availableLabor,
+        formatM2LaborCommitments(value.committedLabor),
+        value.grainStock,
+        value.cashStock
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM2LaborCommitments(values: readonly M2LaborCommitmentStateV0[]): string {
+  return sortM2LaborCommitments(values)
+    .map((value) => `${value.purpose}:${value.laborAmount}:${value.startDay}:${value.releaseDay}`)
+    .join("+");
+}
+
+function formatM2AgricultureDistricts(values: readonly M2DistrictAgricultureStateV0[]): string {
+  return sortM2AgricultureDistricts(values)
+    .map((value) =>
+      [
+        value.districtId,
+        value.phase,
+        value.daysInPhase,
+        value.accumulatedFarmLabor,
+        value.expectedHarvestGrain,
+        value.lastHarvestGrain
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM2MarketDistricts(values: readonly M2DistrictMarketStateV0[]): string {
+  return sortM2MarketDistricts(values)
+    .map((value) =>
+      [
+        value.districtId,
+        value.grainPriceCashPerHundred,
+        value.cashFlow.cumulativeMobilizationCost,
+        value.cashFlow.lastDailyCashDelta,
+        value.grainFlow.lastHarvestDelta
+      ].join(":")
+    )
     .join(",");
 }
 
@@ -1193,6 +1689,118 @@ function validateRuntimeState(world: WorldStateV0Candidate, errors: WorldInvaria
   });
 }
 
+function validateM2RuntimeState(world: WorldStateV0Candidate, errors: WorldInvariantError[]): void {
+  const m2 = getRecordPath(world, ["state", "m2"]);
+  if (!isM2StateLike(m2)) {
+    return;
+  }
+
+  const districtIds = idsOf(world.definitions.districts);
+  validateM2DistrictCoverage({
+    definitionIds: districtIds,
+    runtimeIds: m2.populationGroups.map((group) => group.districtId),
+    statePath: "state.m2.populationGroups",
+    stateLabel: "M2PopulationGroupState",
+    errors
+  });
+  validateM2DistrictCoverage({
+    definitionIds: districtIds,
+    runtimeIds: m2.agriculture.districts.map((district) => district.districtId),
+    statePath: "state.m2.agriculture.districts",
+    stateLabel: "M2DistrictAgricultureState",
+    errors
+  });
+  validateM2DistrictCoverage({
+    definitionIds: districtIds,
+    runtimeIds: m2.market.districts.map((district) => district.districtId),
+    statePath: "state.m2.market.districts",
+    stateLabel: "M2DistrictMarketState",
+    errors
+  });
+
+  const populationGroupIds = new Set<number>();
+  m2.populationGroups.forEach((group, index) => {
+    if (populationGroupIds.has(group.id)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m2.populationGroups",
+        message: `Duplicate M2PopulationGroupState row for PopulationGroupId ${group.id}.`
+      });
+    }
+    populationGroupIds.add(group.id);
+
+    if (!districtIds.has(group.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m2.populationGroups[${index}].districtId`,
+        message: `M2PopulationGroupState ${group.id} references missing DistrictId ${group.districtId}.`
+      });
+    }
+
+    const committedLabor = group.committedLabor.reduce(
+      (sum, commitment) => sum + commitment.laborAmount,
+      0
+    );
+    if (group.totalPeople !== group.workingPeople + group.dependentPeople) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m2.populationGroups[${index}].totalPeople`,
+        message: "M2 population totalPeople must equal workingPeople plus dependentPeople."
+      });
+    }
+    if (group.availableLabor + committedLabor !== group.workingPeople) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m2.populationGroups[${index}].availableLabor`,
+        message: "M2 availableLabor plus committed labor must equal workingPeople."
+      });
+    }
+
+    group.committedLabor.forEach((commitment, commitmentIndex) => {
+      if (commitment.releaseDay <= commitment.startDay) {
+        errors.push({
+          code: "invalid-day",
+          path: `state.m2.populationGroups[${index}].committedLabor[${commitmentIndex}].releaseDay`,
+          message: "M2 labor commitment releaseDay must be greater than startDay."
+        });
+      }
+    });
+  });
+}
+
+interface M2DistrictCoverageInput {
+  readonly definitionIds: ReadonlySet<number>;
+  readonly runtimeIds: readonly number[];
+  readonly statePath: string;
+  readonly stateLabel: string;
+  readonly errors: WorldInvariantError[];
+}
+
+function validateM2DistrictCoverage(input: M2DistrictCoverageInput): void {
+  const seen = new Set<number>();
+  for (const runtimeId of input.runtimeIds) {
+    if (seen.has(runtimeId)) {
+      input.errors.push({
+        code: "duplicate-runtime-state-row",
+        path: input.statePath,
+        message: `Duplicate ${input.stateLabel} row for DistrictId ${runtimeId}.`
+      });
+      continue;
+    }
+    seen.add(runtimeId);
+  }
+
+  for (const definitionId of input.definitionIds) {
+    if (!seen.has(definitionId)) {
+      input.errors.push({
+        code: "missing-runtime-state-row",
+        path: input.statePath,
+        message: `Missing ${input.stateLabel} row for DistrictId ${definitionId}.`
+      });
+    }
+  }
+}
+
 function validateRuntimeTableCoverage(
   world: WorldStateV0Candidate,
   errors: WorldInvariantError[]
@@ -1335,8 +1943,37 @@ function isStateLike(value: unknown): value is WorldRuntimeStateV0 {
   );
 }
 
+function isM2StateLike(value: unknown): value is M2EconomyPopulationStateV0 {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const agriculture = value["agriculture"];
+  const market = value["market"];
+  return (
+    value["schemaVersion"] === 1 &&
+    Array.isArray(value["populationGroups"]) &&
+    isRecord(agriculture) &&
+    Array.isArray(agriculture["districts"]) &&
+    isRecord(market) &&
+    Array.isArray(market["districts"])
+  );
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function compareText(left: string, right: string): number {
+  if (left < right) {
+    return -1;
+  }
+
+  if (left > right) {
+    return 1;
+  }
+
+  return 0;
 }
 
 function getRecordPath(value: unknown, path: readonly string[]): unknown {

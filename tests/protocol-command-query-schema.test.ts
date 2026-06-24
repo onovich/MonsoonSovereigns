@@ -53,6 +53,29 @@ describe("SIM-003 protocol command/query schemas", () => {
         message: "controllerPolityId must be a positive safe integer or null."
       }
     });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.commit-labor",
+        commandId: "cmd.bad-labor",
+        actor: { kind: "ai", id: "ai:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          populationGroupId: 1,
+          purpose: "mobilized",
+          laborAmount: 0,
+          durationDays: 30
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.laborAmount",
+        message: "payload.laborAmount must be a positive safe integer."
+      }
+    });
   });
 
   test("rejects malformed query payloads without leaking nonserializable details", () => {
@@ -80,6 +103,18 @@ describe("SIM-003 protocol command/query schemas", () => {
         code: "unsupported-query-version",
         path: "schemaVersion",
         message: "GameQuery schemaVersion must be 1."
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m2-economy-summaries"
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-m2-economy-summaries"
       }
     });
   });

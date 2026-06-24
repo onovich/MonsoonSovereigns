@@ -45,7 +45,7 @@ describe("M2-BOOT-BOUNDARY-001 sim-core/content-runtime boot boundary", () => {
     }
 
     expect(firstBoot.stateHash).toBe(secondBoot.stateHash);
-    expect(firstBoot.runtime.world.meta.stateHash).toBe("42e3a2fe");
+    expect(firstBoot.runtime.world.meta.stateHash).toBe("d280a188");
     expect(firstBoot.runtime.world.meta.contentManifestHash).toBe(
       runtimeContentPack.manifest.manifestHash
     );
