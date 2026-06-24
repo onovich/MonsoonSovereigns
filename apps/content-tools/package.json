@@ -1,0 +1,18 @@
+{
+  "name": "@monsoon/content-tools",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run --root ../.. tests/content-tools-compiler.test.ts",
+    "content:validate": "node --experimental-strip-types ./src/cli.ts validate ../../content-source/m1-fixtures/abstract-graph-30.json"
+  },
+  "dependencies": {
+    "@monsoon/content-runtime": "workspace:*",
+    "@monsoon/content-schema": "workspace:*"
+  }
+}

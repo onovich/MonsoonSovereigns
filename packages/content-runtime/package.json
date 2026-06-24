@@ -1,0 +1,16 @@
+{
+  "name": "@monsoon/content-runtime",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run --root ../.. tests/content-runtime-pack.test.ts"
+  },
+  "dependencies": {
+    "@monsoon/content-schema": "workspace:*"
+  }
+}
