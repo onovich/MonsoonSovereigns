@@ -1,0 +1,135 @@
+{
+  "task_id": "M2-HOST-HASH-CANARY-001",
+  "message_id": "MSG-20260625-M2-HOST-HASH-CANARY-QA-REVIEW-R3",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Final R3 review verifies the fresh desktop-only CI repair and preserves the original host-hash canary guarantees. With generated apps/web/dist removed, pnpm desktop:security-check and pnpm desktop:package both pass and copy-renderer logs an explicit optional web-renderer skip. After pnpm build:web, pnpm desktop:package copies the canary web renderer into renderer/web, and fresh Electron plus Chromium host-hash canary commands match the Node baseline for hello 61e0ba1c, command/query d275faa4, save/load 28074edd, and save byte length 10920. Electron security remains narrow and no CI workflow, root package, lockfile, web package dependency, or production dependency change was found.",
+  "artifacts": [
+    "apps/desktop/scripts/copy-renderer.mjs",
+    "apps/desktop/src/main/main.ts",
+    "apps/web/src/host-hash-canary/compute-host-hash-canary.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-main.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-worker.ts",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/host-hash-canary.html",
+    "apps/web/vite.config.ts",
+    "apps/sim-runner/src/run-host-hash-canary.mjs",
+    "apps/sim-runner/package.json",
+    "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-R3__test_engineer.json",
+    "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-QA-REVIEW-R3__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "test/m2-host-hash-canary",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On test/m2-host-hash-canary. Dirty paths are intended canary changes, allowed lead-owned orchestration/task files, route files, and review/handoff artifacts."
+    },
+    {
+      "command": "git diff --name-status",
+      "exit_code": 0,
+      "result": "Tracked source diffs are confined to apps/desktop, apps/sim-runner, apps/web, and allowed project orchestration/task files. No forbidden task path was present."
+    },
+    {
+      "command": "Remove generated apps/web/dist after verifying resolved path is inside workspace",
+      "exit_code": 0,
+      "result": "Removed generated web dist: D:/WebProjects/MonsoonSovereigns/apps/web/dist; apps/web/dist existed after removal: False."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Fresh desktop-only path passed with apps/web/dist absent. copy-renderer logged: Skipped optional web renderer assets; D:/WebProjects/MonsoonSovereigns/apps/web/dist does not exist. Electron preferences passed; preload exposes only monsoonDesktop; renderer navigation is restricted; IPC allowlist remains desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Fresh desktop-only package path passed with apps/web/dist absent. copy-renderer logged the optional skip and packaged main, preload, renderer, and platform adapter artifacts."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite built dist/index.html, dist/host-hash-canary.html, the host-hash-canary worker bundle, and shared assets; only the existing chunk-size warning was emitted."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Canary-present package path passed after pnpm build:web. copy-renderer copied web renderer assets to apps/desktop/dist/renderer/web, then packaged desktop artifacts to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "Test-Path apps/web/dist/host-hash-canary.html; Test-Path apps/desktop/dist/renderer/web/host-hash-canary.html; Test-Path .tmp/desktop-package/MonsoonSovereigns-win32-x64/renderer/web/host-hash-canary.html",
+      "exit_code": 0,
+      "result": "All three canary-present artifact checks returned True."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron",
+      "exit_code": 0,
+      "result": "Packaged Electron renderer Dedicated Worker matched Node baseline: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium",
+      "exit_code": 0,
+      "result": "Chromium Dedicated Worker matched Node baseline: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "apps/web tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Root check passed: Prettier format check, ESLint, recursive workspace typecheck, and architecture boundary check all completed successfully."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and Worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "git diff --name-status -- .github package.json pnpm-lock.yaml apps/web/package.json apps/sim-runner/package.json",
+      "exit_code": 0,
+      "result": "Only apps/sim-runner/package.json changed, adding the sim:host-hash-canary script. No CI workflow, root package, lockfile, or apps/web package dependency diff was present."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-HOST-HASH-CANARY-001",
+      "exit_code": 0,
+      "result": "VALID D:/WebProjects/MonsoonSovereigns/project/tasks/active/M2-HOST-HASH-CANARY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-R3__test_engineer.json",
+      "exit_code": 0,
+      "result": "R3 writer handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "Task JSON shape ok: M2-HOST-HASH-CANARY-001 IN_PROGRESS 6 acceptance criteria and 10 required tests."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "rg static security and worker scans",
+      "exit_code": 0,
+      "result": "Confirmed copy-renderer optional skip/copy behavior, canary source uses a real new Worker(..., { type: 'module' }) path, Electron main gates canary load behind MONSOON_HOST_HASH_CANARY=1, and security settings remain nodeIntegration=false, contextIsolation=true, sandbox=true, webSecurity=true."
+    }
+  ],
+  "decisions": [
+    "Accept M2-HOST-HASH-CANARY-001 after R3 because the fresh desktop-only CI failure mode is repaired and all original host-hash acceptance criteria remain satisfied.",
+    "apps/web/dist is now an optional generated input for ordinary desktop security/package jobs; absence no longer fails desktop-only CI.",
+    "The canary-present path remains explicit: run pnpm build:web before pnpm desktop:package, then the packaged Electron renderer/Worker host canary is available and matches the Node baseline.",
+    "Electron security posture is unchanged: no new IPC channel, no preload bridge expansion, no Node integration, no remote URL loading, and no filesystem authority was introduced for the canary.",
+    "No CI workflow files, lockfile, root package manifest, apps/web package manifest, or production dependencies were changed."
+  ],
+  "risks": [
+    "The packaged Electron canary page is intentionally absent from desktop-only packages when apps/web/dist has not been built; this is acceptable for normal desktop security/package CI and is covered by the explicit build:web -> desktop:package canary sequence.",
+    "The task JSON currently records status IN_PROGRESS while the routed handoff is REVIEW. taskctl validation passes and the R3 route is explicit, so this is treated as lead-owned coordination state to reconcile during acceptance integration rather than a task blocker."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "acceptance_decision",
+  "created_at": "2026-06-24T23:05:10.984Z"
+}

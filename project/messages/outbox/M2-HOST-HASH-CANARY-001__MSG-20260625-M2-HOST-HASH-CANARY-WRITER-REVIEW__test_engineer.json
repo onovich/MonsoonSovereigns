@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW",
+  "task_id": "M2-HOST-HASH-CANARY-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Added the smallest explicit host hash canary that proves real Chromium Dedicated Worker and packaged Electron renderer/Worker execution against the Node baseline for the M2 hello, command/query, and save/load hashes. The browser-side canary is a dedicated-worker page in apps/web, and the packaged Electron app loads that same built page only when MONSOON_HOST_HASH_CANARY=1. Security posture stayed intact: nodeIntegration remains off, preload authority stayed narrow, and no new IPC or filesystem capability was introduced.",
+  "artifacts": [
+    "apps/web/src/host-hash-canary/compute-host-hash-canary.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-main.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-worker.ts",
+    "apps/web/host-hash-canary.html",
+    "apps/web/vite.config.ts",
+    "apps/web/package.json",
+    "apps/desktop/scripts/copy-renderer.mjs",
+    "apps/desktop/src/main/main.ts",
+    "apps/sim-runner/src/run-host-hash-canary.mjs",
+    "apps/sim-runner/package.json",
+    "pnpm-lock.yaml",
+    "apps/web/dist/host-hash-canary.html",
+    "apps/desktop/dist/renderer/web/host-hash-canary.html",
+    ".tmp/desktop-package/MonsoonSovereigns-win32-x64/renderer/web/host-hash-canary.html",
+    "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "test/m2-host-hash-canary",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Pre-existing orchestration files were already dirty and left untouched. Current worktree shows the canary source files, desktop/web build changes, apps/web/package.json, pnpm-lock.yaml, and the new outbox handoff."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; command/query hash d275faa4 matched Worker-compatible command/query hash d275faa4; save/load hash 28074edd matched Worker-compatible save/load hash 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite built dist/index.html and dist/host-hash-canary.html plus the host-hash-canary worker bundle and shared assets."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only the named monsoonDesktop bridge; renderer navigation is restricted to the packaged renderer root."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Packaged main, preload, renderer, and platform adapter artifacts to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium",
+      "exit_code": 0,
+      "result": "Command: pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium. Node baseline hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920. Chromium dedicated worker matched hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron",
+      "exit_code": 0,
+      "result": "Command: pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron. Node baseline hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920. Electron renderer dedicated worker matched hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-HOST-HASH-CANARY-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-HOST-HASH-CANARY-001.json"
+    },
+    {
+      "command": "node -e JSON parse/shape check for M2-HOST-HASH-CANARY-001",
+      "exit_code": 0,
+      "result": "Task JSON shape ok: M2-HOST-HASH-CANARY-001 IN_PROGRESS 16 13 10"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Kept the canary browser-safe by putting the shared hash computation in apps/web/src/host-hash-canary/compute-host-hash-canary.ts and reusing it from the dedicated worker and the Node runner.",
+    "Made apps/web a two-entry Vite build with base ./ so the canary can run from both the web dev build and the packaged Electron file URL without adding a new runtime dependency.",
+    "Copied apps/web/dist into the packaged desktop renderer under renderer/web so the existing secure Electron main process can load host-hash-canary.html only when MONSOON_HOST_HASH_CANARY=1 is set.",
+    "Kept the browser/desktop comparison in the Node runner script so the page can stay minimal and the exact commands and hashes are printed in test output."
+  ],
+  "risks": [
+    "desktop:package now depends on build:web having already produced apps/web/dist; if the web build is skipped or stale, the packaged canary page will be absent.",
+    "Chromium file:// execution depends on relative asset URLs and allow-file-access-from-files; the build uses base ./ to keep those paths stable.",
+    "The task and goal/model orchestration files were already dirty before this work and were intentionally left untouched."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "review",
+  "created_at": "2026-06-24T22:25:11.7542004Z"
+}

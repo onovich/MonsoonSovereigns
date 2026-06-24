@@ -1,0 +1,113 @@
+{
+  "task_id": "M2-HOST-HASH-CANARY-001",
+  "message_id": "MSG-20260625-M2-HOST-HASH-CANARY-QA-REVIEW",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "REQUEST_CHANGES. Runtime host-hash evidence is strong: reviewer reproduced both Chromium Dedicated Worker and packaged Electron renderer/Worker canaries matching the Node baseline for hello 61e0ba1c, command/query d275faa4, save/load 28074edd, and save byte length 10920. Acceptance is blocked by three P1 issues from the changed web package failing strict typecheck: TS4111 dataset access in host-hash-canary-main.ts, TS2304 missing DedicatedWorkerGlobalScope typing in host-hash-canary-worker.ts, and TS5097 errors caused by the new direct web dependency/import path into @monsoon/sim-core. Fix must preserve the real Chromium Dedicated Worker path, real packaged Electron renderer/Worker path, Node baseline comparison, and Electron security posture without adding unapproved dependencies.",
+  "artifacts": [
+    "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW__test_engineer.json",
+    "project/messages/routes/M2-HOST-HASH-CANARY-001__ROUTE-20260624-LEAD-TO-QA.json",
+    "apps/web/src/host-hash-canary/host-hash-canary-main.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-worker.ts",
+    "apps/web/src/host-hash-canary/compute-host-hash-canary.ts",
+    "apps/web/package.json",
+    "apps/sim-runner/src/run-host-hash-canary.mjs",
+    "apps/desktop/src/main/main.ts"
+  ],
+  "branch_or_worktree": "test/m2-host-hash-canary",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On test/m2-host-hash-canary with dirty allowed app/orchestration paths and new canary/message files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-HOST-HASH-CANARY-001",
+      "exit_code": 0,
+      "result": "VALID D:/WebProjects/MonsoonSovereigns/project/tasks/active/M2-HOST-HASH-CANARY-001.json"
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "Task JSON shape ok: M2-HOST-HASH-CANARY-001 REVIEW 6 10"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter web lint",
+      "exit_code": 0,
+      "result": "ESLint passed for apps/web source and vite.config.ts."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 1,
+      "result": "Failed with TS4111 in apps/web/src/host-hash-canary/host-hash-canary-main.ts, TS2304 in apps/web/src/host-hash-canary/host-hash-canary-worker.ts, and multiple TS5097 errors from packages/sim-core/src/*.ts imports traversed by the web project after the new direct @monsoon/sim-core dependency/import path."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium",
+      "exit_code": 0,
+      "result": "Node baseline matched Chromium dedicated worker: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron",
+      "exit_code": 0,
+      "result": "Node baseline matched Electron renderer dedicated worker: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    }
+  ],
+  "decisions": [
+    "Decision is REQUEST_CHANGES, not ACCEPT, because the affected web package fails its strict typecheck.",
+    "The runtime host-hash acceptance evidence is otherwise valid: real Chromium Dedicated Worker and packaged Electron renderer/Worker paths both matched the Node baseline hashes.",
+    "Static Electron review found no new IPC channel, preload bridge expansion, nodeIntegration enablement, webSecurity disablement, filesystem authority, or remote-code path for the canary.",
+    "Changed source paths inspected in git status/name-status are within the task allowed scope; no forbidden path edits were detected.",
+    "No new external production dependency was found; the lockfile change is a workspace link for @monsoon/sim-core."
+  ],
+  "risks": [
+    {
+      "severity": "P1",
+      "file": "apps/web/src/host-hash-canary/host-hash-canary-main.ts",
+      "symbol": "renderResult/renderFailure",
+      "reproduction": "pnpm --filter web typecheck",
+      "evidence": [
+        "src/host-hash-canary/host-hash-canary-main.ts(28,25): error TS4111: Property 'canaryStatus' comes from an index signature, so it must be accessed with ['canaryStatus'].",
+        "src/host-hash-canary/host-hash-canary-main.ts(33,25): error TS4111: Property 'canaryStatus' comes from an index signature, so it must be accessed with ['canaryStatus']."
+      ],
+      "impact": "The affected web package does not satisfy the repository strict TypeScript completion gate.",
+      "required_fix": "Update the canary DOM dataset access so apps/web typechecks under the existing strict compiler settings."
+    },
+    {
+      "severity": "P1",
+      "file": "apps/web/src/host-hash-canary/host-hash-canary-worker.ts",
+      "symbol": "workerScope",
+      "reproduction": "pnpm --filter web typecheck",
+      "evidence": [
+        "src/host-hash-canary/host-hash-canary-worker.ts(8,35): error TS2304: Cannot find name 'DedicatedWorkerGlobalScope'."
+      ],
+      "impact": "The new Dedicated Worker canary source is not type-valid in the web package's configured TypeScript environment.",
+      "required_fix": "Make the worker source typecheck without weakening strictness or introducing unapproved dependencies; preserve the real Dedicated Worker runtime path."
+    },
+    {
+      "severity": "P1",
+      "file": "apps/web/package.json",
+      "symbol": "@monsoon/sim-core dependency/import path",
+      "reproduction": "pnpm --filter web typecheck",
+      "evidence": [
+        "../../packages/sim-core/src/index.ts and multiple sim-core source files fail TS5097: import paths ending with '.ts' require allowImportingTsExtensions.",
+        "The failure appears after apps/web adds a direct workspace dependency on @monsoon/sim-core and the canary imports sim-core through apps/web/src/host-hash-canary/compute-host-hash-canary.ts."
+      ],
+      "impact": "The host canary currently makes the web compiler traverse sim-core source in a way that the web tsconfig cannot compile, creating a deterministic CI failure for an affected package.",
+      "required_fix": "Refactor or configure the canary so the web package typecheck passes while preserving Node baseline comparison, real Chromium Dedicated Worker execution, real packaged Electron renderer/Worker execution, and no Electron security-surface expansion."
+    }
+  ],
+  "blockers": [
+    "P1: pnpm --filter web typecheck exits 1. This blocks acceptance until fixed and rerun.",
+    "After repair, the writer must return to qa_reviewer with passing web typecheck plus rerun host hash, security, package, task validation, and git diff checks."
+  ],
+  "route_to": "test_engineer",
+  "requested_action": "fix_and_return_to_qa_review",
+  "created_at": "2026-06-24T22:33:26.835Z"
+}

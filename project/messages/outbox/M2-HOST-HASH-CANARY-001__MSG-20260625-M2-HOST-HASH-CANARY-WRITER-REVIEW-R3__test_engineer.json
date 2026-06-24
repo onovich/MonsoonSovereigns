@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-R3",
+  "task_id": "M2-HOST-HASH-CANARY-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "R3/fresh-CI repair after lead gate failure. Fixed desktop renderer packaging so desktop:security-check and desktop:package pass when apps/web/dist is absent in a fresh desktop-only CI job, while preserving the required canary sequence where pnpm build:web runs before pnpm desktop:package and the packaged Electron renderer Dedicated Worker canary matches the Node baseline.",
+  "artifacts": [
+    "apps/desktop/scripts/copy-renderer.mjs",
+    "apps/desktop/src/main/main.ts",
+    "apps/web/src/host-hash-canary/compute-host-hash-canary.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-main.ts",
+    "apps/web/src/host-hash-canary/host-hash-canary-worker.ts",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/host-hash-canary.html",
+    "apps/web/vite.config.ts",
+    "apps/sim-runner/src/run-host-hash-canary.mjs",
+    "apps/sim-runner/package.json",
+    "project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-R3__test_engineer.json"
+  ],
+  "branch_or_worktree": "test/m2-host-hash-canary",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On test/m2-host-hash-canary with intended canary changes, this R3 handoff, prior QA/R2 message artifacts, and pre-existing lead-owned orchestration file changes still present."
+    },
+    {
+      "command": "Remove generated apps/web/dist after verifying the resolved path is inside the workspace",
+      "exit_code": 0,
+      "result": "Removed generated web dist: D:\\WebProjects\\MonsoonSovereigns\\apps\\web\\dist"
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Fresh-CI absence proof passed with apps/web/dist absent. copy-renderer logged: Skipped optional web renderer assets; D:\\WebProjects\\MonsoonSovereigns\\apps\\web\\dist does not exist. Electron security preferences passed; preload exposes only monsoonDesktop; renderer file navigation remains restricted to the packaged renderer root; allowed IPC channels remain desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Fresh-CI absence proof passed with apps/web/dist absent. copy-renderer logged the optional web renderer asset skip and packaged main, preload, renderer, and platform adapter artifacts to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite built dist/index.html, dist/host-hash-canary.html, the host-hash-canary worker bundle, and shared assets. Vite emitted only the existing chunk-size warning."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Canary-present package path passed after pnpm build:web. copy-renderer logged: Copied web renderer assets to D:\\WebProjects\\MonsoonSovereigns\\apps\\desktop\\dist\\renderer\\web, then packaged desktop artifacts to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron",
+      "exit_code": 0,
+      "result": "Packaged Electron renderer Dedicated Worker matched the Node baseline: hello hash 61e0ba1c, command/query hash d275faa4, save/load hash 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium",
+      "exit_code": 0,
+      "result": "Chromium Dedicated Worker matched the Node baseline: hello hash 61e0ba1c, command/query hash d275faa4, save/load hash 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Root check passed: Prettier format check, ESLint, recursive workspace typecheck, and architecture boundary check all completed successfully."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-HOST-HASH-CANARY-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M2-HOST-HASH-CANARY-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-R3__test_engineer.json",
+      "exit_code": 0,
+      "result": "R3 writer handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Made apps/web/dist an optional generated input for normal desktop packaging; copy-renderer copies it when present and logs an explicit skip when absent.",
+    "Kept the required host canary path dependent on the documented sequence: pnpm build:web before pnpm desktop:package, then the packaged Electron canary page is copied into renderer/web.",
+    "Did not edit CI workflow files and did not add dependencies.",
+    "Kept Electron security unchanged: no Node integration, no broad IPC, and the host hash canary remains gated behind MONSOON_HOST_HASH_CANARY=1."
+  ],
+  "risks": [
+    "The packaged Electron host canary is intentionally available only when pnpm build:web has produced apps/web/dist before desktop packaging.",
+    "The repo remains dirty in lead-owned orchestration files and QA route/message artifacts that predate this R3 fix."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "review",
+  "created_at": "2026-06-24T22:58:33.5267198Z"
+}
