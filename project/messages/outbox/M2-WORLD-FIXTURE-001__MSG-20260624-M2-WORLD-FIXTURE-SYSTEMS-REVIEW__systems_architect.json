@@ -1,0 +1,157 @@
+{
+  "message_id": "MSG-20260624-M2-WORLD-FIXTURE-SYSTEMS-REVIEW",
+  "task_id": "M2-WORLD-FIXTURE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems architecture review accepts the M2 prototype world fixture delivery. The implementation stays within content schema/runtime/tools and fixture/test scope, preserves sim-core and UI/Electron boundaries, validates M2 references at compile/runtime boundaries, keeps runtime lookup ID-based, and leaves the data synthetic under M2-MAP-SOURCE-POLICY-001.",
+  "artifacts": [
+    "project/messages/outbox/M2-WORLD-FIXTURE-001__MSG-20260624-M2-WORLD-FIXTURE-SIMULATION-REVIEW__simulation_engineer.json",
+    "project/tasks/active/M2-WORLD-FIXTURE-001.json",
+    "docs/research/m2-map-fixture-source-policy.md",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "apps/content-tools/src/index.ts",
+    "apps/content-tools/src/cli.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "project/messages/outbox/M2-WORLD-FIXTURE-001__MSG-20260624-M2-WORLD-FIXTURE-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m2-world-fixture / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --untracked-files=all",
+      "exit_code": 0,
+      "result": "Worktree on feat/m2-world-fixture with modified content-schema/content-runtime/content-tools/tests/task files, modified coordination state files, and untracked M2 fixture/writer handoff/route messages before this systems handoff was written."
+    },
+    {
+      "command": "git diff -- packages/sim-core apps/web apps/desktop packages/client-core packages/map-renderer packages/ui content-source/historical docs/decisions docs/GATE-M0.md docs/GATE-M1.md docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md --stat",
+      "exit_code": 0,
+      "result": "No output; tracked forbidden-path diff is empty."
+    },
+    {
+      "command": "rg -n 'TODO|FIXME|as unknown as|\\bany\\b|enum |namespace |Math\\.random\\(|Date\\.now\\(|performance\\.now\\(' packages/content-schema/src/index.ts packages/content-runtime/src/index.ts apps/content-tools/src/index.ts apps/content-tools/src/cli.ts tests/content-schema-graph-source.test.ts tests/content-runtime-pack.test.ts tests/content-tools-compiler.test.ts",
+      "exit_code": 1,
+      "result": "No matches; changed implementation/test files contain none of these banned patterns."
+    },
+    {
+      "command": "rg -n '@monsoon/sim-core|react|pixi|pixi\\.js|electron' packages/content-schema/src/index.ts packages/content-runtime/src/index.ts apps/content-tools/src/index.ts apps/content-tools/src/cli.ts apps/content-tools/package.json packages/content-schema/package.json packages/content-runtime/package.json",
+      "exit_code": 1,
+      "result": "No matches; changed content packages do not import sim-core, React, Pixi, or Electron."
+    },
+    {
+      "command": "rg -n 'node:fs|node:perf_hooks|perf_hooks|Date\\.now|Math\\.random|performance\\.now' packages/content-schema/src/index.ts packages/content-runtime/src/index.ts apps/content-tools/src/index.ts apps/content-tools/src/cli.ts",
+      "exit_code": 0,
+      "result": "Only apps/content-tools/src/cli.ts imports node:fs/promises for CLI file reading; no real-time or random calls found."
+    },
+    {
+      "command": "rg -n 'get[A-Za-z]*(ByDisplay|ByName)|displayNameLookup|displayNameKey.*Map|displayNameKey.*new Map|name.*new Map|new Map.*displayName' packages/content-runtime/src/index.ts apps/content-tools/src/index.ts packages/content-schema/src/index.ts tests/content-runtime-pack.test.ts",
+      "exit_code": 0,
+      "result": "Only negative runtime tests mention get*ByDisplayName; no display-name/name lookup implementation found."
+    },
+    {
+      "command": "git diff -- apps/content-tools/package.json packages/content-schema/package.json packages/content-runtime/package.json pnpm-lock.yaml --stat",
+      "exit_code": 0,
+      "result": "No output; no package manifest or lockfile dependency changes."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['content-source/m2-fixtures/prototype-world-30-districts.json','project/tasks/active/M2-WORLD-FIXTURE-001.json','project/messages/outbox/M2-WORLD-FIXTURE-001__MSG-20260624-M2-WORLD-FIXTURE-SIMULATION-REVIEW__simulation_engineer.json']; for (const f of files) { JSON.parse(fs.readFileSync(f,'utf8')); } console.log('JSON parse ok', files.length);\"",
+      "exit_code": 0,
+      "result": "JSON parse ok 3."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const f=JSON.parse(fs.readFileSync('content-source/m2-fixtures/prototype-world-30-districts.json','utf8')); const counts={districts:f.districts.length,settlements:f.settlements.length,curves:f.regionalSeasonalCurves.length,routes:f.routes.length,geometries:f.mapGeometries.length}; const curveMonths=f.regionalSeasonalCurves.map(c=>c.monthlyValues.map(v=>v.month).join(',')); const nonInteger=[]; for (const c of f.regionalSeasonalCurves) for (const v of c.monthlyValues) for (const k of ['month','monsoonIntensityBps','agricultureWorkBps','riverNavigabilityBps','roadTravelCostBps']) if (!Number.isSafeInteger(v[k])) nonInteger.push(c.sourceId+':'+k); console.log(JSON.stringify({counts,curveMonths,nonInteger,provenance:f.provenance,historicity:f.historicity}, null, 2));\"",
+      "exit_code": 0,
+      "result": "counts districts=30 settlements=10 curves=4 routes=42 geometries=40; every curve has months 1..12; nonInteger=[]; provenance validation-only-fixture/LOW/M2-MAP-SOURCE-POLICY-001; historicity=FICTIONAL."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 4 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 3 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 12 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "node --experimental-strip-types apps/content-tools/src/cli.ts validate content-source/m2-fixtures/prototype-world-30-districts.json",
+      "exit_code": 0,
+      "result": "Content validation passed: m2.prototype-world-30-districts districts=30 settlements=10 regionalSeasonalCurves=4 routes=42 mapGeometries=40 manifestHash=9ab72b0b."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Default M1 fixture remains valid: m1.abstract-graph-30 nodes=30 edges=60 manifestHash=4a438525."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-WORLD-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-WORLD-FIXTURE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-WORLD-FIXTURE-001__MSG-20260624-M2-WORLD-FIXTURE-SIMULATION-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { readFile } from 'node:fs/promises'; import { compileContentPackV0OrThrow } from './apps/content-tools/src/index.ts'; const source = JSON.parse(await readFile('content-source/m2-fixtures/prototype-world-30-districts.json','utf8')); const first = compileContentPackV0OrThrow(source); const second = compileContentPackV0OrThrow(structuredClone(source)); if (first.kind !== 'runtime-m2-world-content-pack-v0' || second.kind !== 'runtime-m2-world-content-pack-v0') throw new Error('expected M2 packs'); const sameHash = first.manifest.manifestHash === second.manifest.manifestHash; const sameDistrictOrder = JSON.stringify(first.districts.map((d) => d.sourceId)) === JSON.stringify(second.districts.map((d) => d.sourceId)); const sameRouteOrder = JSON.stringify(first.routes.map((r) => r.sourceId)) === JSON.stringify(second.routes.map((r) => r.sourceId)); console.log(JSON.stringify({ manifestHash: first.manifest.manifestHash, sameHash, sameDistrictOrder, sameRouteOrder, firstDistrict: first.districts[0]?.sourceId, lastDistrict: first.districts.at(-1)?.sourceId, firstRoute: first.routes[0]?.sourceId, lastRoute: first.routes.at(-1)?.sourceId }, null, 2)); if (!sameHash || !sameDistrictOrder || !sameRouteOrder) process.exitCode = 1;\"",
+      "exit_code": 0,
+      "result": "manifestHash=9ab72b0b; sameHash=true; sameDistrictOrder=true; sameRouteOrder=true; first/last districts district-001/district-030; first/last routes route-001/route-042."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "Root eslint command completed successfully."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-WORLD-FIXTURE-001__MSG-20260624-M2-WORLD-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Reviewer handoff schema validation passed."
+    }
+  ],
+  "decisions": [
+    "Architecture boundaries satisfied: packages/sim-core, apps/web, apps/desktop, client/map/ui packages, ADR/gate/roadmap/status files, and historical content paths were not changed by the tracked implementation diff.",
+    "sim-core remains decoupled from React/Pixi/Electron/Node IO; this task does not add sim-core imports or product-scope simulation behavior. The only Node file IO found is apps/content-tools/src/cli.ts, which is the existing Node CLI boundary.",
+    "Determinism and stable ordering satisfied: source arrays are required to be sorted by sourceId before stable numeric ID assignment, runtime arrays validate ordered IDs, and repeated M2 compiles produced the same manifestHash and sourceId order.",
+    "ID-only runtime lookup satisfied: runtime M2 indices expose getDistrict/getSettlement/getRegionalSeasonalCurve/getRoute/getMapGeometry by branded numeric ID; no runtime display-name/name lookup API or displayNameKey map was introduced.",
+    "Compile-time reference validation satisfied for district regionalCurveId/mapGeometryId, settlement districtId/mapGeometryId, route endpoints, geometry owners, route duplicates, route self-loops, seasonal month order, and district/settlement geometry kind constraints.",
+    "M2-MAP-SOURCE-POLICY-001 compliance satisfied: the fixture uses abstract IDs and placeholder displayNameKeys, historicity FICTIONAL, sourceCategory validation-only-fixture, confidence LOW, and policyId M2-MAP-SOURCE-POLICY-001; no real historical settlement, polity, boundary, symbol, or cultural identity claims were introduced.",
+    "No forbidden product or implementation scope was performed: no sim-core economy/population/route-planning behavior, no UI/React/Pixi/Electron work, no formal historical map content, and no new production dependencies."
+  ],
+  "risks": [
+    "The source schema remains permissive of extra source fields such as fixture scope notes and drops them during parsing. This is consistent with the current local schema style and not blocking for this task because policy/provenance fields and runtime pack fields are explicit, but future content guard work should decide whether unknown source fields must be rejected.",
+    "The workspace still contains unrelated coordination-state and route-message changes noted by writer/lead; this review did not revert or modify them."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator should validate this systems_architect handoff and decide task acceptance/closure. Do not treat this handoff as the lead's final ACCEPTED state.",
+  "created_at": "2026-06-24T14:45:00Z"
+}

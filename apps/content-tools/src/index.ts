@@ -1,19 +1,39 @@
 import {
   parseM1GraphFixtureSourceV0,
+  parseM2WorldFixtureSourceV0,
   validateM1GraphFixtureSourceV0,
+  validateM2WorldFixtureSourceV0,
   type ContentSchemaError,
   type M1GraphFixtureEdgeSourceV0,
   type M1GraphFixtureNodeSourceV0,
-  type M1GraphFixtureSourceV0
+  type M1GraphFixtureSourceV0,
+  type M2WorldDistrictSourceV0,
+  type M2WorldMapGeometrySourceV0,
+  type M2WorldRegionalSeasonalCurveSourceV0,
+  type M2WorldRouteSourceV0,
+  type M2WorldSettlementSourceV0,
+  type M2WorldFixtureSourceV0
 } from "@monsoon/content-schema";
 import {
   parseContentEdgeId,
+  parseContentDistrictId,
   parseContentManifestHash,
+  parseContentMapGeometryId,
   parseContentNodeId,
+  parseContentRegionalSeasonalCurveId,
+  parseContentRouteId,
+  parseContentSettlementId,
+  parseRuntimeM2WorldContentPackV0,
   parseRuntimeContentPackV0,
   type RuntimeContentEdgeV0,
   type RuntimeContentNodeV0,
-  type RuntimeContentPackV0
+  type RuntimeContentPackV0,
+  type RuntimeM2DistrictDefinitionV0,
+  type RuntimeM2MapGeometryV0,
+  type RuntimeM2RegionalSeasonalCurveV0,
+  type RuntimeM2RouteDefinitionV0,
+  type RuntimeM2SettlementDefinitionV0,
+  type RuntimeM2WorldContentPackV0
 } from "@monsoon/content-runtime";
 
 export type ContentCompileErrorCode =
@@ -22,7 +42,9 @@ export type ContentCompileErrorCode =
   | "duplicate-id"
   | "duplicate-route"
   | "invalid-count"
+  | "invalid-geometry"
   | "invalid-route"
+  | "invalid-seasonal-curve"
   | "isolated-node"
   | "unstable-order";
 
@@ -35,7 +57,7 @@ export interface ContentCompileError {
 export type ContentCompileResultV0 =
   | {
       readonly status: "ok";
-      readonly pack: RuntimeContentPackV0;
+      readonly pack: RuntimeContentPackV0 | RuntimeM2WorldContentPackV0;
       readonly errors: readonly [];
     }
   | {
@@ -53,10 +75,39 @@ interface StableEdgeAssignment {
   readonly runtimeId: number;
 }
 
+interface StableDistrictAssignment {
+  readonly district: M2WorldDistrictSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableSettlementAssignment {
+  readonly settlement: M2WorldSettlementSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableCurveAssignment {
+  readonly curve: M2WorldRegionalSeasonalCurveSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableRouteAssignment {
+  readonly route: M2WorldRouteSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableGeometryAssignment {
+  readonly geometry: M2WorldMapGeometrySourceV0;
+  readonly runtimeId: number;
+}
+
 const INITIAL_HASH_OFFSET = 2_166_136_261;
 const HASH_PRIME = 16_777_619;
 
 export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
+  if (isRecord(input) && input["kind"] === "m2.prototype-world-fixture") {
+    return compileM2WorldContentPackV0(input);
+  }
+
   const schemaErrors = validateM1GraphFixtureSourceV0(input);
   if (schemaErrors.length > 0) {
     return {
@@ -86,13 +137,45 @@ export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
   };
 }
 
-export function compileContentPackV0OrThrow(input: unknown): RuntimeContentPackV0 {
+export function compileContentPackV0OrThrow(
+  input: unknown
+): RuntimeContentPackV0 | RuntimeM2WorldContentPackV0 {
   const result = compileContentPackV0(input);
   if (result.status === "ok") {
     return result.pack;
   }
 
   throw new Error(`Content compile failed: ${formatCompileErrors(result.errors)}`);
+}
+
+function compileM2WorldContentPackV0(input: unknown): ContentCompileResultV0 {
+  const schemaErrors = validateM2WorldFixtureSourceV0(input);
+  if (schemaErrors.length > 0) {
+    return {
+      status: "error",
+      errors: schemaErrors.map((error) => ({
+        code: error.code,
+        path: error.path,
+        message: error.message
+      }))
+    };
+  }
+
+  const source = parseM2WorldFixtureSourceV0(input);
+  const semanticErrors = validateM2WorldSemantics(source);
+  if (semanticErrors.length > 0) {
+    return {
+      status: "error",
+      errors: semanticErrors
+    };
+  }
+
+  const pack = buildRuntimeM2WorldPack(source);
+  return {
+    status: "ok",
+    pack: parseRuntimeM2WorldContentPackV0(pack),
+    errors: []
+  };
 }
 
 function validateGraphSemantics(source: M1GraphFixtureSourceV0): readonly ContentCompileError[] {
@@ -126,9 +209,41 @@ function validateGraphSemantics(source: M1GraphFixtureSourceV0): readonly Conten
   return errors;
 }
 
+function validateM2WorldSemantics(source: M2WorldFixtureSourceV0): readonly ContentCompileError[] {
+  const errors: ContentCompileError[] = [];
+
+  if (source.districts.length !== 30) {
+    errors.push({
+      code: "invalid-count",
+      path: "districts",
+      message: `M2 prototype fixture must contain exactly 30 districts, received ${source.districts.length}.`
+    });
+  }
+
+  if (source.settlements.length !== 10) {
+    errors.push({
+      code: "invalid-count",
+      path: "settlements",
+      message: `M2 prototype fixture must contain exactly 10 settlements, received ${source.settlements.length}.`
+    });
+  }
+
+  validateStableOrderAndUniqueIds(source.districts, "districts", errors);
+  validateStableOrderAndUniqueIds(source.settlements, "settlements", errors);
+  validateStableOrderAndUniqueIds(source.regionalSeasonalCurves, "regionalSeasonalCurves", errors);
+  validateStableOrderAndUniqueIds(source.routes, "routes", errors);
+  validateStableOrderAndUniqueIds(source.mapGeometries, "mapGeometries", errors);
+  validateM2References(source, errors);
+  validateM2Routes(source, errors);
+  validateM2SeasonalCurves(source, errors);
+  validateM2Geometries(source, errors);
+
+  return errors;
+}
+
 function validateStableOrderAndUniqueIds(
   entries: readonly { readonly sourceId: string }[],
-  path: "nodes" | "edges",
+  path: string,
   errors: ContentCompileError[]
 ): void {
   const seen = new Set<string>();
@@ -178,6 +293,101 @@ function validateReferences(source: M1GraphFixtureSourceV0, errors: ContentCompi
   });
 }
 
+function validateM2References(source: M2WorldFixtureSourceV0, errors: ContentCompileError[]): void {
+  const districtIds = new Set(source.districts.map((district) => district.sourceId));
+  const settlementIds = new Set(source.settlements.map((settlement) => settlement.sourceId));
+  const curveIds = new Set(source.regionalSeasonalCurves.map((curve) => curve.sourceId));
+  const geometryBySourceId = new Map(
+    source.mapGeometries.map((geometry) => [geometry.sourceId, geometry])
+  );
+
+  source.districts.forEach((district, index) => {
+    if (!curveIds.has(district.regionalCurveId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `districts[${index}].regionalCurveId`,
+        message: `District ${district.sourceId} references missing regional curve ${district.regionalCurveId}.`
+      });
+    }
+
+    const geometry = geometryBySourceId.get(district.mapGeometryId);
+    if (geometry === undefined) {
+      errors.push({
+        code: "bad-reference",
+        path: `districts[${index}].mapGeometryId`,
+        message: `District ${district.sourceId} references missing map geometry ${district.mapGeometryId}.`
+      });
+    } else if (geometry.ownerKind !== "district" || geometry.ownerId !== district.sourceId) {
+      errors.push({
+        code: "bad-reference",
+        path: `districts[${index}].mapGeometryId`,
+        message: `District ${district.sourceId} map geometry must be owned by that district.`
+      });
+    }
+  });
+
+  source.settlements.forEach((settlement, index) => {
+    if (!districtIds.has(settlement.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `settlements[${index}].districtId`,
+        message: `Settlement ${settlement.sourceId} references missing district ${settlement.districtId}.`
+      });
+    }
+
+    const geometry = geometryBySourceId.get(settlement.mapGeometryId);
+    if (geometry === undefined) {
+      errors.push({
+        code: "bad-reference",
+        path: `settlements[${index}].mapGeometryId`,
+        message: `Settlement ${settlement.sourceId} references missing map geometry ${settlement.mapGeometryId}.`
+      });
+    } else if (geometry.ownerKind !== "settlement" || geometry.ownerId !== settlement.sourceId) {
+      errors.push({
+        code: "bad-reference",
+        path: `settlements[${index}].mapGeometryId`,
+        message: `Settlement ${settlement.sourceId} map geometry must be owned by that settlement.`
+      });
+    }
+  });
+
+  source.routes.forEach((route, index) => {
+    if (!districtIds.has(route.fromDistrictId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `routes[${index}].fromDistrictId`,
+        message: `Route ${route.sourceId} references missing from district ${route.fromDistrictId}.`
+      });
+    }
+
+    if (!districtIds.has(route.toDistrictId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `routes[${index}].toDistrictId`,
+        message: `Route ${route.sourceId} references missing to district ${route.toDistrictId}.`
+      });
+    }
+  });
+
+  source.mapGeometries.forEach((geometry, index) => {
+    if (geometry.ownerKind === "district" && !districtIds.has(geometry.ownerId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `mapGeometries[${index}].ownerId`,
+        message: `Map geometry ${geometry.sourceId} references missing district owner ${geometry.ownerId}.`
+      });
+    }
+
+    if (geometry.ownerKind === "settlement" && !settlementIds.has(geometry.ownerId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `mapGeometries[${index}].ownerId`,
+        message: `Map geometry ${geometry.sourceId} references missing settlement owner ${geometry.ownerId}.`
+      });
+    }
+  });
+}
+
 function validateRoutes(source: M1GraphFixtureSourceV0, errors: ContentCompileError[]): void {
   const seenRoutes = new Set<string>();
 
@@ -202,6 +412,86 @@ function validateRoutes(source: M1GraphFixtureSourceV0, errors: ContentCompileEr
     }
 
     seenRoutes.add(routeKey);
+  });
+}
+
+function validateM2Routes(source: M2WorldFixtureSourceV0, errors: ContentCompileError[]): void {
+  const seenRoutes = new Set<string>();
+
+  source.routes.forEach((route, index) => {
+    if (route.fromDistrictId === route.toDistrictId) {
+      errors.push({
+        code: "invalid-route",
+        path: `routes[${index}]`,
+        message: `Route ${route.sourceId} must connect two distinct districts.`
+      });
+      return;
+    }
+
+    const routeKey = m2RouteSemanticKey(route);
+    if (seenRoutes.has(routeKey)) {
+      errors.push({
+        code: "duplicate-route",
+        path: `routes[${index}]`,
+        message: `Duplicate M2 route semantics for ${route.sourceId}.`
+      });
+      return;
+    }
+
+    seenRoutes.add(routeKey);
+  });
+}
+
+function validateM2SeasonalCurves(
+  source: M2WorldFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  source.regionalSeasonalCurves.forEach((curve, curveIndex) => {
+    curve.monthlyValues.forEach((value, valueIndex) => {
+      if (value.month !== valueIndex + 1) {
+        errors.push({
+          code: "invalid-seasonal-curve",
+          path: `regionalSeasonalCurves[${curveIndex}].monthlyValues[${valueIndex}].month`,
+          message: `Regional curve ${curve.sourceId} monthly values must be ordered from month 1 through month 12.`
+        });
+      }
+    });
+  });
+}
+
+function validateM2Geometries(source: M2WorldFixtureSourceV0, errors: ContentCompileError[]): void {
+  source.mapGeometries.forEach((geometry, index) => {
+    if (geometry.ownerKind === "district" && geometry.geometryKind !== "polygon") {
+      errors.push({
+        code: "invalid-geometry",
+        path: `mapGeometries[${index}].geometryKind`,
+        message: `District geometry ${geometry.sourceId} must use polygon geometry.`
+      });
+    }
+
+    if (geometry.ownerKind === "settlement" && geometry.geometryKind !== "point") {
+      errors.push({
+        code: "invalid-geometry",
+        path: `mapGeometries[${index}].geometryKind`,
+        message: `Settlement geometry ${geometry.sourceId} must use point geometry.`
+      });
+    }
+
+    if (geometry.geometryKind === "polygon" && geometry.points.length < 3) {
+      errors.push({
+        code: "invalid-geometry",
+        path: `mapGeometries[${index}].points`,
+        message: `Polygon geometry ${geometry.sourceId} must contain at least 3 points.`
+      });
+    }
+
+    if (geometry.geometryKind === "point" && geometry.points.length !== 0) {
+      errors.push({
+        code: "invalid-geometry",
+        path: `mapGeometries[${index}].points`,
+        message: `Point geometry ${geometry.sourceId} must not contain polygon points.`
+      });
+    }
   });
 }
 
@@ -298,6 +588,147 @@ function buildRuntimePack(source: M1GraphFixtureSourceV0): RuntimeContentPackV0 
   };
 }
 
+function buildRuntimeM2WorldPack(source: M2WorldFixtureSourceV0): RuntimeM2WorldContentPackV0 {
+  const districtAssignments = assignM2Districts(source.districts);
+  const settlementAssignments = assignM2Settlements(source.settlements);
+  const curveAssignments = assignM2Curves(source.regionalSeasonalCurves);
+  const routeAssignments = assignM2Routes(source.routes);
+  const geometryAssignments = assignM2Geometries(source.mapGeometries);
+  const districtIdBySourceId = new Map(
+    districtAssignments.map((assignment) => [assignment.district.sourceId, assignment.runtimeId])
+  );
+  const settlementIdBySourceId = new Map(
+    settlementAssignments.map((assignment) => [
+      assignment.settlement.sourceId,
+      assignment.runtimeId
+    ])
+  );
+  const curveIdBySourceId = new Map(
+    curveAssignments.map((assignment) => [assignment.curve.sourceId, assignment.runtimeId])
+  );
+  const geometryIdBySourceId = new Map(
+    geometryAssignments.map((assignment) => [assignment.geometry.sourceId, assignment.runtimeId])
+  );
+
+  const districts: RuntimeM2DistrictDefinitionV0[] = districtAssignments.map((assignment) => {
+    const regionalCurveId = curveIdBySourceId.get(assignment.district.regionalCurveId);
+    const mapGeometryId = geometryIdBySourceId.get(assignment.district.mapGeometryId);
+    if (regionalCurveId === undefined || mapGeometryId === undefined) {
+      throw new Error(`Compiler invariant failed for district ${assignment.district.sourceId}.`);
+    }
+
+    return {
+      id: parseContentDistrictId(assignment.runtimeId),
+      sourceId: assignment.district.sourceId,
+      displayNameKey: assignment.district.displayNameKey,
+      regionalCurveId: parseContentRegionalSeasonalCurveId(regionalCurveId),
+      mapGeometryId: parseContentMapGeometryId(mapGeometryId)
+    };
+  });
+
+  const settlements: RuntimeM2SettlementDefinitionV0[] = settlementAssignments.map((assignment) => {
+    const districtId = districtIdBySourceId.get(assignment.settlement.districtId);
+    const mapGeometryId = geometryIdBySourceId.get(assignment.settlement.mapGeometryId);
+    if (districtId === undefined || mapGeometryId === undefined) {
+      throw new Error(
+        `Compiler invariant failed for settlement ${assignment.settlement.sourceId}.`
+      );
+    }
+
+    return {
+      id: parseContentSettlementId(assignment.runtimeId),
+      sourceId: assignment.settlement.sourceId,
+      displayNameKey: assignment.settlement.displayNameKey,
+      districtId: parseContentDistrictId(districtId),
+      mapGeometryId: parseContentMapGeometryId(mapGeometryId)
+    };
+  });
+
+  const regionalSeasonalCurves: RuntimeM2RegionalSeasonalCurveV0[] = curveAssignments.map(
+    (assignment) => ({
+      id: parseContentRegionalSeasonalCurveId(assignment.runtimeId),
+      sourceId: assignment.curve.sourceId,
+      displayNameKey: assignment.curve.displayNameKey,
+      monthlyValues: assignment.curve.monthlyValues.map((value) => ({ ...value }))
+    })
+  );
+
+  const routes: RuntimeM2RouteDefinitionV0[] = routeAssignments.map((assignment) => {
+    const fromDistrictId = districtIdBySourceId.get(assignment.route.fromDistrictId);
+    const toDistrictId = districtIdBySourceId.get(assignment.route.toDistrictId);
+    if (fromDistrictId === undefined || toDistrictId === undefined) {
+      throw new Error(`Compiler invariant failed for route ${assignment.route.sourceId}.`);
+    }
+
+    return {
+      id: parseContentRouteId(assignment.runtimeId),
+      sourceId: assignment.route.sourceId,
+      fromDistrictId: parseContentDistrictId(fromDistrictId),
+      toDistrictId: parseContentDistrictId(toDistrictId),
+      routeKind: assignment.route.routeKind,
+      baseTravelCost: assignment.route.baseTravelCost
+    };
+  });
+
+  const mapGeometries: RuntimeM2MapGeometryV0[] = geometryAssignments.map((assignment) => {
+    const ownerRuntimeId =
+      assignment.geometry.ownerKind === "district"
+        ? districtIdBySourceId.get(assignment.geometry.ownerId)
+        : settlementIdBySourceId.get(assignment.geometry.ownerId);
+    if (ownerRuntimeId === undefined) {
+      throw new Error(
+        `Compiler invariant failed for map geometry ${assignment.geometry.sourceId}.`
+      );
+    }
+
+    return {
+      id: parseContentMapGeometryId(assignment.runtimeId),
+      sourceId: assignment.geometry.sourceId,
+      ownerKind: assignment.geometry.ownerKind,
+      ownerId:
+        assignment.geometry.ownerKind === "district"
+          ? parseContentDistrictId(ownerRuntimeId)
+          : parseContentSettlementId(ownerRuntimeId),
+      geometryKind: assignment.geometry.geometryKind,
+      anchor: { ...assignment.geometry.anchor },
+      points: assignment.geometry.points.map((point) => ({ ...point }))
+    };
+  });
+
+  const manifestHash = hashM2Manifest(
+    source.fixtureId,
+    districts,
+    settlements,
+    regionalSeasonalCurves,
+    routes,
+    mapGeometries
+  );
+
+  return {
+    schemaVersion: 1,
+    kind: "runtime-m2-world-content-pack-v0",
+    fixtureId: source.fixtureId,
+    manifest: {
+      schemaVersion: 1,
+      fixtureId: source.fixtureId,
+      fixtureKind: source.fixtureKind,
+      syntheticScope: source.syntheticScope,
+      historicity: source.historicity,
+      manifestHash: parseContentManifestHash(manifestHash),
+      districtCount: districts.length,
+      settlementCount: settlements.length,
+      regionalSeasonalCurveCount: regionalSeasonalCurves.length,
+      routeCount: routes.length,
+      mapGeometryCount: mapGeometries.length
+    },
+    districts,
+    settlements,
+    regionalSeasonalCurves,
+    routes,
+    mapGeometries
+  };
+}
+
 function assignNodes(
   nodes: readonly M1GraphFixtureNodeSourceV0[]
 ): readonly StableNodeAssignment[] {
@@ -312,6 +743,49 @@ function assignEdges(
 ): readonly StableEdgeAssignment[] {
   return sortBySourceId(edges).map((edge, index) => ({
     edge,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM2Districts(
+  districts: readonly M2WorldDistrictSourceV0[]
+): readonly StableDistrictAssignment[] {
+  return sortBySourceId(districts).map((district, index) => ({
+    district,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM2Settlements(
+  settlements: readonly M2WorldSettlementSourceV0[]
+): readonly StableSettlementAssignment[] {
+  return sortBySourceId(settlements).map((settlement, index) => ({
+    settlement,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM2Curves(
+  curves: readonly M2WorldRegionalSeasonalCurveSourceV0[]
+): readonly StableCurveAssignment[] {
+  return sortBySourceId(curves).map((curve, index) => ({
+    curve,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM2Routes(routes: readonly M2WorldRouteSourceV0[]): readonly StableRouteAssignment[] {
+  return sortBySourceId(routes).map((route, index) => ({
+    route,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM2Geometries(
+  geometries: readonly M2WorldMapGeometrySourceV0[]
+): readonly StableGeometryAssignment[] {
+  return sortBySourceId(geometries).map((geometry, index) => ({
+    geometry,
     runtimeId: index + 1
   }));
 }
@@ -331,6 +805,17 @@ function routeSemanticKey(edge: M1GraphFixtureEdgeSourceV0): string {
   return `bidirectional:${first}<->${second}`;
 }
 
+function m2RouteSemanticKey(route: M2WorldRouteSourceV0): string {
+  const orderedDistricts = sortText([route.fromDistrictId, route.toDistrictId]);
+  const first = orderedDistricts[0];
+  const second = orderedDistricts[1];
+  if (first === undefined || second === undefined) {
+    throw new Error("Expected M2 route endpoints.");
+  }
+
+  return `${route.routeKind}:${first}<->${second}`;
+}
+
 function hashManifest(
   fixtureId: string,
   nodes: readonly RuntimeContentNodeV0[],
@@ -348,6 +833,61 @@ function hashManifest(
           .map(
             (edge) =>
               `${edge.id}:${edge.sourceId}:${edge.fromNodeId}:${edge.toNodeId}:${edge.direction}:${edge.traversalCost}`
+          )
+          .join(",")}`
+      ].join("\n")
+    )
+  );
+}
+
+function hashM2Manifest(
+  fixtureId: string,
+  districts: readonly RuntimeM2DistrictDefinitionV0[],
+  settlements: readonly RuntimeM2SettlementDefinitionV0[],
+  regionalSeasonalCurves: readonly RuntimeM2RegionalSeasonalCurveV0[],
+  routes: readonly RuntimeM2RouteDefinitionV0[],
+  mapGeometries: readonly RuntimeM2MapGeometryV0[]
+): string {
+  return toFixedHexHash(
+    hashText(
+      [
+        "runtime-m2-world-content-pack-v0",
+        `fixtureId=${fixtureId}`,
+        `districts=${districts
+          .map(
+            (district) =>
+              `${district.id}:${district.sourceId}:${district.displayNameKey}:${district.regionalCurveId}:${district.mapGeometryId}`
+          )
+          .join(",")}`,
+        `settlements=${settlements
+          .map(
+            (settlement) =>
+              `${settlement.id}:${settlement.sourceId}:${settlement.displayNameKey}:${settlement.districtId}:${settlement.mapGeometryId}`
+          )
+          .join(",")}`,
+        `regionalSeasonalCurves=${regionalSeasonalCurves
+          .map(
+            (curve) =>
+              `${curve.id}:${curve.sourceId}:${curve.displayNameKey}:${curve.monthlyValues
+                .map(
+                  (value) =>
+                    `${value.month}:${value.monsoonIntensityBps}:${value.agricultureWorkBps}:${value.riverNavigabilityBps}:${value.roadTravelCostBps}`
+                )
+                .join("|")}`
+          )
+          .join(",")}`,
+        `routes=${routes
+          .map(
+            (route) =>
+              `${route.id}:${route.sourceId}:${route.fromDistrictId}:${route.toDistrictId}:${route.routeKind}:${route.baseTravelCost}`
+          )
+          .join(",")}`,
+        `mapGeometries=${mapGeometries
+          .map(
+            (geometry) =>
+              `${geometry.id}:${geometry.sourceId}:${geometry.ownerKind}:${geometry.ownerId}:${geometry.geometryKind}:${geometry.anchor.x}:${geometry.anchor.y}:${geometry.points
+                .map((point) => `${point.x}:${point.y}`)
+                .join("|")}`
           )
           .join(",")}`
       ].join("\n")
@@ -398,4 +938,8 @@ function compareText(left: string, right: string): number {
 
 function formatCompileErrors(errors: readonly ContentCompileError[]): string {
   return errors.map((error) => `${error.code} ${error.path}: ${error.message}`).join("; ");
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T12:05:09Z",
+  "updated_at": "2026-06-24T14:45:10Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -388,6 +388,39 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_accept_review",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef98b-237c-7f61-887f-efba8d13819b",
+      "role": "simulation_engineer",
+      "task_id": "M2-WORLD-FIXTURE-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "stale_not_found_before_handoff_replaced",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019ef9a7-9a41-7f63-bbaa-6545b78308b6",
+      "role": "simulation_engineer",
+      "task_id": "M2-WORLD-FIXTURE-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_valid_handoff_and_systems_accept",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efa0d-5ebc-7581-82fd-4abcead5ebc6",
+      "role": "systems_architect",
+      "task_id": "M2-WORLD-FIXTURE-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_accept_review",
+      "accepted_task_reopened": false
     }
   ],
   "active_threads": [],
@@ -410,6 +443,6 @@
     "M1-GATE": "CLOSED after PR #24 entered main at cd19e1071d3264c5fd9a2d97bea35d677882d7ec. systems_architect gpt-5.5 xhigh wrote docs/GATE-M1.md; qa_reviewer gpt-5.5 xhigh accepted the gate; lead advanced current_milestone to M2 in the post-merge closure branch.",
     "M2-TASK-GRAPH-001": "CLOSED after PR #26 entered main at 3ded0126d251fc44e0397187750c2fd6c5ebebb6; systems_architect gpt-5.5 xhigh created and revised the M2 task DAG, qa_reviewer gpt-5.5 xhigh accepted Revision 1 and the final allowed_paths scope metadata, and lead_orchestrator closed the task after confirming integration.",
     "M2-MAP-SOURCE-POLICY-001": "CLOSED after PR #28 entered main at 5dac323b7dbd5dfa3d2de6f228bb76c67f32c96b; historical_researcher gpt-5.5 high wrote the M2 map fixture source policy, qa_reviewer gpt-5.5 xhigh accepted it, and lead_orchestrator closed the task after confirming integration.",
-    "M2-WORLD-FIXTURE-001": "READY; next M2 task selected after M2-MAP-SOURCE-POLICY-001 integration. Owner simulation_engineer gpt-5.5 high; reviewer systems_architect gpt-5.5 xhigh."
+    "M2-WORLD-FIXTURE-001": "ACCEPTED; original simulation_engineer thread 019ef98b-237c-7f61-887f-efba8d13819b became unavailable before producing a handoff and was replaced by simulation_engineer thread 019ef9a7-9a41-7f63-bbaa-6545b78308b6. The replacement completed the M2 30 District/10 Settlement fixture and seasonal curves, systems_architect thread 019efa0d-5ebc-7581-82fd-4abcead5ebc6 accepted the architecture review, and lead_orchestrator accepted the task pending PR integration."
   }
 }

@@ -23,9 +23,15 @@ async function main(args: readonly string[]): Promise<number> {
     return 1;
   }
 
-  console.log(
-    `Content validation passed: ${result.pack.fixtureId} nodes=${result.pack.manifest.nodeCount} edges=${result.pack.manifest.edgeCount} manifestHash=${result.pack.manifest.manifestHash}`
-  );
+  if (result.pack.kind === "runtime-content-pack-v0") {
+    console.log(
+      `Content validation passed: ${result.pack.fixtureId} nodes=${result.pack.manifest.nodeCount} edges=${result.pack.manifest.edgeCount} manifestHash=${result.pack.manifest.manifestHash}`
+    );
+  } else {
+    console.log(
+      `Content validation passed: ${result.pack.fixtureId} districts=${result.pack.manifest.districtCount} settlements=${result.pack.manifest.settlementCount} regionalSeasonalCurves=${result.pack.manifest.regionalSeasonalCurveCount} routes=${result.pack.manifest.routeCount} mapGeometries=${result.pack.manifest.mapGeometryCount} manifestHash=${result.pack.manifest.manifestHash}`
+    );
+  }
   return 0;
 }
 
