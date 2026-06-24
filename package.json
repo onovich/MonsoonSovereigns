@@ -13,6 +13,7 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "architecture:check": "node tools/architecture/check-boundaries.mjs",
     "sim:determinism": "pnpm --filter @monsoon/sim-runner sim:determinism",
+    "sim:perf-baseline": "pnpm --filter @monsoon/sim-core sim:perf-baseline",
     "test": "pnpm architecture:check && pnpm sim:determinism && vitest run --config vitest.config.ts && pnpm --filter web test",
     "build:web": "pnpm --filter web build",
     "storybook:build": "storybook build --config-dir .storybook --output-dir .tmp/storybook-static && node -e \"require('node:fs').rmSync('.tmp/storybook-static',{recursive:true,force:true})\"",

@@ -7,6 +7,8 @@ import {
 } from "@monsoon/protocol";
 
 export * from "./world-state-v0.ts";
+export * from "./scheduler-v0.ts";
+export * from "./minimal-m1-fixture.ts";
 
 interface HelloSimulationState {
   readonly day: number;

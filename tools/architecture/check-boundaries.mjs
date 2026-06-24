@@ -414,6 +414,10 @@ function collectForbiddenSimCoreApis(sourceFile) {
       ) {
         usages.push(node.expression.text);
       }
+
+      if (ts.isIdentifier(node.expression) && node.expression.text === "Date") {
+        usages.push("Date");
+      }
     }
 
     if (
@@ -456,6 +460,18 @@ function isSimCoreSource(relativePath) {
 }
 
 /**
+ * @param {string} relativePath
+ * @returns {boolean}
+ */
+function isAuthoritativeSimCoreSource(relativePath) {
+  if (relativePath.startsWith("packages/sim-core/scripts/")) {
+    return false;
+  }
+
+  return isSimCoreSource(relativePath);
+}
+
+/**
  * @param {string} rootPath
  * @param {ScanOptions} [options]
  * @returns {Promise<Violation[]>}
@@ -477,7 +493,7 @@ async function validateSourceImports(rootPath, options = {}) {
     }
 
     const relativePath = relativeFrom(rootPath, filePath);
-    if (!isSimCoreSource(relativePath)) {
+    if (!isAuthoritativeSimCoreSource(relativePath)) {
       continue;
     }
 
@@ -525,7 +541,7 @@ async function validateSimCoreAuthorityApis(rootPath, options = {}) {
     }
 
     const relativePath = relativeFrom(rootPath, filePath);
-    if (!isSimCoreSource(relativePath)) {
+    if (!isAuthoritativeSimCoreSource(relativePath)) {
       continue;
     }
 
