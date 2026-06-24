@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW",
+  "task_id": "M2-BOOT-BOUNDARY-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented an explicit runtime-content-pack boot DTO path for sim-core and added an M2 boot-boundary contract test. The test compiles the M2 content-source fixture through content-runtime tooling, boots sim-core from the compiled runtime M2 pack, locks the deterministic initial WorldState hash at 42e3a2fe, and verifies schema-mismatched or bad-reference packs return structured errors without a runtime. It also scans authoritative sim-core source for content-source, Node fs, React, PixiJS, Electron, DOM, and real-time API usage.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/package.json",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/messages/outbox/M2-BOOT-BOUNDARY-001__MSG-20260624-M2-BOOT-BOUNDARY-SIMULATION-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m2-boot-boundary @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial status showed lead/orchestrator task-state files already modified plus one route message; implementation did not revert them."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "7 test files passed; 35 tests passed. M2 boot-boundary contract included. Vitest emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c matched; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-BOOT-BOUNDARY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-BOOT-BOUNDARY-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M2-BOOT-BOUNDARY-001",
+      "exit_code": 0,
+      "result": "M2-BOOT-BOUNDARY-001 JSON shape ok: IN_PROGRESS, R3, 6 acceptance criteria."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "All workspace typecheck scripts passed, including sim-core, content-runtime, content-tools, web, desktop, save-format, UI, map-renderer, and platform."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 protocol schema test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style after formatting the two new/changed implementation files."
+    }
+  ],
+  "decisions": [
+    "Added a protocol-level runtime-content-pack boot DTO variant while preserving existing fixture boot inputs.",
+    "Kept sim-core independent of content-runtime imports by validating the runtime M2 pack as a plain DTO at the authority boundary.",
+    "Mapped M2 districts, settlements, and routes into existing WorldState v0 definitions only; no economy, population, route-choice, UI, platform-host hash, or broader product scope was added.",
+    "Used structured boot rejection errors with code/path/message; invalid pack rejection returns no SimulationRuntime."
+  ],
+  "risks": [
+    "R3 public boot contract change requires systems_architect review.",
+    "The M2 content boot maps route baseTravelCost into existing RouteDefinition.lengthInMapUnits as a boundary placeholder until dedicated M2 transport systems are specified.",
+    "The contract test reads content-source only from test/tool side; sim-core source scan and architecture check guard against authority-layer imports."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the runtime-content-pack boot DTO, sim-core M2 runtime pack validation boundary, deterministic hash fixture, and structured rejection behavior for R3 architecture acceptance.",
+  "created_at": "2026-06-24T16:35:00Z"
+}
