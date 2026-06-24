@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-24T16:10:39Z",
+  "updated_at": "2026-06-24T16:18:19Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -466,6 +466,7 @@
     "M2-TASK-GRAPH-001": "CLOSED after PR #26 entered main at 3ded0126d251fc44e0397187750c2fd6c5ebebb6; systems_architect gpt-5.5 xhigh created and revised the M2 task DAG, qa_reviewer gpt-5.5 xhigh accepted Revision 1 and the final allowed_paths scope metadata, and lead_orchestrator closed the task after confirming integration.",
     "M2-MAP-SOURCE-POLICY-001": "CLOSED after PR #28 entered main at 5dac323b7dbd5dfa3d2de6f228bb76c67f32c96b; historical_researcher gpt-5.5 high wrote the M2 map fixture source policy, qa_reviewer gpt-5.5 xhigh accepted it, and lead_orchestrator closed the task after confirming integration.",
     "M2-WORLD-FIXTURE-001": "CLOSED after PR #30 entered main at e7b9f6f44d607927ce7330de178b002152a8ffbe. Original simulation_engineer thread 019ef98b-237c-7f61-887f-efba8d13819b became unavailable before producing a handoff and was replaced by simulation_engineer thread 019ef9a7-9a41-7f63-bbaa-6545b78308b6. The replacement completed the M2 30 District/10 Settlement fixture and seasonal curves; systems_architect thread 019efa0d-5ebc-7581-82fd-4abcead5ebc6 accepted the architecture review. Next ready task is M2-CONTENT-GUARDS-001.",
-    "M2-CONTENT-GUARDS-001": "ACCEPTED; simulation_engineer thread 019efa4d-14c7-7030-8594-87aedbd4c43b completed bad M2 map/reference guard coverage and wrote a valid REVIEW handoff. qa_reviewer thread 019efa59-f1ec-7c20-bc7d-d0c9b88ebd5e accepted via lead-owned send_input routing. Pending PR integration before CLOSED."
+    "M2-CONTENT-GUARDS-001": "CLOSED after PR #32 entered main at fb7004b87ce33c6a176af8100fd7dba23dd1943b. simulation_engineer thread 019efa4d-14c7-7030-8594-87aedbd4c43b completed bad M2 map/reference guard coverage and wrote a valid REVIEW handoff. qa_reviewer thread 019efa59-f1ec-7c20-bc7d-d0c9b88ebd5e accepted via lead-owned send_input routing. Next ready task is M2-BOOT-BOUNDARY-001.",
+    "M2-BOOT-BOUNDARY-001": "READY after M2-WORLD-FIXTURE-001 and M2-CONTENT-GUARDS-001 closed; next writer is simulation_engineer gpt-5.5 high with systems_architect gpt-5.5 xhigh review."
   }
 }
