@@ -1,0 +1,53 @@
+{
+  "message_id": "MSG-20260624-FOUNDATION-007-QA-ACCEPT",
+  "task_id": "FOUNDATION-007",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Accepted FOUNDATION-007. PR and nightly CI workflows cover required repository, web, browser, desktop security, and Windows desktop package smoke gates. Artifact manifests provide commit, tool version, lockfile, checksum, size, and artifact traceability, and fail on missing or empty artifact directories. Scope remained within allowed implementation paths plus orchestration state/evidence records.",
+  "artifacts": [
+    "project/messages/outbox/FOUNDATION-007__MSG-20260624-FOUNDATION-007-RELEASE-REVIEW__release_engineer.json",
+    "project/tasks/active/FOUNDATION-007.json",
+    ".github/workflows/pr.yml",
+    ".github/workflows/nightly.yml",
+    "tools/ci/write-artifact-manifest.mjs",
+    "package.json",
+    "project/model-routing-state.json",
+    "project/goal-mode-state.json"
+  ],
+  "branch_or_worktree": "chore/foundation-007-ci-artifacts",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/FOUNDATION-007__MSG-20260624-FOUNDATION-007-RELEASE-REVIEW__release_engineer.json",
+      "exit_code": 0,
+      "result": "VALID owner handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate FOUNDATION-007",
+      "exit_code": 0,
+      "result": "VALID FOUNDATION-007 task JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On chore/foundation-007-ci-artifacts with expected CI/package/project-state changes only."
+    }
+  ],
+  "decisions": [
+    "Accepted owner/lead evidence for pnpm install --frozen-lockfile, pnpm check, pnpm build:web, pnpm desktop:package, manifest positive/negative checks, desktop:security-check, pnpm test, Storybook build, and Chromium e2e because this QA pass was strict read-only and the validated handoff reports exit-0/expected-exit evidence.",
+    "Accepted the lead integration after the release_engineer tool error because current task, route, and model state record the closure and REVIEW handoff consistently."
+  ],
+  "risks": [
+    "GitHub Actions workflows were statically reviewed and locally covered by owner evidence, but not executed remotely in GitHub Actions during this QA pass.",
+    "desktop:package remains a smoke package rather than a signed Windows installer, which is consistent with the F007 scope."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may mark FOUNDATION-007 ACCEPTED and proceed with integration.",
+  "created_at": "2026-06-23T20:15:19Z"
+}

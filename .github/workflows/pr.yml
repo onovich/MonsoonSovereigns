@@ -1,0 +1,104 @@
+name: PR Gate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-and-web:
+    name: Quality, Web, and Browser Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium for Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run repository checks
+        run: pnpm check
+
+      - name: Run test suite
+        run: pnpm test
+
+      - name: Build web artifact
+        run: pnpm build:web
+
+      - name: Build Storybook
+        run: pnpm storybook:build
+
+      - name: Chromium web smoke
+        run: pnpm test:e2e --project=chromium
+
+      - name: Write web artifact manifest
+        run: node tools/ci/write-artifact-manifest.mjs --output .tmp/ci-manifest/pr-web-manifest.json --artifact web-dist=apps/web/dist
+
+      - name: Upload traceable web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-web-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            apps/web/dist
+            .tmp/ci-manifest/pr-web-manifest.json
+
+  desktop-smoke:
+    name: Windows Desktop Smoke Artifact
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Desktop security check
+        run: pnpm desktop:security-check
+
+      - name: Desktop package smoke
+        run: pnpm desktop:package
+
+      - name: Write desktop artifact manifest
+        run: node tools/ci/write-artifact-manifest.mjs --output .tmp/ci-manifest/pr-desktop-manifest.json --artifact desktop-smoke=.tmp/desktop-package/MonsoonSovereigns-win32-x64
+
+      - name: Upload traceable desktop smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-desktop-smoke-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            .tmp/desktop-package/MonsoonSovereigns-win32-x64
+            .tmp/ci-manifest/pr-desktop-manifest.json
