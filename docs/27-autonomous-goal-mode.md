@@ -5,6 +5,10 @@ Date: 2026-06-23
 Status: Accepted
 Product owner approval: BOOTSTRAP-INTEGRATION-AND-AUTONOMOUS-GOAL-MODE-001 user authorization message
 
+Amendment ID: MILESTONE-AUTONOMY-AMENDMENT-001
+Amendment date: 2026-06-24
+Amendment status: Accepted by product owner approval M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001
+
 ## 1. Context
 
 `AUTONOMOUS-GOAL-MODE-001` establishes a process overlay for letting Codex continue dependency-ready work without asking for a new human prompt after every task. It is not a product, platform, simulation, save-format, historical-content, or architecture decision.
@@ -34,7 +38,7 @@ Autonomous Goal Mode must not:
 - reopen accepted ADRs or frozen product/platform/core architecture decisions;
 - merge writer output without independent review;
 - create new production dependencies without the existing dependency and ADR rules;
-- bypass human approval for R4 decisions, milestone exits, release, business, branding, or cultural-risk gates.
+- bypass human approval for R4 decisions, M0/M5 milestone exits, release, business, branding, or cultural-risk gates.
 
 ## 4. Operating State
 
@@ -85,7 +89,7 @@ Autonomous Goal Mode stops and asks the product owner or named decision owner be
 - enabling the mode for the first time or materially changing this decision;
 - changing frozen product, platform, technology, simulation-authority, deterministic, save-format, or historical-policy decisions;
 - accepting or merging any new R4 decision without an explicit approval source;
-- exiting a milestone, especially M0 and M5;
+- exiting M0 or formally passing M5;
 - deciding brand, commercial model, budget, release timing, store presence, telemetry, networking, arbitrary-code Mod support, or macOS desktop commitment;
 - resolving major historical/cultural disputes or turning insufficient evidence into product content;
 - approving a new production dependency or license/security exception;
@@ -94,6 +98,8 @@ Autonomous Goal Mode stops and asks the product owner or named decision owner be
 - integrating when another writer's uncommitted work conflicts with the task scope.
 
 For PROCESS-001, the first enablement Human Gate is satisfied by the BOOTSTRAP-INTEGRATION-AND-AUTONOMOUS-GOAL-MODE-001 user authorization message. Future Human Gates still apply.
+
+For MILESTONE-AUTONOMY-AMENDMENT-001, ordinary M1, M2, M3, and M4 exits are not standalone Human Gates when the milestone acceptance matrix is satisfied, required CI and validation pass, independent reviewer handoffs are `ACCEPT`, and no R4/frozen-decision Human Gate is active. M5 formal passage remains a Human Gate.
 
 ## 7. WIP Limits
 

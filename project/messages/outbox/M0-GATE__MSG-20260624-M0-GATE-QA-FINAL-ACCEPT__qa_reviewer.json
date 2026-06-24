@@ -1,0 +1,84 @@
+{
+  "message_id": "MSG-20260624-M0-GATE-QA-FINAL-ACCEPT",
+  "task_id": "M0-GATE",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Final read-only branch review for chore/m0-exit-enter-m1 found the M0 exit/M1 entry diff suitable for PR and auto-merge if required checks pass. The gate record is evidence-bounded, M0-GATE handoffs validate, reviewer thread IDs match the registry/routes, goal-mode state is M1-ready, MILESTONE-AUTONOMY-AMENDMENT-001 preserves M5/R4/frozen-decision gates, and no code/dependency/schema/game implementation changes were introduced.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/GATE-M0.md",
+    "docs/25-decision-history-and-rejected-directions.md",
+    "docs/27-autonomous-goal-mode.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M0-GATE__MSG-20260624-M0-GATE-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M0-GATE__MSG-20260624-M0-GATE-SYSTEMS-ACCEPT__systems_architect.json",
+    "project/messages/routes/M0-GATE__CLOSE-20260624-QA-REVIEWER.json",
+    "project/messages/routes/M0-GATE__CLOSE-20260624-SYSTEMS-ARCHITECT.json",
+    "project/messages/routes/M0-GATE__ROUTE-20260624-FINAL-TO-QA.json",
+    "project/messages/routes/M0-GATE__ROUTE-20260624-FINAL-TO-SYSTEMS.json"
+  ],
+  "branch_or_worktree": "chore/m0-exit-enter-m1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On chore/m0-exit-enter-m1 with only M0 gate/status/model-routing/thread-registry docs and message/route files changed; two extra M0-GATE route logs were reviewed as audit evidence."
+    },
+    {
+      "command": "validate-handoff for M0-GATE QA and systems handoffs",
+      "exit_code": 0,
+      "result": "Both project/messages/outbox M0-GATE ACCEPT handoffs validated successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "taskctl list; taskctl ready",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 through FOUNDATION-008 and PROCESS-001 are CLOSED; ready output empty."
+    },
+    {
+      "command": "JSON parse and goal-mode M1/human_gate shape checks",
+      "exit_code": 0,
+      "result": "current_milestone M1, human_gate.required false, current_tasks empty, active_threads empty, approval recorded."
+    },
+    {
+      "command": "thread-registry/model-routing duplicate and active-thread checks",
+      "exit_code": 0,
+      "result": "No duplicate thread IDs; model-routing active_threads empty; M0-GATE reviewer records present."
+    },
+    {
+      "command": "M0-GATE route-to-registry thread ID cross-check",
+      "exit_code": 0,
+      "result": "All four M0-GATE route/close files point to expected qa_reviewer or systems_architect registry thread IDs."
+    },
+    {
+      "command": "git diff --name-only e99b348 -- package.json pnpm-lock.yaml apps packages tools .github",
+      "exit_code": 0,
+      "result": "No code, dependency, schema/tool, app/package, or CI files changed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: Branch diff is suitable for PR and auto-merge if required checks pass.",
+    "ACCEPT: M0 gate record does not overclaim beyond reviewed evidence and keeps M5 release/vertical-slice passage, gameplay expansion, and frozen-decision changes out of scope.",
+    "ACCEPT: MILESTONE-AUTONOMY-AMENDMENT-001 permits ordinary M1-M4 exit automation only under matrix/reviewer/CI validation and does not remove M5, R4, frozen-decision, release/business/telemetry/mod/macOS, or cultural/historical gates."
+  ],
+  "risks": [
+    "Two additional untracked M0-GATE route logs were present beyond the user-provided changed-file list. They were reviewed and match registry thread IDs; include them intentionally in the branch or drop them intentionally before PR, but they are not blockers.",
+    "This review did not rerun artifact-producing M0 commands; the branch changes are docs/process metadata only and prior gate evidence plus PR #9 CI remain the artifact evidence."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Persist this final QA ACCEPT addendum, include the reviewed M0-GATE route logs intentionally if keeping them, then open/merge the chore/m0-exit-enter-m1 PR only after required checks pass.",
+  "created_at": "2026-06-24T04:40:09Z"
+}

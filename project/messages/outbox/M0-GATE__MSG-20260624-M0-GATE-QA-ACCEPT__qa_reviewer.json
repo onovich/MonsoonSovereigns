@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260624-M0-GATE-QA-ACCEPT",
+  "task_id": "M0-GATE",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Independent QA reviewed M0 foundation evidence on origin/main at e99b348f06bfc229544613bf79e63da68da0572b. F001-F008 are closed, PR #9 is merged with checks passing, local check/test gates pass, handoff provenance validates, and M0 acceptance evidence is sufficient from QA/integration perspective.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "docs/11-roadmap.md",
+    "docs/13-risk-register-and-test-strategy.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/26-model-routing-amendment.md",
+    "docs/27-autonomous-goal-mode.md",
+    "project/tasks/active/FOUNDATION-001.json",
+    "project/tasks/active/FOUNDATION-002.json",
+    "project/tasks/active/FOUNDATION-003.json",
+    "project/tasks/active/FOUNDATION-004.json",
+    "project/tasks/active/FOUNDATION-005.json",
+    "project/tasks/active/FOUNDATION-006.json",
+    "project/tasks/active/FOUNDATION-007.json",
+    "project/tasks/active/FOUNDATION-008.json",
+    "project/messages/outbox",
+    "https://github.com/onovich/MonsoonSovereigns/pull/9"
+  ],
+  "branch_or_worktree": "main / origin/main",
+  "commit": "e99b348f06bfc229544613bf79e63da68da0572b",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean local main tracking origin/main."
+    },
+    {
+      "command": "gh pr view 9 --json state,mergedAt,mergeCommit,url",
+      "exit_code": 0,
+      "result": "PR #9 MERGED at 2026-06-24T03:40:40Z with merge commit 3f196a544a34c0b863fd7fd1b9124bb56f0e1a24."
+    },
+    {
+      "command": "gh pr checks 9",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "FOUNDATION-001 through FOUNDATION-008 and PROCESS-001 are CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready tasks printed."
+    },
+    {
+      "command": "taskctl validate FOUNDATION-001..FOUNDATION-008 individually",
+      "exit_code": 0,
+      "result": "All eight FOUNDATION task JSON files validated successfully."
+    },
+    {
+      "command": "validate-handoff over project/messages/outbox/*.json",
+      "exit_code": 0,
+      "result": "All 24 outbox handoffs validated successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "JSON parse check for tracked JSON excluding generated/vendor dirs",
+      "exit_code": 0,
+      "result": "JSON_PARSE_OK count=88."
+    },
+    {
+      "command": "thread registry duplicate-ID and model-routing active-thread checks",
+      "exit_code": 0,
+      "result": "14 thread IDs, no duplicates; goal/model routing active_threads empty; Spark fallback inactive."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture boundaries passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check passed; Node and Worker-compatible hash both 61e0ba1c; root and web Vitest passed."
+    }
+  ],
+  "decisions": [
+    "M0 Gate is accepted from QA/integration evidence perspective.",
+    "Project may enter M1 only after lead_orchestrator writes and integrates the gate record/status update on origin/main."
+  ],
+  "risks": [
+    "Artifact-producing local commands such as build:web, storybook:build, desktop:package, and e2e were not rerun in this strict read-only QA pass; relied on PR #9 CI and accepted handoff evidence for those.",
+    "project/model-routing-state.json contains historical task_effects text from the model-routing amendment, but active_threads is empty and canonical task/goal state is current."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Continue M0 exit gate integration: write the M0 gate record/status update, include this QA ACCEPT handoff at project/messages/outbox/M0-GATE__MSG-20260624-M0-GATE-QA-ACCEPT__qa_reviewer.json, validate it, and integrate to origin/main before starting M1 work.",
+  "created_at": "2026-06-24T04:23:55Z"
+}
