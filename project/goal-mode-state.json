@@ -2,10 +2,12 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M1",
-  "current_tasks": [],
+  "current_tasks": [
+    "M1-GATE"
+  ],
   "active_threads": {},
   "last_integrated_task": "SIM-005",
-  "last_main_commit": "021c2545438af71455547abf9761cf671f39c280",
+  "last_main_commit": "3037107e04ac8619c44ae54abafa4766e9338104",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -17,6 +19,16 @@
       "id": "GOAL-MODE-RISK-002",
       "description": "Thread IDs are session-local and may become stale after Codex restart.",
       "mitigation": "Recover from persisted handoffs, task JSON, git status, and the state file; spawn replacement role threads when needed."
+    },
+    {
+      "id": "M1-GATE-FOLLOW-UP-001",
+      "description": "Literal Chromium and packaged Electron host hash extraction is not yet directly proven; M1 only proves Node plus Worker-compatible hash equality with browser/desktop smoke.",
+      "mitigation": "Add an explicit Chromium plus Electron host hash canary before M2 exit or before making any platform-host determinism claim."
+    },
+    {
+      "id": "M1-GATE-FOLLOW-UP-002",
+      "description": "SIM-006 content-runtime is not yet wired through a sim-core boot-boundary contract test.",
+      "mitigation": "Add the sim-core/content-runtime boot-boundary contract test during M2 world/content integration."
     }
   ],
   "human_gate": {
@@ -31,5 +43,5 @@
       "major historical/cultural dispute resolution"
     ]
   },
-  "last_updated_at": "2026-06-24T10:17:22Z"
+  "last_updated_at": "2026-06-24T10:50:00Z"
 }
