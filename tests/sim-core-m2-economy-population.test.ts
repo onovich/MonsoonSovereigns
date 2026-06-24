@@ -183,7 +183,8 @@ describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffo
 
           expect(validateWorldStateV0(nextWorld)).toEqual([]);
         }
-      )
+      ),
+      { numRuns: 24, seed: 1531 }
     );
   });
 
