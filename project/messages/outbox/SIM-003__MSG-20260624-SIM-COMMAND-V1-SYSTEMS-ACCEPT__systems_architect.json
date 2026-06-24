@@ -1,0 +1,85 @@
+{
+  "message_id": "MSG-20260624-SIM-COMMAND-V1-SYSTEMS-ACCEPT",
+  "task_id": "SIM-003",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems re-review accepts SIM-003. The prior Query v1/StateDelta alias leak is fixed: packages/sim-core/src/command-query-v1.ts now copies DistrictControlState at the world-state, delta, and query read-model boundaries, and tests/sim-core-command-query.test.ts includes regression coverage proving mutation of returned delta/query control DTOs cannot mutate runtime.world or invalidate WorldState invariants. GameCommand v1 remains versioned and minimal for M1, player/AI/system actors share the same validator and apply path, expected failures remain structured, adapters delegate to sim-core, and Node/Worker command-query hashes match.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "tests/sim-core-command-query.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-command-worker-contract.test.ts",
+    "project/messages/outbox/SIM-003__MSG-20260624-SIM-COMMAND-V1-SYSTEMS-ACCEPT__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/sim-003-command-query-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <alias isolation probe>",
+      "exit_code": 0,
+      "result": "After booting minimal-m1, applying debug.set-district-control, mutating the returned state.district-control-updated delta control to 777, querying sim.list-district-summaries, and mutating the query control to 999, runtime.world.state.districts[0].control.controllerPolityId remained 1 and validateWorldStateV0(runtime.world) returned no errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: Test Files 5 passed (5), Tests 27 passed (27). Includes alias isolation regression for Query v1 and StateDelta district control DTOs."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: Test Files 1 passed (1), Tests 3 passed (3)."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; Node command/query hash d275faa4 matched Worker-compatible command/query hash d275faa4."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check and sim:determinism passed; root Vitest Test Files 8 passed (8), Tests 33 passed (33); web Vitest Test Files 1 passed (1), Tests 3 passed (3)."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "pnpm -r --if-present typecheck completed successfully across workspace packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    }
+  ],
+  "decisions": [
+    "Accepted the explicit copyDistrictControlState boundary helper as the minimal M1 fix; no new abstraction or ADR is required.",
+    "Accepted runtime-scoped duplicate command detection for M1 with the writer-documented follow-up risk for snapshot/save v1 persistence."
+  ],
+  "risks": [
+    "Future nested read-model DTOs need the same explicit copy-at-boundary treatment to avoid reintroducing object aliasing.",
+    "Duplicate command tracking is still runtime-scoped and should be revisited with snapshot/save v1 work."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route SIM-003 to the next required review or closure step; systems_architect accepts the command/query v1 architecture after the alias isolation fix.",
+  "created_at": "2026-06-24T08:19:11Z"
+}

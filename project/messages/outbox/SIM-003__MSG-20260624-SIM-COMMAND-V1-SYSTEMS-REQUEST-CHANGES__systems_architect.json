@@ -1,0 +1,63 @@
+{
+  "message_id": "MSG-20260624-SIM-COMMAND-V1-SYSTEMS-REQUEST-CHANGES",
+  "task_id": "SIM-003",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Systems review cannot accept SIM-003 yet. GameCommand validation, shared Node/Worker canary path, structured rejection, and deterministic hash parity are broadly aligned with ADR-004, but Query v1 currently leaks a mutable WorldState child object through the district summary read model. In packages/sim-core/src/command-query-v1.ts, sim.list-district-summaries returns state.control by reference for existing district state; mutating the query result can mutate runtime.world.state outside submitCommandV1, violating the single-writer authority boundary and the read-model-safe Query v1 acceptance criterion.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "tests/sim-core-command-query.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-command-worker-contract.test.ts",
+    "project/messages/outbox/SIM-003__MSG-20260624-SIM-COMMAND-V1-SYSTEMS-REQUEST-CHANGES__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/sim-003-command-query-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: Test Files 5 passed (5), Tests 26 passed (26). Existing tests do not catch the Query read-model aliasing issue."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: Test Files 1 passed (1), Tests 3 passed (3)."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; Node command/query hash d275faa4 matched Worker-compatible command/query hash d275faa4."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <read-model alias probe>",
+      "exit_code": 0,
+      "result": "After booting minimal-m1, applying debug.set-district-control, querying sim.list-district-summaries, and mutating q.result.districts[0].control.controllerPolityId to 999, runtime.world.state.districts[0].control.controllerPolityId also became 999; validateWorldStateV0 then reported bad-reference and hash-mismatch."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES rather than ACCEPT because the read-model query boundary must not expose mutable WorldState internals.",
+    "No new ADR is required for the current fix if it remains a DTO-copy/test correction within ADR-004 and SIM-003 scope."
+  ],
+  "risks": [
+    "The current test named read-model-safe only checks that definitions/state are absent as top-level properties; it does not prove object-reference isolation.",
+    "Duplicate command detection remains runtime-scoped and not persisted in WorldState or save/replay tail; this was acknowledged by the writer and can remain deferred to snapshot/save v1 if documented."
+  ],
+  "blockers": [
+    "Fix packages/sim-core/src/command-query-v1.ts so sim.list-district-summaries returns fresh serializable DTO objects for nested control state instead of state.control references.",
+    "Add a regression test that mutating a query result or delta/read-model object cannot mutate runtime.world and cannot invalidate validateWorldStateV0(runtime.world)."
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Clone/copy nested Query v1 read-model DTO state at the boundary, add regression coverage for read-model alias isolation, rerun the affected SIM-003 gates, and return REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-24T08:11:56Z"
+}

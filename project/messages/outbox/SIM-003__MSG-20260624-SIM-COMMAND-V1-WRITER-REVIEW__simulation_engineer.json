@@ -1,0 +1,81 @@
+{
+  "task_id": "SIM-003",
+  "message_id": "MSG-20260624-SIM-COMMAND-V1-WRITER-REVIEW",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented minimal M1 GameCommand v1, DomainEvent/StateDelta outputs, Query v1, protocol parsers, and a shared sim-core boot/preview/submit/query canary used by both Node runner and Worker-compatible adapter. Player, AI, and system actors use the same command union, validation, apply path, and result shape.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "packages/sim-core/package.json",
+    "packages/protocol/package.json",
+    "tests/sim-core-command-query.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-command-worker-contract.test.ts",
+    "project/messages/outbox/SIM-003__MSG-20260624-SIM-COMMAND-V1-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/sim-003-command-query-v1",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Test Files 5 passed (5); Tests 26 passed (26). Includes SIM-003 command/query and Node/Worker contract tests. Node warning about MODULE_TYPELESS_PACKAGE_JSON for tests/fixtures/deterministic-rng-worker.ts is pre-existing test environment noise."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Test Files 1 passed (1); Tests 3 passed (3)."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash: 61e0ba1c; Worker-compatible hash: 61e0ba1c; Node command/query hash: d275faa4; Worker-compatible command/query hash: d275faa4; Deterministic command/query simulation matched."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed. Self-test fixture produced 15 expected violation(s)."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check and sim:determinism passed; root Vitest Test Files 8 passed (8), Tests 32 passed (32); web Vitest Test Files 1 passed (1), Tests 3 passed (3)."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "pnpm -r --if-present typecheck completed; web, sim-core, desktop, client-core, map-renderer, ui, platform, core, and tools checks passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    }
+  ],
+  "decisions": [
+    "Kept SIM-003 within ADR-004: explicit commands produce semantic events/deltas, but no full event sourcing was introduced.",
+    "Used minimal M1 commands only: sim.advance-day, debug.set-district-control, and sim.verify-state-hash.",
+    "Kept duplicate/replay tracking in SimulationRuntimeV1 acceptedCommandIds for M1 runtime authority; WorldState v0 schema was not expanded in this task.",
+    "Worker-compatible adapter delegates to shared sim-core canary execution instead of duplicating validation or apply logic.",
+    "Query v1 returns read-model DTOs for state hash, calendar, and district summaries; it does not expose WorldState internals."
+  ],
+  "risks": [
+    "R3: command/protocol/authority behavior changed and requires systems_architect review.",
+    "Duplicate command detection is runtime-scoped in M1 and not yet persisted in save/replay tail; this should be revisited with snapshot/save v1 work.",
+    "Current command parser is hand-written because no production schema dependency is approved; future broader protocol surface may need a reviewed schema strategy."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review SIM-003 for deterministic command semantics, authority boundary, protocol/query shape, and Node/Worker hash parity. Do not mark ACCEPTED without independent systems review.",
+  "created_at": "2026-06-24T08:05:00Z"
+}

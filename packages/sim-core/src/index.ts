@@ -10,6 +10,7 @@ export * from "./world-state-v0.ts";
 export * from "./scheduler-v0.ts";
 export * from "./minimal-m1-fixture.ts";
 export * from "./deterministic-rng.ts";
+export * from "./command-query-v1.ts";
 
 interface HelloSimulationState {
   readonly day: number;
