@@ -57,6 +57,15 @@ importers:
         specifier: 4.1.9
         version: 4.1.9(@types/node@26.0.0)(vite@8.1.0(@types/node@26.0.0)(esbuild@0.28.1))
 
+  apps/content-tools:
+    dependencies:
+      '@monsoon/content-runtime':
+        specifier: workspace:*
+        version: link:../../packages/content-runtime
+      '@monsoon/content-schema':
+        specifier: workspace:*
+        version: link:../../packages/content-schema
+
   apps/desktop:
     dependencies:
       '@monsoon/platform':
@@ -118,6 +127,14 @@ importers:
       '@monsoon/protocol':
         specifier: workspace:*
         version: link:../protocol
+
+  packages/content-runtime:
+    dependencies:
+      '@monsoon/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+
+  packages/content-schema: {}
 
   packages/core: {}
 
