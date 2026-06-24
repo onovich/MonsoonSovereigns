@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "kind": "m2.validation-only-bad-fixture-manifest",
+  "fixtureSetId": "m2.validation-only-content-guards",
+  "syntheticScope": "m2-prototype-only",
+  "historicity": "FICTIONAL",
+  "provenance": {
+    "sourceCategory": "validation-only-fixture",
+    "confidence": "LOW",
+    "policyId": "M2-MAP-SOURCE-POLICY-001"
+  },
+  "scopeNotes": [
+    "Validation-only negative fixture manifest for M2 content compiler guard tests.",
+    "Not production content, historical content, tutorial content, world-building content, or a source for screenshots."
+  ],
+  "cases": [
+    {
+      "caseId": "bad-map-malformed-geometry",
+      "category": "bad-map",
+      "sourceFixture": "prototype-world-30-districts.json",
+      "mutation": "district polygon has fewer than three points",
+      "expectedErrorCodes": ["invalid-geometry"],
+      "expectedPaths": ["mapGeometries[1].points"]
+    },
+    {
+      "caseId": "bad-map-invalid-district-anchor",
+      "category": "bad-map",
+      "sourceFixture": "prototype-world-30-districts.json",
+      "mutation": "district polygon anchor lies outside its polygon",
+      "expectedErrorCodes": ["invalid-geometry"],
+      "expectedPaths": ["mapGeometries[0].anchor"]
+    },
+    {
+      "caseId": "bad-map-invalid-settlement-anchor",
+      "category": "bad-map",
+      "sourceFixture": "prototype-world-30-districts.json",
+      "mutation": "settlement point anchor lies outside its owning district polygon",
+      "expectedErrorCodes": ["invalid-geometry"],
+      "expectedPaths": ["mapGeometries[31].anchor"]
+    },
+    {
+      "caseId": "bad-map-disconnected-route-graph",
+      "category": "bad-map",
+      "sourceFixture": "prototype-world-30-districts.json",
+      "mutation": "all routes touching one district are removed",
+      "expectedErrorCodes": ["isolated-district"],
+      "expectedPaths": ["districts[29].sourceId"]
+    },
+    {
+      "caseId": "bad-references-cross-content",
+      "category": "bad-reference",
+      "sourceFixture": "prototype-world-30-districts.json",
+      "mutation": "districts, settlements, curves, route endpoints, localization keys, and provenance entries reference invalid targets",
+      "expectedErrorCodes": ["bad-reference", "invalid-schema"],
+      "expectedPaths": [
+        "districts[0].regionalCurveId",
+        "settlements[0].districtId",
+        "routes[0].toDistrictId",
+        "districts[0].displayNameKey",
+        "settlements[0].displayNameKey",
+        "regionalSeasonalCurves[0].displayNameKey",
+        "provenance.policyId"
+      ]
+    }
+  ]
+}

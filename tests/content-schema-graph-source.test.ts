@@ -212,4 +212,33 @@ describe("M2 world fixture source schema", () => {
       ])
     );
   });
+
+  test("returns nested schema paths for invalid M2 provenance manifest entries", () => {
+    expect(
+      validateM2WorldFixtureSourceV0({
+        schemaVersion: 1,
+        kind: "m2.prototype-world-fixture",
+        fixtureId: "m2.bad-provenance",
+        fixtureKind: "prototype-world-fixture",
+        syntheticScope: "m2-prototype-only",
+        historicity: "FICTIONAL",
+        provenance: {
+          sourceCategory: "production-content",
+          confidence: "HIGH",
+          policyId: "missing-policy"
+        },
+        districts: [],
+        settlements: [],
+        regionalSeasonalCurves: [],
+        routes: [],
+        mapGeometries: []
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-schema", path: "provenance.sourceCategory" }),
+        expect.objectContaining({ code: "invalid-schema", path: "provenance.confidence" }),
+        expect.objectContaining({ code: "invalid-schema", path: "provenance.policyId" })
+      ])
+    );
+  });
 });

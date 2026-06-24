@@ -6,7 +6,8 @@ import { compileContentPackV0, compileContentPackV0OrThrow } from "../apps/conte
 import {
   parseM1GraphFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
-  type M1GraphFixtureSourceV0
+  type M1GraphFixtureSourceV0,
+  type M2WorldFixtureSourceV0
 } from "../packages/content-schema/src/index";
 
 const fixtureUrl = new URL("../content-source/m1-fixtures/abstract-graph-30.json", import.meta.url);
@@ -14,6 +15,34 @@ const m2FixtureUrl = new URL(
   "../content-source/m2-fixtures/prototype-world-30-districts.json",
   import.meta.url
 );
+const m2BadFixtureManifestUrl = new URL(
+  "../content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json",
+  import.meta.url
+);
+
+interface M2BadFixtureManifest {
+  readonly schemaVersion: 1;
+  readonly kind: "m2.validation-only-bad-fixture-manifest";
+  readonly fixtureSetId: string;
+  readonly syntheticScope: "m2-prototype-only";
+  readonly historicity: "FICTIONAL";
+  readonly provenance: {
+    readonly sourceCategory: "validation-only-fixture";
+    readonly confidence: "LOW";
+    readonly policyId: "M2-MAP-SOURCE-POLICY-001";
+  };
+  readonly scopeNotes: readonly string[];
+  readonly cases: readonly M2BadFixtureManifestCase[];
+}
+
+interface M2BadFixtureManifestCase {
+  readonly caseId: string;
+  readonly category: "bad-map" | "bad-reference";
+  readonly sourceFixture: "prototype-world-30-districts.json";
+  readonly mutation: string;
+  readonly expectedErrorCodes: readonly string[];
+  readonly expectedPaths: readonly string[];
+}
 
 describe("SIM-006 Content Compiler v0", () => {
   test("compiles the valid synthetic 30-node fixture into stable runtime content", async () => {
@@ -161,6 +190,37 @@ async function readFixture(): Promise<M1GraphFixtureSourceV0> {
 }
 
 describe("M2 Content Compiler v0", () => {
+  test("marks bad M2 fixture cases as validation-only fictional data", async () => {
+    const manifest = await readM2BadFixtureManifest();
+
+    expect(manifest.kind).toBe("m2.validation-only-bad-fixture-manifest");
+    expect(manifest.historicity).toBe("FICTIONAL");
+    expect(manifest.provenance).toEqual({
+      sourceCategory: "validation-only-fixture",
+      confidence: "LOW",
+      policyId: "M2-MAP-SOURCE-POLICY-001"
+    });
+    expect(manifest.scopeNotes.join(" ")).toContain("Validation-only");
+    expect(manifest.scopeNotes.join(" ")).toContain("Not production content");
+    expect(manifest.cases.map((entry) => entry.caseId)).toEqual(
+      expect.arrayContaining([
+        "bad-map-malformed-geometry",
+        "bad-map-invalid-district-anchor",
+        "bad-map-invalid-settlement-anchor",
+        "bad-map-disconnected-route-graph",
+        "bad-references-cross-content"
+      ])
+    );
+    expect(
+      manifest.cases.every(
+        (entry) =>
+          entry.expectedErrorCodes.length > 0 &&
+          entry.expectedPaths.length > 0 &&
+          entry.sourceFixture === "prototype-world-30-districts.json"
+      )
+    ).toBe(true);
+  });
+
   test("compiles the M2 prototype world fixture with stable runtime definitions", async () => {
     const source = await readM2Fixture();
     const pack = compileContentPackV0OrThrow(source);
@@ -220,6 +280,111 @@ describe("M2 Content Compiler v0", () => {
     );
   });
 
+  test("fails malformed M2 map geometry and invalid district or settlement anchors", async () => {
+    const source = await readM2Fixture();
+    const badSource = {
+      ...source,
+      mapGeometries: source.mapGeometries.map((geometry, index) => {
+        if (index === 0) {
+          return {
+            ...geometry,
+            anchor: { x: 999999, y: 999999 }
+          };
+        }
+
+        if (index === 1) {
+          return {
+            ...geometry,
+            points: geometry.points.slice(0, 2)
+          };
+        }
+
+        if (index === 31) {
+          return {
+            ...geometry,
+            anchor: { x: 999999, y: 999999 }
+          };
+        }
+
+        return geometry;
+      })
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-geometry", path: "mapGeometries[1].points" }),
+        expect.objectContaining({ code: "invalid-geometry", path: "mapGeometries[0].anchor" }),
+        expect.objectContaining({ code: "invalid-geometry", path: "mapGeometries[31].anchor" })
+      ])
+    );
+  });
+
+  test("fails duplicate stable M2 IDs and disconnected district route graph parts", async () => {
+    const source = await readM2Fixture();
+    const badSource = {
+      ...source,
+      districts: source.districts.map((district, index) =>
+        index === 1 ? { ...district, sourceId: "district-001" } : district
+      ),
+      routes: source.routes.filter(
+        (route) => route.fromDistrictId !== "district-030" && route.toDistrictId !== "district-030"
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "duplicate-id", path: "districts[1].sourceId" }),
+        expect.objectContaining({ code: "isolated-district", path: "districts[29].sourceId" })
+      ])
+    );
+  });
+
+  test("fails M2 localization key reference mismatches with paths", async () => {
+    const source = await readM2Fixture();
+    const badSource = {
+      ...source,
+      districts: source.districts.map((district, index) =>
+        index === 0
+          ? { ...district, displayNameKey: "content.m2.prototype.district_002" }
+          : district
+      ),
+      settlements: source.settlements.map((settlement, index) =>
+        index === 0
+          ? { ...settlement, displayNameKey: "content.m2.prototype.settlement_002" }
+          : settlement
+      ),
+      regionalSeasonalCurves: source.regionalSeasonalCurves.map((curve, index) =>
+        index === 0 ? { ...curve, displayNameKey: "content.m2.prototype.curve_002" } : curve
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "bad-reference", path: "districts[0].displayNameKey" }),
+        expect.objectContaining({ code: "bad-reference", path: "settlements[0].displayNameKey" }),
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "regionalSeasonalCurves[0].displayNameKey"
+        })
+      ])
+    );
+  });
+
+  test("fails M2 validation manifest entry mismatches with nested schema paths", async () => {
+    const source = await readM2Fixture();
+    const badSource = {
+      ...source,
+      provenance: {
+        ...source.provenance,
+        policyId: "MISSING-POLICY"
+      }
+    };
+
+    expect(compileContentPackV0(badSource).errors).toContainEqual(
+      expect.objectContaining({ code: "invalid-schema", path: "provenance.policyId" })
+    );
+  });
+
   test("fails M2 seasonal curves that do not provide months 1 through 12 in order", async () => {
     const source = await readM2Fixture();
     const badSource = {
@@ -268,7 +433,64 @@ describe("M2 Content Compiler v0", () => {
   });
 });
 
-async function readM2Fixture() {
+async function readM2Fixture(): Promise<M2WorldFixtureSourceV0> {
   const text = await readFile(m2FixtureUrl, "utf8");
   return parseM2WorldFixtureSourceV0(JSON.parse(text) as unknown);
+}
+
+async function readM2BadFixtureManifest(): Promise<M2BadFixtureManifest> {
+  const text = await readFile(m2BadFixtureManifestUrl, "utf8");
+  return parseM2BadFixtureManifest(JSON.parse(text) as unknown);
+}
+
+function parseM2BadFixtureManifest(input: unknown): M2BadFixtureManifest {
+  if (!isRecord(input)) {
+    throw new Error("Bad fixture manifest must be an object.");
+  }
+  const provenance = input["provenance"];
+  if (!isRecord(provenance)) {
+    throw new Error("Bad fixture manifest provenance must be an object.");
+  }
+  const scopeNotes = input["scopeNotes"];
+  const cases = input["cases"];
+  if (
+    input["schemaVersion"] !== 1 ||
+    input["kind"] !== "m2.validation-only-bad-fixture-manifest" ||
+    typeof input["fixtureSetId"] !== "string" ||
+    input["syntheticScope"] !== "m2-prototype-only" ||
+    input["historicity"] !== "FICTIONAL" ||
+    provenance["sourceCategory"] !== "validation-only-fixture" ||
+    provenance["confidence"] !== "LOW" ||
+    provenance["policyId"] !== "M2-MAP-SOURCE-POLICY-001" ||
+    !isStringArray(scopeNotes) ||
+    !Array.isArray(cases) ||
+    !cases.every(isM2BadFixtureManifestCase)
+  ) {
+    throw new Error("Bad fixture manifest shape mismatch.");
+  }
+
+  return input as M2BadFixtureManifest;
+}
+
+function isM2BadFixtureManifestCase(input: unknown): input is M2BadFixtureManifestCase {
+  if (!isRecord(input)) {
+    return false;
+  }
+
+  return (
+    typeof input["caseId"] === "string" &&
+    (input["category"] === "bad-map" || input["category"] === "bad-reference") &&
+    input["sourceFixture"] === "prototype-world-30-districts.json" &&
+    typeof input["mutation"] === "string" &&
+    isStringArray(input["expectedErrorCodes"]) &&
+    isStringArray(input["expectedPaths"])
+  );
+}
+
+function isStringArray(input: unknown): input is readonly string[] {
+  return Array.isArray(input) && input.every((entry) => typeof entry === "string");
+}
+
+function isRecord(input: unknown): input is Record<string, unknown> {
+  return typeof input === "object" && input !== null && !Array.isArray(input);
 }
