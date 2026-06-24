@@ -1,0 +1,108 @@
+{
+  "message_id": "MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R2",
+  "task_id": "M2-CLIENT-MAP-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R2 addresses the prior architecture objection in shape: packages/ui no longer creates per-map-entity SVG/DOM, apps/web mounts a Pixi-backed MapRenderer surface, and packages/map-renderer owns render-plan, selection hit handling, presentation formulas, and replace-read-model applyDelta/rebuild semantics. Diff scope remains inside allowed paths, with no sim-core, save/schema, Electron IPC, RNG/time, or production dependency expansion. However, acceptance gates still fail: formatting is not clean, strict typecheck fails after the Pixi import/type surface, and the Chromium Playwright test proves the browser-visible Pixi canvas is not mounted. The task cannot be accepted until the renderer-owned visible map works in the browser and required checks pass.",
+  "artifacts": [
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW-R2__systems_architect.json",
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R2__client_engineer.json",
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-SYSTEMS-REVIEW__systems_architect.json",
+    "project/tasks/active/M2-CLIENT-MAP-001.json",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "test-results/web-shell-M2-map-zoom-sele-ecd0f-ching-updates-read-model-UI-chromium/error-context.md"
+  ],
+  "branch_or_worktree": "feat/m2-client-map",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m2-client-map. Modified and untracked task files are within allowed implementation/orchestration/test paths."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R2__client_engineer.json",
+      "exit_code": 0,
+      "result": "R2 writer handoff JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-MAP-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 web Vitest file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build succeeded. Output includes Pixi renderer chunks; no build error."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "Failed at format:check. Prettier reported style issues in tests/ui-m2-district-list.test.tsx, packages/map-renderer/src/index.ts, and packages/ui/src/index.tsx."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer typecheck",
+      "exit_code": 1,
+      "result": "Failed strict typecheck. Errors include @webgpu/types conflicts with TypeScript lib.dom declarations, Pixi FederatedPointerEvent missing PointerEvent.persistentDeviceId, and Pixi AbstractBitmapFont distanceField optionality mismatch."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 1,
+      "result": "Failed with the same Pixi/@webgpu TypeScript declaration conflicts surfaced through the web package."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 1,
+      "result": "1 passed, 1 failed. The M2 map interaction test timed out waiting for locator('.pixi-map__canvas') to have data-renderer-owner='map-renderer'; Playwright error context shows the React shell rendered controls and panels but no Pixi canvas."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: The prior architectural ownership issue is conceptually addressed, but R2 cannot be accepted while required formatting/typecheck/E2E gates fail.",
+    "The remaining blocker is implementation correctness, not a new ADR question: keep the MapRenderer/Pixi ownership direction, but make it typecheck and mount successfully in Chromium.",
+    "The protocol-shaped M2 client fixture remains a known non-blocking risk pending live worker query integration; it is not the reason for this request-changes result."
+  ],
+  "risks": [
+    "Direct default Pixi import currently exposes WebGPU/type declarations that conflict with the repository's TypeScript/lib.dom setup and may also be pulling non-baseline renderer chunks. The frozen baseline is PixiJS with WebGL2 as the conservative target.",
+    "The web shell currently does not surface mount failure; mountPixiMapRenderer can fail silently from the user's perspective because the promise is fire-and-forget in the React effect. Add a deterministic error/reporting path or test-visible failure mode while keeping runtime errors outside authoritative simulation state."
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Fix R2 before acceptance: 1. Run formatting or manually apply equivalent formatting so pnpm check reaches lint/typecheck. 2. Resolve the Pixi/@webgpu TypeScript declaration conflicts without weakening project strictness or hiding failures; prefer a narrow import/configuration that preserves the WebGL2-baseline Pixi map renderer and avoids unneeded renderer/type surface. 3. Fix the browser mount path so .pixi-map__canvas is actually appended in Chromium and the Playwright map interaction test passes. Capture and expose mount failures in a controlled way instead of silently leaving an empty map surface. 4. Keep React as UI intent/DOM owner only; do not reintroduce SVG/DOM per map entity or duplicate presentation formulas in packages/ui. 5. Re-run at least pnpm check, pnpm build:web, pnpm test:e2e --project=chromium, pnpm --filter @monsoon/map-renderer test, pnpm --filter @monsoon/ui test, pnpm --filter @monsoon/client-core test, task validation, handoff validation, and git diff --check in the next handoff.",
+  "created_at": "2026-06-25T04:07:29+08:00"
+}

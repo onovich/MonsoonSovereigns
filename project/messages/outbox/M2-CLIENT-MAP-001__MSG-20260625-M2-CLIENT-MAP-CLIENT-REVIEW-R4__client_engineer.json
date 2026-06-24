@@ -1,0 +1,99 @@
+{
+  "task_id": "M2-CLIENT-MAP-001",
+  "message_id": "MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R4",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R4 fixes the repeated Chromium page-load reliability issue for the MapRenderer-owned Pixi surface. The root cause was host sizing and lifecycle timing: the empty Pixi host could have zero layout size before the canvas existed, while page-load tests could close before renderer init completed. The web shell now aborts stale mount attempts, times out pending Pixi mounts into a controlled renderer error state, keeps React-rendered error UI outside the Pixi-owned host, and clears/destroys the renderer during cleanup. The map viewport now fills the positioned map surface independent of canvas children, so Pixi receives deterministic dimensions before init. Playwright now waits for renderer-mounted state on every page load and the repeat Chromium reproduction passes.",
+  "artifacts": [
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/map-renderer/src/index.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M2-CLIENT-MAP-001__MSG-20260625-M2-CLIENT-MAP-CLIENT-REVIEW-R4__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m2-client-map",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec prettier --write apps/web/src/shell/web-client-shell.tsx apps/web/src/styles/shell.css packages/map-renderer/src/index.ts tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Formatted R4 touched files; web shell/CSS/e2e were already formatted, map-renderer formatting applied."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer typecheck",
+      "exit_code": 0,
+      "result": "MapRenderer typecheck passed with abortable mount options and explicit WebGL host sizing."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "Web shell typecheck passed with abortable mount lifecycle and renderer status state."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --repeat-each=3 --workers=1",
+      "exit_code": 1,
+      "result": "Diagnostic R4 run failed 6/6 with controlled renderer errors: MapRenderer host did not receive a renderable layout size. This confirmed the blank-surface regression was host sizing before canvas append."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --repeat-each=3 --workers=1",
+      "exit_code": 0,
+      "result": "Repeat Chromium reproduction passed after making .map-viewport fill the positioned map surface; 6 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format, lint, recursive typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check, sim determinism, root Vitest suite, and web Vitest suite passed; 19 root test files/89 tests and 1 web test file/3 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Normal Chromium Playwright run passed; 2 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-CLIENT-MAP-001",
+      "exit_code": 0,
+      "result": "Task JSON validated."
+    }
+  ],
+  "decisions": [
+    "Kept React as UI intent and DOM owner only; React does not create map entity DOM/SVG or manage Pixi DisplayObjects.",
+    "Kept the visible map MapRenderer/Pixi-owned; apps/web only mounts the renderer and passes read-model snapshot, viewport, selection callback, and abort signal.",
+    "Kept map presentation formulas in packages/map-renderer.",
+    "Changed Pixi init to wait for a renderable host, use explicit width/height, and prefer WebGL only instead of depending on resizeTo host sizing during initial mount.",
+    "Added mount abort/timeout handling so failures become controlled data-renderer-status/data-renderer-error state promptly rather than an empty surface.",
+    "Moved the React-rendered mount error paragraph outside the Pixi-owned host so React reconciliation cannot clear imperatively appended Pixi canvas children."
+  ],
+  "risks": [
+    "The M2 map continues to use the protocol-shaped client fixture pending live worker query integration, consistent with the existing non-blocking M2 risk.",
+    "pixi.js public top-level runtime still emits broad build chunks even though init prefers WebGL only; a narrower Pixi bundle remains an architecture/dependency review topic."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "review the R4 deterministic Pixi map mount fix.",
+  "created_at": "2026-06-25T04:32:34+08:00"
+}

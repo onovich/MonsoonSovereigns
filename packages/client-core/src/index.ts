@@ -1,6 +1,9 @@
 import {
   HELLO_SIMULATION_PROTOCOL_VERSION,
-  type HelloSimulationResultDto
+  type HelloSimulationResultDto,
+  type ListM2EconomySummariesResultV1,
+  type M2TransportRouteKindV1,
+  type PreviewM2TransportRouteResultV1
 } from "@monsoon/protocol";
 
 export const CLIENT_READ_MODEL_PROTOCOL_VERSION = 1;
@@ -10,6 +13,7 @@ export type Brand<T, B extends string> = T & { readonly __brand: B };
 export type ClientReadModelRevision = Brand<number, "ClientReadModelRevision">;
 export type ClientMapAnchorId = Brand<string, "ClientMapAnchorId">;
 export type ClientDistrictId = Brand<number, "ClientDistrictId">;
+export type ClientSettlementId = Brand<number, "ClientSettlementId">;
 
 export type ClientReadModelStatus = "booting" | "ready";
 
@@ -34,6 +38,9 @@ export interface ClientMapReadModelSnapshot {
   readonly revision: ClientReadModelRevision;
   readonly bounds: ClientMapBoundsReadModel;
   readonly anchors: readonly ClientMapAnchorReadModel[];
+  readonly districts: readonly ClientMapDistrictReadModel[];
+  readonly settlements: readonly ClientMapSettlementReadModel[];
+  readonly routes: readonly ClientMapRouteReadModel[];
 }
 
 export interface ClientMapBoundsReadModel {
@@ -50,6 +57,55 @@ export interface ClientMapAnchorReadModel {
 }
 
 export type ClientMapAnchorTone = "primary" | "secondary" | "muted";
+
+export type ClientMapMode = "seasonal" | "economy" | "routes";
+
+export type ClientMapEntitySelection =
+  | {
+      readonly kind: "district";
+      readonly districtId: ClientDistrictId;
+    }
+  | {
+      readonly kind: "settlement";
+      readonly settlementId: ClientSettlementId;
+      readonly districtId: ClientDistrictId;
+    };
+
+export interface ClientMapPointReadModel {
+  readonly xInMapUnits: number;
+  readonly yInMapUnits: number;
+}
+
+export interface ClientMapDistrictReadModel {
+  readonly districtId: ClientDistrictId;
+  readonly displayName: string;
+  readonly anchor: ClientMapPointReadModel;
+  readonly polygon: readonly ClientMapPointReadModel[];
+  readonly seasonal: ClientDistrictSeasonalReadModel;
+  readonly population: number;
+  readonly availableLabor: number;
+  readonly grainStock: number;
+  readonly cashStock: number;
+  readonly route: ClientDistrictRouteSummaryReadModel;
+}
+
+export interface ClientMapSettlementReadModel {
+  readonly settlementId: ClientSettlementId;
+  readonly districtId: ClientDistrictId;
+  readonly displayName: string;
+  readonly anchor: ClientMapPointReadModel;
+}
+
+export interface ClientMapRouteReadModel {
+  readonly originDistrictId: ClientDistrictId;
+  readonly destinationDistrictId: ClientDistrictId;
+  readonly status: ClientDistrictRouteStatus;
+  readonly stockAmount: number;
+  readonly totalCost: number | null;
+  readonly bottleneckCapacity: number | null;
+  readonly routeKinds: readonly ClientDistrictRouteKind[];
+  readonly points: readonly ClientMapPointReadModel[];
+}
 
 export interface ClientPanelReadModelSnapshot {
   readonly headline: string;
@@ -152,6 +208,8 @@ export interface ClientVirtualWindowReadModel {
 }
 
 export const SYNTHETIC_DISTRICT_PRESSURE_ROW_COUNT = 4_000;
+export const M2_PROTOTYPE_DISTRICT_COUNT = 30;
+export const M2_PROTOTYPE_SETTLEMENT_COUNT = 10;
 
 export type ClientReadModelDelta =
   | {
@@ -197,7 +255,10 @@ export function createInitialClientReadModelSnapshot(): ClientReadModelSnapshot 
           yInMapUnits: 194,
           tone: "secondary"
         }
-      ]
+      ],
+      districts: [],
+      settlements: [],
+      routes: []
     },
     panels: {
       headline: "Simulation shell booting",
@@ -254,6 +315,147 @@ export function withDistrictListReadModel(
     ...snapshot,
     districtList
   };
+}
+
+export function createM2PrototypeClientReadModelSnapshot(
+  baseSnapshot = createInitialClientReadModelSnapshot()
+): ClientReadModelSnapshot {
+  const fixture = createM2PrototypeReadModelFixture(baseSnapshot.revision);
+
+  return {
+    ...baseSnapshot,
+    map: fixture.map,
+    panels: {
+      headline: "M2 prototype map ready",
+      metrics: [
+        {
+          label: "Districts",
+          value: fixture.map.districts.length.toString()
+        },
+        {
+          label: "Settlements",
+          value: fixture.map.settlements.length.toString()
+        },
+        {
+          label: "Route previews",
+          value: fixture.routePreviewResults.length.toString()
+        },
+        {
+          label: "State hash",
+          value: baseSnapshot.simulation.stateHash
+        }
+      ]
+    },
+    districtList: fixture.districtList
+  };
+}
+
+export interface ClientM2PrototypeReadModelFixture {
+  readonly map: ClientMapReadModelSnapshot;
+  readonly districtList: ClientDistrictListReadModelSnapshot;
+  readonly economyResult: ListM2EconomySummariesResultV1;
+  readonly routePreviewResults: readonly PreviewM2TransportRouteResultV1[];
+}
+
+export function createM2PrototypeReadModelFixture(
+  revision = createClientReadModelRevision(1)
+): ClientM2PrototypeReadModelFixture {
+  const economyResult = createM2PrototypeEconomyResult(Number(revision));
+  const routePreviewResults = createM2PrototypeRoutePreviewResults(Number(revision));
+  const rows = projectM2DistrictRowsFromProtocolReadModels({
+    economyResult,
+    routePreviewResults
+  });
+  const selected = rows[0];
+  if (selected === undefined) {
+    throw new Error("M2 prototype read model must contain at least one district row.");
+  }
+
+  const districtById = new Map<ClientDistrictId, ClientDistrictRowReadModel>(
+    rows.map((row) => [row.districtId, row])
+  );
+  const districtFeatures = createM2PrototypeDistrictMapFeatures(districtById);
+  const settlementFeatures = createM2PrototypeSettlementMapFeatures();
+  const routeFeatures = createM2PrototypeRouteMapFeatures(routePreviewResults, districtFeatures);
+
+  return {
+    economyResult,
+    routePreviewResults,
+    map: {
+      revision,
+      bounds: {
+        widthInMapUnits: 600,
+        heightInMapUnits: 500
+      },
+      anchors: districtFeatures.map((district) => ({
+        id: createClientMapAnchorId(`district-${formatThreeDigitId(Number(district.districtId))}`),
+        label: district.displayName,
+        xInMapUnits: district.anchor.xInMapUnits,
+        yInMapUnits: district.anchor.yInMapUnits,
+        tone: district.districtId === selected.districtId ? "primary" : "secondary"
+      })),
+      districts: districtFeatures,
+      settlements: settlementFeatures,
+      routes: routeFeatures
+    },
+    districtList: {
+      revision,
+      provenance: {
+        kind: "simulation-read-model",
+        note: "M2 prototype fixture projected from protocol read-model DTOs; not authoritative simulation state."
+      },
+      rows,
+      selectedDistrictId: selected.districtId
+    }
+  };
+}
+
+export interface ProjectM2DistrictRowsInput {
+  readonly economyResult: ListM2EconomySummariesResultV1;
+  readonly routePreviewResults: readonly PreviewM2TransportRouteResultV1[];
+}
+
+export function projectM2DistrictRowsFromProtocolReadModels(
+  input: ProjectM2DistrictRowsInput
+): readonly ClientDistrictRowReadModel[] {
+  const routeByOriginDistrictId = new Map<number, PreviewM2TransportRouteResultV1>();
+  for (const preview of input.routePreviewResults) {
+    routeByOriginDistrictId.set(preview.route.originDistrictId, preview);
+  }
+
+  return input.economyResult.districts.map((district) => {
+    const districtId = createClientDistrictId(district.districtId);
+    const preview = routeByOriginDistrictId.get(district.districtId);
+
+    return {
+      districtId,
+      displayName: formatPrototypeDistrictDisplayName(district.districtId),
+      seasonal: {
+        monthOfYear: ((input.economyResult.day % 360) % 12) + 1,
+        agriculturePhase: district.agriculturePhase,
+        label: `${district.agriculturePhase} M${(((input.economyResult.day % 360) % 12) + 1)
+          .toString()
+          .padStart(2, "0")}`
+      },
+      population: district.population,
+      labor: {
+        available: district.availableLabor,
+        committed: district.committedLabor
+      },
+      grain: {
+        stock: district.grainStock,
+        lastHarvest: district.lastHarvestGrain
+      },
+      cash: {
+        stock: district.cashStock,
+        cumulativeMobilizationCost: district.cumulativeMobilizationCost
+      },
+      route:
+        preview === undefined
+          ? createUnreachableRouteSummary(districtId)
+          : routeSummaryFromPreview(preview)
+    };
+  });
 }
 
 export function applyClientReadModelDelta(
@@ -318,7 +520,10 @@ export function projectHelloSimulationResult(
           yInMapUnits: 346,
           tone: "muted"
         }
-      ]
+      ],
+      districts: [],
+      settlements: [],
+      routes: []
     },
     panels: {
       headline: "Simulation shell ready",
@@ -416,6 +621,14 @@ export function createClientDistrictId(value: number): ClientDistrictId {
   return value as ClientDistrictId;
 }
 
+export function createClientSettlementId(value: number): ClientSettlementId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client settlement id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientSettlementId;
+}
+
 export function createClientMapAnchorId(value: string): ClientMapAnchorId {
   if (!/^[a-z][a-z0-9-]*$/u.test(value)) {
     throw new Error(`Client map anchor id must be kebab-case, received ${value}.`);
@@ -481,6 +694,211 @@ function createSyntheticDistrictPressureRow(
   };
 }
 
+function createM2PrototypeEconomyResult(revision: number): ListM2EconomySummariesResultV1 {
+  const districts: M2EconomyDistrictProtocolRow[] = [];
+  for (let districtNumber = 1; districtNumber <= M2_PROTOTYPE_DISTRICT_COUNT; districtNumber += 1) {
+    const settlementCount = M2_PROTOTYPE_SETTLEMENT_DISTRICT_IDS.filter(
+      (districtId) => districtId === districtNumber
+    ).length;
+    const phase = pickByIndex(SYNTHETIC_AGRICULTURE_PHASES, districtNumber - 1);
+
+    districts.push({
+      districtId: districtNumber,
+      population: 1_000 + settlementCount * 250,
+      availableLabor: 500 + settlementCount * 90,
+      committedLabor: (districtNumber % 5) * 12,
+      grainStock: 3_000 + settlementCount * 500 + (districtNumber - 1) * 37,
+      cashStock: 1_000 + settlementCount * 180 + (districtNumber - 1) * 23,
+      agriculturePhase: phase,
+      lastHarvestGrain: phase === "harvest" ? 780 + districtNumber * 9 : 0,
+      cumulativeMobilizationCost: (districtNumber % 6) * 45
+    });
+  }
+
+  return {
+    kind: "sim.list-m2-economy-summaries",
+    day: 0,
+    revision,
+    districts
+  };
+}
+
+function createM2PrototypeRoutePreviewResults(
+  revision: number
+): readonly PreviewM2TransportRouteResultV1[] {
+  return M2_PROTOTYPE_ROUTE_PAIRS.map((pair, index) => {
+    const routeKind = pickByIndex(M2_PROTOTYPE_ROUTE_KINDS, index);
+    const stockAmount = 40 + (index % 3) * 20;
+    const seasonalCapacity = 90 + (index % 5) * 45;
+    const isCapacityExceeded = stockAmount > seasonalCapacity || index % 13 === 0;
+    const status = isCapacityExceeded ? "capacity-exceeded" : "reachable";
+
+    return {
+      kind: "sim.preview-m2-transport-route",
+      day: 0,
+      revision,
+      monthOfYear: 1,
+      route: {
+        status,
+        originDistrictId: pair.originDistrictId,
+        destinationDistrictId: pair.destinationDistrictId,
+        stockAmount,
+        totalCost: 8 + index * 2,
+        bottleneckCapacity: seasonalCapacity,
+        edges: [
+          {
+            routeId: index + 1,
+            fromDistrictId: pair.originDistrictId,
+            toDistrictId: pair.destinationDistrictId,
+            routeKind,
+            baseTravelCost: 8 + index,
+            seasonalCost: 8 + index * 2,
+            baseCapacity: 100 + (index % 4) * 40,
+            seasonalCapacity,
+            stockAmount,
+            remainingCapacityAfterStock: Math.max(0, seasonalCapacity - stockAmount)
+          }
+        ]
+      }
+    };
+  });
+}
+
+function createM2PrototypeDistrictMapFeatures(
+  districtById: ReadonlyMap<ClientDistrictId, ClientDistrictRowReadModel>
+): readonly ClientMapDistrictReadModel[] {
+  const districts: ClientMapDistrictReadModel[] = [];
+  for (let districtNumber = 1; districtNumber <= M2_PROTOTYPE_DISTRICT_COUNT; districtNumber += 1) {
+    const districtId = createClientDistrictId(districtNumber);
+    const row = districtById.get(districtId);
+    if (row === undefined) {
+      throw new Error(`Missing M2 district row ${districtNumber}.`);
+    }
+
+    const column = (districtNumber - 1) % M2_PROTOTYPE_GRID_COLUMNS;
+    const rowIndex = Math.floor((districtNumber - 1) / M2_PROTOTYPE_GRID_COLUMNS);
+    const x = column * M2_PROTOTYPE_CELL_SIZE;
+    const y = rowIndex * M2_PROTOTYPE_CELL_SIZE;
+    const polygon = [
+      { xInMapUnits: x, yInMapUnits: y },
+      { xInMapUnits: x + M2_PROTOTYPE_CELL_SIZE, yInMapUnits: y },
+      {
+        xInMapUnits: x + M2_PROTOTYPE_CELL_SIZE,
+        yInMapUnits: y + M2_PROTOTYPE_CELL_SIZE
+      },
+      { xInMapUnits: x, yInMapUnits: y + M2_PROTOTYPE_CELL_SIZE }
+    ];
+
+    districts.push({
+      districtId,
+      displayName: row.displayName,
+      anchor: {
+        xInMapUnits: x + M2_PROTOTYPE_CELL_SIZE / 2,
+        yInMapUnits: y + M2_PROTOTYPE_CELL_SIZE / 2
+      },
+      polygon,
+      seasonal: row.seasonal,
+      population: row.population,
+      availableLabor: row.labor.available,
+      grainStock: row.grain.stock,
+      cashStock: row.cash.stock,
+      route: row.route
+    });
+  }
+
+  return districts;
+}
+
+function createM2PrototypeSettlementMapFeatures(): readonly ClientMapSettlementReadModel[] {
+  return M2_PROTOTYPE_SETTLEMENT_DISTRICT_IDS.map((districtNumber, index) => {
+    const districtId = createClientDistrictId(districtNumber);
+    const column = (districtNumber - 1) % M2_PROTOTYPE_GRID_COLUMNS;
+    const rowIndex = Math.floor((districtNumber - 1) / M2_PROTOTYPE_GRID_COLUMNS);
+
+    return {
+      settlementId: createClientSettlementId(index + 1),
+      districtId,
+      displayName: `Prototype Settlement ${formatThreeDigitId(index + 1)}`,
+      anchor: {
+        xInMapUnits: column * M2_PROTOTYPE_CELL_SIZE + 68,
+        yInMapUnits: rowIndex * M2_PROTOTYPE_CELL_SIZE + 64
+      }
+    };
+  });
+}
+
+function createM2PrototypeRouteMapFeatures(
+  routePreviewResults: readonly PreviewM2TransportRouteResultV1[],
+  districts: readonly ClientMapDistrictReadModel[]
+): readonly ClientMapRouteReadModel[] {
+  const anchorByDistrictId = new Map<ClientDistrictId, ClientMapPointReadModel>(
+    districts.map((district) => [district.districtId, district.anchor])
+  );
+
+  return routePreviewResults.map((preview) => {
+    const originDistrictId = createClientDistrictId(preview.route.originDistrictId);
+    const destinationDistrictId = createClientDistrictId(preview.route.destinationDistrictId);
+    const origin = anchorByDistrictId.get(originDistrictId);
+    const destination = anchorByDistrictId.get(destinationDistrictId);
+    if (origin === undefined || destination === undefined) {
+      throw new Error("M2 route preview references a district outside the map read model.");
+    }
+    const routeSummary = routeSummaryFromPreview(preview);
+
+    return {
+      originDistrictId,
+      destinationDistrictId,
+      status: routeSummary.status,
+      stockAmount: routeSummary.stockAmount,
+      totalCost: routeSummary.totalCost,
+      bottleneckCapacity: routeSummary.bottleneckCapacity,
+      routeKinds: routeSummary.routeKinds,
+      points: [origin, destination]
+    };
+  });
+}
+
+function routeSummaryFromPreview(
+  preview: PreviewM2TransportRouteResultV1
+): ClientDistrictRouteSummaryReadModel {
+  const destinationDistrictId = createClientDistrictId(preview.route.destinationDistrictId);
+  if (preview.route.status === "unreachable") {
+    return {
+      status: "unreachable",
+      destinationDistrictId,
+      stockAmount: preview.route.stockAmount,
+      totalCost: null,
+      bottleneckCapacity: null,
+      edgeCount: 0,
+      routeKinds: []
+    };
+  }
+
+  return {
+    status: preview.route.status,
+    destinationDistrictId,
+    stockAmount: preview.route.stockAmount,
+    totalCost: preview.route.totalCost,
+    bottleneckCapacity: preview.route.bottleneckCapacity,
+    edgeCount: preview.route.edges.length,
+    routeKinds: preview.route.edges.map((edge) => edge.routeKind)
+  };
+}
+
+function createUnreachableRouteSummary(
+  districtId: ClientDistrictId
+): ClientDistrictRouteSummaryReadModel {
+  return {
+    status: "unreachable",
+    destinationDistrictId: districtId,
+    stockAmount: 0,
+    totalCost: null,
+    bottleneckCapacity: null,
+    edgeCount: 0,
+    routeKinds: []
+  };
+}
+
 function rowMatchesFilter(row: ClientDistrictRowReadModel, normalizedFilter: string): boolean {
   return (
     row.displayName.toLowerCase().includes(normalizedFilter) ||
@@ -538,6 +956,16 @@ function pickByIndex<TValue>(values: readonly TValue[], index: number): TValue {
   return value;
 }
 
+function formatPrototypeDistrictDisplayName(districtNumber: number): string {
+  return `Prototype District ${formatThreeDigitId(districtNumber)}`;
+}
+
+function formatThreeDigitId(value: number): string {
+  return value.toString().padStart(3, "0");
+}
+
+type M2EconomyDistrictProtocolRow = ListM2EconomySummariesResultV1["districts"][number];
+
 const SYNTHETIC_AGRICULTURE_PHASES: readonly string[] = [
   "fallow",
   "planting",
@@ -546,3 +974,53 @@ const SYNTHETIC_AGRICULTURE_PHASES: readonly string[] = [
 ];
 
 const SYNTHETIC_ROUTE_KINDS: readonly ClientDistrictRouteKind[] = ["road", "river", "coast"];
+
+const M2_PROTOTYPE_GRID_COLUMNS = 6;
+const M2_PROTOTYPE_CELL_SIZE = 100;
+
+const M2_PROTOTYPE_SETTLEMENT_DISTRICT_IDS: readonly number[] = [
+  2, 5, 8, 11, 14, 17, 20, 23, 26, 29
+];
+
+const M2_PROTOTYPE_ROUTE_KINDS: readonly M2TransportRouteKindV1[] = ["road", "river", "coast"];
+
+const M2_PROTOTYPE_ROUTE_PAIRS: readonly {
+  readonly originDistrictId: number;
+  readonly destinationDistrictId: number;
+}[] = [
+  ...createSequentialRoutePairs(1, 29),
+  ...createStrideRoutePairs([1, 6, 11, 16, 21, 26]),
+  ...createStrideRoutePairs([2, 8, 14, 20, 26]),
+  ...createStrideRoutePairs([5, 10, 15, 20, 25])
+];
+
+function createSequentialRoutePairs(
+  startDistrictId: number,
+  count: number
+): readonly { readonly originDistrictId: number; readonly destinationDistrictId: number }[] {
+  const pairs: { readonly originDistrictId: number; readonly destinationDistrictId: number }[] = [];
+  for (let index = 0; index < count; index += 1) {
+    pairs.push({
+      originDistrictId: startDistrictId + index,
+      destinationDistrictId: startDistrictId + index + 1
+    });
+  }
+
+  return pairs;
+}
+
+function createStrideRoutePairs(
+  districtIds: readonly number[]
+): readonly { readonly originDistrictId: number; readonly destinationDistrictId: number }[] {
+  const pairs: { readonly originDistrictId: number; readonly destinationDistrictId: number }[] = [];
+  for (let index = 0; index < districtIds.length - 1; index += 1) {
+    const originDistrictId = districtIds[index];
+    const destinationDistrictId = districtIds[index + 1];
+    if (originDistrictId === undefined || destinationDistrictId === undefined) {
+      throw new Error("Invalid M2 prototype route stride.");
+    }
+    pairs.push({ originDistrictId, destinationDistrictId });
+  }
+
+  return pairs;
+}

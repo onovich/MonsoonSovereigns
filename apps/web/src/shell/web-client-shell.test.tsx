@@ -1,10 +1,10 @@
 import {
-  buildMapRenderPlan,
-  createMemoryPixiAnchorMarkerFactory,
+  createMemoryPixiMapNodeFactory,
   createMemoryPixiSceneLayer,
   createPixiMapScene,
   type PixiSceneLayer
 } from "@monsoon/map-renderer";
+import { createClientDistrictId } from "@monsoon/client-core";
 import { ClientShellView } from "@monsoon/ui";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
@@ -17,50 +17,81 @@ describe("web client shell", () => {
 
     expect(snapshot.status).toBe("ready");
     expect(snapshot.simulation.daysSimulated).toBe(30);
-    expect(snapshot.districtList.rows).toHaveLength(4_000);
-    expect(snapshot.districtList.provenance.kind).toBe("synthetic-pressure-fixture");
+    expect(snapshot.map.districts).toHaveLength(30);
+    expect(snapshot.map.settlements).toHaveLength(10);
+    expect(snapshot.districtList.rows).toHaveLength(30);
+    expect(snapshot.districtList.provenance.kind).toBe("simulation-read-model");
     expect(snapshot.revision).toBe(snapshot.simulation.finalRevision);
     expect(JSON.stringify(snapshot)).not.toContain("WorldState");
   });
 
   it("renders React from read model snapshots without authority-bearing state", () => {
     const snapshot = createBootstrappedShellSnapshot();
-    const plan = buildMapRenderPlan(snapshot.map);
     const markup = renderToStaticMarkup(
-      <ClientShellView snapshot={snapshot} mapAnchorCount={plan.anchors.length} />
+      <ClientShellView
+        snapshot={snapshot}
+        mapMode="seasonal"
+        zoomLevel={1}
+        selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
+        onMapModeChange={() => undefined}
+        onZoomLevelChange={() => undefined}
+        onSelectedEntityChange={() => undefined}
+        mapSurface={
+          <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
+        }
+      />
     );
 
     expect(markup).toContain("Monsoon Sovereigns");
-    expect(markup).toContain("Synthetic District 0001");
+    expect(markup).toContain("Prototype District 001");
     expect(markup).toContain(snapshot.simulation.stateHash);
-    expect(markup).toContain(`data-anchor-count="${plan.anchors.length}"`);
-    expect(markup).toContain('data-row-count="4000"');
+    expect(markup).toContain('data-renderer-owner="map-renderer"');
+    expect(markup).toContain('data-district-count="30"');
+    expect(markup).toContain('data-settlement-count="10"');
+    expect(markup).toContain('data-row-count="30"');
   });
 
   it("rebuilds the Pixi scene shell from the read model", () => {
     const snapshot = createBootstrappedShellSnapshot();
     const stage = createMemoryPixiSceneLayer();
-    const scene = createPixiMapScene(stage, createMemoryPixiAnchorMarkerFactory());
+    const scene = createPixiMapScene(stage, createMemoryPixiMapNodeFactory());
 
     scene.rebuild(snapshot.map);
-    const anchorLayer = getOnlyChildLayer(stage);
-    expect(stage.children.length).toBe(1);
+    const anchorLayer = getChildLayer(stage, 4);
+    expect(stage.children.length).toBe(5);
     expect(anchorLayer.children.length).toBe(snapshot.map.anchors.length);
 
-    scene.rebuild({
-      ...snapshot.map,
-      anchors: snapshot.map.anchors.slice(0, 1)
+    scene.applyDelta({
+      kind: "replace-read-model",
+      snapshot: {
+        ...snapshot.map,
+        districts: snapshot.map.districts.slice(0, 2),
+        settlements: snapshot.map.settlements.slice(0, 1),
+        routes: snapshot.map.routes.slice(0, 1),
+        anchors: snapshot.map.anchors.slice(0, 1)
+      },
+      viewport: {
+        mode: "routes",
+        zoomLevel: 1.8,
+        selectedEntity: {
+          kind: "district",
+          districtId:
+            snapshot.map.districts[0]?.districtId ?? snapshot.districtList.selectedDistrictId
+        }
+      }
     });
+    expect(getChildLayer(stage, 0).children.length).toBe(2);
+    expect(getChildLayer(stage, 2).children.length).toBe(1);
     expect(anchorLayer.children.length).toBe(1);
 
     scene.destroy();
   });
 });
 
-function getOnlyChildLayer(layer: PixiSceneLayer): PixiSceneLayer {
-  const child = layer.children[0];
+function getChildLayer(layer: PixiSceneLayer, index: number): PixiSceneLayer {
+  const child = layer.children[index];
   if (!isPixiSceneLayer(child)) {
-    throw new Error("Expected the Pixi scene shell to attach one child layer.");
+    throw new Error("Expected the Pixi scene shell to attach child layers.");
   }
 
   return child;
