@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task_id": "M2-PRESSURE-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019efb74-7dc3-7503-b0b3-725347a57972",
+  "branch": "test/m2-pressure-validation",
+  "source_handoff": "project/messages/outbox/M2-PRESSURE-VALIDATION-001__MSG-20260625-M2-PRESSURE-TEST-REVIEW__test_engineer.json",
+  "send_input_submission_id": "019efb77-d763-75b2-801e-a61a3b09bc15",
+  "routed_at": "2026-06-24T21:10:34Z",
+  "requested_action": "Review M2 H-001/H-002 initial pressure evidence and decide ACCEPT, REQUEST_CHANGES, or BLOCKED.",
+  "required_handoff": "project/messages/outbox/M2-PRESSURE-VALIDATION-001__MSG-20260625-M2-PRESSURE-QA-REVIEW__qa_reviewer.json",
+  "route_to_after_accept": "lead_orchestrator",
+  "route_to_after_request_changes": "test_engineer"
+}

@@ -1,0 +1,125 @@
+{
+  "message_id": "MSG-20260625-M2-PRESSURE-QA-REVIEW",
+  "task_id": "M2-PRESSURE-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M2-PRESSURE-VALIDATION-001 as an evidence-only initial M2 H-001/H-002 pressure validation. The recorded simulation and client evidence is real, scoped to current M2 systems, includes commands, exit codes, metrics, and environment notes, and does not hide gameplay, formal historical content, Electron/security, production dependency, or architecture-boundary expansion.",
+  "artifacts": [
+    "project/messages/outbox/M2-PRESSURE-VALIDATION-001__MSG-20260625-M2-PRESSURE-TEST-REVIEW__test_engineer.json",
+    "project/messages/outbox/M2-PRESSURE-VALIDATION-001__MSG-20260625-M2-PRESSURE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/routes/M2-PRESSURE-VALIDATION-001__ROUTE-20260624-LEAD-TO-TEST.json",
+    "project/messages/routes/M2-PRESSURE-VALIDATION-001__ROUTE-20260624-LEAD-TO-QA.json",
+    "project/tasks/active/M2-PRESSURE-VALIDATION-001.json",
+    "packages/sim-core/scripts/performance-baseline.mjs",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx"
+  ],
+  "branch_or_worktree": "test/m2-pressure-validation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On branch test/m2-pressure-validation. Before writing this QA handoff, tracked changes were limited to project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M2-PRESSURE-VALIDATION-001.json, and project/tasks/thread-registry.json; untracked files were the writer handoff and route messages for this task."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-PRESSURE-VALIDATION-001__MSG-20260625-M2-PRESSURE-TEST-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-PRESSURE-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-PRESSURE-VALIDATION-001.json."
+    },
+    {
+      "command": "node -e current JSON parse/shape check for project/tasks/active/M2-PRESSURE-VALIDATION-001.json",
+      "exit_code": 0,
+      "result": "M2-PRESSURE-VALIDATION-001 current shape ok REVIEW 6 criteria 9 tests. The writer's recorded transient shape check expected IN_PROGRESS, but current REVIEW status is correct for routed review."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 baseline rerun matched the reported H-001 evidence: fixture=m1.abstract-graph-30-world-state-v0; runtime=node v24.13.1; machine=win32 x64 cpuCount=16; days=3650; finalDay=3650; finalRevision=3650; dayThroughputPerSecond=15581; p50StepNanoseconds=55900; p95StepNanoseconds=91500; p99StepNanoseconds=141600; saveByteLength=9980; saveNanoseconds=1535200; loadNanoseconds=2208300."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed tests/ui-m2-district-list.test.tsx: 1 file / 3 tests. The 4000-row synthetic fixture renders data-row-count=4000, data-rendered-row-count=16, includes Synthetic District 0001, and excludes Synthetic District 4000 from the first virtualized window."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; 684 modules transformed; built in 140 ms."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; sim determinism hashes matched for hello, command/query, and save/load; root Vitest passed 19 files / 89 tests; web Vitest passed 1 file / 3 tests. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Playwright Chromium passed 2 tests covering web shell mount/read-model smoke and M2 map zoom, selection, mode switching, list filtering/sorting, and timing attribute assertions. The pre-existing Vite dynamic import warning for apps/web/src/worker/hello-simulation-adapter.mjs appeared."
+    },
+    {
+      "command": "PowerShell Start-Job Vite server plus inline node --input-type=module Playwright long-task smoke",
+      "exit_code": 0,
+      "result": "{\"derivationMs\":0.1,\"selectionMs\":0,\"longTaskCount\":0,\"maxLongTaskMs\":0,\"observerError\":null}"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list parsed successfully; M2-PRESSURE-VALIDATION-001 is REVIEW and dependencies are closed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready list contains M2-HOST-HASH-CANARY-001; pressure validation is no longer listed as ready because it is in REVIEW."
+    },
+    {
+      "command": "rg -n 'Math\\.random\\(|Date\\.now\\(' packages/sim-core/src packages/sim-core/scripts apps/sim-runner/src",
+      "exit_code": 1,
+      "result": "No matches; expected rg exit code 1 for no forbidden RNG/time calls."
+    },
+    {
+      "command": "rg -n 'react|pixi|pixi\\.js|electron|node:fs|from \"fs\"|from ''fs''|node:perf_hooks|node:worker_threads' packages/sim-core/src packages/sim-core/scripts apps/sim-runner/src",
+      "exit_code": 1,
+      "result": "No matches; expected rg exit code 1 for no forbidden sim-core imports in scanned source/scripts."
+    },
+    {
+      "command": "git diff -- package.json pnpm-lock.yaml",
+      "exit_code": 0,
+      "result": "No dependency or lockfile diff."
+    },
+    {
+      "command": "git diff -- apps/desktop packages/platform-electron content-source/historical docs/decisions docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No forbidden-path diff."
+    }
+  ],
+  "decisions": [
+    "Accepted H-001 only as initial M2 pressure evidence, not as a final full-scale H-001 pass. The measured 3650-day deterministic baseline is below the long-term risk-register matrix scale, and that scale limit is explicitly recorded.",
+    "Accepted H-002 initial evidence as the combination of current Chromium map/list interaction smoke, current 4000-row synthetic UI render test, current long-task/timing smoke, and the previously accepted M2 district-list pressure fixture evidence.",
+    "Accepted the evidence-only nature of this task. No implementation, dependency, Electron/security, formal historical content, save/schema, or architecture-boundary change was required for this validation turn.",
+    "Accepted the synthetic fixture as non-formal content because provenance and tests label it as synthetic pressure data and assert it does not contain WorldState authority."
+  ],
+  "risks": [
+    "H-001 remains an initial sample over the current 30-district abstract graph and must not be represented as the final 4000-character / 2500-district / 500-army / 10000-route-edge target.",
+    "The current branch's browser e2e smoke exercises the live 30-district M2 shell; the 4000-row pressure fixture is covered by client-core/UI tests and prior accepted Playwright evidence from M2-CLIENT-DISTRICT-LIST-001, not by a new current-branch browser route that mounts 4000 rows.",
+    "The writer handoff's one-off JSON shape command recorded an IN_PROGRESS status check that is no longer the current task status after routing to REVIEW. Reviewer reran a current REVIEW-aware shape check; this is non-blocking process drift, not pressure-evidence failure.",
+    "The existing Vite dynamic import warning and MODULE_TYPELESS_PACKAGE_JSON warning remain visible test noise and are not introduced by this validation task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead integration gates for M2-PRESSURE-VALIDATION-001. Treat this as accepted initial H-001/H-002 pressure evidence with the recorded scale limits; do not treat it as final full-scale performance acceptance.",
+  "created_at": "2026-06-25T05:15:27.1637998+08:00"
+}
