@@ -2,7 +2,7 @@
   "id": "M3-H003-H005-VALIDATION-001",
   "summary": "Validate initial M3 H-003 and H-005 evidence",
   "milestone": "M3",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -73,58 +73,60 @@
   "threads": {
     "test_engineer": {
       "thread_id": "019f0086-2f81-7342-a15b-6d19c1db995c",
-      "status": "active",
+      "status": "completed_review_handoff",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "nickname": "Probe the 2nd",
       "responsibility": "primary validation writer",
       "branch_or_worktree": "test/m3-h003-h005-validation",
       "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T20:50:02Z",
+      "updated_at": "2026-06-25T21:06:21Z",
       "start_submission_id": "019f0089-8042-7bc0-9571-59394bf35a28"
     },
     "gameplay_designer": {
       "thread_id": "019f0086-42e9-7801-b648-fc3e29822624",
-      "status": "active",
+      "status": "completed_partial_validation",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Court the 2nd",
       "responsibility": "H-003/H-005 validation design and outcome interpretation",
       "branch_or_worktree": "test/m3-h003-h005-validation",
       "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T20:50:02Z",
+      "updated_at": "2026-06-25T21:06:21Z",
       "start_submission_id": "019f0089-808f-73e2-a489-886c6c79cae1"
     },
     "historical_researcher": {
       "thread_id": "019f0086-56f5-7b03-8f76-8e8435470f52",
-      "status": "active",
+      "status": "completed_partial_risk_review",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "nickname": "Archive the 2nd",
       "responsibility": "historical/cultural risk classification",
       "branch_or_worktree": "test/m3-h003-h005-validation",
       "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T20:50:02Z",
+      "updated_at": "2026-06-25T21:06:21Z",
       "start_submission_id": "019f0089-80d5-7222-bdc1-b253dfe9fdf1"
     },
     "qa_reviewer": {
       "thread_id": "019f0086-5e2b-7ca1-9f86-104b1e726c64",
-      "status": "active",
+      "status": "reviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Witness the 2nd",
       "responsibility": "independent read-only acceptance reviewer",
       "branch_or_worktree": "test/m3-h003-h005-validation",
       "start_state": "AWAITING_REVIEW_READY",
-      "updated_at": "2026-06-25T20:50:02Z"
+      "updated_at": "2026-06-25T21:06:21Z",
+      "review_ready_submission_id": "019f009a-5738-7091-b356-6598917cd6a0",
+      "review_commit": "22029cec"
     }
   },
-  "route_to": "test_engineer",
+  "route_to": "qa_reviewer",
   "notes": [
     "This is validation-focused and should not implement missing M3 systems except for tiny test harness adjustments needed to run accepted flows.",
     "H-003/H-005 are initial M3 evidence, not final M5 playtest proof.",
     "If the validation shows direct annexation dominates or reasons are not useful, route findings to gameplay_designer and systems_architect rather than adjusting product scope silently."
   ],
   "created_at": "2026-06-25T04:09:26.814Z",
-  "updated_at": "2026-06-25T20:50:02Z"
+  "updated_at": "2026-06-25T21:06:21Z"
 }

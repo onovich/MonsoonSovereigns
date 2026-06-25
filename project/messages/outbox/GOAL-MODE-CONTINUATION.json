@@ -7,7 +7,7 @@
   "origin_main": "cdf7269ec9a7b82b11dcaa67839896ec1deeae2e",
   "current_milestone": "M3",
   "current_task": "M3-H003-H005-VALIDATION-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M3-SAVE-RUNTIME-001",
   "ready_tasks": [],
   "active_threads": [
@@ -15,7 +15,7 @@
       "task_id": "M3-H003-H005-VALIDATION-001",
       "role": "test_engineer",
       "thread_id": "019f0086-2f81-7342-a15b-6d19c1db995c",
-      "status": "active",
+      "status": "completed_review_handoff",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "branch_or_worktree": "test/m3-h003-h005-validation",
@@ -26,7 +26,7 @@
       "task_id": "M3-H003-H005-VALIDATION-001",
       "role": "gameplay_designer",
       "thread_id": "019f0086-42e9-7801-b648-fc3e29822624",
-      "status": "active",
+      "status": "completed_partial_validation",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "test/m3-h003-h005-validation",
@@ -37,7 +37,7 @@
       "task_id": "M3-H003-H005-VALIDATION-001",
       "role": "historical_researcher",
       "thread_id": "019f0086-56f5-7b03-8f76-8e8435470f52",
-      "status": "active",
+      "status": "completed_partial_risk_review",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "branch_or_worktree": "test/m3-h003-h005-validation",
@@ -48,11 +48,13 @@
       "task_id": "M3-H003-H005-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f0086-5e2b-7ca1-9f86-104b1e726c64",
-      "status": "active",
+      "status": "reviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "test/m3-h003-h005-validation",
-      "start_state": "AWAITING_REVIEW_READY"
+      "start_state": "AWAITING_REVIEW_READY",
+      "review_ready_submission_id": "019f009a-5738-7091-b356-6598917cd6a0",
+      "review_commit": "22029cec"
     }
   ],
   "unresolved_risks": [
@@ -72,7 +74,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Wait for M3-H003-H005 validation handoffs, then route REVIEW_READY to qa_reviewer with exact commits and evidence paths.",
+  "next_machine_action": "Wait for qa_reviewer ACCEPT or REQUEST_CHANGES on M3-H003-H005-VALIDATION-001.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -80,5 +82,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T20:50:02Z"
+  "last_updated_at": "2026-06-25T21:06:21Z"
 }
