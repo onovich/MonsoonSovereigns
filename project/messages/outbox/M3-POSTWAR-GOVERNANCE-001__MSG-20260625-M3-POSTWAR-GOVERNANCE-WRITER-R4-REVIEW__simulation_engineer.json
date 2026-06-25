@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R4-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R4 fixes are implemented. The postwar arrangement guard no longer depends on incoming payload.localPolityId. It now inspects current district control plus M3 administrative marker state for the district, rejecting when an existing non-direct or non-controller administrative marker indicates an already-applied postwar arrangement. The systems repro variants using localPolityId equal to the prior victor marker now reject before stale rights can survive or new overlapping obligations can be added.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R4-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 1,
+      "result": "R4 red pass before implementation: new localPolityId bypass regression failed because direct-control/tribute-only by victor 3 with localPolityId 1 was accepted."
+    },
+    {
+      "command": "pnpm exec prettier --write packages/sim-core/src/command-query-v1.ts tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Formatted the touched R4 implementation and test files."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Targeted postwar file passed after R4 fix: 1 file passed; 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "sim-core package tests passed: 14 files passed; 96 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "protocol package tests passed: 1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/156 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R4-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "R4 handoff JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task file validated."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed and confirmed status REVIEW, route_to systems_architect, risk_level R3, and scoped allowed/forbidden paths."
+    },
+    {
+      "command": "node -e git status allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 21 changed or untracked paths reported by git status are within allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "rg deterministic/forbidden runtime API scan",
+      "exit_code": 0,
+      "result": "No Math.random, Date.now, performance.now, new Date, React, Pixi, Electron, or fs runtime API matches in touched implementation/test files."
+    },
+    {
+      "command": "rg M4/UI/content scope scan",
+      "exit_code": 0,
+      "result": "No marching, battle, campaign, siege, supply, reinforcement, full diplomacy, treaty, legitimacy, rebellion, client UI, content-source, or forbidden client package scope matches in touched implementation/test files."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree includes task-scoped implementation/test/task changes plus task-scoped orchestration message/route files. No forbidden-path changes."
+    }
+  ],
+  "decisions": [
+    "R4 conflict rule: hasExistingPostwarGovernanceArrangement now receives world and districtId only; it no longer receives or trusts payload.localPolityId.",
+    "The guard rejects when the current district has an M3 administrative marker with a non-direct control mode, or an administrative marker held by a polity other than the current district controller.",
+    "No replacement semantics were added. Clearing or retiring previous suzerain edges, obligations, and enfeoffments remains out of the minimal M3-safe boundary.",
+    "Regression coverage now includes victor 1 restore-vassal-ruler followed by victor 3 direct-control and tribute-only with localPolityId changed to 1. Both assert rejection, unchanged state hash, unchanged controller, no victor 3 administrative marker, and no victor 3 obligations.",
+    "Previous R2/R3 protections remain covered: same-victor duplicates reject, direct-after-vassal rejects, different-victor with original local polity rejects, and restore-vassal-ruler requires concrete ruler/policy fields."
+  ],
+  "risks": [
+    "R3 public protocol surface remains changed from the original M3 implementation and still needs systems_architect review for long-term command/query naming and compatibility.",
+    "The guard remains a minimal M3 prototype rule over existing M3 administrative marker state; a future replacement command should define explicit retirement events and rights-clearing semantics before allowing same-district replacement.",
+    "Projection coefficients remain prototype constants for M3 validation and are not final balance."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R4 payload-independent district marker guard and the localPolityId bypass regression coverage, then route to QA if systems review accepts.",
+  "created_at": "2026-06-25T18:15:52Z"
+}

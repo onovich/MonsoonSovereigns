@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R2-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes are implemented. Same-district postwar arrangements are now rejected regardless of settlementId by using the district administrative postwar marker. Direct control after an existing vassal or tribute-only postwar arrangement is rejected with the same stable duplicate reason instead of leaving stale suzerain or obligation rights. restore-vassal-ruler now requires concrete local ruler and policy inputs and validates that the ruler and policy actually fit the restored district.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 1,
+      "result": "R2 red pass before the fix: different-settlementId same-district duplicate, direct-after-vassal, and null ruler/policy restore cases were accepted."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Targeted postwar file passed after R2 fix: 1 file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "sim-core package tests passed: 14 files passed; 94 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "protocol package tests passed: 1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/154 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    },
+    {
+      "command": "pnpm exec prettier --check packages/sim-core/src/command-query-v1.ts tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Touched R2 implementation/test files use Prettier style."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "R2 handoff JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task file validated."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed and confirmed status REVIEW, route_to systems_architect, risk_level R3, and scoped allowed/forbidden paths."
+    },
+    {
+      "command": "rg deterministic/forbidden runtime API scan",
+      "exit_code": 0,
+      "result": "No Math.random, Date.now, performance.now, new Date, React, Pixi, Electron, or fs runtime API matches in touched implementation/test files."
+    },
+    {
+      "command": "rg M4/UI/content scope scan",
+      "exit_code": 0,
+      "result": "No marching, battle, campaign, siege, supply, reinforcement, full diplomacy, treaty, legitimacy, rebellion, client UI, content-source, or forbidden client package scope matches in touched implementation/test files."
+    },
+    {
+      "command": "node -e git status allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 11 changed or untracked paths reported by git status are within allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree includes task-scoped implementation/test/task changes plus task-scoped orchestration message/route files. No forbidden-path changes."
+    }
+  ],
+  "decisions": [
+    "R2 conflict rule: a district can have only one postwar governance arrangement for the victor marker. Repeated same-district commands are rejected with duplicate-obligation-settlement at payload.districtId, regardless of settlementId or method.",
+    "Direct-after-vassal/tribute replacement is rejected for M3 instead of clearing prior rights. This is the smallest M3-safe rule and avoids introducing a treaty replacement or rights-transfer model before M4.",
+    "The duplicate guard is district-scoped through the administrative district marker produced by the postwar command path; it does not reject a separate district solely because the same victor/local polities already have postwar obligations elsewhere.",
+    "restore-vassal-ruler requires non-null localRulerCharacterId and policyId. The command also validates the ruler exists, is available in the district, belongs to the local polity, and that the policy exists and targets the restored district.",
+    "Regression coverage now asserts different-settlementId same-district duplicate rejection, direct-after-vassal rejection, and null ruler/policy restore rejection with stable reason codes."
+  ],
+  "risks": [
+    "R3 public protocol surface remains changed from the original M3 implementation and still needs systems_architect review for long-term command/query naming and compatibility.",
+    "The replacement/clearing path is intentionally not implemented. If design later needs postwar arrangement replacement, systems_architect should define the deterministic rights and obligation clearing semantics before implementation.",
+    "Projection coefficients remain prototype constants for M3 validation and are not final balance."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R2 conflict handling, restore-vassal-ruler validation, and regression coverage. Confirm whether the M3-safe reject-on-existing-arrangement rule is acceptable.",
+  "created_at": "2026-06-25T17:41:34Z"
+}

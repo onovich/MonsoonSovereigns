@@ -67,6 +67,10 @@ export type M3ObligationSettlementActionV1 =
   | "remission"
   | "pursuit-recovery"
   | "default-breach";
+export type M3PostwarGovernanceMethodV1 =
+  | "direct-control"
+  | "restore-vassal-ruler"
+  | "tribute-only";
 
 export interface CommandActorV1 {
   readonly kind: CommandActorKindV1;
@@ -313,6 +317,25 @@ export interface CreateCharacterRelationshipCommandV1 {
   };
 }
 
+export interface ApplyM3PostwarGovernanceCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.apply-m3-postwar-governance";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly settlementId: string;
+    readonly victorPolityId: number;
+    readonly localPolityId: number;
+    readonly districtId: number;
+    readonly method: M3PostwarGovernanceMethodV1;
+    readonly localRulerCharacterId: number | null;
+    readonly policyId: number | null;
+    readonly reasonCode: string;
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -328,6 +351,7 @@ export type GameCommandV1 =
   | RecordCharacterStatusCommandV1
   | ResolveSuccessionCommandV1
   | CreateCharacterRelationshipCommandV1
+  | ApplyM3PostwarGovernanceCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -376,6 +400,31 @@ export interface PreviewM2TransportRouteQueryV1 {
   };
 }
 
+export interface PreviewM3PostwarGovernanceQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.preview-m3-postwar-governance";
+  readonly payload: {
+    readonly queryId: string;
+    readonly victorPolityId: number;
+    readonly localPolityId: number;
+    readonly districtId: number;
+    readonly methods: readonly M3PostwarGovernanceMethodV1[];
+    readonly months: number;
+  };
+}
+
+export interface CompareM3PostwarGovernanceOutcomesQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.compare-m3-postwar-governance-outcomes";
+  readonly payload: {
+    readonly queryId: string;
+    readonly victorPolityId: number;
+    readonly localPolityId: number;
+    readonly districtId: number;
+    readonly months: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -384,7 +433,9 @@ export type GameQueryV1 =
   | ListM3AdministrativeBurdenQueryV1
   | ListM3DecisionScaffoldsQueryV1
   | ListM3SuccessionCrisesQueryV1
-  | PreviewM2TransportRouteQueryV1;
+  | PreviewM2TransportRouteQueryV1
+  | PreviewM3PostwarGovernanceQueryV1
+  | CompareM3PostwarGovernanceOutcomesQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -556,6 +607,58 @@ export interface PreviewM2TransportRouteResultV1 {
   readonly revision: number;
   readonly monthOfYear: number;
   readonly route: M2TransportRoutePreviewReadModelV1;
+}
+
+export interface M3PostwarGovernanceObligationShapeReadModelV1 {
+  readonly periodDays: number;
+  readonly tributeCash: number;
+  readonly troopHeadcount: number;
+  readonly hasDirectGarrison: boolean;
+}
+
+export interface M3PostwarGovernancePreviewReadModelV1 {
+  readonly method: M3PostwarGovernanceMethodV1;
+  readonly districtId: number;
+  readonly victorPolityId: number;
+  readonly localPolityId: number;
+  readonly administrativeBurden: M3AdministrativeBurdenDistrictReadModelV1;
+  readonly obligationShape: M3PostwarGovernanceObligationShapeReadModelV1;
+  readonly expectedIncomeCash: number;
+  readonly expectedTributeCash: number;
+  readonly localAcceptanceBps: number;
+  readonly reliabilityBps: number;
+  readonly militaryReadinessBps: number;
+  readonly militaryContributionTroops: number;
+  readonly riskBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface PreviewM3PostwarGovernanceResultV1 {
+  readonly kind: "sim.preview-m3-postwar-governance";
+  readonly day: number;
+  readonly revision: number;
+  readonly months: number;
+  readonly arrangements: readonly M3PostwarGovernancePreviewReadModelV1[];
+}
+
+export interface M3PostwarGovernanceOutcomeReadModelV1 {
+  readonly months: number;
+  readonly method: M3PostwarGovernanceMethodV1;
+  readonly totalExpectedIncomeCash: number;
+  readonly totalExpectedTributeCash: number;
+  readonly averageAdministrativeLoad: number;
+  readonly averageReliabilityBps: number;
+  readonly totalMilitaryContributionTroops: number;
+  readonly averageRiskBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface CompareM3PostwarGovernanceOutcomesResultV1 {
+  readonly kind: "sim.compare-m3-postwar-governance-outcomes";
+  readonly day: number;
+  readonly revision: number;
+  readonly months: number;
+  readonly outcomes: readonly M3PostwarGovernanceOutcomeReadModelV1[];
 }
 
 export type SimulationFixtureIdV1 = "m1.abstract-graph-30" | "minimal-m1";
@@ -1004,6 +1107,22 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.apply-m3-postwar-governance": {
+      const payload = parseApplyM3PostwarGovernancePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -1060,6 +1179,36 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
       };
     case "sim.preview-m2-transport-route": {
       const payload = parsePreviewM2TransportRoutePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.preview-m3-postwar-governance": {
+      const payload = parsePreviewM3PostwarGovernancePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.compare-m3-postwar-governance-outcomes": {
+      const payload = parseCompareM3PostwarGovernanceOutcomesPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -1913,6 +2062,71 @@ function parseCreateCharacterRelationshipPayload(
   };
 }
 
+function parseApplyM3PostwarGovernancePayload(
+  input: unknown
+): ProtocolParseResult<ApplyM3PostwarGovernanceCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.apply-m3-postwar-governance payload must be an object."
+    );
+  }
+
+  const settlementId = parseNonEmptyProtocolString(input["settlementId"], "payload.settlementId");
+  if (!settlementId.ok) {
+    return settlementId;
+  }
+  const victorPolityId = parsePositiveSafeInteger(
+    input["victorPolityId"],
+    "payload.victorPolityId"
+  );
+  if (!victorPolityId.ok) {
+    return victorPolityId;
+  }
+  const localPolityId = parsePositiveSafeInteger(input["localPolityId"], "payload.localPolityId");
+  if (!localPolityId.ok) {
+    return localPolityId;
+  }
+  const districtId = parsePositiveSafeInteger(input["districtId"], "payload.districtId");
+  if (!districtId.ok) {
+    return districtId;
+  }
+  const method = parseM3PostwarGovernanceMethod(input["method"], "payload.method");
+  if (!method.ok) {
+    return method;
+  }
+  const localRulerCharacterId = parseNullablePositiveSafeInteger(
+    input["localRulerCharacterId"],
+    "payload.localRulerCharacterId"
+  );
+  if (!localRulerCharacterId.ok) {
+    return localRulerCharacterId;
+  }
+  const policyId = parseNullablePositiveSafeInteger(input["policyId"], "payload.policyId");
+  if (!policyId.ok) {
+    return policyId;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      settlementId: settlementId.value,
+      victorPolityId: victorPolityId.value,
+      localPolityId: localPolityId.value,
+      districtId: districtId.value,
+      method: method.value,
+      localRulerCharacterId: localRulerCharacterId.value,
+      policyId: policyId.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
 function parseM3ObligationCategory(
   value: unknown,
   path: string
@@ -1931,6 +2145,21 @@ function parseM3ObligationCategory(
     "invalid-payload",
     path,
     "obligationCategory must be regular-tribute, extraordinary-levy, troop-obligation, defensive-garrison, or specific-war-aid."
+  );
+}
+
+function parseM3PostwarGovernanceMethod(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M3PostwarGovernanceMethodV1> {
+  if (value === "direct-control" || value === "restore-vassal-ruler" || value === "tribute-only") {
+    return { ok: true, value };
+  }
+
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be direct-control, restore-vassal-ruler, or tribute-only.`
   );
 }
 
@@ -2109,6 +2338,106 @@ function parsePreviewM2TransportRoutePayload(
       originDistrictId: originDistrictId.value,
       destinationDistrictId: destinationDistrictId.value,
       stockAmount: stockAmount.value
+    }
+  };
+}
+
+function parsePreviewM3PostwarGovernancePayload(
+  input: unknown
+): ProtocolParseResult<PreviewM3PostwarGovernanceQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.preview-m3-postwar-governance payload must be an object."
+    );
+  }
+
+  const base = parseM3PostwarGovernanceQueryBase(input, "sim.preview-m3-postwar-governance");
+  if (!base.ok) {
+    return base;
+  }
+
+  const methods = input["methods"];
+  if (!Array.isArray(methods) || methods.length === 0) {
+    return protocolError(
+      "invalid-payload",
+      "payload.methods",
+      "payload.methods must be a non-empty array."
+    );
+  }
+
+  const parsedMethods: M3PostwarGovernanceMethodV1[] = [];
+  for (let index = 0; index < methods.length; index += 1) {
+    const method = parseM3PostwarGovernanceMethod(methods[index], `payload.methods[${index}]`);
+    if (!method.ok) {
+      return method;
+    }
+    parsedMethods.push(method.value);
+  }
+
+  return {
+    ok: true,
+    value: {
+      ...base.value,
+      methods: parsedMethods
+    }
+  };
+}
+
+function parseCompareM3PostwarGovernanceOutcomesPayload(
+  input: unknown
+): ProtocolParseResult<CompareM3PostwarGovernanceOutcomesQueryV1["payload"]> {
+  return parseM3PostwarGovernanceQueryBase(input, "sim.compare-m3-postwar-governance-outcomes");
+}
+
+function parseM3PostwarGovernanceQueryBase(
+  input: unknown,
+  commandKind: string
+): ProtocolParseResult<CompareM3PostwarGovernanceOutcomesQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", "payload", `${commandKind} payload must be an object.`);
+  }
+
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const victorPolityId = parsePositiveSafeInteger(
+    input["victorPolityId"],
+    "payload.victorPolityId"
+  );
+  if (!victorPolityId.ok) {
+    return victorPolityId;
+  }
+  const localPolityId = parsePositiveSafeInteger(input["localPolityId"], "payload.localPolityId");
+  if (!localPolityId.ok) {
+    return localPolityId;
+  }
+  const districtId = parsePositiveSafeInteger(input["districtId"], "payload.districtId");
+  if (!districtId.ok) {
+    return districtId;
+  }
+  const months = parsePositiveSafeInteger(input["months"], "payload.months");
+  if (!months.ok) {
+    return months;
+  }
+  if (months.value > 240) {
+    return protocolError("invalid-payload", "payload.months", "payload.months must be <= 240.");
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      victorPolityId: victorPolityId.value,
+      localPolityId: localPolityId.value,
+      districtId: districtId.value,
+      months: months.value
     }
   };
 }

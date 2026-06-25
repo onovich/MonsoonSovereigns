@@ -1,0 +1,126 @@
+{
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-LEAD-ACCEPT",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M3 postwar governance after writer R5, systems_architect R5 ACCEPT, and independent qa_reviewer R5 ACCEPT. The implementation stays within the task allowed paths, adds explicit direct-control, restore-vassal-ruler, and tribute-only governance arrangements, exposes immediate preview and 24-month comparison queries, records auditable reason codes, uses explicit GameCommand/event paths for mutation, rejects repeated same-district arrangements before mutation across same-victor, different-victor, localPolityId bypass, and direct-control-first cases, and avoids implementing M4 campaign, march, battle, supply, siege, treaty, or full diplomacy systems.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R5-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R5-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-QA-R5-REVIEW__qa_reviewer.json",
+    "project/messages/routes/M3-POSTWAR-GOVERNANCE-001__ROUTE-20260625-M3-POSTWAR-LEAD-TO-QA-R5.json",
+    "project/messages/routes/M3-POSTWAR-GOVERNANCE-001__ROUTE-20260625-M3-POSTWAR-LEAD-TO-SYSTEMS-R5.json",
+    "project/messages/routes/M3-POSTWAR-GOVERNANCE-001__ROUTE-20260625-M3-POSTWAR-SYSTEMS-R4-TO-WRITER-R5.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "validate-handoff for all M3-POSTWAR-GOVERNANCE-001 outbox handoffs",
+      "exit_code": 0,
+      "result": "All writer, systems, QA, and reviewer-loop handoffs validate successfully."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON VALID."
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "Task id, ACCEPTED status, lead route, all child thread ids, allowed paths, forbidden paths, and required tests are present."
+    },
+    {
+      "command": "PowerShell changed-path allowed/forbidden scope check",
+      "exit_code": 0,
+      "result": "SCOPE_VALID 30 paths."
+    },
+    {
+      "command": "rg -n 'Math.random|Date.now|performance.now|new Date' packages/sim-core packages/protocol tests/sim-core-m3-postwar-governance.test.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 1,
+      "result": "No authority-breaking random or real-time usage found; rg returns 1 for no matches."
+    },
+    {
+      "command": "rg -n framework/fs import search in packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No React, Pixi, Electron, fs, or node:fs import matches."
+    },
+    {
+      "command": "rg -n M4/full-scope drift scan",
+      "exit_code": 1,
+      "result": "No campaign, march, siege, supply, reinforcement, battle, treaty, full diplomacy, rebellion, or legitimacy implementation matches in touched implementation/test surfaces."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "14 test files passed; 97 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello 61e0ba1c, command/query d275faa4, and save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; root Vitest 24 files/157 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: Direct-control, restore-vassal-ruler, and tribute-only governance methods satisfy the M3 prototype boundary without starting the M4 war loop.",
+    "ACCEPT: Same-district postwar arrangements are single-assignment in M3; replacement semantics require a future explicit task.",
+    "ACCEPT: Direct-control persistence uses a district-keyed condition-based defensive-garrison marker with zero nominal/due/arrears accounting so it records governance without creating resources.",
+    "ACCEPT: 24-month outcome projection coefficients remain M3 validation constants and are not final balance."
+  ],
+  "risks": [
+    "Direct-control postwar persistence uses an existing obligation marker rather than a first-class postwar arrangement table. Future replacement or retirement semantics should be designed separately before allowing replacement.",
+    "Projection coefficients remain M3 prototype validation constants, not final balance.",
+    "Existing MODULE_TYPELESS_PACKAGE_JSON warning remains in the deterministic RNG worker fixture and is not introduced by this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit, push, create PR, wait for CI, merge to main, sync main, then mark M3-POSTWAR-GOVERNANCE-001 CLOSED and continue to the next READY M3 task.",
+  "created_at": "2026-06-26T02:51:54.1319001+08:00"
+}

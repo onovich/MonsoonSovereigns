@@ -1,0 +1,111 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the minimum M3 postwar governance boundary: explicit protocol command/query support, sim-core application path, auditable preview/projection read models, and deterministic 24-month scenario/property coverage for direct control, restored vassal ruler, and tribute-only settlements.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 1,
+      "result": "Initial red test pass before implementation: 5 failed because postwar command/query support was absent."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm exec vitest run tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only task-scoped files were modified or added."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "14 files passed; 91 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier check passed for all matched files."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/151 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task file validated."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed and shape check confirmed status REVIEW, route_to systems_architect, risk_level R3."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Handoff JSON validated."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "R3 protocol change: added GameCommand kind sim.apply-m3-postwar-governance plus query kinds sim.preview-m3-postwar-governance and sim.compare-m3-postwar-governance-outcomes for explicit command/query paths.",
+    "No save-format or permanent M3 save migration was introduced; existing requestSaveV1 still rejects WorldState state.m3 before emitting incompatible bytes.",
+    "The 24-month comparison is an auditable sim-core read-model projection derived from existing M2 stocks, M3 administrative burden, vassalage, obligations, and enfeoffment scaffolds; it does not run an M4 war loop or mutate resources.",
+    "Direct control changes the sole district controller to the victor and records direct administrative/garrison load; restored vassal and tribute-only settlements leave the local polity as sole controller while establishing the suzerain edge and only the method-specific obligations.",
+    "Duplicate postwar settlement obligation source prefixes are rejected with duplicate-obligation-settlement rather than stacking overlapping tribute/troop obligations."
+  ],
+  "risks": [
+    "R3 public protocol surface changed and should receive systems_architect review for naming, long-term compatibility, and whether this remains acceptable inside M3 without save migration.",
+    "Projection coefficients are prototype constants for M3 validation, not final balance; balance_analyst can tune after architect acceptance.",
+    "The prototype intentionally does not model full diplomacy, legitimacy, rebellion, treaty text, or M4 campaign/battle/siege resolution."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 protocol/sim-core boundary, authority/ownership invariants, deterministic 24-month postwar outcomes, and confirm whether to accept or request changes.",
+  "created_at": "2026-06-25T17:22:05Z"
+}

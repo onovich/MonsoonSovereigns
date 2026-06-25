@@ -1,0 +1,145 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Read-only systems review completed. The diff stays within allowed paths, keeps sim-core free of UI/Electron/Node IO dependencies, avoids M4 campaign/battle/siege/supply scope, and all requested verification commands passed. Requesting changes because the apply command can produce inconsistent authority/obligation state across repeated postwar arrangements, and restore-vassal-ruler can be accepted without actually restoring or retaining a ruler.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m3-postwar-governance. Modified/untracked files are task-scoped; review handoff was added after inspection."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "Task JSON parsed; required keys present; status REVIEW and route_to systems_architect."
+    },
+    {
+      "command": "rg searches for random/time/framework/fs and M4 scope drift",
+      "exit_code": 0,
+      "result": "No new Math.random/Date.now/performance.now or UI/Electron/Node IO dependency in reviewed files. M4 scope terms only appeared in task/handoff text or negative protocol test data."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "14 files passed; 91 tests passed. Existing Node MODULE_TYPELESS_PACKAGE_JSON warning observed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/151 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module <inline duplicate-arrangement repro>",
+      "exit_code": 0,
+      "result": "A restore-vassal-ruler settlement followed by a tribute-only settlement for the same victor/local/district but different settlementId was accepted and left 3 active obligations with validateWorldStateV0 reporting 0 invariant errors."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module <inline direct-after-vassal repro>",
+      "exit_code": 0,
+      "result": "A direct-control settlement after a restored-vassal settlement was accepted; district controller became victor while prior local-vassal obligations and suzerain edge remained."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module <inline null-ruler restore repro>",
+      "exit_code": 0,
+      "result": "restore-vassal-ruler with localRulerCharacterId null and policyId null was accepted, created 2 obligations, and created 0 enfeoffments."
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "review-verdict",
+      "decision": "REQUEST_CHANGES",
+      "reason": "The command path can accept sequences that violate the task's authority/obligation invariants even though current tests pass."
+    },
+    {
+      "kind": "boundary",
+      "decision": "No allowed_paths or forbidden_paths violation found.",
+      "evidence": "Changed/untracked files are under packages/sim-core, packages/protocol, tests, project/tasks/thread-registry.json, active task JSON, and project/messages."
+    },
+    {
+      "kind": "save-runtime",
+      "decision": "No packages/save-format change found; existing M3 save rejection remains acceptable for this task."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "high",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "2411-2488",
+      "issue": "Duplicate or conflicting postwar arrangements can be applied to the same district when settlementId changes. The duplicate guard only checks the same postwar source prefix for non-direct methods, while new obligations are always appended and old obligations/suzerain state are not retired. This allows overlapping tax/levy obligations and direct control with retained vassal obligations."
+    },
+    {
+      "severity": "medium",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "2465-2480",
+      "issue": "restore-vassal-ruler does not require a localRulerCharacterId or policyId. If either is null, the command is still accepted, obligations are created, and the event reports restore-vassal-ruler without a restored/retained ruler enfeoffment."
+    },
+    {
+      "severity": "medium",
+      "file": "tests/sim-core-m3-postwar-governance.test.ts",
+      "lines": "111-159",
+      "issue": "Negative coverage only rejects duplicate settlementId and suzerain cycles. It does not cover repeated same-district arrangements with a different settlementId, direct-after-vassal cleanup/rejection, or restore-vassal-ruler with missing ruler/policy."
+    }
+  ],
+  "blockers": [
+    "Fix the apply command so a district cannot accumulate conflicting postwar settlement rights/obligations. Minimal acceptable repair: reject an already-arranged victor/local/district unless a future explicit replacement command is designed with retirement events and tests.",
+    "Validate restore-vassal-ruler payload consistency. Require a valid local ruler and policy, or rename/split the method if null means a different governance mode.",
+    "Add regression tests for different-settlementId duplicate arrangements, direct-after-vassal or vassal-after-direct behavior, and restore-vassal-ruler null ruler/policy rejection."
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Route back to original writer thread 019effbf-bfc9-7f30-8e2d-7c290d1080a3 for targeted repair, then return to systems_architect review.",
+  "created_at": "2026-06-25T17:32:12.9851413Z"
+}
