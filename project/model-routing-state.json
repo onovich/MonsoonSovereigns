@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-25T06:20:43Z",
+  "updated_at": "2026-06-25T06:51:11Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -718,6 +718,28 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_request_changes_and_r2_accept_review",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efd75-1427-7b62-b656-81416f46c56f",
+      "role": "simulation_engineer",
+      "task_id": "M3-ADMIN-BURDEN-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_review_handoff",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efd7f-c8b7-7413-abb9-0ac0cdedfd3d",
+      "role": "systems_architect",
+      "task_id": "M3-ADMIN-BURDEN-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_accept_review_and_handoff_schema_fix",
+      "accepted_task_reopened": false
     }
   ],
   "active_threads": [],
@@ -753,6 +775,7 @@
     "M2-EXIT-VALIDATION-001": "CLOSED after PR #51 entered main at eb8039b5a038c9ed5a29a88e09bdc33699c4c2cd. systems_architect thread 019efca6-bd29-7f33-af2f-69384681911a disconnected before producing a handoff and was replaced by systems_architect thread 019efcc3-a03a-78b0-a523-da00df73ae51. The replacement produced docs/GATE-M2.md and valid REVIEW handoff project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-SYSTEMS-REVIEW__systems_architect.json with M2_GATE = PASS. Lead routed it by send_input submission 019efcd1-f241-7f23-a8d2-31c5b30d2c9d to qa_reviewer thread 019efccf-e06e-75e2-8d00-9f734902959c. qa_reviewer accepted via valid handoffs project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW__qa_reviewer.json, project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW-R2__qa_reviewer.json, and project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW-R3__qa_reviewer.json after verifying scope, required gate evidence, M1 follow-up closure, no forbidden path drift, accepted final documentation wording, and no M3 start. Lead advanced current_milestone to M3 in the post-merge closure branch; M3 implementation still requires an accepted M3 task graph.",
     "M3-TASK-GRAPH-001": "CLOSED after PR #53 entered main at e1b323a698c267ba3cf016aee22e67d37822ff2a. systems_architect thread 019efcf2-c8a8-7691-abe1-526026eac77c created the minimal M3 task DAG and valid REVIEW handoff project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json. Lead routed the review by send_input submission 019efd03-139b-7070-b60b-0f0b67015d6d to qa_reviewer thread 019efcff-ddc6-7b62-8430-bbd771b9d1e6. qa_reviewer accepted via valid handoff project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json. The next dependency-ready M3 candidates are M3-HISTORICAL-CLAIM-PIPELINE-001 and M3-POLITY-VASSALAGE-001; neither was started before task graph integration.",
     "M3-HISTORICAL-CLAIM-PIPELINE-001": "CLOSED after PR #55 entered main at 97875197bdf35e96551164c3d9cf52ac30ae9e8c. historical_researcher thread 019efd15-9d3a-7442-8ce3-c622d3109b07 produced valid REVIEW and R2 REVIEW handoffs; lead routed R2 review by send_input submission 019efd26-ba3d-7792-a2f2-12fa66805afe to qa_reviewer thread 019efd25-5f8a-7b13-b157-d1128c308fc8 after preflight route submission 019efd1f-cc6e-7111-b80b-284599e3d7ae fixed one non-ASCII mixed-language phrase. qa_reviewer accepted via valid handoff project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-QA-ACCEPT__qa_reviewer.json. No formal historical content, content-source data, product code, package code, roadmap, gate docs, ADRs, or dependencies were changed. The next dependency-ready M3 task is M3-POLITY-VASSALAGE-001.",
-    "M3-POLITY-VASSALAGE-001": "CLOSED after PR #57 entered main at 3b0c90b0f5723d962966293bf4bb64b2a46f17c3. simulation_engineer thread 019efd36-991d-7b61-bd9a-4c313e9e1383 implemented the M3 polity/vassalage substrate and produced valid REVIEW and R2 REVIEW handoffs. Lead routed initial architecture review by send_input submission 019efd54-8c13-7af0-a266-e52dbe532fe4 to systems_architect thread 019efd53-2468-7303-932a-d9491cfe6844. systems_architect requested changes for M3 save/error-model compatibility; lead routed the fix by send_input submission 019efd5c-a004-73c2-9434-381edc0f6c55 back to the original writer, then routed R2 by send_input submission 019efd62-afb7-7333-b6e4-a8a25b063df3. systems_architect accepted R2 via project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-ACCEPT-R2__systems_architect.json. The accepted scoped strategy explicitly rejects requestSaveV1 for state.m3 rather than touching forbidden packages/save-format. Next dependency-ready M3 candidates are M3-ADMIN-BURDEN-001 and M3-CHARACTER-OFFICE-FIXTURE-001."
+    "M3-POLITY-VASSALAGE-001": "CLOSED after PR #57 entered main at 3b0c90b0f5723d962966293bf4bb64b2a46f17c3. simulation_engineer thread 019efd36-991d-7b61-bd9a-4c313e9e1383 implemented the M3 polity/vassalage substrate and produced valid REVIEW and R2 REVIEW handoffs. Lead routed initial architecture review by send_input submission 019efd54-8c13-7af0-a266-e52dbe532fe4 to systems_architect thread 019efd53-2468-7303-932a-d9491cfe6844. systems_architect requested changes for M3 save/error-model compatibility; lead routed the fix by send_input submission 019efd5c-a004-73c2-9434-381edc0f6c55 back to the original writer, then routed R2 by send_input submission 019efd62-afb7-7333-b6e4-a8a25b063df3. systems_architect accepted R2 via project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-ACCEPT-R2__systems_architect.json. The accepted scoped strategy explicitly rejects requestSaveV1 for state.m3 rather than touching forbidden packages/save-format. Next dependency-ready M3 candidates are M3-ADMIN-BURDEN-001 and M3-CHARACTER-OFFICE-FIXTURE-001.",
+    "M3-ADMIN-BURDEN-001": "ACCEPTED pending PR integration on branch feat/m3-admin-burden. simulation_engineer thread 019efd75-1427-7b62-b656-81416f46c56f implemented the M3 administrative burden scaffold and produced a valid REVIEW handoff. Lead routed systems review by send_input submission 019efd80-7263-7122-a575-b2f991449cea to systems_architect thread 019efd7f-c8b7-7413-abb9-0ac0cdedfd3d. systems_architect accepted after schema-fixing its handoff via send_input submission 019efd88-2368-7b80-9033-0f993893cd94. The accepted scoped strategy keeps administrative burden as a deterministic read-only query over explicit state.m3 runtime inputs and keeps requestSaveV1 M3 rejection intact until M3-SAVE-RUNTIME-001."
   }
 }
