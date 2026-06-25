@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-HISTORICAL-CLAIM-PIPELINE-001",
+  "route_id": "ROUTE-20260625-LEAD-TO-QA-R2",
+  "created_at": "2026-06-25T05:00:41Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "target_thread_id": "019efd25-5f8a-7b13-b157-d1128c308fc8",
+  "source_handoff": "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json",
+  "source_status": "REVIEW",
+  "requested_action": "Verify the R2 wording fix, ASCII/non-ASCII safety, unchanged scope, abstract examples, handoff validity, and required checks before QA routing.",
+  "send_input": {
+    "submission_id": "019efd26-ba3d-7792-a2f2-12fa66805afe",
+    "target": "019efd25-5f8a-7b13-b157-d1128c308fc8",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json",
+  "route_to": "qa_reviewer"
+}

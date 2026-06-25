@@ -1,0 +1,75 @@
+{
+  "message_id": "MSG-20260625-M3-CLAIM-PIPELINE-QA-ACCEPT",
+  "task_id": "M3-HISTORICAL-CLAIM-PIPELINE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT: The R2 artifact satisfies the documentation-only historical claim pipeline task. It uses the existing historical-claim schema/template fields, separates source statement, scholarly interpretation, project inference, and game abstraction, blocks formal historical content and runtime fixture entry without claim/source IDs, keeps examples abstract validation-only, and the R2 ASCII/non-ASCII correction is complete across dirty paths.",
+  "artifacts": [
+    "docs/research/m3-historical-claim-pipeline.md",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "research/m3-claim-pipeline",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On research/m3-claim-pipeline. Dirty paths before QA handoff were project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json, project/tasks/thread-registry.json, docs/research/m3-historical-claim-pipeline.md, two writer outbox handoffs, and two route messages; all are in the task allowed path family."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-HISTORICAL-CLAIM-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-HISTORICAL-CLAIM-PIPELINE-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const b=fs.readFileSync('project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json'); const h=JSON.parse(b.toString('utf8')); const bom=b.length>=3&&b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf; let nonAscii=0; for(const ch of b.toString('utf8')) if(ch.charCodeAt(0)>127) nonAscii++; console.log(JSON.stringify({status:h.status, route_to:h.route_to, tests:h.tests_run.length, allExitZero:h.tests_run.every(t=>t.exit_code===0), bom, nonAscii},null,2)); if(h.status!=='REVIEW'||h.route_to!=='qa_reviewer'||!h.tests_run.every(t=>t.exit_code===0)||bom||nonAscii) process.exit(1);\"",
+      "exit_code": 0,
+      "result": "{\"status\":\"REVIEW\",\"route_to\":\"qa_reviewer\",\"tests\":10,\"allExitZero\":true,\"bom\":false,\"nonAscii\":0}"
+    },
+    {
+      "command": "node -e dirty path allowed/forbidden scope check",
+      "exit_code": 0,
+      "result": "Checked git status --porcelain paths against task allowed and forbidden patterns; files=9 badAllowed=0 badForbidden=0."
+    },
+    {
+      "command": "node -e dirty path BOM/non-ASCII scan",
+      "exit_code": 0,
+      "result": "Scanned all 9 dirty paths; bom=false and nonAscii=0 for every file."
+    },
+    {
+      "command": "node -e JSON parse check for task, outbox route/context JSON, and coordination JSON",
+      "exit_code": 0,
+      "result": "JSON parse ok files=8."
+    },
+    {
+      "command": "node -e artifact marker and R2 wording check",
+      "exit_code": 0,
+      "result": "Required markers present for evidence layers, content-source/runtime fixture blockers, source IDs and claim records, and local delegated roles; old mixed-language phrase absent; artifact bom=false and nonAsciiCount=0."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No output."
+    }
+  ],
+  "decisions": [
+    "Accepted because scope is documentation/policy only and no production code, package code, content-source data, roadmap, gate document, accepted ADR, dependency, or runtime fixture was changed.",
+    "Accepted because the artifact uses the existing historical-claim schema/template fields without changing accepted historical policy semantics.",
+    "Accepted because abstract validation examples use validation/entity.abstract/polity.abstract/source.abstract identifiers and contain no real or real-looking historical names.",
+    "Accepted because the dirty-tree ASCII/BOM scan covers the R2 artifact, both writer handoffs, route messages, task state, and coordination state."
+  ],
+  "risks": [
+    "This task defines the policy pipeline only; downstream content-source, compiler, and runtime fixture tasks still need their own enforcement before formal historical content is added.",
+    "The original writer REVIEW handoff remains in outbox as audit history and includes a documented failed scratch parse followed by a passing rerun; the routed R2 handoff is valid and has all reported tests passing."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may run integration gates for M3-HISTORICAL-CLAIM-PIPELINE-001 and advance task state if no additional lead-level blockers are present.",
+  "created_at": "2026-06-25T05:04:51Z"
+}

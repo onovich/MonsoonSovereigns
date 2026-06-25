@@ -1,0 +1,76 @@
+{
+  "message_id": "MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2",
+  "task_id": "M3-HISTORICAL-CLAIM-PIPELINE-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "R2 targeted writer fix replaced the mixed-language Office Claims phrase with clear ASCII English: local delegated roles. Scope remains documentation-only; examples remain abstract validation examples and no formal historical content was added.",
+  "artifacts": [
+    "docs/research/m3-historical-claim-pipeline.md",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json"
+  ],
+  "branch_or_worktree": "research/m3-claim-pipeline",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified coordination files: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json, project/tasks/thread-registry.json. Untracked files: docs/research/m3-historical-claim-pipeline.md, project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json, project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json, and project/messages/routes/M3-HISTORICAL-CLAIM-PIPELINE-001__ROUTE-20260625-LEAD-PREFLIGHT-TO-HISTORICAL.json. All listed paths are within the task allowed path family; no apps, packages, content-source, roadmap, gate doc, ADR, or dependency path appeared."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-HISTORICAL-CLAIM-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-HISTORICAL-CLAIM-PIPELINE-001.json"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json','project/schemas/historical-claim.schema.json','project/schemas/handoff.schema.json','project/schemas/task.schema.json']; for (const f of files) JSON.parse(fs.readFileSync(f,'utf8')); const task=JSON.parse(fs.readFileSync(files[0],'utf8')); const failures=[]; if(task.status!=='REVIEW') failures.push('task status not REVIEW'); if(!task.scope.allowed_paths.includes('docs/research/**')) failures.push('docs/research not allowed'); if(!task.scope.forbidden_paths.includes('content-source/**')) failures.push('content-source not forbidden'); if(failures.length){ console.error(failures.join('; ')); process.exit(1); } console.log('JSON parse/shape ok files='+files.length+' taskStatus='+task.status);\"",
+      "exit_code": 0,
+      "result": "JSON parse/shape ok files=4 taskStatus=REVIEW"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const f='docs/research/m3-historical-claim-pipeline.md'; const text=fs.readFileSync(f,'utf8'); const oldPhrase='local'+String.fromCharCode(0x4ee3,0x7406); const required=['# M3 Historical Claim Pipeline','### Office Claims','local delegated roles','## Abstract Validation Examples','## ROUTE_TO','qa_reviewer']; const missing=required.filter(s=>!text.includes(s)); const forbidden=[oldPhrase,'Bayinnaung','Toungoo','Hanthawaddy','Pegu','Ava','Ayutthaya','Lan Xang','Mrauk']; const found=forbidden.filter(s=>text.slice(text.indexOf('## Abstract Validation Examples')).includes(s)||s===oldPhrase&&text.includes(s)); if(missing.length||found.length){ console.error(JSON.stringify({missingCount:missing.length,foundCount:found.length})); process.exit(1); } console.log('Markdown targeted parse ok required='+required.length+' forbiddenFound='+found.length);\"",
+      "exit_code": 0,
+      "result": "Markdown targeted parse ok required=6 forbiddenFound=0"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['docs/research/m3-historical-claim-pipeline.md','project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json']; let bad=[]; for(const f of files){ const text=fs.readFileSync(f,'utf8'); const hits=[]; for(let i=0;i<text.length;i++){ if(text.charCodeAt(i)>127) hits.push({index:i,charCode:text.charCodeAt(i)}); } console.log(f+': nonAscii='+hits.length); if(hits.length) bad.push({file:f,hits:hits.slice(0,10)}); } if(bad.length){ console.error(JSON.stringify(bad)); process.exit(1); }\"",
+      "exit_code": 0,
+      "result": "docs/research/m3-historical-claim-pipeline.md: nonAscii=0; project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json: nonAscii=0"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['docs/research/m3-historical-claim-pipeline.md','project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json']; for(const f of files){ const b=fs.readFileSync(f); const bom=b.length>=3&&b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf; console.log(f+': bom='+bom); if(bom) process.exitCode=1; }\"",
+      "exit_code": 0,
+      "result": "docs/research/m3-historical-claim-pipeline.md: bom=false; project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json: bom=false"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No output."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const h=JSON.parse(fs.readFileSync('project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json','utf8')); if(h.status!=='REVIEW'||h.route_to!=='qa_reviewer'||!h.tests_run.every(t=>Number.isInteger(t.exit_code))) throw new Error('bad handoff shape'); console.log('R2 handoff JSON parse/shape ok tests='+h.tests_run.length+' route='+h.route_to);\"",
+      "exit_code": 0,
+      "result": "R2 handoff JSON parse/shape ok tests=10 route=qa_reviewer"
+    },
+    {
+      "command": "node -e \"const child=require('child_process'); const allowed=[/^docs\\/research\\//,/^project\\/schemas\\//,/^project\\/templates\\//,/^project\\/goal-mode-state\\.json$/,/^project\\/model-routing-state\\.json$/,/^project\\/tasks\\/thread-registry\\.json$/,/^project\\/tasks\\/active\\/M3-HISTORICAL-CLAIM-PIPELINE-001\\.json$/,/^project\\/messages\\//]; const lines=child.execSync('git status --porcelain=v1',{encoding:'utf8'}).split(/\\r?\\n/).filter(Boolean); const files=lines.map(line=>line.slice(3).replace(/\\\\/g,'/')); const bad=files.filter(f=>!allowed.some(r=>r.test(f))); if(bad.length){ console.error('bad paths '+bad.join(',')); process.exit(1); } console.log('changed path scope ok files='+files.length);\"",
+      "exit_code": 0,
+      "result": "changed path scope ok files=8"
+    }
+  ],
+  "decisions": [
+    "Made only the requested ASCII wording correction under Office Claims.",
+    "Kept all examples abstract and did not add formal historical names, titles, relationships, symbols, polity claims, or content-source data."
+  ],
+  "risks": [
+    "The untracked route file project/messages/routes/M3-HISTORICAL-CLAIM-PIPELINE-001__ROUTE-20260625-LEAD-PREFLIGHT-TO-HISTORICAL.json appears to be lead preflight routing context and was not modified by this R2 writer fix."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Verify the R2 wording fix, ASCII/non-ASCII safety, unchanged scope, abstract examples, handoff validity, and required checks before QA routing.",
+  "created_at": "2026-06-25T04:54:28Z"
+}

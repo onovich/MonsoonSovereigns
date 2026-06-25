@@ -1,0 +1,82 @@
+{
+  "message_id": "MSG-20260625-M3-CLAIM-PIPELINE-LEAD-ACCEPT",
+  "task_id": "M3-HISTORICAL-CLAIM-PIPELINE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts the M3 historical claim pipeline after historical_researcher R2 and independent qa_reviewer acceptance. The delivered document is a documentation-only research gate for M3 names, titles, kinship, offices, polity relationships, vassalage assertions, and symbols; it uses existing claim schema/template fields, keeps examples abstract validation-only, and changes no product code or formal historical content.",
+  "artifacts": [
+    "docs/research/m3-historical-claim-pipeline.md",
+    "project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW-R2__historical_researcher.json",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/routes/M3-HISTORICAL-CLAIM-PIPELINE-001__ROUTE-20260625-LEAD-PREFLIGHT-TO-HISTORICAL.json",
+    "project/messages/routes/M3-HISTORICAL-CLAIM-PIPELINE-001__ROUTE-20260625-LEAD-TO-QA-R2.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "research/m3-claim-pipeline",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-QA-ACCEPT__qa_reviewer.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-HISTORICAL-CLAIM-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-HISTORICAL-CLAIM-PIPELINE-001.json"
+    },
+    {
+      "command": "node -e scope/encoding check for dirty paths",
+      "exit_code": 0,
+      "result": "scope/encoding ok files=10 nonAscii=0 bom=0"
+    },
+    {
+      "command": "node -e document marker and abstract-example check",
+      "exit_code": 0,
+      "result": "doc markers ok required=12 forbiddenAbstractNames=0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No output."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M3-HISTORICAL-CLAIM-PIPELINE-001 was REVIEW before lead acceptance; all prior integrated tasks remained CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M3-POLITY-VASSALAGE-001 is the remaining ready M3 candidate."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status M3-HISTORICAL-CLAIM-PIPELINE-001 ACCEPTED",
+      "exit_code": 0,
+      "result": "M3-HISTORICAL-CLAIM-PIPELINE-001 ACCEPTED"
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M3-HISTORICAL-CLAIM-PIPELINE-001 may be committed and opened as a PR.",
+    "The first writer handoff is retained as audit history; R2 is the routed writer handoff accepted by QA.",
+    "No downstream M3 implementation task is started by this acceptance."
+  ],
+  "risks": [
+    "The pipeline is documentation and policy only; later content-source, compiler, and runtime fixture tasks still need their own enforcement gates.",
+    "RESEARCH REQUIRED remains a workflow stop label, not a schema status value."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit and open the M3 historical claim pipeline PR. Do not start downstream implementation before integration.",
+  "created_at": "2026-06-25T05:08:32Z"
+}
