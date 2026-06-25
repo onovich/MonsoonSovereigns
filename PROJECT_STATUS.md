@@ -33,6 +33,8 @@ M3 当前进展：`M3-TRIBUTE-TROOP-OBLIGATIONS-001` 已在 PR #70 进入 `origi
 
 M3 当前进展：`M3-POSTWAR-GOVERNANCE-001` 已在 PR #72 进入 `origin/main`（`81380a2836c7985c9f7c7b8f726321cdcdbb6137`）并进入 `CLOSED`。已完成直接统治、恢复/保留臣属统治者与贡赋型战后安排原型，提供即时预览、24 个月 deterministic 对比、原因码、重复同地安排拒绝与 direct-control 标记不变式。下一批 READY M3 任务为 `M3-CLIENT-APPOINTMENT-UI-001` 与 `M3-SAVE-RUNTIME-001`，优先继续 `M3-CLIENT-APPOINTMENT-UI-001`。
 
+M3 当前进展：`M3-CLIENT-APPOINTMENT-UI-001` 已在 PR #74 进入 `origin/main`（`4af3729b469efcb9b2836c9b03155de73d12b384`）并进入 `CLOSED`。已完成 M3 appointment/read-model workspace、candidate eligibility/rejection reason、bulk preview、policy continuity、administrative impact、succession/obligation/result panels、protocol command DTO submission、Storybook 覆盖与 1440px viewport Playwright 回归。下一 READY M3 任务为 `M3-SAVE-RUNTIME-001`。
+
 ## 2. 已冻结决定
 
 | ID | 决定 | 状态 |
