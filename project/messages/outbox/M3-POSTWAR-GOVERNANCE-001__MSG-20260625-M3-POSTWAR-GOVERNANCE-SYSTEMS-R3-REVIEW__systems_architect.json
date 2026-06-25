@@ -1,0 +1,146 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R3-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R3 systems re-review completed. The exact QA path with incoming localPolityId=2 is covered, but the district-scoped guard is still dependent on the incoming localPolityId. A second different-victor postwar command can be accepted for the same district after an existing postwar marker by setting localPolityId to the previous victor marker polity. This leaves stale prior suzerain/obligation rights and, for tribute-only, adds a new overlapping obligation. Request changes before acceptance.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R3-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R3-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m3-postwar-governance; changed/untracked files are task-scoped."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R3-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer R3 handoff JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "Task JSON parsed; required keys present; status REVIEW and route_to systems_architect."
+    },
+    {
+      "command": "node allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 19 changed or untracked paths are within allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "rg boundary/scope searches",
+      "exit_code": 0,
+      "result": "No forbidden random/time, framework/fs, or M4/full-scope drift matches in reviewed implementation/test files."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module <inline cross-victor localPolityId bypass repro>",
+      "exit_code": 0,
+      "result": "After victor 1 restore-vassal-ruler, victor 3 direct-control with localPolityId=1 was accepted, changed controller to 3, and left old 2->1 tribute/troop obligations. Victor 3 tribute-only with localPolityId=1 was also accepted and added 1->3 tribute while old 2->1 obligations remained. validateWorldStateV0 reported 0 invariant errors."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 9 tests passed. Current tests cover localPolityId=2 different-victor direct-control but not the localPolityId bypass or different-victor tribute-only variant."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "14 files passed; 95 tests passed. Existing Node MODULE_TYPELESS_PACKAGE_JSON warning observed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/155 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "review-verdict",
+      "decision": "REQUEST_CHANGES",
+      "reason": "The existing postwar marker guard remains bypassable through payload localPolityId and can still produce stale/overlapping rights."
+    },
+    {
+      "kind": "boundary",
+      "decision": "PASS",
+      "reason": "No allowed_paths/forbidden_paths, dependency, save-format, content-source, UI, or M4 scope drift found."
+    },
+    {
+      "kind": "r2-regressions",
+      "decision": "Mostly intact",
+      "reason": "Same-victor duplicate arrangements, direct-after-vassal with the original local polity, and null ruler/policy restore rejection remain covered and passing."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "high",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "2402, 4229-4236",
+      "issue": "hasExistingPostwarGovernanceArrangement is keyed on incoming localPolityId rather than the district's existing postwar marker state. A caller can set localPolityId to the previous victor marker polity and bypass the same-district postwar guard."
+    },
+    {
+      "severity": "high",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "2444-2484",
+      "issue": "Once the guard is bypassed, the normal apply path can change the district controller or append obligations while stale prior suzerain and obligation rights remain active. validateWorldStateV0 currently does not catch this."
+    },
+    {
+      "severity": "medium",
+      "file": "tests/sim-core-m3-postwar-governance.test.ts",
+      "lines": "214-245",
+      "issue": "R3 regression covers different-victor direct-control only with localPolityId fixed to the original local polity. It does not cover different-victor tribute-only or localPolityId mismatch/bypass cases."
+    }
+  ],
+  "blockers": [
+    "Make the postwar arrangement guard truly district-scoped and independent of incoming localPolityId, or validate localPolityId against the existing/current local controller before the guard can be bypassed.",
+    "Add focused regressions for victor 1 restore-vassal-ruler followed by victor 3 direct-control and tribute-only where localPolityId is changed to the prior victor marker polity; both must reject and leave state unchanged.",
+    "Consider adding an invariant or command validation that prevents active postwar obligation rights from surviving under a conflicting same-district postwar marker."
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Repair the district-scoped postwar marker guard so different-victor same-district arrangements cannot be accepted through localPolityId changes, add the missing regressions, rerun required gates, and return to systems_architect review.",
+  "created_at": "2026-06-25T18:10:04.7861632Z"
+}

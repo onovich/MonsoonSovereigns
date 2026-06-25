@@ -1,0 +1,141 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R2-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 systems re-review accepted. The requested changes were addressed: repeated same-victor same-district postwar arrangements are rejected regardless of settlementId, direct-after-vassal/tribute is coherently rejected instead of partially replacing rights, and restore-vassal-ruler now rejects missing ruler or policy inputs before creating obligations. Regression tests cover the R1 failures, and required validation passed.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m3-postwar-governance; changed/untracked files are task-scoped."
+    },
+    {
+      "command": "rg \"codex-project-ops-workflow: initialized\" -S .",
+      "exit_code": 1,
+      "result": "No initialized project ops wrapper marker found; ran lead-requested pnpm/taskctl commands directly."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer R2 handoff JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "Task JSON parsed; required keys present; status REVIEW and route_to systems_architect."
+    },
+    {
+      "command": "rg boundary/scope searches",
+      "exit_code": 0,
+      "result": "No forbidden random/time, framework/fs, or M4/full-scope drift matches in reviewed implementation/test files."
+    },
+    {
+      "command": "node allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 13 changed or untracked paths are within allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module <inline R1 repro check>",
+      "exit_code": 0,
+      "result": "Different-settlement same-district arrangement, direct-after-vassal, and null-ruler restore are now rejected; rejected commands leave stateHash unchanged."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "14 files passed; 94 tests passed. Existing Node MODULE_TYPELESS_PACKAGE_JSON warning observed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/154 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "review-verdict",
+      "decision": "ACCEPT",
+      "reason": "R2 repairs close the prior authority/obligation overlap findings without expanding product scope."
+    },
+    {
+      "kind": "postwar-conflict-rule",
+      "decision": "Accept reject-on-existing-arrangement for M3.",
+      "reason": "Rejecting replacement avoids introducing treaty/right-retirement semantics before M4 while preserving one-controller and no-overlapping-obligations invariants."
+    },
+    {
+      "kind": "restore-vassal-validation",
+      "decision": "Accept concrete ruler/policy requirement.",
+      "reason": "The method now matches its name and cannot create obligations without a restored or retained local ruler enfeoffment."
+    },
+    {
+      "kind": "save-runtime",
+      "decision": "No packages/save-format changes found; existing M3 save rejection remains acceptable until M3-SAVE-RUNTIME-001."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "low",
+      "issue": "R2 intentionally does not implement replacement or clearing of postwar arrangements. If design later needs replacement, it should be a separate architecture decision with explicit obligation retirement and rights-transfer events."
+    },
+    {
+      "severity": "low",
+      "issue": "Projection coefficients remain M3 prototype constants and should be tuned by balance work, not treated as final economy or military balance."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead orchestration. Systems architecture review accepts M3-POSTWAR-GOVERNANCE-001 R2.",
+  "created_at": "2026-06-25T17:47:38.0002448Z"
+}

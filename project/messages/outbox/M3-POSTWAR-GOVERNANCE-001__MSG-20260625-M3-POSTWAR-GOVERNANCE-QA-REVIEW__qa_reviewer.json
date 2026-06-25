@@ -1,0 +1,143 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-QA-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent read-only QA rejects M3-POSTWAR-GOVERNANCE-001 after finding an unclosed same-district stale-rights variant. A restored-vassal postwar arrangement by victor 1 can be followed by direct-control for the same district by victor 3; the second command is accepted, district controller becomes 3, but local polity 2 remains suzerain-linked to victor 1 with active tribute/troop obligations to victor 1. Existing validation reports zero invariant errors.",
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "symbols": [
+        "evaluateApplyM3PostwarGovernance",
+        "hasExistingPostwarGovernanceArrangement"
+      ],
+      "lines": "2402, 2444-2452, 2483, 4230-4237",
+      "reproduction": "Inline Node repro: create a 3-polity M3 world; apply restore-vassal-ruler for victorPolityId=1/localPolityId=2/districtId=2; then apply direct-control for victorPolityId=3/localPolityId=2/districtId=2 with a different settlementId.",
+      "observed": "firstStatus=accepted, secondStatus=accepted, districtController=3, localSuzerain=1, active obligations remain debtor=2 creditor=1 for tribute and troop, validateWorldStateV0(second.runtime.world)=[]",
+      "impact": "Violates no illegal overlapping rights and coherent same-district postwar arrangement semantics. The district has one controller, but old suzerain and obligations survive under a different victor, so the authority/obligation state is internally misleading and not caught by tests or invariants.",
+      "necessary_fix": "Make the postwar arrangement guard district-scoped for existing postwar arrangements regardless of victor, or implement an explicit replacement command that deterministically retires/clears prior suzerain, obligations, and enfeoffment rights with events. Add regression coverage for different-victor same-district restore-vassal to direct-control and/or tribute-only attempts."
+    }
+  ],
+  "r1_r2_assessment": {
+    "r1_same_victor_findings_closed": true,
+    "systems_r2_accept_justified": false,
+    "reason": "R2 tests cover same-victor same-district duplicate settlementId changes and direct-after-vassal through the fixed helper victor, but do not cover a different victor applying a second same-district arrangement."
+  },
+  "scope_assessment": {
+    "allowed_forbidden_paths": "PASS",
+    "combined_scope_files": 19,
+    "scope_note": "Branch diff plus current status paths are all under allowed_paths and none match forbidden_paths.",
+    "scope_creep": "No M4 campaign/marching/battle/siege/supply/reinforcement, full diplomacy/treaty/legitimacy/rebellion, client UI, content-source, save-format migration, historical content, or new dependency implementation drift found."
+  },
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "validate writer R2 handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "validate systems R2 handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "taskctl validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "status REVIEW, route_to systems_architect, risk R3"
+    },
+    {
+      "command": "allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "combined scope ok, 19 files"
+    },
+    {
+      "command": "rg random/time/framework/fs scans",
+      "exit_code": 1,
+      "result": "no matches in changed implementation/test surfaces"
+    },
+    {
+      "command": "rg M4/full-scope drift scans",
+      "exit_code": 0,
+      "result": "matches only in task/handoff negative-scope text and pre-existing save-format import; no diff drift"
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed, 8 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "14 files passed, 94 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 7 tests passed"
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "hello 61e0ba1c, command/query d275faa4, save/load 28074edd"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture passed; root 24 files/154 tests; web 1 file/3 tests"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ],
+  "blockers": [
+    "Reject or explicitly replace any existing same-district postwar arrangement across different victor polities.",
+    "Add regression tests proving the different-victor same-district path cannot leave stale suzerain, enfeoffment, or obligation rights."
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: R1 same-victor findings are fixed, but same-district different-victor replacement still leaves stale suzerain and obligation rights.",
+    "REQUEST_CHANGES: systems R2 ACCEPT is not sufficient until different-victor same-district postwar arrangements are rejected or explicitly replaced."
+  ],
+  "risks": [
+    "If same-district different-victor arrangements remain accepted, authority and obligation state can diverge while validateWorldStateV0 reports no invariant errors.",
+    "Replacement semantics are intentionally out of scope unless implemented with deterministic retirement/clearing events and separate review."
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Repair the same-district different-victor stale-rights path, add focused regression coverage, rerun required gates, and return to systems_architect/qa review.",
+  "created_at": "2026-06-25T17:55:00Z"
+}

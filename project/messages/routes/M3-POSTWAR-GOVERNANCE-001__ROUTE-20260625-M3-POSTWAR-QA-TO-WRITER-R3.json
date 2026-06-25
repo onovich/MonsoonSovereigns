@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "route_id": "ROUTE-20260625-M3-POSTWAR-QA-TO-WRITER-R3",
+  "created_at": "2026-06-25T18:01:31Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "simulation_engineer",
+  "target_thread_id": "019effbf-bfc9-7f30-8e2d-7c290d1080a3",
+  "source_handoff": "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-QA-REVIEW__qa_reviewer.json",
+  "source_status": "REQUEST_CHANGES",
+  "requested_action": "Fix same-district different-victor postwar stale-rights path, add regression coverage, preserve R2 fixes, run required gates, and emit R3 REVIEW handoff.",
+  "send_input": {
+    "submission_id": "019efff1-9e48-7c11-8376-6b6d91c076f0",
+    "target": "019effbf-bfc9-7f30-8e2d-7c290d1080a3",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-QA-REVIEW__qa_reviewer.json",
+  "route_to": "simulation_engineer"
+}

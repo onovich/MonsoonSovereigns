@@ -1,0 +1,142 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R4-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R4 fixes the named localPolityId bypass after restore-vassal-ruler, and the standard scope, protocol, deterministic, and mechanical gates pass. However the same district guard is still not fully district-scoped for direct-control-first settlements: after victor 1 applies direct-control to district 2, the same district accepts a second postwar arrangement, including same-victor direct-control, same-victor tribute-only, and victor 3 direct-control. This violates the required no-repeat same-district postwar arrangement rule and can replace the controller without an explicit retirement/replacement semantics.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R4-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R4-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R4-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer R4 handoff JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task file validated."
+    },
+    {
+      "command": "node -e custom task JSON parse/shape check for project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+      "exit_code": 0,
+      "result": "Task JSON parsed with status REVIEW, route_to systems_architect, risk_level R3, 10 scoped allowed paths, 20 scoped forbidden paths, 6 acceptance criteria, and 10 required tests."
+    },
+    {
+      "command": "node -e git diff/git ls-files allowed-forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 23 changed or untracked paths present before this review handoff were inside task allowed_paths and none matched forbidden_paths."
+    },
+    {
+      "command": "rg random/time scan over packages/sim-core/src/command-query-v1.ts packages/protocol/src/index.ts tests/sim-core-m3-postwar-governance.test.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "No Math.random, Date.now, performance.now, new Date, Date, or random matches in the touched implementation/test files."
+    },
+    {
+      "command": "rg framework/fs scan over packages/sim-core/src/command-query-v1.ts packages/protocol/src/index.ts tests/sim-core-m3-postwar-governance.test.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "No React, Pixi, Electron, DOM, browser storage, fs, node:fs, readFile/writeFile, process.cwd, or process.env matches in the touched implementation/test files."
+    },
+    {
+      "command": "rg M4/full-scope scan over packages/sim-core/src/command-query-v1.ts packages/protocol/src/index.ts tests/sim-core-m3-postwar-governance.test.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "No campaign, marching, battle, siege, supply, reinforcement, treaty, legitimacy, rebellion, narrative chain, historical, content-source, or client UI matches in the touched implementation/test files."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <inline postwar same-district repro>",
+      "exit_code": 0,
+      "result": "R4 named blocker is fixed: restore-vassal-ruler by victor 1 followed by victor 3 direct-control or tribute-only with localPolityId 1 rejects and preserves state hash. Remaining blocker reproduced: direct-control by victor 1 followed by same-victor direct-control, same-victor tribute-only, or victor 3 direct-control on district 2 is accepted and changes state hash/controller."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Targeted postwar file passed: 1 file passed; 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "sim-core package tests passed: 14 files passed; 96 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "protocol package tests passed: 1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker deterministic hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/156 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R4-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems R4 handoff JSON validated after writing."
+    },
+    {
+      "command": "node -e final git diff/git ls-files allowed-forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 24 changed or untracked paths after this review handoff are inside task allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Worktree is on feat/m3-postwar-governance with task-scoped modified/untracked implementation, tests, task, and message/route files. No forbidden-path changes observed."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES is required because a same-district direct-control-first postwar arrangement is still treated as replaceable.",
+    "The R4 change at packages/sim-core/src/command-query-v1.ts:4229 is independent of incoming payload.localPolityId, but it only treats non-direct administrative markers or direct markers not matching the current controller as existing postwar arrangements.",
+    "Because direct-control creates a direct administrative marker for the current controller, the new guard does not see that direct-control settlement as an existing postwar arrangement.",
+    "R2/R3 fixes for restore-vassal-ruler duplicate, direct-after-vassal, different-victor after vassal, and missing ruler/policy rejection remain covered by tests/sim-core-m3-postwar-governance.test.ts:169, :193, :214, :247, and :287."
+  ],
+  "risks": [
+    "The current same-district guard allows implicit replacement of a direct-control postwar settlement without explicit clearing of rights, obligations, enfeoffments, or suzerain semantics.",
+    "Existing tests do not cover direct-control-first duplicate/replacement cases, so the failing path passes the current targeted and package test suites."
+  ],
+  "blockers": [
+    {
+      "code": "POSTWAR-DIRECT-CONTROL-REPLACEMENT",
+      "path": "packages/sim-core/src/command-query-v1.ts:4229",
+      "details": "After victor 1 applies direct-control to district 2, subsequent sim.apply-m3-postwar-governance commands for the same district are accepted. Reproduced accepted transitions: same-victor direct-control with a different settlementId, same-victor tribute-only with a different settlementId, and victor 3 direct-control. Expected behavior for this task is rejection with unchanged state until an explicit replacement/retirement command exists.",
+      "suggested_fix": "Make the duplicate arrangement guard mark any already-applied postwar arrangement for the district as existing, including direct-control markers, or introduce an explicit postwar arrangement marker/audit field that distinguishes initial fixture direct administration from an applied direct-control settlement. Add regression tests for direct-control-first duplicate and different-victor replacement paths."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Route back to original simulation_engineer thread 019effbf-bfc9-7f30-8e2d-7c290d1080a3. Fix same-district direct-control-first replacement so any prior applied postwar arrangement for district 2 rejects later direct-control, tribute-only, or restore-vassal-ruler commands unless explicit replacement semantics are added. Add regressions for direct-control-first duplicate/replacement cases and rerun the required gates.",
+  "created_at": "2026-06-25T18:24:04.5901553Z"
+}

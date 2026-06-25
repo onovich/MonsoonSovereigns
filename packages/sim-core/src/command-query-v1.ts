@@ -7,6 +7,7 @@ import {
   type CommandActorV1,
   type GameCommandV1,
   type GameQueryV1,
+  type M3PostwarGovernanceMethodV1,
   type SaveLoadCanaryScriptV1,
   type ProtocolErrorCodeV1,
   type SerializableProtocolErrorV1
@@ -53,6 +54,8 @@ import {
   computeM3AdministrativeBurdenProfileV0,
   type DistrictControlState,
   type DistrictId,
+  type M3AdministrativeControlModeV0,
+  type M3AdministrativeDistrictStateV0,
   type M3AdministrativeBurdenProfileV0,
   type M3AppointmentAuditEventKindV0,
   type M3AppointmentAuditEventId,
@@ -245,6 +248,22 @@ export type DomainEventV1 =
       readonly polityId: PolityId;
       readonly status: "pending" | "resolved";
       readonly outcomeKind: "disputed" | "peaceful" | "regency" | null;
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m3-postwar-governance-applied";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly settlementId: string;
+      readonly method: M3PostwarGovernanceMethodV1;
+      readonly victorPolityId: PolityId;
+      readonly localPolityId: PolityId;
+      readonly districtId: DistrictId;
+      readonly obligationIds: readonly number[];
+      readonly administrativeLoad: number;
+      readonly reasonCodes: readonly string[];
       readonly revisionBefore: number;
       readonly revisionAfter: number;
     };
@@ -458,6 +477,20 @@ export type QueryResultV1 =
             readonly revision: number;
             readonly monthOfYear: number;
             readonly route: M2TransportRoutePreviewReadModelV1;
+          }
+        | {
+            readonly kind: "sim.preview-m3-postwar-governance";
+            readonly day: number;
+            readonly revision: number;
+            readonly months: number;
+            readonly arrangements: readonly M3PostwarGovernancePreviewReadModelV1[];
+          }
+        | {
+            readonly kind: "sim.compare-m3-postwar-governance-outcomes";
+            readonly day: number;
+            readonly revision: number;
+            readonly months: number;
+            readonly outcomes: readonly M3PostwarGovernanceOutcomeReadModelV1[];
           };
     }
   | {
@@ -561,6 +594,42 @@ export interface M2TransportRoutePreviewEdgeReadModelV1 {
   readonly seasonalCapacity: number;
   readonly stockAmount: number;
   readonly remainingCapacityAfterStock: number;
+}
+
+export interface M3PostwarGovernanceObligationShapeReadModelV1 {
+  readonly periodDays: number;
+  readonly tributeCash: number;
+  readonly troopHeadcount: number;
+  readonly hasDirectGarrison: boolean;
+}
+
+export interface M3PostwarGovernancePreviewReadModelV1 {
+  readonly method: M3PostwarGovernanceMethodV1;
+  readonly districtId: DistrictId;
+  readonly victorPolityId: PolityId;
+  readonly localPolityId: PolityId;
+  readonly administrativeBurden: M3AdministrativeBurdenProfileV0;
+  readonly obligationShape: M3PostwarGovernanceObligationShapeReadModelV1;
+  readonly expectedIncomeCash: number;
+  readonly expectedTributeCash: number;
+  readonly localAcceptanceBps: number;
+  readonly reliabilityBps: number;
+  readonly militaryReadinessBps: number;
+  readonly militaryContributionTroops: number;
+  readonly riskBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M3PostwarGovernanceOutcomeReadModelV1 {
+  readonly months: number;
+  readonly method: M3PostwarGovernanceMethodV1;
+  readonly totalExpectedIncomeCash: number;
+  readonly totalExpectedTributeCash: number;
+  readonly averageAdministrativeLoad: number;
+  readonly averageReliabilityBps: number;
+  readonly totalMilitaryContributionTroops: number;
+  readonly averageRiskBps: number;
+  readonly reasonCodes: readonly string[];
 }
 
 interface CommandEvaluationV1 {
@@ -954,6 +1023,8 @@ function validateAndEvaluateCommand(
       return evaluateResolveSuccession(runtime.world, command);
     case "sim.create-character-relationship":
       return evaluateCreateCharacterRelationship(runtime.world, command);
+    case "sim.apply-m3-postwar-governance":
+      return evaluateApplyM3PostwarGovernance(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -2289,6 +2360,164 @@ function evaluateCreateCharacterRelationship(
   });
 }
 
+type PostwarGovernanceEvaluationInput = {
+  readonly world: WorldStateV0;
+  readonly m3: M3PolityVassalageStateV0;
+  readonly victorPolityId: PolityId;
+  readonly localPolityId: PolityId;
+  readonly districtId: DistrictId;
+  readonly method: M3PostwarGovernanceMethodV1;
+};
+
+function evaluateApplyM3PostwarGovernance(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.apply-m3-postwar-governance" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.apply-m3-postwar-governance");
+  }
+
+  const victorPolityId = parsePolityId(command.payload.victorPolityId);
+  const localPolityId = parsePolityId(command.payload.localPolityId);
+  const districtId = parseDistrictId(command.payload.districtId);
+  const validation = validatePostwarGovernanceRequest({
+    world,
+    m3,
+    victorPolityId,
+    localPolityId,
+    districtId,
+    method: command.payload.method
+  });
+  if (validation !== null) {
+    return { ok: false, error: validation };
+  }
+  if (!actorHasPolityAuthority(m3, command.actor, victorPolityId)) {
+    return authorityDeniedError();
+  }
+  const restoreValidation = validateRestoreVassalPayload(m3, command, localPolityId, districtId);
+  if (restoreValidation !== null) {
+    return { ok: false, error: restoreValidation };
+  }
+  if (hasExistingPostwarGovernanceArrangement(world, m3, districtId)) {
+    return {
+      ok: false,
+      error: {
+        code: "duplicate-obligation-settlement",
+        path: "payload.districtId",
+        message: "sim.apply-m3-postwar-governance district already has a postwar arrangement."
+      }
+    };
+  }
+  if (
+    command.payload.method !== "direct-control" &&
+    wouldCreateSuzerainCycle(m3.polities, localPolityId, victorPolityId)
+  ) {
+    return {
+      ok: false,
+      error: {
+        code: "acyclicity-violation",
+        path: "payload.victorPolityId",
+        message: "sim.apply-m3-postwar-governance would create a suzerain cycle."
+      }
+    };
+  }
+  const preview = computeM3PostwarGovernancePreview({
+    world,
+    m3,
+    victorPolityId,
+    localPolityId,
+    districtId,
+    method: command.payload.method,
+    months: 24
+  });
+  const nextDistrictControl =
+    command.payload.method === "direct-control"
+      ? { kind: "controlled" as const, controllerPolityId: victorPolityId }
+      : { kind: "controlled" as const, controllerPolityId: localPolityId };
+  const districts = world.state.districts.map((district) =>
+    district.definitionId === districtId
+      ? { definitionId: district.definitionId, control: nextDistrictControl }
+      : district
+  );
+  const polities = m3.polities.map((polity) =>
+    polity.polityId === localPolityId && command.payload.method !== "direct-control"
+      ? { polityId: localPolityId, directSuzerainPolityId: victorPolityId }
+      : polity
+  );
+  const nextAdministrativeDistrict = administrativeDistrictFromPostwarPreview(preview);
+  const administrativeDistricts = [
+    ...m3.administrativeDistricts.filter((entry) => entry.districtId !== districtId),
+    nextAdministrativeDistrict
+  ];
+  const obligationBuild = buildPostwarObligations({
+    world,
+    m3,
+    command,
+    preview,
+    victorPolityId,
+    localPolityId
+  });
+  const enfeoffments =
+    command.payload.method === "restore-vassal-ruler" &&
+    command.payload.localRulerCharacterId !== null &&
+    command.payload.policyId !== null
+      ? [
+          ...m3.enfeoffments.filter((entry) => entry.districtId !== districtId),
+          {
+            districtId,
+            holderCharacterId: parsePersonId(command.payload.localRulerCharacterId),
+            grantedByPolityId: victorPolityId,
+            policyId: parseM3PolicyId(command.payload.policyId),
+            grantedDay: world.meta.currentDay,
+            reasonCode: command.payload.reasonCode
+          }
+        ]
+      : m3.enfeoffments.filter((entry) => entry.districtId !== districtId);
+
+  const nextM3 = canonicalizeM3PolityVassalageState({
+    ...m3,
+    polities,
+    administrativeDistricts,
+    obligations: [...m3.obligations, ...obligationBuild.obligations],
+    obligationAuditEvents: [...m3.obligationAuditEvents, ...obligationBuild.auditEvents],
+    enfeoffments
+  });
+  const nextWorld = commitRuntimeState(world, { ...world.state, districts, m3: nextM3 });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      wouldChangeState: true,
+      events: [
+        {
+          schemaVersion: 1,
+          kind: "sim.m3-postwar-governance-applied",
+          commandId: command.commandId,
+          actor: command.actor,
+          settlementId: command.payload.settlementId,
+          method: command.payload.method,
+          victorPolityId,
+          localPolityId,
+          districtId,
+          obligationIds: obligationBuild.obligations.map((obligation) => obligation.id),
+          administrativeLoad: preview.administrativeBurden.administrativeLoad,
+          reasonCodes: preview.reasonCodes,
+          revisionBefore: world.meta.revision,
+          revisionAfter: nextWorld.meta.revision
+        }
+      ],
+      deltas: []
+    }
+  };
+}
+
 function evaluateVerifyStateHash(
   world: WorldStateV0,
   command: Extract<GameCommandV1, { readonly kind: "sim.verify-state-hash" }>
@@ -2989,11 +3218,15 @@ function m3MissingError(commandKind: string): EvaluationResult {
 function badIdError(path: string, message: string): EvaluationResult {
   return {
     ok: false,
-    error: {
-      code: "bad-id",
-      path,
-      message
-    }
+    error: badIdDomainError(path, message)
+  };
+}
+
+function badIdDomainError(path: string, message: string): DomainErrorV1 {
+  return {
+    code: "bad-id",
+    path,
+    message
   };
 }
 
@@ -3639,6 +3872,10 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM3SuccessionCrisesQuery(runtime);
     case "sim.preview-m2-transport-route":
       return executeM2TransportRoutePreviewQuery(runtime, query);
+    case "sim.preview-m3-postwar-governance":
+      return executeM3PostwarGovernancePreviewQuery(runtime, query);
+    case "sim.compare-m3-postwar-governance-outcomes":
+      return executeM3PostwarGovernanceOutcomesQuery(runtime, query);
   }
 }
 
@@ -3775,6 +4012,765 @@ function executeM3SuccessionCrisesQuery(runtime: SimulationRuntimeV1): QueryResu
       }))
     }
   };
+}
+
+function executeM3PostwarGovernancePreviewQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.preview-m3-postwar-governance" }>
+): QueryResultV1 {
+  const m3 = runtime.world.state.m3;
+  if (m3 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m3-state-missing",
+        path: "state.m3",
+        message: "sim.preview-m3-postwar-governance requires an M3 polity vassalage state."
+      }
+    };
+  }
+
+  const victorPolityId = parsePolityId(query.payload.victorPolityId);
+  const localPolityId = parsePolityId(query.payload.localPolityId);
+  const districtId = parseDistrictId(query.payload.districtId);
+  const validation = validatePostwarGovernanceRequest({
+    world: runtime.world,
+    m3,
+    victorPolityId,
+    localPolityId,
+    districtId,
+    method: query.payload.methods[0] ?? "direct-control"
+  });
+  if (validation !== null) {
+    return { status: "rejected", error: validation };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.preview-m3-postwar-governance",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      months: query.payload.months,
+      arrangements: query.payload.methods.map((method) =>
+        computeM3PostwarGovernancePreview({
+          world: runtime.world,
+          m3,
+          victorPolityId,
+          localPolityId,
+          districtId,
+          method,
+          months: query.payload.months
+        })
+      )
+    }
+  };
+}
+
+function executeM3PostwarGovernanceOutcomesQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.compare-m3-postwar-governance-outcomes" }>
+): QueryResultV1 {
+  const m3 = runtime.world.state.m3;
+  if (m3 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m3-state-missing",
+        path: "state.m3",
+        message: "sim.compare-m3-postwar-governance-outcomes requires an M3 polity vassalage state."
+      }
+    };
+  }
+
+  const victorPolityId = parsePolityId(query.payload.victorPolityId);
+  const localPolityId = parsePolityId(query.payload.localPolityId);
+  const districtId = parseDistrictId(query.payload.districtId);
+  const appliedMethods = appliedPostwarMethods(m3, districtId, victorPolityId, localPolityId);
+  const methods =
+    appliedMethods.length === 0
+      ? (["direct-control", "restore-vassal-ruler", "tribute-only"] as const)
+      : appliedMethods;
+  const validation = validatePostwarGovernanceRequest({
+    world: runtime.world,
+    m3,
+    victorPolityId,
+    localPolityId,
+    districtId,
+    method: methods[0] ?? "direct-control"
+  });
+  if (validation !== null) {
+    return { status: "rejected", error: validation };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.compare-m3-postwar-governance-outcomes",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      months: query.payload.months,
+      outcomes: methods.map((method) =>
+        postwarPreviewToOutcome(
+          computeM3PostwarGovernancePreview({
+            world: runtime.world,
+            m3,
+            victorPolityId,
+            localPolityId,
+            districtId,
+            method,
+            months: query.payload.months
+          }),
+          query.payload.months
+        )
+      )
+    }
+  };
+}
+
+function validatePostwarGovernanceRequest(
+  input: PostwarGovernanceEvaluationInput
+): DomainErrorV1 | null {
+  if (!input.m3.polities.some((entry) => entry.polityId === input.victorPolityId)) {
+    return badIdDomainError(
+      "payload.victorPolityId",
+      "M3 postwar governance references a missing victor PolityId."
+    );
+  }
+  if (!input.m3.polities.some((entry) => entry.polityId === input.localPolityId)) {
+    return badIdDomainError(
+      "payload.localPolityId",
+      "M3 postwar governance references a missing local PolityId."
+    );
+  }
+  if (input.victorPolityId === input.localPolityId) {
+    return badIdDomainError(
+      "payload.localPolityId",
+      "M3 postwar governance requires different victor and local polities."
+    );
+  }
+  if (!input.world.definitions.districts.some((entry) => entry.id === input.districtId)) {
+    return badIdDomainError(
+      "payload.districtId",
+      "M3 postwar governance references a missing DistrictId."
+    );
+  }
+
+  return null;
+}
+
+function validateRestoreVassalPayload(
+  m3: M3PolityVassalageStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.apply-m3-postwar-governance" }>,
+  localPolityId: PolityId,
+  districtId: DistrictId
+): DomainErrorV1 | null {
+  if (command.payload.method !== "restore-vassal-ruler") {
+    return null;
+  }
+  if (command.payload.localRulerCharacterId === null) {
+    return {
+      code: "invalid-payload",
+      path: "payload.localRulerCharacterId",
+      message: "restore-vassal-ruler requires a local ruler character."
+    };
+  }
+  if (command.payload.policyId === null) {
+    return {
+      code: "invalid-payload",
+      path: "payload.policyId",
+      message: "restore-vassal-ruler requires a district policy."
+    };
+  }
+
+  const localRulerCharacterId = parsePersonId(command.payload.localRulerCharacterId);
+  const ruler = findM3Character(m3, localRulerCharacterId);
+  if (ruler === undefined) {
+    return badIdDomainError(
+      "payload.localRulerCharacterId",
+      "restore-vassal-ruler references a missing local ruler character."
+    );
+  }
+  const availability = validateM3CharacterAvailabilityAtPath(
+    ruler,
+    districtId,
+    "payload.localRulerCharacterId"
+  );
+  if (availability !== null) {
+    return availability;
+  }
+  if (ruler.polityId !== localPolityId) {
+    return {
+      code: "office-eligibility-failed",
+      path: "payload.localRulerCharacterId",
+      message: "restore-vassal-ruler requires a ruler from the local polity."
+    };
+  }
+
+  const policyId = parseM3PolicyId(command.payload.policyId);
+  const policy = m3.policies.find((entry) => entry.policyId === policyId);
+  if (policy === undefined) {
+    return badIdDomainError(
+      "payload.policyId",
+      "restore-vassal-ruler references a missing district policy."
+    );
+  }
+  if (policy.target.kind !== "district" || policy.target.districtId !== districtId) {
+    return {
+      code: "invalid-payload",
+      path: "payload.policyId",
+      message: "restore-vassal-ruler policy must target the restored district."
+    };
+  }
+
+  return null;
+}
+
+function hasExistingPostwarGovernanceArrangement(
+  world: WorldStateV0,
+  m3: M3PolityVassalageStateV0,
+  districtId: DistrictId
+): boolean {
+  const district = world.state.districts.find((entry) => entry.definitionId === districtId);
+  const controllerPolityId =
+    district?.control.kind === "controlled" ? district.control.controllerPolityId : null;
+  return (
+    m3.administrativeDistricts.some(
+      (entry) =>
+        entry.districtId === districtId &&
+        (entry.controlMode !== "direct" ||
+          (controllerPolityId !== null && entry.polityId !== controllerPolityId))
+    ) ||
+    m3.obligations.some((obligation) =>
+      obligation.obligationSource.sourceId.startsWith(postwarDirectControlMarkerPrefix(districtId))
+    )
+  );
+}
+
+function computeM3PostwarGovernancePreview(input: {
+  readonly world: WorldStateV0;
+  readonly m3: M3PolityVassalageStateV0;
+  readonly victorPolityId: PolityId;
+  readonly localPolityId: PolityId;
+  readonly districtId: DistrictId;
+  readonly method: M3PostwarGovernanceMethodV1;
+  readonly months: number;
+}): M3PostwarGovernancePreviewReadModelV1 {
+  const base = postwarDistrictBase(input.world, input.m3, input.localPolityId, input.districtId);
+  const burden = computeM3AdministrativeBurdenProfileV0({
+    polityId: input.victorPolityId,
+    districtId: input.districtId,
+    controlMode: postwarControlMode(input.method),
+    localComplexity: base.localComplexity + postwarLocalComplexityBump(input.method),
+    communicationCost: base.communicationCost + postwarCommunicationBump(input.method),
+    directness: postwarDirectness(input.method, base.directness),
+    frontierPressure: base.frontierPressure + postwarFrontierBump(input.method),
+    administrativeCapacity: base.administrativeCapacity
+  });
+  const obligationShape = postwarObligationShape(input.method, base);
+  const cycles = postwarCycles(input.months, obligationShape.periodDays);
+  const expectedIncomeCash = divideInteger(
+    base.cashStock *
+      input.months *
+      burden.realizableIncomeBps *
+      postwarIncomeShareBps(input.method),
+    120_000_000
+  );
+  const expectedTributeCash = obligationShape.tributeCash * cycles;
+  const localAcceptanceBps = clampBps(
+    postwarLocalAcceptanceBaseBps(input.method) -
+      divideInteger(burden.overload, 2) -
+      divideInteger(burden.delayRiskBps, 20)
+  );
+  const reliabilityBps = clampBps(
+    divideInteger(
+      burden.obligationReliabilityBps * 2 +
+        localAcceptanceBps +
+        postwarReliabilityBaseBps(input.method),
+      4
+    )
+  );
+  const militaryReadinessBps = clampBps(
+    divideInteger(burden.readinessBps + postwarReadinessBaseBps(input.method), 2)
+  );
+  const militaryContributionTroops = divideInteger(
+    obligationShape.troopHeadcount * militaryReadinessBps,
+    10_000
+  );
+  const riskBps = clampBps(10_000 - divideInteger(localAcceptanceBps + reliabilityBps, 2));
+
+  return {
+    method: input.method,
+    districtId: input.districtId,
+    victorPolityId: input.victorPolityId,
+    localPolityId: input.localPolityId,
+    administrativeBurden: burden,
+    obligationShape,
+    expectedIncomeCash,
+    expectedTributeCash,
+    localAcceptanceBps,
+    reliabilityBps,
+    militaryReadinessBps,
+    militaryContributionTroops,
+    riskBps,
+    reasonCodes: postwarReasonCodes(input.method, burden, obligationShape, localAcceptanceBps)
+  };
+}
+
+function postwarPreviewToOutcome(
+  preview: M3PostwarGovernancePreviewReadModelV1,
+  months: number
+): M3PostwarGovernanceOutcomeReadModelV1 {
+  return {
+    months,
+    method: preview.method,
+    totalExpectedIncomeCash: preview.expectedIncomeCash,
+    totalExpectedTributeCash: preview.expectedTributeCash,
+    averageAdministrativeLoad: preview.administrativeBurden.administrativeLoad,
+    averageReliabilityBps: preview.reliabilityBps,
+    totalMilitaryContributionTroops:
+      preview.militaryContributionTroops * postwarCycles(months, 360),
+    averageRiskBps: preview.riskBps,
+    reasonCodes: preview.reasonCodes
+  };
+}
+
+function postwarDistrictBase(
+  world: WorldStateV0,
+  m3: M3PolityVassalageStateV0,
+  localPolityId: PolityId,
+  districtId: DistrictId
+): {
+  readonly localComplexity: number;
+  readonly communicationCost: number;
+  readonly directness: number;
+  readonly frontierPressure: number;
+  readonly administrativeCapacity: number;
+  readonly cashStock: number;
+  readonly availableLabor: number;
+} {
+  const row =
+    m3.administrativeDistricts.find(
+      (entry) => entry.polityId === localPolityId && entry.districtId === districtId
+    ) ?? m3.administrativeDistricts.find((entry) => entry.districtId === districtId);
+  const group = world.state.m2?.populationGroups.find((entry) => entry.districtId === districtId);
+
+  return {
+    localComplexity: row?.localComplexity ?? 160,
+    communicationCost: row?.communicationCost ?? 100,
+    directness: row?.directness ?? 140,
+    frontierPressure: row?.frontierPressure ?? 120,
+    administrativeCapacity: row?.administrativeCapacity ?? 900,
+    cashStock: group?.cashStock ?? 0,
+    availableLabor: group?.availableLabor ?? 0
+  };
+}
+
+function postwarObligationShape(
+  method: M3PostwarGovernanceMethodV1,
+  base: { readonly cashStock: number; readonly availableLabor: number }
+): M3PostwarGovernanceObligationShapeReadModelV1 {
+  switch (method) {
+    case "direct-control":
+      return {
+        periodDays: 360,
+        tributeCash: 0,
+        troopHeadcount: divideInteger(base.availableLabor, 30),
+        hasDirectGarrison: true
+      };
+    case "restore-vassal-ruler":
+      return {
+        periodDays: 360,
+        tributeCash: divideInteger(base.cashStock, 5),
+        troopHeadcount: divideInteger(base.availableLabor, 20),
+        hasDirectGarrison: false
+      };
+    case "tribute-only":
+      return {
+        periodDays: 360,
+        tributeCash: divideInteger(base.cashStock, 10),
+        troopHeadcount: 0,
+        hasDirectGarrison: false
+      };
+  }
+}
+
+function administrativeDistrictFromPostwarPreview(
+  preview: M3PostwarGovernancePreviewReadModelV1
+): M3AdministrativeDistrictStateV0 {
+  return {
+    polityId: preview.victorPolityId,
+    districtId: preview.districtId,
+    controlMode: preview.administrativeBurden.controlMode,
+    localComplexity: preview.administrativeBurden.localComplexity,
+    communicationCost: preview.administrativeBurden.communicationCost,
+    directness: preview.administrativeBurden.directness,
+    frontierPressure: preview.administrativeBurden.frontierPressure,
+    administrativeCapacity: preview.administrativeBurden.administrativeCapacity
+  };
+}
+
+function buildPostwarObligations(input: {
+  readonly world: WorldStateV0;
+  readonly m3: M3PolityVassalageStateV0;
+  readonly command: Extract<GameCommandV1, { readonly kind: "sim.apply-m3-postwar-governance" }>;
+  readonly preview: M3PostwarGovernancePreviewReadModelV1;
+  readonly victorPolityId: PolityId;
+  readonly localPolityId: PolityId;
+}): {
+  readonly obligations: readonly M3ObligationStateV0[];
+  readonly auditEvents: readonly M3ObligationAuditEventStateV0[];
+} {
+  let obligationId = nextNumericId(input.m3.obligations);
+  let auditEventId = nextNumericId(input.m3.obligationAuditEvents);
+  const obligations: M3ObligationStateV0[] = [];
+  const auditEvents: M3ObligationAuditEventStateV0[] = [];
+  const due = {
+    kind: "cadence" as const,
+    periodDays: input.preview.obligationShape.periodDays,
+    nextDueDay: parseGameDay(input.world.meta.currentDay + input.preview.obligationShape.periodDays)
+  };
+  const tributeRequirement = {
+    kind: "amount" as const,
+    resourceKind: "cash" as const,
+    amount: input.preview.obligationShape.tributeCash
+  };
+  if (input.command.payload.method === "direct-control") {
+    const garrisonMarkerRequirement = {
+      kind: "condition" as const,
+      conditionKey: "m3.postwar.direct-control.marker"
+    };
+    obligations.push(
+      createPostwarObligation({
+        id: obligationId,
+        auditEventId,
+        world: input.world,
+        command: input.command,
+        debtorPolityId: input.localPolityId,
+        creditorPolityId: input.victorPolityId,
+        obligationKind: "troop",
+        obligationCategory: "defensive-garrison",
+        sourceId: postwarDirectControlMarkerSourceId(
+          input.preview.districtId,
+          input.command.payload.settlementId
+        ),
+        requirement: garrisonMarkerRequirement,
+        due
+      })
+    );
+    auditEvents.push(
+      createPostwarObligationAuditEvent({
+        id: auditEventId,
+        obligationId,
+        world: input.world,
+        command: input.command,
+        reliabilityBps: input.preview.reliabilityBps,
+        obligationCategory: "defensive-garrison"
+      })
+    );
+    return { obligations, auditEvents };
+  }
+
+  obligations.push(
+    createPostwarObligation({
+      id: obligationId,
+      auditEventId,
+      world: input.world,
+      command: input.command,
+      debtorPolityId: input.localPolityId,
+      creditorPolityId: input.victorPolityId,
+      obligationKind: "tribute",
+      obligationCategory: "regular-tribute",
+      sourceId: `${postwarObligationSourcePrefix(input.command.payload.settlementId)}tribute`,
+      requirement: tributeRequirement,
+      due
+    })
+  );
+  auditEvents.push(
+    createPostwarObligationAuditEvent({
+      id: auditEventId,
+      obligationId,
+      world: input.world,
+      command: input.command,
+      reliabilityBps: input.preview.reliabilityBps,
+      obligationCategory: "regular-tribute"
+    })
+  );
+  obligationId += 1;
+  auditEventId += 1;
+
+  if (input.command.payload.method === "restore-vassal-ruler") {
+    const troopRequirement = {
+      kind: "amount" as const,
+      resourceKind: "troops" as const,
+      amount: input.preview.obligationShape.troopHeadcount
+    };
+    obligations.push(
+      createPostwarObligation({
+        id: obligationId,
+        auditEventId,
+        world: input.world,
+        command: input.command,
+        debtorPolityId: input.localPolityId,
+        creditorPolityId: input.victorPolityId,
+        obligationKind: "troop",
+        obligationCategory: "troop-obligation",
+        sourceId: `${postwarObligationSourcePrefix(input.command.payload.settlementId)}troops`,
+        requirement: troopRequirement,
+        due
+      })
+    );
+    auditEvents.push(
+      createPostwarObligationAuditEvent({
+        id: auditEventId,
+        obligationId,
+        world: input.world,
+        command: input.command,
+        reliabilityBps: input.preview.reliabilityBps,
+        obligationCategory: "troop-obligation"
+      })
+    );
+  }
+
+  return { obligations, auditEvents };
+}
+
+function createPostwarObligation(input: {
+  readonly id: number;
+  readonly auditEventId: number;
+  readonly world: WorldStateV0;
+  readonly command: Extract<GameCommandV1, { readonly kind: "sim.apply-m3-postwar-governance" }>;
+  readonly debtorPolityId: PolityId;
+  readonly creditorPolityId: PolityId;
+  readonly obligationKind: M3ObligationStateV0["obligationKind"];
+  readonly obligationCategory: M3ObligationStateV0["obligationCategory"];
+  readonly sourceId: string;
+  readonly requirement: M3ObligationRequirementV0;
+  readonly due: M3ObligationDueV0;
+}): M3ObligationStateV0 {
+  const accounting = createInitialObligationAccounting(input.requirement, input.due);
+  return {
+    id: parseM3ObligationId(input.id),
+    debtorPolityId: input.debtorPolityId,
+    creditorPolityId: input.creditorPolityId,
+    obligationKind: input.obligationKind,
+    obligationCategory: input.obligationCategory,
+    obligationSource: {
+      kind: "vassalage",
+      sourceId: input.sourceId,
+      debtorPolityId: input.debtorPolityId,
+      creditorPolityId: input.creditorPolityId
+    },
+    requirement: input.requirement,
+    due: input.due,
+    accounting,
+    status: "active",
+    disputeReasonCode: null,
+    breachReasonCode: null,
+    createdAuditEventId: parseM3ObligationAuditEventId(input.auditEventId),
+    latestAuditEventId: parseM3ObligationAuditEventId(input.auditEventId)
+  };
+}
+
+function createPostwarObligationAuditEvent(input: {
+  readonly id: number;
+  readonly obligationId: number;
+  readonly world: WorldStateV0;
+  readonly command: Extract<GameCommandV1, { readonly kind: "sim.apply-m3-postwar-governance" }>;
+  readonly reliabilityBps: number;
+  readonly obligationCategory: M3ObligationStateV0["obligationCategory"];
+}): M3ObligationAuditEventStateV0 {
+  return createM3AuditEvent({
+    id: input.id,
+    obligationId: input.obligationId,
+    eventKind: "created",
+    world: input.world,
+    commandId: input.command.commandId,
+    actor: input.command.actor,
+    actionKind: null,
+    dueDay: null,
+    fulfillmentId: null,
+    fulfilledAmount: null,
+    statusAfter: "active",
+    reasonCode: null,
+    reasonCodes: [
+      "postwar.obligation.created",
+      `obligation.kind.${input.obligationCategory}`,
+      `postwar.method.${input.command.payload.method}`
+    ],
+    reliabilityBps: input.reliabilityBps
+  });
+}
+
+function appliedPostwarMethods(
+  m3: M3PolityVassalageStateV0,
+  districtId: DistrictId,
+  victorPolityId: PolityId,
+  localPolityId: PolityId
+): readonly M3PostwarGovernanceMethodV1[] {
+  const row = m3.administrativeDistricts.find(
+    (entry) => entry.polityId === victorPolityId && entry.districtId === districtId
+  );
+  if (row === undefined) {
+    return [];
+  }
+  if (row.controlMode === "direct") {
+    return ["direct-control"];
+  }
+  if (row.controlMode === "tribute-only") {
+    return ["tribute-only"];
+  }
+  const hasLocalRuler = m3.enfeoffments.some(
+    (entry) =>
+      entry.districtId === districtId &&
+      m3.characters.some(
+        (character) =>
+          character.characterId === entry.holderCharacterId && character.polityId === localPolityId
+      )
+  );
+  return hasLocalRuler ? ["restore-vassal-ruler"] : [];
+}
+
+function postwarObligationSourcePrefix(settlementId: string): string {
+  return `m3.postwar.${settlementId}.`;
+}
+
+function postwarDirectControlMarkerPrefix(districtId: DistrictId): string {
+  return `m3.postwar.district.${districtId}.direct-control.`;
+}
+
+function postwarDirectControlMarkerSourceId(districtId: DistrictId, settlementId: string): string {
+  return `${postwarDirectControlMarkerPrefix(districtId)}${settlementId}`;
+}
+
+function postwarControlMode(method: M3PostwarGovernanceMethodV1): M3AdministrativeControlModeV0 {
+  switch (method) {
+    case "direct-control":
+      return "direct";
+    case "restore-vassal-ruler":
+      return "vassal";
+    case "tribute-only":
+      return "tribute-only";
+  }
+}
+
+function postwarLocalComplexityBump(method: M3PostwarGovernanceMethodV1): number {
+  switch (method) {
+    case "direct-control":
+      return 90;
+    case "restore-vassal-ruler":
+      return 40;
+    case "tribute-only":
+      return 20;
+  }
+}
+
+function postwarCommunicationBump(method: M3PostwarGovernanceMethodV1): number {
+  switch (method) {
+    case "direct-control":
+      return 70;
+    case "restore-vassal-ruler":
+      return 40;
+    case "tribute-only":
+      return 60;
+  }
+}
+
+function postwarDirectness(method: M3PostwarGovernanceMethodV1, baseDirectness: number): number {
+  switch (method) {
+    case "direct-control":
+      return baseDirectness + 220;
+    case "restore-vassal-ruler":
+      return divideInteger(baseDirectness, 2) + 80;
+    case "tribute-only":
+      return 40;
+  }
+}
+
+function postwarFrontierBump(method: M3PostwarGovernanceMethodV1): number {
+  switch (method) {
+    case "direct-control":
+      return 140;
+    case "restore-vassal-ruler":
+      return 90;
+    case "tribute-only":
+      return 120;
+  }
+}
+
+function postwarIncomeShareBps(method: M3PostwarGovernanceMethodV1): number {
+  switch (method) {
+    case "direct-control":
+      return 10_000;
+    case "restore-vassal-ruler":
+      return 2_500;
+    case "tribute-only":
+      return 1_000;
+  }
+}
+
+function postwarLocalAcceptanceBaseBps(method: M3PostwarGovernanceMethodV1): number {
+  switch (method) {
+    case "direct-control":
+      return 4_500;
+    case "restore-vassal-ruler":
+      return 7_500;
+    case "tribute-only":
+      return 6_800;
+  }
+}
+
+function postwarReliabilityBaseBps(method: M3PostwarGovernanceMethodV1): number {
+  switch (method) {
+    case "direct-control":
+      return 6_400;
+    case "restore-vassal-ruler":
+      return 8_000;
+    case "tribute-only":
+      return 5_200;
+  }
+}
+
+function postwarReadinessBaseBps(method: M3PostwarGovernanceMethodV1): number {
+  switch (method) {
+    case "direct-control":
+      return 7_600;
+    case "restore-vassal-ruler":
+      return 6_800;
+    case "tribute-only":
+      return 2_500;
+  }
+}
+
+function postwarReasonCodes(
+  method: M3PostwarGovernanceMethodV1,
+  burden: M3AdministrativeBurdenProfileV0,
+  obligationShape: M3PostwarGovernanceObligationShapeReadModelV1,
+  localAcceptanceBps: number
+): readonly string[] {
+  return [
+    `postwar.method.${method}`,
+    `postwar.control-mode.${burden.controlMode}`,
+    burden.overload > 0 ? "postwar.admin.overloaded" : "postwar.admin.within-capacity",
+    obligationShape.hasDirectGarrison ? "postwar.garrison.direct" : "postwar.garrison.not-direct",
+    obligationShape.tributeCash > 0 ? "postwar.obligation.tribute" : "postwar.obligation.none",
+    obligationShape.troopHeadcount > 0
+      ? "postwar.obligation.troops"
+      : "postwar.obligation.no-troops",
+    localAcceptanceBps >= 7_000
+      ? "postwar.local-acceptance.strong"
+      : "postwar.local-acceptance.strained"
+  ];
+}
+
+function postwarCycles(months: number, periodDays: number): number {
+  const totalDays = months * 30;
+  const cycles = divideInteger(totalDays, periodDays);
+  return cycles < 1 ? 1 : cycles;
+}
+
+function divideInteger(dividend: number, divisor: number): number {
+  return (dividend - (dividend % divisor)) / divisor;
 }
 
 function m3OfficeDecisionScaffold(
@@ -4070,6 +5066,8 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
     case "sim.m3-appointment-audited":
       return { ...event };
     case "sim.m3-succession-updated":
+      return { ...event };
+    case "sim.m3-postwar-governance-applied":
       return { ...event };
     case "sim.state-hash-verified":
       return { ...event };

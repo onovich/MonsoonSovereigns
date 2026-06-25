@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R3-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R3 fixes are implemented. Existing same-district postwar arrangements are now rejected across victor polities by treating any non-local administrative district marker as an occupied postwar arrangement for that district. The QA restore-vassal-ruler by victor 1 followed by direct-control by victor 3 path now rejects before mutating controller, suzerain, obligations, enfeoffments, or administrative markers.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R3-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 1,
+      "result": "R3 red pass before implementation: new different-victor same-district regression failed because the second direct-control command was accepted."
+    },
+    {
+      "command": "pnpm exec prettier --write packages/sim-core/src/command-query-v1.ts tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Formatted the touched R3 implementation and test files."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Targeted postwar file passed after R3 fix: 1 file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "sim-core package tests passed: 14 files passed; 95 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "protocol package tests passed: 1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/155 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R3-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "R3 handoff JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task file validated."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed and confirmed status REVIEW, route_to systems_architect, risk_level R3, and scoped allowed/forbidden paths."
+    },
+    {
+      "command": "node -e git status allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 17 changed or untracked paths reported by git status are within allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "rg deterministic/forbidden runtime API scan",
+      "exit_code": 0,
+      "result": "No Math.random, Date.now, performance.now, new Date, React, Pixi, Electron, or fs runtime API matches in touched implementation/test files."
+    },
+    {
+      "command": "rg M4/UI/content scope scan",
+      "exit_code": 0,
+      "result": "No marching, battle, campaign, siege, supply, reinforcement, full diplomacy, treaty, legitimacy, rebellion, client UI, content-source, or forbidden client package scope matches in touched implementation/test files."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree includes task-scoped implementation/test/task changes plus task-scoped orchestration message/route files. No forbidden-path changes."
+    }
+  ],
+  "decisions": [
+    "R3 conflict rule: reject any postwar arrangement command when the target district already has a non-local administrative district marker, regardless of incoming victorPolityId or settlementId.",
+    "No replacement semantics were added. Retiring prior suzerain edges, obligations, and enfeoffments would be a broader treaty/replacement model and remains out of M3 scope.",
+    "The R2 same-victor protections remain intact: duplicate arrangements reject, direct-after-vassal rejects, and restore-vassal-ruler still requires concrete ruler and policy fields.",
+    "The new regression fixture includes a third polity and uses matching actor authority for victor 3 so the rejection proves the district-scoped postwar guard, not an authority failure.",
+    "The different-victor regression asserts rejection, unchanged state hash, unchanged district controller, no victor 3 administrative marker, and no victor 3 obligations."
+  ],
+  "risks": [
+    "R3 public protocol surface remains changed from the original M3 implementation and still needs systems_architect review for long-term command/query naming and compatibility.",
+    "The explicit replacement/clearing path is intentionally not implemented. If design later needs postwar arrangement replacement, systems_architect should define deterministic retirement events and rights-clearing semantics before implementation.",
+    "Projection coefficients remain prototype constants for M3 validation and are not final balance."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 district-scoped cross-victor rejection rule and regression coverage, then route to QA if systems review accepts.",
+  "created_at": "2026-06-25T18:04:47Z"
+}

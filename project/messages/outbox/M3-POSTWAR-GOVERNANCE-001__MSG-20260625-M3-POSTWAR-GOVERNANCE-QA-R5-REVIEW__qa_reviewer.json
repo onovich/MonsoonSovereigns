@@ -1,0 +1,142 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-QA-R5-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA R5 accepts M3-POSTWAR-GOVERNANCE-001. The prior same-district different-victor stale-rights finding and later direct-control-first R4 blocker are closed. R5 uses a district-keyed condition-based defensive-garrison marker for direct-control arrangements; later same-district postwar commands reject before mutation, independent of payload.localPolityId.",
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R5-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-SYSTEMS-R5-REVIEW__systems_architect.json"
+  ],
+  "findings": [],
+  "decisions": [
+    {
+      "decision": "Accept M3 postwar governance after R5 direct-control marker fix.",
+      "rationale": "Duplicate or replacement governance for the same district now rejects before mutation across same-victor, different-victor, localPolityId bypass, and direct-control-first paths; required deterministic tests and full package/root checks pass."
+    }
+  ],
+  "acceptance_checks": [
+    "Three governance methods exist: direct-control, restore-vassal-ruler, tribute-only.",
+    "Immediate previews expose administrative burden, obligation shape, expected income/tribute, local acceptance/reliability, military readiness/risk, and reason codes.",
+    "24-month deterministic comparison shows materially different income, tribute, administrative load, reliability/risk, and military contribution outcomes.",
+    "State changes use explicit sim.apply-m3-postwar-governance GameCommand with sim.m3-postwar-governance-applied event; previews/comparisons use explicit query kinds.",
+    "Same-district repeated arrangements now reject across same-victor and different-victor cases, including payload.localPolityId bypass attempts.",
+    "Rejected commands preserve state hash, controller, administrative districts, obligations, enfeoffments, and suzerain records.",
+    "Restore-vassal-ruler still rejects missing ruler or policy.",
+    "Direct-control marker is condition-based with zero nominal/due/arrears accounting and does not create resources."
+  ],
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "validate writer R5 handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "validate systems R5 handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "taskctl validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "status REVIEW, route_to systems_architect, risk R3."
+    },
+    {
+      "command": "combined allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "33 changed/untracked paths all inside allowed_paths; none matched forbidden_paths."
+    },
+    {
+      "command": "rg random/time/framework/fs scans",
+      "exit_code": 1,
+      "result": "No matches in touched implementation/test surfaces; expected no-match exit."
+    },
+    {
+      "command": "rg M4/full-scope drift scans",
+      "exit_code": 1,
+      "result": "No matches in touched implementation/test surfaces; expected no-match exit."
+    },
+    {
+      "command": "inline R5 postwar guard repro matrix",
+      "exit_code": 0,
+      "result": "Vassal-first different-victor/localPolityId bypass and direct-control-first duplicate/replacement cases rejected unchanged; marker condition accounting is zero."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "14 files passed; 97 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture passed; root 24 files/157 tests; web 1 file/3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ],
+  "scope_assessment": {
+    "allowed_forbidden_paths": "PASS",
+    "scope_creep": "No M4 campaign/marching/battle/siege/supply/reinforcement, full diplomacy/treaty/legitimacy/rebellion, client UI, content-source, save-format migration, historical content, dependency, or lockfile drift found.",
+    "dependency_diff": "Only packages/sim-core/package.json adds tests/sim-core-m3-postwar-governance.test.ts to the sim-core test script."
+  },
+  "risks": [
+    {
+      "severity": "low",
+      "issue": "Direct-control postwar persistence uses an existing obligation marker rather than a first-class postwar arrangement table. Future replacement/retirement semantics should be designed separately before allowing replacement."
+    },
+    {
+      "severity": "low",
+      "issue": "Projection coefficients remain M3 prototype validation constants, not final balance."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may proceed with acceptance/closure for M3-POSTWAR-GOVERNANCE-001.",
+  "created_at": "2026-06-26T02:45:07.1209955+08:00"
+}

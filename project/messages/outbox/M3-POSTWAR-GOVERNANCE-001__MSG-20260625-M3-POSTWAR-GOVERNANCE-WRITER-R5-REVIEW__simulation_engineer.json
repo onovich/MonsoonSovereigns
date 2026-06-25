@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R5-REVIEW",
+  "task_id": "M3-POSTWAR-GOVERNANCE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R5 fixes are implemented. Direct-control postwar arrangements now leave a durable, auditable M3 postwar marker through a condition-based defensive-garrison obligation keyed by district. The existing-arrangement guard checks that marker, so direct-control-first arrangements reject later same-district postwar commands instead of allowing implicit replacement or stacking.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R5-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-postwar-governance",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 1,
+      "result": "R5 red pass before implementation: direct-control had no durable marker and direct-control-first repeat/replacement commands were accepted."
+    },
+    {
+      "command": "pnpm exec prettier --check packages/sim-core/src/command-query-v1.ts tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Touched R5 files used Prettier style."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts",
+      "exit_code": 0,
+      "result": "Targeted postwar file passed after R5 fix: 1 file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "sim-core package tests passed: 14 files passed; 97 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "protocol package tests passed: 1 file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 24 files/157 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed with no reported errors."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-WRITER-R5-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "R5 handoff JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task file validated."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-POSTWAR-GOVERNANCE-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed and confirmed status REVIEW, route_to systems_architect, risk_level R3, and scoped allowed/forbidden paths."
+    },
+    {
+      "command": "node -e git status allowed/forbidden path scope check",
+      "exit_code": 0,
+      "result": "All 25 changed or untracked paths reported by git status are within allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "rg deterministic/forbidden runtime API scan",
+      "exit_code": 0,
+      "result": "No Math.random, Date.now, performance.now, new Date, React, Pixi, Electron, or fs runtime API matches in touched implementation/test files."
+    },
+    {
+      "command": "rg M4/UI/content scope scan",
+      "exit_code": 0,
+      "result": "No marching, battle, campaign, siege, supply, reinforcement, full diplomacy, treaty, legitimacy, rebellion, client UI, content-source, or forbidden client package scope matches in touched implementation/test files."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree includes task-scoped implementation/test/task changes plus task-scoped orchestration message/route files. No forbidden-path changes."
+    }
+  ],
+  "decisions": [
+    "R5 direct-control marker: direct-control postwar arrangements now create a defensive-garrison obligation with a condition requirement, not a resource amount. This avoids direct resource creation while giving authoritative state a durable marker.",
+    "The direct-control marker sourceId is district-keyed as m3.postwar.district.<districtId>.direct-control.<settlementId>, so the guard can detect an applied direct-control postwar arrangement without trusting payload.localPolityId.",
+    "hasExistingPostwarGovernanceArrangement still rejects non-direct/non-controller administrative markers from restored-vassal and tribute-only arrangements, and now also rejects district-keyed direct-control marker obligations.",
+    "No replacement semantics were added. Repeat same-district postwar commands reject until a future explicitly designed replacement/retirement command exists.",
+    "Regression coverage now includes direct-control followed by same-victor direct-control, same-victor tribute-only, same-victor restore-vassal-ruler, and different-victor direct-control. All assert rejection and unchanged state."
+  ],
+  "risks": [
+    "R3 public protocol surface remains changed from the original M3 implementation and still needs systems_architect review for long-term command/query naming and compatibility.",
+    "The direct-control marker uses existing M3 obligation state as an auditable discriminator. If future design wants a first-class postwar arrangement table, this marker can be migrated or replaced with explicit schema under architect review.",
+    "Projection coefficients remain prototype constants for M3 validation and are not final balance."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R5 direct-control postwar marker and direct-control-first rejection regressions, then route to QA if systems review accepts.",
+  "created_at": "2026-06-25T18:31:56Z"
+}

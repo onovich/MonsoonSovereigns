@@ -365,6 +365,97 @@ describe("SIM-003 protocol command/query schemas", () => {
     });
   });
 
+  test("accepts M3 postwar governance command and query schemas", () => {
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.apply-m3-postwar-governance",
+        commandId: "cmd.m3.postwar.apply",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          settlementId: "m3.postwar.validation",
+          victorPolityId: 1,
+          localPolityId: 2,
+          districtId: 3,
+          method: "restore-vassal-ruler",
+          localRulerCharacterId: 4,
+          policyId: 5,
+          reasonCode: "validation"
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.apply-m3-postwar-governance",
+        commandId: "cmd.m3.postwar.apply",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          settlementId: "m3.postwar.validation",
+          victorPolityId: 1,
+          localPolityId: 2,
+          districtId: 3,
+          method: "restore-vassal-ruler",
+          localRulerCharacterId: 4,
+          policyId: 5,
+          reasonCode: "validation"
+        }
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-m3-postwar-governance",
+        payload: {
+          queryId: "m3.postwar.preview",
+          victorPolityId: 1,
+          localPolityId: 2,
+          districtId: 3,
+          methods: ["direct-control", "restore-vassal-ruler", "tribute-only"],
+          months: 24
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.compare-m3-postwar-governance-outcomes",
+        payload: {
+          queryId: "m3.postwar.outcomes",
+          victorPolityId: 1,
+          localPolityId: 2,
+          districtId: 3,
+          months: 24
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-m3-postwar-governance",
+        payload: {
+          queryId: "m3.postwar.preview.bad",
+          victorPolityId: 1,
+          localPolityId: 2,
+          districtId: 3,
+          methods: ["war-annexation"],
+          months: 24
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.methods[0]",
+        message: "payload.methods[0] must be direct-control, restore-vassal-ruler, or tribute-only."
+      }
+    });
+  });
+
   test("rejects malformed query payloads without leaking nonserializable details", () => {
     expect(
       parseGameQueryV1({
