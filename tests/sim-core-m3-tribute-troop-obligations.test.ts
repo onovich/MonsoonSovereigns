@@ -185,11 +185,9 @@ describe("M3-TRIBUTE-TROOP-OBLIGATIONS-001 obligation settlement", () => {
       "sim.obligation-settled",
       "sim.obligation-settled"
     ]);
-    expect(orderedM3ObligationAuditEventsV0(requiredM3(runtime)).map((event) => event.eventKind)).toEqual([
-      "created",
-      "settled",
-      "settled"
-    ]);
+    expect(
+      orderedM3ObligationAuditEventsV0(requiredM3(runtime)).map((event) => event.eventKind)
+    ).toEqual(["created", "settled", "settled"]);
   });
 
   test("validates malformed M3 obligation fields without throwing", () => {
@@ -261,8 +259,12 @@ describe("M3-TRIBUTE-TROOP-OBLIGATIONS-001 obligation settlement", () => {
         expect.objectContaining({ path: "state.m3.obligationAuditEvents[1].reasonCodes[1]" }),
         expect.objectContaining({ path: "state.m3.obligationAuditEvents[1].reliabilityBps" }),
         expect.objectContaining({ path: "state.m3.fulfillmentClaims[0].actionKind" }),
-        expect.objectContaining({ path: "state.m3.fulfillmentClaims[0].sourceMovements[0].amount" }),
-        expect.objectContaining({ path: "state.m3.fulfillmentClaims[0].sourceMovements[1].headcount" })
+        expect.objectContaining({
+          path: "state.m3.fulfillmentClaims[0].sourceMovements[0].amount"
+        }),
+        expect.objectContaining({
+          path: "state.m3.fulfillmentClaims[0].sourceMovements[1].headcount"
+        })
       ])
     );
   });
@@ -593,7 +595,10 @@ describe("M3-TRIBUTE-TROOP-OBLIGATIONS-001 obligation settlement", () => {
     });
 
     const poorRuntime = bootPoorObligationRuntime();
-    const withPoorObligation = accepted(poorRuntime, createTributeCommand("m3.poor.create", poorRuntime));
+    const withPoorObligation = accepted(
+      poorRuntime,
+      createTributeCommand("m3.poor.create", poorRuntime)
+    );
     expect(
       submitCommandV1(
         withPoorObligation,
@@ -665,7 +670,8 @@ describe("M3-TRIBUTE-TROOP-OBLIGATIONS-001 obligation settlement", () => {
             fulfillmentId: 1_000 + amount,
             actionKind,
             dueDay: 30,
-            fulfilledAmount: actionKind === "refusal" || actionKind === "default-breach" ? 0 : amount,
+            fulfilledAmount:
+              actionKind === "refusal" || actionKind === "default-breach" ? 0 : amount,
             reasonCode: "property.validation"
           });
           const submitted = submitCommandV1(runtime, command);

@@ -1684,7 +1684,13 @@ function validateM3ObligationSourceEntry(
   }
   validateStringUnionField(input, "kind", `${path}.kind`, ["vassalage"], errors);
   validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
-  validatePositiveIntegerField(input, "debtorPolityId", `${path}.debtorPolityId`, "PolityId", errors);
+  validatePositiveIntegerField(
+    input,
+    "debtorPolityId",
+    `${path}.debtorPolityId`,
+    "PolityId",
+    errors
+  );
   validatePositiveIntegerField(
     input,
     "creditorPolityId",
@@ -1887,12 +1893,7 @@ function validateM3FulfillmentClaimEntry(
     errors
   );
   validateM3SettlementActionValue(input["actionKind"], `${path}.actionKind`, errors);
-  validateNonnegativeIntegerField(
-    input,
-    "fulfilledAmount",
-    `${path}.fulfilledAmount`,
-    errors
-  );
+  validateNonnegativeIntegerField(input, "fulfilledAmount", `${path}.fulfilledAmount`, errors);
   validateNonnegativeIntegerField(input, "deliveredAmount", `${path}.deliveredAmount`, errors);
   validateNonnegativeIntegerField(input, "arrearsAmount", `${path}.arrearsAmount`, errors);
   validateNonnegativeIntegerField(input, "defaultedAmount", `${path}.defaultedAmount`, errors);
@@ -1990,7 +1991,13 @@ function validateM3FulfillmentSourceMovementsEntry(
         ["cash", "grain"],
         errors
       );
-      validatePositiveIntegerField(movement, "amount", `${movementPath}.amount`, "M3 amount", errors);
+      validatePositiveIntegerField(
+        movement,
+        "amount",
+        `${movementPath}.amount`,
+        "M3 amount",
+        errors
+      );
       return;
     }
     if (movement["kind"] === "m3-troop-commitment-placeholder") {

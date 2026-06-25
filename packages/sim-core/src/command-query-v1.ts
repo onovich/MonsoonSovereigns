@@ -1396,7 +1396,10 @@ function evaluateCreateObligation(
 
   const obligationId = parseM3ObligationId(nextNumericId(m3.obligations));
   const auditEventId = parseM3ObligationAuditEventId(nextNumericId(m3.obligationAuditEvents));
-  const accounting = createInitialObligationAccounting(command.payload.requirement, command.payload.due);
+  const accounting = createInitialObligationAccounting(
+    command.payload.requirement,
+    command.payload.due
+  );
   const obligation: M3ObligationStateV0 = {
     id: obligationId,
     debtorPolityId,
@@ -1617,7 +1620,10 @@ function evaluateRecordObligationFulfillment(
           fulfillmentId,
           actionKind: command.payload.actionKind,
           dueDay: command.payload.dueDay,
-          resourceKind: obligation.requirement.kind === "amount" ? obligation.requirement.resourceKind : "condition",
+          resourceKind:
+            obligation.requirement.kind === "amount"
+              ? obligation.requirement.resourceKind
+              : "condition",
           fulfilledAmount: command.payload.fulfilledAmount,
           statusAfter: settlement.status,
           reasonCode: command.payload.reasonCode,
@@ -3068,7 +3074,10 @@ function copyCommandDue(
 }
 
 function createInitialObligationAccounting(
-  requirement: Extract<GameCommandV1, { readonly kind: "sim.create-obligation" }>["payload"]["requirement"],
+  requirement: Extract<
+    GameCommandV1,
+    { readonly kind: "sim.create-obligation" }
+  >["payload"]["requirement"],
   due: Extract<GameCommandV1, { readonly kind: "sim.create-obligation" }>["payload"]["due"]
 ): M3ObligationStateV0["accounting"] {
   const nominalAmount = requirement.kind === "amount" ? requirement.amount : 0;
@@ -3100,7 +3109,8 @@ function validateObligationDuePeriod(
     return {
       code: "obligation-due-period-invalid",
       path: "payload.dueDay",
-      message: "sim.record-obligation-fulfillment dueDay does not match current obligation due period."
+      message:
+        "sim.record-obligation-fulfillment dueDay does not match current obligation due period."
     };
   }
   return null;
@@ -3149,9 +3159,7 @@ function isTerminalObligationSettlementAction(
   >["payload"]["actionKind"]
 ): boolean {
   return (
-    actionKind === "fulfillment" ||
-    actionKind === "remission" ||
-    actionKind === "default-breach"
+    actionKind === "fulfillment" || actionKind === "remission" || actionKind === "default-breach"
   );
 }
 
@@ -3162,7 +3170,10 @@ function validateObligationSettlementRules(
   const remainingAmount = obligation.accounting.dueAmount - obligation.accounting.deliveredAmount;
   switch (command.payload.actionKind) {
     case "fulfillment":
-      if (command.payload.fulfilledAmount <= 0 || command.payload.fulfilledAmount !== remainingAmount) {
+      if (
+        command.payload.fulfilledAmount <= 0 ||
+        command.payload.fulfilledAmount !== remainingAmount
+      ) {
         return obligationSettlementInvalid(
           "payload.fulfilledAmount",
           "sim.record-obligation-fulfillment fulfillment must exactly satisfy the remaining due amount."
@@ -3291,7 +3302,8 @@ function planObligationResourceMovement(
     error: {
       code: "obligation-resource-insufficient",
       path: "payload.fulfilledAmount",
-      message: "sim.record-obligation-fulfillment cannot draw the requested amount from debtor sources."
+      message:
+        "sim.record-obligation-fulfillment cannot draw the requested amount from debtor sources."
     }
   };
 }
@@ -3299,7 +3311,10 @@ function planObligationResourceMovement(
 function sourceDistrictIdsForPolity(world: WorldStateV0, polityId: PolityId): ReadonlySet<number> {
   const districtIds = new Set<number>();
   for (const district of world.state.districts) {
-    if (district.control.kind === "controlled" && district.control.controllerPolityId === polityId) {
+    if (
+      district.control.kind === "controlled" &&
+      district.control.controllerPolityId === polityId
+    ) {
       districtIds.add(district.definitionId);
     }
   }
@@ -3374,8 +3389,7 @@ function applyObligationSettlementAccounting(
     command.payload.actionKind === "remission"
       ? obligation.accounting.remittedAmount + arrearsAfterDelivery
       : obligation.accounting.remittedAmount;
-  const arrearsAmount =
-    command.payload.actionKind === "remission" ? 0 : arrearsAfterDelivery;
+  const arrearsAmount = command.payload.actionKind === "remission" ? 0 : arrearsAfterDelivery;
   const status = nextObligationStatus(obligation.status, command.payload.actionKind);
   const nextDue = nextObligationDue(obligation.due, command.payload.actionKind);
   const nextAccounting =
@@ -3507,10 +3521,7 @@ function explainObligationSettlement(
   };
 }
 
-function computeObligationReliabilityBps(
-  m3: M3PolityVassalageStateV0,
-  polityId: PolityId
-): number {
+function computeObligationReliabilityBps(m3: M3PolityVassalageStateV0, polityId: PolityId): number {
   const profiles = m3.administrativeDistricts
     .filter((entry) => entry.polityId === polityId)
     .map((entry) => computeM3AdministrativeBurdenProfileV0(entry));
@@ -3532,7 +3543,9 @@ function executorReasonCode(world: WorldStateV0, executorCharacterId: number | n
     return "obligation.executor.unavailable";
   }
   const skill = Math.max(character.administrationBps, character.commandBps, character.diplomacyBps);
-  return skill >= 7_000 ? "obligation.executor.character-strong" : "obligation.executor.character-weak";
+  return skill >= 7_000
+    ? "obligation.executor.character-strong"
+    : "obligation.executor.character-weak";
 }
 
 function createM3AuditEvent(input: {

@@ -52,8 +52,14 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
 
   test("keeps obligation audit order stable and prevents fulfillment double counting", () => {
     let runtime = bootM3Runtime();
-    runtime = accepted(runtime, setSuzerainCommand("m3.obligation.suzerain.1", "player", runtime, 1, 2));
-    runtime = accepted(runtime, setSuzerainCommand("m3.obligation.suzerain.2", "player", runtime, 2, 3));
+    runtime = accepted(
+      runtime,
+      setSuzerainCommand("m3.obligation.suzerain.1", "player", runtime, 1, 2)
+    );
+    runtime = accepted(
+      runtime,
+      setSuzerainCommand("m3.obligation.suzerain.2", "player", runtime, 2, 3)
+    );
     runtime = accepted(
       runtime,
       createObligationCommand("m3.obligation.create.1", "player", runtime, 1, 2, 100)
@@ -119,7 +125,10 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
 
   test("requestSaveV1 rejects M3 state before emitting unloadable save bytes", () => {
     let runtime = bootM3Runtime();
-    runtime = accepted(runtime, setSuzerainCommand("m3.obligation.save-suzerain", "player", runtime, 1, 2));
+    runtime = accepted(
+      runtime,
+      setSuzerainCommand("m3.obligation.save-suzerain", "player", runtime, 1, 2)
+    );
     runtime = accepted(
       runtime,
       createObligationCommand("m3.obligation.save-probe", "player", runtime, 1, 2, 100)
