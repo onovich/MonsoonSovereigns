@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "message_id": "LEAD-TRANSITION-PREPARE-001__ACK",
+  "type": "leadership_transition_acknowledgement",
+  "status": "ACKNOWLEDGED",
+  "acknowledges": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
+  "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
+  "transition_result": "ACCEPTED",
+  "prepared_status": "PREPARED",
+  "prepared_transition_status": "PREPARED_AWAITING_SUCCESSOR",
+  "outgoing_thread_id": null,
+  "outgoing_state_after_acceptance": "retired_closed",
+  "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "verified_main_commit": "1c707babbb2d9bace3cbdccc94ebd264df702072",
+  "note": "The prepared handoff is preserved as historical input. This acknowledgement records successor acceptance without overwriting the prepared handoff facts or fabricating the missing outgoing thread id.",
+  "acknowledged_at": "2026-06-25T23:12:37.3024877+08:00"
+}

@@ -1,7 +1,52 @@
 {
   "version": 1,
-  "updated_at": "2026-06-25T09:28:42.485Z",
+  "updated_at": "2026-06-25T23:12:37.3024877+08:00",
+  "leadership": {
+    "active_leads": [
+      {
+        "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+        "role": "lead_orchestrator",
+        "status": "active",
+        "configured_model": "gpt-5.5",
+        "configured_effort": "xhigh",
+        "actual_model": "gpt-5.5",
+        "actual_effort": "xhigh",
+        "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
+        "updated_at": "2026-06-25T23:12:37.3024877+08:00"
+      }
+    ],
+    "retired_leads": [
+      {
+        "thread_id": null,
+        "role": "lead_orchestrator",
+        "status": "retired_closed",
+        "reason": "SUCCESSOR_ACCEPTED",
+        "prepared_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
+        "accepted_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
+        "updated_at": "2026-06-25T23:12:37.3024877+08:00",
+        "note": "Outgoing lead thread id was unavailable in the prepared handoff; no thread id is fabricated."
+      }
+    ],
+    "unique_active_lead_check": {
+      "result": "PASS",
+      "active_count": 1,
+      "active_thread_ids": [
+        "019eff50-c69d-7612-a90b-7024a47e0af5"
+      ]
+    }
+  },
   "entries": {
+    "LEAD-TRANSITION-ACCEPT-001:lead_orchestrator": {
+      "task_id": "LEAD-TRANSITION-ACCEPT-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "updated_at": "2026-06-25T23:12:37.3024877+08:00"
+    },
     "FOUNDATION-001:release_engineer": {
       "task_id": "FOUNDATION-001",
       "role": "release_engineer",

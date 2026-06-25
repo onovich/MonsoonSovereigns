@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "message_id": "LEAD-TRANSITION-ACCEPT-001",
+  "type": "leadership_transition_acceptance",
+  "status": "ACCEPT",
+  "transition_result": "ACCEPTED",
+  "project": "Monsoon Sovereigns",
+  "outgoing_role": "lead_orchestrator",
+  "outgoing_thread_id": null,
+  "outgoing_state_before_acceptance": "PREPARED_AWAITING_SUCCESSOR",
+  "outgoing_state_after_acceptance": "retired_closed",
+  "outgoing_retirement_reason": "SUCCESSOR_ACCEPTED",
+  "outgoing_thread_id_note": "LEAD-TRANSITION-PREPARE-001 did not expose a reliable outgoing thread id; this acceptance does not fabricate one.",
+  "successor_role": "lead_orchestrator",
+  "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "successor_model_configured": "gpt-5.5",
+  "successor_effort_configured": "xhigh",
+  "successor_model_actual": "gpt-5.5",
+  "successor_effort_actual": "xhigh",
+  "verified_main_commit": "1c707babbb2d9bace3cbdccc94ebd264df702072",
+  "prepared_handoff_main_commit": "268569409f8ced18c19b891c7e183d4018cc23cd",
+  "prepared_handoff_main_commit_is_ancestor": true,
+  "accepted_milestone": "M3",
+  "accepted_current_task": null,
+  "last_closed_task": "M3-SUCCESSION-STATE-MACHINE-001",
+  "next_ready_tasks": [
+    "M3-TRIBUTE-TROOP-OBLIGATIONS-001"
+  ],
+  "unique_active_lead_check": {
+    "result": "PASS",
+    "active_lead_thread_ids": [
+      "019eff50-c69d-7612-a90b-7024a47e0af5"
+    ],
+    "active_lead_count": 1,
+    "sources": [
+      "project/tasks/thread-registry.json",
+      "project/model-routing-state.json",
+      "project/goal-mode-state.json",
+      "nodeRepl.requestMeta"
+    ]
+  },
+  "human_gate": {
+    "required": false,
+    "reason": null
+  },
+  "active_business_threads": [],
+  "unresolved_risks": [
+    {
+      "id": "GOAL-MODE-RISK-001",
+      "description": "Autonomous continuation can hide scope drift if the lead fails to re-check allowed paths, forbidden paths, and Human Gates after each handoff.",
+      "mitigation": "docs/27-autonomous-goal-mode.md requires per-task diff-scope checks, handoff validation, task validation, ready/list checks, and explicit stop conditions."
+    },
+    {
+      "id": "GOAL-MODE-RISK-002",
+      "description": "Thread IDs are session-local and may become stale after Codex restart.",
+      "mitigation": "Recover from persisted handoffs, task JSON, git status, and the state file; spawn replacement role threads when needed."
+    }
+  ],
+  "verification": {
+    "handoff_in_origin_main": true,
+    "current_main_not_behind_handoff": true,
+    "working_tree_clean_before_acceptance_edits": true,
+    "git_head_equals_origin_main_before_acceptance": true,
+    "task_registry_valid": true,
+    "taskctl_ready": [
+      "M3-TRIBUTE-TROOP-OBLIGATIONS-001"
+    ],
+    "unresolved_human_gate": false,
+    "residual_state_reconciliation": [
+      "goal-mode last_main_commit advanced from prepared handoff commit 268569409f8ced18c19b891c7e183d4018cc23cd to verified origin/main 1c707babbb2d9bace3cbdccc94ebd264df702072",
+      "leadership state moved from PREPARED_AWAITING_SUCCESSOR to SUCCESSOR_ACCEPTED",
+      "no business code was changed"
+    ]
+  },
+  "route_to_outgoing_thread": {
+    "attempted": false,
+    "supported": false,
+    "reason": "The prepared handoff recorded outgoing_thread_id as null, so no real send_input target exists. The repository-level takeover continues without fabricating route evidence."
+  },
+  "artifacts": [
+    "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/LEAD-TRANSITION-PREPARE-001__ACK.json",
+    "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "next_action": "After this transition record is independently accepted, create and merge the process PR, sync main, emit LEAD_TAKEOVER_ACCEPTED, then start M3-TRIBUTE-TROOP-OBLIGATIONS-001 through the normal writer/reviewer workflow.",
+  "accepted_at": "2026-06-25T23:12:37.3024877+08:00"
+}
