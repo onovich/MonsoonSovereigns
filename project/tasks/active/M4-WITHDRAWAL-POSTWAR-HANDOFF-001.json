@@ -1,0 +1,81 @@
+{
+  "id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+  "summary": "Implement M4 withdrawal and postwar result handoff to M3 governance",
+  "milestone": "M4",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M4-AUTO-ENGAGEMENT-SIEGE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M4-WITHDRAWAL-POSTWAR-HANDOFF-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Campaign withdrawal can be ordered or triggered by explicit supply, season, siege, loss, or objective-complete reasons and updates force/supply/campaign state deterministically.",
+    "Withdrawal records distinguish orderly withdrawal, forced retreat, cancellation before departure, and failed extraction without implementing tactical pursuit or naval evacuation systems.",
+    "M4 produces an explicit WarOutcome/PostwarCandidate DTO that can be consumed by accepted M3 postwar governance preview/application paths without bypassing M3 validation.",
+    "War losses and campaign results flow back to existing economic, loyalty, obligation, and credit/reliability hooks with auditable reason codes and conservation checks.",
+    "The task does not implement full diplomacy, peace treaties, rebellion systems, formal historical content, campaign planning UI, or M5 vertical-slice content."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Scenario tests cover planned withdrawal, rainy-season cancellation, supply-forced retreat, siege-lift withdrawal, and WarOutcome handoff into M3 governance preview.",
+    "Property/invariant tests cover no duplicate postwar candidate creation, loss accounting conservation, deterministic withdrawal ordering, and valid M3 governance references.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+    "node -e JSON parse/shape check for M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "The handoff target is the accepted M3 governance prototype; do not invent a parallel postwar settlement model.",
+    "War losses must show human and political cost; do not present forced displacement, starvation, or slaughter as free rewards.",
+    "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
+  ],
+  "created_at": "2026-06-25T22:49:34Z",
+  "updated_at": "2026-06-25T22:49:34Z"
+}

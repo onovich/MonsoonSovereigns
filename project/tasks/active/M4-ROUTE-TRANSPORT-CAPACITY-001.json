@@ -1,0 +1,80 @@
+{
+  "id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+  "summary": "Implement M4 route and transport capacity planning for campaigns",
+  "milestone": "M4",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M4-GRAIN-SUPPLY-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Campaign planning can compute deterministic route and transport capacity forecasts using existing M2 road/river/season transport scaffolds plus M4 grain and force commitments.",
+    "Forecast output records route segments, bottleneck capacity, travel window, carried supply limit, overloaded reason, and monsoon/season risk reason codes.",
+    "River or water transport remains a simple capacity modifier over accepted M2 route data and does not become complex naval warfare, fleets, battles, or amphibious operations.",
+    "Equivalent route choices use explicit stable tie-breakers and do not depend on object traversal order.",
+    "The task does not implement march execution, battle, siege, UI, full economy, or formal map/content production."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/invariant tests cover stable route tie-breakers, capacity bottleneck calculation, over-capacity rejection/reasoning, and monsoon/season forecast determinism.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-ROUTE-TRANSPORT-CAPACITY-001",
+    "node -e JSON parse/shape check for M4-ROUTE-TRANSPORT-CAPACITY-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m4-route-transport-capacity",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "Keep route/transport as campaign planning data over M2 scaffolds; do not create a general logistics manager.",
+    "If existing M2 route data is insufficient, add explicit narrow schema/query fields inside allowed package boundaries and record compatibility evidence.",
+    "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
+  ],
+  "created_at": "2026-06-25T22:49:34Z",
+  "updated_at": "2026-06-25T22:49:34Z"
+}

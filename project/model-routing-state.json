@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-25T22:45:03Z",
+  "updated_at": "2026-06-25T23:07:53Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1087,31 +1087,37 @@
       "task_id": "M4-TASK-GRAPH-001",
       "role": "systems_architect",
       "thread_id": "019f00f4-e7ae-7c71-9a8a-8e8285c9500d",
-      "status": "start_confirmed",
+      "status": "accepted_after_qa",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "chore/m4-task-graph",
       "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T22:45:03Z",
+      "updated_at": "2026-06-25T23:07:53Z",
       "responsibility": "primary M4 task graph writer",
-      "start_submission_id": "019f00f6-55e3-7fd3-9843-360790bad1cb"
+      "start_submission_id": "019f00f6-55e3-7fd3-9843-360790bad1cb",
+      "review_ready_handoff": "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "status_check_submission_id": "019f0101-7629-7cd1-818c-50282fef2b8a"
     },
     {
       "task_id": "M4-TASK-GRAPH-001",
       "role": "qa_reviewer",
       "thread_id": "019f00f5-07f1-7ec0-b362-6dc0599efaab",
-      "status": "awaiting_review_ready",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "chore/m4-task-graph",
       "start_state": "AWAITING_REVIEW_READY",
-      "updated_at": "2026-06-25T22:45:03Z",
+      "updated_at": "2026-06-25T23:07:53Z",
       "responsibility": "independent read-only M4 task graph acceptance reviewer",
-      "await_submission_id": "019f00f6-5617-71a2-a43b-ab601e630dd8"
+      "await_submission_id": "019f00f6-5617-71a2-a43b-ab601e630dd8",
+      "review_ready_submission_id": "019f0103-959e-70d1-bf09-14a558f9c29a",
+      "review_ready_handoff": "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "accept_submission_id": "019f0108-772f-7910-84a1-b436bf9115c7",
+      "accept_handoff": "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
     }
   ],
   "task_effects": {
