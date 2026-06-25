@@ -7,7 +7,7 @@
   "origin_main": "ef40f3dfddfdb64500a0c348590588209b117db9",
   "current_milestone": "M3",
   "current_task": "M3-EXIT-VALIDATION-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M3-H003-H005-VALIDATION-001",
   "ready_tasks": [],
   "active_threads": [
@@ -15,22 +15,25 @@
       "task_id": "M3-EXIT-VALIDATION-001",
       "role": "systems_architect",
       "thread_id": "019f00ab-b4f3-7b01-8616-d5391a341275",
-      "status": "active",
+      "status": "review_handoff_committed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
       "start_state": "START_CONFIRMED",
-      "start_submission_id": "019f00ad-d04d-71e1-b055-77660f96e935"
+      "start_submission_id": "019f00ad-d04d-71e1-b055-77660f96e935",
+      "review_commit": "5c30e4a5"
     },
     {
       "task_id": "M3-EXIT-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f00ab-d6dc-7e11-9043-6096c46ef578",
-      "status": "active",
+      "status": "reviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
-      "start_state": "AWAITING_REVIEW_READY"
+      "start_state": "AWAITING_REVIEW_READY",
+      "review_ready_submission_id": "019f00c4-b0e9-7db2-b998-d72a183087f8",
+      "review_commit": "5c30e4a5"
     }
   ],
   "unresolved_risks": [
@@ -50,7 +53,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Wait for systems_architect M3 exit gate handoff, then send REVIEW_READY to qa_reviewer.",
+  "next_machine_action": "Wait for qa_reviewer ACCEPT or REQUEST_CHANGES on M3-EXIT-VALIDATION-001.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -58,5 +61,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T21:27:31Z"
+  "last_updated_at": "2026-06-25T21:52:36Z"
 }
