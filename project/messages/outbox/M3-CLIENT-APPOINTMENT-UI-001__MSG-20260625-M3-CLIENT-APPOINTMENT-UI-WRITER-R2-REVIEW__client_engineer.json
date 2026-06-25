@@ -1,0 +1,73 @@
+{
+  "message_id": "MSG-20260625-M3-CLIENT-APPOINTMENT-UI-WRITER-R2-REVIEW",
+  "task_id": "M3-CLIENT-APPOINTMENT-UI-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed the QA-reported desktop horizontal overflow in the M3 appointment workspace. The M3 grid now uses shrinkable equal tracks, its summary/grid children opt into min-width: 0, long action buttons can wrap within their panel, and bulk rows no longer impose 120px minimum subcolumns. Added a Playwright 1440x1000 viewport measurement that asserts document scrollWidth does not exceed clientWidth and the M3 grid right edge stays within the viewport.",
+  "artifacts": [
+    "apps/web/src/styles/shell.css",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M3-CLIENT-APPOINTMENT-UI-001.json"
+  ],
+  "branch_or_worktree": "feat/m3-client-appointment-ui",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 1,
+      "result": "Initial R2 run reproduced the remaining overflow after the first grid-track change: 3 tests passed, the new 1440px viewport check failed with scrollWidth 1451 > clientWidth 1440."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Chromium Playwright passed 4 tests, including the new M3 1440x1000 no-horizontal-overflow measurement."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest SSR passed 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; existing chunk-size warning for lib-a6cQy7l-.js over 500 kB remains."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier check, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-CLIENT-APPOINTMENT-UI-001",
+      "exit_code": 0,
+      "result": "Task JSON validated successfully before R2 status update."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-CLIENT-APPOINTMENT-UI-001",
+      "exit_code": 0,
+      "result": "Parsed task and R2 handoff JSON; verified REVIEW status and qa_reviewer route."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed task implementation changes, the original writer handoff, the new R2 writer handoff, and lead/coordinator-owned goal/model/thread/route files already present in the worktree."
+    }
+  ],
+  "decisions": [
+    "Fixed the overflow in CSS layout rather than hiding page overflow, so content remains visible and measurable.",
+    "Kept the test as a direct Playwright viewport measurement at 1440x1000 because it matches the QA repro and catches page-level horizontal overflow."
+  ],
+  "risks": [
+    "The original task's live-query integration risk remains unchanged: this UI still uses protocol DTO projection fixtures until a future approved worker query adapter supplies the page-level appointment read model.",
+    "The Vite chunk-size warning remains unchanged and unrelated to the overflow fix."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the R2 overflow fix and the new 1440x1000 Playwright measurement.",
+  "created_at": "2026-06-25T19:32:40.579Z"
+}

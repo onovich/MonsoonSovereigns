@@ -20,6 +20,8 @@ describe("web client shell", () => {
     expect(snapshot.map.districts).toHaveLength(30);
     expect(snapshot.map.settlements).toHaveLength(10);
     expect(snapshot.districtList.rows).toHaveLength(30);
+    expect(snapshot.m3Appointment.offices).toHaveLength(3);
+    expect(snapshot.m3Appointment.bulkPreview.eligibleCount).toBe(2);
     expect(snapshot.districtList.provenance.kind).toBe("simulation-read-model");
     expect(snapshot.revision).toBe(snapshot.simulation.finalRevision);
     expect(JSON.stringify(snapshot)).not.toContain("WorldState");
@@ -36,6 +38,8 @@ describe("web client shell", () => {
         onMapModeChange={() => undefined}
         onZoomLevelChange={() => undefined}
         onSelectedEntityChange={() => undefined}
+        onM3CommandSubmit={() => undefined}
+        m3CommandStatus={null}
         mapSurface={
           <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
         }
@@ -49,6 +53,8 @@ describe("web client shell", () => {
     expect(markup).toContain('data-district-count="30"');
     expect(markup).toContain('data-settlement-count="10"');
     expect(markup).toContain('data-row-count="30"');
+    expect(markup).toContain('aria-label="M3 appointment workspace"');
+    expect(markup).toContain('data-bulk-eligible-count="2"');
   });
 
   it("rebuilds the Pixi scene shell from the read model", () => {

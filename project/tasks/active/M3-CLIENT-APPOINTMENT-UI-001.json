@@ -2,7 +2,7 @@
   "id": "M3-CLIENT-APPOINTMENT-UI-001",
   "summary": "Build M3 appointment, bulk action, and reason read-model UI",
   "milestone": "M3",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -68,13 +68,16 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m3-client-appointment-ui",
-  "threads": {},
-  "route_to": "client_engineer",
+  "threads": {
+    "client_engineer": "019f002b-1a38-78d2-ac41-aaefd0060920",
+    "qa_reviewer": "019f003b-6894-76e0-ba04-227258f5d4ef"
+  },
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task covers the M3 appointment/bulk/reason UI/read-model requirement only.",
     "If the UI needs a missing protocol query or reason code, route back to the relevant simulation task rather than duplicating rules client-side.",
     "Keep React/Pixi boundaries unchanged; this task is DOM/read-model UI, not map renderer work."
   ],
   "created_at": "2026-06-25T04:09:26.814Z",
-  "updated_at": "2026-06-25T17:01:20.811Z"
+  "updated_at": "2026-06-25T19:39:09.473Z"
 }

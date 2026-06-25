@@ -4,16 +4,28 @@
   "type": "goal_mode_continuation",
   "status": "M3_CONTINUING",
   "project": "Monsoon Sovereigns",
-  "origin_main": "81380a2836c7985c9f7c7b8f726321cdcdbb6137",
+  "origin_main": "c84d65376443a1cbcf69935fbe75a62d08f7f8c9",
   "current_milestone": "M3",
-  "current_task": null,
-  "current_task_status": null,
+  "current_task": "M3-CLIENT-APPOINTMENT-UI-001",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M3-POSTWAR-GOVERNANCE-001",
   "ready_tasks": [
-    "M3-CLIENT-APPOINTMENT-UI-001",
     "M3-SAVE-RUNTIME-001"
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M3-CLIENT-APPOINTMENT-UI-001",
+      "role": "client_engineer",
+      "thread_id": "019f002b-1a38-78d2-ac41-aaefd0060920",
+      "status": "active"
+    },
+    {
+      "task_id": "M3-CLIENT-APPOINTMENT-UI-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f003b-6894-76e0-ba04-227258f5d4ef",
+      "status": "active"
+    }
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -31,7 +43,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Start M3-CLIENT-APPOINTMENT-UI-001 through the normal task workflow; M3-SAVE-RUNTIME-001 remains READY.",
+  "next_machine_action": "Await M3-CLIENT-APPOINTMENT-UI-001 client_engineer writer handoff, validate it, route to qa_reviewer, and continue normal review/fix/integration workflow; M3-SAVE-RUNTIME-001 remains READY.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -39,5 +51,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T18:59:00Z"
+  "last_updated_at": "2026-06-25T19:04:34Z"
 }

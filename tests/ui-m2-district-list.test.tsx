@@ -53,6 +53,28 @@ describe("M2 district client UI", () => {
     expect(markup).toContain('aria-label="Routes map mode"');
     expect(markup).toContain("Prototype District 001");
   });
+
+  test("renders M3 appointment workflow, bulk preview, rejection reasons, and outcome reasons", () => {
+    const snapshot = createM2PrototypeClientReadModelSnapshot();
+    const markup = renderToStaticMarkup(createShell(snapshot));
+
+    expect(markup).toContain("M3 appointments");
+    expect(markup).toContain('aria-label="M3 appointment workspace"');
+    expect(markup).toContain('data-office-count="3"');
+    expect(markup).toContain('data-character-count="4"');
+    expect(markup).toContain('data-obligation-count="4"');
+    expect(markup).toContain('data-bulk-eligible-count="2"');
+    expect(markup).toContain('data-bulk-rejected-count="1"');
+    expect(markup).toContain("Submit appointment");
+    expect(markup).toContain("Submit bulk eligible appointments");
+    expect(markup).toContain("character-unavailable");
+    expect(markup).toContain("office-primary-conflict");
+    expect(markup).toContain("Administrative impact preview");
+    expect(markup).toContain("Vacancies, succession, obligations");
+    expect(markup).toContain("Appointment and enfeoffment results");
+    expect(markup).toContain("Visible reason summaries");
+    expect(markup).not.toContain("WorldState");
+  });
 });
 
 function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]) {
@@ -67,6 +89,8 @@ function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]
       onMapModeChange={() => undefined}
       onZoomLevelChange={() => undefined}
       onSelectedEntityChange={() => undefined}
+      onM3CommandSubmit={() => undefined}
+      m3CommandStatus={null}
       mapSurface={<div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />}
     />
   );

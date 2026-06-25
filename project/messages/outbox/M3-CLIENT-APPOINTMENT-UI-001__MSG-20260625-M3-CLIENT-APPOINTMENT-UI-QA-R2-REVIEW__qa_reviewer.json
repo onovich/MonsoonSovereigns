@@ -1,0 +1,48 @@
+{
+  "message_id": "MSG-20260625-M3-CLIENT-APPOINTMENT-UI-QA-R2-REVIEW",
+  "task_id": "M3-CLIENT-APPOINTMENT-UI-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Accepted R2 after verifying the 1440x1000 horizontal overflow regression is fixed, the new Playwright no-horizontal-overflow test meaningfully covers the repro, scope remains within allowed paths, no new dependency drift exists, and no authority mutation or forbidden package boundary violation was found.",
+  "artifacts": [
+    "apps/web/src/styles/shell.css",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M3-CLIENT-APPOINTMENT-UI-001__MSG-20260625-M3-CLIENT-APPOINTMENT-UI-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-client-appointment-ui",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Chromium Playwright passed 4 tests, including the new 1440x1000 M3 appointment no-horizontal-overflow measurement."
+    },
+    {
+      "command": "manual Playwright 1440x1000 DOM measurement",
+      "exit_code": 0,
+      "result": "document scrollWidth and clientWidth were both 1440; M3 grid right edge was 1418; no M3 panel overlaps were detected."
+    },
+    {
+      "command": "pnpm build:web && pnpm check",
+      "exit_code": 0,
+      "result": "Web build passed with the existing chunk-size warning; Prettier, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "scope, dependency, handoff, task, and authority scans",
+      "exit_code": 0,
+      "result": "Task and R2 handoff validated; changed files stayed within allowed paths; no forbidden paths, dependency drift, WorldState storage, Redux, Electron IPC, or forbidden package imports were found."
+    }
+  ],
+  "decisions": [
+    "Accepted Playwright coverage because it directly asserts the prior QA repro condition at 1440x1000 instead of relying on screenshots or hidden overflow.",
+    "Did not write the handoff file locally because this review was explicitly read-only."
+  ],
+  "risks": [
+    "The previously disclosed live-query integration risk remains: the M3 appointment workspace still uses protocol DTO projection fixtures until a future approved worker query adapter provides the page-level appointment read model.",
+    "The existing Vite chunk-size warning remains unrelated to this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator should validate this ACCEPT handoff JSON and proceed with task acceptance/integration routing.",
+  "created_at": "2026-06-25T19:38:01.210Z"
+}

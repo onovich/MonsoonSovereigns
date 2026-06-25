@@ -1,0 +1,102 @@
+{
+  "message_id": "MSG-20260625-M3-CLIENT-APPOINTMENT-UI-WRITER-REVIEW",
+  "task_id": "M3-CLIENT-APPOINTMENT-UI-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M3 appointment workspace as a React DOM/client read-model feature: client-core now exposes appointment, character, polity/vassal, obligation, succession/vacancy, eligibility, bulk preview, result, and reason-summary slices projected from protocol query DTOs; UI renders appointment and bulk command workflows with per-candidate rejection reasons, policy continuity, administrative impact preview, succession/obligation/result panels, and command DTO submission callbacks without mutating authoritative state.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M3-CLIENT-APPOINTMENT-UI-001.json"
+  ],
+  "branch_or_worktree": "feat/m3-client-appointment-ui",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/client-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit for @monsoon/client-core passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit for @monsoon/ui passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 8 tests, including M3 appointment read-model projection, rejection reason, and command DTO coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest SSR passed 1 file / 4 tests, including M3 appointment, bulk, rejection reason, succession, obligation, result, and reason summary rendering."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Web shell Vitest passed 1 file / 3 tests, including bootstrapped M3 appointment slice smoke coverage."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; emitted existing chunk-size warning for lib-DHa59PjR.js over 500 kB."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; sim determinism/save-load hashes matched; root Vitest passed 24 files / 161 tests; web Vitest passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Chromium Playwright passed 3 tests, including the M3 appointment workspace command submission flow."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier check, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-CLIENT-APPOINTMENT-UI-001",
+      "exit_code": 0,
+      "result": "Task JSON validated successfully."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-CLIENT-APPOINTMENT-UI-001",
+      "exit_code": 0,
+      "result": "Parsed task JSON and verified id, status, allowed_paths, and required_tests shape."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed only task-scoped modified files and the new M3 writer handoff file."
+    }
+  ],
+  "decisions": [
+    "Used Playwright coverage instead of Storybook because root .storybook is outside this task's allowed_paths and apps/storybook does not exist in this checkout.",
+    "Kept M3 UI as React DOM over client read-model slices; no Pixi ownership, Electron, Node, or authoritative WorldState mutation was introduced.",
+    "Projected visible eligibility and reason summaries from protocol query/read-model DTO-shaped inputs and command result reason codes; UI does not copy sim-core appointment formulas or hidden weights.",
+    "Generated sim.appoint-office and sim.appoint-offices-bulk DTOs through client-core command builders and surfaced them via a Web shell callback/status instead of applying them locally."
+  ],
+  "risks": [
+    "Current M3 appointment workspace uses a protocol DTO projection fixture because there is not yet a single live worker query adapter feeding the page-level appointment workspace in apps/web.",
+    "Existing protocol query output exposes office/enfeoffment/succession/postwar reason data but not a complete live character catalog or per-office candidate eligibility query; this UI keeps those values as read-model fixture inputs and should be wired to a future systems_architect-approved query rather than duplicating sim-core rules.",
+    "Build still reports the pre-existing Vite chunk-size warning for a large generated lib chunk; no new production dependency was added."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review M3 appointment UI/read-model implementation, Playwright coverage, boundary compliance, and the noted live-query integration risk.",
+  "created_at": "2026-06-25T19:19:33.978Z"
+}
