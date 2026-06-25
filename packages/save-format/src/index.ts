@@ -173,6 +173,321 @@ export interface SaveM2EconomyPopulationStateDto {
   readonly transport: SaveM2TransportStateDto;
 }
 
+export type SaveM3ObligationKindDto = "tribute" | "troop";
+export type SaveM3ObligationResourceKindDto = "cash" | "grain" | "troops";
+export type SaveM3ObligationStatusDto = "active" | "disputed" | "breached";
+export type SaveM3ObligationAuditEventKindDto = "created" | "settled" | "status-changed";
+export type SaveM3ObligationCategoryDto =
+  | "regular-tribute"
+  | "extraordinary-levy"
+  | "troop-obligation"
+  | "defensive-garrison"
+  | "specific-war-aid";
+export type SaveM3ObligationSettlementActionDto =
+  | "fulfillment"
+  | "partial-fulfillment"
+  | "deferral"
+  | "refusal"
+  | "remission"
+  | "pursuit-recovery"
+  | "default-breach";
+export type SaveM3TroopResponseStateDto =
+  | "none"
+  | "committed"
+  | "deferred"
+  | "refused"
+  | "remitted"
+  | "recovery-pursued"
+  | "breached";
+export type SaveM3AdministrativeControlModeDto = "direct" | "vassal" | "tribute-only";
+export type SaveM3OfficeKindDto = "commander" | "governor" | "minister";
+export type SaveM3OfficeJurisdictionDto =
+  | { readonly kind: "polity"; readonly polityId: number }
+  | { readonly kind: "district"; readonly districtId: number };
+export type SaveM3PolicyStanceDto = "balanced" | "conciliatory" | "extractive" | "military";
+export type SaveM3PolicyTargetDto =
+  | { readonly kind: "office"; readonly officeId: number }
+  | { readonly kind: "polity"; readonly polityId: number }
+  | { readonly kind: "district"; readonly districtId: number };
+export type SaveM3AppointmentAuditEventKindDto =
+  | "appointment"
+  | "bulk-appointment"
+  | "enfeoffment"
+  | "policy-updated";
+export type SaveM3SuccessionSupportKindDto =
+  | "kinship"
+  | "designation"
+  | "court"
+  | "military"
+  | "provincial"
+  | "suzerain"
+  | "foreign";
+export type SaveM3SuccessionTriggerDto =
+  | {
+      readonly kind: "death";
+      readonly characterId: number;
+      readonly officeId: number | null;
+    }
+  | {
+      readonly kind: "incapacity";
+      readonly characterId: number;
+      readonly officeId: number | null;
+    };
+export type SaveM3SuccessionOutcomeDto =
+  | {
+      readonly kind: "peaceful";
+      readonly successorCharacterId: number;
+      readonly supportTotalBps: number;
+    }
+  | {
+      readonly kind: "regency";
+      readonly successorCharacterId: number;
+      readonly regentCharacterId: number;
+      readonly supportTotalBps: number;
+      readonly reasonCode: string;
+    }
+  | {
+      readonly kind: "disputed";
+      readonly leadingCharacterId: number;
+      readonly rivalCharacterId: number;
+      readonly supportMarginBps: number;
+      readonly reasonCode: string;
+    };
+
+export interface SaveM3PolityRecordStateDto {
+  readonly polityId: number;
+  readonly directSuzerainPolityId: number | null;
+}
+
+export type SaveM3ObligationRequirementDto =
+  | {
+      readonly kind: "amount";
+      readonly resourceKind: SaveM3ObligationResourceKindDto;
+      readonly amount: number;
+    }
+  | {
+      readonly kind: "condition";
+      readonly conditionKey: string;
+    };
+
+export type SaveM3ObligationDueDto =
+  | {
+      readonly kind: "cadence";
+      readonly periodDays: number;
+      readonly nextDueDay: number;
+    }
+  | {
+      readonly kind: "trigger";
+      readonly triggerKey: string;
+    };
+
+export interface SaveM3ObligationSourceStateDto {
+  readonly kind: "vassalage";
+  readonly sourceId: string;
+  readonly debtorPolityId: number;
+  readonly creditorPolityId: number;
+}
+
+export interface SaveM3ObligationAccountingStateDto {
+  readonly nominalAmount: number;
+  readonly dueAmount: number;
+  readonly deliveredAmount: number;
+  readonly arrearsAmount: number;
+  readonly defaultedAmount: number;
+  readonly remittedAmount: number;
+  readonly dueDay: number;
+  readonly cycle: number;
+  readonly troopResponseState: SaveM3TroopResponseStateDto;
+}
+
+export interface SaveM3ObligationStateDto {
+  readonly id: number;
+  readonly debtorPolityId: number;
+  readonly creditorPolityId: number;
+  readonly obligationKind: SaveM3ObligationKindDto;
+  readonly obligationCategory: SaveM3ObligationCategoryDto;
+  readonly obligationSource: SaveM3ObligationSourceStateDto;
+  readonly requirement: SaveM3ObligationRequirementDto;
+  readonly due: SaveM3ObligationDueDto;
+  readonly accounting: SaveM3ObligationAccountingStateDto;
+  readonly status: SaveM3ObligationStatusDto;
+  readonly disputeReasonCode: string | null;
+  readonly breachReasonCode: string | null;
+  readonly createdAuditEventId: number;
+  readonly latestAuditEventId: number;
+}
+
+export interface SaveM3ObligationAuditEventStateDto {
+  readonly id: number;
+  readonly obligationId: number;
+  readonly eventKind: SaveM3ObligationAuditEventKindDto;
+  readonly eventDay: number;
+  readonly eventRevision: number;
+  readonly commandId: string;
+  readonly actor: {
+    readonly kind: "ai" | "player" | "system";
+    readonly id: string;
+  };
+  readonly actionKind: SaveM3ObligationSettlementActionDto | null;
+  readonly dueDay: number | null;
+  readonly fulfillmentId: number | null;
+  readonly fulfilledAmount: number | null;
+  readonly statusAfter: SaveM3ObligationStatusDto;
+  readonly reasonCode: string | null;
+  readonly reasonCodes: readonly string[];
+  readonly reliabilityBps: number;
+}
+
+export type SaveM3FulfillmentSourceMovementStateDto =
+  | {
+      readonly kind: "m2-population-group";
+      readonly populationGroupId: number;
+      readonly districtId: number;
+      readonly resourceKind: "cash" | "grain";
+      readonly amount: number;
+    }
+  | {
+      readonly kind: "m3-troop-commitment-placeholder";
+      readonly debtorPolityId: number;
+      readonly headcount: number;
+    };
+
+export interface SaveM3FulfillmentClaimStateDto {
+  readonly fulfillmentId: number;
+  readonly obligationId: number;
+  readonly auditEventId: number;
+  readonly actionKind: SaveM3ObligationSettlementActionDto;
+  readonly dueDay: number;
+  readonly fulfilledAmount: number;
+  readonly deliveredAmount: number;
+  readonly arrearsAmount: number;
+  readonly defaultedAmount: number;
+  readonly reasonCode: string;
+  readonly sourceMovements: readonly SaveM3FulfillmentSourceMovementStateDto[];
+}
+
+export interface SaveM3AdministrativeDistrictStateDto {
+  readonly polityId: number;
+  readonly districtId: number;
+  readonly controlMode: SaveM3AdministrativeControlModeDto;
+  readonly localComplexity: number;
+  readonly communicationCost: number;
+  readonly directness: number;
+  readonly frontierPressure: number;
+  readonly administrativeCapacity: number;
+}
+
+export interface SaveM3CharacterStateDto {
+  readonly characterId: number;
+  readonly polityId: number;
+  readonly alive: boolean;
+  readonly incapacitated: boolean;
+  readonly currentDistrictId: number;
+  readonly commandBps: number;
+  readonly administrationBps: number;
+  readonly diplomacyBps: number;
+}
+
+export interface SaveM3CharacterRelationshipStateDto {
+  readonly sourceCharacterId: number;
+  readonly targetCharacterId: number;
+  readonly affinityBps: number;
+}
+
+export interface SaveM3OfficeStateDto {
+  readonly officeId: number;
+  readonly polityId: number;
+  readonly jurisdiction: SaveM3OfficeJurisdictionDto;
+  readonly officeKind: SaveM3OfficeKindDto;
+  readonly primary: boolean;
+  readonly holderCharacterId: number | null;
+  readonly policyId: number;
+  readonly minimumCommandBps: number;
+  readonly minimumAdministrationBps: number;
+}
+
+export interface SaveM3PolicyStateDto {
+  readonly policyId: number;
+  readonly target: SaveM3PolicyTargetDto;
+  readonly stance: SaveM3PolicyStanceDto;
+  readonly intensityBps: number;
+}
+
+export interface SaveM3EnfeoffmentStateDto {
+  readonly districtId: number;
+  readonly holderCharacterId: number;
+  readonly grantedByPolityId: number;
+  readonly policyId: number;
+  readonly grantedDay: number;
+  readonly reasonCode: string;
+}
+
+export interface SaveM3AppointmentAuditEventStateDto {
+  readonly id: number;
+  readonly eventKind: SaveM3AppointmentAuditEventKindDto;
+  readonly eventDay: number;
+  readonly eventRevision: number;
+  readonly commandId: string;
+  readonly actor: {
+    readonly kind: "ai" | "player" | "system";
+    readonly id: string;
+  };
+  readonly officeId: number | null;
+  readonly characterId: number | null;
+  readonly policyId: number | null;
+  readonly districtId: number | null;
+  readonly reasonCode: string;
+}
+
+export interface SaveM3SuccessionSupportSourceStateDto {
+  readonly kind: SaveM3SuccessionSupportKindDto;
+  readonly strengthBps: number;
+  readonly sourceId: string;
+}
+
+export interface SaveM3SuccessionCandidateProfileStateDto {
+  readonly polityId: number;
+  readonly characterId: number;
+  readonly requiresRegency: boolean;
+  readonly supportSources: readonly SaveM3SuccessionSupportSourceStateDto[];
+}
+
+export interface SaveM3SuccessionCandidateStateDto {
+  readonly characterId: number;
+  readonly requiresRegency: boolean;
+  readonly supportSources: readonly SaveM3SuccessionSupportSourceStateDto[];
+  readonly supportTotalBps: number;
+}
+
+export interface SaveM3SuccessionCrisisStateDto {
+  readonly id: number;
+  readonly polityId: number;
+  readonly trigger: SaveM3SuccessionTriggerDto;
+  readonly status: "pending" | "resolved";
+  readonly startedDay: number;
+  readonly resolvedDay: number | null;
+  readonly candidates: readonly SaveM3SuccessionCandidateStateDto[];
+  readonly outcome: SaveM3SuccessionOutcomeDto | null;
+  readonly reasonCode: string;
+}
+
+export interface SaveM3PolityVassalageStateDto {
+  readonly schemaVersion: 1;
+  readonly polities: readonly SaveM3PolityRecordStateDto[];
+  readonly obligations: readonly SaveM3ObligationStateDto[];
+  readonly obligationAuditEvents: readonly SaveM3ObligationAuditEventStateDto[];
+  readonly fulfillmentClaims: readonly SaveM3FulfillmentClaimStateDto[];
+  readonly administrativeDistricts: readonly SaveM3AdministrativeDistrictStateDto[];
+  readonly characters: readonly SaveM3CharacterStateDto[];
+  readonly relationships: readonly SaveM3CharacterRelationshipStateDto[];
+  readonly offices: readonly SaveM3OfficeStateDto[];
+  readonly policies: readonly SaveM3PolicyStateDto[];
+  readonly enfeoffments: readonly SaveM3EnfeoffmentStateDto[];
+  readonly appointmentAuditEvents: readonly SaveM3AppointmentAuditEventStateDto[];
+  readonly successionCandidateProfiles: readonly SaveM3SuccessionCandidateProfileStateDto[];
+  readonly successionCrises: readonly SaveM3SuccessionCrisisStateDto[];
+}
+
 export interface SaveWorldRuntimeStateV0Dto {
   readonly polities: readonly SaveSimpleRuntimeStateDto[];
   readonly persons: readonly SavePersonStateDto[];
@@ -180,6 +495,7 @@ export interface SaveWorldRuntimeStateV0Dto {
   readonly settlements: readonly SaveSettlementStateDto[];
   readonly routes: readonly SaveSimpleRuntimeStateDto[];
   readonly m2?: SaveM2EconomyPopulationStateDto;
+  readonly m3?: SaveM3PolityVassalageStateDto;
 }
 
 export interface SaveWorldSnapshotV0Dto {
@@ -292,6 +608,7 @@ export interface WorldStateV0ForSave {
     readonly settlements: readonly SaveSettlementStateDto[];
     readonly routes: readonly SaveSimpleRuntimeStateDto[];
     readonly m2?: SaveM2EconomyPopulationStateDto;
+    readonly m3?: SaveM3PolityVassalageStateDto;
   };
 }
 
@@ -436,13 +753,7 @@ export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnap
     })),
     routes: world.state.routes.map(copySimpleRuntimeState)
   };
-  const state =
-    world.state.m2 === undefined
-      ? stateWithoutM2
-      : {
-          ...stateWithoutM2,
-          m2: copyM2EconomyPopulationState(world.state.m2)
-        };
+  const state = copyOptionalRuntimeSlices(stateWithoutM2, world.state.m2, world.state.m3);
 
   return {
     schemaVersion: 0,
@@ -504,13 +815,11 @@ export function saveWorldStateV0DtoToCandidate(snapshot: unknown, scheduler?: un
       currentDistrictId: person.currentDistrictId === null ? undefined : person.currentDistrictId
     }))
   };
-  const state =
-    parsedSnapshot.value.state.m2 === undefined
-      ? stateWithoutM2
-      : {
-          ...stateWithoutM2,
-          m2: copyM2EconomyPopulationState(parsedSnapshot.value.state.m2)
-        };
+  const state = copyOptionalCandidateRuntimeSlices(
+    stateWithoutM2,
+    parsedSnapshot.value.state.m2,
+    parsedSnapshot.value.state.m3
+  );
 
   return {
     meta: parsedSnapshot.value.meta,
@@ -896,19 +1205,33 @@ function parseWorldRuntimeState(
     input["m2"] === undefined
       ? undefined
       : parseM2EconomyPopulationState(input["m2"], "body.authoritativeSnapshot.state.m2", errors);
+  const m3 =
+    input["m3"] === undefined
+      ? undefined
+      : parseM3PolityVassalageState(input["m3"], "body.authoritativeSnapshot.state.m3", errors);
   if (
     polities === undefined ||
     persons === undefined ||
     districts === undefined ||
     settlements === undefined ||
     routes === undefined ||
-    (input["m2"] !== undefined && m2 === undefined)
+    (input["m2"] !== undefined && m2 === undefined) ||
+    (input["m3"] !== undefined && m3 === undefined)
   ) {
     return undefined;
   }
 
   const state = { polities, persons, districts, settlements, routes };
-  return m2 === undefined ? state : { ...state, m2 };
+  if (m2 !== undefined && m3 !== undefined) {
+    return { ...state, m2, m3 };
+  }
+  if (m2 !== undefined) {
+    return { ...state, m2 };
+  }
+  if (m3 !== undefined) {
+    return { ...state, m3 };
+  }
+  return state;
 }
 
 function parseSaveSchedulerV1Dto(
@@ -1302,6 +1625,1275 @@ function parseM2EconomyPopulationState(
     market,
     transport
   };
+}
+
+function parseM3PolityVassalageState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3PolityVassalageStateDto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 polity vassalage state must be an object."));
+    return undefined;
+  }
+
+  if (input["schemaVersion"] !== 1) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.schemaVersion`,
+        "M3 polity vassalage schemaVersion must be 1."
+      )
+    );
+  }
+
+  const polities = parseM3Array(
+    input["polities"],
+    `${path}.polities`,
+    "M3 polities",
+    errors,
+    parseM3PolityRecord
+  );
+  const obligations = parseM3Array(
+    input["obligations"],
+    `${path}.obligations`,
+    "M3 obligations",
+    errors,
+    parseM3Obligation
+  );
+  const obligationAuditEvents = parseM3Array(
+    input["obligationAuditEvents"],
+    `${path}.obligationAuditEvents`,
+    "M3 obligationAuditEvents",
+    errors,
+    parseM3ObligationAuditEvent
+  );
+  const fulfillmentClaims = parseM3Array(
+    input["fulfillmentClaims"],
+    `${path}.fulfillmentClaims`,
+    "M3 fulfillmentClaims",
+    errors,
+    parseM3FulfillmentClaim
+  );
+  const administrativeDistricts = parseM3Array(
+    input["administrativeDistricts"],
+    `${path}.administrativeDistricts`,
+    "M3 administrativeDistricts",
+    errors,
+    parseM3AdministrativeDistrict
+  );
+  const characters = parseM3Array(
+    input["characters"],
+    `${path}.characters`,
+    "M3 characters",
+    errors,
+    parseM3Character
+  );
+  const relationships = parseM3Array(
+    input["relationships"],
+    `${path}.relationships`,
+    "M3 relationships",
+    errors,
+    parseM3Relationship
+  );
+  const offices = parseM3Array(
+    input["offices"],
+    `${path}.offices`,
+    "M3 offices",
+    errors,
+    parseM3Office
+  );
+  const policies = parseM3Array(
+    input["policies"],
+    `${path}.policies`,
+    "M3 policies",
+    errors,
+    parseM3Policy
+  );
+  const enfeoffments = parseM3Array(
+    input["enfeoffments"],
+    `${path}.enfeoffments`,
+    "M3 enfeoffments",
+    errors,
+    parseM3Enfeoffment
+  );
+  const appointmentAuditEvents = parseM3Array(
+    input["appointmentAuditEvents"],
+    `${path}.appointmentAuditEvents`,
+    "M3 appointmentAuditEvents",
+    errors,
+    parseM3AppointmentAuditEvent
+  );
+  const successionCandidateProfiles = parseM3Array(
+    input["successionCandidateProfiles"],
+    `${path}.successionCandidateProfiles`,
+    "M3 successionCandidateProfiles",
+    errors,
+    parseM3SuccessionCandidateProfile
+  );
+  const successionCrises = parseM3Array(
+    input["successionCrises"],
+    `${path}.successionCrises`,
+    "M3 successionCrises",
+    errors,
+    parseM3SuccessionCrisis
+  );
+
+  if (
+    polities === undefined ||
+    obligations === undefined ||
+    obligationAuditEvents === undefined ||
+    fulfillmentClaims === undefined ||
+    administrativeDistricts === undefined ||
+    characters === undefined ||
+    relationships === undefined ||
+    offices === undefined ||
+    policies === undefined ||
+    enfeoffments === undefined ||
+    appointmentAuditEvents === undefined ||
+    successionCandidateProfiles === undefined ||
+    successionCrises === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    schemaVersion: 1,
+    polities,
+    obligations,
+    obligationAuditEvents,
+    fulfillmentClaims,
+    administrativeDistricts,
+    characters,
+    relationships,
+    offices,
+    policies,
+    enfeoffments,
+    appointmentAuditEvents,
+    successionCandidateProfiles,
+    successionCrises
+  };
+}
+
+function parseM3Array<TEntry>(
+  input: unknown,
+  path: string,
+  label: string,
+  errors: SaveLoadRejectionReasonV1[],
+  parseEntry: (entry: unknown, path: string, errors: SaveLoadRejectionReasonV1[]) => TEntry
+): readonly TEntry[] | undefined {
+  if (!Array.isArray(input)) {
+    errors.push(reason("invalid-schema", path, `${label} must be an array.`));
+    return undefined;
+  }
+
+  return input.map((entry, index) => parseEntry(entry, `${path}[${index}]`, errors));
+}
+
+function parseM3PolityRecord(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3PolityRecordStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 polity record must be an object."));
+    return { polityId: 0, directSuzerainPolityId: null };
+  }
+
+  return {
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0,
+    directSuzerainPolityId: readNullablePositiveSafeInteger(
+      input,
+      "directSuzerainPolityId",
+      `${path}.directSuzerainPolityId`,
+      errors
+    )
+  };
+}
+
+function parseM3Obligation(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 obligation must be an object."));
+    return fallbackM3Obligation();
+  }
+
+  const obligationSource = parseM3ObligationSource(
+    input["obligationSource"],
+    `${path}.obligationSource`,
+    errors
+  );
+  const requirement = parseM3Requirement(input["requirement"], `${path}.requirement`, errors);
+  const due = parseM3Due(input["due"], `${path}.due`, errors);
+  const accounting = parseM3ObligationAccounting(input["accounting"], `${path}.accounting`, errors);
+
+  return {
+    id: readPositiveSafeInteger(input, "id", `${path}.id`, errors) ?? 0,
+    debtorPolityId:
+      readPositiveSafeInteger(input, "debtorPolityId", `${path}.debtorPolityId`, errors) ?? 0,
+    creditorPolityId:
+      readPositiveSafeInteger(input, "creditorPolityId", `${path}.creditorPolityId`, errors) ?? 0,
+    obligationKind: parseM3ObligationKind(
+      input["obligationKind"],
+      `${path}.obligationKind`,
+      errors
+    ),
+    obligationCategory: parseM3ObligationCategory(
+      input["obligationCategory"],
+      `${path}.obligationCategory`,
+      errors
+    ),
+    obligationSource,
+    requirement,
+    due,
+    accounting,
+    status: parseM3ObligationStatus(input["status"], `${path}.status`, errors),
+    disputeReasonCode: readNullableString(
+      input,
+      "disputeReasonCode",
+      `${path}.disputeReasonCode`,
+      errors
+    ),
+    breachReasonCode: readNullableString(
+      input,
+      "breachReasonCode",
+      `${path}.breachReasonCode`,
+      errors
+    ),
+    createdAuditEventId:
+      readPositiveSafeInteger(
+        input,
+        "createdAuditEventId",
+        `${path}.createdAuditEventId`,
+        errors
+      ) ?? 0,
+    latestAuditEventId:
+      readPositiveSafeInteger(input, "latestAuditEventId", `${path}.latestAuditEventId`, errors) ??
+      0
+  };
+}
+
+function parseM3ObligationSource(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationSourceStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 obligationSource must be an object."));
+    return { kind: "vassalage", sourceId: "", debtorPolityId: 0, creditorPolityId: 0 };
+  }
+  if (input["kind"] !== "vassalage") {
+    errors.push(
+      reason("invalid-schema", `${path}.kind`, "M3 obligationSource kind must be vassalage.")
+    );
+  }
+
+  return {
+    kind: "vassalage",
+    sourceId: readNonEmptyString(input, "sourceId", `${path}.sourceId`, errors) ?? "",
+    debtorPolityId:
+      readPositiveSafeInteger(input, "debtorPolityId", `${path}.debtorPolityId`, errors) ?? 0,
+    creditorPolityId:
+      readPositiveSafeInteger(input, "creditorPolityId", `${path}.creditorPolityId`, errors) ?? 0
+  };
+}
+
+function parseM3Requirement(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationRequirementDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 obligation requirement must be an object."));
+    return { kind: "amount", resourceKind: "cash", amount: 0 };
+  }
+  if (input["kind"] === "condition") {
+    return {
+      kind: "condition",
+      conditionKey: readNonEmptyString(input, "conditionKey", `${path}.conditionKey`, errors) ?? ""
+    };
+  }
+  if (input["kind"] !== "amount") {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.kind`,
+        "M3 obligation requirement kind must be amount or condition."
+      )
+    );
+  }
+  return {
+    kind: "amount",
+    resourceKind: parseM3ObligationResourceKind(
+      input["resourceKind"],
+      `${path}.resourceKind`,
+      errors
+    ),
+    amount: readPositiveSafeInteger(input, "amount", `${path}.amount`, errors) ?? 0
+  };
+}
+
+function parseM3Due(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationDueDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 obligation due must be an object."));
+    return { kind: "cadence", periodDays: 0, nextDueDay: 0 };
+  }
+  if (input["kind"] === "trigger") {
+    return {
+      kind: "trigger",
+      triggerKey: readNonEmptyString(input, "triggerKey", `${path}.triggerKey`, errors) ?? ""
+    };
+  }
+  if (input["kind"] !== "cadence") {
+    errors.push(
+      reason("invalid-schema", `${path}.kind`, "M3 obligation due kind must be cadence or trigger.")
+    );
+  }
+  return {
+    kind: "cadence",
+    periodDays: readPositiveSafeInteger(input, "periodDays", `${path}.periodDays`, errors) ?? 0,
+    nextDueDay: readNonnegativeSafeInteger(input, "nextDueDay", `${path}.nextDueDay`, errors) ?? 0
+  };
+}
+
+function parseM3ObligationAccounting(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationAccountingStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 obligation accounting must be an object."));
+    return fallbackM3ObligationAccounting();
+  }
+  return {
+    nominalAmount:
+      readNonnegativeSafeInteger(input, "nominalAmount", `${path}.nominalAmount`, errors) ?? 0,
+    dueAmount: readNonnegativeSafeInteger(input, "dueAmount", `${path}.dueAmount`, errors) ?? 0,
+    deliveredAmount:
+      readNonnegativeSafeInteger(input, "deliveredAmount", `${path}.deliveredAmount`, errors) ?? 0,
+    arrearsAmount:
+      readNonnegativeSafeInteger(input, "arrearsAmount", `${path}.arrearsAmount`, errors) ?? 0,
+    defaultedAmount:
+      readNonnegativeSafeInteger(input, "defaultedAmount", `${path}.defaultedAmount`, errors) ?? 0,
+    remittedAmount:
+      readNonnegativeSafeInteger(input, "remittedAmount", `${path}.remittedAmount`, errors) ?? 0,
+    dueDay: readNonnegativeSafeInteger(input, "dueDay", `${path}.dueDay`, errors) ?? 0,
+    cycle: readPositiveSafeInteger(input, "cycle", `${path}.cycle`, errors) ?? 0,
+    troopResponseState: parseM3TroopResponseState(
+      input["troopResponseState"],
+      `${path}.troopResponseState`,
+      errors
+    )
+  };
+}
+
+function parseM3ObligationAuditEvent(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationAuditEventStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 obligation audit event must be an object."));
+    return fallbackM3ObligationAuditEvent();
+  }
+  return {
+    id: readPositiveSafeInteger(input, "id", `${path}.id`, errors) ?? 0,
+    obligationId:
+      readPositiveSafeInteger(input, "obligationId", `${path}.obligationId`, errors) ?? 0,
+    eventKind: parseM3ObligationAuditEventKind(input["eventKind"], `${path}.eventKind`, errors),
+    eventDay: readNonnegativeSafeInteger(input, "eventDay", `${path}.eventDay`, errors) ?? 0,
+    eventRevision:
+      readNonnegativeSafeInteger(input, "eventRevision", `${path}.eventRevision`, errors) ?? 0,
+    commandId: readNonEmptyString(input, "commandId", `${path}.commandId`, errors) ?? "",
+    actor: parseM3Actor(input["actor"], `${path}.actor`, errors),
+    actionKind: parseNullableM3SettlementAction(input["actionKind"], `${path}.actionKind`, errors),
+    dueDay: readNullableNonnegativeSafeInteger(input, "dueDay", `${path}.dueDay`, errors),
+    fulfillmentId: readNullablePositiveSafeInteger(
+      input,
+      "fulfillmentId",
+      `${path}.fulfillmentId`,
+      errors
+    ),
+    fulfilledAmount: readNullableNonnegativeSafeInteger(
+      input,
+      "fulfilledAmount",
+      `${path}.fulfilledAmount`,
+      errors
+    ),
+    statusAfter: parseM3ObligationStatus(input["statusAfter"], `${path}.statusAfter`, errors),
+    reasonCode: readNullableString(input, "reasonCode", `${path}.reasonCode`, errors),
+    reasonCodes: parseStringArray(input["reasonCodes"], `${path}.reasonCodes`, errors),
+    reliabilityBps:
+      readIntegerInRange(input, "reliabilityBps", `${path}.reliabilityBps`, 0, 10_000, errors) ?? 0
+  };
+}
+
+function parseM3FulfillmentClaim(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3FulfillmentClaimStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 fulfillment claim must be an object."));
+    return fallbackM3FulfillmentClaim();
+  }
+  const sourceMovements = parseM3Array(
+    input["sourceMovements"],
+    `${path}.sourceMovements`,
+    "M3 fulfillment sourceMovements",
+    errors,
+    parseM3FulfillmentSourceMovement
+  );
+  return {
+    fulfillmentId:
+      readPositiveSafeInteger(input, "fulfillmentId", `${path}.fulfillmentId`, errors) ?? 0,
+    obligationId:
+      readPositiveSafeInteger(input, "obligationId", `${path}.obligationId`, errors) ?? 0,
+    auditEventId:
+      readPositiveSafeInteger(input, "auditEventId", `${path}.auditEventId`, errors) ?? 0,
+    actionKind: parseM3SettlementAction(input["actionKind"], `${path}.actionKind`, errors),
+    dueDay: readNonnegativeSafeInteger(input, "dueDay", `${path}.dueDay`, errors) ?? 0,
+    fulfilledAmount:
+      readNonnegativeSafeInteger(input, "fulfilledAmount", `${path}.fulfilledAmount`, errors) ?? 0,
+    deliveredAmount:
+      readNonnegativeSafeInteger(input, "deliveredAmount", `${path}.deliveredAmount`, errors) ?? 0,
+    arrearsAmount:
+      readNonnegativeSafeInteger(input, "arrearsAmount", `${path}.arrearsAmount`, errors) ?? 0,
+    defaultedAmount:
+      readNonnegativeSafeInteger(input, "defaultedAmount", `${path}.defaultedAmount`, errors) ?? 0,
+    reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? "",
+    sourceMovements: sourceMovements ?? []
+  };
+}
+
+function parseM3FulfillmentSourceMovement(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3FulfillmentSourceMovementStateDto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "M3 fulfillment source movement must be an object.")
+    );
+    return {
+      kind: "m2-population-group",
+      populationGroupId: 0,
+      districtId: 0,
+      resourceKind: "cash",
+      amount: 0
+    };
+  }
+  if (input["kind"] === "m3-troop-commitment-placeholder") {
+    return {
+      kind: "m3-troop-commitment-placeholder",
+      debtorPolityId:
+        readPositiveSafeInteger(input, "debtorPolityId", `${path}.debtorPolityId`, errors) ?? 0,
+      headcount: readNonnegativeSafeInteger(input, "headcount", `${path}.headcount`, errors) ?? 0
+    };
+  }
+  if (input["kind"] !== "m2-population-group") {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.kind`,
+        "M3 fulfillment source movement kind must be m2-population-group or m3-troop-commitment-placeholder."
+      )
+    );
+  }
+  return {
+    kind: "m2-population-group",
+    populationGroupId:
+      readPositiveSafeInteger(input, "populationGroupId", `${path}.populationGroupId`, errors) ?? 0,
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    resourceKind: parseM3CashOrGrain(input["resourceKind"], `${path}.resourceKind`, errors),
+    amount: readNonnegativeSafeInteger(input, "amount", `${path}.amount`, errors) ?? 0
+  };
+}
+
+function parseM3AdministrativeDistrict(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3AdministrativeDistrictStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 administrative district must be an object."));
+    return fallbackM3AdministrativeDistrict();
+  }
+  return {
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0,
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    controlMode: parseM3AdministrativeControlMode(
+      input["controlMode"],
+      `${path}.controlMode`,
+      errors
+    ),
+    localComplexity:
+      readNonnegativeSafeInteger(input, "localComplexity", `${path}.localComplexity`, errors) ?? 0,
+    communicationCost:
+      readNonnegativeSafeInteger(input, "communicationCost", `${path}.communicationCost`, errors) ??
+      0,
+    directness: readNonnegativeSafeInteger(input, "directness", `${path}.directness`, errors) ?? 0,
+    frontierPressure:
+      readNonnegativeSafeInteger(input, "frontierPressure", `${path}.frontierPressure`, errors) ??
+      0,
+    administrativeCapacity:
+      readPositiveSafeInteger(
+        input,
+        "administrativeCapacity",
+        `${path}.administrativeCapacity`,
+        errors
+      ) ?? 0
+  };
+}
+
+function parseM3Character(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3CharacterStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 character must be an object."));
+    return fallbackM3Character();
+  }
+  return {
+    characterId: readPositiveSafeInteger(input, "characterId", `${path}.characterId`, errors) ?? 0,
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0,
+    alive: readBoolean(input, "alive", `${path}.alive`, errors),
+    incapacitated: readBoolean(input, "incapacitated", `${path}.incapacitated`, errors),
+    currentDistrictId:
+      readPositiveSafeInteger(input, "currentDistrictId", `${path}.currentDistrictId`, errors) ?? 0,
+    commandBps:
+      readIntegerInRange(input, "commandBps", `${path}.commandBps`, 0, 10_000, errors) ?? 0,
+    administrationBps:
+      readIntegerInRange(
+        input,
+        "administrationBps",
+        `${path}.administrationBps`,
+        0,
+        10_000,
+        errors
+      ) ?? 0,
+    diplomacyBps:
+      readIntegerInRange(input, "diplomacyBps", `${path}.diplomacyBps`, 0, 10_000, errors) ?? 0
+  };
+}
+
+function parseM3Relationship(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3CharacterRelationshipStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 relationship must be an object."));
+    return { sourceCharacterId: 0, targetCharacterId: 0, affinityBps: 0 };
+  }
+  return {
+    sourceCharacterId:
+      readPositiveSafeInteger(input, "sourceCharacterId", `${path}.sourceCharacterId`, errors) ?? 0,
+    targetCharacterId:
+      readPositiveSafeInteger(input, "targetCharacterId", `${path}.targetCharacterId`, errors) ?? 0,
+    affinityBps:
+      readIntegerInRange(input, "affinityBps", `${path}.affinityBps`, -10_000, 10_000, errors) ?? 0
+  };
+}
+
+function parseM3Office(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3OfficeStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 office must be an object."));
+    return fallbackM3Office();
+  }
+  return {
+    officeId: readPositiveSafeInteger(input, "officeId", `${path}.officeId`, errors) ?? 0,
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0,
+    jurisdiction: parseM3OfficeJurisdiction(input["jurisdiction"], `${path}.jurisdiction`, errors),
+    officeKind: parseM3OfficeKind(input["officeKind"], `${path}.officeKind`, errors),
+    primary: readBoolean(input, "primary", `${path}.primary`, errors),
+    holderCharacterId: readNullablePositiveSafeInteger(
+      input,
+      "holderCharacterId",
+      `${path}.holderCharacterId`,
+      errors
+    ),
+    policyId: readPositiveSafeInteger(input, "policyId", `${path}.policyId`, errors) ?? 0,
+    minimumCommandBps:
+      readIntegerInRange(
+        input,
+        "minimumCommandBps",
+        `${path}.minimumCommandBps`,
+        0,
+        10_000,
+        errors
+      ) ?? 0,
+    minimumAdministrationBps:
+      readIntegerInRange(
+        input,
+        "minimumAdministrationBps",
+        `${path}.minimumAdministrationBps`,
+        0,
+        10_000,
+        errors
+      ) ?? 0
+  };
+}
+
+function parseM3Policy(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3PolicyStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 policy must be an object."));
+    return fallbackM3Policy();
+  }
+  return {
+    policyId: readPositiveSafeInteger(input, "policyId", `${path}.policyId`, errors) ?? 0,
+    target: parseM3PolicyTarget(input["target"], `${path}.target`, errors),
+    stance: parseM3PolicyStance(input["stance"], `${path}.stance`, errors),
+    intensityBps:
+      readIntegerInRange(input, "intensityBps", `${path}.intensityBps`, 0, 10_000, errors) ?? 0
+  };
+}
+
+function parseM3Enfeoffment(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3EnfeoffmentStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 enfeoffment must be an object."));
+    return {
+      districtId: 0,
+      holderCharacterId: 0,
+      grantedByPolityId: 0,
+      policyId: 0,
+      grantedDay: 0,
+      reasonCode: ""
+    };
+  }
+  return {
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    holderCharacterId:
+      readPositiveSafeInteger(input, "holderCharacterId", `${path}.holderCharacterId`, errors) ?? 0,
+    grantedByPolityId:
+      readPositiveSafeInteger(input, "grantedByPolityId", `${path}.grantedByPolityId`, errors) ?? 0,
+    policyId: readPositiveSafeInteger(input, "policyId", `${path}.policyId`, errors) ?? 0,
+    grantedDay: readNonnegativeSafeInteger(input, "grantedDay", `${path}.grantedDay`, errors) ?? 0,
+    reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+  };
+}
+
+function parseM3AppointmentAuditEvent(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3AppointmentAuditEventStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 appointment audit event must be an object."));
+    return fallbackM3AppointmentAuditEvent();
+  }
+  return {
+    id: readPositiveSafeInteger(input, "id", `${path}.id`, errors) ?? 0,
+    eventKind: parseM3AppointmentAuditEventKind(input["eventKind"], `${path}.eventKind`, errors),
+    eventDay: readNonnegativeSafeInteger(input, "eventDay", `${path}.eventDay`, errors) ?? 0,
+    eventRevision:
+      readNonnegativeSafeInteger(input, "eventRevision", `${path}.eventRevision`, errors) ?? 0,
+    commandId: readNonEmptyString(input, "commandId", `${path}.commandId`, errors) ?? "",
+    actor: parseM3Actor(input["actor"], `${path}.actor`, errors),
+    officeId: readNullablePositiveSafeInteger(input, "officeId", `${path}.officeId`, errors),
+    characterId: readNullablePositiveSafeInteger(
+      input,
+      "characterId",
+      `${path}.characterId`,
+      errors
+    ),
+    policyId: readNullablePositiveSafeInteger(input, "policyId", `${path}.policyId`, errors),
+    districtId: readNullablePositiveSafeInteger(input, "districtId", `${path}.districtId`, errors),
+    reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+  };
+}
+
+function parseM3SuccessionCandidateProfile(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionCandidateProfileStateDto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "M3 succession candidate profile must be an object.")
+    );
+    return { polityId: 0, characterId: 0, requiresRegency: false, supportSources: [] };
+  }
+  const supportSources = parseM3Array(
+    input["supportSources"],
+    `${path}.supportSources`,
+    "M3 succession supportSources",
+    errors,
+    parseM3SuccessionSupportSource
+  );
+  return {
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0,
+    characterId: readPositiveSafeInteger(input, "characterId", `${path}.characterId`, errors) ?? 0,
+    requiresRegency: readBoolean(input, "requiresRegency", `${path}.requiresRegency`, errors),
+    supportSources: supportSources ?? []
+  };
+}
+
+function parseM3SuccessionCrisis(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionCrisisStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 succession crisis must be an object."));
+    return fallbackM3SuccessionCrisis();
+  }
+  const candidates = parseM3Array(
+    input["candidates"],
+    `${path}.candidates`,
+    "M3 succession candidates",
+    errors,
+    parseM3SuccessionCandidate
+  );
+  return {
+    id: readPositiveSafeInteger(input, "id", `${path}.id`, errors) ?? 0,
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0,
+    trigger: parseM3SuccessionTrigger(input["trigger"], `${path}.trigger`, errors),
+    status: parseM3SuccessionStatus(input["status"], `${path}.status`, errors),
+    startedDay: readNonnegativeSafeInteger(input, "startedDay", `${path}.startedDay`, errors) ?? 0,
+    resolvedDay: readNullableNonnegativeSafeInteger(
+      input,
+      "resolvedDay",
+      `${path}.resolvedDay`,
+      errors
+    ),
+    candidates: candidates ?? [],
+    outcome: parseNullableM3SuccessionOutcome(input["outcome"], `${path}.outcome`, errors),
+    reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+  };
+}
+
+function parseM3OfficeJurisdiction(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3OfficeJurisdictionDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 office jurisdiction must be an object."));
+    return { kind: "polity", polityId: 0 };
+  }
+  if (input["kind"] === "district") {
+    return {
+      kind: "district",
+      districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0
+    };
+  }
+  if (input["kind"] !== "polity") {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.kind`,
+        "M3 office jurisdiction kind must be polity or district."
+      )
+    );
+  }
+  return {
+    kind: "polity",
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0
+  };
+}
+
+function parseM3PolicyTarget(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3PolicyTargetDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 policy target must be an object."));
+    return { kind: "polity", polityId: 0 };
+  }
+  if (input["kind"] === "office") {
+    return {
+      kind: "office",
+      officeId: readPositiveSafeInteger(input, "officeId", `${path}.officeId`, errors) ?? 0
+    };
+  }
+  if (input["kind"] === "district") {
+    return {
+      kind: "district",
+      districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0
+    };
+  }
+  if (input["kind"] !== "polity") {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.kind`,
+        "M3 policy target kind must be office, polity, or district."
+      )
+    );
+  }
+  return {
+    kind: "polity",
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0
+  };
+}
+
+function parseM3SuccessionSupportSource(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionSupportSourceStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 succession support source must be an object."));
+    return { kind: "kinship", strengthBps: 0, sourceId: "" };
+  }
+  return {
+    kind: parseM3SuccessionSupportKind(input["kind"], `${path}.kind`, errors),
+    strengthBps:
+      readIntegerInRange(input, "strengthBps", `${path}.strengthBps`, 0, 10_000, errors) ?? 0,
+    sourceId: readNonEmptyString(input, "sourceId", `${path}.sourceId`, errors) ?? ""
+  };
+}
+
+function parseM3SuccessionCandidate(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionCandidateStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 succession candidate must be an object."));
+    return { characterId: 0, requiresRegency: false, supportSources: [], supportTotalBps: 0 };
+  }
+  const supportSources = parseM3Array(
+    input["supportSources"],
+    `${path}.supportSources`,
+    "M3 succession supportSources",
+    errors,
+    parseM3SuccessionSupportSource
+  );
+  return {
+    characterId: readPositiveSafeInteger(input, "characterId", `${path}.characterId`, errors) ?? 0,
+    requiresRegency: readBoolean(input, "requiresRegency", `${path}.requiresRegency`, errors),
+    supportSources: supportSources ?? [],
+    supportTotalBps:
+      readIntegerInRange(input, "supportTotalBps", `${path}.supportTotalBps`, 0, 10_000, errors) ??
+      0
+  };
+}
+
+function parseM3SuccessionTrigger(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionTriggerDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 succession trigger must be an object."));
+    return { kind: "death", characterId: 0, officeId: null };
+  }
+  if (input["kind"] === "incapacity") {
+    return {
+      kind: "incapacity",
+      characterId:
+        readPositiveSafeInteger(input, "characterId", `${path}.characterId`, errors) ?? 0,
+      officeId: readNullablePositiveSafeInteger(input, "officeId", `${path}.officeId`, errors)
+    };
+  }
+  if (input["kind"] !== "death") {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.kind`,
+        "M3 succession trigger kind must be death or incapacity."
+      )
+    );
+  }
+  return {
+    kind: "death",
+    characterId: readPositiveSafeInteger(input, "characterId", `${path}.characterId`, errors) ?? 0,
+    officeId: readNullablePositiveSafeInteger(input, "officeId", `${path}.officeId`, errors)
+  };
+}
+
+function parseNullableM3SuccessionOutcome(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionOutcomeDto | null {
+  if (input === null) {
+    return null;
+  }
+  return parseM3SuccessionOutcome(input, path, errors);
+}
+
+function parseM3SuccessionOutcome(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionOutcomeDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 succession outcome must be an object or null."));
+    return { kind: "peaceful", successorCharacterId: 0, supportTotalBps: 0 };
+  }
+  if (input["kind"] === "regency") {
+    return {
+      kind: "regency",
+      successorCharacterId:
+        readPositiveSafeInteger(
+          input,
+          "successorCharacterId",
+          `${path}.successorCharacterId`,
+          errors
+        ) ?? 0,
+      regentCharacterId:
+        readPositiveSafeInteger(input, "regentCharacterId", `${path}.regentCharacterId`, errors) ??
+        0,
+      supportTotalBps:
+        readIntegerInRange(
+          input,
+          "supportTotalBps",
+          `${path}.supportTotalBps`,
+          0,
+          10_000,
+          errors
+        ) ?? 0,
+      reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+    };
+  }
+  if (input["kind"] === "disputed") {
+    return {
+      kind: "disputed",
+      leadingCharacterId:
+        readPositiveSafeInteger(
+          input,
+          "leadingCharacterId",
+          `${path}.leadingCharacterId`,
+          errors
+        ) ?? 0,
+      rivalCharacterId:
+        readPositiveSafeInteger(input, "rivalCharacterId", `${path}.rivalCharacterId`, errors) ?? 0,
+      supportMarginBps:
+        readIntegerInRange(
+          input,
+          "supportMarginBps",
+          `${path}.supportMarginBps`,
+          0,
+          10_000,
+          errors
+        ) ?? 0,
+      reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+    };
+  }
+  if (input["kind"] !== "peaceful") {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.kind`,
+        "M3 succession outcome kind must be peaceful, regency, or disputed."
+      )
+    );
+  }
+  return {
+    kind: "peaceful",
+    successorCharacterId:
+      readPositiveSafeInteger(
+        input,
+        "successorCharacterId",
+        `${path}.successorCharacterId`,
+        errors
+      ) ?? 0,
+    supportTotalBps:
+      readIntegerInRange(input, "supportTotalBps", `${path}.supportTotalBps`, 0, 10_000, errors) ??
+      0
+  };
+}
+
+function parseM3Actor(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): { readonly kind: "ai" | "player" | "system"; readonly id: string } {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M3 actor must be an object."));
+    return { kind: "system", id: "" };
+  }
+  const kind = input["kind"];
+  if (kind !== "ai" && kind !== "player" && kind !== "system") {
+    errors.push(
+      reason("invalid-schema", `${path}.kind`, "M3 actor kind must be ai, player, or system.")
+    );
+  }
+  return {
+    kind: kind === "ai" || kind === "player" || kind === "system" ? kind : "system",
+    id: readNonEmptyString(input, "id", `${path}.id`, errors) ?? ""
+  };
+}
+
+function parseStringArray(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): readonly string[] {
+  if (!Array.isArray(input)) {
+    errors.push(reason("invalid-schema", path, `${path} must be an array.`));
+    return [];
+  }
+  return input.map((entry, index) => {
+    if (typeof entry === "string" && entry.length > 0) {
+      return entry;
+    }
+    errors.push(
+      reason("invalid-schema", `${path}[${index}]`, `${path}[${index}] must be a non-empty string.`)
+    );
+    return "";
+  });
+}
+
+function parseM3ObligationKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationKindDto {
+  if (input === "tribute" || input === "troop") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 obligationKind must be tribute or troop."));
+  return "tribute";
+}
+
+function parseM3ObligationResourceKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationResourceKindDto {
+  if (input === "cash" || input === "grain" || input === "troops") {
+    return input;
+  }
+  errors.push(
+    reason("invalid-schema", path, "M3 obligation resourceKind must be cash, grain, or troops.")
+  );
+  return "cash";
+}
+
+function parseM3CashOrGrain(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): "cash" | "grain" {
+  if (input === "cash" || input === "grain") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 source resourceKind must be cash or grain."));
+  return "cash";
+}
+
+function parseM3ObligationStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationStatusDto {
+  if (input === "active" || input === "disputed" || input === "breached") {
+    return input;
+  }
+  errors.push(
+    reason("invalid-schema", path, "M3 obligation status must be active, disputed, or breached.")
+  );
+  return "active";
+}
+
+function parseM3ObligationAuditEventKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationAuditEventKindDto {
+  if (input === "created" || input === "settled" || input === "status-changed") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 obligation audit eventKind is invalid."));
+  return "created";
+}
+
+function parseM3ObligationCategory(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationCategoryDto {
+  if (
+    input === "regular-tribute" ||
+    input === "extraordinary-levy" ||
+    input === "troop-obligation" ||
+    input === "defensive-garrison" ||
+    input === "specific-war-aid"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 obligationCategory is invalid."));
+  return "regular-tribute";
+}
+
+function parseM3SettlementAction(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationSettlementActionDto {
+  if (
+    input === "fulfillment" ||
+    input === "partial-fulfillment" ||
+    input === "deferral" ||
+    input === "refusal" ||
+    input === "remission" ||
+    input === "pursuit-recovery" ||
+    input === "default-breach"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 obligation settlement actionKind is invalid."));
+  return "fulfillment";
+}
+
+function parseNullableM3SettlementAction(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3ObligationSettlementActionDto | null {
+  if (input === null) {
+    return null;
+  }
+  return parseM3SettlementAction(input, path, errors);
+}
+
+function parseM3TroopResponseState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3TroopResponseStateDto {
+  if (
+    input === "none" ||
+    input === "committed" ||
+    input === "deferred" ||
+    input === "refused" ||
+    input === "remitted" ||
+    input === "recovery-pursued" ||
+    input === "breached"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 troopResponseState is invalid."));
+  return "none";
+}
+
+function parseM3AdministrativeControlMode(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3AdministrativeControlModeDto {
+  if (input === "direct" || input === "vassal" || input === "tribute-only") {
+    return input;
+  }
+  errors.push(
+    reason(
+      "invalid-schema",
+      path,
+      "M3 administrative controlMode must be direct, vassal, or tribute-only."
+    )
+  );
+  return "direct";
+}
+
+function parseM3OfficeKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3OfficeKindDto {
+  if (input === "commander" || input === "governor" || input === "minister") {
+    return input;
+  }
+  errors.push(
+    reason("invalid-schema", path, "M3 officeKind must be commander, governor, or minister.")
+  );
+  return "governor";
+}
+
+function parseM3PolicyStance(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3PolicyStanceDto {
+  if (
+    input === "balanced" ||
+    input === "conciliatory" ||
+    input === "extractive" ||
+    input === "military"
+  ) {
+    return input;
+  }
+  errors.push(
+    reason(
+      "invalid-schema",
+      path,
+      "M3 policy stance must be balanced, conciliatory, extractive, or military."
+    )
+  );
+  return "balanced";
+}
+
+function parseM3AppointmentAuditEventKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3AppointmentAuditEventKindDto {
+  if (
+    input === "appointment" ||
+    input === "bulk-appointment" ||
+    input === "enfeoffment" ||
+    input === "policy-updated"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 appointment audit eventKind is invalid."));
+  return "appointment";
+}
+
+function parseM3SuccessionSupportKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM3SuccessionSupportKindDto {
+  if (
+    input === "kinship" ||
+    input === "designation" ||
+    input === "court" ||
+    input === "military" ||
+    input === "provincial" ||
+    input === "suzerain" ||
+    input === "foreign"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 succession support kind is invalid."));
+  return "kinship";
+}
+
+function parseM3SuccessionStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): "pending" | "resolved" {
+  if (input === "pending" || input === "resolved") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M3 succession status must be pending or resolved."));
+  return "pending";
 }
 
 function parseM2PopulationGroups(
@@ -1906,13 +3498,11 @@ function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
     })),
     routes: body.authoritativeSnapshot.state.routes.map(copySimpleRuntimeState)
   };
-  const state =
-    body.authoritativeSnapshot.state.m2 === undefined
-      ? stateWithoutM2
-      : {
-          ...stateWithoutM2,
-          m2: copyM2EconomyPopulationState(body.authoritativeSnapshot.state.m2)
-        };
+  const state = copyOptionalRuntimeSlices(
+    stateWithoutM2,
+    body.authoritativeSnapshot.state.m2,
+    body.authoritativeSnapshot.state.m3
+  );
 
   return {
     authoritativeSnapshot: {
@@ -1978,6 +3568,60 @@ function copyDistrictControl(control: SaveDistrictControlDto): SaveDistrictContr
         kind: "uncontrolled"
       };
   }
+}
+
+function copyOptionalRuntimeSlices(
+  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3">,
+  m2: SaveM2EconomyPopulationStateDto | undefined,
+  m3: SaveM3PolityVassalageStateDto | undefined
+): SaveWorldRuntimeStateV0Dto {
+  if (m2 !== undefined && m3 !== undefined) {
+    return {
+      ...base,
+      m2: copyM2EconomyPopulationState(m2),
+      m3: copyM3PolityVassalageState(m3)
+    };
+  }
+  if (m2 !== undefined) {
+    return {
+      ...base,
+      m2: copyM2EconomyPopulationState(m2)
+    };
+  }
+  if (m3 !== undefined) {
+    return {
+      ...base,
+      m3: copyM3PolityVassalageState(m3)
+    };
+  }
+  return base;
+}
+
+function copyOptionalCandidateRuntimeSlices(
+  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3">,
+  m2: SaveM2EconomyPopulationStateDto | undefined,
+  m3: SaveM3PolityVassalageStateDto | undefined
+): WorldStateV0ForSave["state"] {
+  if (m2 !== undefined && m3 !== undefined) {
+    return {
+      ...base,
+      m2: copyM2EconomyPopulationState(m2),
+      m3: copyM3PolityVassalageState(m3)
+    };
+  }
+  if (m2 !== undefined) {
+    return {
+      ...base,
+      m2: copyM2EconomyPopulationState(m2)
+    };
+  }
+  if (m3 !== undefined) {
+    return {
+      ...base,
+      m3: copyM3PolityVassalageState(m3)
+    };
+  }
+  return base;
 }
 
 function copyM2EconomyPopulationState(
@@ -2052,6 +3696,346 @@ function copyM2EconomyPopulationState(
   };
 }
 
+function copyM3PolityVassalageState(
+  m3: SaveM3PolityVassalageStateDto
+): SaveM3PolityVassalageStateDto {
+  return {
+    schemaVersion: 1,
+    polities: m3.polities.map((entry) => ({
+      polityId: entry.polityId,
+      directSuzerainPolityId: entry.directSuzerainPolityId
+    })),
+    obligations: m3.obligations.map((entry) => ({
+      id: entry.id,
+      debtorPolityId: entry.debtorPolityId,
+      creditorPolityId: entry.creditorPolityId,
+      obligationKind: entry.obligationKind,
+      obligationCategory: entry.obligationCategory,
+      obligationSource: {
+        kind: "vassalage",
+        sourceId: entry.obligationSource.sourceId,
+        debtorPolityId: entry.obligationSource.debtorPolityId,
+        creditorPolityId: entry.obligationSource.creditorPolityId
+      },
+      requirement: copyM3Requirement(entry.requirement),
+      due: copyM3Due(entry.due),
+      accounting: { ...entry.accounting },
+      status: entry.status,
+      disputeReasonCode: entry.disputeReasonCode,
+      breachReasonCode: entry.breachReasonCode,
+      createdAuditEventId: entry.createdAuditEventId,
+      latestAuditEventId: entry.latestAuditEventId
+    })),
+    obligationAuditEvents: m3.obligationAuditEvents.map((entry) => ({
+      id: entry.id,
+      obligationId: entry.obligationId,
+      eventKind: entry.eventKind,
+      eventDay: entry.eventDay,
+      eventRevision: entry.eventRevision,
+      commandId: entry.commandId,
+      actor: { ...entry.actor },
+      actionKind: entry.actionKind,
+      dueDay: entry.dueDay,
+      fulfillmentId: entry.fulfillmentId,
+      fulfilledAmount: entry.fulfilledAmount,
+      statusAfter: entry.statusAfter,
+      reasonCode: entry.reasonCode,
+      reasonCodes: entry.reasonCodes.map((reasonCode) => reasonCode),
+      reliabilityBps: entry.reliabilityBps
+    })),
+    fulfillmentClaims: m3.fulfillmentClaims.map((entry) => ({
+      fulfillmentId: entry.fulfillmentId,
+      obligationId: entry.obligationId,
+      auditEventId: entry.auditEventId,
+      actionKind: entry.actionKind,
+      dueDay: entry.dueDay,
+      fulfilledAmount: entry.fulfilledAmount,
+      deliveredAmount: entry.deliveredAmount,
+      arrearsAmount: entry.arrearsAmount,
+      defaultedAmount: entry.defaultedAmount,
+      reasonCode: entry.reasonCode,
+      sourceMovements: entry.sourceMovements.map(copyM3FulfillmentSourceMovement)
+    })),
+    administrativeDistricts: m3.administrativeDistricts.map((entry) => ({ ...entry })),
+    characters: m3.characters.map((entry) => ({ ...entry })),
+    relationships: m3.relationships.map((entry) => ({ ...entry })),
+    offices: m3.offices.map((entry) => ({
+      ...entry,
+      jurisdiction: copyM3OfficeJurisdiction(entry.jurisdiction)
+    })),
+    policies: m3.policies.map((entry) => ({
+      ...entry,
+      target: copyM3PolicyTarget(entry.target)
+    })),
+    enfeoffments: m3.enfeoffments.map((entry) => ({ ...entry })),
+    appointmentAuditEvents: m3.appointmentAuditEvents.map((entry) => ({
+      ...entry,
+      actor: { ...entry.actor }
+    })),
+    successionCandidateProfiles: m3.successionCandidateProfiles.map((entry) => ({
+      polityId: entry.polityId,
+      characterId: entry.characterId,
+      requiresRegency: entry.requiresRegency,
+      supportSources: entry.supportSources.map((source) => ({ ...source }))
+    })),
+    successionCrises: m3.successionCrises.map((entry) => ({
+      id: entry.id,
+      polityId: entry.polityId,
+      trigger: copyM3SuccessionTrigger(entry.trigger),
+      status: entry.status,
+      startedDay: entry.startedDay,
+      resolvedDay: entry.resolvedDay,
+      candidates: entry.candidates.map((candidate) => ({
+        characterId: candidate.characterId,
+        requiresRegency: candidate.requiresRegency,
+        supportSources: candidate.supportSources.map((source) => ({ ...source })),
+        supportTotalBps: candidate.supportTotalBps
+      })),
+      outcome: entry.outcome === null ? null : copyM3SuccessionOutcome(entry.outcome),
+      reasonCode: entry.reasonCode
+    }))
+  };
+}
+
+function copyM3Requirement(
+  requirement: SaveM3ObligationRequirementDto
+): SaveM3ObligationRequirementDto {
+  switch (requirement.kind) {
+    case "amount":
+      return {
+        kind: "amount",
+        resourceKind: requirement.resourceKind,
+        amount: requirement.amount
+      };
+    case "condition":
+      return {
+        kind: "condition",
+        conditionKey: requirement.conditionKey
+      };
+  }
+}
+
+function copyM3Due(due: SaveM3ObligationDueDto): SaveM3ObligationDueDto {
+  switch (due.kind) {
+    case "cadence":
+      return {
+        kind: "cadence",
+        periodDays: due.periodDays,
+        nextDueDay: due.nextDueDay
+      };
+    case "trigger":
+      return {
+        kind: "trigger",
+        triggerKey: due.triggerKey
+      };
+  }
+}
+
+function copyM3FulfillmentSourceMovement(
+  movement: SaveM3FulfillmentSourceMovementStateDto
+): SaveM3FulfillmentSourceMovementStateDto {
+  switch (movement.kind) {
+    case "m2-population-group":
+      return { ...movement };
+    case "m3-troop-commitment-placeholder":
+      return { ...movement };
+  }
+}
+
+function copyM3OfficeJurisdiction(
+  jurisdiction: SaveM3OfficeJurisdictionDto
+): SaveM3OfficeJurisdictionDto {
+  switch (jurisdiction.kind) {
+    case "polity":
+      return { kind: "polity", polityId: jurisdiction.polityId };
+    case "district":
+      return { kind: "district", districtId: jurisdiction.districtId };
+  }
+}
+
+function copyM3PolicyTarget(target: SaveM3PolicyTargetDto): SaveM3PolicyTargetDto {
+  switch (target.kind) {
+    case "office":
+      return { kind: "office", officeId: target.officeId };
+    case "polity":
+      return { kind: "polity", polityId: target.polityId };
+    case "district":
+      return { kind: "district", districtId: target.districtId };
+  }
+}
+
+function copyM3SuccessionTrigger(trigger: SaveM3SuccessionTriggerDto): SaveM3SuccessionTriggerDto {
+  switch (trigger.kind) {
+    case "death":
+      return { kind: "death", characterId: trigger.characterId, officeId: trigger.officeId };
+    case "incapacity":
+      return { kind: "incapacity", characterId: trigger.characterId, officeId: trigger.officeId };
+  }
+}
+
+function copyM3SuccessionOutcome(outcome: SaveM3SuccessionOutcomeDto): SaveM3SuccessionOutcomeDto {
+  switch (outcome.kind) {
+    case "peaceful":
+      return {
+        kind: "peaceful",
+        successorCharacterId: outcome.successorCharacterId,
+        supportTotalBps: outcome.supportTotalBps
+      };
+    case "regency":
+      return { ...outcome };
+    case "disputed":
+      return { ...outcome };
+  }
+}
+
+function fallbackM3Obligation(): SaveM3ObligationStateDto {
+  return {
+    id: 0,
+    debtorPolityId: 0,
+    creditorPolityId: 0,
+    obligationKind: "tribute",
+    obligationCategory: "regular-tribute",
+    obligationSource: { kind: "vassalage", sourceId: "", debtorPolityId: 0, creditorPolityId: 0 },
+    requirement: { kind: "amount", resourceKind: "cash", amount: 0 },
+    due: { kind: "cadence", periodDays: 0, nextDueDay: 0 },
+    accounting: fallbackM3ObligationAccounting(),
+    status: "active",
+    disputeReasonCode: null,
+    breachReasonCode: null,
+    createdAuditEventId: 0,
+    latestAuditEventId: 0
+  };
+}
+
+function fallbackM3ObligationAccounting(): SaveM3ObligationAccountingStateDto {
+  return {
+    nominalAmount: 0,
+    dueAmount: 0,
+    deliveredAmount: 0,
+    arrearsAmount: 0,
+    defaultedAmount: 0,
+    remittedAmount: 0,
+    dueDay: 0,
+    cycle: 0,
+    troopResponseState: "none"
+  };
+}
+
+function fallbackM3ObligationAuditEvent(): SaveM3ObligationAuditEventStateDto {
+  return {
+    id: 0,
+    obligationId: 0,
+    eventKind: "created",
+    eventDay: 0,
+    eventRevision: 0,
+    commandId: "",
+    actor: { kind: "system", id: "" },
+    actionKind: null,
+    dueDay: null,
+    fulfillmentId: null,
+    fulfilledAmount: null,
+    statusAfter: "active",
+    reasonCode: null,
+    reasonCodes: [],
+    reliabilityBps: 0
+  };
+}
+
+function fallbackM3FulfillmentClaim(): SaveM3FulfillmentClaimStateDto {
+  return {
+    fulfillmentId: 0,
+    obligationId: 0,
+    auditEventId: 0,
+    actionKind: "fulfillment",
+    dueDay: 0,
+    fulfilledAmount: 0,
+    deliveredAmount: 0,
+    arrearsAmount: 0,
+    defaultedAmount: 0,
+    reasonCode: "",
+    sourceMovements: []
+  };
+}
+
+function fallbackM3AdministrativeDistrict(): SaveM3AdministrativeDistrictStateDto {
+  return {
+    polityId: 0,
+    districtId: 0,
+    controlMode: "direct",
+    localComplexity: 0,
+    communicationCost: 0,
+    directness: 0,
+    frontierPressure: 0,
+    administrativeCapacity: 0
+  };
+}
+
+function fallbackM3Character(): SaveM3CharacterStateDto {
+  return {
+    characterId: 0,
+    polityId: 0,
+    alive: false,
+    incapacitated: false,
+    currentDistrictId: 0,
+    commandBps: 0,
+    administrationBps: 0,
+    diplomacyBps: 0
+  };
+}
+
+function fallbackM3Office(): SaveM3OfficeStateDto {
+  return {
+    officeId: 0,
+    polityId: 0,
+    jurisdiction: { kind: "polity", polityId: 0 },
+    officeKind: "governor",
+    primary: false,
+    holderCharacterId: null,
+    policyId: 0,
+    minimumCommandBps: 0,
+    minimumAdministrationBps: 0
+  };
+}
+
+function fallbackM3Policy(): SaveM3PolicyStateDto {
+  return {
+    policyId: 0,
+    target: { kind: "polity", polityId: 0 },
+    stance: "balanced",
+    intensityBps: 0
+  };
+}
+
+function fallbackM3AppointmentAuditEvent(): SaveM3AppointmentAuditEventStateDto {
+  return {
+    id: 0,
+    eventKind: "appointment",
+    eventDay: 0,
+    eventRevision: 0,
+    commandId: "",
+    actor: { kind: "system", id: "" },
+    officeId: null,
+    characterId: null,
+    policyId: null,
+    districtId: null,
+    reasonCode: ""
+  };
+}
+
+function fallbackM3SuccessionCrisis(): SaveM3SuccessionCrisisStateDto {
+  return {
+    id: 0,
+    polityId: 0,
+    trigger: { kind: "death", characterId: 0, officeId: null },
+    status: "pending",
+    startedDay: 0,
+    resolvedDay: null,
+    candidates: [],
+    outcome: null,
+    reasonCode: ""
+  };
+}
+
 function fallbackM2PopulationGroup(): SaveM2PopulationGroupStateDto {
   return {
     id: 0,
@@ -2121,6 +4105,37 @@ function readNonEmptyString(
   return undefined;
 }
 
+function readNullableString(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): string | null {
+  const value = record[key];
+  if (value === null) {
+    return null;
+  }
+  if (typeof value === "string" && value.length > 0) {
+    return value;
+  }
+  errors.push(reason("invalid-schema", path, `${path} must be a non-empty string or null.`));
+  return null;
+}
+
+function readBoolean(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): boolean {
+  const value = record[key];
+  if (typeof value === "boolean") {
+    return value;
+  }
+  errors.push(reason("invalid-schema", path, `${path} must be a boolean.`));
+  return false;
+}
+
 function readChecksum(
   record: Record<string, unknown>,
   key: string,
@@ -2149,6 +4164,23 @@ function readPositiveSafeInteger(
   return undefined;
 }
 
+function readNullablePositiveSafeInteger(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): number | null {
+  const value = record[key];
+  if (value === null) {
+    return null;
+  }
+  if (isPositiveSafeInteger(value)) {
+    return value;
+  }
+  errors.push(reason("invalid-schema", path, `${path} must be a positive safe integer or null.`));
+  return null;
+}
+
 function readNonnegativeSafeInteger(
   record: Record<string, unknown>,
   key: string,
@@ -2161,6 +4193,25 @@ function readNonnegativeSafeInteger(
   }
   errors.push(reason("invalid-schema", path, `${path} must be a nonnegative safe integer.`));
   return undefined;
+}
+
+function readNullableNonnegativeSafeInteger(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): number | null {
+  const value = record[key];
+  if (value === null) {
+    return null;
+  }
+  if (isNonnegativeSafeInteger(value)) {
+    return value;
+  }
+  errors.push(
+    reason("invalid-schema", path, `${path} must be a nonnegative safe integer or null.`)
+  );
+  return null;
 }
 
 function readIntegerInRange(

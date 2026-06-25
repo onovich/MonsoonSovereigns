@@ -123,7 +123,7 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
   });
 
-  test("requestSaveV1 rejects M3 state before emitting unloadable save bytes", () => {
+  test("requestSaveV1 emits explicit M3 polity and obligation save data", () => {
     let runtime = bootM3Runtime();
     runtime = accepted(
       runtime,
@@ -139,15 +139,15 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
       "sim.polity-suzerain-changed",
       "sim.obligation-created"
     ]);
-    expect(() =>
-      requestSaveV1(runtime, {
-        appVersion: "0.0.0",
-        source: "test",
-        codecVersion: "save-envelope-v1"
-      })
-    ).toThrow(
-      "requestSaveV1 does not support WorldState state.m3; refusing to emit incompatible save bytes."
-    );
+    const saved = requestSaveV1(runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+    const m3 = saved.envelope.body.authoritativeSnapshot.state.m3;
+    expect(m3).toBeDefined();
+    expect(m3?.polities).toHaveLength(3);
+    expect(m3?.obligations).toHaveLength(1);
   });
 
   test("canonicalizes unordered obligation audit history with deterministic tie-breakers", () => {

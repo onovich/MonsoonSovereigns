@@ -7,7 +7,7 @@
   "origin_main": "2f2440f5a7cb775e7f1ae7bcd7d8a85af74e11bc",
   "current_milestone": "M3",
   "current_task": "M3-SAVE-RUNTIME-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M3-CLIENT-APPOINTMENT-UI-001",
   "ready_tasks": [],
   "active_threads": [
@@ -15,7 +15,19 @@
       "task_id": "M3-SAVE-RUNTIME-001",
       "role": "simulation_engineer",
       "thread_id": "019f0058-1b24-7840-8866-b30d07c3c364",
-      "status": "active"
+      "status": "accepted_pending_integration"
+    },
+    {
+      "task_id": "M3-SAVE-RUNTIME-001",
+      "role": "systems_architect",
+      "thread_id": "019f006a-a5c6-7840-9b04-64b646fb47bb",
+      "status": "accepted"
+    },
+    {
+      "task_id": "M3-SAVE-RUNTIME-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f0074-2f9d-7222-a62d-d80e154f84da",
+      "status": "accepted"
     }
   ],
   "unresolved_risks": [
@@ -35,7 +47,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Await M3-SAVE-RUNTIME-001 simulation_engineer writer REVIEW handoff, validate it, route to systems_architect, run required save/runtime gates, and continue normal review/fix/integration workflow.",
+  "next_machine_action": "Commit M3-SAVE-RUNTIME-001 implementation, open PR, require CI, merge to main, sync, mark task CLOSED, close child threads, then select next READY M3 task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -43,5 +55,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T19:54:29Z"
+  "last_updated_at": "2026-06-25T20:31:13Z"
 }

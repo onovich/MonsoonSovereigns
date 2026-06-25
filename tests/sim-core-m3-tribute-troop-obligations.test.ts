@@ -692,7 +692,7 @@ describe("M3-TRIBUTE-TROOP-OBLIGATIONS-001 obligation settlement", () => {
     );
   });
 
-  test("current M3 save boundary rejects after duplicate settlement probe instead of emitting incompatible bytes", () => {
+  test("M3 save preserves obligation settlement after duplicate settlement probe", () => {
     let runtime = bootObligationRuntime();
     runtime = accepted(runtime, createTributeCommand("m3.save.create", runtime));
     runtime = accepted(
@@ -727,15 +727,17 @@ describe("M3-TRIBUTE-TROOP-OBLIGATIONS-001 obligation settlement", () => {
       status: "rejected",
       error: { code: "duplicate-obligation-settlement", path: "payload.dueDay" }
     });
-    expect(() =>
-      requestSaveV1(runtime, {
-        appVersion: "0.0.0",
-        source: "test",
-        codecVersion: "save-envelope-v1"
-      })
-    ).toThrow(
-      "requestSaveV1 does not support WorldState state.m3; refusing to emit incompatible save bytes."
-    );
+    const saved = requestSaveV1(runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+    const m3 = saved.envelope.body.authoritativeSnapshot.state.m3;
+    expect(m3?.obligations[0]?.accounting).toMatchObject({
+      deliveredAmount: 120,
+      arrearsAmount: 0
+    });
+    expect(m3?.fulfillmentClaims).toHaveLength(1);
   });
 });
 

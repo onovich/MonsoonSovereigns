@@ -772,12 +772,6 @@ export function requestSaveV1(
   runtime: SimulationRuntimeV1,
   build: SaveBuildMetadataV1
 ): RequestSaveOutputV1 {
-  if (runtime.world.state.m3 !== undefined) {
-    throw new Error(
-      "requestSaveV1 does not support WorldState state.m3; refusing to emit incompatible save bytes."
-    );
-  }
-
   const envelope = createSaveEnvelopeV1({
     build,
     scenarioId: scenarioIdForRuntime(runtime),
@@ -823,6 +817,14 @@ export function loadSaveV1(
           {
             path: "state.m2",
             message: "Save snapshot is missing required M2 runtime state for this runtime."
+          }
+        ];
+      }
+      if (runtime.world.state.m3 !== undefined && !hasM3RuntimeState(candidate)) {
+        return [
+          {
+            path: "state.m3",
+            message: "Save snapshot is missing required M3 runtime state for this runtime."
           }
         ];
       }
@@ -5507,6 +5509,15 @@ function hasM2RuntimeState(candidate: unknown): boolean {
 
   const state = candidate["state"];
   return isRecord(state) && state["m2"] !== undefined;
+}
+
+function hasM3RuntimeState(candidate: unknown): boolean {
+  if (!isRecord(candidate)) {
+    return false;
+  }
+
+  const state = candidate["state"];
+  return isRecord(state) && state["m3"] !== undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
