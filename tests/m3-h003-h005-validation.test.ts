@@ -14,7 +14,6 @@ import {
 } from "../packages/sim-core/src/index";
 import {
   createM3AppointmentReadModelFixture,
-  type ClientM3AppointmentReadModelSnapshot,
   type ClientM3ReasonSummaryReadModel
 } from "../packages/client-core/src/index";
 
