@@ -35,6 +35,8 @@ M3 当前进展：`M3-POSTWAR-GOVERNANCE-001` 已在 PR #72 进入 `origin/main`
 
 M3 当前进展：`M3-CLIENT-APPOINTMENT-UI-001` 已在 PR #74 进入 `origin/main`（`4af3729b469efcb9b2836c9b03155de73d12b384`）并进入 `CLOSED`。已完成 M3 appointment/read-model workspace、candidate eligibility/rejection reason、bulk preview、policy continuity、administrative impact、succession/obligation/result panels、protocol command DTO submission、Storybook 覆盖与 1440px viewport Playwright 回归。下一 READY M3 任务为 `M3-SAVE-RUNTIME-001`。
 
+M3 当前进展：`M3-SAVE-RUNTIME-001` 已在 PR #76 进入 `origin/main`（`c71f5dfb411e7bdec8282807a3b67b23f70dea46`）并进入 `CLOSED`。已完成 M3 runtime save/load 显式 DTO、parser、copy、missing-M3 load rejection、M1/M2 兼容回归、M3 round-trip 与 malformed/future/cross-manifest rejection 覆盖。下一 READY M3 任务为 `M3-H003-H005-VALIDATION-001`。
+
 ## 2. 已冻结决定
 
 | ID | 决定 | 状态 |

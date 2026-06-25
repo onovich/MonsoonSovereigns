@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T04:31:13+08:00",
+  "updated_at": "2026-06-26T04:37:19+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -936,43 +936,42 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_r2_accept_review_and_main_integration",
       "accepted_task_reopened": false
-    }
-  ],
-  "active_threads": [
+    },
     {
-      "task_id": "M3-SAVE-RUNTIME-001",
-      "role": "simulation_engineer",
       "thread_id": "019f0058-1b24-7840-8866-b30d07c3c364",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
+      "role": "simulation_engineer",
+      "task_id": "M3-SAVE-RUNTIME-001",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "status": "ACCEPTED_PENDING_INTEGRATION",
-      "updated_at": "2026-06-25T20:31:13Z"
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_r2_valid_handoff_systems_qa_accept_and_main_integration",
+      "accepted_task_reopened": false
     },
     {
-      "task_id": "M3-SAVE-RUNTIME-001",
-      "role": "systems_architect",
       "thread_id": "019f006a-a5c6-7840-9b04-64b646fb47bb",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
+      "role": "systems_architect",
+      "task_id": "M3-SAVE-RUNTIME-001",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "status": "ACCEPT",
-      "updated_at": "2026-06-25T20:31:13Z"
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_r2_accept_review_and_main_integration",
+      "accepted_task_reopened": false
     },
     {
-      "task_id": "M3-SAVE-RUNTIME-001",
-      "role": "qa_reviewer",
       "thread_id": "019f0074-2f9d-7222-a62d-d80e154f84da",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
+      "role": "qa_reviewer",
+      "task_id": "M3-SAVE-RUNTIME-001",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "status": "ACCEPT",
-      "updated_at": "2026-06-25T20:31:13Z"
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_independent_accept_review_and_main_integration",
+      "accepted_task_reopened": false
     }
   ],
+  "active_threads": [],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1012,6 +1011,7 @@
     "M3-SUCCESSION-STATE-MACHINE-001": "CLOSED after PR #65 entered main at 8971462e20ef48e08be010d0f67d14aabb2c85f5 and closure PR #66 entered main at 3e3455d8da7276f677c142db6bef6a424fc5707b. simulation_engineer thread 019efdf7-e658-7e30-8486-e496b0de4b7f produced valid REVIEW, R2, and R3 handoffs. Lead routed initial systems review by send_input submission 019efe0a-9a2d-7532-8ec5-fcd42a8c748c to systems_architect thread 019efe09-de21-7e71-9bcd-5540fdc0f666. systems_architect requested explicit M3 succession state schema/error-model fixes, then accepted R2 via valid handoff project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-R2-REVIEW__systems_architect.json. Lead routed final QA review to qa_reviewer thread 019efe1c-11c0-7701-9175-1d52e88650a1 by send_input submission 019efe1c-8b9c-7fd2-8a91-432bdb7bad06. qa_reviewer requested dead/incapacitated and office-holder invariant fixes; lead routed the fix back to the original writer by send_input submission 019efe26-576a-7172-b01c-4df07231d585. systems_architect accepted R3 after send_input submission 019efe2d-4ca4-7083-b52c-b2c392ed2db6; qa_reviewer accepted R3 after send_input submission 019efe33-c199-7440-9b15-abf6c8096a67 via valid handoff project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-R3-REVIEW__qa_reviewer.json. Lead accepted via project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-LEAD-ACCEPT__lead_orchestrator.json after local gates and closed all three child threads. Next ready task is M3-TRIBUTE-TROOP-OBLIGATIONS-001.",
     "M3-TRIBUTE-TROOP-OBLIGATIONS-001": "CLOSED after PR #70 entered main at 9e0bf248eeecbcd4faab162d54dd0504c02f57ac. simulation_engineer thread 019eff66-a89a-7d71-8f57-68a903393b87 implemented M3 vassalage-sourced tribute and troop obligation settlement. systems_architect thread 019eff7e-08c1-7701-8bf3-ca9728272bf9 requested two rounds of changes, then accepted R3 after the partial-fulfillment plus deferral over-collection path was fixed. qa_reviewer thread 019effa4-ffcb-76e3-843e-7bd1b7daf2ae independently accepted. CI initially failed on formatting, then passed after the style fix. Lead closed all three child threads after main integration. Next ready M3 tasks are M3-POSTWAR-GOVERNANCE-001 and M3-CLIENT-APPOINTMENT-UI-001.",
     "M3-POSTWAR-GOVERNANCE-001": "CLOSED after PR #72 entered main at 81380a2836c7985c9f7c7b8f726321cdcdbb6137. simulation_engineer thread 019effbf-bfc9-7f30-8e2d-7c290d1080a3 implemented direct-control, restore-vassal-ruler, and tribute-only postwar governance arrangements with preview, 24-month comparison, reason codes, and duplicate same-district guards. systems_architect thread 019effd0-0eca-7e91-81ae-5772f42001f1 requested four rounds of changes and accepted R5 after direct-control-first duplicate/replacement paths were rejected without mutation. qa_reviewer thread 019effe6-7050-7d93-9c15-a0b25d2c720e independently accepted R5. CI passed on PR #72. Lead closed all three child threads after main integration. Next ready M3 tasks are M3-CLIENT-APPOINTMENT-UI-001 and M3-SAVE-RUNTIME-001.",
-    "M3-CLIENT-APPOINTMENT-UI-001": "CLOSED after PR #74 entered main at 4af3729b469efcb9b2836c9b03155de73d12b384. client_engineer thread 019f002b-1a38-78d2-ac41-aaefd0060920 implemented the M3 appointment workspace, read models, eligibility/rejection reasons, bulk preview, policy continuity, administrative impact, succession/obligation/result panels, Storybook coverage, and Playwright protocol command submission plus 1440px viewport regression. qa_reviewer thread 019f003b-6894-76e0-ba04-227258f5d4ef requested the desktop overflow fix and accepted R2 after verifying scrollWidth/clientWidth, no overlap, local tests, scope, and no direct WorldState mutation. PR #74 CI passed; lead closed both child threads after main integration. Next ready M3 task is M3-SAVE-RUNTIME-001."
+    "M3-CLIENT-APPOINTMENT-UI-001": "CLOSED after PR #74 entered main at 4af3729b469efcb9b2836c9b03155de73d12b384. client_engineer thread 019f002b-1a38-78d2-ac41-aaefd0060920 implemented the M3 appointment workspace, read models, eligibility/rejection reasons, bulk preview, policy continuity, administrative impact, succession/obligation/result panels, Storybook coverage, and Playwright protocol command submission plus 1440px viewport regression. qa_reviewer thread 019f003b-6894-76e0-ba04-227258f5d4ef requested the desktop overflow fix and accepted R2 after verifying scrollWidth/clientWidth, no overlap, local tests, scope, and no direct WorldState mutation. PR #74 CI passed; lead closed both child threads after main integration. Next ready M3 task is M3-SAVE-RUNTIME-001.",
+    "M3-SAVE-RUNTIME-001": "CLOSED after PR #76 entered main at c71f5dfb411e7bdec8282807a3b67b23f70dea46. simulation_engineer thread 019f0058-1b24-7840-8866-b30d07c3c364 implemented explicit M3 runtime save/load DTO, parser, copy, missing-M3 load rejection, and regression coverage. systems_architect thread 019f006a-a5c6-7840-9b04-64b646fb47bb accepted R2 after the Prettier gate fix. qa_reviewer thread 019f0074-2f9d-7222-a62d-d80e154f84da independently accepted. CI passed on PR #76. Lead closed child threads after main integration. Next ready M3 task is M3-H003-H005-VALIDATION-001."
   }
 }
