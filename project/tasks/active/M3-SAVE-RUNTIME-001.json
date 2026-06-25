@@ -1,0 +1,85 @@
+{
+  "id": "M3-SAVE-RUNTIME-001",
+  "summary": "Add explicit M3 runtime save/load support",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-APPOINTMENT-ENFEOFFMENT-001",
+    "M3-POSTWAR-GOVERNANCE-001",
+    "M3-SUCCESSION-STATE-MACHINE-001",
+    "M3-TRIBUTE-TROOP-OBLIGATIONS-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/save-format/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-SAVE-RUNTIME-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M3 runtime save/load explicitly preserves polity, suzerain chain, obligations/audits, administrative burden inputs/state, characters, relationships, offices, appointments, policies, postwar arrangement state, and succession state needed by accepted M3 tasks.",
+    "Same seed, same fixture, same command sequence, and same saved M3 snapshot produce the same state hash after load as before save in the Node path.",
+    "Existing M1/M2 save/load golden behavior and corrupt/future/cross-manifest rejection behavior remain compatible.",
+    "Malformed or missing M3 save data is rejected with stable reason codes/paths before runtime replacement and without partial state mutation.",
+    "DTO/schema changes remain explicit, serializable, versioned, and confined to save-format/sim-core/protocol boundaries; no platform IO, IndexedDB, Electron IPC, compression, database, object graph serialization, or new production dependency is introduced.",
+    "If M3 implementation chooses not to support save/load for a new state slice, it must return a structured unsupported-save rejection and M3 exit cannot claim persistence support for that slice."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm --filter @monsoon/save-format typecheck",
+    "pnpm --filter @monsoon/sim-core typecheck",
+    "pnpm sim:determinism",
+    "pnpm sim:perf-baseline",
+    "pnpm test",
+    "Save round-trip tests cover M3 polity/obligation/character/office/policy/postwar/succession state and malformed/future/cross-manifest rejection.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SAVE-RUNTIME-001",
+    "node -e JSON parse/shape check for M3-SAVE-RUNTIME-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m3-save-runtime",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "This task exists because M3 introduces explicit state and schema slices; it is not a platform persistence task.",
+    "If save-format changes would alter frozen D-011 rather than extending explicit DTO/schema support, stop and route to systems_architect.",
+    "Do not implement IndexedDB, Electron filesystem saves, migrations beyond the accepted explicit save contract, cloud saves, or compression."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

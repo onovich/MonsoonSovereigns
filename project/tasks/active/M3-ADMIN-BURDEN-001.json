@@ -1,0 +1,76 @@
+{
+  "id": "M3-ADMIN-BURDEN-001",
+  "summary": "Implement M3 administrative burden and efficiency scaffold",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-POLITY-VASSALAGE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-ADMIN-BURDEN-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "packages/save-format/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M3 simulation computes administrative load and efficiency from explicit serializable inputs such as local complexity, communication cost, directness, and frontier pressure without hard city-count breakpoints.",
+    "Administrative overload affects realizable income, obligation fulfillment reliability, delay/risk/readiness signals, or other M3 scaffold outcomes without directly creating or destroying resources.",
+    "Direct rule, vassalage, and tribute-only control modes expose different administrative burden profiles for later 24-month comparison.",
+    "All ordered calculations use deterministic stable IDs or explicit tie-breakers; no Math.random(), Date.now(), object-iteration dependency, or UI/client authority is introduced.",
+    "The task does not implement full economy rebalance, full diplomacy, full war, UI, save migration, or formal historical content."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/invariant tests cover monotonic load composition, no resource creation/destruction from overload, deterministic load ordering, and different burden profiles for direct/vassal/tribute patterns.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-ADMIN-BURDEN-001",
+    "node -e JSON parse/shape check for M3-ADMIN-BURDEN-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m3-admin-burden",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "Use the smallest scaffold that can support M3 exit comparison; do not create a full bureaucracy simulation.",
+    "Administrative friction must not become a culture/ethnicity penalty; it should be expressed as governance network, communication, war damage, language/institution friction, and local relationship factors only when explicit and reviewable.",
+    "If a needed input belongs in content schema instead of runtime state, route to systems_architect before widening scope."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

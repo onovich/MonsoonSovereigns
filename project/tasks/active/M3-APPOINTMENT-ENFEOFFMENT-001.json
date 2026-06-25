@@ -1,0 +1,78 @@
+{
+  "id": "M3-APPOINTMENT-ENFEOFFMENT-001",
+  "summary": "Implement M3 appointments, enfeoffment, policies, and reason scaffolds",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-ADMIN-BURDEN-001",
+    "M3-CHARACTER-OFFICE-FIXTURE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "packages/save-format/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Versioned GameCommand paths support appointment, bulk appointment, enfeoffment, and office/jurisdiction policy updates, and the same command family is usable by player and AI actors.",
+    "Command validation checks office eligibility, mutually exclusive primary offices, jurisdiction existence, character liveness/location constraints, and authority from polity/office rather than UI state.",
+    "Policies remain attached to offices or jurisdictions when the holder changes; holder ability and relationships change execution performance and visible reason codes.",
+    "Minimal character proposal/reason scaffolds exist for appointment, policy, and enfeoffment decisions without exposing hidden full weights or creating autonomous out-of-scope gameplay.",
+    "Bulk commands are deterministic, auditable, and fail with stable per-item rejection reasons instead of partially mutating in an implicit order.",
+    "No client UI, full AI planner, full diplomacy, full war loop, formal historical content, or new production dependency is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/invariant tests cover office exclusivity, dead/invalid character rejection, policy persistence across holder changes, deterministic bulk command ordering, and stable reason codes.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-APPOINTMENT-ENFEOFFMENT-001",
+    "node -e JSON parse/shape check for M3-APPOINTMENT-ENFEOFFMENT-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m3-appointments-enfeoffment",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "This is the sim/protocol foundation for the later client appointment/bulk/reason UI task.",
+    "Do not put domain rules in client read models; client work must consume protocol/query outputs from this task.",
+    "If proposal behavior grows beyond minimal M3 reason scaffolds, stop and route to gameplay_designer/systems_architect before widening scope."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

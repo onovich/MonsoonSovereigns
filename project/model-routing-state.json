@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-25T03:55:43Z",
+  "updated_at": "2026-06-25T04:28:11Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -652,6 +652,28 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_m2_gate_accept_review",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efcf2-c8a8-7691-abe1-526026eac77c",
+      "role": "systems_architect",
+      "task_id": "M3-TASK-GRAPH-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_m3_task_graph_review_handoff",
+      "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019efcff-ddc6-7b62-8430-bbd771b9d1e6",
+      "role": "qa_reviewer",
+      "task_id": "M3-TASK-GRAPH-001",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_m3_task_graph_accept_review",
+      "accepted_task_reopened": false
     }
   ],
   "active_threads": [],
@@ -684,6 +706,7 @@
     "M2-PRESSURE-VALIDATION-001": "CLOSED after PR #45 entered main at df28472652da7d008088f406d44d5523dae3fd84. test_engineer thread 019efb69-45b9-7972-8705-10fc4fe8b404 produced valid REVIEW handoff project/messages/outbox/M2-PRESSURE-VALIDATION-001__MSG-20260625-M2-PRESSURE-TEST-REVIEW__test_engineer.json. Lead routed it by send_input submission 019efb77-d763-75b2-801e-a61a3b09bc15 to qa_reviewer thread 019efb74-7dc3-7503-b0b3-725347a57972. qa_reviewer accepted via project/messages/outbox/M2-PRESSURE-VALIDATION-001__MSG-20260625-M2-PRESSURE-QA-REVIEW__qa_reviewer.json, with residual risk that H-001/H-002 are initial pressure evidence only, not final full-scale M2 exit proof.",
     "M2-SAVE-RUNTIME-001": "CLOSED after PR #47 entered main at 5467f064e8a5ca763c7a0929c2aff481a57bcef5. Lead created this R3 follow-up to resolve M2-ECON-POP-FOLLOW-UP-001 before M2-HOST-HASH-CANARY-001 or M2 exit save/load claims. simulation_engineer thread 019efb8c-e147-7451-9322-72ebc094147f produced valid REVIEW handoff project/messages/outbox/M2-SAVE-RUNTIME-001__MSG-20260625-M2-SAVE-RUNTIME-WRITER-REVIEW__simulation_engineer.json. Lead routed it by send_input submission 019efb9b-3ea5-7a12-91b2-b8cada330df5 to systems_architect thread 019efb99-fe16-7692-928c-e46c79b12b61. systems_architect accepted via project/messages/outbox/M2-SAVE-RUNTIME-001__MSG-20260625-M2-SAVE-RUNTIME-SYSTEMS-REVIEW__systems_architect.json. This resolves M2-ECON-POP-FOLLOW-UP-001 enough for the host hash canary to perform its required save/load comparison over explicit M2 runtime state.",
     "M2-HOST-HASH-CANARY-001": "CLOSED after PR #49 entered main at 9db4a58dcb5eba829b5c7a31ef3294e59c5b8b4e. test_engineer thread 019efbae-154a-7ae1-98ce-3223c6056e18 produced valid initial, R2, and R3 REVIEW handoffs; qa_reviewer thread 019efbbf-2992-7b20-95b2-6364133b5307 first returned REQUEST_CHANGES, then ACCEPT in R2. During lead integration, lead found a fresh desktop-only CI risk: apps/desktop/scripts/copy-renderer.mjs required apps/web/dist even though the PR Windows Desktop Smoke Artifact job does not run build:web before desktop:security-check or desktop:package. Lead reopened the writer by send_input submission 019efbd7-fd8f-7d42-9905-b4aa86f8262e. test_engineer fixed fresh-CI behavior in valid R3 handoff project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-WRITER-REVIEW-R3__test_engineer.json; lead routed R3 to qa_reviewer by send_input submission 019efbdd-7db6-7432-b60d-130b597349fc. qa_reviewer accepted via valid handoff project/messages/outbox/M2-HOST-HASH-CANARY-001__MSG-20260625-M2-HOST-HASH-CANARY-QA-REVIEW-R3__qa_reviewer.json after fresh desktop-only package checks passed and Chromium/Electron canaries matched Node baseline hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920. This resolves M1-GATE-FOLLOW-UP-001; next ready task is M2-EXIT-VALIDATION-001.",
-    "M2-EXIT-VALIDATION-001": "CLOSED after PR #51 entered main at eb8039b5a038c9ed5a29a88e09bdc33699c4c2cd. systems_architect thread 019efca6-bd29-7f33-af2f-69384681911a disconnected before producing a handoff and was replaced by systems_architect thread 019efcc3-a03a-78b0-a523-da00df73ae51. The replacement produced docs/GATE-M2.md and valid REVIEW handoff project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-SYSTEMS-REVIEW__systems_architect.json with M2_GATE = PASS. Lead routed it by send_input submission 019efcd1-f241-7f23-a8d2-31c5b30d2c9d to qa_reviewer thread 019efccf-e06e-75e2-8d00-9f734902959c. qa_reviewer accepted via valid handoffs project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW__qa_reviewer.json, project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW-R2__qa_reviewer.json, and project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW-R3__qa_reviewer.json after verifying scope, required gate evidence, M1 follow-up closure, no forbidden path drift, accepted final documentation wording, and no M3 start. Lead advanced current_milestone to M3 in the post-merge closure branch; M3 implementation still requires an accepted M3 task graph."
+    "M2-EXIT-VALIDATION-001": "CLOSED after PR #51 entered main at eb8039b5a038c9ed5a29a88e09bdc33699c4c2cd. systems_architect thread 019efca6-bd29-7f33-af2f-69384681911a disconnected before producing a handoff and was replaced by systems_architect thread 019efcc3-a03a-78b0-a523-da00df73ae51. The replacement produced docs/GATE-M2.md and valid REVIEW handoff project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-SYSTEMS-REVIEW__systems_architect.json with M2_GATE = PASS. Lead routed it by send_input submission 019efcd1-f241-7f23-a8d2-31c5b30d2c9d to qa_reviewer thread 019efccf-e06e-75e2-8d00-9f734902959c. qa_reviewer accepted via valid handoffs project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW__qa_reviewer.json, project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW-R2__qa_reviewer.json, and project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW-R3__qa_reviewer.json after verifying scope, required gate evidence, M1 follow-up closure, no forbidden path drift, accepted final documentation wording, and no M3 start. Lead advanced current_milestone to M3 in the post-merge closure branch; M3 implementation still requires an accepted M3 task graph.",
+    "M3-TASK-GRAPH-001": "ACCEPTED pending PR integration. systems_architect thread 019efcf2-c8a8-7691-abe1-526026eac77c created the minimal M3 task DAG and valid REVIEW handoff project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json. Lead routed the review by send_input submission 019efd03-139b-7070-b60b-0f0b67015d6d to qa_reviewer thread 019efcff-ddc6-7b62-8430-bbd771b9d1e6. qa_reviewer accepted via valid handoff project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json. No downstream M3 implementation task has been started."
   }
 }

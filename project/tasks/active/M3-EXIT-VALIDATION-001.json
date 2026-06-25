@@ -1,0 +1,90 @@
+{
+  "id": "M3-EXIT-VALIDATION-001",
+  "summary": "Validate M3 milestone exit gate",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-HISTORICAL-CLAIM-PIPELINE-001",
+    "M3-POLITY-VASSALAGE-001",
+    "M3-CHARACTER-OFFICE-FIXTURE-001",
+    "M3-ADMIN-BURDEN-001",
+    "M3-APPOINTMENT-ENFEOFFMENT-001",
+    "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+    "M3-SUCCESSION-STATE-MACHINE-001",
+    "M3-POSTWAR-GOVERNANCE-001",
+    "M3-SAVE-RUNTIME-001",
+    "M3-CLIENT-APPOINTMENT-UI-001",
+    "M3-H003-H005-VALIDATION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/GATE-M3.md",
+      "PROJECT_STATUS.md",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/active/M3-EXIT-VALIDATION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "docs/GATE-M3.md records M3 Roadmap and acceptance-matrix evidence for polity/vassalage obligations, administrative burden, 50-80 characters/relationships/offices, appointment/enfeoffment/policy workflows, tribute/troop fulfillment, postwar arrangements, minimal succession, appointment/bulk/reason UI, H-003/H-005 initial validation, and historical claim pipeline readiness.",
+    "M3 exit evidence proves three postwar governance methods produce different 24-month consequences.",
+    "M3 exit evidence proves lord/office holder changes preserve jurisdiction policy while changing execution performance.",
+    "M3 exit evidence proves suzerain chains are acyclic and obligations are auditable without duplicate fulfillment.",
+    "M3 exit evidence proves character behavior reasons are visible through accepted read models/UI.",
+    "Historical names, titles, and relationships are either absent from formal content or routed through the accepted claim pipeline with labels and review evidence.",
+    "No product code, package code, content-source data, roadmap edits, accepted ADR changes, M4 campaign loop, M5 vertical-slice scope, or frozen-decision changes are modified by this validation task.",
+    "systems_architect writer and independent qa_reviewer reviewer produce validated handoffs before lead marks M3 accepted."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-EXIT-VALIDATION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <qa-handoff>",
+    "node -e JSON validation for M3 gate task, goal-mode-state, model-routing-state, relevant M3 handoffs, and systems handoff",
+    "pnpm install --frozen-lockfile",
+    "pnpm check",
+    "pnpm test",
+    "pnpm content:validate",
+    "pnpm sim:determinism",
+    "pnpm sim:perf-baseline",
+    "pnpm build:web",
+    "M3 scenario command proving three 24-month governance outcomes",
+    "M3 client reason UI Playwright or Storybook/browser smoke",
+    "M3 historical claim-pipeline validation evidence",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m3-exit-gate",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "MILESTONE-AUTONOMY-AMENDMENT-001 allows ordinary M3 exit only when the acceptance matrix, tests, independent review, and no R4/frozen-decision Human Gate conditions are satisfied.",
+    "This task validates M3 only; it must not start M4 campaign, supply, siege, battle, or full diplomacy work.",
+    "If H-003/H-005 evidence is inconclusive, record PASS_WITH_LIMITS or BLOCKED rather than claiming M3 exit."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260625-M3-TASK-GRAPH-LEAD-ACCEPT",
+  "task_id": "M3-TASK-GRAPH-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts the independently reviewed M3 task graph for PR integration. The graph is dependency-ordered, keeps all downstream M3 work in DRAFT, records real systems/QA thread IDs, includes a persisted send_input route evidence record, and changes only planning, message, thread registry, and coordination-state files.",
+  "artifacts": [
+    "project/tasks/active/M3-TASK-GRAPH-001.json",
+    "project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json",
+    "project/tasks/active/M3-POLITY-VASSALAGE-001.json",
+    "project/tasks/active/M3-CHARACTER-OFFICE-FIXTURE-001.json",
+    "project/tasks/active/M3-ADMIN-BURDEN-001.json",
+    "project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json",
+    "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+    "project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/tasks/active/M3-SAVE-RUNTIME-001.json",
+    "project/tasks/active/M3-CLIENT-APPOINTMENT-UI-001.json",
+    "project/tasks/active/M3-H003-H005-VALIDATION-001.json",
+    "project/tasks/active/M3-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/routes/M3-TASK-GRAPH-001__ROUTE-20260625-LEAD-TO-QA.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "chore/m3-task-graph",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
+    },
+    {
+      "command": "$failed = $false; Get-ChildItem project/tasks/active/M3-*.json | Sort-Object Name | ForEach-Object { node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate $_.BaseName; if ($LASTEXITCODE -ne 0) { $failed = $true } }; if ($failed) { exit 1 }",
+      "exit_code": 0,
+      "result": "All 13 M3 task files validated successfully."
+    },
+    {
+      "command": "node -e JSON/DAG/scope validation for all M3 task files, dependency ordering, status counts, historical prerequisite, H-003/H-005 dependencies, exit dependencies, and changed path scope",
+      "exit_code": 0,
+      "result": "M3 DAG/scope ok files=13 statuses={\"DRAFT\":12,\"ACCEPTED\":1} changed_paths=19"
+    },
+    {
+      "command": "node -e thread registry duplicate ID check",
+      "exit_code": 0,
+      "result": "thread registry ok entries=61 duplicates=0"
+    },
+    {
+      "command": "node -e route evidence check for project/messages/routes/M3-TASK-GRAPH-001__ROUTE-20260625-LEAD-TO-QA.json",
+      "exit_code": 0,
+      "result": "route evidence ok submission=019efd03-139b-7070-b60b-0f0b67015d6d target=019efcff-ddc6-7b62-8430-bbd771b9d1e6"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M3-TASK-GRAPH-001 is ACCEPTED; 12 downstream M3 tasks remain DRAFT; all prior M0/M1/M2 tasks remain CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready candidates are M3-HISTORICAL-CLAIM-PIPELINE-001 and M3-POLITY-VASSALAGE-001; neither has been started."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Already up to date; lockfile unchanged."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M3-TASK-GRAPH-001 may be committed and opened as a PR.",
+    "No M3 implementation task is started in this task graph PR.",
+    "The next dependency-ready M3 candidates after integration are M3-HISTORICAL-CLAIM-PIPELINE-001 and M3-POLITY-VASSALAGE-001."
+  ],
+  "risks": [
+    "This is a planning and orchestration integration only; downstream M3 tasks still require independent writer/reviewer routing before implementation acceptance.",
+    "M3-H003-H005-VALIDATION-001 is initial M3 evidence only and must not be represented as final M5 player-study proof."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit and open the M3 task graph PR. Do not start downstream M3 implementation until this task graph is integrated.",
+  "created_at": "2026-06-25T04:30:48Z"
+}

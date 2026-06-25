@@ -1,0 +1,78 @@
+{
+  "id": "M3-CHARACTER-OFFICE-FIXTURE-001",
+  "summary": "Create M3 50-80 character, relationship, office, and policy fixture",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-HISTORICAL-CLAIM-PIPELINE-001",
+    "M3-POLITY-VASSALAGE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "apps/content-tools/**",
+      "content-source/m3-fixtures/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-CHARACTER-OFFICE-FIXTURE-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/save-format/**",
+      "content-source/historical/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A valid M3 fixture compiles to a runtime content pack with 50-80 character definitions, directed relationship edges, office definitions, appointment eligibility, landed power, and fixture policies/enfeoffment hooks needed by later M3 tasks.",
+    "The fixture includes at least a competent administrator, a strong local lord, an ambitious commander, and succession competitors with relationship and office context sufficient for scenario tests.",
+    "Relationship storage is sparse and meaningful, not an O(n^2) complete matrix; family and patron/client references are validated for stable IDs and logical cycles such as self-ancestor edges.",
+    "Office policies belong to office/jurisdiction definitions and are not erased merely because the current office holder changes.",
+    "All names, titles, kinship claims, and relationship claims are synthetic validation data or explicitly claim-labeled according to M3-HISTORICAL-CLAIM-PIPELINE-001; no formal historical content-source data is created.",
+    "Repeated compiles produce deterministic manifest ordering and hashes; no sim-core logic, UI, Electron, or full historical database work is performed."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/content-schema test",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm --filter @monsoon/content-tools test",
+    "pnpm content:validate",
+    "Tests or validation scripts cover 50-80 character count, sparse relationship references, office eligibility, policy persistence metadata, and fixture historicity/claim labels.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-CHARACTER-OFFICE-FIXTURE-001",
+    "node -e JSON parse/shape check for M3-CHARACTER-OFFICE-FIXTURE-001 and new fixture manifests",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m3-character-office-fixture",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "This is a fixture/schema task, not a formal historical content task.",
+    "If real-world names, titles, or relationships are requested, stop and route to historical_researcher with claim-record requirements.",
+    "Keep the fixture small enough for M3 vertical-slice validation and avoid 1.0-scale content production."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

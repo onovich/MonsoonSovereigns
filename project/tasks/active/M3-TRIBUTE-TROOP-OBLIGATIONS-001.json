@@ -1,0 +1,78 @@
+{
+  "id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "summary": "Implement M3 tribute and troop obligation fulfillment",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-CHARACTER-OFFICE-FIXTURE-001",
+    "M3-POLITY-VASSALAGE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "packages/save-format/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M3 simulation supports tribute and campaign-troop obligation fulfillment, refusal, dispute, breach, and audit history through explicit serializable state and versioned commands/events.",
+    "Fulfillment draws from existing M2 grain/cash/labor/manpower scaffolds or explicit M3 placeholders without double-counting the same resource or obligation across a suzerain chain.",
+    "Obligation fulfillment reliability can vary with polity/vassal relationship context, administrative burden hooks, and character/office execution context while remaining deterministic and explainable.",
+    "Player and AI obligation actions use the same GameCommand validation and rejection reasons.",
+    "Scenario tests demonstrate at least one fulfilled tribute, one fulfilled troop obligation, one refusal/breach, and audit trails that identify source obligation and due period.",
+    "No full campaign warfare, full diplomacy, hidden global reputation system, client UI, formal historical content, or new production dependency is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/invariant tests cover tribute/troop non-negative accounting, no duplicate fulfillment, stable due-period audit ordering, and refusal/breach reason consistency.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+    "node -e JSON parse/shape check for M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "Troop fulfillment in M3 is obligation accounting and readiness scaffolding, not the M4 campaign/army movement loop.",
+    "Keep breach/audit history stable and readable for later UI reason display.",
+    "If implementation needs new diplomacy or war agreement semantics beyond vassal obligations, stop and route to systems_architect."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

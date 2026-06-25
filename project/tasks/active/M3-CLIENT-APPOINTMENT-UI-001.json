@@ -1,0 +1,80 @@
+{
+  "id": "M3-CLIENT-APPOINTMENT-UI-001",
+  "summary": "Build M3 appointment, bulk action, and reason read-model UI",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-APPOINTMENT-ENFEOFFMENT-001",
+    "M3-SUCCESSION-STATE-MACHINE-001",
+    "M3-TRIBUTE-TROOP-OBLIGATIONS-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "apps/storybook/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-CLIENT-APPOINTMENT-UI-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "packages/platform/**",
+      "packages/map-renderer/**",
+      "packages/sim-core/**",
+      "packages/sim-testkit/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Client read models expose M3 character, office, polity/vassal, obligation, vacancy/succession, appointment eligibility, bulk-action preview, and reason summaries without storing full WorldState in Redux/client store.",
+    "UI supports appointment and bulk appointment workflows, including per-target validation/rejection reasons, policy continuity visibility, and clear command submission through existing Worker/protocol paths.",
+    "Visible reason summaries are derived from protocol/query outputs and do not copy sim-core formulas or hidden full weights into React/UI code.",
+    "The interface shows why character behavior, appointment suitability, or obligation/proposal outcomes differ enough for M3 H-005 initial validation.",
+    "Storybook or Playwright coverage exercises appointment, bulk action, rejection reason, vacancy/succession, and obligation/reason display paths.",
+    "No authoritative domain state mutation, Pixi DisplayObject ownership by React, Electron/Node integration, full diplomacy UI, formal historical content, or new production dependency is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm build:web",
+    "pnpm test",
+    "Storybook story or Playwright test covers M3 appointment, bulk action, per-item rejection reason, and visible character/obligation reason flows.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-CLIENT-APPOINTMENT-UI-001",
+    "node -e JSON parse/shape check for M3-CLIENT-APPOINTMENT-UI-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m3-client-appointment-ui",
+  "threads": {},
+  "route_to": "client_engineer",
+  "notes": [
+    "This task covers the M3 appointment/bulk/reason UI/read-model requirement only.",
+    "If the UI needs a missing protocol query or reason code, route back to the relevant simulation task rather than duplicating rules client-side.",
+    "Keep React/Pixi boundaries unchanged; this task is DOM/read-model UI, not map renderer work."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

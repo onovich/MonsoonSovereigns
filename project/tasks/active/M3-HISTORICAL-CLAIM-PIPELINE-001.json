@@ -1,0 +1,66 @@
+{
+  "id": "M3-HISTORICAL-CLAIM-PIPELINE-001",
+  "summary": "Define M3 historical claim pipeline for names, titles, and relationships",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "historical_researcher",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-TASK-GRAPH-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/research/**",
+      "project/schemas/**",
+      "project/templates/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A documented M3 claim pipeline exists for names, titles, kinship, office claims, polity relationships, and vassalage assertions, using existing historical-claim schema fields and the source-policy rules in docs/10-historical-research-policy.md.",
+    "The pipeline distinguishes source statements, scholarly interpretation, project inference, and game abstraction, and it records confidence and HISTORICAL/INFERRED/COMPOSITE/FICTIONAL status for any specific claim.",
+    "The pipeline explicitly blocks formal historical people, titles, relationships, symbols, or polity claims from entering content-source or runtime fixtures without source IDs and claim records.",
+    "Any examples are abstract validation examples only and cannot be mistaken for formal historical content.",
+    "No production code, package code, content-source data, gameplay implementation, roadmap edit, accepted ADR, or gate file is modified."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-HISTORICAL-CLAIM-PIPELINE-001",
+    "node -e JSON parse/shape check for M3-HISTORICAL-CLAIM-PIPELINE-001 and any changed schema/template JSON files",
+    "Markdown/schema lint or targeted parse command for the new claim-pipeline artifact",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "research/m3-claim-pipeline",
+  "threads": {},
+  "route_to": "historical_researcher",
+  "notes": [
+    "This is a pipeline and policy task only; it must not create formal historical character, title, relationship, or polity content.",
+    "If the task needs to change the historical claim schema in a way that alters accepted policy semantics, route to systems_architect before continuing.",
+    "M3 character fixtures may depend on this pipeline while remaining synthetic or explicitly claim-labeled."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}
