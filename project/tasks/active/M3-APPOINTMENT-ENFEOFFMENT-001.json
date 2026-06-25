@@ -2,7 +2,7 @@
   "id": "M3-APPOINTMENT-ENFEOFFMENT-001",
   "summary": "Implement M3 appointments, enfeoffment, policies, and reason scaffolds",
   "milestone": "M3",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -66,13 +66,16 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m3-appointments-enfeoffment",
-  "threads": {},
-  "route_to": "simulation_engineer",
+  "threads": {
+    "simulation_engineer": "019efdc5-1a66-7d22-8e11-4f6b7d053c9d",
+    "systems_architect": "019efdd7-a355-76a2-a360-6ecda3563ddc"
+  },
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is the sim/protocol foundation for the later client appointment/bulk/reason UI task.",
     "Do not put domain rules in client read models; client work must consume protocol/query outputs from this task.",
     "If proposal behavior grows beyond minimal M3 reason scaffolds, stop and route to gameplay_designer/systems_architect before widening scope."
   ],
   "created_at": "2026-06-25T04:09:26.814Z",
-  "updated_at": "2026-06-25T04:09:26.814Z"
+  "updated_at": "2026-06-25T08:35:43.015Z"
 }

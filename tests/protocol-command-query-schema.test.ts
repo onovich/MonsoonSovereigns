@@ -179,6 +179,113 @@ describe("SIM-003 protocol command/query schemas", () => {
     });
   });
 
+  test("accepts M3 appointment, enfeoffment, policy, bulk command, and scaffold query schemas", () => {
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.appoint-office",
+        commandId: "cmd.m3.appoint",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: { officeId: 1, characterId: 2, reasonCode: "validation" }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.appoint-office",
+        commandId: "cmd.m3.appoint",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: { officeId: 1, characterId: 2, reasonCode: "validation" }
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.appoint-offices-bulk",
+        commandId: "cmd.m3.bulk",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          items: [{ itemId: "a", officeId: 1, characterId: null, reasonCode: "validation" }]
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.appoint-offices-bulk",
+        commandId: "cmd.m3.bulk",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          items: [{ itemId: "a", officeId: 1, characterId: null, reasonCode: "validation" }]
+        }
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.enfeoff-district",
+        commandId: "cmd.m3.enfeoff",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          districtId: 2,
+          holderCharacterId: 4,
+          grantedByPolityId: 1,
+          policyId: 6,
+          reasonCode: "validation"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.update-office-policy",
+        commandId: "cmd.m3.policy.office",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: { policyId: 1, stance: "military", intensityBps: 10_000, reasonCode: "validation" }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.update-jurisdiction-policy",
+        commandId: "cmd.m3.policy.jurisdiction",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          policyId: 1,
+          stance: "conciliatory",
+          intensityBps: 0,
+          reasonCode: "validation"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m3-decision-scaffolds"
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-m3-decision-scaffolds"
+      }
+    });
+  });
+
   test("rejects malformed query payloads without leaking nonserializable details", () => {
     expect(
       parseGameQueryV1({

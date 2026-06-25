@@ -1,0 +1,92 @@
+{
+  "message_id": "MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-SYSTEMS-REVIEW",
+  "task_id": "M3-APPOINTMENT-ENFEOFFMENT-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent R3 systems review found the protocol and sim-core changes broadly within the allowed package boundaries, with passing typecheck, sim-core, protocol, determinism, root test, task validation, and whitespace checks. However, this cannot be accepted because bulk appointment validation does not validate collective primary-office conflicts before applying the batch: two individually valid primary appointments to the same character are rejected only as a generic post-commit invariant-violation instead of stable per-item bulk rejection reasons. A second authority/error-model gap lets sim.enfeoff-district with actor id polity:999 and grantedByPolityId 999 pass the string authority check, then fail only as an invariant-violation for a missing PolityId. Both issues violate the R3 requirement that authority and bulk semantics be explicit command validation rather than hidden invariant fallback.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json",
+    "project/messages/outbox/M3-APPOINTMENT-ENFEOFFMENT-001__MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-appointments-enfeoffment",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Observed modified protocol/sim-core/test files plus pre-existing project coordination changes; new writer handoff, route file, and tests/sim-core-m3-appointment-enfeoffment.test.ts are untracked. No product/code files were modified by this review."
+    },
+    {
+      "command": "rg -n \"Math\\\\.random|Date\\\\.now|performance\\\\.now|new Date|fs|react|pixi|electron|window|document|localStorage|setTimeout|setInterval\" packages/sim-core/src packages/protocol/src",
+      "exit_code": 1,
+      "result": "No forbidden random, real-time, DOM, browser, Electron, React/Pixi, or Node IO matches in sim-core/protocol source."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e M3 bulk collective primary-conflict repro",
+      "exit_code": 0,
+      "result": "Submitted sim.appoint-offices-bulk with two valid primary offices assigning the same character. Result was rejected with code invariant-violation at state.m3.offices and message 'M3 primary office holder appears in more than one primary office.' Runtime hash remained unchanged. Expected behavior is explicit bulk-command-rejected with stable per-item reason strings before commit/invariant fallback."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e M3 enfeoff unknown grantor authority repro",
+      "exit_code": 0,
+      "result": "Submitted sim.enfeoff-district with actor id polity:999 and grantedByPolityId 999 in a world with only PolityId 1. Result was rejected with code invariant-violation at state.m3.administrativeDistricts[0].polityId for missing PolityId 999. Runtime hash remained unchanged. Expected behavior is explicit bad-id or authority-denied from command validation/state authority checks."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "11 test files passed; 63 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning for deterministic-rng-worker.ts remains non-blocking."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 21 files/121 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-APPOINTMENT-ENFEOFFMENT-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-APPOINTMENT-ENFEOFFMENT-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Review outcome is REQUEST_CHANGES and route_to is simulation_engineer because both failures are localized to sim-core command validation semantics and test coverage.",
+    "The added command/query schemas are explicit and player/AI actors share the same GameCommand kinds; the issue is not command-family asymmetry.",
+    "sim-core/protocol do not import React, Pixi, Electron, DOM, Node filesystem, or real-time APIs in the inspected paths.",
+    "state.m3 participates in canonicalization and hashing, and requestSaveV1 still intentionally refuses M3 state before emitting save bytes.",
+    "The decision scaffold query remains minimal: it exposes reason codes and executionPerformanceBps, not full hidden weights or an autonomous planner."
+  ],
+  "risks": [
+    "Bulk appointment tests currently cover missing/dead item rejection and order determinism, but not collective validity after applying all items, such as duplicate primary holder assignments across different offices in one batch.",
+    "actorHasPolityAuthority accepts actor.id equality for polity:<id> without first proving that the polity exists in M3 state. Commands that use a polity id supplied directly in payload can therefore reach invariant fallback rather than returning explicit authority or bad-id errors.",
+    "Leaving these as invariant fallback paths weakens the public error model and makes client/AI callers depend on less stable internal validation messages."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix sim-core command validation so bulk appointment batches validate collective primary-office exclusivity and return stable per-item bulk-command-rejected reason strings before mutation. Also validate enfeoffment grantedByPolityId against M3 polity state, and ensure actor polity authority is derived from existing polity/office state rather than string equality alone. Add focused tests that fail on both reproduced cases, then rerun the M3 validation matrix.",
+  "created_at": "2026-06-25T08:21:30Z"
+}
