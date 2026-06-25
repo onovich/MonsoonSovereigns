@@ -19,7 +19,8 @@
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
-      "start_state": "START_PENDING"
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f00ad-d04d-71e1-b055-77660f96e935"
     },
     {
       "task_id": "M3-EXIT-VALIDATION-001",
@@ -29,7 +30,7 @@
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
-      "start_state": "START_PENDING"
+      "start_state": "AWAITING_REVIEW_READY"
     }
   ],
   "unresolved_risks": [
@@ -49,7 +50,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Commit M3 exit gate start registration, send START_CONFIRMED to systems_architect, and keep qa_reviewer waiting for REVIEW_READY.",
+  "next_machine_action": "Wait for systems_architect M3 exit gate handoff, then send REVIEW_READY to qa_reviewer.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -57,5 +58,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T21:25:38Z"
+  "last_updated_at": "2026-06-25T21:27:31Z"
 }
