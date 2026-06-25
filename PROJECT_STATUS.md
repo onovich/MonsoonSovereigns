@@ -2,7 +2,7 @@
 
 ## 1. 当前阶段
 
-项目处于 **M2 / World, Economy, and Population Vertical Slice**。
+项目处于 **M3 / Polity, Office, Character, and Vassal Vertical Slice**。
 
 M0 Gate 已通过，见 `docs/GATE-M0.md`：
 
@@ -20,7 +20,14 @@ M1 Gate 已通过，见 `docs/GATE-M1.md`：
 - M1 Gate 经 `systems_architect` 与 `qa_reviewer` 独立验收为 `ACCEPT`。
 - M1 Gate 记录了非阻塞 follow-up：在 M2 exit 前补显式 Chromium + Electron host hash canary，并在 M2 内容/世界集成时补 sim-core/content-runtime boot-boundary contract test。
 
-当前执行重点是按 Roadmap 建立世界、经济与人口纵切；M2 不得扩写臣属政治、完整战争闭环、正式历史人物数据库、完整外交、生产地图内容或未批准的生产依赖。
+M2 Gate 已通过，见 `docs/GATE-M2.md`：
+
+- `M2-TASK-GRAPH-001`、`M2-MAP-SOURCE-POLICY-001`、`M2-WORLD-FIXTURE-001`、`M2-CONTENT-GUARDS-001`、`M2-BOOT-BOUNDARY-001`、`M2-ECON-POP-001`、`M2-ROUTE-TRANSPORT-001`、`M2-CLIENT-DISTRICT-LIST-001`、`M2-CLIENT-MAP-001`、`M2-PRESSURE-VALIDATION-001`、`M2-SAVE-RUNTIME-001`、`M2-HOST-HASH-CANARY-001` 与 `M2-EXIT-VALIDATION-001` 均已进入 `CLOSED`。
+- `origin/main` 已包含 M2 30 District/10 Settlement fixture、map source policy、content guards、boot-boundary contract、economy/population scaffold、route/transport preview、district list pressure panel、map renderer surface、pressure validation、M2 save runtime、Chromium/Electron host hash canary 与 M2 Gate 文档。
+- M2 Gate 经 `systems_architect` 与 `qa_reviewer` 独立验收为 `ACCEPT`。
+- M1 Gate 的两个 M2 前置 follow-up 已关闭：显式 Chromium + Electron host hash canary，以及 sim-core/content-runtime boot-boundary contract test。
+
+当前执行重点是按 Roadmap 建立政体、职任、人物与臣属纵切；M3 不得扩写完整战争闭环、完整外交、正式历史人物数据库、生产地图内容、M4+ 战役系统或未批准的生产依赖。M3 实现工作必须先经过 M3 task graph 创建与独立验收。
 
 ## 2. 已冻结决定
 
