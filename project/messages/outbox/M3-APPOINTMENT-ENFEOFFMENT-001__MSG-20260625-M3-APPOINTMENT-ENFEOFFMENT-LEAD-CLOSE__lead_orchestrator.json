@@ -1,0 +1,44 @@
+{
+  "message_id": "MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-LEAD-CLOSE",
+  "task_id": "M3-APPOINTMENT-ENFEOFFMENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead closed M3-APPOINTMENT-ENFEOFFMENT-001 after confirming PR #63 entered main at c9c65d2f4cf16a92734d440139128fd96db90438. The task was previously accepted after systems_architect R2 ACCEPT and lead gates; this closure branch updates only integration state, goal-mode state, model-routing state, and this close handoff.",
+  "artifacts": [
+    "project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M3-APPOINTMENT-ENFEOFFMENT-001__MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-LEAD-CLOSE__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/m3-appointments-enfeoffment-close",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git log --oneline --decorate -5",
+      "exit_code": 0,
+      "result": "Confirmed c9c65d2f is HEAD, origin/main, and origin/HEAD with message feat(m3): add appointment and enfeoffment commands (#63)."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status M3-APPOINTMENT-ENFEOFFMENT-001 CLOSED --note <integration commit>",
+      "exit_code": 0,
+      "result": "M3-APPOINTMENT-ENFEOFFMENT-001 CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready tasks are M3-SUCCESSION-STATE-MACHINE-001 and M3-TRIBUTE-TROOP-OBLIGATIONS-001; neither was started."
+    }
+  ],
+  "decisions": [
+    "M3-APPOINTMENT-ENFEOFFMENT-001 is CLOSED only because its accepted implementation entered main at c9c65d2f4cf16a92734d440139128fd96db90438.",
+    "No successor task was started on this closure branch.",
+    "Goal-mode last_integrated_task now records M3-APPOINTMENT-ENFEOFFMENT-001 and last_main_commit records the feature PR integration commit."
+  ],
+  "risks": [
+    "Closure branch still needs its own PR merge before main carries the CLOSED bookkeeping."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Create, merge, and verify the closure PR. After the closure PR reaches main, continue autonomous task selection from taskctl ready without reopening M3-APPOINTMENT-ENFEOFFMENT-001.",
+  "created_at": "2026-06-25T08:43:01.466Z"
+}
