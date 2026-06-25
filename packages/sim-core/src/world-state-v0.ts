@@ -14,6 +14,8 @@ export type M3OfficeId = Brand<number, "M3OfficeId">;
 export type M3PolicyId = Brand<number, "M3PolicyId">;
 export type M3AppointmentAuditEventId = Brand<number, "M3AppointmentAuditEventId">;
 export type M3SuccessionId = Brand<number, "M3SuccessionId">;
+export type CampaignPlanId = Brand<number, "CampaignPlanId">;
+export type FactionKnowledgeSnapshotId = Brand<number, "FactionKnowledgeSnapshotId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -491,6 +493,97 @@ export interface M3PolityVassalageStateV0 {
   readonly successionCrises: readonly M3SuccessionCrisisStateV0[];
 }
 
+export type M4CampaignObjectiveKindV0 =
+  | "prepare"
+  | "march"
+  | "besiege"
+  | "relieve"
+  | "withdraw"
+  | "postwar-result-candidate";
+export type M4CampaignPlanStatusV0 = "planned" | "active" | "cancelled" | "completed";
+export type M4CampaignOwnerV0 =
+  | { readonly kind: "commander"; readonly characterId: PersonId }
+  | { readonly kind: "polity"; readonly polityId: PolityId };
+export type M4CampaignTargetV0 =
+  | { readonly kind: "district"; readonly districtId: DistrictId }
+  | { readonly kind: "polity"; readonly polityId: PolityId };
+
+export interface M4CampaignStartWindowV0 {
+  readonly earliestDay: GameDay;
+  readonly latestDay: GameDay;
+}
+
+export interface M4CampaignPlanStateV0 {
+  readonly id: CampaignPlanId;
+  readonly owner: M4CampaignOwnerV0;
+  readonly target: M4CampaignTargetV0;
+  readonly objectiveKind: M4CampaignObjectiveKindV0;
+  readonly startWindow: M4CampaignStartWindowV0;
+  readonly status: M4CampaignPlanStatusV0;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly createdDay: GameDay;
+  readonly updatedDay: GameDay;
+}
+
+export type M4FactionKnowledgeSourceKindV0 = "scout" | "merchant" | "envoy" | "report";
+
+export interface M4FactionKnowledgeSourceV0 {
+  readonly kind: M4FactionKnowledgeSourceKindV0;
+  readonly sourceId: string;
+  readonly reliabilityBps: number;
+}
+
+export interface M4KnownObjectiveEstimateV0 {
+  readonly campaignPlanId: CampaignPlanId;
+  readonly target: M4CampaignTargetV0;
+  readonly objectiveKind: M4CampaignObjectiveKindV0;
+  readonly confidenceBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M4RouteEstimateV0 {
+  readonly routeId: RouteId;
+  readonly fromDistrictId: DistrictId;
+  readonly toDistrictId: DistrictId;
+  readonly travelCostEstimate: number;
+  readonly capacityEstimate: number;
+  readonly confidenceBps: number;
+}
+
+export interface M4SupplyEstimateV0 {
+  readonly districtId: DistrictId;
+  readonly supplyMin: number;
+  readonly supplyMax: number;
+  readonly confidenceBps: number;
+}
+
+export interface M4DefenderEstimateV0 {
+  readonly target: M4CampaignTargetV0;
+  readonly defenderMin: number;
+  readonly defenderMax: number;
+  readonly confidenceBps: number;
+}
+
+export interface M4FactionKnowledgeSnapshotStateV0 {
+  readonly snapshotId: FactionKnowledgeSnapshotId;
+  readonly observerPolityId: PolityId;
+  readonly subjectPolityId: PolityId;
+  readonly knowledgeVersion: number;
+  readonly recordedDay: GameDay;
+  readonly source: M4FactionKnowledgeSourceV0;
+  readonly knownObjectives: readonly M4KnownObjectiveEstimateV0[];
+  readonly routeEstimates: readonly M4RouteEstimateV0[];
+  readonly supplyEstimates: readonly M4SupplyEstimateV0[];
+  readonly defenderEstimates: readonly M4DefenderEstimateV0[];
+}
+
+export interface M4CampaignStateV0 {
+  readonly schemaVersion: 1;
+  readonly campaignPlans: readonly M4CampaignPlanStateV0[];
+  readonly factionKnowledgeSnapshots: readonly M4FactionKnowledgeSnapshotStateV0[];
+}
+
 export interface M3AdministrativeBurdenProfileInputV0 {
   readonly polityId: unknown;
   readonly districtId: unknown;
@@ -528,6 +621,7 @@ export interface WorldRuntimeStateV0 {
   readonly routes: readonly RouteState[];
   readonly m2?: M2EconomyPopulationStateV0;
   readonly m3?: M3PolityVassalageStateV0;
+  readonly m4?: M4CampaignStateV0;
 }
 
 export interface SchedulerStateV0 {
@@ -640,6 +734,7 @@ export interface CreateWorldStateV0Input {
   readonly definitions: WorldDefinitionsV0;
   readonly m2?: M2EconomyPopulationStateV0;
   readonly m3?: M3PolityVassalageStateV0;
+  readonly m4?: M4CampaignStateV0;
 }
 
 const INITIAL_HASH_OFFSET = 2_166_136_261;
@@ -699,6 +794,14 @@ export function parseM3AppointmentAuditEventId(value: unknown): M3AppointmentAud
 
 export function parseM3SuccessionId(value: unknown): M3SuccessionId {
   return parsePositiveInteger(value, "M3SuccessionId") as M3SuccessionId;
+}
+
+export function parseCampaignPlanId(value: unknown): CampaignPlanId {
+  return parsePositiveInteger(value, "CampaignPlanId") as CampaignPlanId;
+}
+
+export function parseFactionKnowledgeSnapshotId(value: unknown): FactionKnowledgeSnapshotId {
+  return parsePositiveInteger(value, "FactionKnowledgeSnapshotId") as FactionKnowledgeSnapshotId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -908,7 +1011,7 @@ export function createM2RouteTransportStateV0(
 
 export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0 {
   const definitions = canonicalizeDefinitions(input.definitions);
-  const state = createRuntimeState(definitions, input.m2, input.m3);
+  const state = createRuntimeState(definitions, input.m2, input.m3, input.m4);
   const stateWithoutHash: WorldStateV0 = {
     meta: {
       schemaVersion: WORLD_STATE_V0_SCHEMA_VERSION,
@@ -973,6 +1076,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     `state.routes=${formatRouteStates(world.state.routes)}`,
     ...formatM2CanonicalLines(world.state.m2),
     ...formatM3CanonicalLines(world.state.m3),
+    ...formatM4CanonicalLines(world.state.m4),
     `scheduler.schedulerVersion=${formatUnknown(
       getRecordPath(world, ["scheduler", "schedulerVersion"])
     )}`,
@@ -1014,6 +1118,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateRuntimeEntryShapes(world.state, errors);
   validateM2EntryShapes(getRecordPath(world, ["state", "m2"]), errors);
   validateM3EntryShapes(getRecordPath(world, ["state", "m3"]), errors);
+  validateM4EntryShapes(getRecordPath(world, ["state", "m4"]), errors);
   if (errors.some((error) => error.code === "invalid-schema")) {
     return errors;
   }
@@ -1023,6 +1128,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateRuntimeState(world, errors);
   validateM2RuntimeState(world, errors);
   validateM3RuntimeState(world, errors);
+  validateM4RuntimeState(world, errors);
   validateRuntimeTableCoverage(world, errors);
   validateStateHash(world, errors);
   return errors;
@@ -1584,6 +1690,332 @@ function validateM3EntryShapes(input: unknown, errors: WorldInvariantError[]): v
       validateM3SuccessionCrisisEntry(entry, `state.m3.successionCrises[${index}]`, errors)
     );
   }
+}
+
+function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): void {
+  if (input === undefined) {
+    return;
+  }
+  if (!isRecord(input) || input["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m4",
+      message: "M4 campaign state must be an object with schemaVersion 1."
+    });
+    return;
+  }
+
+  const campaignPlans = input["campaignPlans"];
+  const factionKnowledgeSnapshots = input["factionKnowledgeSnapshots"];
+  if (!Array.isArray(campaignPlans)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m4.campaignPlans",
+      message: "state.m4.campaignPlans must be an array."
+    });
+  } else {
+    campaignPlans.forEach((entry, index) =>
+      validateM4CampaignPlanEntry(entry, `state.m4.campaignPlans[${index}]`, errors)
+    );
+  }
+  if (!Array.isArray(factionKnowledgeSnapshots)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m4.factionKnowledgeSnapshots",
+      message: "state.m4.factionKnowledgeSnapshots must be an array."
+    });
+  } else {
+    factionKnowledgeSnapshots.forEach((entry, index) =>
+      validateM4FactionKnowledgeSnapshotEntry(
+        entry,
+        `state.m4.factionKnowledgeSnapshots[${index}]`,
+        errors
+      )
+    );
+  }
+}
+
+function validateM4CampaignPlanEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4CampaignPlanState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "id", `${path}.id`, "CampaignPlanId", errors);
+  validateM4CampaignOwnerEntry(input["owner"], `${path}.owner`, errors);
+  validateM4CampaignTargetEntry(input["target"], `${path}.target`, errors);
+  validateM4ObjectiveKindValue(input["objectiveKind"], `${path}.objectiveKind`, errors);
+  validateM4StartWindowEntry(input["startWindow"], `${path}.startWindow`, errors);
+  validateM4CampaignStatusValue(input["status"], `${path}.status`, errors);
+  validateNonEmptyStringField(input, "statusReasonCode", `${path}.statusReasonCode`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateNonnegativeIntegerField(input, "createdDay", `${path}.createdDay`, errors);
+  validateNonnegativeIntegerField(input, "updatedDay", `${path}.updatedDay`, errors);
+}
+
+function validateM4FactionKnowledgeSnapshotEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4FactionKnowledgeSnapshotState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "snapshotId",
+    `${path}.snapshotId`,
+    "FactionKnowledgeSnapshotId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "observerPolityId",
+    `${path}.observerPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "subjectPolityId",
+    `${path}.subjectPolityId`,
+    "PolityId",
+    errors
+  );
+  validateNonnegativeIntegerField(input, "knowledgeVersion", `${path}.knowledgeVersion`, errors);
+  validateNonnegativeIntegerField(input, "recordedDay", `${path}.recordedDay`, errors);
+  validateM4FactionKnowledgeSourceEntry(input["source"], `${path}.source`, errors);
+  validateM4Array(
+    input["knownObjectives"],
+    `${path}.knownObjectives`,
+    errors,
+    validateM4KnownObjectiveEntry
+  );
+  validateM4Array(
+    input["routeEstimates"],
+    `${path}.routeEstimates`,
+    errors,
+    validateM4RouteEstimateEntry
+  );
+  validateM4Array(
+    input["supplyEstimates"],
+    `${path}.supplyEstimates`,
+    errors,
+    validateM4SupplyEstimateEntry
+  );
+  validateM4Array(
+    input["defenderEstimates"],
+    `${path}.defenderEstimates`,
+    errors,
+    validateM4DefenderEstimateEntry
+  );
+}
+
+function validateM4Array(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[],
+  validateEntry: (entry: unknown, path: string, errors: WorldInvariantError[]) => void
+): void {
+  if (!Array.isArray(input)) {
+    errors.push({ code: "invalid-schema", path, message: `${path} must be an array.` });
+    return;
+  }
+  input.forEach((entry, index) => validateEntry(entry, `${path}[${index}]`, errors));
+}
+
+function validateM4KnownObjectiveEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4KnownObjectiveEstimate", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "campaignPlanId",
+    `${path}.campaignPlanId`,
+    "CampaignPlanId",
+    errors
+  );
+  validateM4CampaignTargetEntry(input["target"], `${path}.target`, errors);
+  validateM4ObjectiveKindValue(input["objectiveKind"], `${path}.objectiveKind`, errors);
+  validateIntegerFieldInRange(input, "confidenceBps", `${path}.confidenceBps`, 0, 10_000, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateM4RouteEstimateEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4RouteEstimate", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "routeId", `${path}.routeId`, "RouteId", errors);
+  validatePositiveIntegerField(
+    input,
+    "fromDistrictId",
+    `${path}.fromDistrictId`,
+    "DistrictId",
+    errors
+  );
+  validatePositiveIntegerField(input, "toDistrictId", `${path}.toDistrictId`, "DistrictId", errors);
+  validatePositiveIntegerField(
+    input,
+    "travelCostEstimate",
+    `${path}.travelCostEstimate`,
+    "M4 travelCostEstimate",
+    errors
+  );
+  validateNonnegativeIntegerField(input, "capacityEstimate", `${path}.capacityEstimate`, errors);
+  validateIntegerFieldInRange(input, "confidenceBps", `${path}.confidenceBps`, 0, 10_000, errors);
+}
+
+function validateM4SupplyEstimateEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4SupplyEstimate", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validateNonnegativeIntegerField(input, "supplyMin", `${path}.supplyMin`, errors);
+  validateNonnegativeIntegerField(input, "supplyMax", `${path}.supplyMax`, errors);
+  validateIntegerFieldInRange(input, "confidenceBps", `${path}.confidenceBps`, 0, 10_000, errors);
+}
+
+function validateM4DefenderEstimateEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4DefenderEstimate", errors)) {
+    return;
+  }
+  validateM4CampaignTargetEntry(input["target"], `${path}.target`, errors);
+  validateNonnegativeIntegerField(input, "defenderMin", `${path}.defenderMin`, errors);
+  validateNonnegativeIntegerField(input, "defenderMax", `${path}.defenderMax`, errors);
+  validateIntegerFieldInRange(input, "confidenceBps", `${path}.confidenceBps`, 0, 10_000, errors);
+}
+
+function validateM4CampaignOwnerEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4CampaignOwner", errors)) {
+    return;
+  }
+  if (input["kind"] === "commander") {
+    validatePositiveIntegerField(input, "characterId", `${path}.characterId`, "PersonId", errors);
+    return;
+  }
+  if (input["kind"] === "polity") {
+    validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path: `${path}.kind`,
+    message: "M4 campaign owner kind must be commander or polity."
+  });
+}
+
+function validateM4CampaignTargetEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4CampaignTarget", errors)) {
+    return;
+  }
+  if (input["kind"] === "district") {
+    validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+    return;
+  }
+  if (input["kind"] === "polity") {
+    validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path: `${path}.kind`,
+    message: "M4 campaign target kind must be district or polity."
+  });
+}
+
+function validateM4StartWindowEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4CampaignStartWindow", errors)) {
+    return;
+  }
+  validateNonnegativeIntegerField(input, "earliestDay", `${path}.earliestDay`, errors);
+  validateNonnegativeIntegerField(input, "latestDay", `${path}.latestDay`, errors);
+}
+
+function validateM4FactionKnowledgeSourceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4FactionKnowledgeSource", errors)) {
+    return;
+  }
+  const kind = input["kind"];
+  if (kind !== "scout" && kind !== "merchant" && kind !== "envoy" && kind !== "report") {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.kind`,
+      message: "M4 knowledge source kind must be scout, merchant, envoy, or report."
+    });
+  }
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateIntegerFieldInRange(input, "reliabilityBps", `${path}.reliabilityBps`, 0, 10_000, errors);
+}
+
+function validateM4ObjectiveKindValue(
+  value: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    value === "prepare" ||
+    value === "march" ||
+    value === "besiege" ||
+    value === "relieve" ||
+    value === "withdraw" ||
+    value === "postwar-result-candidate"
+  ) {
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: "M4 objectiveKind is invalid."
+  });
+}
+
+function validateM4CampaignStatusValue(
+  value: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (value === "planned" || value === "active" || value === "cancelled" || value === "completed") {
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: "M4 campaign status is invalid."
+  });
 }
 
 function validateM3PolityEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
@@ -3035,7 +3467,8 @@ function validateNonnegativeIntegerValue(
 function createRuntimeState(
   definitions: WorldDefinitionsV0,
   m2: M2EconomyPopulationStateV0 | undefined,
-  m3: M3PolityVassalageStateV0 | undefined
+  m3: M3PolityVassalageStateV0 | undefined,
+  m4: M4CampaignStateV0 | undefined
 ): WorldRuntimeStateV0 {
   const state: WorldRuntimeStateV0 = {
     polities: sortByNumericId(definitions.polities).map((definition) => ({
@@ -3058,29 +3491,24 @@ function createRuntimeState(
     }))
   };
 
-  if (m2 === undefined && m3 === undefined) {
+  if (m2 === undefined && m3 === undefined && m4 === undefined) {
     return state;
   }
 
-  const nextState: WorldRuntimeStateV0 = { ...state };
+  let nextState: WorldRuntimeStateV0 = { ...state };
   if (m2 !== undefined) {
-    return m3 === undefined
-      ? { ...nextState, m2: canonicalizeM2EconomyPopulationState(m2) }
-      : {
-          ...nextState,
-          m2: canonicalizeM2EconomyPopulationState(m2),
-          m3: canonicalizeM3PolityVassalageState(m3)
-        };
+    nextState = { ...nextState, m2: canonicalizeM2EconomyPopulationState(m2) };
   }
 
-  if (m3 === undefined) {
-    return nextState;
+  if (m3 !== undefined) {
+    nextState = { ...nextState, m3: canonicalizeM3PolityVassalageState(m3) };
   }
 
-  return {
-    ...nextState,
-    m3: canonicalizeM3PolityVassalageState(m3)
-  };
+  if (m4 !== undefined) {
+    nextState = { ...nextState, m4: canonicalizeM4CampaignStateV0(m4) };
+  }
+
+  return nextState;
 }
 
 function canonicalizeDefinitions(definitions: WorldDefinitionsV0): WorldDefinitionsV0 {
@@ -3149,6 +3577,89 @@ export function createM3PolityVassalageStateV0(
     successionCandidateProfiles: input?.successionCandidateProfiles ?? [],
     successionCrises: input?.successionCrises ?? []
   });
+}
+
+export function createM4CampaignStateV0(
+  _definitions: WorldDefinitionsV0,
+  input?: Partial<M4CampaignStateV0>
+): M4CampaignStateV0 {
+  return canonicalizeM4CampaignStateV0({
+    schemaVersion: 1,
+    campaignPlans: input?.campaignPlans ?? [],
+    factionKnowledgeSnapshots: input?.factionKnowledgeSnapshots ?? []
+  });
+}
+
+export function canonicalizeM4CampaignStateV0(m4: M4CampaignStateV0): M4CampaignStateV0 {
+  return {
+    schemaVersion: 1,
+    campaignPlans: sortM4CampaignPlans(m4.campaignPlans).map((plan) => ({
+      id: parseCampaignPlanId(plan.id),
+      owner: copyM4CampaignOwner(plan.owner),
+      target: copyM4CampaignTarget(plan.target),
+      objectiveKind: parseM4CampaignObjectiveKind(plan.objectiveKind),
+      startWindow: {
+        earliestDay: parseGameDay(plan.startWindow.earliestDay),
+        latestDay: parseGameDay(plan.startWindow.latestDay)
+      },
+      status: parseM4CampaignPlanStatus(plan.status),
+      statusReasonCode: parseDisplayNameKey(plan.statusReasonCode, "M4 statusReasonCode"),
+      reasonCodes: sortText(plan.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M4 reasonCode")
+      ),
+      createdDay: parseGameDay(plan.createdDay),
+      updatedDay: parseGameDay(plan.updatedDay)
+    })),
+    factionKnowledgeSnapshots: sortM4FactionKnowledgeSnapshots(m4.factionKnowledgeSnapshots).map(
+      (snapshot) => ({
+        snapshotId: parseFactionKnowledgeSnapshotId(snapshot.snapshotId),
+        observerPolityId: parsePolityId(snapshot.observerPolityId),
+        subjectPolityId: parsePolityId(snapshot.subjectPolityId),
+        knowledgeVersion: parseNonnegativeInteger(snapshot.knowledgeVersion, "M4 knowledgeVersion"),
+        recordedDay: parseGameDay(snapshot.recordedDay),
+        source: {
+          kind: parseM4FactionKnowledgeSourceKind(snapshot.source.kind),
+          sourceId: parseDisplayNameKey(snapshot.source.sourceId, "M4 sourceId"),
+          reliabilityBps: parseBps(snapshot.source.reliabilityBps, "M4 reliabilityBps")
+        },
+        knownObjectives: sortM4KnownObjectives(snapshot.knownObjectives).map((objective) => ({
+          campaignPlanId: parseCampaignPlanId(objective.campaignPlanId),
+          target: copyM4CampaignTarget(objective.target),
+          objectiveKind: parseM4CampaignObjectiveKind(objective.objectiveKind),
+          confidenceBps: parseBps(objective.confidenceBps, "M4 objective confidenceBps"),
+          reasonCodes: sortText(objective.reasonCodes).map((code) =>
+            parseDisplayNameKey(code, "M4 known objective reasonCode")
+          )
+        })),
+        routeEstimates: sortM4RouteEstimates(snapshot.routeEstimates).map((estimate) => ({
+          routeId: parseRouteId(estimate.routeId),
+          fromDistrictId: parseDistrictId(estimate.fromDistrictId),
+          toDistrictId: parseDistrictId(estimate.toDistrictId),
+          travelCostEstimate: parsePositiveInteger(
+            estimate.travelCostEstimate,
+            "M4 travelCostEstimate"
+          ),
+          capacityEstimate: parseNonnegativeInteger(
+            estimate.capacityEstimate,
+            "M4 capacityEstimate"
+          ),
+          confidenceBps: parseBps(estimate.confidenceBps, "M4 route confidenceBps")
+        })),
+        supplyEstimates: sortM4SupplyEstimates(snapshot.supplyEstimates).map((estimate) => ({
+          districtId: parseDistrictId(estimate.districtId),
+          supplyMin: parseNonnegativeInteger(estimate.supplyMin, "M4 supplyMin"),
+          supplyMax: parseNonnegativeInteger(estimate.supplyMax, "M4 supplyMax"),
+          confidenceBps: parseBps(estimate.confidenceBps, "M4 supply confidenceBps")
+        })),
+        defenderEstimates: sortM4DefenderEstimates(snapshot.defenderEstimates).map((estimate) => ({
+          target: copyM4CampaignTarget(estimate.target),
+          defenderMin: parseNonnegativeInteger(estimate.defenderMin, "M4 defenderMin"),
+          defenderMax: parseNonnegativeInteger(estimate.defenderMax, "M4 defenderMax"),
+          confidenceBps: parseBps(estimate.confidenceBps, "M4 defender confidenceBps")
+        }))
+      })
+    )
+  };
 }
 
 export function canonicalizeM3PolityVassalageState(
@@ -3681,6 +4192,55 @@ function copyM3Due(due: M3ObligationDueV0): M3ObligationDueV0 {
   }
 }
 
+export function copyM4CampaignOwner(owner: M4CampaignOwnerV0): M4CampaignOwnerV0 {
+  switch (owner.kind) {
+    case "commander":
+      return { kind: "commander", characterId: parsePersonId(owner.characterId) };
+    case "polity":
+      return { kind: "polity", polityId: parsePolityId(owner.polityId) };
+  }
+}
+
+export function copyM4CampaignTarget(target: M4CampaignTargetV0): M4CampaignTargetV0 {
+  switch (target.kind) {
+    case "district":
+      return { kind: "district", districtId: parseDistrictId(target.districtId) };
+    case "polity":
+      return { kind: "polity", polityId: parsePolityId(target.polityId) };
+  }
+}
+
+export function parseM4CampaignObjectiveKind(value: unknown): M4CampaignObjectiveKindV0 {
+  if (
+    value === "prepare" ||
+    value === "march" ||
+    value === "besiege" ||
+    value === "relieve" ||
+    value === "withdraw" ||
+    value === "postwar-result-candidate"
+  ) {
+    return value;
+  }
+
+  throw new Error("M4 campaign objective kind is invalid.");
+}
+
+export function parseM4CampaignPlanStatus(value: unknown): M4CampaignPlanStatusV0 {
+  if (value === "planned" || value === "active" || value === "cancelled" || value === "completed") {
+    return value;
+  }
+
+  throw new Error("M4 campaign plan status is invalid.");
+}
+
+export function parseM4FactionKnowledgeSourceKind(value: unknown): M4FactionKnowledgeSourceKindV0 {
+  if (value === "scout" || value === "merchant" || value === "envoy" || value === "report") {
+    return value;
+  }
+
+  throw new Error("M4 faction knowledge source kind is invalid.");
+}
+
 function isPositiveInteger(value: unknown): boolean {
   return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
 }
@@ -3896,6 +4456,85 @@ function sortM3SuccessionCandidates(
     (left, right) =>
       right.supportTotalBps - left.supportTotalBps || left.characterId - right.characterId
   );
+}
+
+function sortM4CampaignPlans(
+  values: readonly M4CampaignPlanStateV0[]
+): readonly M4CampaignPlanStateV0[] {
+  return [...values].sort((left, right) => left.id - right.id);
+}
+
+function sortM4FactionKnowledgeSnapshots(
+  values: readonly M4FactionKnowledgeSnapshotStateV0[]
+): readonly M4FactionKnowledgeSnapshotStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.observerPolityId - right.observerPolityId ||
+      left.subjectPolityId - right.subjectPolityId ||
+      left.knowledgeVersion - right.knowledgeVersion ||
+      left.snapshotId - right.snapshotId
+  );
+}
+
+function sortM4KnownObjectives(
+  values: readonly M4KnownObjectiveEstimateV0[]
+): readonly M4KnownObjectiveEstimateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.campaignPlanId - right.campaignPlanId ||
+      compareM4CampaignTarget(left.target, right.target) ||
+      compareText(left.objectiveKind, right.objectiveKind)
+  );
+}
+
+function sortM4RouteEstimates(values: readonly M4RouteEstimateV0[]): readonly M4RouteEstimateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.routeId - right.routeId ||
+      left.fromDistrictId - right.fromDistrictId ||
+      left.toDistrictId - right.toDistrictId
+  );
+}
+
+function sortM4SupplyEstimates(
+  values: readonly M4SupplyEstimateV0[]
+): readonly M4SupplyEstimateV0[] {
+  return [...values].sort((left, right) => left.districtId - right.districtId);
+}
+
+function sortM4DefenderEstimates(
+  values: readonly M4DefenderEstimateV0[]
+): readonly M4DefenderEstimateV0[] {
+  return [...values].sort((left, right) => compareM4CampaignTarget(left.target, right.target));
+}
+
+function compareM4CampaignTarget(left: M4CampaignTargetV0, right: M4CampaignTargetV0): number {
+  return (
+    m4TargetKindRank(left.kind) - m4TargetKindRank(right.kind) ||
+    m4TargetId(left) - m4TargetId(right)
+  );
+}
+
+function m4TargetKindRank(kind: M4CampaignTargetV0["kind"]): number {
+  switch (kind) {
+    case "district":
+      return 1;
+    case "polity":
+      return 2;
+  }
+}
+
+function m4TargetId(target: M4CampaignTargetV0): number {
+  switch (target.kind) {
+    case "district":
+      return target.districtId;
+    case "polity":
+      return target.polityId;
+  }
+}
+
+function sortText(values: readonly string[]): readonly string[] {
+  return [...values].sort(compareText);
 }
 
 function m3AdministrativeModeBaseLoad(mode: M3AdministrativeControlModeV0): number {
@@ -4132,6 +4771,112 @@ function formatM3CanonicalLines(m3: M3PolityVassalageStateV0 | undefined): reado
     )}`,
     `state.m3.successionCrises=${formatM3SuccessionCrises(m3.successionCrises)}`
   ];
+}
+
+function formatM4CanonicalLines(m4: M4CampaignStateV0 | undefined): readonly string[] {
+  if (m4 === undefined) {
+    return [];
+  }
+
+  return [
+    `state.m4.schemaVersion=${m4.schemaVersion}`,
+    `state.m4.campaignPlans=${formatM4CampaignPlans(m4.campaignPlans)}`,
+    `state.m4.factionKnowledgeSnapshots=${formatM4FactionKnowledgeSnapshots(
+      m4.factionKnowledgeSnapshots
+    )}`
+  ];
+}
+
+function formatM4CampaignPlans(values: readonly M4CampaignPlanStateV0[]): string {
+  return sortM4CampaignPlans(values)
+    .map((value) =>
+      [
+        value.id,
+        formatM4CampaignOwner(value.owner),
+        formatM4CampaignTarget(value.target),
+        value.objectiveKind,
+        `${value.startWindow.earliestDay}/${value.startWindow.latestDay}`,
+        value.status,
+        value.statusReasonCode,
+        sortText(value.reasonCodes).join("/"),
+        value.createdDay,
+        value.updatedDay
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM4FactionKnowledgeSnapshots(
+  values: readonly M4FactionKnowledgeSnapshotStateV0[]
+): string {
+  return sortM4FactionKnowledgeSnapshots(values)
+    .map((value) =>
+      [
+        value.snapshotId,
+        value.observerPolityId,
+        value.subjectPolityId,
+        value.knowledgeVersion,
+        value.recordedDay,
+        `${value.source.kind}/${value.source.sourceId}/${value.source.reliabilityBps}`,
+        sortM4KnownObjectives(value.knownObjectives).map(formatM4KnownObjective).join("/"),
+        sortM4RouteEstimates(value.routeEstimates).map(formatM4RouteEstimate).join("/"),
+        sortM4SupplyEstimates(value.supplyEstimates).map(formatM4SupplyEstimate).join("/"),
+        sortM4DefenderEstimates(value.defenderEstimates).map(formatM4DefenderEstimate).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM4KnownObjective(value: M4KnownObjectiveEstimateV0): string {
+  return [
+    value.campaignPlanId,
+    formatM4CampaignTarget(value.target),
+    value.objectiveKind,
+    value.confidenceBps,
+    sortText(value.reasonCodes).join(".")
+  ].join(".");
+}
+
+function formatM4RouteEstimate(value: M4RouteEstimateV0): string {
+  return [
+    value.routeId,
+    value.fromDistrictId,
+    value.toDistrictId,
+    value.travelCostEstimate,
+    value.capacityEstimate,
+    value.confidenceBps
+  ].join(".");
+}
+
+function formatM4SupplyEstimate(value: M4SupplyEstimateV0): string {
+  return [value.districtId, value.supplyMin, value.supplyMax, value.confidenceBps].join(".");
+}
+
+function formatM4DefenderEstimate(value: M4DefenderEstimateV0): string {
+  return [
+    formatM4CampaignTarget(value.target),
+    value.defenderMin,
+    value.defenderMax,
+    value.confidenceBps
+  ].join(".");
+}
+
+function formatM4CampaignOwner(owner: M4CampaignOwnerV0): string {
+  switch (owner.kind) {
+    case "commander":
+      return `commander.${owner.characterId}`;
+    case "polity":
+      return `polity.${owner.polityId}`;
+  }
+}
+
+function formatM4CampaignTarget(target: M4CampaignTargetV0): string {
+  switch (target.kind) {
+    case "district":
+      return `district.${target.districtId}`;
+    case "polity":
+      return `polity.${target.polityId}`;
+  }
 }
 
 function formatM3PolityRecords(values: readonly M3PolityRecordStateV0[]): string {
@@ -5707,6 +6452,202 @@ function validateM3PolicyTargetReferences(
   }
 }
 
+function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvariantError[]): void {
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return;
+  }
+  if (!isM4StateLike(m4)) {
+    return;
+  }
+
+  const planIds = new Set<number>();
+  const polityIds = idsOf(world.definitions.polities);
+  const personIds = idsOf(world.definitions.persons);
+  const districtIds = idsOf(world.definitions.districts);
+  const routeIds = idsOf(world.definitions.routes);
+
+  m4.campaignPlans.forEach((plan, index) => {
+    if (planIds.has(plan.id)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m4.campaignPlans",
+        message: `Duplicate M4 campaign plan row for CampaignPlanId ${plan.id}.`
+      });
+    }
+    planIds.add(plan.id);
+    validateM4OwnerReference(
+      plan.owner,
+      polityIds,
+      personIds,
+      `state.m4.campaignPlans[${index}].owner`,
+      errors
+    );
+    validateM4TargetReference(
+      plan.target,
+      polityIds,
+      districtIds,
+      `state.m4.campaignPlans[${index}].target`,
+      errors
+    );
+    if (plan.startWindow.earliestDay > plan.startWindow.latestDay) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.campaignPlans[${index}].startWindow`,
+        message: "M4 campaign startWindow earliestDay must be <= latestDay."
+      });
+    }
+    if (plan.updatedDay < plan.createdDay) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.campaignPlans[${index}].updatedDay`,
+        message: "M4 campaign updatedDay must be >= createdDay."
+      });
+    }
+  });
+
+  const snapshotIds = new Set<number>();
+  m4.factionKnowledgeSnapshots.forEach((snapshot, snapshotIndex) => {
+    if (snapshotIds.has(snapshot.snapshotId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m4.factionKnowledgeSnapshots",
+        message: `Duplicate M4 knowledge snapshot row for FactionKnowledgeSnapshotId ${snapshot.snapshotId}.`
+      });
+    }
+    snapshotIds.add(snapshot.snapshotId);
+    if (!polityIds.has(snapshot.observerPolityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].observerPolityId`,
+        message: "M4 knowledge snapshot references missing observer polity."
+      });
+    }
+    if (!polityIds.has(snapshot.subjectPolityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].subjectPolityId`,
+        message: "M4 knowledge snapshot references missing subject polity."
+      });
+    }
+    snapshot.knownObjectives.forEach((objective, objectiveIndex) => {
+      validateM4TargetReference(
+        objective.target,
+        polityIds,
+        districtIds,
+        `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].knownObjectives[${objectiveIndex}].target`,
+        errors
+      );
+    });
+    snapshot.routeEstimates.forEach((estimate, estimateIndex) => {
+      if (!routeIds.has(estimate.routeId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].routeEstimates[${estimateIndex}].routeId`,
+          message: "M4 route estimate references missing RouteId."
+        });
+      }
+      if (!districtIds.has(estimate.fromDistrictId) || !districtIds.has(estimate.toDistrictId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].routeEstimates[${estimateIndex}]`,
+          message: "M4 route estimate references missing endpoint DistrictId."
+        });
+      }
+    });
+    snapshot.supplyEstimates.forEach((estimate, estimateIndex) => {
+      if (!districtIds.has(estimate.districtId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].supplyEstimates[${estimateIndex}].districtId`,
+          message: "M4 supply estimate references missing DistrictId."
+        });
+      }
+      if (estimate.supplyMin > estimate.supplyMax) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].supplyEstimates[${estimateIndex}]`,
+          message: "M4 supply estimate supplyMin must be <= supplyMax."
+        });
+      }
+    });
+    snapshot.defenderEstimates.forEach((estimate, estimateIndex) => {
+      validateM4TargetReference(
+        estimate.target,
+        polityIds,
+        districtIds,
+        `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].defenderEstimates[${estimateIndex}].target`,
+        errors
+      );
+      if (estimate.defenderMin > estimate.defenderMax) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m4.factionKnowledgeSnapshots[${snapshotIndex}].defenderEstimates[${estimateIndex}]`,
+          message: "M4 defender estimate defenderMin must be <= defenderMax."
+        });
+      }
+    });
+  });
+}
+
+function validateM4OwnerReference(
+  owner: M4CampaignOwnerV0,
+  polityIds: ReadonlySet<number>,
+  personIds: ReadonlySet<number>,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  switch (owner.kind) {
+    case "commander":
+      if (!personIds.has(owner.characterId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.characterId`,
+          message: "M4 campaign owner references missing commander PersonId."
+        });
+      }
+      return;
+    case "polity":
+      if (!polityIds.has(owner.polityId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.polityId`,
+          message: "M4 campaign owner references missing PolityId."
+        });
+      }
+      return;
+  }
+}
+
+function validateM4TargetReference(
+  target: M4CampaignTargetV0,
+  polityIds: ReadonlySet<number>,
+  districtIds: ReadonlySet<number>,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  switch (target.kind) {
+    case "district":
+      if (!districtIds.has(target.districtId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.districtId`,
+          message: "M4 campaign target references missing DistrictId."
+        });
+      }
+      return;
+    case "polity":
+      if (!polityIds.has(target.polityId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.polityId`,
+          message: "M4 campaign target references missing PolityId."
+        });
+      }
+      return;
+  }
+}
+
 interface M2DistrictCoverageInput {
   readonly definitionIds: ReadonlySet<number>;
   readonly runtimeIds: readonly number[];
@@ -5924,6 +6865,18 @@ function isM3StateLike(value: unknown): value is M3PolityVassalageStateV0 {
     Array.isArray(value["appointmentAuditEvents"]) &&
     Array.isArray(value["successionCandidateProfiles"]) &&
     Array.isArray(value["successionCrises"])
+  );
+}
+
+function isM4StateLike(value: unknown): value is M4CampaignStateV0 {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    value["schemaVersion"] === 1 &&
+    Array.isArray(value["campaignPlans"]) &&
+    Array.isArray(value["factionKnowledgeSnapshots"])
   );
 }
 

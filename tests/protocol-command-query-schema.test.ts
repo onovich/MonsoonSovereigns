@@ -456,6 +456,128 @@ describe("SIM-003 protocol command/query schemas", () => {
     });
   });
 
+  test("accepts M4 campaign objective command and planning query schemas", () => {
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.create-campaign-objective",
+        commandId: "cmd.m4.campaign.create",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          campaignPlanId: 1,
+          owner: { kind: "polity", polityId: 1 },
+          target: { kind: "district", districtId: 2 },
+          objectiveKind: "besiege",
+          startWindow: { earliestDay: 12, latestDay: 30 },
+          reasonCodes: ["campaign.reason.dry-season-range"]
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.create-campaign-objective",
+        commandId: "cmd.m4.campaign.create",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          campaignPlanId: 1,
+          owner: { kind: "polity", polityId: 1 },
+          target: { kind: "district", districtId: 2 },
+          objectiveKind: "besiege",
+          startWindow: { earliestDay: 12, latestDay: 30 },
+          reasonCodes: ["campaign.reason.dry-season-range"]
+        }
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.update-campaign-objective",
+        commandId: "cmd.m4.campaign.update",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          campaignPlanId: 1,
+          target: { kind: "district", districtId: 3 },
+          objectiveKind: "relieve",
+          startWindow: { earliestDay: 14, latestDay: 40 },
+          reasonCodes: ["campaign.reason.defender-pressure"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.cancel-campaign-objective",
+        commandId: "cmd.m4.campaign.cancel",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          campaignPlanId: 1,
+          reasonCode: "campaign.cancelled.monsoon-range"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m4-campaign-plans"
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-m4-campaign-plans"
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m4-faction-knowledge",
+        payload: { queryId: "m4.knowledge.1", observerPolityId: 1 }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-m4-faction-knowledge",
+        payload: { queryId: "m4.knowledge.1", observerPolityId: 1 }
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.create-campaign-objective",
+        commandId: "cmd.m4.campaign.bad",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          campaignPlanId: 1,
+          owner: { kind: "polity", polityId: 1 },
+          target: { kind: "district", districtId: 2 },
+          objectiveKind: "naval-invasion",
+          startWindow: { earliestDay: 12, latestDay: 30 },
+          reasonCodes: ["campaign.reason.dry-season-range"]
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.objectiveKind",
+        message:
+          "payload.objectiveKind must be prepare, march, besiege, relieve, withdraw, or postwar-result-candidate."
+      }
+    });
+  });
+
   test("rejects malformed query payloads without leaking nonserializable details", () => {
     expect(
       parseGameQueryV1({
