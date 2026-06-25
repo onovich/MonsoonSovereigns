@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-25T22:38:15Z",
+  "updated_at": "2026-06-25T22:45:03Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1082,7 +1082,38 @@
       "accepted_task_reopened": false
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M4-TASK-GRAPH-001",
+      "role": "systems_architect",
+      "thread_id": "019f00f4-e7ae-7c71-9a8a-8e8285c9500d",
+      "status": "start_confirmed",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "chore/m4-task-graph",
+      "start_state": "START_CONFIRMED",
+      "updated_at": "2026-06-25T22:45:03Z",
+      "responsibility": "primary M4 task graph writer",
+      "start_submission_id": "019f00f6-55e3-7fd3-9843-360790bad1cb"
+    },
+    {
+      "task_id": "M4-TASK-GRAPH-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f00f5-07f1-7ec0-b362-6dc0599efaab",
+      "status": "awaiting_review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "chore/m4-task-graph",
+      "start_state": "AWAITING_REVIEW_READY",
+      "updated_at": "2026-06-25T22:45:03Z",
+      "responsibility": "independent read-only M4 task graph acceptance reviewer",
+      "await_submission_id": "019f00f6-5617-71a2-a43b-ab601e630dd8"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",

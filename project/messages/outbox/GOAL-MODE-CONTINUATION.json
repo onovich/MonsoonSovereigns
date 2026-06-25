@@ -2,17 +2,40 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M3_GATE_PASS_M4_TASK_GRAPH_READY",
+  "status": "M4_TASK_GRAPH_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "2bf90fdd9f009c30ff104926944e8434c4e0b579",
+  "origin_main": "a89e79ab3502705fceee19d88300e76446a77ad4",
   "current_milestone": "M4",
   "current_task": "M4-TASK-GRAPH-001",
-  "current_task_status": "READY",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M3-EXIT-VALIDATION-001",
-  "ready_tasks": [
-    "M4-TASK-GRAPH-001"
+  "ready_tasks": [],
+  "active_threads": [
+    {
+      "task_id": "M4-TASK-GRAPH-001",
+      "role": "systems_architect",
+      "thread_id": "019f00f4-e7ae-7c71-9a8a-8e8285c9500d",
+      "status": "start_confirmed",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "branch_or_worktree": "chore/m4-task-graph",
+      "start_state": "START_CONFIRMED",
+      "updated_at": "2026-06-25T22:45:03Z",
+      "start_submission_id": "019f00f6-55e3-7fd3-9843-360790bad1cb"
+    },
+    {
+      "task_id": "M4-TASK-GRAPH-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f00f5-07f1-7ec0-b362-6dc0599efaab",
+      "status": "awaiting_review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "branch_or_worktree": "chore/m4-task-graph",
+      "start_state": "AWAITING_REVIEW_READY",
+      "updated_at": "2026-06-25T22:45:03Z",
+      "await_submission_id": "019f00f6-5617-71a2-a43b-ab601e630dd8"
+    }
   ],
-  "active_threads": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -30,7 +53,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Start M4-TASK-GRAPH-001 on a dedicated branch/worktree with systems_architect writer and independent qa_reviewer, validate the graph, integrate it through PR/CI, then start the first READY M4 implementation task.",
+  "next_machine_action": "Await systems_architect M4 task graph REVIEW handoff, validate it, route to qa_reviewer, review/fix as needed, then integrate M4 task graph through PR/CI before starting the first M4 implementation task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -38,7 +61,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T22:38:15Z",
+  "last_updated_at": "2026-06-25T22:45:03Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
