@@ -31,6 +31,8 @@ M2 Gate 已通过，见 `docs/GATE-M2.md`：
 
 M3 当前进展：`M3-TRIBUTE-TROOP-OBLIGATIONS-001` 已在 PR #70 进入 `origin/main`（`9e0bf248eeecbcd4faab162d54dd0504c02f57ac`）并进入 `CLOSED`。已完成臣属义务的显式来源、名义/到期/已交付/欠额/违约会计、履行/部分履行/延期/拒绝/减免/追索/违约审计、M2 资源来源扣减、M3 出兵承诺占位、原因码与确定性回归。下一批 READY M3 任务为 `M3-POSTWAR-GOVERNANCE-001` 与 `M3-CLIENT-APPOINTMENT-UI-001`，优先继续 `M3-POSTWAR-GOVERNANCE-001`。
 
+M3 当前进展：`M3-POSTWAR-GOVERNANCE-001` 已在 PR #72 进入 `origin/main`（`81380a2836c7985c9f7c7b8f726321cdcdbb6137`）并进入 `CLOSED`。已完成直接统治、恢复/保留臣属统治者与贡赋型战后安排原型，提供即时预览、24 个月 deterministic 对比、原因码、重复同地安排拒绝与 direct-control 标记不变式。下一批 READY M3 任务为 `M3-CLIENT-APPOINTMENT-UI-001` 与 `M3-SAVE-RUNTIME-001`，优先继续 `M3-CLIENT-APPOINTMENT-UI-001`。
+
 ## 2. 已冻结决定
 
 | ID | 决定 | 状态 |
