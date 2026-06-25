@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260626-M4-TASK-GRAPH-SYSTEMS-REVIEW",
+  "task_id": "M4-TASK-GRAPH-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Created a minimal dependency-ordered M4 task DAG covering campaign objectives, muster/prep, mobilized commitments, grain supply, route/transport capacity, march execution, supply state, reinforcement timing, automatic engagement, siege choices, withdrawal, postwar handoff to M3 governance, minimal campaign AI, campaign planning UI, determinism/replay, stress validation, and M4 exit validation without implementing M4 systems.",
+  "artifacts": [
+    "project/tasks/active/M4-TASK-GRAPH-001.json",
+    "project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json",
+    "project/tasks/active/M4-MUSTER-PREP-COMMITMENTS-001.json",
+    "project/tasks/active/M4-GRAIN-SUPPLY-001.json",
+    "project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json",
+    "project/tasks/active/M4-MARCH-SUPPLY-STATE-001.json",
+    "project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json",
+    "project/tasks/active/M4-WITHDRAWAL-POSTWAR-HANDOFF-001.json",
+    "project/tasks/active/M4-CAMPAIGN-AI-001.json",
+    "project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json",
+    "project/tasks/active/M4-DETERMINISM-REPLAY-001.json",
+    "project/tasks/active/M4-STRESS-VALIDATION-001.json",
+    "project/tasks/active/M4-EXIT-VALIDATION-001.json",
+    "project/goal-mode-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md",
+    "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m4-task-graph",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified planning/status files: PROJECT_STATUS.md, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/tasks/active/M4-TASK-GRAPH-001.json, project/tasks/thread-registry.json. New M4 task files and systems handoff are untracked under allowed project/tasks/active and project/messages/outbox paths."
+    },
+    {
+      "command": "node -e diff scope guard for tracked and untracked changed paths",
+      "exit_code": 0,
+      "result": "diff scope ok paths=18; no forbidden path patterns were touched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M4-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed prior tasks as CLOSED; M4-TASK-GRAPH-001 as REVIEW; 12 downstream M4 tasks as DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M4-TASK-GRAPH-001 remains in REVIEW."
+    },
+    {
+      "command": "node -e JSON validation for all M4 task files and DAG acyclicity/dependency existence/status shape",
+      "exit_code": 0,
+      "result": "M4 JSON DAG validation ok files=13 edges=27."
+    },
+    {
+      "command": "node -e ASCII validation for new M4 JSON task and handoff files",
+      "exit_code": 0,
+      "result": "M4 new JSON ASCII check ok files=14."
+    },
+    {
+      "command": "node -e taskctl validate for every M4 task file",
+      "exit_code": 0,
+      "result": "taskctl validate all M4 ok count=13."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Handoff schema validation passes."
+    }
+  ],
+  "decisions": [
+    "All downstream M4 implementation and validation tasks remain DRAFT; no M4 implementation task was advanced to READY.",
+    "The M4 DAG follows a narrow dependency spine: campaign objectives/knowledge, muster commitments, grain supply, route/transport capacity, march/supply/reinforcement execution, automatic engagement/siege, withdrawal/postwar handoff, AI, client UI, determinism/replay, stress validation, and exit gate.",
+    "Campaign AI is scoped to existing sim-core/protocol boundaries because the repository currently has no separate sim-ai package; no new package or manager abstraction is introduced by the graph.",
+    "The M4 postwar result task must hand off to accepted M3 postwar governance paths and must not create a parallel settlement/diplomacy model.",
+    "M4-DETERMINISM-REPLAY-001 covers deterministic replay and explicit M4 persistence/rejection boundaries so M4 state cannot be silently lost.",
+    "The DAG explicitly excludes manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
+  ],
+  "risks": [
+    "M4 implementation tasks are mostly R3 because they touch deterministic authoritative simulation state, protocol payloads, route/supply accounting, automatic resolution, save/replay boundaries, or client command/read-model surfaces.",
+    "M4 route and river transport must stay a simple capacity model over accepted M2 scaffolds; any push toward complex naval warfare is out of scope and should stop.",
+    "M4 AI must remain minimal and explanatory. A general grand-strategy AI or hidden scoring manager would exceed this graph.",
+    "M4 stress validation is milestone evidence only, not final M5 player-study or final H-004 proof."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M4 DAG for Roadmap/acceptance-matrix completeness, dependency ordering, architecture-boundary discipline, explicit exclusions, downstream DRAFT status, and handoff validity. Accept or request changes.",
+  "created_at": "2026-06-25T22:49:34Z"
+}

@@ -1,0 +1,83 @@
+{
+  "id": "M4-DETERMINISM-REPLAY-001",
+  "summary": "Validate M4 deterministic campaign replay, combat replay, and runtime persistence boundaries",
+  "milestone": "M4",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+    "M4-CAMPAIGN-AI-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/sim-runner/**",
+      "apps/web/**",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/save-format/**",
+      "packages/sim-testkit/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M4-DETERMINISM-REPLAY-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A deterministic replay fixture covers the complete M4 loop from objective creation through muster, supply, route, march, automatic engagement/siege, withdrawal or success, and postwar candidate creation.",
+    "The same seed and command sequence produce the same M4 state hash across Node runner and browser Worker paths used by the project.",
+    "At least one automatic engagement/siege outcome is replayable from command/event tail or explicit fixture inputs, with stable casualty/supply/result hashes.",
+    "M4 runtime state is either explicitly persisted/loaded through save-format-compatible DTOs or explicitly rejected with safe compatibility errors until the accepted persistence path exists; no silent data loss is permitted.",
+    "The task does not add product gameplay, UI design, telemetry, Electron/Node integration, networking, or arbitrary-code mod behavior."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Node/browser Worker replay command proves identical M4 state hashes for the same campaign command sequence.",
+    "Replay fixture covers automatic engagement/siege and postwar candidate output.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-DETERMINISM-REPLAY-001",
+    "node -e JSON parse/shape check for M4-DETERMINISM-REPLAY-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "test/m4-determinism-replay",
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This task validates determinism and persistence boundaries; it should not broaden M4 gameplay.",
+    "If save-format changes are required, keep them explicit, schema-backed, and reviewed; stop if compatibility risk exceeds task scope.",
+    "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
+  ],
+  "created_at": "2026-06-25T22:49:34Z",
+  "updated_at": "2026-06-25T22:49:34Z"
+}

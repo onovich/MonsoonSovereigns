@@ -1,0 +1,82 @@
+{
+  "id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+  "summary": "Build M4 campaign planning, supply forecast, and war report UI",
+  "milestone": "M4",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+    "M4-CAMPAIGN-AI-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "apps/storybook/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "packages/platform/**",
+      "packages/sim-core/**",
+      "packages/sim-testkit/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Client read models expose campaign objective, muster readiness, mobilized commitments, grain supply, route/transport forecast, march status, reinforcement timing, siege choice, withdrawal, AI reason, and war report summaries without storing full WorldState in Redux/client store.",
+    "UI supports planning a campaign before the rainy season, reviewing predicted supply and route risks, submitting plan/cancel/withdraw/siege commands through Worker/protocol paths, and seeing rejection or risk reasons.",
+    "War report UI shows automatic engagement/siege outcome, losses, supply state, withdrawal reason, and postwar governance handoff candidate without duplicating sim-core formulas.",
+    "Map/route visualization may use existing map-renderer surfaces, but React must not own per-entity Pixi DisplayObjects and Pixi state must remain non-authoritative.",
+    "Storybook or Playwright coverage exercises planning, command submission, rejection/reason display, siege/withdrawal choice, AI reason display, and war report rendering.",
+    "No Electron/Node integration, full diplomacy UI, manual battle UI, 3D battle, telemetry, or new production dependency is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm build:web",
+    "pnpm test",
+    "Storybook story or Playwright test covers M4 campaign planning, supply/route forecast, siege/withdrawal command flow, AI reasons, and war report rendering.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+    "node -e JSON parse/shape check for M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "If UI needs missing command/query fields, route back to the relevant simulation task; do not reimplement domain rules in React.",
+    "Keep the first screen task-focused and operational; this is not a landing page or marketing page.",
+    "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
+  ],
+  "created_at": "2026-06-25T22:49:34Z",
+  "updated_at": "2026-06-25T22:49:34Z"
+}

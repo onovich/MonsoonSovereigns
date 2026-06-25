@@ -1,0 +1,80 @@
+{
+  "id": "M4-CAMPAIGN-OBJECTIVES-001",
+  "summary": "Implement minimal M4 campaign objectives and planning knowledge model",
+  "milestone": "M4",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M4-TASK-GRAPH-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Authoritative sim-core state represents a minimal CampaignPlan with stable branded IDs, objective target, start window, commander or polity owner, current status, and explicit reason codes.",
+    "Campaign objectives are limited to M4 vertical-slice needs: prepare, march, besiege or relieve, withdraw or cancel, and produce a postwar-result candidate; no full diplomacy, treaty, rebellion, or manual battle mode is introduced.",
+    "Player and AI actors create, update, and cancel campaign objectives through the same versioned GameCommand paths with explicit serializable payload schemas.",
+    "A minimal FactionKnowledge snapshot records known objective, route, supply, and defender estimates with deterministic source/version metadata and does not grant hidden omniscience to UI code.",
+    "Planning queries provide forecast/reason fields without mutating WorldState or relying on React, Pixi, Electron, DOM, Node IO, real time, Math.random, or unspecified ordering."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/invariant tests cover stable campaign IDs, objective validation, player/AI command parity, deterministic FactionKnowledge ordering, and read-only planning queries.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-OBJECTIVES-001",
+    "node -e JSON parse/shape check for M4-CAMPAIGN-OBJECTIVES-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-objectives",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "This task creates only the M4 objective/knowledge substrate; it must not absorb muster, supply, march, siege, UI, or validation work.",
+    "Stop and route to systems_architect if objective modeling requires a save-format, protocol-compatibility, or frozen-decision ADR beyond the task scope.",
+    "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
+  ],
+  "created_at": "2026-06-25T22:49:34Z",
+  "updated_at": "2026-06-25T22:49:34Z"
+}

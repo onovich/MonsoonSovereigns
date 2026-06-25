@@ -1,0 +1,84 @@
+{
+  "id": "M4-STRESS-VALIDATION-001",
+  "summary": "Validate M4 monsoon, starvation, withdrawal, AI trace, and scale stress scenarios",
+  "milestone": "M4",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+    "M4-DETERMINISM-REPLAY-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "apps/storybook/**",
+      "apps/sim-runner/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M4-STRESS-VALIDATION-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "packages/platform/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Validation records evidence for a player completing or cancelling a predicted campaign before the rainy season, including forecast versus actual reasons.",
+    "Validation records out-of-supply and withdrawal scenarios with explicit loss, loyalty/credit, and postwar-candidate consequences.",
+    "AI trace evidence explains waiting, withdrawal, and target change decisions with primary reason codes and deterministic replay references.",
+    "Stress fixtures exercise M4-scale campaign pressure without claiming full M5/M6 scale: multiple concurrent campaigns/forces, route bottlenecks, supply consumption, siege choices, and UI war-report rendering.",
+    "Performance or stress claims include real commands, exit codes, key metrics, and hardware/environment notes; no unmeasured performance claim is accepted.",
+    "No gameplay scope, formal historical content, Electron security surface, production dependency, telemetry, networking, or manual battle feature is added by validation."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm sim:perf-baseline",
+    "pnpm sim:determinism",
+    "pnpm build:web",
+    "pnpm test",
+    "Playwright or browser smoke covers M4 campaign planner/war report under stress fixture data.",
+    "Scenario commands record rainy-season completion/cancellation, out-of-supply withdrawal, AI wait/withdraw/target-change trace, and siege outcome evidence.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-STRESS-VALIDATION-001",
+    "node -e JSON parse/shape check for M4-STRESS-VALIDATION-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "test/m4-stress-validation",
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This is M4 gate evidence, not final balance or M5 player-study proof.",
+    "If a stress failure requires code changes, keep fixes scoped to the failing task boundary and rerun the measured scenario.",
+    "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
+  ],
+  "created_at": "2026-06-25T22:49:34Z",
+  "updated_at": "2026-06-25T22:49:34Z"
+}
