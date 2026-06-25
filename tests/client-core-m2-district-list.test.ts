@@ -5,8 +5,12 @@ import {
   calculateClientVirtualWindow,
   createClientDistrictId,
   createInitialClientReadModelSnapshot,
+  createM3AppointmentCommand,
+  createM3AppointmentReadModelFixture,
+  createM3BulkAppointmentCommand,
   createM2PrototypeReadModelFixture,
   createSyntheticDistrictPressureFixture,
+  findM3Office,
   findClientDistrictRow,
   projectM2DistrictRowsFromProtocolReadModels,
   selectClientDistrictRows,
@@ -115,5 +119,82 @@ describe("M2 district list client read model", () => {
       }
     });
     expect(JSON.stringify(fixture)).not.toContain("WorldState");
+  });
+});
+
+describe("M3 appointment client read model", () => {
+  test("projects M3 appointment, polity, obligation, succession, and reason slices without WorldState", () => {
+    const fixture = createM3AppointmentReadModelFixture();
+
+    expect(fixture.provenance.kind).toBe("protocol-query-projection");
+    expect(fixture.characters).toHaveLength(4);
+    expect(fixture.polities).toHaveLength(3);
+    expect(fixture.offices).toHaveLength(3);
+    expect(fixture.obligations.length).toBeGreaterThanOrEqual(3);
+    expect(fixture.successionCrises).toHaveLength(1);
+    expect(fixture.appointmentResults).toHaveLength(3);
+    expect(fixture.enfeoffmentResults).toHaveLength(1);
+    expect(
+      fixture.reasonSummaries.some((summary) => summary.reasonCode === "character-unavailable")
+    ).toBe(true);
+    expect(JSON.stringify(fixture)).not.toContain("WorldState");
+  });
+
+  test("keeps appointment eligibility and rejection reasons as read-model input", () => {
+    const fixture = createM3AppointmentReadModelFixture();
+    const firstOffice = fixture.offices[0];
+    if (firstOffice === undefined) {
+      throw new Error("Expected first M3 office.");
+    }
+    const office = findM3Office(fixture.offices, firstOffice.officeId);
+    if (office === null) {
+      throw new Error("Expected first M3 office.");
+    }
+
+    expect(office.policy.continuity).toBe("persists-across-holder-change");
+    expect(office.reasonCodes).toContain("appointment.holder.skill-strong");
+    expect(
+      office.candidateEligibilities.some(
+        (eligibility) =>
+          eligibility.status === "rejected" &&
+          eligibility.reasonCodes.includes("office-primary-conflict")
+      )
+    ).toBe(true);
+  });
+
+  test("builds appointment commands and bulk commands through protocol DTOs", () => {
+    const fixture = createM3AppointmentReadModelFixture();
+    const office = fixture.offices[1];
+    if (office === undefined) {
+      throw new Error("Expected a vacant M3 office.");
+    }
+    const eligible = office.candidateEligibilities.find(
+      (eligibility) => eligibility.status === "eligible"
+    );
+    if (eligible === undefined) {
+      throw new Error("Expected an eligible candidate.");
+    }
+
+    const appointmentCommand = createM3AppointmentCommand({
+      snapshot: fixture,
+      commandId: "test.m3.appointment",
+      officeId: office.officeId,
+      characterId: eligible.characterId
+    });
+    const bulkCommand = createM3BulkAppointmentCommand({
+      snapshot: fixture,
+      commandId: "test.m3.bulk"
+    });
+
+    expect(appointmentCommand.kind).toBe("sim.appoint-office");
+    expect(appointmentCommand.payload).toMatchObject({
+      officeId: Number(office.officeId),
+      characterId: Number(eligible.characterId)
+    });
+    expect(bulkCommand.kind).toBe("sim.appoint-offices-bulk");
+    expect(bulkCommand.payload.items).toHaveLength(fixture.bulkPreview.eligibleCount);
+    expect(bulkCommand.payload.items.map((item) => item.itemId)).not.toContain(
+      "office-1-unavailable"
+    );
   });
 });

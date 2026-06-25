@@ -1,0 +1,97 @@
+{
+  "message_id": "MSG-20260625-M3-CLIENT-APPOINTMENT-UI-LEAD-ACCEPT",
+  "task_id": "M3-CLIENT-APPOINTMENT-UI-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts the M3 client appointment UI after writer REVIEW, qa_reviewer REQUEST_CHANGES for a 1440x1000 horizontal overflow, writer R2 fix, and qa_reviewer R2 ACCEPT. The implementation adds client read-model slices for M3 character, polity/vassal, office, obligation, succession/vacancy, eligibility, bulk preview, appointment/enfeoffment result, and reason summaries; renders React DOM appointment and bulk workflows; builds sim.appoint-office and sim.appoint-offices-bulk command DTOs through client-core; keeps UI state non-authoritative; and adds Playwright coverage for command submission and desktop no-horizontal-overflow.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M3-CLIENT-APPOINTMENT-UI-001.json",
+    "project/messages/outbox/M3-CLIENT-APPOINTMENT-UI-001__MSG-20260625-M3-CLIENT-APPOINTMENT-UI-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M3-CLIENT-APPOINTMENT-UI-001__MSG-20260625-M3-CLIENT-APPOINTMENT-UI-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m3-client-appointment-ui @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "validate-handoff writer REVIEW, writer R2 REVIEW, and QA R2 ACCEPT",
+      "exit_code": 0,
+      "result": "All available M3 client appointment UI handoffs validate."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-CLIENT-APPOINTMENT-UI-001",
+      "exit_code": 0,
+      "result": "Task JSON VALID."
+    },
+    {
+      "command": "PowerShell allowed/forbidden scope check",
+      "exit_code": 0,
+      "result": "All changed/untracked paths are within task allowed_paths; no forbidden path hits."
+    },
+    {
+      "command": "authority/static scans",
+      "exit_code": 0,
+      "result": "No client-side WorldState storage, Redux store, authoritative sim-core/save-format import, Electron IPC, Node fs, Math.random, or Date.now authority usage found in touched surfaces."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 file passed; 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; existing chunk-size warning remains."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism hashes matched; root Vitest 24 files/161 tests passed; web tests passed."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Chromium Playwright 4 tests passed, including M3 command submission and 1440x1000 no-horizontal-overflow."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: Playwright coverage satisfies the task's Storybook-or-Playwright requirement because it covers appointment, bulk action, per-item rejection reasons, visible character/obligation reasons, command submission, and the QA-requested viewport fit check.",
+    "ACCEPT: The UI generates protocol command DTOs and hands them to a shell callback instead of mutating authoritative state locally.",
+    "ACCEPT: The live-query integration gap is recorded as a future risk rather than solved by copying sim-core formulas into UI."
+  ],
+  "risks": [
+    "The M3 appointment workspace uses protocol DTO projection fixtures until a future approved worker query adapter supplies a live page-level appointment read model.",
+    "The existing Vite chunk-size warning remains unrelated to this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit, push, create PR, wait for CI, merge to main, sync main, then mark M3-CLIENT-APPOINTMENT-UI-001 CLOSED and continue to the next READY M3 task.",
+  "created_at": "2026-06-26T03:39:39.3517785+08:00"
+}

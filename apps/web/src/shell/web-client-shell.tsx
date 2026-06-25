@@ -2,7 +2,8 @@ import {
   createClientDistrictId,
   type ClientMapEntitySelection,
   type ClientMapMode,
-  type ClientMapReadModelSnapshot
+  type ClientMapReadModelSnapshot,
+  type ClientM3SubmittedCommand
 } from "@monsoon/client-core";
 import {
   mountPixiMapRenderer,
@@ -20,6 +21,7 @@ export function WebClientShell(): ReactElement {
   const [snapshot] = useState(createBootstrappedShellSnapshot);
   const [mapMode, setMapMode] = useState<ClientMapMode>("seasonal");
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [m3CommandStatus, setM3CommandStatus] = useState<string | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<ClientMapEntitySelection>({
     kind: "district",
     districtId: createClientDistrictId(1)
@@ -33,6 +35,10 @@ export function WebClientShell(): ReactElement {
     [mapMode, selectedEntity, zoomLevel]
   );
 
+  function handleM3CommandSubmit(command: ClientM3SubmittedCommand): void {
+    setM3CommandStatus(`${command.kind} ready for ${command.actor.id}`);
+  }
+
   return (
     <ClientShellView
       snapshot={snapshot}
@@ -42,6 +48,8 @@ export function WebClientShell(): ReactElement {
       onMapModeChange={setMapMode}
       onZoomLevelChange={setZoomLevel}
       onSelectedEntityChange={setSelectedEntity}
+      onM3CommandSubmit={handleM3CommandSubmit}
+      m3CommandStatus={m3CommandStatus}
       mapSurface={
         <PixiMapSurface
           snapshot={snapshot.map}

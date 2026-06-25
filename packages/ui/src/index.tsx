@@ -1,6 +1,10 @@
 import {
   calculateClientVirtualWindow,
+  createM3AppointmentCommand,
+  createM3BulkAppointmentCommand,
   findClientDistrictRow,
+  findM3Character,
+  findM3Office,
   selectClientDistrictRows,
   type ClientDistrictRowReadModel,
   type ClientDistrictSortDirection,
@@ -8,6 +12,13 @@ import {
   type ClientMapEntitySelection,
   type ClientMapMode,
   type ClientMapSettlementReadModel,
+  type ClientM3AppointmentEligibilityReadModel,
+  type ClientM3AppointmentReadModelSnapshot,
+  type ClientM3BulkAppointmentPreviewItemReadModel,
+  type ClientM3CharacterReadModel,
+  type ClientM3OfficeReadModel,
+  type ClientM3SubmittedCommand,
+  type ClientOfficeId,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
 import { useMemo, useState, type ChangeEvent, type ReactElement, type UIEvent } from "react";
@@ -21,6 +32,8 @@ export interface ClientShellViewProps {
   readonly onMapModeChange: (mode: ClientMapMode) => void;
   readonly onZoomLevelChange: (zoomLevel: number) => void;
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
+  readonly onM3CommandSubmit: (command: ClientM3SubmittedCommand) => void;
+  readonly m3CommandStatus: string | null;
 }
 
 const DISTRICT_ROW_HEIGHT_PX = 44;
@@ -35,7 +48,9 @@ export function ClientShellView({
   selectedEntity,
   onMapModeChange,
   onZoomLevelChange,
-  onSelectedEntityChange
+  onSelectedEntityChange,
+  onM3CommandSubmit,
+  m3CommandStatus
 }: ClientShellViewProps): ReactElement {
   const selectedDistrictId =
     selectedEntity?.kind === "settlement"
@@ -46,6 +61,12 @@ export function ClientShellView({
   const [sortDirection, setSortDirection] = useState<ClientDistrictSortDirection>("ascending");
   const [scrollTopPx, setScrollTopPx] = useState(0);
   const [lastSelectionMs, setLastSelectionMs] = useState(0);
+  const [selectedM3OfficeId, setSelectedM3OfficeId] = useState<ClientOfficeId | null>(
+    snapshot.m3Appointment.offices[0]?.officeId ?? null
+  );
+  const [selectedM3CandidateKey, setSelectedM3CandidateKey] = useState("");
+  const [showRejectedM3Candidates, setShowRejectedM3Candidates] = useState(true);
+  const [m3SubmitSequence, setM3SubmitSequence] = useState(0);
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -83,6 +104,26 @@ export function ClientShellView({
     virtualWindow.startIndex,
     virtualWindow.endIndex
   );
+  const selectedM3Office =
+    selectedM3OfficeId === null
+      ? (snapshot.m3Appointment.offices[0] ?? null)
+      : (findM3Office(snapshot.m3Appointment.offices, selectedM3OfficeId) ??
+        snapshot.m3Appointment.offices[0] ??
+        null);
+  const visibleM3CandidateEligibilities =
+    selectedM3Office === null
+      ? []
+      : selectedM3Office.candidateEligibilities.filter(
+          (eligibility) => showRejectedM3Candidates || eligibility.status === "eligible"
+        );
+  const firstEligibleM3Candidate =
+    selectedM3Office?.candidateEligibilities.find(
+      (eligibility) => eligibility.status === "eligible"
+    ) ?? null;
+  const selectedM3Eligibility =
+    visibleM3CandidateEligibilities.find(
+      (eligibility) => Number(eligibility.characterId).toString() === selectedM3CandidateKey
+    ) ?? firstEligibleM3Candidate;
 
   function handleFilterChange(event: ChangeEvent<HTMLInputElement>): void {
     setFilter(event.currentTarget.value);
@@ -107,6 +148,50 @@ export function ClientShellView({
     const startedAt = getHighResolutionTime();
     onSelectedEntityChange({ kind: "district", districtId: row.districtId });
     setLastSelectionMs(getHighResolutionTime() - startedAt);
+  }
+
+  function handleM3OfficeChange(event: ChangeEvent<HTMLSelectElement>): void {
+    const officeId = Number(event.currentTarget.value);
+    const office = snapshot.m3Appointment.offices.find(
+      (candidateOffice) => Number(candidateOffice.officeId) === officeId
+    );
+    setSelectedM3OfficeId(office?.officeId ?? null);
+    setSelectedM3CandidateKey("");
+  }
+
+  function handleM3CandidateChange(event: ChangeEvent<HTMLSelectElement>): void {
+    setSelectedM3CandidateKey(event.currentTarget.value);
+  }
+
+  function handleM3RejectedToggle(event: ChangeEvent<HTMLInputElement>): void {
+    setShowRejectedM3Candidates(event.currentTarget.checked);
+  }
+
+  function handleSubmitM3Appointment(): void {
+    if (selectedM3Office === null || selectedM3Eligibility === null) {
+      return;
+    }
+    const nextSequence = m3SubmitSequence + 1;
+    setM3SubmitSequence(nextSequence);
+    onM3CommandSubmit(
+      createM3AppointmentCommand({
+        snapshot: snapshot.m3Appointment,
+        commandId: `client.m3.appointment.${snapshot.m3Appointment.revision}.${nextSequence}`,
+        officeId: selectedM3Office.officeId,
+        characterId: selectedM3Eligibility.characterId
+      })
+    );
+  }
+
+  function handleSubmitM3BulkAppointments(): void {
+    const nextSequence = m3SubmitSequence + 1;
+    setM3SubmitSequence(nextSequence);
+    onM3CommandSubmit(
+      createM3BulkAppointmentCommand({
+        snapshot: snapshot.m3Appointment,
+        commandId: `client.m3.bulk-appointment.${snapshot.m3Appointment.revision}.${nextSequence}`
+      })
+    );
   }
 
   function handleZoomIn(): void {
@@ -290,6 +375,20 @@ export function ClientShellView({
             provenanceNote={snapshot.districtList.provenance.note}
           />
         </div>
+
+        <M3AppointmentWorkspace
+          snapshot={snapshot.m3Appointment}
+          selectedOffice={selectedM3Office}
+          candidateEligibilities={visibleM3CandidateEligibilities}
+          selectedEligibility={selectedM3Eligibility}
+          showRejectedCandidates={showRejectedM3Candidates}
+          commandStatus={m3CommandStatus}
+          onOfficeChange={handleM3OfficeChange}
+          onCandidateChange={handleM3CandidateChange}
+          onRejectedToggle={handleM3RejectedToggle}
+          onSubmitAppointment={handleSubmitM3Appointment}
+          onSubmitBulk={handleSubmitM3BulkAppointments}
+        />
       </section>
     </main>
   );
@@ -434,6 +533,326 @@ function DistrictPanel({
   );
 }
 
+interface M3AppointmentWorkspaceProps {
+  readonly snapshot: ClientM3AppointmentReadModelSnapshot;
+  readonly selectedOffice: ClientM3OfficeReadModel | null;
+  readonly candidateEligibilities: readonly ClientM3AppointmentEligibilityReadModel[];
+  readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
+  readonly showRejectedCandidates: boolean;
+  readonly commandStatus: string | null;
+  readonly onOfficeChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onCandidateChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onRejectedToggle: (event: ChangeEvent<HTMLInputElement>) => void;
+  readonly onSubmitAppointment: () => void;
+  readonly onSubmitBulk: () => void;
+}
+
+function M3AppointmentWorkspace({
+  snapshot,
+  selectedOffice,
+  candidateEligibilities,
+  selectedEligibility,
+  showRejectedCandidates,
+  commandStatus,
+  onOfficeChange,
+  onCandidateChange,
+  onRejectedToggle,
+  onSubmitAppointment,
+  onSubmitBulk
+}: M3AppointmentWorkspaceProps): ReactElement {
+  const selectedCharacter = findM3Character(
+    snapshot.characters,
+    selectedEligibility?.characterId ?? null
+  );
+  const canSubmitAppointment =
+    selectedOffice !== null &&
+    selectedEligibility !== null &&
+    selectedEligibility.status === "eligible";
+
+  return (
+    <section
+      className="m3-appointment"
+      aria-label="M3 appointment workspace"
+      data-office-count={snapshot.offices.length}
+      data-character-count={snapshot.characters.length}
+      data-obligation-count={snapshot.obligations.length}
+      data-bulk-eligible-count={snapshot.bulkPreview.eligibleCount}
+      data-bulk-rejected-count={snapshot.bulkPreview.rejectedCount}
+    >
+      <div className="m3-appointment__header">
+        <div>
+          <h2>M3 appointments</h2>
+          <p>{snapshot.provenance.note}</p>
+        </div>
+        <dl className="m3-appointment__summary">
+          <Metric label="Offices" value={snapshot.offices.length.toString()} />
+          <Metric label="Candidates" value={snapshot.characters.length.toString()} />
+          <Metric label="Bulk eligible" value={snapshot.bulkPreview.eligibleCount.toString()} />
+          <Metric label="Rejected" value={snapshot.bulkPreview.rejectedCount.toString()} />
+        </dl>
+      </div>
+
+      <div className="m3-appointment__grid">
+        <section className="m3-appointment__panel" aria-label="Appointment command panel">
+          <div className="m3-appointment__controls">
+            <label>
+              <span>Office</span>
+              <select
+                aria-label="Select M3 office"
+                value={selectedOffice === null ? "" : Number(selectedOffice.officeId).toString()}
+                onChange={onOfficeChange}
+              >
+                {snapshot.offices.map((office) => (
+                  <option key={office.officeId} value={Number(office.officeId).toString()}>
+                    {office.displayName}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Candidate</span>
+              <select
+                aria-label="Select appointment candidate"
+                value={
+                  selectedEligibility === null
+                    ? ""
+                    : Number(selectedEligibility.characterId).toString()
+                }
+                onChange={onCandidateChange}
+              >
+                {candidateEligibilities.map((eligibility) => {
+                  const character = findM3Character(snapshot.characters, eligibility.characterId);
+                  return (
+                    <option
+                      key={`${eligibility.officeId}-${eligibility.characterId}`}
+                      value={Number(eligibility.characterId).toString()}
+                      disabled={eligibility.status === "rejected"}
+                    >
+                      {character?.displayName ?? `Character ${eligibility.characterId}`} /{" "}
+                      {eligibility.status}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+            <label className="m3-appointment__toggle">
+              <input type="checkbox" checked={showRejectedCandidates} onChange={onRejectedToggle} />
+              <span>Show rejected candidates</span>
+            </label>
+          </div>
+
+          <OfficeDetail office={selectedOffice} selectedCharacter={selectedCharacter} />
+
+          <div className="m3-appointment__actions">
+            <button
+              type="button"
+              disabled={!canSubmitAppointment}
+              onClick={onSubmitAppointment}
+              data-command-kind="sim.appoint-office"
+            >
+              Submit appointment
+            </button>
+            <button
+              type="button"
+              disabled={snapshot.bulkPreview.eligibleCount === 0}
+              onClick={onSubmitBulk}
+              data-command-kind="sim.appoint-offices-bulk"
+            >
+              Submit bulk eligible appointments
+            </button>
+          </div>
+
+          {commandStatus === null ? null : (
+            <output className="m3-appointment__command-status" aria-label="M3 command status">
+              {commandStatus}
+            </output>
+          )}
+        </section>
+
+        <section className="m3-appointment__panel" aria-label="Appointment validation reasons">
+          <h3>Candidate reasons</h3>
+          <div className="m3-appointment__reason-list">
+            {candidateEligibilities.map((eligibility) => {
+              const character = findM3Character(snapshot.characters, eligibility.characterId);
+              return (
+                <ReasonCard
+                  key={`${eligibility.officeId}-${eligibility.characterId}`}
+                  title={character?.displayName ?? `Character ${eligibility.characterId}`}
+                  status={eligibility.status}
+                  reasonCodes={eligibility.reasonCodes}
+                />
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="m3-appointment__panel" aria-label="Bulk appointment preview">
+          <h3>Bulk preview</h3>
+          <div className="m3-appointment__bulk">
+            {snapshot.bulkPreview.items.map((item) => (
+              <BulkPreviewRow key={item.itemId} item={item} snapshot={snapshot} />
+            ))}
+          </div>
+        </section>
+
+        <section className="m3-appointment__panel" aria-label="Vacancy succession and obligations">
+          <h3>Vacancies, succession, obligations</h3>
+          <div className="m3-appointment__stack">
+            {snapshot.successionCrises.map((crisis) => (
+              <div className="m3-appointment__fact" key={crisis.successionId}>
+                <strong>Succession {crisis.successionId}</strong>
+                <span>
+                  {crisis.status}; vacancies {crisis.vacancyOfficeIds.length}; candidates{" "}
+                  {crisis.candidates.length}
+                </span>
+              </div>
+            ))}
+            {snapshot.obligations.map((obligation) => (
+              <div className="m3-appointment__fact" key={obligation.obligationId}>
+                <strong>{obligation.obligationKind}</strong>
+                <span>
+                  {obligation.amount} / {obligation.dueLabel} / {obligation.status}
+                </span>
+                <ReasonChips reasonCodes={obligation.reasonCodes} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="m3-appointment__panel" aria-label="Appointment and enfeoffment results">
+          <h3>Results</h3>
+          <div className="m3-appointment__stack">
+            {snapshot.appointmentResults.map((result) => (
+              <div className="m3-appointment__fact" key={`office-${result.officeId}`}>
+                <strong>Office {result.officeId}</strong>
+                <span>{result.status}</span>
+                <ReasonChips reasonCodes={result.reasonCodes} />
+              </div>
+            ))}
+            {snapshot.enfeoffmentResults.map((result) => (
+              <div className="m3-appointment__fact" key={`district-${result.districtId}`}>
+                <strong>District {result.districtId}</strong>
+                <span>granted to character {result.holderCharacterId}</span>
+                <ReasonChips reasonCodes={result.reasonCodes} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="m3-appointment__panel" aria-label="Visible reason summaries">
+          <h3>Reason summary</h3>
+          <div className="m3-appointment__reason-summary">
+            {snapshot.reasonSummaries.slice(0, 10).map((summary) => (
+              <div className="m3-appointment__fact" key={summary.reasonCode}>
+                <strong>{summary.reasonCode}</strong>
+                <span>
+                  {summary.count} / {summary.sourceKinds.join(", ")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+interface OfficeDetailProps {
+  readonly office: ClientM3OfficeReadModel | null;
+  readonly selectedCharacter: ClientM3CharacterReadModel | null;
+}
+
+function OfficeDetail({ office, selectedCharacter }: OfficeDetailProps): ReactElement {
+  if (office === null) {
+    return (
+      <div className="m3-appointment__empty">
+        <p>No M3 office read-model row is available.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="m3-appointment__detail" data-selected-office-id={office.officeId}>
+      <h3>{office.displayName}</h3>
+      <dl>
+        <Metric label="Kind" value={office.officeKind} />
+        <Metric label="Holder" value={formatNullableCharacter(office.holderCharacterId)} />
+        <Metric
+          label="Policy continuity"
+          value={`${office.policy.stance}; ${office.policy.continuity}`}
+        />
+        <Metric label="Performance" value={formatBps(office.executionPerformanceBps)} />
+        <Metric
+          label="Selected candidate"
+          value={selectedCharacter?.displayName ?? "No eligible candidate selected"}
+        />
+      </dl>
+      {office.administrativePreview === null ? null : (
+        <div className="m3-appointment__admin">
+          <strong>Administrative impact preview</strong>
+          <span>
+            load {office.administrativePreview.administrativeLoad}; efficiency{" "}
+            {formatBps(office.administrativePreview.efficiencyBps)}; readiness{" "}
+            {formatBps(office.administrativePreview.readinessBps)}
+          </span>
+          <ReasonChips reasonCodes={office.administrativePreview.reasonCodes} />
+        </div>
+      )}
+      <ReasonChips reasonCodes={[...office.reasonCodes, ...office.policy.reasonCodes]} />
+    </div>
+  );
+}
+
+interface ReasonCardProps {
+  readonly title: string;
+  readonly status: string;
+  readonly reasonCodes: readonly string[];
+}
+
+function ReasonCard({ title, status, reasonCodes }: ReasonCardProps): ReactElement {
+  return (
+    <div className="m3-appointment__reason-card" data-status={status}>
+      <strong>{title}</strong>
+      <span>{status}</span>
+      <ReasonChips reasonCodes={reasonCodes} />
+    </div>
+  );
+}
+
+interface BulkPreviewRowProps {
+  readonly item: ClientM3BulkAppointmentPreviewItemReadModel;
+  readonly snapshot: ClientM3AppointmentReadModelSnapshot;
+}
+
+function BulkPreviewRow({ item, snapshot }: BulkPreviewRowProps): ReactElement {
+  const office = findM3Office(snapshot.offices, item.officeId);
+  const character = findM3Character(snapshot.characters, item.characterId);
+  return (
+    <div className="m3-appointment__bulk-row" data-status={item.status}>
+      <span>{office?.displayName ?? `Office ${item.officeId}`}</span>
+      <span>{character?.displayName ?? "Vacate"}</span>
+      <span>{item.status}</span>
+      <ReasonChips reasonCodes={item.reasonCodes} />
+    </div>
+  );
+}
+
+interface ReasonChipsProps {
+  readonly reasonCodes: readonly string[];
+}
+
+function ReasonChips({ reasonCodes }: ReasonChipsProps): ReactElement {
+  return (
+    <span className="m3-appointment__reasons">
+      {reasonCodes.map((reasonCode) => (
+        <span className="m3-appointment__reason" key={reasonCode}>
+          {reasonCode}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 interface MetricProps {
   readonly label: string;
   readonly value: string;
@@ -450,6 +869,14 @@ function Metric({ label, value }: MetricProps): ReactElement {
 
 function formatInteger(value: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
+}
+
+function formatBps(value: number): string {
+  return `${Math.round(value / 100)}%`;
+}
+
+function formatNullableCharacter(characterId: number | null): string {
+  return characterId === null ? "Vacant" : `Character ${characterId}`;
 }
 
 function formatRouteCell(row: ClientDistrictRowReadModel): string {

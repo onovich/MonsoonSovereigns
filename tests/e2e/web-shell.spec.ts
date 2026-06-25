@@ -78,6 +78,64 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   expect(selectionMs).toBeLessThan(10);
 });
 
+test("M3 appointment workspace submits appointment and bulk command DTOs", async ({ page }) => {
+  await page.goto("/");
+
+  const workspace = page.getByLabel("M3 appointment workspace");
+  await expect(workspace).toHaveAttribute("data-office-count", "3");
+  await expect(workspace).toHaveAttribute("data-character-count", "4");
+  await expect(workspace).toHaveAttribute("data-bulk-eligible-count", "2");
+  await expect(workspace).toHaveAttribute("data-bulk-rejected-count", "1");
+
+  await page.getByLabel("Select M3 office").selectOption("2");
+  await page.getByLabel("Select appointment candidate").selectOption("2");
+  await expect(page.getByLabel("Appointment validation reasons")).toContainText(
+    "appointment.local-claimant"
+  );
+  await expect(page.getByLabel("Appointment validation reasons")).toContainText(
+    "office-eligibility-failed"
+  );
+  await expect(page.getByLabel("Vacancy succession and obligations")).toContainText("Succession 1");
+  await expect(page.getByLabel("Vacancy succession and obligations")).toContainText(
+    "obligation.tribute.regular"
+  );
+  await expect(page.getByLabel("Appointment and enfeoffment results")).toContainText(
+    "enfeoffment.local-holder"
+  );
+  await expect(page.getByLabel("Visible reason summaries")).toContainText("character-unavailable");
+
+  await page.getByRole("button", { name: "Submit appointment" }).click();
+  await expect(page.getByLabel("M3 command status")).toContainText(
+    "sim.appoint-office ready for polity:1"
+  );
+
+  await page.getByRole("button", { name: "Submit bulk eligible appointments" }).click();
+  await expect(page.getByLabel("M3 command status")).toContainText(
+    "sim.appoint-offices-bulk ready for polity:1"
+  );
+});
+
+test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+
+  const overflow = await page.evaluate(() => {
+    const grid = document.querySelector(".m3-appointment__grid");
+    if (grid === null) {
+      throw new Error("Expected M3 appointment grid.");
+    }
+    const gridBox = grid.getBoundingClientRect();
+    return {
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      gridRight: gridBox.right
+    };
+  });
+
+  expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+  expect(overflow.gridRight).toBeLessThanOrEqual(overflow.clientWidth);
+});
+
 async function expectMountedPixiMapRenderer(page: Page): Promise<Locator> {
   const host = page.locator(".map-viewport");
   await expect(host).toHaveAttribute("data-renderer-status", "mounted");

@@ -372,6 +372,217 @@ input {
   line-height: 1.4;
 }
 
+.m3-appointment {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 0 22px 22px;
+}
+
+.m3-appointment__header {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(360px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+  border-block-start: 1px solid #d8dee2;
+  padding-block-start: 18px;
+}
+
+.m3-appointment__header h2,
+.m3-appointment__panel h3,
+.m3-appointment__detail h3 {
+  margin: 0;
+  color: #172126;
+  line-height: 1.25;
+}
+
+.m3-appointment__header h2 {
+  margin-block-end: 6px;
+  font-size: 1.12rem;
+}
+
+.m3-appointment__header p {
+  margin: 0;
+  color: #53636b;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.m3-appointment__summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+.m3-appointment__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+
+.m3-appointment__summary > *,
+.m3-appointment__grid > * {
+  min-width: 0;
+}
+
+.m3-appointment__panel {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border-block-start: 1px solid #d8dee2;
+  padding-block-start: 12px;
+}
+
+.m3-appointment__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.m3-appointment__controls label,
+.m3-appointment__toggle {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  color: #516069;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.m3-appointment__controls select {
+  min-width: 0;
+  border: 1px solid #aab4ba;
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 8px 10px;
+  color: #1d2430;
+  text-transform: none;
+}
+
+.m3-appointment__toggle {
+  grid-column: 1 / -1;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  text-transform: none;
+}
+
+.m3-appointment__detail,
+.m3-appointment__empty,
+.m3-appointment__reason-card,
+.m3-appointment__bulk-row,
+.m3-appointment__fact,
+.m3-appointment__admin {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid #d8dee2;
+  border-radius: 4px;
+  background: #fbfcfc;
+  padding: 10px;
+}
+
+.m3-appointment__detail dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.m3-appointment__admin {
+  border-color: #b8c8c5;
+  background: #f0f7f5;
+}
+
+.m3-appointment__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.m3-appointment__actions button {
+  max-width: 100%;
+  min-height: 34px;
+  border: 1px solid #8fa0a6;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #263238;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: normal;
+}
+
+.m3-appointment__actions button:not(:disabled) {
+  border-color: #2f6f73;
+  background: #e7f2ef;
+  color: #1f5c61;
+}
+
+.m3-appointment__command-status {
+  border: 1px solid #b8c8c5;
+  border-radius: 4px;
+  background: #f0f7f5;
+  padding: 8px 10px;
+  color: #1f5c61;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.m3-appointment__reason-list,
+.m3-appointment__bulk,
+.m3-appointment__stack,
+.m3-appointment__reason-summary {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.m3-appointment__reason-card[data-status="eligible"],
+.m3-appointment__bulk-row[data-status="eligible"] {
+  border-color: #9bbdb5;
+}
+
+.m3-appointment__reason-card[data-status="rejected"],
+.m3-appointment__bulk-row[data-status="rejected"] {
+  border-color: #c7a39a;
+  background: #fff8f6;
+}
+
+.m3-appointment__bulk-row {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.m3-appointment__fact strong,
+.m3-appointment__reason-card strong,
+.m3-appointment__bulk-row span,
+.m3-appointment__admin strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.m3-appointment__reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+}
+
+.m3-appointment__reason {
+  border: 1px solid #c7d0d5;
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 3px 6px;
+  color: #40515a;
+  font-size: 0.7rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 1080px) {
   .client-shell {
     grid-template-columns: 1fr;
@@ -389,6 +600,11 @@ input {
   .client-shell__operations {
     border-block-start: 1px solid #c4ccd1;
     border-inline-start: 0;
+  }
+
+  .m3-appointment__header,
+  .m3-appointment__grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -432,5 +648,16 @@ input {
     border-inline-start: 0;
     padding-block-start: 14px;
     padding-inline-start: 0;
+  }
+
+  .m3-appointment {
+    padding: 0 14px 18px;
+  }
+
+  .m3-appointment__summary,
+  .m3-appointment__controls,
+  .m3-appointment__detail dl,
+  .m3-appointment__bulk-row {
+    grid-template-columns: 1fr;
   }
 }

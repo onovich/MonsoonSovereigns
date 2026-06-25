@@ -1,9 +1,17 @@
 import {
+  GAME_COMMAND_SCHEMA_VERSION,
   HELLO_SIMULATION_PROTOCOL_VERSION,
+  type BulkAppointOfficesCommandV1,
+  type GameCommandV1,
   type HelloSimulationResultDto,
   type ListM2EconomySummariesResultV1,
+  type ListM3AdministrativeBurdenResultV1,
+  type ListM3DecisionScaffoldsResultV1,
+  type ListM3SuccessionCrisesResultV1,
   type M2TransportRouteKindV1,
-  type PreviewM2TransportRouteResultV1
+  type M3PostwarGovernanceMethodV1,
+  type PreviewM2TransportRouteResultV1,
+  type PreviewM3PostwarGovernanceResultV1
 } from "@monsoon/protocol";
 
 export const CLIENT_READ_MODEL_PROTOCOL_VERSION = 1;
@@ -14,6 +22,10 @@ export type ClientReadModelRevision = Brand<number, "ClientReadModelRevision">;
 export type ClientMapAnchorId = Brand<string, "ClientMapAnchorId">;
 export type ClientDistrictId = Brand<number, "ClientDistrictId">;
 export type ClientSettlementId = Brand<number, "ClientSettlementId">;
+export type ClientCharacterId = Brand<number, "ClientCharacterId">;
+export type ClientOfficeId = Brand<number, "ClientOfficeId">;
+export type ClientPolicyId = Brand<number, "ClientPolicyId">;
+export type ClientPolityId = Brand<number, "ClientPolityId">;
 
 export type ClientReadModelStatus = "booting" | "ready";
 
@@ -25,6 +37,7 @@ export interface ClientReadModelSnapshot {
   readonly map: ClientMapReadModelSnapshot;
   readonly panels: ClientPanelReadModelSnapshot;
   readonly districtList: ClientDistrictListReadModelSnapshot;
+  readonly m3Appointment: ClientM3AppointmentReadModelSnapshot;
 }
 
 export interface HelloSimulationSummaryReadModel {
@@ -174,6 +187,222 @@ export interface ClientDistrictRouteSummaryReadModel {
   readonly routeKinds: readonly ClientDistrictRouteKind[];
 }
 
+export interface ClientM3AppointmentReadModelSnapshot {
+  readonly revision: ClientReadModelRevision;
+  readonly day: number;
+  readonly commandActor: ClientM3CommandActorReadModel;
+  readonly provenance: ClientM3AppointmentProvenanceReadModel;
+  readonly characters: readonly ClientM3CharacterReadModel[];
+  readonly polities: readonly ClientM3PolityReadModel[];
+  readonly offices: readonly ClientM3OfficeReadModel[];
+  readonly obligations: readonly ClientM3ObligationReadModel[];
+  readonly successionCrises: readonly ClientM3SuccessionCrisisReadModel[];
+  readonly appointmentResults: readonly ClientM3AppointmentResultReadModel[];
+  readonly enfeoffmentResults: readonly ClientM3EnfeoffmentResultReadModel[];
+  readonly bulkPreview: ClientM3BulkAppointmentPreviewReadModel;
+  readonly reasonSummaries: readonly ClientM3ReasonSummaryReadModel[];
+}
+
+export interface ClientM3CommandActorReadModel {
+  readonly kind: "player";
+  readonly id: string;
+}
+
+export interface ClientM3AppointmentProvenanceReadModel {
+  readonly kind: "protocol-query-projection";
+  readonly note: string;
+}
+
+export interface ClientM3CharacterReadModel {
+  readonly characterId: ClientCharacterId;
+  readonly displayName: string;
+  readonly polityId: ClientPolityId;
+  readonly availability: "available" | "unavailable";
+  readonly roleLabel: string;
+  readonly behaviorReasonCodes: readonly string[];
+}
+
+export interface ClientM3PolityReadModel {
+  readonly polityId: ClientPolityId;
+  readonly displayName: string;
+  readonly relationKind: "court" | "vassal" | "tributary";
+  readonly suzerainPolityId: ClientPolityId | null;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3OfficeReadModel {
+  readonly officeId: ClientOfficeId;
+  readonly displayName: string;
+  readonly officeKind: "minister" | "governor" | "commander";
+  readonly holderCharacterId: ClientCharacterId | null;
+  readonly policy: ClientM3OfficePolicyReadModel;
+  readonly executionPerformanceBps: number;
+  readonly administrativePreview: ClientM3AdministrativePreviewReadModel | null;
+  readonly candidateEligibilities: readonly ClientM3AppointmentEligibilityReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3OfficePolicyReadModel {
+  readonly policyId: ClientPolicyId;
+  readonly stance: string;
+  readonly continuity: "persists-across-holder-change";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3AdministrativePreviewReadModel {
+  readonly districtId: ClientDistrictId;
+  readonly controlMode: string;
+  readonly administrativeLoad: number;
+  readonly overload: number;
+  readonly efficiencyBps: number;
+  readonly obligationReliabilityBps: number;
+  readonly readinessBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3AppointmentEligibilityReadModel {
+  readonly officeId: ClientOfficeId;
+  readonly characterId: ClientCharacterId;
+  readonly status: "eligible" | "rejected";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3ObligationReadModel {
+  readonly obligationId: string;
+  readonly debtorPolityId: ClientPolityId;
+  readonly creditorPolityId: ClientPolityId;
+  readonly obligationKind: "tribute" | "troop" | "garrison";
+  readonly amount: number;
+  readonly dueLabel: string;
+  readonly status: "preview" | "pending" | "breached";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3SuccessionCrisisReadModel {
+  readonly successionId: number;
+  readonly polityId: ClientPolityId;
+  readonly status: "pending" | "resolved";
+  readonly vacancyOfficeIds: readonly ClientOfficeId[];
+  readonly candidates: readonly ClientM3SuccessionCandidateReadModel[];
+}
+
+export interface ClientM3SuccessionCandidateReadModel {
+  readonly characterId: ClientCharacterId;
+  readonly requiresRegency: boolean;
+  readonly supportTotalBps: number;
+  readonly supportReasonCodes: readonly string[];
+}
+
+export interface ClientM3AppointmentResultReadModel {
+  readonly officeId: ClientOfficeId;
+  readonly holderCharacterId: ClientCharacterId | null;
+  readonly status: "vacant" | "appointed";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3EnfeoffmentResultReadModel {
+  readonly districtId: ClientDistrictId;
+  readonly holderCharacterId: ClientCharacterId;
+  readonly status: "granted";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3BulkAppointmentPreviewReadModel {
+  readonly commandKind: BulkAppointOfficesCommandV1["kind"];
+  readonly applyMode: "apply-eligible-only";
+  readonly eligibleCount: number;
+  readonly rejectedCount: number;
+  readonly items: readonly ClientM3BulkAppointmentPreviewItemReadModel[];
+}
+
+export interface ClientM3BulkAppointmentPreviewItemReadModel {
+  readonly itemId: string;
+  readonly officeId: ClientOfficeId;
+  readonly characterId: ClientCharacterId | null;
+  readonly status: "eligible" | "rejected";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3ReasonSummaryReadModel {
+  readonly reasonCode: string;
+  readonly count: number;
+  readonly sourceKinds: readonly ClientM3ReasonSourceKind[];
+}
+
+export type ClientM3ReasonSourceKind =
+  | "appointment"
+  | "behavior"
+  | "bulk"
+  | "enfeoffment"
+  | "obligation"
+  | "policy"
+  | "succession";
+
+export interface ClientM3AppointmentProjectionInput {
+  readonly decisionScaffolds: ListM3DecisionScaffoldsResultV1;
+  readonly administrativeBurden: ListM3AdministrativeBurdenResultV1;
+  readonly successionCrises: ListM3SuccessionCrisesResultV1;
+  readonly postwarGovernancePreview: PreviewM3PostwarGovernanceResultV1;
+  readonly catalog: ClientM3AppointmentCatalogInput;
+}
+
+export interface ClientM3AppointmentCatalogInput {
+  readonly commandActor: ClientM3CommandActorReadModel;
+  readonly characters: readonly ClientM3CharacterCatalogRow[];
+  readonly polities: readonly ClientM3PolityCatalogRow[];
+  readonly offices: readonly ClientM3OfficeCatalogRow[];
+  readonly eligibility: readonly ClientM3AppointmentEligibilityCatalogRow[];
+  readonly bulkItems: readonly ClientM3BulkAppointmentCatalogRow[];
+}
+
+export interface ClientM3CharacterCatalogRow {
+  readonly characterId: number;
+  readonly displayName: string;
+  readonly polityId: number;
+  readonly availability: ClientM3CharacterReadModel["availability"];
+  readonly roleLabel: string;
+  readonly behaviorReasonCodes: readonly string[];
+}
+
+export interface ClientM3PolityCatalogRow {
+  readonly polityId: number;
+  readonly displayName: string;
+  readonly relationKind: ClientM3PolityReadModel["relationKind"];
+  readonly suzerainPolityId: number | null;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3OfficeCatalogRow {
+  readonly officeId: number;
+  readonly displayName: string;
+  readonly officeKind: ClientM3OfficeReadModel["officeKind"];
+  readonly administrativeDistrictId: number | null;
+  readonly policyStance: string;
+  readonly policyReasonCodes: readonly string[];
+}
+
+export interface ClientM3AppointmentEligibilityCatalogRow {
+  readonly officeId: number;
+  readonly characterId: number;
+  readonly status: ClientM3AppointmentEligibilityReadModel["status"];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3BulkAppointmentCatalogRow {
+  readonly itemId: string;
+  readonly officeId: number;
+  readonly characterId: number | null;
+  readonly status: ClientM3BulkAppointmentPreviewItemReadModel["status"];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM3CommandContextInput {
+  readonly snapshot: ClientM3AppointmentReadModelSnapshot;
+  readonly commandId: string;
+}
+
+export type ClientM3SubmittedCommand = GameCommandV1;
+
 export type ClientDistrictSortKey =
   | "cash"
   | "district"
@@ -273,7 +502,8 @@ export function createInitialClientReadModelSnapshot(): ClientReadModelSnapshot 
         }
       ]
     },
-    districtList: createEmptyDistrictListReadModel(revision)
+    districtList: createEmptyDistrictListReadModel(revision),
+    m3Appointment: createEmptyM3AppointmentReadModel(revision)
   };
 }
 
@@ -346,7 +576,8 @@ export function createM2PrototypeClientReadModelSnapshot(
         }
       ]
     },
-    districtList: fixture.districtList
+    districtList: fixture.districtList,
+    m3Appointment: createM3AppointmentReadModelFixture(baseSnapshot.revision)
   };
 }
 
@@ -466,7 +697,8 @@ export function applyClientReadModelDelta(
     case "hello-result":
       return {
         ...projectHelloSimulationResult(delta.result),
-        districtList: snapshot.districtList
+        districtList: snapshot.districtList,
+        m3Appointment: snapshot.m3Appointment
       };
     case "replace":
       return delta.snapshot;
@@ -542,8 +774,773 @@ export function projectHelloSimulationResult(
         }
       ]
     },
-    districtList: createEmptyDistrictListReadModel(revision)
+    districtList: createEmptyDistrictListReadModel(revision),
+    m3Appointment: createEmptyM3AppointmentReadModel(revision)
   };
+}
+
+export function createM3AppointmentReadModelFixture(
+  revision = createClientReadModelRevision(1)
+): ClientM3AppointmentReadModelSnapshot {
+  return projectM3AppointmentReadModelFromProtocolReadModels(
+    createM3AppointmentProtocolProjectionFixture(Number(revision))
+  );
+}
+
+export function createM3AppointmentProtocolProjectionFixture(
+  revision: number
+): ClientM3AppointmentProjectionInput {
+  return {
+    decisionScaffolds: {
+      kind: "sim.list-m3-decision-scaffolds",
+      day: 120,
+      revision,
+      offices: [
+        {
+          officeId: 1,
+          holderCharacterId: 1,
+          policyId: 101,
+          executionPerformanceBps: 8_800,
+          reasonCodes: [
+            "appointment.holder.skill-strong",
+            "appointment.relationship.supportive",
+            "policy.office.balanced"
+          ]
+        },
+        {
+          officeId: 2,
+          holderCharacterId: null,
+          policyId: 102,
+          executionPerformanceBps: 0,
+          reasonCodes: ["appointment.office.vacant", "succession.pending-office-vacancy"]
+        },
+        {
+          officeId: 3,
+          holderCharacterId: 2,
+          policyId: 103,
+          executionPerformanceBps: 6_200,
+          reasonCodes: [
+            "appointment.holder.skill-adequate",
+            "appointment.relationship.strained",
+            "policy.office.military"
+          ]
+        }
+      ],
+      policies: [
+        {
+          policyId: 101,
+          targetKind: "office",
+          reasonCodes: ["policy.office.balanced", "policy.continuity.preserved"]
+        },
+        {
+          policyId: 102,
+          targetKind: "office",
+          reasonCodes: ["policy.office.conciliatory", "policy.continuity.preserved"]
+        },
+        {
+          policyId: 103,
+          targetKind: "office",
+          reasonCodes: ["policy.office.military", "policy.continuity.preserved"]
+        },
+        {
+          policyId: 201,
+          targetKind: "district",
+          reasonCodes: ["policy.jurisdiction.conciliatory"]
+        }
+      ],
+      enfeoffments: [
+        {
+          districtId: 2,
+          holderCharacterId: 2,
+          reasonCodes: ["enfeoffment.local-holder", "policy.jurisdiction.conciliatory"]
+        }
+      ]
+    },
+    administrativeBurden: {
+      kind: "sim.list-m3-administrative-burden",
+      day: 120,
+      revision,
+      districts: [
+        {
+          polityId: 1,
+          districtId: 1,
+          controlMode: "direct",
+          localComplexity: 50,
+          communicationCost: 50,
+          directness: 50,
+          frontierPressure: 25,
+          administrativeCapacity: 1_000,
+          administrativeLoad: 175,
+          overload: 0,
+          efficiencyBps: 8_250,
+          realizableIncomeBps: 8_100,
+          obligationReliabilityBps: 7_600,
+          delayRiskBps: 1_200,
+          readinessBps: 7_900
+        },
+        {
+          polityId: 1,
+          districtId: 2,
+          controlMode: "vassal",
+          localComplexity: 50,
+          communicationCost: 75,
+          directness: 75,
+          frontierPressure: 50,
+          administrativeCapacity: 1_000,
+          administrativeLoad: 250,
+          overload: 0,
+          efficiencyBps: 7_500,
+          realizableIncomeBps: 6_900,
+          obligationReliabilityBps: 6_600,
+          delayRiskBps: 2_100,
+          readinessBps: 6_800
+        }
+      ]
+    },
+    successionCrises: {
+      kind: "sim.list-m3-succession-crises",
+      day: 120,
+      revision,
+      crises: [
+        {
+          successionId: 1,
+          polityId: 2,
+          status: "pending",
+          candidates: [
+            {
+              characterId: 2,
+              requiresRegency: false,
+              supportTotalBps: 6_400,
+              supportSources: [
+                { kind: "court", strengthBps: 3_100, sourceId: "support.court" },
+                { kind: "provincial", strengthBps: 3_300, sourceId: "support.province" }
+              ]
+            },
+            {
+              characterId: 4,
+              requiresRegency: true,
+              supportTotalBps: 3_700,
+              supportSources: [
+                { kind: "kinship", strengthBps: 2_600, sourceId: "support.kinship" },
+                { kind: "foreign", strengthBps: 1_100, sourceId: "support.foreign" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    postwarGovernancePreview: {
+      kind: "sim.preview-m3-postwar-governance",
+      day: 120,
+      revision,
+      months: 4,
+      arrangements: [
+        createPostwarPreviewArrangement("restore-vassal-ruler", 2, 1, 2, 201, [
+          "postwar.vassal-continuity",
+          "obligation.tribute.regular",
+          "obligation.troop.commitment-limited"
+        ]),
+        createPostwarPreviewArrangement("direct-control", 1, 1, 2, 201, [
+          "postwar.direct-control.admin-load",
+          "obligation.garrison.required"
+        ])
+      ]
+    },
+    catalog: createM3AppointmentCatalogFixture()
+  };
+}
+
+export function projectM3AppointmentReadModelFromProtocolReadModels(
+  input: ClientM3AppointmentProjectionInput
+): ClientM3AppointmentReadModelSnapshot {
+  const revision = createClientReadModelRevision(input.decisionScaffolds.revision);
+  const officeById = new Map(
+    input.decisionScaffolds.offices.map((office) => [office.officeId, office])
+  );
+  const policyReasonsById = new Map(
+    input.decisionScaffolds.policies.map((policy) => [policy.policyId, policy.reasonCodes])
+  );
+  const adminByDistrictId = new Map(
+    input.administrativeBurden.districts.map((district) => [district.districtId, district])
+  );
+
+  const characters = input.catalog.characters.map((character) => ({
+    characterId: createClientCharacterId(character.characterId),
+    displayName: character.displayName,
+    polityId: createClientPolityId(character.polityId),
+    availability: character.availability,
+    roleLabel: character.roleLabel,
+    behaviorReasonCodes: character.behaviorReasonCodes
+  }));
+  const polities = input.catalog.polities.map((polity) => ({
+    polityId: createClientPolityId(polity.polityId),
+    displayName: polity.displayName,
+    relationKind: polity.relationKind,
+    suzerainPolityId:
+      polity.suzerainPolityId === null ? null : createClientPolityId(polity.suzerainPolityId),
+    reasonCodes: polity.reasonCodes
+  }));
+  const offices = input.catalog.offices.map((officeCatalog) => {
+    const scaffold = officeById.get(officeCatalog.officeId);
+    if (scaffold === undefined) {
+      throw new Error(`Missing M3 decision scaffold for office ${officeCatalog.officeId}.`);
+    }
+    const policyReasonCodes = policyReasonsById.get(scaffold.policyId) ?? [];
+
+    return {
+      officeId: createClientOfficeId(officeCatalog.officeId),
+      displayName: officeCatalog.displayName,
+      officeKind: officeCatalog.officeKind,
+      holderCharacterId:
+        scaffold.holderCharacterId === null
+          ? null
+          : createClientCharacterId(scaffold.holderCharacterId),
+      policy: {
+        policyId: createClientPolicyId(scaffold.policyId),
+        stance: officeCatalog.policyStance,
+        continuity: "persists-across-holder-change" as const,
+        reasonCodes: [...policyReasonCodes, ...officeCatalog.policyReasonCodes]
+      },
+      executionPerformanceBps: scaffold.executionPerformanceBps,
+      administrativePreview:
+        officeCatalog.administrativeDistrictId === null
+          ? null
+          : projectM3AdministrativePreview(
+              adminByDistrictId.get(officeCatalog.administrativeDistrictId)
+            ),
+      candidateEligibilities: input.catalog.eligibility
+        .filter((eligibility) => eligibility.officeId === officeCatalog.officeId)
+        .map(projectM3Eligibility),
+      reasonCodes: scaffold.reasonCodes
+    };
+  });
+  const appointmentResults = input.decisionScaffolds.offices.map((office) => ({
+    officeId: createClientOfficeId(office.officeId),
+    holderCharacterId:
+      office.holderCharacterId === null ? null : createClientCharacterId(office.holderCharacterId),
+    status: office.holderCharacterId === null ? ("vacant" as const) : ("appointed" as const),
+    reasonCodes: office.reasonCodes
+  }));
+  const enfeoffmentResults = input.decisionScaffolds.enfeoffments.map((enfeoffment) => ({
+    districtId: createClientDistrictId(enfeoffment.districtId),
+    holderCharacterId: createClientCharacterId(enfeoffment.holderCharacterId),
+    status: "granted" as const,
+    reasonCodes: enfeoffment.reasonCodes
+  }));
+  const obligations = projectM3ObligationsFromPostwarPreview(input.postwarGovernancePreview);
+  const successionCrises = input.successionCrises.crises.map((crisis) => ({
+    successionId: crisis.successionId,
+    polityId: createClientPolityId(crisis.polityId),
+    status: crisis.status,
+    vacancyOfficeIds: offices
+      .filter((office) => office.holderCharacterId === null)
+      .map((office) => office.officeId),
+    candidates: crisis.candidates.map((candidate) => ({
+      characterId: createClientCharacterId(candidate.characterId),
+      requiresRegency: candidate.requiresRegency,
+      supportTotalBps: candidate.supportTotalBps,
+      supportReasonCodes: candidate.supportSources.map((source) => `succession.${source.kind}`)
+    }))
+  }));
+  const bulkPreview = projectM3BulkPreview(input.catalog.bulkItems);
+
+  return {
+    revision,
+    day: input.decisionScaffolds.day,
+    commandActor: input.catalog.commandActor,
+    provenance: {
+      kind: "protocol-query-projection",
+      note: "M3 appointment workspace projected from protocol query/read-model DTOs; candidate eligibility and reason codes are inputs from the command/query boundary, not UI formulas."
+    },
+    characters,
+    polities,
+    offices,
+    obligations,
+    successionCrises,
+    appointmentResults,
+    enfeoffmentResults,
+    bulkPreview,
+    reasonSummaries: summarizeM3ReasonCodes({
+      characters,
+      polities,
+      offices,
+      obligations,
+      successionCrises,
+      appointmentResults,
+      enfeoffmentResults,
+      bulkPreview
+    })
+  };
+}
+
+export function createM3AppointmentCommand(
+  input: ClientM3CommandContextInput & {
+    readonly officeId: ClientOfficeId;
+    readonly characterId: ClientCharacterId | null;
+  }
+): GameCommandV1 {
+  return {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.appoint-office",
+    commandId: input.commandId,
+    actor: input.snapshot.commandActor,
+    expectedDay: input.snapshot.day,
+    expectedRevision: Number(input.snapshot.revision),
+    payload: {
+      officeId: Number(input.officeId),
+      characterId: input.characterId === null ? null : Number(input.characterId),
+      reasonCode: "client.m3.appointment.submit"
+    }
+  };
+}
+
+export function createM3BulkAppointmentCommand(
+  input: ClientM3CommandContextInput
+): BulkAppointOfficesCommandV1 {
+  const eligibleItems = input.snapshot.bulkPreview.items.filter(
+    (item) => item.status === "eligible"
+  );
+  return {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.appoint-offices-bulk",
+    commandId: input.commandId,
+    actor: input.snapshot.commandActor,
+    expectedDay: input.snapshot.day,
+    expectedRevision: Number(input.snapshot.revision),
+    payload: {
+      items: eligibleItems.map((item) => ({
+        itemId: item.itemId,
+        officeId: Number(item.officeId),
+        characterId: item.characterId === null ? null : Number(item.characterId),
+        reasonCode: "client.m3.bulk-appointment.apply-eligible"
+      }))
+    }
+  };
+}
+
+export function findM3Office(
+  offices: readonly ClientM3OfficeReadModel[],
+  officeId: ClientOfficeId
+): ClientM3OfficeReadModel | null {
+  return offices.find((office) => office.officeId === officeId) ?? null;
+}
+
+export function findM3Character(
+  characters: readonly ClientM3CharacterReadModel[],
+  characterId: ClientCharacterId | null
+): ClientM3CharacterReadModel | null {
+  if (characterId === null) {
+    return null;
+  }
+
+  return characters.find((character) => character.characterId === characterId) ?? null;
+}
+
+function createEmptyM3AppointmentReadModel(
+  revision: ClientReadModelRevision
+): ClientM3AppointmentReadModelSnapshot {
+  return {
+    revision,
+    day: 0,
+    commandActor: { kind: "player", id: "polity:1" },
+    provenance: {
+      kind: "protocol-query-projection",
+      note: "No M3 appointment read-model slice has been projected yet."
+    },
+    characters: [],
+    polities: [],
+    offices: [],
+    obligations: [],
+    successionCrises: [],
+    appointmentResults: [],
+    enfeoffmentResults: [],
+    bulkPreview: {
+      commandKind: "sim.appoint-offices-bulk",
+      applyMode: "apply-eligible-only",
+      eligibleCount: 0,
+      rejectedCount: 0,
+      items: []
+    },
+    reasonSummaries: []
+  };
+}
+
+function createM3AppointmentCatalogFixture(): ClientM3AppointmentCatalogInput {
+  return {
+    commandActor: { kind: "player", id: "polity:1" },
+    characters: [
+      {
+        characterId: 1,
+        displayName: "Validation Regent",
+        polityId: 1,
+        availability: "available",
+        roleLabel: "court administrator",
+        behaviorReasonCodes: ["behavior.cautious", "behavior.court-aligned"]
+      },
+      {
+        characterId: 2,
+        displayName: "Validation Provincial Heir",
+        polityId: 2,
+        availability: "available",
+        roleLabel: "local claimant",
+        behaviorReasonCodes: ["behavior.local-power-base", "behavior.relationship.strained"]
+      },
+      {
+        characterId: 3,
+        displayName: "Validation Commander",
+        polityId: 1,
+        availability: "available",
+        roleLabel: "campaign officer",
+        behaviorReasonCodes: ["behavior.military-priority", "behavior.risk-tolerant"]
+      },
+      {
+        characterId: 4,
+        displayName: "Validation Unavailable Kin",
+        polityId: 2,
+        availability: "unavailable",
+        roleLabel: "succession claimant",
+        behaviorReasonCodes: ["behavior.regency-required", "character-unavailable"]
+      }
+    ],
+    polities: [
+      {
+        polityId: 1,
+        displayName: "Validation Court",
+        relationKind: "court",
+        suzerainPolityId: null,
+        reasonCodes: ["polity.player-court"]
+      },
+      {
+        polityId: 2,
+        displayName: "Validation Vassal Court",
+        relationKind: "vassal",
+        suzerainPolityId: 1,
+        reasonCodes: ["vassal.restored-ruler", "obligation.tribute.regular"]
+      },
+      {
+        polityId: 3,
+        displayName: "Validation Tributary Port",
+        relationKind: "tributary",
+        suzerainPolityId: 1,
+        reasonCodes: ["tribute-only.low-control", "obligation.troop.commitment-limited"]
+      }
+    ],
+    offices: [
+      {
+        officeId: 1,
+        displayName: "Court Stewardship",
+        officeKind: "minister",
+        administrativeDistrictId: 1,
+        policyStance: "balanced",
+        policyReasonCodes: ["policy.continuity.preserved"]
+      },
+      {
+        officeId: 2,
+        displayName: "Vacant River Governorship",
+        officeKind: "governor",
+        administrativeDistrictId: 2,
+        policyStance: "conciliatory",
+        policyReasonCodes: ["policy.continuity.preserved"]
+      },
+      {
+        officeId: 3,
+        displayName: "Frontier Muster Office",
+        officeKind: "commander",
+        administrativeDistrictId: 2,
+        policyStance: "military",
+        policyReasonCodes: ["policy.continuity.preserved"]
+      }
+    ],
+    eligibility: [
+      {
+        officeId: 1,
+        characterId: 1,
+        status: "eligible",
+        reasonCodes: ["appointment.holder.skill-strong", "appointment.relationship.supportive"]
+      },
+      {
+        officeId: 1,
+        characterId: 2,
+        status: "rejected",
+        reasonCodes: ["office-primary-conflict", "appointment.relationship.strained"]
+      },
+      {
+        officeId: 1,
+        characterId: 4,
+        status: "rejected",
+        reasonCodes: ["character-unavailable"]
+      },
+      {
+        officeId: 2,
+        characterId: 2,
+        status: "eligible",
+        reasonCodes: ["appointment.local-claimant", "succession.support.provincial"]
+      },
+      {
+        officeId: 2,
+        characterId: 3,
+        status: "rejected",
+        reasonCodes: ["office-eligibility-failed"]
+      },
+      {
+        officeId: 3,
+        characterId: 3,
+        status: "eligible",
+        reasonCodes: ["appointment.command-fit", "behavior.military-priority"]
+      }
+    ],
+    bulkItems: [
+      {
+        itemId: "office-2-local-claimant",
+        officeId: 2,
+        characterId: 2,
+        status: "eligible",
+        reasonCodes: ["appointment.local-claimant", "succession.support.provincial"]
+      },
+      {
+        itemId: "office-3-commander",
+        officeId: 3,
+        characterId: 3,
+        status: "eligible",
+        reasonCodes: ["appointment.command-fit", "behavior.military-priority"]
+      },
+      {
+        itemId: "office-1-unavailable",
+        officeId: 1,
+        characterId: 4,
+        status: "rejected",
+        reasonCodes: ["character-unavailable"]
+      }
+    ]
+  };
+}
+
+function createPostwarPreviewArrangement(
+  method: M3PostwarGovernanceMethodV1,
+  districtId: number,
+  victorPolityId: number,
+  localPolityId: number,
+  policyId: number,
+  reasonCodes: readonly string[]
+): PreviewM3PostwarGovernanceResultV1["arrangements"][number] {
+  const hasDirectGarrison = method === "direct-control";
+  return {
+    method,
+    districtId,
+    victorPolityId,
+    localPolityId,
+    administrativeBurden: {
+      polityId: victorPolityId,
+      districtId,
+      controlMode: method === "direct-control" ? "direct" : "vassal",
+      localComplexity: 50,
+      communicationCost: method === "direct-control" ? 75 : 55,
+      directness: method === "direct-control" ? 100 : 45,
+      frontierPressure: 50,
+      administrativeCapacity: 1_000,
+      administrativeLoad: method === "direct-control" ? 330 : 210,
+      overload: 0,
+      efficiencyBps: method === "direct-control" ? 6_900 : 7_700,
+      realizableIncomeBps: method === "direct-control" ? 8_400 : 6_200,
+      obligationReliabilityBps: method === "direct-control" ? 7_200 : 6_600,
+      delayRiskBps: method === "direct-control" ? 2_500 : 1_900,
+      readinessBps: method === "direct-control" ? 7_900 : 6_800
+    },
+    obligationShape: {
+      periodDays: 360,
+      tributeCash: method === "direct-control" ? 0 : 120,
+      troopHeadcount: method === "direct-control" ? 30 : 80,
+      hasDirectGarrison
+    },
+    expectedIncomeCash: method === "direct-control" ? 220 : 80,
+    expectedTributeCash: method === "direct-control" ? 0 : 120,
+    localAcceptanceBps: method === "direct-control" ? 4_100 : 6_800,
+    reliabilityBps: method === "direct-control" ? 7_200 : 6_600,
+    militaryReadinessBps: method === "direct-control" ? 7_900 : 6_800,
+    militaryContributionTroops: method === "direct-control" ? 30 : 80,
+    riskBps: method === "direct-control" ? 4_900 : 3_200,
+    reasonCodes: [...reasonCodes, `policy.${policyId}`]
+  };
+}
+
+function projectM3AdministrativePreview(
+  district: ListM3AdministrativeBurdenResultV1["districts"][number] | undefined
+): ClientM3AdministrativePreviewReadModel {
+  if (district === undefined) {
+    throw new Error("Missing M3 administrative burden row for appointment preview.");
+  }
+
+  return {
+    districtId: createClientDistrictId(district.districtId),
+    controlMode: district.controlMode,
+    administrativeLoad: district.administrativeLoad,
+    overload: district.overload,
+    efficiencyBps: district.efficiencyBps,
+    obligationReliabilityBps: district.obligationReliabilityBps,
+    readinessBps: district.readinessBps,
+    reasonCodes: [
+      `admin.control.${district.controlMode}`,
+      district.overload > 0 ? "admin.overloaded" : "admin.within-capacity"
+    ]
+  };
+}
+
+function projectM3Eligibility(
+  eligibility: ClientM3AppointmentEligibilityCatalogRow
+): ClientM3AppointmentEligibilityReadModel {
+  return {
+    officeId: createClientOfficeId(eligibility.officeId),
+    characterId: createClientCharacterId(eligibility.characterId),
+    status: eligibility.status,
+    reasonCodes: eligibility.reasonCodes
+  };
+}
+
+function projectM3ObligationsFromPostwarPreview(
+  preview: PreviewM3PostwarGovernanceResultV1
+): readonly ClientM3ObligationReadModel[] {
+  const obligations: ClientM3ObligationReadModel[] = [];
+  for (const arrangement of preview.arrangements) {
+    if (arrangement.obligationShape.tributeCash > 0) {
+      obligations.push({
+        obligationId: `${arrangement.method}.tribute.${arrangement.districtId}`,
+        debtorPolityId: createClientPolityId(arrangement.localPolityId),
+        creditorPolityId: createClientPolityId(arrangement.victorPolityId),
+        obligationKind: "tribute",
+        amount: arrangement.obligationShape.tributeCash,
+        dueLabel: `${arrangement.obligationShape.periodDays} day cadence`,
+        status: "preview",
+        reasonCodes: arrangement.reasonCodes.filter((reasonCode) =>
+          reasonCode.startsWith("obligation.")
+        )
+      });
+    }
+    if (arrangement.obligationShape.troopHeadcount > 0) {
+      obligations.push({
+        obligationId: `${arrangement.method}.troops.${arrangement.districtId}`,
+        debtorPolityId: createClientPolityId(arrangement.localPolityId),
+        creditorPolityId: createClientPolityId(arrangement.victorPolityId),
+        obligationKind: "troop",
+        amount: arrangement.obligationShape.troopHeadcount,
+        dueLabel: "war trigger",
+        status: "preview",
+        reasonCodes: arrangement.reasonCodes.filter((reasonCode) =>
+          reasonCode.startsWith("obligation.")
+        )
+      });
+    }
+    if (arrangement.obligationShape.hasDirectGarrison) {
+      obligations.push({
+        obligationId: `${arrangement.method}.garrison.${arrangement.districtId}`,
+        debtorPolityId: createClientPolityId(arrangement.victorPolityId),
+        creditorPolityId: createClientPolityId(arrangement.victorPolityId),
+        obligationKind: "garrison",
+        amount: arrangement.militaryContributionTroops,
+        dueLabel: "continuous",
+        status: "preview",
+        reasonCodes: arrangement.reasonCodes.filter((reasonCode) =>
+          reasonCode.startsWith("obligation.")
+        )
+      });
+    }
+  }
+
+  return obligations;
+}
+
+function projectM3BulkPreview(
+  items: readonly ClientM3BulkAppointmentCatalogRow[]
+): ClientM3BulkAppointmentPreviewReadModel {
+  const projected = items.map((item) => ({
+    itemId: item.itemId,
+    officeId: createClientOfficeId(item.officeId),
+    characterId: item.characterId === null ? null : createClientCharacterId(item.characterId),
+    status: item.status,
+    reasonCodes: item.reasonCodes
+  }));
+
+  return {
+    commandKind: "sim.appoint-offices-bulk",
+    applyMode: "apply-eligible-only",
+    eligibleCount: projected.filter((item) => item.status === "eligible").length,
+    rejectedCount: projected.filter((item) => item.status === "rejected").length,
+    items: projected
+  };
+}
+
+interface M3ReasonSummarySourceInput {
+  readonly characters: readonly ClientM3CharacterReadModel[];
+  readonly polities: readonly ClientM3PolityReadModel[];
+  readonly offices: readonly ClientM3OfficeReadModel[];
+  readonly obligations: readonly ClientM3ObligationReadModel[];
+  readonly successionCrises: readonly ClientM3SuccessionCrisisReadModel[];
+  readonly appointmentResults: readonly ClientM3AppointmentResultReadModel[];
+  readonly enfeoffmentResults: readonly ClientM3EnfeoffmentResultReadModel[];
+  readonly bulkPreview: ClientM3BulkAppointmentPreviewReadModel;
+}
+
+function summarizeM3ReasonCodes(
+  input: M3ReasonSummarySourceInput
+): readonly ClientM3ReasonSummaryReadModel[] {
+  const accumulator = new Map<
+    string,
+    { count: number; sourceKinds: Set<ClientM3ReasonSourceKind> }
+  >();
+  const add = (reasonCodes: readonly string[], sourceKind: ClientM3ReasonSourceKind): void => {
+    for (const reasonCode of reasonCodes) {
+      const existing = accumulator.get(reasonCode);
+      if (existing === undefined) {
+        accumulator.set(reasonCode, { count: 1, sourceKinds: new Set([sourceKind]) });
+      } else {
+        existing.count += 1;
+        existing.sourceKinds.add(sourceKind);
+      }
+    }
+  };
+
+  for (const character of input.characters) {
+    add(character.behaviorReasonCodes, "behavior");
+  }
+  for (const polity of input.polities) {
+    add(polity.reasonCodes, "obligation");
+  }
+  for (const office of input.offices) {
+    add(office.reasonCodes, "appointment");
+    add(office.policy.reasonCodes, "policy");
+    for (const eligibility of office.candidateEligibilities) {
+      add(eligibility.reasonCodes, eligibility.status === "eligible" ? "appointment" : "bulk");
+    }
+    if (office.administrativePreview !== null) {
+      add(office.administrativePreview.reasonCodes, "appointment");
+    }
+  }
+  for (const obligation of input.obligations) {
+    add(obligation.reasonCodes, "obligation");
+  }
+  for (const crisis of input.successionCrises) {
+    for (const candidate of crisis.candidates) {
+      add(candidate.supportReasonCodes, "succession");
+    }
+  }
+  for (const result of input.appointmentResults) {
+    add(result.reasonCodes, "appointment");
+  }
+  for (const result of input.enfeoffmentResults) {
+    add(result.reasonCodes, "enfeoffment");
+  }
+  for (const item of input.bulkPreview.items) {
+    add(item.reasonCodes, "bulk");
+  }
+
+  return [...accumulator.entries()]
+    .map(([reasonCode, summary]) => ({
+      reasonCode,
+      count: summary.count,
+      sourceKinds: [...summary.sourceKinds].sort()
+    }))
+    .sort(
+      (left, right) => right.count - left.count || left.reasonCode.localeCompare(right.reasonCode)
+    );
 }
 
 export function selectClientDistrictRows(
@@ -627,6 +1624,38 @@ export function createClientSettlementId(value: number): ClientSettlementId {
   }
 
   return value as ClientSettlementId;
+}
+
+export function createClientCharacterId(value: number): ClientCharacterId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client character id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientCharacterId;
+}
+
+export function createClientOfficeId(value: number): ClientOfficeId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client office id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientOfficeId;
+}
+
+export function createClientPolicyId(value: number): ClientPolicyId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client policy id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientPolicyId;
+}
+
+export function createClientPolityId(value: number): ClientPolityId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client polity id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientPolityId;
 }
 
 export function createClientMapAnchorId(value: string): ClientMapAnchorId {

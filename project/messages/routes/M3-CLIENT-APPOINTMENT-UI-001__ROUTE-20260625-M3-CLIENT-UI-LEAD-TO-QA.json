@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-CLIENT-APPOINTMENT-UI-001",
+  "route_id": "ROUTE-20260625-M3-CLIENT-UI-LEAD-TO-QA",
+  "created_at": "2026-06-25T19:22:00Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "target_thread_id": "019f003b-6894-76e0-ba04-227258f5d4ef",
+  "source_handoff": "project/messages/outbox/M3-CLIENT-APPOINTMENT-UI-001__MSG-20260625-M3-CLIENT-APPOINTMENT-UI-WRITER-REVIEW__client_engineer.json",
+  "source_status": "REVIEW",
+  "requested_action": "Perform independent read-only QA review of M3 client appointment UI, including actual diff, allowed/forbidden paths, client authority boundaries, visible reason flows, Playwright coverage, and required tests.",
+  "spawn_agent": {
+    "target": "019f003b-6894-76e0-ba04-227258f5d4ef",
+    "agent_type": "qa_reviewer",
+    "mode": "read-only acceptance"
+  },
+  "route_to": "qa_reviewer"
+}
