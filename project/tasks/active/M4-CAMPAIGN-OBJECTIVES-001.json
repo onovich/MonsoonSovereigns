@@ -2,7 +2,7 @@
   "id": "M4-CAMPAIGN-OBJECTIVES-001",
   "summary": "Implement minimal M4 campaign objectives and planning knowledge model",
   "milestone": "M4",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -68,8 +68,33 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m4-campaign-objectives",
-  "threads": {},
-  "route_to": "systems_architect",
+  "threads": {
+    "simulation_engineer": {
+      "thread_id": "019f0114-5efd-79a0-bf93-f8d6e566f134",
+      "status": "start_confirmed",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "nickname": "Engine the 3rd",
+      "responsibility": "primary M4 campaign objective and FactionKnowledge writer",
+      "branch_or_worktree": "feat/m4-campaign-objectives",
+      "start_state": "START_CONFIRMED",
+      "updated_at": "2026-06-25T23:19:19Z",
+      "start_submission_id": "019f0115-9714-70f3-8afa-1917a5057dff"
+    },
+    "systems_architect": {
+      "thread_id": "019f0114-755e-7763-a7c5-bea403684924",
+      "status": "awaiting_review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "nickname": "Keystone the 3rd",
+      "responsibility": "architecture reviewer for M4 campaign objective substrate",
+      "branch_or_worktree": "feat/m4-campaign-objectives",
+      "start_state": "AWAITING_REVIEW_READY",
+      "updated_at": "2026-06-25T23:19:19Z",
+      "await_submission_id": "019f0115-98a9-7c12-8c72-bd44abb59510"
+    }
+  },
+  "route_to": "simulation_engineer",
   "notes": [
     "This task creates only the M4 objective/knowledge substrate; it must not absorb muster, supply, march, siege, UI, or validation work.",
     "Stop and route to systems_architect if objective modeling requires a save-format, protocol-compatibility, or frozen-decision ADR beyond the task scope.",
@@ -77,5 +102,5 @@
     "Promoted to READY after M4-TASK-GRAPH-001 entered origin/main and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-25T23:13:27Z"
+  "updated_at": "2026-06-25T23:19:19Z"
 }
