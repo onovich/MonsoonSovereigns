@@ -1,0 +1,68 @@
+{
+  "message_id": "MSG-20260626-M4-TASK-GRAPH-CLOSED-CAMPAIGN-OBJECTIVES-READY",
+  "task_id": "M4-TASK-GRAPH-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M4 task graph is closed after PR #82 entered origin/main at 4bee35829c9a37eff405d59cfe4af1a605434928. Lead closed the systems_architect and qa_reviewer graph threads, promoted M4-CAMPAIGN-OBJECTIVES-001 to READY, and prepared continuation into the first M4 implementation task.",
+  "artifacts": [
+    "project/tasks/active/M4-TASK-GRAPH-001.json",
+    "project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md"
+  ],
+  "branch_or_worktree": "chore/m4-task-graph-close",
+  "commit": "pending closure commit",
+  "tests_run": [
+    {
+      "command": "gh pr checks 82 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact passed"
+    },
+    {
+      "command": "gh pr merge 82 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #82 entered main at 4bee35829c9a37eff405d59cfe4af1a605434928"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-CLOSED-CAMPAIGN-OBJECTIVES-READY__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M4-CAMPAIGN-OBJECTIVES-001 READY"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ],
+  "decisions": [
+    "Closed M4-TASK-GRAPH-001 only after PR #82 entered main and CI passed.",
+    "Promoted M4-CAMPAIGN-OBJECTIVES-001 to READY as the first dependency-ready M4 implementation task.",
+    "No M4 implementation has started in this closure branch."
+  ],
+  "risks": [
+    "M4-CAMPAIGN-OBJECTIVES-001 is R3 and touches authoritative simulation/protocol/test paths when started.",
+    "Scope must remain objective/knowledge substrate only; later M4 tasks own muster, supply, march, siege, UI, determinism, and stress validation."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit and merge this closure branch, then start M4-CAMPAIGN-OBJECTIVES-001 on its dedicated branch with simulation_engineer writer and systems_architect reviewer.",
+  "created_at": "2026-06-25T23:13:27Z"
+}

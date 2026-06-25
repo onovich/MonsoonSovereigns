@@ -116,3 +116,7 @@ M3 当前进展：`M3-SAVE-RUNTIME-001` 已在 PR #76 进入 `origin/main`（`c7
 Current milestone is **M4 / Campaign, Logistics, Siege, and Postwar War Outcome Loop**. The first READY M4 task is `M4-TASK-GRAPH-001`, which must create the minimal M4 task DAG before any M4 implementation begins. M4 remains bounded by the accepted roadmap: no manual node battle, complex naval war, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, or frozen product/architecture changes without the documented Human Gate.
 
 M4 current progress: `M4-TASK-GRAPH-001` has produced a systems_architect REVIEW handoff for the minimal M4 campaign/logistics/siege/AI/UI/validation DAG on branch `chore/m4-task-graph`. Downstream M4 implementation and validation tasks remain `DRAFT` pending independent `qa_reviewer` review and lead integration; no M4 product code has started.
+
+## 9. M4 Task Graph Snapshot
+
+M4-TASK-GRAPH-001 is CLOSED after PR #82 entered origin/main at `4bee35829c9a37eff405d59cfe4af1a605434928`. The next READY M4 task is `M4-CAMPAIGN-OBJECTIVES-001`; it is limited to the minimal campaign objective and planning-knowledge substrate and must not absorb muster, supply, march, siege, UI, or validation work.

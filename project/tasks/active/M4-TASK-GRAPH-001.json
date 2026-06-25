@@ -2,7 +2,7 @@
   "id": "M4-TASK-GRAPH-001",
   "summary": "Create minimal M4 campaign, logistics, siege, and AI task graph",
   "milestone": "M4",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -61,33 +61,41 @@
   "threads": {
     "systems_architect": {
       "thread_id": "019f00f4-e7ae-7c71-9a8a-8e8285c9500d",
-      "status": "accepted_after_qa",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Meridian the 3rd",
       "responsibility": "primary M4 task graph writer",
       "branch_or_worktree": "chore/m4-task-graph",
       "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T23:07:53Z",
+      "updated_at": "2026-06-25T23:13:27Z",
       "start_submission_id": "019f00f6-55e3-7fd3-9843-360790bad1cb",
       "review_ready_handoff": "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "status_check_submission_id": "019f0101-7629-7cd1-818c-50282fef2b8a"
+      "status_check_submission_id": "019f0101-7629-7cd1-818c-50282fef2b8a",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-25T23:13:27Z",
+      "integrated_main_commit": "4bee35829c9a37eff405d59cfe4af1a605434928",
+      "integrated_pr": 82
     },
     "qa_reviewer": {
       "thread_id": "019f00f5-07f1-7ec0-b362-6dc0599efaab",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Gate the 3rd",
       "responsibility": "independent read-only M4 task graph acceptance reviewer",
       "branch_or_worktree": "chore/m4-task-graph",
       "start_state": "AWAITING_REVIEW_READY",
-      "updated_at": "2026-06-25T23:07:53Z",
+      "updated_at": "2026-06-25T23:13:27Z",
       "await_submission_id": "019f00f6-5617-71a2-a43b-ab601e630dd8",
       "review_ready_submission_id": "019f0103-959e-70d1-bf09-14a558f9c29a",
       "review_ready_handoff": "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
       "accept_submission_id": "019f0108-772f-7910-84a1-b436bf9115c7",
-      "accept_handoff": "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
+      "accept_handoff": "project/messages/outbox/M4-TASK-GRAPH-001__MSG-20260626-M4-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-25T23:13:27Z",
+      "integrated_main_commit": "4bee35829c9a37eff405d59cfe4af1a605434928",
+      "integrated_pr": 82
     }
   },
   "route_to": "lead_orchestrator",
@@ -98,8 +106,12 @@
     "M4 work must connect war outcomes back to accepted M3 postwar governance boundaries without expanding into full diplomacy or rebellion systems.",
     "Created a dependency-ordered M4 DAG with downstream implementation and validation tasks left in DRAFT for lead selection after QA review.",
     "The M4 DAG explicitly excludes manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes.",
-    "No product, package, content-source, roadmap, ADR, gate, or implementation files were changed by this planning task."
+    "No product, package, content-source, roadmap, ADR, gate, or implementation files were changed by this planning task.",
+    "CLOSED after PR #82 entered origin/main at 4bee35829c9a37eff405d59cfe4af1a605434928; next READY M4 task is M4-CAMPAIGN-OBJECTIVES-001."
   ],
   "created_at": "2026-06-25T22:38:15Z",
-  "updated_at": "2026-06-25T23:07:53Z"
+  "updated_at": "2026-06-25T23:13:27Z",
+  "closed_at": "2026-06-25T23:13:27Z",
+  "integrated_main_commit": "4bee35829c9a37eff405d59cfe4af1a605434928",
+  "integrated_pr": 82
 }
