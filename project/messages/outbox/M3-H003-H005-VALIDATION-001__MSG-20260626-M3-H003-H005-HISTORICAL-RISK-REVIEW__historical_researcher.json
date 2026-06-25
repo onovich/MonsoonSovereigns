@@ -1,0 +1,113 @@
+{
+  "message_id": "MSG-20260626-M3-H003-H005-HISTORICAL-RISK-REVIEW",
+  "task_id": "M3-H003-H005-VALIDATION-001",
+  "from_role": "historical_researcher",
+  "status": "PARTIAL",
+  "summary": "Historical/cultural risk review after START_CONFIRMED. A draft untracked H-003/H-005 validation test is now visible, but there is still no task-specific writer/gameplay outbox handoff and the targeted Vitest command currently fails on the H-003 postwar command path. The visible H-003/H-005 claims remain validation-only gameplay/system abstractions rather than formal historical content. No Human Gate is required for the currently visible historical/cultural scope, and no forbidden historical/content/gate/project-status path change is needed.",
+  "artifacts": [
+    "docs/09-world-history-culture.md",
+    "docs/10-historical-research-policy.md",
+    "docs/16-research-bibliography.md",
+    "docs/19-data-schema-guide.md",
+    "docs/research/m3-historical-claim-pipeline.md",
+    "project/tasks/active/M3-H003-H005-VALIDATION-001.json",
+    "tests/m3-h003-h005-validation.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "packages/client-core/src/index.ts",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-HISTORICAL-RISK-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "test/m3-h003-h005-validation",
+  "commit": "75fdd4c9",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On test/m3-h003-h005-validation tracking origin/test/m3-h003-h005-validation. Dirty paths before this handoff were limited to project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M3-H003-H005-VALIDATION-001.json, project/tasks/thread-registry.json, and three START_CONFIRMED route JSON files."
+    },
+    {
+      "command": "git log --oneline --decorate -8",
+      "exit_code": 0,
+      "result": "HEAD is 75fdd4c9 chore(process): start M3 H003 H005 validation task; origin/main is cdf7269e chore(process): close M3 save runtime task."
+    },
+    {
+      "command": "git diff --name-status 75fdd4c9...HEAD",
+      "exit_code": 0,
+      "result": "No committed delta after the start commit."
+    },
+    {
+      "command": "rg --files project/messages | rg \"M3-H003-H005-VALIDATION-001\"",
+      "exit_code": 0,
+      "result": "Found START_PENDING and START_CONFIRMED route files plus this historical_researcher outbox handoff; no test_engineer/gameplay_designer outbox validation handoff was present."
+    },
+    {
+      "command": "Read task, START_CONFIRMED route, M3 historical claim pipeline, and relevant existing M3 fixture/test/client surfaces",
+      "exit_code": 0,
+      "result": "Confirmed task is IN_PROGRESS, historical_researcher is START_CONFIRMED, QA is awaiting review-ready, and current visible H-003/H-005 surfaces are validation/prototype fixtures rather than formal content-source historical records."
+    },
+    {
+      "command": "rg -n \"Toungoo|Pegu|Ava|Bayinnaung|Tabinshwehti|Ayutthaya|Lan Na|Lan Xang|Mrauk|Shan|Mon|Burman|Thai|Lao|Arakan|Buddh|Muslim|Brahman|slave|enslav|hostage|forced|migration|massacre|ethnic|relig|Hanthawaddy\" tests/m3-h003-h005-validation.test.ts",
+      "exit_code": 1,
+      "result": "No real historical names, modern ethnic/national labels, religious labels, forced migration, slavery, hostage, massacre, or similar high-risk historical/cultural terms were found in the draft validation test."
+    },
+    {
+      "command": "pnpm exec vitest run tests/m3-h003-h005-validation.test.ts",
+      "exit_code": 1,
+      "result": "FAILED: 1 of 2 tests failed. H-003 failed because sim.apply-m3-postwar-governance returned rejected where the test expected accepted in appliedPostwarOutcome; H-005 reason coverage test passed. This is not a historical-policy failure, but it blocks validation acceptance."
+    },
+    {
+      "command": "git diff --name-status --",
+      "exit_code": 0,
+      "result": "No tracked forbidden-path diff was present before this handoff update; visible untracked paths were this handoff and tests/m3-h003-h005-validation.test.ts."
+    }
+  ],
+  "decisions": [
+    {
+      "claim": "H-003 validation target: vassal networks should have more decision value than direct annexation, with at least three postwar governance methods producing different 24-month M3 fixture outcomes.",
+      "classification": "in-house abstraction and prototype inference",
+      "finding": "Not a historical fact claim. The draft test expresses this as fixture metrics and winner distribution across abstract methods. Existing postwar governance methods are M3 validation mechanics and must not be presented as exact 16th-century institutions without future claim records."
+    },
+    {
+      "claim": "Direct-control, restore-vassal-ruler, and tribute-only are the three governance methods currently visible in existing M3 tests and accepted handoffs.",
+      "classification": "intentional gameplay deviation and in-house abstraction",
+      "finding": "Acceptable for validation-only mechanics. These labels simplify a broad historical-policy idea that victory is not the same as durable control, but they are not attested formal offices, treaty categories, or historical legal statuses."
+    },
+    {
+      "claim": "24-month projection coefficients, expected income, expected tribute, administrative load, reliability, troop contribution, and risk values differ by method.",
+      "classification": "in-house abstraction",
+      "finding": "These are simulation constants and balance probes, not historical measurements. The draft test currently fails before H-003 can be accepted as technical evidence; once fixed, these values still require no historical claim record unless later described as evidence for real-world magnitudes."
+    },
+    {
+      "claim": "H-005 validation target: character/vassal proposals or reason summaries should be useful but not always optimal.",
+      "classification": "in-house UX/AI validation hypothesis",
+      "finding": "Not historical content. The visible draft checks abstract reason-code coverage and a useful-but-not-always-optimal proposal contrast; this remains a UX/AI validation claim, not a claim about historical advisers, offices, ethnicity, religion, or law."
+    },
+    {
+      "claim": "Validation Court, Validation Vassal Court, Validation Tributary Port, Court Stewardship, Vacant River Governorship, Frontier Muster Office, succession claimant, and reason-code labels in existing client fixtures.",
+      "classification": "in-house abstraction",
+      "finding": "Currently acceptable because labels are visibly validation/prototype data. If any are promoted to production localization, formal historical content, encyclopedia copy, art/audio briefs, or historical scenario data, the M3 claim pipeline requires source IDs, claim records, and review."
+    },
+    {
+      "claim": "Existing docs state broad historical framing that conquest, suzerainty, tribute, hostages, local rulers, and postwar arrangements matter and that modern national/ethnic categories must not be projected backward.",
+      "classification": "historical interpretation and project policy boundary",
+      "finding": "Usable as policy framing, not as a substitute for claim records for any specific person, polity relationship, title, office, coercive act, or date."
+    },
+    {
+      "claim": "Pre-existing SIM-001 test labels include real historical-looking identifiers such as Toungoo, Bayinnaung, and Pegu.",
+      "classification": "historical fact labels in legacy test fixture, outside current H-003/H-005 validation delta",
+      "finding": "Not introduced by this task and not part of current H-003/H-005 evidence. Do not reuse them as validation evidence or product-facing historical content without claim records."
+    }
+  ],
+  "risks": [
+    "No H-003/H-005 writer/gameplay validation handoff is present yet, and the draft targeted validation test currently fails. This review is a historical/cultural policy classification, not overall validation acceptance.",
+    "Generic labels such as governorship, tributary, court, and succession claimant can become historical-title or legal-status claims if moved from validation UI into formal content; that promotion would require claim records and source locators.",
+    "Any future validation evidence involving real polities, people, religious institutions, ethnic categories, forced migration, hostage-taking, slavery, massacre, famine, or coercive settlement must route to historical review and may require Human Gate if it asks the project to resolve a major dispute or cultural risk."
+  ],
+  "blockers": [
+    "Fix or replace the failing H-003 draft validation test before claiming H-003 validation evidence.",
+    "Await test_engineer/gameplay_designer handoff evidence before final task acceptance."
+  ],
+  "route_to": "lead_orchestrator,qa_reviewer",
+  "requested_action": "Use this as the historical/cultural policy classification for the current draft evidence. Do not accept M3-H003-H005-VALIDATION-001 until the failing H-003 test is resolved and test_engineer/gameplay_designer provide routeable validation evidence. Route back to historical_researcher only if later evidence introduces or appears to rely on real historical, cultural, religious, ethnic, legal, or coercion-related assertions.",
+  "created_at": "2026-06-26T04:51:31.7403401+08:00"
+}
