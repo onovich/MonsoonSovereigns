@@ -1,0 +1,118 @@
+{
+  "message_id": "MSG-20260625-M3-POLITY-VASSALAGE-LEAD-ACCEPT",
+  "task_id": "M3-POLITY-VASSALAGE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts the M3 polity/vassalage substrate after systems_architect accepted R2. The implementation adds optional M3 polity/vassalage WorldState, versioned GameCommand paths, validation-only content schema/runtime DTOs, invariant tests, and an explicit requestSaveV1 rejection for state.m3 so M3 worlds cannot emit incompatible save bytes before a future save-format task opens persistence scope.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "packages/protocol/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/tasks/active/M3-POLITY-VASSALAGE-001.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW-R2__simulation_engineer.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-ACCEPT-R2__systems_architect.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/routes/M3-POLITY-VASSALAGE-001__ROUTE-20260625-LEAD-TO-SYSTEMS.json",
+    "project/messages/routes/M3-POLITY-VASSALAGE-001__ROUTE-20260625-SYSTEMS-REQUEST-CHANGES-TO-SIMULATION.json",
+    "project/messages/routes/M3-POLITY-VASSALAGE-001__ROUTE-20260625-LEAD-TO-SYSTEMS-R2.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "feat/m3-polity-vassalage",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Already up to date."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-ACCEPT-R2__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-ACCEPT-R2__systems_architect.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-POLITY-VASSALAGE-001.json"
+    },
+    {
+      "command": "node -e diff scope check",
+      "exit_code": 0,
+      "result": "scope ok files=21; no forbidden paths including packages/save-format were changed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "10 files passed, 52 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 file passed, 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 file passed, 5 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "hello 61e0ba1c, command/query d275faa4, save/load 28074edd, byte length 10920."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed: m1.abstract-graph-30 nodes=30 edges=60 manifestHash=4a438525."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 20 root test files / 101 tests passed; web 1 file / 3 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status M3-POLITY-VASSALAGE-001 ACCEPTED",
+      "exit_code": 0,
+      "result": "M3-POLITY-VASSALAGE-001 ACCEPTED"
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M3-POLITY-VASSALAGE-001 may be committed and opened as a PR.",
+    "The R2 explicit requestSaveV1 rejection is accepted because packages/save-format is forbidden in this task and invalid save bytes are no longer emitted for state.m3.",
+    "No downstream M3 tasks are started before this PR enters main."
+  ],
+  "risks": [
+    "M3 worlds cannot be saved until a future task opens packages/save-format scope and implements state.m3 snapshot DTOs plus matching M3 eventTail parsing.",
+    "M3 content-tools compilation and UI/read-model support remain future tasks."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit and open the M3 polity/vassalage PR. Do not start downstream M3 tasks before integration.",
+  "created_at": "2026-06-25T06:12:42Z"
+}

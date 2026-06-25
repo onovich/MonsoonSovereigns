@@ -1,5 +1,6 @@
 export const M1_GRAPH_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 export const M2_WORLD_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
+export const M3_POLITY_VASSALAGE_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 
 export type M1GraphFixtureSourceKind = "m1.synthetic-abstract-graph";
 export type M1GraphFixtureKind = "synthetic-kernel-graph";
@@ -15,6 +16,15 @@ export type M2WorldConfidence = "LOW";
 export type M2RouteKind = "road" | "river" | "coast";
 export type M2MapGeometryOwnerKind = "district" | "settlement";
 export type M2MapGeometryKind = "polygon" | "point";
+export type M3PolityVassalageFixtureSourceKind = "m3.polity-vassalage-fixture";
+export type M3PolityVassalageFixtureKind = "polity-vassalage-fixture";
+export type M3PolityVassalageSyntheticScope = "m3-validation-only";
+export type M3PolityVassalageHistoricity = "FICTIONAL";
+export type M3PolityVassalageSourceCategory = "validation-only-fixture";
+export type M3PolityVassalageConfidence = "LOW";
+export type M3ObligationKind = "tribute" | "troop";
+export type M3ObligationResourceKind = "cash" | "grain" | "troops";
+export type M3ObligationStatus = "active" | "disputed" | "breached";
 
 export type ContentSchemaErrorCode = "invalid-schema";
 
@@ -119,6 +129,71 @@ export interface M2WorldFixtureSourceV0 {
   readonly mapGeometries: readonly M2WorldMapGeometrySourceV0[];
 }
 
+export interface M3PolityVassalageFixtureProvenanceV0 {
+  readonly sourceCategory: M3PolityVassalageSourceCategory;
+  readonly confidence: M3PolityVassalageConfidence;
+  readonly policyId: "M3-HISTORICAL-CLAIM-PIPELINE-001";
+}
+
+export interface M3PolitySourceV0 {
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly directSuzerainPolityId: string | null;
+}
+
+export interface M3DistrictControllerSourceV0 {
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly controllerPolityId: string | null;
+}
+
+export type M3ObligationRequirementSourceV0 =
+  | {
+      readonly kind: "amount";
+      readonly resourceKind: M3ObligationResourceKind;
+      readonly amount: number;
+    }
+  | {
+      readonly kind: "condition";
+      readonly conditionKey: string;
+    };
+
+export type M3ObligationDueSourceV0 =
+  | {
+      readonly kind: "cadence";
+      readonly periodDays: number;
+      readonly nextDueDay: number;
+    }
+  | {
+      readonly kind: "trigger";
+      readonly triggerKey: string;
+    };
+
+export interface M3ObligationSourceV0 {
+  readonly sourceId: string;
+  readonly debtorPolityId: string;
+  readonly creditorPolityId: string;
+  readonly obligationKind: M3ObligationKind;
+  readonly requirement: M3ObligationRequirementSourceV0;
+  readonly due: M3ObligationDueSourceV0;
+  readonly status: M3ObligationStatus;
+  readonly disputeReasonCode: string | null;
+  readonly breachReasonCode: string | null;
+}
+
+export interface M3PolityVassalageFixtureSourceV0 {
+  readonly schemaVersion: typeof M3_POLITY_VASSALAGE_FIXTURE_SOURCE_V0_SCHEMA_VERSION;
+  readonly kind: M3PolityVassalageFixtureSourceKind;
+  readonly fixtureId: string;
+  readonly fixtureKind: M3PolityVassalageFixtureKind;
+  readonly syntheticScope: M3PolityVassalageSyntheticScope;
+  readonly historicity: M3PolityVassalageHistoricity;
+  readonly provenance: M3PolityVassalageFixtureProvenanceV0;
+  readonly polities: readonly M3PolitySourceV0[];
+  readonly districts: readonly M3DistrictControllerSourceV0[];
+  readonly obligations: readonly M3ObligationSourceV0[];
+}
+
 export function validateM1GraphFixtureSourceV0(input: unknown): readonly ContentSchemaError[] {
   if (!isRecord(input)) {
     return [
@@ -201,6 +276,48 @@ export function validateM2WorldFixtureSourceV0(input: unknown): readonly Content
   return errors;
 }
 
+export function validateM3PolityVassalageFixtureSourceV0(
+  input: unknown
+): readonly ContentSchemaError[] {
+  if (!isRecord(input)) {
+    return [
+      {
+        code: "invalid-schema",
+        path: "$",
+        message: "M3 polity vassalage fixture source must be an object."
+      }
+    ];
+  }
+
+  const errors: ContentSchemaError[] = [];
+  validateM3Root(input, errors);
+  const provenance = input["provenance"];
+  if (isRecord(provenance)) {
+    validateM3Provenance(provenance, errors);
+  }
+
+  const polities = input["polities"];
+  if (Array.isArray(polities)) {
+    polities.forEach((polity, index) => validateM3Polity(polity, `polities[${index}]`, errors));
+  }
+
+  const districts = input["districts"];
+  if (Array.isArray(districts)) {
+    districts.forEach((district, index) =>
+      validateM3District(district, `districts[${index}]`, errors)
+    );
+  }
+
+  const obligations = input["obligations"];
+  if (Array.isArray(obligations)) {
+    obligations.forEach((obligation, index) =>
+      validateM3Obligation(obligation, `obligations[${index}]`, errors)
+    );
+  }
+
+  return errors;
+}
+
 export function parseM1GraphFixtureSourceV0(input: unknown): M1GraphFixtureSourceV0 {
   const errors = validateM1GraphFixtureSourceV0(input);
   if (errors.length > 0) {
@@ -245,6 +362,32 @@ export function parseM2WorldFixtureSourceV0(input: unknown): M2WorldFixtureSourc
     regionalSeasonalCurves: readArray(input, "regionalSeasonalCurves").map(parseM2RegionalCurve),
     routes: readArray(input, "routes").map(parseM2Route),
     mapGeometries: readArray(input, "mapGeometries").map(parseM2MapGeometry)
+  };
+}
+
+export function parseM3PolityVassalageFixtureSourceV0(
+  input: unknown
+): M3PolityVassalageFixtureSourceV0 {
+  const errors = validateM3PolityVassalageFixtureSourceV0(input);
+  if (errors.length > 0) {
+    throw new Error(`M3PolityVassalageFixtureSourceV0 invalid: ${formatErrors(errors)}`);
+  }
+
+  if (!isRecord(input)) {
+    throw new Error("M3PolityVassalageFixtureSourceV0 invalid: root was not an object.");
+  }
+
+  return {
+    schemaVersion: M3_POLITY_VASSALAGE_FIXTURE_SOURCE_V0_SCHEMA_VERSION,
+    kind: "m3.polity-vassalage-fixture",
+    fixtureId: readString(input, "fixtureId"),
+    fixtureKind: "polity-vassalage-fixture",
+    syntheticScope: "m3-validation-only",
+    historicity: "FICTIONAL",
+    provenance: parseM3Provenance(readRecord(input, "provenance")),
+    polities: readArray(input, "polities").map(parseM3Polity),
+    districts: readArray(input, "districts").map(parseM3District),
+    obligations: readArray(input, "obligations").map(parseM3Obligation)
   };
 }
 
@@ -293,6 +436,32 @@ function validateM2Root(input: Record<string, unknown>, errors: ContentSchemaErr
   validateArray(input, "mapGeometries", errors);
 }
 
+function validateM3Root(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
+  if (input["schemaVersion"] !== M3_POLITY_VASSALAGE_FIXTURE_SOURCE_V0_SCHEMA_VERSION) {
+    errors.push({
+      code: "invalid-schema",
+      path: "schemaVersion",
+      message: `schemaVersion must be ${M3_POLITY_VASSALAGE_FIXTURE_SOURCE_V0_SCHEMA_VERSION}.`
+    });
+  }
+
+  validateExactString(input, "kind", "m3.polity-vassalage-fixture", errors);
+  validateNonEmptyString(input, "fixtureId", errors);
+  validateExactString(input, "fixtureKind", "polity-vassalage-fixture", errors);
+  validateExactString(input, "syntheticScope", "m3-validation-only", errors);
+  validateExactString(input, "historicity", "FICTIONAL", errors);
+  if (!isRecord(input["provenance"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: "provenance",
+      message: "provenance must be an object."
+    });
+  }
+  validateArray(input, "polities", errors);
+  validateArray(input, "districts", errors);
+  validateArray(input, "obligations", errors);
+}
+
 function validateM2Provenance(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
   validateExactString(
     input,
@@ -303,6 +472,167 @@ function validateM2Provenance(input: Record<string, unknown>, errors: ContentSch
   );
   validateExactString(input, "confidence", "LOW", errors, "provenance.confidence");
   validateExactString(input, "policyId", "M2-MAP-SOURCE-POLICY-001", errors, "provenance.policyId");
+}
+
+function validateM3Provenance(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
+  validateExactString(
+    input,
+    "sourceCategory",
+    "validation-only-fixture",
+    errors,
+    "provenance.sourceCategory"
+  );
+  validateExactString(input, "confidence", "LOW", errors, "provenance.confidence");
+  validateExactString(
+    input,
+    "policyId",
+    "M3-HISTORICAL-CLAIM-PIPELINE-001",
+    errors,
+    "provenance.policyId"
+  );
+}
+
+function validateM3Polity(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 polity entry must be an object." });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^polity-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m3\.validation\.polity_\d{3}$/u,
+    errors
+  );
+  validateNullablePatternString(
+    input,
+    "directSuzerainPolityId",
+    `${path}.directSuzerainPolityId`,
+    /^polity-\d{3}$/u,
+    errors
+  );
+}
+
+function validateM3District(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 district entry must be an object." });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^district-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m3\.validation\.district_\d{3}$/u,
+    errors
+  );
+  validateNullablePatternString(
+    input,
+    "controllerPolityId",
+    `${path}.controllerPolityId`,
+    /^polity-\d{3}$/u,
+    errors
+  );
+}
+
+function validateM3Obligation(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 obligation entry must be an object."
+    });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^obligation-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "debtorPolityId",
+    `${path}.debtorPolityId`,
+    /^polity-\d{3}$/u,
+    errors
+  );
+  validatePatternString(
+    input,
+    "creditorPolityId",
+    `${path}.creditorPolityId`,
+    /^polity-\d{3}$/u,
+    errors
+  );
+  validateStringUnion(
+    input,
+    "obligationKind",
+    `${path}.obligationKind`,
+    ["tribute", "troop"],
+    errors
+  );
+  validateM3Requirement(input["requirement"], `${path}.requirement`, errors);
+  validateM3Due(input["due"], `${path}.due`, errors);
+  validateStringUnion(
+    input,
+    "status",
+    `${path}.status`,
+    ["active", "disputed", "breached"],
+    errors
+  );
+  validateNullableString(input, "disputeReasonCode", `${path}.disputeReasonCode`, errors);
+  validateNullableString(input, "breachReasonCode", `${path}.breachReasonCode`, errors);
+}
+
+function validateM3Requirement(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 requirement must be an object." });
+    return;
+  }
+  if (input["kind"] === "amount") {
+    validateStringUnion(
+      input,
+      "resourceKind",
+      `${path}.resourceKind`,
+      ["cash", "grain", "troops"],
+      errors
+    );
+    validatePositiveInteger(input, "amount", `${path}.amount`, errors);
+    return;
+  }
+  if (input["kind"] === "condition") {
+    validateNonEmptyString(input, "conditionKey", errors, `${path}.conditionKey`);
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path: `${path}.kind`,
+    message: "M3 requirement kind must be amount or condition."
+  });
+}
+
+function validateM3Due(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 due must be an object." });
+    return;
+  }
+  if (input["kind"] === "cadence") {
+    validatePositiveInteger(input, "periodDays", `${path}.periodDays`, errors);
+    validateIntegerInRange(
+      input,
+      "nextDueDay",
+      `${path}.nextDueDay`,
+      0,
+      Number.MAX_SAFE_INTEGER,
+      errors
+    );
+    return;
+  }
+  if (input["kind"] === "trigger") {
+    validateNonEmptyString(input, "triggerKey", errors, `${path}.triggerKey`);
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path: `${path}.kind`,
+    message: "M3 due kind must be cadence or trigger."
+  });
 }
 
 function validateM2District(input: unknown, path: string, errors: ContentSchemaError[]): void {
@@ -605,6 +935,25 @@ function parseM2Provenance(input: Record<string, unknown>): M2WorldFixtureProven
   };
 }
 
+function parseM3Provenance(input: Record<string, unknown>): M3PolityVassalageFixtureProvenanceV0 {
+  const sourceCategory = readString(input, "sourceCategory");
+  const confidence = readString(input, "confidence");
+  const policyId = readString(input, "policyId");
+  if (
+    sourceCategory !== "validation-only-fixture" ||
+    confidence !== "LOW" ||
+    policyId !== "M3-HISTORICAL-CLAIM-PIPELINE-001"
+  ) {
+    throw new Error("Expected valid M3 polity vassalage provenance.");
+  }
+
+  return {
+    sourceCategory,
+    confidence,
+    policyId
+  };
+}
+
 function parseM2District(input: unknown): M2WorldDistrictSourceV0 {
   if (!isRecord(input)) {
     throw new Error("Expected valid district source entry.");
@@ -686,6 +1035,87 @@ function parseM2MapGeometry(input: unknown): M2WorldMapGeometrySourceV0 {
   };
 }
 
+function parseM3Polity(input: unknown): M3PolitySourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 polity source entry.");
+  }
+  const directSuzerainPolityId = input["directSuzerainPolityId"];
+  if (directSuzerainPolityId !== null && typeof directSuzerainPolityId !== "string") {
+    throw new Error("Expected valid M3 direct suzerain source id.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    directSuzerainPolityId
+  };
+}
+
+function parseM3District(input: unknown): M3DistrictControllerSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 district source entry.");
+  }
+  const controllerPolityId = input["controllerPolityId"];
+  if (controllerPolityId !== null && typeof controllerPolityId !== "string") {
+    throw new Error("Expected valid M3 district controller source id.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    controllerPolityId
+  };
+}
+
+function parseM3Obligation(input: unknown): M3ObligationSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 obligation source entry.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    debtorPolityId: readString(input, "debtorPolityId"),
+    creditorPolityId: readString(input, "creditorPolityId"),
+    obligationKind: readM3ObligationKind(input, "obligationKind"),
+    requirement: parseM3Requirement(readRecord(input, "requirement")),
+    due: parseM3Due(readRecord(input, "due")),
+    status: readM3ObligationStatus(input, "status"),
+    disputeReasonCode: readNullableString(input, "disputeReasonCode"),
+    breachReasonCode: readNullableString(input, "breachReasonCode")
+  };
+}
+
+function parseM3Requirement(input: Record<string, unknown>): M3ObligationRequirementSourceV0 {
+  if (input["kind"] === "amount") {
+    return {
+      kind: "amount",
+      resourceKind: readM3ResourceKind(input, "resourceKind"),
+      amount: readPositiveInteger(input, "amount")
+    };
+  }
+  if (input["kind"] === "condition") {
+    return {
+      kind: "condition",
+      conditionKey: readString(input, "conditionKey")
+    };
+  }
+  throw new Error("Expected valid M3 requirement.");
+}
+
+function parseM3Due(input: Record<string, unknown>): M3ObligationDueSourceV0 {
+  if (input["kind"] === "cadence") {
+    return {
+      kind: "cadence",
+      periodDays: readPositiveInteger(input, "periodDays"),
+      nextDueDay: readIntegerInRange(input, "nextDueDay", 0, Number.MAX_SAFE_INTEGER)
+    };
+  }
+  if (input["kind"] === "trigger") {
+    return {
+      kind: "trigger",
+      triggerKey: readString(input, "triggerKey")
+    };
+  }
+  throw new Error("Expected valid M3 due.");
+}
+
 function parseM2Point(input: unknown): M2WorldMapPointSourceV0 {
   if (!isRecord(input)) {
     throw new Error("Expected valid map point source entry.");
@@ -718,7 +1148,8 @@ function validateExactString(
 function validateNonEmptyString(
   record: Record<string, unknown>,
   key: string,
-  errors: ContentSchemaError[]
+  errors: ContentSchemaError[],
+  path = key
 ): void {
   const value = record[key];
   if (typeof value === "string" && value.length > 0) {
@@ -727,8 +1158,8 @@ function validateNonEmptyString(
 
   errors.push({
     code: "invalid-schema",
-    path: key,
-    message: `${key} must be a non-empty string.`
+    path,
+    message: `${path} must be a non-empty string.`
   });
 }
 
@@ -748,6 +1179,43 @@ function validatePatternString(
     code: "invalid-schema",
     path,
     message: `${path} must match ${pattern.source}.`
+  });
+}
+
+function validateNullablePatternString(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  pattern: RegExp,
+  errors: ContentSchemaError[]
+): void {
+  const value = record[key];
+  if (value === null || (typeof value === "string" && pattern.test(value))) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be null or match ${pattern.source}.`
+  });
+}
+
+function validateNullableString(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  const value = record[key];
+  if (value === null || (typeof value === "string" && value.length > 0)) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be null or a non-empty string.`
   });
 }
 
@@ -931,6 +1399,45 @@ function readM2MapGeometryKind(record: Record<string, unknown>, key: string): M2
   }
 
   throw new Error(`${key} must be a valid M2 map geometry kind.`);
+}
+
+function readM3ObligationKind(record: Record<string, unknown>, key: string): M3ObligationKind {
+  const value = readString(record, key);
+  if (value === "tribute" || value === "troop") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M3 obligation kind.`);
+}
+
+function readM3ResourceKind(
+  record: Record<string, unknown>,
+  key: string
+): M3ObligationResourceKind {
+  const value = readString(record, key);
+  if (value === "cash" || value === "grain" || value === "troops") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M3 resource kind.`);
+}
+
+function readM3ObligationStatus(record: Record<string, unknown>, key: string): M3ObligationStatus {
+  const value = readString(record, key);
+  if (value === "active" || value === "disputed" || value === "breached") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M3 obligation status.`);
+}
+
+function readNullableString(record: Record<string, unknown>, key: string): string | null {
+  const value = record[key];
+  if (value === null || typeof value === "string") {
+    return value;
+  }
+
+  throw new Error(`${key} must be null or a string.`);
 }
 
 function formatErrors(errors: readonly ContentSchemaError[]): string {
