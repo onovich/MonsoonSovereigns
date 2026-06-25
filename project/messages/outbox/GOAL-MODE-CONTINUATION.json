@@ -7,7 +7,7 @@
   "origin_main": "ef40f3dfddfdb64500a0c348590588209b117db9",
   "current_milestone": "M3",
   "current_task": "M3-EXIT-VALIDATION-001",
-  "current_task_status": "REVIEW",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M3-H003-H005-VALIDATION-001",
   "ready_tasks": [],
   "active_threads": [
@@ -15,19 +15,20 @@
       "task_id": "M3-EXIT-VALIDATION-001",
       "role": "systems_architect",
       "thread_id": "019f00ab-b4f3-7b01-8616-d5391a341275",
-      "status": "review_handoff_committed",
+      "status": "request_changes_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
       "start_state": "START_CONFIRMED",
       "start_submission_id": "019f00ad-d04d-71e1-b055-77660f96e935",
-      "review_commit": "5c30e4a5"
+      "review_commit": "5c30e4a5",
+      "request_changes_submission_id": "019f00c9-dd9d-7d01-bc09-3928bf3543e3"
     },
     {
       "task_id": "M3-EXIT-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f00ab-d6dc-7e11-9043-6096c46ef578",
-      "status": "reviewing",
+      "status": "request_changes_issued",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
@@ -53,7 +54,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Wait for qa_reviewer ACCEPT or REQUEST_CHANGES on M3-EXIT-VALIDATION-001.",
+  "next_machine_action": "Wait for systems_architect R2 fix for M3 exit gate QA REQUEST_CHANGES, then route R2 REVIEW_READY to qa_reviewer.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -61,5 +62,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T21:52:36Z"
+  "last_updated_at": "2026-06-25T21:58:11Z"
 }
