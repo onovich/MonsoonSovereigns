@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "message_id": "LEAD-TRANSITION-PREPARE-001",
+  "type": "leadership_handoff",
+  "status": "PREPARED",
+  "transition_status": "PREPARED_AWAITING_SUCCESSOR",
+  "project": "Monsoon Sovereigns",
+  "outgoing_role": "lead_orchestrator",
+  "outgoing_thread_id": null,
+  "outgoing_model_actual": "unknown",
+  "outgoing_model_configured": "gpt-5.5",
+  "outgoing_effort_configured": "xhigh",
+  "outgoing_operational_state_after_integration": "operationally_frozen",
+  "successor_thread_id": null,
+  "main_commit": "268569409f8ced18c19b891c7e183d4018cc23cd",
+  "current_milestone": "M3",
+  "current_task": null,
+  "current_task_status": null,
+  "last_closed_task": "M3-SUCCESSION-STATE-MACHINE-001",
+  "next_ready_tasks": [
+    "M3-TRIBUTE-TROOP-OBLIGATIONS-001"
+  ],
+  "active_threads": [],
+  "open_branches": [
+    "chore/m2-client-district-list-close",
+    "chore/m2-econ-pop-close",
+    "chore/m2-route-transport-close",
+    "chore/sim-003-close-after-integration",
+    "chore/sim-006-close-after-integration",
+    "feat/m2-client-district-list",
+    "feat/m2-economy-population",
+    "feat/m2-route-transport",
+    "feat/sim-003-command-query-v1",
+    "feat/sim-006-content-compiler-v0"
+  ],
+  "open_branches_note": "These are local no-merged branch names observed by git branch --no-merged main. They have no open GitHub PRs and are not active task branches for this transition checkpoint.",
+  "open_pull_requests": [],
+  "unresolved_risks": [
+    {
+      "id": "GOAL-MODE-RISK-001",
+      "description": "Autonomous continuation can hide scope drift if the lead fails to re-check allowed paths, forbidden paths, and Human Gates after each handoff.",
+      "mitigation": "docs/27-autonomous-goal-mode.md requires per-task diff-scope checks, handoff validation, task validation, ready/list checks, and explicit stop conditions."
+    },
+    {
+      "id": "GOAL-MODE-RISK-002",
+      "description": "Thread IDs are session-local and may become stale after Codex restart.",
+      "mitigation": "Recover from persisted handoffs, task JSON, git status, and the state file; spawn replacement role threads when needed."
+    }
+  ],
+  "human_gate": {
+    "required": false,
+    "reason": null
+  },
+  "working_tree_clean": true,
+  "required_successor_checks": [
+    "git status",
+    "git fetch origin --prune",
+    "git rev-parse origin/main",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+    "node -e JSON parse/shape checks for project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, and this handoff"
+  ],
+  "critical_files": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "docs/11-roadmap.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/26-model-routing-amendment.md",
+    "docs/27-autonomous-goal-mode.md",
+    ".agents/skills/monsoon-studio-orchestrator/SKILL.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "recent_handoffs": [
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-R3-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-R3-REVIEW__systems_architect.json"
+  ],
+  "recent_routes": [
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-LEAD-TO-SYSTEMS.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-SYSTEMS-TO-WRITER-R2.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-LEAD-TO-SYSTEMS-R2.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-SYSTEMS-TO-QA.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-QA-TO-WRITER-R3.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-LEAD-TO-SYSTEMS-R3.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-SYSTEMS-R3-TO-QA.json"
+  ],
+  "continuation_file": "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+  "continuation_instruction": "从权威 main 恢复，原子接管 leadership，然后持续完成 M3 并进入 M4。新线程必须先验证本 handoff、GOAL-MODE-CONTINUATION、origin/main、taskctl list/ready、goal-mode state、model-routing state 和 thread registry；不得重启已 CLOSED 任务。",
+  "prepared_at": "2026-06-25T14:33:11.616Z"
+}

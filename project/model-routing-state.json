@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-25T10:13:29.036Z",
+  "updated_at": "2026-06-25T14:42:54.489Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -22,8 +22,10 @@
     "actual_effort": "unknown",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
-    "migration_status": "continue_current_thread_cannot_self_switch",
-    "note": "Current thread can apply this amendment and spawn agents, but the environment does not expose a reliable self-switch operation for the active lead model/effort. User should select GPT-5.5 xhigh when reopening or continuing as lead if the UI is not already using it."
+    "migration_status": "PREPARED_AWAITING_SUCCESSOR",
+    "successor_thread_id": null,
+    "operational_state_after_transition_integration": "operationally_frozen",
+    "note": "Outgoing lead prepared LEAD-TRANSITION-PREPARE-001. The environment does not expose a reliable self-observed active lead thread id, actual model, or effort; successor_thread_id remains null until a new GPT-5.5 xhigh lead_orchestrator explicitly accepts takeover."
   },
   "closed_threads": [
     {
