@@ -1,0 +1,96 @@
+{
+  "message_id": "MSG-20260626-M3-H003-H005-TEST-ENGINEER-REVIEW",
+  "task_id": "M3-H003-H005-VALIDATION-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Validated the initial M3 H-003 and H-005 evidence without changing product scope. Added a dedicated validation test that proves three postwar governance methods produce different 24-month outcomes from the M3 fixture and that reason/proposal cues are useful but not always optimal. The browser smoke still covers appointment submission, bulk eligible submission, per-item rejection visibility, and reason display.",
+  "artifacts": [
+    "tests/m3-h003-h005-validation.test.ts",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "packages/client-core/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-GAMEPLAY-PARTIAL__gameplay_designer.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-HISTORICAL-RISK-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "test/m3-h003-h005-validation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/m3-h003-h005-validation.test.ts --config vitest.config.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 2 tests passed. H-003 comparison uses seed 1531 and contentManifestHash content.m3.postwar.validation. H-005 reason coverage uses the client appointment fixture and a separate appointment world."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-H003-H005-VALIDATION-001.json"
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "JSON shape ok: M3-H003-H005-VALIDATION-001 tests 10 allowed 14 forbidden 18"
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Untracked: project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-GAMEPLAY-PARTIAL__gameplay_designer.json, project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-HISTORICAL-RISK-REVIEW__historical_researcher.json, tests/m3-h003-h005-validation.test.ts"
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c, Worker-compatible hash 61e0ba1c, command/query hash d275faa4, save/load hash 28074edd, save/load byte length 10920"
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "fixture m1.abstract-graph-30-world-state-v0; days 3650; finalRevision 3650; throughput 14471 days/sec; p50 57700ns; p95 113100ns; p99 197800ns; saveByteLength 9980; save 1527400ns; load 2842400ns"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed; existing chunk-size warning remains for lib-a6cQy7l-.js at 513.64 kB"
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --grep \"M3 appointment workspace\"",
+      "exit_code": 0,
+      "result": "2 Chromium Playwright tests passed: appointment/bulk DTO submission and 1440px viewport fit"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture check passed; sim determinism passed; root Vitest 25 files / 165 tests passed; web Vitest 1 file / 3 tests passed"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported"
+    }
+  ],
+  "decisions": [
+    {
+      "classification": "in-house abstraction",
+      "finding": "H-003 evidence is fixture-level and deterministic, not a global balance claim. The three governance methods are intentionally different and the direct-control option is not trivially dominant when administrative load, reliability, troop contribution, tribute, and risk are all considered."
+    },
+    {
+      "classification": "in-house UX/AI validation hypothesis",
+      "finding": "H-005 evidence is measurable but still fixture-level. A stronger-skill candidate can lose to a supportive/military candidate, and the client read model exposes reason-code coverage across appointment, behavior, bulk, enfeoffment, obligation, policy, and succession sources."
+    },
+    {
+      "classification": "coordination note",
+      "finding": "Gameplay_designer and historical_researcher both posted PARTIAL outbox evidence during this turn. Their reads were useful for scope confirmation and did not require any forbidden-path edits or Human Gate escalation."
+    }
+  ],
+  "risks": [
+    "H-005 still does not measure live player acceptance or regret rates; it only proves measurable non-optimality inside the validation fixture.",
+    "The browser smoke is protocol/read-model coverage, not a live production worker integration proof.",
+    "Two concurrent PARTIAL outbox files from other roles remain unmodified in the workspace."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the validation evidence and accept if the initial H-003/H-005 evidence level is sufficient. If you require live proposal telemetry instead of fixture evidence, request a narrowly scoped follow-up.",
+  "created_at": "2026-06-26T04:58:18.7854495+08:00"
+}

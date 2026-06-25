@@ -1,0 +1,139 @@
+{
+  "message_id": "MSG-20260626-M3-H003-H005-GAMEPLAY-PARTIAL",
+  "task_id": "M3-H003-H005-VALIDATION-001",
+  "from_role": "gameplay_designer",
+  "status": "PARTIAL",
+  "summary": "Gameplay validation finds H-003 initial M3 evidence directionally acceptable: direct-control, restore-vassal-ruler, and tribute-only produce meaningfully different 24-month outcomes and direct annexation is not trivially dominant once administrative load, reliability, troop contribution, and risk are considered. H-005 evidence is useful but incomplete: current client/sim surfaces expose eligibility, rejected candidates, bulk eligible-only application, and broad reason-code summaries, but there is not yet a real character/vassal proposal acceptance/regret dataset proving proposals are useful but not always optimal. Full pnpm test currently fails because an untracked validation test misinterprets the postwar outcome query fixture and attempts appointments that current eligibility rules correctly reject.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/systems/02-polity-vassalage-governance.md",
+    "docs/systems/03-characters-court-succession.md",
+    "project/tasks/active/M3-H003-H005-VALIDATION-001.json",
+    "tests/sim-core-m3-postwar-governance.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/m3-h003-h005-validation.test.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-HISTORICAL-RISK-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-GAMEPLAY-PARTIAL__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "test/m3-h003-h005-validation @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "75fdd4c9",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On test/m3-h003-h005-validation tracking origin/test/m3-h003-h005-validation. Current untracked files are the historical_researcher H003/H005 handoff and tests/m3-h003-h005-validation.test.ts; gameplay_designer handoff was then added under project/messages/outbox."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts --reporter verbose",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed, including three-arrangement preview, 24-month outcome comparison, duplicate-arrangement rejection, suzerain-cycle rejection, restore payload validation, and deterministic preview property coverage."
+    },
+    {
+      "command": "node --input-type=module inline query probe for sim.preview-m3-postwar-governance and sim.compare-m3-postwar-governance-outcomes",
+      "exit_code": 0,
+      "result": "Fixture seed=1531, contentManifestHash=content.m3.postwar.validation, districtId=2, months=24. Applied 24-month outcomes: direct-control income=5000 tribute=0 load=2020 reliability=3266 troops=12 risk=6660; restore-vassal-ruler income=2653 tribute=400 load=1092 reliability=6451 troops=20 risk=3177; tribute-only income=765 tribute=200 load=1000 reliability=5260 troops=0 risk=4089."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-appointment-enfeoffment.test.ts tests/client-core-m2-district-list.test.ts tests/ui-m2-district-list.test.tsx --reporter verbose",
+      "exit_code": 0,
+      "result": "3 test files passed; 21 tests passed, including shared player/AI appointment path, stable rejection reasons, policy continuity, deterministic bulk ordering, read-model reason projection, and UI rendering of M3 appointment/bulk/reason panels."
+    },
+    {
+      "command": "node --input-type=module inline client-core fixture probe",
+      "exit_code": 0,
+      "result": "M3 appointment fixture day=120 revision=1 provenance=protocol-query-projection. Counts: characters=4, polities=3, offices=3, obligations=4, successionCrises=1, appointmentResults=3, enfeoffmentResults=1. Eligibility: total=6, eligible=3, rejected=3, unique eligibility reason codes=10. Bulk preview: eligible=2, rejected=1. Reason summaries: 38 unique summaries across appointment, behavior, bulk, enfeoffment, obligation, policy, and succession source kinds."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --grep \"M3 appointment workspace\"",
+      "exit_code": 0,
+      "result": "2 Chromium Playwright tests passed: M3 appointment workspace submits appointment and bulk command DTOs; M3 appointment workspace fits a 1440px desktop viewport."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "Task JSON VALID."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "{\"ok\":true,\"id\":\"M3-H003-H005-VALIDATION-001\",\"status\":\"IN_PROGRESS\",\"allowedPaths\":14,\"forbiddenPaths\":18,\"acceptanceCriteria\":6,\"requiredTests\":10,\"missing\":[]}"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello=61e0ba1c, command/query=d275faa4, save/load=28074edd; save/load byte length=10920."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 performance baseline on node v24.13.1 win32 x64: days=3650, finalRevision=3650, dayThroughputPerSecond=13390, p50=59100ns, p95=127100ns, p99=221600ns, saveByteLength=9980, save=1752100ns, load=2457100ns."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed. Existing chunk-size warning remains for lib-a6cQy7l-.js at 513.64 kB."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 1,
+      "result": "Architecture check and determinism passed, but root Vitest failed in untracked tests/m3-h003-h005-validation.test.ts: expected outcome query length 3 but got 1 because the fixture already gives victor polity 1 a direct administrative district row; expected appointment acceptance but received office-eligibility-failed because the candidate characters belong to polity 2 while the office belongs to polity 1."
+    }
+  ],
+  "decisions": [
+    {
+      "classification": "in-house abstraction",
+      "finding": "H-003 initial evidence is positive for the M3 fixture. Direct-control wins expected income but pays high administrative load and risk; restore-vassal-ruler wins tribute, reliability, and troop contribution while still carrying lower direct income and some overload; tribute-only has the lowest load but weak income, no troops, and worse risk than restored vassal."
+    },
+    {
+      "classification": "in-house abstraction",
+      "finding": "No global hidden penalty is needed to explain the H-003 tradeoffs. The consequences are visible through explicit administrative burden, obligation shape, local acceptance, reliability, readiness, and risk fields."
+    },
+    {
+      "classification": "intentional gameplay deviation",
+      "finding": "The three arrangements intentionally compress broad postwar governance choices into validation mechanics. They are not formal treaty/legal categories or exact historical institutions."
+    },
+    {
+      "classification": "in-house UX/AI validation hypothesis",
+      "finding": "H-005 is currently PARTIAL. Reason summaries are useful inspection aids, and candidate/bulk rejection coverage is measurable, but current M3 does not yet provide a true autonomous proposal acceptance rate, regret rate, or always-not-optimal proposal dataset."
+    },
+    {
+      "classification": "historical fact",
+      "finding": "No new formal historical fact is asserted by this gameplay review. Validation labels such as Validation Court, restored vassal, and tributary port remain prototype labels only."
+    },
+    {
+      "classification": "historiographical dispute",
+      "finding": "No historiographical dispute is adjudicated in this review. Any future use of real polities, offices, titles, religious institutions, ethnic categories, coercive settlement, hostage-taking, slavery, massacre, famine, or forced migration must route back to historical_researcher and may require Human Gate."
+    },
+    {
+      "classification": "inference",
+      "finding": "The gameplay inference is that vassal networks already show decision value over direct annexation in this fixture because different metrics have different winners. This remains initial M3 evidence, not final M5 player-study proof."
+    }
+  ],
+  "risks": [
+    "Current full test status is not green because tests/m3-h003-h005-validation.test.ts is untracked and failing. This blocks clean task acceptance until test_engineer repairs or removes that validation test.",
+    "H-003 evidence is based on one deterministic fixture with seed 1531 and prototype balance constants. It should not be generalized to all scenarios or final balance.",
+    "H-005 currently validates reason-code coverage and command/read-model usefulness, not true proposal optimality, player acceptance rate, regret rate, or interview explainability.",
+    "Client appointment workspace still uses protocol projection fixtures until a future live worker query adapter supplies page-level appointment read models.",
+    "The historical_researcher pre-review is PARTIAL and explicitly requires re-review if validation evidence introduces real historical, cultural, religious, ethnic, legal, or coercion-related assertions.",
+    "The existing Vite chunk-size warning and MODULE_TYPELESS_PACKAGE_JSON warning remain unrelated residuals."
+  ],
+  "blockers": [
+    "Repair tests/m3-h003-h005-validation.test.ts: either compare preview.arrangements for all three methods or apply each postwar method in separate runtimes before querying outcomes; do not expect three applied outcomes from a fixture that already contains a victor direct-control administrative row.",
+    "Repair tests/m3-h003-h005-validation.test.ts H-005 appointment setup: candidate characters must satisfy current office eligibility, especially character.polityId === office.polityId, before using their scaffold metrics as proposal usefulness evidence.",
+    "Decide whether M3-H003-H005 should accept H-005 as PARTIAL initial reason-summary evidence or require an additional validation harness for proposal acceptance/regret before acceptance."
+  ],
+  "route_to": "lead_orchestrator,qa_reviewer",
+  "requested_action": "Lead should route this PARTIAL gameplay validation to qa_reviewer and test_engineer. QA should not accept the task while pnpm test fails. Test engineer should repair the untracked validation test and either record H-005 as partial initial evidence or add a scoped measurable proposal/regret harness without changing public API or product direction.",
+  "created_at": "2026-06-26T04:59:30+08:00"
+}
