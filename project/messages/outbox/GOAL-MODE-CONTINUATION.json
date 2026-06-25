@@ -7,7 +7,7 @@
   "origin_main": "ef40f3dff442ee16acc479346d8f0409c2ca736e",
   "current_milestone": "M3",
   "current_task": "M3-EXIT-VALIDATION-001",
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M3-H003-H005-VALIDATION-001",
   "ready_tasks": [],
   "active_threads": [
@@ -15,7 +15,7 @@
       "task_id": "M3-EXIT-VALIDATION-001",
       "role": "systems_architect",
       "thread_id": "019f00ab-b4f3-7b01-8616-d5391a341275",
-      "status": "review_handoff_committed_r3",
+      "status": "accepted_after_qa_r3",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
@@ -32,7 +32,7 @@
       "task_id": "M3-EXIT-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f00ab-d6dc-7e11-9043-6096c46ef578",
-      "status": "reviewing_r3",
+      "status": "accepted_r3",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "chore/m3-exit-gate",
@@ -43,7 +43,8 @@
       "review_commit_r2": "b9cbdc21",
       "updated_at": "2026-06-25T22:26:04Z",
       "review_ready_submission_id_r3": "019f00e3-5574-7102-a1bd-347b2812cc9a",
-      "review_commit_r3": "9d21e67c"
+      "review_commit_r3": "9d21e67c",
+      "accept_handoff": "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-QA-ACCEPT-R3__qa_reviewer.json"
     }
   ],
   "unresolved_risks": [
@@ -63,7 +64,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Wait for qa_reviewer R3 ACCEPT or REQUEST_CHANGES on M3-EXIT-VALIDATION-001.",
+  "next_machine_action": "Commit M3 Gate accepted state, open PR, require CI, merge, sync main, then close M3-EXIT-VALIDATION-001 and advance current_milestone to M4.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -71,5 +72,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T22:26:04Z"
+  "last_updated_at": "2026-06-25T22:31:40Z"
 }
