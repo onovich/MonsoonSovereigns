@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-25T21:13:46Z",
+  "updated_at": "2026-06-25T21:21:08Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -969,69 +969,65 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_independent_accept_review_and_main_integration",
       "accepted_task_reopened": false
-    }
-  ],
-  "active_threads": [
+    },
     {
-      "task_id": "M3-H003-H005-VALIDATION-001",
-      "role": "test_engineer",
       "thread_id": "019f0086-2f81-7342-a15b-6d19c1db995c",
-      "status": "accepted_after_qa_review",
+      "role": "test_engineer",
+      "task_id": "M3-H003-H005-VALIDATION-001",
+      "status": "closed",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "branch_or_worktree": "test/m3-h003-h005-validation",
-      "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T21:13:46Z",
-      "start_submission_id": "019f0089-8042-7bc0-9571-59394bf35a28"
+      "migration_status": "closed_after_qa_accept_pr_ci_and_main_integration",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-25T21:21:08Z",
+      "integrated_main_commit": "9e1e319be0ce14a20a9614e5108fdb7c2e14e955"
     },
     {
-      "task_id": "M3-H003-H005-VALIDATION-001",
-      "role": "gameplay_designer",
       "thread_id": "019f0086-42e9-7801-b648-fc3e29822624",
-      "status": "accepted_partial_evidence_after_qa_review",
+      "role": "gameplay_designer",
+      "task_id": "M3-H003-H005-VALIDATION-001",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "branch_or_worktree": "test/m3-h003-h005-validation",
-      "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T21:13:46Z",
-      "start_submission_id": "019f0089-808f-73e2-a489-886c6c79cae1"
+      "migration_status": "closed_after_qa_accept_pr_ci_and_main_integration",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-25T21:21:08Z",
+      "integrated_main_commit": "9e1e319be0ce14a20a9614e5108fdb7c2e14e955"
     },
     {
-      "task_id": "M3-H003-H005-VALIDATION-001",
-      "role": "historical_researcher",
       "thread_id": "019f0086-56f5-7b03-8f76-8e8435470f52",
-      "status": "accepted_no_human_gate_after_qa_review",
+      "role": "historical_researcher",
+      "task_id": "M3-H003-H005-VALIDATION-001",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "branch_or_worktree": "test/m3-h003-h005-validation",
-      "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T21:13:46Z",
-      "start_submission_id": "019f0089-80d5-7222-bdc1-b253dfe9fdf1"
+      "migration_status": "closed_after_qa_accept_pr_ci_and_main_integration",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-25T21:21:08Z",
+      "integrated_main_commit": "9e1e319be0ce14a20a9614e5108fdb7c2e14e955"
     },
     {
-      "task_id": "M3-H003-H005-VALIDATION-001",
-      "role": "qa_reviewer",
       "thread_id": "019f0086-5e2b-7ca1-9f86-104b1e726c64",
-      "status": "accepted",
+      "role": "qa_reviewer",
+      "task_id": "M3-H003-H005-VALIDATION-001",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "branch_or_worktree": "test/m3-h003-h005-validation",
-      "start_state": "AWAITING_REVIEW_READY",
-      "updated_at": "2026-06-25T21:13:46Z",
-      "review_ready_submission_id": "019f009a-5738-7091-b356-6598917cd6a0",
-      "review_commit": "22029cec",
-      "accept_submission_id": "019f009e-bf94-7741-ab0e-5d78ba021186",
-      "accept_handoff": "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-QA-ACCEPT__qa_reviewer.json"
+      "migration_status": "closed_after_qa_accept_pr_ci_and_main_integration",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-25T21:21:08Z",
+      "integrated_main_commit": "9e1e319be0ce14a20a9614e5108fdb7c2e14e955"
     }
   ],
+  "active_threads": [],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1072,6 +1068,7 @@
     "M3-TRIBUTE-TROOP-OBLIGATIONS-001": "CLOSED after PR #70 entered main at 9e0bf248eeecbcd4faab162d54dd0504c02f57ac. simulation_engineer thread 019eff66-a89a-7d71-8f57-68a903393b87 implemented M3 vassalage-sourced tribute and troop obligation settlement. systems_architect thread 019eff7e-08c1-7701-8bf3-ca9728272bf9 requested two rounds of changes, then accepted R3 after the partial-fulfillment plus deferral over-collection path was fixed. qa_reviewer thread 019effa4-ffcb-76e3-843e-7bd1b7daf2ae independently accepted. CI initially failed on formatting, then passed after the style fix. Lead closed all three child threads after main integration. Next ready M3 tasks are M3-POSTWAR-GOVERNANCE-001 and M3-CLIENT-APPOINTMENT-UI-001.",
     "M3-POSTWAR-GOVERNANCE-001": "CLOSED after PR #72 entered main at 81380a2836c7985c9f7c7b8f726321cdcdbb6137. simulation_engineer thread 019effbf-bfc9-7f30-8e2d-7c290d1080a3 implemented direct-control, restore-vassal-ruler, and tribute-only postwar governance arrangements with preview, 24-month comparison, reason codes, and duplicate same-district guards. systems_architect thread 019effd0-0eca-7e91-81ae-5772f42001f1 requested four rounds of changes and accepted R5 after direct-control-first duplicate/replacement paths were rejected without mutation. qa_reviewer thread 019effe6-7050-7d93-9c15-a0b25d2c720e independently accepted R5. CI passed on PR #72. Lead closed all three child threads after main integration. Next ready M3 tasks are M3-CLIENT-APPOINTMENT-UI-001 and M3-SAVE-RUNTIME-001.",
     "M3-CLIENT-APPOINTMENT-UI-001": "CLOSED after PR #74 entered main at 4af3729b469efcb9b2836c9b03155de73d12b384. client_engineer thread 019f002b-1a38-78d2-ac41-aaefd0060920 implemented the M3 appointment workspace, read models, eligibility/rejection reasons, bulk preview, policy continuity, administrative impact, succession/obligation/result panels, Storybook coverage, and Playwright protocol command submission plus 1440px viewport regression. qa_reviewer thread 019f003b-6894-76e0-ba04-227258f5d4ef requested the desktop overflow fix and accepted R2 after verifying scrollWidth/clientWidth, no overlap, local tests, scope, and no direct WorldState mutation. PR #74 CI passed; lead closed both child threads after main integration. Next ready M3 task is M3-SAVE-RUNTIME-001.",
-    "M3-SAVE-RUNTIME-001": "CLOSED after PR #76 entered main at c71f5dfb411e7bdec8282807a3b67b23f70dea46. simulation_engineer thread 019f0058-1b24-7840-8866-b30d07c3c364 implemented explicit M3 runtime save/load DTO, parser, copy, missing-M3 load rejection, and regression coverage. systems_architect thread 019f006a-a5c6-7840-9b04-64b646fb47bb accepted R2 after the Prettier gate fix. qa_reviewer thread 019f0074-2f9d-7222-a62d-d80e154f84da independently accepted. CI passed on PR #76. Lead closed child threads after main integration. Next ready M3 task is M3-H003-H005-VALIDATION-001."
+    "M3-SAVE-RUNTIME-001": "CLOSED after PR #76 entered main at c71f5dfb411e7bdec8282807a3b67b23f70dea46. simulation_engineer thread 019f0058-1b24-7840-8866-b30d07c3c364 implemented explicit M3 runtime save/load DTO, parser, copy, missing-M3 load rejection, and regression coverage. systems_architect thread 019f006a-a5c6-7840-9b04-64b646fb47bb accepted R2 after the Prettier gate fix. qa_reviewer thread 019f0074-2f9d-7222-a62d-d80e154f84da independently accepted. CI passed on PR #76. Lead closed child threads after main integration. Next ready M3 task is M3-H003-H005-VALIDATION-001.",
+    "M3-H003-H005-VALIDATION-001": "CLOSED after PR #78 entered main at 9e1e319be0ce14a20a9614e5108fdb7c2e14e955. test_engineer produced validation evidence for H-003/H-005; gameplay_designer recorded fixture-level interpretation and limitations; historical_researcher found no Human Gate for validation-only abstractions; qa_reviewer accepted after CI and required gates passed. Next ready task is M3-EXIT-VALIDATION-001."
   }
 }
