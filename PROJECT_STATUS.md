@@ -109,8 +109,8 @@ M3 当前进展：`M3-SAVE-RUNTIME-001` 已在 PR #76 进入 `origin/main`（`c7
 ## 7. 当前流程模式
 
 `AUTONOMOUS-GOAL-MODE-001` 已作为受门禁约束的流程模式接受，详见 `docs/27-autonomous-goal-mode.md`。它只允许主协调线程在任务、handoff、review、测试和 Human Gates 全部满足时连续推进下一项 dependency-ready 工作；不改变上述冻结产品决定、平台承诺、技术栈、Roadmap、架构边界或历史表达政策。
-## 8. M3 Exit Validation Snapshot
+## 8. M3 Gate And M4 Start Snapshot
 
-`M3-H003-H005-VALIDATION-001` is closed after PR #78 entered main at `9e1e319be0ce14a20a9614e5108fdb7c2e14e955` and the process closure baseline is `ef40f3dff442ee16acc479346d8f0409c2ca736e`.
+`M3-EXIT-VALIDATION-001` is CLOSED after PR #80 entered `origin/main` at `2bf90fdd9f009c30ff104926944e8434c4e0b579`. `docs/GATE-M3.md` records `M3_GATE = PASS`; systems_architect R3 and independent qa_reviewer R3 handoffs were validated; PR CI passed Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact. M3 implementation work is complete.
 
-`M3-EXIT-VALIDATION-001` is now in systems_architect R3 review-ready state on `chore/m3-exit-gate` after QA request changes for lifecycle-aware command evidence. The systems writer produced `docs/GATE-M3.md` with `M3_GATE = PASS`, original handoff `project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json`, R2 handoff `project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json`, and R3 handoff `project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3__systems_architect.json`, routed to `qa_reviewer`. Formal M3 acceptance remains pending independent QA acceptance and lead integration; no M4 work is started by this writer scope.
+Current milestone is **M4 / Campaign, Logistics, Siege, and Postwar War Outcome Loop**. The first READY M4 task is `M4-TASK-GRAPH-001`, which must create the minimal M4 task DAG before any M4 implementation begins. M4 remains bounded by the accepted roadmap: no manual node battle, complex naval war, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, or frozen product/architecture changes without the documented Human Gate.

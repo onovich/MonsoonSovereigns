@@ -1,0 +1,71 @@
+{
+  "id": "M4-TASK-GRAPH-001",
+  "summary": "Create minimal M4 campaign, logistics, siege, and AI task graph",
+  "milestone": "M4",
+  "status": "READY",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-EXIT-VALIDATION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M4-TASK-GRAPH-001.json",
+      "project/tasks/active/M4-*.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Create a minimal, dependency-ordered M4 task DAG under project/tasks/active with explicit owner_role, reviewer_role, risk_level, dependencies, allowed_paths, forbidden_paths, acceptance_criteria, required_tests, route_to, and notes for every M4 task.",
+    "The M4 DAG covers Roadmap M4 goals without implementing them: campaign objectives, muster and preparation, mobilized force commitments, grain supply, route and transport capacity, march execution, supply state, reinforcement timing, siege choices, withdrawal, postwar result handoff to M3 governance, minimal campaign AI, campaign planning UI, determinism, and stress validation.",
+    "The M4 DAG explicitly excludes manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer, server work, telemetry, arbitrary-code mods, and any Human Gate decision reserved by PROJECT_STATUS.md or docs/27-autonomous-goal-mode.md.",
+    "Tasks are small enough for independent writer/reviewer routing, with no overlapping writer ownership for the same package or file region.",
+    "No product code, package code, content-source data, roadmap edits, accepted ADR changes, M4 implementation work, or production dependency changes are performed by this planning task.",
+    "systems_architect writer and independent qa_reviewer reviewer produce validated handoffs before lead acceptance."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-TASK-GRAPH-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON validation for all new M4 task files and DAG acyclicity/dependency existence/status shape",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <qa-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m4-task-graph",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "M4 starts only after M3 Gate PASS entered origin/main and M3-EXIT-VALIDATION-001 is CLOSED.",
+    "This task creates or restores the M4 task graph only; it must not implement campaign, march, supply, siege, combat, AI, or UI behavior.",
+    "Manual node battle remains a Human Gate and must not be added automatically.",
+    "M4 work must connect war outcomes back to accepted M3 postwar governance boundaries without expanding into full diplomacy or rebellion systems."
+  ],
+  "created_at": "2026-06-25T22:38:15Z",
+  "updated_at": "2026-06-25T22:38:15Z"
+}
