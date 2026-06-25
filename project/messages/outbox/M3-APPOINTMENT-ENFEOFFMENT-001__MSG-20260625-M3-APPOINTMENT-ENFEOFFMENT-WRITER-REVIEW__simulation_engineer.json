@@ -1,0 +1,79 @@
+{
+  "message_id": "MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-WRITER-REVIEW",
+  "task_id": "M3-APPOINTMENT-ENFEOFFMENT-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M3 appointment, bulk appointment, enfeoffment, office policy, jurisdiction policy, and decision scaffold command/query paths in protocol and sim-core. Commands are shared for player and AI actors, validate authority from polity/office actor ids, preserve policies across holder changes, and reject bulk appointment batches atomically with stable per-item reason strings.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts"
+  ],
+  "branch_or_worktree": "feat/m3-appointments-enfeoffment",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified implementation/test files plus pre-existing modified project coordination files; new tests/sim-core-m3-appointment-enfeoffment.test.ts is untracked."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "11 test files passed; 63 tests passed. Includes appointment/enfeoffment property and invariant coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 21 files/121 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-APPOINTMENT-ENFEOFFMENT-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-APPOINTMENT-ENFEOFFMENT-001",
+      "exit_code": 0,
+      "result": "JSON shape ok for project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "R3 surface: extended existing state.m3 substrate instead of adding a new root or touching save-format; requestSaveV1 continues refusing M3 state.",
+    "Authority is validated from actor.id values of form polity:<id> or office:<id>; UI/player/AI callers use the same GameCommand family.",
+    "Decision scaffolds expose coarse reason codes and integer executionPerformanceBps only; no hidden full scoring weights or autonomous planner behavior were added.",
+    "Bulk appointment validation sorts items by itemId for stable audit/rejection order and commits only after all items validate."
+  ],
+  "risks": [
+    "Appointment audit records include commandId and actor for auditability, so otherwise identical player and AI commands can intentionally produce different state hashes.",
+    "M3 save compatibility remains intentionally unsupported by the existing M3 save refusal guard; no save-format migration was attempted.",
+    "R3 command/state changes require systems_architect and QA review before acceptance."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R3 protocol/state/command architecture, authority validation, deterministic bulk semantics, scaffold visibility, and confirm QA routing.",
+  "created_at": "2026-06-25T08:12:00.596Z"
+}

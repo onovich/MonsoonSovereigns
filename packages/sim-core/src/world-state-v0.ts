@@ -10,6 +10,9 @@ export type PopulationGroupId = Brand<number, "PopulationGroupId">;
 export type M3ObligationId = Brand<number, "M3ObligationId">;
 export type M3ObligationAuditEventId = Brand<number, "M3ObligationAuditEventId">;
 export type M3FulfillmentId = Brand<number, "M3FulfillmentId">;
+export type M3OfficeId = Brand<number, "M3OfficeId">;
+export type M3PolicyId = Brand<number, "M3PolicyId">;
+export type M3AppointmentAuditEventId = Brand<number, "M3AppointmentAuditEventId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -177,6 +180,20 @@ export type M3ObligationResourceKindV0 = "cash" | "grain" | "troops";
 export type M3ObligationStatusV0 = "active" | "disputed" | "breached";
 export type M3ObligationAuditEventKindV0 = "created" | "fulfilled" | "status-changed";
 export type M3AdministrativeControlModeV0 = "direct" | "vassal" | "tribute-only";
+export type M3OfficeKindV0 = "commander" | "governor" | "minister";
+export type M3OfficeJurisdictionV0 =
+  | { readonly kind: "polity"; readonly polityId: PolityId }
+  | { readonly kind: "district"; readonly districtId: DistrictId };
+export type M3PolicyStanceV0 = "balanced" | "conciliatory" | "extractive" | "military";
+export type M3PolicyTargetV0 =
+  | { readonly kind: "office"; readonly officeId: M3OfficeId }
+  | { readonly kind: "polity"; readonly polityId: PolityId }
+  | { readonly kind: "district"; readonly districtId: DistrictId };
+export type M3AppointmentAuditEventKindV0 =
+  | "appointment"
+  | "bulk-appointment"
+  | "enfeoffment"
+  | "policy-updated";
 
 export interface M3PolityRecordStateV0 {
   readonly polityId: PolityId;
@@ -254,6 +271,67 @@ export interface M3AdministrativeDistrictStateV0 {
   readonly administrativeCapacity: number;
 }
 
+export interface M3CharacterStateV0 {
+  readonly characterId: PersonId;
+  readonly polityId: PolityId;
+  readonly alive: boolean;
+  readonly currentDistrictId: DistrictId;
+  readonly commandBps: number;
+  readonly administrationBps: number;
+  readonly diplomacyBps: number;
+}
+
+export interface M3CharacterRelationshipStateV0 {
+  readonly sourceCharacterId: PersonId;
+  readonly targetCharacterId: PersonId;
+  readonly affinityBps: number;
+}
+
+export interface M3OfficeStateV0 {
+  readonly officeId: M3OfficeId;
+  readonly polityId: PolityId;
+  readonly jurisdiction: M3OfficeJurisdictionV0;
+  readonly officeKind: M3OfficeKindV0;
+  readonly primary: boolean;
+  readonly holderCharacterId: PersonId | null;
+  readonly policyId: M3PolicyId;
+  readonly minimumCommandBps: number;
+  readonly minimumAdministrationBps: number;
+}
+
+export interface M3PolicyStateV0 {
+  readonly policyId: M3PolicyId;
+  readonly target: M3PolicyTargetV0;
+  readonly stance: M3PolicyStanceV0;
+  readonly intensityBps: number;
+}
+
+export interface M3EnfeoffmentStateV0 {
+  readonly districtId: DistrictId;
+  readonly holderCharacterId: PersonId;
+  readonly grantedByPolityId: PolityId;
+  readonly policyId: M3PolicyId;
+  readonly grantedDay: GameDay;
+  readonly reasonCode: string;
+}
+
+export interface M3AppointmentAuditEventStateV0 {
+  readonly id: M3AppointmentAuditEventId;
+  readonly eventKind: M3AppointmentAuditEventKindV0;
+  readonly eventDay: GameDay;
+  readonly eventRevision: WorldRevision;
+  readonly commandId: string;
+  readonly actor: {
+    readonly kind: "ai" | "player" | "system";
+    readonly id: string;
+  };
+  readonly officeId: M3OfficeId | null;
+  readonly characterId: PersonId | null;
+  readonly policyId: M3PolicyId | null;
+  readonly districtId: DistrictId | null;
+  readonly reasonCode: string;
+}
+
 export interface M3PolityVassalageStateV0 {
   readonly schemaVersion: 1;
   readonly polities: readonly M3PolityRecordStateV0[];
@@ -261,6 +339,12 @@ export interface M3PolityVassalageStateV0 {
   readonly obligationAuditEvents: readonly M3ObligationAuditEventStateV0[];
   readonly fulfillmentClaims: readonly M3FulfillmentClaimStateV0[];
   readonly administrativeDistricts: readonly M3AdministrativeDistrictStateV0[];
+  readonly characters: readonly M3CharacterStateV0[];
+  readonly relationships: readonly M3CharacterRelationshipStateV0[];
+  readonly offices: readonly M3OfficeStateV0[];
+  readonly policies: readonly M3PolicyStateV0[];
+  readonly enfeoffments: readonly M3EnfeoffmentStateV0[];
+  readonly appointmentAuditEvents: readonly M3AppointmentAuditEventStateV0[];
 }
 
 export interface M3AdministrativeBurdenProfileInputV0 {
@@ -455,6 +539,18 @@ export function parseM3ObligationAuditEventId(value: unknown): M3ObligationAudit
 
 export function parseM3FulfillmentId(value: unknown): M3FulfillmentId {
   return parsePositiveInteger(value, "M3FulfillmentId") as M3FulfillmentId;
+}
+
+export function parseM3OfficeId(value: unknown): M3OfficeId {
+  return parsePositiveInteger(value, "M3OfficeId") as M3OfficeId;
+}
+
+export function parseM3PolicyId(value: unknown): M3PolicyId {
+  return parsePositiveInteger(value, "M3PolicyId") as M3PolicyId;
+}
+
+export function parseM3AppointmentAuditEventId(value: unknown): M3AppointmentAuditEventId {
+  return parsePositiveInteger(value, "M3AppointmentAuditEventId") as M3AppointmentAuditEventId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -2090,7 +2186,13 @@ export function createM3PolityVassalageStateV0(
     obligations: input?.obligations ?? [],
     obligationAuditEvents: input?.obligationAuditEvents ?? [],
     fulfillmentClaims: input?.fulfillmentClaims ?? [],
-    administrativeDistricts: input?.administrativeDistricts ?? []
+    administrativeDistricts: input?.administrativeDistricts ?? [],
+    characters: input?.characters ?? [],
+    relationships: input?.relationships ?? [],
+    offices: input?.offices ?? [],
+    policies: input?.policies ?? [],
+    enfeoffments: input?.enfeoffments ?? [],
+    appointmentAuditEvents: input?.appointmentAuditEvents ?? []
   });
 }
 
@@ -2143,7 +2245,63 @@ export function canonicalizeM3PolityVassalageState(
           "M3 administrativeCapacity"
         )
       })
-    )
+    ),
+    characters: sortM3Characters(m3.characters).map((entry) => ({
+      characterId: parsePersonId(entry.characterId),
+      polityId: parsePolityId(entry.polityId),
+      alive: parseBoolean(entry.alive, "M3 character alive"),
+      currentDistrictId: parseDistrictId(entry.currentDistrictId),
+      commandBps: parseBps(entry.commandBps, "M3 commandBps"),
+      administrationBps: parseBps(entry.administrationBps, "M3 administrationBps"),
+      diplomacyBps: parseBps(entry.diplomacyBps, "M3 diplomacyBps")
+    })),
+    relationships: sortM3Relationships(m3.relationships).map((entry) => ({
+      sourceCharacterId: parsePersonId(entry.sourceCharacterId),
+      targetCharacterId: parsePersonId(entry.targetCharacterId),
+      affinityBps: parseSignedBps(entry.affinityBps, "M3 affinityBps")
+    })),
+    offices: sortM3Offices(m3.offices).map((entry) => ({
+      officeId: parseM3OfficeId(entry.officeId),
+      polityId: parsePolityId(entry.polityId),
+      jurisdiction: copyM3OfficeJurisdiction(entry.jurisdiction),
+      officeKind: parseM3OfficeKind(entry.officeKind),
+      primary: parseBoolean(entry.primary, "M3 office primary"),
+      holderCharacterId:
+        entry.holderCharacterId === null ? null : parsePersonId(entry.holderCharacterId),
+      policyId: parseM3PolicyId(entry.policyId),
+      minimumCommandBps: parseBps(entry.minimumCommandBps, "M3 minimumCommandBps"),
+      minimumAdministrationBps: parseBps(
+        entry.minimumAdministrationBps,
+        "M3 minimumAdministrationBps"
+      )
+    })),
+    policies: sortM3Policies(m3.policies).map((entry) => ({
+      policyId: parseM3PolicyId(entry.policyId),
+      target: copyM3PolicyTarget(entry.target),
+      stance: parseM3PolicyStance(entry.stance),
+      intensityBps: parseBps(entry.intensityBps, "M3 intensityBps")
+    })),
+    enfeoffments: sortM3Enfeoffments(m3.enfeoffments).map((entry) => ({
+      districtId: parseDistrictId(entry.districtId),
+      holderCharacterId: parsePersonId(entry.holderCharacterId),
+      grantedByPolityId: parsePolityId(entry.grantedByPolityId),
+      policyId: parseM3PolicyId(entry.policyId),
+      grantedDay: parseGameDay(entry.grantedDay),
+      reasonCode: parseDisplayNameKey(entry.reasonCode, "M3 enfeoffment reasonCode")
+    })),
+    appointmentAuditEvents: orderedM3AppointmentAuditEventsV0(m3).map((entry) => ({
+      id: parseM3AppointmentAuditEventId(entry.id),
+      eventKind: parseM3AppointmentAuditEventKind(entry.eventKind),
+      eventDay: parseGameDay(entry.eventDay),
+      eventRevision: parseWorldRevision(entry.eventRevision),
+      commandId: parseDisplayNameKey(entry.commandId, "M3 appointment audit commandId"),
+      actor: { ...entry.actor },
+      officeId: entry.officeId === null ? null : parseM3OfficeId(entry.officeId),
+      characterId: entry.characterId === null ? null : parsePersonId(entry.characterId),
+      policyId: entry.policyId === null ? null : parseM3PolicyId(entry.policyId),
+      districtId: entry.districtId === null ? null : parseDistrictId(entry.districtId),
+      reasonCode: parseDisplayNameKey(entry.reasonCode, "M3 appointment audit reasonCode")
+    }))
   };
 }
 
@@ -2229,12 +2387,43 @@ export function orderedM3ObligationAuditEventsV0(
   );
 }
 
+export function orderedM3AppointmentAuditEventsV0(
+  m3: M3PolityVassalageStateV0 | undefined
+): readonly M3AppointmentAuditEventStateV0[] {
+  if (m3 === undefined) {
+    return [];
+  }
+
+  return [...m3.appointmentAuditEvents].sort(
+    (left, right) =>
+      left.eventDay - right.eventDay ||
+      left.eventRevision - right.eventRevision ||
+      left.id - right.id
+  );
+}
+
 function parseDisplayNameKey(value: unknown, path: string): string {
   if (typeof value !== "string" || value.length === 0) {
     throw new Error(`${path} must be a non-empty string.`);
   }
 
   return value;
+}
+
+function parseBoolean(value: unknown, label: string): boolean {
+  if (typeof value !== "boolean") {
+    throw new Error(`${label} must be a boolean.`);
+  }
+
+  return value;
+}
+
+function parseBps(value: unknown, label: string): number {
+  return parseIntegerInRange(value, label, 0, 10_000);
+}
+
+function parseSignedBps(value: unknown, label: string): number {
+  return parseIntegerInRange(value, label, -10_000, 10_000);
 }
 
 function parsePositiveInteger(value: unknown, label: string): number {
@@ -2291,6 +2480,75 @@ function parseM3AdministrativeControlMode(value: unknown): M3AdministrativeContr
   }
 
   throw new Error("M3 administrative controlMode must be direct, vassal, or tribute-only.");
+}
+
+function parseM3OfficeKind(value: unknown): M3OfficeKindV0 {
+  if (value === "commander" || value === "governor" || value === "minister") {
+    return value;
+  }
+
+  throw new Error("M3 officeKind must be commander, governor, or minister.");
+}
+
+function parseM3PolicyStance(value: unknown): M3PolicyStanceV0 {
+  if (
+    value === "balanced" ||
+    value === "conciliatory" ||
+    value === "extractive" ||
+    value === "military"
+  ) {
+    return value;
+  }
+
+  throw new Error("M3 policy stance must be balanced, conciliatory, extractive, or military.");
+}
+
+function parseM3AppointmentAuditEventKind(value: unknown): M3AppointmentAuditEventKindV0 {
+  if (
+    value === "appointment" ||
+    value === "bulk-appointment" ||
+    value === "enfeoffment" ||
+    value === "policy-updated"
+  ) {
+    return value;
+  }
+
+  throw new Error("M3 appointment audit eventKind is invalid.");
+}
+
+function copyM3OfficeJurisdiction(jurisdiction: M3OfficeJurisdictionV0): M3OfficeJurisdictionV0 {
+  switch (jurisdiction.kind) {
+    case "polity":
+      return {
+        kind: "polity",
+        polityId: parsePolityId(jurisdiction.polityId)
+      };
+    case "district":
+      return {
+        kind: "district",
+        districtId: parseDistrictId(jurisdiction.districtId)
+      };
+  }
+}
+
+function copyM3PolicyTarget(target: M3PolicyTargetV0): M3PolicyTargetV0 {
+  switch (target.kind) {
+    case "office":
+      return {
+        kind: "office",
+        officeId: parseM3OfficeId(target.officeId)
+      };
+    case "polity":
+      return {
+        kind: "polity",
+        polityId: parsePolityId(target.polityId)
+      };
+    case "district":
+      return {
+        kind: "district",
+        districtId: parseDistrictId(target.districtId)
+      };
+  }
 }
 
 function copyM3Requirement(requirement: M3ObligationRequirementV0): M3ObligationRequirementV0 {
@@ -2410,6 +2668,34 @@ function sortM3AdministrativeDistricts(
       left.districtId - right.districtId ||
       compareText(left.controlMode, right.controlMode)
   );
+}
+
+function sortM3Characters(values: readonly M3CharacterStateV0[]): readonly M3CharacterStateV0[] {
+  return [...values].sort((left, right) => left.characterId - right.characterId);
+}
+
+function sortM3Relationships(
+  values: readonly M3CharacterRelationshipStateV0[]
+): readonly M3CharacterRelationshipStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.sourceCharacterId - right.sourceCharacterId ||
+      left.targetCharacterId - right.targetCharacterId
+  );
+}
+
+function sortM3Offices(values: readonly M3OfficeStateV0[]): readonly M3OfficeStateV0[] {
+  return [...values].sort((left, right) => left.officeId - right.officeId);
+}
+
+function sortM3Policies(values: readonly M3PolicyStateV0[]): readonly M3PolicyStateV0[] {
+  return [...values].sort((left, right) => left.policyId - right.policyId);
+}
+
+function sortM3Enfeoffments(
+  values: readonly M3EnfeoffmentStateV0[]
+): readonly M3EnfeoffmentStateV0[] {
+  return [...values].sort((left, right) => left.districtId - right.districtId);
 }
 
 function m3AdministrativeModeBaseLoad(mode: M3AdministrativeControlModeV0): number {
@@ -2634,7 +2920,13 @@ function formatM3CanonicalLines(m3: M3PolityVassalageStateV0 | undefined): reado
     `state.m3.fulfillmentClaims=${formatM3FulfillmentClaims(m3.fulfillmentClaims)}`,
     `state.m3.administrativeDistricts=${formatM3AdministrativeDistricts(
       m3.administrativeDistricts
-    )}`
+    )}`,
+    `state.m3.characters=${formatM3Characters(m3.characters)}`,
+    `state.m3.relationships=${formatM3Relationships(m3.relationships)}`,
+    `state.m3.offices=${formatM3Offices(m3.offices)}`,
+    `state.m3.policies=${formatM3Policies(m3.policies)}`,
+    `state.m3.enfeoffments=${formatM3Enfeoffments(m3.enfeoffments)}`,
+    `state.m3.appointmentAuditEvents=${formatM3AppointmentAuditEvents(m3)}`
   ];
 }
 
@@ -2725,6 +3017,104 @@ function formatM3AdministrativeDistricts(
         value.directness,
         value.frontierPressure,
         value.administrativeCapacity
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM3Characters(values: readonly M3CharacterStateV0[]): string {
+  return sortM3Characters(values)
+    .map((value) =>
+      [
+        value.characterId,
+        value.polityId,
+        value.alive ? "1" : "0",
+        value.currentDistrictId,
+        value.commandBps,
+        value.administrationBps,
+        value.diplomacyBps
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM3Relationships(values: readonly M3CharacterRelationshipStateV0[]): string {
+  return sortM3Relationships(values)
+    .map((value) => `${value.sourceCharacterId}:${value.targetCharacterId}:${value.affinityBps}`)
+    .join(",");
+}
+
+function formatM3Offices(values: readonly M3OfficeStateV0[]): string {
+  return sortM3Offices(values)
+    .map((value) =>
+      [
+        value.officeId,
+        value.polityId,
+        formatM3OfficeJurisdiction(value.jurisdiction),
+        value.officeKind,
+        value.primary ? "1" : "0",
+        formatNullableNumber(value.holderCharacterId),
+        value.policyId,
+        value.minimumCommandBps,
+        value.minimumAdministrationBps
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM3OfficeJurisdiction(jurisdiction: M3OfficeJurisdictionV0): string {
+  switch (jurisdiction.kind) {
+    case "polity":
+      return `polity:${jurisdiction.polityId}`;
+    case "district":
+      return `district:${jurisdiction.districtId}`;
+  }
+}
+
+function formatM3Policies(values: readonly M3PolicyStateV0[]): string {
+  return sortM3Policies(values)
+    .map(
+      (value) =>
+        `${value.policyId}:${formatM3PolicyTarget(value.target)}:${value.stance}:${value.intensityBps}`
+    )
+    .join(",");
+}
+
+function formatM3PolicyTarget(target: M3PolicyTargetV0): string {
+  switch (target.kind) {
+    case "office":
+      return `office:${target.officeId}`;
+    case "polity":
+      return `polity:${target.polityId}`;
+    case "district":
+      return `district:${target.districtId}`;
+  }
+}
+
+function formatM3Enfeoffments(values: readonly M3EnfeoffmentStateV0[]): string {
+  return sortM3Enfeoffments(values)
+    .map(
+      (value) =>
+        `${value.districtId}:${value.holderCharacterId}:${value.grantedByPolityId}:${value.policyId}:${value.grantedDay}:${value.reasonCode}`
+    )
+    .join(",");
+}
+
+function formatM3AppointmentAuditEvents(m3: M3PolityVassalageStateV0): string {
+  return orderedM3AppointmentAuditEventsV0(m3)
+    .map((value) =>
+      [
+        value.id,
+        value.eventKind,
+        value.eventDay,
+        value.eventRevision,
+        value.commandId,
+        `${value.actor.kind}:${value.actor.id}`,
+        formatNullableNumber(value.officeId),
+        formatNullableNumber(value.characterId),
+        formatNullableNumber(value.policyId),
+        formatNullableNumber(value.districtId),
+        value.reasonCode
       ].join(":")
     )
     .join(",");
@@ -3334,6 +3724,13 @@ function validateM3RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
   validateM3AuditSemantics(m3, errors);
   validateM3FulfillmentSemantics(m3, errors);
   validateM3AdministrativeSemantics(m3, polityIds, idsOf(world.definitions.districts), errors);
+  validateM3AppointmentSemantics(
+    m3,
+    idsOf(world.definitions.persons),
+    polityIds,
+    idsOf(world.definitions.districts),
+    errors
+  );
 }
 
 function validateM3PolityCoverage(
@@ -3577,6 +3974,246 @@ function validateM3AdministrativeSemantics(
   });
 }
 
+function validateM3AppointmentSemantics(
+  m3: M3PolityVassalageStateV0,
+  personIds: ReadonlySet<number>,
+  polityIds: ReadonlySet<number>,
+  districtIds: ReadonlySet<number>,
+  errors: WorldInvariantError[]
+): void {
+  const characterIds = new Set<number>();
+  m3.characters.forEach((character, index) => {
+    if (characterIds.has(character.characterId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.characters",
+        message: `Duplicate M3CharacterState row for PersonId ${character.characterId}.`
+      });
+    }
+    characterIds.add(character.characterId);
+    if (!personIds.has(character.characterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.characters[${index}].characterId`,
+        message: `M3 character references missing PersonId ${character.characterId}.`
+      });
+    }
+    if (!polityIds.has(character.polityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.characters[${index}].polityId`,
+        message: `M3 character references missing PolityId ${character.polityId}.`
+      });
+    }
+    if (!districtIds.has(character.currentDistrictId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.characters[${index}].currentDistrictId`,
+        message: `M3 character references missing DistrictId ${character.currentDistrictId}.`
+      });
+    }
+  });
+
+  m3.relationships.forEach((relationship, index) => {
+    if (!characterIds.has(relationship.sourceCharacterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.relationships[${index}].sourceCharacterId`,
+        message: "M3 relationship references missing source character."
+      });
+    }
+    if (!characterIds.has(relationship.targetCharacterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.relationships[${index}].targetCharacterId`,
+        message: "M3 relationship references missing target character."
+      });
+    }
+  });
+
+  const officeIds = new Set<number>();
+  const primaryHolderIds = new Set<number>();
+  m3.offices.forEach((office, index) => {
+    if (officeIds.has(office.officeId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.offices",
+        message: `Duplicate M3OfficeState row for M3OfficeId ${office.officeId}.`
+      });
+    }
+    officeIds.add(office.officeId);
+    if (!polityIds.has(office.polityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.offices[${index}].polityId`,
+        message: `M3 office references missing PolityId ${office.polityId}.`
+      });
+    }
+    validateM3OfficeJurisdictionReferences(
+      office.jurisdiction,
+      polityIds,
+      districtIds,
+      index,
+      errors
+    );
+    if (office.holderCharacterId !== null && !characterIds.has(office.holderCharacterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.offices[${index}].holderCharacterId`,
+        message: "M3 office holder references missing character."
+      });
+    }
+    if (office.primary && office.holderCharacterId !== null) {
+      if (primaryHolderIds.has(office.holderCharacterId)) {
+        errors.push({
+          code: "duplicate-runtime-state-row",
+          path: "state.m3.offices",
+          message: "M3 primary office holder appears in more than one primary office."
+        });
+      }
+      primaryHolderIds.add(office.holderCharacterId);
+    }
+  });
+
+  const policyIds = new Set<number>();
+  m3.policies.forEach((policy, index) => {
+    if (policyIds.has(policy.policyId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.policies",
+        message: `Duplicate M3PolicyState row for M3PolicyId ${policy.policyId}.`
+      });
+    }
+    policyIds.add(policy.policyId);
+    validateM3PolicyTargetReferences(
+      policy.target,
+      officeIds,
+      polityIds,
+      districtIds,
+      index,
+      errors
+    );
+  });
+
+  m3.offices.forEach((office, index) => {
+    if (!policyIds.has(office.policyId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.offices[${index}].policyId`,
+        message: `M3 office references missing M3PolicyId ${office.policyId}.`
+      });
+    }
+  });
+
+  const enfeoffedDistrictIds = new Set<number>();
+  m3.enfeoffments.forEach((enfeoffment, index) => {
+    if (enfeoffedDistrictIds.has(enfeoffment.districtId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.enfeoffments",
+        message: "Duplicate M3EnfeoffmentState row for DistrictId."
+      });
+    }
+    enfeoffedDistrictIds.add(enfeoffment.districtId);
+    if (!districtIds.has(enfeoffment.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.enfeoffments[${index}].districtId`,
+        message: `M3 enfeoffment references missing DistrictId ${enfeoffment.districtId}.`
+      });
+    }
+    if (!characterIds.has(enfeoffment.holderCharacterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.enfeoffments[${index}].holderCharacterId`,
+        message: "M3 enfeoffment references missing holder character."
+      });
+    }
+    if (!polityIds.has(enfeoffment.grantedByPolityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.enfeoffments[${index}].grantedByPolityId`,
+        message: "M3 enfeoffment references missing granting polity."
+      });
+    }
+    if (!policyIds.has(enfeoffment.policyId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.enfeoffments[${index}].policyId`,
+        message: "M3 enfeoffment references missing jurisdiction policy."
+      });
+    }
+  });
+}
+
+function validateM3OfficeJurisdictionReferences(
+  jurisdiction: M3OfficeJurisdictionV0,
+  polityIds: ReadonlySet<number>,
+  districtIds: ReadonlySet<number>,
+  officeIndex: number,
+  errors: WorldInvariantError[]
+): void {
+  switch (jurisdiction.kind) {
+    case "polity":
+      if (!polityIds.has(jurisdiction.polityId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m3.offices[${officeIndex}].jurisdiction.polityId`,
+          message: "M3 office jurisdiction references missing PolityId."
+        });
+      }
+      return;
+    case "district":
+      if (!districtIds.has(jurisdiction.districtId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m3.offices[${officeIndex}].jurisdiction.districtId`,
+          message: "M3 office jurisdiction references missing DistrictId."
+        });
+      }
+      return;
+  }
+}
+
+function validateM3PolicyTargetReferences(
+  target: M3PolicyTargetV0,
+  officeIds: ReadonlySet<number>,
+  polityIds: ReadonlySet<number>,
+  districtIds: ReadonlySet<number>,
+  policyIndex: number,
+  errors: WorldInvariantError[]
+): void {
+  switch (target.kind) {
+    case "office":
+      if (!officeIds.has(target.officeId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m3.policies[${policyIndex}].target.officeId`,
+          message: "M3 policy target references missing office."
+        });
+      }
+      return;
+    case "polity":
+      if (!polityIds.has(target.polityId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m3.policies[${policyIndex}].target.polityId`,
+          message: "M3 policy target references missing PolityId."
+        });
+      }
+      return;
+    case "district":
+      if (!districtIds.has(target.districtId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m3.policies[${policyIndex}].target.districtId`,
+          message: "M3 policy target references missing DistrictId."
+        });
+      }
+      return;
+  }
+}
+
 interface M2DistrictCoverageInput {
   readonly definitionIds: ReadonlySet<number>;
   readonly runtimeIds: readonly number[];
@@ -3785,7 +4422,13 @@ function isM3StateLike(value: unknown): value is M3PolityVassalageStateV0 {
     Array.isArray(value["obligations"]) &&
     Array.isArray(value["obligationAuditEvents"]) &&
     Array.isArray(value["fulfillmentClaims"]) &&
-    Array.isArray(value["administrativeDistricts"])
+    Array.isArray(value["administrativeDistricts"]) &&
+    Array.isArray(value["characters"]) &&
+    Array.isArray(value["relationships"]) &&
+    Array.isArray(value["offices"]) &&
+    Array.isArray(value["policies"]) &&
+    Array.isArray(value["enfeoffments"]) &&
+    Array.isArray(value["appointmentAuditEvents"])
   );
 }
 

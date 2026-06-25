@@ -1,0 +1,80 @@
+{
+  "message_id": "MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-WRITER-R2-REVIEW",
+  "task_id": "M3-APPOINTMENT-ENFEOFFMENT-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Addressed systems_architect REQUEST_CHANGES by adding failed-first regression coverage for collective bulk primary-office conflicts and unknown enfeoffment granting polity authority. Bulk appointment validation now computes final primary-office holder occupancy before mutation and rejects conflicting batch items with stable bulk-command-rejected item reasons. Enfeoffment now validates grantedByPolityId against M3 polity state before authority and mutation, and polity actor authority requires an existing M3 polity row.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "project/messages/outbox/M3-APPOINTMENT-ENFEOFFMENT-001__MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-WRITER-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-appointments-enfeoffment",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 1,
+      "result": "Failed-first regression run: new tests reproduced invariant fallback for bulk collective primary conflicts and unknown enfeoff grantor polity."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "11 test files passed; 65 tests passed. Includes new regression coverage for collective bulk primary-office conflict and unknown enfeoff grantor polity."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 21 files/123 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-APPOINTMENT-ENFEOFFMENT-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-APPOINTMENT-ENFEOFFMENT-001",
+      "exit_code": 0,
+      "result": "JSON shape ok for project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified protocol/sim-core/test files remain from original implementation plus pre-existing project coordination changes and outbox/route files; no forbidden path changes."
+    }
+  ],
+  "decisions": [
+    "Bulk appointment validation remains all-or-nothing and now checks collective final primary-office exclusivity before commitRuntimeState.",
+    "Per-item bulk rejection strings are sorted by itemId and use stable domain reason strings, including office-primary-conflict for collective conflicts.",
+    "actorHasPolityAuthority no longer grants polity:<id> authority unless that PolityId exists in state.m3.polities.",
+    "sim.enfeoff-district returns explicit bad-id at payload.grantedByPolityId for missing granting polities before authority or invariant fallback."
+  ],
+  "risks": [
+    "R3 command/state changes still require systems_architect and QA review before acceptance.",
+    "M3 save compatibility remains intentionally unsupported by the existing M3 save refusal guard; no save-format migration was attempted."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Re-review the requested R3 validation fixes for bulk appointment collective primary-office exclusivity, enfeoffment granting polity validation, and state-derived actor authority.",
+  "created_at": "2026-06-25T08:25:49.763Z"
+}

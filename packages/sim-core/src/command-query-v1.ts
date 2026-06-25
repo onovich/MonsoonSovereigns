@@ -36,9 +36,13 @@ import {
   hashWorldStateV0,
   parseDistrictId,
   parseGameDay,
+  parseM3AppointmentAuditEventId,
   parseM3FulfillmentId,
+  parseM3OfficeId,
   parseM3ObligationAuditEventId,
   parseM3ObligationId,
+  parseM3PolicyId,
+  parsePersonId,
   parsePopulationGroupId,
   parsePolityId,
   parseWorldRevision,
@@ -49,15 +53,27 @@ import {
   type DistrictControlState,
   type DistrictId,
   type M3AdministrativeBurdenProfileV0,
+  type M3AppointmentAuditEventKindV0,
+  type M3AppointmentAuditEventId,
+  type M3AppointmentAuditEventStateV0,
+  type M3CharacterStateV0,
+  type M3EnfeoffmentStateV0,
+  type M3OfficeId,
+  type M3OfficeStateV0,
   type M3ObligationAuditEventStateV0,
   type M3ObligationDueV0,
   type M3ObligationRequirementV0,
   type M3ObligationStateV0,
   type M3ObligationStatusV0,
+  type M3PolicyStanceV0,
+  type M3PolicyId,
+  type M3PolicyStateV0,
+  type M3PolicyTargetV0,
   type M3PolityRecordStateV0,
   type M2LaborCommitmentPurposeV0,
   type M2RouteKindV0,
   type M2PopulationGroupStateV0,
+  type PersonId,
   type PopulationGroupId,
   type PolityId,
   type RouteId,
@@ -68,6 +84,10 @@ import {
 export type DomainErrorCodeV1 =
   | "acyclicity-violation"
   | "bad-id"
+  | "authority-denied"
+  | "bulk-command-rejected"
+  | "character-location-invalid"
+  | "character-unavailable"
   | "duplicate-command"
   | "duplicate-fulfillment"
   | "hash-mismatch"
@@ -77,6 +97,8 @@ export type DomainErrorCodeV1 =
   | "invariant-violation"
   | "m2-state-missing"
   | "m3-state-missing"
+  | "office-eligibility-failed"
+  | "office-primary-conflict"
   | "stale-day"
   | "stale-revision"
   | "unknown-command-kind"
@@ -174,6 +196,21 @@ export type DomainEventV1 =
       readonly auditEventId: number;
       readonly revisionBefore: number;
       readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m3-appointment-audited";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly auditEventId: number;
+      readonly eventKind: M3AppointmentAuditEventKindV0;
+      readonly officeId: number | null;
+      readonly characterId: number | null;
+      readonly policyId: number | null;
+      readonly districtId: number | null;
+      readonly reasonCode: string;
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
     };
 
 export type StateDeltaV1 =
@@ -224,6 +261,33 @@ export type StateDeltaV1 =
       readonly obligationId: number;
       readonly status: M3ObligationStatusV0;
       readonly latestAuditEventId: number;
+      readonly revision: number;
+      readonly stateHash: string;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "state.m3-office-updated";
+      readonly officeId: number;
+      readonly holderCharacterId: number | null;
+      readonly policyId: number;
+      readonly revision: number;
+      readonly stateHash: string;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "state.m3-policy-updated";
+      readonly policyId: number;
+      readonly stance: M3PolicyStanceV0;
+      readonly intensityBps: number;
+      readonly revision: number;
+      readonly stateHash: string;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "state.m3-enfeoffment-updated";
+      readonly districtId: number;
+      readonly holderCharacterId: number;
+      readonly policyId: number;
       readonly revision: number;
       readonly stateHash: string;
     };
@@ -330,6 +394,14 @@ export type QueryResultV1 =
             readonly districts: readonly M3AdministrativeBurdenDistrictReadModelV1[];
           }
         | {
+            readonly kind: "sim.list-m3-decision-scaffolds";
+            readonly day: number;
+            readonly revision: number;
+            readonly offices: readonly M3DecisionOfficeScaffoldReadModelV1[];
+            readonly policies: readonly M3DecisionPolicyScaffoldReadModelV1[];
+            readonly enfeoffments: readonly M3DecisionEnfeoffmentScaffoldReadModelV1[];
+          }
+        | {
             readonly kind: "sim.preview-m2-transport-route";
             readonly day: number;
             readonly revision: number;
@@ -361,6 +433,26 @@ export interface M2EconomyDistrictSummaryReadModelV1 {
 }
 
 export type M3AdministrativeBurdenDistrictReadModelV1 = M3AdministrativeBurdenProfileV0;
+
+export interface M3DecisionOfficeScaffoldReadModelV1 {
+  readonly officeId: number;
+  readonly holderCharacterId: number | null;
+  readonly policyId: number;
+  readonly executionPerformanceBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M3DecisionPolicyScaffoldReadModelV1 {
+  readonly policyId: number;
+  readonly targetKind: "district" | "office" | "polity";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M3DecisionEnfeoffmentScaffoldReadModelV1 {
+  readonly districtId: number;
+  readonly holderCharacterId: number;
+  readonly reasonCodes: readonly string[];
+}
 
 export type M2TransportRoutePreviewReadModelV1 =
   | {
@@ -768,6 +860,16 @@ function validateAndEvaluateCommand(
       return evaluateCreateObligation(runtime.world, command);
     case "sim.record-obligation-fulfillment":
       return evaluateRecordObligationFulfillment(runtime.world, command);
+    case "sim.appoint-office":
+      return evaluateAppointOffice(runtime.world, command);
+    case "sim.appoint-offices-bulk":
+      return evaluateBulkAppointOffices(runtime.world, command);
+    case "sim.update-office-policy":
+      return evaluateUpdateOfficePolicy(runtime.world, command);
+    case "sim.update-jurisdiction-policy":
+      return evaluateUpdateJurisdictionPolicy(runtime.world, command);
+    case "sim.enfeoff-district":
+      return evaluateEnfeoffDistrict(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -1369,6 +1471,400 @@ function evaluateRecordObligationFulfillment(
   };
 }
 
+function evaluateAppointOffice(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.appoint-office" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.appoint-office");
+  }
+
+  const officeId = parseM3OfficeId(command.payload.officeId);
+  const characterId =
+    command.payload.characterId === null ? null : parsePersonId(command.payload.characterId);
+  const validation = validateM3AppointmentItem({
+    m3,
+    actor: command.actor,
+    officeId,
+    characterId,
+    currentOfficeId: null
+  });
+  if (!validation.ok) {
+    return { ok: false, error: validation.error };
+  }
+
+  const nextM3 = applyM3AppointmentItems({
+    m3,
+    world,
+    commandId: command.commandId,
+    actor: command.actor,
+    eventKind: "appointment",
+    reasonCode: command.payload.reasonCode,
+    items: [{ officeId, characterId }]
+  });
+  return commitM3AppointmentWorld({
+    world,
+    command,
+    nextM3,
+    events: [
+      createM3AppointmentDomainEvent({
+        command,
+        world,
+        nextM3,
+        eventKind: "appointment",
+        officeId,
+        characterId,
+        policyId: validation.office.policyId,
+        districtId: null,
+        reasonCode: command.payload.reasonCode
+      })
+    ],
+    deltas: [
+      {
+        schemaVersion: 1,
+        kind: "state.m3-office-updated",
+        officeId,
+        holderCharacterId: characterId,
+        policyId: validation.office.policyId,
+        revision: world.meta.revision + 1,
+        stateHash: ""
+      }
+    ]
+  });
+}
+
+function evaluateBulkAppointOffices(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.appoint-offices-bulk" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.appoint-offices-bulk");
+  }
+
+  const orderedItems = [...command.payload.items].sort((left, right) =>
+    compareText(left.itemId, right.itemId)
+  );
+  const seenOfficeIds = new Set<number>();
+  const rejections: { readonly itemId: string; readonly reasonCode: string }[] = [];
+  const validItems: {
+    readonly itemId: string;
+    readonly officeId: M3OfficeId;
+    readonly characterId: PersonId | null;
+  }[] = [];
+
+  for (const item of orderedItems) {
+    const officeId = parseM3OfficeId(item.officeId);
+    const characterId = item.characterId === null ? null : parsePersonId(item.characterId);
+    if (seenOfficeIds.has(officeId)) {
+      rejections.push({ itemId: item.itemId, reasonCode: "duplicate-office-in-bulk" });
+      continue;
+    }
+    seenOfficeIds.add(officeId);
+
+    const validation = validateM3AppointmentItem({
+      m3,
+      actor: command.actor,
+      officeId,
+      characterId,
+      currentOfficeId: officeId
+    });
+    if (validation.ok) {
+      validItems.push({ itemId: item.itemId, officeId, characterId });
+    } else {
+      rejections.push({ itemId: item.itemId, reasonCode: validation.error.message });
+    }
+  }
+
+  rejections.push(...collectM3BulkPrimaryConflictRejections(m3, validItems));
+
+  if (rejections.length > 0) {
+    return {
+      ok: false,
+      error: {
+        code: "bulk-command-rejected",
+        path: "payload.items",
+        message: `sim.appoint-offices-bulk rejected items: ${rejections
+          .sort((left, right) => compareText(left.itemId, right.itemId))
+          .map((item) => `${item.itemId}=${item.reasonCode}`)
+          .join(";")}`
+      }
+    };
+  }
+
+  const nextM3 = applyM3AppointmentItems({
+    m3,
+    world,
+    commandId: command.commandId,
+    actor: command.actor,
+    eventKind: "bulk-appointment",
+    reasonCode: "bulk-appointment",
+    items: validItems
+  });
+  const events = validItems.map((item) =>
+    createM3AppointmentDomainEvent({
+      command,
+      world,
+      nextM3,
+      eventKind: "bulk-appointment",
+      officeId: item.officeId,
+      characterId: item.characterId,
+      policyId: findM3Office(nextM3, item.officeId)?.policyId ?? null,
+      districtId: null,
+      reasonCode: "bulk-appointment"
+    })
+  );
+  const deltas = validItems.map((item) => {
+    const office = findM3Office(nextM3, item.officeId);
+    return {
+      schemaVersion: 1 as const,
+      kind: "state.m3-office-updated" as const,
+      officeId: item.officeId,
+      holderCharacterId: item.characterId,
+      policyId: office === undefined ? parseM3PolicyId(1) : office.policyId,
+      revision: world.meta.revision + 1,
+      stateHash: ""
+    };
+  });
+
+  return commitM3AppointmentWorld({ world, command, nextM3, events, deltas });
+}
+
+function evaluateUpdateOfficePolicy(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.update-office-policy" }>
+): EvaluationResult {
+  return evaluateUpdatePolicy(world, command, "office");
+}
+
+function evaluateUpdateJurisdictionPolicy(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.update-jurisdiction-policy" }>
+): EvaluationResult {
+  return evaluateUpdatePolicy(world, command, "jurisdiction");
+}
+
+function evaluateUpdatePolicy(
+  world: WorldStateV0,
+  command: Extract<
+    GameCommandV1,
+    { readonly kind: "sim.update-office-policy" | "sim.update-jurisdiction-policy" }
+  >,
+  expectedTarget: "jurisdiction" | "office"
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError(command.kind);
+  }
+
+  const policyId = parseM3PolicyId(command.payload.policyId);
+  const policy = m3.policies.find((entry) => entry.policyId === policyId);
+  if (policy === undefined) {
+    return badIdError("payload.policyId", `${command.kind} references a missing M3PolicyId.`);
+  }
+  if (expectedTarget === "office" && policy.target.kind !== "office") {
+    return badIdError("payload.policyId", "sim.update-office-policy requires an office policy.");
+  }
+  if (expectedTarget === "jurisdiction" && policy.target.kind === "office") {
+    return badIdError(
+      "payload.policyId",
+      "sim.update-jurisdiction-policy requires a jurisdiction policy."
+    );
+  }
+  const authorityPolityId = polityForPolicyTarget(m3, policy.target);
+  if (
+    authorityPolityId === null ||
+    !actorHasPolityAuthority(m3, command.actor, authorityPolityId)
+  ) {
+    return authorityDeniedError();
+  }
+
+  const nextPolicy: M3PolicyStateV0 = {
+    ...policy,
+    stance: command.payload.stance,
+    intensityBps: command.payload.intensityBps
+  };
+  const auditEventId = parseM3AppointmentAuditEventId(nextNumericId(m3.appointmentAuditEvents));
+  const nextM3 = canonicalizeM3PolityVassalageState({
+    ...m3,
+    policies: m3.policies.map((entry) => (entry.policyId === policyId ? nextPolicy : entry)),
+    appointmentAuditEvents: [
+      ...m3.appointmentAuditEvents,
+      createM3AppointmentAuditEvent({
+        id: auditEventId,
+        eventKind: "policy-updated",
+        world,
+        commandId: command.commandId,
+        actor: command.actor,
+        officeId: policy.target.kind === "office" ? policy.target.officeId : null,
+        characterId: null,
+        policyId,
+        districtId: policy.target.kind === "district" ? policy.target.districtId : null,
+        reasonCode: command.payload.reasonCode
+      })
+    ]
+  });
+
+  return commitM3AppointmentWorld({
+    world,
+    command,
+    nextM3,
+    events: [
+      createM3AppointmentDomainEvent({
+        command,
+        world,
+        nextM3,
+        eventKind: "policy-updated",
+        officeId: policy.target.kind === "office" ? policy.target.officeId : null,
+        characterId: null,
+        policyId,
+        districtId: policy.target.kind === "district" ? policy.target.districtId : null,
+        reasonCode: command.payload.reasonCode
+      })
+    ],
+    deltas: [
+      {
+        schemaVersion: 1,
+        kind: "state.m3-policy-updated",
+        policyId,
+        stance: command.payload.stance,
+        intensityBps: command.payload.intensityBps,
+        revision: world.meta.revision + 1,
+        stateHash: ""
+      }
+    ]
+  });
+}
+
+function evaluateEnfeoffDistrict(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.enfeoff-district" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.enfeoff-district");
+  }
+
+  const districtId = parseDistrictId(command.payload.districtId);
+  const holderCharacterId = parsePersonId(command.payload.holderCharacterId);
+  const grantedByPolityId = parsePolityId(command.payload.grantedByPolityId);
+  const policyId = parseM3PolicyId(command.payload.policyId);
+  if (!world.definitions.districts.some((entry) => entry.id === districtId)) {
+    return badIdError(
+      "payload.districtId",
+      "sim.enfeoff-district references a missing DistrictId."
+    );
+  }
+  if (!m3.polities.some((entry) => entry.polityId === grantedByPolityId)) {
+    return badIdError(
+      "payload.grantedByPolityId",
+      "sim.enfeoff-district references a missing granting PolityId."
+    );
+  }
+  const holder = findM3Character(m3, holderCharacterId);
+  if (holder === undefined) {
+    return badIdError(
+      "payload.holderCharacterId",
+      "sim.enfeoff-district references a missing holder character."
+    );
+  }
+  const availability = validateM3CharacterAvailability(holder, districtId);
+  if (availability !== null) {
+    return { ok: false, error: availability };
+  }
+  const policy = m3.policies.find((entry) => entry.policyId === policyId);
+  if (
+    policy === undefined ||
+    policy.target.kind !== "district" ||
+    policy.target.districtId !== districtId
+  ) {
+    return badIdError(
+      "payload.policyId",
+      "sim.enfeoff-district requires a policy attached to the target district."
+    );
+  }
+  if (!actorHasPolityAuthority(m3, command.actor, grantedByPolityId)) {
+    return authorityDeniedError();
+  }
+
+  const enfeoffment: M3EnfeoffmentStateV0 = {
+    districtId,
+    holderCharacterId,
+    grantedByPolityId,
+    policyId,
+    grantedDay: world.meta.currentDay,
+    reasonCode: command.payload.reasonCode
+  };
+  const auditEventId = parseM3AppointmentAuditEventId(nextNumericId(m3.appointmentAuditEvents));
+  const nextAdministrativeDistricts = [
+    ...m3.administrativeDistricts.filter((entry) => entry.districtId !== districtId),
+    {
+      polityId: grantedByPolityId,
+      districtId,
+      controlMode: "vassal" as const,
+      localComplexity: 50,
+      communicationCost: 75,
+      directness: 50,
+      frontierPressure: 50,
+      administrativeCapacity: 1_000
+    }
+  ];
+  const nextM3 = canonicalizeM3PolityVassalageState({
+    ...m3,
+    enfeoffments: [
+      ...m3.enfeoffments.filter((entry) => entry.districtId !== districtId),
+      enfeoffment
+    ],
+    administrativeDistricts: nextAdministrativeDistricts,
+    appointmentAuditEvents: [
+      ...m3.appointmentAuditEvents,
+      createM3AppointmentAuditEvent({
+        id: auditEventId,
+        eventKind: "enfeoffment",
+        world,
+        commandId: command.commandId,
+        actor: command.actor,
+        officeId: null,
+        characterId: holderCharacterId,
+        policyId,
+        districtId,
+        reasonCode: command.payload.reasonCode
+      })
+    ]
+  });
+
+  return commitM3AppointmentWorld({
+    world,
+    command,
+    nextM3,
+    events: [
+      createM3AppointmentDomainEvent({
+        command,
+        world,
+        nextM3,
+        eventKind: "enfeoffment",
+        officeId: null,
+        characterId: holderCharacterId,
+        policyId,
+        districtId,
+        reasonCode: command.payload.reasonCode
+      })
+    ],
+    deltas: [
+      {
+        schemaVersion: 1,
+        kind: "state.m3-enfeoffment-updated",
+        districtId,
+        holderCharacterId,
+        policyId,
+        revision: world.meta.revision + 1,
+        stateHash: ""
+      }
+    ]
+  });
+}
+
 function evaluateVerifyStateHash(
   world: WorldStateV0,
   command: Extract<GameCommandV1, { readonly kind: "sim.verify-state-hash" }>
@@ -1411,6 +1907,382 @@ function evaluateVerifyStateHash(
         }
       ]
     }
+  };
+}
+
+type AppointmentValidationResult =
+  | { readonly ok: true; readonly office: M3OfficeStateV0 }
+  | { readonly ok: false; readonly error: DomainErrorV1 };
+
+function validateM3AppointmentItem(input: {
+  readonly m3: NonNullable<WorldStateV0["state"]["m3"]>;
+  readonly actor: CommandActorV1;
+  readonly officeId: number;
+  readonly characterId: PersonId | null;
+  readonly currentOfficeId: number | null;
+}): AppointmentValidationResult {
+  const office = findM3Office(input.m3, input.officeId);
+  if (office === undefined) {
+    return {
+      ok: false,
+      error: { code: "bad-id", path: "payload.officeId", message: "office-missing" }
+    };
+  }
+  if (!actorHasPolityAuthority(input.m3, input.actor, office.polityId)) {
+    return { ok: false, error: authorityDeniedDomainError() };
+  }
+  if (input.characterId === null) {
+    return { ok: true, office };
+  }
+
+  const character = findM3Character(input.m3, input.characterId);
+  if (character === undefined) {
+    return {
+      ok: false,
+      error: { code: "bad-id", path: "payload.characterId", message: "character-missing" }
+    };
+  }
+  const availability = validateM3CharacterAvailability(
+    character,
+    office.jurisdiction.kind === "district" ? office.jurisdiction.districtId : null
+  );
+  if (availability !== null) {
+    return { ok: false, error: availability };
+  }
+  if (
+    character.polityId !== office.polityId ||
+    character.commandBps < office.minimumCommandBps ||
+    character.administrationBps < office.minimumAdministrationBps
+  ) {
+    return {
+      ok: false,
+      error: {
+        code: "office-eligibility-failed",
+        path: "payload.characterId",
+        message: "office-eligibility-failed"
+      }
+    };
+  }
+  const conflictingPrimaryOffice = input.m3.offices.find(
+    (entry) =>
+      entry.primary &&
+      entry.officeId !== office.officeId &&
+      entry.officeId !== input.currentOfficeId &&
+      entry.holderCharacterId === input.characterId
+  );
+  if (office.primary && conflictingPrimaryOffice !== undefined) {
+    return {
+      ok: false,
+      error: {
+        code: "office-primary-conflict",
+        path: "payload.characterId",
+        message: "office-primary-conflict"
+      }
+    };
+  }
+
+  return { ok: true, office };
+}
+
+function validateM3CharacterAvailability(
+  character: M3CharacterStateV0,
+  requiredDistrictId: number | null
+): DomainErrorV1 | null {
+  if (!character.alive) {
+    return {
+      code: "character-unavailable",
+      path: "payload.characterId",
+      message: "character-unavailable"
+    };
+  }
+  if (requiredDistrictId !== null && character.currentDistrictId !== requiredDistrictId) {
+    return {
+      code: "character-location-invalid",
+      path: "payload.characterId",
+      message: "character-location-invalid"
+    };
+  }
+
+  return null;
+}
+
+function collectM3BulkPrimaryConflictRejections(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  items: readonly {
+    readonly itemId: string;
+    readonly officeId: M3OfficeId;
+    readonly characterId: PersonId | null;
+  }[]
+): readonly { readonly itemId: string; readonly reasonCode: string }[] {
+  const holderByPrimaryOfficeId = new Map<number, PersonId | null>();
+  for (const office of m3.offices) {
+    if (office.primary) {
+      holderByPrimaryOfficeId.set(office.officeId, office.holderCharacterId);
+    }
+  }
+
+  for (const item of items) {
+    const office = findM3Office(m3, item.officeId);
+    if (office?.primary === true) {
+      holderByPrimaryOfficeId.set(item.officeId, item.characterId);
+    }
+  }
+
+  const primaryOfficeIdsByHolderId = new Map<number, number[]>();
+  for (const [officeId, holderId] of holderByPrimaryOfficeId) {
+    if (holderId === null) {
+      continue;
+    }
+    const officeIds = primaryOfficeIdsByHolderId.get(holderId) ?? [];
+    officeIds.push(officeId);
+    primaryOfficeIdsByHolderId.set(holderId, officeIds);
+  }
+
+  const conflictedPrimaryOfficeIds = new Set<number>();
+  for (const officeIds of primaryOfficeIdsByHolderId.values()) {
+    if (officeIds.length > 1) {
+      for (const officeId of officeIds) {
+        conflictedPrimaryOfficeIds.add(officeId);
+      }
+    }
+  }
+
+  return items
+    .filter((item) => conflictedPrimaryOfficeIds.has(item.officeId))
+    .map((item) => ({ itemId: item.itemId, reasonCode: "office-primary-conflict" }));
+}
+
+function applyM3AppointmentItems(input: {
+  readonly m3: NonNullable<WorldStateV0["state"]["m3"]>;
+  readonly world: WorldStateV0;
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly eventKind: M3AppointmentAuditEventKindV0;
+  readonly reasonCode: string;
+  readonly items: readonly {
+    readonly officeId: M3OfficeId;
+    readonly characterId: PersonId | null;
+  }[];
+}): NonNullable<WorldStateV0["state"]["m3"]> {
+  let nextAuditId = nextNumericId(input.m3.appointmentAuditEvents);
+  const audits: M3AppointmentAuditEventStateV0[] = [];
+  const holderByOfficeId = new Map<number, PersonId | null>();
+  for (const item of input.items) {
+    holderByOfficeId.set(item.officeId, item.characterId);
+  }
+
+  const offices = input.m3.offices.map((office) => {
+    const nextHolder = holderByOfficeId.get(office.officeId);
+    if (nextHolder === undefined) {
+      return office;
+    }
+    audits.push(
+      createM3AppointmentAuditEvent({
+        id: parseM3AppointmentAuditEventId(nextAuditId),
+        eventKind: input.eventKind,
+        world: input.world,
+        commandId: input.commandId,
+        actor: input.actor,
+        officeId: office.officeId,
+        characterId: nextHolder,
+        policyId: office.policyId,
+        districtId: null,
+        reasonCode: input.reasonCode
+      })
+    );
+    nextAuditId += 1;
+    return { ...office, holderCharacterId: nextHolder };
+  });
+
+  return canonicalizeM3PolityVassalageState({
+    ...input.m3,
+    offices,
+    appointmentAuditEvents: [...input.m3.appointmentAuditEvents, ...audits]
+  });
+}
+
+function commitM3AppointmentWorld(input: {
+  readonly world: WorldStateV0;
+  readonly command: GameCommandV1;
+  readonly nextM3: NonNullable<WorldStateV0["state"]["m3"]>;
+  readonly events: readonly DomainEventV1[];
+  readonly deltas: readonly StateDeltaV1[];
+}): EvaluationResult {
+  const nextWorld = commitRuntimeState(input.world, { ...input.world.state, m3: input.nextM3 });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+
+  return {
+    ok: true,
+    value: {
+      command: input.command,
+      nextWorld,
+      wouldChangeState: true,
+      events: input.events.map((event) => ({ ...event, revisionAfter: nextWorld.meta.revision })),
+      deltas: input.deltas.map((delta) => stampM3Delta(delta, nextWorld))
+    }
+  };
+}
+
+function stampM3Delta(delta: StateDeltaV1, nextWorld: WorldStateV0): StateDeltaV1 {
+  switch (delta.kind) {
+    case "state.m3-office-updated":
+      return { ...delta, revision: nextWorld.meta.revision, stateHash: nextWorld.meta.stateHash };
+    case "state.m3-policy-updated":
+      return { ...delta, revision: nextWorld.meta.revision, stateHash: nextWorld.meta.stateHash };
+    case "state.m3-enfeoffment-updated":
+      return { ...delta, revision: nextWorld.meta.revision, stateHash: nextWorld.meta.stateHash };
+    default:
+      return delta;
+  }
+}
+
+function createM3AppointmentAuditEvent(input: {
+  readonly id: M3AppointmentAuditEventId;
+  readonly eventKind: M3AppointmentAuditEventKindV0;
+  readonly world: WorldStateV0;
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly officeId: M3OfficeId | null;
+  readonly characterId: PersonId | null;
+  readonly policyId: M3PolicyId | null;
+  readonly districtId: DistrictId | null;
+  readonly reasonCode: string;
+}): M3AppointmentAuditEventStateV0 {
+  return {
+    id: input.id,
+    eventKind: input.eventKind,
+    eventDay: input.world.meta.currentDay,
+    eventRevision: input.world.meta.revision,
+    commandId: input.commandId,
+    actor: input.actor,
+    officeId: input.officeId,
+    characterId: input.characterId,
+    policyId: input.policyId,
+    districtId: input.districtId,
+    reasonCode: input.reasonCode
+  };
+}
+
+function createM3AppointmentDomainEvent(input: {
+  readonly command: GameCommandV1;
+  readonly world: WorldStateV0;
+  readonly nextM3: NonNullable<WorldStateV0["state"]["m3"]>;
+  readonly eventKind: M3AppointmentAuditEventKindV0;
+  readonly officeId: M3OfficeId | null;
+  readonly characterId: PersonId | null;
+  readonly policyId: M3PolicyId | null;
+  readonly districtId: DistrictId | null;
+  readonly reasonCode: string;
+}): DomainEventV1 {
+  const auditEvent = input.nextM3.appointmentAuditEvents
+    .filter((entry) => entry.commandId === input.command.commandId)
+    .find(
+      (entry) =>
+        entry.eventKind === input.eventKind &&
+        entry.officeId === input.officeId &&
+        entry.characterId === input.characterId &&
+        entry.policyId === input.policyId &&
+        entry.districtId === input.districtId
+    );
+  return {
+    schemaVersion: 1,
+    kind: "sim.m3-appointment-audited",
+    commandId: input.command.commandId,
+    actor: input.command.actor,
+    auditEventId: auditEvent?.id ?? 0,
+    eventKind: input.eventKind,
+    officeId: input.officeId,
+    characterId: input.characterId,
+    policyId: input.policyId,
+    districtId: input.districtId,
+    reasonCode: input.reasonCode,
+    revisionBefore: input.world.meta.revision,
+    revisionAfter: input.world.meta.revision + 1
+  };
+}
+
+function findM3Office(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  officeId: number
+): M3OfficeStateV0 | undefined {
+  return m3.offices.find((entry) => entry.officeId === officeId);
+}
+
+function findM3Character(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  characterId: number
+): M3CharacterStateV0 | undefined {
+  return m3.characters.find((entry) => entry.characterId === characterId);
+}
+
+function polityForPolicyTarget(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  target: M3PolicyTargetV0
+): PolityId | null {
+  switch (target.kind) {
+    case "polity":
+      return target.polityId;
+    case "district": {
+      const row = m3.administrativeDistricts.find(
+        (entry) => entry.districtId === target.districtId
+      );
+      return row?.polityId ?? null;
+    }
+    case "office": {
+      const office = findM3Office(m3, target.officeId);
+      return office?.polityId ?? null;
+    }
+  }
+}
+
+function actorHasPolityAuthority(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  actor: CommandActorV1,
+  polityId: PolityId
+): boolean {
+  if (actor.kind === "system") {
+    return true;
+  }
+  if (
+    actor.id === `polity:${polityId}` &&
+    m3.polities.some((entry) => entry.polityId === polityId)
+  ) {
+    return true;
+  }
+  const officeId = parseActorOfficeId(actor.id);
+  if (officeId === null) {
+    return false;
+  }
+  const office = findM3Office(m3, officeId);
+  return office !== undefined && office.polityId === polityId && office.holderCharacterId !== null;
+}
+
+function parseActorOfficeId(actorId: string): M3OfficeId | null {
+  if (!actorId.startsWith("office:")) {
+    return null;
+  }
+  const raw = Number(actorId.slice("office:".length));
+  if (!Number.isSafeInteger(raw) || raw <= 0) {
+    return null;
+  }
+  return parseM3OfficeId(raw);
+}
+
+function authorityDeniedError(): EvaluationResult {
+  return {
+    ok: false,
+    error: authorityDeniedDomainError()
+  };
+}
+
+function authorityDeniedDomainError(): DomainErrorV1 {
+  return {
+    code: "authority-denied",
+    path: "actor.id",
+    message: "M3 command actor lacks polity or office authority."
   };
 }
 
@@ -1589,6 +2461,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM2EconomySummariesQuery(runtime);
     case "sim.list-m3-administrative-burden":
       return executeM3AdministrativeBurdenQuery(runtime);
+    case "sim.list-m3-decision-scaffolds":
+      return executeM3DecisionScaffoldsQuery(runtime);
     case "sim.preview-m2-transport-route":
       return executeM2TransportRoutePreviewQuery(runtime, query);
   }
@@ -1661,6 +2535,163 @@ function executeM3AdministrativeBurdenQuery(runtime: SimulationRuntimeV1): Query
       )
     }
   };
+}
+
+function executeM3DecisionScaffoldsQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
+  const m3 = runtime.world.state.m3;
+  if (m3 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m3-state-missing",
+        path: "state.m3",
+        message: "sim.list-m3-decision-scaffolds requires an M3 polity vassalage state."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m3-decision-scaffolds",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      offices: m3.offices.map((office) => m3OfficeDecisionScaffold(m3, office)),
+      policies: m3.policies.map((policy) => ({
+        policyId: policy.policyId,
+        targetKind: policy.target.kind,
+        reasonCodes: [`policy.${policy.target.kind}.${policy.stance}`]
+      })),
+      enfeoffments: m3.enfeoffments.map((enfeoffment) =>
+        m3EnfeoffmentDecisionScaffold(m3, enfeoffment)
+      )
+    }
+  };
+}
+
+function m3OfficeDecisionScaffold(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  office: M3OfficeStateV0
+): M3DecisionOfficeScaffoldReadModelV1 {
+  const holder =
+    office.holderCharacterId === null ? undefined : findM3Character(m3, office.holderCharacterId);
+  const policy = m3.policies.find((entry) => entry.policyId === office.policyId);
+  const performance = computeM3OfficeExecutionPerformanceBps(m3, office, holder);
+  return {
+    officeId: office.officeId,
+    holderCharacterId: office.holderCharacterId,
+    policyId: office.policyId,
+    executionPerformanceBps: performance,
+    reasonCodes: [
+      holderSkillReasonCode(office, holder),
+      relationshipReasonCode(m3, office, holder),
+      `policy.office.${policy?.stance ?? "balanced"}`
+    ]
+  };
+}
+
+function m3EnfeoffmentDecisionScaffold(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  enfeoffment: M3EnfeoffmentStateV0
+): M3DecisionEnfeoffmentScaffoldReadModelV1 {
+  const holder = findM3Character(m3, enfeoffment.holderCharacterId);
+  const policy = m3.policies.find((entry) => entry.policyId === enfeoffment.policyId);
+  return {
+    districtId: enfeoffment.districtId,
+    holderCharacterId: enfeoffment.holderCharacterId,
+    reasonCodes: [
+      holder?.currentDistrictId === enfeoffment.districtId
+        ? "enfeoffment.local-holder"
+        : "enfeoffment.nonlocal-holder",
+      `policy.jurisdiction.${policy?.stance ?? "balanced"}`
+    ]
+  };
+}
+
+function computeM3OfficeExecutionPerformanceBps(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  office: M3OfficeStateV0,
+  holder: M3CharacterStateV0 | undefined
+): number {
+  if (holder === undefined) {
+    return 0;
+  }
+  const skill = office.officeKind === "commander" ? holder.commandBps : holder.administrationBps;
+  const relationship = relationshipAdjustmentBps(m3, office, holder);
+  const policy = m3.policies.find((entry) => entry.policyId === office.policyId);
+  const policyAdjustment = policy?.stance === "military" ? 100 : 0;
+  return clampBps(skill + relationship + policyAdjustment);
+}
+
+function holderSkillReasonCode(
+  office: M3OfficeStateV0,
+  holder: M3CharacterStateV0 | undefined
+): string {
+  if (holder === undefined) {
+    return "appointment.holder.vacant";
+  }
+  const skill = office.officeKind === "commander" ? holder.commandBps : holder.administrationBps;
+  return skill >= 7_000 ? "appointment.holder.skill-strong" : "appointment.holder.skill-weak";
+}
+
+function relationshipReasonCode(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  office: M3OfficeStateV0,
+  holder: M3CharacterStateV0 | undefined
+): string {
+  if (holder === undefined) {
+    return "appointment.relationship.none";
+  }
+  const adjustment = relationshipAdjustmentBps(m3, office, holder);
+  if (adjustment > 0) {
+    return "appointment.relationship.supportive";
+  }
+  if (adjustment < 0) {
+    return "appointment.relationship.strained";
+  }
+  return "appointment.relationship.neutral";
+}
+
+function relationshipAdjustmentBps(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  office: M3OfficeStateV0,
+  holder: M3CharacterStateV0
+): number {
+  const primaryPeer = m3.offices.find(
+    (entry) =>
+      entry.polityId === office.polityId &&
+      entry.primary &&
+      entry.officeId !== office.officeId &&
+      entry.holderCharacterId !== null
+  );
+  if (primaryPeer?.holderCharacterId === undefined || primaryPeer.holderCharacterId === null) {
+    const fallback = [...m3.relationships]
+      .filter((entry) => entry.sourceCharacterId === holder.characterId)
+      .sort((left, right) => left.targetCharacterId - right.targetCharacterId)[0];
+    return fallback?.affinityBps ?? 0;
+  }
+  const relationship = m3.relationships.find(
+    (entry) =>
+      entry.sourceCharacterId === holder.characterId &&
+      entry.targetCharacterId === primaryPeer.holderCharacterId
+  );
+  if (relationship === undefined) {
+    const fallback = [...m3.relationships]
+      .filter((entry) => entry.sourceCharacterId === holder.characterId)
+      .sort((left, right) => left.targetCharacterId - right.targetCharacterId)[0];
+    return fallback?.affinityBps ?? 0;
+  }
+  return relationship.affinityBps;
+}
+
+function clampBps(value: number): number {
+  if (value < 0) {
+    return 0;
+  }
+  if (value > 10_000) {
+    return 10_000;
+  }
+  return value;
 }
 
 function executeM2TransportRoutePreviewQuery(
@@ -1827,6 +2858,8 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
     case "sim.obligation-created":
       return { ...event };
     case "sim.obligation-fulfilled":
+      return { ...event };
+    case "sim.m3-appointment-audited":
       return { ...event };
     case "sim.state-hash-verified":
       return { ...event };

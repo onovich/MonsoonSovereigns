@@ -168,6 +168,85 @@ export interface RecordObligationFulfillmentCommandV1 {
   };
 }
 
+export interface AppointOfficeCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.appoint-office";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly officeId: number;
+    readonly characterId: number | null;
+    readonly reasonCode: string;
+  };
+}
+
+export interface BulkAppointOfficesCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.appoint-offices-bulk";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly items: readonly {
+      readonly itemId: string;
+      readonly officeId: number;
+      readonly characterId: number | null;
+      readonly reasonCode: string;
+    }[];
+  };
+}
+
+export type M3PolicyStanceV1 = "balanced" | "conciliatory" | "extractive" | "military";
+
+export interface UpdateOfficePolicyCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.update-office-policy";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly policyId: number;
+    readonly stance: M3PolicyStanceV1;
+    readonly intensityBps: number;
+    readonly reasonCode: string;
+  };
+}
+
+export interface UpdateJurisdictionPolicyCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.update-jurisdiction-policy";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly policyId: number;
+    readonly stance: M3PolicyStanceV1;
+    readonly intensityBps: number;
+    readonly reasonCode: string;
+  };
+}
+
+export interface EnfeoffDistrictCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.enfeoff-district";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly districtId: number;
+    readonly holderCharacterId: number;
+    readonly grantedByPolityId: number;
+    readonly policyId: number;
+    readonly reasonCode: string;
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -175,6 +254,11 @@ export type GameCommandV1 =
   | SetPolitySuzerainCommandV1
   | CreateObligationCommandV1
   | RecordObligationFulfillmentCommandV1
+  | AppointOfficeCommandV1
+  | BulkAppointOfficesCommandV1
+  | UpdateOfficePolicyCommandV1
+  | UpdateJurisdictionPolicyCommandV1
+  | EnfeoffDistrictCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -202,6 +286,11 @@ export interface ListM3AdministrativeBurdenQueryV1 {
   readonly kind: "sim.list-m3-administrative-burden";
 }
 
+export interface ListM3DecisionScaffoldsQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m3-decision-scaffolds";
+}
+
 export interface PreviewM2TransportRouteQueryV1 {
   readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
   readonly kind: "sim.preview-m2-transport-route";
@@ -219,6 +308,7 @@ export type GameQueryV1 =
   | ListDistrictSummariesQueryV1
   | ListM2EconomySummariesQueryV1
   | ListM3AdministrativeBurdenQueryV1
+  | ListM3DecisionScaffoldsQueryV1
   | PreviewM2TransportRouteQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
@@ -285,6 +375,35 @@ export interface ListM3AdministrativeBurdenResultV1 {
   readonly day: number;
   readonly revision: number;
   readonly districts: readonly M3AdministrativeBurdenDistrictReadModelV1[];
+}
+
+export interface M3DecisionOfficeScaffoldReadModelV1 {
+  readonly officeId: number;
+  readonly holderCharacterId: number | null;
+  readonly policyId: number;
+  readonly executionPerformanceBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M3DecisionPolicyScaffoldReadModelV1 {
+  readonly policyId: number;
+  readonly targetKind: "district" | "office" | "polity";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M3DecisionEnfeoffmentScaffoldReadModelV1 {
+  readonly districtId: number;
+  readonly holderCharacterId: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ListM3DecisionScaffoldsResultV1 {
+  readonly kind: "sim.list-m3-decision-scaffolds";
+  readonly day: number;
+  readonly revision: number;
+  readonly offices: readonly M3DecisionOfficeScaffoldReadModelV1[];
+  readonly policies: readonly M3DecisionPolicyScaffoldReadModelV1[];
+  readonly enfeoffments: readonly M3DecisionEnfeoffmentScaffoldReadModelV1[];
 }
 
 export type M2TransportRouteKindV1 = "road" | "river" | "coast";
@@ -640,6 +759,92 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.appoint-office": {
+      const payload = parseAppointOfficePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.appoint-offices-bulk": {
+      const payload = parseBulkAppointOfficesPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.update-office-policy": {
+      const payload = parseUpdatePolicyPayload<UpdateOfficePolicyCommandV1["payload"]>(
+        input["payload"],
+        "sim.update-office-policy"
+      );
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.update-jurisdiction-policy": {
+      const payload = parseUpdatePolicyPayload<UpdateJurisdictionPolicyCommandV1["payload"]>(
+        input["payload"],
+        "sim.update-jurisdiction-policy"
+      );
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.enfeoff-district": {
+      const payload = parseEnfeoffDistrictPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -685,6 +890,7 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     case "sim.list-district-summaries":
     case "sim.list-m2-economy-summaries":
     case "sim.list-m3-administrative-burden":
+    case "sim.list-m3-decision-scaffolds":
       return {
         ok: true,
         value: {
@@ -1210,6 +1416,190 @@ function parseRecordObligationFulfillmentPayload(
   };
 }
 
+function parseAppointOfficePayload(
+  input: unknown
+): ProtocolParseResult<AppointOfficeCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.appoint-office payload must be an object."
+    );
+  }
+
+  const officeId = parsePositiveSafeInteger(input["officeId"], "payload.officeId");
+  if (!officeId.ok) {
+    return officeId;
+  }
+  const characterId = parseNullablePositiveSafeInteger(input["characterId"], "payload.characterId");
+  if (!characterId.ok) {
+    return characterId;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      officeId: officeId.value,
+      characterId: characterId.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseBulkAppointOfficesPayload(
+  input: unknown
+): ProtocolParseResult<BulkAppointOfficesCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.appoint-offices-bulk payload must be an object."
+    );
+  }
+
+  const items = input["items"];
+  if (!Array.isArray(items) || items.length === 0) {
+    return protocolError(
+      "invalid-payload",
+      "payload.items",
+      "payload.items must be a non-empty array."
+    );
+  }
+
+  const parsedItems: BulkAppointOfficesCommandV1["payload"]["items"][number][] = [];
+  for (let index = 0; index < items.length; index += 1) {
+    const item = items[index];
+    if (!isRecord(item)) {
+      return protocolError("invalid-payload", `payload.items[${index}]`, "item must be an object.");
+    }
+    const itemId = parseNonEmptyProtocolString(item["itemId"], `payload.items[${index}].itemId`);
+    if (!itemId.ok) {
+      return itemId;
+    }
+    const officeId = parsePositiveSafeInteger(item["officeId"], `payload.items[${index}].officeId`);
+    if (!officeId.ok) {
+      return officeId;
+    }
+    const characterId = parseNullablePositiveSafeInteger(
+      item["characterId"],
+      `payload.items[${index}].characterId`
+    );
+    if (!characterId.ok) {
+      return characterId;
+    }
+    const reasonCode = parseNonEmptyProtocolString(
+      item["reasonCode"],
+      `payload.items[${index}].reasonCode`
+    );
+    if (!reasonCode.ok) {
+      return reasonCode;
+    }
+    parsedItems.push({
+      itemId: itemId.value,
+      officeId: officeId.value,
+      characterId: characterId.value,
+      reasonCode: reasonCode.value
+    });
+  }
+
+  return {
+    ok: true,
+    value: {
+      items: parsedItems
+    }
+  };
+}
+
+function parseUpdatePolicyPayload<TPayload extends UpdateOfficePolicyCommandV1["payload"]>(
+  input: unknown,
+  commandKind: string
+): ProtocolParseResult<TPayload> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", "payload", `${commandKind} payload must be an object.`);
+  }
+
+  const policyId = parsePositiveSafeInteger(input["policyId"], "payload.policyId");
+  if (!policyId.ok) {
+    return policyId;
+  }
+  const stance = parseM3PolicyStance(input["stance"], "payload.stance");
+  if (!stance.ok) {
+    return stance;
+  }
+  const intensityBps = parseBps(input["intensityBps"], "payload.intensityBps");
+  if (!intensityBps.ok) {
+    return intensityBps;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      policyId: policyId.value,
+      stance: stance.value,
+      intensityBps: intensityBps.value,
+      reasonCode: reasonCode.value
+    } as TPayload
+  };
+}
+
+function parseEnfeoffDistrictPayload(
+  input: unknown
+): ProtocolParseResult<EnfeoffDistrictCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.enfeoff-district payload must be an object."
+    );
+  }
+
+  const districtId = parsePositiveSafeInteger(input["districtId"], "payload.districtId");
+  if (!districtId.ok) {
+    return districtId;
+  }
+  const holderCharacterId = parsePositiveSafeInteger(
+    input["holderCharacterId"],
+    "payload.holderCharacterId"
+  );
+  if (!holderCharacterId.ok) {
+    return holderCharacterId;
+  }
+  const grantedByPolityId = parsePositiveSafeInteger(
+    input["grantedByPolityId"],
+    "payload.grantedByPolityId"
+  );
+  if (!grantedByPolityId.ok) {
+    return grantedByPolityId;
+  }
+  const policyId = parsePositiveSafeInteger(input["policyId"], "payload.policyId");
+  if (!policyId.ok) {
+    return policyId;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      districtId: districtId.value,
+      holderCharacterId: holderCharacterId.value,
+      grantedByPolityId: grantedByPolityId.value,
+      policyId: policyId.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
 function parseObligationRequirement(
   input: unknown
 ): ProtocolParseResult<CreateObligationCommandV1["payload"]["requirement"]> {
@@ -1346,12 +1736,47 @@ function parsePositiveSafeInteger(value: unknown, path: string): ProtocolParseRe
   return protocolError("invalid-payload", path, `${path} must be a positive safe integer.`);
 }
 
+function parseNullablePositiveSafeInteger(
+  value: unknown,
+  path: string
+): ProtocolParseResult<number | null> {
+  if (value === null) {
+    return { ok: true, value };
+  }
+  return parsePositiveSafeInteger(value, path);
+}
+
 function parseNonnegativeSafeInteger(value: unknown, path: string): ProtocolParseResult<number> {
   if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0) {
     return { ok: true, value };
   }
 
   return protocolError("invalid-payload", path, `${path} must be a nonnegative safe integer.`);
+}
+
+function parseBps(value: unknown, path: string): ProtocolParseResult<number> {
+  if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0 && value <= 10_000) {
+    return { ok: true, value };
+  }
+
+  return protocolError("invalid-payload", path, `${path} must be an integer from 0 to 10000.`);
+}
+
+function parseM3PolicyStance(value: unknown, path: string): ProtocolParseResult<M3PolicyStanceV1> {
+  if (
+    value === "balanced" ||
+    value === "conciliatory" ||
+    value === "extractive" ||
+    value === "military"
+  ) {
+    return { ok: true, value };
+  }
+
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be balanced, conciliatory, extractive, or military.`
+  );
 }
 
 function parseNonEmptyProtocolString(value: unknown, path: string): ProtocolParseResult<string> {
