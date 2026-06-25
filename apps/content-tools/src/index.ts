@@ -1,8 +1,17 @@
 import {
   parseM1GraphFixtureSourceV0,
+  parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   validateM1GraphFixtureSourceV0,
+  validateM3CharacterOfficeFixtureSourceV0,
   validateM2WorldFixtureSourceV0,
+  type M3CharacterOfficeFixtureSourceV0,
+  type M3CharacterSourceV0,
+  type M3RelationshipSourceV0,
+  type M3OfficeSourceV0,
+  type M3LandedPowerSourceV0,
+  type M3OfficePolicySourceV0,
+  type M3EnfeoffmentHookSourceV0,
   type ContentSchemaError,
   type M1GraphFixtureEdgeSourceV0,
   type M1GraphFixtureNodeSourceV0,
@@ -17,15 +26,29 @@ import {
 } from "@monsoon/content-schema";
 import {
   parseContentEdgeId,
+  parseContentCharacterId,
   parseContentDistrictId,
+  parseContentEnfeoffmentHookId,
+  parseContentLandedPowerId,
   parseContentManifestHash,
   parseContentMapGeometryId,
   parseContentNodeId,
+  parseContentOfficeId,
+  parseContentOfficePolicyId,
   parseContentRegionalSeasonalCurveId,
+  parseContentRelationshipId,
   parseContentRouteId,
   parseContentSettlementId,
+  parseRuntimeM3CharacterOfficeContentPackV0,
   parseRuntimeM2WorldContentPackV0,
   parseRuntimeContentPackV0,
+  type RuntimeM3CharacterDefinitionV0,
+  type RuntimeM3CharacterOfficeContentPackV0,
+  type RuntimeM3RelationshipDefinitionV0,
+  type RuntimeM3OfficeDefinitionV0,
+  type RuntimeM3LandedPowerDefinitionV0,
+  type RuntimeM3OfficePolicyDefinitionV0,
+  type RuntimeM3EnfeoffmentHookDefinitionV0,
   type RuntimeContentEdgeV0,
   type RuntimeContentNodeV0,
   type RuntimeContentPackV0,
@@ -42,6 +65,8 @@ export type ContentCompileErrorCode =
   | "bad-reference"
   | "duplicate-id"
   | "duplicate-route"
+  | "invalid-eligibility"
+  | "invalid-relationship"
   | "invalid-count"
   | "invalid-geometry"
   | "invalid-route"
@@ -59,7 +84,10 @@ export interface ContentCompileError {
 export type ContentCompileResultV0 =
   | {
       readonly status: "ok";
-      readonly pack: RuntimeContentPackV0 | RuntimeM2WorldContentPackV0;
+      readonly pack:
+        | RuntimeContentPackV0
+        | RuntimeM2WorldContentPackV0
+        | RuntimeM3CharacterOfficeContentPackV0;
       readonly errors: readonly [];
     }
   | {
@@ -102,10 +130,44 @@ interface StableGeometryAssignment {
   readonly runtimeId: number;
 }
 
+interface StableCharacterAssignment {
+  readonly character: M3CharacterSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableRelationshipAssignment {
+  readonly relationship: M3RelationshipSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableOfficeAssignment {
+  readonly office: M3OfficeSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableLandedPowerAssignment {
+  readonly landedPower: M3LandedPowerSourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableOfficePolicyAssignment {
+  readonly officePolicy: M3OfficePolicySourceV0;
+  readonly runtimeId: number;
+}
+
+interface StableEnfeoffmentHookAssignment {
+  readonly hook: M3EnfeoffmentHookSourceV0;
+  readonly runtimeId: number;
+}
+
 const INITIAL_HASH_OFFSET = 2_166_136_261;
 const HASH_PRIME = 16_777_619;
 
 export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
+  if (isRecord(input) && input["kind"] === "m3.character-office-fixture") {
+    return compileM3CharacterOfficeContentPackV0(input);
+  }
+
   if (isRecord(input) && input["kind"] === "m2.prototype-world-fixture") {
     return compileM2WorldContentPackV0(input);
   }
@@ -141,7 +203,7 @@ export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
 
 export function compileContentPackV0OrThrow(
   input: unknown
-): RuntimeContentPackV0 | RuntimeM2WorldContentPackV0 {
+): RuntimeContentPackV0 | RuntimeM2WorldContentPackV0 | RuntimeM3CharacterOfficeContentPackV0 {
   const result = compileContentPackV0(input);
   if (result.status === "ok") {
     return result.pack;
@@ -176,6 +238,36 @@ function compileM2WorldContentPackV0(input: unknown): ContentCompileResultV0 {
   return {
     status: "ok",
     pack: parseRuntimeM2WorldContentPackV0(pack),
+    errors: []
+  };
+}
+
+function compileM3CharacterOfficeContentPackV0(input: unknown): ContentCompileResultV0 {
+  const schemaErrors = validateM3CharacterOfficeFixtureSourceV0(input);
+  if (schemaErrors.length > 0) {
+    return {
+      status: "error",
+      errors: schemaErrors.map((error) => ({
+        code: error.code,
+        path: error.path,
+        message: error.message
+      }))
+    };
+  }
+
+  const source = parseM3CharacterOfficeFixtureSourceV0(input);
+  const semanticErrors = validateM3CharacterOfficeSemantics(source);
+  if (semanticErrors.length > 0) {
+    return {
+      status: "error",
+      errors: semanticErrors
+    };
+  }
+
+  const pack = buildRuntimeM3CharacterOfficePack(source);
+  return {
+    status: "ok",
+    pack: parseRuntimeM3CharacterOfficeContentPackV0(pack),
     errors: []
   };
 }
@@ -245,6 +337,41 @@ function validateM2WorldSemantics(source: M2WorldFixtureSourceV0): readonly Cont
   return errors;
 }
 
+function validateM3CharacterOfficeSemantics(
+  source: M3CharacterOfficeFixtureSourceV0
+): readonly ContentCompileError[] {
+  const errors: ContentCompileError[] = [];
+
+  if (source.characters.length < 50 || source.characters.length > 80) {
+    errors.push({
+      code: "invalid-count",
+      path: "characters",
+      message: `M3 character office fixture must contain 50-80 characters, received ${source.characters.length}.`
+    });
+  }
+
+  if (source.relationships.length >= source.characters.length * (source.characters.length - 1)) {
+    errors.push({
+      code: "invalid-count",
+      path: "relationships",
+      message: "M3 character relationships must be sparse, not a complete directed matrix."
+    });
+  }
+
+  validateStableOrderAndUniqueIds(source.characters, "characters", errors);
+  validateStableOrderAndUniqueIds(source.relationships, "relationships", errors);
+  validateStableOrderAndUniqueIds(source.offices, "offices", errors);
+  validateStableOrderAndUniqueIds(source.landedPowers, "landedPowers", errors);
+  validateStableOrderAndUniqueIds(source.officePolicies, "officePolicies", errors);
+  validateStableOrderAndUniqueIds(source.enfeoffmentHooks, "enfeoffmentHooks", errors);
+  validateM3CharacterOfficeDisplayNameKeyReferences(source, errors);
+  validateM3CharacterOfficeReferences(source, errors);
+  validateM3CharacterOfficeRelationshipCycles(source, errors);
+  validateM3OfficeEligibility(source, errors);
+
+  return errors;
+}
+
 function validateStableOrderAndUniqueIds(
   entries: readonly { readonly sourceId: string }[],
   path: string,
@@ -298,6 +425,33 @@ function validateM2DisplayNameKeyReferences(
     "regionalSeasonalCurves",
     "curve-",
     "content.m2.prototype.curve_",
+    errors
+  );
+}
+
+function validateM3CharacterOfficeDisplayNameKeyReferences(
+  source: M3CharacterOfficeFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  validateDisplayNameKeyReferences(
+    source.characters,
+    "characters",
+    "character-",
+    "content.m3.validation.character_",
+    errors
+  );
+  validateDisplayNameKeyReferences(
+    source.offices,
+    "offices",
+    "office-",
+    "content.m3.validation.office_",
+    errors
+  );
+  validateDisplayNameKeyReferences(
+    source.officePolicies,
+    "officePolicies",
+    "office-policy-",
+    "content.m3.validation.office_policy_",
     errors
   );
 }
@@ -434,6 +588,136 @@ function validateM2References(source: M2WorldFixtureSourceV0, errors: ContentCom
         code: "bad-reference",
         path: `mapGeometries[${index}].ownerId`,
         message: `Map geometry ${geometry.sourceId} references missing settlement owner ${geometry.ownerId}.`
+      });
+    }
+  });
+}
+
+function validateM3CharacterOfficeReferences(
+  source: M3CharacterOfficeFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  const characterIds = new Set(source.characters.map((character) => character.sourceId));
+  const landedPowerIds = new Set(source.landedPowers.map((landedPower) => landedPower.sourceId));
+  const policyIds = new Set(source.officePolicies.map((policy) => policy.sourceId));
+  const hookIds = new Set(source.enfeoffmentHooks.map((hook) => hook.sourceId));
+
+  source.relationships.forEach((relationship, index) => {
+    if (!characterIds.has(relationship.fromCharacterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `relationships[${index}].fromCharacterId`,
+        message: `Relationship ${relationship.sourceId} references missing from character ${relationship.fromCharacterId}.`
+      });
+    }
+    if (!characterIds.has(relationship.toCharacterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `relationships[${index}].toCharacterId`,
+        message: `Relationship ${relationship.sourceId} references missing to character ${relationship.toCharacterId}.`
+      });
+    }
+    if (relationship.fromCharacterId === relationship.toCharacterId) {
+      errors.push({
+        code: "invalid-relationship",
+        path: `relationships[${index}].toCharacterId`,
+        message: `Relationship ${relationship.sourceId} must not reference the same character.`
+      });
+    }
+  });
+
+  source.offices.forEach((office, index) => {
+    if (!characterIds.has(office.currentHolderCharacterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `offices[${index}].currentHolderCharacterId`,
+        message: `Office ${office.sourceId} references missing holder ${office.currentHolderCharacterId}.`
+      });
+    }
+    if (!policyIds.has(office.policyId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `offices[${index}].policyId`,
+        message: `Office ${office.sourceId} references missing policy ${office.policyId}.`
+      });
+    }
+    if (office.landedPowerId !== null && !landedPowerIds.has(office.landedPowerId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `offices[${index}].landedPowerId`,
+        message: `Office ${office.sourceId} references missing landed power ${office.landedPowerId}.`
+      });
+    }
+    if (
+      (office.jurisdictionKind === "polity" && !office.jurisdictionId.startsWith("polity-")) ||
+      (office.jurisdictionKind === "district" && !office.jurisdictionId.startsWith("district-"))
+    ) {
+      errors.push({
+        code: "bad-reference",
+        path: `offices[${index}].jurisdictionId`,
+        message: `Office ${office.sourceId} jurisdictionId must match jurisdictionKind.`
+      });
+    }
+  });
+
+  source.officePolicies.forEach((policy, index) => {
+    if (!policy.persistsAcrossHolderChange) {
+      errors.push({
+        code: "bad-reference",
+        path: `officePolicies[${index}].persistsAcrossHolderChange`,
+        message: `Office policy ${policy.sourceId} must persist across holder changes.`
+      });
+    }
+    policy.enfeoffmentHookIds.forEach((hookId, hookIndex) => {
+      if (!hookIds.has(hookId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `officePolicies[${index}].enfeoffmentHookIds[${hookIndex}]`,
+          message: `Office policy ${policy.sourceId} references missing hook ${hookId}.`
+        });
+      }
+    });
+  });
+}
+
+function validateM3CharacterOfficeRelationshipCycles(
+  source: M3CharacterOfficeFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  const parentCycleId = findM3SourceParentCycle(source.relationships);
+  if (parentCycleId !== null) {
+    errors.push({
+      code: "invalid-relationship",
+      path: "relationships",
+      message: `M3 parent relationship graph contains a cycle at ${parentCycleId}.`
+    });
+  }
+}
+
+function validateM3OfficeEligibility(
+  source: M3CharacterOfficeFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  const characterBySourceId = new Map(
+    source.characters.map((character) => [character.sourceId, character])
+  );
+
+  source.offices.forEach((office, index) => {
+    const holder = characterBySourceId.get(office.currentHolderCharacterId);
+    if (holder === undefined) {
+      return;
+    }
+    const eligibility = office.appointmentEligibility;
+    if (
+      holder.aptitude.administrationBps < eligibility.minimumAdministrationBps ||
+      holder.aptitude.commandBps < eligibility.minimumCommandBps ||
+      holder.aptitude.legitimacyBps < eligibility.minimumLegitimacyBps ||
+      (eligibility.requiredArchetype !== null && holder.archetype !== eligibility.requiredArchetype)
+    ) {
+      errors.push({
+        code: "invalid-eligibility",
+        path: `offices[${index}].currentHolderCharacterId`,
+        message: `Office ${office.sourceId} holder ${holder.sourceId} does not satisfy appointment eligibility.`
       });
     }
   });
@@ -938,6 +1222,168 @@ function buildRuntimeM2WorldPack(source: M2WorldFixtureSourceV0): RuntimeM2World
   };
 }
 
+function buildRuntimeM3CharacterOfficePack(
+  source: M3CharacterOfficeFixtureSourceV0
+): RuntimeM3CharacterOfficeContentPackV0 {
+  const characterAssignments = assignM3Characters(source.characters);
+  const relationshipAssignments = assignM3Relationships(source.relationships);
+  const officeAssignments = assignM3Offices(source.offices);
+  const landedPowerAssignments = assignM3LandedPowers(source.landedPowers);
+  const officePolicyAssignments = assignM3OfficePolicies(source.officePolicies);
+  const hookAssignments = assignM3EnfeoffmentHooks(source.enfeoffmentHooks);
+  const characterIdBySourceId = new Map(
+    characterAssignments.map((assignment) => [assignment.character.sourceId, assignment.runtimeId])
+  );
+  const landedPowerIdBySourceId = new Map(
+    landedPowerAssignments.map((assignment) => [
+      assignment.landedPower.sourceId,
+      assignment.runtimeId
+    ])
+  );
+  const officePolicyIdBySourceId = new Map(
+    officePolicyAssignments.map((assignment) => [
+      assignment.officePolicy.sourceId,
+      assignment.runtimeId
+    ])
+  );
+  const hookIdBySourceId = new Map(
+    hookAssignments.map((assignment) => [assignment.hook.sourceId, assignment.runtimeId])
+  );
+
+  const characters: RuntimeM3CharacterDefinitionV0[] = characterAssignments.map((assignment) => ({
+    id: parseContentCharacterId(assignment.runtimeId),
+    sourceId: assignment.character.sourceId,
+    displayNameKey: assignment.character.displayNameKey,
+    claimLabel: assignment.character.claimLabel,
+    primaryPolitySourceId: assignment.character.primaryPolityId,
+    archetype: assignment.character.archetype,
+    aptitude: { ...assignment.character.aptitude }
+  }));
+
+  const relationships: RuntimeM3RelationshipDefinitionV0[] = relationshipAssignments.map(
+    (assignment) => {
+      const fromCharacterId = characterIdBySourceId.get(assignment.relationship.fromCharacterId);
+      const toCharacterId = characterIdBySourceId.get(assignment.relationship.toCharacterId);
+      if (fromCharacterId === undefined || toCharacterId === undefined) {
+        throw new Error(
+          `Compiler invariant failed for relationship ${assignment.relationship.sourceId}.`
+        );
+      }
+
+      return {
+        id: parseContentRelationshipId(assignment.runtimeId),
+        sourceId: assignment.relationship.sourceId,
+        fromCharacterId: parseContentCharacterId(fromCharacterId),
+        toCharacterId: parseContentCharacterId(toCharacterId),
+        relationshipKind: assignment.relationship.relationshipKind,
+        intensityBps: assignment.relationship.intensityBps,
+        claimLabel: assignment.relationship.claimLabel
+      };
+    }
+  );
+
+  const offices: RuntimeM3OfficeDefinitionV0[] = officeAssignments.map((assignment) => {
+    const holderId = characterIdBySourceId.get(assignment.office.currentHolderCharacterId);
+    const policyId = officePolicyIdBySourceId.get(assignment.office.policyId);
+    const landedPowerId =
+      assignment.office.landedPowerId === null
+        ? null
+        : landedPowerIdBySourceId.get(assignment.office.landedPowerId);
+    if (holderId === undefined || policyId === undefined || landedPowerId === undefined) {
+      throw new Error(`Compiler invariant failed for office ${assignment.office.sourceId}.`);
+    }
+
+    return {
+      id: parseContentOfficeId(assignment.runtimeId),
+      sourceId: assignment.office.sourceId,
+      displayNameKey: assignment.office.displayNameKey,
+      jurisdictionKind: assignment.office.jurisdictionKind,
+      jurisdictionSourceId: assignment.office.jurisdictionId,
+      currentHolderCharacterId: parseContentCharacterId(holderId),
+      policyId: parseContentOfficePolicyId(policyId),
+      landedPowerId: landedPowerId === null ? null : parseContentLandedPowerId(landedPowerId),
+      appointmentEligibility: { ...assignment.office.appointmentEligibility }
+    };
+  });
+
+  const landedPowers: RuntimeM3LandedPowerDefinitionV0[] = landedPowerAssignments.map(
+    (assignment) => ({
+      id: parseContentLandedPowerId(assignment.runtimeId),
+      sourceId: assignment.landedPower.sourceId,
+      districtSourceId: assignment.landedPower.districtId,
+      extractionRightsBps: assignment.landedPower.extractionRightsBps,
+      levyRightsBps: assignment.landedPower.levyRightsBps,
+      successionWeightBps: assignment.landedPower.successionWeightBps
+    })
+  );
+
+  const officePolicies: RuntimeM3OfficePolicyDefinitionV0[] = officePolicyAssignments.map(
+    (assignment) => ({
+      id: parseContentOfficePolicyId(assignment.runtimeId),
+      sourceId: assignment.officePolicy.sourceId,
+      displayNameKey: assignment.officePolicy.displayNameKey,
+      appointmentMode: assignment.officePolicy.appointmentMode,
+      taxAutonomyBps: assignment.officePolicy.taxAutonomyBps,
+      militaryAutonomyBps: assignment.officePolicy.militaryAutonomyBps,
+      persistsAcrossHolderChange: true,
+      enfeoffmentHookIds: assignment.officePolicy.enfeoffmentHookIds.map((hookId) => {
+        const runtimeHookId = hookIdBySourceId.get(hookId);
+        if (runtimeHookId === undefined) {
+          throw new Error(
+            `Compiler invariant failed for office policy ${assignment.officePolicy.sourceId}.`
+          );
+        }
+        return parseContentEnfeoffmentHookId(runtimeHookId);
+      })
+    })
+  );
+
+  const enfeoffmentHooks: RuntimeM3EnfeoffmentHookDefinitionV0[] = hookAssignments.map(
+    (assignment) => ({
+      id: parseContentEnfeoffmentHookId(assignment.runtimeId),
+      sourceId: assignment.hook.sourceId,
+      trigger: assignment.hook.trigger,
+      effectKey: assignment.hook.effectKey
+    })
+  );
+
+  const manifestHash = hashM3CharacterOfficeManifest(
+    source.fixtureId,
+    characters,
+    relationships,
+    offices,
+    landedPowers,
+    officePolicies,
+    enfeoffmentHooks
+  );
+
+  return {
+    schemaVersion: 1,
+    kind: "runtime-m3-character-office-content-pack-v0",
+    fixtureId: source.fixtureId,
+    manifest: {
+      schemaVersion: 1,
+      fixtureId: source.fixtureId,
+      fixtureKind: source.fixtureKind,
+      syntheticScope: source.syntheticScope,
+      historicity: source.historicity,
+      manifestHash: parseContentManifestHash(manifestHash),
+      characterCount: characters.length,
+      relationshipCount: relationships.length,
+      officeCount: offices.length,
+      landedPowerCount: landedPowers.length,
+      officePolicyCount: officePolicies.length,
+      enfeoffmentHookCount: enfeoffmentHooks.length
+    },
+    characters,
+    relationships,
+    offices,
+    landedPowers,
+    officePolicies,
+    enfeoffmentHooks
+  };
+}
+
 function assignNodes(
   nodes: readonly M1GraphFixtureNodeSourceV0[]
 ): readonly StableNodeAssignment[] {
@@ -995,6 +1441,58 @@ function assignM2Geometries(
 ): readonly StableGeometryAssignment[] {
   return sortBySourceId(geometries).map((geometry, index) => ({
     geometry,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM3Characters(
+  characters: readonly M3CharacterSourceV0[]
+): readonly StableCharacterAssignment[] {
+  return sortBySourceId(characters).map((character, index) => ({
+    character,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM3Relationships(
+  relationships: readonly M3RelationshipSourceV0[]
+): readonly StableRelationshipAssignment[] {
+  return sortBySourceId(relationships).map((relationship, index) => ({
+    relationship,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM3Offices(offices: readonly M3OfficeSourceV0[]): readonly StableOfficeAssignment[] {
+  return sortBySourceId(offices).map((office, index) => ({
+    office,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM3LandedPowers(
+  landedPowers: readonly M3LandedPowerSourceV0[]
+): readonly StableLandedPowerAssignment[] {
+  return sortBySourceId(landedPowers).map((landedPower, index) => ({
+    landedPower,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM3OfficePolicies(
+  officePolicies: readonly M3OfficePolicySourceV0[]
+): readonly StableOfficePolicyAssignment[] {
+  return sortBySourceId(officePolicies).map((officePolicy, index) => ({
+    officePolicy,
+    runtimeId: index + 1
+  }));
+}
+
+function assignM3EnfeoffmentHooks(
+  hooks: readonly M3EnfeoffmentHookSourceV0[]
+): readonly StableEnfeoffmentHookAssignment[] {
+  return sortBySourceId(hooks).map((hook, index) => ({
+    hook,
     runtimeId: index + 1
   }));
 }
@@ -1104,6 +1602,58 @@ function hashM2Manifest(
   );
 }
 
+function hashM3CharacterOfficeManifest(
+  fixtureId: string,
+  characters: readonly RuntimeM3CharacterDefinitionV0[],
+  relationships: readonly RuntimeM3RelationshipDefinitionV0[],
+  offices: readonly RuntimeM3OfficeDefinitionV0[],
+  landedPowers: readonly RuntimeM3LandedPowerDefinitionV0[],
+  officePolicies: readonly RuntimeM3OfficePolicyDefinitionV0[],
+  enfeoffmentHooks: readonly RuntimeM3EnfeoffmentHookDefinitionV0[]
+): string {
+  return toFixedHexHash(
+    hashText(
+      [
+        "runtime-m3-character-office-content-pack-v0",
+        `fixtureId=${fixtureId}`,
+        `characters=${characters
+          .map(
+            (character) =>
+              `${character.id}:${character.sourceId}:${character.displayNameKey}:${character.claimLabel}:${character.primaryPolitySourceId}:${character.archetype}:${character.aptitude.administrationBps}:${character.aptitude.commandBps}:${character.aptitude.diplomacyBps}:${character.aptitude.ambitionBps}:${character.aptitude.legitimacyBps}`
+          )
+          .join(",")}`,
+        `relationships=${relationships
+          .map(
+            (relationship) =>
+              `${relationship.id}:${relationship.sourceId}:${relationship.fromCharacterId}:${relationship.toCharacterId}:${relationship.relationshipKind}:${relationship.intensityBps}:${relationship.claimLabel}`
+          )
+          .join(",")}`,
+        `offices=${offices
+          .map(
+            (office) =>
+              `${office.id}:${office.sourceId}:${office.displayNameKey}:${office.jurisdictionKind}:${office.jurisdictionSourceId}:${office.currentHolderCharacterId}:${office.policyId}:${formatNullableNumber(office.landedPowerId)}:${office.appointmentEligibility.minimumAdministrationBps}:${office.appointmentEligibility.minimumCommandBps}:${office.appointmentEligibility.minimumLegitimacyBps}:${office.appointmentEligibility.requiredArchetype ?? "null"}`
+          )
+          .join(",")}`,
+        `landedPowers=${landedPowers
+          .map(
+            (landedPower) =>
+              `${landedPower.id}:${landedPower.sourceId}:${landedPower.districtSourceId}:${landedPower.extractionRightsBps}:${landedPower.levyRightsBps}:${landedPower.successionWeightBps}`
+          )
+          .join(",")}`,
+        `officePolicies=${officePolicies
+          .map(
+            (policy) =>
+              `${policy.id}:${policy.sourceId}:${policy.displayNameKey}:${policy.appointmentMode}:${policy.taxAutonomyBps}:${policy.militaryAutonomyBps}:${policy.persistsAcrossHolderChange}:${policy.enfeoffmentHookIds.join("|")}`
+          )
+          .join(",")}`,
+        `enfeoffmentHooks=${enfeoffmentHooks
+          .map((hook) => `${hook.id}:${hook.sourceId}:${hook.trigger}:${hook.effectKey}`)
+          .join(",")}`
+      ].join("\n")
+    )
+  );
+}
+
 function hashText(text: string): number {
   let hash = INITIAL_HASH_OFFSET;
 
@@ -1133,6 +1683,56 @@ function sortBySourceId<TValue extends { readonly sourceId: string }>(
 
 function sortText(values: readonly string[]): readonly string[] {
   return [...values].sort(compareText);
+}
+
+function findM3SourceParentCycle(relationships: readonly M3RelationshipSourceV0[]): string | null {
+  const parentByChildId = new Map<string, string[]>();
+  const characterIds = new Set<string>();
+  for (const relationship of relationships) {
+    if (relationship.relationshipKind !== "parent") {
+      continue;
+    }
+    characterIds.add(relationship.fromCharacterId);
+    characterIds.add(relationship.toCharacterId);
+    const parents = parentByChildId.get(relationship.toCharacterId) ?? [];
+    parents.push(relationship.fromCharacterId);
+    parentByChildId.set(relationship.toCharacterId, parents);
+  }
+
+  const visiting = new Set<string>();
+  const done = new Set<string>();
+  const visit = (characterId: string): string | null => {
+    if (visiting.has(characterId)) {
+      return characterId;
+    }
+    if (done.has(characterId)) {
+      return null;
+    }
+    visiting.add(characterId);
+    const parents = parentByChildId.get(characterId) ?? [];
+    for (const parentId of sortText(parents)) {
+      const cycleId = visit(parentId);
+      if (cycleId !== null) {
+        return cycleId;
+      }
+    }
+    visiting.delete(characterId);
+    done.add(characterId);
+    return null;
+  };
+
+  for (const characterId of sortText([...characterIds])) {
+    const cycleId = visit(characterId);
+    if (cycleId !== null) {
+      return cycleId;
+    }
+  }
+
+  return null;
+}
+
+function formatNullableNumber(value: number | null): string {
+  return value === null ? "null" : `${value}`;
 }
 
 function compareText(left: string, right: string): number {

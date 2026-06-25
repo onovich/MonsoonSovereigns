@@ -5,8 +5,10 @@ import { describe, expect, test } from "vitest";
 import { compileContentPackV0, compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
 import {
   parseM1GraphFixtureSourceV0,
+  parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   type M1GraphFixtureSourceV0,
+  type M3CharacterOfficeFixtureSourceV0,
   type M2WorldFixtureSourceV0
 } from "../packages/content-schema/src/index";
 
@@ -17,6 +19,10 @@ const m2FixtureUrl = new URL(
 );
 const m2BadFixtureManifestUrl = new URL(
   "../content-source/m2-fixtures/validation-only-bad-fixtures.manifest.json",
+  import.meta.url
+);
+const m3CharacterOfficeFixtureUrl = new URL(
+  "../content-source/m3-fixtures/character-office-validation-64.json",
   import.meta.url
 );
 
@@ -441,6 +447,130 @@ async function readM2Fixture(): Promise<M2WorldFixtureSourceV0> {
 async function readM2BadFixtureManifest(): Promise<M2BadFixtureManifest> {
   const text = await readFile(m2BadFixtureManifestUrl, "utf8");
   return parseM2BadFixtureManifest(JSON.parse(text) as unknown);
+}
+
+describe("M3 Character Office Content Compiler v0", () => {
+  test("compiles the M3 validation character office fixture with sparse relationships", async () => {
+    const source = await readM3CharacterOfficeFixture();
+    const pack = compileContentPackV0OrThrow(source);
+
+    expect(pack.kind).toBe("runtime-m3-character-office-content-pack-v0");
+    if (pack.kind !== "runtime-m3-character-office-content-pack-v0") {
+      throw new Error("Expected M3 character office runtime pack.");
+    }
+    expect(pack.manifest.characterCount).toBeGreaterThanOrEqual(50);
+    expect(pack.manifest.characterCount).toBeLessThanOrEqual(80);
+    expect(pack.manifest.relationshipCount).toBeGreaterThan(0);
+    expect(pack.manifest.relationshipCount).toBeLessThan(
+      pack.manifest.characterCount * (pack.manifest.characterCount - 1)
+    );
+    expect(pack.manifest.officeCount).toBeGreaterThanOrEqual(4);
+    expect(pack.manifest.landedPowerCount).toBeGreaterThanOrEqual(4);
+    expect(pack.manifest.officePolicyCount).toBe(pack.manifest.officeCount);
+    expect(pack.manifest.enfeoffmentHookCount).toBeGreaterThanOrEqual(1);
+    expect(pack.manifest.historicity).toBe("FICTIONAL");
+    expect(
+      pack.characters.every((character) => character.claimLabel === "FICTIONAL_VALIDATION")
+    ).toBe(true);
+    expect(pack.relationships.every((edge) => edge.claimLabel === "FICTIONAL_VALIDATION")).toBe(
+      true
+    );
+    expect(pack.characters.map((character) => character.archetype)).toEqual(
+      expect.arrayContaining(["administrator", "local-lord", "commander", "succession-competitor"])
+    );
+    expect(pack.officePolicies.every((policy) => policy.persistsAcrossHolderChange === true)).toBe(
+      true
+    );
+    expect(pack.offices[0]).toMatchObject({
+      id: 1,
+      sourceId: "office-001",
+      policyId: 1,
+      landedPowerId: 1
+    });
+  });
+
+  test("keeps office policy metadata when only the current holder changes", async () => {
+    const source = await readM3CharacterOfficeFixture();
+    const first = compileContentPackV0OrThrow(source);
+    const changedHolder = {
+      ...source,
+      offices: source.offices.map((office, index) =>
+        index === 0 ? { ...office, currentHolderCharacterId: "character-002" } : office
+      )
+    };
+    const second = compileContentPackV0OrThrow(changedHolder);
+
+    if (
+      first.kind !== "runtime-m3-character-office-content-pack-v0" ||
+      second.kind !== "runtime-m3-character-office-content-pack-v0"
+    ) {
+      throw new Error("Expected M3 character office runtime packs.");
+    }
+    expect(second.offices[0]?.currentHolderCharacterId).toBe(2);
+    expect(second.offices[0]?.policyId).toBe(first.offices[0]?.policyId);
+    expect(second.officePolicies).toEqual(first.officePolicies);
+  });
+
+  test("fails missing relationship references, ancestor cycles, and ineligible office holders", async () => {
+    const source = await readM3CharacterOfficeFixture();
+    const badSource = {
+      ...source,
+      relationships: source.relationships.map((relationship, index) =>
+        index === 0
+          ? { ...relationship, toCharacterId: "character-999" }
+          : index === 2
+            ? {
+                ...relationship,
+                fromCharacterId: "character-002",
+                toCharacterId: "character-001",
+                relationshipKind: "parent" as const
+              }
+            : relationship
+      ),
+      offices: source.offices.map((office, index) =>
+        index === 0 ? { ...office, currentHolderCharacterId: "character-050" } : office
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "bad-reference", path: "relationships[0].toCharacterId" }),
+        expect.objectContaining({ code: "invalid-relationship", path: "relationships" }),
+        expect.objectContaining({
+          code: "invalid-eligibility",
+          path: "offices[0].currentHolderCharacterId"
+        })
+      ])
+    );
+  });
+
+  test("repeated M3 character office compiles produce the same manifest hash and runtime order", async () => {
+    const source = await readM3CharacterOfficeFixture();
+    const first = compileContentPackV0OrThrow(source);
+    const second = compileContentPackV0OrThrow(structuredClone(source));
+
+    if (
+      first.kind !== "runtime-m3-character-office-content-pack-v0" ||
+      second.kind !== "runtime-m3-character-office-content-pack-v0"
+    ) {
+      throw new Error("Expected M3 character office runtime packs.");
+    }
+    expect(second.manifest.manifestHash).toBe(first.manifest.manifestHash);
+    expect(second.characters.map((character) => character.sourceId)).toEqual(
+      first.characters.map((character) => character.sourceId)
+    );
+    expect(second.relationships.map((relationship) => relationship.sourceId)).toEqual(
+      first.relationships.map((relationship) => relationship.sourceId)
+    );
+    expect(second.offices.map((office) => office.sourceId)).toEqual(
+      first.offices.map((office) => office.sourceId)
+    );
+  });
+});
+
+async function readM3CharacterOfficeFixture(): Promise<M3CharacterOfficeFixtureSourceV0> {
+  const text = await readFile(m3CharacterOfficeFixtureUrl, "utf8");
+  return parseM3CharacterOfficeFixtureSourceV0(JSON.parse(text) as unknown);
 }
 
 function parseM2BadFixtureManifest(input: unknown): M2BadFixtureManifest {
