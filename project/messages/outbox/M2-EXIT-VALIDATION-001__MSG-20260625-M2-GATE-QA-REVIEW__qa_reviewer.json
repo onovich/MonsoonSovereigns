@@ -1,0 +1,237 @@
+{
+  "message_id": "MSG-20260625-M2-GATE-QA-REVIEW",
+  "task_id": "M2-EXIT-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA review accepts the M2 exit gate. docs/GATE-M2.md, the systems_architect handoff, task state, cited accepted M2 handoffs, validation commands, and changed-path scope support M2_GATE = PASS with the documented H-001/H-002 initial-evidence limits. No forbidden product/package/content/roadmap/ADR/CI/prior gate path change or M3 start was found.",
+  "artifacts": [
+    "docs/GATE-M2.md",
+    "project/tasks/active/M2-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/routes/M2-EXIT-VALIDATION-001__ROUTE-20260625-LEAD-TO-QA.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "chore/m2-exit-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "aa5b2b17ab2984a7fefd15dfcd45f86ada5d65e7",
+  "tests_run": [
+    {
+      "command": "Get-Content -Raw PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "Read project status before validation; current stage is M2 and frozen decisions remain in force."
+    },
+    {
+      "command": "Get-Content -Raw docs/GATE-M2.md",
+      "exit_code": 0,
+      "result": "Gate records M2_GATE = PASS pending QA acceptance and lead integration, cites M2 acceptance evidence, closes M1 follow-ups, and explicitly says M3 is not started."
+    },
+    {
+      "command": "Get-Content -Raw project/tasks/active/M2-EXIT-VALIDATION-001.json",
+      "exit_code": 0,
+      "result": "Task status is IN_PROGRESS; owner systems_architect, reviewer qa_reviewer; allowed and forbidden paths are defined."
+    },
+    {
+      "command": "Get-Content -Raw project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems handoff is REVIEW, routes to qa_reviewer, and requests independent M2 exit acceptance without starting M3."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On branch chore/m2-exit-gate. Changed paths were docs/GATE-M2.md, coordination state/task/registry files, systems handoff, route message, and later this QA handoff; no package/content/CI/ADR/prior gate path appeared."
+    },
+    {
+      "command": "git log -1 --oneline --decorate",
+      "exit_code": 0,
+      "result": "HEAD is aa5b2b17 on chore/m2-exit-gate/main/origin/main: chore(tasks): close M2 host hash canary."
+    },
+    {
+      "command": "git diff --name-status",
+      "exit_code": 0,
+      "result": "Before writing the QA handoff, tracked diff included only allowed gate/coordination/message paths."
+    },
+    {
+      "command": "git diff --cached --name-status",
+      "exit_code": 0,
+      "result": "No staged diff at that point."
+    },
+    {
+      "command": "Get-Content -Raw project/goal-mode-state.json",
+      "exit_code": 0,
+      "result": "Goal mode state remains on current_milestone M2, current task M2-EXIT-VALIDATION-001, next_ready_tasks empty, and human_gate.required false."
+    },
+    {
+      "command": "Get-Content -Raw project/model-routing-state.json",
+      "exit_code": 0,
+      "result": "Routing state records active systems_architect and qa_reviewer threads for M2-EXIT-VALIDATION-001."
+    },
+    {
+      "command": "Get-Content -Raw project/messages/routes/M2-EXIT-VALIDATION-001__ROUTE-20260625-LEAD-TO-QA.json",
+      "exit_code": 0,
+      "result": "Lead route message targets qa_reviewer and requires this QA handoff path; ACCEPT should route to lead_orchestrator."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M2-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M2-EXIT-VALIDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All M2 dependency tasks are CLOSED; M2-EXIT-VALIDATION-001 is IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output; no dependency-ready M3 task was printed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems handoff is schema-valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit_code": 0,
+      "result": "No staged whitespace errors."
+    },
+    {
+      "command": "node -e <JSON validation for task/state/routing/thread registry/cited M2 handoffs/systems handoff>",
+      "exit_code": 0,
+      "result": "Parsed 17 JSON files; 12 cited handoffs had expected statuses; task_status=IN_PROGRESS; milestone=M2; next_ready=0; current registry scan found 59 unique thread IDs."
+    },
+    {
+      "command": "PowerShell loop: validate-handoff.mjs over 12 cited M2 systems/QA handoff files",
+      "exit_code": 0,
+      "result": "All 12 cited M2 handoffs validated successfully."
+    },
+    {
+      "command": "node -e <scope check attempt with PowerShell-expanded regex>",
+      "exit_code": 1,
+      "result": "Tooling/quoting failure before validation; PowerShell expanded ${} inside the inline JavaScript regex. Superseded by the fixed PowerShell scope check below."
+    },
+    {
+      "command": "node -e <second scope check attempt with broken quoting>",
+      "exit_code": 1,
+      "result": "Tooling/quoting failure in inline JavaScript. Superseded by the fixed PowerShell scope check below."
+    },
+    {
+      "command": "PowerShell scope check over git status --porcelain against task allowed_paths and forbidden_paths",
+      "exit_code": 0,
+      "result": "changed_paths=7 before QA handoff; docs/GATE-M2.md, coordination files, systems handoff, and lead route message all matched allowed paths; no forbidden path matched."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture boundary checks passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture and determinism passed; root Vitest 19 files / 91 tests passed; web Vitest 1 file / 3 tests passed; known MODULE_TYPELESS_PACKAGE_JSON warning remains."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for m1.abstract-graph-30; nodes=30, edges=60, manifestHash=4a438525."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650-day baseline passed; finalRevision=3650; throughput=13054 days/sec; p99=215100 ns; saveByteLength=9980."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "4,000-row client-core fixture/read-model tests passed: 1 file / 5 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "4,000-row UI virtualized list SSR tests passed: 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; navigation restricted; IPC allowlist is desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser chromium",
+      "exit_code": 0,
+      "result": "Chromium Dedicated Worker hashes matched Node baseline: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- --browser electron",
+      "exit_code": 0,
+      "result": "Electron renderer Dedicated Worker hashes matched Node baseline: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "All 16 workspace projects were already up to date under pnpm 11.0.0."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build succeeded with index.html and host-hash-canary.html; existing chunk-size warning remains non-blocking."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke output created under .tmp/desktop-package/MonsoonSovereigns-win32-x64; main, preload, renderer, and platform adapter artifacts packaged."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "After build/package checks, tracked status still showed only allowed gate/coordination/message paths."
+    },
+    {
+      "command": "rg -n \"M2_GATE|PASS_WITH_LIMITS|M3|Human Gate|host hash|boot-boundary|REQUEST_CHANGES|BLOCKED\" docs/GATE-M2.md project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-SYSTEMS-REVIEW__systems_architect.json project/tasks/active/M2-EXIT-VALIDATION-001.json",
+      "exit_code": 0,
+      "result": "Gate, task, and systems handoff contain the expected M2 pass, limit, M1 follow-up, Human Gate, and no-M3-start statements."
+    },
+    {
+      "command": "Get-Date -Format o",
+      "exit_code": 0,
+      "result": "Generated timestamp 2026-06-25T11:33:36.1285511+08:00 for this handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M2-EXIT-VALIDATION-001__MSG-20260625-M2-GATE-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "QA handoff is schema-valid."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Final status shows the QA handoff as untracked plus the existing allowed gate/coordination/message paths."
+    },
+    {
+      "command": "PowerShell final scope check over git status --porcelain against task allowed_paths and forbidden_paths",
+      "exit_code": 0,
+      "result": "changed_paths=8 including the QA handoff; scope check ok."
+    }
+  ],
+  "decisions": [
+    "ACCEPT M2-EXIT-VALIDATION-001 and route to lead_orchestrator for integration and formal milestone closure.",
+    "Do not start M3 from this QA review. taskctl ready produced no output and project/goal-mode-state.json has next_ready_tasks empty.",
+    "Accept H-001/H-002 only as initial M2 evidence, matching docs/GATE-M2.md; the gate must not be represented as final full-scale release performance proof.",
+    "Accept that both M1 follow-ups are closed for M2 exit: Chromium/Electron host hash canaries match Node baseline, and sim-core/content-runtime boot-boundary contract testing is accepted.",
+    "Accept that changed paths comply with M2-EXIT-VALIDATION-001 allowed/forbidden scope; no product/package/content-source/roadmap/ADR/CI/prior-gate path drift was found."
+  ],
+  "risks": [
+    "H-001/H-002 remain initial pressure evidence with documented limits; future full-scale/live projection claims need renewed measurements.",
+    "QA JSON validation found 59 unique thread IDs in the current thread registry while docs/GATE-M2.md records the lead supplemental validation result as 58. This is non-blocking coordination metadata drift and did not affect task status, handoff validity, route target, or M2 evidence.",
+    "Artifact-producing validation commands wrote ignored build/package outputs, but follow-up git status showed no tracked forbidden-path drift."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead should integrate this ACCEPT handoff, mark the M2 exit gate accepted through the normal closure path, and keep M3 blocked until formal lead milestone closure is recorded.",
+  "created_at": "2026-06-25T11:33:36.1285511+08:00"
+}
