@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "route_id": "ROUTE-20260625-M3-TRIBUTE-SYSTEMS-R2-TO-WRITER-R3",
+  "created_at": "2026-06-25T16:25:06Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "simulation_engineer",
+  "target_thread_id": "019eff66-a89a-7d71-8f57-68a903393b87",
+  "source_handoff": "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R2-REVIEW__systems_architect.json",
+  "source_status": "REQUEST_CHANGES",
+  "requested_action": "Fix partial-fulfillment followed by deferral accounting so one nominal obligation cannot over-collect resources, add regression coverage, and emit R3 REVIEW handoff.",
+  "send_input": {
+    "submission_id": "019eff99-5bdd-78f1-91d6-62261f67c864",
+    "target": "019eff66-a89a-7d71-8f57-68a903393b87",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R2-REVIEW__systems_architect.json",
+  "route_to": "simulation_engineer"
+}

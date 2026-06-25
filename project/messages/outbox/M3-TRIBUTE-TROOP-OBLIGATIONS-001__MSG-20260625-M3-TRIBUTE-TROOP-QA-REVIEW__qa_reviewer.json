@@ -1,0 +1,103 @@
+{
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "message_id": "MSG-20260625-M3-TRIBUTE-TROOP-QA-REVIEW",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M3 tribute/troop obligation fulfillment after systems R3 ACCEPT. Task state is coherent in REVIEW after systems acceptance, route evidence is complete, diff scope stays inside allowed paths, no M4 campaign/marching/battle, client UI, content-source, save-format, full diplomacy, or rebellion expansion was found. Obligation source, nominal/due/delivered/arrears/default accounting, resource-source deductions, troop commitment placeholder semantics, deterministic command handling, reason codes, and negative coverage were verified.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/sim-core-m3-tribute-troop-obligations.test.ts",
+    "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R3-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "project/messages/routes/M3-TRIBUTE-TROOP-OBLIGATIONS-001__ROUTE-20260625-M3-TRIBUTE-LEAD-TO-QA.json"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "validate-handoff writer R3 and systems R3",
+      "exit_code": 0,
+      "result": "Both handoffs VALID."
+    },
+    {
+      "command": "taskctl validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "Task JSON VALID."
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "ok=true; status REVIEW; route_to systems_architect; required fields present."
+    },
+    {
+      "command": "rg Math.random/Date.now/performance.now/new Date",
+      "exit_code": 1,
+      "result": "No matches in sim-core/protocol."
+    },
+    {
+      "command": "rg React/Pixi/Electron/fs imports",
+      "exit_code": 1,
+      "result": "No matches in sim-core/protocol."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "13 files passed; 86 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture passed; root 23 files/145 tests passed; web 1 file/3 tests passed."
+    },
+    {
+      "command": "targeted partial fulfillment then deferral/overfull/final fulfillment probe",
+      "exit_code": 0,
+      "result": "Final stdin probe passed; deferral and overfull fulfillment rejected, final remaining 100 accepted, cash deducted exactly 120, world validation clean. Earlier probe attempts failed only from PowerShell --eval quoting and an over-strict harness assertion."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: systems R3 ACCEPT is coherent with task REVIEW state and lead-to-QA route evidence.",
+    "ACCEPT: allowed_paths/forbidden_paths compliance verified by git status and diff against main, including untracked task message/route/test artifacts.",
+    "ACCEPT: M3 troop obligations remain readiness/headcount placeholders only; no M4 campaign/army movement/combat state was introduced.",
+    "ACCEPT: M3 save-format remains intentionally unsupported; requestSaveV1 rejection for state.m3 remains the correct boundary for this task."
+  ],
+  "risks": [
+    "Existing MODULE_TYPELESS_PACKAGE_JSON warning remains in deterministic RNG worker fixture; not introduced by this task and not blocking.",
+    "The QA handoff file was not written by the QA thread because it was explicitly running in read-only mode; lead persisted this exact handoff after ACCEPT."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate and close M3-TRIBUTE-TROOP-OBLIGATIONS-001.",
+  "created_at": "2026-06-26T00:45:30+08:00"
+}

@@ -1,0 +1,99 @@
+{
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "message_id": "MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R2-REVIEW",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R2 systems review confirms the original validator-throw, underfull-terminal-fulfillment, direct deferral, and event/audit naming issues are largely fixed. Required gates pass, sim-core/protocol remain detached from React/Pixi/Electron/Node fs/time/random APIs, and no M4 campaign/combat/client/content-source/save-format drift was found. One remaining accounting defect blocks acceptance: partial-fulfillment followed by deferral resets deliveredAmount from the already delivered amount to 0 and arrearsAmount back to the full due while the M2 cash draw remains applied, allowing over-collection against one nominal obligation.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/sim-core-m3-tribute-troop-obligations.test.ts",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Writer implementation files and task/process state are modified/untracked as expected for this review branch; this reviewer added only the R2 systems review handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R2 handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node -e task JSON parse/shape check for M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "TASK_JSON_SHAPE_OK M3-TRIBUTE-TROOP-OBLIGATIONS-001 REVIEW systems_architect."
+    },
+    {
+      "command": "rg -n 'Math\\.random|Date\\.now|performance\\.now|new Date' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "rg -n 'react|pixi|electron|node:fs|from \"fs\"|from ''fs''|require\\(\"fs\"|require\\(''fs''' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "13 test files passed; 85 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello, command/query, and save/load canaries; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 23 files/144 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node --experimental-strip-types R2 regression probe for malformed state, underfull fulfillment, deferral, and partial-then-deferral",
+      "exit_code": 0,
+      "result": "Malformed obligation validation did not throw and returned state.m3.obligations[0].obligationSource. Underfull fulfillment rejected with obligation-settlement-invalid. Direct deferral advanced accounting dueDay to 60/cycle 2 and later fulfillment at dueDay 60 was accepted. Partial fulfillment of 20 followed by deferral reset deliveredAmount to 0 and arrearsAmount to 120; final fulfillment of 120 was accepted and total debtor cash deducted became 140 against nominalAmount 120."
+    },
+    {
+      "command": "rg -n M4/client/save/content drift search in changed sim-core/protocol/tests",
+      "exit_code": 0,
+      "result": "Only expected M3 test labels, existing save-format import, and character diplomacyBps fields matched; no campaign/march/army/combat/rebellion/client/content-source implementation drift found."
+    }
+  ],
+  "decisions": [
+    "Accept the R2 event/audit naming direction: sim.obligation-settled with audit eventKind settled and actionKind detail is architecturally clearer than labeling refusal/remission/default as fulfilled.",
+    "Accept the R2 action-specific validation direction for direct cases: terminal fulfillment must exactly satisfy remaining due, partial fulfillment remains non-terminal, zero-amount fulfillment rejects, and non-resource actions avoid debtor resource draws.",
+    "Do not accept the current deferral accounting as complete because the implementation allows partial-fulfillment then deferral to discard already delivered accounting while preserving the source resource deduction."
+  ],
+  "risks": [
+    "Current tests cover direct deferral and partial then final fulfillment, but not partial then deferral; the uncovered path can double-charge a debtor source district for a single nominal due period.",
+    "M3 save-format support remains intentionally absent because packages/save-format is forbidden for this task; requestSaveV1 still rejects state.m3 before emitting bytes."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the remaining partial-fulfillment plus deferral accounting path before re-review. Either reject deferral once deliveredAmount for the current due period is nonzero, or carry deliveredAmount and remaining arrears forward so resource deductions, fulfillmentClaims, accounting.deliveredAmount, accounting.arrearsAmount, and any later fulfillment cannot exceed nominal/current due. Add a regression test proving partial 20 then deferral cannot lead to 140 cash deducted or current accounting deliveredAmount reset for a nominal 120 obligation. Rerun git diff --check, writer handoff validation, task validation, task JSON shape check, @monsoon/sim-core test, @monsoon/protocol test, pnpm sim:determinism, pnpm test, and the targeted no-random/time/framework/import searches.",
+  "created_at": "2026-06-25T16:23:01Z"
+}

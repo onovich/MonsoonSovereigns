@@ -1,0 +1,103 @@
+{
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "message_id": "MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-REVIEW",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R3 systems review requests changes. The implementation stays inside the expected sim-core/protocol/test/process paths, required tests pass, and no React/Pixi/Electron/fs/random/time boundary issue was found. However, the new M3 obligation state is not fully covered by explicit runtime schema validation, settlement accounting accepts contradictory terminal fulfillment states, deferral diverges due.nextDueDay from accounting.dueDay, and the public event/audit semantics currently label refusal/default/remission/pursuit as fulfilled.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/sim-core-m3-tribute-troop-obligations.test.ts",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Writer implementation files are modified/untracked as expected; systems review handoff is the only review file added by this reviewer."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node -e task JSON parse/shape check for M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "TASK_JSON_SHAPE_OK M3-TRIBUTE-TROOP-OBLIGATIONS-001 REVIEW systems_architect."
+    },
+    {
+      "command": "rg -n 'Math\\.random|Date\\.now|performance\\.now|new Date' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "rg -n 'react|pixi|electron|node:fs|from \"fs\"|from ''fs''|require\\(\"fs\"|require\\(''fs''' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "node --experimental-strip-types malformed M3 obligation state validator probe",
+      "exit_code": 0,
+      "result": "validateWorldStateV0 threw Cannot read properties of undefined (reading 'debtorPolityId') when a malformed obligation omitted obligationSource but otherwise passed the current audit-event shape check."
+    },
+    {
+      "command": "node --experimental-strip-types underfull terminal fulfillment probe",
+      "exit_code": 0,
+      "result": "A fulfillment of 1 against dueAmount 120 was accepted, left deliveredAmount=1 and arrearsAmount=119, then rejected a retry for the same dueDay as duplicate-obligation-settlement."
+    },
+    {
+      "command": "node --experimental-strip-types deferral due accounting probe",
+      "exit_code": 0,
+      "result": "A deferral changed due.nextDueDay from 30 to 60 but left accounting.dueDay at 30; a later settlement for dueDay 60 was rejected as obligation-due-period-invalid."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "13 test files passed; 81 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello, command/query, and save/load canaries; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 23 files/140 tests passed; web Vitest 1 file/3 tests passed."
+    }
+  ],
+  "decisions": [
+    "Do not accept the current event/audit naming as the final R3 protocol shape. Refusal, remission, pursuit-recovery, deferral, and default-breach should not be emitted or audited under a misleading fulfilled semantic. Use a broader settlement event/audit kind such as sim.obligation-settled / settled, or split semantically distinct event kinds while keeping actionKind as detail.",
+    "Cash/grain resource sourcing from deterministic M2 debtor source districts and troop headcount as an M3 placeholder are directionally acceptable, pending the action-specific settlement validation fixes.",
+    "No M4 campaign movement, armies, combat, client/UI, Electron/Node IO, content-source, or save-format implementation was introduced by the writer diff."
+  ],
+  "risks": [
+    "Current tests pass but do not cover malformed M3 obligation shape validation, underfull terminal fulfillment, deferral due-period progression, or action-specific amount/resource semantics for remission/default/pursuit.",
+    "M3 save-format support remains intentionally absent because packages/save-format is forbidden for this task; this is acceptable only while requestSaveV1 continues to reject state.m3 before emitting bytes."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix before re-review: (1) add complete runtime validation/canonicalization for all new M3 obligation fields, including obligationCategory, obligationSource, accounting, audit actionKind/dueDay/reasonCodes, fulfillment actionKind/dueDay/sourceMovements, source movement amount/headcount, and structured errors instead of validator throws; (2) enforce action-specific settlement rules so fulfillment cannot be terminal unless current due is fully satisfied, partial-fulfillment remains non-terminal, zero-amount fulfillment is rejected, and remission/default/pursuit do not draw debtor resources unless explicitly intended and tested; (3) update deferral to advance both due and accounting due-period/cycle state consistently; (4) replace or split sim.obligation-fulfilled and audit eventKind=fulfilled for non-fulfillment actions with clearer settlement semantics; (5) add regression/property tests for these cases and rerun the required task gates.",
+  "created_at": "2026-06-25T16:03:22Z"
+}

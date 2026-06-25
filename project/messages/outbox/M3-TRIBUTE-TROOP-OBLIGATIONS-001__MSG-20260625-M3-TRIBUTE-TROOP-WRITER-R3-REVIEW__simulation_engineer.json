@@ -1,0 +1,106 @@
+{
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "message_id": "MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R3-REVIEW",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R3 accounting blocker fixed by rejecting deferral once current due-period delivery has begun. This prevents partial-fulfillment from deducting debtor resources and then resetting deliveredAmount/arrears through deferral. Regression coverage now proves partial cash delivery of 20 against nominal 120 cannot be followed by deferral, cannot accept a later overfull 120 fulfillment, preserves deliveredAmount 20 and arrearsAmount 100, and completes with a final 100 fulfillment for total cash deduction 120.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/sim-core-m3-tribute-troop-obligations.test.ts",
+    "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R3-REVIEW__simulation_engineer.json",
+    "project/messages/routes/M3-TRIBUTE-TROOP-OBLIGATIONS-001__ROUTE-20260625-M3-TRIBUTE-LEAD-TO-SYSTEMS.json",
+    "project/messages/routes/M3-TRIBUTE-TROOP-OBLIGATIONS-001__ROUTE-20260625-M3-TRIBUTE-LEAD-TO-SYSTEMS-R2.json",
+    "project/messages/routes/M3-TRIBUTE-TROOP-OBLIGATIONS-001__ROUTE-20260625-M3-TRIBUTE-SYSTEMS-TO-WRITER-R2.json"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Task branch contains modified protocol/sim-core/tests/project state files and preserved untracked systems/writer handoffs and route evidence; no unrelated tracked files were reverted."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m3-tribute-troop-obligations.test.ts",
+      "exit_code": 1,
+      "result": "R3 regression failed before implementation: partial fulfillment of 20 followed by deferral was accepted."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m3-tribute-troop-obligations.test.ts",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed after rejecting deferral when deliveredAmount is nonzero."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json."
+    },
+    {
+      "command": "node -e task JSON parse/shape check for M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "{\"ok\":true,\"id\":\"M3-TRIBUTE-TROOP-OBLIGATIONS-001\",\"status\":\"IN_PROGRESS\",\"allowedPaths\":10,\"forbiddenPaths\":20,\"acceptanceCriteria\":6,\"requiredTests\":9}"
+    },
+    {
+      "command": "rg -n 'Math\\.random|Date\\.now|performance\\.now|new Date' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "rg -n 'react|pixi|electron|node:fs|from \"fs\"|from ''fs''|require\\(\"fs\"|require\\(''fs''' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "13 test files passed; 86 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 23 files/145 tests passed; web Vitest 1 file/3 tests passed."
+    }
+  ],
+  "decisions": [
+    "Selected the conservative systems-approved fix: reject deferral after any deliveredAmount exists for the current due period, rather than introducing M3 rollover accounting semantics.",
+    "Deferral still works before delivery begins and still advances due/accounting cycle consistently as covered by the existing direct deferral test.",
+    "Partial fulfillment remains non-terminal; a later fulfillment for exactly the remaining amount is accepted, while a later full nominal amount is rejected as overfull."
+  ],
+  "risks": [
+    "Deferral-after-partial is now explicitly invalid in M3. If design later wants negotiated rollover of already-delivered tribute, that should be a separate architecture/design change with explicit accounting semantics.",
+    "M3 save-format support remains intentionally absent because packages/save-format is forbidden for this task; existing structured unsupported behavior remains unchanged.",
+    "No M4 campaign movement, battle, client UI, diplomacy/rebellion expansion, content-source changes, or dependency changes were introduced."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R3 accounting fix for partial-fulfillment followed by deferral and confirm the task can proceed beyond systems review.",
+  "created_at": "2026-06-26T00:27:08.3312189+08:00"
+}

@@ -179,7 +179,29 @@ export interface M2EconomyPopulationStateV0 {
 export type M3ObligationKindV0 = "tribute" | "troop";
 export type M3ObligationResourceKindV0 = "cash" | "grain" | "troops";
 export type M3ObligationStatusV0 = "active" | "disputed" | "breached";
-export type M3ObligationAuditEventKindV0 = "created" | "fulfilled" | "status-changed";
+export type M3ObligationAuditEventKindV0 = "created" | "settled" | "status-changed";
+export type M3ObligationCategoryV0 =
+  | "regular-tribute"
+  | "extraordinary-levy"
+  | "troop-obligation"
+  | "defensive-garrison"
+  | "specific-war-aid";
+export type M3ObligationSettlementActionV0 =
+  | "fulfillment"
+  | "partial-fulfillment"
+  | "deferral"
+  | "refusal"
+  | "remission"
+  | "pursuit-recovery"
+  | "default-breach";
+export type M3TroopResponseStateV0 =
+  | "none"
+  | "committed"
+  | "deferred"
+  | "refused"
+  | "remitted"
+  | "recovery-pursued"
+  | "breached";
 export type M3AdministrativeControlModeV0 = "direct" | "vassal" | "tribute-only";
 export type M3OfficeKindV0 = "commander" | "governor" | "minister";
 export type M3OfficeJurisdictionV0 =
@@ -262,13 +284,35 @@ export type M3ObligationDueV0 =
       readonly triggerKey: string;
     };
 
+export interface M3ObligationSourceStateV0 {
+  readonly kind: "vassalage";
+  readonly sourceId: string;
+  readonly debtorPolityId: PolityId;
+  readonly creditorPolityId: PolityId;
+}
+
+export interface M3ObligationAccountingStateV0 {
+  readonly nominalAmount: number;
+  readonly dueAmount: number;
+  readonly deliveredAmount: number;
+  readonly arrearsAmount: number;
+  readonly defaultedAmount: number;
+  readonly remittedAmount: number;
+  readonly dueDay: GameDay;
+  readonly cycle: number;
+  readonly troopResponseState: M3TroopResponseStateV0;
+}
+
 export interface M3ObligationStateV0 {
   readonly id: M3ObligationId;
   readonly debtorPolityId: PolityId;
   readonly creditorPolityId: PolityId;
   readonly obligationKind: M3ObligationKindV0;
+  readonly obligationCategory: M3ObligationCategoryV0;
+  readonly obligationSource: M3ObligationSourceStateV0;
   readonly requirement: M3ObligationRequirementV0;
   readonly due: M3ObligationDueV0;
+  readonly accounting: M3ObligationAccountingStateV0;
   readonly status: M3ObligationStatusV0;
   readonly disputeReasonCode: string | null;
   readonly breachReasonCode: string | null;
@@ -287,17 +331,42 @@ export interface M3ObligationAuditEventStateV0 {
     readonly kind: "ai" | "player" | "system";
     readonly id: string;
   };
+  readonly actionKind: M3ObligationSettlementActionV0 | null;
+  readonly dueDay: GameDay | null;
   readonly fulfillmentId: M3FulfillmentId | null;
   readonly fulfilledAmount: number | null;
   readonly statusAfter: M3ObligationStatusV0;
   readonly reasonCode: string | null;
+  readonly reasonCodes: readonly string[];
+  readonly reliabilityBps: number;
 }
+
+export type M3FulfillmentSourceMovementStateV0 =
+  | {
+      readonly kind: "m2-population-group";
+      readonly populationGroupId: PopulationGroupId;
+      readonly districtId: DistrictId;
+      readonly resourceKind: "cash" | "grain";
+      readonly amount: number;
+    }
+  | {
+      readonly kind: "m3-troop-commitment-placeholder";
+      readonly debtorPolityId: PolityId;
+      readonly headcount: number;
+    };
 
 export interface M3FulfillmentClaimStateV0 {
   readonly fulfillmentId: M3FulfillmentId;
   readonly obligationId: M3ObligationId;
   readonly auditEventId: M3ObligationAuditEventId;
+  readonly actionKind: M3ObligationSettlementActionV0;
+  readonly dueDay: GameDay;
   readonly fulfilledAmount: number;
+  readonly deliveredAmount: number;
+  readonly arrearsAmount: number;
+  readonly defaultedAmount: number;
+  readonly reasonCode: string;
+  readonly sourceMovements: readonly M3FulfillmentSourceMovementStateV0[];
 }
 
 export interface M3AdministrativeDistrictStateV0 {
@@ -1558,8 +1627,23 @@ function validateM3ObligationEntry(
     ["tribute", "troop"],
     errors
   );
+  validateStringUnionField(
+    input,
+    "obligationCategory",
+    `${path}.obligationCategory`,
+    [
+      "regular-tribute",
+      "extraordinary-levy",
+      "troop-obligation",
+      "defensive-garrison",
+      "specific-war-aid"
+    ],
+    errors
+  );
+  validateM3ObligationSourceEntry(input["obligationSource"], `${path}.obligationSource`, errors);
   validateM3RequirementEntry(input["requirement"], `${path}.requirement`, errors);
   validateM3DueEntry(input["due"], `${path}.due`, errors);
+  validateM3ObligationAccountingEntry(input["accounting"], `${path}.accounting`, errors);
   validateStringUnionField(
     input,
     "status",
@@ -1581,6 +1665,61 @@ function validateM3ObligationEntry(
     "latestAuditEventId",
     `${path}.latestAuditEventId`,
     "M3ObligationAuditEventId",
+    errors
+  );
+}
+
+function validateM3ObligationSourceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 obligationSource must be an object."
+    });
+    return;
+  }
+  validateStringUnionField(input, "kind", `${path}.kind`, ["vassalage"], errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validatePositiveIntegerField(input, "debtorPolityId", `${path}.debtorPolityId`, "PolityId", errors);
+  validatePositiveIntegerField(
+    input,
+    "creditorPolityId",
+    `${path}.creditorPolityId`,
+    "PolityId",
+    errors
+  );
+}
+
+function validateM3ObligationAccountingEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 obligation accounting must be an object."
+    });
+    return;
+  }
+  validateNonnegativeIntegerField(input, "nominalAmount", `${path}.nominalAmount`, errors);
+  validateNonnegativeIntegerField(input, "dueAmount", `${path}.dueAmount`, errors);
+  validateNonnegativeIntegerField(input, "deliveredAmount", `${path}.deliveredAmount`, errors);
+  validateNonnegativeIntegerField(input, "arrearsAmount", `${path}.arrearsAmount`, errors);
+  validateNonnegativeIntegerField(input, "defaultedAmount", `${path}.defaultedAmount`, errors);
+  validateNonnegativeIntegerField(input, "remittedAmount", `${path}.remittedAmount`, errors);
+  validateNonnegativeIntegerField(input, "dueDay", `${path}.dueDay`, errors);
+  validatePositiveIntegerField(input, "cycle", `${path}.cycle`, "M3 obligation cycle", errors);
+  validateStringUnionField(
+    input,
+    "troopResponseState",
+    `${path}.troopResponseState`,
+    ["none", "committed", "deferred", "refused", "remitted", "recovery-pursued", "breached"],
     errors
   );
 }
@@ -1663,7 +1802,7 @@ function validateM3AuditEventEntry(
     input,
     "eventKind",
     `${path}.eventKind`,
-    ["created", "fulfilled", "status-changed"],
+    ["created", "settled", "status-changed"],
     errors
   );
   validateNonnegativeIntegerField(input, "eventDay", `${path}.eventDay`, errors);
@@ -1689,14 +1828,22 @@ function validateM3AuditEventEntry(
   if (fulfillmentId !== null) {
     validatePositiveIntegerValue(fulfillmentId, `${path}.fulfillmentId`, "M3FulfillmentId", errors);
   }
+  const actionKind = input["actionKind"];
+  if (actionKind !== null) {
+    validateM3SettlementActionValue(actionKind, `${path}.actionKind`, errors);
+  }
   const fulfilledAmount = input["fulfilledAmount"];
   if (fulfilledAmount !== null) {
-    validatePositiveIntegerValue(
+    validateNonnegativeIntegerValue(
       fulfilledAmount,
       `${path}.fulfilledAmount`,
       "M3 fulfilledAmount",
       errors
     );
+  }
+  const dueDay = input["dueDay"];
+  if (dueDay !== null) {
+    validateNonnegativeIntegerValue(dueDay, `${path}.dueDay`, "M3 dueDay", errors);
   }
   validateStringUnionField(
     input,
@@ -1706,6 +1853,8 @@ function validateM3AuditEventEntry(
     errors
   );
   validateNullableStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateIntegerFieldInRange(input, "reliabilityBps", `${path}.reliabilityBps`, 0, 10_000, errors);
 }
 
 function validateM3FulfillmentClaimEntry(
@@ -1737,13 +1886,136 @@ function validateM3FulfillmentClaimEntry(
     "M3ObligationAuditEventId",
     errors
   );
-  validatePositiveIntegerField(
+  validateM3SettlementActionValue(input["actionKind"], `${path}.actionKind`, errors);
+  validateNonnegativeIntegerField(
     input,
     "fulfilledAmount",
     `${path}.fulfilledAmount`,
-    "M3 fulfilledAmount",
     errors
   );
+  validateNonnegativeIntegerField(input, "deliveredAmount", `${path}.deliveredAmount`, errors);
+  validateNonnegativeIntegerField(input, "arrearsAmount", `${path}.arrearsAmount`, errors);
+  validateNonnegativeIntegerField(input, "defaultedAmount", `${path}.defaultedAmount`, errors);
+  validateNonnegativeIntegerField(input, "dueDay", `${path}.dueDay`, errors);
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  validateM3FulfillmentSourceMovementsEntry(
+    input["sourceMovements"],
+    `${path}.sourceMovements`,
+    errors
+  );
+}
+
+function validateM3SettlementActionValue(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    input === "fulfillment" ||
+    input === "partial-fulfillment" ||
+    input === "deferral" ||
+    input === "refusal" ||
+    input === "remission" ||
+    input === "pursuit-recovery" ||
+    input === "default-breach"
+  ) {
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message:
+      "M3 settlement action must be fulfillment, partial-fulfillment, deferral, refusal, remission, pursuit-recovery, or default-breach."
+  });
+}
+
+function validateStringArrayField(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!Array.isArray(input)) {
+    errors.push({ code: "invalid-schema", path, message: `${path} must be an array.` });
+    return;
+  }
+  input.forEach((value, index) => {
+    if (typeof value !== "string" || value.length === 0) {
+      errors.push({
+        code: "invalid-schema",
+        path: `${path}[${index}]`,
+        message: `${path}[${index}] must be a non-empty string.`
+      });
+    }
+  });
+}
+
+function validateM3FulfillmentSourceMovementsEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!Array.isArray(input)) {
+    errors.push({ code: "invalid-schema", path, message: `${path} must be an array.` });
+    return;
+  }
+  input.forEach((movement, index) => {
+    const movementPath = `${path}[${index}]`;
+    if (!isRecord(movement)) {
+      errors.push({
+        code: "invalid-schema",
+        path: movementPath,
+        message: "M3 fulfillment source movement must be an object."
+      });
+      return;
+    }
+    if (movement["kind"] === "m2-population-group") {
+      validatePositiveIntegerField(
+        movement,
+        "populationGroupId",
+        `${movementPath}.populationGroupId`,
+        "PopulationGroupId",
+        errors
+      );
+      validatePositiveIntegerField(
+        movement,
+        "districtId",
+        `${movementPath}.districtId`,
+        "DistrictId",
+        errors
+      );
+      validateStringUnionField(
+        movement,
+        "resourceKind",
+        `${movementPath}.resourceKind`,
+        ["cash", "grain"],
+        errors
+      );
+      validatePositiveIntegerField(movement, "amount", `${movementPath}.amount`, "M3 amount", errors);
+      return;
+    }
+    if (movement["kind"] === "m3-troop-commitment-placeholder") {
+      validatePositiveIntegerField(
+        movement,
+        "debtorPolityId",
+        `${movementPath}.debtorPolityId`,
+        "PolityId",
+        errors
+      );
+      validatePositiveIntegerField(
+        movement,
+        "headcount",
+        `${movementPath}.headcount`,
+        "M3 troop headcount",
+        errors
+      );
+      return;
+    }
+    errors.push({
+      code: "invalid-schema",
+      path: `${movementPath}.kind`,
+      message: "M3 fulfillment source movement kind is not supported."
+    });
+  });
 }
 
 function validateM3AdministrativeDistrictEntry(
@@ -2736,6 +3008,23 @@ function validatePositiveIntegerValue(
   });
 }
 
+function validateNonnegativeIntegerValue(
+  value: unknown,
+  path: string,
+  label: string,
+  errors: WorldInvariantError[]
+): void {
+  if (isNonnegativeInteger(value)) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${label} ${formatUnknown(value)} must be a nonnegative safe integer.`
+  });
+}
+
 function createRuntimeState(
   definitions: WorldDefinitionsV0,
   m2: M2EconomyPopulationStateV0 | undefined,
@@ -2870,8 +3159,18 @@ export function canonicalizeM3PolityVassalageState(
       id: parseM3ObligationId(obligation.id),
       debtorPolityId: parsePolityId(obligation.debtorPolityId),
       creditorPolityId: parsePolityId(obligation.creditorPolityId),
+      obligationSource: {
+        kind: "vassalage",
+        sourceId: obligation.obligationSource.sourceId,
+        debtorPolityId: parsePolityId(obligation.obligationSource.debtorPolityId),
+        creditorPolityId: parsePolityId(obligation.obligationSource.creditorPolityId)
+      },
       requirement: copyM3Requirement(obligation.requirement),
       due: copyM3Due(obligation.due),
+      accounting: {
+        ...obligation.accounting,
+        dueDay: parseGameDay(obligation.accounting.dueDay)
+      },
       createdAuditEventId: parseM3ObligationAuditEventId(obligation.createdAuditEventId),
       latestAuditEventId: parseM3ObligationAuditEventId(obligation.latestAuditEventId)
     })),
@@ -2882,13 +3181,23 @@ export function canonicalizeM3PolityVassalageState(
       eventDay: parseGameDay(event.eventDay),
       eventRevision: parseWorldRevision(event.eventRevision),
       actor: { ...event.actor },
+      dueDay: event.dueDay === null ? null : parseGameDay(event.dueDay),
       fulfillmentId: event.fulfillmentId === null ? null : parseM3FulfillmentId(event.fulfillmentId)
     })),
     fulfillmentClaims: sortM3FulfillmentClaims(m3.fulfillmentClaims).map((claim) => ({
       fulfillmentId: parseM3FulfillmentId(claim.fulfillmentId),
       obligationId: parseM3ObligationId(claim.obligationId),
       auditEventId: parseM3ObligationAuditEventId(claim.auditEventId),
-      fulfilledAmount: claim.fulfilledAmount
+      actionKind: claim.actionKind,
+      dueDay: parseGameDay(claim.dueDay),
+      fulfilledAmount: claim.fulfilledAmount,
+      deliveredAmount: claim.deliveredAmount,
+      arrearsAmount: claim.arrearsAmount,
+      defaultedAmount: claim.defaultedAmount,
+      reasonCode: claim.reasonCode,
+      sourceMovements: sortM3FulfillmentSourceMovements(claim.sourceMovements).map(
+        copyM3FulfillmentSourceMovement
+      )
     })),
     administrativeDistricts: sortM3AdministrativeDistricts(m3.administrativeDistricts).map(
       (entry) => ({
@@ -3441,6 +3750,52 @@ function sortM3FulfillmentClaims(
   return [...values].sort((left, right) => left.fulfillmentId - right.fulfillmentId);
 }
 
+function sortM3FulfillmentSourceMovements(
+  values: readonly M3FulfillmentSourceMovementStateV0[]
+): readonly M3FulfillmentSourceMovementStateV0[] {
+  return [...values].sort((left, right) => {
+    if (left.kind !== right.kind) {
+      return compareText(left.kind, right.kind);
+    }
+    if (left.kind === "m2-population-group" && right.kind === "m2-population-group") {
+      return (
+        left.populationGroupId - right.populationGroupId ||
+        left.districtId - right.districtId ||
+        compareText(left.resourceKind, right.resourceKind) ||
+        left.amount - right.amount
+      );
+    }
+    if (
+      left.kind === "m3-troop-commitment-placeholder" &&
+      right.kind === "m3-troop-commitment-placeholder"
+    ) {
+      return left.debtorPolityId - right.debtorPolityId || left.headcount - right.headcount;
+    }
+    return 0;
+  });
+}
+
+function copyM3FulfillmentSourceMovement(
+  movement: M3FulfillmentSourceMovementStateV0
+): M3FulfillmentSourceMovementStateV0 {
+  switch (movement.kind) {
+    case "m2-population-group":
+      return {
+        kind: "m2-population-group",
+        populationGroupId: parsePopulationGroupId(movement.populationGroupId),
+        districtId: parseDistrictId(movement.districtId),
+        resourceKind: movement.resourceKind,
+        amount: movement.amount
+      };
+    case "m3-troop-commitment-placeholder":
+      return {
+        kind: "m3-troop-commitment-placeholder",
+        debtorPolityId: parsePolityId(movement.debtorPolityId),
+        headcount: movement.headcount
+      };
+  }
+}
+
 function sortM3AdministrativeDistricts(
   values: readonly M3AdministrativeDistrictStateV0[]
 ): readonly M3AdministrativeDistrictStateV0[] {
@@ -3786,8 +4141,21 @@ function formatM3Obligations(values: readonly M3ObligationStateV0[]): string {
         value.debtorPolityId,
         value.creditorPolityId,
         value.obligationKind,
+        value.obligationCategory,
+        `${value.obligationSource.kind}:${value.obligationSource.sourceId}:${value.obligationSource.debtorPolityId}:${value.obligationSource.creditorPolityId}`,
         formatM3Requirement(value.requirement),
         formatM3Due(value.due),
+        [
+          value.accounting.nominalAmount,
+          value.accounting.dueAmount,
+          value.accounting.deliveredAmount,
+          value.accounting.arrearsAmount,
+          value.accounting.defaultedAmount,
+          value.accounting.remittedAmount,
+          value.accounting.dueDay,
+          value.accounting.cycle,
+          value.accounting.troopResponseState
+        ].join("/"),
         value.status,
         formatNullableString(value.disputeReasonCode),
         formatNullableString(value.breachReasonCode),
@@ -3827,10 +4195,14 @@ function formatM3AuditEvents(m3: M3PolityVassalageStateV0): string {
         value.eventRevision,
         value.commandId,
         `${value.actor.kind}:${value.actor.id}`,
+        formatNullableString(value.actionKind),
+        formatNullableNumber(value.dueDay),
         formatNullableNumber(value.fulfillmentId),
         formatNullableNumber(value.fulfilledAmount),
         value.statusAfter,
-        formatNullableString(value.reasonCode)
+        formatNullableString(value.reasonCode),
+        value.reasonCodes.join("/"),
+        value.reliabilityBps
       ].join(":")
     )
     .join(",");
@@ -3838,11 +4210,39 @@ function formatM3AuditEvents(m3: M3PolityVassalageStateV0): string {
 
 function formatM3FulfillmentClaims(values: readonly M3FulfillmentClaimStateV0[]): string {
   return sortM3FulfillmentClaims(values)
-    .map(
-      (value) =>
-        `${value.fulfillmentId}:${value.obligationId}:${value.auditEventId}:${value.fulfilledAmount}`
+    .map((value) =>
+      [
+        value.fulfillmentId,
+        value.obligationId,
+        value.auditEventId,
+        value.actionKind,
+        value.dueDay,
+        value.fulfilledAmount,
+        value.deliveredAmount,
+        value.arrearsAmount,
+        value.defaultedAmount,
+        value.reasonCode,
+        sortM3FulfillmentSourceMovements(value.sourceMovements)
+          .map(formatM3FulfillmentSourceMovement)
+          .join("/")
+      ].join(":")
     )
     .join(",");
+}
+
+function formatM3FulfillmentSourceMovement(movement: M3FulfillmentSourceMovementStateV0): string {
+  switch (movement.kind) {
+    case "m2-population-group":
+      return [
+        movement.kind,
+        movement.populationGroupId,
+        movement.districtId,
+        movement.resourceKind,
+        movement.amount
+      ].join(".");
+    case "m3-troop-commitment-placeholder":
+      return [movement.kind, movement.debtorPolityId, movement.headcount].join(".");
+  }
 }
 
 function formatM3AdministrativeDistricts(
@@ -4760,6 +5160,22 @@ function validateM3ObligationSemantics(
         message: "M3 obligation creditor and debtor must be different polities."
       });
     }
+    if (!isRecord(obligation.obligationSource)) {
+      return;
+    }
+    if (
+      obligation.obligationSource.debtorPolityId !== obligation.debtorPolityId ||
+      obligation.obligationSource.creditorPolityId !== obligation.creditorPolityId
+    ) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.obligations[${index}].obligationSource`,
+        message: "M3 obligation source must match debtor and creditor polities."
+      });
+    }
+    if (isRecord(obligation.accounting)) {
+      validateNonnegativeM3Accounting(obligation, index, errors);
+    }
     if (obligation.status === "disputed" && obligation.disputeReasonCode === null) {
       errors.push({
         code: "invalid-schema",
@@ -4797,6 +5213,13 @@ function validateM3AuditSemantics(
         code: "bad-reference",
         path: `state.m3.obligationAuditEvents[${index}].obligationId`,
         message: `M3 audit event references missing M3ObligationId ${event.obligationId}.`
+      });
+    }
+    if (event.reliabilityBps < 0 || event.reliabilityBps > 10_000) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.obligationAuditEvents[${index}].reliabilityBps`,
+        message: "M3 audit event reliabilityBps must be from 0 to 10000."
       });
     }
   });
@@ -4849,7 +5272,42 @@ function validateM3FulfillmentSemantics(
         message: `M3 fulfillment claim references missing M3ObligationAuditEventId ${claim.auditEventId}.`
       });
     }
+    if (
+      claim.fulfilledAmount < 0 ||
+      claim.deliveredAmount < 0 ||
+      claim.arrearsAmount < 0 ||
+      claim.defaultedAmount < 0
+    ) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.fulfillmentClaims[${index}]`,
+        message: "M3 fulfillment claim accounting amounts must be nonnegative."
+      });
+    }
   });
+}
+
+function validateNonnegativeM3Accounting(
+  obligation: M3ObligationStateV0,
+  index: number,
+  errors: WorldInvariantError[]
+): void {
+  const accounting = obligation.accounting;
+  if (
+    accounting.nominalAmount < 0 ||
+    accounting.dueAmount < 0 ||
+    accounting.deliveredAmount < 0 ||
+    accounting.arrearsAmount < 0 ||
+    accounting.defaultedAmount < 0 ||
+    accounting.remittedAmount < 0 ||
+    accounting.cycle < 1
+  ) {
+    errors.push({
+      code: "invalid-schema",
+      path: `state.m3.obligations[${index}].accounting`,
+      message: "M3 obligation accounting amounts must be nonnegative and cycle must be positive."
+    });
+  }
 }
 
 function validateM3AdministrativeSemantics(
