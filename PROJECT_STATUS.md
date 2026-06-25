@@ -29,6 +29,8 @@ M2 Gate 已通过，见 `docs/GATE-M2.md`：
 
 当前执行重点是按 Roadmap 建立政体、职任、人物与臣属纵切；M3 不得扩写完整战争闭环、完整外交、正式历史人物数据库、生产地图内容、M4+ 战役系统或未批准的生产依赖。M3 实现工作必须先经过 M3 task graph 创建与独立验收。
 
+M3 当前进展：`M3-TRIBUTE-TROOP-OBLIGATIONS-001` 已在 PR #70 进入 `origin/main`（`9e0bf248eeecbcd4faab162d54dd0504c02f57ac`）并进入 `CLOSED`。已完成臣属义务的显式来源、名义/到期/已交付/欠额/违约会计、履行/部分履行/延期/拒绝/减免/追索/违约审计、M2 资源来源扣减、M3 出兵承诺占位、原因码与确定性回归。下一批 READY M3 任务为 `M3-POSTWAR-GOVERNANCE-001` 与 `M3-CLIENT-APPOINTMENT-UI-001`，优先继续 `M3-POSTWAR-GOVERNANCE-001`。
+
 ## 2. 已冻结决定
 
 | ID | 决定 | 状态 |
