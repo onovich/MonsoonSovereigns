@@ -176,6 +176,7 @@ export type M3ObligationKindV0 = "tribute" | "troop";
 export type M3ObligationResourceKindV0 = "cash" | "grain" | "troops";
 export type M3ObligationStatusV0 = "active" | "disputed" | "breached";
 export type M3ObligationAuditEventKindV0 = "created" | "fulfilled" | "status-changed";
+export type M3AdministrativeControlModeV0 = "direct" | "vassal" | "tribute-only";
 
 export interface M3PolityRecordStateV0 {
   readonly polityId: PolityId;
@@ -242,12 +243,53 @@ export interface M3FulfillmentClaimStateV0 {
   readonly fulfilledAmount: number;
 }
 
+export interface M3AdministrativeDistrictStateV0 {
+  readonly polityId: PolityId;
+  readonly districtId: DistrictId;
+  readonly controlMode: M3AdministrativeControlModeV0;
+  readonly localComplexity: number;
+  readonly communicationCost: number;
+  readonly directness: number;
+  readonly frontierPressure: number;
+  readonly administrativeCapacity: number;
+}
+
 export interface M3PolityVassalageStateV0 {
   readonly schemaVersion: 1;
   readonly polities: readonly M3PolityRecordStateV0[];
   readonly obligations: readonly M3ObligationStateV0[];
   readonly obligationAuditEvents: readonly M3ObligationAuditEventStateV0[];
   readonly fulfillmentClaims: readonly M3FulfillmentClaimStateV0[];
+  readonly administrativeDistricts: readonly M3AdministrativeDistrictStateV0[];
+}
+
+export interface M3AdministrativeBurdenProfileInputV0 {
+  readonly polityId: unknown;
+  readonly districtId: unknown;
+  readonly controlMode: unknown;
+  readonly localComplexity: unknown;
+  readonly communicationCost: unknown;
+  readonly directness: unknown;
+  readonly frontierPressure: unknown;
+  readonly administrativeCapacity: unknown;
+}
+
+export interface M3AdministrativeBurdenProfileV0 {
+  readonly polityId: PolityId;
+  readonly districtId: DistrictId;
+  readonly controlMode: M3AdministrativeControlModeV0;
+  readonly localComplexity: number;
+  readonly communicationCost: number;
+  readonly directness: number;
+  readonly frontierPressure: number;
+  readonly administrativeCapacity: number;
+  readonly administrativeLoad: number;
+  readonly overload: number;
+  readonly efficiencyBps: number;
+  readonly realizableIncomeBps: number;
+  readonly obligationReliabilityBps: number;
+  readonly delayRiskBps: number;
+  readonly readinessBps: number;
 }
 
 export interface WorldRuntimeStateV0 {
@@ -1181,6 +1223,7 @@ function validateM3EntryShapes(input: unknown, errors: WorldInvariantError[]): v
   validateArrayField(input, "obligations", "state.m3.obligations", errors);
   validateArrayField(input, "obligationAuditEvents", "state.m3.obligationAuditEvents", errors);
   validateArrayField(input, "fulfillmentClaims", "state.m3.fulfillmentClaims", errors);
+  validateArrayField(input, "administrativeDistricts", "state.m3.administrativeDistricts", errors);
 
   const polities = input["polities"];
   if (Array.isArray(polities)) {
@@ -1207,6 +1250,17 @@ function validateM3EntryShapes(input: unknown, errors: WorldInvariantError[]): v
   if (Array.isArray(fulfillmentClaims)) {
     fulfillmentClaims.forEach((entry, index) =>
       validateM3FulfillmentClaimEntry(entry, `state.m3.fulfillmentClaims[${index}]`, errors)
+    );
+  }
+
+  const administrativeDistricts = input["administrativeDistricts"];
+  if (Array.isArray(administrativeDistricts)) {
+    administrativeDistricts.forEach((entry, index) =>
+      validateM3AdministrativeDistrictEntry(
+        entry,
+        `state.m3.administrativeDistricts[${index}]`,
+        errors
+      )
     );
   }
 }
@@ -1436,6 +1490,37 @@ function validateM3FulfillmentClaimEntry(
     "fulfilledAmount",
     `${path}.fulfilledAmount`,
     "M3 fulfilledAmount",
+    errors
+  );
+}
+
+function validateM3AdministrativeDistrictEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3AdministrativeDistrictState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validateStringUnionField(
+    input,
+    "controlMode",
+    `${path}.controlMode`,
+    M3_ADMINISTRATIVE_CONTROL_MODES,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "localComplexity", `${path}.localComplexity`, errors);
+  validateNonnegativeIntegerField(input, "communicationCost", `${path}.communicationCost`, errors);
+  validateNonnegativeIntegerField(input, "directness", `${path}.directness`, errors);
+  validateNonnegativeIntegerField(input, "frontierPressure", `${path}.frontierPressure`, errors);
+  validatePositiveIntegerField(
+    input,
+    "administrativeCapacity",
+    `${path}.administrativeCapacity`,
+    "M3 administrativeCapacity",
     errors
   );
 }
@@ -2004,7 +2089,8 @@ export function createM3PolityVassalageStateV0(
       })),
     obligations: input?.obligations ?? [],
     obligationAuditEvents: input?.obligationAuditEvents ?? [],
-    fulfillmentClaims: input?.fulfillmentClaims ?? []
+    fulfillmentClaims: input?.fulfillmentClaims ?? [],
+    administrativeDistricts: input?.administrativeDistricts ?? []
   });
 }
 
@@ -2042,7 +2128,88 @@ export function canonicalizeM3PolityVassalageState(
       obligationId: parseM3ObligationId(claim.obligationId),
       auditEventId: parseM3ObligationAuditEventId(claim.auditEventId),
       fulfilledAmount: claim.fulfilledAmount
-    }))
+    })),
+    administrativeDistricts: sortM3AdministrativeDistricts(m3.administrativeDistricts).map(
+      (entry) => ({
+        polityId: parsePolityId(entry.polityId),
+        districtId: parseDistrictId(entry.districtId),
+        controlMode: parseM3AdministrativeControlMode(entry.controlMode),
+        localComplexity: parseNonnegativeInteger(entry.localComplexity, "M3 localComplexity"),
+        communicationCost: parseNonnegativeInteger(entry.communicationCost, "M3 communicationCost"),
+        directness: parseNonnegativeInteger(entry.directness, "M3 directness"),
+        frontierPressure: parseNonnegativeInteger(entry.frontierPressure, "M3 frontierPressure"),
+        administrativeCapacity: parsePositiveInteger(
+          entry.administrativeCapacity,
+          "M3 administrativeCapacity"
+        )
+      })
+    )
+  };
+}
+
+export function computeM3AdministrativeBurdenProfileV0(
+  input: M3AdministrativeBurdenProfileInputV0
+): M3AdministrativeBurdenProfileV0 {
+  const polityId = parsePolityId(input.polityId);
+  const districtId = parseDistrictId(input.districtId);
+  const controlMode = parseM3AdministrativeControlMode(input.controlMode);
+  const localComplexity = parseNonnegativeInteger(input.localComplexity, "M3 localComplexity");
+  const communicationCost = parseNonnegativeInteger(
+    input.communicationCost,
+    "M3 communicationCost"
+  );
+  const directness = parseNonnegativeInteger(input.directness, "M3 directness");
+  const frontierPressure = parseNonnegativeInteger(input.frontierPressure, "M3 frontierPressure");
+  const administrativeCapacity = parsePositiveInteger(
+    input.administrativeCapacity,
+    "M3 administrativeCapacity"
+  );
+  const administrativeLoad =
+    m3AdministrativeModeBaseLoad(controlMode) +
+    localComplexity +
+    communicationCost +
+    frontierPressure +
+    m3DirectnessLoad(controlMode, directness);
+  const overload =
+    administrativeLoad > administrativeCapacity ? administrativeLoad - administrativeCapacity : 0;
+  const efficiencyBps = clampInteger(10_000 - overload * 10, 2_500, 10_000);
+  const delayRiskBps = clampInteger(
+    overload * 8 + frontierPressure * 4 + communicationCost * 2,
+    0,
+    10_000
+  );
+  const realizableIncomeBps = multiplyBps(
+    m3AdministrativeModeIncomeBps(controlMode),
+    efficiencyBps
+  );
+  const obligationReliabilityBps = clampInteger(
+    multiplyBps(m3AdministrativeModeReliabilityBps(controlMode), efficiencyBps) -
+      communicationCost * 2,
+    0,
+    10_000
+  );
+  const readinessBps = clampInteger(
+    multiplyBps(m3AdministrativeModeReadinessBps(controlMode), efficiencyBps) - delayRiskBps,
+    0,
+    10_000
+  );
+
+  return {
+    polityId,
+    districtId,
+    controlMode,
+    localComplexity,
+    communicationCost,
+    directness,
+    frontierPressure,
+    administrativeCapacity,
+    administrativeLoad,
+    overload,
+    efficiencyBps,
+    realizableIncomeBps,
+    obligationReliabilityBps,
+    delayRiskBps,
+    readinessBps
   };
 }
 
@@ -2110,6 +2277,20 @@ function parseM2RouteKind(value: unknown): M2RouteKindV0 {
   }
 
   throw new Error("M2 routeKind must be coast, river, or road.");
+}
+
+const M3_ADMINISTRATIVE_CONTROL_MODES: readonly M3AdministrativeControlModeV0[] = [
+  "direct",
+  "vassal",
+  "tribute-only"
+];
+
+function parseM3AdministrativeControlMode(value: unknown): M3AdministrativeControlModeV0 {
+  if (value === "direct" || value === "vassal" || value === "tribute-only") {
+    return value;
+  }
+
+  throw new Error("M3 administrative controlMode must be direct, vassal, or tribute-only.");
 }
 
 function copyM3Requirement(requirement: M3ObligationRequirementV0): M3ObligationRequirementV0 {
@@ -2218,6 +2399,90 @@ function sortM3FulfillmentClaims(
   values: readonly M3FulfillmentClaimStateV0[]
 ): readonly M3FulfillmentClaimStateV0[] {
   return [...values].sort((left, right) => left.fulfillmentId - right.fulfillmentId);
+}
+
+function sortM3AdministrativeDistricts(
+  values: readonly M3AdministrativeDistrictStateV0[]
+): readonly M3AdministrativeDistrictStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.polityId - right.polityId ||
+      left.districtId - right.districtId ||
+      compareText(left.controlMode, right.controlMode)
+  );
+}
+
+function m3AdministrativeModeBaseLoad(mode: M3AdministrativeControlModeV0): number {
+  switch (mode) {
+    case "direct":
+      return 320;
+    case "vassal":
+      return 190;
+    case "tribute-only":
+      return 110;
+  }
+}
+
+function m3DirectnessLoad(mode: M3AdministrativeControlModeV0, directness: number): number {
+  switch (mode) {
+    case "direct":
+      return directness;
+    case "vassal":
+      return divideRoundingDown(directness, 2);
+    case "tribute-only":
+      return divideRoundingDown(directness, 4);
+  }
+}
+
+function m3AdministrativeModeIncomeBps(mode: M3AdministrativeControlModeV0): number {
+  switch (mode) {
+    case "direct":
+      return 10_000;
+    case "vassal":
+      return 7_000;
+    case "tribute-only":
+      return 4_500;
+  }
+}
+
+function m3AdministrativeModeReliabilityBps(mode: M3AdministrativeControlModeV0): number {
+  switch (mode) {
+    case "direct":
+      return 8_500;
+    case "vassal":
+      return 7_500;
+    case "tribute-only":
+      return 6_000;
+  }
+}
+
+function m3AdministrativeModeReadinessBps(mode: M3AdministrativeControlModeV0): number {
+  switch (mode) {
+    case "direct":
+      return 8_000;
+    case "vassal":
+      return 6_500;
+    case "tribute-only":
+      return 4_500;
+  }
+}
+
+function multiplyBps(value: number, bps: number): number {
+  return divideRoundingDown(value * bps, 10_000);
+}
+
+function divideRoundingDown(value: number, divisor: number): number {
+  return (value - (value % divisor)) / divisor;
+}
+
+function clampInteger(value: number, minimum: number, maximum: number): number {
+  if (value < minimum) {
+    return minimum;
+  }
+  if (value > maximum) {
+    return maximum;
+  }
+  return value;
 }
 
 function sortM2LaborCommitments(
@@ -2366,7 +2631,10 @@ function formatM3CanonicalLines(m3: M3PolityVassalageStateV0 | undefined): reado
     `state.m3.polities=${formatM3PolityRecords(m3.polities)}`,
     `state.m3.obligations=${formatM3Obligations(m3.obligations)}`,
     `state.m3.obligationAuditEvents=${formatM3AuditEvents(m3)}`,
-    `state.m3.fulfillmentClaims=${formatM3FulfillmentClaims(m3.fulfillmentClaims)}`
+    `state.m3.fulfillmentClaims=${formatM3FulfillmentClaims(m3.fulfillmentClaims)}`,
+    `state.m3.administrativeDistricts=${formatM3AdministrativeDistricts(
+      m3.administrativeDistricts
+    )}`
   ];
 }
 
@@ -2439,6 +2707,25 @@ function formatM3FulfillmentClaims(values: readonly M3FulfillmentClaimStateV0[])
     .map(
       (value) =>
         `${value.fulfillmentId}:${value.obligationId}:${value.auditEventId}:${value.fulfilledAmount}`
+    )
+    .join(",");
+}
+
+function formatM3AdministrativeDistricts(
+  values: readonly M3AdministrativeDistrictStateV0[]
+): string {
+  return sortM3AdministrativeDistricts(values)
+    .map((value) =>
+      [
+        value.polityId,
+        value.districtId,
+        value.controlMode,
+        value.localComplexity,
+        value.communicationCost,
+        value.directness,
+        value.frontierPressure,
+        value.administrativeCapacity
+      ].join(":")
     )
     .join(",");
 }
@@ -3046,6 +3333,7 @@ function validateM3RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
   validateM3ObligationSemantics(m3, polityIds, errors);
   validateM3AuditSemantics(m3, errors);
   validateM3FulfillmentSemantics(m3, errors);
+  validateM3AdministrativeSemantics(m3, polityIds, idsOf(world.definitions.districts), errors);
 }
 
 function validateM3PolityCoverage(
@@ -3249,6 +3537,41 @@ function validateM3FulfillmentSemantics(
         code: "bad-reference",
         path: `state.m3.fulfillmentClaims[${index}].auditEventId`,
         message: `M3 fulfillment claim references missing M3ObligationAuditEventId ${claim.auditEventId}.`
+      });
+    }
+  });
+}
+
+function validateM3AdministrativeSemantics(
+  m3: M3PolityVassalageStateV0,
+  polityIds: ReadonlySet<number>,
+  districtIds: ReadonlySet<number>,
+  errors: WorldInvariantError[]
+): void {
+  const seen = new Set<string>();
+  m3.administrativeDistricts.forEach((entry, index) => {
+    const key = `${entry.polityId}:${entry.districtId}:${entry.controlMode}`;
+    if (seen.has(key)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.administrativeDistricts",
+        message:
+          "Duplicate M3AdministrativeDistrictState row for polity, district, and control mode."
+      });
+    }
+    seen.add(key);
+    if (!polityIds.has(entry.polityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.administrativeDistricts[${index}].polityId`,
+        message: `M3 administrative district references missing PolityId ${entry.polityId}.`
+      });
+    }
+    if (!districtIds.has(entry.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.administrativeDistricts[${index}].districtId`,
+        message: `M3 administrative district references missing DistrictId ${entry.districtId}.`
       });
     }
   });
@@ -3461,7 +3784,8 @@ function isM3StateLike(value: unknown): value is M3PolityVassalageStateV0 {
     Array.isArray(value["polities"]) &&
     Array.isArray(value["obligations"]) &&
     Array.isArray(value["obligationAuditEvents"]) &&
-    Array.isArray(value["fulfillmentClaims"])
+    Array.isArray(value["fulfillmentClaims"]) &&
+    Array.isArray(value["administrativeDistricts"])
   );
 }
 

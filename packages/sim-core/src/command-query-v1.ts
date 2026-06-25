@@ -45,8 +45,10 @@ import {
   validateWorldStateV0,
   canonicalizeM2EconomyPopulationState,
   canonicalizeM3PolityVassalageState,
+  computeM3AdministrativeBurdenProfileV0,
   type DistrictControlState,
   type DistrictId,
+  type M3AdministrativeBurdenProfileV0,
   type M3ObligationAuditEventStateV0,
   type M3ObligationDueV0,
   type M3ObligationRequirementV0,
@@ -322,6 +324,12 @@ export type QueryResultV1 =
             readonly districts: readonly M2EconomyDistrictSummaryReadModelV1[];
           }
         | {
+            readonly kind: "sim.list-m3-administrative-burden";
+            readonly day: number;
+            readonly revision: number;
+            readonly districts: readonly M3AdministrativeBurdenDistrictReadModelV1[];
+          }
+        | {
             readonly kind: "sim.preview-m2-transport-route";
             readonly day: number;
             readonly revision: number;
@@ -351,6 +359,8 @@ export interface M2EconomyDistrictSummaryReadModelV1 {
   readonly lastHarvestGrain: number;
   readonly cumulativeMobilizationCost: number;
 }
+
+export type M3AdministrativeBurdenDistrictReadModelV1 = M3AdministrativeBurdenProfileV0;
 
 export type M2TransportRoutePreviewReadModelV1 =
   | {
@@ -1577,6 +1587,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       };
     case "sim.list-m2-economy-summaries":
       return executeM2EconomySummariesQuery(runtime);
+    case "sim.list-m3-administrative-burden":
+      return executeM3AdministrativeBurdenQuery(runtime);
     case "sim.preview-m2-transport-route":
       return executeM2TransportRoutePreviewQuery(runtime, query);
   }
@@ -1621,6 +1633,32 @@ function executeM2EconomySummariesQuery(runtime: SimulationRuntimeV1): QueryResu
           cumulativeMobilizationCost: market?.cashFlow.cumulativeMobilizationCost ?? 0
         };
       })
+    }
+  };
+}
+
+function executeM3AdministrativeBurdenQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
+  const m3 = runtime.world.state.m3;
+  if (m3 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m3-state-missing",
+        path: "state.m3",
+        message: "sim.list-m3-administrative-burden requires an M3 polity vassalage state."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m3-administrative-burden",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      districts: m3.administrativeDistricts.map((entry) =>
+        computeM3AdministrativeBurdenProfileV0(entry)
+      )
     }
   };
 }

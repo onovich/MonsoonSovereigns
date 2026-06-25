@@ -221,6 +221,18 @@ describe("SIM-003 protocol command/query schemas", () => {
     expect(
       parseGameQueryV1({
         schemaVersion: 1,
+        kind: "sim.list-m3-administrative-burden"
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-m3-administrative-burden"
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
         kind: "sim.preview-m2-transport-route",
         payload: {
           queryId: "route.preview.1",

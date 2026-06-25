@@ -2,10 +2,13 @@ import fc from "fast-check";
 import { describe, expect, test } from "vitest";
 
 import {
+  computeM3AdministrativeBurdenProfileV0,
+  createM2EconomyPopulationStateV0,
   createM3PolityVassalageStateV0,
   createWorldStateV0,
   defineDistrict,
   definePolity,
+  querySimulationV1,
   orderedM3ObligationAuditEventsV0,
   parseM3FulfillmentId,
   parseM3ObligationId,
@@ -167,6 +170,214 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
       { numRuns: 24, seed: 1531 }
     );
   });
+
+  test("computes monotonic administrative load from explicit serializable inputs", () => {
+    fc.assert(
+      fc.property(
+        fc.record({
+          localComplexity: fc.integer({ min: 0, max: 400 }),
+          communicationCost: fc.integer({ min: 0, max: 400 }),
+          directness: fc.integer({ min: 0, max: 400 }),
+          frontierPressure: fc.integer({ min: 0, max: 400 }),
+          bump: fc.integer({ min: 1, max: 200 })
+        }),
+        (input) => {
+          const base = computeM3AdministrativeBurdenProfileV0({
+            polityId: parsePolityId(1),
+            districtId: 1,
+            controlMode: "direct",
+            localComplexity: input.localComplexity,
+            communicationCost: input.communicationCost,
+            directness: input.directness,
+            frontierPressure: input.frontierPressure,
+            administrativeCapacity: 1_000
+          });
+          const higher = computeM3AdministrativeBurdenProfileV0({
+            polityId: parsePolityId(1),
+            districtId: 1,
+            controlMode: "direct",
+            localComplexity: input.localComplexity + input.bump,
+            communicationCost: input.communicationCost + input.bump,
+            directness: input.directness + input.bump,
+            frontierPressure: input.frontierPressure + input.bump,
+            administrativeCapacity: 1_000
+          });
+
+          expect(higher.administrativeLoad).toBeGreaterThanOrEqual(base.administrativeLoad);
+          expect(higher.overload).toBeGreaterThanOrEqual(base.overload);
+          expect(higher.efficiencyBps).toBeLessThanOrEqual(base.efficiencyBps);
+        }
+      ),
+      { numRuns: 48, seed: 1531 }
+    );
+  });
+
+  test("exposes distinct direct, vassal, and tribute-only administrative burden profiles", () => {
+    const runtime = bootM3RuntimeWithAdministration([
+      {
+        polityId: 1,
+        districtId: 1,
+        controlMode: "direct",
+        localComplexity: 280,
+        communicationCost: 190,
+        directness: 260,
+        frontierPressure: 170,
+        administrativeCapacity: 1_000
+      },
+      {
+        polityId: 1,
+        districtId: 2,
+        controlMode: "vassal",
+        localComplexity: 280,
+        communicationCost: 190,
+        directness: 260,
+        frontierPressure: 170,
+        administrativeCapacity: 1_000
+      },
+      {
+        polityId: 1,
+        districtId: 3,
+        controlMode: "tribute-only",
+        localComplexity: 280,
+        communicationCost: 190,
+        directness: 260,
+        frontierPressure: 170,
+        administrativeCapacity: 1_000
+      }
+    ]);
+
+    const queried = querySimulationV1(runtime, {
+      schemaVersion: 1,
+      kind: "sim.list-m3-administrative-burden"
+    });
+    expect(queried.status).toBe("ok");
+    if (queried.status !== "ok" || queried.result.kind !== "sim.list-m3-administrative-burden") {
+      throw new Error("Expected administrative burden query result.");
+    }
+
+    const direct = queried.result.districts[0];
+    const vassal = queried.result.districts[1];
+    const tribute = queried.result.districts[2];
+    expect(direct?.controlMode).toBe("direct");
+    expect(vassal?.controlMode).toBe("vassal");
+    expect(tribute?.controlMode).toBe("tribute-only");
+    expect(direct?.administrativeLoad).toBeGreaterThan(vassal?.administrativeLoad ?? 0);
+    expect(vassal?.administrativeLoad).toBeGreaterThan(tribute?.administrativeLoad ?? 0);
+    expect(direct?.realizableIncomeBps).toBeGreaterThan(vassal?.realizableIncomeBps ?? 0);
+    expect(vassal?.realizableIncomeBps).toBeGreaterThan(tribute?.realizableIncomeBps ?? 0);
+  });
+
+  test("administrative overload changes scaffold signals without mutating resources", () => {
+    const lowLoadRuntime = bootM3RuntimeWithAdministration([
+      {
+        polityId: 1,
+        districtId: 1,
+        controlMode: "direct",
+        localComplexity: 50,
+        communicationCost: 40,
+        directness: 60,
+        frontierPressure: 30,
+        administrativeCapacity: 1_500
+      }
+    ]);
+    const overloadedRuntime = bootM3RuntimeWithAdministration([
+      {
+        polityId: 1,
+        districtId: 1,
+        controlMode: "direct",
+        localComplexity: 500,
+        communicationCost: 450,
+        directness: 420,
+        frontierPressure: 390,
+        administrativeCapacity: 800
+      }
+    ]);
+
+    const lowStock = resourceTotals(lowLoadRuntime);
+    const overloadedStock = resourceTotals(overloadedRuntime);
+    const lowHash = lowLoadRuntime.world.meta.stateHash;
+    const overloadedHash = overloadedRuntime.world.meta.stateHash;
+    const lowQuery = querySimulationV1(lowLoadRuntime, {
+      schemaVersion: 1,
+      kind: "sim.list-m3-administrative-burden"
+    });
+    const overloadedQuery = querySimulationV1(overloadedRuntime, {
+      schemaVersion: 1,
+      kind: "sim.list-m3-administrative-burden"
+    });
+
+    expect(resourceTotals(lowLoadRuntime)).toEqual(lowStock);
+    expect(resourceTotals(overloadedRuntime)).toEqual(overloadedStock);
+    expect(lowLoadRuntime.world.meta.stateHash).toBe(lowHash);
+    expect(overloadedRuntime.world.meta.stateHash).toBe(overloadedHash);
+    expect(lowQuery.status).toBe("ok");
+    expect(overloadedQuery.status).toBe("ok");
+    if (
+      lowQuery.status !== "ok" ||
+      overloadedQuery.status !== "ok" ||
+      lowQuery.result.kind !== "sim.list-m3-administrative-burden" ||
+      overloadedQuery.result.kind !== "sim.list-m3-administrative-burden"
+    ) {
+      throw new Error("Expected administrative burden query results.");
+    }
+
+    const low = lowQuery.result.districts[0];
+    const overloaded = overloadedQuery.result.districts[0];
+    expect(overloaded?.overload).toBeGreaterThan(low?.overload ?? 0);
+    expect(overloaded?.realizableIncomeBps).toBeLessThan(low?.realizableIncomeBps ?? 0);
+    expect(overloaded?.obligationReliabilityBps).toBeLessThan(low?.obligationReliabilityBps ?? 0);
+    expect(overloaded?.readinessBps).toBeLessThan(low?.readinessBps ?? 0);
+  });
+
+  test("canonicalizes administrative burden rows with deterministic stable ID ordering", () => {
+    const first = createM3WorldWithAdministrationRows([
+      {
+        polityId: 1,
+        districtId: 3,
+        controlMode: "tribute-only",
+        localComplexity: 20,
+        communicationCost: 30,
+        directness: 40,
+        frontierPressure: 50,
+        administrativeCapacity: 1_000
+      },
+      {
+        polityId: 1,
+        districtId: 1,
+        controlMode: "direct",
+        localComplexity: 20,
+        communicationCost: 30,
+        directness: 40,
+        frontierPressure: 50,
+        administrativeCapacity: 1_000
+      }
+    ]);
+    const second = createM3WorldWithAdministrationRows([
+      {
+        polityId: 1,
+        districtId: 1,
+        controlMode: "direct",
+        localComplexity: 20,
+        communicationCost: 30,
+        directness: 40,
+        frontierPressure: 50,
+        administrativeCapacity: 1_000
+      },
+      {
+        polityId: 1,
+        districtId: 3,
+        controlMode: "tribute-only",
+        localComplexity: 20,
+        communicationCost: 30,
+        directness: 40,
+        frontierPressure: 50,
+        administrativeCapacity: 1_000
+      }
+    ]);
+
+    expect(first.meta.stateHash).toBe(second.meta.stateHash);
+    expect(validateWorldStateV0(first)).toEqual([]);
+  });
 });
 
 function bootM3Runtime(): SimulationRuntimeV1 {
@@ -180,6 +391,22 @@ function bootM3Runtime(): SimulationRuntimeV1 {
 }
 
 function createM3WorldWithAuditOrder(auditEventIds: readonly number[]): WorldStateV0 {
+  return createM3WorldWithAdministrationRows([], auditEventIds);
+}
+
+function createM3WorldWithAdministrationRows(
+  administrativeDistricts: readonly {
+    readonly polityId: number;
+    readonly districtId: number;
+    readonly controlMode: "direct" | "vassal" | "tribute-only";
+    readonly localComplexity: number;
+    readonly communicationCost: number;
+    readonly directness: number;
+    readonly frontierPressure: number;
+    readonly administrativeCapacity: number;
+  }[],
+  auditEventIds: readonly number[] = []
+): WorldStateV0 {
   const definitions = {
     polities: [
       definePolity({ id: 1, displayNameKey: "content.m3.validation.polity_001" }),
@@ -189,7 +416,8 @@ function createM3WorldWithAuditOrder(auditEventIds: readonly number[]): WorldSta
     persons: [],
     districts: [
       defineDistrict({ id: 1, displayNameKey: "content.m3.validation.district_001" }),
-      defineDistrict({ id: 2, displayNameKey: "content.m3.validation.district_002" })
+      defineDistrict({ id: 2, displayNameKey: "content.m3.validation.district_002" }),
+      defineDistrict({ id: 3, displayNameKey: "content.m3.validation.district_003" })
     ],
     settlements: [],
     routes: []
@@ -201,6 +429,7 @@ function createM3WorldWithAuditOrder(auditEventIds: readonly number[]): WorldSta
     currentDay: 0,
     revision: 0,
     definitions,
+    m2: createM2EconomyPopulationStateV0(definitions),
     m3: createM3PolityVassalageStateV0(definitions, {
       polities: [
         { polityId: 1, directSuzerainPolityId: null },
@@ -225,6 +454,7 @@ function createM3WorldWithAuditOrder(auditEventIds: readonly number[]): WorldSta
                 latestAuditEventId: 3
               }
             ],
+      administrativeDistricts,
       obligationAuditEvents: auditEventIds.map((id) => ({
         id,
         obligationId: 1,
@@ -251,6 +481,43 @@ function createM3WorldWithAuditOrder(auditEventIds: readonly number[]): WorldSta
             ]
     })
   });
+}
+
+function bootM3RuntimeWithAdministration(
+  administrativeDistricts: readonly {
+    readonly polityId: number;
+    readonly districtId: number;
+    readonly controlMode: "direct" | "vassal" | "tribute-only";
+    readonly localComplexity: number;
+    readonly communicationCost: number;
+    readonly directness: number;
+    readonly frontierPressure: number;
+    readonly administrativeCapacity: number;
+  }[]
+): SimulationRuntimeV1 {
+  return {
+    world: createM3WorldWithAdministrationRows(administrativeDistricts),
+    acceptedCommandIds: [],
+    commandTail: [],
+    eventTail: []
+  };
+}
+
+function resourceTotals(runtime: SimulationRuntimeV1): {
+  readonly grain: number;
+  readonly cash: number;
+} {
+  const m2 = runtime.world.state.m2;
+  if (m2 === undefined) {
+    throw new Error("Expected M2 state.");
+  }
+  return m2.populationGroups.reduce(
+    (totals, group) => ({
+      grain: totals.grain + group.grainStock,
+      cash: totals.cash + group.cashStock
+    }),
+    { grain: 0, cash: 0 }
+  );
 }
 
 function accepted(runtime: SimulationRuntimeV1, command: GameCommandV1): SimulationRuntimeV1 {

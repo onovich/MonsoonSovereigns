@@ -1,0 +1,89 @@
+{
+  "message_id": "MSG-20260625-M3-ADMIN-BURDEN-WRITER-REVIEW",
+  "task_id": "M3-ADMIN-BURDEN-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M3 administrative burden scaffold as explicit runtime-state inputs plus a deterministic read-model query. The scaffold computes administrative load, overload, efficiency, realizable income signal, obligation reliability, delay risk, and readiness without mutating M2 resources or save-format state.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/messages/outbox/M3-ADMIN-BURDEN-001__MSG-20260625-M3-ADMIN-BURDEN-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-admin-burden",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial status showed pre-existing modified project/goal-mode-state.json, project/tasks/active/M3-ADMIN-BURDEN-001.json, and project/tasks/thread-registry.json. Final status also shows this task's sim-core/protocol/test edits and the new handoff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 1,
+      "result": "Expected pre-implementation failure after adding tests: missing computeM3AdministrativeBurdenProfileV0 and rejected sim.list-m3-administrative-burden query."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "10 test files passed, 56 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 4 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic runner passed; root Vitest 20 files/105 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-ADMIN-BURDEN-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-ADMIN-BURDEN-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-ADMIN-BURDEN-001",
+      "exit_code": 0,
+      "result": "M3-ADMIN-BURDEN-001 shape ok: IN_PROGRESS, allowed_paths=10, forbidden_paths=20."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit completed successfully."
+    },
+    {
+      "command": "rg -n \"Math\\\\.random|Date\\\\.now|as unknown as|\\\\bany\\\\b\" packages/sim-core/src/world-state-v0.ts packages/sim-core/src/command-query-v1.ts packages/protocol/src/index.ts tests/sim-core-m3-polity-vassalage.test.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 1,
+      "result": "No matches found."
+    }
+  ],
+  "decisions": [
+    "Added M3 administrativeDistricts as explicit serializable runtime inputs under state.m3, with stable canonical ordering by polityId, districtId, and controlMode.",
+    "Kept the scaffold read-only: administrative overload affects computed M3 signals only and does not create, destroy, or transfer resources.",
+    "Exposed direct, vassal, and tribute-only profiles through sim.list-m3-administrative-burden instead of implementing full economy, diplomacy, war, UI, save migration, or formal historical content.",
+    "Kept requestSaveV1 M3 rejection intact; save-format was not touched."
+  ],
+  "risks": [
+    "This R3 task changes protocol/query and WorldState M3 runtime schema; systems_architect review is required before integration.",
+    "Formula weights are scaffold constants for vertical-slice comparison, not final balance.",
+    "Pre-existing dirty process files were present before implementation: project/goal-mode-state.json, project/tasks/active/M3-ADMIN-BURDEN-001.json, and project/tasks/thread-registry.json. They were not edited during this writer implementation."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the M3 administrative burden schema/query boundary, deterministic calculations, test coverage, and R3 implications.",
+  "created_at": "2026-06-25T06:36:00Z"
+}

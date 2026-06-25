@@ -197,6 +197,11 @@ export interface ListM2EconomySummariesQueryV1 {
   readonly kind: "sim.list-m2-economy-summaries";
 }
 
+export interface ListM3AdministrativeBurdenQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m3-administrative-burden";
+}
+
 export interface PreviewM2TransportRouteQueryV1 {
   readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
   readonly kind: "sim.preview-m2-transport-route";
@@ -213,6 +218,7 @@ export type GameQueryV1 =
   | GetCalendarQueryV1
   | ListDistrictSummariesQueryV1
   | ListM2EconomySummariesQueryV1
+  | ListM3AdministrativeBurdenQueryV1
   | PreviewM2TransportRouteQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
@@ -252,6 +258,33 @@ export interface ListM2EconomySummariesResultV1 {
   readonly day: number;
   readonly revision: number;
   readonly districts: readonly M2EconomyDistrictSummaryReadModelV1[];
+}
+
+export type M3AdministrativeControlModeV1 = "direct" | "vassal" | "tribute-only";
+
+export interface M3AdministrativeBurdenDistrictReadModelV1 {
+  readonly polityId: number;
+  readonly districtId: number;
+  readonly controlMode: M3AdministrativeControlModeV1;
+  readonly localComplexity: number;
+  readonly communicationCost: number;
+  readonly directness: number;
+  readonly frontierPressure: number;
+  readonly administrativeCapacity: number;
+  readonly administrativeLoad: number;
+  readonly overload: number;
+  readonly efficiencyBps: number;
+  readonly realizableIncomeBps: number;
+  readonly obligationReliabilityBps: number;
+  readonly delayRiskBps: number;
+  readonly readinessBps: number;
+}
+
+export interface ListM3AdministrativeBurdenResultV1 {
+  readonly kind: "sim.list-m3-administrative-burden";
+  readonly day: number;
+  readonly revision: number;
+  readonly districts: readonly M3AdministrativeBurdenDistrictReadModelV1[];
 }
 
 export type M2TransportRouteKindV1 = "road" | "river" | "coast";
@@ -651,6 +684,7 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     case "sim.get-calendar":
     case "sim.list-district-summaries":
     case "sim.list-m2-economy-summaries":
+    case "sim.list-m3-administrative-burden":
       return {
         ok: true,
         value: {
