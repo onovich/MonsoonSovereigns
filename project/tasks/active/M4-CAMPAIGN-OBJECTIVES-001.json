@@ -70,28 +70,30 @@
   "branch_or_worktree": "feat/m4-campaign-objectives",
   "threads": {
     "simulation_engineer": {
-      "thread_id": "019f0114-5efd-79a0-bf93-f8d6e566f134",
+      "thread_id": "019f011e-bf0d-7693-8a28-15a919e7ea2c",
       "status": "start_confirmed",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
-      "nickname": "Engine the 3rd",
-      "responsibility": "primary M4 campaign objective and FactionKnowledge writer",
+      "nickname": "Delta the 3rd",
+      "responsibility": "replacement primary M4 campaign objective and FactionKnowledge writer",
       "branch_or_worktree": "feat/m4-campaign-objectives",
       "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-25T23:19:19Z",
-      "start_submission_id": "019f0115-9714-70f3-8afa-1917a5057dff"
+      "replaces_thread_id": "019f0114-5efd-79a0-bf93-f8d6e566f134",
+      "updated_at": "2026-06-25T23:31:56Z",
+      "start_submission_id": "019f0120-18e2-7252-826b-82aedf416be9"
     },
     "systems_architect": {
-      "thread_id": "019f0114-755e-7763-a7c5-bea403684924",
+      "thread_id": "019f011e-d31b-7f50-87a7-b92e135d4b7e",
       "status": "awaiting_review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
-      "nickname": "Keystone the 3rd",
-      "responsibility": "architecture reviewer for M4 campaign objective substrate",
+      "nickname": "Lintel the 3rd",
+      "responsibility": "replacement architecture reviewer for M4 campaign objective substrate",
       "branch_or_worktree": "feat/m4-campaign-objectives",
       "start_state": "AWAITING_REVIEW_READY",
-      "updated_at": "2026-06-25T23:19:19Z",
-      "await_submission_id": "019f0115-98a9-7c12-8c72-bd44abb59510"
+      "replaces_thread_id": "019f0114-755e-7763-a7c5-bea403684924",
+      "updated_at": "2026-06-25T23:31:56Z",
+      "await_submission_id": "019f0120-190f-7b83-84f4-7df287c9e8f7"
     }
   },
   "route_to": "simulation_engineer",
@@ -102,5 +104,23 @@
     "Promoted to READY after M4-TASK-GRAPH-001 entered origin/main and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-25T23:19:19Z"
+  "updated_at": "2026-06-25T23:31:56Z",
+  "replaced_threads": [
+    {
+      "role": "simulation_engineer",
+      "thread_id": "019f0114-5efd-79a0-bf93-f8d6e566f134",
+      "status": "closed_disconnected_before_handoff",
+      "replaced_by": "019f011e-bf0d-7693-8a28-15a919e7ea2c",
+      "replaced_at": "2026-06-25T23:30:39Z",
+      "close_reason": "stream_disconnected_before_completion_no_handoff_no_local_changes"
+    },
+    {
+      "role": "systems_architect",
+      "thread_id": "019f0114-755e-7763-a7c5-bea403684924",
+      "status": "closed_disconnected_before_review",
+      "replaced_by": "019f011e-d31b-7f50-87a7-b92e135d4b7e",
+      "replaced_at": "2026-06-25T23:30:39Z",
+      "close_reason": "stream_disconnected_before_completion_no_review"
+    }
+  ]
 }
