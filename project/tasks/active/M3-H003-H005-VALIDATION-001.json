@@ -1,0 +1,82 @@
+{
+  "id": "M3-H003-H005-VALIDATION-001",
+  "summary": "Validate initial M3 H-003 and H-005 evidence",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-CLIENT-APPOINTMENT-UI-001",
+    "M3-POSTWAR-GOVERNANCE-001",
+    "M3-SAVE-RUNTIME-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "apps/storybook/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-H003-H005-VALIDATION-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "packages/platform/**",
+      "packages/map-renderer/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/historical/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Initial H-003 evidence records that at least three postwar governance methods have different 24-month outcomes and are not trivially dominated by direct annexation in the M3 fixture.",
+    "Initial H-005 evidence records whether character/vassal proposals or reason summaries are useful but not always optimal, using measurable scenario outcomes, visible reason-code coverage, and residual limitations.",
+    "Validation commands include real exit codes, key metrics, fixture seed/manifest details, and explicit limits; no 'should be better' or anecdotal-only claim is accepted.",
+    "Client/UI evidence covers appointment, bulk action, and reason display flows needed to inspect H-005; simulation evidence covers the 24-month H-003 comparison.",
+    "Any inconclusive or partial result is recorded as residual risk or BLOCKED/PARTIAL handoff instead of being inflated into M3 acceptance.",
+    "No feature implementation, broad optimization, formal historical content, Electron security surface, new production dependency, or roadmap/gate edit is hidden inside validation."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm sim:determinism",
+    "pnpm sim:perf-baseline",
+    "pnpm build:web",
+    "pnpm test",
+    "Scenario or runner command compares three M3 governance arrangements over 24 months with recorded outcome metrics.",
+    "Playwright or Storybook/browser smoke covers appointment, bulk action, per-item rejection, and reason display flows.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-H003-H005-VALIDATION-001",
+    "node -e JSON parse/shape check for M3-H003-H005-VALIDATION-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "test/m3-h003-h005-validation",
+  "threads": {},
+  "route_to": "test_engineer",
+  "notes": [
+    "This is validation-focused and should not implement missing M3 systems except for tiny test harness adjustments needed to run accepted flows.",
+    "H-003/H-005 are initial M3 evidence, not final M5 playtest proof.",
+    "If the validation shows direct annexation dominates or reasons are not useful, route findings to gameplay_designer and systems_architect rather than adjusting product scope silently."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

@@ -1,0 +1,78 @@
+{
+  "id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "summary": "Implement M3 minimal succession state machine",
+  "milestone": "M3",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M3-CHARACTER-OFFICE-FIXTURE-001",
+    "M3-POLITY-VASSALAGE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "project/tasks/thread-registry.json",
+      "project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json",
+      "project/messages/**"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "packages/save-format/**",
+      "content-source/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A minimal deterministic succession state machine represents ruler death/incapacity, candidate set formation, support dimensions, pending resolution, and at least peaceful succession plus disputed/regency or split outcome.",
+    "Character death or removal creates office vacancies, prevents dead characters from proposing, commanding, holding new offices, or becoming new relationship endpoints, and keeps jurisdiction policies intact where applicable.",
+    "Candidate support sources are explicit and serializable, including kinship/designation/court/military/provincial/suzerain or foreign support as M3-scoped abstractions.",
+    "Succession state transitions are driven by sim-core events/commands and use stable tie-breakers; no random, real-time, UI, or object graph authority is introduced.",
+    "Scenario tests cover peaceful transition, vacancy generation, invalid dead-character actions, and one disputed or regency-style branch.",
+    "No full civil war, full diplomacy, event narrative system, formal historical dynasty database, client UI, or M4+ war behavior is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/state-machine tests cover valid succession transitions, dead-character invariants, office vacancy handling, policy persistence, and deterministic candidate tie-breakers.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+    "node -e JSON parse/shape check for M3-SUCCESSION-STATE-MACHINE-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "threads": {},
+  "route_to": "simulation_engineer",
+  "notes": [
+    "This is the Roadmap M3 minimal state machine only; do not build M6 full succession/civil-war systems.",
+    "If historical succession rules are needed for real polities, route to historical_researcher instead of inventing them.",
+    "Keep support dimensions inspectable so later UI can display reasons without duplicating formulas."
+  ],
+  "created_at": "2026-06-25T04:09:26.814Z",
+  "updated_at": "2026-06-25T04:09:26.814Z"
+}

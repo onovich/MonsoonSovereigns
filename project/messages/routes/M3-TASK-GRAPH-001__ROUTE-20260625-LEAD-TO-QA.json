@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-TASK-GRAPH-001",
+  "route_id": "ROUTE-20260625-LEAD-TO-QA",
+  "created_at": "2026-06-25T04:21:50Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "target_thread_id": "019efcff-ddc6-7b62-8430-bbd771b9d1e6",
+  "source_handoff": "project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+  "source_status": "REVIEW",
+  "requested_action": "Review the M3 DAG for Roadmap/acceptance-matrix completeness, dependency ordering, architecture-boundary discipline, historical claim-pipeline safety, downstream DRAFT status, and handoff validity. Accept or request changes.",
+  "send_input": {
+    "submission_id": "019efd03-139b-7070-b60b-0f0b67015d6d",
+    "target": "019efcff-ddc6-7b62-8430-bbd771b9d1e6",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+  "route_to": "qa_reviewer"
+}

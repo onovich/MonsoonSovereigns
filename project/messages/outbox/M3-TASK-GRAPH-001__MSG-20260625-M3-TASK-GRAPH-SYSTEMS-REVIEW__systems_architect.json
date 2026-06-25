@@ -1,0 +1,80 @@
+{
+  "message_id": "MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW",
+  "task_id": "M3-TASK-GRAPH-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Created a minimal dependency-ordered M3 task DAG covering the Roadmap M3 polity, office, character, vassalage, postwar governance, succession, UI/read-model, historical claim pipeline, and validation requirements without implementing M3 functionality.",
+  "artifacts": [
+    "project/tasks/active/M3-TASK-GRAPH-001.json",
+    "project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json",
+    "project/tasks/active/M3-POLITY-VASSALAGE-001.json",
+    "project/tasks/active/M3-CHARACTER-OFFICE-FIXTURE-001.json",
+    "project/tasks/active/M3-ADMIN-BURDEN-001.json",
+    "project/tasks/active/M3-APPOINTMENT-ENFEOFFMENT-001.json",
+    "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+    "project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json",
+    "project/tasks/active/M3-POSTWAR-GOVERNANCE-001.json",
+    "project/tasks/active/M3-SAVE-RUNTIME-001.json",
+    "project/tasks/active/M3-CLIENT-APPOINTMENT-UI-001.json",
+    "project/tasks/active/M3-H003-H005-VALIDATION-001.json",
+    "project/tasks/active/M3-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m3-task-graph",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Pre-existing modified coordination files remain: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json. New untracked M3 task files are present under project/tasks/active, and this systems handoff is present under project/messages/outbox."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed prior M0/M1/M2 tasks as CLOSED; M3-TASK-GRAPH-001 as REVIEW; 12 downstream M3 tasks as DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M3-TASK-GRAPH-001 remains in REVIEW."
+    },
+    {
+      "command": "node -e JSON validation for all new M3 task files and DAG acyclicity/dependency existence/status shape",
+      "exit_code": 0,
+      "result": "M3 JSON DAG validation ok files=13 edges=36."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TASK-GRAPH-001__MSG-20260625-M3-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Handoff schema validation passes."
+    }
+  ],
+  "decisions": [
+    "All downstream M3 implementation and validation tasks remain DRAFT; no M3 implementation task was advanced to READY.",
+    "The first ready candidates after graph acceptance are the historical claim pipeline and polity/vassalage substrate; character/office fixture work depends on both to avoid unsourced names/titles/relationships and missing polity references.",
+    "Simulation work is split into polity/vassalage, administrative burden, appointment/enfeoffment/policy/reason scaffolds, tribute/troop obligations, minimal succession, postwar governance, and explicit M3 save/runtime support.",
+    "Client appointment/bulk/reason UI depends on accepted sim/protocol reason and obligation work so the UI does not duplicate sim-core rules.",
+    "H-003/H-005 initial validation depends on the postwar prototype, client reason UI, and M3 save/runtime support; M3 exit validation depends on the full M3 graph.",
+    "No roadmap, accepted ADR, gate document, product code, package code, content-source data, or formal historical content was changed by this planning task."
+  ],
+  "risks": [
+    "Existing coordination-state changes were present before this writer edited files and remain outside this task's authored changes.",
+    "Several downstream M3 tasks are R3 because they may touch protocol, save/runtime schema, deterministic sim-core state, UI read-model boundaries, or historical/cultural claim workflow; each task routes to systems_architect or qa_reviewer as appropriate.",
+    "M3-SAVE-RUNTIME-001 is included as a dependency because M3 introduces explicit authoritative state slices; it is scoped to DTO/schema persistence and explicitly excludes platform persistence or Electron/Node IO.",
+    "H-003/H-005 validation is initial M3 evidence only and must not be overstated as M5 player-study proof."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M3 DAG for Roadmap/acceptance-matrix completeness, dependency ordering, architecture-boundary discipline, historical claim-pipeline safety, downstream DRAFT status, and handoff validity. Accept or request changes.",
+  "created_at": "2026-06-25T04:09:26.814Z"
+}
