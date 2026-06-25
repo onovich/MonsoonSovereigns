@@ -2,7 +2,7 @@
   "id": "M3-EXIT-VALIDATION-001",
   "summary": "Validate M3 milestone exit gate",
   "milestone": "M3",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -78,13 +78,50 @@
     "git diff --check"
   ],
   "branch_or_worktree": "chore/m3-exit-gate",
-  "threads": {},
-  "route_to": "systems_architect",
+  "threads": {
+    "systems_architect": {
+      "thread_id": "019f00ab-b4f3-7b01-8616-d5391a341275",
+      "status": "accepted_after_qa_r3",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "nickname": "Lintel the 2nd",
+      "responsibility": "primary M3 exit gate writer",
+      "branch_or_worktree": "chore/m3-exit-gate",
+      "start_state": "START_CONFIRMED",
+      "updated_at": "2026-06-25T22:31:40Z",
+      "start_submission_id": "019f00ad-d04d-71e1-b055-77660f96e935",
+      "review_ready_handoff": "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "9d21e67c",
+      "request_changes_submission_id": "019f00c9-dd9d-7d01-bc09-3928bf3543e3",
+      "review_ready_handoff_r2": "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json",
+      "request_changes_submission_id_r3": "019f00d7-af78-7482-be34-994e069a535b",
+      "review_ready_handoff_r3": "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3__systems_architect.json"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f00ab-d6dc-7e11-9043-6096c46ef578",
+      "status": "accepted_r3",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "nickname": "Witness the 3rd",
+      "responsibility": "independent read-only gate acceptance reviewer",
+      "branch_or_worktree": "chore/m3-exit-gate",
+      "start_state": "AWAITING_REVIEW_READY",
+      "updated_at": "2026-06-25T22:31:40Z",
+      "review_ready_submission_id": "019f00c4-b0e9-7db2-b998-d72a183087f8",
+      "review_commit": "5c30e4a5",
+      "review_ready_submission_id_r2": "019f00d4-c32a-7cb2-9932-00de7f0f4529",
+      "review_commit_r2": "b9cbdc21",
+      "review_ready_submission_id_r3": "019f00e3-5574-7102-a1bd-347b2812cc9a",
+      "review_commit_r3": "9d21e67c",
+      "accept_handoff": "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-QA-ACCEPT-R3__qa_reviewer.json"
+    }
+  },
+  "route_to": "lead_orchestrator",
   "notes": [
     "MILESTONE-AUTONOMY-AMENDMENT-001 allows ordinary M3 exit only when the acceptance matrix, tests, independent review, and no R4/frozen-decision Human Gate conditions are satisfied.",
     "This task validates M3 only; it must not start M4 campaign, supply, siege, battle, or full diplomacy work.",
     "If H-003/H-005 evidence is inconclusive, record PASS_WITH_LIMITS or BLOCKED rather than claiming M3 exit."
   ],
   "created_at": "2026-06-25T04:09:26.814Z",
-  "updated_at": "2026-06-25T21:21:08Z"
+  "updated_at": "2026-06-25T22:31:40Z"
 }

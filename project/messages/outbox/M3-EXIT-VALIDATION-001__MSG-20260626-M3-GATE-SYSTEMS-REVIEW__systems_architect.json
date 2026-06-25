@@ -1,0 +1,144 @@
+{
+  "task_id": "M3-EXIT-VALIDATION-001",
+  "message_id": "MSG-20260626-M3-GATE-SYSTEMS-REVIEW",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Systems architect M3 exit gate review finds M3 evidence sufficient for M3_GATE = PASS, pending independent qa_reviewer acceptance and lead integration. The gate records accepted M3 evidence for historical claim pipeline, polity/vassalage, administrative burden, 64-character validation fixture, appointment/enfeoffment/policy workflows, tribute/troop obligations, minimal succession, postwar arrangements, M3 save runtime, appointment/bulk/reason UI, and H-003/H-005 initial validation. This writer reran the full required validation matrix, recorded exact exit codes, did not start M4, and changed only allowed documentation/process/message paths.",
+  "artifacts": [
+    "docs/GATE-M3.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/tasks/active/M3-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-ACCEPT-R2__systems_architect.json",
+    "project/messages/outbox/M3-ADMIN-BURDEN-001__MSG-20260625-M3-ADMIN-BURDEN-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-CHARACTER-OFFICE-FIXTURE-001__MSG-20260625-M3-CHARACTER-OFFICE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-APPOINTMENT-ENFEOFFMENT-001__MSG-20260625-M3-APPOINTMENT-ENFEOFFMENT-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-R3-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-POSTWAR-GOVERNANCE-001__MSG-20260625-M3-POSTWAR-GOVERNANCE-QA-R5-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-CLIENT-APPOINTMENT-UI-001__MSG-20260625-M3-CLIENT-APPOINTMENT-UI-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-SAVE-RUNTIME-001__MSG-20260626-0430-M3-SAVE-RUNTIME-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/m3-exit-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "045b191151631639fcfdba4a88153a7f536392a9 (pre-handoff HEAD; current gate docs/state/handoff are uncommitted)",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output before this writer's edits."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-EXIT-VALIDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All M3 dependencies are CLOSED. Initial run showed M3-EXIT-VALIDATION-001 as IN_PROGRESS during validation; final rerun after systems handoff state update shows M3-EXIT-VALIDATION-001 as REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output; no dependency-ready next task printed and no M4 task started."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "All 16 workspace projects already up to date; completed in 172ms using pnpm v11.0.0."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture boundary checks passed; architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 25 files / 165 tests passed; web Vitest 1 file / 3 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning remained non-blocking."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "M1, M2, and M3 fixtures validated. M3 character-office fixture: characters=64, relationships=18, offices=4, landedPowers=4, officePolicies=4, enfeoffmentHooks=4, manifestHash=76b75849."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save byte length 10920."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650 days; finalRevision=3650; throughput=13255 days/sec; p50=58500 ns; p95=131900 ns; p99=212400 ns; saveByteLength=9980."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed; existing chunk-size warning remained for dist/assets/lib-a6cQy7l-.js at 513.64 kB."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-postwar-governance.test.ts -t \"compares materially different 24-month outcomes\"",
+      "exit_code": 0,
+      "result": "Focused Vitest scenario proof passed: 1 test file passed; 1 test passed and 10 skipped. The test compares direct-control, restore-vassal-ruler, and tribute-only 24-month outcomes and asserts materially different income, tribute, administrative load, reliability, troop, risk, and reason-code results. Earlier inline metrics are recorded in docs/GATE-M3.md."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --grep \"M3 appointment workspace\"",
+      "exit_code": 0,
+      "result": "2 Chromium Playwright tests passed: M3 appointment workspace submits appointment and bulk command DTOs; M3 appointment workspace fits a 1440px desktop viewport."
+    },
+    {
+      "command": "node -e historical claim-pipeline probe; exact command is recorded in project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+      "exit_code": 0,
+      "result": "PASS: QA status ACCEPT; schema title Historical Claim Record; template has claim_id; M3 fixture historicity FICTIONAL; provenance policy M3-HISTORICAL-CLAIM-PIPELINE-001; 64 characters; nonAbstractKeys=[]."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "Post-edit task validation passed with status REVIEW and route_to qa_reviewer."
+    },
+    {
+      "command": "node -e R2 JSON shape, corrected main hash, R2 handoff, and allowed dirty path probe; exact command is recorded in project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+      "exit_code": 0,
+      "result": "R2 replacement validation passed after QA REQUEST_CHANGES: corrected main hash resolves to a commit; stale review_ready expectation was replaced by review_ready_r2; systems R2 handoff status REVIEW route_to qa_reviewer; task route qa_reviewer; dirty paths restricted to allowed docs/process/message paths."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Post-edit dirty paths are allowed: PROJECT_STATUS.md, docs/GATE-M3.md, project/goal-mode-state.json, project/tasks/active/M3-EXIT-VALIDATION-001.json, project/tasks/thread-registry.json, systems handoff JSON, and command evidence markdown."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "M3_GATE = PASS, pending independent qa_reviewer acceptance and lead integration. Do not mark M3 formally accepted from this writer thread.",
+    "Accepted H-003/H-005 only as initial M3 validation evidence, matching the acceptance matrix wording. The evidence must not be represented as final M5 playtest, global balance, or live player-study proof.",
+    "No ADR is required for this gate because it records validation evidence only and does not change architecture, dependency direction, save schema, platform security model, historical policy, production dependencies, or frozen decisions.",
+    "No Human Gate is triggered because this task does not change frozen product/platform/core architecture decisions, add R4 scope, decide M5 passage, or resolve a major historical/cultural dispute.",
+    "PROJECT_STATUS was updated only to record systems review-ready state and explicitly says formal M3 acceptance remains pending QA and lead integration."
+  ],
+  "risks": [
+    "H-003 is one deterministic M3 fixture with prototype balance constants, not global balance proof.",
+    "H-005 does not include live player acceptance rates, regret rates, interviews, or autonomous proposal telemetry; it is fixture-level reason usefulness and non-optimality evidence.",
+    "Browser smoke is protocol/read-model coverage, not full live production worker integration proof.",
+    "Vite build has a pre-existing non-blocking chunk-size warning for a 513.64 kB chunk.",
+    "The task's required qa_handoff validation cannot be run by this systems writer because the independent qa_reviewer handoff does not exist yet; QA must produce and validate it before lead marks M3 accepted."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently review docs/GATE-M3.md, this systems handoff, the allowed-path diff, and the recorded command evidence. If accepted, write a valid qa_reviewer handoff routed to lead_orchestrator. Do not start M4 from this review.",
+  "created_at": "2026-06-26T05:34:00+08:00"
+}

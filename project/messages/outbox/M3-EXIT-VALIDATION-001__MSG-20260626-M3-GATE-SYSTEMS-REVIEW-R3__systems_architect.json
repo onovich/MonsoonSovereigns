@@ -1,0 +1,81 @@
+{
+  "task_id": "M3-EXIT-VALIDATION-001",
+  "message_id": "MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "R3 systems handoff resolves the qa_reviewer P1 finding that R2 command evidence was not reproducible after lead committed lifecycle route/status state. The command evidence now uses a versioned R3 JSON/status probe that accepts the valid lifecycle states review_ready_r3 and review_handoff_committed_r3 for systems, and awaiting_r3_review and reviewing_r3 for QA. It still verifies the corrected main hash, absence of the invalid full hash in cited evidence files, M3_GATE marker, task route, R3 systems handoff shape, schema version, and allowed dirty paths. M3_GATE remains PASS pending independent qa_reviewer acceptance and lead integration; no M4 work was started.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/M3-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m3-exit-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "a48f9383 (origin/chore/m3-exit-gate HEAD before R3 writer fixes; current R3 review evidence is uncommitted for lead integration)",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Start state was clean on chore/m3-exit-gate at origin/chore/m3-exit-gate, HEAD a48f9383. Final R3 state shows only allowed dirty paths: PROJECT_STATUS.md, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md, project/model-routing-state.json, project/tasks/active/M3-EXIT-VALIDATION-001.json, project/tasks/thread-registry.json, and new project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3__systems_architect.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-EXIT-VALIDATION-001.json"
+    },
+    {
+      "command": "node -e R3 JSON shape and lifecycle probe; exact command is recorded in project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+      "exit_code": 0,
+      "result": "PASS: mainObjectType=commit, noOldHash=true, taskStatus=REVIEW, route=qa_reviewer, systems lifecycle statuses=review_ready_r3, QA lifecycle statuses=awaiting_r3_review, dirty paths restricted to allowed paths. The same probe accepts systems review_handoff_committed_r3 and QA reviewing_r3 after lead route commit."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3__systems_architect.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M3-EXIT-VALIDATION-001 is REVIEW; M3 dependency tasks remain CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output; no M4 task was started."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "M3_GATE remains PASS, pending independent qa_reviewer acceptance and lead integration.",
+    "The R2 JSON/status probe is superseded by the lifecycle-aware R3 probe in project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md.",
+    "The R3 probe deliberately accepts both writer-ready and lead-committed lifecycle states for R3, while rejecting unrelated R1/R2/request-change statuses.",
+    "No product, package, content-source, tool, CI, ADR, roadmap, acceptance-matrix, autonomous-goal doc, manifest, checksum, or validation-report path was modified.",
+    "No Human Gate or M4 start is introduced by this R3 correction."
+  ],
+  "risks": [
+    "Formal M3 acceptance still depends on independent qa_reviewer R3 acceptance and lead integration.",
+    "Earlier R1/R2 handoffs remain audit history; this R3 handoff is the current routed systems evidence after QA request changes."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Re-review the R3 lifecycle-aware command evidence. The exact command in command-evidence.md should exit 0 both before and after lead commits the R3 review route state. If accepted, write a valid qa_reviewer handoff routed to lead_orchestrator. Do not start M4 from this review.",
+  "created_at": "2026-06-26T06:13:38+08:00"
+}

@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260626-M3-GATE-LEAD-ACCEPT",
+  "task_id": "M3-EXIT-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M3 exit gate after systems_architect R3 gate evidence, independent qa_reviewer R3 ACCEPT, corrected reproducible main baseline, lifecycle-aware JSON evidence, and required M3 gate command matrix. M3_GATE = PASS is accepted pending PR CI and main integration; M4 must only start after this gate enters main and closure state advances current_milestone to M4.",
+  "artifacts": [
+    "docs/GATE-M3.md",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R3__systems_architect.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-QA-ACCEPT-R3__qa_reviewer.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md"
+  ],
+  "branch_or_worktree": "chore/m3-exit-gate",
+  "commit": "9d21e67c systems R3 evidence; a53884e2 R3 route; accepted-state commit pending",
+  "tests_run": [
+    {
+      "command": "validate-handoff systems R3 handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "validate-handoff qa R3 ACCEPT handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "taskctl validate M3-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "QA R3 gate matrix",
+      "exit_code": 0,
+      "result": "frozen install, pnpm check, pnpm test, content validate, determinism, perf baseline, web build, M3 postwar focused Vitest, Chromium M3 appointment smoke, lifecycle probe, taskctl list/ready, and git diff --check passed"
+    }
+  ],
+  "decisions": [
+    "Accepted M3_GATE = PASS after R3 QA acceptance.",
+    "Kept H-003/H-005 limits explicit as initial fixture-level M3 evidence.",
+    "No hidden Human Gate, no M4 start, no forbidden path drift."
+  ],
+  "risks": [
+    "H-003/H-005 remain initial fixture-level evidence, not M5 player-study or global balance proof.",
+    "M4 work starts only after PR enters main and closure updates milestone state."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit accepted state, run lead integration gates, open PR, require CI, merge to main, close M3 exit, advance to M4, create or restore M4 task graph, and continue.",
+  "created_at": "2026-06-25T22:31:40Z"
+}
