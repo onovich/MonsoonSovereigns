@@ -55,7 +55,7 @@ Result:
 Exact command:
 
 ```powershell
-node -e "const fs=require('fs'),cp=require('child_process');const hp='project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json';const ep='project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md';const rd=p=>JSON.parse(fs.readFileSync(p,'utf8'));const gate=fs.readFileSync('docs/GATE-M3.md','utf8');const task=rd('project/tasks/active/M3-EXIT-VALIDATION-001.json'),goal=rd('project/goal-mode-state.json'),routing=rd('project/model-routing-state.json'),reg=rd('project/tasks/thread-registry.json'),handoff=rd(hp);const tid='019f00ab-b4f3-7b01-8616-d5391a341275',key='M3-EXIT-VALIDATION-001:systems_architect';const dirty=cp.execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).split(/\r?\n/).filter(Boolean).map(l=>l.length>=4?l.slice(3):l);const allowed=new Set(['PROJECT_STATUS.md','docs/GATE-M3.md','project/goal-mode-state.json','project/model-routing-state.json','project/tasks/active/M3-EXIT-VALIDATION-001.json','project/tasks/thread-registry.json',hp,ep]);const ok=/M3_GATE = PASS/.test(gate)&&/does not start M4/.test(gate)&&task.status==='REVIEW'&&task.route_to==='qa_reviewer'&&task.threads.systems_architect.status==='review_ready'&&goal.active_threads[tid].status==='review_ready'&&reg.entries[key].status==='review_ready'&&handoff.status==='REVIEW'&&handoff.route_to==='qa_reviewer'&&handoff.branch_or_worktree.includes('chore/m3-exit-gate')&&routing.schema_version===1&&dirty.every(p=>allowed.has(p));console.log(JSON.stringify({result:ok?'PASS':'FAIL',dirty,taskStatus:task.status,route:task.route_to,registryStatus:reg.entries[key].status},null,2));process.exit(ok?0:1)"
+node -e "const fs=require('fs'),cp=require('child_process');const oldHash='ef40f3df'+'ddfdb64500a0c348590588209b117db9',main='ef40f3dff442ee16acc479346d8f0409c2ca736e';const r1='project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json';const r2='project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json';const ev='project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md';const rd=p=>JSON.parse(fs.readFileSync(p,'utf8'));const gate=fs.readFileSync('docs/GATE-M3.md','utf8');const task=rd('project/tasks/active/M3-EXIT-VALIDATION-001.json'),goal=rd('project/goal-mode-state.json'),routing=rd('project/model-routing-state.json'),reg=rd('project/tasks/thread-registry.json'),cont=rd('project/messages/outbox/GOAL-MODE-CONTINUATION.json'),handoff=rd(r2);const tid='019f00ab-b4f3-7b01-8616-d5391a341275',key='M3-EXIT-VALIDATION-001:systems_architect';const modelThread=routing.active_threads.find(t=>t.task_id==='M3-EXIT-VALIDATION-001'&&t.role==='systems_architect');const contThread=cont.active_threads.find(t=>t.task_id==='M3-EXIT-VALIDATION-001'&&t.role==='systems_architect');const dirty=cp.execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).split(/\r?\n/).filter(Boolean).map(l=>l.length>=4?l.slice(3):l);const allowed=new Set(['PROJECT_STATUS.md','docs/GATE-M3.md','project/goal-mode-state.json','project/model-routing-state.json','project/tasks/active/M3-EXIT-VALIDATION-001.json','project/tasks/thread-registry.json','project/messages/outbox/GOAL-MODE-CONTINUATION.json',r1,r2,ev]);const hashFiles=['docs/GATE-M3.md','PROJECT_STATUS.md','project/goal-mode-state.json','project/messages/outbox/GOAL-MODE-CONTINUATION.json'];const noOldHash=hashFiles.every(p=>!fs.readFileSync(p,'utf8').includes(oldHash));const objectType=cp.execFileSync('git',['cat-file','-t',main],{encoding:'utf8'}).trim();const ok=objectType==='commit'&&noOldHash&&gate.includes('Main baseline: '+main)&&task.status==='REVIEW'&&task.route_to==='qa_reviewer'&&task.threads.systems_architect.status==='review_ready_r2'&&goal.last_main_commit===main&&goal.active_threads[tid].status==='review_ready_r2'&&reg.entries[key].status==='review_ready_r2'&&modelThread?.status==='review_ready_r2'&&cont.origin_main===main&&contThread?.status==='review_ready_r2'&&handoff.status==='REVIEW'&&handoff.route_to==='qa_reviewer'&&handoff.branch_or_worktree.includes('chore/m3-exit-gate')&&routing.schema_version===1&&dirty.every(p=>allowed.has(p));console.log(JSON.stringify({result:ok?'PASS':'FAIL',mainObjectType:objectType,noOldHash,dirty,taskStatus:task.status,route:task.route_to,registryStatus:reg.entries[key].status,goalStatus:goal.active_threads[tid].status,modelStatus:modelThread?.status,continuationStatus:contThread?.status},null,2));process.exit(ok?0:1)"
 ```
 
 Exit code: 0
@@ -65,17 +65,25 @@ Result:
 ```json
 {
   "result": "PASS",
+  "mainObjectType": "commit",
+  "noOldHash": true,
   "dirty": [
     "PROJECT_STATUS.md",
+    "docs/GATE-M3.md",
     "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+    "project/model-routing-state.json",
     "project/tasks/active/M3-EXIT-VALIDATION-001.json",
     "project/tasks/thread-registry.json",
-    "docs/GATE-M3.md",
-    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
-    "project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md"
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json"
   ],
   "taskStatus": "REVIEW",
   "route": "qa_reviewer",
-  "registryStatus": "review_ready"
+  "registryStatus": "review_ready_r2",
+  "goalStatus": "review_ready_r2",
+  "modelStatus": "review_ready_r2",
+  "continuationStatus": "review_ready_r2"
 }
 ```

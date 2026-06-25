@@ -103,9 +103,9 @@
       "result": "Post-edit task validation passed with status REVIEW and route_to qa_reviewer."
     },
     {
-      "command": "node -e JSON validation for M3 gate task, goal-mode-state, model-routing-state, thread registry, systems handoff, command evidence, dirty allowed paths, and docs/GATE-M3.md marker checks; exact command is recorded in project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+      "command": "node -e R2 JSON shape, corrected main hash, R2 handoff, and allowed dirty path probe; exact command is recorded in project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
       "exit_code": 0,
-      "result": "Post-edit JSON/shape validation passed; M3_GATE marker present; M4 non-start wording present; systems handoff status REVIEW route_to qa_reviewer; task route qa_reviewer; registry systems status review_ready; dirty paths restricted to allowed docs/process/message paths."
+      "result": "R2 replacement validation passed after QA REQUEST_CHANGES: corrected main hash resolves to a commit; stale review_ready expectation was replaced by review_ready_r2; systems R2 handoff status REVIEW route_to qa_reviewer; task route qa_reviewer; dirty paths restricted to allowed docs/process/message paths."
     },
     {
       "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",

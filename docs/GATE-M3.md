@@ -7,7 +7,7 @@ Systems architect decision: M3_GATE = PASS
 Branch/worktree: chore/m3-exit-gate
 Start commit: e2ff5d6a chore(process): start M3 exit validation task
 Start-confirmed commit reviewed: 045b191151631639fcfdba4a88153a7f536392a9
-Main baseline: ef40f3dfddfdb64500a0c348590588209b117db9
+Main baseline: ef40f3dff442ee16acc479346d8f0409c2ca736e
 Autonomy policy: MILESTONE-AUTONOMY-AMENDMENT-001 allows ordinary M1-M4 exits without a standalone Human Gate only when the acceptance matrix, required tests, independent review, and no-R4/no-frozen-decision Human Gate conditions are satisfied. M5 remains a Human Gate.
 
 ## Result

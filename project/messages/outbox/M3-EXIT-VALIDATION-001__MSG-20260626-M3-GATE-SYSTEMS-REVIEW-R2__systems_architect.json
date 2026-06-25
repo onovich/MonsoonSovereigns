@@ -1,0 +1,78 @@
+{
+  "task_id": "M3-EXIT-VALIDATION-001",
+  "message_id": "MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "R2 systems handoff resolves the qa_reviewer REQUEST_CHANGES findings. The invalid main baseline hash was replaced with the verified origin/main commit ef40f3dff442ee16acc479346d8f0409c2ca736e in the gate and process state evidence. The stale JSON-shape probe that expected review_ready was replaced with a final-state R2 probe that validates review_ready_r2 state, the corrected main hash, the R2 handoff, and allowed dirty paths. M3_GATE remains PASS pending independent qa_reviewer acceptance and lead integration; no M4 work was started.",
+  "artifacts": [
+    "docs/GATE-M3.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/M3-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m3-exit-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "a03013d08e0d9e68374d76e1a4c07e45bcc402a6 (pre-R2-fix HEAD; current R2 fixes are uncommitted)",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "R2 dirty paths before handoff validation were allowed: PROJECT_STATUS.md, docs/GATE-M3.md, project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M3-EXIT-VALIDATION-001.json, project/tasks/thread-registry.json, GOAL-MODE-CONTINUATION.json, command evidence, and this R2 handoff."
+    },
+    {
+      "command": "git cat-file -t ef40f3dff442ee16acc479346d8f0409c2ca736e",
+      "exit_code": 0,
+      "result": "commit"
+    },
+    {
+      "command": "node -e \"const fs=require('fs');const oldHash='ef40f3df'+'ddfdb64500a0c348590588209b117db9';const files=['docs/GATE-M3.md','PROJECT_STATUS.md','project/goal-mode-state.json','project/messages/outbox/GOAL-MODE-CONTINUATION.json'];const hits=files.filter(f=>fs.readFileSync(f,'utf8').includes(oldHash));console.log(hits.length?'FOUND '+hits.join(','):'NO_MATCH');process.exit(hits.length?1:0);\"",
+      "exit_code": 0,
+      "result": "NO_MATCH"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-EXIT-VALIDATION-001.json"
+    },
+    {
+      "command": "node -e R2 JSON shape, corrected main hash, R2 handoff, and allowed dirty path probe; exact command is recorded in project/messages/outbox/M3-EXIT-VALIDATION-001__command-evidence.md",
+      "exit_code": 0,
+      "result": "PASS: mainObjectType=commit, noOldHash=true, taskStatus=REVIEW, route=qa_reviewer, registryStatus=review_ready_r2, goalStatus=review_ready_r2, modelStatus=review_ready_r2, continuationStatus=review_ready_r2, dirty paths restricted to allowed paths."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW-R2__systems_architect.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-EXIT-VALIDATION-001__MSG-20260626-M3-GATE-SYSTEMS-REVIEW__systems_architect.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "M3_GATE remains PASS, pending independent qa_reviewer acceptance and lead integration.",
+    "The corrected main baseline is ef40f3dff442ee16acc479346d8f0409c2ca736e; git cat-file verifies it exists as a commit.",
+    "The stale R1 JSON probe expectation of review_ready is superseded. R2 state is review_ready_r2 for the systems thread and awaiting_r2_review for qa_reviewer.",
+    "No product, package, content-source, tool, CI, ADR, roadmap, acceptance-matrix, autonomous-goal doc, manifest, checksum, or validation-report path was modified.",
+    "No Human Gate or M4 start is introduced by this R2 correction."
+  ],
+  "risks": [
+    "The original R1 handoff remains part of the audit trail; this R2 handoff is the current routed systems evidence after QA request changes.",
+    "Formal M3 acceptance still depends on independent qa_reviewer R2 acceptance and lead integration."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Re-review the R2 fixes for the corrected main baseline hash and JSON-shape evidence. If accepted, write a valid qa_reviewer handoff routed to lead_orchestrator. Do not start M4 from this review.",
+  "created_at": "2026-06-26T06:00:16+08:00"
+}
