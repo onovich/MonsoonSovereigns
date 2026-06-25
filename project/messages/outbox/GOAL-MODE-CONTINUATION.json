@@ -2,17 +2,36 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M3_CONTINUING",
+  "status": "M3_GATE_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "9e1e319be0ce14a20a9614e5108fdb7c2e14e955",
+  "origin_main": "ef40f3dfddfdb64500a0c348590588209b117db9",
   "current_milestone": "M3",
-  "current_task": null,
-  "current_task_status": null,
+  "current_task": "M3-EXIT-VALIDATION-001",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M3-H003-H005-VALIDATION-001",
-  "ready_tasks": [
-    "M3-EXIT-VALIDATION-001"
+  "ready_tasks": [],
+  "active_threads": [
+    {
+      "task_id": "M3-EXIT-VALIDATION-001",
+      "role": "systems_architect",
+      "thread_id": "019f00ab-b4f3-7b01-8616-d5391a341275",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "branch_or_worktree": "chore/m3-exit-gate",
+      "start_state": "START_PENDING"
+    },
+    {
+      "task_id": "M3-EXIT-VALIDATION-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f00ab-d6dc-7e11-9043-6096c46ef578",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "branch_or_worktree": "chore/m3-exit-gate",
+      "start_state": "START_PENDING"
+    }
   ],
-  "active_threads": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -30,7 +49,7 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "Start M3-EXIT-VALIDATION-001 through the normal task workflow with systems_architect writer and qa_reviewer reviewer.",
+  "next_machine_action": "Commit M3 exit gate start registration, send START_CONFIRMED to systems_architect, and keep qa_reviewer waiting for REVIEW_READY.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -38,5 +57,5 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-25T21:21:08Z"
+  "last_updated_at": "2026-06-25T21:25:38Z"
 }
