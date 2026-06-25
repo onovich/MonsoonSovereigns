@@ -2,8 +2,10 @@ import { describe, expect, test } from "vitest";
 
 import {
   createRuntimeContentPackIndexV0,
+  createRuntimeM3CharacterOfficeContentPackIndexV0,
   createRuntimeM3PolityVassalageContentPackIndexV0,
   createRuntimeM2WorldContentPackIndexV0,
+  parseRuntimeM3CharacterOfficeContentPackV0,
   parseRuntimeM3PolityVassalageContentPackV0,
   parseRuntimeM2WorldContentPackV0,
   parseRuntimeContentPackV0
@@ -275,5 +277,224 @@ describe("M3 runtime polity vassalage content pack", () => {
         obligations: []
       })
     ).toThrow("RuntimeM3PolityVassalageContentPackV0");
+  });
+});
+
+describe("M3 runtime character office content pack", () => {
+  test("parses abstract characters, sparse relationships, offices, and persistent policies", () => {
+    const pack = parseRuntimeM3CharacterOfficeContentPackV0({
+      schemaVersion: 1,
+      kind: "runtime-m3-character-office-content-pack-v0",
+      fixtureId: "m3.runtime-character-office",
+      manifest: {
+        schemaVersion: 1,
+        fixtureId: "m3.runtime-character-office",
+        fixtureKind: "character-office-fixture",
+        syntheticScope: "m3-validation-only",
+        historicity: "FICTIONAL",
+        manifestHash: "89abcdef",
+        characterCount: 2,
+        relationshipCount: 1,
+        officeCount: 1,
+        landedPowerCount: 1,
+        officePolicyCount: 1,
+        enfeoffmentHookCount: 1
+      },
+      characters: [
+        {
+          id: 1,
+          sourceId: "character-001",
+          displayNameKey: "content.m3.validation.character_001",
+          claimLabel: "FICTIONAL_VALIDATION",
+          primaryPolitySourceId: "polity-001",
+          archetype: "administrator",
+          aptitude: {
+            administrationBps: 8400,
+            commandBps: 3200,
+            diplomacyBps: 6100,
+            ambitionBps: 4200,
+            legitimacyBps: 5200
+          }
+        },
+        {
+          id: 2,
+          sourceId: "character-002",
+          displayNameKey: "content.m3.validation.character_002",
+          claimLabel: "FICTIONAL_VALIDATION",
+          primaryPolitySourceId: "polity-001",
+          archetype: "local-lord",
+          aptitude: {
+            administrationBps: 5200,
+            commandBps: 6700,
+            diplomacyBps: 4800,
+            ambitionBps: 5800,
+            legitimacyBps: 7900
+          }
+        }
+      ],
+      relationships: [
+        {
+          id: 1,
+          sourceId: "relationship-001",
+          fromCharacterId: 2,
+          toCharacterId: 1,
+          relationshipKind: "patron",
+          intensityBps: 6200,
+          claimLabel: "FICTIONAL_VALIDATION"
+        }
+      ],
+      offices: [
+        {
+          id: 1,
+          sourceId: "office-001",
+          displayNameKey: "content.m3.validation.office_001",
+          jurisdictionKind: "district",
+          jurisdictionSourceId: "district-001",
+          currentHolderCharacterId: 1,
+          policyId: 1,
+          landedPowerId: 1,
+          appointmentEligibility: {
+            minimumAdministrationBps: 7000,
+            minimumCommandBps: 0,
+            minimumLegitimacyBps: 3000,
+            requiredArchetype: "administrator"
+          }
+        }
+      ],
+      landedPowers: [
+        {
+          id: 1,
+          sourceId: "landed-power-001",
+          districtSourceId: "district-001",
+          extractionRightsBps: 4200,
+          levyRightsBps: 2100,
+          successionWeightBps: 1200
+        }
+      ],
+      officePolicies: [
+        {
+          id: 1,
+          sourceId: "office-policy-001",
+          displayNameKey: "content.m3.validation.office_policy_001",
+          appointmentMode: "appointed",
+          taxAutonomyBps: 2500,
+          militaryAutonomyBps: 1500,
+          persistsAcrossHolderChange: true,
+          enfeoffmentHookIds: [1]
+        }
+      ],
+      enfeoffmentHooks: [
+        {
+          id: 1,
+          sourceId: "enfeoffment-hook-001",
+          trigger: "on-appointment",
+          effectKey: "content.m3.validation.enfeoffment_hook_001"
+        }
+      ]
+    });
+    const index = createRuntimeM3CharacterOfficeContentPackIndexV0(pack);
+
+    expect(index.getCharacter(1)?.archetype).toBe("administrator");
+    expect(index.getRelationship(1)?.fromCharacterId).toBe(2);
+    expect(index.getOffice(1)?.policyId).toBe(1);
+    expect(index.getOfficePolicy(1)?.persistsAcrossHolderChange).toBe(true);
+    expect(index).not.toHaveProperty("getCharacterByDisplayName");
+  });
+
+  test("rejects cyclic ancestor relationships and missing office policy references", () => {
+    expect(() =>
+      parseRuntimeM3CharacterOfficeContentPackV0({
+        schemaVersion: 1,
+        kind: "runtime-m3-character-office-content-pack-v0",
+        fixtureId: "m3.runtime-character-office",
+        manifest: {
+          schemaVersion: 1,
+          fixtureId: "m3.runtime-character-office",
+          fixtureKind: "character-office-fixture",
+          syntheticScope: "m3-validation-only",
+          historicity: "FICTIONAL",
+          manifestHash: "89abcdef",
+          characterCount: 2,
+          relationshipCount: 2,
+          officeCount: 1,
+          landedPowerCount: 0,
+          officePolicyCount: 0,
+          enfeoffmentHookCount: 0
+        },
+        characters: [
+          {
+            id: 1,
+            sourceId: "character-001",
+            displayNameKey: "content.m3.validation.character_001",
+            claimLabel: "FICTIONAL_VALIDATION",
+            primaryPolitySourceId: "polity-001",
+            archetype: "administrator",
+            aptitude: {
+              administrationBps: 8400,
+              commandBps: 3200,
+              diplomacyBps: 6100,
+              ambitionBps: 4200,
+              legitimacyBps: 5200
+            }
+          },
+          {
+            id: 2,
+            sourceId: "character-002",
+            displayNameKey: "content.m3.validation.character_002",
+            claimLabel: "FICTIONAL_VALIDATION",
+            primaryPolitySourceId: "polity-001",
+            archetype: "local-lord",
+            aptitude: {
+              administrationBps: 5200,
+              commandBps: 6700,
+              diplomacyBps: 4800,
+              ambitionBps: 5800,
+              legitimacyBps: 7900
+            }
+          }
+        ],
+        relationships: [
+          {
+            id: 1,
+            sourceId: "relationship-001",
+            fromCharacterId: 1,
+            toCharacterId: 2,
+            relationshipKind: "parent",
+            intensityBps: 10000,
+            claimLabel: "FICTIONAL_VALIDATION"
+          },
+          {
+            id: 2,
+            sourceId: "relationship-002",
+            fromCharacterId: 2,
+            toCharacterId: 1,
+            relationshipKind: "parent",
+            intensityBps: 10000,
+            claimLabel: "FICTIONAL_VALIDATION"
+          }
+        ],
+        offices: [
+          {
+            id: 1,
+            sourceId: "office-001",
+            displayNameKey: "content.m3.validation.office_001",
+            jurisdictionKind: "district",
+            jurisdictionSourceId: "district-001",
+            currentHolderCharacterId: 1,
+            policyId: 1,
+            landedPowerId: null,
+            appointmentEligibility: {
+              minimumAdministrationBps: 7000,
+              minimumCommandBps: 0,
+              minimumLegitimacyBps: 3000,
+              requiredArchetype: "administrator"
+            }
+          }
+        ],
+        landedPowers: [],
+        officePolicies: [],
+        enfeoffmentHooks: []
+      })
+    ).toThrow("RuntimeM3CharacterOfficeContentPackV0");
   });
 });

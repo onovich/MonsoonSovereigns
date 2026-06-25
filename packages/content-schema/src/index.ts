@@ -1,6 +1,7 @@
 export const M1_GRAPH_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 export const M2_WORLD_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 export const M3_POLITY_VASSALAGE_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
+export const M3_CHARACTER_OFFICE_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 
 export type M1GraphFixtureSourceKind = "m1.synthetic-abstract-graph";
 export type M1GraphFixtureKind = "synthetic-kernel-graph";
@@ -25,8 +26,55 @@ export type M3PolityVassalageConfidence = "LOW";
 export type M3ObligationKind = "tribute" | "troop";
 export type M3ObligationResourceKind = "cash" | "grain" | "troops";
 export type M3ObligationStatus = "active" | "disputed" | "breached";
+export type M3CharacterOfficeFixtureSourceKind = "m3.character-office-fixture";
+export type M3CharacterOfficeFixtureKind = "character-office-fixture";
+export type M3CharacterOfficeSyntheticScope = "m3-validation-only";
+export type M3CharacterOfficeHistoricity = "FICTIONAL";
+export type M3ValidationClaimLabel = "FICTIONAL_VALIDATION";
+export type M3CharacterArchetype =
+  | "administrator"
+  | "local-lord"
+  | "commander"
+  | "succession-competitor"
+  | "courtier"
+  | "broker";
+export type M3RelationshipKind = "parent" | "patron" | "client" | "rival" | "supporter";
+export type M3OfficeJurisdictionKind = "polity" | "district";
+export type M3OfficeAppointmentMode = "appointed" | "hereditary" | "council-nominated";
+export type M3EnfeoffmentTrigger =
+  | "on-appointment"
+  | "on-holder-change"
+  | "on-vacancy"
+  | "on-succession-contest";
 
 export type ContentSchemaErrorCode = "invalid-schema";
+
+const M3_CHARACTER_ARCHETYPES: readonly M3CharacterArchetype[] = [
+  "administrator",
+  "local-lord",
+  "commander",
+  "succession-competitor",
+  "courtier",
+  "broker"
+];
+const M3_RELATIONSHIP_KINDS: readonly M3RelationshipKind[] = [
+  "parent",
+  "patron",
+  "client",
+  "rival",
+  "supporter"
+];
+const M3_OFFICE_APPOINTMENT_MODES: readonly M3OfficeAppointmentMode[] = [
+  "appointed",
+  "hereditary",
+  "council-nominated"
+];
+const M3_ENFEOFFMENT_TRIGGERS: readonly M3EnfeoffmentTrigger[] = [
+  "on-appointment",
+  "on-holder-change",
+  "on-vacancy",
+  "on-succession-contest"
+];
 
 export interface ContentSchemaError {
   readonly code: ContentSchemaErrorCode;
@@ -194,6 +242,96 @@ export interface M3PolityVassalageFixtureSourceV0 {
   readonly obligations: readonly M3ObligationSourceV0[];
 }
 
+export interface M3CharacterOfficeFixtureProvenanceV0 {
+  readonly sourceCategory: M3PolityVassalageSourceCategory;
+  readonly confidence: M3PolityVassalageConfidence;
+  readonly policyId: "M3-HISTORICAL-CLAIM-PIPELINE-001";
+}
+
+export interface M3CharacterAptitudeSourceV0 {
+  readonly administrationBps: number;
+  readonly commandBps: number;
+  readonly diplomacyBps: number;
+  readonly ambitionBps: number;
+  readonly legitimacyBps: number;
+}
+
+export interface M3CharacterSourceV0 {
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly claimLabel: M3ValidationClaimLabel;
+  readonly primaryPolityId: string;
+  readonly archetype: M3CharacterArchetype;
+  readonly aptitude: M3CharacterAptitudeSourceV0;
+}
+
+export interface M3RelationshipSourceV0 {
+  readonly sourceId: string;
+  readonly fromCharacterId: string;
+  readonly toCharacterId: string;
+  readonly relationshipKind: M3RelationshipKind;
+  readonly intensityBps: number;
+  readonly claimLabel: M3ValidationClaimLabel;
+}
+
+export interface M3AppointmentEligibilitySourceV0 {
+  readonly minimumAdministrationBps: number;
+  readonly minimumCommandBps: number;
+  readonly minimumLegitimacyBps: number;
+  readonly requiredArchetype: M3CharacterArchetype | null;
+}
+
+export interface M3OfficeSourceV0 {
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly jurisdictionKind: M3OfficeJurisdictionKind;
+  readonly jurisdictionId: string;
+  readonly currentHolderCharacterId: string;
+  readonly policyId: string;
+  readonly landedPowerId: string | null;
+  readonly appointmentEligibility: M3AppointmentEligibilitySourceV0;
+}
+
+export interface M3LandedPowerSourceV0 {
+  readonly sourceId: string;
+  readonly districtId: string;
+  readonly extractionRightsBps: number;
+  readonly levyRightsBps: number;
+  readonly successionWeightBps: number;
+}
+
+export interface M3OfficePolicySourceV0 {
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly appointmentMode: M3OfficeAppointmentMode;
+  readonly taxAutonomyBps: number;
+  readonly militaryAutonomyBps: number;
+  readonly persistsAcrossHolderChange: true;
+  readonly enfeoffmentHookIds: readonly string[];
+}
+
+export interface M3EnfeoffmentHookSourceV0 {
+  readonly sourceId: string;
+  readonly trigger: M3EnfeoffmentTrigger;
+  readonly effectKey: string;
+}
+
+export interface M3CharacterOfficeFixtureSourceV0 {
+  readonly schemaVersion: typeof M3_CHARACTER_OFFICE_FIXTURE_SOURCE_V0_SCHEMA_VERSION;
+  readonly kind: M3CharacterOfficeFixtureSourceKind;
+  readonly fixtureId: string;
+  readonly fixtureKind: M3CharacterOfficeFixtureKind;
+  readonly syntheticScope: M3CharacterOfficeSyntheticScope;
+  readonly historicity: M3CharacterOfficeHistoricity;
+  readonly provenance: M3CharacterOfficeFixtureProvenanceV0;
+  readonly characters: readonly M3CharacterSourceV0[];
+  readonly relationships: readonly M3RelationshipSourceV0[];
+  readonly offices: readonly M3OfficeSourceV0[];
+  readonly landedPowers: readonly M3LandedPowerSourceV0[];
+  readonly officePolicies: readonly M3OfficePolicySourceV0[];
+  readonly enfeoffmentHooks: readonly M3EnfeoffmentHookSourceV0[];
+}
+
 export function validateM1GraphFixtureSourceV0(input: unknown): readonly ContentSchemaError[] {
   if (!isRecord(input)) {
     return [
@@ -318,6 +456,69 @@ export function validateM3PolityVassalageFixtureSourceV0(
   return errors;
 }
 
+export function validateM3CharacterOfficeFixtureSourceV0(
+  input: unknown
+): readonly ContentSchemaError[] {
+  if (!isRecord(input)) {
+    return [
+      {
+        code: "invalid-schema",
+        path: "$",
+        message: "M3 character office fixture source must be an object."
+      }
+    ];
+  }
+
+  const errors: ContentSchemaError[] = [];
+  validateM3CharacterOfficeRoot(input, errors);
+  const provenance = input["provenance"];
+  if (isRecord(provenance)) {
+    validateM3Provenance(provenance, errors);
+  }
+
+  const characters = input["characters"];
+  if (Array.isArray(characters)) {
+    characters.forEach((character, index) =>
+      validateM3Character(character, `characters[${index}]`, errors)
+    );
+  }
+
+  const relationships = input["relationships"];
+  if (Array.isArray(relationships)) {
+    relationships.forEach((relationship, index) =>
+      validateM3Relationship(relationship, `relationships[${index}]`, errors)
+    );
+  }
+
+  const offices = input["offices"];
+  if (Array.isArray(offices)) {
+    offices.forEach((office, index) => validateM3Office(office, `offices[${index}]`, errors));
+  }
+
+  const landedPowers = input["landedPowers"];
+  if (Array.isArray(landedPowers)) {
+    landedPowers.forEach((landedPower, index) =>
+      validateM3LandedPower(landedPower, `landedPowers[${index}]`, errors)
+    );
+  }
+
+  const officePolicies = input["officePolicies"];
+  if (Array.isArray(officePolicies)) {
+    officePolicies.forEach((policy, index) =>
+      validateM3OfficePolicy(policy, `officePolicies[${index}]`, errors)
+    );
+  }
+
+  const hooks = input["enfeoffmentHooks"];
+  if (Array.isArray(hooks)) {
+    hooks.forEach((hook, index) =>
+      validateM3EnfeoffmentHook(hook, `enfeoffmentHooks[${index}]`, errors)
+    );
+  }
+
+  return errors;
+}
+
 export function parseM1GraphFixtureSourceV0(input: unknown): M1GraphFixtureSourceV0 {
   const errors = validateM1GraphFixtureSourceV0(input);
   if (errors.length > 0) {
@@ -391,6 +592,35 @@ export function parseM3PolityVassalageFixtureSourceV0(
   };
 }
 
+export function parseM3CharacterOfficeFixtureSourceV0(
+  input: unknown
+): M3CharacterOfficeFixtureSourceV0 {
+  const errors = validateM3CharacterOfficeFixtureSourceV0(input);
+  if (errors.length > 0) {
+    throw new Error(`M3CharacterOfficeFixtureSourceV0 invalid: ${formatErrors(errors)}`);
+  }
+
+  if (!isRecord(input)) {
+    throw new Error("M3CharacterOfficeFixtureSourceV0 invalid: root was not an object.");
+  }
+
+  return {
+    schemaVersion: M3_CHARACTER_OFFICE_FIXTURE_SOURCE_V0_SCHEMA_VERSION,
+    kind: "m3.character-office-fixture",
+    fixtureId: readString(input, "fixtureId"),
+    fixtureKind: "character-office-fixture",
+    syntheticScope: "m3-validation-only",
+    historicity: "FICTIONAL",
+    provenance: parseM3Provenance(readRecord(input, "provenance")),
+    characters: readArray(input, "characters").map(parseM3Character),
+    relationships: readArray(input, "relationships").map(parseM3Relationship),
+    offices: readArray(input, "offices").map(parseM3Office),
+    landedPowers: readArray(input, "landedPowers").map(parseM3LandedPower),
+    officePolicies: readArray(input, "officePolicies").map(parseM3OfficePolicy),
+    enfeoffmentHooks: readArray(input, "enfeoffmentHooks").map(parseM3EnfeoffmentHook)
+  };
+}
+
 function validateRoot(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
   if (input["schemaVersion"] !== M1_GRAPH_FIXTURE_SOURCE_V0_SCHEMA_VERSION) {
     errors.push({
@@ -460,6 +690,38 @@ function validateM3Root(input: Record<string, unknown>, errors: ContentSchemaErr
   validateArray(input, "polities", errors);
   validateArray(input, "districts", errors);
   validateArray(input, "obligations", errors);
+}
+
+function validateM3CharacterOfficeRoot(
+  input: Record<string, unknown>,
+  errors: ContentSchemaError[]
+): void {
+  if (input["schemaVersion"] !== M3_CHARACTER_OFFICE_FIXTURE_SOURCE_V0_SCHEMA_VERSION) {
+    errors.push({
+      code: "invalid-schema",
+      path: "schemaVersion",
+      message: `schemaVersion must be ${M3_CHARACTER_OFFICE_FIXTURE_SOURCE_V0_SCHEMA_VERSION}.`
+    });
+  }
+
+  validateExactString(input, "kind", "m3.character-office-fixture", errors);
+  validateNonEmptyString(input, "fixtureId", errors);
+  validateExactString(input, "fixtureKind", "character-office-fixture", errors);
+  validateExactString(input, "syntheticScope", "m3-validation-only", errors);
+  validateExactString(input, "historicity", "FICTIONAL", errors);
+  if (!isRecord(input["provenance"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: "provenance",
+      message: "provenance must be an object."
+    });
+  }
+  validateArray(input, "characters", errors);
+  validateArray(input, "relationships", errors);
+  validateArray(input, "offices", errors);
+  validateArray(input, "landedPowers", errors);
+  validateArray(input, "officePolicies", errors);
+  validateArray(input, "enfeoffmentHooks", errors);
 }
 
 function validateM2Provenance(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
@@ -578,6 +840,275 @@ function validateM3Obligation(input: unknown, path: string, errors: ContentSchem
   );
   validateNullableString(input, "disputeReasonCode", `${path}.disputeReasonCode`, errors);
   validateNullableString(input, "breachReasonCode", `${path}.breachReasonCode`, errors);
+}
+
+function validateM3Character(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 character entry must be an object." });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^character-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m3\.validation\.character_\d{3}$/u,
+    errors
+  );
+  validateExactString(input, "claimLabel", "FICTIONAL_VALIDATION", errors, `${path}.claimLabel`);
+  validatePatternString(
+    input,
+    "primaryPolityId",
+    `${path}.primaryPolityId`,
+    /^polity-\d{3}$/u,
+    errors
+  );
+  validateStringUnion(input, "archetype", `${path}.archetype`, M3_CHARACTER_ARCHETYPES, errors);
+  validateM3Aptitude(input["aptitude"], `${path}.aptitude`, errors);
+}
+
+function validateM3Aptitude(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 aptitude must be an object." });
+    return;
+  }
+  validateIntegerInRange(input, "administrationBps", `${path}.administrationBps`, 0, 10000, errors);
+  validateIntegerInRange(input, "commandBps", `${path}.commandBps`, 0, 10000, errors);
+  validateIntegerInRange(input, "diplomacyBps", `${path}.diplomacyBps`, 0, 10000, errors);
+  validateIntegerInRange(input, "ambitionBps", `${path}.ambitionBps`, 0, 10000, errors);
+  validateIntegerInRange(input, "legitimacyBps", `${path}.legitimacyBps`, 0, 10000, errors);
+}
+
+function validateM3Relationship(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 relationship entry must be an object."
+    });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^relationship-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "fromCharacterId",
+    `${path}.fromCharacterId`,
+    /^character-\d{3}$/u,
+    errors
+  );
+  validatePatternString(
+    input,
+    "toCharacterId",
+    `${path}.toCharacterId`,
+    /^character-\d{3}$/u,
+    errors
+  );
+  validateStringUnion(
+    input,
+    "relationshipKind",
+    `${path}.relationshipKind`,
+    M3_RELATIONSHIP_KINDS,
+    errors
+  );
+  validateIntegerInRange(input, "intensityBps", `${path}.intensityBps`, 0, 10000, errors);
+  validateExactString(input, "claimLabel", "FICTIONAL_VALIDATION", errors, `${path}.claimLabel`);
+}
+
+function validateM3Office(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 office entry must be an object." });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^office-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m3\.validation\.office_\d{3}$/u,
+    errors
+  );
+  validateStringUnion(
+    input,
+    "jurisdictionKind",
+    `${path}.jurisdictionKind`,
+    ["polity", "district"],
+    errors
+  );
+  validatePatternString(
+    input,
+    "jurisdictionId",
+    `${path}.jurisdictionId`,
+    /^(polity|district)-\d{3}$/u,
+    errors
+  );
+  validatePatternString(
+    input,
+    "currentHolderCharacterId",
+    `${path}.currentHolderCharacterId`,
+    /^character-\d{3}$/u,
+    errors
+  );
+  validatePatternString(input, "policyId", `${path}.policyId`, /^office-policy-\d{3}$/u, errors);
+  validateNullablePatternString(
+    input,
+    "landedPowerId",
+    `${path}.landedPowerId`,
+    /^landed-power-\d{3}$/u,
+    errors
+  );
+  validateM3AppointmentEligibility(
+    input["appointmentEligibility"],
+    `${path}.appointmentEligibility`,
+    errors
+  );
+}
+
+function validateM3AppointmentEligibility(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 appointment eligibility must be an object."
+    });
+    return;
+  }
+  validateIntegerInRange(
+    input,
+    "minimumAdministrationBps",
+    `${path}.minimumAdministrationBps`,
+    0,
+    10000,
+    errors
+  );
+  validateIntegerInRange(input, "minimumCommandBps", `${path}.minimumCommandBps`, 0, 10000, errors);
+  validateIntegerInRange(
+    input,
+    "minimumLegitimacyBps",
+    `${path}.minimumLegitimacyBps`,
+    0,
+    10000,
+    errors
+  );
+  validateNullableStringUnion(
+    input,
+    "requiredArchetype",
+    `${path}.requiredArchetype`,
+    M3_CHARACTER_ARCHETYPES,
+    errors
+  );
+}
+
+function validateM3LandedPower(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 landed power entry must be an object."
+    });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^landed-power-\d{3}$/u, errors);
+  validatePatternString(input, "districtId", `${path}.districtId`, /^district-\d{3}$/u, errors);
+  validateIntegerInRange(
+    input,
+    "extractionRightsBps",
+    `${path}.extractionRightsBps`,
+    0,
+    10000,
+    errors
+  );
+  validateIntegerInRange(input, "levyRightsBps", `${path}.levyRightsBps`, 0, 10000, errors);
+  validateIntegerInRange(
+    input,
+    "successionWeightBps",
+    `${path}.successionWeightBps`,
+    0,
+    10000,
+    errors
+  );
+}
+
+function validateM3OfficePolicy(input: unknown, path: string, errors: ContentSchemaError[]): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 office policy entry must be an object."
+    });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^office-policy-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m3\.validation\.office_policy_\d{3}$/u,
+    errors
+  );
+  validateStringUnion(
+    input,
+    "appointmentMode",
+    `${path}.appointmentMode`,
+    M3_OFFICE_APPOINTMENT_MODES,
+    errors
+  );
+  validateIntegerInRange(input, "taxAutonomyBps", `${path}.taxAutonomyBps`, 0, 10000, errors);
+  validateIntegerInRange(
+    input,
+    "militaryAutonomyBps",
+    `${path}.militaryAutonomyBps`,
+    0,
+    10000,
+    errors
+  );
+  if (input["persistsAcrossHolderChange"] !== true) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.persistsAcrossHolderChange`,
+      message: `${path}.persistsAcrossHolderChange must be true.`
+    });
+  }
+  validateArray(input, "enfeoffmentHookIds", errors, `${path}.enfeoffmentHookIds`);
+  const hookIds = input["enfeoffmentHookIds"];
+  if (Array.isArray(hookIds)) {
+    hookIds.forEach((hookId, index) =>
+      validatePatternString(
+        { hookId },
+        "hookId",
+        `${path}.enfeoffmentHookIds[${index}]`,
+        /^enfeoffment-hook-\d{3}$/u,
+        errors
+      )
+    );
+  }
+}
+
+function validateM3EnfeoffmentHook(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 enfeoffment hook entry must be an object."
+    });
+    return;
+  }
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^enfeoffment-hook-\d{3}$/u, errors);
+  validateStringUnion(input, "trigger", `${path}.trigger`, M3_ENFEOFFMENT_TRIGGERS, errors);
+  validatePatternString(
+    input,
+    "effectKey",
+    `${path}.effectKey`,
+    /^content\.m3\.validation\.enfeoffment_hook_\d{3}$/u,
+    errors
+  );
 }
 
 function validateM3Requirement(input: unknown, path: string, errors: ContentSchemaError[]): void {
@@ -1082,6 +1613,126 @@ function parseM3Obligation(input: unknown): M3ObligationSourceV0 {
   };
 }
 
+function parseM3Character(input: unknown): M3CharacterSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 character source entry.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    claimLabel: readM3ClaimLabel(input, "claimLabel"),
+    primaryPolityId: readString(input, "primaryPolityId"),
+    archetype: readM3CharacterArchetype(input, "archetype"),
+    aptitude: parseM3Aptitude(readRecord(input, "aptitude"))
+  };
+}
+
+function parseM3Aptitude(input: Record<string, unknown>): M3CharacterAptitudeSourceV0 {
+  return {
+    administrationBps: readIntegerInRange(input, "administrationBps", 0, 10000),
+    commandBps: readIntegerInRange(input, "commandBps", 0, 10000),
+    diplomacyBps: readIntegerInRange(input, "diplomacyBps", 0, 10000),
+    ambitionBps: readIntegerInRange(input, "ambitionBps", 0, 10000),
+    legitimacyBps: readIntegerInRange(input, "legitimacyBps", 0, 10000)
+  };
+}
+
+function parseM3Relationship(input: unknown): M3RelationshipSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 relationship source entry.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    fromCharacterId: readString(input, "fromCharacterId"),
+    toCharacterId: readString(input, "toCharacterId"),
+    relationshipKind: readM3RelationshipKind(input, "relationshipKind"),
+    intensityBps: readIntegerInRange(input, "intensityBps", 0, 10000),
+    claimLabel: readM3ClaimLabel(input, "claimLabel")
+  };
+}
+
+function parseM3Office(input: unknown): M3OfficeSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 office source entry.");
+  }
+  const landedPowerId = input["landedPowerId"];
+  if (landedPowerId !== null && typeof landedPowerId !== "string") {
+    throw new Error("Expected valid M3 landed power source id.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    jurisdictionKind: readM3OfficeJurisdictionKind(input, "jurisdictionKind"),
+    jurisdictionId: readString(input, "jurisdictionId"),
+    currentHolderCharacterId: readString(input, "currentHolderCharacterId"),
+    policyId: readString(input, "policyId"),
+    landedPowerId,
+    appointmentEligibility: parseM3AppointmentEligibility(
+      readRecord(input, "appointmentEligibility")
+    )
+  };
+}
+
+function parseM3AppointmentEligibility(
+  input: Record<string, unknown>
+): M3AppointmentEligibilitySourceV0 {
+  const requiredArchetype = input["requiredArchetype"];
+  if (requiredArchetype !== null && typeof requiredArchetype !== "string") {
+    throw new Error("Expected valid M3 required archetype.");
+  }
+  return {
+    minimumAdministrationBps: readIntegerInRange(input, "minimumAdministrationBps", 0, 10000),
+    minimumCommandBps: readIntegerInRange(input, "minimumCommandBps", 0, 10000),
+    minimumLegitimacyBps: readIntegerInRange(input, "minimumLegitimacyBps", 0, 10000),
+    requiredArchetype:
+      requiredArchetype === null
+        ? null
+        : readM3CharacterArchetype({ requiredArchetype }, "requiredArchetype")
+  };
+}
+
+function parseM3LandedPower(input: unknown): M3LandedPowerSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 landed power source entry.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    districtId: readString(input, "districtId"),
+    extractionRightsBps: readIntegerInRange(input, "extractionRightsBps", 0, 10000),
+    levyRightsBps: readIntegerInRange(input, "levyRightsBps", 0, 10000),
+    successionWeightBps: readIntegerInRange(input, "successionWeightBps", 0, 10000)
+  };
+}
+
+function parseM3OfficePolicy(input: unknown): M3OfficePolicySourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 office policy source entry.");
+  }
+  if (input["persistsAcrossHolderChange"] !== true) {
+    throw new Error("Expected valid M3 office policy persistence marker.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    appointmentMode: readM3OfficeAppointmentMode(input, "appointmentMode"),
+    taxAutonomyBps: readIntegerInRange(input, "taxAutonomyBps", 0, 10000),
+    militaryAutonomyBps: readIntegerInRange(input, "militaryAutonomyBps", 0, 10000),
+    persistsAcrossHolderChange: true,
+    enfeoffmentHookIds: readArray(input, "enfeoffmentHookIds").map(readStringValue)
+  };
+}
+
+function parseM3EnfeoffmentHook(input: unknown): M3EnfeoffmentHookSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid M3 enfeoffment hook source entry.");
+  }
+  return {
+    sourceId: readString(input, "sourceId"),
+    trigger: readM3EnfeoffmentTrigger(input, "trigger"),
+    effectKey: readString(input, "effectKey")
+  };
+}
+
 function parseM3Requirement(input: Record<string, unknown>): M3ObligationRequirementSourceV0 {
   if (input["kind"] === "amount") {
     return {
@@ -1238,6 +1889,25 @@ function validateStringUnion(
   });
 }
 
+function validateNullableStringUnion(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  allowedValues: readonly string[],
+  errors: ContentSchemaError[]
+): void {
+  const value = record[key];
+  if (value === null || (typeof value === "string" && allowedValues.includes(value))) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be null or one of ${allowedValues.join(", ")}.`
+  });
+}
+
 function validatePositiveInteger(
   record: Record<string, unknown>,
   key: string,
@@ -1320,6 +1990,14 @@ function readString(record: Record<string, unknown>, key: string): string {
   const value = record[key];
   if (typeof value !== "string") {
     throw new Error(`${key} must be a string.`);
+  }
+
+  return value;
+}
+
+function readStringValue(value: unknown): string {
+  if (typeof value !== "string") {
+    throw new Error("Expected string array entry.");
   }
 
   return value;
@@ -1429,6 +2107,72 @@ function readM3ObligationStatus(record: Record<string, unknown>, key: string): M
   }
 
   throw new Error(`${key} must be a valid M3 obligation status.`);
+}
+
+function readM3ClaimLabel(record: Record<string, unknown>, key: string): M3ValidationClaimLabel {
+  const value = readString(record, key);
+  if (value === "FICTIONAL_VALIDATION") {
+    return value;
+  }
+
+  throw new Error(`${key} must be FICTIONAL_VALIDATION.`);
+}
+
+function readM3CharacterArchetype(
+  record: Record<string, unknown>,
+  key: string
+): M3CharacterArchetype {
+  const value = readString(record, key);
+  if (M3_CHARACTER_ARCHETYPES.includes(value as M3CharacterArchetype)) {
+    return value as M3CharacterArchetype;
+  }
+
+  throw new Error(`${key} must be a valid M3 character archetype.`);
+}
+
+function readM3RelationshipKind(record: Record<string, unknown>, key: string): M3RelationshipKind {
+  const value = readString(record, key);
+  if (M3_RELATIONSHIP_KINDS.includes(value as M3RelationshipKind)) {
+    return value as M3RelationshipKind;
+  }
+
+  throw new Error(`${key} must be a valid M3 relationship kind.`);
+}
+
+function readM3OfficeJurisdictionKind(
+  record: Record<string, unknown>,
+  key: string
+): M3OfficeJurisdictionKind {
+  const value = readString(record, key);
+  if (value === "polity" || value === "district") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M3 office jurisdiction kind.`);
+}
+
+function readM3OfficeAppointmentMode(
+  record: Record<string, unknown>,
+  key: string
+): M3OfficeAppointmentMode {
+  const value = readString(record, key);
+  if (M3_OFFICE_APPOINTMENT_MODES.includes(value as M3OfficeAppointmentMode)) {
+    return value as M3OfficeAppointmentMode;
+  }
+
+  throw new Error(`${key} must be a valid M3 office appointment mode.`);
+}
+
+function readM3EnfeoffmentTrigger(
+  record: Record<string, unknown>,
+  key: string
+): M3EnfeoffmentTrigger {
+  const value = readString(record, key);
+  if (M3_ENFEOFFMENT_TRIGGERS.includes(value as M3EnfeoffmentTrigger)) {
+    return value as M3EnfeoffmentTrigger;
+  }
+
+  throw new Error(`${key} must be a valid M3 enfeoffment trigger.`);
 }
 
 function readNullableString(record: Record<string, unknown>, key: string): string | null {

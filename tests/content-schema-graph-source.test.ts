@@ -2,8 +2,10 @@ import { describe, expect, test } from "vitest";
 
 import {
   parseM3PolityVassalageFixtureSourceV0,
+  parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   validateM2WorldFixtureSourceV0,
+  validateM3CharacterOfficeFixtureSourceV0,
   validateM3PolityVassalageFixtureSourceV0,
   parseM1GraphFixtureSourceV0,
   validateM1GraphFixtureSourceV0
@@ -321,6 +323,158 @@ describe("M3 polity vassalage fixture source schema", () => {
         expect.objectContaining({ code: "invalid-schema", path: "historicity" }),
         expect.objectContaining({ code: "invalid-schema", path: "provenance.sourceCategory" }),
         expect.objectContaining({ code: "invalid-schema", path: "provenance.policyId" })
+      ])
+    );
+  });
+});
+
+describe("M3 character office fixture source schema", () => {
+  test("parses abstract validation characters, relationships, offices, and policies", () => {
+    const source = parseM3CharacterOfficeFixtureSourceV0({
+      schemaVersion: 1,
+      kind: "m3.character-office-fixture",
+      fixtureId: "m3.validation-character-office",
+      fixtureKind: "character-office-fixture",
+      syntheticScope: "m3-validation-only",
+      historicity: "FICTIONAL",
+      provenance: {
+        sourceCategory: "validation-only-fixture",
+        confidence: "LOW",
+        policyId: "M3-HISTORICAL-CLAIM-PIPELINE-001"
+      },
+      characters: [
+        {
+          sourceId: "character-001",
+          displayNameKey: "content.m3.validation.character_001",
+          claimLabel: "FICTIONAL_VALIDATION",
+          primaryPolityId: "polity-001",
+          archetype: "administrator",
+          aptitude: {
+            administrationBps: 8400,
+            commandBps: 3200,
+            diplomacyBps: 6100,
+            ambitionBps: 4200,
+            legitimacyBps: 5200
+          }
+        },
+        {
+          sourceId: "character-002",
+          displayNameKey: "content.m3.validation.character_002",
+          claimLabel: "FICTIONAL_VALIDATION",
+          primaryPolityId: "polity-001",
+          archetype: "local-lord",
+          aptitude: {
+            administrationBps: 5200,
+            commandBps: 6700,
+            diplomacyBps: 4800,
+            ambitionBps: 5800,
+            legitimacyBps: 7900
+          }
+        }
+      ],
+      relationships: [
+        {
+          sourceId: "relationship-001",
+          fromCharacterId: "character-002",
+          toCharacterId: "character-001",
+          relationshipKind: "patron",
+          intensityBps: 6200,
+          claimLabel: "FICTIONAL_VALIDATION"
+        }
+      ],
+      offices: [
+        {
+          sourceId: "office-001",
+          displayNameKey: "content.m3.validation.office_001",
+          jurisdictionKind: "district",
+          jurisdictionId: "district-001",
+          currentHolderCharacterId: "character-001",
+          policyId: "office-policy-001",
+          landedPowerId: "landed-power-001",
+          appointmentEligibility: {
+            minimumAdministrationBps: 7000,
+            minimumCommandBps: 0,
+            minimumLegitimacyBps: 3000,
+            requiredArchetype: "administrator"
+          }
+        }
+      ],
+      landedPowers: [
+        {
+          sourceId: "landed-power-001",
+          districtId: "district-001",
+          extractionRightsBps: 4200,
+          levyRightsBps: 2100,
+          successionWeightBps: 1200
+        }
+      ],
+      officePolicies: [
+        {
+          sourceId: "office-policy-001",
+          displayNameKey: "content.m3.validation.office_policy_001",
+          appointmentMode: "appointed",
+          taxAutonomyBps: 2500,
+          militaryAutonomyBps: 1500,
+          persistsAcrossHolderChange: true,
+          enfeoffmentHookIds: ["enfeoffment-hook-001"]
+        }
+      ],
+      enfeoffmentHooks: [
+        {
+          sourceId: "enfeoffment-hook-001",
+          trigger: "on-appointment",
+          effectKey: "content.m3.validation.enfeoffment_hook_001"
+        }
+      ]
+    });
+
+    expect(source.historicity).toBe("FICTIONAL");
+    expect(source.characters[0]?.claimLabel).toBe("FICTIONAL_VALIDATION");
+    expect(source.offices[0]?.appointmentEligibility.requiredArchetype).toBe("administrator");
+    expect(source.officePolicies[0]?.persistsAcrossHolderChange).toBe(true);
+  });
+
+  test("requires abstract M3 validation-only character and office provenance", () => {
+    expect(
+      validateM3CharacterOfficeFixtureSourceV0({
+        schemaVersion: 1,
+        kind: "m3.character-office-fixture",
+        fixtureId: "m3.bad-character-office",
+        fixtureKind: "character-office-fixture",
+        syntheticScope: "m3-validation-only",
+        historicity: "HISTORICAL",
+        provenance: {
+          sourceCategory: "production-content",
+          confidence: "HIGH",
+          policyId: "missing-policy"
+        },
+        characters: [
+          {
+            sourceId: "character-001",
+            displayNameKey: "content.m3.validation.character_001",
+            claimLabel: "HISTORICAL",
+            primaryPolityId: "polity-001",
+            archetype: "administrator",
+            aptitude: {
+              administrationBps: 1000,
+              commandBps: 1000,
+              diplomacyBps: 1000,
+              ambitionBps: 1000,
+              legitimacyBps: 1000
+            }
+          }
+        ],
+        relationships: [],
+        offices: [],
+        landedPowers: [],
+        officePolicies: [],
+        enfeoffmentHooks: []
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-schema", path: "historicity" }),
+        expect.objectContaining({ code: "invalid-schema", path: "provenance.sourceCategory" }),
+        expect.objectContaining({ code: "invalid-schema", path: "characters[0].claimLabel" })
       ])
     );
   });
