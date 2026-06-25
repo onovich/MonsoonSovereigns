@@ -1,0 +1,96 @@
+{
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "message_id": "MSG-20260625-M3-TRIBUTE-TROOP-WRITER-REVIEW",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M3 tribute and troop obligation settlement through explicit vassalage-sourced state, versioned command payloads, deterministic accounting, M2 cash/grain resource draws, M3 troop commitment placeholders, refusal/default audit trails, and shared player/AI validation paths.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/sim-core-m3-tribute-troop-obligations.test.ts",
+    "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified protocol/sim-core/tests/project state files; untracked outbox handoff and tests/sim-core-m3-tribute-troop-obligations.test.ts."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m3-tribute-troop-obligations.test.ts",
+      "exit_code": 1,
+      "result": "Initial TDD run failed before implementation: 6 tests failed against missing accounting/source/resource/duplicate-settlement behavior."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m3-tribute-troop-obligations.test.ts",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "13 test files passed; 81 tests passed. Node emitted existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 23 files/140 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "TASK_JSON_SHAPE_OK M3-TRIBUTE-TROOP-OBLIGATIONS-001 REVIEW systems_architect."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-REVIEW__simulation_engineer.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    }
+  ],
+  "decisions": [
+    "R3 protocol/world-state command payload change: create-obligation now requires explicit obligationCategory and vassalage obligationSource; settlement now requires actionKind, dueDay, reasonCode, executorCharacterId, and officeId.",
+    "M3 troop obligations remain headcount/commitment accounting only via m3-troop-commitment-placeholder source movements; no M4 armies, marching, campaign movement, or combat state was introduced.",
+    "Cash/grain tribute fulfillment draws deterministically from debtor source districts in M2 population groups; no source district means structured obligation-resource-insufficient rejection.",
+    "Illegal obligation creation requires debtor to be direct vassal of creditor, preventing double-counting across a suzerain chain.",
+    "Current M3 save boundary remains unsupported by requestSaveV1; tests assert the existing structured refusal instead of changing save-format."
+  ],
+  "risks": [
+    "Domain event kind remains sim.obligation-fulfilled with actionKind differentiating fulfillment, refusal, remission, pursuit, and default-breach; systems_architect should confirm whether a distinct sim.obligation-settled event kind is preferred before acceptance.",
+    "M3 save-format support is intentionally not implemented because packages/save-format is forbidden for this task; M3 obligation state still cannot be emitted in save bytes.",
+    "Reliability explanations are M3 scaffolds derived from administrative burden and executor character context; no hidden reputation or full diplomacy consequences are added."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R3 protocol/world-state shape, deterministic accounting, no-M4 boundary, and whether actionKind on sim.obligation-fulfilled is acceptable for refusal/default events before routing onward.",
+  "created_at": "2026-06-25T15:50:28.009Z"
+}

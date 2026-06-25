@@ -1,0 +1,107 @@
+{
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "message_id": "MSG-20260625-M3-TRIBUTE-TROOP-LEAD-ACCEPT",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M3 tribute and troop obligation fulfillment after writer R3, systems_architect R3 ACCEPT, and independent qa_reviewer ACCEPT. The implementation stays within the task allowed paths, adds explicit vassalage-sourced obligation categories and settlement actions, separates nominal/due/delivered/arrears/default/remission accounting, draws tribute from existing M2 resource stocks, keeps troop settlement as M3 headcount commitment placeholders only, exposes deterministic reason codes and audit trails, and rejects duplicate, overfull, wrong-actor, wrong-period, illegal-vassalage, and partial-then-deferral over-collection paths.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/sim-core-m3-tribute-troop-obligations.test.ts",
+    "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R3-REVIEW__simulation_engineer.json",
+    "project/messages/routes/M3-TRIBUTE-TROOP-OBLIGATIONS-001__ROUTE-20260625-M3-TRIBUTE-LEAD-TO-QA.json"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "validate-handoff for all M3-TRIBUTE-TROOP-OBLIGATIONS-001 outbox handoffs",
+      "exit_code": 0,
+      "result": "All writer, systems, QA, and lead handoffs available before this file validated successfully where applicable."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "Task JSON VALID."
+    },
+    {
+      "command": "node -e task JSON parse/shape check",
+      "exit_code": 0,
+      "result": "Task id, ACCEPTED status, lead route, qa_reviewer thread, allowed paths, forbidden paths, and required tests are present."
+    },
+    {
+      "command": "rg -n 'Math.random|Date.now|performance.now|new Date' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 when no authority-breaking time/random use is found."
+    },
+    {
+      "command": "rg -n framework/fs import search in packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No React, Pixi, Electron, fs, or node:fs import matches."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "13 test files passed; 86 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello 61e0ba1c, command/query d275faa4, and save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; root Vitest 23 files/145 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m3-tribute-troop-obligations.test.ts",
+      "exit_code": 0,
+      "result": "Targeted M3 obligation test file passed; 11 tests passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M3 deferral after any current due-period delivery is invalid, which avoids implicit rollover semantics and prevents over-collection.",
+    "ACCEPT: Non-resource settlements use sim.obligation-settled / settled with actionKind detail rather than overloading fulfillment semantics.",
+    "ACCEPT: Troop obligations in this task are commitment/headcount readiness placeholders only and do not implement M4 army movement, battle, campaign, supply, siege, or full war systems.",
+    "ACCEPT: M3 save-format support remains intentionally deferred to M3-SAVE-RUNTIME-001 because packages/save-format is forbidden for this task."
+  ],
+  "risks": [
+    "Existing MODULE_TYPELESS_PACKAGE_JSON warning remains in the deterministic RNG worker fixture and is not introduced by this task.",
+    "Rollover of already delivered tribute is intentionally not modeled in M3; if needed later, it requires a separate design task with explicit accounting semantics."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit, push, create PR, wait for CI, merge to main, sync main, then mark M3-TRIBUTE-TROOP-OBLIGATIONS-001 CLOSED and continue to the next READY M3 task.",
+  "created_at": "2026-06-25T16:52:13Z"
+}

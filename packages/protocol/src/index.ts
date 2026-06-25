@@ -53,6 +53,20 @@ export const GAME_QUERY_SCHEMA_VERSION = 1;
 export const SIMULATION_MESSAGE_PROTOCOL_VERSION = 1;
 
 export type CommandActorKindV1 = "ai" | "player" | "system";
+export type M3ObligationCategoryV1 =
+  | "regular-tribute"
+  | "extraordinary-levy"
+  | "troop-obligation"
+  | "defensive-garrison"
+  | "specific-war-aid";
+export type M3ObligationSettlementActionV1 =
+  | "fulfillment"
+  | "partial-fulfillment"
+  | "deferral"
+  | "refusal"
+  | "remission"
+  | "pursuit-recovery"
+  | "default-breach";
 
 export interface CommandActorV1 {
   readonly kind: CommandActorKindV1;
@@ -131,6 +145,11 @@ export interface CreateObligationCommandV1 {
     readonly debtorPolityId: number;
     readonly creditorPolityId: number;
     readonly obligationKind: "tribute" | "troop";
+    readonly obligationCategory: M3ObligationCategoryV1;
+    readonly obligationSource: {
+      readonly kind: "vassalage";
+      readonly sourceId: string;
+    };
     readonly requirement:
       | {
           readonly kind: "amount";
@@ -164,7 +183,12 @@ export interface RecordObligationFulfillmentCommandV1 {
   readonly payload: {
     readonly obligationId: number;
     readonly fulfillmentId: number;
+    readonly actionKind: M3ObligationSettlementActionV1;
+    readonly dueDay: number;
     readonly fulfilledAmount: number;
+    readonly reasonCode: string;
+    readonly executorCharacterId: number | null;
+    readonly officeId: number | null;
   };
 }
 
@@ -1493,6 +1517,17 @@ function parseCreateObligationPayload(
       "obligationKind must be tribute or troop."
     );
   }
+  const obligationCategory = parseM3ObligationCategory(
+    input["obligationCategory"],
+    "payload.obligationCategory"
+  );
+  if (!obligationCategory.ok) {
+    return obligationCategory;
+  }
+  const obligationSource = parseM3ObligationSource(input["obligationSource"]);
+  if (!obligationSource.ok) {
+    return obligationSource;
+  }
 
   const requirement = parseObligationRequirement(input["requirement"]);
   if (!requirement.ok) {
@@ -1509,6 +1544,8 @@ function parseCreateObligationPayload(
       debtorPolityId: debtorPolityId.value,
       creditorPolityId: creditorPolityId.value,
       obligationKind,
+      obligationCategory: obligationCategory.value,
+      obligationSource: obligationSource.value,
       requirement: requirement.value,
       due: due.value
     }
@@ -1534,12 +1571,35 @@ function parseRecordObligationFulfillmentPayload(
   if (!fulfillmentId.ok) {
     return fulfillmentId;
   }
-  const fulfilledAmount = parsePositiveSafeInteger(
+  const actionKind = parseM3ObligationSettlementAction(input["actionKind"], "payload.actionKind");
+  if (!actionKind.ok) {
+    return actionKind;
+  }
+  const dueDay = parseNonnegativeSafeInteger(input["dueDay"], "payload.dueDay");
+  if (!dueDay.ok) {
+    return dueDay;
+  }
+  const fulfilledAmount = parseNonnegativeSafeInteger(
     input["fulfilledAmount"],
     "payload.fulfilledAmount"
   );
   if (!fulfilledAmount.ok) {
     return fulfilledAmount;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+  const executorCharacterId = parseNullablePositiveSafeInteger(
+    input["executorCharacterId"],
+    "payload.executorCharacterId"
+  );
+  if (!executorCharacterId.ok) {
+    return executorCharacterId;
+  }
+  const officeId = parseNullablePositiveSafeInteger(input["officeId"], "payload.officeId");
+  if (!officeId.ok) {
+    return officeId;
   }
 
   return {
@@ -1547,7 +1607,12 @@ function parseRecordObligationFulfillmentPayload(
     value: {
       obligationId: obligationId.value,
       fulfillmentId: fulfillmentId.value,
-      fulfilledAmount: fulfilledAmount.value
+      actionKind: actionKind.value,
+      dueDay: dueDay.value,
+      fulfilledAmount: fulfilledAmount.value,
+      reasonCode: reasonCode.value,
+      executorCharacterId: executorCharacterId.value,
+      officeId: officeId.value
     }
   };
 }
@@ -1846,6 +1911,78 @@ function parseCreateCharacterRelationshipPayload(
       reasonCode: reasonCode.value
     }
   };
+}
+
+function parseM3ObligationCategory(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M3ObligationCategoryV1> {
+  if (
+    value === "regular-tribute" ||
+    value === "extraordinary-levy" ||
+    value === "troop-obligation" ||
+    value === "defensive-garrison" ||
+    value === "specific-war-aid"
+  ) {
+    return { ok: true, value };
+  }
+
+  return protocolError(
+    "invalid-payload",
+    path,
+    "obligationCategory must be regular-tribute, extraordinary-levy, troop-obligation, defensive-garrison, or specific-war-aid."
+  );
+}
+
+function parseM3ObligationSettlementAction(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M3ObligationSettlementActionV1> {
+  if (
+    value === "fulfillment" ||
+    value === "partial-fulfillment" ||
+    value === "deferral" ||
+    value === "refusal" ||
+    value === "remission" ||
+    value === "pursuit-recovery" ||
+    value === "default-breach"
+  ) {
+    return { ok: true, value };
+  }
+
+  return protocolError(
+    "invalid-payload",
+    path,
+    "actionKind must be fulfillment, partial-fulfillment, deferral, refusal, remission, pursuit-recovery, or default-breach."
+  );
+}
+
+function parseM3ObligationSource(
+  input: unknown
+): ProtocolParseResult<CreateObligationCommandV1["payload"]["obligationSource"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.obligationSource",
+      "obligationSource must be an object."
+    );
+  }
+  if (input["kind"] !== "vassalage") {
+    return protocolError(
+      "invalid-payload",
+      "payload.obligationSource.kind",
+      "obligationSource.kind must be vassalage."
+    );
+  }
+  const sourceId = parseNonEmptyProtocolString(
+    input["sourceId"],
+    "payload.obligationSource.sourceId"
+  );
+  if (!sourceId.ok) {
+    return sourceId;
+  }
+
+  return { ok: true, value: { kind: "vassalage", sourceId: sourceId.value } };
 }
 
 function parseObligationRequirement(

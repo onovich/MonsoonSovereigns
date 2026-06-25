@@ -110,6 +110,8 @@ describe("SIM-003 protocol command/query schemas", () => {
           debtorPolityId: 1,
           creditorPolityId: 2,
           obligationKind: "tribute",
+          obligationCategory: "regular-tribute",
+          obligationSource: { kind: "vassalage", sourceId: "validation-vassalage" },
           requirement: { kind: "amount", resourceKind: "cash", amount: 0 },
           due: { kind: "cadence", periodDays: 90, nextDueDay: 90 }
         }
@@ -130,14 +132,23 @@ describe("SIM-003 protocol command/query schemas", () => {
         actor: { kind: "player", id: "player:1" },
         expectedDay: 0,
         expectedRevision: 0,
-        payload: { obligationId: 1, fulfillmentId: 1, fulfilledAmount: 0 }
+        payload: {
+          obligationId: 1,
+          fulfillmentId: 1,
+          actionKind: "fulfillment",
+          dueDay: 90,
+          fulfilledAmount: -1,
+          reasonCode: "validation",
+          executorCharacterId: null,
+          officeId: null
+        }
       })
     ).toEqual({
       ok: false,
       error: {
         code: "invalid-payload",
         path: "payload.fulfilledAmount",
-        message: "payload.fulfilledAmount must be a positive safe integer."
+        message: "payload.fulfilledAmount must be a nonnegative safe integer."
       }
     });
   });
@@ -155,6 +166,8 @@ describe("SIM-003 protocol command/query schemas", () => {
           debtorPolityId: 1,
           creditorPolityId: 2,
           obligationKind: "tribute",
+          obligationCategory: "regular-tribute",
+          obligationSource: { kind: "vassalage", sourceId: "validation-vassalage" },
           requirement: { kind: "condition", conditionKey: "validation-condition" },
           due: { kind: "trigger", triggerKey: "validation-trigger" }
         }
@@ -172,6 +185,8 @@ describe("SIM-003 protocol command/query schemas", () => {
           debtorPolityId: 1,
           creditorPolityId: 2,
           obligationKind: "tribute",
+          obligationCategory: "regular-tribute",
+          obligationSource: { kind: "vassalage", sourceId: "validation-vassalage" },
           requirement: { kind: "condition", conditionKey: "validation-condition" },
           due: { kind: "trigger", triggerKey: "validation-trigger" }
         }

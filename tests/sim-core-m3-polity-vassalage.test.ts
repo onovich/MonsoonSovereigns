@@ -54,11 +54,19 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
     let runtime = bootM3Runtime();
     runtime = accepted(
       runtime,
+      setSuzerainCommand("m3.obligation.suzerain.1", "player", runtime, 1, 2)
+    );
+    runtime = accepted(
+      runtime,
+      setSuzerainCommand("m3.obligation.suzerain.2", "player", runtime, 2, 3)
+    );
+    runtime = accepted(
+      runtime,
       createObligationCommand("m3.obligation.create.1", "player", runtime, 1, 2, 100)
     );
     runtime = accepted(
       runtime,
-      createObligationCommand("m3.obligation.create.2", "ai", runtime, 1, 3, 50)
+      createObligationCommand("m3.obligation.create.2", "ai", runtime, 2, 3, 50)
     );
     runtime = accepted(
       runtime,
@@ -93,7 +101,22 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
         fulfillmentId: parseM3FulfillmentId(900),
         obligationId: parseM3ObligationId(1),
         auditEventId: 3,
-        fulfilledAmount: 40
+        actionKind: "partial-fulfillment",
+        dueDay: 90,
+        fulfilledAmount: 40,
+        deliveredAmount: 40,
+        arrearsAmount: 60,
+        defaultedAmount: 0,
+        reasonCode: "validation",
+        sourceMovements: [
+          {
+            kind: "m2-population-group",
+            populationGroupId: 1,
+            districtId: 1,
+            resourceKind: "cash",
+            amount: 40
+          }
+        ]
       }
     ]);
     expect(orderedM3ObligationAuditEventsV0(m3).map((event) => event.id)).toEqual([1, 2, 3]);
@@ -104,11 +127,18 @@ describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
     let runtime = bootM3Runtime();
     runtime = accepted(
       runtime,
+      setSuzerainCommand("m3.obligation.save-suzerain", "player", runtime, 1, 2)
+    );
+    runtime = accepted(
+      runtime,
       createObligationCommand("m3.obligation.save-probe", "player", runtime, 1, 2, 100)
     );
 
     expect(runtime.world.state.m3).toBeDefined();
-    expect(runtime.eventTail.map((event) => event.kind)).toEqual(["sim.obligation-created"]);
+    expect(runtime.eventTail.map((event) => event.kind)).toEqual([
+      "sim.polity-suzerain-changed",
+      "sim.obligation-created"
+    ]);
     expect(() =>
       requestSaveV1(runtime, {
         appVersion: "0.0.0",
@@ -445,28 +475,64 @@ function createM3WorldWithAdministrationRows(
                 debtorPolityId: 1,
                 creditorPolityId: 2,
                 obligationKind: "tribute",
+                obligationCategory: "regular-tribute",
+                obligationSource: {
+                  kind: "vassalage",
+                  sourceId: "m3.validation.vassalage.1-to-2",
+                  debtorPolityId: 1,
+                  creditorPolityId: 2
+                },
                 status: "active",
                 requirement: { kind: "amount", resourceKind: "cash", amount: 100 },
                 due: { kind: "cadence", periodDays: 90, nextDueDay: 90 },
+                accounting: {
+                  nominalAmount: 100,
+                  dueAmount: 100,
+                  deliveredAmount: 40,
+                  arrearsAmount: 60,
+                  defaultedAmount: 0,
+                  remittedAmount: 0,
+                  dueDay: 90,
+                  cycle: 1,
+                  troopResponseState: "none"
+                },
                 disputeReasonCode: null,
                 breachReasonCode: null,
                 createdAuditEventId: 1,
                 latestAuditEventId: 3
               }
             ],
-      administrativeDistricts,
+      administrativeDistricts:
+        administrativeDistricts.length === 0
+          ? [
+              {
+                polityId: 1,
+                districtId: 1,
+                controlMode: "vassal",
+                localComplexity: 50,
+                communicationCost: 50,
+                directness: 50,
+                frontierPressure: 50,
+                administrativeCapacity: 1_000
+              }
+            ]
+          : administrativeDistricts,
       obligationAuditEvents: auditEventIds.map((id) => ({
         id,
         obligationId: 1,
-        eventKind: id === 3 ? "fulfilled" : id === 2 ? "status-changed" : "created",
+        eventKind: id === 3 ? "settled" : id === 2 ? "status-changed" : "created",
         eventDay: 0,
         eventRevision: 0,
         commandId: `m3.audit.${id}`,
         actor: { kind: "system", id: "validation" },
         fulfillmentId: id === 3 ? 900 : null,
         fulfilledAmount: id === 3 ? 40 : null,
+        actionKind: id === 3 ? "partial-fulfillment" : null,
+        dueDay: id === 3 ? 90 : null,
         statusAfter: "active",
-        reasonCode: null
+        reasonCode: null,
+        reasonCodes: ["validation"],
+        reliabilityBps: 10_000
       })),
       fulfillmentClaims:
         auditEventIds.length === 0
@@ -476,7 +542,14 @@ function createM3WorldWithAdministrationRows(
                 fulfillmentId: 900,
                 obligationId: 1,
                 auditEventId: 3,
-                fulfilledAmount: 40
+                actionKind: "partial-fulfillment",
+                dueDay: 90,
+                fulfilledAmount: 40,
+                deliveredAmount: 40,
+                arrearsAmount: 60,
+                defaultedAmount: 0,
+                reasonCode: "validation",
+                sourceMovements: []
               }
             ]
     })
@@ -567,6 +640,11 @@ function createObligationCommand(
       debtorPolityId,
       creditorPolityId,
       obligationKind: "tribute",
+      obligationCategory: "regular-tribute",
+      obligationSource: {
+        kind: "vassalage",
+        sourceId: `m3.validation.vassalage.${debtorPolityId}-to-${creditorPolityId}`
+      },
       requirement: { kind: "amount", resourceKind: "cash", amount },
       due: { kind: "cadence", periodDays: 90, nextDueDay: 90 }
     }
@@ -585,13 +663,18 @@ function recordFulfillmentCommand(
     schemaVersion: 1,
     kind: "sim.record-obligation-fulfillment",
     commandId,
-    actor: { kind: actorKind, id: `${actorKind}:m3` },
+    actor: { kind: actorKind, id: "polity:1" },
     expectedDay: runtime.world.meta.currentDay,
     expectedRevision: runtime.world.meta.revision,
     payload: {
       obligationId,
       fulfillmentId,
-      fulfilledAmount
+      actionKind: "partial-fulfillment",
+      dueDay: 90,
+      fulfilledAmount,
+      reasonCode: "validation",
+      executorCharacterId: null,
+      officeId: null
     }
   };
 }

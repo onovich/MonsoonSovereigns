@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "route_id": "ROUTE-20260625-M3-TRIBUTE-LEAD-TO-QA",
+  "created_at": "2026-06-25T16:37:57Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "target_thread_id": "019effa4-ffcb-76e3-843e-7bd1b7daf2ae",
+  "source_handoff": "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R3-REVIEW__systems_architect.json",
+  "source_status": "ACCEPT",
+  "requested_action": "Perform independent read-only QA review of actual diff, tests, task state, route evidence, scope boundaries, and M3 obligation constraints before lead integration.",
+  "spawn_agent": {
+    "target": "019effa4-ffcb-76e3-843e-7bd1b7daf2ae",
+    "agent_type": "qa_reviewer",
+    "mode": "read-only"
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R3-REVIEW__systems_architect.json",
+  "route_to": "qa_reviewer"
+}

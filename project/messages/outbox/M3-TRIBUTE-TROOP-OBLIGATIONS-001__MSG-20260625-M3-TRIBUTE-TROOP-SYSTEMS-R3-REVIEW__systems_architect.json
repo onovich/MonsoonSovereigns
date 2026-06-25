@@ -1,0 +1,121 @@
+{
+  "task_id": "M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+  "message_id": "MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R3-REVIEW",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R3 systems re-review accepts the writer R3 fix. The R2 blocker is resolved: partial fulfillment of 20 against a nominal 120 cash obligation no longer permits deferral to reset delivered accounting, an overfull later fulfillment of 120 is rejected, a final remaining fulfillment of 100 is accepted, and total debtor cash deducted is exactly 120. The diff remains inside allowed task paths, keeps sim-core/protocol detached from React/Pixi/Electron/Node fs/random/time APIs, uses sim.obligation-settled / settled event and audit semantics, preserves M3 troop obligations as headcount placeholders, and does not introduce M4 campaign movement/combat, client UI, content-source, save-format, diplomacy, or rebellion scope.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/sim-core-m3-tribute-troop-obligations.test.ts",
+    "project/tasks/active/M3-TRIBUTE-TROOP-OBLIGATIONS-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R3-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R3-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-obligation-fulfillment @ D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Task-scope protocol, sim-core, tests, task/process state, writer handoffs, route evidence, and the new obligation test file are modified or untracked as expected; no forbidden app/client/content/save-format paths are changed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-WRITER-R3-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R3 handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node -e task JSON parse/shape check for M3-TRIBUTE-TROOP-OBLIGATIONS-001",
+      "exit_code": 0,
+      "result": "{\"ok\":true,\"id\":\"M3-TRIBUTE-TROOP-OBLIGATIONS-001\",\"status\":\"REVIEW\",\"allowedPaths\":10,\"forbiddenPaths\":20,\"acceptanceCriteria\":6,\"requiredTests\":9,\"missing\":[]}"
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module targeted partial-20 deferral/final-fulfillment probe",
+      "exit_code": 0,
+      "result": "After partial fulfillment deliveredAmount=20 and arrearsAmount=100. Deferral was rejected with obligation-settlement-invalid at payload.actionKind. Overfull fulfillment of 120 was rejected at payload.fulfilledAmount. Final fulfillment of 100 was accepted; final deliveredAmount=120, arrearsAmount=0, totalCashDeducted=120, and validateWorldStateV0 returned no errors."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m3-tribute-troop-obligations.test.ts",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "rg -n 'Math\\.random|Date\\.now|performance\\.now|new Date' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "rg -n 'from [\"''](react|pixi|pixi\\.js|electron|fs|node:fs)[\"'']|require\\([\"''](react|pixi|pixi\\.js|electron|fs|node:fs)[\"'']\\)' packages/sim-core packages/protocol",
+      "exit_code": 1,
+      "result": "No matches; rg returns 1 for no matches."
+    },
+    {
+      "command": "rg -n 'campaign|march|battle|combat|siege|army|armies|rebellion|rebel|diplomacy|client-core|content-source' changed sim-core/protocol/test surfaces",
+      "exit_code": 0,
+      "result": "Only expected negative-scope test labels and existing M3 character diplomacyBps/executor explanation fields matched; no M4 campaign/marching/battle/combat, client-core, or content-source implementation drift found."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "13 test files passed; 86 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning appeared for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 23 files/145 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-TRIBUTE-TROOP-OBLIGATIONS-001__MSG-20260625-M3-TRIBUTE-TROOP-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems R3 handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors after adding the systems R3 handoff."
+    }
+  ],
+  "decisions": [
+    "Accept the R3 conservative accounting fix: deferral after any current due-period delivery is invalid in M3, avoiding implicit rollover semantics and preventing debtor resource over-collection.",
+    "Accept the current fulfillment semantics: terminal fulfillment must exactly equal remaining due, partial fulfillment remains non-terminal, duplicate terminal settlement is rejected, and non-resource actions do not move debtor M2 resources.",
+    "Accept sim.obligation-settled plus audit eventKind settled with actionKind detail as the R3 event/audit shape for fulfillment, deferral, refusal, remission, pursuit-recovery, and default-breach.",
+    "No ADR is required for this R3 rework because it stays within the approved task protocol/world-state shape, does not change package direction or save-format schema, and introduces no new dependency."
+  ],
+  "risks": [
+    "Deferral-after-partial is intentionally rejected for M3. If later design wants negotiated rollover of already delivered tribute, it should be a separate architecture/design task with explicit accounting semantics.",
+    "M3 save-format support remains intentionally absent because packages/save-format is forbidden for this task; existing requestSaveV1 rejection for state.m3 remains the correct boundary until a save-format task is approved.",
+    "The new obligation world-state fields are explicit and validator-covered for M3, but broader save/load compatibility and UI read models remain future work outside this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead integration or the next parent-owned review step for M3-TRIBUTE-TROOP-OBLIGATIONS-001.",
+  "created_at": "2026-06-26T00:35:05.4446804+08:00"
+}
