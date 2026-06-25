@@ -2,9 +2,9 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "PREPARED_AWAITING_SUCCESSOR",
+  "status": "TAKEOVER_ACCEPTED",
   "project": "Monsoon Sovereigns",
-  "origin_main": "268569409f8ced18c19b891c7e183d4018cc23cd",
+  "origin_main": "1c707babbb2d9bace3cbdccc94ebd264df702072",
   "current_milestone": "M3",
   "current_task": null,
   "current_task_status": null,
@@ -30,9 +30,12 @@
     "reason": null,
     "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
   },
-  "next_machine_action": "A new GPT-5.5 xhigh lead_orchestrator thread should verify this checkpoint from origin/main, acknowledge takeover, and only then decide whether to start M3-TRIBUTE-TROOP-OBLIGATIONS-001 through the normal task workflow.",
+  "next_machine_action": "The accepted successor lead_orchestrator must start M3-TRIBUTE-TROOP-OBLIGATIONS-001 through the normal task workflow after the takeover record is integrated into origin/main.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
-  "successor_thread_id": null,
-  "outgoing_lead_state": "prepared_awaiting_successor_then_operationally_frozen_after_integration",
-  "created_at": "2026-06-25T14:33:11.616Z"
+  "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
+  "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "outgoing_lead_state": "retired_closed_after_successor_accepted",
+  "unique_active_lead_check": "PASS",
+  "created_at": "2026-06-25T14:33:11.616Z",
+  "accepted_at": "2026-06-25T23:12:37.3024877+08:00"
 }

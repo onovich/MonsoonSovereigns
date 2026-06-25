@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-25T14:42:54.489Z",
+  "updated_at": "2026-06-25T23:12:37.3024877+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -18,15 +18,44 @@
   },
   "current_lead_thread": {
     "role": "lead_orchestrator",
-    "actual_model": "unknown",
-    "actual_effort": "unknown",
+    "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "status": "active",
+    "actual_model": "gpt-5.5",
+    "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
-    "migration_status": "PREPARED_AWAITING_SUCCESSOR",
-    "successor_thread_id": null,
-    "operational_state_after_transition_integration": "operationally_frozen",
-    "note": "Outgoing lead prepared LEAD-TRANSITION-PREPARE-001. The environment does not expose a reliable self-observed active lead thread id, actual model, or effort; successor_thread_id remains null until a new GPT-5.5 xhigh lead_orchestrator explicitly accepts takeover."
+    "migration_status": "SUCCESSOR_ACCEPTED",
+    "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
+    "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
+    "predecessor": {
+      "thread_id": null,
+      "status": "retired_closed",
+      "reason": "SUCCESSOR_ACCEPTED",
+      "prepared_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
+      "note": "Outgoing lead did not expose a reliable self-observed thread id in the prepared handoff; no thread id is fabricated."
+    },
+    "unique_active_lead_check": {
+      "result": "PASS",
+      "active_lead_thread_ids": [
+        "019eff50-c69d-7612-a90b-7024a47e0af5"
+      ],
+      "source": "nodeRepl.requestMeta plus project leadership state reconciliation"
+    },
+    "operational_state_after_transition_integration": "active",
+    "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them."
   },
+  "retired_lead_threads": [
+    {
+      "thread_id": null,
+      "role": "lead_orchestrator",
+      "status": "retired_closed",
+      "reason": "SUCCESSOR_ACCEPTED",
+      "prepared_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
+      "accepted_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
+      "retired_at": "2026-06-25T23:12:37.3024877+08:00",
+      "note": "Historical outgoing thread id was unavailable in the prepared handoff and is intentionally left null."
+    }
+  ],
   "closed_threads": [
     {
       "thread_id": "019ef478-2900-78e0-b999-c7ee16dbaf47",
