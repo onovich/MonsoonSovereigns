@@ -1,0 +1,79 @@
+{
+  "message_id": "MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW",
+  "task_id": "M3-HISTORICAL-CLAIM-PIPELINE-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "Defined the M3 historical claim pipeline for names, titles, kinship, office claims, polity relationships, vassalage assertions, and symbols as a documentation-only research gate. The artifact uses existing historical-claim schema fields, distinguishes source statements, scholarly interpretation, project inference, and game abstraction, blocks formal historical content from content-source/runtime fixtures without claim/source IDs, and keeps examples abstract validation-only.",
+  "artifacts": [
+    "docs/research/m3-historical-claim-pipeline.md",
+    "project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json",
+    "project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "research/m3-claim-pipeline",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified coordination files: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json, project/tasks/thread-registry.json. Untracked artifacts: docs/research/m3-historical-claim-pipeline.md and project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json. No apps, packages, content-source, tools, .github, roadmap, gate, ADR, manifest, checksum, or validation-report path appeared."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-HISTORICAL-CLAIM-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M3-HISTORICAL-CLAIM-PIPELINE-001.json"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json','project/schemas/historical-claim.schema.json','project/schemas/handoff.schema.json','project/schemas/task.schema.json']; for (const f of files) JSON.parse(fs.readFileSync(f,'utf8')); const task=JSON.parse(fs.readFileSync(files[0],'utf8')); const failures=[]; if(task.status!=='REVIEW') failures.push('task status not REVIEW'); if(!task.acceptance_criteria.some(x=>x.includes('names, titles, kinship'))) failures.push('missing claim-pipeline acceptance'); if(!task.scope.allowed_paths.includes('docs/research/**')) failures.push('docs/research not allowed'); if(!task.scope.forbidden_paths.includes('content-source/**')) failures.push('content-source not forbidden'); if(failures.length){ console.error(failures.join('; ')); process.exit(1); } console.log('JSON parse/shape ok files='+files.length+' taskStatus='+task.status+' updatedAt='+task.updated_at);\"",
+      "exit_code": 0,
+      "result": "JSON parse/shape ok files=4 taskStatus=REVIEW updatedAt=2026-06-25T04:48:04.404Z"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const f='docs/research/m3-historical-claim-pipeline.md'; const text=fs.readFileSync(f,'utf8'); const required=['# M3 Historical Claim Pipeline','## Source Policy','## Required Claim Record','## Distinguishing Evidence Layers','## Claim Categories','### Names','### Titles','### Kinship','### Office Claims','### Polity Relationships','### Vassalage Assertions','## Content Entry Blockers','## Abstract Validation Examples','## Review Checklist','Route this artifact to `qa_reviewer`']; const missing=required.filter(s=>!text.includes(s)); const exampleBlock=text.slice(text.indexOf('## Abstract Validation Examples')); const forbidden=['Bayinnaung','Toungoo','Hanthawaddy','Pegu','Ava','Ayutthaya','Lan Xang','Mrauk']; const found=forbidden.filter(s=>exampleBlock.includes(s)); if(missing.length||found.length){ console.error(JSON.stringify({missing,found})); process.exit(1); } console.log('Markdown targeted parse ok headings='+required.length+' abstractExamplesForbiddenNames='+found.length);\"",
+      "exit_code": 1,
+      "result": "PowerShell treated the backticks in the expected string as escapes, so the command checked for Route this artifact to qa_reviewer and reported {\"missing\":[\"Route this artifact to qa_reviewer\"],\"found\":[]}. The abstract-example forbidden-name check found no real names."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const f='docs/research/m3-historical-claim-pipeline.md'; const text=fs.readFileSync(f,'utf8'); const required=['# M3 Historical Claim Pipeline','## Source Policy','## Required Claim Record','## Distinguishing Evidence Layers','## Claim Categories','### Names','### Titles','### Kinship','### Office Claims','### Polity Relationships','### Vassalage Assertions','## Content Entry Blockers','## Abstract Validation Examples','## Review Checklist','## ROUTE_TO','qa_reviewer']; const missing=required.filter(s=>!text.includes(s)); const exampleBlock=text.slice(text.indexOf('## Abstract Validation Examples')); const forbidden=['Bayinnaung','Toungoo','Hanthawaddy','Pegu','Ava','Ayutthaya','Lan Xang','Mrauk']; const found=forbidden.filter(s=>exampleBlock.includes(s)); if(missing.length||found.length){ console.error(JSON.stringify({missing,found})); process.exit(1); } console.log('Markdown targeted parse ok headings='+required.length+' abstractExamplesForbiddenNames='+found.length);\"",
+      "exit_code": 0,
+      "result": "Markdown targeted parse ok headings=16 abstractExamplesForbiddenNames=0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No output."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['project/tasks/active/M3-HISTORICAL-CLAIM-PIPELINE-001.json','project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json']; for (const f of files) JSON.parse(fs.readFileSync(f,'utf8')); const h=JSON.parse(fs.readFileSync(files[1],'utf8')); if(h.status!=='REVIEW'||h.route_to!=='qa_reviewer'||!h.tests_run.every(t=>Number.isInteger(t.exit_code))) throw new Error('bad handoff shape'); console.log('handoff JSON parse/shape ok tests='+h.tests_run.length+' route='+h.route_to);\"",
+      "exit_code": 0,
+      "result": "handoff JSON parse/shape ok tests=6 route=qa_reviewer"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const files=['docs/research/m3-historical-claim-pipeline.md','project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json']; for (const f of files) { const b=fs.readFileSync(f); const bom=b.length>=3&&b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf; console.log(f+': bom='+bom); if(bom) process.exitCode=1; }\"",
+      "exit_code": 0,
+      "result": "docs/research/m3-historical-claim-pipeline.md: bom=false; project/messages/outbox/M3-HISTORICAL-CLAIM-PIPELINE-001__MSG-20260625-M3-CLAIM-PIPELINE-WRITER-REVIEW__historical_researcher.json: bom=false"
+    },
+    {
+      "command": "node -e \"const child=require('child_process'); const allowed=[/^docs\\/research\\//,/^project\\/schemas\\//,/^project\\/templates\\//,/^project\\/goal-mode-state\\.json$/,/^project\\/model-routing-state\\.json$/,/^project\\/tasks\\/thread-registry\\.json$/,/^project\\/tasks\\/active\\/M3-HISTORICAL-CLAIM-PIPELINE-001\\.json$/,/^project\\/messages\\//]; const lines=child.execSync('git status --porcelain=v1',{encoding:'utf8'}).split(/\\r?\\n/).filter(Boolean); const files=lines.map(line=>line.slice(3).replace(/\\\\/g,'/')); const bad=files.filter(f=>!allowed.some(r=>r.test(f))); if(bad.length){ console.error('bad paths '+bad.join(',')); process.exit(1); } console.log('changed path scope ok files='+files.length);\"",
+      "exit_code": 0,
+      "result": "changed path scope ok files=6"
+    }
+  ],
+  "decisions": [
+    "Used the existing historical-claim schema and template without schema changes; evidence-layer separation is encoded through structured wording in source_passages, competing_interpretations, and game_abstraction.",
+    "Kept all examples validation-only and abstract, using entity.abstract.*, polity.abstract.*, and source.abstract.* identifiers rather than product content.",
+    "Moved M3-HISTORICAL-CLAIM-PIPELINE-001 to REVIEW for qa_reviewer verification."
+  ],
+  "risks": [
+    "This task defines documentation gates only; downstream content and compiler tasks still need to implement enforcement and create actual claim records before formal historical content is allowed.",
+    "The pipeline relies on reviewers/content tooling to recognize RESEARCH REQUIRED as a workflow stop label because it is intentionally not a historical-claim schema status value."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Verify scope, historical policy safety, schema/template validity, abstract-example safety, no forbidden path drift, and required test evidence for M3-HISTORICAL-CLAIM-PIPELINE-001.",
+  "created_at": "2026-06-25T04:50:00Z"
+}
