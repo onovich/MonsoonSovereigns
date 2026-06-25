@@ -1,0 +1,89 @@
+{
+  "message_id": "MSG-20260625-M3-SUCCESSION-WRITER-REVIEW",
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M3 minimal deterministic succession state machine in sim-core and protocol. Character death/incapacity now flows through shared GameCommand paths, vacates held offices/enfeoffments, filters dead relationship endpoints, forms serializable candidate sets from explicit support sources, creates pending succession crises, and resolves peaceful or disputed/regency-style outcomes through stable integer scoring and tie-breakers.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 1,
+      "result": "Expected red state after adding succession tests: new record-character-status / resolve-succession commands and succession query were not implemented yet."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "12 test files passed; 70 tests passed, including M3 succession peaceful, vacancy, dead-character rejection, disputed outcome, and canonical candidate-order property coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed, including M3 succession command/query schema parsing."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 22 files/129 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Shows this task's protocol/sim-core/test edits and new handoff. Pre-existing modified project coordination files remain: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json, project/tasks/thread-registry.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "task JSON parse/shape ok."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "R3 protocol/state change: extended existing state.m3 and GameCommand/GameQuery v1 rather than adding a new root package, save-format migration, UI surface, or event narrative system.",
+    "Character death/incapacity is represented by explicit alive/incapacitated fields; only sim.record-character-status mutates those fields and commits vacancies/crisis creation.",
+    "Candidate support is explicit and serializable through successionCandidateProfiles and copied crisis candidates, with support source kinds kinship, designation, court, military, provincial, suzerain, and foreign.",
+    "Succession resolution uses integer BPS totals, a fixed peaceful threshold/margin, and characterId tie-breakers. Disputed outcomes leave the ruler office vacant; peaceful/regency outcomes assign the successor to the trigger office.",
+    "Dead or incapacitated characters are unavailable for appointments, enfeoffment, relationship endpoints, and character/office actor authority.",
+    "M3 save behavior remains unchanged: requestSaveV1 still refuses worlds containing state.m3."
+  ],
+  "risks": [
+    "This is an R3 protocol and WorldState M3 runtime schema change; systems_architect review and later QA review are required before acceptance.",
+    "Support weights and peaceful/disputed thresholds are M3-scoped scaffold constants, not final dynasty, diplomacy, or civil-war balance.",
+    "The implementation does not add formal historical succession rules, full civil war, full diplomacy, client UI, or M4+ war behavior.",
+    "Pre-existing dirty project coordination files were present before implementation and were not reverted or normalized."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 protocol/state schema, command authority model, deterministic succession transitions, candidate support serialization, and test coverage; then route to qa_reviewer if architecturally acceptable.",
+  "created_at": "2026-06-25T09:06:00Z"
+}

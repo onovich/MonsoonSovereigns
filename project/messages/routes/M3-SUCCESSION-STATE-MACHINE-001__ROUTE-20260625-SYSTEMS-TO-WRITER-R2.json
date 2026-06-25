@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "route_id": "ROUTE-20260625-SYSTEMS-TO-WRITER-R2",
+  "created_at": "2026-06-25T09:18:16.201Z",
+  "from_role": "lead_orchestrator",
+  "handoff_from_role": "systems_architect",
+  "to_role": "simulation_engineer",
+  "target_thread_id": "019efdf7-e658-7e30-8486-e496b0de4b7f",
+  "source_handoff": "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-REVIEW__systems_architect.json",
+  "source_status": "REQUEST_CHANGES",
+  "requested_action": "Fix the M3 state schema/error model before QA routing. Add explicit validateArrayField coverage for all M3 arrays used by isM3StateLike and this task, including characters, relationships, offices, policies, enfeoffments, appointmentAuditEvents, successionCandidateProfiles, and successionCrises. Add entry-level shape validation for M3CharacterStateV0.incapacitated and the succession profile/crisis/support/trigger/outcome fields needed to return stable invalid-schema paths. Add focused tests proving malformed or missing successionCandidateProfiles/successionCrises and missing incapacitated return structured errors without throwing. Re-run the required task gates and return an R2 handoff.",
+  "send_input": {
+    "submission_id": "019efe12-895b-7c41-89ed-1705b705fe14",
+    "target": "019efdf7-e658-7e30-8486-e496b0de4b7f",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-REVIEW__systems_architect.json",
+  "route_to": "simulation_engineer"
+}

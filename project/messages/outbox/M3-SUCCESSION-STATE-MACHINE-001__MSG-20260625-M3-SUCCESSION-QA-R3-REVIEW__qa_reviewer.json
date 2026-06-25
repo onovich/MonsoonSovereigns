@@ -1,0 +1,124 @@
+{
+  "message_id": "MSG-20260625-M3-SUCCESSION-QA-R3-REVIEW",
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "QA re-review accepts M3-SUCCESSION-STATE-MACHINE-001 after the R3 dead/incapacitated invariant repair. The previous QA blocker is resolved: sim.record-character-status rejects incapacitating an already-dead character without mutating the world, death normalizes incapacitated=false, incapacity vacates active office/enfeoffment holdings and creates an incapacity succession trigger, and validateWorldStateV0 reports stable invalid-schema paths for dead-and-incapacitated characters plus unavailable active office/enfeoffment holders. Required validation commands pass, R3 handoffs validate, deterministic hashes match, and changed-path scope remains within the task allowlist with no client/UI/save/content/full-war/full-diplomacy drift.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R3-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-R3-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree shows task-scoped protocol/sim-core/test edits, allowed project coordination state files, prior QA/systems/writer handoffs, R3 route evidence, and untracked succession test/handoff artifacts."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs for all prior M3 succession handoffs through systems R3",
+      "exit_code": 0,
+      "result": "Validated writer REVIEW, systems REQUEST_CHANGES, writer R2 REVIEW, systems R2 ACCEPT, QA REQUEST_CHANGES, writer R3 REVIEW, and systems R3 ACCEPT handoff JSON files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "Task JSON parse/shape OK: id M3-SUCCESSION-STATE-MACHINE-001, status REVIEW, 6 acceptance criteria, 9 required tests."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e changed/untracked scope audit against task allowlist and forbidden paths",
+      "exit_code": 0,
+      "result": "25 changed or untracked paths audited; forbiddenHits=[] and outsideAllowlist=[]."
+    },
+    {
+      "command": "rg -n -e 'Math.random' -e 'Date.now' -e 'performance.now' -e 'new Date' -- packages/sim-core/src packages/protocol/src tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 1,
+      "result": "No random or real-time API matches found in reviewed sim-core/protocol/test paths."
+    },
+    {
+      "command": "rg -n React/Pixi/Electron/node:fs/fs boundary scan over packages/sim-core/src packages/protocol/src",
+      "exit_code": 1,
+      "result": "No React, Pixi, Electron, node:fs, or fs import/require boundary matches found in sim-core/protocol source."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "12 test files passed; 75 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 22 files / 134 tests passed; web Vitest 1 file / 3 tests passed."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-succession-state-machine.test.ts -t \"record-character-status rejects incapacitating an already-dead character|validateWorldStateV0 rejects unavailable office and enfeoffment holders\"",
+      "exit_code": 0,
+      "result": "Focused R3 invariant regression passed: 2 tests passed, 8 skipped."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-succession-state-machine.test.ts -t \"dead characters cannot command, receive new offices, or become new relationship endpoints\"",
+      "exit_code": 0,
+      "result": "Focused dead-character command/authority/relationship regression passed: 1 test passed, 9 skipped."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module independent R3 command/validation probe",
+      "exit_code": 0,
+      "result": "Confirmed incapacity command is accepted for an alive ruler, vacates office/enfeoffment holdings, creates an incapacity trigger, and validates cleanly; confirmed dead-then-incapacitated command is rejected with succession-state-invalid and unchanged state hash; confirmed malformed unavailable holder state reports invalid-schema paths for character incapacitated, office holder, and enfeoffment holder."
+    },
+    {
+      "command": "Get-Content/rg route evidence for QA->writer R3, lead->systems R3, systems R3->QA, thread registry, goal-mode state, and model-routing state",
+      "exit_code": 0,
+      "result": "Route/thread evidence matches simulation_engineer 019efdf7-e658-7e30-8486-e496b0de4b7f, systems_architect 019efe09-de21-7e71-9bcd-5540fdc0f666, and qa_reviewer 019efe1c-11c0-7701-9175-1d52e88650a1."
+    }
+  ],
+  "decisions": [
+    "Accept the R3 fix because the previously reproduced dead-then-incapacitated command path now rejects before mutation and preserves the state hash.",
+    "Accept the world-state validation repair because unavailable active office and enfeoffment holders now produce stable semantic invalid-schema paths, while normal death and incapacity command paths vacate those holdings.",
+    "The full M3 minimal succession acceptance criteria are supported: death/incapacity state, candidate formation, explicit serializable support sources, peaceful/disputed resolution, command-driven authority, deterministic tie-breakers, policy persistence, and dead-character command/relationship rejection are covered by implementation and tests.",
+    "No scope drift was found into client UI, web/desktop, save-format, content schema/runtime/source, formal historical dynasty data, full diplomacy, full civil war, event narrative systems, random/time APIs, or Node IO authority.",
+    "Route to lead_orchestrator for final task acceptance/integration; do not dispatch further writer work for this task from QA."
+  ],
+  "risks": [
+    "M3 runtime save/load support remains intentionally deferred to M3-SAVE-RUNTIME-001; current save/runtime canaries still pass and existing M3 save behavior is not expanded by this task.",
+    "Succession support weights and thresholds remain M3 scaffold constants, not final dynasty law, diplomacy, civil-war, or historical-content rules.",
+    "Hand-mutated malformed worlds may still include hash-mismatch diagnostics in addition to structured semantic errors; QA accepts this because the required stable invariant paths are present before final rejection."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator should perform final integration/acceptance handling for M3-SUCCESSION-STATE-MACHINE-001. No further simulation_engineer changes are requested by QA.",
+  "created_at": "2026-06-25T17:58:36.6716266+08:00"
+}

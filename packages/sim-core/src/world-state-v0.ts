@@ -13,6 +13,7 @@ export type M3FulfillmentId = Brand<number, "M3FulfillmentId">;
 export type M3OfficeId = Brand<number, "M3OfficeId">;
 export type M3PolicyId = Brand<number, "M3PolicyId">;
 export type M3AppointmentAuditEventId = Brand<number, "M3AppointmentAuditEventId">;
+export type M3SuccessionId = Brand<number, "M3SuccessionId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -194,6 +195,45 @@ export type M3AppointmentAuditEventKindV0 =
   | "bulk-appointment"
   | "enfeoffment"
   | "policy-updated";
+export type M3SuccessionSupportKindV0 =
+  | "kinship"
+  | "designation"
+  | "court"
+  | "military"
+  | "provincial"
+  | "suzerain"
+  | "foreign";
+export type M3SuccessionTriggerV0 =
+  | {
+      readonly kind: "death";
+      readonly characterId: PersonId;
+      readonly officeId: M3OfficeId | null;
+    }
+  | {
+      readonly kind: "incapacity";
+      readonly characterId: PersonId;
+      readonly officeId: M3OfficeId | null;
+    };
+export type M3SuccessionOutcomeV0 =
+  | {
+      readonly kind: "peaceful";
+      readonly successorCharacterId: PersonId;
+      readonly supportTotalBps: number;
+    }
+  | {
+      readonly kind: "regency";
+      readonly successorCharacterId: PersonId;
+      readonly regentCharacterId: PersonId;
+      readonly supportTotalBps: number;
+      readonly reasonCode: string;
+    }
+  | {
+      readonly kind: "disputed";
+      readonly leadingCharacterId: PersonId;
+      readonly rivalCharacterId: PersonId;
+      readonly supportMarginBps: number;
+      readonly reasonCode: string;
+    };
 
 export interface M3PolityRecordStateV0 {
   readonly polityId: PolityId;
@@ -275,6 +315,7 @@ export interface M3CharacterStateV0 {
   readonly characterId: PersonId;
   readonly polityId: PolityId;
   readonly alive: boolean;
+  readonly incapacitated: boolean;
   readonly currentDistrictId: DistrictId;
   readonly commandBps: number;
   readonly administrationBps: number;
@@ -332,6 +373,38 @@ export interface M3AppointmentAuditEventStateV0 {
   readonly reasonCode: string;
 }
 
+export interface M3SuccessionSupportSourceStateV0 {
+  readonly kind: M3SuccessionSupportKindV0;
+  readonly strengthBps: number;
+  readonly sourceId: string;
+}
+
+export interface M3SuccessionCandidateProfileStateV0 {
+  readonly polityId: PolityId;
+  readonly characterId: PersonId;
+  readonly requiresRegency: boolean;
+  readonly supportSources: readonly M3SuccessionSupportSourceStateV0[];
+}
+
+export interface M3SuccessionCandidateStateV0 {
+  readonly characterId: PersonId;
+  readonly requiresRegency: boolean;
+  readonly supportSources: readonly M3SuccessionSupportSourceStateV0[];
+  readonly supportTotalBps: number;
+}
+
+export interface M3SuccessionCrisisStateV0 {
+  readonly id: M3SuccessionId;
+  readonly polityId: PolityId;
+  readonly trigger: M3SuccessionTriggerV0;
+  readonly status: "pending" | "resolved";
+  readonly startedDay: GameDay;
+  readonly resolvedDay: GameDay | null;
+  readonly candidates: readonly M3SuccessionCandidateStateV0[];
+  readonly outcome: M3SuccessionOutcomeV0 | null;
+  readonly reasonCode: string;
+}
+
 export interface M3PolityVassalageStateV0 {
   readonly schemaVersion: 1;
   readonly polities: readonly M3PolityRecordStateV0[];
@@ -345,6 +418,8 @@ export interface M3PolityVassalageStateV0 {
   readonly policies: readonly M3PolicyStateV0[];
   readonly enfeoffments: readonly M3EnfeoffmentStateV0[];
   readonly appointmentAuditEvents: readonly M3AppointmentAuditEventStateV0[];
+  readonly successionCandidateProfiles: readonly M3SuccessionCandidateProfileStateV0[];
+  readonly successionCrises: readonly M3SuccessionCrisisStateV0[];
 }
 
 export interface M3AdministrativeBurdenProfileInputV0 {
@@ -551,6 +626,10 @@ export function parseM3PolicyId(value: unknown): M3PolicyId {
 
 export function parseM3AppointmentAuditEventId(value: unknown): M3AppointmentAuditEventId {
   return parsePositiveInteger(value, "M3AppointmentAuditEventId") as M3AppointmentAuditEventId;
+}
+
+export function parseM3SuccessionId(value: unknown): M3SuccessionId {
+  return parsePositiveInteger(value, "M3SuccessionId") as M3SuccessionId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -1320,6 +1399,19 @@ function validateM3EntryShapes(input: unknown, errors: WorldInvariantError[]): v
   validateArrayField(input, "obligationAuditEvents", "state.m3.obligationAuditEvents", errors);
   validateArrayField(input, "fulfillmentClaims", "state.m3.fulfillmentClaims", errors);
   validateArrayField(input, "administrativeDistricts", "state.m3.administrativeDistricts", errors);
+  validateArrayField(input, "characters", "state.m3.characters", errors);
+  validateArrayField(input, "relationships", "state.m3.relationships", errors);
+  validateArrayField(input, "offices", "state.m3.offices", errors);
+  validateArrayField(input, "policies", "state.m3.policies", errors);
+  validateArrayField(input, "enfeoffments", "state.m3.enfeoffments", errors);
+  validateArrayField(input, "appointmentAuditEvents", "state.m3.appointmentAuditEvents", errors);
+  validateArrayField(
+    input,
+    "successionCandidateProfiles",
+    "state.m3.successionCandidateProfiles",
+    errors
+  );
+  validateArrayField(input, "successionCrises", "state.m3.successionCrises", errors);
 
   const polities = input["polities"];
   if (Array.isArray(polities)) {
@@ -1357,6 +1449,70 @@ function validateM3EntryShapes(input: unknown, errors: WorldInvariantError[]): v
         `state.m3.administrativeDistricts[${index}]`,
         errors
       )
+    );
+  }
+
+  const characters = input["characters"];
+  if (Array.isArray(characters)) {
+    characters.forEach((entry, index) =>
+      validateM3CharacterEntry(entry, `state.m3.characters[${index}]`, errors)
+    );
+  }
+
+  const relationships = input["relationships"];
+  if (Array.isArray(relationships)) {
+    relationships.forEach((entry, index) =>
+      validateM3RelationshipEntry(entry, `state.m3.relationships[${index}]`, errors)
+    );
+  }
+
+  const offices = input["offices"];
+  if (Array.isArray(offices)) {
+    offices.forEach((entry, index) =>
+      validateM3OfficeEntry(entry, `state.m3.offices[${index}]`, errors)
+    );
+  }
+
+  const policies = input["policies"];
+  if (Array.isArray(policies)) {
+    policies.forEach((entry, index) =>
+      validateM3PolicyEntry(entry, `state.m3.policies[${index}]`, errors)
+    );
+  }
+
+  const enfeoffments = input["enfeoffments"];
+  if (Array.isArray(enfeoffments)) {
+    enfeoffments.forEach((entry, index) =>
+      validateM3EnfeoffmentEntry(entry, `state.m3.enfeoffments[${index}]`, errors)
+    );
+  }
+
+  const appointmentAuditEvents = input["appointmentAuditEvents"];
+  if (Array.isArray(appointmentAuditEvents)) {
+    appointmentAuditEvents.forEach((entry, index) =>
+      validateM3AppointmentAuditEventEntry(
+        entry,
+        `state.m3.appointmentAuditEvents[${index}]`,
+        errors
+      )
+    );
+  }
+
+  const successionCandidateProfiles = input["successionCandidateProfiles"];
+  if (Array.isArray(successionCandidateProfiles)) {
+    successionCandidateProfiles.forEach((entry, index) =>
+      validateM3SuccessionCandidateProfileEntry(
+        entry,
+        `state.m3.successionCandidateProfiles[${index}]`,
+        errors
+      )
+    );
+  }
+
+  const successionCrises = input["successionCrises"];
+  if (Array.isArray(successionCrises)) {
+    successionCrises.forEach((entry, index) =>
+      validateM3SuccessionCrisisEntry(entry, `state.m3.successionCrises[${index}]`, errors)
     );
   }
 }
@@ -1619,6 +1775,458 @@ function validateM3AdministrativeDistrictEntry(
     "M3 administrativeCapacity",
     errors
   );
+}
+
+function validateM3CharacterEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3CharacterState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "characterId", `${path}.characterId`, "PersonId", errors);
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validateBooleanField(input, "alive", `${path}.alive`, errors);
+  validateBooleanField(input, "incapacitated", `${path}.incapacitated`, errors);
+  validatePositiveIntegerField(
+    input,
+    "currentDistrictId",
+    `${path}.currentDistrictId`,
+    "DistrictId",
+    errors
+  );
+  validateIntegerFieldInRange(input, "commandBps", `${path}.commandBps`, 0, 10_000, errors);
+  validateIntegerFieldInRange(
+    input,
+    "administrationBps",
+    `${path}.administrationBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateIntegerFieldInRange(input, "diplomacyBps", `${path}.diplomacyBps`, 0, 10_000, errors);
+}
+
+function validateM3RelationshipEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3CharacterRelationshipState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(
+    input,
+    "sourceCharacterId",
+    `${path}.sourceCharacterId`,
+    "PersonId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "targetCharacterId",
+    `${path}.targetCharacterId`,
+    "PersonId",
+    errors
+  );
+  validateIntegerFieldInRange(input, "affinityBps", `${path}.affinityBps`, -10_000, 10_000, errors);
+}
+
+function validateM3OfficeEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
+  if (!validateRecordEntry(input, path, "M3OfficeState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "officeId", `${path}.officeId`, "M3OfficeId", errors);
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validateM3OfficeJurisdictionEntry(input["jurisdiction"], `${path}.jurisdiction`, errors);
+  validateStringUnionField(input, "officeKind", `${path}.officeKind`, M3_OFFICE_KINDS, errors);
+  validateBooleanField(input, "primary", `${path}.primary`, errors);
+  validateNullablePositiveIntegerField(
+    input,
+    "holderCharacterId",
+    `${path}.holderCharacterId`,
+    "PersonId",
+    errors
+  );
+  validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M3PolicyId", errors);
+  validateIntegerFieldInRange(
+    input,
+    "minimumCommandBps",
+    `${path}.minimumCommandBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateIntegerFieldInRange(
+    input,
+    "minimumAdministrationBps",
+    `${path}.minimumAdministrationBps`,
+    0,
+    10_000,
+    errors
+  );
+}
+
+function validateM3OfficeJurisdictionEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 office jurisdiction must be an object."
+    });
+    return;
+  }
+
+  validateStringUnionField(input, "kind", `${path}.kind`, ["polity", "district"], errors);
+  if (input["kind"] === "polity") {
+    validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  }
+  if (input["kind"] === "district") {
+    validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  }
+}
+
+function validateM3PolicyEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
+  if (!validateRecordEntry(input, path, "M3PolicyState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M3PolicyId", errors);
+  validateM3PolicyTargetEntry(input["target"], `${path}.target`, errors);
+  validateStringUnionField(input, "stance", `${path}.stance`, M3_POLICY_STANCES, errors);
+  validateIntegerFieldInRange(input, "intensityBps", `${path}.intensityBps`, 0, 10_000, errors);
+}
+
+function validateM3PolicyTargetEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 policy target must be an object."
+    });
+    return;
+  }
+
+  validateStringUnionField(input, "kind", `${path}.kind`, ["office", "polity", "district"], errors);
+  if (input["kind"] === "office") {
+    validatePositiveIntegerField(input, "officeId", `${path}.officeId`, "M3OfficeId", errors);
+  }
+  if (input["kind"] === "polity") {
+    validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  }
+  if (input["kind"] === "district") {
+    validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  }
+}
+
+function validateM3EnfeoffmentEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3EnfeoffmentState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validatePositiveIntegerField(
+    input,
+    "holderCharacterId",
+    `${path}.holderCharacterId`,
+    "PersonId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "grantedByPolityId",
+    `${path}.grantedByPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M3PolicyId", errors);
+  validateNonnegativeIntegerField(input, "grantedDay", `${path}.grantedDay`, errors);
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
+function validateM3AppointmentAuditEventEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3AppointmentAuditEventState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "id", `${path}.id`, "M3AppointmentAuditEventId", errors);
+  validateStringUnionField(
+    input,
+    "eventKind",
+    `${path}.eventKind`,
+    M3_APPOINTMENT_AUDIT_EVENT_KINDS,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "eventDay", `${path}.eventDay`, errors);
+  validateNonnegativeIntegerField(input, "eventRevision", `${path}.eventRevision`, errors);
+  validateNonEmptyStringField(input, "commandId", `${path}.commandId`, errors);
+  validateM3ActorEntry(input["actor"], `${path}.actor`, errors);
+  validateNullablePositiveIntegerField(input, "officeId", `${path}.officeId`, "M3OfficeId", errors);
+  validateNullablePositiveIntegerField(
+    input,
+    "characterId",
+    `${path}.characterId`,
+    "PersonId",
+    errors
+  );
+  validateNullablePositiveIntegerField(input, "policyId", `${path}.policyId`, "M3PolicyId", errors);
+  validateNullablePositiveIntegerField(
+    input,
+    "districtId",
+    `${path}.districtId`,
+    "DistrictId",
+    errors
+  );
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
+function validateM3SuccessionCandidateProfileEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3SuccessionCandidateProfileState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validatePositiveIntegerField(input, "characterId", `${path}.characterId`, "PersonId", errors);
+  validateBooleanField(input, "requiresRegency", `${path}.requiresRegency`, errors);
+  validateM3SuccessionSupportSourceArray(input["supportSources"], `${path}.supportSources`, errors);
+}
+
+function validateM3SuccessionCrisisEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3SuccessionCrisisState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "id", `${path}.id`, "M3SuccessionId", errors);
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validateM3SuccessionTriggerEntry(input["trigger"], `${path}.trigger`, errors);
+  validateStringUnionField(input, "status", `${path}.status`, ["pending", "resolved"], errors);
+  validateNonnegativeIntegerField(input, "startedDay", `${path}.startedDay`, errors);
+  validateNullableNonnegativeIntegerField(input, "resolvedDay", `${path}.resolvedDay`, errors);
+
+  const candidates = input["candidates"];
+  if (!Array.isArray(candidates)) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.candidates`,
+      message: `${path}.candidates must be an array.`
+    });
+  } else {
+    candidates.forEach((candidate, index) =>
+      validateM3SuccessionCandidateEntry(candidate, `${path}.candidates[${index}]`, errors)
+    );
+  }
+
+  validateM3SuccessionOutcomeEntry(input["outcome"], `${path}.outcome`, errors);
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
+function validateM3SuccessionCandidateEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3SuccessionCandidateState", errors)) {
+    return;
+  }
+
+  validatePositiveIntegerField(input, "characterId", `${path}.characterId`, "PersonId", errors);
+  validateBooleanField(input, "requiresRegency", `${path}.requiresRegency`, errors);
+  validateM3SuccessionSupportSourceArray(input["supportSources"], `${path}.supportSources`, errors);
+  validateIntegerFieldInRange(
+    input,
+    "supportTotalBps",
+    `${path}.supportTotalBps`,
+    0,
+    10_000,
+    errors
+  );
+}
+
+function validateM3SuccessionSupportSourceArray(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!Array.isArray(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: `${path} must be an array.`
+    });
+    return;
+  }
+
+  input.forEach((source, index) =>
+    validateM3SuccessionSupportSourceEntry(source, `${path}[${index}]`, errors)
+  );
+}
+
+function validateM3SuccessionSupportSourceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3SuccessionSupportSourceState", errors)) {
+    return;
+  }
+
+  validateStringUnionField(input, "kind", `${path}.kind`, M3_SUCCESSION_SUPPORT_KINDS, errors);
+  validateIntegerFieldInRange(input, "strengthBps", `${path}.strengthBps`, 0, 10_000, errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+}
+
+function validateM3SuccessionTriggerEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 succession trigger must be an object."
+    });
+    return;
+  }
+
+  validateStringUnionField(input, "kind", `${path}.kind`, ["death", "incapacity"], errors);
+  validatePositiveIntegerField(input, "characterId", `${path}.characterId`, "PersonId", errors);
+  validateNullablePositiveIntegerField(input, "officeId", `${path}.officeId`, "M3OfficeId", errors);
+}
+
+function validateM3SuccessionOutcomeEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (input === null) {
+    return;
+  }
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 succession outcome must be null or an object."
+    });
+    return;
+  }
+
+  validateStringUnionField(
+    input,
+    "kind",
+    `${path}.kind`,
+    ["peaceful", "regency", "disputed"],
+    errors
+  );
+  if (input["kind"] === "peaceful") {
+    validatePositiveIntegerField(
+      input,
+      "successorCharacterId",
+      `${path}.successorCharacterId`,
+      "PersonId",
+      errors
+    );
+    validateIntegerFieldInRange(
+      input,
+      "supportTotalBps",
+      `${path}.supportTotalBps`,
+      0,
+      10_000,
+      errors
+    );
+  }
+  if (input["kind"] === "regency") {
+    validatePositiveIntegerField(
+      input,
+      "successorCharacterId",
+      `${path}.successorCharacterId`,
+      "PersonId",
+      errors
+    );
+    validatePositiveIntegerField(
+      input,
+      "regentCharacterId",
+      `${path}.regentCharacterId`,
+      "PersonId",
+      errors
+    );
+    validateIntegerFieldInRange(
+      input,
+      "supportTotalBps",
+      `${path}.supportTotalBps`,
+      0,
+      10_000,
+      errors
+    );
+    validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  }
+  if (input["kind"] === "disputed") {
+    validatePositiveIntegerField(
+      input,
+      "leadingCharacterId",
+      `${path}.leadingCharacterId`,
+      "PersonId",
+      errors
+    );
+    validatePositiveIntegerField(
+      input,
+      "rivalCharacterId",
+      `${path}.rivalCharacterId`,
+      "PersonId",
+      errors
+    );
+    validateIntegerFieldInRange(
+      input,
+      "supportMarginBps",
+      `${path}.supportMarginBps`,
+      0,
+      10_000,
+      errors
+    );
+    validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  }
+}
+
+function validateM3ActorEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 audit actor must be an object."
+    });
+    return;
+  }
+
+  validateStringUnionField(input, "kind", `${path}.kind`, ["ai", "player", "system"], errors);
+  validateNonEmptyStringField(input, "id", `${path}.id`, errors);
 }
 
 function validateM2PopulationGroupEntry(
@@ -2001,6 +2609,55 @@ function validateNullableStringField(
   });
 }
 
+function validateBooleanField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (typeof entry[key] === "boolean") {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be a boolean.`
+  });
+}
+
+function validateNullablePositiveIntegerField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  label: string,
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (value === null) {
+    return;
+  }
+  validatePositiveIntegerValue(value, path, label, errors);
+}
+
+function validateNullableNonnegativeIntegerField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (value === null || isNonnegativeInteger(value)) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be null or a nonnegative safe integer.`
+  });
+}
+
 function validateStringUnionField(
   entry: Record<string, unknown>,
   key: string,
@@ -2192,7 +2849,9 @@ export function createM3PolityVassalageStateV0(
     offices: input?.offices ?? [],
     policies: input?.policies ?? [],
     enfeoffments: input?.enfeoffments ?? [],
-    appointmentAuditEvents: input?.appointmentAuditEvents ?? []
+    appointmentAuditEvents: input?.appointmentAuditEvents ?? [],
+    successionCandidateProfiles: input?.successionCandidateProfiles ?? [],
+    successionCrises: input?.successionCrises ?? []
   });
 }
 
@@ -2250,6 +2909,7 @@ export function canonicalizeM3PolityVassalageState(
       characterId: parsePersonId(entry.characterId),
       polityId: parsePolityId(entry.polityId),
       alive: parseBoolean(entry.alive, "M3 character alive"),
+      incapacitated: parseBoolean(entry.incapacitated, "M3 character incapacitated"),
       currentDistrictId: parseDistrictId(entry.currentDistrictId),
       commandBps: parseBps(entry.commandBps, "M3 commandBps"),
       administrationBps: parseBps(entry.administrationBps, "M3 administrationBps"),
@@ -2301,6 +2961,38 @@ export function canonicalizeM3PolityVassalageState(
       policyId: entry.policyId === null ? null : parseM3PolicyId(entry.policyId),
       districtId: entry.districtId === null ? null : parseDistrictId(entry.districtId),
       reasonCode: parseDisplayNameKey(entry.reasonCode, "M3 appointment audit reasonCode")
+    })),
+    successionCandidateProfiles: sortM3SuccessionCandidateProfiles(
+      m3.successionCandidateProfiles
+    ).map((entry) => ({
+      polityId: parsePolityId(entry.polityId),
+      characterId: parsePersonId(entry.characterId),
+      requiresRegency: parseBoolean(entry.requiresRegency, "M3 succession requiresRegency"),
+      supportSources: sortM3SuccessionSupportSources(entry.supportSources).map((source) => ({
+        kind: parseM3SuccessionSupportKind(source.kind),
+        strengthBps: parseBps(source.strengthBps, "M3 succession support strengthBps"),
+        sourceId: parseDisplayNameKey(source.sourceId, "M3 succession support sourceId")
+      }))
+    })),
+    successionCrises: sortM3SuccessionCrises(m3.successionCrises).map((entry) => ({
+      id: parseM3SuccessionId(entry.id),
+      polityId: parsePolityId(entry.polityId),
+      trigger: copyM3SuccessionTrigger(entry.trigger),
+      status: parseM3SuccessionStatus(entry.status),
+      startedDay: parseGameDay(entry.startedDay),
+      resolvedDay: entry.resolvedDay === null ? null : parseGameDay(entry.resolvedDay),
+      candidates: sortM3SuccessionCandidates(entry.candidates).map((candidate) => ({
+        characterId: parsePersonId(candidate.characterId),
+        requiresRegency: parseBoolean(candidate.requiresRegency, "M3 succession requiresRegency"),
+        supportSources: sortM3SuccessionSupportSources(candidate.supportSources).map((source) => ({
+          kind: parseM3SuccessionSupportKind(source.kind),
+          strengthBps: parseBps(source.strengthBps, "M3 succession support strengthBps"),
+          sourceId: parseDisplayNameKey(source.sourceId, "M3 succession support sourceId")
+        })),
+        supportTotalBps: parseBps(candidate.supportTotalBps, "M3 succession supportTotalBps")
+      })),
+      outcome: entry.outcome === null ? null : copyM3SuccessionOutcome(entry.outcome),
+      reasonCode: parseDisplayNameKey(entry.reasonCode, "M3 succession reasonCode")
     }))
   };
 }
@@ -2473,6 +3165,28 @@ const M3_ADMINISTRATIVE_CONTROL_MODES: readonly M3AdministrativeControlModeV0[] 
   "vassal",
   "tribute-only"
 ];
+const M3_OFFICE_KINDS: readonly M3OfficeKindV0[] = ["commander", "governor", "minister"];
+const M3_POLICY_STANCES: readonly M3PolicyStanceV0[] = [
+  "balanced",
+  "conciliatory",
+  "extractive",
+  "military"
+];
+const M3_APPOINTMENT_AUDIT_EVENT_KINDS: readonly M3AppointmentAuditEventKindV0[] = [
+  "appointment",
+  "bulk-appointment",
+  "enfeoffment",
+  "policy-updated"
+];
+const M3_SUCCESSION_SUPPORT_KINDS: readonly M3SuccessionSupportKindV0[] = [
+  "kinship",
+  "designation",
+  "court",
+  "military",
+  "provincial",
+  "suzerain",
+  "foreign"
+];
 
 function parseM3AdministrativeControlMode(value: unknown): M3AdministrativeControlModeV0 {
   if (value === "direct" || value === "vassal" || value === "tribute-only") {
@@ -2516,6 +3230,30 @@ function parseM3AppointmentAuditEventKind(value: unknown): M3AppointmentAuditEve
   throw new Error("M3 appointment audit eventKind is invalid.");
 }
 
+function parseM3SuccessionSupportKind(value: unknown): M3SuccessionSupportKindV0 {
+  if (
+    value === "kinship" ||
+    value === "designation" ||
+    value === "court" ||
+    value === "military" ||
+    value === "provincial" ||
+    value === "suzerain" ||
+    value === "foreign"
+  ) {
+    return value;
+  }
+
+  throw new Error("M3 succession support kind is invalid.");
+}
+
+function parseM3SuccessionStatus(value: unknown): "pending" | "resolved" {
+  if (value === "pending" || value === "resolved") {
+    return value;
+  }
+
+  throw new Error("M3 succession status must be pending or resolved.");
+}
+
 function copyM3OfficeJurisdiction(jurisdiction: M3OfficeJurisdictionV0): M3OfficeJurisdictionV0 {
   switch (jurisdiction.kind) {
     case "polity":
@@ -2527,6 +3265,50 @@ function copyM3OfficeJurisdiction(jurisdiction: M3OfficeJurisdictionV0): M3Offic
       return {
         kind: "district",
         districtId: parseDistrictId(jurisdiction.districtId)
+      };
+  }
+}
+
+function copyM3SuccessionTrigger(trigger: M3SuccessionTriggerV0): M3SuccessionTriggerV0 {
+  switch (trigger.kind) {
+    case "death":
+      return {
+        kind: "death",
+        characterId: parsePersonId(trigger.characterId),
+        officeId: trigger.officeId === null ? null : parseM3OfficeId(trigger.officeId)
+      };
+    case "incapacity":
+      return {
+        kind: "incapacity",
+        characterId: parsePersonId(trigger.characterId),
+        officeId: trigger.officeId === null ? null : parseM3OfficeId(trigger.officeId)
+      };
+  }
+}
+
+function copyM3SuccessionOutcome(outcome: M3SuccessionOutcomeV0): M3SuccessionOutcomeV0 {
+  switch (outcome.kind) {
+    case "peaceful":
+      return {
+        kind: "peaceful",
+        successorCharacterId: parsePersonId(outcome.successorCharacterId),
+        supportTotalBps: parseBps(outcome.supportTotalBps, "M3 succession supportTotalBps")
+      };
+    case "regency":
+      return {
+        kind: "regency",
+        successorCharacterId: parsePersonId(outcome.successorCharacterId),
+        regentCharacterId: parsePersonId(outcome.regentCharacterId),
+        supportTotalBps: parseBps(outcome.supportTotalBps, "M3 succession supportTotalBps"),
+        reasonCode: parseDisplayNameKey(outcome.reasonCode, "M3 succession outcome reasonCode")
+      };
+    case "disputed":
+      return {
+        kind: "disputed",
+        leadingCharacterId: parsePersonId(outcome.leadingCharacterId),
+        rivalCharacterId: parsePersonId(outcome.rivalCharacterId),
+        supportMarginBps: parseBps(outcome.supportMarginBps, "M3 succession supportMarginBps"),
+        reasonCode: parseDisplayNameKey(outcome.reasonCode, "M3 succession outcome reasonCode")
       };
   }
 }
@@ -2696,6 +3478,62 @@ function sortM3Enfeoffments(
   values: readonly M3EnfeoffmentStateV0[]
 ): readonly M3EnfeoffmentStateV0[] {
   return [...values].sort((left, right) => left.districtId - right.districtId);
+}
+
+function sortM3SuccessionCandidateProfiles(
+  values: readonly M3SuccessionCandidateProfileStateV0[]
+): readonly M3SuccessionCandidateProfileStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.polityId - right.polityId ||
+      left.characterId - right.characterId ||
+      (left.requiresRegency === right.requiresRegency ? 0 : left.requiresRegency ? 1 : -1)
+  );
+}
+
+function sortM3SuccessionSupportSources(
+  values: readonly M3SuccessionSupportSourceStateV0[]
+): readonly M3SuccessionSupportSourceStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      m3SuccessionSupportKindRank(left.kind) - m3SuccessionSupportKindRank(right.kind) ||
+      compareText(left.sourceId, right.sourceId) ||
+      left.strengthBps - right.strengthBps
+  );
+}
+
+function m3SuccessionSupportKindRank(kind: M3SuccessionSupportKindV0): number {
+  switch (kind) {
+    case "kinship":
+      return 1;
+    case "designation":
+      return 2;
+    case "court":
+      return 3;
+    case "military":
+      return 4;
+    case "provincial":
+      return 5;
+    case "suzerain":
+      return 6;
+    case "foreign":
+      return 7;
+  }
+}
+
+function sortM3SuccessionCrises(
+  values: readonly M3SuccessionCrisisStateV0[]
+): readonly M3SuccessionCrisisStateV0[] {
+  return [...values].sort((left, right) => left.id - right.id);
+}
+
+function sortM3SuccessionCandidates(
+  values: readonly M3SuccessionCandidateStateV0[]
+): readonly M3SuccessionCandidateStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      right.supportTotalBps - left.supportTotalBps || left.characterId - right.characterId
+  );
 }
 
 function m3AdministrativeModeBaseLoad(mode: M3AdministrativeControlModeV0): number {
@@ -2926,7 +3764,11 @@ function formatM3CanonicalLines(m3: M3PolityVassalageStateV0 | undefined): reado
     `state.m3.offices=${formatM3Offices(m3.offices)}`,
     `state.m3.policies=${formatM3Policies(m3.policies)}`,
     `state.m3.enfeoffments=${formatM3Enfeoffments(m3.enfeoffments)}`,
-    `state.m3.appointmentAuditEvents=${formatM3AppointmentAuditEvents(m3)}`
+    `state.m3.appointmentAuditEvents=${formatM3AppointmentAuditEvents(m3)}`,
+    `state.m3.successionCandidateProfiles=${formatM3SuccessionCandidateProfiles(
+      m3.successionCandidateProfiles
+    )}`,
+    `state.m3.successionCrises=${formatM3SuccessionCrises(m3.successionCrises)}`
   ];
 }
 
@@ -3029,6 +3871,7 @@ function formatM3Characters(values: readonly M3CharacterStateV0[]): string {
         value.characterId,
         value.polityId,
         value.alive ? "1" : "0",
+        value.incapacitated ? "1" : "0",
         value.currentDistrictId,
         value.commandBps,
         value.administrationBps,
@@ -3118,6 +3961,76 @@ function formatM3AppointmentAuditEvents(m3: M3PolityVassalageStateV0): string {
       ].join(":")
     )
     .join(",");
+}
+
+function formatM3SuccessionCandidateProfiles(
+  values: readonly M3SuccessionCandidateProfileStateV0[]
+): string {
+  return sortM3SuccessionCandidateProfiles(values)
+    .map((value) =>
+      [
+        value.polityId,
+        value.characterId,
+        value.requiresRegency ? "1" : "0",
+        formatM3SuccessionSupportSources(value.supportSources)
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM3SuccessionCrises(values: readonly M3SuccessionCrisisStateV0[]): string {
+  return sortM3SuccessionCrises(values)
+    .map((value) =>
+      [
+        value.id,
+        value.polityId,
+        formatM3SuccessionTrigger(value.trigger),
+        value.status,
+        value.startedDay,
+        formatNullableNumber(value.resolvedDay),
+        formatM3SuccessionCandidates(value.candidates),
+        value.outcome === null ? "null" : formatM3SuccessionOutcome(value.outcome),
+        value.reasonCode
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM3SuccessionTrigger(trigger: M3SuccessionTriggerV0): string {
+  switch (trigger.kind) {
+    case "death":
+      return `death:${trigger.characterId}:${formatNullableNumber(trigger.officeId)}`;
+    case "incapacity":
+      return `incapacity:${trigger.characterId}:${formatNullableNumber(trigger.officeId)}`;
+  }
+}
+
+function formatM3SuccessionCandidates(values: readonly M3SuccessionCandidateStateV0[]): string {
+  return sortM3SuccessionCandidates(values)
+    .map(
+      (value) =>
+        `${value.characterId}:${value.requiresRegency ? "1" : "0"}:${value.supportTotalBps}:${formatM3SuccessionSupportSources(value.supportSources)}`
+    )
+    .join("|");
+}
+
+function formatM3SuccessionSupportSources(
+  values: readonly M3SuccessionSupportSourceStateV0[]
+): string {
+  return sortM3SuccessionSupportSources(values)
+    .map((value) => `${value.kind}:${value.sourceId}:${value.strengthBps}`)
+    .join("+");
+}
+
+function formatM3SuccessionOutcome(outcome: M3SuccessionOutcomeV0): string {
+  switch (outcome.kind) {
+    case "peaceful":
+      return `peaceful:${outcome.successorCharacterId}:${outcome.supportTotalBps}`;
+    case "regency":
+      return `regency:${outcome.successorCharacterId}:${outcome.regentCharacterId}:${outcome.supportTotalBps}:${outcome.reasonCode}`;
+    case "disputed":
+      return `disputed:${outcome.leadingCharacterId}:${outcome.rivalCharacterId}:${outcome.supportMarginBps}:${outcome.reasonCode}`;
+  }
 }
 
 function formatM2PopulationGroups(values: readonly M2PopulationGroupStateV0[]): string {
@@ -3982,6 +4895,7 @@ function validateM3AppointmentSemantics(
   errors: WorldInvariantError[]
 ): void {
   const characterIds = new Set<number>();
+  const availableCharacterIds = new Set<number>();
   m3.characters.forEach((character, index) => {
     if (characterIds.has(character.characterId)) {
       errors.push({
@@ -4011,6 +4925,16 @@ function validateM3AppointmentSemantics(
         path: `state.m3.characters[${index}].currentDistrictId`,
         message: `M3 character references missing DistrictId ${character.currentDistrictId}.`
       });
+    }
+    if (!character.alive && character.incapacitated) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.characters[${index}].incapacitated`,
+        message: "Dead M3 character cannot be incapacitated."
+      });
+    }
+    if (character.alive && !character.incapacitated) {
+      availableCharacterIds.add(character.characterId);
     }
   });
 
@@ -4061,6 +4985,17 @@ function validateM3AppointmentSemantics(
         code: "bad-reference",
         path: `state.m3.offices[${index}].holderCharacterId`,
         message: "M3 office holder references missing character."
+      });
+    }
+    if (
+      office.holderCharacterId !== null &&
+      characterIds.has(office.holderCharacterId) &&
+      !availableCharacterIds.has(office.holderCharacterId)
+    ) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.offices[${index}].holderCharacterId`,
+        message: "M3 office holder must be alive and not incapacitated."
       });
     }
     if (office.primary && office.holderCharacterId !== null) {
@@ -4129,6 +5064,16 @@ function validateM3AppointmentSemantics(
         message: "M3 enfeoffment references missing holder character."
       });
     }
+    if (
+      characterIds.has(enfeoffment.holderCharacterId) &&
+      !availableCharacterIds.has(enfeoffment.holderCharacterId)
+    ) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.enfeoffments[${index}].holderCharacterId`,
+        message: "M3 enfeoffment holder must be alive and not incapacitated."
+      });
+    }
     if (!polityIds.has(enfeoffment.grantedByPolityId)) {
       errors.push({
         code: "bad-reference",
@@ -4144,6 +5089,89 @@ function validateM3AppointmentSemantics(
       });
     }
   });
+
+  m3.successionCandidateProfiles.forEach((profile, index) => {
+    if (!polityIds.has(profile.polityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.successionCandidateProfiles[${index}].polityId`,
+        message: "M3 succession candidate profile references missing polity."
+      });
+    }
+    if (!characterIds.has(profile.characterId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.successionCandidateProfiles[${index}].characterId`,
+        message: "M3 succession candidate profile references missing character."
+      });
+    }
+  });
+
+  const successionIds = new Set<number>();
+  m3.successionCrises.forEach((crisis, index) => {
+    if (successionIds.has(crisis.id)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.successionCrises",
+        message: `Duplicate M3SuccessionCrisisState row for M3SuccessionId ${crisis.id}.`
+      });
+    }
+    successionIds.add(crisis.id);
+    if (!polityIds.has(crisis.polityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.successionCrises[${index}].polityId`,
+        message: "M3 succession crisis references missing polity."
+      });
+    }
+    validateM3SuccessionTriggerReferences(crisis.trigger, characterIds, officeIds, index, errors);
+    crisis.candidates.forEach((candidate, candidateIndex) => {
+      if (!characterIds.has(candidate.characterId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m3.successionCrises[${index}].candidates[${candidateIndex}].characterId`,
+          message: "M3 succession candidate references missing character."
+        });
+      }
+    });
+    if (crisis.status === "pending" && crisis.outcome !== null) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.successionCrises[${index}].outcome`,
+        message: "M3 pending succession crisis must not have an outcome."
+      });
+    }
+    if (crisis.status === "resolved" && crisis.outcome === null) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.successionCrises[${index}].outcome`,
+        message: "M3 resolved succession crisis must include an outcome."
+      });
+    }
+  });
+}
+
+function validateM3SuccessionTriggerReferences(
+  trigger: M3SuccessionTriggerV0,
+  characterIds: ReadonlySet<number>,
+  officeIds: ReadonlySet<number>,
+  crisisIndex: number,
+  errors: WorldInvariantError[]
+): void {
+  if (!characterIds.has(trigger.characterId)) {
+    errors.push({
+      code: "bad-reference",
+      path: `state.m3.successionCrises[${crisisIndex}].trigger.characterId`,
+      message: "M3 succession trigger references missing character."
+    });
+  }
+  if (trigger.officeId !== null && !officeIds.has(trigger.officeId)) {
+    errors.push({
+      code: "bad-reference",
+      path: `state.m3.successionCrises[${crisisIndex}].trigger.officeId`,
+      message: "M3 succession trigger references missing office."
+    });
+  }
 }
 
 function validateM3OfficeJurisdictionReferences(
@@ -4428,7 +5456,9 @@ function isM3StateLike(value: unknown): value is M3PolityVassalageStateV0 {
     Array.isArray(value["offices"]) &&
     Array.isArray(value["policies"]) &&
     Array.isArray(value["enfeoffments"]) &&
-    Array.isArray(value["appointmentAuditEvents"])
+    Array.isArray(value["appointmentAuditEvents"]) &&
+    Array.isArray(value["successionCandidateProfiles"]) &&
+    Array.isArray(value["successionCrises"])
   );
 }
 

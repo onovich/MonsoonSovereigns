@@ -1,0 +1,137 @@
+{
+  "message_id": "MSG-20260625-M3-SUCCESSION-LEAD-ACCEPT",
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M3-SUCCESSION-STATE-MACHINE-001 after systems_architect R3 ACCEPT and qa_reviewer R3 ACCEPT. The accepted change adds a minimal deterministic M3 succession state machine with ruler death/incapacity commands, candidate/support state, pending/resolved crises, peaceful and disputed outcomes, dead/unavailable character invariants, office/enfeoffment vacancy behavior, stable tie-breakers, and a read model query. R1/R2/R3 review rounds fixed structured succession schema validation and the QA-found dead-then-incapacitated invariant gap. The diff remains confined to allowed sim-core/protocol/test/project messaging paths and does not add client UI, save-format support, formal historical dynasty data, full diplomacy, full civil war, M4+ war behavior, random/time APIs, or Node/DOM authority.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-LEAD-TO-SYSTEMS.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-SYSTEMS-TO-WRITER-R2.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-LEAD-TO-SYSTEMS-R2.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-SYSTEMS-TO-QA.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-QA-TO-WRITER-R3.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-LEAD-TO-SYSTEMS-R3.json",
+    "project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-SYSTEMS-R3-TO-QA.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R3-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-R3-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list command succeeded; M3-SUCCESSION-STATE-MACHINE-001 was REVIEW at the checkpoint before lead acceptance."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready task was M3-TRIBUTE-TROOP-OBLIGATIONS-001; no next task was started before succession acceptance."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <all M3 succession writer/systems/QA handoffs>",
+      "exit_code": 0,
+      "result": "All eight role handoffs validated: writer R1, systems R1, writer R2, systems R2, QA R1, writer R3, systems R3, and QA R3."
+    },
+    {
+      "command": "node -e <JSON parse/route/thread check>",
+      "exit_code": 0,
+      "result": "Parsed task, thread registry, goal-mode state, model-routing state, and all M3 succession route evidence files; task route was qa_reviewer before lead acceptance; thread_ids=74; duplicates=none."
+    },
+    {
+      "command": "node -e <changed/untracked scope audit>",
+      "exit_code": 0,
+      "result": "scope ok: 26 changed/untracked paths; all are inside allowed_paths and outside forbidden_paths."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Already up to date; completed with pnpm v11.0.0."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "Initial lead gate found Prettier style issues in tests/sim-core-m3-succession-state-machine.test.ts."
+    },
+    {
+      "command": "pnpm exec prettier --write tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 0,
+      "result": "Formatted the new succession test file."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed after formatting."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 12 test files, 75 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 6 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check passed; sim determinism hashes matched; root Vitest passed 22 files / 134 tests; web Vitest passed 1 file / 3 tests."
+    }
+  ],
+  "decisions": [
+    "Lead accepts the systems_architect R3 ACCEPT and qa_reviewer R3 ACCEPT reviews and marks M3-SUCCESSION-STATE-MACHINE-001 ACCEPTED, pending PR integration before CLOSED.",
+    "The task implements only the M3 minimal succession scaffold: no full civil war, full diplomacy, narrative event system, historical dynasty database, client UI, save-format support, or M4+ war behavior.",
+    "Player, AI, and system actors use versioned GameCommand paths for status recording, succession resolution, and relationship mutation; no UI or object graph authority is introduced.",
+    "Dead or incapacitated characters are excluded from active office/enfeoffment holdings; death vacates offices/enfeoffments while preserving policies, and malformed worlds now report structured invariant paths.",
+    "Candidate support sources are explicit, serializable, and deterministically ordered with stable support/character tie-breakers.",
+    "M3 save/runtime support remains deferred to M3-SAVE-RUNTIME-001; current save canaries still pass because this task does not extend save-format."
+  ],
+  "risks": [
+    "Succession support weights and thresholds are M3 scaffold constants, not final historical dynasty law or full diplomacy/civil-war behavior.",
+    "M3 runtime save/load remains intentionally deferred to M3-SAVE-RUNTIME-001.",
+    "Hand-mutated malformed worlds may include hash-mismatch diagnostics alongside structured semantic errors; QA accepted this because stable invariant paths are present."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Create the feature commit and PR for M3-SUCCESSION-STATE-MACHINE-001. After the PR is merged into main and verified, close the task in a separate closure branch. Do not start the next M3 task before integration.",
+  "created_at": "2026-06-25T10:02:34.518Z"
+}

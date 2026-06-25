@@ -1,0 +1,90 @@
+{
+  "message_id": "MSG-20260625-M3-SUCCESSION-WRITER-R3-REVIEW",
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed the QA R3 dead/incapacitated invariant gap. sim.record-character-status now rejects incapacitating an already-dead M3 character without mutating authoritative state, and validateWorldStateV0 now emits stable invalid-schema paths when dead characters are incapacitated or when dead/incapacitated characters remain active office or enfeoffment holders.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R3-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 1,
+      "result": "Expected failed-first R3 run after adding regressions: record-character-status still accepted incapacitating an already-dead character, and validateWorldStateV0 returned only hash-mismatch for malformed unavailable holder state instead of the new structured semantic paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "12 test files passed; 75 tests passed, including new repeated-status and unavailable office/enfeoffment holder regressions."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 22 files/134 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "task JSON parse/shape OK: M3-SUCCESSION-STATE-MACHINE-001 IN_PROGRESS."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Shows task-scoped protocol/sim-core/test edits, project coordination state files, prior routed review message artifacts, and this R3 handoff under project/messages. No forbidden path edits were introduced by the R3 fix."
+    },
+    {
+      "command": "rg -n \"Math\\\\.random|Date\\\\.now|performance\\\\.now|as unknown as|\\\\bany\\\\b\" packages/sim-core/src/command-query-v1.ts packages/sim-core/src/world-state-v0.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 1,
+      "result": "No banned randomness/time/unsafe-cast/any matches found in R3-touched implementation and test files."
+    }
+  ],
+  "decisions": [
+    "Kept the R3 fix limited to QA-requested command/status semantics, M3 world-state semantic validation, and focused regression tests.",
+    "Rejected only the impossible transition of incapacitating an already-dead character; death continues to normalize incapacitated characters to alive=false and incapacitated=false while vacating authority holdings.",
+    "Classified dead-and-incapacitated characters and unavailable active holders as invalid-schema semantic state errors because these are authoritative M3 state invariants needed before hash-only diagnostics.",
+    "Applied availability checks to all non-null M3 office holders and active enfeoffment holders; policies remain intact and are still validated separately."
+  ],
+  "risks": [
+    "This remains an R3 authoritative simulation state/schema behavior change and needs systems_architect review before QA re-review.",
+    "Directly hand-mutated malformed states can still also report hash-mismatch in addition to the new structured semantic errors; the requested stable invalid-schema paths are now present."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 dead/incapacitated command and world-state invariant fix, then route to qa_reviewer for re-review if acceptable.",
+  "created_at": "2026-06-25T09:44:00Z"
+}

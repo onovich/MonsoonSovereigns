@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "route_id": "ROUTE-20260625-LEAD-TO-SYSTEMS-R3",
+  "created_at": "2026-06-25T09:47:32.435Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "target_thread_id": "019efe09-de21-7e71-9bcd-5540fdc0f666",
+  "source_handoff": "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R3-REVIEW__simulation_engineer.json",
+  "source_status": "REVIEW",
+  "requested_action": "Review the R3 dead/incapacitated command and world-state invariant fix, then route to qa_reviewer for re-review if acceptable.",
+  "send_input": {
+    "submission_id": "019efe2d-4ca4-7083-b52c-b2c392ed2db6",
+    "target": "019efe09-de21-7e71-9bcd-5540fdc0f666",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R3-REVIEW__simulation_engineer.json",
+  "route_to": "systems_architect"
+}

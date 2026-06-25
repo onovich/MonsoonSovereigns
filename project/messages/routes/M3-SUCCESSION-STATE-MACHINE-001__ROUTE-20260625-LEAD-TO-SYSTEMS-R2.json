@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "route_id": "ROUTE-20260625-LEAD-TO-SYSTEMS-R2",
+  "created_at": "2026-06-25T09:24:28.222Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "target_thread_id": "019efe09-de21-7e71-9bcd-5540fdc0f666",
+  "source_handoff": "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R2-REVIEW__simulation_engineer.json",
+  "source_status": "REVIEW",
+  "requested_action": "Review the R2 schema/error-model fix for validateWorldStateV0, confirm malformed M3 succession state now returns structured invalid-schema errors, and route to qa_reviewer if acceptable.",
+  "send_input": {
+    "submission_id": "019efe18-3b81-78d0-909e-0b5157a52807",
+    "target": "019efe09-de21-7e71-9bcd-5540fdc0f666",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R2-REVIEW__simulation_engineer.json",
+  "route_to": "systems_architect"
+}

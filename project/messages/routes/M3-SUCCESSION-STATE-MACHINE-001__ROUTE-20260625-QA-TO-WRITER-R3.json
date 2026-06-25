@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "route_id": "ROUTE-20260625-QA-TO-WRITER-R3",
+  "created_at": "2026-06-25T09:39:55.493Z",
+  "from_role": "lead_orchestrator",
+  "handoff_from_role": "qa_reviewer",
+  "to_role": "simulation_engineer",
+  "target_thread_id": "019efdf7-e658-7e30-8486-e496b0de4b7f",
+  "source_handoff": "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-REVIEW__qa_reviewer.json",
+  "source_status": "REQUEST_CHANGES",
+  "requested_action": "Fix the dead/incapacitated and office-holder invariant gap, add focused regression tests, rerun git status --short, taskctl validate, git diff --check, pnpm --filter @monsoon/sim-core typecheck, pnpm --filter @monsoon/sim-core test, pnpm --filter @monsoon/protocol test, pnpm sim:determinism, and pnpm test, then return a new simulation_engineer handoff for systems and QA re-review.",
+  "send_input": {
+    "submission_id": "019efe26-576a-7172-b01c-4df07231d585",
+    "target": "019efdf7-e658-7e30-8486-e496b0de4b7f",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-REVIEW__qa_reviewer.json",
+  "route_to": "simulation_engineer"
+}

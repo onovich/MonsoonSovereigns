@@ -286,6 +286,70 @@ describe("SIM-003 protocol command/query schemas", () => {
     });
   });
 
+  test("accepts M3 succession command and query schemas", () => {
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.record-character-status",
+        commandId: "cmd.m3.succession.status",
+        actor: { kind: "system", id: "succession-system" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: { characterId: 1, status: "dead", reasonCode: "validation" }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.record-character-status",
+        commandId: "cmd.m3.succession.status",
+        actor: { kind: "system", id: "succession-system" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: { characterId: 1, status: "dead", reasonCode: "validation" }
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.resolve-succession",
+        commandId: "cmd.m3.succession.resolve",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: { successionId: 1, reasonCode: "validation" }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.create-character-relationship",
+        commandId: "cmd.m3.succession.relationship",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: {
+          sourceCharacterId: 1,
+          targetCharacterId: 2,
+          affinityBps: -1_000,
+          reasonCode: "validation"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m3-succession-crises"
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-m3-succession-crises"
+      }
+    });
+  });
+
   test("rejects malformed query payloads without leaking nonserializable details", () => {
     expect(
       parseGameQueryV1({

@@ -42,6 +42,7 @@ import {
   parseM3ObligationAuditEventId,
   parseM3ObligationId,
   parseM3PolicyId,
+  parseM3SuccessionId,
   parsePersonId,
   parsePopulationGroupId,
   parsePolityId,
@@ -70,6 +71,10 @@ import {
   type M3PolicyStateV0,
   type M3PolicyTargetV0,
   type M3PolityRecordStateV0,
+  type M3SuccessionCandidateStateV0,
+  type M3SuccessionCrisisStateV0,
+  type M3SuccessionOutcomeV0,
+  type M3SuccessionSupportSourceStateV0,
   type M2LaborCommitmentPurposeV0,
   type M2RouteKindV0,
   type M2PopulationGroupStateV0,
@@ -99,6 +104,7 @@ export type DomainErrorCodeV1 =
   | "m3-state-missing"
   | "office-eligibility-failed"
   | "office-primary-conflict"
+  | "succession-state-invalid"
   | "stale-day"
   | "stale-revision"
   | "unknown-command-kind"
@@ -211,6 +217,18 @@ export type DomainEventV1 =
       readonly reasonCode: string;
       readonly revisionBefore: number;
       readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m3-succession-updated";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly successionId: number;
+      readonly polityId: PolityId;
+      readonly status: "pending" | "resolved";
+      readonly outcomeKind: "disputed" | "peaceful" | "regency" | null;
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
     };
 
 export type StateDeltaV1 =
@@ -288,6 +306,15 @@ export type StateDeltaV1 =
       readonly districtId: number;
       readonly holderCharacterId: number;
       readonly policyId: number;
+      readonly revision: number;
+      readonly stateHash: string;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "state.m3-succession-updated";
+      readonly successionId: number;
+      readonly polityId: PolityId;
+      readonly status: "pending" | "resolved";
       readonly revision: number;
       readonly stateHash: string;
     };
@@ -402,6 +429,12 @@ export type QueryResultV1 =
             readonly enfeoffments: readonly M3DecisionEnfeoffmentScaffoldReadModelV1[];
           }
         | {
+            readonly kind: "sim.list-m3-succession-crises";
+            readonly day: number;
+            readonly revision: number;
+            readonly crises: readonly M3SuccessionCrisisReadModelV1[];
+          }
+        | {
             readonly kind: "sim.preview-m2-transport-route";
             readonly day: number;
             readonly revision: number;
@@ -452,6 +485,33 @@ export interface M3DecisionEnfeoffmentScaffoldReadModelV1 {
   readonly districtId: number;
   readonly holderCharacterId: number;
   readonly reasonCodes: readonly string[];
+}
+
+export interface M3SuccessionSupportSourceReadModelV1 {
+  readonly kind:
+    | "kinship"
+    | "designation"
+    | "court"
+    | "military"
+    | "provincial"
+    | "suzerain"
+    | "foreign";
+  readonly strengthBps: number;
+  readonly sourceId: string;
+}
+
+export interface M3SuccessionCandidateReadModelV1 {
+  readonly characterId: number;
+  readonly requiresRegency: boolean;
+  readonly supportTotalBps: number;
+  readonly supportSources: readonly M3SuccessionSupportSourceReadModelV1[];
+}
+
+export interface M3SuccessionCrisisReadModelV1 {
+  readonly successionId: number;
+  readonly polityId: number;
+  readonly status: "pending" | "resolved";
+  readonly candidates: readonly M3SuccessionCandidateReadModelV1[];
 }
 
 export type M2TransportRoutePreviewReadModelV1 =
@@ -870,6 +930,12 @@ function validateAndEvaluateCommand(
       return evaluateUpdateJurisdictionPolicy(runtime.world, command);
     case "sim.enfeoff-district":
       return evaluateEnfeoffDistrict(runtime.world, command);
+    case "sim.record-character-status":
+      return evaluateRecordCharacterStatus(runtime.world, command);
+    case "sim.resolve-succession":
+      return evaluateResolveSuccession(runtime.world, command);
+    case "sim.create-character-relationship":
+      return evaluateCreateCharacterRelationship(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -1865,6 +1931,254 @@ function evaluateEnfeoffDistrict(
   });
 }
 
+function evaluateRecordCharacterStatus(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.record-character-status" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.record-character-status");
+  }
+
+  const characterId = parsePersonId(command.payload.characterId);
+  const character = findM3Character(m3, characterId);
+  if (character === undefined) {
+    return badIdError(
+      "payload.characterId",
+      "sim.record-character-status references a missing character."
+    );
+  }
+  if (!actorHasPolityAuthority(m3, command.actor, character.polityId)) {
+    return authorityDeniedError();
+  }
+  if (!character.alive && command.payload.status === "incapacitated") {
+    return {
+      ok: false,
+      error: {
+        code: "succession-state-invalid",
+        path: "payload.status",
+        message: "sim.record-character-status cannot incapacitate a dead character."
+      }
+    };
+  }
+
+  const triggerOffice = findM3SuccessionTriggerOffice(m3, characterId);
+  const nextCharacter: M3CharacterStateV0 =
+    command.payload.status === "dead"
+      ? { ...character, alive: false, incapacitated: false }
+      : { ...character, incapacitated: true };
+  const candidates =
+    triggerOffice === null ? [] : formM3SuccessionCandidates(m3, character.polityId, characterId);
+  const crisis =
+    triggerOffice === null
+      ? null
+      : createM3SuccessionCrisis({
+          m3,
+          world,
+          polityId: character.polityId,
+          characterId,
+          officeId: triggerOffice.officeId,
+          triggerKind: command.payload.status === "dead" ? "death" : "incapacity",
+          candidates,
+          reasonCode: command.payload.reasonCode
+        });
+  const nextM3 = canonicalizeM3PolityVassalageState({
+    ...m3,
+    characters: m3.characters.map((entry) =>
+      entry.characterId === characterId ? nextCharacter : entry
+    ),
+    relationships: m3.relationships.filter(
+      (entry) => entry.sourceCharacterId !== characterId && entry.targetCharacterId !== characterId
+    ),
+    offices: m3.offices.map((office) =>
+      office.holderCharacterId === characterId ? { ...office, holderCharacterId: null } : office
+    ),
+    enfeoffments: m3.enfeoffments.filter((entry) => entry.holderCharacterId !== characterId),
+    successionCrises: crisis === null ? m3.successionCrises : [...m3.successionCrises, crisis]
+  });
+
+  const events =
+    crisis === null
+      ? []
+      : [
+          createM3SuccessionDomainEvent({
+            command,
+            world,
+            crisis,
+            outcomeKind: null
+          })
+        ];
+  const deltas =
+    crisis === null
+      ? []
+      : [
+          {
+            schemaVersion: 1 as const,
+            kind: "state.m3-succession-updated" as const,
+            successionId: crisis.id,
+            polityId: crisis.polityId,
+            status: crisis.status,
+            revision: world.meta.revision + 1,
+            stateHash: ""
+          }
+        ];
+
+  return commitM3AppointmentWorld({ world, command, nextM3, events, deltas });
+}
+
+function evaluateResolveSuccession(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.resolve-succession" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.resolve-succession");
+  }
+
+  const successionId = parseM3SuccessionId(command.payload.successionId);
+  const crisis = m3.successionCrises.find((entry) => entry.id === successionId);
+  if (crisis === undefined) {
+    return badIdError(
+      "payload.successionId",
+      "sim.resolve-succession references a missing crisis."
+    );
+  }
+  if (crisis.status !== "pending") {
+    return {
+      ok: false,
+      error: {
+        code: "succession-state-invalid",
+        path: "payload.successionId",
+        message: "sim.resolve-succession requires a pending crisis."
+      }
+    };
+  }
+  if (!actorHasPolityAuthority(m3, command.actor, crisis.polityId)) {
+    return authorityDeniedError();
+  }
+  if (crisis.candidates.length === 0) {
+    return {
+      ok: false,
+      error: {
+        code: "succession-state-invalid",
+        path: "state.m3.successionCrises.candidates",
+        message: "sim.resolve-succession requires at least one candidate."
+      }
+    };
+  }
+
+  const outcome = resolveM3SuccessionOutcome(m3, crisis, command.payload.reasonCode);
+  const nextCrisis: M3SuccessionCrisisStateV0 = {
+    ...crisis,
+    status: "resolved",
+    resolvedDay: world.meta.currentDay,
+    outcome,
+    reasonCode: command.payload.reasonCode
+  };
+  const nextM3 = canonicalizeM3PolityVassalageState({
+    ...m3,
+    offices: applyM3SuccessionOutcomeToOffices(m3, crisis, outcome),
+    successionCrises: m3.successionCrises.map((entry) =>
+      entry.id === successionId ? nextCrisis : entry
+    )
+  });
+
+  return commitM3AppointmentWorld({
+    world,
+    command,
+    nextM3,
+    events: [
+      createM3SuccessionDomainEvent({
+        command,
+        world,
+        crisis: nextCrisis,
+        outcomeKind: outcome.kind
+      })
+    ],
+    deltas: [
+      {
+        schemaVersion: 1,
+        kind: "state.m3-succession-updated",
+        successionId,
+        polityId: crisis.polityId,
+        status: "resolved",
+        revision: world.meta.revision + 1,
+        stateHash: ""
+      }
+    ]
+  });
+}
+
+function evaluateCreateCharacterRelationship(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.create-character-relationship" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.create-character-relationship");
+  }
+
+  const sourceCharacterId = parsePersonId(command.payload.sourceCharacterId);
+  const targetCharacterId = parsePersonId(command.payload.targetCharacterId);
+  const source = findM3Character(m3, sourceCharacterId);
+  const target = findM3Character(m3, targetCharacterId);
+  if (source === undefined) {
+    return badIdError(
+      "payload.sourceCharacterId",
+      "sim.create-character-relationship references a missing source character."
+    );
+  }
+  if (target === undefined) {
+    return badIdError(
+      "payload.targetCharacterId",
+      "sim.create-character-relationship references a missing target character."
+    );
+  }
+  const sourceAvailability = validateM3CharacterAvailabilityAtPath(
+    source,
+    null,
+    "payload.sourceCharacterId"
+  );
+  if (sourceAvailability !== null) {
+    return { ok: false, error: sourceAvailability };
+  }
+  const targetAvailability = validateM3CharacterAvailabilityAtPath(
+    target,
+    null,
+    "payload.targetCharacterId"
+  );
+  if (targetAvailability !== null) {
+    return { ok: false, error: targetAvailability };
+  }
+  if (!actorHasPolityAuthority(m3, command.actor, source.polityId)) {
+    return authorityDeniedError();
+  }
+
+  const nextM3 = canonicalizeM3PolityVassalageState({
+    ...m3,
+    relationships: [
+      ...m3.relationships.filter(
+        (entry) =>
+          entry.sourceCharacterId !== sourceCharacterId ||
+          entry.targetCharacterId !== targetCharacterId
+      ),
+      {
+        sourceCharacterId,
+        targetCharacterId,
+        affinityBps: command.payload.affinityBps
+      }
+    ]
+  });
+
+  return commitM3AppointmentWorld({
+    world,
+    command,
+    nextM3,
+    events: [],
+    deltas: []
+  });
+}
+
 function evaluateVerifyStateHash(
   world: WorldStateV0,
   command: Extract<GameCommandV1, { readonly kind: "sim.verify-state-hash" }>
@@ -1988,17 +2302,36 @@ function validateM3CharacterAvailability(
   character: M3CharacterStateV0,
   requiredDistrictId: number | null
 ): DomainErrorV1 | null {
+  return validateM3CharacterAvailabilityAtPath(
+    character,
+    requiredDistrictId,
+    "payload.characterId"
+  );
+}
+
+function validateM3CharacterAvailabilityAtPath(
+  character: M3CharacterStateV0,
+  requiredDistrictId: number | null,
+  path: string
+): DomainErrorV1 | null {
   if (!character.alive) {
     return {
       code: "character-unavailable",
-      path: "payload.characterId",
+      path,
+      message: "character-unavailable"
+    };
+  }
+  if (character.incapacitated) {
+    return {
+      code: "character-unavailable",
+      path,
       message: "character-unavailable"
     };
   }
   if (requiredDistrictId !== null && character.currentDistrictId !== requiredDistrictId) {
     return {
       code: "character-location-invalid",
-      path: "payload.characterId",
+      path,
       message: "character-location-invalid"
     };
   }
@@ -2134,6 +2467,8 @@ function stampM3Delta(delta: StateDeltaV1, nextWorld: WorldStateV0): StateDeltaV
       return { ...delta, revision: nextWorld.meta.revision, stateHash: nextWorld.meta.stateHash };
     case "state.m3-enfeoffment-updated":
       return { ...delta, revision: nextWorld.meta.revision, stateHash: nextWorld.meta.stateHash };
+    case "state.m3-succession-updated":
+      return { ...delta, revision: nextWorld.meta.revision, stateHash: nextWorld.meta.stateHash };
     default:
       return delta;
   }
@@ -2218,6 +2553,225 @@ function findM3Character(
   return m3.characters.find((entry) => entry.characterId === characterId);
 }
 
+function findM3SuccessionTriggerOffice(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  characterId: PersonId
+): M3OfficeStateV0 | null {
+  const office = [...m3.offices]
+    .filter(
+      (entry) =>
+        entry.holderCharacterId === characterId &&
+        entry.primary &&
+        entry.jurisdiction.kind === "polity"
+    )
+    .sort((left, right) => left.officeId - right.officeId)[0];
+  return office ?? null;
+}
+
+function formM3SuccessionCandidates(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  polityId: PolityId,
+  unavailableCharacterId: PersonId
+): readonly M3SuccessionCandidateStateV0[] {
+  const candidates: M3SuccessionCandidateStateV0[] = [];
+  const profiles = m3.successionCandidateProfiles
+    .filter(
+      (profile) => profile.polityId === polityId && profile.characterId !== unavailableCharacterId
+    )
+    .sort((left, right) => left.characterId - right.characterId);
+
+  for (const profile of profiles) {
+    const character = findM3Character(m3, profile.characterId);
+    if (character === undefined || !character.alive || character.incapacitated) {
+      continue;
+    }
+    const supportSources = sortSuccessionSupportSources(profile.supportSources).map((source) => ({
+      ...source
+    }));
+    candidates.push({
+      characterId: profile.characterId,
+      requiresRegency: profile.requiresRegency,
+      supportSources,
+      supportTotalBps: sumSuccessionSupportBps(supportSources)
+    });
+  }
+
+  return candidates.sort(compareSuccessionCandidates);
+}
+
+function createM3SuccessionCrisis(input: {
+  readonly m3: NonNullable<WorldStateV0["state"]["m3"]>;
+  readonly world: WorldStateV0;
+  readonly polityId: PolityId;
+  readonly characterId: PersonId;
+  readonly officeId: M3OfficeId;
+  readonly triggerKind: "death" | "incapacity";
+  readonly candidates: readonly M3SuccessionCandidateStateV0[];
+  readonly reasonCode: string;
+}): M3SuccessionCrisisStateV0 {
+  return {
+    id: parseM3SuccessionId(nextNumericId(input.m3.successionCrises)),
+    polityId: input.polityId,
+    trigger: {
+      kind: input.triggerKind,
+      characterId: input.characterId,
+      officeId: input.officeId
+    },
+    status: "pending",
+    startedDay: input.world.meta.currentDay,
+    resolvedDay: null,
+    candidates: input.candidates,
+    outcome: null,
+    reasonCode: input.reasonCode
+  };
+}
+
+function resolveM3SuccessionOutcome(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  crisis: M3SuccessionCrisisStateV0,
+  reasonCode: string
+): M3SuccessionOutcomeV0 {
+  const ordered = [...crisis.candidates].sort(compareSuccessionCandidates);
+  const leading = ordered[0];
+  if (leading === undefined) {
+    throw new Error("resolveM3SuccessionOutcome requires at least one candidate.");
+  }
+  const rival = ordered[1];
+  const margin =
+    rival === undefined ? leading.supportTotalBps : leading.supportTotalBps - rival.supportTotalBps;
+  if (leading.requiresRegency) {
+    const regent = findM3RegentCandidate(m3, crisis.polityId, leading.characterId);
+    if (regent !== null) {
+      return {
+        kind: "regency",
+        successorCharacterId: leading.characterId,
+        regentCharacterId: regent.characterId,
+        supportTotalBps: leading.supportTotalBps,
+        reasonCode
+      };
+    }
+  }
+  if (leading.supportTotalBps >= 6_000 && margin >= 1_500) {
+    return {
+      kind: "peaceful",
+      successorCharacterId: leading.characterId,
+      supportTotalBps: leading.supportTotalBps
+    };
+  }
+  return {
+    kind: "disputed",
+    leadingCharacterId: leading.characterId,
+    rivalCharacterId: rival?.characterId ?? leading.characterId,
+    supportMarginBps: margin,
+    reasonCode
+  };
+}
+
+function applyM3SuccessionOutcomeToOffices(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  crisis: M3SuccessionCrisisStateV0,
+  outcome: M3SuccessionOutcomeV0
+): readonly M3OfficeStateV0[] {
+  const officeId = crisis.trigger.officeId;
+  if (officeId === null || outcome.kind === "disputed") {
+    return m3.offices;
+  }
+  const successorCharacterId = outcome.successorCharacterId;
+  return m3.offices.map((office) => {
+    if (office.primary && office.holderCharacterId === successorCharacterId) {
+      return { ...office, holderCharacterId: null };
+    }
+    if (office.officeId === officeId) {
+      return { ...office, holderCharacterId: successorCharacterId };
+    }
+    return office;
+  });
+}
+
+function findM3RegentCandidate(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  polityId: PolityId,
+  successorCharacterId: PersonId
+): M3CharacterStateV0 | null {
+  const regent = [...m3.characters]
+    .filter(
+      (character) =>
+        character.polityId === polityId &&
+        character.characterId !== successorCharacterId &&
+        character.alive &&
+        !character.incapacitated
+    )
+    .sort(
+      (left, right) =>
+        right.administrationBps - left.administrationBps || left.characterId - right.characterId
+    )[0];
+  return regent ?? null;
+}
+
+function createM3SuccessionDomainEvent(input: {
+  readonly command: GameCommandV1;
+  readonly world: WorldStateV0;
+  readonly crisis: M3SuccessionCrisisStateV0;
+  readonly outcomeKind: "disputed" | "peaceful" | "regency" | null;
+}): DomainEventV1 {
+  return {
+    schemaVersion: 1,
+    kind: "sim.m3-succession-updated",
+    commandId: input.command.commandId,
+    actor: input.command.actor,
+    successionId: input.crisis.id,
+    polityId: input.crisis.polityId,
+    status: input.crisis.status,
+    outcomeKind: input.outcomeKind,
+    revisionBefore: input.world.meta.revision,
+    revisionAfter: input.world.meta.revision + 1
+  };
+}
+
+function compareSuccessionCandidates(
+  left: M3SuccessionCandidateStateV0,
+  right: M3SuccessionCandidateStateV0
+): number {
+  return right.supportTotalBps - left.supportTotalBps || left.characterId - right.characterId;
+}
+
+function sortSuccessionSupportSources(
+  values: readonly M3SuccessionSupportSourceStateV0[]
+): readonly M3SuccessionSupportSourceStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      successionSupportKindRank(left.kind) - successionSupportKindRank(right.kind) ||
+      compareText(left.sourceId, right.sourceId) ||
+      left.strengthBps - right.strengthBps
+  );
+}
+
+function successionSupportKindRank(kind: M3SuccessionSupportSourceStateV0["kind"]): number {
+  switch (kind) {
+    case "kinship":
+      return 1;
+    case "designation":
+      return 2;
+    case "court":
+      return 3;
+    case "military":
+      return 4;
+    case "provincial":
+      return 5;
+    case "suzerain":
+      return 6;
+    case "foreign":
+      return 7;
+  }
+}
+
+function sumSuccessionSupportBps(
+  supportSources: readonly M3SuccessionSupportSourceStateV0[]
+): number {
+  const total = supportSources.reduce((sum, source) => sum + source.strengthBps, 0);
+  return clampBps(total);
+}
+
 function polityForPolicyTarget(
   m3: NonNullable<WorldStateV0["state"]["m3"]>,
   target: M3PolicyTargetV0
@@ -2253,11 +2807,25 @@ function actorHasPolityAuthority(
     return true;
   }
   const officeId = parseActorOfficeId(actor.id);
-  if (officeId === null) {
+  if (officeId !== null) {
+    const office = findM3Office(m3, officeId);
+    if (office === undefined || office.polityId !== polityId || office.holderCharacterId === null) {
+      return false;
+    }
+    const holder = findM3Character(m3, office.holderCharacterId);
+    return holder !== undefined && holder.alive && !holder.incapacitated;
+  }
+  const characterId = parseActorCharacterId(actor.id);
+  if (characterId === null) {
     return false;
   }
-  const office = findM3Office(m3, officeId);
-  return office !== undefined && office.polityId === polityId && office.holderCharacterId !== null;
+  const character = findM3Character(m3, characterId);
+  return (
+    character !== undefined &&
+    character.polityId === polityId &&
+    character.alive &&
+    !character.incapacitated
+  );
 }
 
 function parseActorOfficeId(actorId: string): M3OfficeId | null {
@@ -2269,6 +2837,17 @@ function parseActorOfficeId(actorId: string): M3OfficeId | null {
     return null;
   }
   return parseM3OfficeId(raw);
+}
+
+function parseActorCharacterId(actorId: string): PersonId | null {
+  if (!actorId.startsWith("character:")) {
+    return null;
+  }
+  const raw = Number(actorId.slice("character:".length));
+  if (!Number.isSafeInteger(raw) || raw <= 0) {
+    return null;
+  }
+  return parsePersonId(raw);
 }
 
 function authorityDeniedError(): EvaluationResult {
@@ -2463,6 +3042,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM3AdministrativeBurdenQuery(runtime);
     case "sim.list-m3-decision-scaffolds":
       return executeM3DecisionScaffoldsQuery(runtime);
+    case "sim.list-m3-succession-crises":
+      return executeM3SuccessionCrisesQuery(runtime);
     case "sim.preview-m2-transport-route":
       return executeM2TransportRoutePreviewQuery(runtime, query);
   }
@@ -2565,6 +3146,40 @@ function executeM3DecisionScaffoldsQuery(runtime: SimulationRuntimeV1): QueryRes
       enfeoffments: m3.enfeoffments.map((enfeoffment) =>
         m3EnfeoffmentDecisionScaffold(m3, enfeoffment)
       )
+    }
+  };
+}
+
+function executeM3SuccessionCrisesQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
+  const m3 = runtime.world.state.m3;
+  if (m3 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m3-state-missing",
+        path: "state.m3",
+        message: "sim.list-m3-succession-crises requires an M3 polity vassalage state."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m3-succession-crises",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      crises: m3.successionCrises.map((crisis) => ({
+        successionId: crisis.id,
+        polityId: crisis.polityId,
+        status: crisis.status,
+        candidates: crisis.candidates.map((candidate) => ({
+          characterId: candidate.characterId,
+          requiresRegency: candidate.requiresRegency,
+          supportTotalBps: candidate.supportTotalBps,
+          supportSources: candidate.supportSources.map((source) => ({ ...source }))
+        }))
+      }))
     }
   };
 }
@@ -2860,6 +3475,8 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
     case "sim.obligation-fulfilled":
       return { ...event };
     case "sim.m3-appointment-audited":
+      return { ...event };
+    case "sim.m3-succession-updated":
       return { ...event };
     case "sim.state-hash-verified":
       return { ...event };

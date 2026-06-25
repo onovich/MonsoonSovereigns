@@ -1,0 +1,85 @@
+{
+  "message_id": "MSG-20260625-M3-SUCCESSION-WRITER-R2-REVIEW",
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed the R2 M3 succession state schema/error-model review finding. validateWorldStateV0 now explicitly guards every state.m3 array used by isM3StateLike and this task, validates M3CharacterStateV0.incapacitated, and validates succession candidate profile, crisis, support source, trigger, candidate, and outcome entry shapes so malformed authoritative state returns structured invalid-schema paths instead of raw iteration or hash-format exceptions.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 1,
+      "result": "Expected failed-first R2 run after adding negative schema tests: missing successionCandidateProfiles still threw TypeError values is not iterable, malformed succession entries fell through to hash-mismatch, and missing character incapacitated was not reported."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "12 test files passed; 73 tests passed, including new malformed/missing successionCandidateProfiles, successionCrises, succession entry, and incapacitated structured-error coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 22 files/132 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Shows task-scoped protocol/sim-core/test edits and project messages. Pre-existing modified project coordination files remain. Systems review/route message files are present in project/messages from the routed handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "task JSON parse/shape ok."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "rg -n \"Math\\\\.random|Date\\\\.now|performance\\\\.now|as unknown as|\\\\bany\\\\b\" packages/protocol/src/index.ts packages/sim-core/src/world-state-v0.ts packages/sim-core/src/command-query-v1.ts tests/sim-core-m3-succession-state-machine.test.ts tests/protocol-command-query-schema.test.ts tests/sim-core-m3-appointment-enfeoffment.test.ts",
+      "exit_code": 1,
+      "result": "No banned randomness/time/unsafe-cast/any matches found in touched implementation and test files."
+    }
+  ],
+  "decisions": [
+    "Kept R2 scope to sim-core schema/error-model validation plus focused negative tests; no tribute/troop, UI, save-format, content, docs, or protocol expansion was added in R2.",
+    "Added explicit validateArrayField checks for M3 characters, relationships, offices, policies, enfeoffments, appointmentAuditEvents, successionCandidateProfiles, and successionCrises before runtime/reference/hash validation.",
+    "Added entry-level validators for new succession structures and existing M3 character incapacitated so malformed state returns deterministic invalid-schema paths.",
+    "Normal constructor-created M3 worlds remain valid; malformed authoritative state now short-circuits at invalid-schema errors instead of reaching canonical hash formatting."
+  ],
+  "risks": [
+    "This remains an R3 authoritative state schema change and needs systems_architect review before QA routing.",
+    "R2 adds schema shape validation only; semantic succession balance and final dynasty rules remain intentionally M3-scoped scaffolds."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R2 schema/error-model fix for validateWorldStateV0, confirm malformed M3 succession state now returns structured invalid-schema errors, and route to qa_reviewer if acceptable.",
+  "created_at": "2026-06-25T09:24:00Z"
+}
