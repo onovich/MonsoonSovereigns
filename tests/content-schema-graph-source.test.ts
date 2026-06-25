@@ -1,8 +1,10 @@
 import { describe, expect, test } from "vitest";
 
 import {
+  parseM3PolityVassalageFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   validateM2WorldFixtureSourceV0,
+  validateM3PolityVassalageFixtureSourceV0,
   parseM1GraphFixtureSourceV0,
   validateM1GraphFixtureSourceV0
 } from "../packages/content-schema/src/index";
@@ -237,6 +239,87 @@ describe("M2 world fixture source schema", () => {
       expect.arrayContaining([
         expect.objectContaining({ code: "invalid-schema", path: "provenance.sourceCategory" }),
         expect.objectContaining({ code: "invalid-schema", path: "provenance.confidence" }),
+        expect.objectContaining({ code: "invalid-schema", path: "provenance.policyId" })
+      ])
+    );
+  });
+});
+
+describe("M3 polity vassalage fixture source schema", () => {
+  test("parses abstract validation polity, controller, and obligation records", () => {
+    const source = parseM3PolityVassalageFixtureSourceV0({
+      schemaVersion: 1,
+      kind: "m3.polity-vassalage-fixture",
+      fixtureId: "m3.validation-polity",
+      fixtureKind: "polity-vassalage-fixture",
+      syntheticScope: "m3-validation-only",
+      historicity: "FICTIONAL",
+      provenance: {
+        sourceCategory: "validation-only-fixture",
+        confidence: "LOW",
+        policyId: "M3-HISTORICAL-CLAIM-PIPELINE-001"
+      },
+      polities: [
+        {
+          sourceId: "polity-001",
+          displayNameKey: "content.m3.validation.polity_001",
+          directSuzerainPolityId: null
+        },
+        {
+          sourceId: "polity-002",
+          displayNameKey: "content.m3.validation.polity_002",
+          directSuzerainPolityId: "polity-001"
+        }
+      ],
+      districts: [
+        {
+          sourceId: "district-001",
+          displayNameKey: "content.m3.validation.district_001",
+          controllerPolityId: "polity-002"
+        }
+      ],
+      obligations: [
+        {
+          sourceId: "obligation-001",
+          debtorPolityId: "polity-002",
+          creditorPolityId: "polity-001",
+          obligationKind: "tribute",
+          requirement: { kind: "amount", resourceKind: "cash", amount: 100 },
+          due: { kind: "cadence", periodDays: 90, nextDueDay: 90 },
+          status: "active",
+          disputeReasonCode: null,
+          breachReasonCode: null
+        }
+      ]
+    });
+
+    expect(source.historicity).toBe("FICTIONAL");
+    expect(source.polities[1]?.directSuzerainPolityId).toBe("polity-001");
+    expect(source.obligations[0]?.requirement).toMatchObject({ kind: "amount", amount: 100 });
+  });
+
+  test("requires abstract M3 validation-only provenance", () => {
+    expect(
+      validateM3PolityVassalageFixtureSourceV0({
+        schemaVersion: 1,
+        kind: "m3.polity-vassalage-fixture",
+        fixtureId: "m3.bad",
+        fixtureKind: "polity-vassalage-fixture",
+        syntheticScope: "m3-validation-only",
+        historicity: "HISTORICAL",
+        provenance: {
+          sourceCategory: "production-content",
+          confidence: "HIGH",
+          policyId: "missing-policy"
+        },
+        polities: [],
+        districts: [],
+        obligations: []
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-schema", path: "historicity" }),
+        expect.objectContaining({ code: "invalid-schema", path: "provenance.sourceCategory" }),
         expect.objectContaining({ code: "invalid-schema", path: "provenance.policyId" })
       ])
     );

@@ -1,0 +1,117 @@
+{
+  "message_id": "MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-ACCEPT-R2",
+  "task_id": "M3-POLITY-VASSALAGE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 architecture review accepts the M3 polity/vassalage substrate and the save/error-model fix. requestSaveV1 now rejects runtime WorldState state.m3 at the top of the function, before createSaveEnvelopeV1, worldStateV0ToSaveDto, encodeSaveEnvelopeV1, commandTail mapping, or domainEventToRecord eventTail serialization can run. The regression covers an accepted sim.create-obligation producing an in-memory sim.obligation-created event and then proves requestSaveV1 throws the explicit unsupported-M3 error instead of returning unloadable bytes. Non-M3 save/load determinism remains unchanged, and packages/save-format plus other forbidden paths are untouched.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/protocol/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/tasks/active/M3-POLITY-VASSALAGE-001.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW-R2__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-polity-vassalage",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW-R2__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "R2 writer handoff JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "Task JSON validated in REVIEW state."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e forbidden-path diff check",
+      "exit_code": 0,
+      "result": "No forbidden changed paths. Checked 20 changed/untracked paths, including confirmation that packages/save-format was untouched."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m3-polity-vassalage.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed, 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "10 files passed, 52 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c, command/query hash d275faa4, save/load hash 28074edd; deterministic save/load byte length 10920."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e M3 requestSaveV1 rejection probe",
+      "exit_code": 0,
+      "result": "Accepted sim.create-obligation left runtimeEventKinds=[\"sim.obligation-created\"], and requestSaveV1 threw: requestSaveV1 does not support WorldState state.m3; refusing to emit incompatible save bytes."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 file passed, 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 file passed, 5 tests passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 20 root test files passed with 101 tests; web test passed with 1 file and 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "rg -n 'Math\\.random|Date\\.now|performance\\.now|document\\.|window\\.' packages/sim-core/src",
+      "exit_code": 1,
+      "result": "No forbidden real-time, random, DOM, or window API matches in sim-core."
+    },
+    {
+      "command": "rg -n 'from [\"''](react|pixi|pixi\\.js|electron|fs|node:fs|path|node:path)[\"'']' packages/sim-core/src",
+      "exit_code": 1,
+      "result": "No forbidden React/Pixi/Electron/Node IO imports in sim-core."
+    }
+  ],
+  "decisions": [
+    "Accepted the explicit requestSaveV1 rejection strategy as the correct scoped fix because packages/save-format remains forbidden for this task.",
+    "Accepted leaving M3 persistence unsupported until a future task opens save-format scope and adds matching DTO/parser coverage.",
+    "Accepted the R2 regression as meaningful for the prior defect: it exercises accepted sim.create-obligation before requestSaveV1 and prevents a return path that would expose M3-stripped save bytes."
+  ],
+  "risks": [
+    "M3 worlds cannot be saved until a future save-format task implements state.m3 snapshot DTOs and M3 eventTail parsing.",
+    "Callers must handle the explicit requestSaveV1 Error for M3 worlds; this is intentional under the current scope."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate M3-POLITY-VASSALAGE-001 after lead_orchestrator verifies final diff scope, handoff chain, and autonomous goal-mode gates.",
+  "created_at": "2026-06-25T06:08:37Z"
+}

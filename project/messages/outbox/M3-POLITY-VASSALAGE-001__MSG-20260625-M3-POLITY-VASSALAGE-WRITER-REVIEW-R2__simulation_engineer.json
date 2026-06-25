@@ -1,0 +1,115 @@
+{
+  "message_id": "MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW-R2",
+  "task_id": "M3-POLITY-VASSALAGE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Addressed systems_architect REQUEST_CHANGES for M3 save compatibility by making requestSaveV1 explicitly reject WorldState state.m3 before creating a save envelope, save DTO, bytes, or eventTail records. Added regression coverage for the accepted sim.create-obligation probe scenario proving M3 state and sim.obligation-created eventTail no longer produce unloadable save bytes. This keeps the fix inside allowed paths and avoids touching packages/save-format.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "project/tasks/active/M3-POLITY-VASSALAGE-001.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW-R2__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-polity-vassalage",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m3-polity-vassalage.test.ts",
+      "exit_code": 1,
+      "result": "Expected failing regression before implementation: requestSaveV1 did not throw for M3 state after accepted sim.create-obligation; 1 failed, 4 passed."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m3-polity-vassalage.test.ts",
+      "exit_code": 0,
+      "result": "Focused M3 regression passed after implementation; 1 file passed, 5 tests passed."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree contained only allowed-path M3 implementation, task/message state, and route/handoff artifacts at the start of the R2 fix."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "10 files passed, 52 tests passed, including M3 save rejection regression and save-load contract tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 file passed, 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 file passed, 5 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c, command/query hash d275faa4, save/load hash 28074edd; deterministic save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 20 root test files passed with 101 tests; web test passed with 1 file and 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed for apps, packages, tests, tools, and root config files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status M3-POLITY-VASSALAGE-001 REVIEW",
+      "exit_code": 0,
+      "result": "Task status set back to REVIEW after the R2 fix."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "Task JSON validated in REVIEW state."
+    },
+    {
+      "command": "node -e task JSON parse/shape check for M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "Task shape ok: id M3-POLITY-VASSALAGE-001, status REVIEW, route_to systems_architect, scope arrays present."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW-R2__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "R2 handoff JSON validated."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Final status shows allowed-path M3 implementation, task/message state, route artifacts, and the R2 handoff; no forbidden paths are modified."
+    }
+  ],
+  "decisions": [
+    "Chose explicit requestSaveV1 rejection instead of a full M3 save path because packages/save-format is forbidden for this change request.",
+    "The guard runs before createSaveEnvelopeV1, worldStateV0ToSaveDto, encodeSaveEnvelopeV1, and domainEventToRecord so M3 state cannot produce M3-stripped save bytes or unparseable M3 eventTail records.",
+    "Existing non-M3 save/load behavior remains covered by the sim-core save-load contract tests and pnpm sim:determinism save/load canary."
+  ],
+  "risks": [
+    "M3 persistence remains intentionally unsupported until a future task opens save-format scope and adds matching snapshot DTO and eventTail parsers.",
+    "Callers using requestSaveV1 must handle the explicit Error for M3 worlds; this is safer than producing unloadable artifacts under the current package boundary."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Please re-review the R2 save/error-model compatibility fix, focusing on explicit requestSaveV1 rejection for state.m3, absence of M3 eventTail emission without parser support, unchanged non-M3 save/load determinism, and allowed-path boundary compliance.",
+  "created_at": "2026-06-25T06:08:00.000Z"
+}

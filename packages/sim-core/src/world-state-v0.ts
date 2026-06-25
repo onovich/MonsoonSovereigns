@@ -7,6 +7,9 @@ export type SettlementId = Brand<number, "SettlementId">;
 export type RouteId = Brand<number, "RouteId">;
 export type RegionalSeasonalCurveId = Brand<number, "RegionalSeasonalCurveId">;
 export type PopulationGroupId = Brand<number, "PopulationGroupId">;
+export type M3ObligationId = Brand<number, "M3ObligationId">;
+export type M3ObligationAuditEventId = Brand<number, "M3ObligationAuditEventId">;
+export type M3FulfillmentId = Brand<number, "M3FulfillmentId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -169,6 +172,84 @@ export interface M2EconomyPopulationStateV0 {
   readonly transport: M2TransportStateV0;
 }
 
+export type M3ObligationKindV0 = "tribute" | "troop";
+export type M3ObligationResourceKindV0 = "cash" | "grain" | "troops";
+export type M3ObligationStatusV0 = "active" | "disputed" | "breached";
+export type M3ObligationAuditEventKindV0 = "created" | "fulfilled" | "status-changed";
+
+export interface M3PolityRecordStateV0 {
+  readonly polityId: PolityId;
+  readonly directSuzerainPolityId: PolityId | null;
+}
+
+export type M3ObligationRequirementV0 =
+  | {
+      readonly kind: "amount";
+      readonly resourceKind: M3ObligationResourceKindV0;
+      readonly amount: number;
+    }
+  | {
+      readonly kind: "condition";
+      readonly conditionKey: string;
+    };
+
+export type M3ObligationDueV0 =
+  | {
+      readonly kind: "cadence";
+      readonly periodDays: number;
+      readonly nextDueDay: GameDay;
+    }
+  | {
+      readonly kind: "trigger";
+      readonly triggerKey: string;
+    };
+
+export interface M3ObligationStateV0 {
+  readonly id: M3ObligationId;
+  readonly debtorPolityId: PolityId;
+  readonly creditorPolityId: PolityId;
+  readonly obligationKind: M3ObligationKindV0;
+  readonly requirement: M3ObligationRequirementV0;
+  readonly due: M3ObligationDueV0;
+  readonly status: M3ObligationStatusV0;
+  readonly disputeReasonCode: string | null;
+  readonly breachReasonCode: string | null;
+  readonly createdAuditEventId: M3ObligationAuditEventId;
+  readonly latestAuditEventId: M3ObligationAuditEventId;
+}
+
+export interface M3ObligationAuditEventStateV0 {
+  readonly id: M3ObligationAuditEventId;
+  readonly obligationId: M3ObligationId;
+  readonly eventKind: M3ObligationAuditEventKindV0;
+  readonly eventDay: GameDay;
+  readonly eventRevision: WorldRevision;
+  readonly commandId: string;
+  readonly actor: {
+    readonly kind: "ai" | "player" | "system";
+    readonly id: string;
+  };
+  readonly fulfillmentId: M3FulfillmentId | null;
+  readonly fulfilledAmount: number | null;
+  readonly statusAfter: M3ObligationStatusV0;
+  readonly reasonCode: string | null;
+}
+
+export interface M3FulfillmentClaimStateV0 {
+  readonly fulfillmentId: M3FulfillmentId;
+  readonly obligationId: M3ObligationId;
+  readonly auditEventId: M3ObligationAuditEventId;
+  readonly fulfilledAmount: number;
+}
+
+export interface M3PolityVassalageStateV0 {
+  readonly schemaVersion: 1;
+  readonly polities: readonly M3PolityRecordStateV0[];
+  readonly obligations: readonly M3ObligationStateV0[];
+  readonly obligationAuditEvents: readonly M3ObligationAuditEventStateV0[];
+  readonly fulfillmentClaims: readonly M3FulfillmentClaimStateV0[];
+}
+
 export interface WorldRuntimeStateV0 {
   readonly polities: readonly PolityState[];
   readonly persons: readonly PersonState[];
@@ -176,6 +257,7 @@ export interface WorldRuntimeStateV0 {
   readonly settlements: readonly SettlementState[];
   readonly routes: readonly RouteState[];
   readonly m2?: M2EconomyPopulationStateV0;
+  readonly m3?: M3PolityVassalageStateV0;
 }
 
 export interface SchedulerStateV0 {
@@ -287,6 +369,7 @@ export interface CreateWorldStateV0Input {
   readonly revision: unknown;
   readonly definitions: WorldDefinitionsV0;
   readonly m2?: M2EconomyPopulationStateV0;
+  readonly m3?: M3PolityVassalageStateV0;
 }
 
 const INITIAL_HASH_OFFSET = 2_166_136_261;
@@ -318,6 +401,18 @@ export function parseRegionalSeasonalCurveId(value: unknown): RegionalSeasonalCu
 
 export function parsePopulationGroupId(value: unknown): PopulationGroupId {
   return parsePositiveInteger(value, "PopulationGroupId") as PopulationGroupId;
+}
+
+export function parseM3ObligationId(value: unknown): M3ObligationId {
+  return parsePositiveInteger(value, "M3ObligationId") as M3ObligationId;
+}
+
+export function parseM3ObligationAuditEventId(value: unknown): M3ObligationAuditEventId {
+  return parsePositiveInteger(value, "M3ObligationAuditEventId") as M3ObligationAuditEventId;
+}
+
+export function parseM3FulfillmentId(value: unknown): M3FulfillmentId {
+  return parsePositiveInteger(value, "M3FulfillmentId") as M3FulfillmentId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -527,7 +622,7 @@ export function createM2RouteTransportStateV0(
 
 export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0 {
   const definitions = canonicalizeDefinitions(input.definitions);
-  const state = createRuntimeState(definitions, input.m2);
+  const state = createRuntimeState(definitions, input.m2, input.m3);
   const stateWithoutHash: WorldStateV0 = {
     meta: {
       schemaVersion: WORLD_STATE_V0_SCHEMA_VERSION,
@@ -591,6 +686,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     `state.settlements=${formatSettlementStates(world.state.settlements)}`,
     `state.routes=${formatRouteStates(world.state.routes)}`,
     ...formatM2CanonicalLines(world.state.m2),
+    ...formatM3CanonicalLines(world.state.m3),
     `scheduler.schedulerVersion=${formatUnknown(
       getRecordPath(world, ["scheduler", "schedulerVersion"])
     )}`,
@@ -631,6 +727,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateDefinitionEntryShapes(world.definitions, errors);
   validateRuntimeEntryShapes(world.state, errors);
   validateM2EntryShapes(getRecordPath(world, ["state", "m2"]), errors);
+  validateM3EntryShapes(getRecordPath(world, ["state", "m3"]), errors);
   if (errors.some((error) => error.code === "invalid-schema")) {
     return errors;
   }
@@ -639,6 +736,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateDefinitionReferences(world.definitions, errors);
   validateRuntimeState(world, errors);
   validateM2RuntimeState(world, errors);
+  validateM3RuntimeState(world, errors);
   validateRuntimeTableCoverage(world, errors);
   validateStateHash(world, errors);
   return errors;
@@ -1057,6 +1155,291 @@ function validateM2TransportEntryShapes(input: unknown, errors: WorldInvariantEr
   }
 }
 
+function validateM3EntryShapes(input: unknown, errors: WorldInvariantError[]): void {
+  if (input === undefined) {
+    return;
+  }
+
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m3",
+      message: "M3 polity vassalage state must be an object."
+    });
+    return;
+  }
+
+  if (input["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m3.schemaVersion",
+      message: "M3 polity vassalage schemaVersion must be 1."
+    });
+  }
+
+  validateArrayField(input, "polities", "state.m3.polities", errors);
+  validateArrayField(input, "obligations", "state.m3.obligations", errors);
+  validateArrayField(input, "obligationAuditEvents", "state.m3.obligationAuditEvents", errors);
+  validateArrayField(input, "fulfillmentClaims", "state.m3.fulfillmentClaims", errors);
+
+  const polities = input["polities"];
+  if (Array.isArray(polities)) {
+    polities.forEach((entry, index) =>
+      validateM3PolityEntry(entry, `state.m3.polities[${index}]`, errors)
+    );
+  }
+
+  const obligations = input["obligations"];
+  if (Array.isArray(obligations)) {
+    obligations.forEach((entry, index) =>
+      validateM3ObligationEntry(entry, `state.m3.obligations[${index}]`, errors)
+    );
+  }
+
+  const auditEvents = input["obligationAuditEvents"];
+  if (Array.isArray(auditEvents)) {
+    auditEvents.forEach((entry, index) =>
+      validateM3AuditEventEntry(entry, `state.m3.obligationAuditEvents[${index}]`, errors)
+    );
+  }
+
+  const fulfillmentClaims = input["fulfillmentClaims"];
+  if (Array.isArray(fulfillmentClaims)) {
+    fulfillmentClaims.forEach((entry, index) =>
+      validateM3FulfillmentClaimEntry(entry, `state.m3.fulfillmentClaims[${index}]`, errors)
+    );
+  }
+}
+
+function validateM3PolityEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
+  if (!validateRecordEntry(input, path, "M3PolityRecordState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  const suzerainId = input["directSuzerainPolityId"];
+  if (suzerainId !== null) {
+    validatePositiveIntegerValue(suzerainId, `${path}.directSuzerainPolityId`, "PolityId", errors);
+  }
+}
+
+function validateM3ObligationEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3ObligationState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "id", `${path}.id`, "M3ObligationId", errors);
+  validatePositiveIntegerField(
+    input,
+    "debtorPolityId",
+    `${path}.debtorPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "creditorPolityId",
+    `${path}.creditorPolityId`,
+    "PolityId",
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "obligationKind",
+    `${path}.obligationKind`,
+    ["tribute", "troop"],
+    errors
+  );
+  validateM3RequirementEntry(input["requirement"], `${path}.requirement`, errors);
+  validateM3DueEntry(input["due"], `${path}.due`, errors);
+  validateStringUnionField(
+    input,
+    "status",
+    `${path}.status`,
+    ["active", "disputed", "breached"],
+    errors
+  );
+  validateNullableStringField(input, "disputeReasonCode", `${path}.disputeReasonCode`, errors);
+  validateNullableStringField(input, "breachReasonCode", `${path}.breachReasonCode`, errors);
+  validatePositiveIntegerField(
+    input,
+    "createdAuditEventId",
+    `${path}.createdAuditEventId`,
+    "M3ObligationAuditEventId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "latestAuditEventId",
+    `${path}.latestAuditEventId`,
+    "M3ObligationAuditEventId",
+    errors
+  );
+}
+
+function validateM3RequirementEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 requirement must be an object." });
+    return;
+  }
+  if (input["kind"] === "amount") {
+    validateStringUnionField(
+      input,
+      "resourceKind",
+      `${path}.resourceKind`,
+      ["cash", "grain", "troops"],
+      errors
+    );
+    validatePositiveIntegerField(input, "amount", `${path}.amount`, "M3 amount", errors);
+    return;
+  }
+  if (input["kind"] === "condition") {
+    validateNonEmptyStringField(input, "conditionKey", `${path}.conditionKey`, errors);
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path: `${path}.kind`,
+    message: "M3 requirement kind must be amount or condition."
+  });
+}
+
+function validateM3DueEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "M3 due must be an object." });
+    return;
+  }
+  if (input["kind"] === "cadence") {
+    validatePositiveIntegerField(
+      input,
+      "periodDays",
+      `${path}.periodDays`,
+      "M3 periodDays",
+      errors
+    );
+    validateNonnegativeIntegerField(input, "nextDueDay", `${path}.nextDueDay`, errors);
+    return;
+  }
+  if (input["kind"] === "trigger") {
+    validateNonEmptyStringField(input, "triggerKey", `${path}.triggerKey`, errors);
+    return;
+  }
+  errors.push({
+    code: "invalid-schema",
+    path: `${path}.kind`,
+    message: "M3 due kind must be cadence or trigger."
+  });
+}
+
+function validateM3AuditEventEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3ObligationAuditEventState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "id", `${path}.id`, "M3ObligationAuditEventId", errors);
+  validatePositiveIntegerField(
+    input,
+    "obligationId",
+    `${path}.obligationId`,
+    "M3ObligationId",
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "eventKind",
+    `${path}.eventKind`,
+    ["created", "fulfilled", "status-changed"],
+    errors
+  );
+  validateNonnegativeIntegerField(input, "eventDay", `${path}.eventDay`, errors);
+  validateNonnegativeIntegerField(input, "eventRevision", `${path}.eventRevision`, errors);
+  validateNonEmptyStringField(input, "commandId", `${path}.commandId`, errors);
+  if (!isRecord(input["actor"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.actor`,
+      message: "M3 audit actor must be an object."
+    });
+  } else {
+    validateStringUnionField(
+      input["actor"],
+      "kind",
+      `${path}.actor.kind`,
+      ["ai", "player", "system"],
+      errors
+    );
+    validateNonEmptyStringField(input["actor"], "id", `${path}.actor.id`, errors);
+  }
+  const fulfillmentId = input["fulfillmentId"];
+  if (fulfillmentId !== null) {
+    validatePositiveIntegerValue(fulfillmentId, `${path}.fulfillmentId`, "M3FulfillmentId", errors);
+  }
+  const fulfilledAmount = input["fulfilledAmount"];
+  if (fulfilledAmount !== null) {
+    validatePositiveIntegerValue(
+      fulfilledAmount,
+      `${path}.fulfilledAmount`,
+      "M3 fulfilledAmount",
+      errors
+    );
+  }
+  validateStringUnionField(
+    input,
+    "statusAfter",
+    `${path}.statusAfter`,
+    ["active", "disputed", "breached"],
+    errors
+  );
+  validateNullableStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
+function validateM3FulfillmentClaimEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M3FulfillmentClaimState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "fulfillmentId",
+    `${path}.fulfillmentId`,
+    "M3FulfillmentId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "obligationId",
+    `${path}.obligationId`,
+    "M3ObligationId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "auditEventId",
+    `${path}.auditEventId`,
+    "M3ObligationAuditEventId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "fulfilledAmount",
+    `${path}.fulfilledAmount`,
+    "M3 fulfilledAmount",
+    errors
+  );
+}
+
 function validateM2PopulationGroupEntry(
   entry: unknown,
   path: string,
@@ -1401,6 +1784,61 @@ function validatePositiveIntegerField(
   validatePositiveIntegerValue(entry[key], path, label, errors);
 }
 
+function validateNonEmptyStringField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (typeof value === "string" && value.length > 0) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be a non-empty string.`
+  });
+}
+
+function validateNullableStringField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (value === null || (typeof value === "string" && value.length > 0)) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be null or a non-empty string.`
+  });
+}
+
+function validateStringUnionField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  allowedValues: readonly string[],
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (typeof value === "string" && allowedValues.includes(value)) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be one of ${allowedValues.join(", ")}.`
+  });
+}
+
 function validateNonnegativeIntegerField(
   entry: Record<string, unknown>,
   key: string,
@@ -1462,7 +1900,8 @@ function validatePositiveIntegerValue(
 
 function createRuntimeState(
   definitions: WorldDefinitionsV0,
-  m2: M2EconomyPopulationStateV0 | undefined
+  m2: M2EconomyPopulationStateV0 | undefined,
+  m3: M3PolityVassalageStateV0 | undefined
 ): WorldRuntimeStateV0 {
   const state: WorldRuntimeStateV0 = {
     polities: sortByNumericId(definitions.polities).map((definition) => ({
@@ -1485,13 +1924,28 @@ function createRuntimeState(
     }))
   };
 
-  if (m2 === undefined) {
+  if (m2 === undefined && m3 === undefined) {
     return state;
   }
 
+  const nextState: WorldRuntimeStateV0 = { ...state };
+  if (m2 !== undefined) {
+    return m3 === undefined
+      ? { ...nextState, m2: canonicalizeM2EconomyPopulationState(m2) }
+      : {
+          ...nextState,
+          m2: canonicalizeM2EconomyPopulationState(m2),
+          m3: canonicalizeM3PolityVassalageState(m3)
+        };
+  }
+
+  if (m3 === undefined) {
+    return nextState;
+  }
+
   return {
-    ...state,
-    m2: canonicalizeM2EconomyPopulationState(m2)
+    ...nextState,
+    m3: canonicalizeM3PolityVassalageState(m3)
   };
 }
 
@@ -1534,6 +1988,78 @@ export function canonicalizeM2TransportState(transport: M2TransportStateV0): M2T
       monthlyValues: sortM2SeasonalMonths(curve.monthlyValues)
     }))
   };
+}
+
+export function createM3PolityVassalageStateV0(
+  definitions: WorldDefinitionsV0,
+  input?: Partial<M3PolityVassalageStateV0>
+): M3PolityVassalageStateV0 {
+  return canonicalizeM3PolityVassalageState({
+    schemaVersion: 1,
+    polities:
+      input?.polities ??
+      definitions.polities.map((polity) => ({
+        polityId: polity.id,
+        directSuzerainPolityId: null
+      })),
+    obligations: input?.obligations ?? [],
+    obligationAuditEvents: input?.obligationAuditEvents ?? [],
+    fulfillmentClaims: input?.fulfillmentClaims ?? []
+  });
+}
+
+export function canonicalizeM3PolityVassalageState(
+  m3: M3PolityVassalageStateV0
+): M3PolityVassalageStateV0 {
+  return {
+    schemaVersion: 1,
+    polities: sortM3PolityRecords(m3.polities).map((polity) => ({
+      polityId: parsePolityId(polity.polityId),
+      directSuzerainPolityId:
+        polity.directSuzerainPolityId === null ? null : parsePolityId(polity.directSuzerainPolityId)
+    })),
+    obligations: sortM3Obligations(m3.obligations).map((obligation) => ({
+      ...obligation,
+      id: parseM3ObligationId(obligation.id),
+      debtorPolityId: parsePolityId(obligation.debtorPolityId),
+      creditorPolityId: parsePolityId(obligation.creditorPolityId),
+      requirement: copyM3Requirement(obligation.requirement),
+      due: copyM3Due(obligation.due),
+      createdAuditEventId: parseM3ObligationAuditEventId(obligation.createdAuditEventId),
+      latestAuditEventId: parseM3ObligationAuditEventId(obligation.latestAuditEventId)
+    })),
+    obligationAuditEvents: orderedM3ObligationAuditEventsV0(m3).map((event) => ({
+      ...event,
+      id: parseM3ObligationAuditEventId(event.id),
+      obligationId: parseM3ObligationId(event.obligationId),
+      eventDay: parseGameDay(event.eventDay),
+      eventRevision: parseWorldRevision(event.eventRevision),
+      actor: { ...event.actor },
+      fulfillmentId: event.fulfillmentId === null ? null : parseM3FulfillmentId(event.fulfillmentId)
+    })),
+    fulfillmentClaims: sortM3FulfillmentClaims(m3.fulfillmentClaims).map((claim) => ({
+      fulfillmentId: parseM3FulfillmentId(claim.fulfillmentId),
+      obligationId: parseM3ObligationId(claim.obligationId),
+      auditEventId: parseM3ObligationAuditEventId(claim.auditEventId),
+      fulfilledAmount: claim.fulfilledAmount
+    }))
+  };
+}
+
+export function orderedM3ObligationAuditEventsV0(
+  m3: M3PolityVassalageStateV0 | undefined
+): readonly M3ObligationAuditEventStateV0[] {
+  if (m3 === undefined) {
+    return [];
+  }
+
+  return [...m3.obligationAuditEvents].sort(
+    (left, right) =>
+      left.eventDay - right.eventDay ||
+      left.eventRevision - right.eventRevision ||
+      left.obligationId - right.obligationId ||
+      left.id - right.id
+  );
 }
 
 function parseDisplayNameKey(value: unknown, path: string): string {
@@ -1584,6 +2110,38 @@ function parseM2RouteKind(value: unknown): M2RouteKindV0 {
   }
 
   throw new Error("M2 routeKind must be coast, river, or road.");
+}
+
+function copyM3Requirement(requirement: M3ObligationRequirementV0): M3ObligationRequirementV0 {
+  switch (requirement.kind) {
+    case "amount":
+      return {
+        kind: "amount",
+        resourceKind: requirement.resourceKind,
+        amount: parsePositiveInteger(requirement.amount, "M3 amount")
+      };
+    case "condition":
+      return {
+        kind: "condition",
+        conditionKey: parseDisplayNameKey(requirement.conditionKey, "M3 conditionKey")
+      };
+  }
+}
+
+function copyM3Due(due: M3ObligationDueV0): M3ObligationDueV0 {
+  switch (due.kind) {
+    case "cadence":
+      return {
+        kind: "cadence",
+        periodDays: parsePositiveInteger(due.periodDays, "M3 periodDays"),
+        nextDueDay: parseGameDay(due.nextDueDay)
+      };
+    case "trigger":
+      return {
+        kind: "trigger",
+        triggerKey: parseDisplayNameKey(due.triggerKey, "M3 triggerKey")
+      };
+  }
 }
 
 function isPositiveInteger(value: unknown): boolean {
@@ -1644,6 +2202,22 @@ function sortM2MarketDistricts(
       (left, right) => left.value.districtId - right.value.districtId || left.index - right.index
     )
     .map((entry) => entry.value);
+}
+
+function sortM3PolityRecords(
+  values: readonly M3PolityRecordStateV0[]
+): readonly M3PolityRecordStateV0[] {
+  return [...values].sort((left, right) => left.polityId - right.polityId);
+}
+
+function sortM3Obligations(values: readonly M3ObligationStateV0[]): readonly M3ObligationStateV0[] {
+  return [...values].sort((left, right) => left.id - right.id);
+}
+
+function sortM3FulfillmentClaims(
+  values: readonly M3FulfillmentClaimStateV0[]
+): readonly M3FulfillmentClaimStateV0[] {
+  return [...values].sort((left, right) => left.fulfillmentId - right.fulfillmentId);
 }
 
 function sortM2LaborCommitments(
@@ -1782,6 +2356,93 @@ function formatM2CanonicalLines(m2: M2EconomyPopulationStateV0 | undefined): rea
   ];
 }
 
+function formatM3CanonicalLines(m3: M3PolityVassalageStateV0 | undefined): readonly string[] {
+  if (m3 === undefined) {
+    return [];
+  }
+
+  return [
+    `state.m3.schemaVersion=${m3.schemaVersion}`,
+    `state.m3.polities=${formatM3PolityRecords(m3.polities)}`,
+    `state.m3.obligations=${formatM3Obligations(m3.obligations)}`,
+    `state.m3.obligationAuditEvents=${formatM3AuditEvents(m3)}`,
+    `state.m3.fulfillmentClaims=${formatM3FulfillmentClaims(m3.fulfillmentClaims)}`
+  ];
+}
+
+function formatM3PolityRecords(values: readonly M3PolityRecordStateV0[]): string {
+  return sortM3PolityRecords(values)
+    .map((value) => `${value.polityId}:${formatNullableNumber(value.directSuzerainPolityId)}`)
+    .join(",");
+}
+
+function formatM3Obligations(values: readonly M3ObligationStateV0[]): string {
+  return sortM3Obligations(values)
+    .map((value) =>
+      [
+        value.id,
+        value.debtorPolityId,
+        value.creditorPolityId,
+        value.obligationKind,
+        formatM3Requirement(value.requirement),
+        formatM3Due(value.due),
+        value.status,
+        formatNullableString(value.disputeReasonCode),
+        formatNullableString(value.breachReasonCode),
+        value.createdAuditEventId,
+        value.latestAuditEventId
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM3Requirement(requirement: M3ObligationRequirementV0): string {
+  switch (requirement.kind) {
+    case "amount":
+      return `amount:${requirement.resourceKind}:${requirement.amount}`;
+    case "condition":
+      return `condition:${requirement.conditionKey}`;
+  }
+}
+
+function formatM3Due(due: M3ObligationDueV0): string {
+  switch (due.kind) {
+    case "cadence":
+      return `cadence:${due.periodDays}:${due.nextDueDay}`;
+    case "trigger":
+      return `trigger:${due.triggerKey}`;
+  }
+}
+
+function formatM3AuditEvents(m3: M3PolityVassalageStateV0): string {
+  return orderedM3ObligationAuditEventsV0(m3)
+    .map((value) =>
+      [
+        value.id,
+        value.obligationId,
+        value.eventKind,
+        value.eventDay,
+        value.eventRevision,
+        value.commandId,
+        `${value.actor.kind}:${value.actor.id}`,
+        formatNullableNumber(value.fulfillmentId),
+        formatNullableNumber(value.fulfilledAmount),
+        value.statusAfter,
+        formatNullableString(value.reasonCode)
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM3FulfillmentClaims(values: readonly M3FulfillmentClaimStateV0[]): string {
+  return sortM3FulfillmentClaims(values)
+    .map(
+      (value) =>
+        `${value.fulfillmentId}:${value.obligationId}:${value.auditEventId}:${value.fulfilledAmount}`
+    )
+    .join(",");
+}
+
 function formatM2PopulationGroups(values: readonly M2PopulationGroupStateV0[]): string {
   return sortM2PopulationGroups(values)
     .map((value) =>
@@ -1887,6 +2548,14 @@ function formatDistrictControl(control: DistrictControlState): string {
 
 function formatOptionalNumber(value: number | undefined): string {
   return value === undefined ? "none" : `${value}`;
+}
+
+function formatNullableNumber(value: number | null): string {
+  return value === null ? "null" : `${value}`;
+}
+
+function formatNullableString(value: string | null): string {
+  return value === null ? "null" : value;
 }
 
 function formatUnknown(value: unknown): string {
@@ -2365,6 +3034,226 @@ function validateM2RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
   });
 }
 
+function validateM3RuntimeState(world: WorldStateV0Candidate, errors: WorldInvariantError[]): void {
+  const m3 = getRecordPath(world, ["state", "m3"]);
+  if (!isM3StateLike(m3)) {
+    return;
+  }
+
+  const polityIds = idsOf(world.definitions.polities);
+  validateM3PolityCoverage(m3, polityIds, errors);
+  validateM3SuzerainAcyclicity(m3, errors);
+  validateM3ObligationSemantics(m3, polityIds, errors);
+  validateM3AuditSemantics(m3, errors);
+  validateM3FulfillmentSemantics(m3, errors);
+}
+
+function validateM3PolityCoverage(
+  m3: M3PolityVassalageStateV0,
+  polityIds: ReadonlySet<number>,
+  errors: WorldInvariantError[]
+): void {
+  const seen = new Set<number>();
+  m3.polities.forEach((polity, index) => {
+    if (seen.has(polity.polityId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.polities",
+        message: `Duplicate M3PolityRecordState row for PolityId ${polity.polityId}.`
+      });
+    }
+    seen.add(polity.polityId);
+    if (!polityIds.has(polity.polityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.polities[${index}].polityId`,
+        message: `M3 polity record references missing PolityId ${polity.polityId}.`
+      });
+    }
+    if (polity.directSuzerainPolityId !== null && !polityIds.has(polity.directSuzerainPolityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.polities[${index}].directSuzerainPolityId`,
+        message: `M3 polity record references missing suzerain PolityId ${polity.directSuzerainPolityId}.`
+      });
+    }
+    if (polity.directSuzerainPolityId === polity.polityId) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.polities[${index}].directSuzerainPolityId`,
+        message: "M3 polity direct suzerain must not reference itself."
+      });
+    }
+  });
+
+  for (const polityId of polityIds) {
+    if (!seen.has(polityId)) {
+      errors.push({
+        code: "missing-runtime-state-row",
+        path: "state.m3.polities",
+        message: `Missing M3PolityRecordState row for PolityId ${polityId}.`
+      });
+    }
+  }
+}
+
+function validateM3SuzerainAcyclicity(
+  m3: M3PolityVassalageStateV0,
+  errors: WorldInvariantError[]
+): void {
+  const suzerainByPolityId = new Map<number, number>();
+  for (const polity of m3.polities) {
+    if (polity.directSuzerainPolityId !== null) {
+      suzerainByPolityId.set(polity.polityId, polity.directSuzerainPolityId);
+    }
+  }
+
+  for (const polity of sortM3PolityRecords(m3.polities)) {
+    const visited = new Set<number>();
+    let current: number | undefined = polity.polityId;
+    while (current !== undefined) {
+      if (visited.has(current)) {
+        errors.push({
+          code: "bad-reference",
+          path: "state.m3.polities",
+          message: `M3 suzerain chain contains a cycle at PolityId ${current}.`
+        });
+        return;
+      }
+      visited.add(current);
+      current = suzerainByPolityId.get(current);
+    }
+  }
+}
+
+function validateM3ObligationSemantics(
+  m3: M3PolityVassalageStateV0,
+  polityIds: ReadonlySet<number>,
+  errors: WorldInvariantError[]
+): void {
+  const obligationIds = new Set<number>();
+  m3.obligations.forEach((obligation, index) => {
+    if (obligationIds.has(obligation.id)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.obligations",
+        message: `Duplicate M3ObligationState row for M3ObligationId ${obligation.id}.`
+      });
+    }
+    obligationIds.add(obligation.id);
+    if (!polityIds.has(obligation.debtorPolityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.obligations[${index}].debtorPolityId`,
+        message: `M3 obligation references missing debtor PolityId ${obligation.debtorPolityId}.`
+      });
+    }
+    if (!polityIds.has(obligation.creditorPolityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.obligations[${index}].creditorPolityId`,
+        message: `M3 obligation references missing creditor PolityId ${obligation.creditorPolityId}.`
+      });
+    }
+    if (obligation.debtorPolityId === obligation.creditorPolityId) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.obligations[${index}].creditorPolityId`,
+        message: "M3 obligation creditor and debtor must be different polities."
+      });
+    }
+    if (obligation.status === "disputed" && obligation.disputeReasonCode === null) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.obligations[${index}].disputeReasonCode`,
+        message: "M3 disputed obligation must include a disputeReasonCode."
+      });
+    }
+    if (obligation.status === "breached" && obligation.breachReasonCode === null) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m3.obligations[${index}].breachReasonCode`,
+        message: "M3 breached obligation must include a breachReasonCode."
+      });
+    }
+  });
+}
+
+function validateM3AuditSemantics(
+  m3: M3PolityVassalageStateV0,
+  errors: WorldInvariantError[]
+): void {
+  const obligationIds = new Set(m3.obligations.map((obligation) => obligation.id));
+  const auditIds = new Set<number>();
+  m3.obligationAuditEvents.forEach((event, index) => {
+    if (auditIds.has(event.id)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.obligationAuditEvents",
+        message: `Duplicate M3ObligationAuditEventState row for M3ObligationAuditEventId ${event.id}.`
+      });
+    }
+    auditIds.add(event.id);
+    if (!obligationIds.has(event.obligationId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.obligationAuditEvents[${index}].obligationId`,
+        message: `M3 audit event references missing M3ObligationId ${event.obligationId}.`
+      });
+    }
+  });
+
+  m3.obligations.forEach((obligation, index) => {
+    if (!auditIds.has(obligation.createdAuditEventId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.obligations[${index}].createdAuditEventId`,
+        message: `M3 obligation references missing created audit event ${obligation.createdAuditEventId}.`
+      });
+    }
+    if (!auditIds.has(obligation.latestAuditEventId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.obligations[${index}].latestAuditEventId`,
+        message: `M3 obligation references missing latest audit event ${obligation.latestAuditEventId}.`
+      });
+    }
+  });
+}
+
+function validateM3FulfillmentSemantics(
+  m3: M3PolityVassalageStateV0,
+  errors: WorldInvariantError[]
+): void {
+  const obligationIds = new Set(m3.obligations.map((obligation) => obligation.id));
+  const auditIds = new Set(m3.obligationAuditEvents.map((event) => event.id));
+  const fulfillmentIds = new Set<number>();
+  m3.fulfillmentClaims.forEach((claim, index) => {
+    if (fulfillmentIds.has(claim.fulfillmentId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m3.fulfillmentClaims",
+        message: `Duplicate M3FulfillmentClaimState row for M3FulfillmentId ${claim.fulfillmentId}.`
+      });
+    }
+    fulfillmentIds.add(claim.fulfillmentId);
+    if (!obligationIds.has(claim.obligationId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.fulfillmentClaims[${index}].obligationId`,
+        message: `M3 fulfillment claim references missing M3ObligationId ${claim.obligationId}.`
+      });
+    }
+    if (!auditIds.has(claim.auditEventId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m3.fulfillmentClaims[${index}].auditEventId`,
+        message: `M3 fulfillment claim references missing M3ObligationAuditEventId ${claim.auditEventId}.`
+      });
+    }
+  });
+}
+
 interface M2DistrictCoverageInput {
   readonly definitionIds: ReadonlySet<number>;
   readonly runtimeIds: readonly number[];
@@ -2559,6 +3448,20 @@ function isM2StateLike(value: unknown): value is M2EconomyPopulationStateV0 {
     Array.isArray(transport["routes"]) &&
     Array.isArray(transport["districtSeasonality"]) &&
     Array.isArray(transport["regionalCurves"])
+  );
+}
+
+function isM3StateLike(value: unknown): value is M3PolityVassalageStateV0 {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    value["schemaVersion"] === 1 &&
+    Array.isArray(value["polities"]) &&
+    Array.isArray(value["obligations"]) &&
+    Array.isArray(value["obligationAuditEvents"]) &&
+    Array.isArray(value["fulfillmentClaims"])
   );
 }
 

@@ -1,0 +1,112 @@
+{
+  "message_id": "MSG-20260625-M3-POLITY-VASSALAGE-SYSTEMS-REQUEST-CHANGES",
+  "task_id": "M3-POLITY-VASSALAGE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Architecture review found the M3 sim-core/protocol/content implementation broadly within the allowed package boundaries, with passing declared test gates, but it cannot be accepted because the current save path can emit unloadable bytes after accepted M3 commands. M3 state participates in the canonical world hash, but the save DTO omits state.m3; loadSaveV1 then rejects the generated save with a meta.stateHash mismatch. The new M3 domain events are also serialized into eventTail but are not parsed by parseSavedDomainEvent. This violates the public boundary/error-model expectation that unsupported persistence must fail explicitly rather than generating an invalid save artifact.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/tasks/active/M3-POLITY-VASSALAGE-001.json",
+    "project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m3-polity-vassalage",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "Task JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff JSON validated."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e forbidden-path diff check",
+      "exit_code": 0,
+      "result": "No forbidden changed paths. Checked 16 changed/untracked paths."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e M3 save/load probe",
+      "exit_code": 1,
+      "result": "After an accepted sim.create-obligation command, requestSaveV1 produced a save with savedHasM3=false and eventKinds=[\"sim.obligation-created\"]; loadSaveV1 rejected it with semantic-invariant at meta.stateHash: stored hash 23fac46e did not match canonical hash f029be70."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "10 files passed, 51 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 file passed, 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 file passed, 5 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c, command/query hash d275faa4, save/load hash 28074edd, save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 20 root test files passed with 100 tests; web test passed with 1 file and 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "rg -n 'Math\\.random|Date\\.now|performance\\.now|document\\.|window\\.' packages/sim-core/src",
+      "exit_code": 1,
+      "result": "No forbidden real-time, random, DOM, or window API matches in sim-core."
+    },
+    {
+      "command": "rg -n 'from [\"''](react|pixi|pixi\\.js|electron|fs|node:fs|path|node:path)[\"'']' packages/sim-core/src",
+      "exit_code": 1,
+      "result": "No forbidden React/Pixi/Electron/Node IO imports in sim-core."
+    }
+  ],
+  "decisions": [
+    "Review outcome is REQUEST_CHANGES, not BLOCKED, because the failing behavior is reproducible and can be addressed within an explicit simulation_engineer follow-up or routed back if the lead decides save-format scope must be opened.",
+    "The implementation otherwise respects the main authority boundary: M3 mutations use versioned GameCommand paths in sim-core, and player/AI actors share those command kinds.",
+    "content-schema and content-runtime M3 additions remain validation-only and FICTIONAL, with M3-HISTORICAL-CLAIM-PIPELINE-001 provenance rather than formal historical content."
+  ],
+  "risks": [
+    "packages/save-format is forbidden for this task, so the fix must not silently edit it unless lead_orchestrator changes scope. If M3 persistence is intentionally unsupported, requestSaveV1 must fail explicitly for state.m3 rather than emit unloadable bytes.",
+    "If M3 domain events remain serializable through save eventTail, parseSavedDomainEvent needs matching cases for sim.polity-suzerain-changed, sim.obligation-created, and sim.obligation-fulfilled, with regression coverage."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the M3 save/error-model compatibility issue without touching forbidden paths unless the lead changes scope. Add regression coverage proving either explicit save rejection for state.m3 or a fully loadable M3 save path, and ensure new M3 eventTail records are not emitted without a corresponding parser strategy.",
+  "created_at": "2026-06-25T05:57:05Z"
+}

@@ -2,7 +2,7 @@
   "id": "M3-POLITY-VASSALAGE-001",
   "summary": "Implement M3 polity, suzerain chain, and auditable obligations model",
   "milestone": "M3",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -68,13 +68,16 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m3-polity-vassalage",
-  "threads": {},
-  "route_to": "simulation_engineer",
+  "threads": {
+    "simulation_engineer": "019efd36-991d-7b61-bd9a-4c313e9e1383",
+    "systems_architect": "019efd53-2468-7303-932a-d9491cfe6844"
+  },
+  "route_to": "systems_architect",
   "notes": [
     "This task establishes the M3 polity/vassalage substrate only; it must not absorb postwar settlement, full diplomacy, or client UI work.",
     "Keep sim-core decoupled from React, Pixi, Electron, DOM, Node IO, and real-time APIs.",
     "Any change that would reinterpret D-012 or require a new architecture decision must stop and route to systems_architect."
   ],
   "created_at": "2026-06-25T04:09:26.814Z",
-  "updated_at": "2026-06-25T04:09:26.814Z"
+  "updated_at": "2026-06-25T06:11:36.405Z"
 }

@@ -1,0 +1,139 @@
+{
+  "message_id": "MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW",
+  "task_id": "M3-POLITY-VASSALAGE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M3 polity/vassalage substrate in sim-core, protocol, content-schema, and content-runtime. WorldState now optionally carries M3 polity records, direct suzerain links, obligations, obligation audit events, and fulfillment claims. Mutations use versioned GameCommand paths for suzerain changes, obligation creation, and fulfillment recording. Tests cover acyclic suzerain chains, stable audit ordering, duplicate fulfillment rejection, district controller validity, protocol parsing, and abstract validation-only content schemas.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "packages/protocol/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "tests/sim-core-m3-polity-vassalage.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/tasks/active/M3-POLITY-VASSALAGE-001.json"
+  ],
+  "branch_or_worktree": "feat/m3-polity-vassalage",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m3-polity-vassalage.test.ts",
+      "exit_code": 1,
+      "result": "Expected failing test pass before implementation: 4 tests failed because createM3PolityVassalageStateV0 was not implemented."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/content-schema-graph-source.test.ts tests/content-runtime-pack.test.ts",
+      "exit_code": 1,
+      "result": "Expected failing test pass before implementation: M3 content schema/runtime parser functions were not implemented."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m3-polity-vassalage.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed, 4 tests passed after implementation."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/content-schema-graph-source.test.ts tests/content-runtime-pack.test.ts",
+      "exit_code": 0,
+      "result": "2 files passed, 12 tests passed after implementation."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "10 files passed, 51 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 file passed, 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 file passed, 5 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hello hash 61e0ba1c, command/query hash d275faa4, save/load hash 28074edd, save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 20 root test files passed with 100 tests; web test passed with 1 file and 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 1,
+      "result": "Initial lint found one unused M3PolityVassalageStateV0 import in packages/sim-core/src/command-query-v1.ts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "Lint passed after removing the unused import."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "Task JSON validated."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "Task shape ok for id M3-POLITY-VASSALAGE-001 with status IN_PROGRESS at check time."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-POLITY-VASSALAGE-001__MSG-20260625-M3-POLITY-VASSALAGE-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Handoff JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-POLITY-VASSALAGE-001",
+      "exit_code": 0,
+      "result": "Final task JSON validated after switching task status to REVIEW."
+    },
+    {
+      "command": "node -e handoff JSON parse/route/status check",
+      "exit_code": 0,
+      "result": "Handoff shape ok with status REVIEW and route_to systems_architect."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree contains only allowed-path task changes plus pre-existing allowed project state files; tests/sim-core-m3-polity-vassalage.test.ts and this handoff JSON are untracked until staged."
+    }
+  ],
+  "decisions": [
+    "M3 state is optional on WorldRuntimeStateV0 so existing M1/M2 fixtures and save canaries are not forced into a save-format migration during this task.",
+    "Obligation audit ordering is deterministic by eventDay, eventRevision, obligationId, and audit event id as the final stable tie-breaker.",
+    "Fulfillment IDs are globally unique within M3 fulfillmentClaims; sim.record-obligation-fulfillment rejects duplicate fulfillmentId before commit to prevent double-counting across suzerains.",
+    "Runtime/source content examples are validation-only FICTIONAL DTOs with M3-HISTORICAL-CLAIM-PIPELINE-001 provenance and no formal historical content."
+  ],
+  "risks": [
+    "M3 WorldState is not wired into save-format by design because packages/save-format was forbidden for this task; current save/load canaries remain unchanged for M1/M2.",
+    "Content-tools compilation for M3 source DTOs is not implemented; this task added content-schema and content-runtime representation only.",
+    "No UI/client read model was added because UI/client packages were forbidden."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Please perform architecture review for WorldState/protocol/content-runtime determinism, authority boundaries, explicit schemas, acyclic suzerain model, obligation audit ordering, duplicate fulfillment prevention, and test coverage.",
+  "created_at": "2026-06-25T05:46:30.000Z"
+}

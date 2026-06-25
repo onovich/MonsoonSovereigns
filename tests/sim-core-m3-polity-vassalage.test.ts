@@ -1,0 +1,330 @@
+import fc from "fast-check";
+import { describe, expect, test } from "vitest";
+
+import {
+  createM3PolityVassalageStateV0,
+  createWorldStateV0,
+  defineDistrict,
+  definePolity,
+  orderedM3ObligationAuditEventsV0,
+  parseM3FulfillmentId,
+  parseM3ObligationId,
+  parsePolityId,
+  requestSaveV1,
+  submitCommandV1,
+  validateWorldStateV0,
+  type SimulationRuntimeV1,
+  type WorldStateV0
+} from "../packages/sim-core/src/index";
+
+import type { GameCommandV1 } from "../packages/protocol/src/index";
+
+describe("M3-POLITY-VASSALAGE-001 polity and vassalage substrate", () => {
+  test("rejects cyclic suzerain chains while player and AI use the same command path", () => {
+    let playerRuntime = bootM3Runtime();
+    let aiRuntime = bootM3Runtime();
+
+    playerRuntime = accepted(
+      playerRuntime,
+      setSuzerainCommand("m3.suzerain.player.1", "player", playerRuntime, 1, 2)
+    );
+    aiRuntime = accepted(aiRuntime, setSuzerainCommand("m3.suzerain.ai.1", "ai", aiRuntime, 1, 2));
+    expect(playerRuntime.world.meta.stateHash).toBe(aiRuntime.world.meta.stateHash);
+
+    playerRuntime = accepted(
+      playerRuntime,
+      setSuzerainCommand("m3.suzerain.player.2", "player", playerRuntime, 2, 3)
+    );
+
+    const rejected = submitCommandV1(
+      playerRuntime,
+      setSuzerainCommand("m3.suzerain.cycle", "ai", playerRuntime, 3, 1)
+    );
+    expect(rejected.result).toMatchObject({
+      status: "rejected",
+      error: { code: "acyclicity-violation", path: "payload.directSuzerainPolityId" }
+    });
+    expect(rejected.runtime.world.meta.stateHash).toBe(playerRuntime.world.meta.stateHash);
+  });
+
+  test("keeps obligation audit order stable and prevents fulfillment double counting", () => {
+    let runtime = bootM3Runtime();
+    runtime = accepted(
+      runtime,
+      createObligationCommand("m3.obligation.create.1", "player", runtime, 1, 2, 100)
+    );
+    runtime = accepted(
+      runtime,
+      createObligationCommand("m3.obligation.create.2", "ai", runtime, 1, 3, 50)
+    );
+    runtime = accepted(
+      runtime,
+      recordFulfillmentCommand("m3.obligation.fulfill.1", "player", runtime, 1, 900, 40)
+    );
+
+    const duplicate = submitCommandV1(
+      runtime,
+      recordFulfillmentCommand("m3.obligation.fulfill.duplicate", "ai", runtime, 2, 900, 20)
+    );
+    expect(duplicate.result).toMatchObject({
+      status: "rejected",
+      error: { code: "duplicate-fulfillment", path: "payload.fulfillmentId" }
+    });
+
+    const m3 = runtime.world.state.m3;
+    expect(m3).toBeDefined();
+    if (m3 === undefined) {
+      throw new Error("Expected M3 state.");
+    }
+
+    expect(m3.obligations[0]).toMatchObject({
+      id: parseM3ObligationId(1),
+      debtorPolityId: parsePolityId(1),
+      creditorPolityId: parsePolityId(2),
+      status: "active",
+      requirement: { kind: "amount", amount: 100 },
+      due: { kind: "cadence", periodDays: 90 }
+    });
+    expect(m3.fulfillmentClaims).toEqual([
+      {
+        fulfillmentId: parseM3FulfillmentId(900),
+        obligationId: parseM3ObligationId(1),
+        auditEventId: 3,
+        fulfilledAmount: 40
+      }
+    ]);
+    expect(orderedM3ObligationAuditEventsV0(m3).map((event) => event.id)).toEqual([1, 2, 3]);
+    expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
+  test("requestSaveV1 rejects M3 state before emitting unloadable save bytes", () => {
+    let runtime = bootM3Runtime();
+    runtime = accepted(
+      runtime,
+      createObligationCommand("m3.obligation.save-probe", "player", runtime, 1, 2, 100)
+    );
+
+    expect(runtime.world.state.m3).toBeDefined();
+    expect(runtime.eventTail.map((event) => event.kind)).toEqual(["sim.obligation-created"]);
+    expect(() =>
+      requestSaveV1(runtime, {
+        appVersion: "0.0.0",
+        source: "test",
+        codecVersion: "save-envelope-v1"
+      })
+    ).toThrow(
+      "requestSaveV1 does not support WorldState state.m3; refusing to emit incompatible save bytes."
+    );
+  });
+
+  test("canonicalizes unordered obligation audit history with deterministic tie-breakers", () => {
+    const first = createM3WorldWithAuditOrder([3, 1, 2]);
+    const second = createM3WorldWithAuditOrder([1, 2, 3]);
+
+    expect(orderedM3ObligationAuditEventsV0(first.state.m3).map((event) => event.id)).toEqual([
+      1, 2, 3
+    ]);
+    expect(first.meta.stateHash).toBe(second.meta.stateHash);
+    expect(validateWorldStateV0(first)).toEqual([]);
+  });
+
+  test("property invariants preserve acyclic suzerain chains and district controller validity", () => {
+    fc.assert(
+      fc.property(
+        fc.array(fc.integer({ min: 0, max: 3 }), { minLength: 3, maxLength: 3 }),
+        (raw) => {
+          let runtime = bootM3Runtime();
+
+          for (let index = 0; index < raw.length; index += 1) {
+            const polityId = index + 1;
+            const suzerainId = raw[index] === 0 ? null : raw[index];
+            const submitted = submitCommandV1(
+              runtime,
+              setSuzerainCommand(
+                `m3.property.suzerain.${index}`,
+                "ai",
+                runtime,
+                polityId,
+                suzerainId
+              )
+            );
+            if (submitted.result.status === "accepted") {
+              runtime = submitted.runtime;
+            } else {
+              expect(submitted.result.error.code).toBe("acyclicity-violation");
+            }
+
+            expect(validateWorldStateV0(runtime.world)).toEqual([]);
+          }
+
+          for (const district of runtime.world.state.districts) {
+            if (district.control.kind === "controlled") {
+              expect([1, 2, 3]).toContain(district.control.controllerPolityId);
+            }
+          }
+        }
+      ),
+      { numRuns: 24, seed: 1531 }
+    );
+  });
+});
+
+function bootM3Runtime(): SimulationRuntimeV1 {
+  const world = createM3WorldWithAuditOrder([]);
+  return {
+    world,
+    acceptedCommandIds: [],
+    commandTail: [],
+    eventTail: []
+  };
+}
+
+function createM3WorldWithAuditOrder(auditEventIds: readonly number[]): WorldStateV0 {
+  const definitions = {
+    polities: [
+      definePolity({ id: 1, displayNameKey: "content.m3.validation.polity_001" }),
+      definePolity({ id: 2, displayNameKey: "content.m3.validation.polity_002" }),
+      definePolity({ id: 3, displayNameKey: "content.m3.validation.polity_003" })
+    ],
+    persons: [],
+    districts: [
+      defineDistrict({ id: 1, displayNameKey: "content.m3.validation.district_001" }),
+      defineDistrict({ id: 2, displayNameKey: "content.m3.validation.district_002" })
+    ],
+    settlements: [],
+    routes: []
+  };
+
+  return createWorldStateV0({
+    seed: 1531,
+    contentManifestHash: "content.m3.validation",
+    currentDay: 0,
+    revision: 0,
+    definitions,
+    m3: createM3PolityVassalageStateV0(definitions, {
+      polities: [
+        { polityId: 1, directSuzerainPolityId: null },
+        { polityId: 2, directSuzerainPolityId: null },
+        { polityId: 3, directSuzerainPolityId: null }
+      ],
+      obligations:
+        auditEventIds.length === 0
+          ? []
+          : [
+              {
+                id: 1,
+                debtorPolityId: 1,
+                creditorPolityId: 2,
+                obligationKind: "tribute",
+                status: "active",
+                requirement: { kind: "amount", resourceKind: "cash", amount: 100 },
+                due: { kind: "cadence", periodDays: 90, nextDueDay: 90 },
+                disputeReasonCode: null,
+                breachReasonCode: null,
+                createdAuditEventId: 1,
+                latestAuditEventId: 3
+              }
+            ],
+      obligationAuditEvents: auditEventIds.map((id) => ({
+        id,
+        obligationId: 1,
+        eventKind: id === 3 ? "fulfilled" : id === 2 ? "status-changed" : "created",
+        eventDay: 0,
+        eventRevision: 0,
+        commandId: `m3.audit.${id}`,
+        actor: { kind: "system", id: "validation" },
+        fulfillmentId: id === 3 ? 900 : null,
+        fulfilledAmount: id === 3 ? 40 : null,
+        statusAfter: "active",
+        reasonCode: null
+      })),
+      fulfillmentClaims:
+        auditEventIds.length === 0
+          ? []
+          : [
+              {
+                fulfillmentId: 900,
+                obligationId: 1,
+                auditEventId: 3,
+                fulfilledAmount: 40
+              }
+            ]
+    })
+  });
+}
+
+function accepted(runtime: SimulationRuntimeV1, command: GameCommandV1): SimulationRuntimeV1 {
+  const submitted = submitCommandV1(runtime, command);
+  expect(submitted.result.status).toBe("accepted");
+  return submitted.runtime;
+}
+
+function setSuzerainCommand(
+  commandId: string,
+  actorKind: "ai" | "player",
+  runtime: SimulationRuntimeV1,
+  polityId: number,
+  directSuzerainPolityId: number | null
+): GameCommandV1 {
+  return {
+    schemaVersion: 1,
+    kind: "sim.set-polity-suzerain",
+    commandId,
+    actor: { kind: actorKind, id: `${actorKind}:m3` },
+    expectedDay: runtime.world.meta.currentDay,
+    expectedRevision: runtime.world.meta.revision,
+    payload: {
+      polityId,
+      directSuzerainPolityId,
+      reasonCode: "validation-change"
+    }
+  };
+}
+
+function createObligationCommand(
+  commandId: string,
+  actorKind: "ai" | "player",
+  runtime: SimulationRuntimeV1,
+  debtorPolityId: number,
+  creditorPolityId: number,
+  amount: number
+): GameCommandV1 {
+  return {
+    schemaVersion: 1,
+    kind: "sim.create-obligation",
+    commandId,
+    actor: { kind: actorKind, id: `${actorKind}:m3` },
+    expectedDay: runtime.world.meta.currentDay,
+    expectedRevision: runtime.world.meta.revision,
+    payload: {
+      debtorPolityId,
+      creditorPolityId,
+      obligationKind: "tribute",
+      requirement: { kind: "amount", resourceKind: "cash", amount },
+      due: { kind: "cadence", periodDays: 90, nextDueDay: 90 }
+    }
+  };
+}
+
+function recordFulfillmentCommand(
+  commandId: string,
+  actorKind: "ai" | "player",
+  runtime: SimulationRuntimeV1,
+  obligationId: number,
+  fulfillmentId: number,
+  fulfilledAmount: number
+): GameCommandV1 {
+  return {
+    schemaVersion: 1,
+    kind: "sim.record-obligation-fulfillment",
+    commandId,
+    actor: { kind: actorKind, id: `${actorKind}:m3` },
+    expectedDay: runtime.world.meta.currentDay,
+    expectedRevision: runtime.world.meta.revision,
+    payload: {
+      obligationId,
+      fulfillmentId,
+      fulfilledAmount
+    }
+  };
+}

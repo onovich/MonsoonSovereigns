@@ -106,10 +106,75 @@ export interface CommitLaborCommandV1 {
   };
 }
 
+export interface SetPolitySuzerainCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.set-polity-suzerain";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly polityId: number;
+    readonly directSuzerainPolityId: number | null;
+    readonly reasonCode: string;
+  };
+}
+
+export interface CreateObligationCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.create-obligation";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly debtorPolityId: number;
+    readonly creditorPolityId: number;
+    readonly obligationKind: "tribute" | "troop";
+    readonly requirement:
+      | {
+          readonly kind: "amount";
+          readonly resourceKind: "cash" | "grain" | "troops";
+          readonly amount: number;
+        }
+      | {
+          readonly kind: "condition";
+          readonly conditionKey: string;
+        };
+    readonly due:
+      | {
+          readonly kind: "cadence";
+          readonly periodDays: number;
+          readonly nextDueDay: number;
+        }
+      | {
+          readonly kind: "trigger";
+          readonly triggerKey: string;
+        };
+  };
+}
+
+export interface RecordObligationFulfillmentCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.record-obligation-fulfillment";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly obligationId: number;
+    readonly fulfillmentId: number;
+    readonly fulfilledAmount: number;
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
   | CommitLaborCommandV1
+  | SetPolitySuzerainCommandV1
+  | CreateObligationCommandV1
+  | RecordObligationFulfillmentCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -480,6 +545,54 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
     }
     case "sim.commit-labor": {
       const payload = parseCommitLaborPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.set-polity-suzerain": {
+      const payload = parseSetPolitySuzerainPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.create-obligation": {
+      const payload = parseCreateObligationPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.record-obligation-fulfillment": {
+      const payload = parseRecordObligationFulfillmentPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -931,6 +1044,214 @@ function parseCommitLaborPayload(
   };
 }
 
+function parseSetPolitySuzerainPayload(
+  input: unknown
+): ProtocolParseResult<SetPolitySuzerainCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.set-polity-suzerain payload must be an object."
+    );
+  }
+
+  const polityId = parsePositiveSafeInteger(input["polityId"], "payload.polityId");
+  if (!polityId.ok) {
+    return polityId;
+  }
+
+  const directSuzerainPolityId = input["directSuzerainPolityId"];
+  if (directSuzerainPolityId !== null && !isPositiveSafeInteger(directSuzerainPolityId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.directSuzerainPolityId",
+      "directSuzerainPolityId must be a positive safe integer or null."
+    );
+  }
+
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      polityId: polityId.value,
+      directSuzerainPolityId,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseCreateObligationPayload(
+  input: unknown
+): ProtocolParseResult<CreateObligationCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.create-obligation payload must be an object."
+    );
+  }
+
+  const debtorPolityId = parsePositiveSafeInteger(
+    input["debtorPolityId"],
+    "payload.debtorPolityId"
+  );
+  if (!debtorPolityId.ok) {
+    return debtorPolityId;
+  }
+  const creditorPolityId = parsePositiveSafeInteger(
+    input["creditorPolityId"],
+    "payload.creditorPolityId"
+  );
+  if (!creditorPolityId.ok) {
+    return creditorPolityId;
+  }
+  const obligationKind = input["obligationKind"];
+  if (obligationKind !== "tribute" && obligationKind !== "troop") {
+    return protocolError(
+      "invalid-payload",
+      "payload.obligationKind",
+      "obligationKind must be tribute or troop."
+    );
+  }
+
+  const requirement = parseObligationRequirement(input["requirement"]);
+  if (!requirement.ok) {
+    return requirement;
+  }
+  const due = parseObligationDue(input["due"]);
+  if (!due.ok) {
+    return due;
+  }
+
+  return {
+    ok: true,
+    value: {
+      debtorPolityId: debtorPolityId.value,
+      creditorPolityId: creditorPolityId.value,
+      obligationKind,
+      requirement: requirement.value,
+      due: due.value
+    }
+  };
+}
+
+function parseRecordObligationFulfillmentPayload(
+  input: unknown
+): ProtocolParseResult<RecordObligationFulfillmentCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.record-obligation-fulfillment payload must be an object."
+    );
+  }
+
+  const obligationId = parsePositiveSafeInteger(input["obligationId"], "payload.obligationId");
+  if (!obligationId.ok) {
+    return obligationId;
+  }
+  const fulfillmentId = parsePositiveSafeInteger(input["fulfillmentId"], "payload.fulfillmentId");
+  if (!fulfillmentId.ok) {
+    return fulfillmentId;
+  }
+  const fulfilledAmount = parsePositiveSafeInteger(
+    input["fulfilledAmount"],
+    "payload.fulfilledAmount"
+  );
+  if (!fulfilledAmount.ok) {
+    return fulfilledAmount;
+  }
+
+  return {
+    ok: true,
+    value: {
+      obligationId: obligationId.value,
+      fulfillmentId: fulfillmentId.value,
+      fulfilledAmount: fulfilledAmount.value
+    }
+  };
+}
+
+function parseObligationRequirement(
+  input: unknown
+): ProtocolParseResult<CreateObligationCommandV1["payload"]["requirement"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.requirement",
+      "requirement must be an object."
+    );
+  }
+  if (input["kind"] === "amount") {
+    const resourceKind = input["resourceKind"];
+    if (resourceKind !== "cash" && resourceKind !== "grain" && resourceKind !== "troops") {
+      return protocolError(
+        "invalid-payload",
+        "payload.requirement.resourceKind",
+        "resourceKind must be cash, grain, or troops."
+      );
+    }
+    const amount = parsePositiveSafeInteger(input["amount"], "payload.requirement.amount");
+    if (!amount.ok) {
+      return amount;
+    }
+    return { ok: true, value: { kind: "amount", resourceKind, amount: amount.value } };
+  }
+  if (input["kind"] === "condition") {
+    const conditionKey = parseNonEmptyProtocolString(
+      input["conditionKey"],
+      "payload.requirement.conditionKey"
+    );
+    if (!conditionKey.ok) {
+      return conditionKey;
+    }
+    return { ok: true, value: { kind: "condition", conditionKey: conditionKey.value } };
+  }
+  return protocolError(
+    "invalid-payload",
+    "payload.requirement.kind",
+    "requirement kind must be amount or condition."
+  );
+}
+
+function parseObligationDue(
+  input: unknown
+): ProtocolParseResult<CreateObligationCommandV1["payload"]["due"]> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", "payload.due", "due must be an object.");
+  }
+  if (input["kind"] === "cadence") {
+    const periodDays = parsePositiveSafeInteger(input["periodDays"], "payload.due.periodDays");
+    if (!periodDays.ok) {
+      return periodDays;
+    }
+    const nextDueDay = parseNonnegativeSafeInteger(input["nextDueDay"], "payload.due.nextDueDay");
+    if (!nextDueDay.ok) {
+      return nextDueDay;
+    }
+    return {
+      ok: true,
+      value: { kind: "cadence", periodDays: periodDays.value, nextDueDay: nextDueDay.value }
+    };
+  }
+  if (input["kind"] === "trigger") {
+    const triggerKey = parseNonEmptyProtocolString(input["triggerKey"], "payload.due.triggerKey");
+    if (!triggerKey.ok) {
+      return triggerKey;
+    }
+    return { ok: true, value: { kind: "trigger", triggerKey: triggerKey.value } };
+  }
+  return protocolError(
+    "invalid-payload",
+    "payload.due.kind",
+    "due kind must be cadence or trigger."
+  );
+}
+
 function parsePreviewM2TransportRoutePayload(
   input: unknown
 ): ProtocolParseResult<PreviewM2TransportRouteQueryV1["payload"]> {
@@ -997,6 +1318,14 @@ function parseNonnegativeSafeInteger(value: unknown, path: string): ProtocolPars
   }
 
   return protocolError("invalid-payload", path, `${path} must be a nonnegative safe integer.`);
+}
+
+function parseNonEmptyProtocolString(value: unknown, path: string): ProtocolParseResult<string> {
+  if (typeof value === "string" && value.length > 0) {
+    return { ok: true, value };
+  }
+
+  return protocolError("invalid-payload", path, `${path} must be a non-empty string.`);
 }
 
 function isPositiveSafeInteger(value: unknown): value is number {

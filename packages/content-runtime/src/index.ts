@@ -7,7 +7,13 @@ import type {
   M2RouteKind,
   M2WorldFixtureKind,
   M2WorldHistoricity,
-  M2WorldSyntheticScope
+  M2WorldSyntheticScope,
+  M3ObligationKind,
+  M3ObligationResourceKind,
+  M3ObligationStatus,
+  M3PolityVassalageFixtureKind,
+  M3PolityVassalageHistoricity,
+  M3PolityVassalageSyntheticScope
 } from "@monsoon/content-schema";
 
 export type Brand<TValue, TBrand extends string> = TValue & { readonly __brand: TBrand };
@@ -19,6 +25,9 @@ export type ContentSettlementId = Brand<number, "ContentSettlementId">;
 export type ContentRegionalSeasonalCurveId = Brand<number, "ContentRegionalSeasonalCurveId">;
 export type ContentRouteId = Brand<number, "ContentRouteId">;
 export type ContentMapGeometryId = Brand<number, "ContentMapGeometryId">;
+export type ContentPolityId = Brand<number, "ContentPolityId">;
+export type ContentM3DistrictId = Brand<number, "ContentM3DistrictId">;
+export type ContentObligationId = Brand<number, "ContentObligationId">;
 export type ContentManifestHash = Brand<string, "ContentManifestHash">;
 
 export interface RuntimeContentManifestV0 {
@@ -154,6 +163,84 @@ export interface RuntimeM2WorldContentPackIndexV0 {
   getMapGeometry(id: ContentMapGeometryId | number): RuntimeM2MapGeometryV0 | undefined;
 }
 
+export interface RuntimeM3PolityVassalageContentManifestV0 {
+  readonly schemaVersion: 1;
+  readonly fixtureId: string;
+  readonly fixtureKind: M3PolityVassalageFixtureKind;
+  readonly syntheticScope: M3PolityVassalageSyntheticScope;
+  readonly historicity: M3PolityVassalageHistoricity;
+  readonly manifestHash: ContentManifestHash;
+  readonly polityCount: number;
+  readonly districtCount: number;
+  readonly obligationCount: number;
+}
+
+export interface RuntimeM3PolityDefinitionV0 {
+  readonly id: ContentPolityId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly directSuzerainPolityId: ContentPolityId | null;
+}
+
+export interface RuntimeM3DistrictControllerV0 {
+  readonly id: ContentM3DistrictId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly controllerPolityId: ContentPolityId | null;
+}
+
+export type RuntimeM3ObligationRequirementV0 =
+  | {
+      readonly kind: "amount";
+      readonly resourceKind: M3ObligationResourceKind;
+      readonly amount: number;
+    }
+  | {
+      readonly kind: "condition";
+      readonly conditionKey: string;
+    };
+
+export type RuntimeM3ObligationDueV0 =
+  | {
+      readonly kind: "cadence";
+      readonly periodDays: number;
+      readonly nextDueDay: number;
+    }
+  | {
+      readonly kind: "trigger";
+      readonly triggerKey: string;
+    };
+
+export interface RuntimeM3ObligationDefinitionV0 {
+  readonly id: ContentObligationId;
+  readonly sourceId: string;
+  readonly debtorPolityId: ContentPolityId;
+  readonly creditorPolityId: ContentPolityId;
+  readonly obligationKind: M3ObligationKind;
+  readonly requirement: RuntimeM3ObligationRequirementV0;
+  readonly due: RuntimeM3ObligationDueV0;
+  readonly status: M3ObligationStatus;
+  readonly disputeReasonCode: string | null;
+  readonly breachReasonCode: string | null;
+}
+
+export interface RuntimeM3PolityVassalageContentPackV0 {
+  readonly schemaVersion: 1;
+  readonly kind: "runtime-m3-polity-vassalage-content-pack-v0";
+  readonly fixtureId: string;
+  readonly manifest: RuntimeM3PolityVassalageContentManifestV0;
+  readonly polities: readonly RuntimeM3PolityDefinitionV0[];
+  readonly districts: readonly RuntimeM3DistrictControllerV0[];
+  readonly obligations: readonly RuntimeM3ObligationDefinitionV0[];
+}
+
+export interface RuntimeM3PolityVassalageContentPackIndexV0 {
+  readonly pack: RuntimeM3PolityVassalageContentPackV0;
+  getPolity(id: ContentPolityId | number): RuntimeM3PolityDefinitionV0 | undefined;
+  getDistrict(id: ContentM3DistrictId | number): RuntimeM3DistrictControllerV0 | undefined;
+  getObligation(id: ContentObligationId | number): RuntimeM3ObligationDefinitionV0 | undefined;
+}
+
 interface RuntimeValidationError {
   readonly path: string;
   readonly message: string;
@@ -230,6 +317,44 @@ export function parseRuntimeM2WorldContentPackV0(input: unknown): RuntimeM2World
   return Object.freeze(pack);
 }
 
+export function parseRuntimeM3PolityVassalageContentPackV0(
+  input: unknown
+): RuntimeM3PolityVassalageContentPackV0 {
+  const errors = validateRuntimeM3PolityVassalageContentPackV0(input);
+  if (errors.length > 0) {
+    throw new Error(
+      `RuntimeM3PolityVassalageContentPackV0 invalid: ${formatRuntimeErrors(errors)}`
+    );
+  }
+
+  if (!isRecord(input)) {
+    throw new Error("RuntimeM3PolityVassalageContentPackV0 invalid: root was not an object.");
+  }
+
+  const manifest = readRecord(input, "manifest");
+  const pack = {
+    schemaVersion: 1 as const,
+    kind: "runtime-m3-polity-vassalage-content-pack-v0" as const,
+    fixtureId: readString(input, "fixtureId"),
+    manifest: freezeM3Manifest({
+      schemaVersion: 1,
+      fixtureId: readString(manifest, "fixtureId"),
+      fixtureKind: "polity-vassalage-fixture",
+      syntheticScope: "m3-validation-only",
+      historicity: "FICTIONAL",
+      manifestHash: parseContentManifestHash(readString(manifest, "manifestHash")),
+      polityCount: readPositiveInteger(manifest, "polityCount"),
+      districtCount: readPositiveInteger(manifest, "districtCount"),
+      obligationCount: readPositiveInteger(manifest, "obligationCount")
+    }),
+    polities: Object.freeze(readArray(input, "polities").map(parseRuntimeM3Polity)),
+    districts: Object.freeze(readArray(input, "districts").map(parseRuntimeM3District)),
+    obligations: Object.freeze(readArray(input, "obligations").map(parseRuntimeM3Obligation))
+  };
+
+  return Object.freeze(pack);
+}
+
 export function validateRuntimeContentPackV0(input: unknown): readonly RuntimeValidationError[] {
   if (!isRecord(input)) {
     return [{ path: "$", message: "Runtime content pack must be an object." }];
@@ -275,6 +400,24 @@ export function validateRuntimeM2WorldContentPackV0(
   return errors;
 }
 
+export function validateRuntimeM3PolityVassalageContentPackV0(
+  input: unknown
+): readonly RuntimeValidationError[] {
+  if (!isRecord(input)) {
+    return [{ path: "$", message: "Runtime M3 polity vassalage content pack must be an object." }];
+  }
+
+  const errors: RuntimeValidationError[] = [];
+  validateRuntimeM3Root(input, errors);
+  validateRuntimeM3ArrayEntries(input, errors);
+  if (errors.length > 0) {
+    return errors;
+  }
+
+  validateRuntimeM3Semantics(input, errors);
+  return errors;
+}
+
 export function parseContentNodeId(value: unknown): ContentNodeId {
   return parsePositiveInteger(value, "ContentNodeId") as ContentNodeId;
 }
@@ -306,6 +449,18 @@ export function parseContentRouteId(value: unknown): ContentRouteId {
 
 export function parseContentMapGeometryId(value: unknown): ContentMapGeometryId {
   return parsePositiveInteger(value, "ContentMapGeometryId") as ContentMapGeometryId;
+}
+
+export function parseContentPolityId(value: unknown): ContentPolityId {
+  return parsePositiveInteger(value, "ContentPolityId") as ContentPolityId;
+}
+
+export function parseContentM3DistrictId(value: unknown): ContentM3DistrictId {
+  return parsePositiveInteger(value, "ContentM3DistrictId") as ContentM3DistrictId;
+}
+
+export function parseContentObligationId(value: unknown): ContentObligationId {
+  return parsePositiveInteger(value, "ContentObligationId") as ContentObligationId;
 }
 
 export function parseContentManifestHash(value: unknown): ContentManifestHash {
@@ -408,6 +563,36 @@ export function createRuntimeM2WorldContentPackIndexV0(
   });
 }
 
+export function createRuntimeM3PolityVassalageContentPackIndexV0(
+  pack: RuntimeM3PolityVassalageContentPackV0
+): RuntimeM3PolityVassalageContentPackIndexV0 {
+  const polityById = new Map<number, RuntimeM3PolityDefinitionV0>();
+  const districtById = new Map<number, RuntimeM3DistrictControllerV0>();
+  const obligationById = new Map<number, RuntimeM3ObligationDefinitionV0>();
+  for (const polity of pack.polities) {
+    polityById.set(polity.id, polity);
+  }
+  for (const district of pack.districts) {
+    districtById.set(district.id, district);
+  }
+  for (const obligation of pack.obligations) {
+    obligationById.set(obligation.id, obligation);
+  }
+
+  return Object.freeze({
+    pack,
+    getPolity(id: ContentPolityId | number): RuntimeM3PolityDefinitionV0 | undefined {
+      return polityById.get(id);
+    },
+    getDistrict(id: ContentM3DistrictId | number): RuntimeM3DistrictControllerV0 | undefined {
+      return districtById.get(id);
+    },
+    getObligation(id: ContentObligationId | number): RuntimeM3ObligationDefinitionV0 | undefined {
+      return obligationById.get(id);
+    }
+  });
+}
+
 function validateRuntimeRoot(
   input: Record<string, unknown>,
   errors: RuntimeValidationError[]
@@ -488,6 +673,31 @@ function validateRuntimeM2Root(
   validateArray(input, "mapGeometries", errors);
 }
 
+function validateRuntimeM3Root(
+  input: Record<string, unknown>,
+  errors: RuntimeValidationError[]
+): void {
+  if (input["schemaVersion"] !== 1) {
+    errors.push({ path: "schemaVersion", message: "schemaVersion must be 1." });
+  }
+  if (input["kind"] !== "runtime-m3-polity-vassalage-content-pack-v0") {
+    errors.push({
+      path: "kind",
+      message: "kind must be runtime-m3-polity-vassalage-content-pack-v0."
+    });
+  }
+  validateNonEmptyString(input, "fixtureId", "fixtureId", errors);
+  const manifest = input["manifest"];
+  if (!isRecord(manifest)) {
+    errors.push({ path: "manifest", message: "manifest must be an object." });
+  } else {
+    validateM3Manifest(manifest, errors);
+  }
+  validateArray(input, "polities", errors);
+  validateArray(input, "districts", errors);
+  validateArray(input, "obligations", errors);
+}
+
 function validateM2Manifest(
   manifest: Record<string, unknown>,
   errors: RuntimeValidationError[]
@@ -533,6 +743,44 @@ function validateM2Manifest(
   validatePositiveIntegerField(manifest, "mapGeometryCount", "manifest.mapGeometryCount", errors);
 }
 
+function validateM3Manifest(
+  manifest: Record<string, unknown>,
+  errors: RuntimeValidationError[]
+): void {
+  if (manifest["schemaVersion"] !== 1) {
+    errors.push({ path: "manifest.schemaVersion", message: "manifest schemaVersion must be 1." });
+  }
+  validateNonEmptyString(manifest, "fixtureId", "manifest.fixtureId", errors);
+  if (manifest["fixtureKind"] !== "polity-vassalage-fixture") {
+    errors.push({
+      path: "manifest.fixtureKind",
+      message: "manifest fixtureKind must be polity-vassalage-fixture."
+    });
+  }
+  if (manifest["syntheticScope"] !== "m3-validation-only") {
+    errors.push({
+      path: "manifest.syntheticScope",
+      message: "manifest syntheticScope must be m3-validation-only."
+    });
+  }
+  if (manifest["historicity"] !== "FICTIONAL") {
+    errors.push({
+      path: "manifest.historicity",
+      message: "manifest historicity must be FICTIONAL."
+    });
+  }
+  validatePatternString(
+    manifest,
+    "manifestHash",
+    "manifest.manifestHash",
+    /^[0-9a-f]{8}$/u,
+    errors
+  );
+  validatePositiveIntegerField(manifest, "polityCount", "manifest.polityCount", errors);
+  validatePositiveIntegerField(manifest, "districtCount", "manifest.districtCount", errors);
+  validatePositiveIntegerField(manifest, "obligationCount", "manifest.obligationCount", errors);
+}
+
 function validateRuntimeM2ArrayEntries(
   input: Record<string, unknown>,
   errors: RuntimeValidationError[]
@@ -567,6 +815,30 @@ function validateRuntimeM2ArrayEntries(
   if (Array.isArray(geometries)) {
     geometries.forEach((geometry, index) =>
       validateRuntimeM2MapGeometry(geometry, `mapGeometries[${index}]`, errors)
+    );
+  }
+}
+
+function validateRuntimeM3ArrayEntries(
+  input: Record<string, unknown>,
+  errors: RuntimeValidationError[]
+): void {
+  const polities = input["polities"];
+  if (Array.isArray(polities)) {
+    polities.forEach((polity, index) =>
+      validateRuntimeM3Polity(polity, `polities[${index}]`, errors)
+    );
+  }
+  const districts = input["districts"];
+  if (Array.isArray(districts)) {
+    districts.forEach((district, index) =>
+      validateRuntimeM3District(district, `districts[${index}]`, errors)
+    );
+  }
+  const obligations = input["obligations"];
+  if (Array.isArray(obligations)) {
+    obligations.forEach((obligation, index) =>
+      validateRuntimeM3Obligation(obligation, `obligations[${index}]`, errors)
     );
   }
 }
@@ -786,6 +1058,149 @@ function validateRuntimeM2MapGeometry(
   }
 }
 
+function validateRuntimeM3Polity(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M3 polity must be an object." });
+    return;
+  }
+  validatePositiveIntegerField(input, "id", `${path}.id`, errors);
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^polity-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m3\.validation\.polity_\d{3}$/u,
+    errors
+  );
+  validateNullablePositiveIntegerField(
+    input,
+    "directSuzerainPolityId",
+    `${path}.directSuzerainPolityId`,
+    errors
+  );
+}
+
+function validateRuntimeM3District(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M3 district must be an object." });
+    return;
+  }
+  validatePositiveIntegerField(input, "id", `${path}.id`, errors);
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^district-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m3\.validation\.district_\d{3}$/u,
+    errors
+  );
+  validateNullablePositiveIntegerField(
+    input,
+    "controllerPolityId",
+    `${path}.controllerPolityId`,
+    errors
+  );
+}
+
+function validateRuntimeM3Obligation(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M3 obligation must be an object." });
+    return;
+  }
+  validatePositiveIntegerField(input, "id", `${path}.id`, errors);
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^obligation-\d{3}$/u, errors);
+  validatePositiveIntegerField(input, "debtorPolityId", `${path}.debtorPolityId`, errors);
+  validatePositiveIntegerField(input, "creditorPolityId", `${path}.creditorPolityId`, errors);
+  validateStringUnion(
+    input,
+    "obligationKind",
+    `${path}.obligationKind`,
+    ["tribute", "troop"],
+    errors
+  );
+  validateRuntimeM3Requirement(input["requirement"], `${path}.requirement`, errors);
+  validateRuntimeM3Due(input["due"], `${path}.due`, errors);
+  validateStringUnion(
+    input,
+    "status",
+    `${path}.status`,
+    ["active", "disputed", "breached"],
+    errors
+  );
+  validateNullableStringField(input, "disputeReasonCode", `${path}.disputeReasonCode`, errors);
+  validateNullableStringField(input, "breachReasonCode", `${path}.breachReasonCode`, errors);
+}
+
+function validateRuntimeM3Requirement(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M3 requirement must be an object." });
+    return;
+  }
+  if (input["kind"] === "amount") {
+    validateStringUnion(
+      input,
+      "resourceKind",
+      `${path}.resourceKind`,
+      ["cash", "grain", "troops"],
+      errors
+    );
+    validatePositiveIntegerField(input, "amount", `${path}.amount`, errors);
+    return;
+  }
+  if (input["kind"] === "condition") {
+    validateNonEmptyString(input, "conditionKey", `${path}.conditionKey`, errors);
+    return;
+  }
+  errors.push({
+    path: `${path}.kind`,
+    message: "Runtime M3 requirement kind must be amount or condition."
+  });
+}
+
+function validateRuntimeM3Due(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M3 due must be an object." });
+    return;
+  }
+  if (input["kind"] === "cadence") {
+    validatePositiveIntegerField(input, "periodDays", `${path}.periodDays`, errors);
+    validateIntegerFieldInRange(
+      input,
+      "nextDueDay",
+      `${path}.nextDueDay`,
+      0,
+      Number.MAX_SAFE_INTEGER,
+      errors
+    );
+    return;
+  }
+  if (input["kind"] === "trigger") {
+    validateNonEmptyString(input, "triggerKey", `${path}.triggerKey`, errors);
+    return;
+  }
+  errors.push({ path: `${path}.kind`, message: "Runtime M3 due kind must be cadence or trigger." });
+}
+
 function validateRuntimeM2Point(
   input: unknown,
   path: string,
@@ -1002,6 +1417,96 @@ function validateRuntimeM2Semantics(
   });
 }
 
+function validateRuntimeM3Semantics(
+  input: Record<string, unknown>,
+  errors: RuntimeValidationError[]
+): void {
+  const manifest = readRecord(input, "manifest");
+  const polities = readArray(input, "polities");
+  const districts = readArray(input, "districts");
+  const obligations = readArray(input, "obligations");
+
+  if (readString(input, "fixtureId") !== readString(manifest, "fixtureId")) {
+    errors.push({
+      path: "manifest.fixtureId",
+      message: "manifest fixtureId must match pack fixtureId."
+    });
+  }
+  validateRuntimeCount(manifest, "polityCount", polities.length, errors);
+  validateRuntimeCount(manifest, "districtCount", districts.length, errors);
+  validateRuntimeCount(manifest, "obligationCount", obligations.length, errors);
+
+  const polityIds = collectOrderedRuntimeIds(polities, "polities", errors);
+  collectOrderedRuntimeIds(districts, "districts", errors);
+  collectOrderedRuntimeIds(obligations, "obligations", errors);
+
+  polities.forEach((polity, index) => {
+    if (!isRecord(polity)) {
+      return;
+    }
+    const suzerainId = readNullablePositiveInteger(polity, "directSuzerainPolityId");
+    if (suzerainId !== null && !polityIds.has(suzerainId)) {
+      errors.push({
+        path: `polities[${index}].directSuzerainPolityId`,
+        message: `Missing suzerain polity ${suzerainId}.`
+      });
+    }
+    if (suzerainId === readPositiveInteger(polity, "id")) {
+      errors.push({
+        path: `polities[${index}].directSuzerainPolityId`,
+        message: "Runtime M3 polity direct suzerain must not reference itself."
+      });
+    }
+  });
+
+  const cycleId = findM3SuzerainCycle(polities);
+  if (cycleId !== null) {
+    errors.push({
+      path: "polities",
+      message: `Runtime M3 suzerain chain contains a cycle at polity ${cycleId}.`
+    });
+  }
+
+  districts.forEach((district, index) => {
+    if (!isRecord(district)) {
+      return;
+    }
+    const controllerPolityId = readNullablePositiveInteger(district, "controllerPolityId");
+    if (controllerPolityId !== null && !polityIds.has(controllerPolityId)) {
+      errors.push({
+        path: `districts[${index}].controllerPolityId`,
+        message: `Missing controller polity ${controllerPolityId}.`
+      });
+    }
+  });
+
+  obligations.forEach((obligation, index) => {
+    if (!isRecord(obligation)) {
+      return;
+    }
+    const debtorPolityId = readPositiveInteger(obligation, "debtorPolityId");
+    const creditorPolityId = readPositiveInteger(obligation, "creditorPolityId");
+    if (!polityIds.has(debtorPolityId)) {
+      errors.push({
+        path: `obligations[${index}].debtorPolityId`,
+        message: `Missing debtor polity ${debtorPolityId}.`
+      });
+    }
+    if (!polityIds.has(creditorPolityId)) {
+      errors.push({
+        path: `obligations[${index}].creditorPolityId`,
+        message: `Missing creditor polity ${creditorPolityId}.`
+      });
+    }
+    if (debtorPolityId === creditorPolityId) {
+      errors.push({
+        path: `obligations[${index}].creditorPolityId`,
+        message: "Runtime M3 obligation debtor and creditor must differ."
+      });
+    }
+  });
+}
+
 function parseRuntimeNode(input: unknown): RuntimeContentNodeV0 {
   if (!isRecord(input)) {
     throw new Error("Expected valid runtime node.");
@@ -1118,6 +1623,88 @@ function parseRuntimeM2MapGeometry(input: unknown): RuntimeM2MapGeometryV0 {
   });
 }
 
+function parseRuntimeM3Polity(input: unknown): RuntimeM3PolityDefinitionV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M3 polity.");
+  }
+  const directSuzerainPolityId = readNullablePositiveInteger(input, "directSuzerainPolityId");
+  return Object.freeze({
+    id: parseContentPolityId(input["id"]),
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    directSuzerainPolityId:
+      directSuzerainPolityId === null ? null : parseContentPolityId(directSuzerainPolityId)
+  });
+}
+
+function parseRuntimeM3District(input: unknown): RuntimeM3DistrictControllerV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M3 district.");
+  }
+  const controllerPolityId = readNullablePositiveInteger(input, "controllerPolityId");
+  return Object.freeze({
+    id: parseContentM3DistrictId(input["id"]),
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    controllerPolityId:
+      controllerPolityId === null ? null : parseContentPolityId(controllerPolityId)
+  });
+}
+
+function parseRuntimeM3Obligation(input: unknown): RuntimeM3ObligationDefinitionV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M3 obligation.");
+  }
+  return Object.freeze({
+    id: parseContentObligationId(input["id"]),
+    sourceId: readString(input, "sourceId"),
+    debtorPolityId: parseContentPolityId(input["debtorPolityId"]),
+    creditorPolityId: parseContentPolityId(input["creditorPolityId"]),
+    obligationKind: readM3ObligationKind(input, "obligationKind"),
+    requirement: parseRuntimeM3Requirement(readRecord(input, "requirement")),
+    due: parseRuntimeM3Due(readRecord(input, "due")),
+    status: readM3ObligationStatus(input, "status"),
+    disputeReasonCode: readNullableString(input, "disputeReasonCode"),
+    breachReasonCode: readNullableString(input, "breachReasonCode")
+  });
+}
+
+function parseRuntimeM3Requirement(
+  input: Record<string, unknown>
+): RuntimeM3ObligationRequirementV0 {
+  if (input["kind"] === "amount") {
+    return {
+      kind: "amount",
+      resourceKind: readM3ResourceKind(input, "resourceKind"),
+      amount: readPositiveInteger(input, "amount")
+    };
+  }
+  if (input["kind"] === "condition") {
+    return {
+      kind: "condition",
+      conditionKey: readString(input, "conditionKey")
+    };
+  }
+  throw new Error("Expected valid runtime M3 requirement.");
+}
+
+function parseRuntimeM3Due(input: Record<string, unknown>): RuntimeM3ObligationDueV0 {
+  if (input["kind"] === "cadence") {
+    return {
+      kind: "cadence",
+      periodDays: readPositiveInteger(input, "periodDays"),
+      nextDueDay: readIntegerInRange(input, "nextDueDay", 0, Number.MAX_SAFE_INTEGER)
+    };
+  }
+  if (input["kind"] === "trigger") {
+    return {
+      kind: "trigger",
+      triggerKey: readString(input, "triggerKey")
+    };
+  }
+  throw new Error("Expected valid runtime M3 due.");
+}
+
 function parseRuntimeM2Point(input: unknown): RuntimeM2MapPointV0 {
   if (!isRecord(input)) {
     throw new Error("Expected valid runtime M2 map point.");
@@ -1136,6 +1723,12 @@ function freezeManifest(manifest: RuntimeContentManifestV0): RuntimeContentManif
 function freezeM2Manifest(
   manifest: RuntimeM2WorldContentManifestV0
 ): RuntimeM2WorldContentManifestV0 {
+  return Object.freeze(manifest);
+}
+
+function freezeM3Manifest(
+  manifest: RuntimeM3PolityVassalageContentManifestV0
+): RuntimeM3PolityVassalageContentManifestV0 {
   return Object.freeze(manifest);
 }
 
@@ -1236,6 +1829,34 @@ function validatePositiveIntegerField(
   errors.push({ path, message: `${path} must be a positive safe integer.` });
 }
 
+function validateNullablePositiveIntegerField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  const value = record[key];
+  if (value === null || (typeof value === "number" && Number.isSafeInteger(value) && value > 0)) {
+    return;
+  }
+
+  errors.push({ path, message: `${path} must be null or a positive safe integer.` });
+}
+
+function validateNullableStringField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  const value = record[key];
+  if (value === null || (typeof value === "string" && value.length > 0)) {
+    return;
+  }
+
+  errors.push({ path, message: `${path} must be null or a non-empty string.` });
+}
+
 function validateIntegerFieldInRange(
   record: Record<string, unknown>,
   key: string,
@@ -1298,6 +1919,40 @@ function collectOrderedRuntimeIds(
   return ids;
 }
 
+function findM3SuzerainCycle(polities: readonly unknown[]): number | null {
+  const suzerainByPolityId = new Map<number, number>();
+  const polityIds: number[] = [];
+  for (const polity of polities) {
+    if (!isRecord(polity)) {
+      continue;
+    }
+    const polityId = readPositiveInteger(polity, "id");
+    polityIds.push(polityId);
+    const suzerainId = readNullablePositiveInteger(polity, "directSuzerainPolityId");
+    if (suzerainId !== null) {
+      suzerainByPolityId.set(polityId, suzerainId);
+    }
+  }
+
+  for (const polityId of polityIds.sort(compareNumber)) {
+    const visited = new Set<number>();
+    let current: number | undefined = polityId;
+    while (current !== undefined) {
+      if (visited.has(current)) {
+        return current;
+      }
+      visited.add(current);
+      current = suzerainByPolityId.get(current);
+    }
+  }
+
+  return null;
+}
+
+function compareNumber(left: number, right: number): number {
+  return left - right;
+}
+
 function validateArray(
   record: Record<string, unknown>,
   key: string,
@@ -1341,6 +1996,24 @@ function readPositiveInteger(record: Record<string, unknown>, key: string): numb
   return parsePositiveInteger(record[key], key);
 }
 
+function readNullablePositiveInteger(record: Record<string, unknown>, key: string): number | null {
+  const value = record[key];
+  if (value === null) {
+    return null;
+  }
+
+  return parsePositiveInteger(value, key);
+}
+
+function readNullableString(record: Record<string, unknown>, key: string): string | null {
+  const value = record[key];
+  if (value === null || typeof value === "string") {
+    return value;
+  }
+
+  throw new Error(`${key} must be null or a string.`);
+}
+
 function readIntegerInRange(
   record: Record<string, unknown>,
   key: string,
@@ -1366,6 +2039,36 @@ function parsePositiveInteger(value: unknown, label: string): number {
   }
 
   return value;
+}
+
+function readM3ObligationKind(record: Record<string, unknown>, key: string): M3ObligationKind {
+  const value = readString(record, key);
+  if (value === "tribute" || value === "troop") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M3 obligation kind.`);
+}
+
+function readM3ResourceKind(
+  record: Record<string, unknown>,
+  key: string
+): M3ObligationResourceKind {
+  const value = readString(record, key);
+  if (value === "cash" || value === "grain" || value === "troops") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M3 resource kind.`);
+}
+
+function readM3ObligationStatus(record: Record<string, unknown>, key: string): M3ObligationStatus {
+  const value = readString(record, key);
+  if (value === "active" || value === "disputed" || value === "breached") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M3 obligation status.`);
 }
 
 function formatRuntimeErrors(errors: readonly RuntimeValidationError[]): string {

@@ -2,7 +2,9 @@ import { describe, expect, test } from "vitest";
 
 import {
   createRuntimeContentPackIndexV0,
+  createRuntimeM3PolityVassalageContentPackIndexV0,
   createRuntimeM2WorldContentPackIndexV0,
+  parseRuntimeM3PolityVassalageContentPackV0,
   parseRuntimeM2WorldContentPackV0,
   parseRuntimeContentPackV0
 } from "../packages/content-runtime/src/index";
@@ -173,5 +175,105 @@ describe("M2 runtime world content pack", () => {
     expect(index.getRegionalSeasonalCurve(1)?.monthlyValues).toHaveLength(12);
     expect(index).not.toHaveProperty("getDistrictByDisplayName");
     expect(index).not.toHaveProperty("getSettlementByDisplayName");
+  });
+});
+
+describe("M3 runtime polity vassalage content pack", () => {
+  test("parses abstract polity records, controller references, and obligation schemas", () => {
+    const pack = parseRuntimeM3PolityVassalageContentPackV0({
+      schemaVersion: 1,
+      kind: "runtime-m3-polity-vassalage-content-pack-v0",
+      fixtureId: "m3.runtime-test",
+      manifest: {
+        schemaVersion: 1,
+        fixtureId: "m3.runtime-test",
+        fixtureKind: "polity-vassalage-fixture",
+        syntheticScope: "m3-validation-only",
+        historicity: "FICTIONAL",
+        manifestHash: "0123abcd",
+        polityCount: 2,
+        districtCount: 1,
+        obligationCount: 1
+      },
+      polities: [
+        {
+          id: 1,
+          sourceId: "polity-001",
+          displayNameKey: "content.m3.validation.polity_001",
+          directSuzerainPolityId: null
+        },
+        {
+          id: 2,
+          sourceId: "polity-002",
+          displayNameKey: "content.m3.validation.polity_002",
+          directSuzerainPolityId: 1
+        }
+      ],
+      districts: [
+        {
+          id: 1,
+          sourceId: "district-001",
+          displayNameKey: "content.m3.validation.district_001",
+          controllerPolityId: 2
+        }
+      ],
+      obligations: [
+        {
+          id: 1,
+          sourceId: "obligation-001",
+          debtorPolityId: 2,
+          creditorPolityId: 1,
+          obligationKind: "tribute",
+          requirement: { kind: "amount", resourceKind: "cash", amount: 100 },
+          due: { kind: "cadence", periodDays: 90, nextDueDay: 90 },
+          status: "active",
+          disputeReasonCode: null,
+          breachReasonCode: null
+        }
+      ]
+    });
+    const index = createRuntimeM3PolityVassalageContentPackIndexV0(pack);
+
+    expect(index.getPolity(2)?.directSuzerainPolityId).toBe(1);
+    expect(index.getDistrict(1)?.controllerPolityId).toBe(2);
+    expect(index.getObligation(1)?.creditorPolityId).toBe(1);
+    expect(index).not.toHaveProperty("getPolityByDisplayName");
+  });
+
+  test("rejects duplicate fulfillment-unsafe or cyclic runtime polity packs", () => {
+    expect(() =>
+      parseRuntimeM3PolityVassalageContentPackV0({
+        schemaVersion: 1,
+        kind: "runtime-m3-polity-vassalage-content-pack-v0",
+        fixtureId: "m3.runtime-test",
+        manifest: {
+          schemaVersion: 1,
+          fixtureId: "m3.runtime-test",
+          fixtureKind: "polity-vassalage-fixture",
+          syntheticScope: "m3-validation-only",
+          historicity: "FICTIONAL",
+          manifestHash: "0123abcd",
+          polityCount: 2,
+          districtCount: 0,
+          obligationCount: 0
+        },
+        polities: [
+          {
+            id: 1,
+            sourceId: "polity-001",
+            displayNameKey: "content.m3.validation.polity_001",
+            directSuzerainPolityId: 2
+          },
+          {
+            id: 2,
+            sourceId: "polity-002",
+            displayNameKey: "content.m3.validation.polity_002",
+            directSuzerainPolityId: 1
+          }
+        ],
+        districts: [],
+        obligations: []
+      })
+    ).toThrow("RuntimeM3PolityVassalageContentPackV0");
   });
 });
