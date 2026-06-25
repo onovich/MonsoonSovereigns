@@ -1,0 +1,82 @@
+{
+  "message_id": "MSG-20260626-M3-H003-H005-LEAD-ACCEPT",
+  "task_id": "M3-H003-H005-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M3-H003-H005 validation after test_engineer REVIEW, gameplay_designer PARTIAL validation interpretation, historical_researcher no-Human-Gate risk review, independent qa_reviewer ACCEPT, and lead-side reproduced pre-integration gates. The task remains ACCEPTED until the PR enters main; it will only be marked CLOSED after merge and sync.",
+  "artifacts": [
+    "tests/m3-h003-h005-validation.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-TEST-ENGINEER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-GAMEPLAY-PARTIAL__gameplay_designer.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-HISTORICAL-RISK-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "test/m3-h003-h005-validation",
+  "commit": "22029cec evidence; fa6c7acd review route; accepted-state commit pending",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs on test_engineer/gameplay/historical handoffs",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID per qa_reviewer"
+    },
+    {
+      "command": "pnpm exec prettier --check tests/m3-h003-h005-validation.test.ts and handoff JSON files",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm exec vitest run tests/m3-h003-h005-validation.test.ts --config vitest.config.ts",
+      "exit_code": 0,
+      "result": "1 file / 2 tests passed"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "ok; status IN_PROGRESS during lead pre-review, 10 required tests, 14 allowed paths, 18 forbidden paths"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "root 25 files / 165 tests plus web 1 file / 3 tests passed before acceptance-state commit"
+    },
+    {
+      "command": "qa_reviewer integration review command set",
+      "exit_code": 0,
+      "result": "targeted Vitest, taskctl validate, Prettier, diff check, sim:determinism, sim:perf-baseline, build:web, Chromium e2e, pnpm test, JSON shape all passed"
+    }
+  ],
+  "decisions": [
+    "Accepted H-003 as initial M3 fixture evidence: direct-control, restore-vassal-ruler, and tribute-only produce different 24-month outcomes; direct annexation is not trivially dominant across income, tribute, load, reliability, troops, and risk.",
+    "Accepted H-005 as initial fixture-level evidence rather than final player-study proof: reason/proposal cues are useful and not always optimal under current scaffold metrics, with reason-code coverage across appointment, behavior, bulk, enfeoffment, obligation, policy, and succession.",
+    "Accepted historical_researcher classification that current validation evidence is in-house abstraction / prototype inference / intentional gameplay deviation, with no Human Gate required.",
+    "Kept live player telemetry, full proposal AI, formal historical content, roadmap/gate edits, dependencies, and production worker integration expansion out of scope."
+  ],
+  "risks": [
+    "H-003 evidence is one deterministic M3 fixture with prototype balance constants, not global balance proof.",
+    "H-005 does not measure live acceptance or regret rates; it proves fixture-level non-optimality and reason usefulness only.",
+    "Browser smoke remains protocol/read-model coverage, not full live production worker integration.",
+    "Validation labels must be routed back to historical review if promoted to formal historical content or scenario data."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit accepted state, run integration gates, open PR, require CI, merge, sync main, then mark M3-H003-H005-VALIDATION-001 CLOSED and continue to M3-EXIT-VALIDATION-001.",
+  "created_at": "2026-06-25T21:13:46Z"
+}

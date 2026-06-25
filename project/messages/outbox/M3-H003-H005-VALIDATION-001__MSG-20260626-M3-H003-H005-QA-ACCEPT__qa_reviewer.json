@@ -1,0 +1,127 @@
+{
+  "message_id": "MSG-20260626-M3-H003-H005-QA-ACCEPT",
+  "task_id": "M3-H003-H005-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M3-H003-H005-VALIDATION-001. The review verified commit 22029cec with route/status commit fa6c7acd present on test/m3-h003-h005-validation. The accepted evidence is validation/process only: H-003 has three deterministic 24-month postwar governance arrangements with non-trivial tradeoffs, H-005 has fixture-level useful-but-not-always-optimal reason/proposal evidence with explicit limits, the existing UI smoke covers appointment, bulk, per-item rejection, and reason display, and historical/Human Gate review found no hidden historical-content or Human Gate escalation for the current validation-only abstractions.",
+  "artifacts": [
+    "tests/m3-h003-h005-validation.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "project/tasks/active/M3-H003-H005-VALIDATION-001.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-TEST-ENGINEER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-GAMEPLAY-PARTIAL__gameplay_designer.json",
+    "project/messages/outbox/M3-H003-H005-VALIDATION-001__MSG-20260626-M3-H003-H005-HISTORICAL-RISK-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "test/m3-h003-h005-validation",
+  "commit": "22029cec reviewed; fa6c7acd route/status commit present",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean branch test/m3-h003-h005-validation tracking origin/test/m3-h003-h005-validation."
+    },
+    {
+      "command": "git log --oneline --decorate -6",
+      "exit_code": 0,
+      "result": "HEAD fa6c7acd chore(process): route M3 H003 H005 validation review; prior reviewed evidence commit 22029cec test(m3): validate H003 H005 evidence."
+    },
+    {
+      "command": "git diff --name-status 83a69f43..22029cec",
+      "exit_code": 0,
+      "result": "Only four files changed after the process-start commit: three task handoff JSON files and tests/m3-h003-h005-validation.test.ts."
+    },
+    {
+      "command": "node -e changed-path scope check against task allowed_paths/forbidden_paths",
+      "exit_code": 0,
+      "result": "17 changed paths from origin/main..HEAD; all matched allowed paths and none matched forbidden paths."
+    },
+    {
+      "command": "pnpm exec vitest run tests/m3-h003-h005-validation.test.ts --config vitest.config.ts",
+      "exit_code": 0,
+      "result": "1 file passed; 2 tests passed. H-003 uses seed 1531 and contentManifestHash content.m3.postwar.validation; H-005 uses content.m3.reason.validation and client appointment fixture reason coverage."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-H003-H005-VALIDATION-001.json."
+    },
+    {
+      "command": "pnpm exec prettier --check tests/m3-h003-h005-validation.test.ts and three H003/H005 handoff JSON files",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650 days, finalRevision 3650, throughput observed locally at 10722 days/sec, saveByteLength 9980."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed; existing chunk-size warning remained for lib-a6cQy7l-.js at 513.64 kB."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium --grep \"M3 appointment workspace\"",
+      "exit_code": 0,
+      "result": "2 Chromium Playwright tests passed: appointment/bulk DTO submission and 1440px viewport fit."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; sim determinism passed; root Vitest 25 files / 165 tests passed; web Vitest 1 file / 3 tests passed."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M3-H003-H005-VALIDATION-001",
+      "exit_code": 0,
+      "result": "ok true; status REVIEW; requiredTests 10; allowed paths 14; forbidden paths 18; no missing required fields."
+    }
+  ],
+  "decisions": [
+    {
+      "classification": "acceptance",
+      "finding": "ACCEPT. The validation branch meets the task acceptance criteria without source, test, dependency, public API, roadmap, gate, or task-status drift beyond the intended validation/process artifacts."
+    },
+    {
+      "classification": "diff scope",
+      "finding": "The actual evidence delta from 83a69f43..22029cec is limited to tests/m3-h003-h005-validation.test.ts plus the test_engineer, gameplay_designer, and historical_researcher handoff JSON files. The route/status commit fa6c7acd is present and does not change the reviewed source/test evidence."
+    },
+    {
+      "classification": "H-003",
+      "finding": "H-003 is satisfied at initial M3 fixture level. The validation test compares direct-control, restore-vassal-ruler, and tribute-only over 24 months. Direct control wins expected income but has higher administrative load and risk; restored vassal wins tribute, reliability, and troop contribution; tribute-only has lower load but weaker income and no troops. Direct annexation is therefore not trivially dominant across the recorded metrics."
+    },
+    {
+      "classification": "H-005",
+      "finding": "H-005 is accepted as initial fixture-level evidence, not final player-study proof. The validation test shows a stronger-skill candidate can be less useful than a supportive military-fit candidate under the current scaffold metrics, and the client read model exposes broad reason-code coverage across appointment, behavior, bulk, enfeoffment, obligation, policy, and succession sources."
+    },
+    {
+      "classification": "UI evidence",
+      "finding": "Existing Chromium smoke and SSR tests cover appointment submission, bulk eligible submission, bulk rejected count, per-item rejection/reason visibility, reason summary display, and 1440px viewport fit for the M3 appointment workspace."
+    },
+    {
+      "classification": "historical and Human Gate",
+      "finding": "The historical review classifies the H-003/H-005 evidence as validation-only gameplay/system abstractions. No new formal historical facts, real cultural claims, coercion claims, or Human Gate trigger are introduced by the accepted validation evidence."
+    }
+  ],
+  "risks": [
+    "H-003 evidence is one deterministic M3 fixture with prototype balance constants, not a global balance proof.",
+    "H-005 does not measure live player acceptance rates, regret rates, interviews, or a true autonomous proposal dataset; it proves measurable non-optimality and reason usefulness inside the validation fixture only.",
+    "The browser smoke is protocol/read-model coverage rather than a live production worker integration proof.",
+    "Generic validation labels such as court, tributary, governorship, or succession claimant must route back to historical review if promoted into formal historical content, localization, encyclopedia copy, art/audio briefs, or scenario data."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead should record QA ACCEPT for M3-H003-H005-VALIDATION-001 and proceed with the normal acceptance/closure workflow. No source, test, task-status, dependency, roadmap, or gate edits were requested by this QA handoff.",
+  "created_at": "2026-06-26T05:11:06+08:00"
+}
