@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260625-M3-SUCCESSION-SYSTEMS-REVIEW",
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R3 systems review found the core succession command/state flow architecturally scoped and deterministic, and the required validation suite passes. However, the new M3 succession state schema is not fully guarded by validateWorldStateV0: a focused malformed-state probe with state.m3.successionCrises missing throws a raw values-is-not-iterable exception instead of returning a structured invalid-schema error. Because this task extends the authoritative state schema, the writer must fix the explicit schema/error model before QA routing.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-appointment-enfeoffment.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree contains task-scoped changes in packages/protocol, packages/sim-core, tests, project state, and project messages. No forbidden apps/web, apps/desktop, client/map/ui, content, save-format, gate/status/checksum/report paths are modified."
+    },
+    {
+      "command": "node -e JSON parse and required-field check for writer handoff",
+      "exit_code": 0,
+      "result": "Writer handoff parsed, required schema fields were present, task_id/from_role/status/route_to matched M3-SUCCESSION-STATE-MACHINE-001, simulation_engineer, REVIEW, systems_architect."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "12 test files passed; 70 tests passed, including the new M3 succession state machine tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed, including M3 succession command/query schema parsing."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 22 files / 129 tests passed; web Vitest 1 file / 3 tests passed."
+    },
+    {
+      "command": "rg -n -e 'react' -e 'pixi' -e 'electron' -e 'node:fs' -e 'from \"fs\"' -e \"from 'fs'\" -e 'require\\(\"fs\"' -e \"require\\('fs'\" -- packages/sim-core/src packages/protocol/src",
+      "exit_code": 1,
+      "result": "No React, Pixi, Electron, or fs boundary hits in sim-core/protocol source."
+    },
+    {
+      "command": "rg -n -e 'Math\\.random\\(' -e 'Date\\.now\\(' -e 'performance\\.now\\(' -e 'new Date\\(' -- packages/sim-core/src packages/protocol/src",
+      "exit_code": 1,
+      "result": "No random or real-time API hits in sim-core/protocol source."
+    },
+    {
+      "command": "rg -n \"requestSaveV1 does not support|state\\.m3\" tests/sim-core-m3-polity-vassalage.test.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 0,
+      "result": "Existing M3 test coverage confirms requestSaveV1 rejects state.m3 before emitting incompatible save bytes."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module focused validateWorldStateV0 malformed M3 succession schema probe",
+      "exit_code": 1,
+      "result": "FAILED as expected for this review finding: deleting state.m3.successionCrises from a normal M3 world caused validateWorldStateV0 to throw raw error \"values is not iterable\" instead of returning a structured invalid-schema error."
+    }
+  ],
+  "decisions": [
+    "Do not route to qa_reviewer yet because R3 state-schema/error-model behavior is not acceptable.",
+    "The command authority model stays inside sim-core GameCommand paths; player and AI use the same command variants for succession actions.",
+    "The implementation does not introduce React, Pixi, Electron, Node IO, real-time APIs, random APIs, save-format changes, content packages, client UI, full civil war, full diplomacy, or M4+ war behavior.",
+    "Succession candidate support sources are explicit serializable values and ordered by stable support totals and characterId tie-breakers."
+  ],
+  "risks": [
+    "State schema validation currently relies on later canonicalization/hash formatting for some M3 arrays; malformed M3 succession state can escape validateM3EntryShapes and throw a raw exception.",
+    "This would weaken protocol/state compatibility and error-model guarantees for the new authoritative succession fields, even though normal constructor-created runtime worlds pass."
+  ],
+  "blockers": [
+    {
+      "code": "m3-succession-state-schema-validation-gap",
+      "path": "packages/sim-core/src/world-state-v0.ts",
+      "message": "validateM3EntryShapes must explicitly validate the M3 arrays and entries introduced or required by this task, especially state.m3.successionCandidateProfiles and state.m3.successionCrises, before validateM3RuntimeState/hash formatting can touch them."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the M3 state schema/error model before QA routing. Add explicit validateArrayField coverage for all M3 arrays used by isM3StateLike and this task, including characters, relationships, offices, policies, enfeoffments, appointmentAuditEvents, successionCandidateProfiles, and successionCrises. Add entry-level shape validation for M3CharacterStateV0.incapacitated and the succession profile/crisis/support/trigger/outcome fields needed to return stable invalid-schema paths. Add focused tests proving malformed or missing successionCandidateProfiles/successionCrises and missing incapacitated return structured errors without throwing. Re-run the required task gates and return an R2 handoff.",
+  "created_at": "2026-06-25T17:16:08.3962857+08:00"
+}

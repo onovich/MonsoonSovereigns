@@ -247,6 +247,48 @@ export interface EnfeoffDistrictCommandV1 {
   };
 }
 
+export interface RecordCharacterStatusCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.record-character-status";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly characterId: number;
+    readonly status: "dead" | "incapacitated";
+    readonly reasonCode: string;
+  };
+}
+
+export interface ResolveSuccessionCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.resolve-succession";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly successionId: number;
+    readonly reasonCode: string;
+  };
+}
+
+export interface CreateCharacterRelationshipCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.create-character-relationship";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly sourceCharacterId: number;
+    readonly targetCharacterId: number;
+    readonly affinityBps: number;
+    readonly reasonCode: string;
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -259,6 +301,9 @@ export type GameCommandV1 =
   | UpdateOfficePolicyCommandV1
   | UpdateJurisdictionPolicyCommandV1
   | EnfeoffDistrictCommandV1
+  | RecordCharacterStatusCommandV1
+  | ResolveSuccessionCommandV1
+  | CreateCharacterRelationshipCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -291,6 +336,11 @@ export interface ListM3DecisionScaffoldsQueryV1 {
   readonly kind: "sim.list-m3-decision-scaffolds";
 }
 
+export interface ListM3SuccessionCrisesQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m3-succession-crises";
+}
+
 export interface PreviewM2TransportRouteQueryV1 {
   readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
   readonly kind: "sim.preview-m2-transport-route";
@@ -309,6 +359,7 @@ export type GameQueryV1 =
   | ListM2EconomySummariesQueryV1
   | ListM3AdministrativeBurdenQueryV1
   | ListM3DecisionScaffoldsQueryV1
+  | ListM3SuccessionCrisesQueryV1
   | PreviewM2TransportRouteQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
@@ -404,6 +455,42 @@ export interface ListM3DecisionScaffoldsResultV1 {
   readonly offices: readonly M3DecisionOfficeScaffoldReadModelV1[];
   readonly policies: readonly M3DecisionPolicyScaffoldReadModelV1[];
   readonly enfeoffments: readonly M3DecisionEnfeoffmentScaffoldReadModelV1[];
+}
+
+export type M3SuccessionSupportKindV1 =
+  | "kinship"
+  | "designation"
+  | "court"
+  | "military"
+  | "provincial"
+  | "suzerain"
+  | "foreign";
+
+export interface M3SuccessionSupportSourceReadModelV1 {
+  readonly kind: M3SuccessionSupportKindV1;
+  readonly strengthBps: number;
+  readonly sourceId: string;
+}
+
+export interface M3SuccessionCandidateReadModelV1 {
+  readonly characterId: number;
+  readonly requiresRegency: boolean;
+  readonly supportTotalBps: number;
+  readonly supportSources: readonly M3SuccessionSupportSourceReadModelV1[];
+}
+
+export interface M3SuccessionCrisisReadModelV1 {
+  readonly successionId: number;
+  readonly polityId: number;
+  readonly status: "pending" | "resolved";
+  readonly candidates: readonly M3SuccessionCandidateReadModelV1[];
+}
+
+export interface ListM3SuccessionCrisesResultV1 {
+  readonly kind: "sim.list-m3-succession-crises";
+  readonly day: number;
+  readonly revision: number;
+  readonly crises: readonly M3SuccessionCrisisReadModelV1[];
 }
 
 export type M2TransportRouteKindV1 = "road" | "river" | "coast";
@@ -845,6 +932,54 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.record-character-status": {
+      const payload = parseRecordCharacterStatusPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.resolve-succession": {
+      const payload = parseResolveSuccessionPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.create-character-relationship": {
+      const payload = parseCreateCharacterRelationshipPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -891,6 +1026,7 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     case "sim.list-m2-economy-summaries":
     case "sim.list-m3-administrative-burden":
     case "sim.list-m3-decision-scaffolds":
+    case "sim.list-m3-succession-crises":
       return {
         ok: true,
         value: {
@@ -1600,6 +1736,118 @@ function parseEnfeoffDistrictPayload(
   };
 }
 
+function parseRecordCharacterStatusPayload(
+  input: unknown
+): ProtocolParseResult<RecordCharacterStatusCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.record-character-status payload must be an object."
+    );
+  }
+
+  const characterId = parsePositiveSafeInteger(input["characterId"], "payload.characterId");
+  if (!characterId.ok) {
+    return characterId;
+  }
+  const status = input["status"];
+  if (status !== "dead" && status !== "incapacitated") {
+    return protocolError(
+      "invalid-payload",
+      "payload.status",
+      "status must be dead or incapacitated."
+    );
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      characterId: characterId.value,
+      status,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseResolveSuccessionPayload(
+  input: unknown
+): ProtocolParseResult<ResolveSuccessionCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.resolve-succession payload must be an object."
+    );
+  }
+
+  const successionId = parsePositiveSafeInteger(input["successionId"], "payload.successionId");
+  if (!successionId.ok) {
+    return successionId;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      successionId: successionId.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseCreateCharacterRelationshipPayload(
+  input: unknown
+): ProtocolParseResult<CreateCharacterRelationshipCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.create-character-relationship payload must be an object."
+    );
+  }
+
+  const sourceCharacterId = parsePositiveSafeInteger(
+    input["sourceCharacterId"],
+    "payload.sourceCharacterId"
+  );
+  if (!sourceCharacterId.ok) {
+    return sourceCharacterId;
+  }
+  const targetCharacterId = parsePositiveSafeInteger(
+    input["targetCharacterId"],
+    "payload.targetCharacterId"
+  );
+  if (!targetCharacterId.ok) {
+    return targetCharacterId;
+  }
+  const affinityBps = parseSignedBps(input["affinityBps"], "payload.affinityBps");
+  if (!affinityBps.ok) {
+    return affinityBps;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      sourceCharacterId: sourceCharacterId.value,
+      targetCharacterId: targetCharacterId.value,
+      affinityBps: affinityBps.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
 function parseObligationRequirement(
   input: unknown
 ): ProtocolParseResult<CreateObligationCommandV1["payload"]["requirement"]> {
@@ -1760,6 +2008,19 @@ function parseBps(value: unknown, path: string): ProtocolParseResult<number> {
   }
 
   return protocolError("invalid-payload", path, `${path} must be an integer from 0 to 10000.`);
+}
+
+function parseSignedBps(value: unknown, path: string): ProtocolParseResult<number> {
+  if (
+    typeof value === "number" &&
+    Number.isSafeInteger(value) &&
+    value >= -10_000 &&
+    value <= 10_000
+  ) {
+    return { ok: true, value };
+  }
+
+  return protocolError("invalid-payload", path, `${path} must be an integer from -10000 to 10000.`);
 }
 
 function parseM3PolicyStance(value: unknown, path: string): ProtocolParseResult<M3PolicyStanceV1> {

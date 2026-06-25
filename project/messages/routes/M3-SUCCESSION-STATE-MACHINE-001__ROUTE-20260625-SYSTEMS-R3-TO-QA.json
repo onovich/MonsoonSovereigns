@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "route_id": "ROUTE-20260625-SYSTEMS-R3-TO-QA",
+  "created_at": "2026-06-25T09:54:30.984Z",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "target_thread_id": "019efe1c-11c0-7701-9175-1d52e88650a1",
+  "source_handoff": "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-R3-REVIEW__systems_architect.json",
+  "source_status": "ACCEPT",
+  "requested_action": "Perform QA re-review of the R3 dead/incapacitated command invariant, unavailable office/enfeoffment holder validation, deterministic succession coverage, and task-scope boundaries.",
+  "send_input": {
+    "submission_id": "019efe33-c199-7440-9b15-abf6c8096a67",
+    "target": "019efe1c-11c0-7701-9175-1d52e88650a1",
+    "interrupt": false
+  },
+  "route_message_command": "node .agents/skills/monsoon-studio-orchestrator/scripts/render-route-message.mjs project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-SYSTEMS-R3-REVIEW__systems_architect.json",
+  "route_to": "qa_reviewer"
+}

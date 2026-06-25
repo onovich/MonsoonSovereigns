@@ -2,7 +2,7 @@
   "id": "M3-SUCCESSION-STATE-MACHINE-001",
   "summary": "Implement M3 minimal succession state machine",
   "milestone": "M3",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -66,13 +66,17 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m3-succession-state-machine",
-  "threads": {},
-  "route_to": "simulation_engineer",
+  "threads": {
+    "simulation_engineer": "019efdf7-e658-7e30-8486-e496b0de4b7f",
+    "systems_architect": "019efe09-de21-7e71-9bcd-5540fdc0f666",
+    "qa_reviewer": "019efe1c-11c0-7701-9175-1d52e88650a1"
+  },
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is the Roadmap M3 minimal state machine only; do not build M6 full succession/civil-war systems.",
     "If historical succession rules are needed for real polities, route to historical_researcher instead of inventing them.",
     "Keep support dimensions inspectable so later UI can display reasons without duplicating formulas."
   ],
   "created_at": "2026-06-25T04:09:26.814Z",
-  "updated_at": "2026-06-25T04:09:26.814Z"
+  "updated_at": "2026-06-25T10:02:34.481Z"
 }

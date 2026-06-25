@@ -1,0 +1,129 @@
+{
+  "message_id": "MSG-20260625-M3-SUCCESSION-QA-REVIEW",
+  "task_id": "M3-SUCCESSION-STATE-MACHINE-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA review rejects final acceptance for M3-SUCCESSION-STATE-MACHINE-001. The required validation matrix passes, the four prior handoffs are structurally valid, scope stays within the task allowlist, and the R2 malformed-state schema fix is confirmed. However, a focused command-path probe shows sim.record-character-status accepts marking an already-dead character as incapacitated, producing authoritative state with alive=false and incapacitated=true while validateWorldStateV0 returns no errors. A related semantic probe shows validateWorldStateV0 also accepts dead or incapacitated characters holding a primary office when such state is constructed directly. This violates the requested dead/incapacitated and vacancy invariants, so the task must return to simulation_engineer before lead acceptance.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/messages/outbox/M3-SUCCESSION-STATE-MACHINE-001__MSG-20260625-M3-SUCCESSION-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m3-succession-state-machine",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before writing this QA handoff, worktree showed task-scoped modifications in packages/protocol, packages/sim-core, tests, project state files, four prior handoffs, four route evidence files, and the new succession test. No forbidden paths were listed."
+    },
+    {
+      "command": "node -e handoff schema/required-field validation for four prior handoffs",
+      "exit_code": 0,
+      "result": "All four prior handoffs parsed as JSON, had required schema fields, used task_id M3-SUCCESSION-STATE-MACHINE-001, and formed the expected route chain: writer REVIEW -> systems REQUEST_CHANGES -> writer R2 REVIEW -> systems R2 ACCEPT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M3-SUCCESSION-STATE-MACHINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M3-SUCCESSION-STATE-MACHINE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e changed/untracked scope audit against task allowlist and forbidden paths",
+      "exit_code": 0,
+      "result": "19 changed or untracked paths audited; forbiddenHits=[] and outsideAllowlist=[]."
+    },
+    {
+      "command": "rg -n \"M3-SUCCESSION-STATE-MACHINE-001|019efdf7|019efe09|019efe1c\" project/tasks/thread-registry.json project/goal-mode-state.json project/model-routing-state.json",
+      "exit_code": 0,
+      "result": "Thread and route evidence exists for simulation_engineer 019efdf7-e658-7e30-8486-e496b0de4b7f, systems_architect 019efe09-de21-7e71-9bcd-5540fdc0f666, and qa_reviewer 019efe1c-11c0-7701-9175-1d52e88650a1."
+    },
+    {
+      "command": "Get-Content -Raw project/messages/routes/M3-SUCCESSION-STATE-MACHINE-001__ROUTE-20260625-SYSTEMS-TO-QA.json",
+      "exit_code": 0,
+      "result": "Route file targets qa_reviewer thread 019efe1c-11c0-7701-9175-1d52e88650a1 from systems R2 ACCEPT handoff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "12 test files passed; 73 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 22 files / 132 tests passed; web Vitest 1 file / 3 tests passed."
+    },
+    {
+      "command": "rg -n banned randomness/time/unsafe-cast/TODO/skip scan over touched implementation and test files",
+      "exit_code": 1,
+      "result": "No Math.random, Date.now, performance.now, new Date, as unknown as, any, TODO, FIXME, or .skip hits in the touched succession implementation/test surfaces."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module focused malformed M3 state probe",
+      "exit_code": 0,
+      "result": "Confirmed R2 fix: missing state.m3.successionCrises, missing state.m3.successionCandidateProfiles, invalid succession support kind, and missing state.m3.characters[0].incapacitated all returned structured invalid-schema paths without throwing."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module focused command-path dead-then-incapacitated probe",
+      "exit_code": 0,
+      "result": "Defect reproduced: after accepting sim.record-character-status status=dead for character 1, a second sim.record-character-status status=incapacitated for the same character was accepted. Resulting state had alive=false and incapacitated=true, and validateWorldStateV0 returned []."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module focused M3 holder availability validation probe",
+      "exit_code": 0,
+      "result": "Defect reproduced: validateWorldStateV0 returned [] for constructed M3 states where a dead+incapacitated, dead, or incapacitated character still held a primary office."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES is required because the R3 task explicitly calls for dead/incapacitated invariants and office vacancy behavior; current command and validation paths allow contradictory or invalid authoritative state.",
+    "The prior systems_architect R2 schema/error-model blocker is resolved for missing/malformed M3 succession arrays and entry shapes.",
+    "No client/UI/save/content/full-war/full-diplomacy scope drift was found in changed paths or reviewed implementation.",
+    "Do not route to lead_orchestrator until simulation_engineer fixes the invariant gap and returns a new writer handoff."
+  ],
+  "risks": [
+    "M3 save runtime is a later task, but accepting validateWorldStateV0 states with dead or incapacitated office holders would create a compatibility and data-corruption trap when M3 runtime save/load is enabled.",
+    "The current tests pass because they cover death vacating offices on the happy command path but do not cover repeated status transitions or direct malformed semantic states with unavailable holders."
+  ],
+  "blockers": [
+    {
+      "code": "m3-succession-dead-incapacitated-invariant-gap",
+      "paths": [
+        "packages/sim-core/src/command-query-v1.ts:evaluateRecordCharacterStatus",
+        "packages/sim-core/src/world-state-v0.ts:validateM3AppointmentSemantics",
+        "tests/sim-core-m3-succession-state-machine.test.ts"
+      ],
+      "reproduction": [
+        "Create an M3 world with character 1 alive and holding primary polity office 1.",
+        "Submit sim.record-character-status for character 1 with status=dead; command is accepted and office is vacated.",
+        "Submit sim.record-character-status for character 1 with status=incapacitated; command is accepted.",
+        "Inspect state.m3.characters[0]: alive=false and incapacitated=true; validateWorldStateV0 returns [].",
+        "Separately construct M3 state with a dead or incapacitated character as primary office holder; validateWorldStateV0 also returns []."
+      ],
+      "impact": "The authoritative M3 state can represent contradictory dead/incapacitated status and unavailable office holders while reporting no invariant error. This weakens deterministic state validity and violates the task's dead/incapacitated and office-vacancy invariants.",
+      "necessary_fix": "Reject or normalize invalid status transitions in evaluateRecordCharacterStatus, especially incapacitating an already-dead character. Add validateWorldStateV0 semantic checks so dead characters cannot be incapacitated and dead or incapacitated characters cannot be active office/enfeoffment holders where the M3 invariants require availability. Add focused tests that fail on the current implementation for the repeated status command and malformed semantic holder states, then rerun the full required validation matrix."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the dead/incapacitated and office-holder invariant gap, add focused regression tests, rerun git status --short, taskctl validate, git diff --check, pnpm --filter @monsoon/sim-core typecheck, pnpm --filter @monsoon/sim-core test, pnpm --filter @monsoon/protocol test, pnpm sim:determinism, and pnpm test, then return a new simulation_engineer handoff for systems and QA re-review.",
+  "created_at": "2026-06-25T17:36:54.5070254+08:00"
+}
