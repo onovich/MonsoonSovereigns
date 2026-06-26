@@ -1,0 +1,101 @@
+{
+  "message_id": "MSG-20260626-M5-SLICE-DEFINITION-QA-REVIEW",
+  "task_id": "M5-SLICE-DEFINITION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the bounded M5 playable-slice definition as a planning-only contract. The task remains in REVIEW, writer and systems handoffs validate, the real origin/main...HEAD diff stays inside allowed project status/task/message/state paths, and no apps, packages, content-source, tools, .github, ADR, gate doc, roadmap, acceptance-matrix, manifest, checksum, validation-report, release, dependency, product-code, package-code, telemetry, server/multiplayer, arbitrary-code mod, branding, commercial, frozen-architecture, irreversible migration, or formal historical content scope was added.",
+  "artifacts": [
+    "project/tasks/active/M5-SLICE-DEFINITION-001.json",
+    "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md",
+    "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "design/m5-slice-definition / D:/WebProjects/MonsoonSovereigns",
+  "commit": "8591eadca3b06535fcf1638786a01518275fefab",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## design/m5-slice-definition...origin/design/m5-slice-definition before QA handoff creation; no extra uncommitted diff. Earlier required status output on the same branch also showed only allowed project/status/message/state/task paths before the branch was confirmed clean."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths: PROJECT_STATUS.md; project/goal-mode-state.json; project/messages/outbox/GOAL-MODE-CONTINUATION.json; M5 slice start/writer/systems outbox handoffs; M5 slice route files; project/model-routing-state.json; project/tasks/active/M5-SLICE-DEFINITION-001.json; project/tasks/thread-registry.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-SLICE-DEFINITION-001",
+      "exit_code": 0,
+      "result": "VALID D:/WebProjects/MonsoonSovereigns/project/tasks/active/M5-SLICE-DEFINITION-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M5-SLICE-DEFINITION-001 is REVIEW; M5-TASK-GRAPH-001 is CLOSED; M5 implementation, evidence, distributable, player-research, performance, manual-node-battle, and exit-human-gate tasks remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M5-SLICE-DEFINITION-001 is in REVIEW and downstream tasks remain dependency-gated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID M5 task graph closure handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node -e JSON shape check for M5-SLICE-DEFINITION-001",
+      "exit_code": 0,
+      "result": "taskStatus=REVIEW; routeTo=qa_reviewer; writerStatus=REVIEW; systemsStatus=ACCEPT; required sections present; decisions=7; commands=27; readModels=19; replayEvidence=6; Human Gate and paid/accounts/secrets checks passed; thread statuses gameplay_designer=review, systems_architect=accepted, qa_reviewer=in_review."
+    },
+    {
+      "command": "node -e command/read-model surface check",
+      "exit_code": 0,
+      "result": "Contract lists 27 required command surfaces and 19 required read models; missingCommands=[]; missingQueries=[] against packages/protocol/src/index.ts and packages/sim-core/src/command-query-v1.ts."
+    },
+    {
+      "command": "node -e allowed-path and forbidden-path diff check",
+      "exit_code": 0,
+      "result": "origin/main...HEAD changed 12 files; outsideAllowed=[]; forbiddenHits=[]."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M5-SLICE-DEFINITION-001 remains REVIEW and is not self-approved ACCEPTED/CLOSED. writer handoff is REVIEW, systems handoff is ACCEPT, and qa_reviewer route/state is present.",
+    "ACCEPT: The playable-slice contract satisfies the task acceptance criteria: it defines a repeatable 2-4 hour slice, start state, player goal, success/failure conditions, required command surfaces, required read models, replay/save/hash evidence, AI behavior, UI explanation needs, boundaries, invariants, parameters, and downstream acceptance evidence.",
+    "ACCEPT: Human Gates remain preserved for M5 formal passage, manual node battle, frozen product/platform/core architecture changes, telemetry, server/multiplayer, arbitrary-code mods, release/commercial decisions, branding, major cultural-risk decisions, irreversible migrations, and paid services/accounts/secrets.",
+    "ACCEPT: The contract is COMPOSITE_FICTIONAL_PLACEHOLDER and explicitly routes any real names, identities, claims, cultural symbols, art, music, language, or event content to historical_researcher before production.",
+    "ACCEPT: No formal historical content, production dependency, product code, package code, content-source data, release artifact, telemetry, server/multiplayer behavior, arbitrary-code mod support, branding, commercial decision, frozen architecture/platform/core decision, or irreversible migration was added.",
+    "ACCEPT: Independent command/read-model surface check confirms systems_architect's conclusion: the listed surfaces are already present in protocol/sim-core and do not imply obvious hidden protocol or save-format expansion inside this task.",
+    "ACCEPT: Downstream implementation remains gated. M5-SIM-PLAYABLE-LOOP-001, M5-CLIENT-PLAYABLE-UI-001, M5-WEB-WINDOWS-DISTRIBUTABLE-001, M5-MULTIYEAR-AI-RUN-001, M5-PERFORMANCE-GATE-001, M5-PLAYER-RESEARCH-001, M5-MANUAL-NODE-BATTLE-DECISION-001, and M5-EXIT-HUMAN-GATE-001 remain DRAFT."
+  ],
+  "risks": [
+    "Non-blocking state hygiene risk: PROJECT_STATUS.md and project/goal-mode-state.json still contain local next-action wording that names systems review, while GOAL-MODE-CONTINUATION.json, route files, task route_to, and thread state correctly show QA review routed after systems ACCEPT. Lead integration should refresh this wording when integrating QA acceptance.",
+    "Downstream implementation tasks must not treat this contract as approval for new protocol, save migration, content-source, UI formula duplication, release/commercial, telemetry, server, account, paid-service, secret, dependency, or Human Gate scope. Any insufficient accepted surface must be routed through the owning downstream task and systems_architect review.",
+    "Session length, map scale, in-game duration, AI multi-year duration, and comprehension targets remain starting hypotheses until M5 sim, client, AI, performance, and player-research tasks produce evidence."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate QA ACCEPT, refresh any stale next-action status wording during lead integration, and keep M5 formal passage/manual node battle/downstream implementation tasks gated until their own tasks and Human Gates pass.",
+  "created_at": "2026-06-26T20:46:48.9999315+08:00"
+}
