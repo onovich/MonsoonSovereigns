@@ -1,0 +1,52 @@
+{
+  "message_id": "MSG-20260627-M5-MULTIYEAR-AI-RUN-REPLACEMENT-START",
+  "task_id": "M5-MULTIYEAR-AI-RUN-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Replacement start for M5-MULTIYEAR-AI-RUN-001. The first test_engineer writer thread was closed as stale after two lead wait windows and one narrowing instruction returned no handoff; this replacement continues the same scoped task without reinitializing or changing acceptance criteria.",
+  "artifacts": [
+    "project/tasks/active/M5-MULTIYEAR-AI-RUN-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
+    "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260626-M5-AI-RUN-LEAD-TO-TEST-START-CONFIRMED.json",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-REPLACEMENT-START__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "test/m5-multiyear-ai-run / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
+  "base_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
+  "replaced_thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
+  "writer_thread_id": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
+  "writer_nickname": "Canary the 9th",
+  "tests_run": [
+    {
+      "command": "multi_agent_v1.wait_agent 019f0486-71a5-7cd3-950c-933d86afb0fc",
+      "exit_code": 0,
+      "result": "Timed out twice without final status, then timed out after narrowing instruction."
+    },
+    {
+      "command": "multi_agent_v1.close_agent 019f0486-71a5-7cd3-950c-933d86afb0fc",
+      "exit_code": 0,
+      "result": "Closed stale predecessor; previous_status was running."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent test_engineer",
+      "exit_code": 0,
+      "result": "Spawned replacement test_engineer thread 019f04aa-f0c6-7523-8ac4-2c42a1db5709 (Canary the 9th)."
+    }
+  ],
+  "decisions": [
+    "Do not fabricate a predecessor handoff; record the predecessor as closed_stale_running_no_handoff.",
+    "Continue the same M5-MULTIYEAR-AI-RUN-001 task on the same branch and same allowed paths.",
+    "Replacement writer must produce REVIEW/BLOCKED/PARTIAL evidence before independent QA review."
+  ],
+  "risks": [
+    "P2: The first writer consumed time without output; replacement is instructed to keep work bounded and produce a handoff promptly."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer",
+  "requested_action": "Replacement writer should implement scoped validation and produce REVIEW handoff for qa_reviewer; do not mark ACCEPTED/CLOSED.",
+  "created_at": "2026-06-27T00:01:55+08:00"
+}

@@ -81,6 +81,9 @@ importers:
       '@monsoon/protocol':
         specifier: workspace:*
         version: link:../../packages/protocol
+      '@monsoon/sim-ai':
+        specifier: workspace:*
+        version: link:../../packages/sim-ai
       '@monsoon/sim-core':
         specifier: workspace:*
         version: link:../../packages/sim-core
@@ -156,6 +159,15 @@ importers:
       '@monsoon/protocol':
         specifier: workspace:*
         version: link:../protocol
+
+  packages/sim-ai:
+    dependencies:
+      '@monsoon/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+      '@monsoon/sim-core':
+        specifier: workspace:*
+        version: link:../sim-core
 
   packages/sim-core:
     dependencies:

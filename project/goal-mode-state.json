@@ -6,24 +6,33 @@
     "M5-MULTIYEAR-AI-RUN-001"
   ],
   "active_threads": {
-    "019f0486-71a5-7cd3-950c-933d86afb0fc": {
+    "019f04aa-f0c6-7523-8ac4-2c42a1db5709": {
       "task_id": "M5-MULTIYEAR-AI-RUN-001",
       "role": "test_engineer",
-      "thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
-      "status": "active",
+      "thread_id": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
+      "status": "review_ready",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "nickname": "Probe the 9th",
-      "responsibility": "primary test_engineer writer for M5 multi-year AI run validation",
+      "nickname": "Canary the 9th",
+      "responsibility": "replacement test_engineer writer for M5 multi-year AI run validation",
       "branch_or_worktree": "test/m5-multiyear-ai-run",
-      "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
+      "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-REPLACEMENT-START__lead_orchestrator.json",
       "base_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
-      "updated_at": "2026-06-26T23:24:10+08:00",
-      "start_state": "START_CONFIRMED",
-      "start_submission_id": "019f0488-29f8-7511-bc27-28cfd8f41c17",
-      "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260626-M5-AI-RUN-LEAD-TO-TEST-START-CONFIRMED.json"
+      "replaces_thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
+      "updated_at": "2026-06-27T00:29:58+08:00",
+      "start_state": "START_CONFIRMED_REPLACEMENT",
+      "start_submission_id": "019f04ac-0cd3-7d50-ae91-4dfc1f27db36",
+      "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-LEAD-TO-TEST-REPLACEMENT-START.json",
+      "request_changes_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-LEAD-REQUEST-CHANGES-TO-TEST.json",
+      "request_changes_submission_id": "019f04b0-4912-7e83-a02c-fa467c1440d8",
+      "request_changes_r2_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-LEAD-R2-REQUEST-CHANGES-TO-TEST.json",
+      "request_changes_r2_submission_id": "019f04bf-0056-7f93-a821-f56940bc7732",
+      "review_ready_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-27T00:29:58+08:00",
+      "review_ready_round": 3
     }
   },
   "last_integrated_task": "M5-CLIENT-PLAYABLE-UI-001",
@@ -66,7 +75,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-26T23:24:10+08:00",
+  "last_updated_at": "2026-06-27T00:29:58+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -78,7 +87,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-26T23:24:10+08:00",
+  "updated_at": "2026-06-27T00:29:58+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -205,16 +214,44 @@
     ]
   },
   "m5_multiyear_ai_run": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "branch_or_worktree": "test/m5-multiyear-ai-run",
-    "writer_thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
-    "writer_nickname": "Probe the 9th",
+    "writer_thread_id": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
+    "writer_nickname": "Canary the 9th",
     "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
     "started_at": "2026-06-26T23:23:27+08:00",
     "base_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
-    "next_action": "Wait for test_engineer REVIEW handoff, then route to independent qa_reviewer.",
+    "next_action": "Route R3 REVIEW handoff to independent qa_reviewer; QA must review the explicit live no-action-only limitation.",
     "human_gate_required": false,
     "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260626-M5-AI-RUN-LEAD-TO-TEST-START-CONFIRMED.json",
-    "start_submission_id": "019f0488-29f8-7511-bc27-28cfd8f41c17"
-  }
+    "start_submission_id": "019f0488-29f8-7511-bc27-28cfd8f41c17",
+    "review_ready_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
+    "review_ready_at": "2026-06-27T00:29:58+08:00",
+    "replaces_thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
+    "replacement_start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-REPLACEMENT-START__lead_orchestrator.json",
+    "replaced_at": "2026-06-27T00:01:55+08:00",
+    "replacement_route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-LEAD-TO-TEST-REPLACEMENT-START.json",
+    "replacement_submission_id": "019f04ac-0cd3-7d50-ae91-4dfc1f27db36",
+    "request_changes_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "request_changes_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-LEAD-REQUEST-CHANGES-TO-TEST.json",
+    "request_changes_submission_id": "019f04b0-4912-7e83-a02c-fa467c1440d8",
+    "request_changes_round": 2,
+    "review_ready_r2_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R2-REVIEW__test_engineer.json",
+    "review_ready_r2_at": "2026-06-27T00:16:00+08:00",
+    "request_changes_r2_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-LEAD-R2-REQUEST-CHANGES-TO-TEST.json",
+    "request_changes_r2_submission_id": "019f04bf-0056-7f93-a821-f56940bc7732",
+    "review_ready_r3_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
+    "review_ready_r3_at": "2026-06-27T00:26:01+08:00",
+    "review_ready_round": 3
+  },
+  "replaced_threads": [
+    {
+      "task_id": "M5-MULTIYEAR-AI-RUN-001",
+      "role": "test_engineer",
+      "thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
+      "status": "closed_stale_running_no_handoff",
+      "replaced_by": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
+      "replaced_at": "2026-06-27T00:01:55+08:00"
+    }
+  ]
 }
