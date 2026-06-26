@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T14:10:00Z",
+  "updated_at": "2026-06-26T14:30:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1562,14 +1562,12 @@
       "integrated_pr": 108,
       "lead_close_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
       "close_tool_result": "not_found_at_closure_time_no_fabricated_close_result"
-    }
-  ],
-  "active_threads": [
+    },
     {
       "task_id": "M5-SLICE-DEFINITION-001",
       "role": "gameplay_designer",
       "thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1582,15 +1580,21 @@
       "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
       "review_ready_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
       "review_ready_at": "2026-06-26T13:30:00Z",
-      "updated_at": "2026-06-26T14:10:00Z",
+      "updated_at": "2026-06-26T14:30:00Z",
       "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "accepted_at": "2026-06-26T13:30:00Z"
+      "accepted_at": "2026-06-26T13:30:00Z",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T14:30:00Z",
+      "integrated_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
+      "integrated_pr": 110,
+      "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "closed_after_completed_accept"
     },
     {
       "task_id": "M5-SLICE-DEFINITION-001",
       "role": "systems_architect",
       "thread_id": "019f03ed-169e-7481-95f2-e9e5c4d765ba",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1602,15 +1606,21 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "updated_at": "2026-06-26T14:10:00Z",
+      "updated_at": "2026-06-26T14:30:00Z",
       "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
-      "accepted_at": "2026-06-26T13:55:00Z"
+      "accepted_at": "2026-06-26T13:55:00Z",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T14:30:00Z",
+      "integrated_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
+      "integrated_pr": 110,
+      "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "closed_after_completed_accept"
     },
     {
       "task_id": "M5-SLICE-DEFINITION-001",
       "role": "qa_reviewer",
       "thread_id": "019f03f4-39f3-71c1-859d-cfa5fb8a544a",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1623,11 +1633,18 @@
       "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-SYSTEMS-TO-QA-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
       "writer_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "updated_at": "2026-06-26T14:10:00Z",
+      "updated_at": "2026-06-26T14:30:00Z",
       "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-QA-REVIEW__qa_reviewer.json",
-      "accepted_at": "2026-06-26T14:05:00Z"
+      "accepted_at": "2026-06-26T14:05:00Z",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T14:30:00Z",
+      "integrated_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
+      "integrated_pr": 110,
+      "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "closed_after_completed_accept"
     }
   ],
+  "active_threads": [],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1678,7 +1695,8 @@
     "M4-DETERMINISM-REPLAY-001": "CLOSED after PR #102 entered main at 83ecd0c07fbe29f0d449180c00710bb10568a105. test_engineer thread 019f0313-1f78-70d2-ad1a-033e799c63d4 produced a valid REVIEW handoff; qa_reviewer thread 019f0313-78ab-7f21-a5e1-e1a4d7955ed2 independently accepted after schema fix; lead gates and PR CI passed. Next READY task is M4-STRESS-VALIDATION-001.",
     "M4-STRESS-VALIDATION-001": "CLOSED after PR #104 entered main at 0eb040e9a3a32ec39e36f83e5d46df5f0cde3feb. Replacement test_engineer thread 019f036c-21de-7512-b545-18c05bf892bb produced valid R2 REVIEW handoff; qa_reviewer thread 019f034c-0dbf-7122-b874-684fe62a157a accepted R2; lead gates and PR CI passed. Next READY task is M4-EXIT-VALIDATION-001.",
     "M4-EXIT-VALIDATION-001": "CLOSED after PR #107 entered main at 3e649ac5f739dfea75511ad0cb1193fc7df713aa. M4_GATE = PASS_WITH_LIMITS; M5 task graph is now the next active planning task.",
-    "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117; M5-SLICE-DEFINITION-001 is the next dependency-ready M5 task."
+    "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117; M5-SLICE-DEFINITION-001 is the next dependency-ready M5 task.",
+    "M5-SLICE-DEFINITION-001": "CLOSED after PR #110 entered main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042; M5-SIM-PLAYABLE-LOOP-001 is the next dependency-ready M5 task."
   },
   "task_notes": {
     "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",
@@ -1691,6 +1709,6 @@
     "M4-STRESS-VALIDATION-001": "CLOSED after PR #105 entered main at 96abe397327a81e5922aed61c022255dc20f2baa. Validation-only M4 stress evidence task produced accepted stress coverage, closure handoff, clean task graph, and no product scope expansion.",
     "M4-EXIT-VALIDATION-001": "CLOSED after M4 gate PR #106 entered main. M4_GATE = PASS_WITH_LIMITS with accepted process limit; M5 formal passage remains a Human Gate.",
     "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117. Planning-only M5 graph accepted and integrated; downstream M5 tasks remain DRAFT, with M5-SLICE-DEFINITION-001 dependency-ready. M5 formal passage and manual node battle remain Human Gates.",
-    "M5-SLICE-DEFINITION-001": "ACCEPTED pending PR after gameplay_designer REVIEW, systems_architect ACCEPT, independent qa_reviewer ACCEPT, and lead acceptance. M5 formal passage and downstream tasks remain gated."
+    "M5-SLICE-DEFINITION-001": "CLOSED after PR #110 entered main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042. Planning-only M5 slice contract integrated; M5-SIM-PLAYABLE-LOOP-001 is next ready. M5 formal passage and manual node battle remain Human Gates."
   }
 }
