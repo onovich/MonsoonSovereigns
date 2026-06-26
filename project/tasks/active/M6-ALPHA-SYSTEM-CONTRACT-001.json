@@ -2,7 +2,7 @@
   "id": "M6-ALPHA-SYSTEM-CONTRACT-001",
   "summary": "Define bounded M6 Alpha system-complete contract",
   "milestone": "M6",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -55,22 +55,628 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
     "git diff --check"
   ],
+  "contract": {
+    "target": {
+      "name": "M6 Alpha system-complete contract v0",
+      "objective": "Define the minimum Alpha proof that Monsoon Sovereigns can start a bounded scenario, reach one accepted victory condition, explain failure, and demonstrate all major M6 systems without placeholder surfaces or hidden rule shortcuts.",
+      "alpha_minimum": "One complete start-to-victory path is required; the path may be narrow, but every major system in the M6 DAG must either participate in the path or expose a non-placeholder reason-coded state that can affect it.",
+      "non_painting_rule": "Changing actual controller or coloring a district is never sufficient. Victory requires recognized political settlement, legitimacy or diplomatic acceptance evidence, obligation or governance terms, and a stabilization check.",
+      "planning_only_policy": "This task defines contract only. It adds no product code, package code, content-source data, dependencies, roadmap edits, accepted ADR edits, gate edits, release artifacts, telemetry, server behavior, or arbitrary-code mod support.",
+      "historical_policy": "This contract introduces no formal historical facts, names, symbols, claims, language, art, music, or culture-specific assets. Any later formal scenario detail must route to historical_researcher and use HISTORICAL, INFERRED, COMPOSITE, or FICTIONAL labels.",
+      "manual_node_battle_policy": "DEFER_MANUAL_NODE_BATTLE is preserved exactly. Manual node battle may appear only as a post-1.0 non-blocking candidate note and is not an M6, M7, or M8 implementation, spike, research, validation, or exit-gate dependency."
+    },
+    "start_conditions": {
+      "scenario_set": {
+        "minimum_count": 3,
+        "primary_playthrough_required": true,
+        "labels": [
+          "one primary Alpha victory scenario",
+          "one pressure-variant scenario",
+          "one recovery-or-failure scenario"
+        ],
+        "content_policy": "Scenario records may be COMPOSITE or FICTIONAL for Alpha. Formal historical claims require historical_researcher review before acceptance."
+      },
+      "authoritative_basis": [
+        "M1 deterministic WorldState, GameDay scheduler, Command/Event/Query v1, RNG, save envelope, replay and state hash.",
+        "M2 economy, population, labor, agriculture, grain/cash source ledgers, routes, transport and seasonal pressure.",
+        "M3 polities, suzerain chains, offices, characters, obligations, administrative burden, succession pressure, and postwar governance.",
+        "M4 campaign objectives, faction knowledge, muster, grain supply, route capacity, march/supply state, automatic engagement, siege choice, withdrawal, war outcome, postwar candidate and AI trace.",
+        "M5 playable loop, client command/preview surfaces, Web/Windows smoke evidence, performance evidence, local player research limits, and PASS_WITH_LIMITS carry-forward notes."
+      ],
+      "required_initial_state": [
+        "A deterministic seed, start day, scenario id, fixture or manifest hash, and start state hash are recorded before the first player command.",
+        "The player court has at least one vassal or dependent polity, at least one contested target, at least one eligible office or agent decision, visible population/labor/grain/cash constraints, and one plausible campaign or diplomatic route.",
+        "At least one legitimacy or diplomatic recognition issue, one succession or continuity pressure, one policy/event choice, and one encyclopedia reference are reachable before victory or failure.",
+        "At least one rival or non-player polity can act through the same command surface or choose a reason-coded wait/no-action path.",
+        "No active Human Gate is required to begin the Alpha playthrough; if a Human Gate scope is encountered, the run records BLOCKED rather than treating it as success."
+      ],
+      "scale_starting_assumption": {
+        "starting_hypothesis": "Three Alpha scenarios, each with enough districts, polities, characters, offices, obligations, route edges, and policy/event definitions to exercise the major systems, but smaller than final M7 content lock.",
+        "metric": "A complete run exposes all major M6 system states without forcing more than one winning path or hiding missing systems behind placeholder text.",
+        "validation_way": "M6 scenario pipeline validation, start-to-victory replay, client Alpha surface smoke, and Alpha no-P0/P1 validation evidence."
+      }
+    },
+    "accepted_victory_condition": {
+      "id": "m6.alpha.recognized_order.v0",
+      "statement": "The player wins when a contested target or dependent polity is brought into a stable recognized order through diplomacy, legitimacy, campaign outcome, succession continuity, and postwar or vassal governance terms.",
+      "minimum_requirements": [
+        "A valid political arrangement exists: vassal settlement, recognized succession-backed settlement, restored ruler settlement, tribute/obligation settlement, or direct control with explicit administrative and garrison burden.",
+        "The arrangement survives the stabilization window without unresolved suzerain cycle, duplicate same-district settlement, impossible obligation ledger, broken succession continuity, or immediate legitimacy collapse.",
+        "The player has made at least one meaningful decision in agent appointment, diplomacy or obligation, population/labor or supply, monsoon campaign planning, succession or legitimacy, policy/event handling, and postwar or vassal settlement.",
+        "AI or adviser reasons can explain at least one rival action, wait, refusal, withdrawal, policy choice, or no-action decision that influenced the path.",
+        "Replay evidence includes start hash, ordered command sequence, save/load checkpoint, terminal state, final hash, and matching Node/Worker-compatible deterministic result."
+      ],
+      "stabilization_window_starting_assumption": {
+        "starting_hypothesis": "Six to twelve in-game months after the settlement, long enough for at least one obligation, legitimacy, administrative, or policy consequence to surface.",
+        "metric": "The victory state is not immediately voided by arrears, succession break, invalid settlement, supply ledger violation, or legitimacy collapse.",
+        "validation_way": "M6 start-to-victory sim loop tests, batch auto-run result review, and Alpha no-P0/P1 validation."
+      }
+    },
+    "failure_conditions": [
+      "The player loses all maintainable power centers or has no valid succession, regency, stewardship, or political continuity path.",
+      "The contested target changes actual control but lacks a valid recognized arrangement, obligation term, legitimacy basis, or stabilization evidence.",
+      "Campaign, siege, withdrawal, season, supply, or population/labor consequences collapse the playable objective and no diplomatic or political recovery remains inside the scenario contract.",
+      "Diplomacy or legitimacy falls into an unrecoverable breach state caused by explicit decisions, not a hidden global punishment.",
+      "Succession produces no eligible continuity path, creates cyclic or duplicated claims, or invalidates command authority before victory is locked.",
+      "A policy/event choice creates an explicit terminal failure or removes every legal route to recognized settlement.",
+      "Replay, save/load, Node/Worker hash parity, command parity, source-ledger conservation, or a listed invariant fails.",
+      "A required Human Gate is encountered without approval, including manual node battle reversal, telemetry, accounts, server/multiplayer, arbitrary-code mods, paid services, branding, commercial release, frozen architecture/platform/core changes, irreversible migration, major cultural-risk decision, or formal 1.0 scope reversal."
+    ],
+    "player_decisions": [
+      {
+        "id": "select_alpha_opening",
+        "decision": "Choose one of the Alpha scenarios and decide whether to pursue recognition through diplomacy-first, campaign-first, or recovery-first sequencing.",
+        "advantage": "The opening choice lets the player commit to a readable strategic problem instead of a single scripted tutorial route.",
+        "cost": "Each opening exposes different political, succession, route, and resource liabilities that cannot all be solved before the first crisis.",
+        "dependencies": "Requires validated scenario metadata, start hash, goal text, known starting pressures, and non-placeholder read models for diplomacy, legitimacy, succession, policy/event, and campaign state.",
+        "counter": "The rival can act on the same opening pressures; a weak opening can be punished by wait, refusal, succession contest, or supply timing rather than by hidden difficulty bonuses.",
+        "design_guard": "Openings are not cultural or ethnic buffs. Differences come from explicit institutions, geography, obligations, resources, relationships, and scenario labels."
+      },
+      {
+        "id": "appoint_or_reassign_agent",
+        "decision": "Appoint, retain, or reassign an agent for office, district, campaign, diplomacy, or succession support.",
+        "advantage": "A fitting agent improves a specific decision path such as negotiation reliability, office execution, local compliance, campaign preparation, or succession support.",
+        "cost": "Appointment consumes political capacity, may displace another holder, creates relationship obligations, can empower a local bloc, and can worsen administrative burden.",
+        "dependencies": "Requires eligible office or mandate, candidate reason codes, relationship and interest context, policy continuity, jurisdiction, and preview of institutional consequences.",
+        "counter": "A rival claimant, local elite, overloaded court, or offended office holder can reduce compliance, contest legitimacy, or refuse later obligations.",
+        "design_guard": "Characters are not total attribute cards. Public ability values can inform fit, but interests, relationships, office context, legitimacy, information quality, and institutional limits must remain visible."
+      },
+      {
+        "id": "negotiate_diplomacy_and_obligations",
+        "decision": "Offer recognition, protection, alliance-like terms if represented by accepted schemas, guarantee terms if represented by accepted schemas, tribute terms, access, grain, troops, or lighter obligations through accepted command paths.",
+        "advantage": "Diplomacy can convert influence into support or neutrality without direct annexation and can make victory possible without painting the map.",
+        "cost": "Terms create explicit future obligations, legitimacy exposure, arrears risk, hostage or guarantee risk if later implemented, and opportunity cost against other dependents.",
+        "dependencies": "Requires M6 diplomacy/legitimacy state, M3 suzerain and obligation accounting, visible relationship/claim reasons, no graph cycles, and serializable acceptance/refusal reasons.",
+        "counter": "The target or rival may refuse, delay, demand better terms, exploit weak legitimacy, or accept terms that become costly when succession or supply conditions change.",
+        "design_guard": "No hidden global reputation penalty. Diplomatic consequences must attach to specific terms, actors, obligations, claims, relationships, and events."
+      },
+      {
+        "id": "manage_legitimacy_and_succession",
+        "decision": "Support a claimant, arrange temporary stewardship, resolve disputed succession, or defer a settlement until legitimacy evidence improves.",
+        "advantage": "A timely legitimacy or succession settlement can preserve command authority, vassal recognition, office continuity, and postwar settlement validity.",
+        "cost": "Backing one path can alienate another faction, weaken a dependent, delay campaign timing, or create future claim disputes.",
+        "dependencies": "Requires deterministic succession candidate generation, explicit eligibility and claim reasons, diplomacy/legitimacy effects, relationship support sources, and save/replay coverage.",
+        "counter": "Rivals can back an alternate claimant, dependents can refuse to inherit old obligations, and delayed settlement can shrink the campaign or harvest window.",
+        "design_guard": "Succession is a network and institution problem, not a single global stability score."
+      },
+      {
+        "id": "mobilize_population_labor_and_supply",
+        "decision": "Commit households, labor, retainers, grain, cash, storage, and transport capacity to support diplomacy, campaign, siege, or stabilization.",
+        "advantage": "Proper mobilization increases operating days, siege endurance, local compliance, and recovery options after a failed route.",
+        "cost": "Mobilized households reduce productive labor, grain reservations create spoilage or opportunity risk, retainers create recurring fiscal pressure, and transport commitments can starve other obligations.",
+        "dependencies": "Requires M2 population/economy and M4 supply source ledgers, seasonal calendar, route capacity, muster state, and explicit reserve/consume/release events.",
+        "counter": "An opponent can wait out supplies, force a late withdrawal, target overextended obligations, or exploit weakened harvest and local labor recovery.",
+        "design_guard": "No abstract manpower pool or hidden global war exhaustion. Costs must be visible in local population, labor, harvest, grain, cash, obligation, casualty, or transport ledgers."
+      },
+      {
+        "id": "choose_monsoon_route_and_campaign_window",
+        "decision": "Pick objective, route, transport mode, staging site, campaign start day, siege approach, or cancellation before sunk costs dominate.",
+        "advantage": "A well-matched route and window can beat monsoon risk, enemy reinforcement, grain exhaustion, or siege delay.",
+        "cost": "Plans tie up muster and grain, can become stale, can expose intent, and may require cancellation with recorded opportunity costs.",
+        "dependencies": "Requires M4 campaign objective and faction knowledge, M2/M4 route and transport forecasts, calendar/season state, supply preview, and reason-coded cancellation/withdrawal outcomes.",
+        "counter": "Weather window, river or road capacity, stale knowledge, enemy relief, vassal delay, or supply shortage can make waiting, changing target, or withdrawing correct.",
+        "design_guard": "Monsoon is a route, timing, disease/siege/supply, and transport planning force, not a universal percentage debuff."
+      },
+      {
+        "id": "resolve_automatic_war_and_siege",
+        "decision": "Commit to march, accept automatic engagement, select siege pressure, negotiate, hold, assault-like abstract choice if already accepted by M4 rules, or withdraw.",
+        "advantage": "The war loop can create a postwar candidate or diplomatic leverage without direct permanent annexation.",
+        "cost": "Casualties, grain loss, morale or credit hooks, siege damage, breach consequences, and withdrawal losses flow back into institutions and local ledgers.",
+        "dependencies": "Requires accepted M4 automatic engagement and siege rules, campaign/march/supply state, deterministic tie-breakers, source-ledger conservation, and visible war outcome handoff.",
+        "counter": "The defender can use fortification, time, relief, monsoon pressure, or the attacker's political need to withdraw.",
+        "design_guard": "Manual node battle remains unavailable. The Alpha contract uses deterministic automatic resolution and strategic siege choices only."
+      },
+      {
+        "id": "choose_postwar_governance_and_policy",
+        "decision": "Choose direct control, restored dependent ruler, tribute/obligation settlement, policy concession, event option, or delayed settlement after a war or diplomatic result.",
+        "advantage": "Postwar choice converts temporary leverage into different mixes of recognition, obligation, administrative reach, and local continuity.",
+        "cost": "Direct control needs administrative and garrison capacity; restored rulers preserve autonomy and breach risk; tribute-only settlements offer lower control; policy concessions may reduce short-term friction but create future obligations.",
+        "dependencies": "Requires M3 postwar candidate and governance paths, M6 legitimacy/diplomacy state, policy/event runtime, obligation compatibility, and stabilization preview.",
+        "counter": "Administrative overload, local elite refusal, arrears, succession dispute, rival protection offer, or event consequences can undermine the arrangement.",
+        "design_guard": "Victory is a political arrangement with terms and failure modes, not a permanent color fill."
+      }
+    ],
+    "state": {
+      "authoritative_state": [
+        "M1 deterministic world, calendar, command/event/query protocol, RNG, save envelope, replay tail, and hash state.",
+        "M2 district, economy, population, labor, grain, cash, harvest, storage, route, transport, and seasonal state.",
+        "M3 polity, control, suzerain, obligation, office, character, relationship, administrative burden, succession, and postwar governance state.",
+        "M4 campaign objective, knowledge, muster, supply, route capacity, march, engagement, siege, withdrawal, war outcome, postwar candidate, and AI trace state.",
+        "M6 diplomacy, legitimacy, completed succession resolution, policy/event runtime, encyclopedia reference, scenario manifest, map candidate reference, terminal victory/failure state, batch evidence metadata, and adviser intervention evidence metadata."
+      ],
+      "client_state_rule": "Client/UI may hold view state, selection, filters, local drafts, generated local evidence artifact views, and read-model caches only. They must not own or mutate authoritative WorldState.",
+      "save_rule": "Alpha save/load uses explicit accepted save envelope and additive versioned schemas. No irreversible migration is authorized by this contract.",
+      "content_state_rule": "Scenario and map candidate data enter the simulation only through validated content/runtime boundaries; sim-core does not import Node IO, DOM, React, Pixi, Electron, or real-time APIs."
+    },
+    "update_frequency": {
+      "daily": [
+        "GameDay advance, march movement, supply consumption, siege pressure, route and seasonal risk, policy/event timers when scheduled, AI decision opportunities, and state hash update."
+      ],
+      "monthly_or_periodic": [
+        "Obligation due/arrears review, administrative burden projection, legitimacy drift from explicit institutional causes, succession pressure review, population/labor recovery, harvest/resource cycles, and diplomacy offer expiry."
+      ],
+      "event_driven": [
+        "Scenario start, appointment, office policy update, diplomacy offer/response, obligation create/fulfill/breach, succession resolution, policy/event option, encyclopedia reference unlock, campaign objective create/update/cancel, muster response, grain reserve/release/consume, march start, field engagement, siege choice, withdrawal, postwar settlement, victory/failure terminal check, save/load."
+      ],
+      "per_run_or_batch": [
+        "Start hash capture, terminal hash capture, no-rescue AI run summary, batch metric aggregation, dashboard artifact generation, adviser intervention evidence recording, Alpha no-P0/P1 classification."
+      ],
+      "ui_refresh": [
+        "UI refreshes from read models and reason-code projections after commands, scheduled day advancement, save/load, and local artifact selection; it does not duplicate simulation formula authority."
+      ]
+    },
+    "formula_intent": [
+      "Every advantage is local, conditional, and inspectable; it must name its cost, dependency, and counterplay.",
+      "Do not hide global penalties behind vague stability, reputation, culture, ethnicity, war exhaustion, or legitimacy meters. Consequences must route through institutions: offices, obligations, claims, succession, relationships, ledgers, route capacity, supply, policy/event effects, or postwar terms.",
+      "Legitimacy should explain why actors accept, refuse, delay, or contest authority; it is not a generic universal score that silently modifies every formula.",
+      "Diplomacy should create explicit terms, promises, recognition, access, obligations, and refusal reasons; it is not a full peace-treaty system in M6.",
+      "Policy and events should expose cause, option, consequence, timing, and encyclopedia reference through schemas and reason codes; no script callbacks, hidden managers, or object-graph saves.",
+      "AI evaluation should use bounded visible candidates, deterministic tie-breakers, and protocol-visible traces, not hidden resources, hidden map knowledge, or privileged actions.",
+      "Characters are institutional actors with interests, relationships, offices, status, local bases, knowledge and constraints; they are not total attribute cards.",
+      "Culture, ethnicity, religion, language, or modern identity categories must never be fixed buffs or penalties. Any formal cultural detail requires historical_researcher routing."
+    ],
+    "invariants": [
+      "Same scenario id, content manifest hash, seed, start state, and command sequence produce the same final state hash in Node runner and Worker/browser-compatible execution.",
+      "All player and AI state changes use the same versioned GameCommand or accepted deterministic scheduler path.",
+      "No simulation result depends on Math.random, Date.now, real time, object traversal order, unstable sort order, DOM, React, Pixi, Electron, Node filesystem, or hidden external service state.",
+      "One district has one actual controller at a time; suzerain chains, claim references, and diplomacy relation graphs cannot create cycles unless an explicit accepted model allows and validates that relation type.",
+      "Obligations, grain, cash, labor, population, troops, casualties, and supply movements conserve explicit source ledgers and reject double counting.",
+      "Legitimacy, recognition, and diplomacy effects have reason-coded sources and cannot silently overwrite postwar governance, succession, or obligation state.",
+      "Succession candidate ordering is deterministic and invalid candidates are rejected with serializable reasons.",
+      "Policy/event effects are schema-defined, deterministic, bounded, serializable, and cannot inject arbitrary code or hidden callbacks.",
+      "Victory/failure terminal state is explicit, versioned, hash-covered, save/load round-tripped, and explained through read models.",
+      "AI traces remain bounded, serializable, and tied to visible read-model inputs.",
+      "Major M6 UI surfaces cannot display placeholder-only panels for systems required by the contract.",
+      "Manual node battle, telemetry, accounts, paid services, server/multiplayer, arbitrary-code mods, commercial release, branding decisions, and irreversible migrations remain absent."
+    ],
+    "ai_behavior": {
+      "minimum_alpha_behavior": [
+        "Operate in deterministic layers: survival/recovery, succession/legitimacy, diplomacy/obligation, policy/event, campaign/logistics, postwar/governance, and no-action/wait.",
+        "Submit the same command kinds available to the player, or choose no-action/wait with reason codes when no command is justified.",
+        "Create or update diplomacy offers, obligations, campaign objectives, succession support, policy choices, and postwar preferences only from visible state and bounded candidate lists.",
+        "Run a full Alpha scenario without lead rescue commands, hidden resource grants, hidden map knowledge, remote services, telemetry, or privileged mutation.",
+        "Explain target selection, refusal, wait, withdrawal, succession support, policy choice, and postwar choice through primary reason, rejected alternatives, and trace truncation metadata."
+      ],
+      "counterplay": [
+        "Players can read why AI waited, refused, shifted target, withdrew, or supported a claimant and can respond through diplomacy, obligations, campaign timing, policy choices, or postwar terms.",
+        "AI can punish exposed costs such as over-mobilized labor, weak legitimacy, stale route knowledge, unpaid obligations, poor succession planning, or supply exhaustion, but only through normal commands and visible reasons."
+      ],
+      "constraints": [
+        "No general hidden grand-strategy manager, no AI-only command surface, no runtime script engine, no server service, no telemetry, no arbitrary-code mod hook, and no manual node battle assumption.",
+        "No culture, ethnicity, or modern identity fixed preferences. AI preference comes from explicit scenario data, institutions, obligations, relationships, claims, logistics, knowledge age, risk, and policy/event state."
+      ]
+    },
+    "ui_explanation": {
+      "required_non_placeholder_surfaces": [
+        "Scenario start and goal status",
+        "Victory/failure progress and terminal explanation",
+        "Diplomacy and legitimacy",
+        "Succession and continuity",
+        "Agent/office appointment",
+        "Population, labor, harvest, grain, cash, and obligation ledgers",
+        "Route, monsoon, supply, march, engagement, siege, withdrawal, and postwar outcome",
+        "Policy and event choices with causes and consequences",
+        "Encyclopedia references linked from scenario, event, institution, route, and culture-sensitive reviewed entries without claiming final content lock",
+        "AI and adviser reasons",
+        "Save/load checkpoint, seed, command count, state hash, and replay evidence",
+        "Local batch auto-run and balance dashboard artifacts",
+        "Accessibility core-flow status"
+      ],
+      "explanation_rules": [
+        "Each major action preview shows top reason codes, concrete source-ledger deltas, institutional consequences, and known uncertainty.",
+        "The UI must distinguish actual control, suzerain relation, recognized legitimacy, obligations, claims, and postwar terms.",
+        "Manual node battle is not presented as an Alpha feature. If mentioned, it is only a post-1.0 non-blocking candidate note outside current implementation authorization.",
+        "Client code consumes protocol/query/read-model projections and does not duplicate sim-core formulas or hold full WorldState.",
+        "Text, controls, and status explanations must not overlap in supported Alpha desktop viewports; keyboard and focus paths cover the core flow."
+      ]
+    },
+    "major_system_expectations": [
+      {
+        "system": "Start-to-victory loop",
+        "minimum_alpha_expectation": "At least one scenario reaches the accepted victory condition or a defined failure state through authoritative sim, save, replay, and query paths.",
+        "not_placeholder_definition": "Terminal state has explicit schema, reason codes, stabilization evidence, and hash coverage.",
+        "evidence_required": "Scripted or manual command log, save/load checkpoint, Node/Worker hash parity, and no invariant failures.",
+        "m6_task": "M6-START-TO-VICTORY-SIM-LOOP-001"
+      },
+      {
+        "system": "Diplomacy and legitimacy",
+        "minimum_alpha_expectation": "Diplomacy and legitimacy can alter obligations, succession, campaign decisions, postwar outcomes, and AI reasons.",
+        "not_placeholder_definition": "Actors can accept, refuse, delay, contest, or recognize with serializable reasons; legitimacy has explicit sources.",
+        "evidence_required": "Command parity tests, save/load tests, graph/reason invariants, and UI preview/read-model evidence.",
+        "m6_task": "M6-DIPLOMACY-LEGITIMACY-001"
+      },
+      {
+        "system": "Succession completion",
+        "minimum_alpha_expectation": "Succession and continuity can be resolved or fail inside Alpha without data corruption.",
+        "not_placeholder_definition": "Eligibility, claim strength, support sources, disputed outcome, and effects on obligations/recognition are visible.",
+        "evidence_required": "Deterministic candidate tests, malformed input rejection, save round-trip, and start-to-victory integration.",
+        "m6_task": "M6-SUCCESSION-COMPLETION-001"
+      },
+      {
+        "system": "Policy, event, and encyclopedia runtime",
+        "minimum_alpha_expectation": "At least one policy/event choice affects the victory path or a failure/recovery path and links to encyclopedia context.",
+        "not_placeholder_definition": "Events have schema-defined cause, option, consequence, timing, and reference ids; no arbitrary scripts.",
+        "evidence_required": "Content schema validation, deterministic event ordering tests, UI choice surface, and save/replay round-trip.",
+        "m6_task": "M6-POLICY-EVENT-RUNTIME-001"
+      },
+      {
+        "system": "Three-scenario data pipeline",
+        "minimum_alpha_expectation": "Three Alpha scenarios compile with stable ids, source/claim labels, and references required by the major systems.",
+        "not_placeholder_definition": "Scenario data rejects unlabeled formal claims, bad references, duplicate ids, and unstable manifest output.",
+        "evidence_required": "Content validation, manifest determinism, label audit, and historical_researcher routing for formal historical content.",
+        "m6_task": "M6-SCENARIO-DATA-PIPELINE-001"
+      },
+      {
+        "system": "Map candidate path",
+        "minimum_alpha_expectation": "Map candidate data can be validated, compiled, and rendered as read-model-compatible geography for Alpha scenarios.",
+        "not_placeholder_definition": "District, route, water/land, ordering, and references are stable and schema-checked, but not final M7 map lock.",
+        "evidence_required": "Map/content validation, renderer read-model tests, and no simulation authority leak from renderer.",
+        "m6_task": "M6-MAP-CANDIDATE-PIPELINE-001"
+      },
+      {
+        "system": "Layered AI",
+        "minimum_alpha_expectation": "AI completes full Alpha runs without rescue and with bounded traces for strategic, diplomatic, succession, policy, campaign, and recovery decisions.",
+        "not_placeholder_definition": "AI acts through normal commands or reason-coded no-action/wait; no hidden resources or hidden manager.",
+        "evidence_required": "AI full-run tests, trace truncation, command parity, and batch no-rescue evidence.",
+        "m6_task": "M6-LAYERED-AI-001"
+      },
+      {
+        "system": "Client Alpha surfaces",
+        "minimum_alpha_expectation": "Player can start, understand, command, save/load, and finish or fail an Alpha run with all major systems visible.",
+        "not_placeholder_definition": "No required major system is represented only by placeholder text or inert mock panels.",
+        "evidence_required": "Storybook or Playwright coverage, Web build, command preview/confirm smoke, and no client WorldState ownership.",
+        "m6_task": "M6-CLIENT-ALPHA-SURFACES-001"
+      },
+      {
+        "system": "Batch auto-run and balance dashboard",
+        "minimum_alpha_expectation": "Local deterministic batch runs summarize victory, failure, AI collapse, economy pressure, succession, diplomacy, war/postwar losses, and balance risks.",
+        "not_placeholder_definition": "Dashboard reads local generated artifacts only; it is not telemetry or authoritative state.",
+        "evidence_required": "Multiple scenario/seed smoke, artifact schema validation, dashboard rendering, and no remote collection.",
+        "m6_task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
+      },
+      {
+        "system": "Accessibility core flows",
+        "minimum_alpha_expectation": "Core Alpha flows can be completed with keyboard reachability, focus visibility, labels, and non-color-only state.",
+        "not_placeholder_definition": "Accessibility evidence covers actual start, command, map, diplomacy, succession, policy/event, encyclopedia, save/load, and review flows.",
+        "evidence_required": "Keyboard smoke, focus order, viewport overflow, non-color status, and screen-reader label spot checks.",
+        "m6_task": "M6-ACCESSIBILITY-CORE-FLOWS-001"
+      },
+      {
+        "system": "Adviser intervention evidence",
+        "minimum_alpha_expectation": "Adviser interventions are evaluated for whether they help players understand goals, risks, reasons, and victory/failure without taking control.",
+        "not_placeholder_definition": "Evidence distinguishes useful, ignored, harmful, and missing interventions with local/privacy-safe observation or deterministic run review.",
+        "evidence_required": "Anonymized/local evidence, blocker/follow-up split, and no telemetry/network collection.",
+        "m6_task": "M6-ADVISER-INTERVENTION-EVIDENCE-001"
+      },
+      {
+        "system": "Alpha no P0/P1 validation",
+        "minimum_alpha_expectation": "No accepted P0/P1 blocker remains for determinism, data corruption, save/load, command parity, security, package boundary, or start-to-victory playability.",
+        "not_placeholder_definition": "Failures are recorded as BLOCKED or REQUEST_CHANGES, not downgraded to pass.",
+        "evidence_required": "Full gate command set, focused M6 evidence, batch runs, accessibility evidence, and explicit known-limit review.",
+        "m6_task": "M6-ALPHA-NO-P0P1-VALIDATION-001"
+      }
+    ],
+    "m1_m5_mapping": [
+      {
+        "milestone": "M1",
+        "accepted_systems_used": "Deterministic simulation authority, scheduler, command/event/query, RNG, content compiler baseline, save envelope, fixtures and hash evidence.",
+        "contract_use": "All Alpha state changes and terminal proofs rely on deterministic command/replay/save/hash paths."
+      },
+      {
+        "milestone": "M2",
+        "accepted_systems_used": "District/world fixture, economy/population/labor scaffold, routes/transport, pressure validation, map renderer surface, save runtime.",
+        "contract_use": "Population, labor, grain, cash, routes, transport capacity and season are concrete costs and constraints, not global penalties."
+      },
+      {
+        "milestone": "M3",
+        "accepted_systems_used": "Polity/vassalage, offices, characters, appointments, obligations, administrative burden, succession state machine, postwar governance, M3 save runtime.",
+        "contract_use": "Victory requires institutions: offices, agents, obligations, succession continuity, administrative burden, and postwar or vassal settlement."
+      },
+      {
+        "milestone": "M4",
+        "accepted_systems_used": "Campaign objectives, knowledge, muster, grain supply, route capacity, march/supply state, automatic engagement, siege, withdrawal, postwar handoff, campaign AI, planning UI, determinism and stress evidence.",
+        "contract_use": "War is a logistical and political sequence with automatic engagement only; campaign consequences feed back into postwar and institutions."
+      },
+      {
+        "milestone": "M5",
+        "accepted_systems_used": "Playable slice contract, sim loop, client playable UI, multi-year AI run, performance gate, Web/Windows smoke, player research, manual node battle deferral, M5 Gate PASS_WITH_LIMITS.",
+        "contract_use": "M6 expands from vertical slice to Alpha system-complete proof while carrying forward known limits and preserving manual node battle deferral."
+      }
+    ],
+    "m6_dag_mapping": [
+      {
+        "task": "M6-ALPHA-SYSTEM-CONTRACT-001",
+        "contract_role": "Defines this reviewable Alpha system-complete contract."
+      },
+      {
+        "task": "M6-SCENARIO-DATA-PIPELINE-001",
+        "contract_role": "Provides three validated Alpha scenarios and formal source/claim labels."
+      },
+      {
+        "task": "M6-MAP-CANDIDATE-PIPELINE-001",
+        "contract_role": "Provides a complete candidate map data-to-render path for Alpha scenarios."
+      },
+      {
+        "task": "M6-DIPLOMACY-LEGITIMACY-001",
+        "contract_role": "Adds deterministic diplomacy and legitimacy state that affects victory, failure, AI, succession, and postwar terms."
+      },
+      {
+        "task": "M6-SUCCESSION-COMPLETION-001",
+        "contract_role": "Completes succession resolution required for continuity and recognized order."
+      },
+      {
+        "task": "M6-POLICY-EVENT-RUNTIME-001",
+        "contract_role": "Adds bounded policy/event and encyclopedia runtime participation."
+      },
+      {
+        "task": "M6-START-TO-VICTORY-SIM-LOOP-001",
+        "contract_role": "Proves one complete authoritative start-to-victory or failure loop."
+      },
+      {
+        "task": "M6-LAYERED-AI-001",
+        "contract_role": "Proves no-rescue AI decision layers and reason traces across Alpha runs."
+      },
+      {
+        "task": "M6-CLIENT-ALPHA-SURFACES-001",
+        "contract_role": "Exposes non-placeholder major system UI through read models and commands."
+      },
+      {
+        "task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+        "contract_role": "Validates core Alpha flow accessibility without claiming final release completion."
+      },
+      {
+        "task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+        "contract_role": "Provides local deterministic batch evidence and balance dashboard artifacts."
+      },
+      {
+        "task": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+        "contract_role": "Records whether adviser interventions help or harm Alpha comprehension."
+      },
+      {
+        "task": "M6-ALPHA-NO-P0P1-VALIDATION-001",
+        "contract_role": "Validates no accepted P0/P1 blockers remain before exit consideration."
+      },
+      {
+        "task": "M6-EXIT-VALIDATION-001",
+        "contract_role": "Synthesizes reviewed M6 evidence without starting M7 or reversing Human Gates."
+      }
+    ],
+    "evidence_requirements": [
+      "Scenario id, scenario label mix, content/fixture manifest hash, start day, deterministic seed, start state hash, and host/platform are recorded.",
+      "Ordered command log includes actor kind, command kind, preview or submit result, rejection reasons, event tail identity, and terminal state transition.",
+      "At least one save/load checkpoint occurs before irreversible campaign or settlement commitment and one after settlement or failure.",
+      "Node runner and Worker/browser-compatible execution produce matching final state hash for the same seed and command sequence.",
+      "Victory evidence includes recognized arrangement, legitimacy/diplomacy source, succession continuity if relevant, obligations/governance terms, stabilization window, and no unresolved invariant breach.",
+      "Failure evidence identifies the explicit institutional, logistical, succession, diplomacy, policy/event, or invariant cause.",
+      "AI evidence includes selected candidate, primary reason, rejected alternative categories, no-action/wait/withdraw counts, trace truncation, and no hidden privilege.",
+      "UI evidence shows every major system surface is non-placeholder, command-driven, read-model-backed, and free of supported-viewport overlap in core flows.",
+      "Batch evidence is local, schema-versioned, deterministic, small enough for review, and not telemetry.",
+      "Adviser evidence is local/privacy-safe and classifies useful, ignored, harmful, and missing interventions.",
+      "Human Gate preservation evidence confirms manual node battle deferral, no telemetry, no accounts/secrets, no server/multiplayer, no arbitrary-code mods, no frozen product/platform/core change, no commercial/branding decision, no irreversible migration, and no major cultural-risk decision."
+    ],
+    "parameters": [
+      {
+        "name": "alpha_scenario_count",
+        "starting_hypothesis": "Three Alpha scenarios.",
+        "metric": "All three compile and at least one reaches accepted victory while the others exercise pressure or failure/recovery evidence.",
+        "validation_way": "M6-SCENARIO-DATA-PIPELINE-001 and M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001."
+      },
+      {
+        "name": "complete_playthrough_minutes",
+        "starting_hypothesis": "120-300 minutes for a first Alpha start-to-victory pass; shorter scripted evidence is acceptable for CI-like validation.",
+        "metric": "Observed or scripted time to victory/failure, number of forced restarts, and number of unresolved blocker defects.",
+        "validation_way": "M6-CLIENT-ALPHA-SURFACES-001, M6-ADVISER-INTERVENTION-EVIDENCE-001, and M6-ALPHA-NO-P0P1-VALIDATION-001."
+      },
+      {
+        "name": "in_game_duration",
+        "starting_hypothesis": "Two to six in-game years, enough for at least one campaign season, monsoon transition, succession or legitimacy pressure, policy/event consequence, and stabilization window.",
+        "metric": "Run includes one season-driven planning change, one institutional consequence, and one terminal victory/failure explanation.",
+        "validation_way": "M6-START-TO-VICTORY-SIM-LOOP-001 and batch autorun evidence."
+      },
+      {
+        "name": "meaningful_decision_count",
+        "starting_hypothesis": "Eight to fourteen meaningful player decisions on a successful path.",
+        "metric": "Each counted decision has visible advantage, cost, dependency, counterplay, and reason-code evidence.",
+        "validation_way": "Command log review, client flow smoke, and adviser intervention evidence."
+      },
+      {
+        "name": "stabilization_window_months",
+        "starting_hypothesis": "Six to twelve in-game months after recognized settlement.",
+        "metric": "No immediate invalidation from arrears, succession discontinuity, duplicate settlement, illegitimate recognition, source-ledger violation, or administrative collapse.",
+        "validation_way": "Start-to-victory sim tests and Alpha no-P0/P1 validation."
+      },
+      {
+        "name": "ai_no_rescue_run_count",
+        "starting_hypothesis": "At least one full no-rescue AI run per Alpha scenario plus a small deterministic seed set for batch smoke.",
+        "metric": "No invariant failure, bounded trace size, bounded rejection rate, and terminal or continued-play state with explainable reasons.",
+        "validation_way": "M6-LAYERED-AI-001 and M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001."
+      },
+      {
+        "name": "major_surface_placeholder_tolerance",
+        "starting_hypothesis": "Zero placeholder-only panels for contract-required major systems.",
+        "metric": "Every required major surface has read-model data, reason text, available/rejected commands where relevant, and at least one covered state.",
+        "validation_way": "M6-CLIENT-ALPHA-SURFACES-001 Playwright or Storybook evidence."
+      },
+      {
+        "name": "accessibility_core_flow_coverage",
+        "starting_hypothesis": "Scenario start, command preview/confirm, map navigation, diplomacy, succession, policy/event, encyclopedia, save/load, and terminal review are keyboard reachable and labelable.",
+        "metric": "Keyboard smoke, focus order, non-color state, label spot check, and viewport overflow results.",
+        "validation_way": "M6-ACCESSIBILITY-CORE-FLOWS-001."
+      }
+    ],
+    "boundaries": [
+      "Planning-only contract; no product code, package code, content-source data, dependency, release artifact, roadmap edit, accepted ADR edit, prior Gate edit, acceptance matrix edit, or implementation file is changed by this task.",
+      "M6 is Alpha system-complete proof, not M7 content lock and not M8 release hardening.",
+      "Manual node battle is deferred from M5 and the 1.0 mainline. It is not M6/M7/M8 implementation, spike, research, validation, or exit-gate dependency.",
+      "No full diplomacy, full peace treaty system, complex naval warfare, 3D battle, tactical battle UI, server, multiplayer, account, paid service, secret, telemetry, analytics pipeline, remote collection, arbitrary-code mod, runtime SQL database, ORM, Rust, or WASM is authorized.",
+      "No frozen product, platform, or core architecture change is authorized.",
+      "No commercial, release, store, branding, logo, trademark, signing, installer, public distribution, MANIFEST, SHA256SUMS, or VALIDATION_REPORT work is authorized.",
+      "No major cultural-risk decision or formal historical content lock is authorized; route formal content to historical_researcher before production acceptance.",
+      "No irreversible save/content migration is authorized."
+    ],
+    "human_gates": [
+      "Frozen product, platform, or core architecture change",
+      "Paid services, accounts, or secrets",
+      "Server or multiplayer",
+      "Telemetry, analytics, or remote collection",
+      "Arbitrary-code mods or runtime scripting as user extension",
+      "Commercial, release, store, branding, logo, or trademark decision",
+      "Major cultural-risk decision",
+      "Irreversible save/content migration",
+      "Manual node battle reversal or any formal 1.0 scope reversal"
+    ],
+    "exploits": [
+      {
+        "risk": "Diplomacy offer spam scouts hidden acceptance thresholds.",
+        "counter": "Preview can show known reasons, but submitted offers consume time, opportunity, relationship, obligation, or legitimacy hooks through explicit ledgers and cooldown-like institutional terms."
+      },
+      {
+        "risk": "Legitimacy becomes a single number players optimize while ignoring institutions.",
+        "counter": "Legitimacy effects must cite specific claims, recognizers, offices, succession paths, obligations, events, and postwar terms."
+      },
+      {
+        "risk": "Succession support creates guaranteed puppet rulers.",
+        "counter": "Candidates need eligibility, support sources, relationship context, local power, and refusal/contest paths; backing one claimant carries future costs."
+      },
+      {
+        "risk": "Direct control dominates every postwar choice.",
+        "counter": "Direct control carries administrative, garrison, legitimacy, obligation, and local compliance costs that can be exploited by rivals or events."
+      },
+      {
+        "risk": "Vassal obligations create infinite troops, cash, grain, or access.",
+        "counter": "Obligations and muster use source-ledger conservation, due dates, arrears, breach, partial fulfillment, and refusal reasons."
+      },
+      {
+        "risk": "Monsoon becomes a punitive global timer.",
+        "counter": "Monsoon effects must be route-, river-, road-, supply-, siege-, disease-risk-, or timing-specific and show alternatives."
+      },
+      {
+        "risk": "Policy/events become arbitrary scripts that bypass command parity.",
+        "counter": "Policy/events use explicit schemas, scheduler or command paths, deterministic ordering, and serializable effects only."
+      },
+      {
+        "risk": "AI wins or survives through hidden resources or hidden knowledge.",
+        "counter": "AI traces cite visible faction knowledge, diplomacy, succession, policy/event, obligation, route, supply, and risk inputs; all actions use normal commands."
+      },
+      {
+        "risk": "Dashboard evidence quietly becomes telemetry.",
+        "counter": "Batch artifacts are local generated files only, schema-versioned, reviewable, and never remotely collected by this contract."
+      },
+      {
+        "risk": "Encyclopedia or scenario text locks unreviewed history or cultural symbols.",
+        "counter": "Formal historical and cultural details must carry source/claim labels and route through historical_researcher before production acceptance."
+      },
+      {
+        "risk": "Player treats actual-control map color as victory.",
+        "counter": "Accepted victory requires recognized arrangement, legitimacy/diplomacy source, obligations/governance terms, and stabilization evidence."
+      }
+    ],
+    "vertical_slice_acceptance": [
+      "This contract reaches REVIEW with gameplay_designer as writer and systems_architect as reviewer; gameplay_designer does not approve its own design implementation.",
+      "M6 downstream implementation tasks use this contract to prove one accepted start-to-victory Alpha path and explicit failure paths through authoritative command/query/save/replay surfaces.",
+      "All major M6 systems have non-placeholder sim and UI participation or reason-coded visible state before M6 exit can pass.",
+      "At least one full Alpha run records start hash, command sequence, save/load checkpoint, terminal outcome, final hash, Node/Worker-compatible parity, and no invariant failure.",
+      "AI can run complete Alpha scenarios without rescue and with bounded, visible reason traces.",
+      "Batch auto-run and balance dashboard evidence remain local, deterministic, and non-telemetry.",
+      "Accessibility core flows are covered for the Alpha start-to-terminal path without claiming final release accessibility completion.",
+      "Adviser intervention evidence records whether interventions improve player understanding without collecting telemetry or taking control.",
+      "M6 Alpha no-P0/P1 validation reports no accepted blocker for data corruption, determinism, save/load, command parity, security, package boundary, or start-to-victory playability.",
+      "M6 exit validation preserves M5 PASS_WITH_LIMITS context, DEFER_MANUAL_NODE_BATTLE, Human Gates, and the boundary between M6 Alpha, M7 content lock, M8 release work, and post-1.0 candidates."
+    ]
+  },
+  "acceptance_evidence": {
+    "contract_contains_required_sections": [
+      "target",
+      "player_decisions",
+      "state",
+      "update_frequency",
+      "formula_intent",
+      "invariants",
+      "ai_behavior",
+      "ui_explanation",
+      "boundaries",
+      "exploits",
+      "vertical_slice_acceptance",
+      "start_conditions",
+      "accepted_victory_condition",
+      "failure_conditions",
+      "evidence_requirements",
+      "major_system_expectations",
+      "m1_m5_mapping",
+      "m6_dag_mapping",
+      "parameters"
+    ],
+    "advantage_cost_dependency_counterplay_check": "Every player_decisions entry includes advantage, cost, dependencies, and counter fields.",
+    "human_gates_preserved": [
+      "frozen product/platform/core architecture changes",
+      "paid services/accounts/secrets",
+      "server/multiplayer",
+      "telemetry/analytics/remote collection",
+      "arbitrary-code mods",
+      "commercial/release/branding decisions",
+      "major cultural-risk decisions",
+      "irreversible migrations",
+      "manual node battle reversal",
+      "formal 1.0 scope reversal"
+    ],
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "manual_node_battle_allowed_mention": "post-1.0 non-blocking candidate note only; not M6/M7/M8 implementation, spike, research, validation, or exit-gate dependency",
+    "forbidden_outputs_not_created": [
+      "product code",
+      "package code",
+      "content-source data",
+      "dependencies",
+      "release artifacts",
+      "roadmap edits",
+      "accepted ADR edits",
+      "prior Gate edits",
+      "acceptance matrix edits",
+      "telemetry",
+      "server/multiplayer",
+      "arbitrary-code mod support"
+    ],
+    "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+    "route_to": "systems_architect"
+  },
   "branch_or_worktree": "design/m6-alpha-system-contract",
   "threads": {
     "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
     "gameplay_designer": "019f05f2-2542-7db1-b9cf-8f1890569919"
   },
-  "route_to": "lead_orchestrator",
+  "route_to": "systems_architect",
   "notes": [
     "This is the first executable M6 task after the graph closes; it is planning-only and does not implement Alpha features.",
-    "The contract must keep M6 system-complete scope minimal and must not expand into M7 content lock, M8 release work, or post-1.0 expansion candidates.",
-    "If the contract needs a frozen decision change or manual node battle reversal, stop and route to Human Gate instead of continuing."
+    "The contract keeps M6 system-complete scope minimal and does not expand into M7 content lock, M8 release work, or post-1.0 expansion candidates.",
+    "If the contract needs a frozen decision change or manual node battle reversal, stop and route to Human Gate instead of continuing.",
+    "Contract is routed to systems_architect for review; gameplay_designer does not approve its own design implementation."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T06:02:12+08:00",
+  "updated_at": "2026-06-27T06:10:00+08:00",
   "started_at": "2026-06-27T06:02:12+08:00",
+  "review_ready_at": "2026-06-27T06:10:00+08:00",
   "start_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-LEAD-TO-GAMEPLAY-START.json",
+  "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
   "base_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gate_required": false

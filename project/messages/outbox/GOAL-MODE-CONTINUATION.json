@@ -2,12 +2,12 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_ALPHA_SYSTEM_CONTRACT_IN_PROGRESS",
+  "status": "M6_ALPHA_SYSTEM_CONTRACT_REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "ce81452b47b456c81705eb6469d92ae429bca718",
   "current_milestone": "M6",
   "current_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M6-TASK-GRAPH-001",
   "ready_tasks": [],
   "active_threads": {
@@ -20,7 +20,7 @@
     "gameplay_designer": {
       "thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
       "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "active",
+      "status": "review_ready",
       "role": "gameplay_designer",
       "nickname": "Monsoon"
     }
@@ -43,10 +43,10 @@
     "approval_scope": "NONE",
     "approval_source": "M5 Gate closure after PR #127 and M6 task graph closure after PR #130; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is IN_PROGRESS with gameplay_designer writer.",
+    "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is in REVIEW with gameplay_designer writer handoff ready for systems_architect review.",
     "recorded_at": "2026-06-27T06:03:31+08:00"
   },
-  "next_machine_action": "Wait for gameplay_designer REVIEW handoff, then route to systems_architect reviewer.",
+  "next_machine_action": "Validate gameplay_designer REVIEW handoff, then route to systems_architect reviewer.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -54,7 +54,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T06:05:24+08:00",
+  "last_updated_at": "2026-06-27T06:10:00+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -94,14 +94,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T06:05:24+08:00",
+  "updated_at": "2026-06-27T06:10:00+08:00",
   "current_tasks": [
     "M6-ALPHA-SYSTEM-CONTRACT-001"
   ],
   "last_integrated_task": "M6-TASK-GRAPH-001",
   "last_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
   "next_ready_tasks": [],
-  "next_action": "Wait for gameplay_designer REVIEW handoff, then route to systems_architect reviewer.",
+  "next_action": "Validate gameplay_designer REVIEW handoff, then route to systems_architect reviewer.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -539,7 +539,7 @@
     "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
   },
   "m6_alpha_system_contract": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "branch_or_worktree": "design/m6-alpha-system-contract",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -551,7 +551,10 @@
     "base_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Writer defines bounded M6 Alpha system-complete contract without product code changes.",
+    "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+    "review_ready_at": "2026-06-27T06:10:00+08:00",
+    "reviewer_role": "systems_architect",
+    "next_action": "Route gameplay_designer REVIEW handoff to systems_architect reviewer.",
     "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
     "route_sent_at": "2026-06-27T06:05:24+08:00"
   }

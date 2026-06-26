@@ -1,0 +1,72 @@
+{
+  "message_id": "MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW",
+  "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+  "from_role": "gameplay_designer",
+  "status": "REVIEW",
+  "summary": "Defined the bounded M6 Alpha system-complete contract as a planning-only task. The contract specifies start conditions, one accepted non-map-painting victory condition, failure conditions, evidence requirements, no-placeholder major-system expectations, M1-M5 mapping, and M6 DAG mapping while preserving Human Gates and DEFER_MANUAL_NODE_BATTLE.",
+  "artifacts": [
+    "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "design/m6-alpha-system-contract / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified only allowed task/status/message files at the time of the check; untracked ui-samples/ was present and left untouched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ALPHA-SYSTEM-CONTRACT-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list shows M6-ALPHA-SYSTEM-CONTRACT-001 in REVIEW; M6-TASK-GRAPH-001 remains CLOSED and downstream M6 implementation tasks remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks printed while M6-ALPHA-SYSTEM-CONTRACT-001 is in REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M6-ALPHA-SYSTEM-CONTRACT-001",
+      "exit_code": 0,
+      "result": "JSON shape ok: required 19 contract sections present; 8 player decisions each include advantage, cost, dependency, and counterplay fields; route_to systems_architect; Human Gate false; manual decision unchanged."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "M6 Alpha victory is bounded to one accepted recognized-order condition, not map painting: a valid political arrangement, legitimacy or diplomatic recognition evidence, obligation/governance terms, and a stabilization check are required.",
+    "Every gameplay advantage in the contract has a named cost, dependency, and counterplay path.",
+    "Consequences are institutional and ledger-based; the contract rejects hidden global penalties, total-character-score design, and fixed culture/ethnicity buffs.",
+    "Parameters are recorded as starting hypotheses with metrics and validation methods, not final balance values.",
+    "Formal historical names, claims, symbols, language, art, music, or culture-specific assets are outside this contract and must route to historical_researcher before production acceptance.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE: only a post-1.0 non-blocking candidate note is allowed, with no M6/M7/M8 implementation, spike, research, validation, or exit-gate dependency."
+  ],
+  "risks": [
+    "Systems_architect should verify that the M6 major-system expectations are strict enough to prevent placeholder UI while still not expanding into M7 content lock or M8 release hardening.",
+    "The contract names a narrow accepted victory condition; future implementation tasks must keep it minimal and avoid adding full diplomacy, full peace treaties, complex naval war, or release/commercial scope.",
+    "Untracked ui-samples/ existed before this writer work and was intentionally untouched."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the M6 Alpha system-complete contract for scope, architecture boundaries, M1-M5/M6 DAG mapping, Human Gate preservation, DEFER_MANUAL_NODE_BATTLE preservation, and no-placeholder major-system expectations.",
+  "created_at": "2026-06-27T06:10:00+08:00"
+}

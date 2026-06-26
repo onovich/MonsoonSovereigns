@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T06:05:24+08:00",
+  "updated_at": "2026-06-27T06:10:00+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1779,13 +1779,13 @@
       "responsibility": "lead orchestration for M6 Alpha system contract",
       "branch_or_worktree": "design/m6-alpha-system-contract",
       "last_closed_task": "M6-TASK-GRAPH-001",
-      "updated_at": "2026-06-27T06:03:31+08:00"
+      "updated_at": "2026-06-27T06:10:00+08:00"
     },
     {
       "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
       "role": "gameplay_designer",
       "thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
-      "status": "active",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1793,7 +1793,9 @@
       "nickname": "Monsoon",
       "responsibility": "primary gameplay_designer writer for bounded M6 Alpha system-complete contract",
       "branch_or_worktree": "design/m6-alpha-system-contract",
-      "updated_at": "2026-06-27T06:03:31+08:00"
+      "review_ready_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+      "review_ready_at": "2026-06-27T06:10:00+08:00",
+      "updated_at": "2026-06-27T06:10:00+08:00"
     }
   ],
   "task_effects": {
@@ -1870,7 +1872,7 @@
     "M5-MANUAL-NODE-BATTLE-DECISION-001": "CLOSED after decision PR #125 and closure/start PR #126; current main is 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313. Decision remains DEFER_MANUAL_NODE_BATTLE.",
     "M5-EXIT-HUMAN-GATE-001": "CLOSED after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011. M5_GATE = PASS_WITH_LIMITS; M6-TASK-GRAPH-001 is READY.",
     "M6-TASK-GRAPH-001": "CLOSED after PR #129 entered main at 4aef9108da1e659354a4a726b07b4b6dad56f966. Planning-only M6 Alpha task DAG accepted; next READY M6 task is M6-ALPHA-SYSTEM-CONTRACT-001.",
-    "M6-ALPHA-SYSTEM-CONTRACT-001": "READY as the first M6 downstream task after M6 task graph closure. Use gameplay_designer writer and systems_architect reviewer."
+    "M6-ALPHA-SYSTEM-CONTRACT-001": "REVIEW after gameplay_designer defined the bounded M6 Alpha system-complete contract; route writer handoff to systems_architect reviewer."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -2007,21 +2009,23 @@
       "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
     },
     "M6-ALPHA-SYSTEM-CONTRACT-001": {
-      "status": "IN_PROGRESS",
+      "status": "REVIEW",
       "owner_role": "gameplay_designer",
       "reviewer_role": "systems_architect",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "design/m6-alpha-system-contract",
       "created_by_task_graph_pr": 129,
-      "updated_at": "2026-06-27T06:05:24+08:00",
+      "updated_at": "2026-06-27T06:10:00+08:00",
       "human_gate_required": false,
-      "next_action": "Wait for gameplay_designer REVIEW handoff.",
+      "next_action": "Route gameplay_designer REVIEW handoff to systems_architect reviewer.",
       "writer_thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
       "writer_nickname": "Monsoon",
       "start_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-LEAD-TO-GAMEPLAY-START.json",
       "base_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
       "started_at": "2026-06-27T06:03:31+08:00",
+      "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+      "review_ready_at": "2026-06-27T06:10:00+08:00",
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
       "route_sent_at": "2026-06-27T06:05:24+08:00"
