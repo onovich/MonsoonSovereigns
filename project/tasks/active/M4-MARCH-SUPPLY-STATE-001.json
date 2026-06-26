@@ -2,7 +2,7 @@
   "id": "M4-MARCH-SUPPLY-STATE-001",
   "summary": "Implement M4 march execution, supply state, and reinforcement timing",
   "milestone": "M4",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -74,7 +74,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f01f4-764d-7220-ab55-c1735c3c9bf4",
-      "status": "review_ready_r3",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "nickname": "Delta the 5th",
@@ -82,7 +82,7 @@
       "branch_or_worktree": "feat/m4-march-supply-state",
       "start_state": "START_CONFIRMED",
       "start_submission_id": "019f01f4-cbd1-7ec3-b5b0-df4b0ffb0ae2",
-      "updated_at": "2026-06-26T04:27:00Z",
+      "updated_at": "2026-06-26T04:34:00Z",
       "review_ready_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_at": "2026-06-26T03:49:45Z",
       "request_changes_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW__systems_architect.json",
@@ -93,11 +93,13 @@
       "request_changes_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R2__systems_architect.json",
       "request_changes_submission_id_r2": "019f0229-96a0-7c81-a769-ee583dbc72db",
       "review_ready_handoff_r3": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R3__simulation_engineer.json",
-      "review_ready_at_r3": "2026-06-26T04:25:38Z"
+      "review_ready_at_r3": "2026-06-26T04:25:38Z",
+      "systems_accept_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R3__systems_architect.json",
+      "lead_accept_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "systems_architect": {
       "thread_id": "019f01f4-8a58-7753-bdae-37ae559fc7bc",
-      "status": "reviewing_r3",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Meridian the 5th",
@@ -105,7 +107,7 @@
       "branch_or_worktree": "feat/m4-march-supply-state",
       "start_state": "AWAITING_REVIEW_READY",
       "await_submission_id": "019f01f4-cbed-76c0-9d20-5e2fa394c37f",
-      "updated_at": "2026-06-26T04:27:00Z",
+      "updated_at": "2026-06-26T04:34:00Z",
       "review_ready_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_submission_id": "019f0210-a10d-74e1-9932-c9b7eadc22dd",
       "review_started_at": "2026-06-26T03:52:00Z",
@@ -120,10 +122,13 @@
       "review_ready_handoff_r3": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R3__simulation_engineer.json",
       "review_ready_at_r3": "2026-06-26T04:25:38Z",
       "review_ready_submission_id_r3": "019f022f-29bb-7f53-9f40-b674c1496ee1",
-      "review_started_at_r3": "2026-06-26T04:27:00Z"
+      "review_started_at_r3": "2026-06-26T04:27:00Z",
+      "accept_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R3__systems_architect.json",
+      "accepted_at": "2026-06-26T04:30:33Z",
+      "lead_accept_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-LEAD-ACCEPT__lead_orchestrator.json"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "lead_orchestrator",
   "notes": [
     "March execution must stay deterministic and headless; UI/renderer must observe read models only.",
     "Keep reinforcement timing as campaign commitments joining an existing plan, not a full army organization system.",
@@ -131,5 +136,5 @@
     "Promoted to READY after M4-ROUTE-TRANSPORT-CAPACITY-001 entered origin/main at 2431e897676838057d2e29201b0528b5ebbf29c2 and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T04:27:00Z"
+  "updated_at": "2026-06-26T04:34:00Z"
 }

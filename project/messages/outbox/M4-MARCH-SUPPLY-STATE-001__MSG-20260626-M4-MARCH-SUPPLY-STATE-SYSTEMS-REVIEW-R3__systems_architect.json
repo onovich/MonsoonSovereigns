@@ -1,0 +1,96 @@
+{
+  "message_id": "MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R3",
+  "task_id": "M4-MARCH-SUPPLY-STATE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R3 architecture review inspected writer R3 handoff, actual diff through commit 6f46b27a, canonical WorldState hashing, structured validation for joinedCommitmentTroops, deterministic march execution, quantity-aware reinforcement joins, protocol/read-model serializability, package boundaries, and required tests. The R1/R2 blockers are resolved. Scope remains limited to sim-core, protocol, tests, and process handoffs; no siege decision, automatic battle resolution, postwar governance, campaign AI policy, client UI, save-format, complex naval war, diplomacy, or architecture/product drift was introduced.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-march-supply-state.test.ts",
+    "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R3__simulation_engineer.json",
+    "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R3__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m4-march-supply-state",
+  "commit": "6f46b27a",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R3__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer R3 handoff validated."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <validateWorldStateV0 missing joinedCommitmentTroops reproduction>",
+      "exit_code": 0,
+      "result": "validateWorldStateV0 returned structured invalid-schema error for state.m4.marches[0].joinedCommitmentTroops and did not throw."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <canonical m4 march line inspection>",
+      "exit_code": 0,
+      "result": "canonicalWorldStateV0Text included state.m4.marches with routeSegments in accepted 3->2 then 2->1 order and sorted unordered reason/joined troop sublists."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-march-supply-state.test.ts tests/protocol-command-query-schema.test.ts --config vitest.config.ts",
+      "exit_code": 0,
+      "result": "2 test files passed; 18 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "19 test files passed; 135 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible command/query and save/load deterministic hashes matched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-MARCH-SUPPLY-STATE-001",
+      "exit_code": 0,
+      "result": "Task JSON validated."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 30 root Vitest files and 202 tests passed; web Vitest 1 file and 3 tests passed."
+    }
+  ],
+  "decisions": [
+    "Accepted R3 canonical hash fix: state.m4.marches now participates in canonical WorldState text and stateHash.",
+    "Accepted ordered path handling: routeSegments remain in accepted route order through canonicalization, hashing, and daily execution.",
+    "Accepted quantity-aware reinforcement model: joinedCommitmentTroops tracks per-commitment joined quantities while joinedCommitmentIds remains the display/query ID list.",
+    "Accepted validation fix: joinedCommitmentTroops is required by march shape validation, so missing ledgers return structured invalid-schema errors before runtime invariant checks.",
+    "No ADR is required for this task because changes remain within approved M4 sim-core/protocol command/query and WorldState surfaces and do not alter frozen platform, save-format, architecture, or product decisions."
+  ],
+  "risks": [
+    "M4 march state is live authoritative WorldState but save-format is intentionally unchanged due task boundaries; route a later explicit M4 save/runtime task before relying on persistent M4 march saves.",
+    "Rainy-season pause remains plan-time based on accepted-route season risk rather than daily route reforecasting; acceptable for this milestone task as a documented bounded assumption."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead integration gates for M4-MARCH-SUPPLY-STATE-001.",
+  "created_at": "2026-06-26T04:30:33Z"
+}
