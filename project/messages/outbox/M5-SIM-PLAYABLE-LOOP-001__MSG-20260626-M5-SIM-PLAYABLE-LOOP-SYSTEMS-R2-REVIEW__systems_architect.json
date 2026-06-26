@@ -1,0 +1,125 @@
+{
+  "message_id": "MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-R2-REVIEW",
+  "task_id": "M5-SIM-PLAYABLE-LOOP-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 fixes satisfy the prior systems_architect blockers. The branch diff remains inside allowed paths, M4 save runtime state now uses explicit nested DTO/parser/copy paths that strip unknown nested keys before hydration and reject malformed nested fields, and M5 worker-compatible evidence now crosses a real Node worker_threads JSON message boundary inside allowed apps/sim-runner/test paths. No forbidden UI/client/content/manual battle/telemetry/server/multiplayer/mod scope was introduced.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "apps/sim-runner/src/m5-playable-loop-worker.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "tests/save-load-contract.test.ts",
+    "tests/sim-core-m5-playable-loop.test.ts",
+    "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m5-sim-playable-loop",
+  "commit": "5b3be3df5f53c651081d51f7367b5cd245f2603a",
+  "reviewed_code_commit": "ef774926c7a192822e612feff22bfdec1579e757",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## feat/m5-sim-playable-loop...origin/feat/m5-sim-playable-loop; clean before writing this R2 systems review handoff."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff is limited to allowed paths: apps/sim-runner, packages/protocol, packages/save-format, packages/sim-core, tests, and project task/state/message files. No apps/web, desktop, client-core, ui, content, tools, docs/gates, roadmap, manifest, release, or acceptance-matrix files are changed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer review handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-SIM-PLAYABLE-LOOP-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-SIM-PLAYABLE-LOOP-001.json."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "23 test files passed; 172 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 16 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Hello, command/query, save/load, M4 replay, and M5 playable loop hashes matched. M5 Node hash bf042e42; worker-compatible hash bf042e42; loaded hash bf042e42; postwar arrangements 1."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root vitest 34 files/244 tests passed; web vitest 1 file/4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol typecheck",
+      "exit_code": 1,
+      "result": "Non-blocking: selected package has no typecheck script, matching the writer handoff. Protocol tests passed and root pnpm test passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <M4 nested extra-field save/load probe>",
+      "exit_code": 0,
+      "result": "After injecting state.m4.postwarCandidates[0].extraHiddenAuthority and recreating a valid checksum, loadSaveV1 returned loaded with stateHash bf042e42, extraPreserved null, and candidate keys limited to the explicit M4 postwar candidate DTO fields."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <M4 malformed nested field save/load probe>",
+      "exit_code": 0,
+      "result": "After changing state.m4.postwarCandidates[0].validM3Methods[1] to an invalid value and recreating a valid checksum, loadSaveV1 rejected with invalid-schema at body.authoritativeSnapshot.state.m4.postwarCandidates[0].validM3Methods[1]."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <M3 postwar event-tail malformed method probe>",
+      "exit_code": 0,
+      "result": "After changing saved sim.m3-postwar-governance-applied.event.method to an invalid value and recreating a valid checksum, loadSaveV1 rejected with invalid-schema at body.eventTail[7].event.method."
+    }
+  ],
+  "decisions": [
+    "ACCEPT R2. The previous P1 save-format blocker is resolved: packages/save-format/src/index.ts now declares explicit nested M4 save DTOs, parses each M4 collection and nested union/object field, and reconstructs only known fields through copyM4CampaignState and nested copy functions. Unknown nested keys are stripped before hydration; malformed nested values are rejected with bounded invalid-schema reasons.",
+    "ACCEPT R2 worker evidence. apps/sim-runner/src/m5-playable-loop-worker.mjs uses node:worker_threads and JSON string request/response boundaries; run-determinism and tests/sim-core-m5-playable-loop.test.ts both exercise that boundary. This is sufficient for the task's Worker-host contract evidence within allowed paths because apps/web/client paths are explicitly forbidden for this task.",
+    "The M5 playable loop remains grounded in authoritative sim-core state and versioned GameCommandV1 paths. The success path reaches accepted M4 campaign/logistics/automatic engagement/siege/withdrawal/postwar handoff surfaces; the duplicate postwar command failure path preserves the state hash.",
+    "Single-writer WorldState authority, deterministic stable IDs, stable ordering/hash evidence, and bounded serializable errors remain acceptable. sim-core does not import React, Pixi, Electron, DOM, Node filesystem, or real-time APIs.",
+    "The new sim.m3-postwar-governance-applied event-tail parser is complete enough for this slice: it explicitly validates schemaVersion, actor, settlementId, method, polity/district IDs, obligationIds, administrativeLoad, reasonCodes, and revisions, and rejects bad data through invalid-schema paths.",
+    "No ADR or Human Gate is required for this R2 acceptance. The change is an explicit schema evolution and worker-evidence improvement inside allowed implementation/test paths, not a frozen architecture change, irreversible migration, or formal M5 milestone passage."
+  ],
+  "risks": [
+    {
+      "severity": "P3",
+      "summary": "The worker-compatible proof is a Node worker_threads boundary, not a browser Worker. This is acceptable for this task because apps/web/client changes are forbidden; a future web-client integration task should add browser Worker coverage in its own allowed scope."
+    },
+    {
+      "severity": "P3",
+      "summary": "packages/protocol has no package-level typecheck script. This is pre-existing/non-blocking for this review because protocol tests passed and root pnpm test passed."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Proceed with QA review of M5-SIM-PLAYABLE-LOOP-001 R2 on feat/m5-sim-playable-loop. Focus QA on the accepted M5 start-to-success/failure loop, save/load persistence of M4 runtime state, malformed save/event rejection, determinism evidence, and scope boundaries.",
+  "created_at": "2026-06-26T14:02:30Z"
+}
