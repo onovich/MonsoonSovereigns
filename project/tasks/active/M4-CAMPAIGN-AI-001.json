@@ -2,7 +2,7 @@
   "id": "M4-CAMPAIGN-AI-001",
   "summary": "Implement minimal campaign AI target, wait, withdraw, and objective-change reasons",
   "milestone": "M4",
-  "status": "REVIEW",
+  "status": "IN_PROGRESS",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -72,7 +72,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f02b3-174c-7790-b18a-9c07603d9459",
-      "status": "review_ready",
+      "status": "request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -82,13 +82,16 @@
       "branch_or_worktree": "feat/m4-campaign-ai",
       "start_state": "START_CONFIRMED",
       "spawn_result": "spawn_agent",
-      "updated_at": "2026-06-26T07:14:00Z",
+      "updated_at": "2026-06-26T07:19:00Z",
       "review_ready_handoff": "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json",
-      "review_ready_at": "2026-06-26T07:10:00Z"
+      "review_ready_at": "2026-06-26T07:10:00Z",
+      "request_changes_handoff": "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+      "request_changes_submission_id": "019f02cb-d349-7eb2-8842-7d410a29ec72",
+      "request_changes_round": 1
     },
     "systems_architect": {
       "thread_id": "019f02b3-2b4a-7a82-b147-01dd71eac736",
-      "status": "review_requested",
+      "status": "request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -98,18 +101,20 @@
       "branch_or_worktree": "feat/m4-campaign-ai",
       "start_state": "AWAITING_REVIEW_READY",
       "spawn_result": "spawn_agent",
-      "updated_at": "2026-06-26T07:14:00Z",
+      "updated_at": "2026-06-26T07:19:00Z",
       "review_ready_handoff": "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json",
       "review_ready_submission_id": "019f02c7-4533-7352-a781-d2febabbb06a",
-      "review_started_at": "2026-06-26T07:14:00Z"
+      "review_started_at": "2026-06-26T07:14:00Z",
+      "request_changes_handoff": "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+      "request_changes_at": "2026-06-26T07:17:25Z"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "simulation_engineer",
   "notes": [
     "Keep AI minimal and explanatory; do not build a general strategic-planning manager.",
     "If AI needs missing reason fields, route back to the relevant M4 sim task rather than duplicating hidden formulas.",
     "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T07:14:00Z"
+  "updated_at": "2026-06-26T07:19:00Z"
 }

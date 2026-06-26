@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-REQUEST-CHANGES",
+  "task_id": "M4-CAMPAIGN-AI-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Read-only systems architecture review of commit 6b04f7248fd1 found the campaign AI implementation is directionally correct and passes the required gates, but the bounded trace contract is not enforced consistently between sim-core planner output and the protocol parser.",
+  "artifacts": [
+    "packages/sim-core/src/campaign-ai-v1.ts",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-m4-campaign-ai.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-CAMPAIGN-AI-001.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-ai",
+  "commit": "6b04f7248fd1",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean worktree on feat/m4-campaign-ai."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff is confined to allowed task scope: packages/protocol, packages/sim-core, tests, project task/model/goal/thread/message files. No forbidden paths observed."
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|runtime\\.world|\\.state\\.|acceptedCommandIds|eventTail|commandTail|new Date|Object\\.keys|for \\(const .* in\" packages/sim-core/src/campaign-ai-v1.ts packages/protocol/src/index.ts tests/sim-core-m4-campaign-ai.test.ts",
+      "exit_code": 0,
+      "result": "No authority-time/random or hidden WorldState access found in campaign-ai-v1.ts; matches are only in tests that inspect world state after command submission."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "22 sim-core test files passed; 164 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 protocol test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed, determinism passed, root Vitest passed with 33 files and 232 tests, web Vitest passed with 1 file and 3 tests."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-AI-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid and in REVIEW routed to systems_architect."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff JSON validates against project/schemas/handoff.schema.json."
+    }
+  ],
+  "decisions": [
+    {
+      "outcome": "REQUEST_CHANGES",
+      "severity": "P1",
+      "finding": "Bounded serializable trace contract is not enforced by the planner.",
+      "evidence": "packages/protocol/src/index.ts:3480-3488 rejects M4 campaign AI traces with more than 16 candidate entries, but packages/sim-core/src/campaign-ai-v1.ts:101 and :758-765 pass caller-supplied maxTraceCandidates through with only a lower bound. A caller can request more than 16 candidates and receive a trace DTO that the exported parser rejects. This violates the M4-CAMPAIGN-AI-001 acceptance criterion that AI traces are deterministic, serializable, bounded in size, and suitable for later UI/validation consumption.",
+      "required_change": "Clamp planner trace output to the same protocol maximum, preferably through a named shared constant or a local constant explicitly kept in sync with the protocol parser, and add a regression where maxTraceCandidates exceeds the protocol maximum in a multi-candidate scenario. The generated trace must parse successfully and contain no more than the protocol maximum number of candidates."
+    },
+    {
+      "outcome": "REQUEST_CHANGES",
+      "severity": "P2",
+      "finding": "Bounded candidate trace can omit the selected candidate when many candidates exist.",
+      "evidence": "packages/sim-core/src/campaign-ai-v1.ts:758-765 bounds candidates by candidateId order after packages/sim-core/src/campaign-ai-v1.ts selects by score and candidateId. With enough candidates, selectedCandidateId can point to a candidate omitted from trace.candidates. The top-level selected fields reduce the blast radius, but this weakens the trace as a validation/UI artifact.",
+      "required_change": "When truncating, keep the selected candidate in the bounded candidate list, then fill remaining slots deterministically. Add a regression that proves selectedCandidateId is present in trace.candidates after truncation."
+    }
+  ],
+  "risks": [
+    "The planner otherwise appears to stay on the intended architecture boundary: it calls querySimulationV1, returns ordinary GameCommandV1 payloads, and does not mutate authoritative WorldState directly.",
+    "Command parity coverage is present for AI versus player actor on start march, and generated AI commands use existing GameCommandV1 kinds.",
+    "No React, Pixi, Electron, Node IO, Math.random, Date.now, hidden runtime.world access, save-format change, telemetry, server, multiplayer, manual battle, complex naval warfare, full diplomacy, or M5 content was found in the reviewed implementation."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Please fix the bounded trace serialization issues in the original writer thread, add focused regressions, rerun the required M4-CAMPAIGN-AI-001 gates, and return an R4 REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-26T07:17:25Z"
+}
