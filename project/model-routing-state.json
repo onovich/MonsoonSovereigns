@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T04:45:00Z",
+  "updated_at": "2026-06-26T05:06:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1300,7 +1300,7 @@
       "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
       "role": "simulation_engineer",
       "thread_id": "019f023d-5f45-7372-8f16-4b55c6818ea2",
-      "status": "in_progress",
+      "status": "in_progress_status_confirmed",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -1308,8 +1308,11 @@
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
       "start_state": "START_CONFIRMED",
       "start_submission_id": "019f023d-bc63-7123-be72-4b8387ba640f",
-      "updated_at": "2026-06-26T04:45:00Z",
-      "responsibility": "primary M4 automatic engagement resolution and siege choice loop writer"
+      "updated_at": "2026-06-26T05:06:00Z",
+      "responsibility": "primary M4 automatic engagement resolution and siege choice loop writer",
+      "status_probe_submission_id": "019f024c-ee6c-7881-b39f-9d21e0d8869a",
+      "continue_submission_id": "019f024d-6742-7243-8aeb-1eabe9a52f8f",
+      "status_probe_result": "still implementing; protocol/schema additions in place; sim-core engagement/siege plumbing in progress; tests next; ETA 60-90 minutes"
     },
     {
       "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
@@ -1323,8 +1326,9 @@
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
       "start_state": "AWAITING_REVIEW_READY",
       "await_submission_id": "019f023d-bce4-7920-99ff-dcb42e231393",
-      "updated_at": "2026-06-26T04:45:00Z",
-      "responsibility": "architecture reviewer for M4 automatic engagement resolution and siege choice loop"
+      "updated_at": "2026-06-26T05:06:00Z",
+      "responsibility": "architecture reviewer for M4 automatic engagement resolution and siege choice loop",
+      "status_note": "Reviewer ready; no writer handoff yet."
     }
   ],
   "task_effects": {
@@ -1379,6 +1383,6 @@
     "M4-GRAIN-SUPPLY-001": "CLOSED after PR #88 entered main at ea0ebff0b0b861563acf0fedc409fa0d0d14a72f. simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-ROUTE-TRANSPORT-CAPACITY-001.",
     "M4-ROUTE-TRANSPORT-CAPACITY-001": "CLOSED after PR #90 entered main at 2431e897676838057d2e29201b0528b5ebbf29c2. simulation_engineer thread 019f01ca-2ecb-7223-a4a1-ff03e0b527cb implemented route/transport capacity forecasts; systems_architect thread 019f01ca-42ce-78d2-8e19-da4887343bb3 accepted; independent qa_reviewer thread 019f01df-cfe0-7bd2-a412-c67a7441ef96 accepted; lead gates and PR CI passed. Next READY task is M4-MARCH-SUPPLY-STATE-001.",
     "M4-MARCH-SUPPLY-STATE-001": "CLOSED after PR #92 entered main at 2ab85022eaa89e5ab3b4b1f421fe422beb4b38ff. simulation_engineer thread 019f01f4-764d-7220-ab55-c1735c3c9bf4 implemented deterministic daily march execution, supply state, reinforcement timing, canonical m4.marches hashing, and regressions; systems_architect thread 019f01f4-8a58-7753-bdae-37ae559fc7bc requested two rounds of changes and accepted R3; lead gates and PR CI passed. Next READY task is M4-AUTO-ENGAGEMENT-SIEGE-001.",
-    "M4-AUTO-ENGAGEMENT-SIEGE-001": "IN_PROGRESS on feat/m4-auto-engagement-siege. simulation_engineer thread 019f023d-5f45-7372-8f16-4b55c6818ea2 received START_CONFIRMED by send_input 019f023d-bc63-7123-be72-4b8387ba640f; systems_architect thread 019f023d-7347-7712-b832-3f825603ae21 received AWAITING_REVIEW_READY by send_input 019f023d-bce4-7920-99ff-dcb42e231393."
+    "M4-AUTO-ENGAGEMENT-SIEGE-001": "IN_PROGRESS_STATUS_CONFIRMED. Lead sent status probe 019f024c-ee6c-7881-b39f-9d21e0d8869a; writer reported active allowed-path progress and ETA 60-90 minutes. Lead sent CONTINUE 019f024d-6742-7243-8aeb-1eabe9a52f8f. Reviewer thread 019f023d-7347-7712-b832-3f825603ae21 remains awaiting real writer REVIEW handoff."
   }
 }

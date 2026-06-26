@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_AUTO_ENGAGEMENT_SIEGE_IN_PROGRESS",
+  "status": "M4_AUTO_ENGAGEMENT_SIEGE_IN_PROGRESS_STATUS_CONFIRMED",
   "project": "Monsoon Sovereigns",
   "origin_main": "5027a57d7b7e0f980b9fd7979724f0fc76b5ed06",
   "current_milestone": "M4",
@@ -14,16 +14,19 @@
     "019f023d-5f45-7372-8f16-4b55c6818ea2": {
       "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
       "role": "simulation_engineer",
-      "status": "in_progress",
+      "status": "in_progress_status_confirmed",
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
-      "start_submission_id": "019f023d-bc63-7123-be72-4b8387ba640f"
+      "start_submission_id": "019f023d-bc63-7123-be72-4b8387ba640f",
+      "status_probe_submission_id": "019f024c-ee6c-7881-b39f-9d21e0d8869a",
+      "continue_submission_id": "019f024d-6742-7243-8aeb-1eabe9a52f8f"
     },
     "019f023d-7347-7712-b832-3f825603ae21": {
       "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
       "role": "systems_architect",
       "status": "awaiting_review_ready",
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
-      "await_submission_id": "019f023d-bce4-7920-99ff-dcb42e231393"
+      "await_submission_id": "019f023d-bce4-7920-99ff-dcb42e231393",
+      "status_note": "Reviewer ready; no writer handoff yet."
     }
   },
   "unresolved_risks": [
@@ -42,7 +45,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Await simulation_engineer REVIEW handoff for M4-AUTO-ENGAGEMENT-SIEGE-001, validate it, route to systems_architect, review/fix, then integrate through PR/CI before closing.",
+  "next_machine_action": "Await simulation_engineer REVIEW handoff for M4-AUTO-ENGAGEMENT-SIEGE-001; if no handoff after another material wait, probe again or replace writer if progress stalls.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -50,7 +53,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T04:45:00Z",
+  "last_updated_at": "2026-06-26T05:06:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -74,12 +77,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T04:45:00Z",
+  "updated_at": "2026-06-26T05:06:00Z",
   "current_tasks": [
     "M4-AUTO-ENGAGEMENT-SIEGE-001"
   ],
   "last_integrated_task": "M4-MARCH-SUPPLY-STATE-001",
   "last_main_commit": "5027a57d7b7e0f980b9fd7979724f0fc76b5ed06",
   "next_ready_tasks": [],
-  "next_action": "Await simulation_engineer REVIEW handoff for M4-AUTO-ENGAGEMENT-SIEGE-001, validate it, route to systems_architect, review/fix, then integrate through PR/CI before closing."
+  "next_action": "Await simulation_engineer REVIEW handoff for M4-AUTO-ENGAGEMENT-SIEGE-001; if no handoff after another material wait, probe again or replace writer if progress stalls."
 }
