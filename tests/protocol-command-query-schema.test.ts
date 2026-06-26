@@ -745,6 +745,70 @@ describe("SIM-003 protocol command/query schemas", () => {
     expect(
       parseGameCommandV1({
         schemaVersion: 1,
+        kind: "sim.resolve-m4-campaign-withdrawal",
+        commandId: "cmd.m4.withdrawal.resolve",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          withdrawalId: 1,
+          campaignPlanId: 1,
+          marchId: 701,
+          siegeId: null,
+          triggerReason: "supply",
+          reasonCodes: ["withdrawal.reason.supply-collapse"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m4-withdrawal-state",
+        payload: {
+          queryId: "m4.withdrawal.1",
+          campaignPlanId: 1
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m4-war-outcomes",
+        payload: {
+          queryId: "m4.outcomes.1",
+          campaignPlanId: 1
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.resolve-m4-campaign-withdrawal",
+        commandId: "cmd.m4.withdrawal.bad-trigger",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          withdrawalId: 1,
+          campaignPlanId: 1,
+          marchId: 701,
+          siegeId: null,
+          triggerReason: "peace-treaty",
+          reasonCodes: ["withdrawal.reason.invalid"]
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.triggerReason",
+        message:
+          "payload.triggerReason must be ordered, supply, season, siege, loss, or objective-complete."
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
         kind: "sim.apply-m4-siege-choice",
         commandId: "cmd.m4.siege.bad-choice",
         actor: { kind: "player", id: "polity:1" },

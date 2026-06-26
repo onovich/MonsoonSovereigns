@@ -85,6 +85,13 @@ export type M4SiegeChoiceV1 =
   | "accept-surrender"
   | "lift-siege"
   | "withdraw";
+export type M4WithdrawalTriggerV1 =
+  | "ordered"
+  | "supply"
+  | "season"
+  | "siege"
+  | "loss"
+  | "objective-complete";
 
 export interface CommandActorV1 {
   readonly kind: CommandActorKindV1;
@@ -553,6 +560,23 @@ export interface ApplyM4SiegeChoiceCommandV1 {
   };
 }
 
+export interface ResolveM4CampaignWithdrawalCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.resolve-m4-campaign-withdrawal";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly withdrawalId: number;
+    readonly campaignPlanId: number;
+    readonly marchId: number | null;
+    readonly siegeId: number | null;
+    readonly triggerReason: M4WithdrawalTriggerV1;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -580,6 +604,7 @@ export type GameCommandV1 =
   | StartCampaignMarchCommandV1
   | ResolveM4FieldEngagementCommandV1
   | ApplyM4SiegeChoiceCommandV1
+  | ResolveM4CampaignWithdrawalCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -714,6 +739,24 @@ export interface ListM4SiegeStateQueryV1 {
   };
 }
 
+export interface ListM4WithdrawalStateQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m4-withdrawal-state";
+  readonly payload: {
+    readonly queryId: string;
+    readonly campaignPlanId: number;
+  };
+}
+
+export interface ListM4WarOutcomesQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m4-war-outcomes";
+  readonly payload: {
+    readonly queryId: string;
+    readonly campaignPlanId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -731,7 +774,9 @@ export type GameQueryV1 =
   | PreviewM4GrainSupplyQueryV1
   | PreviewM4RouteTransportCapacityQueryV1
   | ListM4MarchStateQueryV1
-  | ListM4SiegeStateQueryV1;
+  | ListM4SiegeStateQueryV1
+  | ListM4WithdrawalStateQueryV1
+  | ListM4WarOutcomesQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1595,6 +1640,22 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.resolve-m4-campaign-withdrawal": {
+      const payload = parseResolveM4CampaignWithdrawalPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -1772,6 +1833,36 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.list-m4-siege-state": {
       const payload = parseListM4SiegeStatePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.list-m4-withdrawal-state": {
+      const payload = parseListM4WithdrawalStatePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.list-m4-war-outcomes": {
+      const payload = parseListM4WarOutcomesPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -3718,6 +3809,43 @@ function parseListM4SiegeStatePayload(
   };
 }
 
+function parseListM4WithdrawalStatePayload(
+  input: unknown
+): ProtocolParseResult<ListM4WithdrawalStateQueryV1["payload"]> {
+  return parseM4CampaignScopedQueryPayload(input, "sim.list-m4-withdrawal-state");
+}
+
+function parseListM4WarOutcomesPayload(
+  input: unknown
+): ProtocolParseResult<ListM4WarOutcomesQueryV1["payload"]> {
+  return parseM4CampaignScopedQueryPayload(input, "sim.list-m4-war-outcomes");
+}
+
+function parseM4CampaignScopedQueryPayload(
+  input: unknown,
+  kind: string
+): ProtocolParseResult<{ readonly queryId: string; readonly campaignPlanId: number }> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", "payload", `${kind} payload must be an object.`);
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  return { ok: true, value: { queryId, campaignPlanId: campaignPlanId.value } };
+}
+
 function parseStartCampaignMarchPayload(
   input: unknown
 ): ProtocolParseResult<StartCampaignMarchCommandV1["payload"]> {
@@ -3919,6 +4047,77 @@ function parseApplyM4SiegeChoicePayload(
       reasonCodes: reasonCodes.value
     }
   };
+}
+
+function parseResolveM4CampaignWithdrawalPayload(
+  input: unknown
+): ProtocolParseResult<ResolveM4CampaignWithdrawalCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.resolve-m4-campaign-withdrawal payload must be an object."
+    );
+  }
+  const withdrawalId = parsePositiveSafeInteger(input["withdrawalId"], "payload.withdrawalId");
+  if (!withdrawalId.ok) {
+    return withdrawalId;
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const marchId = parseNullablePositiveSafeInteger(input["marchId"], "payload.marchId");
+  if (!marchId.ok) {
+    return marchId;
+  }
+  const siegeId = parseNullablePositiveSafeInteger(input["siegeId"], "payload.siegeId");
+  if (!siegeId.ok) {
+    return siegeId;
+  }
+  const triggerReason = parseM4WithdrawalTrigger(input["triggerReason"], "payload.triggerReason");
+  if (!triggerReason.ok) {
+    return triggerReason;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+  return {
+    ok: true,
+    value: {
+      withdrawalId: withdrawalId.value,
+      campaignPlanId: campaignPlanId.value,
+      marchId: marchId.value,
+      siegeId: siegeId.value,
+      triggerReason: triggerReason.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseM4WithdrawalTrigger(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M4WithdrawalTriggerV1> {
+  if (
+    value === "ordered" ||
+    value === "supply" ||
+    value === "season" ||
+    value === "siege" ||
+    value === "loss" ||
+    value === "objective-complete"
+  ) {
+    return { ok: true, value };
+  }
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be ordered, supply, season, siege, loss, or objective-complete.`
+  );
 }
 
 function parseM4SiegeChoice(value: unknown, path: string): ProtocolParseResult<M4SiegeChoiceV1> {
