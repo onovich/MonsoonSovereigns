@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-26T10:48:46.054Z",
+  "updated_at": "2026-06-26T11:00:43.084Z",
   "leadership": {
     "active_leads": [
       {
@@ -1551,20 +1551,21 @@
     "M4-EXIT-VALIDATION-001:systems_architect": {
       "task_id": "M4-EXIT-VALIDATION-001",
       "role": "systems_architect",
-      "thread_id": "019f0389-b54a-7191-b5f2-0813f6bca0ad",
+      "thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
       "status": "started",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "nickname": "Lintel the 7th",
-      "responsibility": "primary M4 exit gate evidence and docs writer",
+      "nickname": "Keystone the 7th",
+      "responsibility": "replacement primary M4 exit gate evidence and docs writer",
       "branch_or_worktree": "chore/m4-exit-gate",
       "start_state": "START_CONFIRMED",
       "spawn_result": "spawn_agent",
-      "start_submission_id": "019f038b-3419-7060-bae9-1d1ac162264b",
+      "replaces_thread_id": "019f0389-b54a-7191-b5f2-0813f6bca0ad",
+      "predecessor_close_reason": "stalled_no_review_handoff_after_gate_evidence_update",
       "start_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T10:48:46.054Z"
+      "updated_at": "2026-06-26T11:00:43.084Z"
     },
     "M4-EXIT-VALIDATION-001:qa_reviewer": {
       "task_id": "M4-EXIT-VALIDATION-001",
@@ -1582,7 +1583,29 @@
       "spawn_result": "spawn_agent",
       "await_submission_id": "019f038b-35cd-7cd2-8ea3-6c1d6daca32c",
       "start_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T10:48:46.054Z"
+      "updated_at": "2026-06-26T11:00:43.084Z"
+    },
+    "M4-EXIT-VALIDATION-001:systems_architect:replaced:019f0389-b54a-7191-b5f2-0813f6bca0ad": {
+      "task_id": "M4-EXIT-VALIDATION-001",
+      "role": "systems_architect",
+      "thread_id": "019f0389-b54a-7191-b5f2-0813f6bca0ad",
+      "status": "closed",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Lintel the 7th",
+      "responsibility": "primary M4 exit gate evidence and docs writer",
+      "branch_or_worktree": "chore/m4-exit-gate",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_submission_id": "019f038b-3419-7060-bae9-1d1ac162264b",
+      "start_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T10:48:46.054Z",
+      "close_reason": "stalled_no_review_handoff_after_gate_evidence_update",
+      "closed_at": "2026-06-26T11:00:43.084Z",
+      "replaced_by": "019f0396-8e7d-73b0-9384-52f7deed12fd",
+      "replacement_nickname": "Keystone the 7th"
     }
   }
 }
