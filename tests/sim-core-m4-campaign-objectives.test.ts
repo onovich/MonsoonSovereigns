@@ -140,6 +140,7 @@ describe("M4-CAMPAIGN-OBJECTIVES-001 campaign objectives and FactionKnowledge", 
     const first = canonicalizeM4CampaignStateV0({
       schemaVersion: 1,
       campaignPlans: [],
+      mobilizedForceCommitments: [],
       factionKnowledgeSnapshots: [
         {
           ...knowledgeSnapshot(2),
@@ -156,6 +157,7 @@ describe("M4-CAMPAIGN-OBJECTIVES-001 campaign objectives and FactionKnowledge", 
     const second = canonicalizeM4CampaignStateV0({
       schemaVersion: 1,
       campaignPlans: [],
+      mobilizedForceCommitments: [],
       factionKnowledgeSnapshots: [
         {
           ...knowledgeSnapshot(2),
@@ -177,6 +179,7 @@ describe("M4-CAMPAIGN-OBJECTIVES-001 campaign objectives and FactionKnowledge", 
     const first = canonicalizeM4CampaignStateV0({
       schemaVersion: 1,
       campaignPlans: [],
+      mobilizedForceCommitments: [],
       factionKnowledgeSnapshots: [
         {
           ...knowledgeSnapshot(2),
@@ -202,6 +205,7 @@ describe("M4-CAMPAIGN-OBJECTIVES-001 campaign objectives and FactionKnowledge", 
     const second = canonicalizeM4CampaignStateV0({
       schemaVersion: 1,
       campaignPlans: [],
+      mobilizedForceCommitments: [],
       factionKnowledgeSnapshots: [
         {
           ...knowledgeSnapshot(2),
@@ -335,7 +339,7 @@ function worldWithM4(
     definitions: defs,
     m2: createM2EconomyPopulationStateV0(defs),
     m3: createM3PolityVassalageStateV0(defs),
-    m4: createM4CampaignStateV0(defs, m4)
+    m4: createM4CampaignStateV0(defs, { ...m4, mobilizedForceCommitments: [] })
   });
 }
 

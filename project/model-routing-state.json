@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T00:21:19Z",
+  "updated_at": "2026-06-26T01:15:41Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1236,9 +1236,55 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_r2_accept_and_main_integration",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019f0152-40b7-7a73-b231-48227617563f",
+      "role": "simulation_engineer",
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "status": "closed_disconnected_before_handoff",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f0154-a0e3-77c3-8d64-de653e6e4ac0",
+      "status_probe_submission_id": "019f0160-7c8a-79b1-a29b-de4fdfefe8ea",
+      "close_reason": "no_review_handoff_after_wait_and_status_probe",
+      "replaced_by": "019f0163-f8a2-7462-8fa4-9eca83a5a3f4",
+      "closed_at": "2026-06-26T00:47:33Z"
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0152-40b7-7a73-b231-48227617563f",
+      "status": "start_pending",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_state": "START_PENDING",
+      "updated_at": "2026-06-26T00:26:54Z",
+      "responsibility": "primary M4 muster preparation and mobilized commitments writer"
+    },
+    {
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "role": "systems_architect",
+      "thread_id": "019f0152-54c5-7d40-a504-dfc1a75082e1",
+      "status": "awaiting_review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_state": "AWAITING_REVIEW_READY",
+      "updated_at": "2026-06-26T00:26:54Z",
+      "responsibility": "architecture reviewer for M4 muster preparation and commitments"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1285,5 +1331,8 @@
     "M4-TASK-GRAPH-001": "CLOSED after PR #82 entered main at 4bee35829c9a37eff405d59cfe4af1a605434928. systems_architect thread 019f00f4-e7ae-7c71-9a8a-8e8285c9500d created the minimal M4 DAG, qa_reviewer thread 019f00f5-07f1-7ec0-b362-6dc0599efaab accepted it, CI passed, and lead closed both child threads. Next READY task is M4-CAMPAIGN-OBJECTIVES-001.",
     "M4-CAMPAIGN-OBJECTIVES-001": "CLOSED after PR #84 entered main at ff2675e8b8222e9006df3e5a9848526d2edeaa85. Replacement simulation_engineer implemented M4 campaign objective/FactionKnowledge substrate; systems_architect requested deterministic duplicate-key fixes and accepted R2. Next READY task is M4-MUSTER-PREP-COMMITMENTS-001.",
     "M4-MUSTER-PREP-COMMITMENTS-001": "READY after M4 campaign objectives closure. This task owns muster preparation and mobilized force commitments only."
+  },
+  "task_notes": {
+    "M4-MUSTER-PREP-COMMITMENTS-001": "ACCEPTED after replacement simulation_engineer R2, systems_architect ACCEPT, and lead integration gates passed locally. Pending PR CI and main integration before CLOSED."
   }
 }

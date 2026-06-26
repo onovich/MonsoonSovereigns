@@ -48,6 +48,7 @@ import {
   parsePopulationGroupId,
   parsePolityId,
   parseCampaignPlanId,
+  parseMobilizedForceCommitmentId,
   parseWorldRevision,
   validateWorldStateV0,
   canonicalizeM2EconomyPopulationState,
@@ -55,6 +56,8 @@ import {
   canonicalizeM4CampaignStateV0,
   copyM4CampaignOwner,
   copyM4CampaignTarget,
+  copyM4MusterCommitmentSource,
+  copyM4MusterLocalCostHook,
   createM4CampaignStateV0,
   computeM3AdministrativeBurdenProfileV0,
   type DistrictControlState,
@@ -91,6 +94,8 @@ import {
   type M4CampaignTargetV0,
   type M4FactionKnowledgeSnapshotStateV0,
   type M4KnownObjectiveEstimateV0,
+  type M4MobilizedForceCommitmentStateV0,
+  type M4MusterCommitmentStatusV0,
   type M2EconomyPopulationStateV0,
   type M2LaborCommitmentPurposeV0,
   type M2RouteKindV0,
@@ -121,6 +126,7 @@ export type DomainErrorCodeV1 =
   | "illegal-vassalage"
   | "m2-state-missing"
   | "m3-state-missing"
+  | "muster-commitment-invalid"
   | "obligation-actor-invalid"
   | "obligation-due-period-invalid"
   | "obligation-resource-insufficient"
@@ -516,6 +522,14 @@ export type QueryResultV1 =
             readonly revision: number;
             readonly observerPolityId: number;
             readonly snapshots: readonly M4FactionKnowledgeSnapshotReadModelV1[];
+          }
+        | {
+            readonly kind: "sim.list-m4-muster-commitments";
+            readonly day: number;
+            readonly revision: number;
+            readonly campaignPlanId: number;
+            readonly commitments: readonly M4MusterCommitmentReadModelV1[];
+            readonly reasonCodes: readonly string[];
           };
     }
   | {
@@ -687,6 +701,24 @@ export interface M4FactionKnowledgeSnapshotReadModelV1 {
   readonly supplyEstimates: M4FactionKnowledgeSnapshotStateV0["supplyEstimates"];
   readonly defenderEstimates: M4FactionKnowledgeSnapshotStateV0["defenderEstimates"];
   readonly reasonCodes: readonly string[];
+}
+
+export interface M4MusterCommitmentReadModelV1 {
+  readonly commitmentId: number;
+  readonly campaignPlanId: number;
+  readonly source: M4MobilizedForceCommitmentStateV0["source"];
+  readonly promisedTroops: number;
+  readonly dueDay: number;
+  readonly assemblyWindow: M4MobilizedForceCommitmentStateV0["assemblyWindow"];
+  readonly plannedAssemblyDay: number;
+  readonly assembledTroops: number;
+  readonly delayedTroops: number;
+  readonly refusedTroops: number;
+  readonly releasedTroops: number;
+  readonly status: M4MusterCommitmentStatusV0;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly localCostHooks: M4MobilizedForceCommitmentStateV0["localCostHooks"];
 }
 
 interface CommandEvaluationV1 {
@@ -1090,6 +1122,10 @@ function validateAndEvaluateCommand(
       return evaluateUpdateCampaignObjective(runtime.world, command);
     case "sim.cancel-campaign-objective":
       return evaluateCancelCampaignObjective(runtime.world, command);
+    case "sim.create-muster-commitment":
+      return evaluateCreateMusterCommitment(runtime.world, command);
+    case "sim.record-muster-response":
+      return evaluateRecordMusterResponse(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -2702,6 +2738,168 @@ function evaluateCancelCampaignObjective(
   });
 }
 
+function evaluateCreateMusterCommitment(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.create-muster-commitment" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.create-muster-commitment");
+  }
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectMusterCommitment("state.m4", "M4 campaign state is missing.");
+  }
+
+  const commitmentId = parseMobilizedForceCommitmentId(command.payload.commitmentId);
+  if (m4.mobilizedForceCommitments.some((entry) => entry.id === commitmentId)) {
+    return rejectMusterCommitment("payload.commitmentId", "MobilizedForceCommitmentId exists.");
+  }
+  const campaignPlanId = parseCampaignPlanId(command.payload.campaignPlanId);
+  const campaignPlan = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (campaignPlan === undefined) {
+    return badIdError("payload.campaignPlanId", "Muster commitment references missing campaign.");
+  }
+  if (campaignPlan.status === "cancelled" || campaignPlan.status === "completed") {
+    return rejectMusterCommitment("payload.campaignPlanId", "CampaignPlan cannot accept muster.");
+  }
+
+  const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
+  if (ownerPolityId === null) {
+    return rejectMusterCommitment(
+      "payload.campaignPlanId",
+      "Campaign owner polity is unavailable."
+    );
+  }
+  if (!actorHasPolityAuthority(m3, command.actor, ownerPolityId)) {
+    return authorityDeniedError();
+  }
+
+  const obligation = m3.obligations.find(
+    (entry) => entry.id === command.payload.source.obligationId
+  );
+  if (obligation === undefined) {
+    return badIdError(
+      "payload.source.obligationId",
+      "Muster commitment references missing M3ObligationId."
+    );
+  }
+  const sourceError = validateMusterSourceObligation(
+    world,
+    m4,
+    campaignPlan,
+    obligation,
+    command.payload.promisedTroops,
+    command.payload.dueDay
+  );
+  if (sourceError !== null) {
+    return { ok: false, error: sourceError };
+  }
+  const windowError = validateMusterAssemblyWindow(
+    command.payload.assemblyWindow,
+    command.payload.dueDay
+  );
+  if (windowError !== null) {
+    return { ok: false, error: windowError };
+  }
+
+  const plannedAssemblyDay = deterministicMusterAssemblyDay(command.payload.assemblyWindow);
+  const localCostHooks = musterLocalCostHooks(m3, obligation, command.payload.promisedTroops);
+  const commitment: M4MobilizedForceCommitmentStateV0 = {
+    id: commitmentId,
+    campaignPlanId,
+    source: {
+      kind: "m3-obligation",
+      obligationId: obligation.id,
+      debtorPolityId: obligation.debtorPolityId,
+      creditorPolityId: obligation.creditorPolityId
+    },
+    promisedTroops: command.payload.promisedTroops,
+    dueDay: parseGameDay(command.payload.dueDay),
+    assemblyWindow: {
+      earliestDay: parseGameDay(command.payload.assemblyWindow.earliestDay),
+      latestDay: parseGameDay(command.payload.assemblyWindow.latestDay)
+    },
+    plannedAssemblyDay,
+    assembledTroops: 0,
+    delayedTroops: 0,
+    refusedTroops: 0,
+    releasedTroops: 0,
+    status: "promised",
+    statusReasonCode: "muster.commitment.promised",
+    reasonCodes: [
+      ...command.payload.reasonCodes,
+      ...localCostHooks.map((hook) => hook.reasonCode)
+    ].sort(compareText),
+    localCostHooks
+  };
+
+  return acceptM4CampaignState(world, command, {
+    ...m4,
+    mobilizedForceCommitments: [...m4.mobilizedForceCommitments, commitment]
+  });
+}
+
+function evaluateRecordMusterResponse(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.record-muster-response" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.record-muster-response");
+  }
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectMusterCommitment("state.m4", "M4 campaign state is missing.");
+  }
+
+  const commitmentId = parseMobilizedForceCommitmentId(command.payload.commitmentId);
+  const commitment = m4.mobilizedForceCommitments.find((entry) => entry.id === commitmentId);
+  if (commitment === undefined) {
+    return badIdError(
+      "payload.commitmentId",
+      "sim.record-muster-response references missing commitment."
+    );
+  }
+  if (commitment.status === "released" || commitment.status === "refused") {
+    return rejectMusterCommitment(
+      "payload.commitmentId",
+      "Muster commitment is already terminally settled."
+    );
+  }
+
+  const responseError = validateMusterResponsePayload(commitment, command);
+  if (responseError !== null) {
+    return { ok: false, error: responseError };
+  }
+  const isReleaseAdvance = command.payload.releasedTroops > commitment.releasedTroops;
+  const actingPolityId = isReleaseAdvance
+    ? commitment.source.creditorPolityId
+    : commitment.source.debtorPolityId;
+  if (!actorHasPolityAuthority(m3, command.actor, actingPolityId)) {
+    return authorityDeniedError();
+  }
+
+  const nextStatus = deriveMusterCommitmentStatus(command.payload, commitment.promisedTroops);
+  const updatedCommitment: M4MobilizedForceCommitmentStateV0 = {
+    ...commitment,
+    assembledTroops: command.payload.assembledTroops,
+    delayedTroops: command.payload.delayedTroops,
+    refusedTroops: command.payload.refusedTroops,
+    releasedTroops: command.payload.releasedTroops,
+    status: nextStatus,
+    statusReasonCode: command.payload.reasonCodes[0] ?? commitment.statusReasonCode,
+    reasonCodes: [...commitment.reasonCodes, ...command.payload.reasonCodes].sort(compareText)
+  };
+
+  return acceptM4CampaignState(world, command, {
+    ...m4,
+    mobilizedForceCommitments: m4.mobilizedForceCommitments.map((entry) =>
+      entry.id === commitmentId ? updatedCommitment : entry
+    )
+  });
+}
+
 function acceptM4CampaignState(
   world: WorldStateV0,
   command: GameCommandV1,
@@ -2837,6 +3035,246 @@ function rejectCampaignObjective(path: string, message: string): EvaluationResul
       path,
       message
     }
+  };
+}
+
+function campaignOwnerPolityId(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  owner: M4CampaignOwnerV0
+): PolityId | null {
+  switch (owner.kind) {
+    case "polity":
+      return owner.polityId;
+    case "commander": {
+      const character = findM3Character(m3, owner.characterId);
+      return character?.polityId ?? null;
+    }
+  }
+}
+
+function validateMusterSourceObligation(
+  world: WorldStateV0,
+  m4: M4CampaignStateV0,
+  campaignPlan: M4CampaignPlanStateV0,
+  obligation: M3ObligationStateV0,
+  promisedTroops: number,
+  dueDay: number
+): DomainErrorV1 | null {
+  const ownerPolityId = campaignOwnerPolityIdForValidation(world, campaignPlan.owner);
+  if (ownerPolityId === null || obligation.creditorPolityId !== ownerPolityId) {
+    return musterCommitmentDomainError(
+      "payload.source.obligationId",
+      "Muster source obligation creditor must match the campaign owner polity."
+    );
+  }
+  if (
+    m4.mobilizedForceCommitments.some(
+      (commitment) =>
+        commitment.source.kind === "m3-obligation" &&
+        commitment.source.obligationId === obligation.id &&
+        commitment.dueDay === dueDay
+    )
+  ) {
+    return musterCommitmentDomainError(
+      "payload.source.obligationId",
+      "Muster source obligation already has a commitment for this due day."
+    );
+  }
+  if (
+    obligation.obligationKind !== "troop" ||
+    obligation.requirement.kind !== "amount" ||
+    obligation.requirement.resourceKind !== "troops"
+  ) {
+    return musterCommitmentDomainError(
+      "payload.source.obligationId",
+      "Muster source must be an amount-based M3 troop obligation."
+    );
+  }
+  if (obligation.status !== "active") {
+    return musterCommitmentDomainError(
+      "payload.source.obligationId",
+      "Muster source obligation must be active."
+    );
+  }
+  if (dueDay !== obligation.accounting.dueDay) {
+    return musterCommitmentDomainError(
+      "payload.dueDay",
+      "Muster dueDay must match the source obligation due period."
+    );
+  }
+  if (world.meta.currentDay > dueDay) {
+    return musterCommitmentDomainError("payload.dueDay", "Muster source obligation is expired.");
+  }
+  if (promisedTroops > obligation.accounting.dueAmount - obligation.accounting.deliveredAmount) {
+    return musterCommitmentDomainError(
+      "payload.promisedTroops",
+      "Muster promisedTroops exceeds source obligation remaining due troops."
+    );
+  }
+  return null;
+}
+
+function campaignOwnerPolityIdForValidation(
+  world: WorldStateV0,
+  owner: M4CampaignOwnerV0
+): PolityId | null {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return owner.kind === "polity" ? owner.polityId : null;
+  }
+  return campaignOwnerPolityId(m3, owner);
+}
+
+function validateMusterAssemblyWindow(
+  assemblyWindow: { readonly earliestDay: number; readonly latestDay: number },
+  dueDay: number
+): DomainErrorV1 | null {
+  if (assemblyWindow.earliestDay > assemblyWindow.latestDay) {
+    return musterCommitmentDomainError(
+      "payload.assemblyWindow",
+      "Muster assemblyWindow earliestDay must be <= latestDay."
+    );
+  }
+  if (assemblyWindow.latestDay > dueDay) {
+    return musterCommitmentDomainError(
+      "payload.assemblyWindow",
+      "Muster assemblyWindow must close no later than dueDay."
+    );
+  }
+  return null;
+}
+
+function deterministicMusterAssemblyDay(input: {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}): ReturnType<typeof parseGameDay> {
+  return parseGameDay(input.earliestDay + Math.floor((input.latestDay - input.earliestDay) / 2));
+}
+
+function musterLocalCostHooks(
+  m3: NonNullable<WorldStateV0["state"]["m3"]>,
+  obligation: M3ObligationStateV0,
+  promisedTroops: number
+): M4MobilizedForceCommitmentStateV0["localCostHooks"] {
+  const debtorDistrict = [...m3.administrativeDistricts]
+    .filter((district) => district.polityId === obligation.debtorPolityId)
+    .sort((left, right) => left.districtId - right.districtId)[0];
+  const economicHooks =
+    debtorDistrict === undefined
+      ? []
+      : [
+          {
+            kind: "economic-labor-reservation" as const,
+            districtId: debtorDistrict.districtId,
+            laborAmount: promisedTroops,
+            reasonCode: "muster.cost.economic-labor-reservation"
+          }
+        ];
+  return [
+    ...economicHooks,
+    {
+      kind: "loyalty-pressure",
+      polityId: obligation.debtorPolityId,
+      pressureBps: clampBps(promisedTroops * 10),
+      reasonCode: "muster.cost.loyalty-pressure"
+    }
+  ];
+}
+
+function validateMusterResponsePayload(
+  commitment: M4MobilizedForceCommitmentStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.record-muster-response" }>
+): DomainErrorV1 | null {
+  if (command.payload.assembledTroops > commitment.promisedTroops) {
+    return musterCommitmentDomainError(
+      "payload.assembledTroops",
+      "Muster assembledTroops must not exceed promisedTroops."
+    );
+  }
+  if (
+    command.payload.assembledTroops +
+      command.payload.delayedTroops +
+      command.payload.refusedTroops >
+    commitment.promisedTroops
+  ) {
+    return musterCommitmentDomainError(
+      "payload.assembledTroops",
+      "Muster response totals must not exceed promisedTroops."
+    );
+  }
+  if (command.payload.releasedTroops > command.payload.assembledTroops) {
+    return musterCommitmentDomainError(
+      "payload.releasedTroops",
+      "Muster releasedTroops must not exceed assembledTroops."
+    );
+  }
+  if (
+    command.payload.assembledTroops < commitment.assembledTroops ||
+    command.payload.delayedTroops < commitment.delayedTroops ||
+    command.payload.refusedTroops < commitment.refusedTroops ||
+    command.payload.releasedTroops < commitment.releasedTroops
+  ) {
+    return musterCommitmentDomainError(
+      "payload.commitmentId",
+      "Muster response quantities cannot decrease."
+    );
+  }
+  if (
+    command.payload.assembledTroops === commitment.assembledTroops &&
+    command.payload.delayedTroops === commitment.delayedTroops &&
+    command.payload.refusedTroops === commitment.refusedTroops &&
+    command.payload.releasedTroops === commitment.releasedTroops
+  ) {
+    return musterCommitmentDomainError(
+      "payload.commitmentId",
+      "Muster response must advance at least one commitment quantity."
+    );
+  }
+  const hasDebtorResponseAdvance =
+    command.payload.assembledTroops > commitment.assembledTroops ||
+    command.payload.delayedTroops > commitment.delayedTroops ||
+    command.payload.refusedTroops > commitment.refusedTroops;
+  const hasCreditorReleaseAdvance = command.payload.releasedTroops > commitment.releasedTroops;
+  if (hasDebtorResponseAdvance && hasCreditorReleaseAdvance) {
+    return musterCommitmentDomainError(
+      "payload.commitmentId",
+      "Muster response quantities and release quantities must advance in separate commands."
+    );
+  }
+  return null;
+}
+
+function deriveMusterCommitmentStatus(
+  payload: Extract<GameCommandV1, { readonly kind: "sim.record-muster-response" }>["payload"],
+  promisedTroops: number
+): M4MusterCommitmentStatusV0 {
+  if (payload.releasedTroops > 0 && payload.releasedTroops === payload.assembledTroops) {
+    return "released";
+  }
+  if (payload.refusedTroops > 0 && payload.assembledTroops === 0 && payload.delayedTroops === 0) {
+    return "refused";
+  }
+  if (payload.delayedTroops > 0 || payload.refusedTroops > 0) {
+    return "delayed";
+  }
+  if (payload.assembledTroops === promisedTroops) {
+    return "assembled";
+  }
+  return "promised";
+}
+
+function rejectMusterCommitment(path: string, message: string): EvaluationResult {
+  return {
+    ok: false,
+    error: musterCommitmentDomainError(path, message)
+  };
+}
+
+function musterCommitmentDomainError(path: string, message: string): DomainErrorV1 {
+  return {
+    code: "muster-commitment-invalid",
+    path,
+    message
   };
 }
 
@@ -4202,6 +4640,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM4CampaignPlansQuery(runtime);
     case "sim.list-m4-faction-knowledge":
       return executeM4FactionKnowledgeQuery(runtime, query);
+    case "sim.list-m4-muster-commitments":
+      return executeM4MusterCommitmentsQuery(runtime, query);
   }
 }
 
@@ -4322,6 +4762,63 @@ function copyM4KnowledgeSnapshotReadModel(
       confidenceBps: estimate.confidenceBps
     })),
     reasonCodes: ["faction-knowledge.snapshot.visible"]
+  };
+}
+
+function executeM4MusterCommitmentsQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.list-m4-muster-commitments" }>
+): QueryResultV1 {
+  const campaignPlanId = parseCampaignPlanId(query.payload.campaignPlanId);
+  const m4 = runtime.world.state.m4;
+  if (m4 === undefined || !m4.campaignPlans.some((plan) => plan.id === campaignPlanId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.campaignPlanId",
+        message: "sim.list-m4-muster-commitments references a missing CampaignPlanId."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m4-muster-commitments",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      campaignPlanId,
+      commitments: m4.mobilizedForceCommitments
+        .filter((commitment) => commitment.campaignPlanId === campaignPlanId)
+        .map(copyM4MusterCommitmentReadModel),
+      reasonCodes: ["muster.query.filtered-by-campaign"]
+    }
+  };
+}
+
+function copyM4MusterCommitmentReadModel(
+  commitment: M4MobilizedForceCommitmentStateV0
+): M4MusterCommitmentReadModelV1 {
+  return {
+    commitmentId: commitment.id,
+    campaignPlanId: commitment.campaignPlanId,
+    source: copyM4MusterCommitmentSource(commitment.source),
+    promisedTroops: commitment.promisedTroops,
+    dueDay: commitment.dueDay,
+    assemblyWindow: {
+      earliestDay: commitment.assemblyWindow.earliestDay,
+      latestDay: commitment.assemblyWindow.latestDay
+    },
+    plannedAssemblyDay: commitment.plannedAssemblyDay,
+    assembledTroops: commitment.assembledTroops,
+    delayedTroops: commitment.delayedTroops,
+    refusedTroops: commitment.refusedTroops,
+    releasedTroops: commitment.releasedTroops,
+    status: commitment.status,
+    statusReasonCode: commitment.statusReasonCode,
+    reasonCodes: [...commitment.reasonCodes],
+    localCostHooks: commitment.localCostHooks.map(copyM4MusterLocalCostHook)
   };
 }
 
