@@ -9,7 +9,10 @@ import { ClientShellView } from "@monsoon/ui";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { createBootstrappedShellSnapshot } from "./create-shell-snapshot";
+import {
+  createBootstrappedShellSnapshot,
+  createWebClientShellSnapshot
+} from "./create-shell-snapshot";
 
 describe("web client shell", () => {
   it("projects a simulation result into a disposable client read model", () => {
@@ -22,12 +25,30 @@ describe("web client shell", () => {
     expect(snapshot.districtList.rows).toHaveLength(30);
     expect(snapshot.m3Appointment.offices).toHaveLength(3);
     expect(snapshot.m3Appointment.bulkPreview.eligibleCount).toBe(2);
-    expect(snapshot.m4Campaign.plans).toHaveLength(1);
+    expect(snapshot.m4Campaign.plans).toHaveLength(2);
     expect(snapshot.m4Campaign.muster.readiness).toBe("partial");
-    expect(snapshot.m4Campaign.warReports).toHaveLength(1);
+    expect(snapshot.m4Campaign.warReports).toHaveLength(2);
     expect(snapshot.districtList.provenance.kind).toBe("simulation-read-model");
     expect(snapshot.revision).toBe(snapshot.simulation.finalRevision);
     expect(JSON.stringify(snapshot)).not.toContain("WorldState");
+  });
+
+  it("switches to the 4000-row stress validation fixture when requested", () => {
+    const snapshot = createWebClientShellSnapshot("?fixture=stress");
+
+    expect(snapshot.districtList.provenance.kind).toBe("synthetic-pressure-fixture");
+    expect(snapshot.districtList.rows).toHaveLength(4000);
+    expect(snapshot.m4Campaign.plans).toHaveLength(2);
+    expect(snapshot.m4Campaign.marches).toHaveLength(2);
+    expect(snapshot.m4Campaign.sieges).toHaveLength(2);
+    expect(snapshot.m4Campaign.withdrawals).toHaveLength(2);
+    expect(snapshot.m4Campaign.warReports).toHaveLength(2);
+    expect(snapshot.m4Campaign.warReports[0]?.postwarCandidate?.validM3Methods).toContain(
+      "restore-vassal-ruler"
+    );
+    expect(snapshot.m4Campaign.warReports[1]?.postwarCandidate?.validM3Methods).toContain(
+      "restore-vassal-ruler"
+    );
   });
 
   it("renders React from read model snapshots without authority-bearing state", () => {

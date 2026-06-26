@@ -1696,10 +1696,15 @@ export function createM4CampaignProtocolProjectionFixture(
 ): ClientM4CampaignProjectionInput {
   const day = 150;
   const campaignPlanId = 10;
+  const secondaryCampaignPlanId = 11;
   const marchId = 701;
+  const secondaryMarchId = 702;
   const siegeId = 801;
+  const secondarySiegeId = 802;
   const withdrawalId = 901;
+  const secondaryWithdrawalId = 902;
   const outcomeId = 1001;
+  const secondaryOutcomeId = 1002;
   return {
     campaignPlans: {
       kind: "sim.list-m4-campaign-plans",
@@ -1718,6 +1723,21 @@ export function createM4CampaignProtocolProjectionFixture(
             status: "ready",
             earliestStartDay: 150,
             latestStartDay: 178,
+            reasonCodes: ["campaign.forecast.start-range-open"]
+          }
+        },
+        {
+          campaignPlanId: secondaryCampaignPlanId,
+          owner: { kind: "polity", polityId: 1 },
+          target: { kind: "district", districtId: 2 },
+          objectiveKind: "relieve",
+          status: "active",
+          statusReasonCode: "campaign.objective.march-started",
+          reasonCodes: ["campaign.reason.defender-pressure"],
+          forecast: {
+            status: "ready",
+            earliestStartDay: 151,
+            latestStartDay: 184,
             reasonCodes: ["campaign.forecast.start-range-open"]
           }
         }
@@ -1786,6 +1806,20 @@ export function createM4CampaignProtocolProjectionFixture(
           status: "carried",
           statusReasonCode: "grain.reserve.planned-campaign",
           reasonCodes: ["grain.reserve.planned-campaign", "grain.loss.river-spoilage"]
+        },
+        {
+          reservationId: 502,
+          campaignPlanId: secondaryCampaignPlanId,
+          reservedAmount: 900,
+          carriedAmount: 820,
+          consumedAmount: 160,
+          shortageAmount: 0,
+          lossAmount: 80,
+          lossReasonCode: "grain.loss.river-spoilage",
+          expectedDaysOfSupply: 9,
+          status: "carried",
+          statusReasonCode: "grain.reserve.planned-campaign",
+          reasonCodes: ["grain.reserve.planned-campaign", "grain.loss.river-spoilage"]
         }
       ],
       reasonCodes: ["grain.forecast.short-of-full-window", "grain.forecast.reserve-available"]
@@ -1813,6 +1847,22 @@ export function createM4CampaignProtocolProjectionFixture(
             earliestArrivalDay: 162,
             latestArrivalDay: 190,
             travelDays: 12
+          },
+          overloadedReasonCode: "route.capacity.carried-supply-over-bottleneck",
+          seasonRiskReasonCodes: ["route.season.monsoon-risk", "route.season.river-navigation-risk"]
+        },
+        {
+          reservationId: 502,
+          originDistrictId: 1,
+          destinationDistrictId: 2,
+          status: "capacity-exceeded",
+          carriedSupplyAmount: 820,
+          carriedSupplyLimit: 700,
+          bottleneckCapacity: 700,
+          travelWindow: {
+            earliestArrivalDay: 160,
+            latestArrivalDay: 188,
+            travelDays: 10
           },
           overloadedReasonCode: "route.capacity.carried-supply-over-bottleneck",
           seasonRiskReasonCodes: ["route.season.monsoon-risk", "route.season.river-navigation-risk"]
@@ -1853,6 +1903,31 @@ export function createM4CampaignProtocolProjectionFixture(
           ],
           failedCommitmentIds: [],
           reasonCodes: ["march.supply.strained", "reinforcement.timing.partial-late"]
+        },
+        {
+          marchId: secondaryMarchId,
+          campaignPlanId: secondaryCampaignPlanId,
+          originDistrictId: 1,
+          targetDistrictId: 2,
+          currentDistrictId: 2,
+          activeTroops: 68,
+          status: "marching",
+          statusReasonCode: "march.status.en-route",
+          supply: {
+            status: "strained",
+            carriedGrain: 700,
+            consumedGrain: 160,
+            shortageGrain: 0,
+            delayedDays: 1
+          },
+          predictedArrivalWindow: {
+            earliestDay: 160,
+            latestDay: 188
+          },
+          actualArrivalDay: null,
+          joinedCommitmentTroops: [{ commitmentId: 102, joinedTroops: 40 }],
+          failedCommitmentIds: [],
+          reasonCodes: ["march.supply.strained", "reinforcement.timing.partial-late"]
         }
       ],
       reasonCodes: ["march.query.filtered-by-campaign"]
@@ -1884,6 +1959,28 @@ export function createM4CampaignProtocolProjectionFixture(
           surrenderEligible: false,
           surrenderReasonCodes: ["siege.surrender.not-yet"],
           reasonCodes: ["siege.choice.invest-blockade", "siege.progress.blockade"]
+        },
+        {
+          siegeId: secondarySiegeId,
+          campaignPlanId: secondaryCampaignPlanId,
+          marchId: secondaryMarchId,
+          targetDistrictId: 2,
+          attackerPolityId: 1,
+          defenderPolityId: 2,
+          status: "active",
+          statusReasonCode: "siege.status.invested",
+          fortification: 360,
+          defenderEstimatedTroops: 64,
+          defenderSupply: 230,
+          siegeProgress: 52,
+          daysInvested: 7,
+          attackerTroops: 66,
+          attackerCasualties: 6,
+          defenderCasualties: 10,
+          supplyLoss: 72,
+          surrenderEligible: false,
+          surrenderReasonCodes: ["siege.surrender.not-yet"],
+          reasonCodes: ["siege.choice.invest-blockade", "siege.progress.blockade"]
         }
       ],
       reasonCodes: ["siege.query.filtered-by-campaign"]
@@ -1907,6 +2004,20 @@ export function createM4CampaignProtocolProjectionFixture(
           supplyLoss: 260,
           reasonCodes: ["withdrawal.reason.supply-collapse", "withdrawal.cost.failed-baggage"],
           resolvedDay: 194
+        },
+        {
+          withdrawalId: secondaryWithdrawalId,
+          campaignPlanId: secondaryCampaignPlanId,
+          marchId: secondaryMarchId,
+          siegeId: secondarySiegeId,
+          kind: "forced-retreat",
+          triggerReason: "supply",
+          troopsBefore: 66,
+          troopsExtracted: 52,
+          casualties: 14,
+          supplyLoss: 180,
+          reasonCodes: ["withdrawal.reason.supply-collapse", "withdrawal.cost.failed-baggage"],
+          resolvedDay: 195
         }
       ],
       reasonCodes: ["withdrawal.query.filtered-by-campaign"]
@@ -1944,6 +2055,34 @@ export function createM4CampaignProtocolProjectionFixture(
             "postwar.candidate.ready"
           ],
           resolvedDay: 196
+        },
+        {
+          outcomeId: secondaryOutcomeId,
+          campaignPlanId: secondaryCampaignPlanId,
+          victorPolityId: 1,
+          localPolityId: 2,
+          targetDistrictId: 2,
+          attackerCasualties: 16,
+          defenderCasualties: 28,
+          supplyLoss: 310,
+          withdrawalId: secondaryWithdrawalId,
+          siegeId: secondarySiegeId,
+          postwarCandidate: {
+            candidateId: "m4.campaign.11.outcome.1",
+            sourceWarOutcomeId: secondaryOutcomeId,
+            settlementId: "m4.campaign.11.settlement",
+            victorPolityId: 1,
+            localPolityId: 2,
+            districtId: 2,
+            validM3Methods: ["direct-control", "restore-vassal-ruler"],
+            reasonCodes: ["postwar.candidate.from-war-outcome", "postwar.methods.m3-compatible"]
+          },
+          reasonCodes: [
+            "war-outcome.siege-pressure",
+            "war-outcome.withdrawal-supply",
+            "postwar.candidate.ready"
+          ],
+          resolvedDay: 197
         }
       ],
       reasonCodes: ["war-outcome.query.filtered-by-campaign"]
@@ -2624,9 +2763,9 @@ function createM4CampaignCatalogFixture(): ClientM4CampaignCatalogInput {
   return {
     commandActor: { kind: "player", id: "polity:1" },
     commandDefaults: {
-      nextCampaignPlanId: 11,
-      nextMarchId: 702,
-      nextWithdrawalId: 902,
+      nextCampaignPlanId: 12,
+      nextMarchId: 703,
+      nextWithdrawalId: 903,
       originDistrictId: 1,
       grainPerTroopPerDay: 1,
       withdrawalTrigger: "ordered"

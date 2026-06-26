@@ -211,27 +211,48 @@ describe("M4 campaign planning client read model", () => {
     const fixture = createM4CampaignReadModelFixture();
 
     expect(fixture.provenance.kind).toBe("protocol-query-projection");
-    expect(fixture.plans).toHaveLength(1);
+    expect(fixture.plans).toHaveLength(2);
+    expect(fixture.marches).toHaveLength(2);
+    expect(fixture.sieges).toHaveLength(2);
+    expect(fixture.withdrawals).toHaveLength(2);
+    expect(fixture.warReports).toHaveLength(2);
     expect(fixture.muster.readiness).toBe("partial");
     expect(fixture.muster.promisedTroops).toBe(120);
     expect(fixture.muster.assembledTroops).toBe(100);
     expect(fixture.grain.expectedDaysOfSupply).toBe(11);
     expect(fixture.route.reasonCodes).toContain("route.forecast.seasonal-risk");
+    expect(fixture.route.sourceForecasts).toHaveLength(2);
     expect(fixture.marches[0]).toMatchObject({
       status: "marching",
       joinedTroops: 100
+    });
+    expect(fixture.marches[1]).toMatchObject({
+      status: "marching",
+      joinedTroops: 40
     });
     expect(fixture.sieges[0]).toMatchObject({
       status: "active",
       attackerCasualties: 4,
       defenderCasualties: 11
     });
+    expect(fixture.sieges[1]).toMatchObject({
+      status: "active",
+      attackerCasualties: 6,
+      defenderCasualties: 10
+    });
     expect(fixture.withdrawals[0]).toMatchObject({
+      triggerReason: "supply",
+      casualties: 14
+    });
+    expect(fixture.withdrawals[1]).toMatchObject({
       triggerReason: "supply",
       casualties: 14
     });
     expect(fixture.aiReason.primaryReasonCode).toBe("m4.ai.withdraw.supply-collapse");
     expect(fixture.warReports[0]?.postwarCandidate?.validM3Methods).toContain(
+      "restore-vassal-ruler"
+    );
+    expect(fixture.warReports[1]?.postwarCandidate?.validM3Methods).toContain(
       "restore-vassal-ruler"
     );
     expect(
@@ -277,7 +298,7 @@ describe("M4 campaign planning client read model", () => {
     expect(planCommand).toMatchObject({
       kind: "sim.create-campaign-objective",
       payload: {
-        campaignPlanId: 11,
+        campaignPlanId: 12,
         objectiveKind: "besiege",
         reasonCodes: ["client.m4.plan.before-rainy-season", "campaign.reason.dry-season-range"]
       }

@@ -1,0 +1,162 @@
+{
+  "message_id": "MSG-20260626-M4-STRESS-VALIDATION-QA-ACCEPT-R2",
+  "task_id": "M4-STRESS-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only R2 QA accepts M4-STRESS-VALIDATION-001. The replacement writer resolved both QA findings: the 4000-row stress fixture now carries two concurrent M4 campaign plans with separate marches, sieges, withdrawals, route pressure, supply pressure, and war reports, and rainy-season forecast-versus-actual cancellation evidence is now recorded in one scenario with forecast reason codes, actual cancellation reason codes, and day evidence. Required validation commands were rerun successfully and the actual diff stays within allowed validation paths.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M4-STRESS-VALIDATION-001.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW__test_engineer.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-REQUEST-CHANGES__qa_reviewer.json",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+    "tests/sim-core-m4-campaign-ai.test.ts",
+    "tests/sim-core-m4-auto-engagement-siege.test.ts",
+    "tests/sim-core-m4-march-supply-state.test.ts",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-ACCEPT-R2__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "test/m4-stress-validation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch test/m4-stress-validation. Modified paths were apps/web/src/shell/create-shell-snapshot.ts, apps/web/src/shell/web-client-shell.test.tsx, apps/web/src/shell/web-client-shell.tsx, packages/client-core/src/index.ts, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M4-STRESS-VALIDATION-001.json, project/tasks/thread-registry.json, tests/client-core-m2-district-list.test.ts, tests/e2e/web-shell.spec.ts, tests/sim-core-m4-campaign-objectives.test.ts, tests/sim-core-m4-withdrawal-postwar-handoff.test.ts, and tests/ui-m2-district-list.test.tsx, plus untracked R1/R2 writer handoffs and the prior QA REQUEST_CHANGES handoff."
+    },
+    {
+      "command": "git diff --name-status && git diff --stat",
+      "exit_code": 0,
+      "result": "Diff is limited to allowed apps/web/**, packages/client-core/**, tests/**, project task/state JSON, and project/messages/** paths. No forbidden path from the task scope was modified."
+    },
+    {
+      "command": "Manual diff inspection of packages/client-core/src/index.ts and tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Verified the stress fixture now contains two campaign plans, two marches, two sieges, two withdrawals, two route source forecasts, two grain reservations, and two war reports. Browser smoke asserts data-plan-count=2, data-war-report-count=2, two campaign options, 4000 virtualized rows, route.season.monsoon-risk, Route reservation 502, route.capacity.carried-supply-over-bottleneck, March 702, Siege 802, Withdrawal 902, postwar.candidate.ready, restore-vassal-ruler, and Outcome 1002."
+    },
+    {
+      "command": "Manual diff inspection of tests/sim-core-m4-campaign-objectives.test.ts and tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+      "exit_code": 0,
+      "result": "Verified rainy-season evidence now records forecast reason codes before cancellation and actual cancelled status/statusReasonCode/updatedDay after cancellation in one scenario path. Withdrawal scenario also queries forecast before and after seasonal cancellation and asserts cancelled-before-departure withdrawal plus updatedDay 180."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-STRESS-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M4-STRESS-VALIDATION-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-REQUEST-CHANGES__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID previous QA REQUEST_CHANGES handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M4-STRESS-VALIDATION-001.json",
+      "exit_code": 0,
+      "result": "TASK_JSON_OK M4-STRESS-VALIDATION-001 REVIEW 15 10"
+    },
+    {
+      "command": "rg -n 'console\\.log|Date\\.now|Math\\.random|from \"node:fs\"|from \"fs\"|from \"react\"|electron|telemetry|server|manual battle|naval|fleet|amphib|\\bany\\b' packages/client-core/src/index.ts tests/sim-core-m4-campaign-objectives.test.ts tests/sim-core-m4-withdrawal-postwar-handoff.test.ts apps/web/src/shell/create-shell-snapshot.ts apps/web/src/shell/web-client-shell.tsx apps/web/src/shell/web-client-shell.test.tsx tests/e2e/web-shell.spec.ts tests/client-core-m2-district-list.test.ts tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "Matches were expected SSR imports/test names, the existing naval-evacuation wording in a test name, observerPolityId literals, and one test console.log in the new rainy-season scenario. No forbidden implementation dependency, entropy source, Electron/security surface, telemetry, server, manual battle, naval/fleet feature, or any usage was found in the reviewed implementation paths."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m4-withdrawal-postwar-handoff.test.ts apps/web/src/shell/web-client-shell.test.tsx",
+      "exit_code": 0,
+      "result": "Root Vitest picked up the sim-core file and passed 1 file / 11 tests. The web app test path is covered by pnpm test below."
+    },
+    {
+      "command": "pnpm test:e2e -- --grep \"M4 stress fixture renders campaign planning and war report under 4000-row pressure\"",
+      "exit_code": 0,
+      "result": "Chromium Playwright stress smoke passed: 1 test passed in 841ms."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 performance baseline passed on win32 x64 cpuCount=16 with runtime=node v24.13.1; days=3650; finalDay=3650; finalRevision=3650; dayThroughputPerSecond=14953; p50StepNanoseconds=57100; p95StepNanoseconds=102700; p99StepNanoseconds=163100; saveByteLength=9980; saveNanoseconds=1823100; loadNanoseconds=2829600."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello simulation (61e0ba1c), command/query (d275faa4), save/load (28074edd), and M4 replay (232f62ab), with engagement hash 334e0df0, siege hash ac35e97e, withdrawal hash 232f62ab, and M4 postwar candidates 1."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed with the existing large-chunk warning."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic sim runner matched Node and worker-compatible hashes; root Vitest passed 33 files / 240 tests; web Vitest passed 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed across configured repository targets."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m4-campaign-objectives.test.ts tests/sim-core-m4-withdrawal-postwar-handoff.test.ts tests/sim-core-m4-campaign-ai.test.ts tests/sim-core-m4-auto-engagement-siege.test.ts tests/sim-core-m4-march-supply-state.test.ts tests/client-core-m2-district-list.test.ts tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "Focused M4/UI evidence matrix passed: 7 files / 64 tests."
+    }
+  ],
+  "decisions": [
+    {
+      "result": "ACCEPT",
+      "reason": "Both prior QA findings are resolved and required evidence commands pass."
+    },
+    {
+      "finding_id": "QA-001",
+      "previous_status": "resolved",
+      "evidence": "4000-row browser stress fixture now asserts two concurrent campaign plans and two war reports, plus secondary route reservation, bottleneck reason, march, siege, withdrawal, and outcome pressure."
+    },
+    {
+      "finding_id": "QA-002",
+      "previous_status": "resolved",
+      "evidence": "Rainy-season acceptance scenario now includes pre-cancellation forecast reason codes and actual cancellation status/statusReasonCode/updatedDay in the same test path; withdrawal scenario also includes forecast and actual cancellation evidence."
+    },
+    {
+      "scope": "accepted",
+      "evidence": "Actual diff stays within allowed_paths and does not touch forbidden desktop, platform, save-format, content, tools, docs gate/roadmap, manifest, checksum, or validation-report paths."
+    },
+    {
+      "determinism": "accepted",
+      "evidence": "pnpm sim:determinism and pnpm test both reran with matching Node and worker-compatible hashes, including M4 replay hash 232f62ab."
+    },
+    {
+      "stress_metrics": "accepted",
+      "evidence": "pnpm sim:perf-baseline records real runtime, machine, throughput, latency, save, and load metrics; no unmeasured performance claim is needed for acceptance."
+    }
+  ],
+  "risks": [
+    "The stress fixture remains an opt-in validation path, not a permanent player-facing feature.",
+    "Performance numbers are single-machine evidence for this environment, not a fleet-wide guarantee.",
+    "A non-blocking test console.log remains in tests/sim-core-m4-campaign-objectives.test.ts; lint and tests pass, but lead may ask writer to remove it during integration cleanup if quiet test output is desired.",
+    "The stress fixture combines multi-campaign rows inside a client read-model projection fixture for validation pressure; future live multi-campaign query aggregation should be handled in a separate scoped task if needed."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route this QA ACCEPT to lead_orchestrator. Lead can proceed with integration/acceptance gates for M4-STRESS-VALIDATION-001, preserving the R2 writer handoff, prior QA REQUEST_CHANGES handoff, and this QA ACCEPT handoff. Do not mark CLOSED until lead staging/integration gates include the modified source/test files and untracked handoff artifacts.",
+  "created_at": "2026-06-26T18:28:18.0343009+08:00"
+}
