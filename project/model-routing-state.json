@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T01:15:41Z",
+  "updated_at": "2026-06-26T01:21:22Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1253,6 +1253,26 @@
       "close_reason": "no_review_handoff_after_wait_and_status_probe",
       "replaced_by": "019f0163-f8a2-7462-8fa4-9eca83a5a3f4",
       "closed_at": "2026-06-26T00:47:33Z"
+    },
+    {
+      "thread_id": "019f0163-f8a2-7462-8fa4-9eca83a5a3f4",
+      "role": "simulation_engineer",
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "status": "closed",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T01:21:22Z",
+      "integrated_main_commit": "af5427ec99753dd2159c01327c47afe4a3e0bef5",
+      "integrated_pr": 86
+    },
+    {
+      "thread_id": "019f0152-54c5-7d40-a504-dfc1a75082e1",
+      "role": "systems_architect",
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "status": "closed",
+      "close_reason": "task_closed_after_r2_accept_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T01:21:22Z",
+      "integrated_main_commit": "af5427ec99753dd2159c01327c47afe4a3e0bef5",
+      "integrated_pr": 86
     }
   ],
   "active_threads": [
@@ -1333,6 +1353,7 @@
     "M4-MUSTER-PREP-COMMITMENTS-001": "READY after M4 campaign objectives closure. This task owns muster preparation and mobilized force commitments only."
   },
   "task_notes": {
-    "M4-MUSTER-PREP-COMMITMENTS-001": "ACCEPTED after replacement simulation_engineer R2, systems_architect ACCEPT, and lead integration gates passed locally. Pending PR CI and main integration before CLOSED."
+    "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",
+    "M4-GRAIN-SUPPLY-001": "READY after M4-MUSTER-PREP-COMMITMENTS-001 closure. This task owns campaign grain supply reservations and consumption forecast only."
   }
 }
