@@ -197,3 +197,7 @@ The DAG covers start-to-victory playability, diplomacy, legitimacy, succession c
 The graph preserves `DEFER_MANUAL_NODE_BATTLE` exactly. It creates no manual node battle implementation task and no blocking manual node battle spike or research task for M6, M7, or M8. Manual node battle remains only a post-1.0 non-blocking candidate note and is not current implementation authorization.
 
 This planning task does not modify product code, package code, content-source data, tools, CI, roadmap, acceptance matrix, prior gate documents, accepted ADRs, dependency manifests, release artifacts, telemetry, server/multiplayer behavior, arbitrary-code mod support, or frozen product/platform/core architecture decisions.
+
+## 17. M6 Alpha System Contract Snapshot
+
+`M6-ALPHA-SYSTEM-CONTRACT-001` is IN_PROGRESS on branch `design/m6-alpha-system-contract`. The gameplay_designer writer thread is `019f05f2-2542-7db1-b9cf-8f1890569919` (Monsoon); the lead start handoff is `project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-START__lead_orchestrator.json`, and route evidence is `project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-LEAD-TO-GAMEPLAY-START.json`. This task is planning-only and may modify only the task/status/message files allowed by its task scope. It preserves `DEFER_MANUAL_NODE_BATTLE` exactly: no M6/M7/M8 manual node battle implementation, spike, research, validation, or exit-gate dependency is authorized.

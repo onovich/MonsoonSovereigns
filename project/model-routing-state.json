@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T05:51:38+08:00",
+  "updated_at": "2026-06-27T06:05:24+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1771,15 +1771,29 @@
       "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "ready_to_start",
+      "status": "active_orchestrating",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead start for first M6 downstream task after graph closure",
+      "responsibility": "lead orchestration for M6 Alpha system contract",
       "branch_or_worktree": "design/m6-alpha-system-contract",
       "last_closed_task": "M6-TASK-GRAPH-001",
-      "updated_at": "2026-06-27T05:51:38+08:00"
+      "updated_at": "2026-06-27T06:03:31+08:00"
+    },
+    {
+      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+      "role": "gameplay_designer",
+      "thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Monsoon",
+      "responsibility": "primary gameplay_designer writer for bounded M6 Alpha system-complete contract",
+      "branch_or_worktree": "design/m6-alpha-system-contract",
+      "updated_at": "2026-06-27T06:03:31+08:00"
     }
   ],
   "task_effects": {
@@ -1993,15 +2007,24 @@
       "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
     },
     "M6-ALPHA-SYSTEM-CONTRACT-001": {
-      "status": "READY",
+      "status": "IN_PROGRESS",
       "owner_role": "gameplay_designer",
       "reviewer_role": "systems_architect",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "design/m6-alpha-system-contract",
       "created_by_task_graph_pr": 129,
-      "updated_at": "2026-06-27T05:51:38+08:00",
+      "updated_at": "2026-06-27T06:05:24+08:00",
       "human_gate_required": false,
-      "next_action": "Start with gameplay_designer writer and systems_architect review."
+      "next_action": "Wait for gameplay_designer REVIEW handoff.",
+      "writer_thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
+      "writer_nickname": "Monsoon",
+      "start_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-LEAD-TO-GAMEPLAY-START.json",
+      "base_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
+      "started_at": "2026-06-27T06:03:31+08:00",
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
+      "route_sent_at": "2026-06-27T06:05:24+08:00"
     }
   }
 }

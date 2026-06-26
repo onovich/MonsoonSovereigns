@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-START",
+  "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead started M6-ALPHA-SYSTEM-CONTRACT-001 after M6 task graph closure entered main. gameplay_designer writer thread 019f05f2-2542-7db1-b9cf-8f1890569919 is assigned to define the bounded M6 Alpha system-complete contract without product code changes.",
+  "artifacts": [
+    "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-START__lead_orchestrator.json",
+    "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-LEAD-TO-GAMEPLAY-START.json",
+    "PROJECT_STATUS.md"
+  ],
+  "branch_or_worktree": "design/m6-alpha-system-contract / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "ce81452b47b456c81705eb6469d92ae429bca718",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-ALPHA-SYSTEM-CONTRACT-001 was READY on main before start."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent gameplay_designer",
+      "exit_code": 0,
+      "result": "Spawned gameplay_designer writer thread 019f05f2-2542-7db1-b9cf-8f1890569919, nickname Monsoon."
+    }
+  ],
+  "decisions": [
+    "Start the first downstream M6 planning task after M6-TASK-GRAPH-001 closure entered main through PR #130.",
+    "Keep the task planning-only and limited to allowed status/task/message/project-status files.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE exactly: no M6/M7/M8 manual node battle implementation, spike, research, validation, or exit-gate dependency is authorized."
+  ],
+  "risks": [
+    "M6 Alpha contract could over-expand into M7 content lock, M8 release work, or post-1.0 candidates if Human Gate boundaries are not restated explicitly.",
+    "Manual node battle must remain a non-blocking post-1.0 candidate note only."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Define the bounded M6 Alpha system-complete contract within allowed paths, update M6-ALPHA-SYSTEM-CONTRACT-001 to REVIEW, and return a gameplay_designer REVIEW handoff for systems_architect review.",
+  "created_at": "2026-06-27T06:04:20+08:00",
+  "start_confirmed": {
+    "to_thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
+    "to_thread_nickname": "Monsoon",
+    "allowed_paths": [
+      "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ],
+    "acceptance_criteria": [
+      "Define the minimum M6 Alpha contract for a start-to-victory playthrough, including start conditions, one accepted victory condition, failure conditions, evidence requirements, and no-placeholder major system expectations.",
+      "Map the contract to accepted M1-M5 systems and the M6 DAG without adding product code, content-source data, dependencies, release artifacts, or roadmap changes.",
+      "Preserve DEFER_MANUAL_NODE_BATTLE exactly: manual node battle may appear only as a post-1.0 non-blocking candidate note and not as M6/M7/M8 implementation, spike, research, validation, or exit-gate dependency.",
+      "Preserve Human Gates for frozen product, platform, core architecture, paid services, accounts or secrets, server or multiplayer, telemetry, arbitrary-code mods, commercial or branding decisions, major cultural-risk decisions, irreversible migrations, and any formal 1.0 scope reversal."
+    ],
+    "required_tests": [
+      "git status --short",
+      "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ALPHA-SYSTEM-CONTRACT-001",
+      "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "node -e JSON parse/shape check for M6-ALPHA-SYSTEM-CONTRACT-001",
+      "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+      "git diff --check"
+    ],
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+  }
+}
