@@ -2,7 +2,7 @@
   "id": "M5-PLAYER-RESEARCH-001",
   "summary": "Run minimal M5 player research",
   "milestone": "M5",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -56,12 +56,141 @@
     "git diff --check"
   ],
   "branch_or_worktree": "research/m5-player-research",
-  "threads": {},
-  "route_to": "qa_reviewer",
+  "threads": {
+    "gameplay_designer": {
+      "task_id": "M5-PLAYER-RESEARCH-001",
+      "role": "gameplay_designer",
+      "thread_id": "019f0532-ad92-7bc3-950e-8bb269289d7e",
+      "status": "accepted_pending_integration",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Ledger the 10th",
+      "responsibility": "primary gameplay_designer writer for minimal M5 player research protocol and evidence",
+      "branch_or_worktree": "research/m5-player-research",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-LEAD-TO-GAMEPLAY-START-CONFIRMED.json",
+      "base_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
+      "review_ready_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
+      "review_ready_at": "2026-06-27T02:37:09+08:00",
+      "updated_at": "2026-06-27T02:49:15+08:00",
+      "lead_accept_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T02:49:15+08:00"
+    },
+    "qa_reviewer": {
+      "task_id": "M5-PLAYER-RESEARCH-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f053d-cda9-7a51-a8e0-b6c82cae1c0e",
+      "status": "accepted_pending_integration",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Auditor the 10th",
+      "responsibility": "independent read-only QA review of M5 minimal player research evidence",
+      "branch_or_worktree": "research/m5-player-research",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-WRITER-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
+      "updated_at": "2026-06-27T02:49:15+08:00",
+      "lead_accept_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T02:49:15+08:00"
+    }
+  },
+  "research_evidence": {
+    "protocol": {
+      "name": "M5 minimal anonymous comprehension pilot",
+      "target_session_window": "2-4 hours for a first human pass; 60-120 minutes for a repeat pass after familiarity.",
+      "executed_scope": "Two compressed internal anonymous observation sessions against the accepted local M5 slice, assisted by Playwright DOM reads for auditability.",
+      "scenario_id": "m5.composite.river-gate.v0",
+      "evidence_basis": [
+        "Accepted M5 slice contract from M5-SLICE-DEFINITION-001.",
+        "Accepted M5 client flow and QA evidence from M5-CLIENT-PLAYABLE-UI-001.",
+        "Accepted M5 multi-year AI, performance, and distributable evidence from M5-MULTIYEAR-AI-RUN-001, M5-PERFORMANCE-GATE-001, and M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
+        "Local loopback observation at http://127.0.0.1:5175/ during this task."
+      ]
+    },
+    "privacy_handling": {
+      "participants": "Internal anonymous observer labels only: S1-internal-anonymous-success-path and S2-internal-anonymous-failure-repeat.",
+      "personal_data": "No names, account IDs, email, IP beyond local loopback, device fingerprint, screen recording, voice, chat log, or demographic data was collected.",
+      "telemetry": "No telemetry, analytics pipeline, account system, remote network collection, paid service, or hidden personal-data capture was used.",
+      "storage": "Only aggregated observations and reason-code excerpts are recorded in project task/message files."
+    },
+    "session_count": 2,
+    "anonymized_observations": [
+      {
+        "session_id": "S1-internal-anonymous-success-path",
+        "path": "start, preview first command, confirm, save checkpoint, cancel, load checkpoint, confirm all 15 scripted commands to success",
+        "goal_understanding": "Goal text was visible before start: secure recognition over the contested target, settle postwar terms, and keep the arrangement stable.",
+        "command_preview_understanding": "First preview exposed sim.create-campaign-objective, actor player:polity:1, and campaign.reason.deterministic-replay before confirmation.",
+        "campaign_risk_understanding": "Risk panel exposed seasonal route risk, 11 supply days, reserve 1,120, route.season.monsoon-risk, route.season.river-navigation-risk, and grain forecast reasons.",
+        "ai_reason_understanding": "AI panel exposed withdraw/no-action style reasons including m4.ai.withdraw.supply-collapse and m4.ai.wait.monsoon-risk.",
+        "save_load_understanding": "Client checkpoint save produced m5.save.client-session-written; cancel set phase cancelled; load restored running at m5.step.02.sim.create-muster-commitment.",
+        "postwar_understanding": "Postwar panel exposed 2 candidates, direct-control and restore-vassal-ruler methods, postwar.candidate.ready, and failure conditions that actual control alone is insufficient.",
+        "outcome": "Reached success with data-confirmed-count=15; reason summary retained AI, season, withdrawal, and postwar reason codes."
+      },
+      {
+        "session_id": "S2-internal-anonymous-failure-repeat",
+        "path": "start, preview first command, preview failure branch, restart slice, preview first command again",
+        "goal_understanding": "Restart reset phase to running and repeated first preview kind sim.create-campaign-objective, supporting repeatability of the observable decision path.",
+        "command_preview_understanding": "Failure preview exposed sim.apply-m3-postwar-governance and m5.slice.duplicate-postwar-governance rather than silently accepting a duplicate settlement.",
+        "campaign_risk_understanding": "The same supply/season risk reasons remained visible during the failure branch.",
+        "ai_reason_understanding": "AI withdraw/wait reasons remained visible on the failure branch.",
+        "save_load_understanding": "This branch did not execute save/load; it used the S1 checkpoint observation as the save/load evidence.",
+        "postwar_understanding": "Failure branch made duplicate postwar settlement and Human Gate/manual node battle boundaries visible.",
+        "outcome": "Observed phase=failure, then reset to running for a repeat preview."
+      }
+    ],
+    "classification": {
+      "blocker_defects": [],
+      "bounded_follow_up_tasks": [
+        "Run the same protocol with 2-3 external or non-author participants under explicit consent if the Human Gate wants real player evidence beyond this internal pilot.",
+        "Fix or review duplicate React key warnings observed during the local M5 workspace session for repeated reason-code chips including m4.ai.withdraw.supply-collapse, route.season.monsoon-risk, route.season.river-navigation-risk, withdrawal.reason.supply-collapse, war-outcome.siege-pressure, postwar.candidate.ready, policy.office.balanced, and muster.response.assembled. The warnings did not block the observed path but can cause unsupported duplicate/omitted children behavior.",
+        "Clarify in future UI or research script that current save/load is a client-session checkpoint, not desktop file import/export; the distributable QA caveat already records this boundary.",
+        "If later formal historical names, cultural symbols, language, art, music, or event content are introduced, route those concerns to historical_researcher before asset/content production.",
+        "Track that the accepted multi-year AI run records 730 no-action decisions and zero live accepted AI commands; this is adequate for validation evidence but should not be presented as proof of rich live AI strategy."
+      ],
+      "subjective_preferences": [
+        "Dense reason-code panels are informative but may read as audit output rather than player prose; future UX polish can group reasons by goal, risk, AI, save, and postwar without hiding source codes.",
+        "The first command path is clear for a system-literate observer, but non-expert players may need shorter labels beside command kind strings."
+      ]
+    },
+    "cultural_historical_concerns": {
+      "observed": [],
+      "routing_rule": "No formal historical or cultural concern was adjudicated in this task. Any future concern must be tagged HISTORICAL, INFERRED, COMPOSITE, or FICTIONAL and routed to historical_researcher or Human Gate before production use."
+    },
+    "scope_guard": {
+      "formal_m5_passage_decision": "Not made.",
+      "manual_node_battle_decision": "Not made; UI explicitly says manual node battle is unavailable in M5.",
+      "product_scope_expansion": "None.",
+      "code_or_content_changes": "None outside allowed process/status/message files."
+    }
+  },
+  "route_to": "lead_orchestrator",
   "notes": [
     "Use manual/anonymized observations only unless a separate Human Gate approves different data handling.",
-    "M5 formal passage remains a separate Human Gate even if this research passes."
+    "M5 formal passage remains a separate Human Gate even if this research passes.",
+    "Lead started gameplay_designer writer thread 019f0532-ad92-7bc3-950e-8bb269289d7e (Ledger the 10th) after M5-WEB-WINDOWS-DISTRIBUTABLE-001 closure entered main.",
+    "Writer completed two internal anonymous local observation sessions and routed REVIEW to qa_reviewer; this is not formal M5 passage.",
+    "Lead routed gameplay_designer REVIEW to independent qa_reviewer for privacy/scope/research-evidence acceptance.",
+    "Independent qa_reviewer accepted the minimal privacy-safe research evidence; lead accepted for PR/CI/main integration. Task remains ACCEPTED pending PR and is not CLOSED until main integration is confirmed."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-26T12:30:00Z"
+  "updated_at": "2026-06-27T02:49:15+08:00",
+  "started_at": "2026-06-27T02:30:48+08:00",
+  "ready_at": "2026-06-27T02:30:48+08:00",
+  "start_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-LEAD-TO-GAMEPLAY-START-CONFIRMED.json",
+  "review_ready_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
+  "review_ready_at": "2026-06-27T02:37:09+08:00",
+  "qa_thread_id": "019f053d-cda9-7a51-a8e0-b6c82cae1c0e",
+  "qa_route": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-WRITER-TO-QA-REVIEW.json",
+  "qa_review_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-QA-REVIEW__qa_reviewer.json",
+  "qa_status": "ACCEPT",
+  "accepted_at": "2026-06-27T02:49:15+08:00",
+  "lead_accept_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-LEAD-ACCEPT__lead_orchestrator.json"
 }

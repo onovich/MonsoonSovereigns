@@ -1,0 +1,114 @@
+{
+  "message_id": "MSG-20260627-M5-PLAYER-RESEARCH-QA-REVIEW",
+  "task_id": "M5-PLAYER-RESEARCH-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Independent read-only QA review accepts M5-PLAYER-RESEARCH-001 as a minimal privacy-safe player-research pilot. The branch diff is limited to allowed process/status/task/message/state paths; no apps, packages, content-source, tools, docs, gate, roadmap, ADR, manifest, checksum, or validation-report path was changed. The task remains REVIEW and does not mark CLOSED. The evidence records two internal anonymous observation sessions, privacy handling, no telemetry/accounts/paid services/remote network collection/hidden personal data, comprehension coverage for goal, command preview, campaign risk, AI reasons, client-session save/load checkpoint behavior, and postwar consequences. Findings separate no blockers, bounded follow-ups, and subjective preferences. Duplicate React key warnings are correctly treated as a bounded UI follow-up for this research task rather than a blocker because the observed path completed and no code changes were in scope. No M5 formal passage, manual node battle decision, formal historical content, or cultural/historical adjudication was made; future formal names/symbols/content remain routed to historical_researcher or Human Gate.",
+  "artifacts": [
+    "project/tasks/active/M5-PLAYER-RESEARCH-001.json",
+    "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
+    "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-WRITER-TO-QA-REVIEW.json",
+    "PROJECT_STATUS.md",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "research/m5-player-research / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "bca9b1ee4cc2a5622e45dd495550ca1f4efe3531",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean working tree on ## research/m5-player-research before QA handoff creation."
+    },
+    {
+      "command": "git rev-parse HEAD && git merge-base HEAD origin/main",
+      "exit_code": 0,
+      "result": "HEAD=bca9b1ee4cc2a5622e45dd495550ca1f4efe3531; merge-base with origin/main=d03a922afa1b71c8ee5730b0cbf05a984aed55ae."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are PROJECT_STATUS.md, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, M5 player research start/review handoffs, M5 player research route files, project/model-routing-state.json, project/tasks/active/M5-PLAYER-RESEARCH-001.json, and project/tasks/thread-registry.json."
+    },
+    {
+      "command": "git diff --stat origin/main...HEAD",
+      "exit_code": 0,
+      "result": "10 files changed, 562 insertions(+), 19 deletions(-), all in allowed process/status/task/message/state files."
+    },
+    {
+      "command": "PowerShell allowed/forbidden path check over git diff --name-only origin/main...HEAD",
+      "exit_code": 0,
+      "result": "SCOPE_OK. No changes outside allowed paths and no forbidden path hits under apps/, packages/, content-source/, tools/, .github/, docs/decisions/, gate docs, roadmap, acceptance matrix, autonomous goal doc, MANIFEST.md, SHA256SUMS.txt, or VALIDATION_REPORT.md."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-PLAYER-RESEARCH-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-PLAYER-RESEARCH-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list parsed successfully; M5-PLAYER-RESEARCH-001 is REVIEW, M5-EXIT-HUMAN-GATE-001 is DRAFT, and M5-MANUAL-NODE-BATTLE-DECISION-001 is DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M5-PLAYER-RESEARCH-001 is in REVIEW."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format errors."
+    },
+    {
+      "command": "Get-Content PROJECT_STATUS.md; Get-Content project/tasks/active/M5-PLAYER-RESEARCH-001.json; Get-Content writer handoff and route file",
+      "exit_code": 0,
+      "result": "Reviewed project status, task acceptance criteria, research_evidence, writer REVIEW handoff, and writer-to-QA route. The status snapshot records M5-PLAYER-RESEARCH-001 in REVIEW and preserves M5 formal passage as M5-EXIT-HUMAN-GATE-001."
+    },
+    {
+      "command": "Get-Content docs/22-privacy-security-legal.md and docs/10-historical-research-policy.md; Select-String for telemetry/privacy/manual node/Human Gate/historical tags",
+      "exit_code": 0,
+      "result": "Relevant policy review confirms offline-first/no default telemetry expectations, explicit consent for diagnostics, and HISTORICAL/INFERRED/COMPOSITE/FICTIONAL plus historical_researcher routing for formal content. Current task text aligns with those policies."
+    }
+  ],
+  "decisions": [
+    "ACCEPT route_to=lead_orchestrator. This QA handoff does not mark M5-PLAYER-RESEARCH-001 CLOSED.",
+    "ACCEPT scope. The real origin/main...HEAD diff only touches allowed paths: PROJECT_STATUS.md, project/tasks/active/M5-PLAYER-RESEARCH-001.json, project/tasks/thread-registry.json, project/messages/**, project/goal-mode-state.json, and project/model-routing-state.json.",
+    "ACCEPT research evidence. The task records session_count=2 and two anonymized internal observation labels, with coverage for goal understanding, command preview, campaign risk, AI reasons, save/load checkpoint behavior, and postwar consequences.",
+    "ACCEPT privacy. Evidence states no participant names, account IDs, email, demographic data, device fingerprint, screen recording, voice, chat logs, telemetry, analytics pipeline, remote network collection, paid service, or hidden personal-data capture. Only aggregated observations and reason-code excerpts are recorded.",
+    "ACCEPT classification. blocker_defects is empty; bounded_follow_up_tasks covers external/non-author consented sessions, duplicate React key warnings, save/load wording, historical_researcher routing for later formal content, and the no-action-only live AI limitation; subjective_preferences covers reason-code density and command-label readability.",
+    "ACCEPT duplicate React key handling. The warning can cause unsupported duplicate/omitted child behavior and should be fixed or reviewed in a bounded UI follow-up, but it does not block this read-only research task because the observed success/failure paths completed and code/UI repair is outside allowed paths.",
+    "ACCEPT Human Gate boundaries. The task explicitly records that M5 formal passage and manual node battle decision were not made. M5-EXIT-HUMAN-GATE-001 and M5-MANUAL-NODE-BATTLE-DECISION-001 remain DRAFT in taskctl list.",
+    "ACCEPT cultural/historical routing. No cultural or historical concern was adjudicated; the task records a routing rule requiring future formal names, symbols, language, art, music, event content, or cultural claims to be tagged HISTORICAL, INFERRED, COMPOSITE, or FICTIONAL and routed to historical_researcher or Human Gate before production use."
+  ],
+  "risks": [
+    {
+      "risk": "The evidence is intentionally a minimal internal anonymous pilot with two compressed sessions, not recruited external user research or a full statistical comprehension study.",
+      "impact": "Acceptable for this task because the limitation is disclosed and external/non-author consented sessions are recorded as a bounded follow-up if the Human Gate wants stronger player evidence."
+    },
+    {
+      "risk": "Duplicate React key warnings indicate a real UI correctness risk for repeated reason-code chips.",
+      "impact": "Non-blocking for M5-PLAYER-RESEARCH-001 but should be repaired or explicitly reviewed in a bounded client/UI follow-up before relying on repeated reason-chip rendering as polished player-facing UX."
+    },
+    {
+      "risk": "Current save/load evidence is client-session checkpoint behavior, not desktop file import/export.",
+      "impact": "Acceptable within the accepted M5 slice/distributable caveat; future desktop file import/export requires separate scoped implementation and review."
+    },
+    {
+      "risk": "Accepted multi-year AI evidence remains no-action-heavy and should not be overstated.",
+      "impact": "The task correctly records this as a bounded follow-up/limitation rather than proof of rich long-run AI strategy."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate this ACCEPT QA review and continue the normal M5 process gates. Do not treat this handoff as CLOSED, do not use it to pass M5 formal passage, and keep manual node battle and formal historical/cultural content behind their existing Human Gates/routes.",
+  "created_at": "2026-06-27T02:47:09+08:00"
+}
