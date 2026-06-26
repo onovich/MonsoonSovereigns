@@ -17,6 +17,7 @@ export type M3SuccessionId = Brand<number, "M3SuccessionId">;
 export type CampaignPlanId = Brand<number, "CampaignPlanId">;
 export type FactionKnowledgeSnapshotId = Brand<number, "FactionKnowledgeSnapshotId">;
 export type MobilizedForceCommitmentId = Brand<number, "MobilizedForceCommitmentId">;
+export type GrainSupplyReservationId = Brand<number, "GrainSupplyReservationId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -578,6 +579,36 @@ export interface M4MobilizedForceCommitmentStateV0 {
   readonly localCostHooks: readonly M4MusterLocalCostHookV0[];
 }
 
+export type M4GrainSupplySourceV0 = {
+  readonly kind: "m2-population-group";
+  readonly populationGroupId: PopulationGroupId;
+  readonly districtId: DistrictId;
+};
+
+export type M4GrainSupplyReservationStatusV0 =
+  | "reserved"
+  | "partially-consumed"
+  | "shortage"
+  | "consumed"
+  | "released";
+
+export interface M4GrainSupplyReservationStateV0 {
+  readonly reservationId: GrainSupplyReservationId;
+  readonly campaignPlanId: CampaignPlanId;
+  readonly source: M4GrainSupplySourceV0;
+  readonly reservedAmount: number;
+  readonly carriedAmount: number;
+  readonly consumedAmount: number;
+  readonly shortageAmount: number;
+  readonly lossAmount: number;
+  readonly lossReasonCode: string | null;
+  readonly expectedDailyConsumption: number;
+  readonly expectedDaysOfSupply: number;
+  readonly status: M4GrainSupplyReservationStatusV0;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+}
+
 export type M4FactionKnowledgeSourceKindV0 = "scout" | "merchant" | "envoy" | "report";
 
 export interface M4FactionKnowledgeSourceV0 {
@@ -635,6 +666,7 @@ export interface M4CampaignStateV0 {
   readonly campaignPlans: readonly M4CampaignPlanStateV0[];
   readonly factionKnowledgeSnapshots: readonly M4FactionKnowledgeSnapshotStateV0[];
   readonly mobilizedForceCommitments: readonly M4MobilizedForceCommitmentStateV0[];
+  readonly grainSupplyReservations: readonly M4GrainSupplyReservationStateV0[];
 }
 
 export interface M3AdministrativeBurdenProfileInputV0 {
@@ -859,6 +891,10 @@ export function parseFactionKnowledgeSnapshotId(value: unknown): FactionKnowledg
 
 export function parseMobilizedForceCommitmentId(value: unknown): MobilizedForceCommitmentId {
   return parsePositiveInteger(value, "MobilizedForceCommitmentId") as MobilizedForceCommitmentId;
+}
+
+export function parseGrainSupplyReservationId(value: unknown): GrainSupplyReservationId {
+  return parsePositiveInteger(value, "GrainSupplyReservationId") as GrainSupplyReservationId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -1765,6 +1801,7 @@ function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): v
   const campaignPlans = input["campaignPlans"];
   const factionKnowledgeSnapshots = input["factionKnowledgeSnapshots"];
   const mobilizedForceCommitments = input["mobilizedForceCommitments"];
+  const grainSupplyReservations = input["grainSupplyReservations"];
   if (!Array.isArray(campaignPlans)) {
     errors.push({
       code: "invalid-schema",
@@ -1802,6 +1839,21 @@ function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): v
       validateM4MobilizedForceCommitmentEntry(
         entry,
         `state.m4.mobilizedForceCommitments[${index}]`,
+        errors
+      )
+    );
+  }
+  if (!Array.isArray(grainSupplyReservations)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m4.grainSupplyReservations",
+      message: "state.m4.grainSupplyReservations must be an array."
+    });
+  } else {
+    grainSupplyReservations.forEach((entry, index) =>
+      validateM4GrainSupplyReservationEntry(
+        entry,
+        `state.m4.grainSupplyReservations[${index}]`,
         errors
       )
     );
@@ -1940,6 +1992,74 @@ function validateM4Array(
   input.forEach((entry, index) => validateEntry(entry, `${path}[${index}]`, errors));
 }
 
+function validateM4GrainSupplyReservationEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4GrainSupplyReservationState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "reservationId",
+    `${path}.reservationId`,
+    "GrainSupplyReservationId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "campaignPlanId",
+    `${path}.campaignPlanId`,
+    "CampaignPlanId",
+    errors
+  );
+  validateM4GrainSupplySourceEntry(input["source"], `${path}.source`, errors);
+  validateNonnegativeIntegerField(input, "reservedAmount", `${path}.reservedAmount`, errors);
+  validateNonnegativeIntegerField(input, "carriedAmount", `${path}.carriedAmount`, errors);
+  validateNonnegativeIntegerField(input, "consumedAmount", `${path}.consumedAmount`, errors);
+  validateNonnegativeIntegerField(input, "shortageAmount", `${path}.shortageAmount`, errors);
+  validateNonnegativeIntegerField(input, "lossAmount", `${path}.lossAmount`, errors);
+  if (input["lossReasonCode"] !== null) {
+    validateNonEmptyStringField(input, "lossReasonCode", `${path}.lossReasonCode`, errors);
+  }
+  validatePositiveIntegerField(
+    input,
+    "expectedDailyConsumption",
+    `${path}.expectedDailyConsumption`,
+    "M4 expectedDailyConsumption",
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "expectedDaysOfSupply",
+    `${path}.expectedDaysOfSupply`,
+    errors
+  );
+  validateM4GrainSupplyReservationStatusValue(input["status"], `${path}.status`, errors);
+  validateNonEmptyStringField(input, "statusReasonCode", `${path}.statusReasonCode`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateM4GrainSupplySourceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4GrainSupplySource", errors)) {
+    return;
+  }
+  validateStringUnionField(input, "kind", `${path}.kind`, ["m2-population-group"], errors);
+  validatePositiveIntegerField(
+    input,
+    "populationGroupId",
+    `${path}.populationGroupId`,
+    "PopulationGroupId",
+    errors
+  );
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+}
+
 function validateM4MusterCommitmentSourceEntry(
   input: unknown,
   path: string,
@@ -2003,6 +2123,28 @@ function validateM4MusterCommitmentStatusValue(
     code: "invalid-schema",
     path,
     message: "M4 muster commitment status is invalid."
+  });
+}
+
+function validateM4GrainSupplyReservationStatusValue(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    input === "reserved" ||
+    input === "partially-consumed" ||
+    input === "shortage" ||
+    input === "consumed" ||
+    input === "released"
+  ) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: "M4 grain supply reservation status is invalid."
   });
 }
 
@@ -3796,7 +3938,8 @@ export function createM4CampaignStateV0(
     schemaVersion: 1,
     campaignPlans: input?.campaignPlans ?? [],
     factionKnowledgeSnapshots: input?.factionKnowledgeSnapshots ?? [],
-    mobilizedForceCommitments: input?.mobilizedForceCommitments ?? []
+    mobilizedForceCommitments: input?.mobilizedForceCommitments ?? [],
+    grainSupplyReservations: input?.grainSupplyReservations ?? []
   });
 }
 
@@ -3897,7 +4040,39 @@ export function canonicalizeM4CampaignStateV0(m4: M4CampaignStateV0): M4Campaign
       localCostHooks: sortM4MusterLocalCostHooks(commitment.localCostHooks).map(
         copyM4MusterLocalCostHook
       )
-    }))
+    })),
+    grainSupplyReservations: sortM4GrainSupplyReservations(m4.grainSupplyReservations ?? []).map(
+      (reservation) => ({
+        reservationId: parseGrainSupplyReservationId(reservation.reservationId),
+        campaignPlanId: parseCampaignPlanId(reservation.campaignPlanId),
+        source: copyM4GrainSupplySource(reservation.source),
+        reservedAmount: parseNonnegativeInteger(reservation.reservedAmount, "M4 reservedAmount"),
+        carriedAmount: parseNonnegativeInteger(reservation.carriedAmount, "M4 carriedAmount"),
+        consumedAmount: parseNonnegativeInteger(reservation.consumedAmount, "M4 consumedAmount"),
+        shortageAmount: parseNonnegativeInteger(reservation.shortageAmount, "M4 shortageAmount"),
+        lossAmount: parseNonnegativeInteger(reservation.lossAmount, "M4 lossAmount"),
+        lossReasonCode:
+          reservation.lossReasonCode === null
+            ? null
+            : parseDisplayNameKey(reservation.lossReasonCode, "M4 lossReasonCode"),
+        expectedDailyConsumption: parsePositiveInteger(
+          reservation.expectedDailyConsumption,
+          "M4 expectedDailyConsumption"
+        ),
+        expectedDaysOfSupply: parseNonnegativeInteger(
+          reservation.expectedDaysOfSupply,
+          "M4 expectedDaysOfSupply"
+        ),
+        status: parseM4GrainSupplyReservationStatus(reservation.status),
+        statusReasonCode: parseDisplayNameKey(
+          reservation.statusReasonCode,
+          "M4 grain statusReasonCode"
+        ),
+        reasonCodes: sortText(reservation.reasonCodes).map((code) =>
+          parseDisplayNameKey(code, "M4 grain reasonCode")
+        )
+      })
+    )
   };
 }
 
@@ -4482,6 +4657,17 @@ export function copyM4MusterLocalCostHook(hook: M4MusterLocalCostHookV0): M4Must
   }
 }
 
+export function copyM4GrainSupplySource(source: M4GrainSupplySourceV0): M4GrainSupplySourceV0 {
+  switch (source.kind) {
+    case "m2-population-group":
+      return {
+        kind: "m2-population-group",
+        populationGroupId: parsePopulationGroupId(source.populationGroupId),
+        districtId: parseDistrictId(source.districtId)
+      };
+  }
+}
+
 export function parseM4CampaignObjectiveKind(value: unknown): M4CampaignObjectiveKindV0 {
   if (
     value === "prepare" ||
@@ -4517,6 +4703,22 @@ export function parseM4MusterCommitmentStatus(value: unknown): M4MusterCommitmen
   }
 
   throw new Error("M4 muster commitment status is invalid.");
+}
+
+export function parseM4GrainSupplyReservationStatus(
+  value: unknown
+): M4GrainSupplyReservationStatusV0 {
+  if (
+    value === "reserved" ||
+    value === "partially-consumed" ||
+    value === "shortage" ||
+    value === "consumed" ||
+    value === "released"
+  ) {
+    return value;
+  }
+
+  throw new Error("M4 grain supply reservation status is invalid.");
 }
 
 export function parseM4FactionKnowledgeSourceKind(value: unknown): M4FactionKnowledgeSourceKindV0 {
@@ -4781,6 +4983,39 @@ function sortM4MobilizedForceCommitments(
   );
 }
 
+function sortM4GrainSupplyReservations(
+  values: readonly M4GrainSupplyReservationStateV0[]
+): readonly M4GrainSupplyReservationStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.campaignPlanId - right.campaignPlanId ||
+      left.reservationId - right.reservationId ||
+      compareM4GrainSupplySource(left.source, right.source) ||
+      left.reservedAmount - right.reservedAmount ||
+      left.carriedAmount - right.carriedAmount ||
+      left.consumedAmount - right.consumedAmount ||
+      left.shortageAmount - right.shortageAmount ||
+      left.lossAmount - right.lossAmount ||
+      compareOptionalText(left.lossReasonCode, right.lossReasonCode) ||
+      left.expectedDailyConsumption - right.expectedDailyConsumption ||
+      left.expectedDaysOfSupply - right.expectedDaysOfSupply ||
+      compareText(left.status, right.status) ||
+      compareText(left.statusReasonCode, right.statusReasonCode) ||
+      compareSortedTextList(left.reasonCodes, right.reasonCodes)
+  );
+}
+
+function compareM4GrainSupplySource(
+  left: M4GrainSupplySourceV0,
+  right: M4GrainSupplySourceV0
+): number {
+  return (
+    compareText(left.kind, right.kind) ||
+    left.districtId - right.districtId ||
+    left.populationGroupId - right.populationGroupId
+  );
+}
+
 function compareM4MusterCommitmentSource(
   left: M4MusterCommitmentSourceV0,
   right: M4MusterCommitmentSourceV0
@@ -4888,6 +5123,19 @@ function compareSortedTextList(left: readonly string[], right: readonly string[]
   }
 
   return 0;
+}
+
+function compareOptionalText(left: string | null, right: string | null): number {
+  if (left === null && right === null) {
+    return 0;
+  }
+  if (left === null) {
+    return -1;
+  }
+  if (right === null) {
+    return 1;
+  }
+  return compareText(left, right);
 }
 
 function compareM4CampaignTarget(left: M4CampaignTargetV0, right: M4CampaignTargetV0): number {
@@ -5168,6 +5416,9 @@ function formatM4CanonicalLines(m4: M4CampaignStateV0 | undefined): readonly str
     )}`,
     `state.m4.mobilizedForceCommitments=${formatM4MobilizedForceCommitments(
       m4.mobilizedForceCommitments
+    )}`,
+    `state.m4.grainSupplyReservations=${formatM4GrainSupplyReservations(
+      m4.grainSupplyReservations
     )}`
   ];
 }
@@ -5238,6 +5489,31 @@ function formatM4MobilizedForceCommitments(
     .join(",");
 }
 
+function formatM4GrainSupplyReservations(
+  values: readonly M4GrainSupplyReservationStateV0[]
+): string {
+  return sortM4GrainSupplyReservations(values)
+    .map((value) =>
+      [
+        value.reservationId,
+        value.campaignPlanId,
+        formatM4GrainSupplySource(value.source),
+        value.reservedAmount,
+        value.carriedAmount,
+        value.consumedAmount,
+        value.shortageAmount,
+        value.lossAmount,
+        value.lossReasonCode ?? "none",
+        value.expectedDailyConsumption,
+        value.expectedDaysOfSupply,
+        value.status,
+        value.statusReasonCode,
+        sortText(value.reasonCodes).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
 function formatM4MusterCommitmentSource(source: M4MusterCommitmentSourceV0): string {
   switch (source.kind) {
     case "m3-obligation":
@@ -5247,6 +5523,13 @@ function formatM4MusterCommitmentSource(source: M4MusterCommitmentSourceV0): str
         source.debtorPolityId,
         source.creditorPolityId
       ].join(".");
+  }
+}
+
+function formatM4GrainSupplySource(source: M4GrainSupplySourceV0): string {
+  switch (source.kind) {
+    case "m2-population-group":
+      return [source.kind, source.districtId, source.populationGroupId].join(".");
   }
 }
 
@@ -6898,6 +7181,10 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
   const personIds = idsOf(world.definitions.persons);
   const districtIds = idsOf(world.definitions.districts);
   const routeIds = idsOf(world.definitions.routes);
+  const populationGroupById = new Map<number, M2PopulationGroupStateV0>();
+  world.state.m2?.populationGroups.forEach((group) => {
+    populationGroupById.set(group.id, group);
+  });
   const m3ObligationById = new Map<number, M3ObligationStateV0>();
   world.state.m3?.obligations.forEach((obligation) => {
     m3ObligationById.set(obligation.id, obligation);
@@ -6999,6 +7286,46 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
         errors
       );
     });
+  });
+
+  const supplySourceKeys = new Set<string>();
+  const supplyCampaignByReservationId = new Map<number, number>();
+  m4.grainSupplyReservations.forEach((reservation, index) => {
+    const key = `${reservation.reservationId}:${formatM4GrainSupplySource(reservation.source)}`;
+    if (supplySourceKeys.has(key)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m4.grainSupplyReservations",
+        message: `Duplicate M4 grain supply source row for GrainSupplyReservationId ${reservation.reservationId}.`
+      });
+    }
+    supplySourceKeys.add(key);
+    const existingCampaignPlanId = supplyCampaignByReservationId.get(reservation.reservationId);
+    if (
+      existingCampaignPlanId !== undefined &&
+      existingCampaignPlanId !== reservation.campaignPlanId
+    ) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.grainSupplyReservations[${index}].reservationId`,
+        message: "M4 grain supply reservationId must belong to exactly one CampaignPlanId."
+      });
+    }
+    supplyCampaignByReservationId.set(reservation.reservationId, reservation.campaignPlanId);
+    if (!planIds.has(reservation.campaignPlanId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.grainSupplyReservations[${index}].campaignPlanId`,
+        message: "M4 grain supply reservation references missing CampaignPlanId."
+      });
+    }
+    validateM4GrainSupplySourceReference(
+      reservation.source,
+      populationGroupById,
+      `state.m4.grainSupplyReservations[${index}].source`,
+      errors
+    );
+    validateM4GrainSupplyReservationQuantities(reservation, index, errors);
   });
 
   const snapshotIds = new Set<number>();
@@ -7202,6 +7529,73 @@ function validateM4MusterCommitmentQuantities(
       code: "invalid-schema",
       path: `state.m4.mobilizedForceCommitments[${index}].releasedTroops`,
       message: "M4 releasedTroops must not exceed assembledTroops."
+    });
+  }
+}
+
+function validateM4GrainSupplySourceReference(
+  source: M4GrainSupplySourceV0,
+  populationGroupById: ReadonlyMap<number, M2PopulationGroupStateV0>,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  switch (source.kind) {
+    case "m2-population-group": {
+      const group = populationGroupById.get(source.populationGroupId);
+      if (group === undefined) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.populationGroupId`,
+          message: "M4 grain supply source references missing M2 population group."
+        });
+        return;
+      }
+      if (group.districtId !== source.districtId) {
+        errors.push({
+          code: "invalid-schema",
+          path,
+          message: "M4 grain supply source district must match M2 population group district."
+        });
+      }
+      return;
+    }
+  }
+}
+
+function validateM4GrainSupplyReservationQuantities(
+  reservation: M4GrainSupplyReservationStateV0,
+  index: number,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    reservation.carriedAmount + reservation.consumedAmount + reservation.lossAmount >
+    reservation.reservedAmount
+  ) {
+    errors.push({
+      code: "invalid-schema",
+      path: `state.m4.grainSupplyReservations[${index}]`,
+      message: "M4 grain supply carried, consumed, and loss amounts must not exceed reservedAmount."
+    });
+  }
+  if (reservation.lossAmount > 0 && reservation.lossReasonCode === null) {
+    errors.push({
+      code: "invalid-schema",
+      path: `state.m4.grainSupplyReservations[${index}].lossReasonCode`,
+      message: "M4 grain supply lossReasonCode is required when lossAmount is positive."
+    });
+  }
+  if (reservation.lossAmount === 0 && reservation.lossReasonCode !== null) {
+    errors.push({
+      code: "invalid-schema",
+      path: `state.m4.grainSupplyReservations[${index}].lossReasonCode`,
+      message: "M4 grain supply lossReasonCode must be null when lossAmount is zero."
+    });
+  }
+  if (reservation.status === "released" && reservation.carriedAmount !== 0) {
+    errors.push({
+      code: "invalid-schema",
+      path: `state.m4.grainSupplyReservations[${index}].carriedAmount`,
+      message: "M4 released grain supply must not retain carriedAmount."
     });
   }
 }
@@ -7464,7 +7858,8 @@ function isM4StateLike(value: unknown): value is M4CampaignStateV0 {
     value["schemaVersion"] === 1 &&
     Array.isArray(value["campaignPlans"]) &&
     Array.isArray(value["factionKnowledgeSnapshots"]) &&
-    Array.isArray(value["mobilizedForceCommitments"])
+    Array.isArray(value["mobilizedForceCommitments"]) &&
+    Array.isArray(value["grainSupplyReservations"])
   );
 }
 

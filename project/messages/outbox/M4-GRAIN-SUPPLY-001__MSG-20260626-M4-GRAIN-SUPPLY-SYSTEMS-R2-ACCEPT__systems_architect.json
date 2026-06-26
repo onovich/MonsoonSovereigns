@@ -1,0 +1,102 @@
+{
+  "message_id": "MSG-20260626-M4-GRAIN-SUPPLY-SYSTEMS-R2-ACCEPT",
+  "task_id": "M4-GRAIN-SUPPLY-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 systems architecture review accepts M4-GRAIN-SUPPLY-001. The prior REQUEST_CHANGES blockers are fixed: reserve, consume, and release now emit explicit grain supply DomainEventV1 records; reserve and release emit M2 population group deltas for actual stock changes; consumedAmount plus lossAmount conservation is explicit with unmet demand recorded as deterministic shortage; loss-only and loss overflow cases no longer silently drop demand; and malformed duplicate GrainSupplyReservationId rows spanning campaign scopes are rejected by runtime validation and command behavior. No new R3 architecture blocker was found.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-grain-supply.test.ts",
+    "project/tasks/active/M4-GRAIN-SUPPLY-001.json",
+    "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-grain-supply",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-grain-supply.test.ts",
+      "exit_code": 0,
+      "result": "1 test file passed; 7 tests passed. Covers reserve/consume/release events, M2 deltas, conservation, deterministic allocation/hash stability, loss-only consumption, loss overflow shortage accounting, forecast immutability, negative command cases, malformed quantities, and cross-campaign duplicate reservation IDs."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "17 test files passed; 120 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-GRAIN-SUPPLY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-GRAIN-SUPPLY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R2 handoff."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, workspace typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root vitest 28 files/187 tests passed; web vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-GRAIN-SUPPLY-001",
+      "exit_code": 0,
+      "result": "M4-GRAIN-SUPPLY-001 JSON parse/shape ok."
+    },
+    {
+      "command": "git diff -- packages/sim-core/src packages/protocol/src tests/sim-core-m4-grain-supply.test.ts tests/protocol-command-query-schema.test.ts | rg -n 'Math\\\\.random|Date\\\\.now|performance\\\\.now|route capacity|naval|market economy|siege|battle|save-format|\\\\bany\\\\b|react|pixi|electron|node:fs|from \"fs\"|from \"path\"|from \"os\"'",
+      "exit_code": 1,
+      "result": "No matches in relevant diff for nondeterministic APIs, UI/platform imports, forbidden scope terms, or explicit any usage."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-SYSTEMS-R2-ACCEPT__systems_architect.json",
+      "exit_code": 0,
+      "result": "Reviewer ACCEPT handoff validates."
+    }
+  ],
+  "decisions": [
+    "ACCEPT. The R2 diff stays within the task's allowed paths and product scope: protocol, sim-core, tests, task state, and outbox handoff only.",
+    "Reserve, consume, and release use the shared GameCommand protocol path for player and AI actors. Authority checks are tied to campaign ownership and do not introduce separate player-only or AI-only execution paths.",
+    "Grain conservation is auditable. Reserve deducts controlled M2 stock into M4 carried reservations; consume moves carried grain into consumed/loss/shortage accounting without mutating M2 stock; release returns carried grain to M2 stock and marks reservation rows released.",
+    "Deterministic source allocation is preserved through sorted controlled source pools and stable tie-breakers. Shortage remainder is assigned to a deterministic final source row, and reason ordering is covered by tests.",
+    "Canonical hash, runtime validation, saved event parsing, and query copy behavior were reviewed. Grain supply reservations participate in canonical world-state formatting and validation, forecast query runs on cloned state, and new event records round-trip through existing sim-core event-tail parsing.",
+    "No premature route capacity, march execution, siege or battle resolution, UI, save-format milestone work, full market economy, naval logistics, server, Rust/WASM, or new dependency work was introduced."
+  ],
+  "risks": [
+    "Save-format milestone work remains intentionally out of scope. The current change extends sim-core runtime state and event-tail parsing only; future save-format milestones still need their own DTO/versioning review if M4 grain reservations become part of milestone persistence policy.",
+    "The reserve event summarizes source count and total reserved grain while per-source detail remains in authoritative reservation rows and M2 deltas. This is acceptable for this bounded task but should not be treated as a complete logistics audit stream for future route capacity work."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may route this accepted R2 implementation to qa_reviewer or the next integration gate per workflow. Do not mark CLOSED until required downstream QA/integration checks complete.",
+  "created_at": "2026-06-26T02:16:10Z"
+}

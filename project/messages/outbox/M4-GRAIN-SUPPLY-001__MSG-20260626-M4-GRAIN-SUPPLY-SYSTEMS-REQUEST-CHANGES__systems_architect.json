@@ -1,0 +1,97 @@
+{
+  "message_id": "MSG-20260626-M4-GRAIN-SUPPLY-SYSTEMS-REQUEST-CHANGES",
+  "task_id": "M4-GRAIN-SUPPLY-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Reviewed the current feat/m4-grain-supply working-tree diff. Mechanical checks pass, and the implementation stays within allowed product scope, but it does not yet satisfy the R3 acceptance requirements for explicit events/resource deltas, loss/shortage accounting, and runtime validation of stable reservation identity.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-grain-supply.test.ts",
+    "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-grain-supply",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m4-grain-supply with tracked implementation/task-state modifications and untracked writer handoff, route JSON, reviewer handoff, and tests/sim-core-m4-grain-supply.test.ts."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-grain-supply.test.ts",
+      "exit_code": 0,
+      "result": "PASS; 1 test file passed, 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "PASS; 17 test files passed, 118 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "PASS; 1 test file passed, 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "PASS; tsc --noEmit --project tsconfig.json completed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "PASS; Node/Worker-compatible hashes matched: simulation 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format:check, lint, workspace typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS; architecture boundaries and determinism passed; root vitest 28 files/185 tests passed; web vitest 1 file/3 tests passed."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES is required despite passing tests because the implementation misses explicit event/delta evidence for grain resource movement and has uncovered accounting/runtime-validation holes.",
+    "No forbidden product scope was found: no UI, desktop, save-format package, route capacity, naval logistics, market economy, march execution, battle, siege, postwar, server, Rust/WASM, or new production dependency work was introduced.",
+    "The package.json change only adds the new grain supply test to the sim-core test script and is acceptable."
+  ],
+  "risks": [
+    "The current tests do not cover loss-only consumption or consumption where loss demand exceeds carried grain after normal consumption.",
+    "The current runtime validation does not lock a GrainSupplyReservationId to exactly one campaign/authority scope even though consume/release commands operate by reservationId alone."
+  ],
+  "blockers": [
+    {
+      "severity": "BLOCKER",
+      "area": "explicit events and deltas",
+      "evidence": "packages/sim-core/src/command-query-v1.ts:2952-2974 and 2978-3004 return accepted grain/M4 state changes with events: [] and deltas: []. Reserve and release mutate M2 population-group grain through acceptM4CampaignAndM2State, but no state.m2-population-group-updated delta is emitted. DomainEventV1 at packages/sim-core/src/command-query-v1.ts:164-292 also has no grain reserve/consume/release event kind, unlike the existing explicit sim.labor-committed event and M2 delta at packages/sim-core/src/command-query-v1.ts:1428-1457.",
+      "required_action": "Add explicit auditable grain supply events for reserve, consume, and release, and emit M2 population-group deltas for reserve/release source stock changes. Add tests asserting command results contain these events/deltas. If the team intends grain to have no events, route an architecture/task-scope decision before review can accept because the task acceptance says explicit commands/events."
+    },
+    {
+      "severity": "BLOCKER",
+      "area": "grain conservation and loss/shortage accounting",
+      "evidence": "applyM4GrainConsumption tracks remainingLoss at packages/sim-core/src/command-query-v1.ts:3090-3104, but the only shortage path checks remainingConsumption at 3130-3144. A command with consumedAmount equal to carried grain and positive lossAmount is accepted, records no loss and no shortage for the unfulfilled loss, and still returns an accepted state. Loss-only commands can also reduce carried grain while deriveM4GrainSupplyStatus at 3116-3120/3165-3175 can leave a fully lost record as status reserved because consumedAmount is zero.",
+      "required_action": "Make consumedAmount + lossAmount conservation explicit: either reject demand above carried grain or record all unmet consumption/loss as shortage with stable reason ordering. Add negative/property tests for loss-only consumption, loss overflow after consumption, and status consistency when loss exhausts carried grain."
+    },
+    {
+      "severity": "BLOCKER",
+      "area": "stable reservation identity and runtime validation",
+      "evidence": "Runtime validation keys grain reservation rows by reservationId plus source at packages/sim-core/src/world-state-v0.ts:7291-7301, so the same GrainSupplyReservationId can exist across different campaignPlanId values if sources differ. Consume/release then select all rows by reservationId alone and authorize using only reservations[0].campaignPlanId at packages/sim-core/src/command-query-v1.ts:3756-3777 and 3842-3850, then update every matching reservationId at 3787-3795 and 3870-3880. This is not a stable ID or authority invariant.",
+      "required_action": "Enforce that a GrainSupplyReservationId is globally unique, or at minimum that all rows for one reservationId have exactly one campaignPlanId and one authority scope. Add runtime validation and tests proving malformed duplicate reservation IDs across campaigns are rejected before command/query behavior can cross-authorize unrelated grain."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route these blockers back to the same simulation_engineer writer. After fixes, request a new REVIEW handoff with updated tests and evidence for events/deltas, loss shortage accounting, stable reservation identity validation, and the existing required gates.",
+  "created_at": "2026-06-26T01:58:00Z"
+}

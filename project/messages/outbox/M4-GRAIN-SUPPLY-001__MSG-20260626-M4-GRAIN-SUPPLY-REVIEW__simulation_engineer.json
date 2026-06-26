@@ -1,0 +1,90 @@
+{
+  "message_id": "MSG-20260626-M4-GRAIN-SUPPLY-REVIEW",
+  "task_id": "M4-GRAIN-SUPPLY-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M4 campaign grain supply reservations, consumption, release, and forecast query only. The change adds explicit M4 grain supply reservation records sourced from M2 population-group grain stockpiles, deterministic controlled-source allocation, carried/consumed/shortage/loss accounting, release back to original stockpiles, and forecast reason codes for insufficient grain and seasonal risk. No UI, route capacity, market economy, march execution, battle, siege, save-format milestone, server, Rust/WASM, or production dependency work was added.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-grain-supply.test.ts"
+  ],
+  "branch_or_worktree": "feat/m4-grain-supply",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before handoff: modified packages/protocol/src/index.ts, packages/sim-core/package.json, packages/sim-core/src/command-query-v1.ts, packages/sim-core/src/world-state-v0.ts, tests/protocol-command-query-schema.test.ts; untracked tests/sim-core-m4-grain-supply.test.ts."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-grain-supply.test.ts",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed. Covers grain conservation/no creation, no negative carried supply, deterministic source allocation, reservation release, shortage reason ordering, wrong actor, duplicate reservation, duplicate/empty release, shortage, overflow, and malformed state validation."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "17 test files passed; 118 tests passed. Includes tests/sim-core-m4-grain-supply.test.ts in the package script."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed. Added schema coverage for reserve, consume, release, preview query, and invalid loss reason."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root vitest 28 files/185 tests passed; web vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-GRAIN-SUPPLY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-GRAIN-SUPPLY-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-GRAIN-SUPPLY-001",
+      "exit_code": 0,
+      "result": "M4-GRAIN-SUPPLY-001 JSON parse/shape ok."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, workspace typecheck, and architecture:check passed. Earlier formatting/lint reruns found and fixed Prettier issues in touched files and one unused test import before this final pass."
+    }
+  ],
+  "decisions": [
+    "R3 risk acknowledged: this touches WorldState and GameCommand/protocol surfaces; handoff routes to systems_architect for review.",
+    "Supply reservation uses explicit M4 records keyed by GrainSupplyReservationId plus deterministic M2 population-group source lines.",
+    "Reservation deducts M2 grain into carried M4 supply; consumption burns carried grain only; release returns remaining carried grain to the original M2 stockpile source.",
+    "Source allocation is deterministic: controlled districts for the campaign owner, ordered by districtId then populationGroupId, with no route capacity or market behavior.",
+    "Forecast uses planned M4 muster commitments, existing carried reservations, controlled M2 grain available to reserve, integer grain-per-troop-per-day demand, and M2 seasonal monsoon risk at the target district."
+  ],
+  "risks": [
+    "Protocol command/query kinds were extended for this M4 task; systems_architect should verify that the R3 protocol change is acceptable before integration.",
+    "Save-format migration is intentionally not implemented per task scope, so persisted save DTO coverage remains unchanged until the relevant save-format milestone.",
+    "Forecast is intentionally bounded: it reports grain needs and seasonal risk but does not model route capacity, naval logistics, market economy, march execution, battle, or siege outcomes."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review M4-GRAIN-SUPPLY-001 for R3 architecture, protocol/schema suitability, deterministic resource conservation, command authority, invariant coverage, and scope discipline. Return ACCEPT, REQUEST_CHANGES, or BLOCK; do not mark ACCEPTED/CLOSED from this writer handoff alone.",
+  "created_at": "2026-06-26T01:50:00Z"
+}
