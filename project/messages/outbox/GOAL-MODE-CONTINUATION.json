@@ -2,19 +2,21 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M5_EXIT_GATE_ACCEPTED_PENDING_INTEGRATION",
+  "status": "M6_TASK_GRAPH_READY",
   "project": "Monsoon Sovereigns",
-  "origin_main": "4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313",
-  "current_milestone": "M5",
-  "current_task": "M5-EXIT-HUMAN-GATE-001",
-  "current_task_status": "ACCEPTED",
-  "last_closed_task": "M5-MANUAL-NODE-BATTLE-DECISION-001",
-  "ready_tasks": [],
+  "origin_main": "b09675c115b81ee05b7894071afb6f10000af011",
+  "current_milestone": "M6",
+  "current_task": "M6-TASK-GRAPH-001",
+  "current_task_status": "READY",
+  "last_closed_task": "M5-EXIT-HUMAN-GATE-001",
+  "ready_tasks": [
+    "M6-TASK-GRAPH-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M5-EXIT-HUMAN-GATE-001",
-      "status": "accepted_pending_integration",
+      "task_id": "M6-TASK-GRAPH-001",
+      "status": "ready_to_start",
       "role": "lead_orchestrator"
     }
   },
@@ -32,14 +34,14 @@
   ],
   "human_gate": {
     "required": false,
-    "active_gate_task_id": "M5-EXIT-HUMAN-GATE-001",
-    "approval_scope": "M5_EXIT_GATE_ACCEPTED_PENDING_INTEGRATION",
-    "approval_source": "Codex attachment bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt",
-    "recommended_result": "PASS_WITH_LIMITS",
-    "note": "M5 Exit Gate reviewers accepted PASS_WITH_LIMITS; M5 is not CLOSED and M6 is not started until PR, CI, merge, sync, and closure.",
-    "recorded_at": "2026-06-27T04:49:00+08:00"
+    "active_gate_task_id": null,
+    "approval_scope": "NONE",
+    "approval_source": "M5 Gate closure after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011",
+    "recommended_result": null,
+    "note": "No active Human Gate. M5_GATE = PASS_WITH_LIMITS is closed; M6-TASK-GRAPH-001 is READY.",
+    "recorded_at": "2026-06-27T05:01:21+08:00"
   },
-  "next_machine_action": "Integrate the accepted M5 Exit Gate through PR and CI. M5 is not closed and M6 is not started until merge, sync, and closure are recorded.",
+  "next_machine_action": "Start M6-TASK-GRAPH-001 with systems_architect writer and independent qa_reviewer review; do not create manual node battle implementation or blocking spike tasks.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -47,7 +49,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T04:49:00+08:00",
+  "last_updated_at": "2026-06-27T05:01:21+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -87,14 +89,16 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T04:49:00+08:00",
+  "updated_at": "2026-06-27T05:01:21+08:00",
   "current_tasks": [
-    "M5-EXIT-HUMAN-GATE-001"
+    "M6-TASK-GRAPH-001"
   ],
-  "last_integrated_task": "M5-MANUAL-NODE-BATTLE-DECISION-001",
-  "last_main_commit": "4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313",
-  "next_ready_tasks": [],
-  "next_action": "Integrate the accepted M5 Exit Gate through PR and CI. M5 is not closed and M6 is not started until merge, sync, and closure are recorded.",
+  "last_integrated_task": "M5-EXIT-HUMAN-GATE-001",
+  "last_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
+  "next_ready_tasks": [
+    "M6-TASK-GRAPH-001"
+  ],
+  "next_action": "Start M6-TASK-GRAPH-001 with systems_architect writer and independent qa_reviewer review; do not create manual node battle implementation or blocking spike tasks.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -456,16 +460,16 @@
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
   "m5_exit_human_gate": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
     "branch_or_worktree": "gate/m5-exit-human-gate",
     "start_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "manual_decision_closed_at": "2026-06-27T04:18:00+08:00",
     "started_at": "2026-06-27T04:18:00+08:00",
-    "m5_gate_result": null,
-    "m6_started": false,
-    "updated_at": "2026-06-27T04:49:00+08:00",
+    "m5_gate_result": "PASS_WITH_LIMITS",
+    "m6_started": true,
+    "updated_at": "2026-06-27T05:01:21+08:00",
     "gate_doc": "docs/GATE-M5.md",
     "review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
     "recommended_result": "PASS_WITH_LIMITS",
@@ -478,6 +482,34 @@
     "lead_accept_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-27T04:49:00+08:00",
     "accepted_result": "PASS_WITH_LIMITS",
-    "reviewer_threads_closed": true
+    "reviewer_threads_closed": true,
+    "integrated_pr": 127,
+    "integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
+    "lead_close_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T05:01:21+08:00"
+  },
+  "m5_gate": {
+    "result": "PASS_WITH_LIMITS",
+    "integrated_pr": 127,
+    "integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
+    "gate_doc": "docs/GATE-M5.md",
+    "lead_accept_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+    "lead_close_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T05:01:21+08:00",
+    "limits": [
+      "Minimal internal player research sample.",
+      "Desktop file import/export bridge not implemented.",
+      "Multi-year AI evidence remains no-action-heavy.",
+      "Existing duplicate React key warnings and large chunk warnings are carried forward as non-P0/P1 limits.",
+      "Inherited M4 process limit remains accepted."
+    ]
+  },
+  "m6_task_graph": {
+    "status": "READY",
+    "task_id": "M6-TASK-GRAPH-001",
+    "branch_or_worktree": "chore/m6-task-graph",
+    "created_at": "2026-06-27T05:01:21+08:00",
+    "human_gate_required": false,
+    "next_action": "Start M6-TASK-GRAPH-001 as the first dependency-ready M6 task."
   }
 }

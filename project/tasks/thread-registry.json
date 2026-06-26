@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T04:49:00+08:00",
+  "updated_at": "2026-06-27T05:01:21+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2389,7 +2389,7 @@
       "task_id": "M5-EXIT-HUMAN-GATE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -2401,7 +2401,7 @@
       "manual_decision_close_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json",
       "manual_decision_integrated_pr": 125,
       "manual_decision_integrated_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
-      "updated_at": "2026-06-27T04:49:00+08:00",
+      "updated_at": "2026-06-27T05:01:21+08:00",
       "gate_doc": "docs/GATE-M5.md",
       "review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
       "recommended_result": "PASS_WITH_LIMITS",
@@ -2412,7 +2412,12 @@
       "lead_accept_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T04:49:00+08:00",
       "accepted_result": "PASS_WITH_LIMITS",
-      "next_action": "Open PR for accepted M5 Exit Gate, wait for CI, merge, sync main, then close M5 and start M6."
+      "integrated_pr": 127,
+      "integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
+      "lead_close_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T05:01:21+08:00",
+      "closed_result": "PASS_WITH_LIMITS",
+      "next_action": "Start M6-TASK-GRAPH-001 as the first READY M6 task."
     },
     "M5-EXIT-HUMAN-GATE-001:systems_architect": {
       "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -2464,6 +2469,26 @@
       "result": "ACCEPT",
       "closed_at": "2026-06-27T04:49:00+08:00",
       "updated_at": "2026-06-27T04:49:00+08:00"
+    },
+    "M6-TASK-GRAPH-001:lead_orchestrator": {
+      "task_id": "M6-TASK-GRAPH-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "ready_to_start",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "responsibility": "lead orchestration for M6 task graph start after M5 Gate PASS_WITH_LIMITS",
+      "branch_or_worktree": "chore/m6-task-graph",
+      "start_state": "READY_AFTER_M5_GATE_CLOSED",
+      "created_at": "2026-06-27T05:01:21+08:00",
+      "updated_at": "2026-06-27T05:01:21+08:00",
+      "m5_gate_result": "PASS_WITH_LIMITS",
+      "m5_gate_integrated_pr": 127,
+      "m5_gate_integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "next_action": "Spawn systems_architect writer for M6-TASK-GRAPH-001 after this closure checkpoint enters main."
     }
   }
 }

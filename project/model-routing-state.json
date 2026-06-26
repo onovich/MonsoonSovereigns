@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T04:49:00+08:00",
+  "updated_at": "2026-06-27T05:01:21+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1766,50 +1766,7 @@
       "lead_close_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-CLOSED__lead_orchestrator.json"
     }
   ],
-  "active_threads": [
-    {
-      "task_id": "M5-PERFORMANCE-GATE-001",
-      "role": "test_engineer",
-      "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
-      "status": "review_ready",
-      "configured_model": "gpt-5.4-mini",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Gauge the 9th",
-      "responsibility": "primary test_engineer writer for M5 performance and stability gate",
-      "branch_or_worktree": "test/m5-performance-gate",
-      "start_state": "START_CONFIRMED",
-      "spawn_result": "spawn_agent",
-      "start_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
-      "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
-      "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
-      "updated_at": "2026-06-27T01:16:50+08:00",
-      "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
-      "review_ready_at": "2026-06-27T01:16:50+08:00"
-    },
-    {
-      "task_id": "M5-PERFORMANCE-GATE-001",
-      "role": "qa_reviewer",
-      "thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
-      "status": "reviewing",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Gate the 10th",
-      "responsibility": "independent read-only QA review of M5 performance and stability gate",
-      "branch_or_worktree": "test/m5-performance-gate",
-      "start_state": "QA_REVIEW_ROUTED",
-      "spawn_result": "spawn_agent",
-      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-WRITER-TO-QA-REVIEW.json",
-      "review_source_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
-      "review_commit": "81aacaea",
-      "review_submission_id": "019f04f2-3e8a-7a21-ab80-7909e1d415fc",
-      "updated_at": "2026-06-27T01:19:30+08:00"
-    }
-  ],
+  "active_threads": [],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1882,7 +1839,8 @@
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "CLOSED after PR #120 entered main at b173c980e02e3d2365fdb4d022c7c4392918cca9; next ready task pending taskctl ready after closure integration.",
     "M5-PLAYER-RESEARCH-001": "CLOSED after PR #122 entered main at 8b6ef6542d2d1a8270618ec8bae2161eb94c2e9d; next ready task pending taskctl ready after closure integration.",
     "M5-MANUAL-NODE-BATTLE-DECISION-001": "CLOSED after decision PR #125 and closure/start PR #126; current main is 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313. Decision remains DEFER_MANUAL_NODE_BATTLE.",
-    "M5-EXIT-HUMAN-GATE-001": "ACCEPTED after systems_architect ACCEPT and qa_reviewer R2 ACCEPT; lead recommendation remains M5_GATE = PASS_WITH_LIMITS in docs/GATE-M5.md. Awaiting PR CI, merge, sync, and closure before M6 starts."
+    "M5-EXIT-HUMAN-GATE-001": "CLOSED after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011. M5_GATE = PASS_WITH_LIMITS; M6-TASK-GRAPH-001 is READY.",
+    "M6-TASK-GRAPH-001": "READY after M5 Gate PASS_WITH_LIMITS closure. This is planning-only and must create the minimal M6 Alpha system-complete task DAG without implementing M6 product code or re-opening manual node battle for 1.0."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -1950,7 +1908,7 @@
       "last_main_commit": "4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313"
     },
     "M5-EXIT-HUMAN-GATE-001": {
-      "status": "ACCEPTED",
+      "status": "CLOSED",
       "owner_role": "lead_orchestrator",
       "reviewer_role": "qa_reviewer",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -1959,7 +1917,7 @@
       "manual_decision_integrated_pr": 125,
       "manual_decision_integrated_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
       "branch_or_worktree": "gate/m5-exit-human-gate",
-      "updated_at": "2026-06-27T04:49:00+08:00",
+      "updated_at": "2026-06-27T05:01:21+08:00",
       "gate_doc": "docs/GATE-M5.md",
       "review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
       "recommended_result": "PASS_WITH_LIMITS",
@@ -1967,8 +1925,8 @@
       "qa_thread_id": "019f05a1-d0c1-75d3-8bfc-ade6d5fb3c38",
       "systems_route_file": "project/messages/routes/M5-EXIT-HUMAN-GATE-001__ROUTE-20260627-M5-GATE-LEAD-TO-SYSTEMS-REVIEW.json",
       "qa_route_file": "project/messages/routes/M5-EXIT-HUMAN-GATE-001__ROUTE-20260627-M5-GATE-LEAD-TO-QA-REVIEW.json",
-      "m5_gate_result": null,
-      "m6_started": false,
+      "m5_gate_result": "PASS_WITH_LIMITS",
+      "m6_started": true,
       "systems_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-SYSTEMS-REVIEW__systems_architect.json",
       "qa_initial_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-REVIEW__qa_reviewer.json",
       "qa_fix_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-FIX__lead_orchestrator.json",
@@ -1976,7 +1934,26 @@
       "lead_accept_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T04:49:00+08:00",
       "accepted_result": "PASS_WITH_LIMITS",
-      "reviewer_threads_closed": true
+      "reviewer_threads_closed": true,
+      "integrated_pr": 127,
+      "integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
+      "lead_close_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T05:01:21+08:00"
+    },
+    "M6-TASK-GRAPH-001": {
+      "status": "READY",
+      "owner_role": "systems_architect",
+      "reviewer_role": "qa_reviewer",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "branch_or_worktree": "chore/m6-task-graph",
+      "created_at": "2026-06-27T05:01:21+08:00",
+      "updated_at": "2026-06-27T05:01:21+08:00",
+      "depends_on": [
+        "M5-EXIT-HUMAN-GATE-001"
+      ],
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "human_gate_required": false,
+      "next_action": "Start M6-TASK-GRAPH-001 with systems_architect writer and independent qa_reviewer review."
     }
   }
 }
