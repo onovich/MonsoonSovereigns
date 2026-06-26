@@ -2,7 +2,7 @@
   "id": "M5-SIM-PLAYABLE-LOOP-001",
   "summary": "Implement deterministic M5 simulation slice loop",
   "milestone": "M5",
-  "status": "REVIEW",
+  "status": "IN_PROGRESS",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -72,7 +72,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
-      "status": "review",
+      "status": "in_progress_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -86,11 +86,15 @@
       "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-LEAD-TO-SIM-START-CONFIRMED.json",
       "review_ready_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_at": "2026-06-26T15:20:00Z",
-      "updated_at": "2026-06-26T15:20:00Z"
+      "updated_at": "2026-06-26T15:45:00Z",
+      "request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_route": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-SYSTEMS-REQUEST-CHANGES-TO-WRITER.json",
+      "request_changes_submission_id": "019f0422-ee3c-7631-9e5b-744f2997a61a",
+      "request_changes_round": 1
     },
     "systems_architect": {
       "thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
-      "status": "in_review",
+      "status": "request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -102,19 +106,25 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
-      "updated_at": "2026-06-26T15:35:00Z"
+      "updated_at": "2026-06-26T15:45:00Z",
+      "request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_at": "2026-06-26T15:45:00Z"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "simulation_engineer",
   "notes": [
     "Do not import React, Pixi, Electron, DOM, Node filesystem, or real-time APIs into sim-core.",
     "Do not add a general manager, implicit RPC layer, object-graph serializer, arbitrary scripting, telemetry, server, or multiplayer substrate.",
     "Architecture or save-format decisions beyond explicit schema evolution require ADR routing before implementation.",
     "Lead started simulation_engineer writer thread 019f0403-1c1a-79c0-a63b-bc4eb0075958 after M5 slice definition closure entered main.",
-    "Lead routed writer REVIEW handoff to systems_architect thread 019f0417-d858-7a83-b482-b02660bf72c9."
+    "Lead routed writer REVIEW handoff to systems_architect thread 019f0417-d858-7a83-b482-b02660bf72c9.",
+    "systems_architect requested changes for explicit nested M4 save DTO/schema boundary and real worker-compatible M5 contract coverage; lead routed back to original simulation_engineer."
   ],
   "created_at": "2026-06-26T12:30:00Z",
   "review_ready_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
   "review_ready_at": "2026-06-26T15:20:00Z",
-  "updated_at": "2026-06-26T15:35:00Z"
+  "updated_at": "2026-06-26T15:45:00Z",
+  "request_changes_round": 1,
+  "systems_request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
+  "request_changes_route": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-SYSTEMS-REQUEST-CHANGES-TO-WRITER.json"
 }

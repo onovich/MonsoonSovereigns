@@ -8,7 +8,7 @@
   "active_threads": {
     "019f0403-1c1a-79c0-a63b-bc4eb0075958": {
       "thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
-      "status": "review",
+      "status": "in_progress_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -22,11 +22,15 @@
       "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-LEAD-TO-SIM-START-CONFIRMED.json",
       "review_ready_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_at": "2026-06-26T15:20:00Z",
-      "updated_at": "2026-06-26T15:20:00Z"
+      "updated_at": "2026-06-26T15:45:00Z",
+      "request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_route": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-SYSTEMS-REQUEST-CHANGES-TO-WRITER.json",
+      "request_changes_submission_id": "019f0422-ee3c-7631-9e5b-744f2997a61a",
+      "request_changes_round": 1
     },
     "019f0417-d858-7a83-b482-b02660bf72c9": {
       "thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
-      "status": "in_review",
+      "status": "request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -38,7 +42,9 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
-      "updated_at": "2026-06-26T15:35:00Z"
+      "updated_at": "2026-06-26T15:45:00Z",
+      "request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_at": "2026-06-26T15:45:00Z"
     }
   },
   "last_integrated_task": "M5-SLICE-DEFINITION-001",
@@ -79,7 +85,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-26T15:35:00Z",
+  "last_updated_at": "2026-06-26T15:45:00Z",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -91,7 +97,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-26T15:35:00Z",
+  "updated_at": "2026-06-26T15:45:00Z",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -131,7 +137,7 @@
     "closed_at": "2026-06-26T14:30:00Z"
   },
   "m5_sim_playable_loop": {
-    "status": "REVIEW",
+    "status": "REQUEST_CHANGES_R1_ROUTED_TO_WRITER",
     "branch_or_worktree": "feat/m5-sim-playable-loop",
     "writer_thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
     "start_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-START__lead_orchestrator.json",
@@ -144,6 +150,10 @@
     "reviewer_thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
     "review_route": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-TO-SYSTEMS-REVIEW.json",
     "review_source_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
-    "routed_at": "2026-06-26T15:35:00Z"
+    "routed_at": "2026-06-26T15:35:00Z",
+    "systems_request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
+    "request_changes_route": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-SYSTEMS-REQUEST-CHANGES-TO-WRITER.json",
+    "systems_thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
+    "request_changes_at": "2026-06-26T15:45:00Z"
   }
 }
