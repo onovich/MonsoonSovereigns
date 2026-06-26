@@ -9,6 +9,7 @@ import {
   type GameQueryV1,
   type M3PostwarGovernanceMethodV1,
   type M4DeterminismReplayScriptV1,
+  type M5PlayableLoopScriptV1,
   type SaveLoadCanaryScriptV1,
   type ProtocolErrorCodeV1,
   type SerializableProtocolErrorV1
@@ -1074,6 +1075,26 @@ export interface M4DeterminismReplayResultV1 {
   readonly campaignPlanStatusReasonCode: string | null;
 }
 
+export interface M5PlayableLoopResultV1 {
+  readonly status: "ok";
+  readonly outcome: "success";
+  readonly finalHash: string;
+  readonly loadedHash: string;
+  readonly verifiedHash: string;
+  readonly finalDay: number;
+  readonly finalRevision: number;
+  readonly saveByteLength: number;
+  readonly commandCount: number;
+  readonly postwarCandidateCount: number;
+  readonly postwarArrangementCount: number;
+  readonly failure: {
+    readonly status: "rejected";
+    readonly code: DomainErrorCodeV1;
+    readonly path: string;
+    readonly stateHashUnchanged: boolean;
+  };
+}
+
 export function bootSimulationV1(input: unknown): BootSimulationResultV1 {
   const parsed = parseBootSimulationInputV1(input);
   if (!parsed.ok) {
@@ -1191,10 +1212,6 @@ export function requestSaveV1(
   runtime: SimulationRuntimeV1,
   build: SaveBuildMetadataV1
 ): RequestSaveOutputV1 {
-  if (runtime.world.state.m4 !== undefined) {
-    throw new Error("Save request rejected: M4 runtime state is not supported by save-format v1.");
-  }
-
   const envelope = createSaveEnvelopeV1({
     build,
     scenarioId: scenarioIdForRuntime(runtime),
@@ -1415,6 +1432,77 @@ export function runM4DeterminismReplayV1(
     postwarCandidateCount: m4.postwarCandidates.length,
     campaignPlanStatus: campaignPlan.status,
     campaignPlanStatusReasonCode: campaignPlan.statusReasonCode
+  };
+}
+
+export function runM5PlayableLoopV1(input: M5PlayableLoopScriptV1): M5PlayableLoopResultV1 {
+  const boot = bootSimulationV1(input.boot);
+  if (boot.status !== "booted") {
+    throw new Error(`M5 playable loop boot rejected: ${boot.error.code}.`);
+  }
+
+  let runtime = boot.runtime;
+  for (const command of input.successCommands) {
+    const submitted = submitCommandV1(runtime, command);
+    if (submitted.result.status !== "accepted") {
+      throw new Error(`M5 playable loop command rejected: ${submitted.result.error.code}.`);
+    }
+
+    runtime = submitted.runtime;
+  }
+
+  const saved = requestSaveV1(runtime, {
+    appVersion: "0.0.0",
+    source: "node-runner",
+    codecVersion: "save-envelope-v1"
+  });
+  const loaded = loadSaveV1(boot.runtime, saved.bytes, {
+    expectedContentManifestHash: runtime.world.meta.contentManifestHash,
+    expectedScenarioId: scenarioIdForRuntime(runtime)
+  });
+  if (loaded.status !== "loaded") {
+    throw new Error(`M5 playable loop load rejected: ${loaded.reasons[0]?.code ?? "unknown"}.`);
+  }
+
+  const hashBeforeFailure = loaded.runtime.world.meta.stateHash;
+  const duplicate = submitCommandV1(loaded.runtime, input.duplicatePostwarCommand);
+  if (duplicate.result.status !== "rejected") {
+    throw new Error("M5 playable loop duplicate postwar command was not rejected.");
+  }
+
+  const verify = submitCommandV1(loaded.runtime, {
+    schemaVersion: 1,
+    kind: "sim.verify-state-hash",
+    commandId: "m5.slice.verify-loaded-hash",
+    actor: { kind: "system", id: "m5-playable-loop" },
+    expectedDay: loaded.runtime.world.meta.currentDay,
+    expectedRevision: loaded.runtime.world.meta.revision,
+    expectedHash: loaded.runtime.world.meta.stateHash
+  });
+  if (verify.result.status !== "accepted") {
+    throw new Error(`M5 playable loop verify rejected: ${verify.result.error.code}.`);
+  }
+
+  return {
+    status: "ok",
+    outcome: "success",
+    finalHash: runtime.world.meta.stateHash,
+    loadedHash: loaded.runtime.world.meta.stateHash,
+    verifiedHash: verify.runtime.world.meta.stateHash,
+    finalDay: runtime.world.meta.currentDay,
+    finalRevision: runtime.world.meta.revision,
+    saveByteLength: saved.byteLength,
+    commandCount: input.successCommands.length,
+    postwarCandidateCount: runtime.world.state.m4?.postwarCandidates.length ?? 0,
+    postwarArrangementCount: runtime.eventTail.filter(
+      (event) => event.kind === "sim.m3-postwar-governance-applied"
+    ).length,
+    failure: {
+      status: "rejected",
+      code: duplicate.result.error.code,
+      path: duplicate.result.error.path,
+      stateHashUnchanged: duplicate.runtime.world.meta.stateHash === hashBeforeFailure
+    }
   };
 }
 
@@ -10356,6 +10444,101 @@ function parseSavedDomainEvent(
         }
       };
     }
+    case "sim.m3-postwar-governance-applied": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const settlementId = readStringRecordField(
+        record,
+        "settlementId",
+        `${path}.settlementId`,
+        reasons
+      );
+      const method = readM3PostwarGovernanceMethodRecordField(
+        record,
+        "method",
+        `${path}.method`,
+        reasons
+      );
+      const victorPolityId = readPositiveIdRecordField(
+        record,
+        "victorPolityId",
+        `${path}.victorPolityId`,
+        reasons
+      );
+      const localPolityId = readPositiveIdRecordField(
+        record,
+        "localPolityId",
+        `${path}.localPolityId`,
+        reasons
+      );
+      const districtId = readPositiveIdRecordField(record, "districtId", `${path}.districtId`, reasons);
+      const obligationIds = readPositiveIdArrayRecordField(
+        record,
+        "obligationIds",
+        `${path}.obligationIds`,
+        reasons
+      );
+      const administrativeLoad = readNumberRecordField(
+        record,
+        "administrativeLoad",
+        `${path}.administrativeLoad`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        settlementId === undefined ||
+        method === undefined ||
+        victorPolityId === undefined ||
+        localPolityId === undefined ||
+        districtId === undefined ||
+        obligationIds === undefined ||
+        administrativeLoad === undefined ||
+        reasonCodes === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          settlementId,
+          method,
+          victorPolityId: parsePolityId(victorPolityId),
+          localPolityId: parsePolityId(localPolityId),
+          districtId: parseDistrictId(districtId),
+          obligationIds: obligationIds.map(parseM3ObligationId),
+          administrativeLoad,
+          reasonCodes,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
     case "sim.m4-field-engagement-resolved": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
@@ -10760,6 +10943,45 @@ function readStringArrayRecordField(
     return undefined;
   }
   return [...value];
+}
+
+function readPositiveIdArrayRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): readonly number[] | undefined {
+  const value = record[key];
+  if (
+    !Array.isArray(value) ||
+    !value.every((entry) => typeof entry === "number" && Number.isSafeInteger(entry) && entry > 0)
+  ) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a positive integer array.`
+    });
+    return undefined;
+  }
+  return [...value];
+}
+
+function readM3PostwarGovernanceMethodRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M3PostwarGovernanceMethodV1 | undefined {
+  const value = record[key];
+  if (value === "direct-control" || value === "restore-vassal-ruler" || value === "tribute-only") {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M3 postwar governance method.`
+  });
+  return undefined;
 }
 
 function readM4CampaignHooksRecordField(

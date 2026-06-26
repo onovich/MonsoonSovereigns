@@ -1114,6 +1114,16 @@ export interface M4DeterminismReplayScriptV1 {
   readonly commands: readonly GameCommandV1[];
 }
 
+export interface M5PlayableLoopScriptV1 {
+  readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  readonly boot: {
+    readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+    readonly fixture: "m4.determinism-replay-001";
+  };
+  readonly successCommands: readonly GameCommandV1[];
+  readonly duplicatePostwarCommand: GameCommandV1;
+}
+
 export type ProtocolErrorCodeV1 =
   | "invalid-payload"
   | "unknown-command-kind"
@@ -1479,6 +1489,57 @@ export function createM4DeterminismReplayScriptV1(): M4DeterminismReplayScriptV1
       fixture: "m4.determinism-replay-001"
     },
     commands
+  };
+}
+
+export function createM5PlayableLoopScriptV1(): M5PlayableLoopScriptV1 {
+  const protocolVersion = SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  const base = createM4DeterminismReplayScriptV1();
+  const postwarCommand: GameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.apply-m3-postwar-governance",
+    commandId: "m5.slice.apply-postwar-governance",
+    actor: { kind: "player", id: "polity:1" },
+    expectedDay: 22,
+    expectedRevision: 12,
+    payload: {
+      settlementId: "m4.campaign.10.outcome.1",
+      victorPolityId: 1,
+      localPolityId: 2,
+      districtId: 3,
+      method: "tribute-only",
+      localRulerCharacterId: null,
+      policyId: null,
+      reasonCode: "m5.slice.postwar.tribute-only"
+    }
+  };
+  const stabilizeOne: GameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.advance-day",
+    commandId: "m5.slice.stabilize-day-1",
+    actor: { kind: "system", id: "scheduler" },
+    expectedDay: 22,
+    expectedRevision: 13
+  };
+  const stabilizeTwo: GameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.advance-day",
+    commandId: "m5.slice.stabilize-day-2",
+    actor: { kind: "system", id: "scheduler" },
+    expectedDay: 23,
+    expectedRevision: 14
+  };
+
+  return {
+    protocolVersion,
+    boot: base.boot,
+    successCommands: [...base.commands, postwarCommand, stabilizeOne, stabilizeTwo],
+    duplicatePostwarCommand: {
+      ...postwarCommand,
+      commandId: "m5.slice.duplicate-postwar-governance",
+      expectedDay: 24,
+      expectedRevision: 15
+    }
   };
 }
 

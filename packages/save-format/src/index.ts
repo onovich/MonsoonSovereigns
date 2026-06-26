@@ -488,6 +488,20 @@ export interface SaveM3PolityVassalageStateDto {
   readonly successionCrises: readonly SaveM3SuccessionCrisisStateDto[];
 }
 
+export interface SaveM4CampaignStateDto {
+  readonly schemaVersion: 1;
+  readonly campaignPlans: readonly unknown[];
+  readonly factionKnowledgeSnapshots: readonly unknown[];
+  readonly mobilizedForceCommitments: readonly unknown[];
+  readonly grainSupplyReservations: readonly unknown[];
+  readonly marches: readonly unknown[];
+  readonly fieldEngagements: readonly unknown[];
+  readonly sieges: readonly unknown[];
+  readonly withdrawals: readonly unknown[];
+  readonly warOutcomes: readonly unknown[];
+  readonly postwarCandidates: readonly unknown[];
+}
+
 export interface SaveWorldRuntimeStateV0Dto {
   readonly polities: readonly SaveSimpleRuntimeStateDto[];
   readonly persons: readonly SavePersonStateDto[];
@@ -496,6 +510,7 @@ export interface SaveWorldRuntimeStateV0Dto {
   readonly routes: readonly SaveSimpleRuntimeStateDto[];
   readonly m2?: SaveM2EconomyPopulationStateDto;
   readonly m3?: SaveM3PolityVassalageStateDto;
+  readonly m4?: SaveM4CampaignStateDto;
 }
 
 export interface SaveWorldSnapshotV0Dto {
@@ -609,6 +624,7 @@ export interface WorldStateV0ForSave {
     readonly routes: readonly SaveSimpleRuntimeStateDto[];
     readonly m2?: SaveM2EconomyPopulationStateDto;
     readonly m3?: SaveM3PolityVassalageStateDto;
+    readonly m4?: SaveM4CampaignStateDto;
   };
 }
 
@@ -753,7 +769,12 @@ export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnap
     })),
     routes: world.state.routes.map(copySimpleRuntimeState)
   };
-  const state = copyOptionalRuntimeSlices(stateWithoutM2, world.state.m2, world.state.m3);
+  const state = copyOptionalRuntimeSlices(
+    stateWithoutM2,
+    world.state.m2,
+    world.state.m3,
+    world.state.m4
+  );
 
   return {
     schemaVersion: 0,
@@ -818,7 +839,8 @@ export function saveWorldStateV0DtoToCandidate(snapshot: unknown, scheduler?: un
   const state = copyOptionalCandidateRuntimeSlices(
     stateWithoutM2,
     parsedSnapshot.value.state.m2,
-    parsedSnapshot.value.state.m3
+    parsedSnapshot.value.state.m3,
+    parsedSnapshot.value.state.m4
   );
 
   return {
@@ -1209,6 +1231,10 @@ function parseWorldRuntimeState(
     input["m3"] === undefined
       ? undefined
       : parseM3PolityVassalageState(input["m3"], "body.authoritativeSnapshot.state.m3", errors);
+  const m4 =
+    input["m4"] === undefined
+      ? undefined
+      : parseM4CampaignState(input["m4"], "body.authoritativeSnapshot.state.m4", errors);
   if (
     polities === undefined ||
     persons === undefined ||
@@ -1216,22 +1242,14 @@ function parseWorldRuntimeState(
     settlements === undefined ||
     routes === undefined ||
     (input["m2"] !== undefined && m2 === undefined) ||
-    (input["m3"] !== undefined && m3 === undefined)
+    (input["m3"] !== undefined && m3 === undefined) ||
+    (input["m4"] !== undefined && m4 === undefined)
   ) {
     return undefined;
   }
 
   const state = { polities, persons, districts, settlements, routes };
-  if (m2 !== undefined && m3 !== undefined) {
-    return { ...state, m2, m3 };
-  }
-  if (m2 !== undefined) {
-    return { ...state, m2 };
-  }
-  if (m3 !== undefined) {
-    return { ...state, m3 };
-  }
-  return state;
+  return copyOptionalRuntimeSlices(state, m2, m3, m4);
 }
 
 function parseSaveSchedulerV1Dto(
@@ -1773,6 +1791,130 @@ function parseM3PolityVassalageState(
     successionCandidateProfiles,
     successionCrises
   };
+}
+
+function parseM4CampaignState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignStateDto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M4 campaign state must be an object."));
+    return undefined;
+  }
+
+  if (input["schemaVersion"] !== 1) {
+    errors.push(
+      reason("invalid-schema", `${path}.schemaVersion`, "M4 campaign schemaVersion must be 1.")
+    );
+  }
+
+  const campaignPlans = parseM4RecordArray(
+    input["campaignPlans"],
+    `${path}.campaignPlans`,
+    "M4 campaignPlans",
+    errors
+  );
+  const factionKnowledgeSnapshots = parseM4RecordArray(
+    input["factionKnowledgeSnapshots"],
+    `${path}.factionKnowledgeSnapshots`,
+    "M4 factionKnowledgeSnapshots",
+    errors
+  );
+  const mobilizedForceCommitments = parseM4RecordArray(
+    input["mobilizedForceCommitments"],
+    `${path}.mobilizedForceCommitments`,
+    "M4 mobilizedForceCommitments",
+    errors
+  );
+  const grainSupplyReservations = parseM4RecordArray(
+    input["grainSupplyReservations"],
+    `${path}.grainSupplyReservations`,
+    "M4 grainSupplyReservations",
+    errors
+  );
+  const marches = parseM4RecordArray(input["marches"], `${path}.marches`, "M4 marches", errors);
+  const fieldEngagements = parseM4RecordArray(
+    input["fieldEngagements"],
+    `${path}.fieldEngagements`,
+    "M4 fieldEngagements",
+    errors
+  );
+  const sieges = parseM4RecordArray(input["sieges"], `${path}.sieges`, "M4 sieges", errors);
+  const withdrawals = parseM4RecordArray(
+    input["withdrawals"],
+    `${path}.withdrawals`,
+    "M4 withdrawals",
+    errors
+  );
+  const warOutcomes = parseM4RecordArray(
+    input["warOutcomes"],
+    `${path}.warOutcomes`,
+    "M4 warOutcomes",
+    errors
+  );
+  const postwarCandidates = parseM4RecordArray(
+    input["postwarCandidates"],
+    `${path}.postwarCandidates`,
+    "M4 postwarCandidates",
+    errors
+  );
+
+  if (
+    campaignPlans === undefined ||
+    factionKnowledgeSnapshots === undefined ||
+    mobilizedForceCommitments === undefined ||
+    grainSupplyReservations === undefined ||
+    marches === undefined ||
+    fieldEngagements === undefined ||
+    sieges === undefined ||
+    withdrawals === undefined ||
+    warOutcomes === undefined ||
+    postwarCandidates === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    schemaVersion: 1,
+    campaignPlans,
+    factionKnowledgeSnapshots,
+    mobilizedForceCommitments,
+    grainSupplyReservations,
+    marches,
+    fieldEngagements,
+    sieges,
+    withdrawals,
+    warOutcomes,
+    postwarCandidates
+  };
+}
+
+function parseM4RecordArray(
+  input: unknown,
+  path: string,
+  label: string,
+  errors: SaveLoadRejectionReasonV1[]
+): readonly Record<string, unknown>[] | undefined {
+  if (!Array.isArray(input)) {
+    errors.push(reason("invalid-schema", path, `${label} must be an array.`));
+    return undefined;
+  }
+
+  return input.map((entry, index) => parseM4Record(entry, `${path}[${index}]`, errors));
+}
+
+function parseM4Record(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): Record<string, unknown> {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M4 save entry must be an object."));
+    return {};
+  }
+
+  return copyJsonRecord(input);
 }
 
 function parseM3Array<TEntry>(
@@ -3501,7 +3643,8 @@ function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
   const state = copyOptionalRuntimeSlices(
     stateWithoutM2,
     body.authoritativeSnapshot.state.m2,
-    body.authoritativeSnapshot.state.m3
+    body.authoritativeSnapshot.state.m3,
+    body.authoritativeSnapshot.state.m4
   );
 
   return {
@@ -3571,57 +3714,47 @@ function copyDistrictControl(control: SaveDistrictControlDto): SaveDistrictContr
 }
 
 function copyOptionalRuntimeSlices(
-  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3">,
+  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3" | "m4">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
-  m3: SaveM3PolityVassalageStateDto | undefined
+  m3: SaveM3PolityVassalageStateDto | undefined,
+  m4: SaveM4CampaignStateDto | undefined
 ): SaveWorldRuntimeStateV0Dto {
-  if (m2 !== undefined && m3 !== undefined) {
-    return {
-      ...base,
-      m2: copyM2EconomyPopulationState(m2),
-      m3: copyM3PolityVassalageState(m3)
-    };
-  }
-  if (m2 !== undefined) {
-    return {
-      ...base,
-      m2: copyM2EconomyPopulationState(m2)
-    };
-  }
-  if (m3 !== undefined) {
-    return {
-      ...base,
-      m3: copyM3PolityVassalageState(m3)
-    };
-  }
-  return base;
+  return {
+    ...base,
+    ...(m2 === undefined ? {} : { m2: copyM2EconomyPopulationState(m2) }),
+    ...(m3 === undefined ? {} : { m3: copyM3PolityVassalageState(m3) }),
+    ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) })
+  };
 }
 
 function copyOptionalCandidateRuntimeSlices(
-  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3">,
+  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3" | "m4">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
-  m3: SaveM3PolityVassalageStateDto | undefined
+  m3: SaveM3PolityVassalageStateDto | undefined,
+  m4: SaveM4CampaignStateDto | undefined
 ): WorldStateV0ForSave["state"] {
-  if (m2 !== undefined && m3 !== undefined) {
-    return {
-      ...base,
-      m2: copyM2EconomyPopulationState(m2),
-      m3: copyM3PolityVassalageState(m3)
-    };
-  }
-  if (m2 !== undefined) {
-    return {
-      ...base,
-      m2: copyM2EconomyPopulationState(m2)
-    };
-  }
-  if (m3 !== undefined) {
-    return {
-      ...base,
-      m3: copyM3PolityVassalageState(m3)
-    };
-  }
-  return base;
+  return {
+    ...base,
+    ...(m2 === undefined ? {} : { m2: copyM2EconomyPopulationState(m2) }),
+    ...(m3 === undefined ? {} : { m3: copyM3PolityVassalageState(m3) }),
+    ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) })
+  };
+}
+
+function copyM4CampaignState(m4: SaveM4CampaignStateDto): SaveM4CampaignStateDto {
+  return {
+    schemaVersion: 1,
+    campaignPlans: m4.campaignPlans.map(copyJsonValue),
+    factionKnowledgeSnapshots: m4.factionKnowledgeSnapshots.map(copyJsonValue),
+    mobilizedForceCommitments: m4.mobilizedForceCommitments.map(copyJsonValue),
+    grainSupplyReservations: m4.grainSupplyReservations.map(copyJsonValue),
+    marches: m4.marches.map(copyJsonValue),
+    fieldEngagements: m4.fieldEngagements.map(copyJsonValue),
+    sieges: m4.sieges.map(copyJsonValue),
+    withdrawals: m4.withdrawals.map(copyJsonValue),
+    warOutcomes: m4.warOutcomes.map(copyJsonValue),
+    postwarCandidates: m4.postwarCandidates.map(copyJsonValue)
+  };
 }
 
 function copyM2EconomyPopulationState(
@@ -4480,11 +4613,25 @@ function rejected(
 }
 
 function copyRecord(record: Record<string, unknown>): Record<string, unknown> {
+  return copyJsonRecord(record);
+}
+
+function copyJsonRecord(record: Record<string, unknown>): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   for (const key of Object.keys(record).sort(compareText)) {
-    result[key] = record[key];
+    result[key] = copyJsonValue(record[key]);
   }
   return result;
+}
+
+function copyJsonValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(copyJsonValue);
+  }
+  if (isRecord(value)) {
+    return copyJsonRecord(value);
+  }
+  return value;
 }
 
 function compareText(left: string, right: string): number {

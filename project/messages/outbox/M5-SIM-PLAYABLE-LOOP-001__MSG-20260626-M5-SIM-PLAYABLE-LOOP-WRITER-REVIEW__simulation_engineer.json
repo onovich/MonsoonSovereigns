@@ -1,0 +1,101 @@
+{
+  "message_id": "MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW",
+  "task_id": "M5-SIM-PLAYABLE-LOOP-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the minimal deterministic M5 playable simulation loop by extending the accepted M4 determinism replay into an M3 postwar governance success path, a save/load round-trip, a duplicate-settlement failure path, and Node/worker-compatible hash canary coverage. The loop stays in sim-core/protocol/save-format/test surfaces and does not touch UI/client/content packages.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "packages/save-format/src/index.ts",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "tests/sim-core-m5-playable-loop.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M5-SIM-PLAYABLE-LOOP-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m5-sim-playable-loop",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial pre-edit run was clean; final run contains only the expected M5 implementation, state, and handoff files."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "23 test files passed; 170 tests passed. Includes tests/sim-core-m5-playable-loop.test.ts and updated save/load contract coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "pnpm reported: No projects matched the filters in D:\\WebProjects\\MonsoonSovereigns. No packages/sim-ai package exists in this repo."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 14 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol typecheck",
+      "exit_code": 1,
+      "result": "ERR_PNPM_RECURSIVE_RUN_NO_SCRIPT: selected package has no typecheck script."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop. M5 final hash bf042e42; loaded hash bf042e42; postwar arrangements 1."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism canary passed; root vitest 34 files/242 tests passed; web test 1 file/4 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-SIM-PLAYABLE-LOOP-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-SIM-PLAYABLE-LOOP-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Used existing m4.determinism-replay-001 and accepted M4 command sequence as the M5 start-to-postwar substrate.",
+    "Used the existing M3 tribute-only postwar governance path for the M5 success branch to avoid expanding content fixtures with new character/policy dependencies.",
+    "Kept player and AI parity through versioned GameCommandV1 only; the AI actor remains the existing M4 muster response command and does not read hidden state.",
+    "Added M4 runtime save-format support at explicit top-level M4 slice boundaries with decode-time object validation and sim-core validateWorldStateV0 semantic validation for nested M4 fields.",
+    "Did not create packages/sim-ai because this repository currently has no @monsoon/sim-ai package and accepted M4 AI surfaces live in sim-core/protocol."
+  ],
+  "risks": [
+    "R4 task with R3 save/protocol impact: save-format now persists M4 runtime state. Systems architecture review should confirm whether the top-level explicit M4 DTO plus sim-core semantic validation is sufficient or whether a full nested M4 save DTO should be split into a follow-up.",
+    "Worker-compatible M5 coverage uses the same sim-core runner source through a local adapter in tests and sim-runner because apps/web is forbidden for this task. No apps/web worker export was changed.",
+    "No UI/client/manual battle/full diplomacy/naval/telemetry/server/multiplayer/content-source work was included."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the deterministic M5 loop, M4 save-format schema evolution, event-tail parsing, and Node/worker-compatible hash coverage. If accepted, route onward to qa_reviewer.",
+  "created_at": "2026-06-26T15:20:00Z"
+}

@@ -2,7 +2,7 @@
   "id": "M5-SIM-PLAYABLE-LOOP-001",
   "summary": "Implement deterministic M5 simulation slice loop",
   "milestone": "M5",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -72,7 +72,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
-      "status": "in_progress",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -84,7 +84,9 @@
       "spawn_result": "spawn_agent",
       "start_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-LEAD-TO-SIM-START-CONFIRMED.json",
-      "updated_at": "2026-06-26T14:45:00Z"
+      "review_ready_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
+      "review_ready_at": "2026-06-26T15:20:00Z",
+      "updated_at": "2026-06-26T15:20:00Z"
     }
   },
   "route_to": "systems_architect",
@@ -95,5 +97,7 @@
     "Lead started simulation_engineer writer thread 019f0403-1c1a-79c0-a63b-bc4eb0075958 after M5 slice definition closure entered main."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-26T14:45:00Z"
+  "review_ready_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
+  "review_ready_at": "2026-06-26T15:20:00Z",
+  "updated_at": "2026-06-26T15:20:00Z"
 }

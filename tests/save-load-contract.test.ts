@@ -564,7 +564,9 @@ describe("M4-DETERMINISM-REPLAY-001 complete loop replay", () => {
     expect(validateReplayWorld(replayedRuntime.world)).toBe(true);
   });
 
-  test("rejects M4 save requests and missing-M4 load snapshots explicitly", () => {
+  test("round-trips M4 save requests and still rejects missing-M4 load snapshots explicitly", () => {
+    const script = createM4DeterminismReplayScriptV1();
+    const replayedRuntime = replayM4Script(script);
     const m4Boot = bootSimulationV1({
       protocolVersion: 1,
       fixture: "m4.determinism-replay-001"
@@ -574,13 +576,23 @@ describe("M4-DETERMINISM-REPLAY-001 complete loop replay", () => {
     }
     const compatibilityRuntime = createM2M3CompatibilityRuntime();
 
-    expect(() =>
-      requestSaveV1(m4Boot.runtime, {
-        appVersion: "0.0.0",
-        source: "test",
-        codecVersion: "save-envelope-v1"
-      })
-    ).toThrow("M4 runtime state is not supported by save-format v1.");
+    const m4Saved = requestSaveV1(replayedRuntime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+    const m4Loaded = loadSaveV1(m4Boot.runtime, m4Saved.bytes, {
+      expectedContentManifestHash: m4Saved.envelope.header.contentManifestHash,
+      expectedScenarioId: m4Saved.envelope.header.scenarioId
+    });
+
+    expect(m4Loaded.status).toBe("loaded");
+    if (m4Loaded.status !== "loaded") {
+      throw new Error("Expected M4 replay save to load.");
+    }
+    expect(m4Loaded.stateHash).toBe(replayedRuntime.world.meta.stateHash);
+    expect(m4Loaded.runtime.world.state.m4?.postwarCandidates).toHaveLength(1);
+    expect(validateReplayWorld(m4Loaded.runtime.world)).toBe(true);
 
     const saved = requestSaveV1(compatibilityRuntime, {
       appVersion: "0.0.0",
