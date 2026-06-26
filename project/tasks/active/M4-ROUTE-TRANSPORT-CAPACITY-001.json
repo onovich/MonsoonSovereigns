@@ -2,7 +2,7 @@
   "id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
   "summary": "Implement M4 route and transport capacity planning for campaigns",
   "milestone": "M4",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -71,7 +71,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f01ca-2ecb-7223-a4a1-ff03e0b527cb",
-      "status": "active",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "nickname": "Clockwork the 4th",
@@ -79,11 +79,13 @@
       "branch_or_worktree": "feat/m4-route-transport-capacity",
       "start_state": "START_CONFIRMED",
       "start_submission_id": "019f01ca-8b8d-7ed0-bee5-1577ffc6553e",
-      "updated_at": "2026-06-26T02:38:48Z"
+      "updated_at": "2026-06-26T02:55:26Z",
+      "review_ready_handoff": "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json",
+      "review_ready_at": "2026-06-26T02:55:26Z"
     },
     "systems_architect": {
       "thread_id": "019f01ca-42ce-78d2-8e19-da4887343bb3",
-      "status": "awaiting_review_ready",
+      "status": "reviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Keystone the 4th",
@@ -91,10 +93,13 @@
       "branch_or_worktree": "feat/m4-route-transport-capacity",
       "start_state": "AWAITING_REVIEW_READY",
       "await_submission_id": "019f01ca-8c25-7cb3-8634-e3cdae2ca828",
-      "updated_at": "2026-06-26T02:38:48Z"
+      "updated_at": "2026-06-26T02:55:26Z",
+      "review_ready_handoff": "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json",
+      "review_ready_submission_id": "019f01da-0272-7933-9aee-7d2cb92c7635",
+      "review_started_at": "2026-06-26T02:55:26Z"
     }
   },
-  "route_to": "simulation_engineer",
+  "route_to": "systems_architect",
   "notes": [
     "Keep route/transport as campaign planning data over M2 scaffolds; do not create a general logistics manager.",
     "If existing M2 route data is insufficient, add explicit narrow schema/query fields inside allowed package boundaries and record compatibility evidence.",
@@ -102,5 +107,5 @@
     "Promoted to READY after M4-GRAIN-SUPPLY-001 entered origin/main and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T02:38:48Z"
+  "updated_at": "2026-06-26T02:55:26Z"
 }
