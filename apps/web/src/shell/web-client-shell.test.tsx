@@ -22,6 +22,9 @@ describe("web client shell", () => {
     expect(snapshot.districtList.rows).toHaveLength(30);
     expect(snapshot.m3Appointment.offices).toHaveLength(3);
     expect(snapshot.m3Appointment.bulkPreview.eligibleCount).toBe(2);
+    expect(snapshot.m4Campaign.plans).toHaveLength(1);
+    expect(snapshot.m4Campaign.muster.readiness).toBe("partial");
+    expect(snapshot.m4Campaign.warReports).toHaveLength(1);
     expect(snapshot.districtList.provenance.kind).toBe("simulation-read-model");
     expect(snapshot.revision).toBe(snapshot.simulation.finalRevision);
     expect(JSON.stringify(snapshot)).not.toContain("WorldState");
@@ -40,6 +43,8 @@ describe("web client shell", () => {
         onSelectedEntityChange={() => undefined}
         onM3CommandSubmit={() => undefined}
         m3CommandStatus={null}
+        onM4CommandSubmit={() => undefined}
+        m4CommandStatus={null}
         mapSurface={
           <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
         }
@@ -55,6 +60,10 @@ describe("web client shell", () => {
     expect(markup).toContain('data-row-count="30"');
     expect(markup).toContain('aria-label="M3 appointment workspace"');
     expect(markup).toContain('data-bulk-eligible-count="2"');
+    expect(markup).toContain('aria-label="M4 campaign planning workspace"');
+    expect(markup).toContain('data-muster-readiness="partial"');
+    expect(markup).toContain("m4.ai.withdraw.supply-collapse");
+    expect(markup).toContain("postwar.candidate.ready");
   });
 
   it("rebuilds the Pixi scene shell from the read model", () => {

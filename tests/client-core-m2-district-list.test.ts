@@ -9,8 +9,15 @@ import {
   createM3AppointmentReadModelFixture,
   createM3BulkAppointmentCommand,
   createM2PrototypeReadModelFixture,
+  createM4CampaignPlanCommand,
+  createM4CampaignReadModelFixture,
+  createM4CancelCampaignCommand,
+  createM4SiegeChoiceCommand,
+  createM4StartMarchCommand,
+  createM4WithdrawalCommand,
   createSyntheticDistrictPressureFixture,
   findM3Office,
+  findM4CampaignPlan,
   findClientDistrictRow,
   projectM2DistrictRowsFromProtocolReadModels,
   selectClientDistrictRows,
@@ -196,5 +203,111 @@ describe("M3 appointment client read model", () => {
     expect(bulkCommand.payload.items.map((item) => item.itemId)).not.toContain(
       "office-1-unavailable"
     );
+  });
+});
+
+describe("M4 campaign planning client read model", () => {
+  test("projects campaign planning, supply, route, siege, AI, and war report slices without WorldState", () => {
+    const fixture = createM4CampaignReadModelFixture();
+
+    expect(fixture.provenance.kind).toBe("protocol-query-projection");
+    expect(fixture.plans).toHaveLength(1);
+    expect(fixture.muster.readiness).toBe("partial");
+    expect(fixture.muster.promisedTroops).toBe(120);
+    expect(fixture.muster.assembledTroops).toBe(100);
+    expect(fixture.grain.expectedDaysOfSupply).toBe(11);
+    expect(fixture.route.reasonCodes).toContain("route.forecast.seasonal-risk");
+    expect(fixture.marches[0]).toMatchObject({
+      status: "marching",
+      joinedTroops: 100
+    });
+    expect(fixture.sieges[0]).toMatchObject({
+      status: "active",
+      attackerCasualties: 4,
+      defenderCasualties: 11
+    });
+    expect(fixture.withdrawals[0]).toMatchObject({
+      triggerReason: "supply",
+      casualties: 14
+    });
+    expect(fixture.aiReason.primaryReasonCode).toBe("m4.ai.withdraw.supply-collapse");
+    expect(fixture.warReports[0]?.postwarCandidate?.validM3Methods).toContain(
+      "restore-vassal-ruler"
+    );
+    expect(
+      fixture.reasonSummaries.some((summary) => summary.reasonCode === "route.season.monsoon-risk")
+    ).toBe(true);
+    expect(JSON.stringify(fixture)).not.toContain("WorldState");
+  });
+
+  test("builds M4 campaign command DTOs through protocol paths", () => {
+    const fixture = createM4CampaignReadModelFixture();
+    const selectedPlanId = fixture.selectedCampaignPlanId;
+    const selectedSiege = fixture.sieges[0];
+    if (selectedPlanId === null || selectedSiege === undefined) {
+      throw new Error("Expected M4 selected plan and siege fixture rows.");
+    }
+
+    const planCommand = createM4CampaignPlanCommand({
+      snapshot: fixture,
+      commandId: "test.m4.plan"
+    });
+    const startMarchCommand = createM4StartMarchCommand({
+      snapshot: fixture,
+      commandId: "test.m4.start-march",
+      campaignPlanId: selectedPlanId
+    });
+    const cancelCommand = createM4CancelCampaignCommand({
+      snapshot: fixture,
+      commandId: "test.m4.cancel",
+      campaignPlanId: selectedPlanId
+    });
+    const siegeCommand = createM4SiegeChoiceCommand({
+      snapshot: fixture,
+      commandId: "test.m4.siege",
+      siegeId: selectedSiege.siegeId,
+      choice: "assault"
+    });
+    const withdrawalCommand = createM4WithdrawalCommand({
+      snapshot: fixture,
+      commandId: "test.m4.withdraw",
+      campaignPlanId: selectedPlanId
+    });
+
+    expect(planCommand).toMatchObject({
+      kind: "sim.create-campaign-objective",
+      payload: {
+        campaignPlanId: 11,
+        objectiveKind: "besiege",
+        reasonCodes: ["client.m4.plan.before-rainy-season", "campaign.reason.dry-season-range"]
+      }
+    });
+    expect(startMarchCommand.kind).toBe("sim.start-campaign-march");
+    expect(cancelCommand.kind).toBe("sim.cancel-campaign-objective");
+    expect(siegeCommand).toMatchObject({
+      kind: "sim.apply-m4-siege-choice",
+      payload: {
+        choice: "assault",
+        siegeId: Number(selectedSiege.siegeId)
+      }
+    });
+    expect(withdrawalCommand).toMatchObject({
+      kind: "sim.resolve-m4-campaign-withdrawal",
+      payload: {
+        triggerReason: "ordered"
+      }
+    });
+  });
+
+  test("finds M4 campaign plans with stable branded ids", () => {
+    const fixture = createM4CampaignReadModelFixture();
+    const selectedPlanId = fixture.selectedCampaignPlanId;
+    if (selectedPlanId === null) {
+      throw new Error("Expected M4 selected plan.");
+    }
+
+    const plan = findM4CampaignPlan(fixture.plans, selectedPlanId);
+    expect(plan?.targetLabel).toBe("Prototype District 003");
+    expect(plan?.forecast.reasonCodes).toContain("campaign.forecast.start-range-open");
   });
 });

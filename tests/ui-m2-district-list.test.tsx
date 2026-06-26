@@ -75,6 +75,29 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Visible reason summaries");
     expect(markup).not.toContain("WorldState");
   });
+
+  test("renders M4 campaign planning, risk reasons, choices, AI trace, and war report", () => {
+    const snapshot = createM2PrototypeClientReadModelSnapshot();
+    const markup = renderToStaticMarkup(createShell(snapshot));
+
+    expect(markup).toContain("M4 campaign planning");
+    expect(markup).toContain('aria-label="M4 campaign planning workspace"');
+    expect(markup).toContain('data-plan-count="1"');
+    expect(markup).toContain('data-muster-readiness="partial"');
+    expect(markup).toContain('data-war-report-count="1"');
+    expect(markup).toContain("Submit plan");
+    expect(markup).toContain("Start march");
+    expect(markup).toContain("Cancel plan");
+    expect(markup).toContain("Submit siege choice");
+    expect(markup).toContain("Withdraw");
+    expect(markup).toContain("route.season.monsoon-risk");
+    expect(markup).toContain("withdrawal.reason.supply-collapse");
+    expect(markup).toContain("m4.ai.withdraw.supply-collapse");
+    expect(markup).toContain("War report");
+    expect(markup).toContain("postwar.candidate.ready");
+    expect(markup).toContain("restore-vassal-ruler");
+    expect(markup).not.toContain("WorldState");
+  });
 });
 
 function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]) {
@@ -91,6 +114,8 @@ function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]
       onSelectedEntityChange={() => undefined}
       onM3CommandSubmit={() => undefined}
       m3CommandStatus={null}
+      onM4CommandSubmit={() => undefined}
+      m4CommandStatus={null}
       mapSurface={<div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />}
     />
   );
