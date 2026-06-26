@@ -2,19 +2,22 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_ALPHA_SYSTEM_CONTRACT_ACCEPTED_PENDING_PR",
+  "status": "M6_ALPHA_SYSTEM_CONTRACT_CLOSED_READY_NEXT",
   "project": "Monsoon Sovereigns",
-  "origin_main": "ce81452b47b456c81705eb6469d92ae429bca718",
+  "origin_main": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
   "current_milestone": "M6",
-  "current_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
-  "current_task_status": "ACCEPTED",
-  "last_closed_task": "M6-TASK-GRAPH-001",
-  "ready_tasks": [],
+  "current_task": "M6-DIPLOMACY-LEGITIMACY-001",
+  "current_task_status": "DEPENDENCY_READY_PENDING_START",
+  "last_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
+  "ready_tasks": [
+    "M6-DIPLOMACY-LEGITIMACY-001",
+    "M6-SCENARIO-DATA-PIPELINE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "accepted_integration_pending",
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "status": "dependency_ready_pending_start",
       "role": "lead_orchestrator"
     }
   },
@@ -34,12 +37,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M5 Gate closure after PR #127 and M6 task graph closure after PR #130; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
+    "approval_source": "M6 Alpha system contract PR #131 entered main; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is ACCEPTED after systems_architect review and awaits PR integration.",
-    "recorded_at": "2026-06-27T06:29:00+08:00"
+    "note": "No active Human Gate. Next dependency-ready M6 task is M6-DIPLOMACY-LEGITIMACY-001; M6-SCENARIO-DATA-PIPELINE-001 is also dependency-ready.",
+    "recorded_at": "2026-06-27T06:35:40+08:00"
   },
-  "next_machine_action": "Open PR for M6-ALPHA-SYSTEM-CONTRACT-001, wait for CI, merge to main, then close task and select next READY M6 task.",
+  "next_machine_action": "Start M6-DIPLOMACY-LEGITIMACY-001 as the highest-priority dependency-ready M6 task after this closure checkpoint enters main.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -47,7 +50,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T06:29:00+08:00",
+  "last_updated_at": "2026-06-27T06:35:40+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -87,14 +90,17 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T06:29:00+08:00",
+  "updated_at": "2026-06-27T06:35:40+08:00",
   "current_tasks": [
-    "M6-ALPHA-SYSTEM-CONTRACT-001"
+    "M6-DIPLOMACY-LEGITIMACY-001"
   ],
-  "last_integrated_task": "M6-TASK-GRAPH-001",
-  "last_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
-  "next_ready_tasks": [],
-  "next_action": "Open PR for M6-ALPHA-SYSTEM-CONTRACT-001, wait for CI, merge to main, then close task and select next READY M6 task.",
+  "last_integrated_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
+  "last_main_commit": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
+  "next_ready_tasks": [
+    "M6-DIPLOMACY-LEGITIMACY-001",
+    "M6-SCENARIO-DATA-PIPELINE-001"
+  ],
+  "next_action": "Start M6-DIPLOMACY-LEGITIMACY-001 as the highest-priority dependency-ready M6 task after this closure checkpoint enters main.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -532,7 +538,7 @@
     "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
   },
   "m6_alpha_system_contract": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "branch_or_worktree": "design/m6-alpha-system-contract",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -547,7 +553,7 @@
     "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-27T06:10:00+08:00",
     "reviewer_role": "systems_architect",
-    "next_action": "Open PR, wait for CI, merge to main, then close task.",
+    "next_action": "Start M6-DIPLOMACY-LEGITIMACY-001 after closure checkpoint enters main.",
     "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
     "route_sent_at": "2026-06-27T06:05:24+08:00",
     "systems_architect_thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
@@ -561,6 +567,24 @@
     "systems_status": "ACCEPT",
     "lead_accept_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-27T06:29:00+08:00",
-    "child_threads_closed": true
+    "child_threads_closed": true,
+    "integrated_pr": 131,
+    "integrated_main_commit": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/131",
+    "lead_close_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T06:35:40+08:00",
+    "next_ready_tasks": [
+      "M6-DIPLOMACY-LEGITIMACY-001",
+      "M6-SCENARIO-DATA-PIPELINE-001"
+    ]
+  },
+  "m6_diplomacy_legitimacy": {
+    "status": "DEPENDENCY_READY_PENDING_START",
+    "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+    "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
+    "created_by_task_graph_pr": 129,
+    "dependencies_satisfied_by": "M6-ALPHA-SYSTEM-CONTRACT-001",
+    "human_gate_required": false,
+    "next_action": "Start with simulation_engineer writer and systems_architect review as required by the task file."
   }
 }
