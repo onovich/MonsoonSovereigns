@@ -10,7 +10,7 @@
       "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
       "role": "release_engineer",
       "thread_id": "019f0508-95e6-76c2-92dd-d3cbb7311085",
-      "status": "running",
+      "status": "request_changes",
       "configured_model": "gpt-5.3-codex-spark",
       "configured_effort": "medium",
       "actual_model": "unknown",
@@ -23,7 +23,10 @@
       "start_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-TO-RELEASE-START-CONFIRMED.json",
       "base_main_commit": "54bfb063db57696bcf3f065f3d40656a6e7c5e4e",
-      "updated_at": "2026-06-27T01:44:50+08:00"
+      "updated_at": "2026-06-27T01:52:59+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-REVIEW__release_engineer.json",
+      "request_changes_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-REQUEST-CHANGES-TO-RELEASE.json"
     }
   },
   "last_integrated_task": "M5-PERFORMANCE-GATE-001",
@@ -64,7 +67,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T01:44:50+08:00",
+  "last_updated_at": "2026-06-27T01:52:59+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -76,7 +79,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T01:44:50+08:00",
+  "updated_at": "2026-06-27T01:52:59+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -306,10 +309,10 @@
   },
   "task_notes": {
     "M5-PERFORMANCE-GATE-001": "CLOSED after PR #118 entered main at bd47faee8e6780a96f92402f47361012be40f3e1. Evidence-only M5 performance/stability gate accepted by independent qa_reviewer; child threads closed. Next dependency-ready M5 task is M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
-    "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "IN_PROGRESS with release_engineer thread 019f0508-95e6-76c2-92dd-d3cbb7311085; awaiting REVIEW handoff for security_reviewer."
+    "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "REQUEST_CHANGES to release_engineer: schema-valid R2 handoff and required Windows package M5 smoke evidence are needed before security review."
   },
   "m5_web_windows_distributable": {
-    "status": "IN_PROGRESS",
+    "status": "REQUEST_CHANGES_TO_RELEASE",
     "branch_or_worktree": "chore/m5-web-windows-distributable",
     "writer_thread_id": "019f0508-95e6-76c2-92dd-d3cbb7311085",
     "writer_nickname": "Courier the 10th",
@@ -318,6 +321,11 @@
     "started_at": "2026-06-27T01:44:50+08:00",
     "base_main_commit": "54bfb063db57696bcf3f065f3d40656a6e7c5e4e",
     "human_gate_required": false,
-    "next_action": "Wait for release_engineer REVIEW handoff, then route to security_reviewer."
+    "next_action": "Wait for release_engineer R2 REVIEW handoff with schema-valid handoff and reproducible Windows package M5 smoke evidence.",
+    "review_ready_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-REVIEW__release_engineer.json",
+    "request_changes_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "request_changes_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-REQUEST-CHANGES-TO-RELEASE.json",
+    "request_changes_at": "2026-06-27T01:52:59+08:00",
+    "request_changes_round": 1
   }
 }

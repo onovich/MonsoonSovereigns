@@ -1,0 +1,68 @@
+{
+  "message_id": "MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-REQUEST-CHANGES",
+  "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+  "from_role": "lead_orchestrator",
+  "status": "REQUEST_CHANGES",
+  "summary": "Lead preflight found that the release_engineer REVIEW cannot be routed to security_reviewer yet. The writer handoff is not schema-valid, and the required Windows package smoke did not complete: the packaged app did not expose the M5 playable slice workspace within 120s. This is a task-level required-test gap, not an acceptable PASS_WITH_LIMITS at this stage. The same release_engineer should repair the branch without broadening scope, then produce an R2 REVIEW handoff.",
+  "artifacts": [
+    "apps/desktop/src/main/main.ts",
+    "apps/desktop/renderer/index.html",
+    "apps/desktop/renderer/renderer.js",
+    "apps/desktop/scripts/copy-renderer.mjs",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-REVIEW__release_engineer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-REQUEST-CHANGES-TO-RELEASE.json"
+  ],
+  "branch_or_worktree": "chore/m5-web-windows-distributable / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-REVIEW__release_engineer.json",
+      "exit_code": 1,
+      "result": "FAILED: branch_or_worktree, requested_action, created_at, artifacts, tests_run, decisions, blockers, and commit are missing or invalid."
+    },
+    {
+      "command": "writer temporary Windows package smoke script (Playwright Electron launch + M5 save/load interaction)",
+      "exit_code": 1,
+      "result": "FAILED: could not locate visible M5 playable slice workspace in packaged app within 120s; interactive M5 launch/save/load/import/export boundary evidence is incomplete."
+    },
+    {
+      "command": "lead inspection of apps/desktop/src/main/main.ts and apps/desktop/renderer/index.html",
+      "exit_code": 0,
+      "result": "Desktop normal mode loads renderer/index.html; host-hash mode loads renderer/web/host-hash-canary.html. The current renderer/index.html is a security-boundary shell and does not itself expose the M5 web workspace."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+      "exit_code": 0,
+      "result": "Task schema remains valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before REQUEST_CHANGES routing."
+    }
+  ],
+  "decisions": [
+    "Do not route to security_reviewer until the writer handoff is schema-valid and the required package smoke either passes or is backed by a reviewer-acceptable, explicitly scoped replacement that still proves the acceptance criteria.",
+    "The required package smoke is central to this task; current failure cannot be accepted as PASS_WITH_LIMITS before a security review because the package does not demonstrate M5 slice launch/save boundary behavior.",
+    "The likely narrow fix is in apps/desktop renderer/package smoke surfaces: normal desktop mode currently loads the security shell, while web assets live under renderer/web. Any fix must preserve nodeIntegration=false, contextIsolation=true, sandbox=true, CSP, preload schema validation, and no arbitrary IPC/path/shell exposure.",
+    "Do not touch forbidden paths and do not expand into public release, signing, store, accounts, telemetry, network services, or commercial packaging."
+  ],
+  "risks": [
+    {
+      "risk": "Adding package smoke support could accidentally broaden Electron IPC or renderer filesystem access; security posture must remain strict."
+    },
+    {
+      "risk": "Task required_tests mentions pnpm e2e, but repo actual script is pnpm test:e2e; R2 handoff should record the alias caveat and use pnpm test:e2e."
+    }
+  ],
+  "blockers": [
+    "Writer REVIEW handoff is not schema-valid.",
+    "Required Windows package smoke failed to locate M5 playable slice workspace and did not verify package save/import/export boundaries."
+  ],
+  "route_to": "release_engineer",
+  "requested_action": "Repair the branch with the narrowest allowed-path change needed to provide reproducible Windows package smoke evidence that launches the M5 slice and verifies save/load/import/export boundary behavior plus host hash/security canaries. Rewrite or replace the writer handoff as an R2 schema-valid REVIEW at project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json, rerun required tests, and leave status REVIEW route_to=security_reviewer.",
+  "created_at": "2026-06-27T01:52:59+08:00"
+}
