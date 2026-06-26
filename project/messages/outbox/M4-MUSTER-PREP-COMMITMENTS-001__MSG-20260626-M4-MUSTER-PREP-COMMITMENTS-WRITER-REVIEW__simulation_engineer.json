@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-REVIEW",
+  "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Replacement writer completed the M4 muster preparation and mobilized force commitment implementation from the existing uncommitted diff. The change adds explicit protocol commands and query support for creating M3-obligation-backed muster commitments and recording muster responses, stores promised/due/assembled/delayed/refused/released quantities in authoritative M4 state with stable source IDs, deterministic assembly day/window, reason-code ordering, local economic/loyalty cost hooks, canonical hash coverage, and read-only query models. It remains scoped to sim-core/protocol/tests and does not implement grain consumption, route capacity, march execution, siege, battle, postwar settlement, UI, full diplomacy, or save-format milestone work.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/sim-core-m4-muster-prep-commitments.test.ts",
+    "project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-muster-prep-commitments",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before handoff file creation, only allowed task files were modified plus the new untracked tests/sim-core-m4-muster-prep-commitments.test.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Post-format sim-core suite passed: 16 files, 112 tests. Includes M4 muster tests for commitment creation, player/AI shared command path, response lifecycle, illegal subject, duplicate commitment/source, duplicate response, decreasing response, over-commitment, expired/unavailable obligation, wrong actor, invalid quantities, deterministic ordering, read-only query copy behavior, JSON round-trip validation, and malformed runtime schema rejection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Protocol command/query schema suite passed: 1 file, 8 tests. Includes parse coverage for sim.create-muster-commitment, sim.record-muster-response, sim.list-m4-muster-commitments, and negative promisedTroops validation."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "Sim-core TypeScript strict check passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol typecheck",
+      "exit_code": 1,
+      "result": "No selected package has a typecheck script; workspace pnpm check was run afterward and passed all available package typecheck scripts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible deterministic hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed, determinism passed, root Vitest passed 27 files / 179 tests, and web package tests passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, workspace typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-MUSTER-PREP-COMMITMENTS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-MUSTER-PREP-COMMITMENTS-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-MUSTER-PREP-COMMITMENTS-001",
+      "exit_code": 0,
+      "result": "Parsed task JSON and verified required top-level fields, expected task id, status IN_PROGRESS, risk R3, and allowed/forbidden scope arrays."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported after formatting."
+    },
+    {
+      "command": "rg real-time/random scan over touched sim-core/protocol implementation files",
+      "exit_code": 1,
+      "result": "No Math.random, Date.now, performance.now, or new Date matches in touched sim-core/protocol implementation files."
+    },
+    {
+      "command": "rg UI/Electron/Node-fs import scan over touched sim-core/protocol implementation files",
+      "exit_code": 1,
+      "result": "No React, Pixi, Electron, node:fs, or fs import matches in touched sim-core/protocol implementation files."
+    }
+  ],
+  "decisions": [
+    "Kept M4 muster commitments as authoritative in-memory campaign state under state.m4.mobilizedForceCommitments, with branded MobilizedForceCommitmentId and explicit canonical formatting so state hashes include commitment/readiness/response changes.",
+    "Used only M3 amount-based troop obligations as the initial stable commitment source. The stored source snapshots obligationId, debtorPolityId, and creditorPolityId so later march, AI, UI, and validation tasks have stable auditable source IDs without giving AI hidden state access.",
+    "Create commitment authority is checked against the campaign owner polity; response recording is checked against debtor authority unless releasedTroops increases, in which case creditor authority is required.",
+    "Deterministic plannedAssemblyDay is the integer midpoint of the assembly window. Local cost hooks are explicit economic-labor-reservation and loyalty-pressure records only; they do not yet mutate M2 economy or loyalty values.",
+    "Duplicate response submissions are rejected unless at least one assembled/delayed/refused/released quantity advances, preventing repeated fulfillment/reason accumulation.",
+    "Did not modify packages/save-format because it is forbidden for this task. Coverage is limited to serializable in-memory JSON round-trip plus validateWorldStateV0/canonical hash stability, matching the task's boundary."
+  ],
+  "risks": [
+    "R3 remains in effect because this changes protocol and authoritative WorldState/canonical hash behavior; systems_architect review is required, and QA should review before acceptance.",
+    "Existing save-format DTOs do not persist M4 state. This task intentionally avoided save-format milestone work; later M4 save-runtime work must add explicit DTO/migration support before claiming full save/load persistence for muster commitments.",
+    "The carried uncommitted diff came from the disconnected prior writer. I inspected and fixed it in place without reverting prior work; no commit was created in this replacement handoff."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review M4-MUSTER-PREP-COMMITMENTS-001 on branch feat/m4-muster-prep-commitments and route the review to systems_architect thread 019f0152-54c5-7d40-a504-dfc1a75082e1. Do not mark ACCEPTED or CLOSED until systems_architect and required QA review pass.",
+  "created_at": "2026-06-26T08:56:11+08:00"
+}

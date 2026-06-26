@@ -14,18 +14,17 @@
     "019f0163-f8a2-7462-8fa4-9eca83a5a3f4": {
       "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
       "role": "simulation_engineer",
-      "status": "active",
+      "status": "review_ready",
       "branch_or_worktree": "feat/m4-muster-prep-commitments",
-      "replaces_thread_id": "019f0152-40b7-7a73-b231-48227617563f",
-      "start_submission_id": "019f0164-4dbf-7b21-8a75-127af6d0099e"
+      "review_ready_handoff": "project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-REVIEW__simulation_engineer.json"
     },
     "019f0152-54c5-7d40-a504-dfc1a75082e1": {
       "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
       "role": "systems_architect",
-      "status": "awaiting_review_ready",
+      "status": "reviewing",
       "branch_or_worktree": "feat/m4-muster-prep-commitments",
-      "await_submission_id": "019f0154-a122-7851-8156-52b9e0aa1f2b",
-      "replacement_writer_notice_submission_id": "019f0164-4dcf-7ee3-aef3-9ce2b52ae800"
+      "review_ready_handoff": "project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-REVIEW__simulation_engineer.json",
+      "review_ready_submission_id": "019f016f-7063-7f21-9868-de571e125c49"
     }
   },
   "unresolved_risks": [
@@ -76,12 +75,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T00:47:33Z",
+  "updated_at": "2026-06-26T00:59:24Z",
   "current_tasks": [
     "M4-MUSTER-PREP-COMMITMENTS-001"
   ],
   "last_integrated_task": "M4-CAMPAIGN-OBJECTIVES-001",
   "last_main_commit": "4cd5cd1fc1073c3c76aaca8d78b8be182e30898a",
   "next_ready_tasks": [],
-  "next_action": "Replacement simulation_engineer completes inherited implementation diff, writes validated REVIEW handoff, then lead routes to systems_architect for review/fix loop."
+  "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M4 muster commitments; route fixes back to replacement writer if needed."
 }
