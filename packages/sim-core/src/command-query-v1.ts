@@ -49,6 +49,9 @@ import {
   parseM3ObligationId,
   parseM3PolicyId,
   parseM3SuccessionId,
+  parseM6DiplomaticAgreementId,
+  parseM6DiplomaticRelationId,
+  parseM6LegitimacySourceId,
   parsePersonId,
   parsePopulationGroupId,
   parsePolityId,
@@ -121,6 +124,13 @@ import {
   type M4WithdrawalKindV0,
   type M4WithdrawalStateV0,
   type M4WithdrawalTriggerV0,
+  type M6DiplomaticAgreementStateV0,
+  type M6DiplomacyLegitimacyStateV0,
+  type M6DiplomaticRelationStateV0,
+  type M6LegitimacyAudienceV0,
+  type M6LegitimacyProfileStateV0,
+  type M6LegitimacySourceStateV0,
+  type M6RecognitionEdgeStateV0,
   type M2EconomyPopulationStateV0,
   type GameDay,
   type M2LaborCommitmentPurposeV0,
@@ -143,6 +153,8 @@ export type DomainErrorCodeV1 =
   | "campaign-objective-invalid"
   | "character-location-invalid"
   | "character-unavailable"
+  | "diplomacy-cycle"
+  | "diplomacy-state-invalid"
   | "duplicate-command"
   | "duplicate-fulfillment"
   | "engagement-state-invalid"
@@ -401,6 +413,46 @@ export type DomainEventV1 =
       readonly reputationHooks: M4SiegeStateV0["reputationHooks"];
       readonly revisionBefore: number;
       readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m6-diplomatic-agreement-proposed";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly relationId: number;
+      readonly agreementId: number;
+      readonly proposerPolityId: PolityId;
+      readonly targetPolityId: PolityId;
+      readonly agreementKind: M6DiplomaticAgreementStateV0["agreementKind"];
+      readonly reasonCodes: readonly string[];
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m6-diplomatic-agreement-answered";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly agreementId: number;
+      readonly statusAfter: M6DiplomaticAgreementStateV0["status"];
+      readonly recognitionCreated: boolean;
+      readonly reasonCodes: readonly string[];
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m6-legitimacy-source-recorded";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly sourceId: number;
+      readonly polityId: PolityId;
+      readonly audience: M6LegitimacyAudienceV0;
+      readonly magnitudeBps: number;
+      readonly scoreAfterBps: number;
+      readonly reasonCodes: readonly string[];
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
     };
 
 export type StateDeltaV1 =
@@ -487,6 +539,23 @@ export type StateDeltaV1 =
       readonly successionId: number;
       readonly polityId: PolityId;
       readonly status: "pending" | "resolved";
+      readonly revision: number;
+      readonly stateHash: string;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "state.m6-diplomacy-updated";
+      readonly relationId: number;
+      readonly agreementId: number;
+      readonly revision: number;
+      readonly stateHash: string;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "state.m6-legitimacy-updated";
+      readonly polityId: PolityId;
+      readonly audience: M6LegitimacyAudienceV0;
+      readonly scoreBps: number;
       readonly revision: number;
       readonly stateHash: string;
     };
@@ -709,6 +778,23 @@ export type QueryResultV1 =
             readonly outcomes: readonly M4WarOutcomeReadModelV1[];
             readonly postwarCandidates: readonly M4PostwarCandidateReadModelV1[];
             readonly reasonCodes: readonly string[];
+          }
+        | {
+            readonly kind: "sim.list-m6-diplomacy";
+            readonly day: number;
+            readonly revision: number;
+            readonly observerPolityId: number;
+            readonly relations: readonly M6DiplomaticRelationReadModelV1[];
+            readonly agreements: readonly M6DiplomaticAgreementReadModelV1[];
+            readonly recognitionEdges: readonly M6RecognitionEdgeReadModelV1[];
+            readonly reasonCodes: readonly string[];
+          }
+        | {
+            readonly kind: "sim.list-m6-recognized-order";
+            readonly day: number;
+            readonly revision: number;
+            readonly polityId: number;
+            readonly decisions: readonly M6RecognizedOrderReadModelV1[];
           };
     }
   | {
@@ -781,6 +867,51 @@ export interface M3SuccessionCrisisReadModelV1 {
   readonly polityId: number;
   readonly status: "pending" | "resolved";
   readonly candidates: readonly M3SuccessionCandidateReadModelV1[];
+}
+
+export interface M6DiplomaticRelationReadModelV1 {
+  readonly relationId: number;
+  readonly polityAId: number;
+  readonly polityBId: number;
+  readonly trustBps: number;
+  readonly affinityBps: number;
+  readonly fearBps: number;
+  readonly threatBps: number;
+  readonly interestAlignmentBps: number;
+  readonly historicalDebt: number;
+  readonly borderConflictBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6DiplomaticAgreementReadModelV1 {
+  readonly agreementId: number;
+  readonly relationId: number;
+  readonly proposerPolityId: number;
+  readonly targetPolityId: number;
+  readonly agreementKind: M6DiplomaticAgreementStateV0["agreementKind"];
+  readonly status: M6DiplomaticAgreementStateV0["status"];
+  readonly startDay: number;
+  readonly endDay: number;
+  readonly recognitionDirection: M6DiplomaticAgreementStateV0["recognitionDirection"];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6RecognitionEdgeReadModelV1 {
+  readonly fromPolityId: number;
+  readonly toPolityId: number;
+  readonly agreementId: number;
+  readonly reasonCode: string;
+}
+
+export interface M6RecognizedOrderReadModelV1 {
+  readonly polityId: number;
+  readonly recognizedByCount: number;
+  readonly legitimacyScoreBps: number;
+  readonly activeObligationCount: number;
+  readonly pendingSuccessionCount: number;
+  readonly postwarCandidateCount: number;
+  readonly canPursueVictory: boolean;
+  readonly reasonCodes: readonly string[];
 }
 
 export type M2TransportRoutePreviewReadModelV1 =
@@ -1276,6 +1407,14 @@ export function loadSaveV1(
           }
         ];
       }
+      if (runtime.world.state.m6 !== undefined && !hasM6RuntimeState(candidate)) {
+        return [
+          {
+            path: "state.m6",
+            message: "Save snapshot is missing required M6 runtime state for this runtime."
+          }
+        ];
+      }
 
       return validateWorldStateV0(candidate);
     }
@@ -1604,6 +1743,12 @@ function validateAndEvaluateCommand(
       return evaluateCreateCharacterRelationship(runtime.world, command);
     case "sim.apply-m3-postwar-governance":
       return evaluateApplyM3PostwarGovernance(runtime.world, command);
+    case "sim.propose-diplomatic-agreement":
+      return evaluateProposeDiplomaticAgreement(runtime.world, command);
+    case "sim.answer-diplomatic-agreement":
+      return evaluateAnswerDiplomaticAgreement(runtime.world, command);
+    case "sim.record-legitimacy-source":
+      return evaluateRecordLegitimacySource(runtime.world, command);
     case "sim.create-campaign-objective":
       return evaluateCreateCampaignObjective(runtime.world, command);
     case "sim.update-campaign-objective":
@@ -3145,6 +3290,460 @@ function evaluateApplyM3PostwarGovernance(
       deltas: []
     }
   };
+}
+
+function evaluateProposeDiplomaticAgreement(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.propose-diplomatic-agreement" }>
+): EvaluationResult {
+  const proposerPolityId = parsePolityId(command.payload.proposerPolityId);
+  const targetPolityId = parsePolityId(command.payload.targetPolityId);
+  const relationId = parseM6DiplomaticRelationId(command.payload.relationId);
+  const agreementId = parseM6DiplomaticAgreementId(command.payload.agreementId);
+  const m6 = ensureM6State(world);
+  const polityError = validateM6CommandPolities(world, proposerPolityId, targetPolityId);
+  if (polityError !== null) {
+    return { ok: false, error: polityError };
+  }
+  if (m6.agreements.some((agreement) => agreement.agreementId === agreementId)) {
+    return {
+      ok: false,
+      error: {
+        code: "diplomacy-state-invalid",
+        path: "payload.agreementId",
+        message: "sim.propose-diplomatic-agreement agreementId already exists."
+      }
+    };
+  }
+
+  const relation = findM6Relation(m6, proposerPolityId, targetPolityId);
+  const nextRelation = relation ?? createM6Relation(command, relationId, proposerPolityId, targetPolityId);
+  const agreement: M6DiplomaticAgreementStateV0 = {
+    agreementId,
+    relationId: nextRelation.relationId,
+    proposerPolityId,
+    targetPolityId,
+    agreementKind: command.payload.agreementKind,
+    status: "proposed",
+    startDay: parseGameDay(world.meta.currentDay),
+    endDay: parseGameDay(world.meta.currentDay + command.payload.durationDays),
+    recognitionDirection: command.payload.recognitionDirection,
+    reasonCodes: [command.payload.reasonCode]
+  };
+  const nextM6: M6DiplomacyLegitimacyStateV0 = {
+    ...m6,
+    relations:
+      relation === undefined
+        ? [...m6.relations, nextRelation]
+        : m6.relations.map((entry) =>
+            entry.relationId === relation.relationId
+              ? { ...entry, updatedDay: parseGameDay(world.meta.currentDay) }
+              : entry
+          ),
+    agreements: [...m6.agreements, agreement]
+  };
+  const nextWorld = commitRuntimeState(world, { ...world.state, m6: nextM6 });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      wouldChangeState: true,
+      events: [
+        {
+          schemaVersion: 1,
+          kind: "sim.m6-diplomatic-agreement-proposed",
+          commandId: command.commandId,
+          actor: command.actor,
+          relationId,
+          agreementId,
+          proposerPolityId,
+          targetPolityId,
+          agreementKind: agreement.agreementKind,
+          reasonCodes: agreement.reasonCodes,
+          revisionBefore: world.meta.revision,
+          revisionAfter: nextWorld.meta.revision
+        }
+      ],
+      deltas: [
+        {
+          schemaVersion: 1,
+          kind: "state.m6-diplomacy-updated",
+          relationId,
+          agreementId,
+          revision: nextWorld.meta.revision,
+          stateHash: nextWorld.meta.stateHash
+        }
+      ]
+    }
+  };
+}
+
+function evaluateAnswerDiplomaticAgreement(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.answer-diplomatic-agreement" }>
+): EvaluationResult {
+  const m6 = world.state.m6;
+  if (m6 === undefined) {
+    return m6MissingError("sim.answer-diplomatic-agreement");
+  }
+  const agreementId = parseM6DiplomaticAgreementId(command.payload.agreementId);
+  const agreement = m6.agreements.find((entry) => entry.agreementId === agreementId);
+  if (agreement === undefined) {
+    return {
+      ok: false,
+      error: {
+        code: "bad-id",
+        path: "payload.agreementId",
+        message: "sim.answer-diplomatic-agreement references a missing agreement."
+      }
+    };
+  }
+  if (agreement.status !== "proposed") {
+    return {
+      ok: false,
+      error: {
+        code: "diplomacy-state-invalid",
+        path: "payload.agreementId",
+        message: "sim.answer-diplomatic-agreement requires a proposed agreement."
+      }
+    };
+  }
+  const nextStatus: M6DiplomaticAgreementStateV0["status"] = command.payload.accepted
+    ? "active"
+    : "rejected";
+  const recognition = command.payload.accepted
+    ? recognitionEdgeFromAgreement(agreement)
+    : null;
+  if (recognition !== null && wouldCreateM6RecognitionCycle(m6.recognitionEdges, recognition)) {
+    return {
+      ok: false,
+      error: {
+        code: "diplomacy-cycle",
+        path: "payload.agreementId",
+        message: "sim.answer-diplomatic-agreement would create a recognition cycle."
+      }
+    };
+  }
+  const nextM6: M6DiplomacyLegitimacyStateV0 = {
+    ...m6,
+    agreements: m6.agreements.map((entry) =>
+      entry.agreementId === agreementId
+        ? {
+            ...entry,
+            status: nextStatus,
+            reasonCodes: sortedUniqueText([...entry.reasonCodes, command.payload.reasonCode])
+          }
+        : entry
+    ),
+    recognitionEdges:
+      recognition === null ? m6.recognitionEdges : [...m6.recognitionEdges, recognition]
+  };
+  const nextWorld = commitRuntimeState(world, { ...world.state, m6: nextM6 });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      wouldChangeState: true,
+      events: [
+        {
+          schemaVersion: 1,
+          kind: "sim.m6-diplomatic-agreement-answered",
+          commandId: command.commandId,
+          actor: command.actor,
+          agreementId,
+          statusAfter: nextStatus,
+          recognitionCreated: recognition !== null,
+          reasonCodes: [command.payload.reasonCode],
+          revisionBefore: world.meta.revision,
+          revisionAfter: nextWorld.meta.revision
+        }
+      ],
+      deltas: [
+        {
+          schemaVersion: 1,
+          kind: "state.m6-diplomacy-updated",
+          relationId: agreement.relationId,
+          agreementId,
+          revision: nextWorld.meta.revision,
+          stateHash: nextWorld.meta.stateHash
+        }
+      ]
+    }
+  };
+}
+
+function evaluateRecordLegitimacySource(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.record-legitimacy-source" }>
+): EvaluationResult {
+  const m6 = ensureM6State(world);
+  const sourceId = parseM6LegitimacySourceId(command.payload.sourceId);
+  const polityId = parsePolityId(command.payload.polityId);
+  if (!world.definitions.polities.some((polity) => polity.id === polityId)) {
+    return {
+      ok: false,
+      error: {
+        code: "bad-id",
+        path: "payload.polityId",
+        message: "sim.record-legitimacy-source references a missing PolityId."
+      }
+    };
+  }
+  if (m6.legitimacySources.some((source) => source.sourceId === sourceId)) {
+    return {
+      ok: false,
+      error: {
+        code: "diplomacy-state-invalid",
+        path: "payload.sourceId",
+        message: "sim.record-legitimacy-source sourceId already exists."
+      }
+    };
+  }
+  const source: M6LegitimacySourceStateV0 = {
+    sourceId,
+    polityId,
+    audience: command.payload.audience,
+    sourceKind: command.payload.sourceKind,
+    magnitudeBps: command.payload.magnitudeBps,
+    sourceRef: command.payload.sourceRef,
+    reasonCode: command.payload.reasonCode,
+    createdDay: parseGameDay(world.meta.currentDay)
+  };
+  const profile = recalculateM6LegitimacyProfile([...m6.legitimacySources, source], polityId, source.audience);
+  const nextM6: M6DiplomacyLegitimacyStateV0 = {
+    ...m6,
+    legitimacySources: [...m6.legitimacySources, source],
+    legitimacyProfiles: [
+      ...m6.legitimacyProfiles.filter(
+        (entry) => !(entry.polityId === polityId && entry.audience === source.audience)
+      ),
+      profile
+    ]
+  };
+  const nextWorld = commitRuntimeState(world, { ...world.state, m6: nextM6 });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      wouldChangeState: true,
+      events: [
+        {
+          schemaVersion: 1,
+          kind: "sim.m6-legitimacy-source-recorded",
+          commandId: command.commandId,
+          actor: command.actor,
+          sourceId,
+          polityId,
+          audience: source.audience,
+          magnitudeBps: source.magnitudeBps,
+          scoreAfterBps: profile.scoreBps,
+          reasonCodes: [source.reasonCode],
+          revisionBefore: world.meta.revision,
+          revisionAfter: nextWorld.meta.revision
+        }
+      ],
+      deltas: [
+        {
+          schemaVersion: 1,
+          kind: "state.m6-legitimacy-updated",
+          polityId,
+          audience: source.audience,
+          scoreBps: profile.scoreBps,
+          revision: nextWorld.meta.revision,
+          stateHash: nextWorld.meta.stateHash
+        }
+      ]
+    }
+  };
+}
+
+function ensureM6State(world: WorldStateV0): M6DiplomacyLegitimacyStateV0 {
+  return world.state.m6 ?? {
+    schemaVersion: 1,
+    relations: [],
+    agreements: [],
+    recognitionEdges: [],
+    legitimacySources: [],
+    legitimacyProfiles: []
+  };
+}
+
+function m6MissingError(commandKind: string): EvaluationResult {
+  return {
+    ok: false,
+    error: {
+      code: "diplomacy-state-invalid",
+      path: "state.m6",
+      message: `${commandKind} requires an M6 diplomacy legitimacy state.`
+    }
+  };
+}
+
+function validateM6CommandPolities(
+  world: WorldStateV0,
+  proposerPolityId: PolityId,
+  targetPolityId: PolityId
+): DomainErrorV1 | null {
+  if (!world.definitions.polities.some((polity) => polity.id === proposerPolityId)) {
+    return {
+      code: "bad-id",
+      path: "payload.proposerPolityId",
+      message: "M6 diplomacy command references a missing proposer PolityId."
+    };
+  }
+  if (!world.definitions.polities.some((polity) => polity.id === targetPolityId)) {
+    return {
+      code: "bad-id",
+      path: "payload.targetPolityId",
+      message: "M6 diplomacy command references a missing target PolityId."
+    };
+  }
+  if (proposerPolityId === targetPolityId) {
+    return {
+      code: "diplomacy-state-invalid",
+      path: "payload.targetPolityId",
+      message: "M6 diplomacy command requires different polities."
+    };
+  }
+  return null;
+}
+
+function findM6Relation(
+  m6: M6DiplomacyLegitimacyStateV0,
+  leftPolityId: PolityId,
+  rightPolityId: PolityId
+): M6DiplomaticRelationStateV0 | undefined {
+  const low = Math.min(leftPolityId, rightPolityId);
+  const high = Math.max(leftPolityId, rightPolityId);
+  return m6.relations.find(
+    (relation) => relation.polityAId === low && relation.polityBId === high
+  );
+}
+
+function createM6Relation(
+  command: Extract<GameCommandV1, { readonly kind: "sim.propose-diplomatic-agreement" }>,
+  relationId: ReturnType<typeof parseM6DiplomaticRelationId>,
+  proposerPolityId: PolityId,
+  targetPolityId: PolityId
+): M6DiplomaticRelationStateV0 {
+  return {
+    relationId,
+    polityAId: parsePolityId(Math.min(proposerPolityId, targetPolityId)),
+    polityBId: parsePolityId(Math.max(proposerPolityId, targetPolityId)),
+    trustBps: 5_000,
+    affinityBps: 5_000,
+    fearBps: 0,
+    threatBps: 0,
+    interestAlignmentBps: 5_000,
+    historicalDebt: 0,
+    borderConflictBps: 0,
+    updatedDay: parseGameDay(command.expectedDay),
+    reasonCodes: [command.payload.reasonCode]
+  };
+}
+
+function recognitionEdgeFromAgreement(
+  agreement: M6DiplomaticAgreementStateV0
+): M6RecognitionEdgeStateV0 | null {
+  switch (agreement.recognitionDirection) {
+    case "none":
+      return null;
+    case "proposer-recognizes-target":
+      return {
+        fromPolityId: agreement.proposerPolityId,
+        toPolityId: agreement.targetPolityId,
+        agreementId: agreement.agreementId,
+        reasonCode: "diplomacy.recognition.accepted"
+      };
+    case "target-recognizes-proposer":
+      return {
+        fromPolityId: agreement.targetPolityId,
+        toPolityId: agreement.proposerPolityId,
+        agreementId: agreement.agreementId,
+        reasonCode: "diplomacy.recognition.accepted"
+      };
+  }
+}
+
+function wouldCreateM6RecognitionCycle(
+  edges: readonly M6RecognitionEdgeStateV0[],
+  nextEdge: M6RecognitionEdgeStateV0
+): boolean {
+  return hasM6RecognitionPath([...edges, nextEdge], nextEdge.toPolityId, nextEdge.fromPolityId);
+}
+
+function hasM6RecognitionPath(
+  edges: readonly M6RecognitionEdgeStateV0[],
+  startPolityId: number,
+  targetPolityId: number
+): boolean {
+  const visited = new Set<number>();
+  const pending = [startPolityId];
+  while (pending.length > 0) {
+    const current = pending.shift();
+    if (current === undefined || visited.has(current)) {
+      continue;
+    }
+    if (current === targetPolityId) {
+      return true;
+    }
+    visited.add(current);
+    const next = edges
+      .filter((edge) => edge.fromPolityId === current)
+      .sort((left, right) => left.toPolityId - right.toPolityId || left.agreementId - right.agreementId)
+      .map((edge) => edge.toPolityId);
+    pending.push(...next);
+  }
+  return false;
+}
+
+function recalculateM6LegitimacyProfile(
+  sources: readonly M6LegitimacySourceStateV0[],
+  polityId: PolityId,
+  audience: M6LegitimacyAudienceV0
+): M6LegitimacyProfileStateV0 {
+  const scopedSources = sources
+    .filter((source) => source.polityId === polityId && source.audience === audience)
+    .sort((left, right) => left.createdDay - right.createdDay || left.sourceId - right.sourceId);
+  const rawScore = scopedSources.reduce((total, source) => total + source.magnitudeBps, 0);
+  const scoreBps = clampM6Bps(rawScore);
+  return {
+    polityId,
+    audience,
+    scoreBps,
+    pressureBps: clampM6Bps(10_000 - scoreBps),
+    sourceIds: scopedSources.map((source) => source.sourceId),
+    reasonCodes: sortedUniqueText(scopedSources.map((source) => source.reasonCode))
+  };
+}
+
+function clampM6Bps(value: number): number {
+  if (value < 0) {
+    return 0;
+  }
+  if (value > 10_000) {
+    return 10_000;
+  }
+  return value;
+}
+
+function sortedUniqueText(values: readonly string[]): readonly string[] {
+  return [...new Set(values)].sort(compareText);
 }
 
 function evaluateCreateCampaignObjective(
@@ -7942,6 +8541,10 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM4WithdrawalStateQuery(runtime, query);
     case "sim.list-m4-war-outcomes":
       return executeM4WarOutcomesQuery(runtime, query);
+    case "sim.list-m6-diplomacy":
+      return executeM6DiplomacyQuery(runtime, query);
+    case "sim.list-m6-recognized-order":
+      return executeM6RecognizedOrderQuery(runtime, query);
   }
 }
 
@@ -8799,6 +9402,204 @@ function copyM4PostwarCandidateReadModel(
     validM3Methods: [...candidate.validM3Methods],
     reasonCodes: [...candidate.reasonCodes]
   };
+}
+
+function executeM6DiplomacyQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.list-m6-diplomacy" }>
+): QueryResultV1 {
+  const observerPolityId = parsePolityId(query.payload.observerPolityId);
+  if (!runtime.world.definitions.polities.some((polity) => polity.id === observerPolityId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.observerPolityId",
+        message: "sim.list-m6-diplomacy references a missing observer PolityId."
+      }
+    };
+  }
+  const m6 = runtime.world.state.m6;
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m6-diplomacy",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      observerPolityId,
+      relations:
+        m6?.relations
+          .filter(
+            (relation) =>
+              relation.polityAId === observerPolityId || relation.polityBId === observerPolityId
+          )
+          .sort((left, right) => left.polityAId - right.polityAId || left.polityBId - right.polityBId)
+          .map(copyM6RelationReadModel) ?? [],
+      agreements:
+        m6?.agreements
+          .filter(
+            (agreement) =>
+              agreement.proposerPolityId === observerPolityId ||
+              agreement.targetPolityId === observerPolityId
+          )
+          .sort((left, right) => left.relationId - right.relationId || left.agreementId - right.agreementId)
+          .map(copyM6AgreementReadModel) ?? [],
+      recognitionEdges:
+        m6?.recognitionEdges
+          .filter(
+            (edge) => edge.fromPolityId === observerPolityId || edge.toPolityId === observerPolityId
+          )
+          .sort((left, right) => left.fromPolityId - right.fromPolityId || left.toPolityId - right.toPolityId)
+          .map(copyM6RecognitionEdgeReadModel) ?? [],
+      reasonCodes: ["m6.diplomacy.query.observer-visible"]
+    }
+  };
+}
+
+function executeM6RecognizedOrderQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.list-m6-recognized-order" }>
+): QueryResultV1 {
+  const polityId = parsePolityId(query.payload.polityId);
+  if (!runtime.world.definitions.polities.some((polity) => polity.id === polityId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.polityId",
+        message: "sim.list-m6-recognized-order references a missing PolityId."
+      }
+    };
+  }
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m6-recognized-order",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      polityId,
+      decisions: [buildM6RecognizedOrderReadModel(runtime, polityId)]
+    }
+  };
+}
+
+function copyM6RelationReadModel(
+  relation: M6DiplomaticRelationStateV0
+): M6DiplomaticRelationReadModelV1 {
+  return {
+    relationId: relation.relationId,
+    polityAId: relation.polityAId,
+    polityBId: relation.polityBId,
+    trustBps: relation.trustBps,
+    affinityBps: relation.affinityBps,
+    fearBps: relation.fearBps,
+    threatBps: relation.threatBps,
+    interestAlignmentBps: relation.interestAlignmentBps,
+    historicalDebt: relation.historicalDebt,
+    borderConflictBps: relation.borderConflictBps,
+    reasonCodes: [...relation.reasonCodes]
+  };
+}
+
+function copyM6AgreementReadModel(
+  agreement: M6DiplomaticAgreementStateV0
+): M6DiplomaticAgreementReadModelV1 {
+  return {
+    agreementId: agreement.agreementId,
+    relationId: agreement.relationId,
+    proposerPolityId: agreement.proposerPolityId,
+    targetPolityId: agreement.targetPolityId,
+    agreementKind: agreement.agreementKind,
+    status: agreement.status,
+    startDay: agreement.startDay,
+    endDay: agreement.endDay,
+    recognitionDirection: agreement.recognitionDirection,
+    reasonCodes: [...agreement.reasonCodes]
+  };
+}
+
+function copyM6RecognitionEdgeReadModel(edge: M6RecognitionEdgeStateV0): M6RecognitionEdgeReadModelV1 {
+  return {
+    fromPolityId: edge.fromPolityId,
+    toPolityId: edge.toPolityId,
+    agreementId: edge.agreementId,
+    reasonCode: edge.reasonCode
+  };
+}
+
+function buildM6RecognizedOrderReadModel(
+  runtime: SimulationRuntimeV1,
+  polityId: PolityId
+): M6RecognizedOrderReadModelV1 {
+  const m6 = runtime.world.state.m6;
+  const recognizedByCount =
+    m6?.recognitionEdges.filter((edge) => edge.toPolityId === polityId).length ?? 0;
+  const profile = m6?.legitimacyProfiles.find(
+    (entry) => entry.polityId === polityId && entry.audience === "vassal-rulers"
+  );
+  const legitimacyScoreBps = profile?.scoreBps ?? 0;
+  const activeObligationCount =
+    runtime.world.state.m3?.obligations.filter(
+      (obligation) => obligation.creditorPolityId === polityId && obligation.status === "active"
+    ).length ?? 0;
+  const pendingSuccessionCount =
+    runtime.world.state.m3?.successionCrises.filter(
+      (crisis) => crisis.polityId === polityId && crisis.status === "pending"
+    ).length ?? 0;
+  const postwarCandidateCount =
+    runtime.world.state.m4?.postwarCandidates.filter(
+      (candidate) => candidate.victorPolityId === polityId
+    ).length ?? 0;
+  const postwarSourceCount =
+    m6?.legitimacySources.filter(
+      (source) => source.polityId === polityId && source.sourceKind === "postwar-settlement"
+    ).length ?? 0;
+  const reasonCodes = m6RecognizedOrderReasonCodes({
+    recognizedByCount,
+    legitimacyScoreBps,
+    activeObligationCount,
+    pendingSuccessionCount,
+    postwarEvidenceCount: postwarCandidateCount + postwarSourceCount
+  });
+  return {
+    polityId,
+    recognizedByCount,
+    legitimacyScoreBps,
+    activeObligationCount,
+    pendingSuccessionCount,
+    postwarCandidateCount,
+    canPursueVictory:
+      recognizedByCount > 0 &&
+      legitimacyScoreBps >= 1_000 &&
+      pendingSuccessionCount === 0,
+    reasonCodes
+  };
+}
+
+function m6RecognizedOrderReasonCodes(input: {
+  readonly recognizedByCount: number;
+  readonly legitimacyScoreBps: number;
+  readonly activeObligationCount: number;
+  readonly pendingSuccessionCount: number;
+  readonly postwarEvidenceCount: number;
+}): readonly string[] {
+  return [
+    input.recognizedByCount > 0
+      ? "m6.recognized-order.diplomatic-recognition"
+      : "m6.recognized-order.recognition-missing",
+    input.legitimacyScoreBps >= 1_000
+      ? "m6.recognized-order.legitimacy-sufficient"
+      : "m6.recognized-order.legitimacy-insufficient",
+    input.activeObligationCount >= 0
+      ? "m6.recognized-order.obligations-clear"
+      : "m6.recognized-order.obligation-risk",
+    input.pendingSuccessionCount === 0
+      ? "m6.recognized-order.succession-clear"
+      : "m6.recognized-order.succession-pending",
+    input.postwarEvidenceCount > 0
+      ? "m6.recognized-order.postwar-evidence-present"
+      : "m6.recognized-order.postwar-evidence-absent"
+  ];
 }
 
 function executeM2EconomySummariesQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
@@ -10001,6 +10802,12 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
       return { ...event };
     case "sim.m4-siege-choice-applied":
       return { ...event };
+    case "sim.m6-diplomatic-agreement-proposed":
+      return { ...event };
+    case "sim.m6-diplomatic-agreement-answered":
+      return { ...event };
+    case "sim.m6-legitimacy-source-recorded":
+      return { ...event };
     case "sim.state-hash-verified":
       return { ...event };
   }
@@ -10818,6 +11625,222 @@ function parseSavedDomainEvent(
         }
       };
     }
+    case "sim.m6-diplomatic-agreement-proposed": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const relationId = readPositiveIdRecordField(record, "relationId", `${path}.relationId`, reasons);
+      const agreementId = readPositiveIdRecordField(
+        record,
+        "agreementId",
+        `${path}.agreementId`,
+        reasons
+      );
+      const proposerPolityId = readPositiveIdRecordField(
+        record,
+        "proposerPolityId",
+        `${path}.proposerPolityId`,
+        reasons
+      );
+      const targetPolityId = readPositiveIdRecordField(
+        record,
+        "targetPolityId",
+        `${path}.targetPolityId`,
+        reasons
+      );
+      const agreementKind = readM6AgreementKindRecordField(
+        record,
+        "agreementKind",
+        `${path}.agreementKind`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        relationId === undefined ||
+        agreementId === undefined ||
+        proposerPolityId === undefined ||
+        targetPolityId === undefined ||
+        agreementKind === undefined ||
+        reasonCodes === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          relationId,
+          agreementId,
+          proposerPolityId: parsePolityId(proposerPolityId),
+          targetPolityId: parsePolityId(targetPolityId),
+          agreementKind,
+          reasonCodes,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.m6-diplomatic-agreement-answered": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const agreementId = readPositiveIdRecordField(
+        record,
+        "agreementId",
+        `${path}.agreementId`,
+        reasons
+      );
+      const statusAfter = readM6AgreementStatusRecordField(
+        record,
+        "statusAfter",
+        `${path}.statusAfter`,
+        reasons
+      );
+      const recognitionCreated = readBooleanRecordField(
+        record,
+        "recognitionCreated",
+        `${path}.recognitionCreated`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        agreementId === undefined ||
+        statusAfter === undefined ||
+        recognitionCreated === undefined ||
+        reasonCodes === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          agreementId,
+          statusAfter,
+          recognitionCreated,
+          reasonCodes,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.m6-legitimacy-source-recorded": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const sourceId = readPositiveIdRecordField(record, "sourceId", `${path}.sourceId`, reasons);
+      const polityId = readPositiveIdRecordField(record, "polityId", `${path}.polityId`, reasons);
+      const audience = readM6AudienceRecordField(record, "audience", `${path}.audience`, reasons);
+      const magnitudeBps = readNumberRecordField(
+        record,
+        "magnitudeBps",
+        `${path}.magnitudeBps`,
+        reasons
+      );
+      const scoreAfterBps = readNumberRecordField(
+        record,
+        "scoreAfterBps",
+        `${path}.scoreAfterBps`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        sourceId === undefined ||
+        polityId === undefined ||
+        audience === undefined ||
+        magnitudeBps === undefined ||
+        scoreAfterBps === undefined ||
+        reasonCodes === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          sourceId,
+          polityId: parsePolityId(polityId),
+          audience,
+          magnitudeBps,
+          scoreAfterBps,
+          reasonCodes,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
     case "sim.state-hash-verified": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
@@ -11124,6 +12147,68 @@ function readM4SiegeStatusRecordField(
   return undefined;
 }
 
+function readM6AgreementKindRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M6DiplomaticAgreementStateV0["agreementKind"] | undefined {
+  const value = record[key];
+  if (value === "non-aggression" || value === "military-access" || value === "tribute-recognition") {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M6 agreement kind.`
+  });
+  return undefined;
+}
+
+function readM6AgreementStatusRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M6DiplomaticAgreementStateV0["status"] | undefined {
+  const value = record[key];
+  if (value === "proposed" || value === "active" || value === "rejected") {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M6 agreement status.`
+  });
+  return undefined;
+}
+
+function readM6AudienceRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M6LegitimacyAudienceV0 | undefined {
+  const value = record[key];
+  if (
+    value === "court" ||
+    value === "local-lords" ||
+    value === "military-retinue" ||
+    value === "merchants" ||
+    value === "ritual-network" ||
+    value === "vassal-rulers" ||
+    value === "foreign-courts"
+  ) {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M6 legitimacy audience.`
+  });
+  return undefined;
+}
+
 function readNullableM4SiegeStatusRecordField(
   record: Record<string, unknown>,
   key: string,
@@ -11302,6 +12387,15 @@ function hasM4RuntimeState(candidate: unknown): boolean {
 
   const state = candidate["state"];
   return isRecord(state) && state["m4"] !== undefined;
+}
+
+function hasM6RuntimeState(candidate: unknown): boolean {
+  if (!isRecord(candidate)) {
+    return false;
+  }
+
+  const state = candidate["state"];
+  return isRecord(state) && state["m6"] !== undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

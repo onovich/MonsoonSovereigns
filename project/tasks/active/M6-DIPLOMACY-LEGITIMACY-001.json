@@ -2,7 +2,7 @@
   "id": "M6-DIPLOMACY-LEGITIMACY-001",
   "summary": "Complete deterministic diplomacy and legitimacy substrate",
   "milestone": "M6",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -75,14 +75,15 @@
     "simulation_engineer": "019f0637-1627-75c1-9805-0a63c78f3b9e",
     "replaced_simulation_engineer": "019f0616-e69a-7be1-a688-ed29590a37f1"
   },
-  "route_to": "lead_orchestrator",
+  "route_to": "systems_architect",
   "notes": [
     "Do not implement a hidden grand-strategy manager or implicit RPC layer.",
     "Do not add server, multiplayer, telemetry, arbitrary-code scripting, full peace-treaty UI, or manual node battle.",
     "Protocol or save-format changes beyond explicit additive schemas require systems_architect review and ADR if they change a frozen contract."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T07:16:51+08:00",
+  "updated_at": "2026-06-27T07:24:00+08:00",
+  "review_ready_at": "2026-06-27T07:24:00+08:00",
   "started_at": "2026-06-27T06:41:07+08:00",
   "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-START.json",
@@ -92,6 +93,7 @@
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "replacement_start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-REPLACEMENT-START__lead_orchestrator.json",
   "replacement_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-REPLACEMENT-START.json",
+  "review_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json",
   "replaced_threads": [
     {
       "role": "simulation_engineer",
