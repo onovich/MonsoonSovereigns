@@ -2,15 +2,15 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M5_PERFORMANCE_GATE_QA_REVIEW",
+  "status": "HUMAN_GATE_REQUIRED",
   "project": "Monsoon Sovereigns",
-  "origin_main": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
+  "origin_main": "22a3473eb10d4008500e499ae135333e7d974311",
   "current_milestone": "M5",
   "current_task": null,
-  "current_task_status": "REVIEW",
-  "last_closed_task": "M5-MULTIYEAR-AI-RUN-001",
+  "current_task_status": "DRAFT_HUMAN_GATE",
+  "last_closed_task": "M5-PLAYER-RESEARCH-001",
   "ready_tasks": [
-    "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
+    "M5-MANUAL-NODE-BATTLE-DECISION-001"
   ],
   "active_threads": {},
   "unresolved_risks": [
@@ -26,10 +26,22 @@
     }
   ],
   "human_gate": {
-    "required": false,
-    "reason": ""
+    "required": true,
+    "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+    "reason": "Manual node battle decision is an explicit Human Gate. Autonomous continuation must not defer, approve, authorize, implement, or create manual battle implementation tasks without explicit human decision text.",
+    "options": [
+      "defer manual node battle",
+      "authorize a future bounded research/spike task",
+      "authorize a future implementation task with separate scope and review"
+    ],
+    "evidence": [
+      "taskctl ready lists M5-MANUAL-NODE-BATTLE-DECISION-001 as the only remaining dependency-ready M5 item.",
+      "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json acceptance criteria require an explicit human decision.",
+      "M5-PLAYER-RESEARCH-001 is CLOSED after closure PR #123 advanced main to 22a3473eb10d4008500e499ae135333e7d974311."
+    ],
+    "triggered_at": "2026-06-27T03:02:00+08:00"
   },
-  "next_machine_action": "Wait for M5-PERFORMANCE-GATE-001 QA review; integrate on ACCEPT or route REQUEST_CHANGES to writer.",
+  "next_machine_action": "Stop autonomous execution at M5-MANUAL-NODE-BATTLE-DECISION-001 and wait for explicit human decision text.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -37,7 +49,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T01:19:30+08:00",
+  "last_updated_at": "2026-06-27T03:02:00+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -77,12 +89,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T02:53:55+08:00",
+  "updated_at": "2026-06-27T03:02:00+08:00",
   "current_tasks": [],
   "last_integrated_task": "M5-PLAYER-RESEARCH-001",
-  "last_main_commit": "8b6ef6542d2d1a8270618ec8bae2161eb94c2e9d",
-  "next_ready_tasks": [],
-  "next_action": "Run taskctl ready after closure merge and start the next dependency-ready task unless a Human Gate is required.",
+  "last_main_commit": "22a3473eb10d4008500e499ae135333e7d974311",
+  "next_ready_tasks": [
+    "M5-MANUAL-NODE-BATTLE-DECISION-001"
+  ],
+  "next_action": "Await explicit human decision for manual node battle: defer, authorize future bounded research/spike, or authorize future implementation task with separate scope and review.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -397,5 +411,13 @@
       "019f053d-cda9-7a51-a8e0-b6c82cae1c0e"
     ],
     "next_ready_tasks": []
+  },
+  "m5_manual_node_battle_decision": {
+    "status": "HUMAN_GATE_REQUIRED",
+    "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+    "handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json",
+    "selected_decision": null,
+    "last_main_commit": "22a3473eb10d4008500e499ae135333e7d974311",
+    "updated_at": "2026-06-27T03:02:00+08:00"
   }
 }

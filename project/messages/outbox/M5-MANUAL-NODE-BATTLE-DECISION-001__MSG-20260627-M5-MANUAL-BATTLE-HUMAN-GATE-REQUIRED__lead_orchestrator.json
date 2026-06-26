@@ -1,0 +1,63 @@
+{
+  "message_id": "MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED",
+  "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "from_role": "lead_orchestrator",
+  "status": "BLOCKED",
+  "summary": "Autonomous execution reached the explicit M5 manual node battle Human Gate. The only remaining dependency-ready M5 item is M5-MANUAL-NODE-BATTLE-DECISION-001, whose acceptance criteria require an explicit human decision before any deferral, research/spike authorization, or implementation authorization. No product code, task graph expansion, or battle implementation was started.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "gate/m5-manual-node-battle-pending / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "22a3473eb10d4008500e499ae135333e7d974311",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "main and origin/main were synchronized before creating the gate branch; no product-code changes were present."
+    },
+    {
+      "command": "git rev-parse HEAD; git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "Both resolved to 22a3473eb10d4008500e499ae135333e7d974311."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Only M5-MANUAL-NODE-BATTLE-DECISION-001 was listed, with status DRAFT and summary Human Gate for manual node battle decision."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-MANUAL-NODE-BATTLE-DECISION-001",
+      "exit_code": 0,
+      "result": "Task file validated at project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "Human Gate BLOCKED handoff validated."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in the Human Gate status diff."
+    }
+  ],
+  "decisions": [
+    "No autonomous manual-node-battle decision is made in this handoff.",
+    "No manual battle implementation task is created by autonomous continuation.",
+    "M5 formal passage remains separate and cannot proceed until this Human Gate is explicitly resolved."
+  ],
+  "risks": [
+    "If the gate is skipped, the project could accidentally approve tactical battle UI or manual battle scope contrary to frozen M5 boundaries.",
+    "Current player-research evidence is minimal and internal; stronger external evidence would require explicit consent and a separately scoped task."
+  ],
+  "blockers": [
+    "Requires explicit human decision selecting one path: defer manual node battle, authorize future bounded research/spike, or authorize future implementation task with separate scope and review."
+  ],
+  "route_to": "human",
+  "requested_action": "Provide explicit decision text for M5-MANUAL-NODE-BATTLE-DECISION-001. Accepted paths: defer manual node battle; authorize a future bounded research/spike task; or authorize a future implementation task with separate scope and review.",
+  "created_at": "2026-06-27T03:02:00+08:00"
+}
