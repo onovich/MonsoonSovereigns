@@ -161,10 +161,22 @@ No formal historical content, production dependency, product code, package code,
 
 M5 formal passage, manual node battle, telemetry, server/multiplayer, arbitrary-code mods, release/commercial choices, branding, major cultural-risk decisions, frozen product/platform/core architecture changes, irreversible migrations, and paid services/accounts/secrets remain Human Gates. The next dependency-ready task is `M5-SIM-PLAYABLE-LOOP-001`.
 
-## 14. M5 Player Research Review Snapshot
+## 14. M5 Player Research Closure Snapshot
 
-`M5-PLAYER-RESEARCH-001` is in REVIEW on branch `research/m5-player-research`.
+`M5-PLAYER-RESEARCH-001` is CLOSED. PR #122 entered `origin/main` at `8b6ef6542d2d1a8270618ec8bae2161eb94c2e9d`, and closure PR #123 advanced `origin/main` to `22a3473eb10d4008500e499ae135333e7d974311`.
 
-The gameplay_designer writer executed a minimal privacy-safe player-research pilot against the accepted local M5 slice using two internal anonymous observation sessions and repository-auditable evidence. The observations covered whether the visible slice communicates the goal, command preview, campaign risk, AI reasons, save/load checkpoint behavior, and postwar consequences. The evidence records no telemetry, accounts, paid services, remote network collection, hidden personal data, formal historical content, code changes, content-source changes, or formal M5 passage decision.
+The accepted gameplay_designer evidence records a minimal privacy-safe player-research pilot against the local M5 slice using two internal anonymous observation sessions. The evidence covers visible goal communication, command preview, campaign risk, AI reasons, save/load checkpoint behavior, and postwar consequences. It records no telemetry, accounts, paid services, remote network collection, hidden personal data, formal historical content, product-code changes, content-source changes, or formal M5 passage decision.
 
-Preliminary classification: no blocker defects were recorded. Bounded follow-ups are limited to external/non-author participant sessions under explicit consent if Human Gate wants stronger player evidence, fixing or reviewing duplicate React key warnings observed in repeated reason-code chip rendering, future clarification that current save/load is a client-session checkpoint rather than desktop file import/export, historical_researcher routing for any later formal names/symbols/cultural content, and preserving the accepted limitation that the current live multi-year AI run is no-action-only. Subjective preferences are limited to reason-code density and command-label readability. M5 formal passage remains `M5-EXIT-HUMAN-GATE-001`, not this research task.
+No blocker defects were accepted. Bounded follow-ups remain: optional external/non-author participant sessions under explicit consent if stronger player evidence is required, duplicate React key warnings observed in repeated reason-code chip rendering, clarification that current save/load is a client-session checkpoint rather than desktop file import/export UX, historical_researcher routing for any later formal names/symbols/cultural content, and the accepted limitation that the current live multi-year AI run is no-action-heavy. M5 formal passage remains `M5-EXIT-HUMAN-GATE-001`, not this research task.
+
+## 15. M5 Manual Node Battle Human Gate Snapshot
+
+`taskctl ready` now lists only `M5-MANUAL-NODE-BATTLE-DECISION-001`, whose task file explicitly marks it as a Human Gate for the manual node battle decision. Autonomous continuation must stop here and must not defer, approve, authorize, implement, or create manual battle implementation work without explicit human decision text.
+
+The allowed human decision paths are:
+
+1. Defer manual node battle.
+2. Authorize a future bounded research/spike task.
+3. Authorize a future implementation task with separate scope and review.
+
+Until one of those paths is explicitly selected by a human, `project/goal-mode-state.json` and `project/messages/outbox/GOAL-MODE-CONTINUATION.json` record `human_gate.required = true`, with `M5-MANUAL-NODE-BATTLE-DECISION-001` as the next ready item. M5 formal passage remains blocked behind this decision and the separate `M5-EXIT-HUMAN-GATE-001`.
