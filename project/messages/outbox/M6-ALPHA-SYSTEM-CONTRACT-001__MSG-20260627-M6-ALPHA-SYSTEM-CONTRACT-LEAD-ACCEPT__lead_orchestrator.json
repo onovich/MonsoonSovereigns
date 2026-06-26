@@ -1,0 +1,74 @@
+{
+  "message_id": "MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-LEAD-ACCEPT",
+  "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M6-ALPHA-SYSTEM-CONTRACT-001 after gameplay_designer REVIEW and systems_architect ACCEPT. The task remains planning-only, defines the bounded M6 Alpha start-to-victory contract, preserves DEFER_MANUAL_NODE_BATTLE and Human Gates, and changes only allowed process/task/status/message files.",
+  "artifacts": [
+    "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+    "PROJECT_STATUS.md",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-LEAD-TO-GAMEPLAY-START.json",
+    "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-WRITER-TO-SYSTEMS-REVIEW.json"
+  ],
+  "branch_or_worktree": "design/m6-alpha-system-contract / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "3ce715188a1ac31144cdeac09b3531df3f2b6c3e",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ALPHA-SYSTEM-CONTRACT-001",
+      "exit_code": 0,
+      "result": "Task schema valid before lead ACCEPT update; final validation is run after this handoff is written."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M6 task graph state reviewed; downstream M6 tasks remain DRAFT before this task is integrated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks while M6-ALPHA-SYSTEM-CONTRACT-001 is in review/accepted workflow."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M6-ALPHA-SYSTEM-CONTRACT-001",
+      "exit_code": 0,
+      "result": "Contract contains required sections, 8 player decisions with advantage/cost/dependencies/counter, Human Gate false, and DEFER_MANUAL_NODE_BATTLE preserved."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M6 Alpha victory is a recognized-order condition, not map painting.",
+    "ACCEPT: Contract maps accepted M1-M5 systems to the M6 DAG without adding product code or content-source data.",
+    "ACCEPT: DEFER_MANUAL_NODE_BATTLE remains deferred and non-blocking for M6/M7/M8.",
+    "ACCEPT: Human Gate list remains active and no new Human Gate is required for this task.",
+    "Proceed to PR integration; task becomes CLOSED only after accepted changes enter main."
+  ],
+  "risks": [
+    "Untracked ui-samples/ exists and is unrelated to this task; it is intentionally unstaged and untouched.",
+    "Downstream M6 implementation tasks must honor this contract without expanding into M7/M8 or post-1.0 scope."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, sync main, then mark M6-ALPHA-SYSTEM-CONTRACT-001 CLOSED and start the next READY M6 task.",
+  "created_at": "2026-06-27T06:29:00+08:00"
+}
