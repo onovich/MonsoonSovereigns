@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T14:30:00Z",
+  "updated_at": "2026-06-26T14:45:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1644,7 +1644,26 @@
       "close_tool_result": "closed_after_completed_accept"
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M5-SIM-PLAYABLE-LOOP-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Engine the 8th",
+      "responsibility": "primary simulation_engineer writer for deterministic M5 playable simulation loop",
+      "branch_or_worktree": "feat/m5-sim-playable-loop",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-LEAD-TO-SIM-START-CONFIRMED.json",
+      "updated_at": "2026-06-26T14:45:00Z"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1709,6 +1728,7 @@
     "M4-STRESS-VALIDATION-001": "CLOSED after PR #105 entered main at 96abe397327a81e5922aed61c022255dc20f2baa. Validation-only M4 stress evidence task produced accepted stress coverage, closure handoff, clean task graph, and no product scope expansion.",
     "M4-EXIT-VALIDATION-001": "CLOSED after M4 gate PR #106 entered main. M4_GATE = PASS_WITH_LIMITS with accepted process limit; M5 formal passage remains a Human Gate.",
     "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117. Planning-only M5 graph accepted and integrated; downstream M5 tasks remain DRAFT, with M5-SLICE-DEFINITION-001 dependency-ready. M5 formal passage and manual node battle remain Human Gates.",
-    "M5-SLICE-DEFINITION-001": "CLOSED after PR #110 entered main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042. Planning-only M5 slice contract integrated; M5-SIM-PLAYABLE-LOOP-001 is next ready. M5 formal passage and manual node battle remain Human Gates."
+    "M5-SLICE-DEFINITION-001": "CLOSED after PR #110 entered main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042. Planning-only M5 slice contract integrated; M5-SIM-PLAYABLE-LOOP-001 is next ready. M5 formal passage and manual node battle remain Human Gates.",
+    "M5-SIM-PLAYABLE-LOOP-001": "IN_PROGRESS with simulation_engineer writer thread 019f0403-1c1a-79c0-a63b-bc4eb0075958. Scope is deterministic M5 simulation loop only; client/UI/content/release/Human Gate decisions remain out of scope."
   }
 }

@@ -2,13 +2,30 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M5",
-  "current_tasks": [],
-  "active_threads": {},
-  "last_integrated_task": "M5-SLICE-DEFINITION-001",
-  "last_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
-  "next_ready_tasks": [
+  "current_tasks": [
     "M5-SIM-PLAYABLE-LOOP-001"
   ],
+  "active_threads": {
+    "019f0403-1c1a-79c0-a63b-bc4eb0075958": {
+      "thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Engine the 8th",
+      "responsibility": "primary simulation_engineer writer for deterministic M5 playable simulation loop",
+      "branch_or_worktree": "feat/m5-sim-playable-loop",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-LEAD-TO-SIM-START-CONFIRMED.json",
+      "updated_at": "2026-06-26T14:45:00Z"
+    }
+  },
+  "last_integrated_task": "M5-SLICE-DEFINITION-001",
+  "last_main_commit": "8a17c0b72db60ae10f6218449577b695faf60053",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -44,7 +61,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-26T14:30:00Z",
+  "last_updated_at": "2026-06-26T14:45:00Z",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -56,7 +73,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-26T14:30:00Z",
+  "updated_at": "2026-06-26T14:45:00Z",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -94,5 +111,14 @@
     "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
     "next_ready_task": "M5-SIM-PLAYABLE-LOOP-001",
     "closed_at": "2026-06-26T14:30:00Z"
+  },
+  "m5_sim_playable_loop": {
+    "status": "IN_PROGRESS",
+    "branch_or_worktree": "feat/m5-sim-playable-loop",
+    "writer_thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
+    "start_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-LEAD-TO-SIM-START-CONFIRMED.json",
+    "started_at": "2026-06-26T14:45:00Z",
+    "human_gate_required": false
   }
 }
