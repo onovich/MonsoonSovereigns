@@ -1,0 +1,108 @@
+{
+  "message_id": "MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW",
+  "task_id": "M4-MARCH-SUPPLY-STATE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Architecture review inspected writer handoff, committed diff at 03cce508, protocol and sim-core implementation, WorldState schema changes, package boundaries, and required tests. Scope stayed within allowed sim/protocol/test/process paths and automated gates passed, but the implementation cannot be accepted because canonicalization reorders march route segments and partial late reinforcements within an already joined muster commitment are not applied.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-m4-march-supply-state.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m4-march-supply-state",
+  "commit": "03cce508",
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-march-supply-state.test.ts tests/protocol-command-query-schema.test.ts --config vitest.config.ts",
+      "exit_code": 0,
+      "result": "2 test files passed; 14 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "19 test files passed; 131 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible command/query and save/load deterministic hashes matched."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-MARCH-SUPPLY-STATE-001",
+      "exit_code": 0,
+      "result": "Task JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff validated."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 30 root Vitest files and 198 tests passed; web Vitest 1 file and 3 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol typecheck",
+      "exit_code": 1,
+      "result": "Not a code failure: @monsoon/protocol has no typecheck script."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <canonicalize reversed routeSegments reproduction>",
+      "exit_code": 0,
+      "result": "Canonicalizing a march whose accepted path was 3->2,2->1 returned routeSegments ordered as 2->1,3->2."
+    }
+  ],
+  "decisions": [
+    "Do not accept until march route segment ordering is preserved as ordered path state rather than sorted as identity rows.",
+    "Do not accept until late reinforcement handling accounts for additional assembled troops in a previously joined partial commitment, or the state model explicitly prevents partial commitments from joining before the commitment is complete.",
+    "No ADR was required for the observed package boundary changes because they stayed within sim-core/protocol and did not add dependencies or alter frozen platform authority decisions."
+  ],
+  "risks": [
+    "M4 march state is authoritative live WorldState but save-format remains out of scope; this should remain an explicit follow-up before an M4 save/runtime task, not a hidden change here.",
+    "Rainy-season pause currently uses season risk captured at route creation time; writer should confirm whether this is intentionally a plan-time pause model or add a daily-season regression if it is meant to track actual day/month."
+  ],
+  "blockers": [
+    {
+      "severity": "P1",
+      "file": "packages/sim-core/src/world-state-v0.ts",
+      "lines": "4398,5419-5427",
+      "behavior": "canonicalizeM4CampaignStateV0 sorts march.routeSegments by fromDistrictId, toDistrictId, and routeId. Route segments are ordered path state, not unordered rows. For a valid accepted route 3->2 then 2->1, canonicalization changes the stored path to 2->1 then 3->2. Daily march execution later indexes routeSegments[currentSegmentIndex] in packages/sim-core/src/command-query-v1.ts:4474 and moves to segment.toDistrictId at 4612/4620, so the force can execute a different path than the accepted route plan. This breaks deterministic march execution from the accepted route plan and invalidates route capacity/supply assumptions.",
+      "required_change": "Preserve route segment order in canonicalization, or add an explicit stable segmentIndex/order field and sort by that field only. Add a regression with a non-monotonic or descending route proving canonicalization and daily execution keep the accepted path order."
+    },
+    {
+      "severity": "P1",
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "4447-4450,4461-4465,4644-4657",
+      "behavior": "reinforcement join tracking stores only joinedCommitmentIds. A commitment with partial assembled troops at departure is marked joined by ID, and later record-muster-response increases to the full assembled count are skipped because the ID is already in joinedCommitmentIds. activeTroops therefore does not gain the late portion of the same promised commitment. This conflicts with the existing muster model's assembledTroops/delayedTroops fields and the task requirement for late reinforcement timing without duplicate joins.",
+      "required_change": "Track joined troop quantity per commitment, split partial detachments into distinct commitment records before march start, or reject partial joining until the commitment is fully assembled. Add a regression where one commitment starts as assembledTroops=40 delayedTroops=20, later becomes assembledTroops=60 delayedTroops=0, and the march gains exactly 20 troops once without duplicating the commitment."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the two P1 march execution/reinforcement issues, add focused regression tests, rerun the required M4-MARCH-SUPPLY-STATE-001 gates, and return a new REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-26T04:01:31Z"
+}
