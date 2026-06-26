@@ -1,0 +1,73 @@
+{
+  "message_id": "MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-CLOSED",
+  "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M4 automatic engagement and siege choice loop task is CLOSED after accepted implementation entered origin/main through PR #94 with all required CI checks passing. Child threads were closed, M4-WITHDRAWAL-POSTWAR-HANDOFF-001 was promoted to READY, and goal-mode state now points at the next M4 task.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/sim-core-m4-auto-engagement-siege.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json",
+    "project/tasks/active/M4-WITHDRAWAL-POSTWAR-HANDOFF-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "chore/close-m4-auto-engagement-siege",
+  "commit": null,
+  "integrated_pr": 94,
+  "integrated_main_commit": "b09cf6b7982f3644256a9422f824b2f2639bf000",
+  "ci_checks": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "result": "PASS"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "result": "PASS"
+    }
+  ],
+  "closed_threads": [
+    {
+      "role": "simulation_engineer",
+      "thread_id": "019f023d-5f45-7372-8f16-4b55c6818ea2",
+      "status": "closed"
+    },
+    {
+      "role": "systems_architect",
+      "thread_id": "019f023d-7347-7712-b832-3f825603ae21",
+      "status": "closed"
+    }
+  ],
+  "next_ready_tasks": [
+    "M4-WITHDRAWAL-POSTWAR-HANDOFF-001"
+  ],
+  "tests_run": [
+    {
+      "command": "gh pr checks 94 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Both required PR Gate jobs passed."
+    },
+    {
+      "command": "taskctl validate M4-AUTO-ENGAGEMENT-SIEGE-001",
+      "exit_code": 0,
+      "result": "VALID before closure."
+    }
+  ],
+  "decisions": [
+    "Closed only after PR #94 entered origin/main at the verified main commit.",
+    "Promoted the dependency-ready withdrawal/postwar handoff task to READY without modifying product code.",
+    "Manual node battle, peace treaty, full diplomacy, and save-format package changes remain outside this task."
+  ],
+  "risks": [
+    "M4-WITHDRAWAL-POSTWAR-HANDOFF-001 must reuse accepted M3 governance preview/application boundaries and must not invent a parallel postwar settlement model."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Start M4-WITHDRAWAL-POSTWAR-HANDOFF-001 immediately under Autonomous Goal Mode.",
+  "created_at": "2026-06-26T05:44:00Z"
+}
