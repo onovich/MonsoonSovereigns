@@ -2,7 +2,7 @@
 
 ## 1. 当前阶段
 
-项目处于 **M3 / Polity, Office, Character, and Vassal Vertical Slice**。
+项目处于 **M5 / Playable Vertical Slice**。
 
 M0 Gate 已通过，见 `docs/GATE-M0.md`：
 
@@ -147,4 +147,6 @@ All prior M4 implementation and validation tasks are CLOSED on `origin/main` thr
 
 Current milestone is **M5 / Playable Vertical Slice**, but this closure does not start M5 production scope by itself. M5 formal passage remains a Human Gate. The next machine action is to create or recover the M5 task graph, preserving M4 exclusions unless a later approved task changes them: no manual node battle decision without Human Gate, no full diplomacy, no complex naval warfare, no server/multiplayer, no telemetry, no arbitrary-code mods, and no frozen product/architecture changes.
 
-M5 current progress: `M5-TASK-GRAPH-001` is IN_PROGRESS on branch `chore/m5-task-graph`. It is limited to creating a reviewed M5 task DAG for the playable vertical slice and must not implement M5 production scope, pass M5 formally, decide manual node battle, add telemetry/server/mod support, or change frozen product/platform/core architecture decisions.
+M5 current progress: `M5-TASK-GRAPH-001` is CLOSED after PR #108 entered `origin/main` at `8b771272a9cfa790282043fcd092c1ce59fd0117`; the closure checkpoint is being recorded on branch `chore/close-m5-task-graph`. The accepted graph is planning-only. Downstream M5 tasks remain DRAFT until selected by the lead, and `taskctl ready` selects `M5-SLICE-DEFINITION-001` as the next dependency-ready M5 task.
+
+M5 formal passage remains a Human Gate. Manual node battle, telemetry, server/multiplayer, arbitrary-code mods, paid services/accounts/secrets, release/commercial decisions, branding, frozen product/platform/core changes, major cultural-risk decisions, and irreversible migrations remain outside autonomous implementation unless an explicit Human Gate approves them.
