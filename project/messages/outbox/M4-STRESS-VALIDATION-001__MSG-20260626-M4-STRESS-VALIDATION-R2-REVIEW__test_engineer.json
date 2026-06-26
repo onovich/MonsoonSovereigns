@@ -1,0 +1,73 @@
+{
+  "message_id": "MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW",
+  "task_id": "M4-STRESS-VALIDATION-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Closed the M4 stress-validation QA gaps by keeping the 4000-row browser fixture on two concurrent campaign plans/forces and by merging rainy-season forecast-versus-actual cancellation evidence into one scenario. The worktree stays within allowed validation paths and the revised evidence now shows forecast reasons before cancellation plus the actual cancelled state and withdrawal record in the same test path.",
+  "artifacts": [
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/M4-STRESS-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-REQUEST-CHANGES__qa_reviewer.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-REVIEW__test_engineer.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "test/m4-stress-validation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m4-withdrawal-postwar-handoff.test.ts apps/web/src/shell/web-client-shell.test.tsx",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 11 tests; the rainy-season scenario now records forecast reason codes and the cancelled state in one validation path."
+    },
+    {
+      "command": "pnpm test:e2e -- --grep \"M4 stress fixture renders campaign planning and war report under 4000-row pressure\"",
+      "exit_code": 0,
+      "result": "Playwright Chromium passed 1 stress smoke test against the 4000-row fixture, including the two-plan / two-war-report campaign workspace."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic sim hashes matched Node and worker-compatible runs; root Vitest passed 33 files / 240 tests; web Vitest passed 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-STRESS-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M4-STRESS-VALIDATION-001.json"
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M4-STRESS-VALIDATION-001.json",
+      "exit_code": 0,
+      "result": "TASK_JSON_OK M4-STRESS-VALIDATION-001 IN_PROGRESS 15 10"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Kept the stress fixture opt-in and validation-only, but made it carry two concurrent campaign plans, marches, sieges, withdrawals, and war reports so the browser evidence matches the acceptance wording.",
+    "Merged the rainy-season forecast and cancellation evidence into one scenario instead of leaving it split across separate tests.",
+    "Preserved the existing routing and task-state JSON changes already present in the dirty worktree."
+  ],
+  "risks": [
+    "The stress fixture remains a validation path rather than a permanent player-facing feature.",
+    "The performance baseline evidence is environment-specific and should not be read as a fleet-wide guarantee."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the repaired M4 stress-validation evidence and decide ACCEPT / REQUEST_CHANGES / BLOCK.",
+  "created_at": "2026-06-26T18:22:56.8701767+08:00"
+}

@@ -82,9 +82,9 @@ describe("M2 district client UI", () => {
 
     expect(markup).toContain("M4 campaign planning");
     expect(markup).toContain('aria-label="M4 campaign planning workspace"');
-    expect(markup).toContain('data-plan-count="1"');
+    expect(markup).toContain('data-plan-count="2"');
     expect(markup).toContain('data-muster-readiness="partial"');
-    expect(markup).toContain('data-war-report-count="1"');
+    expect(markup).toContain('data-war-report-count="2"');
     expect(markup).toContain("Submit plan");
     expect(markup).toContain("Start march");
     expect(markup).toContain("Cancel plan");

@@ -1,0 +1,146 @@
+{
+  "message_id": "MSG-20260626-M4-STRESS-VALIDATION-QA-REQUEST-CHANGES",
+  "task_id": "M4-STRESS-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent read-only QA review requests changes for M4-STRESS-VALIDATION-001. Required commands rerun successfully, and the diff stays within allowed paths, but acceptance evidence is incomplete: the 4000-row browser stress fixture still exercises one M4 campaign only, and rainy-season forecast-versus-actual evidence is split across separate tests instead of recorded as one validation scenario.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M4-STRESS-VALIDATION-001.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-REVIEW__test_engineer.json",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "packages/client-core/src/index.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+    "tests/sim-core-m4-campaign-ai.test.ts",
+    "tests/sim-core-m4-auto-engagement-siege.test.ts",
+    "tests/sim-core-m4-march-supply-state.test.ts",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-REQUEST-CHANGES__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "test/m4-stress-validation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch test/m4-stress-validation. Worktree contained modified apps/web/src/shell/create-shell-snapshot.ts, apps/web/src/shell/web-client-shell.test.tsx, apps/web/src/shell/web-client-shell.tsx, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M4-STRESS-VALIDATION-001.json, project/tasks/thread-registry.json, tests/e2e/web-shell.spec.ts, plus untracked writer REVIEW handoff."
+    },
+    {
+      "command": "git diff --name-status",
+      "exit_code": 0,
+      "result": "Changed paths are within allowed_paths: apps/web/**, tests/**, project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, project/tasks/active/M4-STRESS-VALIDATION-001.json, and project/messages/**. No forbidden paths were modified."
+    },
+    {
+      "command": "Manual diff inspection of apps/web/src/shell/create-shell-snapshot.ts, apps/web/src/shell/web-client-shell.tsx, apps/web/src/shell/web-client-shell.test.tsx, tests/e2e/web-shell.spec.ts, project state JSON, task JSON, and writer handoff",
+      "exit_code": 0,
+      "result": "Diff adds an opt-in ?fixture=stress web shell path that replaces only the districtList read model with createSyntheticDistrictPressureFixture while reusing the existing single M4 campaign fixture. Project JSON diffs are routing/status metadata inside allowed paths."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-STRESS-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M4-STRESS-VALIDATION-001.json"
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M4-STRESS-VALIDATION-001.json",
+      "exit_code": 0,
+      "result": "TASK_JSON_OK M4-STRESS-VALIDATION-001 REVIEW 15 10"
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 performance baseline passed on win32 x64 cpuCount=16 with runtime=node v24.13.1; days=3650; finalDay=3650; finalRevision=3650; dayThroughputPerSecond=14300; p50StepNanoseconds=58400; p95StepNanoseconds=112700; p99StepNanoseconds=204800; saveByteLength=9980; saveNanoseconds=2197500; loadNanoseconds=3166400."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello simulation (61e0ba1c), command/query (d275faa4), save/load (28074edd), and M4 replay (232f62ab) with engagement hash 334e0df0, siege hash ac35e97e, withdrawal hash 232f62ab, and postwar candidates 1."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m4-campaign-objectives.test.ts tests/sim-core-m4-withdrawal-postwar-handoff.test.ts tests/sim-core-m4-campaign-ai.test.ts tests/sim-core-m4-auto-engagement-siege.test.ts tests/sim-core-m4-march-supply-state.test.ts tests/client-core-m2-district-list.test.ts tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "7 files passed; 63 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; output included main shell and host-hash-canary entry points with the existing large-chunk warning."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic sim runner matched; root Vitest 33 files / 239 tests passed; web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e -- --grep \"M4 stress fixture renders campaign planning and war report under 4000-row pressure\"",
+      "exit_code": 0,
+      "result": "Chromium Playwright smoke passed: 1 test passed in 835ms."
+    }
+  ],
+  "decisions": [
+    {
+      "result": "REQUEST_CHANGES",
+      "reason": "Required commands pass, but the implemented evidence does not fully satisfy all acceptance criteria."
+    },
+    {
+      "finding_id": "QA-001",
+      "severity": "high",
+      "file": "packages/client-core/src/index.ts",
+      "symbol": "createM4CampaignProtocolProjectionFixture",
+      "repro": "The stress path uses createSyntheticDistrictPressureFixture for district rows but reuses createM4CampaignReadModelFixture, which contains one campaignPlan, one march, one siege, one withdrawal, and one war report. The Playwright stress smoke asserts data-plan-count=\"1\".",
+      "impact": "Acceptance criterion 4 requires M4-scale campaign pressure with multiple concurrent campaigns/forces. The current browser stress evidence covers 4000 district rows and a single M4 report, not concurrent campaign pressure.",
+      "required_change": "Extend the stress fixture and browser smoke to assert multiple concurrent M4 campaign plans/forces under 4000-row pressure while retaining route bottleneck, supply consumption, siege choice, and war-report rendering evidence."
+    },
+    {
+      "finding_id": "QA-002",
+      "severity": "medium",
+      "file": "tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+      "symbol": "cancels before departure when rainy-season route risk closes the window",
+      "repro": "Existing tests separately cover forecast query reason codes, dry predicted-vs-actual arrival, and rainy-season cancellation. No single validation scenario records rainy-season forecast reason codes together with the actual completion or cancellation reason codes/days.",
+      "impact": "Acceptance criterion 1 is only partly covered by the current test matrix; the forecast-versus-actual rainy-season evidence remains fragmented and partly prose-backed.",
+      "required_change": "Add a focused rainy-season validation scenario/test that records predicted campaign forecast reason codes and actual completion or cancellation reason codes/days in the same evidence path."
+    },
+    {
+      "finding_id": "QA-003",
+      "severity": "info",
+      "file": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-REVIEW__test_engineer.json",
+      "symbol": "tests_run[0].result",
+      "repro": "Writer handoff says git status contained only four modified allowed files under apps/web and tests, but reviewer observed additional modified project status/routing JSON files and the untracked writer handoff.",
+      "impact": "Non-blocking because those paths are allowed and appear to be routing metadata, but lead should not rely on the handoff's narrower dirty-tree description.",
+      "required_change": "No code fix required; repaired writer handoff should report the full dirty path set if it is regenerated."
+    },
+    {
+      "coverage": "Accepted as sufficient",
+      "items": [
+        "Allowed_paths and forbidden_paths compliance: no forbidden paths found.",
+        "Out-of-supply withdrawal consequences: existing focused tests cover forced retreat, casualties, human-loss reason code, and postwar candidate handoff.",
+        "AI wait/withdraw/target-change trace: existing focused tests cover primary reason codes, command parity, deterministic trace ordering, and trace parsing.",
+        "Siege outcome evidence: existing focused tests cover assault, surrender, lift, supply failure, event-tail round trip, and accounting.",
+        "Measured stress/perf evidence: pnpm sim:perf-baseline rerun produced real metrics with runtime and machine notes.",
+        "4000-row browser smoke: Playwright grep test passed and asserts row count 4000 with virtualized 16 rendered rows."
+      ]
+    }
+  ],
+  "risks": [
+    "Stress fixture entry is opt-in via query parameter and should remain validation-only unless a separate product-scoped task adds a permanent user-facing affordance.",
+    "Performance baseline is a single-machine measurement and should not be treated as a universal fleet benchmark.",
+    "After repair, lead should rerun the full required command matrix because the requested fixes affect stress evidence and browser smoke assertions."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route this QA REQUEST_CHANGES handoff to lead_orchestrator. Lead should route the required changes back to test_engineer for a scoped repair, then return the repaired REVIEW handoff to qa_reviewer. Do not integrate or mark M4-STRESS-VALIDATION-001 accepted until the multiple-concurrent-campaign stress evidence and rainy-season forecast-versus-actual scenario are implemented and rerun.",
+  "created_at": "2026-06-26T17:59:13.0676270+08:00"
+}

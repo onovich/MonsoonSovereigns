@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import {
   canonicalizeM4CampaignStateV0,
+  advanceWorldByGameDays,
   createM2EconomyPopulationStateV0,
   createM3PolityVassalageStateV0,
   createM4CampaignStateV0,
@@ -133,6 +134,65 @@ describe("M4-CAMPAIGN-OBJECTIVES-001 campaign objectives and FactionKnowledge", 
     expect(cancelled.runtime.world.state.m4?.campaignPlans[0]).toMatchObject({
       status: "cancelled",
       statusReasonCode: "campaign.cancelled.monsoon-range"
+    });
+  });
+
+  test("records rainy-season forecast reasons and cancellation day in one acceptance scenario", () => {
+    let runtime = runtimeWithM4AtDay(179);
+    const created = submitCommandV1(
+      runtime,
+      rainySeasonCampaignCommand("m4.rainy-season.create", runtime, 400)
+    );
+    expect(created.result.status).toBe("accepted");
+    runtime = created.runtime;
+
+    const forecast = querySimulationV1(runtime, {
+      schemaVersion: 1,
+      kind: "sim.list-m4-campaign-plans"
+    });
+    expect(forecast.status).toBe("ok");
+    if (forecast.status !== "ok" || forecast.result.kind !== "sim.list-m4-campaign-plans") {
+      throw new Error("Expected M4 campaign plan query.");
+    }
+    expect(forecast.result.plans[0]).toMatchObject({
+      campaignPlanId: 400,
+      status: "planned",
+      forecast: {
+        status: "ready",
+        reasonCodes: ["campaign.forecast.start-range-open"]
+      }
+    });
+
+    const rainyRuntime = runtimeFromWorld(advanceWorldByGameDays(created.runtime.world, 1));
+    const cancelled = submitCommandV1(
+      rainyRuntime,
+      cancelCampaignCommand("m4.rainy-season.cancel", rainyRuntime, 400)
+    );
+    expect(cancelled.result.status).toBe("accepted");
+    expect(cancelled.runtime.world.state.m4?.campaignPlans[0]).toMatchObject({
+      status: "cancelled",
+      statusReasonCode: "campaign.cancelled.monsoon-range",
+      updatedDay: parseGameDay(180)
+    });
+
+    const cancelledForecast = querySimulationV1(cancelled.runtime, {
+      schemaVersion: 1,
+      kind: "sim.list-m4-campaign-plans"
+    });
+    expect(cancelledForecast.status).toBe("ok");
+    if (
+      cancelledForecast.status !== "ok" ||
+      cancelledForecast.result.kind !== "sim.list-m4-campaign-plans"
+    ) {
+      throw new Error("Expected M4 campaign plan query.");
+    }
+    expect(cancelledForecast.result.plans[0]).toMatchObject({
+      campaignPlanId: 400,
+      status: "cancelled",
+      forecast: {
+        status: "cancelled",
+        reasonCodes: ["campaign.cancelled.monsoon-range"]
+      }
     });
   });
 
@@ -318,6 +378,20 @@ function runtimeWithM4(): SimulationRuntimeV1 {
   return runtimeFromWorld(worldWithM4({ campaignPlans: [], factionKnowledgeSnapshots: [] }));
 }
 
+function runtimeWithM4AtDay(currentDay: number): SimulationRuntimeV1 {
+  const world = worldWithM4({ campaignPlans: [], factionKnowledgeSnapshots: [] });
+  const dayDelta = currentDay - Number(world.meta.currentDay);
+  const advancedWorld = dayDelta >= 0 ? advanceWorldByGameDays(world, dayDelta) : world;
+
+  return runtimeFromWorld({
+    ...advancedWorld,
+    meta: {
+      ...advancedWorld.meta,
+      currentDay: parseGameDay(currentDay)
+    }
+  });
+}
+
 function runtimeFromWorld(world: WorldStateV0): SimulationRuntimeV1 {
   return {
     world,
@@ -444,6 +518,29 @@ function createCampaignCommand(
       target: { kind: "district", districtId: 2 },
       objectiveKind: "besiege",
       startWindow: { earliestDay: 12, latestDay: 30 },
+      reasonCodes: ["campaign.reason.dry-season-range"]
+    }
+  };
+}
+
+function rainySeasonCampaignCommand(
+  commandId: string,
+  runtime: SimulationRuntimeV1,
+  campaignPlanId: number
+): GameCommandV1 {
+  return {
+    schemaVersion: 1,
+    kind: "sim.create-campaign-objective",
+    commandId,
+    actor: { kind: "player", id: "player:1" },
+    expectedDay: runtime.world.meta.currentDay,
+    expectedRevision: runtime.world.meta.revision,
+    payload: {
+      campaignPlanId,
+      owner: { kind: "polity", polityId: 1 },
+      target: { kind: "district", districtId: 3 },
+      objectiveKind: "besiege",
+      startWindow: { earliestDay: 180, latestDay: 180 },
       reasonCodes: ["campaign.reason.dry-season-range"]
     }
   };

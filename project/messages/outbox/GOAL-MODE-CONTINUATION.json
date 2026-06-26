@@ -2,34 +2,18 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_STRESS_VALIDATION_IN_PROGRESS",
+  "status": "M4_STRESS_VALIDATION_ACCEPTED_AWAITING_INTEGRATION",
   "project": "Monsoon Sovereigns",
   "origin_main": "e64b69d3ebc345431cf86aa40c8eaea0fcf2216a",
   "current_milestone": "M4",
   "current_task": "M4-STRESS-VALIDATION-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M4-DETERMINISM-REPLAY-001",
   "ready_tasks": [],
   "active_threads": {
-    "019f034b-f9c7-77f0-a178-7d76527ee5c8": {
-      "thread_id": "019f034b-f9c7-77f0-a178-7d76527ee5c8",
-      "status": "started",
-      "configured_model": "gpt-5.4-mini",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Canary the 6th",
-      "responsibility": "primary M4 stress validation writer for rainy-season, withdrawal, AI trace, siege/war-report, and measured stress evidence",
-      "branch_or_worktree": "test/m4-stress-validation",
-      "start_state": "START_CONFIRMED",
-      "spawn_result": "spawn_agent",
-      "start_submission_id": "019f034c-72a6-7063-9bd0-160c6f1acf3c",
-      "start_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T09:40:18.870Z"
-    },
     "019f034c-0dbf-7122-b874-684fe62a157a": {
       "thread_id": "019f034c-0dbf-7122-b874-684fe62a157a",
-      "status": "standby",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -41,7 +25,41 @@
       "spawn_result": "spawn_agent",
       "await_submission_id": "019f034c-72d2-76d1-8f71-6be141db780e",
       "start_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T09:40:18.870Z"
+      "updated_at": "2026-06-26T10:32:16.798Z",
+      "status_note": "Writer REVIEW handoff routed by lead; QA review in progress.",
+      "review_ready_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-REVIEW__test_engineer.json",
+      "review_ready_submission_id": "019f0359-551f-77e2-b983-c8107fb42826",
+      "review_started_at": "2026-06-26T09:54:00.581Z",
+      "request_changes_submission_id": "019f035d-f551-71e1-ae87-e290499cbd29",
+      "request_changes_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-REQUEST-CHANGES__qa_reviewer.json",
+      "request_changes_at": "2026-06-26T09:59:06.461Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW__test_engineer.json",
+      "review_ready_submission_id_r2": "019f0376-3045-76a2-a956-5a282c729096",
+      "review_started_at_r2": "2026-06-26T10:25:32.929Z",
+      "qa_accept_handoff_r2": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-ACCEPT-R2__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-26T10:32:16.798Z"
+    },
+    "019f036c-21de-7512-b545-18c05bf892bb": {
+      "thread_id": "019f036c-21de-7512-b545-18c05bf892bb",
+      "status": "accepted",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gauge the 7th",
+      "responsibility": "replacement M4 stress validation R2 writer after incomplete original writer handoff",
+      "branch_or_worktree": "test/m4-stress-validation",
+      "start_state": "START_CONFIRMED_REPLACEMENT",
+      "spawn_result": "spawn_agent",
+      "start_submission_id": "019f036c-6350-7b80-84b1-58807e11909f",
+      "replaced_thread_id": "019f034b-f9c7-77f0-a178-7d76527ee5c8",
+      "request_changes_round": 1,
+      "updated_at": "2026-06-26T10:32:16.798Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW__test_engineer.json",
+      "review_ready_at_r2": "2026-06-26T10:25:32.929Z",
+      "lead_accept_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-26T10:32:16.798Z"
     }
   },
   "unresolved_risks": [
@@ -60,7 +78,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Await test_engineer REVIEW handoff for M4-STRESS-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates.",
+  "next_machine_action": "Run lead integration gates, commit accepted M4 stress validation implementation, open PR, wait for CI, merge, sync main, then close task only after main integration.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -68,7 +86,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T09:40:18.870Z",
+  "last_updated_at": "2026-06-26T10:32:16.798Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -90,14 +108,22 @@
       "status": "closed_disconnected_before_review",
       "replaced_by": "019f011e-d31b-7f50-87a7-b92e135d4b7e",
       "replaced_at": "2026-06-25T23:30:39Z"
+    },
+    {
+      "task_id": "M4-STRESS-VALIDATION-001",
+      "role": "test_engineer",
+      "thread_id": "019f034b-f9c7-77f0-a178-7d76527ee5c8",
+      "status": "closed_replaced_after_incomplete_r2",
+      "replaced_by": "019f036c-21de-7512-b545-18c05bf892bb",
+      "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T09:40:18.870Z",
+  "updated_at": "2026-06-26T10:32:16.798Z",
   "current_tasks": [
     "M4-STRESS-VALIDATION-001"
   ],
   "last_integrated_task": "M4-DETERMINISM-REPLAY-001",
   "last_main_commit": "e64b69d3ebc345431cf86aa40c8eaea0fcf2216a",
   "next_ready_tasks": [],
-  "next_action": "Await test_engineer REVIEW handoff for M4-STRESS-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates."
+  "next_action": "Run lead integration gates, commit accepted M4 stress validation implementation, open PR, wait for CI, merge, sync main, then close task only after main integration."
 }

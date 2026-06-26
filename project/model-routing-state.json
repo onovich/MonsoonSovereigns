@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T09:40:18.870Z",
+  "updated_at": "2026-06-26T10:32:16.798Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1410,14 +1410,12 @@
       "lead_close_handoff": "project/messages/outbox/M4-DETERMINISM-REPLAY-001__MSG-20260626-M4-DETERMINISM-REPLAY-CLOSED__lead_orchestrator.json",
       "migration_status": "closed_after_accept_review_pr_ci_and_main_integration",
       "accepted_task_reopened": false
-    }
-  ],
-  "active_threads": [
+    },
     {
       "task_id": "M4-STRESS-VALIDATION-001",
       "role": "test_engineer",
       "thread_id": "019f034b-f9c7-77f0-a178-7d76527ee5c8",
-      "status": "started",
+      "status": "closed_replaced_after_incomplete_r2",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -1429,13 +1427,24 @@
       "spawn_result": "spawn_agent",
       "start_submission_id": "019f034c-72a6-7063-9bd0-160c6f1acf3c",
       "start_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T09:40:18.870Z"
-    },
+      "updated_at": "2026-06-26T10:14:54.417Z",
+      "review_ready_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-26T09:54:00.581Z",
+      "request_changes_submission_id": "019f035d-f559-7523-9137-bc0a638352f3",
+      "request_changes_round": 1,
+      "close_reason": "incomplete_r2_no_handoff_after_request_changes_fix_attempt",
+      "closed_at": "2026-06-26T10:14:54.417Z",
+      "replaced_by": "019f036c-21de-7512-b545-18c05bf892bb",
+      "migration_status": "closed_replaced_after_incomplete_r2",
+      "accepted_task_reopened": false
+    }
+  ],
+  "active_threads": [
     {
       "task_id": "M4-STRESS-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f034c-0dbf-7122-b874-684fe62a157a",
-      "status": "standby",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1447,7 +1456,43 @@
       "spawn_result": "spawn_agent",
       "await_submission_id": "019f034c-72d2-76d1-8f71-6be141db780e",
       "start_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T09:40:18.870Z"
+      "updated_at": "2026-06-26T10:32:16.798Z",
+      "status_note": "Writer REVIEW handoff routed by lead; QA review in progress.",
+      "review_ready_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-REVIEW__test_engineer.json",
+      "review_ready_submission_id": "019f0359-551f-77e2-b983-c8107fb42826",
+      "review_started_at": "2026-06-26T09:54:00.581Z",
+      "request_changes_submission_id": "019f035d-f551-71e1-ae87-e290499cbd29",
+      "request_changes_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-REQUEST-CHANGES__qa_reviewer.json",
+      "request_changes_at": "2026-06-26T09:59:06.461Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW__test_engineer.json",
+      "review_ready_submission_id_r2": "019f0376-3045-76a2-a956-5a282c729096",
+      "review_started_at_r2": "2026-06-26T10:25:32.929Z",
+      "qa_accept_handoff_r2": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-QA-ACCEPT-R2__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-26T10:32:16.798Z"
+    },
+    {
+      "task_id": "M4-STRESS-VALIDATION-001",
+      "role": "test_engineer",
+      "thread_id": "019f036c-21de-7512-b545-18c05bf892bb",
+      "status": "accepted",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gauge the 7th",
+      "responsibility": "replacement M4 stress validation R2 writer after incomplete original writer handoff",
+      "branch_or_worktree": "test/m4-stress-validation",
+      "start_state": "START_CONFIRMED_REPLACEMENT",
+      "spawn_result": "spawn_agent",
+      "start_submission_id": "019f036c-6350-7b80-84b1-58807e11909f",
+      "replaced_thread_id": "019f034b-f9c7-77f0-a178-7d76527ee5c8",
+      "request_changes_round": 1,
+      "updated_at": "2026-06-26T10:32:16.798Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-R2-REVIEW__test_engineer.json",
+      "review_ready_at_r2": "2026-06-26T10:25:32.929Z",
+      "lead_accept_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-26T10:32:16.798Z"
     }
   ],
   "task_effects": {
@@ -1498,7 +1543,7 @@
     "M4-MUSTER-PREP-COMMITMENTS-001": "READY after M4 campaign objectives closure. This task owns muster preparation and mobilized force commitments only.",
     "M4-CLIENT-CAMPAIGN-PLANNING-UI-001": "CLOSED after PR #100 entered main at 5efbf12ef69ce7a4bfb1ef647a584052528a7740. client_engineer thread 019f02ed-b50c-7583-8817-b798b19cf8ed produced REVIEW handoff; qa_reviewer thread 019f02ee-19f7-7743-9d33-8b4d0d29002e accepted; lead gates and PR CI passed. Next READY task is M4-DETERMINISM-REPLAY-001.",
     "M4-DETERMINISM-REPLAY-001": "CLOSED after PR #102 entered main at 83ecd0c07fbe29f0d449180c00710bb10568a105. test_engineer thread 019f0313-1f78-70d2-ad1a-033e799c63d4 produced a valid REVIEW handoff; qa_reviewer thread 019f0313-78ab-7f21-a5e1-e1a4d7955ed2 independently accepted after schema fix; lead gates and PR CI passed. Next READY task is M4-STRESS-VALIDATION-001.",
-    "M4-STRESS-VALIDATION-001": "IN_PROGRESS after main e64b69d3ebc345431cf86aa40c8eaea0fcf2216a. test_engineer thread 019f034b-f9c7-77f0-a178-7d76527ee5c8 started via send_input submission 019f034c-72a6-7063-9bd0-160c6f1acf3c; qa_reviewer thread 019f034c-0dbf-7122-b874-684fe62a157a is standby via send_input submission 019f034c-72d2-76d1-8f71-6be141db780e."
+    "M4-STRESS-VALIDATION-001": "ACCEPTED after replacement test_engineer R2 REVIEW, independent qa_reviewer R2 ACCEPT, lead path/diff review, deterministic/performance gates, browser stress smoke, pnpm test, and pnpm check. Await PR CI and main integration before CLOSED."
   },
   "task_notes": {
     "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",

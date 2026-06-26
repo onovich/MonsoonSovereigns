@@ -215,13 +215,34 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
   });
 
   test("cancels before departure when rainy-season route risk closes the window", () => {
-    const runtime = accepted(
-      runtimeWithM4({
-        currentDay: 180,
-        campaignPlan: campaignPlan({ earliestDay: 180, latestDay: 180 }),
-        commitments: [commitment(100, 60, "assembled", 60)],
-        reservations: [reservation(501, 1, 300)]
-      }),
+    let runtime = runtimeWithM4({
+      currentDay: 180,
+      campaignPlan: campaignPlan({ earliestDay: 180, latestDay: 180 }),
+      commitments: [commitment(100, 60, "assembled", 60)],
+      reservations: [reservation(501, 1, 300)]
+    });
+
+    const forecast = querySimulationV1(runtime, {
+      schemaVersion: 1,
+      kind: "sim.list-m4-campaign-plans",
+      payload: { queryId: "m4.rainy-season.forecast", campaignPlanId: 10 }
+    });
+    expect(forecast.status).toBe("ok");
+    if (forecast.status !== "ok" || forecast.result.kind !== "sim.list-m4-campaign-plans") {
+      throw new Error("Expected M4 campaign plan forecast.");
+    }
+    expect(forecast.result.plans[0]).toMatchObject({
+      campaignPlanId: 10,
+      forecast: {
+        status: "ready",
+        earliestStartDay: 180,
+        latestStartDay: 180,
+        reasonCodes: ["campaign.forecast.start-range-open"]
+      }
+    });
+
+    runtime = accepted(
+      runtime,
       withdrawalCommand("m4.withdraw.season.cancel", runtimeWithM4({ currentDay: 180 }), {
         withdrawalId: 902,
         triggerReason: "season",
@@ -230,6 +251,27 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
       })
     );
 
+    const cancelledForecast = querySimulationV1(runtime, {
+      schemaVersion: 1,
+      kind: "sim.list-m4-campaign-plans",
+      payload: { queryId: "m4.rainy-season.cancelled", campaignPlanId: 10 }
+    });
+    expect(cancelledForecast.status).toBe("ok");
+    if (
+      cancelledForecast.status !== "ok" ||
+      cancelledForecast.result.kind !== "sim.list-m4-campaign-plans"
+    ) {
+      throw new Error("Expected cancelled M4 campaign plan forecast.");
+    }
+    expect(cancelledForecast.result.plans[0]).toMatchObject({
+      campaignPlanId: 10,
+      status: "cancelled",
+      statusReasonCode: "campaign.objective.withdrawn",
+      forecast: {
+        status: "cancelled",
+        reasonCodes: ["campaign.objective.withdrawn"]
+      }
+    });
     expect(firstWithdrawal(runtime)).toMatchObject({
       kind: "cancelled-before-departure",
       triggerReason: "season",
@@ -237,6 +279,11 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
       troopsBefore: 60,
       troopsExtracted: 60,
       casualties: 0
+    });
+    expect(firstCampaign(runtime.world)).toMatchObject({
+      status: "cancelled",
+      statusReasonCode: "campaign.objective.withdrawn",
+      updatedDay: parseGameDay(180)
     });
     expect(runtime.world.state.m4?.grainSupplyReservations[0]).toMatchObject({
       status: "released",

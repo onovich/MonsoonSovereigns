@@ -121,9 +121,9 @@ test("M4 campaign planning submits commands and renders risks, AI reasons, and w
   await page.goto("/");
 
   const workspace = page.getByLabel("M4 campaign planning workspace");
-  await expect(workspace).toHaveAttribute("data-plan-count", "1");
+  await expect(workspace).toHaveAttribute("data-plan-count", "2");
   await expect(workspace).toHaveAttribute("data-muster-readiness", "partial");
-  await expect(workspace).toHaveAttribute("data-war-report-count", "1");
+  await expect(workspace).toHaveAttribute("data-war-report-count", "2");
   await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
     "route.season.monsoon-risk"
   );
@@ -158,6 +158,41 @@ test("M4 campaign planning submits commands and renders risks, AI reasons, and w
   await page.getByRole("button", { name: "Cancel plan" }).click();
   await expect(page.getByLabel("M4 command status")).toContainText(
     "sim.cancel-campaign-objective ready for polity:1"
+  );
+});
+
+test("M4 stress fixture renders campaign planning and war report under 4000-row pressure", async ({
+  page
+}) => {
+  await page.goto("/?fixture=stress");
+
+  const workspace = page.getByLabel("M4 campaign planning workspace");
+  await expect(workspace).toHaveAttribute("data-plan-count", "2");
+  await expect(workspace).toHaveAttribute("data-war-report-count", "2");
+  await expect(workspace.getByLabel("Select M4 campaign plan").locator("option")).toHaveCount(2);
+  await expect(workspace).toContainText("Prototype District 003 / active");
+  await expect(workspace).toContainText("Prototype District 002 / active");
+  const districtRows = page.getByLabel("Virtualized district rows");
+  await expect(districtRows).toHaveAttribute("data-row-count", "4000");
+  await expect(districtRows).toHaveAttribute("data-rendered-row-count", "16");
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
+    "route.season.monsoon-risk"
+  );
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
+    "Route reservation 502"
+  );
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
+    "route.capacity.carried-supply-over-bottleneck"
+  );
+  await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("March 702");
+  await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("Siege 802");
+  await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("Withdrawal 902");
+  await expect(page.getByLabel("M4 war report")).toContainText("postwar.candidate.ready");
+  await expect(page.getByLabel("M4 war report")).toContainText("restore-vassal-ruler");
+  await expect(page.getByLabel("M4 war report")).toContainText("Outcome 1002");
+  await page.getByRole("button", { name: "Submit plan" }).click();
+  await expect(page.getByLabel("M4 command status")).toContainText(
+    "sim.create-campaign-objective ready for polity:1"
   );
 });
 

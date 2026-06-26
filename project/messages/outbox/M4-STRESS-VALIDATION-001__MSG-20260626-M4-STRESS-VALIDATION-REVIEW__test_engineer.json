@@ -1,0 +1,81 @@
+{
+  "message_id": "MSG-20260626-M4-STRESS-VALIDATION-REVIEW",
+  "task_id": "M4-STRESS-VALIDATION-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Validated M4 stress evidence across rainy-season campaign cancellation, out-of-supply withdrawal consequences, AI wait/withdraw/target-change traces, siege outcomes, and 4000-row stress fixture browser smoke. Added a query-param web-shell stress fixture path and corresponding smoke coverage without widening gameplay scope.",
+  "artifacts": [
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "test/m4-stress-validation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree contained only four modified allowed files under apps/web and tests."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 performance baseline passed on win32 x64 cpuCount=16 with runtime=node v24.13.1; days=3650; finalDay=3650; finalRevision=3650; dayThroughputPerSecond=13732; p50StepNanoseconds=58000; p95StepNanoseconds=130400; p99StepNanoseconds=200800; saveByteLength=9980; saveNanoseconds=1725100; loadNanoseconds=2705300."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello simulation (61e0ba1c), command/query (d275faa4), save/load (28074edd), and M4 replay (232f62ab) with engagement hash 334e0df0, siege hash ac35e97e, withdrawal hash 232f62ab, and postwarCandidateCount=1."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; output included the main shell and host-hash-canary entry points and a pre-existing chunk-size warning for large bundles."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic sim runner matched; 33 Vitest files passed with 239 tests; web Vitest passed."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m4-campaign-objectives.test.ts tests/sim-core-m4-withdrawal-postwar-handoff.test.ts tests/sim-core-m4-campaign-ai.test.ts tests/sim-core-m4-auto-engagement-siege.test.ts tests/sim-core-m4-march-supply-state.test.ts tests/client-core-m2-district-list.test.ts tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "7 files passed; 63 tests passed for focused M4 scenario evidence, including rainy-season cancellation, withdrawal consequences, AI trace, siege, and district-list pressure fixtures."
+    },
+    {
+      "command": "pnpm test:e2e -- --grep \"M4 stress fixture renders campaign planning and war report under 4000-row pressure\"",
+      "exit_code": 0,
+      "result": "Playwright browser smoke passed on chromium for the 4000-row stress fixture, covering campaign planning workspace, district-list pressure counts, supply/risk text, and war-report rendering."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-STRESS-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M4-STRESS-VALIDATION-001.json"
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M4-STRESS-VALIDATION-001.json",
+      "exit_code": 0,
+      "result": "TASK_JSON_OK M4-STRESS-VALIDATION-001 IN_PROGRESS 15 10"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Kept the default web shell unchanged and added an opt-in query-param fixture path for stress validation only.",
+    "Reused existing M4 simulation and client read-model evidence instead of expanding gameplay, protocol, or production runtime scope.",
+    "Used a Playwright smoke against the same 4000-row pressure fixture to prove browser behavior under load."
+  ],
+  "risks": [
+    "The stress fixture entry is an opt-in validation path; if product wants a permanent user-facing affordance, that should be handled in a separate scoped task.",
+    "The performance baseline is a single-machine measurement and should be treated as evidence for this environment, not a universal fleet benchmark."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M4 stress validation evidence against the task acceptance criteria and confirm whether the task is ready for QA acceptance.",
+  "created_at": "2026-06-26T09:51:44.5173143Z"
+}

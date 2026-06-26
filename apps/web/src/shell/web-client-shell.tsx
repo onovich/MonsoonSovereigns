@@ -14,12 +14,12 @@ import {
 import { ClientShellView } from "@monsoon/ui";
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 
-import { createBootstrappedShellSnapshot } from "./create-shell-snapshot";
+import { createWebClientShellSnapshot } from "./create-shell-snapshot";
 
 const MAP_RENDERER_MOUNT_TIMEOUT_MS = 2400;
 
 export function WebClientShell(): ReactElement {
-  const [snapshot] = useState(createBootstrappedShellSnapshot);
+  const [snapshot] = useState(() => createWebClientShellSnapshot(getWindowSearch()));
   const [mapMode, setMapMode] = useState<ClientMapMode>("seasonal");
   const [zoomLevel, setZoomLevel] = useState(1);
   const [m3CommandStatus, setM3CommandStatus] = useState<string | null>(null);
@@ -186,4 +186,12 @@ function toRendererMountErrorMessage(error: unknown): string {
   }
 
   return "Unknown MapRenderer mount failure.";
+}
+
+function getWindowSearch(): string {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  return window.location.search;
 }
