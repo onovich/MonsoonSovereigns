@@ -2,7 +2,7 @@
   "id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
   "summary": "Build M4 campaign planning, supply forecast, and war report UI",
   "milestone": "M4",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -70,7 +70,39 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
-  "threads": {},
+  "threads": {
+    "client_engineer": {
+      "thread_id": "019f02ed-b50c-7583-8817-b798b19cf8ed",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Canvas the 6th",
+      "responsibility": "primary M4 campaign planning UI writer",
+      "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_submission_id": "019f02ee-9dfc-72f2-bea3-921cd58c4af3",
+      "updated_at": "2026-06-26T07:57:21Z"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f02ee-19f7-7743-9d33-8b4d0d29002e",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Witness the 6th",
+      "responsibility": "independent read-only QA review for M4 client campaign planning UI",
+      "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+      "start_state": "AWAITING_REVIEW_READY",
+      "spawn_result": "spawn_agent",
+      "await_submission_id": "019f02ee-bd12-7b30-a66c-541c9f0c46fe",
+      "updated_at": "2026-06-26T07:57:21Z",
+      "status_note": "Reviewer is standing by until lead routes the writer REVIEW handoff."
+    }
+  },
   "route_to": "qa_reviewer",
   "notes": [
     "If UI needs missing command/query fields, route back to the relevant simulation task; do not reimplement domain rules in React.",
@@ -78,5 +110,5 @@
     "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T07:50:45.231Z"
+  "updated_at": "2026-06-26T07:57:21Z"
 }

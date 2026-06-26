@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T07:55:00Z",
+  "updated_at": "2026-06-26T07:57:21Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1335,7 +1335,43 @@
       "updated_at": "2026-06-26T07:55:00Z"
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+      "role": "client_engineer",
+      "thread_id": "019f02ed-b50c-7583-8817-b798b19cf8ed",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Canvas the 6th",
+      "responsibility": "primary M4 campaign planning UI writer",
+      "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_submission_id": "019f02ee-9dfc-72f2-bea3-921cd58c4af3",
+      "updated_at": "2026-06-26T07:57:21Z"
+    },
+    {
+      "task_id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f02ee-19f7-7743-9d33-8b4d0d29002e",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Witness the 6th",
+      "responsibility": "independent read-only QA review for M4 client campaign planning UI",
+      "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+      "start_state": "AWAITING_REVIEW_READY",
+      "spawn_result": "spawn_agent",
+      "await_submission_id": "019f02ee-bd12-7b30-a66c-541c9f0c46fe",
+      "updated_at": "2026-06-26T07:57:21Z",
+      "status_note": "Reviewer is standing by until lead routes the writer REVIEW handoff."
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1381,7 +1417,8 @@
     "M3-EXIT-VALIDATION-001": "CLOSED after PR #80 entered main at 2bf90fdd9f009c30ff104926944e8434c4e0b579. systems_architect thread 019f00ab-b4f3-7b01-8616-d5391a341275 produced docs/GATE-M3.md with M3_GATE = PASS and corrected R3 lifecycle evidence; qa_reviewer thread 019f00ab-d6dc-7e11-9043-6096c46ef578 accepted R3 after the full gate command matrix and PR CI passed. Lead closed both child threads, advanced current_milestone to M4, and created M4-TASK-GRAPH-001 as the next READY task.",
     "M4-TASK-GRAPH-001": "CLOSED after PR #82 entered main at 4bee35829c9a37eff405d59cfe4af1a605434928. systems_architect thread 019f00f4-e7ae-7c71-9a8a-8e8285c9500d created the minimal M4 DAG, qa_reviewer thread 019f00f5-07f1-7ec0-b362-6dc0599efaab accepted it, CI passed, and lead closed both child threads. Next READY task is M4-CAMPAIGN-OBJECTIVES-001.",
     "M4-CAMPAIGN-OBJECTIVES-001": "CLOSED after PR #84 entered main at ff2675e8b8222e9006df3e5a9848526d2edeaa85. Replacement simulation_engineer implemented M4 campaign objective/FactionKnowledge substrate; systems_architect requested deterministic duplicate-key fixes and accepted R2. Next READY task is M4-MUSTER-PREP-COMMITMENTS-001.",
-    "M4-MUSTER-PREP-COMMITMENTS-001": "READY after M4 campaign objectives closure. This task owns muster preparation and mobilized force commitments only."
+    "M4-MUSTER-PREP-COMMITMENTS-001": "READY after M4 campaign objectives closure. This task owns muster preparation and mobilized force commitments only.",
+    "M4-CLIENT-CAMPAIGN-PLANNING-UI-001": "IN_PROGRESS on branch feat/m4-client-campaign-planning-ui after M4-CAMPAIGN-AI-001 closure entered main at 48858e8426e9d6e91f5aa20a38cd05c53fe56cba. client_engineer thread 019f02ed-b50c-7583-8817-b798b19cf8ed is active; qa_reviewer thread 019f02ee-19f7-7743-9d33-8b4d0d29002e is standing by read-only until REVIEW handoff."
   },
   "task_notes": {
     "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",

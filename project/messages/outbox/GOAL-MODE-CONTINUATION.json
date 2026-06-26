@@ -2,17 +2,38 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_CAMPAIGN_AI_CLOSED",
+  "status": "M4_CLIENT_CAMPAIGN_PLANNING_UI_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "d5cd9fa8cd4525dce68a705c4540d27453d38048",
+  "origin_main": "48858e8426e9d6e91f5aa20a38cd05c53fe56cba",
   "current_milestone": "M4",
-  "current_task": null,
-  "current_task_status": "CLOSED",
+  "current_task": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-CAMPAIGN-AI-001",
-  "ready_tasks": [
-    "M4-CLIENT-CAMPAIGN-PLANNING-UI-001"
-  ],
-  "active_threads": {},
+  "ready_tasks": [],
+  "active_threads": {
+    "019f02ed-b50c-7583-8817-b798b19cf8ed": {
+      "task_id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+      "role": "client_engineer",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f02ee-9dfc-72f2-bea3-921cd58c4af3",
+      "updated_at": "2026-06-26T07:57:21Z"
+    },
+    "019f02ee-19f7-7743-9d33-8b4d0d29002e": {
+      "task_id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+      "role": "qa_reviewer",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+      "start_state": "AWAITING_REVIEW_READY",
+      "await_submission_id": "019f02ee-bd12-7b30-a66c-541c9f0c46fe",
+      "updated_at": "2026-06-26T07:57:21Z"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -29,7 +50,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Start M4-CLIENT-CAMPAIGN-PLANNING-UI-001 with client_engineer writer and qa_reviewer, preserving M4 UI allowed paths and no direct WorldState mutation.",
+  "next_machine_action": "Await client_engineer REVIEW handoff, validate it, route to qa_reviewer, and continue M4 integration gates.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -37,7 +58,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T07:55:00Z",
+  "last_updated_at": "2026-06-26T07:57:21Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -61,12 +82,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T07:55:00Z",
-  "current_tasks": [],
-  "last_integrated_task": "M4-CAMPAIGN-AI-001",
-  "last_main_commit": "d5cd9fa8cd4525dce68a705c4540d27453d38048",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-26T07:57:21Z",
+  "current_tasks": [
     "M4-CLIENT-CAMPAIGN-PLANNING-UI-001"
   ],
-  "next_action": "Start M4-CLIENT-CAMPAIGN-PLANNING-UI-001 with client_engineer writer and qa_reviewer, preserving M4 UI allowed paths and no direct WorldState mutation."
+  "last_integrated_task": "M4-CAMPAIGN-AI-001",
+  "last_main_commit": "48858e8426e9d6e91f5aa20a38cd05c53fe56cba",
+  "next_ready_tasks": [],
+  "next_action": "Await client_engineer REVIEW handoff, validate it, route to qa_reviewer, and continue M4 integration gates."
 }
