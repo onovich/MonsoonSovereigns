@@ -645,6 +645,11 @@ export interface M4CampaignArrivalWindowV0 {
   readonly latestDay: GameDay;
 }
 
+export interface M4CampaignMarchJoinedCommitmentTroopsStateV0 {
+  readonly commitmentId: MobilizedForceCommitmentId;
+  readonly joinedTroops: number;
+}
+
 export interface M4CampaignMarchStateV0 {
   readonly marchId: CampaignMarchId;
   readonly campaignPlanId: CampaignPlanId;
@@ -665,6 +670,7 @@ export interface M4CampaignMarchStateV0 {
   readonly predictedArrivalWindow: M4CampaignArrivalWindowV0;
   readonly actualArrivalDay: GameDay | null;
   readonly joinedCommitmentIds: readonly MobilizedForceCommitmentId[];
+  readonly joinedCommitmentTroops: readonly M4CampaignMarchJoinedCommitmentTroopsStateV0[];
   readonly failedCommitmentIds: readonly MobilizedForceCommitmentId[];
 }
 
@@ -2215,6 +2221,14 @@ function validateM4CampaignMarchEntry(
     `${path}.failedCommitmentIds`,
     errors
   );
+  if (input["joinedCommitmentTroops"] !== undefined) {
+    validateM4Array(
+      input["joinedCommitmentTroops"],
+      `${path}.joinedCommitmentTroops`,
+      errors,
+      validateM4MarchJoinedCommitmentTroopsEntry
+    );
+  }
   validateUniqueNumberArrayField(
     input["joinedCommitmentIds"],
     `${path}.joinedCommitmentIds`,
@@ -2227,6 +2241,24 @@ function validateM4CampaignMarchEntry(
     "M4 campaign march failedCommitmentIds must not contain duplicates.",
     errors
   );
+}
+
+function validateM4MarchJoinedCommitmentTroopsEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4CampaignMarchJoinedCommitmentTroopsState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "commitmentId",
+    `${path}.commitmentId`,
+    "MobilizedForceCommitmentId",
+    errors
+  );
+  validateNonnegativeIntegerField(input, "joinedTroops", `${path}.joinedTroops`, errors);
 }
 
 function validateM4MarchRouteSegmentEntry(
@@ -4395,7 +4427,7 @@ export function canonicalizeM4CampaignStateV0(m4: M4CampaignStateV0): M4Campaign
       originDistrictId: parseDistrictId(march.originDistrictId),
       targetDistrictId: parseDistrictId(march.targetDistrictId),
       currentDistrictId: parseDistrictId(march.currentDistrictId),
-      routeSegments: sortM4CampaignMarchRouteSegments(march.routeSegments).map((segment) => ({
+      routeSegments: march.routeSegments.map((segment) => ({
         routeId: parseRouteId(segment.routeId),
         fromDistrictId: parseDistrictId(segment.fromDistrictId),
         toDistrictId: parseDistrictId(segment.toDistrictId),
@@ -4441,6 +4473,7 @@ export function canonicalizeM4CampaignStateV0(m4: M4CampaignStateV0): M4Campaign
       joinedCommitmentIds: sortNumericIds(march.joinedCommitmentIds).map(
         parseMobilizedForceCommitmentId
       ),
+      joinedCommitmentTroops: canonicalizeM4CampaignMarchJoinedCommitmentTroops(m4, march),
       failedCommitmentIds: sortNumericIds(march.failedCommitmentIds).map(
         parseMobilizedForceCommitmentId
       )
@@ -5416,15 +5449,31 @@ function sortM4CampaignMarches(
   );
 }
 
-function sortM4CampaignMarchRouteSegments(
-  values: readonly M4CampaignMarchRouteSegmentStateV0[]
-): readonly M4CampaignMarchRouteSegmentStateV0[] {
-  return [...values].sort(
-    (left, right) =>
-      left.fromDistrictId - right.fromDistrictId ||
-      left.toDistrictId - right.toDistrictId ||
-      left.routeId - right.routeId
-  );
+function canonicalizeM4CampaignMarchJoinedCommitmentTroops(
+  m4: M4CampaignStateV0,
+  march: M4CampaignMarchStateV0
+): readonly M4CampaignMarchJoinedCommitmentTroopsStateV0[] {
+  const joinedTroops =
+    march.joinedCommitmentTroops ??
+    march.joinedCommitmentIds.map((commitmentId) => {
+      const commitment = m4.mobilizedForceCommitments.find((entry) => entry.id === commitmentId);
+      return {
+        commitmentId,
+        joinedTroops:
+          commitment === undefined
+            ? 0
+            : parseNonnegativeInteger(
+                commitment.assembledTroops - commitment.releasedTroops,
+                "M4 joinedTroops"
+              )
+      };
+    });
+  return [...joinedTroops]
+    .sort((left, right) => left.commitmentId - right.commitmentId)
+    .map((entry) => ({
+      commitmentId: parseMobilizedForceCommitmentId(entry.commitmentId),
+      joinedTroops: parseNonnegativeInteger(entry.joinedTroops, "M4 joinedTroops")
+    }));
 }
 
 function sortNumericIds<TValue extends number>(values: readonly TValue[]): readonly TValue[] {
@@ -7818,12 +7867,55 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
       "M4 campaign march failedCommitmentIds must not contain duplicates.",
       errors
     );
+    validateUniqueNumberArray(
+      march.joinedCommitmentTroops.map((entry) => entry.commitmentId),
+      `state.m4.marches[${index}].joinedCommitmentTroops`,
+      "M4 campaign march joinedCommitmentTroops must not contain duplicate commitmentIds.",
+      errors
+    );
+    const joinedTroopCommitmentIds = new Set(
+      march.joinedCommitmentTroops.map((entry) => entry.commitmentId)
+    );
     march.joinedCommitmentIds.forEach((commitmentId, commitmentIndex) => {
       if (!commitmentIds.has(commitmentId)) {
         errors.push({
           code: "bad-reference",
           path: `state.m4.marches[${index}].joinedCommitmentIds[${commitmentIndex}]`,
           message: "M4 campaign march joined commitment references missing commitment."
+        });
+      }
+      if (!joinedTroopCommitmentIds.has(commitmentId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m4.marches[${index}].joinedCommitmentIds[${commitmentIndex}]`,
+          message: "M4 campaign march joined commitment is missing joinedTroops quantity."
+        });
+      }
+    });
+    march.joinedCommitmentTroops.forEach((joined, joinedIndex) => {
+      const commitment = m4.mobilizedForceCommitments.find(
+        (entry) => entry.id === joined.commitmentId
+      );
+      if (commitment === undefined) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m4.marches[${index}].joinedCommitmentTroops[${joinedIndex}].commitmentId`,
+          message: "M4 campaign march joinedTroops references missing commitment."
+        });
+        return;
+      }
+      if (!march.joinedCommitmentIds.includes(joined.commitmentId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m4.marches[${index}].joinedCommitmentTroops[${joinedIndex}].commitmentId`,
+          message: "M4 campaign march joinedTroops commitment is missing joinedCommitmentIds entry."
+        });
+      }
+      if (joined.joinedTroops > commitment.assembledTroops - commitment.releasedTroops) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m4.marches[${index}].joinedCommitmentTroops[${joinedIndex}].joinedTroops`,
+          message: "M4 campaign march joinedTroops exceeds assembled unreleased commitment troops."
         });
       }
     });

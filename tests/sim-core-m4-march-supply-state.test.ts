@@ -114,6 +114,46 @@ describe("M4-MARCH-SUPPLY-STATE-001 deterministic march execution and supply sta
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
   });
 
+  test("joins later assembled troops from a partially joined commitment exactly once", () => {
+    let runtime = runtimeWithM4({
+      commitments: [commitment(100, 60, "delayed", 40, 20)]
+    });
+    runtime = accepted(
+      runtime,
+      startMarchCommand("m4.march.partial-late.start", "player", runtime, 706)
+    );
+    runtime = accepted(runtime, advanceDayCommand("m4.march.partial-late.day-11", runtime));
+    runtime = accepted(
+      runtime,
+      recordMusterResponseCommand("m4.march.partial-late.assembled", "ai", runtime, 100, 60)
+    );
+    runtime = accepted(runtime, advanceDayCommand("m4.march.partial-late.day-12", runtime));
+
+    let march = runtime.world.state.m4?.marches[0];
+    expect(march).toMatchObject({
+      status: "delayed",
+      statusReasonCode: "march.delayed.reinforcement-synchronization",
+      activeTroops: 60,
+      joinedCommitmentIds: [parseMobilizedForceCommitmentId(100)],
+      joinedCommitmentTroops: [
+        { commitmentId: parseMobilizedForceCommitmentId(100), joinedTroops: 60 }
+      ]
+    });
+
+    runtime = accepted(runtime, advanceDayCommand("m4.march.partial-late.day-13", runtime));
+    march = runtime.world.state.m4?.marches[0];
+    expect(march).toMatchObject({
+      status: "arrived",
+      activeTroops: 60,
+      joinedCommitmentIds: [parseMobilizedForceCommitmentId(100)],
+      joinedCommitmentTroops: [
+        { commitmentId: parseMobilizedForceCommitmentId(100), joinedTroops: 60 }
+      ],
+      actualArrivalDay: parseGameDay(13)
+    });
+    expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
   test("delays for supply shortage without negative carried grain or free resources", () => {
     let runtime = runtimeWithM4({
       commitments: [commitment(100, 60, "assembled", 60)],
@@ -145,6 +185,42 @@ describe("M4-MARCH-SUPPLY-STATE-001 deterministic march execution and supply sta
       expect.arrayContaining(["march.delayed.supply-shortage", "march.supply.hungry"])
     );
     expect(totalM2AndM4Grain(runtime.world)).toBe(beforeTotal - 30);
+    expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
+  test("preserves accepted descending route order through canonicalization and execution", () => {
+    let runtime = runtimeWithM4({
+      routes: descendingRoutes(),
+      campaignPlan: campaignPlan({ targetDistrictId: 1 }),
+      commitments: [commitment(100, 60, "assembled", 60)],
+      reservations: [reservation(501, 3, 300)]
+    });
+    runtime = accepted(
+      runtime,
+      startMarchCommand("m4.march.descending.start", "player", runtime, 707, 3)
+    );
+
+    const startedMarch = runtime.world.state.m4?.marches[0];
+    expect(startedMarch?.routeSegments.map(routeEndpoints)).toEqual(["3->2", "2->1"]);
+    const m4 = runtime.world.state.m4;
+    if (m4 === undefined) {
+      throw new Error("Expected M4 state.");
+    }
+    const canonical = canonicalizeM4CampaignStateV0(m4);
+    expect(canonical.marches[0]?.routeSegments.map(routeEndpoints)).toEqual(["3->2", "2->1"]);
+
+    runtime = accepted(runtime, advanceDayCommand("m4.march.descending.day-11", runtime));
+    expect(runtime.world.state.m4?.marches[0]).toMatchObject({
+      currentDistrictId: parseDistrictId(2),
+      currentSegmentIndex: 1,
+      status: "marching"
+    });
+    runtime = accepted(runtime, advanceDayCommand("m4.march.descending.day-12", runtime));
+    expect(runtime.world.state.m4?.marches[0]).toMatchObject({
+      currentDistrictId: parseDistrictId(1),
+      status: "arrived",
+      actualArrivalDay: parseGameDay(12)
+    });
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
   });
 
@@ -250,6 +326,7 @@ describe("M4-MARCH-SUPPLY-STATE-001 deterministic march execution and supply sta
 
 function runtimeWithM4(input: {
   readonly currentDay?: number;
+  readonly routes?: readonly M2RouteTransportEdgeStateV0[];
   readonly campaignPlan?: M4CampaignStateV0["campaignPlans"][number];
   readonly commitments?: readonly M4CampaignStateV0["mobilizedForceCommitments"][number][];
   readonly reservations?: readonly M4CampaignStateV0["grainSupplyReservations"][number][];
@@ -264,13 +341,15 @@ function runtimeWithM4(input: {
 
 function worldWithM4(input: {
   readonly currentDay?: number;
+  readonly routes?: readonly M2RouteTransportEdgeStateV0[];
   readonly campaignPlan?: M4CampaignStateV0["campaignPlans"][number];
   readonly commitments?: readonly M4CampaignStateV0["mobilizedForceCommitments"][number][];
   readonly reservations?: readonly M4CampaignStateV0["grainSupplyReservations"][number][];
 }): WorldStateV0 {
-  const defs = definitions();
+  const routes = input.routes ?? defaultRoutes();
+  const defs = definitions(routes);
   const baseM2 = createM2EconomyPopulationStateV0(defs, {
-    routes: defaultRoutes(),
+    routes,
     districtSeasonality: [
       { districtId: 1, regionalCurveId: 1 },
       { districtId: 2, regionalCurveId: 1 },
@@ -335,7 +414,9 @@ function worldWithM4(input: {
   };
 }
 
-function definitions(): WorldDefinitionsV0 {
+function definitions(
+  routes: readonly M2RouteTransportEdgeStateV0[] = defaultRoutes()
+): WorldDefinitionsV0 {
   return {
     polities: [
       { id: parsePolityId(1), displayNameKey: "polity.m4.attacker" },
@@ -348,7 +429,7 @@ function definitions(): WorldDefinitionsV0 {
       { id: parseDistrictId(3), displayNameKey: "district.m4.target" }
     ],
     settlements: [],
-    routes: defaultRoutes().map((entry) => ({
+    routes: routes.map((entry) => ({
       id: entry.routeId,
       fromDistrictId: entry.fromDistrictId,
       toDistrictId: entry.toDistrictId,
@@ -359,6 +440,17 @@ function definitions(): WorldDefinitionsV0 {
 
 function defaultRoutes(): readonly M2RouteTransportEdgeStateV0[] {
   return [route(10, 1, 2, 1, 120), route(11, 2, 3, 1, 120)];
+}
+
+function descendingRoutes(): readonly M2RouteTransportEdgeStateV0[] {
+  return [route(30, 3, 2, 1, 120), route(31, 2, 1, 1, 120)];
+}
+
+function routeEndpoints(routeSegment: {
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+}): string {
+  return `${routeSegment.fromDistrictId}->${routeSegment.toDistrictId}`;
 }
 
 function route(
@@ -395,11 +487,12 @@ function populationGroup(districtId: number, grainStock: number) {
 function campaignPlan(input: {
   readonly earliestDay?: number;
   readonly latestDay?: number;
+  readonly targetDistrictId?: number;
 }): M4CampaignStateV0["campaignPlans"][number] {
   return {
     id: parseCampaignPlanId(10),
     owner: { kind: "polity", polityId: parsePolityId(1) },
-    target: { kind: "district", districtId: parseDistrictId(3) },
+    target: { kind: "district", districtId: parseDistrictId(input.targetDistrictId ?? 3) },
     objectiveKind: "march",
     startWindow: {
       earliestDay: parseGameDay(input.earliestDay ?? 10),
@@ -515,6 +608,9 @@ function march(marchId: number): M4CampaignStateV0["marches"][number] {
     predictedArrivalWindow: { earliestDay: parseGameDay(12), latestDay: parseGameDay(12) },
     actualArrivalDay: null,
     joinedCommitmentIds: [parseMobilizedForceCommitmentId(100)],
+    joinedCommitmentTroops: [
+      { commitmentId: parseMobilizedForceCommitmentId(100), joinedTroops: 60 }
+    ],
     failedCommitmentIds: []
   };
 }
@@ -579,7 +675,8 @@ function startMarchCommand(
   commandId: string,
   actorKind: "ai" | "player",
   runtime: SimulationRuntimeV1,
-  marchId: number
+  marchId: number,
+  originDistrictId = 1
 ): StartCampaignMarchCommandV1 {
   return {
     schemaVersion: 1,
@@ -591,7 +688,7 @@ function startMarchCommand(
     payload: {
       marchId,
       campaignPlanId: 10,
-      originDistrictId: 1,
+      originDistrictId,
       plannedDepartureDay: runtime.world.meta.currentDay,
       grainPerTroopPerDay: 1,
       reasonCodes: ["march.reason.accepted-route-plan"]

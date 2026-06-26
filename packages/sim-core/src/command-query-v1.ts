@@ -869,6 +869,11 @@ export interface M4CampaignArrivalWindowReadModelV1 {
   readonly latestDay: number;
 }
 
+export interface M4CampaignMarchJoinedCommitmentTroopsReadModelV1 {
+  readonly commitmentId: number;
+  readonly joinedTroops: number;
+}
+
 export interface M4CampaignMarchReadModelV1 {
   readonly marchId: number;
   readonly campaignPlanId: number;
@@ -885,6 +890,7 @@ export interface M4CampaignMarchReadModelV1 {
   readonly predictedArrivalWindow: M4CampaignArrivalWindowReadModelV1;
   readonly actualArrivalDay: number | null;
   readonly joinedCommitmentIds: readonly number[];
+  readonly joinedCommitmentTroops: readonly M4CampaignMarchJoinedCommitmentTroopsReadModelV1[];
   readonly failedCommitmentIds: readonly number[];
   readonly reasonCodes: readonly string[];
 }
@@ -4307,13 +4313,9 @@ function evaluateStartCampaignMarch(
     campaignPlanId,
     plannedDepartureDay
   });
+  const joinedCommitmentTroops = m4MarchJoinedCommitmentTroopsFromIds(m4, joinedCommitmentIds);
   const failedCommitmentIds = initialM4MarchFailedCommitmentIds({ m4, campaignPlanId });
-  const activeTroops = joinedCommitmentIds.reduce((sum, commitmentId) => {
-    const commitment = m4.mobilizedForceCommitments.find((entry) => entry.id === commitmentId);
-    return (
-      sum + (commitment === undefined ? 0 : commitment.assembledTroops - commitment.releasedTroops)
-    );
-  }, 0);
+  const activeTroops = joinedCommitmentTroops.reduce((sum, joined) => sum + joined.joinedTroops, 0);
   if (activeTroops <= 0) {
     return rejectMarchState(
       "payload.campaignPlanId",
@@ -4368,6 +4370,7 @@ function evaluateStartCampaignMarch(
     },
     actualArrivalDay: null,
     joinedCommitmentIds,
+    joinedCommitmentTroops,
     failedCommitmentIds
   };
 
@@ -4438,30 +4441,40 @@ function advanceM4DailyMarch(
 
   let activeTroops = march.activeTroops;
   const joinedCommitmentIds = [...march.joinedCommitmentIds];
+  const joinedTroopsByCommitmentId = new Map<number, number>(
+    march.joinedCommitmentTroops.map((joined) => [joined.commitmentId, joined.joinedTroops])
+  );
   const failedCommitmentIds = [...march.failedCommitmentIds];
   const reasonCodes = [...march.reasonCodes];
   let joinedReinforcementThisDay = false;
   for (const commitment of m4.mobilizedForceCommitments
     .filter((entry) => entry.campaignPlanId === march.campaignPlanId)
     .sort(compareM4MusterCommitmentForMarchJoin)) {
-    if (
-      joinedCommitmentIds.includes(commitment.id) ||
-      failedCommitmentIds.includes(commitment.id)
-    ) {
+    if (failedCommitmentIds.includes(commitment.id)) {
       continue;
     }
+    const alreadyJoinedTroops = joinedTroopsByCommitmentId.get(commitment.id) ?? 0;
     if (
-      commitment.status === "refused" ||
-      (world.meta.currentDay > commitment.dueDay && commitment.assembledTroops === 0)
+      (alreadyJoinedTroops === 0 && commitment.status === "refused") ||
+      (alreadyJoinedTroops === 0 &&
+        world.meta.currentDay > commitment.dueDay &&
+        commitment.assembledTroops === 0)
     ) {
       failedCommitmentIds.push(commitment.id);
       reasonCodes.push("march.reinforcement.failed-to-arrive");
       continue;
     }
     const availableTroops = commitment.assembledTroops - commitment.releasedTroops;
-    if (availableTroops > 0 && world.meta.currentDay >= commitment.plannedAssemblyDay) {
-      joinedCommitmentIds.push(commitment.id);
-      activeTroops += availableTroops;
+    if (
+      availableTroops > alreadyJoinedTroops &&
+      world.meta.currentDay >= commitment.plannedAssemblyDay
+    ) {
+      const joinedTroopDelta = availableTroops - alreadyJoinedTroops;
+      if (!joinedCommitmentIds.includes(commitment.id)) {
+        joinedCommitmentIds.push(commitment.id);
+      }
+      joinedTroopsByCommitmentId.set(commitment.id, availableTroops);
+      activeTroops += joinedTroopDelta;
       joinedReinforcementThisDay = true;
       reasonCodes.push(
         world.meta.currentDay > commitment.plannedAssemblyDay
@@ -4477,6 +4490,7 @@ function advanceM4DailyMarch(
       ...march,
       activeTroops,
       joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
       failedCommitmentIds: sortNumericIds(failedCommitmentIds),
       status: "arrived",
       statusReasonCode: "march.arrived",
@@ -4491,6 +4505,7 @@ function advanceM4DailyMarch(
       ...march,
       activeTroops,
       joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
       failedCommitmentIds: sortNumericIds(failedCommitmentIds),
       status: "paused",
       statusReasonCode: "march.paused.rainy-season",
@@ -4503,6 +4518,7 @@ function advanceM4DailyMarch(
       ...march,
       activeTroops,
       joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
       failedCommitmentIds: sortNumericIds(failedCommitmentIds),
       status: "delayed",
       statusReasonCode: "march.delayed.reinforcement-synchronization",
@@ -4520,6 +4536,7 @@ function advanceM4DailyMarch(
       ...march,
       activeTroops,
       joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
       failedCommitmentIds: sortNumericIds(failedCommitmentIds),
       status: "delayed",
       statusReasonCode: "march.delayed.supply-shortage",
@@ -4551,6 +4568,7 @@ function advanceM4DailyMarch(
       activeTroops,
       supply: baseSupply,
       joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
       failedCommitmentIds: sortNumericIds(failedCommitmentIds),
       status: "delayed",
       statusReasonCode: "march.delayed.supply-shortage",
@@ -4571,6 +4589,7 @@ function advanceM4DailyMarch(
     statusReasonCode: progressed.status === "arrived" ? "march.arrived" : "march.advanced",
     updatedDay: world.meta.currentDay,
     joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+    joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
     failedCommitmentIds: sortNumericIds(failedCommitmentIds),
     reasonCodes: uniqueSortedText(
       [
@@ -4657,6 +4676,22 @@ function initialM4MarchJoinedCommitmentIds(input: {
     .map((commitment) => commitment.id);
 }
 
+function m4MarchJoinedCommitmentTroopsFromIds(
+  m4: M4CampaignStateV0,
+  commitmentIds: readonly M4MobilizedForceCommitmentStateV0["id"][]
+): M4CampaignMarchStateV0["joinedCommitmentTroops"] {
+  return commitmentIds
+    .map((commitmentId) => {
+      const commitment = m4.mobilizedForceCommitments.find((entry) => entry.id === commitmentId);
+      return {
+        commitmentId,
+        joinedTroops:
+          commitment === undefined ? 0 : commitment.assembledTroops - commitment.releasedTroops
+      };
+    })
+    .filter((joined) => joined.joinedTroops > 0);
+}
+
 function initialM4MarchFailedCommitmentIds(input: {
   readonly m4: M4CampaignStateV0;
   readonly campaignPlanId: number;
@@ -4709,6 +4744,18 @@ function minimumInteger(first: number, second: number, third: number): number {
 
 function sortNumericIds<TValue extends number>(values: readonly TValue[]): readonly TValue[] {
   return [...values].sort((left, right) => left - right);
+}
+
+function sortM4MarchJoinedCommitmentTroops(
+  joinedTroopsByCommitmentId: ReadonlyMap<number, number>
+): M4CampaignMarchStateV0["joinedCommitmentTroops"] {
+  return [...joinedTroopsByCommitmentId.entries()]
+    .filter((entry) => entry[1] > 0)
+    .sort((left, right) => left[0] - right[0])
+    .map(([commitmentId, joinedTroops]) => ({
+      commitmentId: parseMobilizedForceCommitmentId(commitmentId),
+      joinedTroops
+    }));
 }
 
 function evaluateVerifyStateHash(
@@ -6756,6 +6803,7 @@ function copyM4CampaignMarchReadModel(march: M4CampaignMarchStateV0): M4Campaign
     predictedArrivalWindow: { ...march.predictedArrivalWindow },
     actualArrivalDay: march.actualArrivalDay,
     joinedCommitmentIds: [...march.joinedCommitmentIds],
+    joinedCommitmentTroops: march.joinedCommitmentTroops.map((joined) => ({ ...joined })),
     failedCommitmentIds: [...march.failedCommitmentIds],
     reasonCodes: [...march.reasonCodes]
   };

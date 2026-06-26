@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T04:03:00Z",
+  "updated_at": "2026-06-26T04:15:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1300,7 +1300,7 @@
       "task_id": "M4-MARCH-SUPPLY-STATE-001",
       "role": "simulation_engineer",
       "thread_id": "019f01f4-764d-7220-ab55-c1735c3c9bf4",
-      "status": "request_changes",
+      "status": "review_ready_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -1308,19 +1308,21 @@
       "branch_or_worktree": "feat/m4-march-supply-state",
       "start_state": "START_CONFIRMED",
       "start_submission_id": "019f01f4-cbd1-7ec3-b5b0-df4b0ffb0ae2",
-      "updated_at": "2026-06-26T04:03:00Z",
+      "updated_at": "2026-06-26T04:15:00Z",
       "responsibility": "primary M4 deterministic march execution, supply state, and reinforcement timing writer",
       "review_ready_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_at": "2026-06-26T03:49:45Z",
       "request_changes_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW__systems_architect.json",
       "request_changes_submission_id": "019f0218-c5f5-73b3-9e33-97f17fdc6206",
-      "request_changes_round": 1
+      "request_changes_round": 1,
+      "review_ready_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json",
+      "review_ready_at_r2": "2026-06-26T04:13:25Z"
     },
     {
       "task_id": "M4-MARCH-SUPPLY-STATE-001",
       "role": "systems_architect",
       "thread_id": "019f01f4-8a58-7753-bdae-37ae559fc7bc",
-      "status": "request_changes",
+      "status": "reviewing_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1328,13 +1330,16 @@
       "branch_or_worktree": "feat/m4-march-supply-state",
       "start_state": "AWAITING_REVIEW_READY",
       "await_submission_id": "019f01f4-cbed-76c0-9d20-5e2fa394c37f",
-      "updated_at": "2026-06-26T04:03:00Z",
+      "updated_at": "2026-06-26T04:15:00Z",
       "responsibility": "architecture reviewer for M4 deterministic march execution and supply state",
       "review_ready_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_submission_id": "019f0210-a10d-74e1-9932-c9b7eadc22dd",
       "review_started_at": "2026-06-26T03:52:00Z",
       "request_changes_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW__systems_architect.json",
-      "request_changes_at": "2026-06-26T04:01:31Z"
+      "request_changes_at": "2026-06-26T04:01:31Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json",
+      "review_ready_submission_id_r2": "019f0224-efb2-76d0-bf8b-36577e03f91d",
+      "review_started_at_r2": "2026-06-26T04:15:00Z"
     }
   ],
   "task_effects": {
@@ -1388,6 +1393,6 @@
     "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",
     "M4-GRAIN-SUPPLY-001": "CLOSED after PR #88 entered main at ea0ebff0b0b861563acf0fedc409fa0d0d14a72f. simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-ROUTE-TRANSPORT-CAPACITY-001.",
     "M4-ROUTE-TRANSPORT-CAPACITY-001": "CLOSED after PR #90 entered main at 2431e897676838057d2e29201b0528b5ebbf29c2. simulation_engineer thread 019f01ca-2ecb-7223-a4a1-ff03e0b527cb implemented route/transport capacity forecasts; systems_architect thread 019f01ca-42ce-78d2-8e19-da4887343bb3 accepted; independent qa_reviewer thread 019f01df-cfe0-7bd2-a412-c67a7441ef96 accepted; lead gates and PR CI passed. Next READY task is M4-MARCH-SUPPLY-STATE-001.",
-    "M4-MARCH-SUPPLY-STATE-001": "REQUEST_CHANGES after systems_architect handoff project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW__systems_architect.json. Lead routed fixes to original simulation_engineer thread 019f01f4-764d-7220-ab55-c1735c3c9bf4 by send_input 019f0218-c5f5-73b3-9e33-97f17fdc6206."
+    "M4-MARCH-SUPPLY-STATE-001": "REVIEW_R2 after simulation_engineer R2 handoff project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json. Lead routed R2 to systems_architect thread 019f01f4-8a58-7753-bdae-37ae559fc7bc by send_input 019f0224-efb2-76d0-bf8b-36577e03f91d."
   }
 }
