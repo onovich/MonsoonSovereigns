@@ -48,6 +48,7 @@ import {
   parsePopulationGroupId,
   parsePolityId,
   parseCampaignPlanId,
+  parseGrainSupplyReservationId,
   parseMobilizedForceCommitmentId,
   parseWorldRevision,
   validateWorldStateV0,
@@ -56,6 +57,7 @@ import {
   canonicalizeM4CampaignStateV0,
   copyM4CampaignOwner,
   copyM4CampaignTarget,
+  copyM4GrainSupplySource,
   copyM4MusterCommitmentSource,
   copyM4MusterLocalCostHook,
   createM4CampaignStateV0,
@@ -93,6 +95,8 @@ import {
   type M4CampaignStateV0,
   type M4CampaignTargetV0,
   type M4FactionKnowledgeSnapshotStateV0,
+  type M4GrainSupplyReservationStateV0,
+  type M4GrainSupplyReservationStatusV0,
   type M4KnownObjectiveEstimateV0,
   type M4MobilizedForceCommitmentStateV0,
   type M4MusterCommitmentStatusV0,
@@ -118,6 +122,7 @@ export type DomainErrorCodeV1 =
   | "character-unavailable"
   | "duplicate-command"
   | "duplicate-fulfillment"
+  | "grain-supply-invalid"
   | "hash-mismatch"
   | "insufficient-labor"
   | "invalid-content-pack"
@@ -282,6 +287,46 @@ export type DomainEventV1 =
       readonly obligationIds: readonly number[];
       readonly administrativeLoad: number;
       readonly reasonCodes: readonly string[];
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.grain-supply-reserved";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly reservationId: number;
+      readonly campaignPlanId: number;
+      readonly reservedAmount: number;
+      readonly sourceCount: number;
+      readonly expectedDailyConsumption: number;
+      readonly expectedDaysOfSupply: number;
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.grain-supply-consumed";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly reservationId: number;
+      readonly campaignPlanId: number;
+      readonly consumedAmount: number;
+      readonly lossAmount: number;
+      readonly shortageAmount: number;
+      readonly carriedAmountAfter: number;
+      readonly lossReasonCode: string | null;
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.grain-supply-released";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly reservationId: number;
+      readonly campaignPlanId: number;
+      readonly releasedAmount: number;
       readonly revisionBefore: number;
       readonly revisionAfter: number;
     };
@@ -530,6 +575,22 @@ export type QueryResultV1 =
             readonly campaignPlanId: number;
             readonly commitments: readonly M4MusterCommitmentReadModelV1[];
             readonly reasonCodes: readonly string[];
+          }
+        | {
+            readonly kind: "sim.preview-m4-grain-supply";
+            readonly day: number;
+            readonly revision: number;
+            readonly campaignPlanId: number;
+            readonly plannedTroops: number;
+            readonly plannedMarchDays: number;
+            readonly plannedStartDay: number;
+            readonly grainRequired: number;
+            readonly grainReserved: number;
+            readonly grainAvailableToReserve: number;
+            readonly expectedDaysOfSupply: number;
+            readonly sourceForecasts: readonly M4GrainSupplySourceForecastReadModelV1[];
+            readonly reservations: readonly M4GrainSupplyReservationReadModelV1[];
+            readonly reasonCodes: readonly string[];
           };
     }
   | {
@@ -719,6 +780,28 @@ export interface M4MusterCommitmentReadModelV1 {
   readonly statusReasonCode: string;
   readonly reasonCodes: readonly string[];
   readonly localCostHooks: M4MobilizedForceCommitmentStateV0["localCostHooks"];
+}
+
+export interface M4GrainSupplySourceForecastReadModelV1 {
+  readonly source: M4GrainSupplyReservationStateV0["source"];
+  readonly availableAmount: number;
+}
+
+export interface M4GrainSupplyReservationReadModelV1 {
+  readonly reservationId: number;
+  readonly campaignPlanId: number;
+  readonly source: M4GrainSupplyReservationStateV0["source"];
+  readonly reservedAmount: number;
+  readonly carriedAmount: number;
+  readonly consumedAmount: number;
+  readonly shortageAmount: number;
+  readonly lossAmount: number;
+  readonly lossReasonCode: string | null;
+  readonly expectedDailyConsumption: number;
+  readonly expectedDaysOfSupply: number;
+  readonly status: M4GrainSupplyReservationStatusV0;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
 }
 
 interface CommandEvaluationV1 {
@@ -1126,6 +1209,12 @@ function validateAndEvaluateCommand(
       return evaluateCreateMusterCommitment(runtime.world, command);
     case "sim.record-muster-response":
       return evaluateRecordMusterResponse(runtime.world, command);
+    case "sim.reserve-campaign-grain-supply":
+      return evaluateReserveCampaignGrainSupply(runtime.world, command);
+    case "sim.consume-campaign-grain-supply":
+      return evaluateConsumeCampaignGrainSupply(runtime.world, command);
+    case "sim.release-campaign-grain-supply":
+      return evaluateReleaseCampaignGrainSupply(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -2903,7 +2992,9 @@ function evaluateRecordMusterResponse(
 function acceptM4CampaignState(
   world: WorldStateV0,
   command: GameCommandV1,
-  m4: M4CampaignStateV0
+  m4: M4CampaignStateV0,
+  buildEvents: (nextWorld: WorldStateV0) => readonly DomainEventV1[] = () => [],
+  buildDeltas: (nextWorld: WorldStateV0) => readonly StateDeltaV1[] = () => []
 ): EvaluationResult {
   const nextWorld = commitRuntimeState(world, {
     ...world.state,
@@ -2919,9 +3010,381 @@ function acceptM4CampaignState(
     value: {
       command,
       nextWorld,
-      events: [],
-      deltas: [],
+      events: buildEvents(nextWorld),
+      deltas: buildDeltas(nextWorld),
       wouldChangeState: nextWorld.meta.stateHash !== world.meta.stateHash
+    }
+  };
+}
+
+function acceptM4CampaignAndM2State(
+  world: WorldStateV0,
+  command: GameCommandV1,
+  m2: M2EconomyPopulationStateV0,
+  m4: M4CampaignStateV0,
+  buildEvents: (nextWorld: WorldStateV0) => readonly DomainEventV1[] = () => [],
+  buildDeltas: (nextWorld: WorldStateV0) => readonly StateDeltaV1[] = () => []
+): EvaluationResult {
+  const nextWorld = commitRuntimeState(world, {
+    ...world.state,
+    m2,
+    m4: canonicalizeM4CampaignStateV0(m4)
+  });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      events: buildEvents(nextWorld),
+      deltas: buildDeltas(nextWorld),
+      wouldChangeState: nextWorld.meta.stateHash !== world.meta.stateHash
+    }
+  };
+}
+
+function m2PopulationGroupDelta(
+  nextWorld: WorldStateV0,
+  group: M2PopulationGroupStateV0
+): Extract<StateDeltaV1, { readonly kind: "state.m2-population-group-updated" }> {
+  const committedLabor = group.committedLabor.reduce(
+    (sum, commitment) => sum + commitment.laborAmount,
+    0
+  );
+  return {
+    schemaVersion: 1,
+    kind: "state.m2-population-group-updated",
+    populationGroupId: group.id,
+    availableLabor: group.availableLabor,
+    committedLabor,
+    grainStock: group.grainStock,
+    cashStock: group.cashStock,
+    revision: nextWorld.meta.revision,
+    stateHash: nextWorld.meta.stateHash
+  };
+}
+
+function allocateM4GrainSupplySources(input: {
+  readonly world: WorldStateV0;
+  readonly m2: M2EconomyPopulationStateV0;
+  readonly ownerPolityId: PolityId;
+  readonly requestedAmount: number;
+}): {
+  readonly allocatedAmount: number;
+  readonly allocations: readonly {
+    readonly group: M2PopulationGroupStateV0;
+    readonly amount: number;
+  }[];
+} {
+  let remainingAmount = input.requestedAmount;
+  const allocations: { readonly group: M2PopulationGroupStateV0; readonly amount: number }[] = [];
+  const candidates = input.m2.populationGroups
+    .filter((group) => {
+      const district = input.world.state.districts.find(
+        (entry) => entry.definitionId === group.districtId
+      );
+      return (
+        group.grainStock > 0 &&
+        district?.control.kind === "controlled" &&
+        district.control.controllerPolityId === input.ownerPolityId
+      );
+    })
+    .sort(
+      (left, right) =>
+        left.districtId - right.districtId ||
+        left.id - right.id ||
+        left.grainStock - right.grainStock
+    );
+
+  for (const group of candidates) {
+    if (remainingAmount === 0) {
+      break;
+    }
+    const amount = group.grainStock < remainingAmount ? group.grainStock : remainingAmount;
+    allocations.push({ group, amount });
+    remainingAmount -= amount;
+  }
+
+  return {
+    allocatedAmount: input.requestedAmount - remainingAmount,
+    allocations
+  };
+}
+
+function createM4GrainSupplyReservation(input: {
+  readonly reservationId: ReturnType<typeof parseGrainSupplyReservationId>;
+  readonly campaignPlanId: ReturnType<typeof parseCampaignPlanId>;
+  readonly group: M2PopulationGroupStateV0;
+  readonly amount: number;
+  readonly expectedDailyConsumption: number;
+  readonly reasonCodes: readonly string[];
+}): M4GrainSupplyReservationStateV0 {
+  return {
+    reservationId: input.reservationId,
+    campaignPlanId: input.campaignPlanId,
+    source: {
+      kind: "m2-population-group",
+      populationGroupId: input.group.id,
+      districtId: input.group.districtId
+    },
+    reservedAmount: input.amount,
+    carriedAmount: input.amount,
+    consumedAmount: 0,
+    shortageAmount: 0,
+    lossAmount: 0,
+    lossReasonCode: null,
+    expectedDailyConsumption: input.expectedDailyConsumption,
+    expectedDaysOfSupply: floorDivide(input.amount, input.expectedDailyConsumption),
+    status: "reserved",
+    statusReasonCode: "grain.supply.reserved",
+    reasonCodes: [...input.reasonCodes, "grain.supply.reserved"].sort(compareText)
+  };
+}
+
+function applyM4GrainConsumption(input: {
+  readonly reservations: readonly M4GrainSupplyReservationStateV0[];
+  readonly consumedAmount: number;
+  readonly lossAmount: number;
+  readonly lossReasonCode: string | null;
+  readonly reasonCodes: readonly string[];
+}): { readonly reservations: readonly M4GrainSupplyReservationStateV0[] } {
+  let remainingConsumption = input.consumedAmount;
+  let remainingLoss = input.lossAmount;
+  const sortedReservations = [...input.reservations].sort(
+    compareM4GrainSupplyReservationForConsumption
+  );
+  const consumedReservations = sortedReservations.map((reservation) => {
+    const consumedFromReservation =
+      reservation.carriedAmount < remainingConsumption
+        ? reservation.carriedAmount
+        : remainingConsumption;
+    remainingConsumption -= consumedFromReservation;
+    const carriedAfterConsumption = reservation.carriedAmount - consumedFromReservation;
+    const lossFromReservation =
+      carriedAfterConsumption < remainingLoss ? carriedAfterConsumption : remainingLoss;
+    remainingLoss -= lossFromReservation;
+    const carriedAmount = carriedAfterConsumption - lossFromReservation;
+    const consumedAmount = reservation.consumedAmount + consumedFromReservation;
+    const lossAmount = reservation.lossAmount + lossFromReservation;
+    return {
+      ...reservation,
+      carriedAmount,
+      consumedAmount,
+      shortageAmount: reservation.shortageAmount,
+      lossAmount,
+      lossReasonCode: lossAmount > 0 ? input.lossReasonCode : null,
+      expectedDaysOfSupply: floorDivide(carriedAmount, reservation.expectedDailyConsumption),
+      status: deriveM4GrainSupplyStatus({
+        carriedAmount,
+        consumedAmount,
+        shortageAmount: reservation.shortageAmount,
+        lossAmount
+      }),
+      statusReasonCode: input.reasonCodes[0] ?? reservation.statusReasonCode,
+      reasonCodes: [
+        ...reservation.reasonCodes,
+        ...input.reasonCodes,
+        ...(lossFromReservation > 0 && input.lossReasonCode !== null ? [input.lossReasonCode] : [])
+      ].sort(compareText)
+    };
+  });
+  const lastReservation = consumedReservations[consumedReservations.length - 1];
+  const shortageRemainder = remainingConsumption + remainingLoss;
+  if (shortageRemainder === 0 || lastReservation === undefined) {
+    return { reservations: consumedReservations };
+  }
+
+  return {
+    reservations: consumedReservations.map((reservation) =>
+      reservation.reservationId === lastReservation.reservationId &&
+      reservation.source.populationGroupId === lastReservation.source.populationGroupId
+        ? {
+            ...reservation,
+            shortageAmount: reservation.shortageAmount + shortageRemainder,
+            status: "shortage",
+            statusReasonCode: "grain.supply.shortage",
+            reasonCodes: [...reservation.reasonCodes, "grain.supply.shortage"].sort(compareText)
+          }
+        : reservation
+    )
+  };
+}
+
+function compareM4GrainSupplyReservationForConsumption(
+  left: M4GrainSupplyReservationStateV0,
+  right: M4GrainSupplyReservationStateV0
+): number {
+  return (
+    left.campaignPlanId - right.campaignPlanId ||
+    left.reservationId - right.reservationId ||
+    left.source.districtId - right.source.districtId ||
+    left.source.populationGroupId - right.source.populationGroupId
+  );
+}
+
+function sumM4GrainReservationField(
+  reservations: readonly M4GrainSupplyReservationStateV0[],
+  field: "carriedAmount" | "consumedAmount" | "lossAmount" | "shortageAmount"
+): number {
+  return reservations.reduce((sum, reservation) => sum + reservation[field], 0);
+}
+
+function m4GrainReservationCampaignPlanId(
+  reservations: readonly M4GrainSupplyReservationStateV0[]
+): ReturnType<typeof parseCampaignPlanId> | null {
+  const first = reservations[0];
+  if (first === undefined) {
+    return null;
+  }
+  return reservations.every((reservation) => reservation.campaignPlanId === first.campaignPlanId)
+    ? first.campaignPlanId
+    : null;
+}
+
+function deriveM4GrainSupplyStatus(input: {
+  readonly carriedAmount: number;
+  readonly consumedAmount: number;
+  readonly shortageAmount: number;
+  readonly lossAmount: number;
+}): M4GrainSupplyReservationStatusV0 {
+  if (input.shortageAmount > 0) {
+    return "shortage";
+  }
+  if (input.carriedAmount === 0 && (input.consumedAmount > 0 || input.lossAmount > 0)) {
+    return "consumed";
+  }
+  if (input.consumedAmount > 0 || input.lossAmount > 0) {
+    return "partially-consumed";
+  }
+  return "reserved";
+}
+
+function plannedM4MusterTroops(m4: M4CampaignStateV0, campaignPlanId: number): number {
+  return m4.mobilizedForceCommitments
+    .filter((commitment) => commitment.campaignPlanId === campaignPlanId)
+    .reduce((sum, commitment) => {
+      const unavailableTroops = commitment.refusedTroops + commitment.releasedTroops;
+      const availableTroops =
+        commitment.promisedTroops > unavailableTroops
+          ? commitment.promisedTroops - unavailableTroops
+          : 0;
+      return sum + availableTroops;
+    }, 0);
+}
+
+function m4ControlledGrainSources(
+  world: WorldStateV0,
+  m2: M2EconomyPopulationStateV0,
+  ownerPolityId: PolityId
+): readonly { readonly group: M2PopulationGroupStateV0 }[] {
+  return m2.populationGroups
+    .filter((group) => {
+      const district = world.state.districts.find(
+        (entry) => entry.definitionId === group.districtId
+      );
+      return (
+        group.grainStock > 0 &&
+        district?.control.kind === "controlled" &&
+        district.control.controllerPolityId === ownerPolityId
+      );
+    })
+    .sort((left, right) => left.districtId - right.districtId || left.id - right.id)
+    .map((group) => ({ group }));
+}
+
+function m4GrainForecastReasonCodes(input: {
+  readonly world: WorldStateV0;
+  readonly plan: M4CampaignPlanStateV0;
+  readonly plannedTroops: number;
+  readonly grainRequired: number;
+  readonly grainReserved: number;
+  readonly grainAvailableToReserve: number;
+}): readonly string[] {
+  const reasonCodes: string[] = [];
+  if (input.plannedTroops === 0) {
+    reasonCodes.push("grain.forecast.no-planned-muster");
+  }
+  if (input.grainReserved >= input.grainRequired && input.grainRequired > 0) {
+    reasonCodes.push("grain.forecast.reserved-sufficient");
+  }
+  if (input.grainReserved < input.grainRequired) {
+    reasonCodes.push("grain.forecast.insufficient-reserved-grain");
+  }
+  if (input.grainReserved + input.grainAvailableToReserve < input.grainRequired) {
+    reasonCodes.push("grain.forecast.insufficient-controlled-stockpile");
+  }
+  if (hasM4SeasonalGrainRisk(input.world, input.plan)) {
+    reasonCodes.push("grain.forecast.seasonal-risk");
+  }
+  return reasonCodes.sort(compareM4GrainForecastReasonCode);
+}
+
+function hasM4SeasonalGrainRisk(world: WorldStateV0, plan: M4CampaignPlanStateV0): boolean {
+  const m2 = world.state.m2;
+  if (m2 === undefined || plan.target.kind !== "district") {
+    return false;
+  }
+  const targetDistrictId = plan.target.districtId;
+  const seasonality = m2.transport.districtSeasonality.find(
+    (entry) => entry.districtId === targetDistrictId
+  );
+  const curve = m2.transport.regionalCurves.find(
+    (entry) => entry.id === seasonality?.regionalCurveId
+  );
+  const month =
+    curve?.monthlyValues[getGameCalendarDate(plan.startWindow.earliestDay).monthOfYear - 1];
+  return (month?.monsoonIntensityBps ?? 0) >= 7_000;
+}
+
+function compareM4GrainForecastReasonCode(left: string, right: string): number {
+  return (
+    m4GrainForecastReasonRank(left) - m4GrainForecastReasonRank(right) || compareText(left, right)
+  );
+}
+
+function m4GrainForecastReasonRank(reasonCode: string): number {
+  switch (reasonCode) {
+    case "grain.forecast.no-planned-muster":
+      return 1;
+    case "grain.forecast.insufficient-reserved-grain":
+      return 2;
+    case "grain.forecast.insufficient-controlled-stockpile":
+      return 3;
+    case "grain.forecast.seasonal-risk":
+      return 4;
+    case "grain.forecast.reserved-sufficient":
+      return 5;
+    default:
+      return 99;
+  }
+}
+
+function multiplySafe(first: number, second: number, third: number): number | null {
+  if (first !== 0 && second > Math.floor(Number.MAX_SAFE_INTEGER / first)) {
+    return null;
+  }
+  const partial = first * second;
+  if (partial !== 0 && third > Math.floor(Number.MAX_SAFE_INTEGER / partial)) {
+    return null;
+  }
+  return partial * third;
+}
+
+function floorDivide(numerator: number, denominator: number): number {
+  return Math.floor(numerator / denominator);
+}
+
+function rejectGrainSupply(path: string, message: string): EvaluationResult {
+  return {
+    ok: false,
+    error: {
+      code: "grain-supply-invalid",
+      path,
+      message
     }
   };
 }
@@ -3276,6 +3739,339 @@ function musterCommitmentDomainError(path: string, message: string): DomainError
     path,
     message
   };
+}
+
+function evaluateReserveCampaignGrainSupply(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.reserve-campaign-grain-supply" }>
+): EvaluationResult {
+  const m2 = world.state.m2;
+  if (m2 === undefined) {
+    return {
+      ok: false,
+      error: {
+        code: "m2-state-missing",
+        path: "state.m2",
+        message: "sim.reserve-campaign-grain-supply requires an M2 economy state."
+      }
+    };
+  }
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.reserve-campaign-grain-supply");
+  }
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectGrainSupply("state.m4", "M4 campaign state is missing.");
+  }
+
+  const reservationId = parseGrainSupplyReservationId(command.payload.reservationId);
+  if (m4.grainSupplyReservations.some((entry) => entry.reservationId === reservationId)) {
+    return rejectGrainSupply("payload.reservationId", "GrainSupplyReservationId already exists.");
+  }
+  const campaignPlanId = parseCampaignPlanId(command.payload.campaignPlanId);
+  const campaignPlan = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (campaignPlan === undefined) {
+    return badIdError("payload.campaignPlanId", "Grain supply references missing campaign.");
+  }
+  if (campaignPlan.status === "cancelled" || campaignPlan.status === "completed") {
+    return rejectGrainSupply("payload.campaignPlanId", "CampaignPlan cannot reserve grain.");
+  }
+  const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
+  if (ownerPolityId === null) {
+    return rejectGrainSupply("payload.campaignPlanId", "Campaign owner polity is unavailable.");
+  }
+  if (!actorHasPolityAuthority(m3, command.actor, ownerPolityId)) {
+    return authorityDeniedError();
+  }
+
+  const allocations = allocateM4GrainSupplySources({
+    world,
+    m2,
+    ownerPolityId,
+    requestedAmount: command.payload.requestedAmount
+  });
+  if (allocations.allocatedAmount < command.payload.requestedAmount) {
+    return rejectGrainSupply(
+      "payload.requestedAmount",
+      "Controlled M2 grain stockpiles cannot satisfy requestedAmount."
+    );
+  }
+
+  const nextM2 = canonicalizeM2EconomyPopulationState({
+    ...m2,
+    populationGroups: m2.populationGroups.map((group) => {
+      const allocation = allocations.allocations.find((entry) => entry.group.id === group.id);
+      if (allocation === undefined) {
+        return group;
+      }
+      return {
+        ...group,
+        grainStock: group.grainStock - allocation.amount
+      };
+    })
+  });
+  const reservations = allocations.allocations.map((allocation) =>
+    createM4GrainSupplyReservation({
+      reservationId,
+      campaignPlanId,
+      group: allocation.group,
+      amount: allocation.amount,
+      expectedDailyConsumption: command.payload.expectedDailyConsumption,
+      reasonCodes: command.payload.reasonCodes
+    })
+  );
+
+  return acceptM4CampaignAndM2State(
+    world,
+    command,
+    nextM2,
+    {
+      ...m4,
+      grainSupplyReservations: [...m4.grainSupplyReservations, ...reservations]
+    },
+    (nextWorld) => [
+      {
+        schemaVersion: 1,
+        kind: "sim.grain-supply-reserved",
+        commandId: command.commandId,
+        actor: command.actor,
+        reservationId,
+        campaignPlanId,
+        reservedAmount: command.payload.requestedAmount,
+        sourceCount: reservations.length,
+        expectedDailyConsumption: command.payload.expectedDailyConsumption,
+        expectedDaysOfSupply: floorDivide(
+          command.payload.requestedAmount,
+          command.payload.expectedDailyConsumption
+        ),
+        revisionBefore: world.meta.revision,
+        revisionAfter: nextWorld.meta.revision
+      }
+    ],
+    (nextWorld) =>
+      allocations.allocations
+        .map((allocation) =>
+          nextWorld.state.m2?.populationGroups.find((group) => group.id === allocation.group.id)
+        )
+        .filter((group): group is M2PopulationGroupStateV0 => group !== undefined)
+        .map((group) => m2PopulationGroupDelta(nextWorld, group))
+  );
+}
+
+function evaluateConsumeCampaignGrainSupply(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.consume-campaign-grain-supply" }>
+): EvaluationResult {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.consume-campaign-grain-supply");
+  }
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectGrainSupply("state.m4", "M4 campaign state is missing.");
+  }
+  const reservationId = parseGrainSupplyReservationId(command.payload.reservationId);
+  const reservations = m4.grainSupplyReservations.filter(
+    (entry) => entry.reservationId === reservationId
+  );
+  if (reservations.length === 0) {
+    return badIdError(
+      "payload.reservationId",
+      "sim.consume-campaign-grain-supply references missing reservation."
+    );
+  }
+  if (reservations.every((entry) => entry.status === "released" || entry.status === "consumed")) {
+    return rejectGrainSupply("payload.reservationId", "Grain supply reservation is terminal.");
+  }
+  const campaignPlanId = m4GrainReservationCampaignPlanId(reservations);
+  if (campaignPlanId === null) {
+    return rejectGrainSupply(
+      "payload.reservationId",
+      "GrainSupplyReservationId spans multiple campaign plans."
+    );
+  }
+  const campaignPlan = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (campaignPlan === undefined) {
+    return rejectGrainSupply("payload.reservationId", "Grain reservation campaign is missing.");
+  }
+  const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
+  if (ownerPolityId === null || !actorHasPolityAuthority(m3, command.actor, ownerPolityId)) {
+    return authorityDeniedError();
+  }
+
+  const consumed = applyM4GrainConsumption({
+    reservations,
+    consumedAmount: command.payload.consumedAmount,
+    lossAmount: command.payload.lossAmount,
+    lossReasonCode: command.payload.lossReasonCode,
+    reasonCodes: command.payload.reasonCodes
+  });
+  const consumedBefore = sumM4GrainReservationField(reservations, "consumedAmount");
+  const lossBefore = sumM4GrainReservationField(reservations, "lossAmount");
+  const shortageBefore = sumM4GrainReservationField(reservations, "shortageAmount");
+  const carriedAfter = sumM4GrainReservationField(consumed.reservations, "carriedAmount");
+  const consumedDelta =
+    sumM4GrainReservationField(consumed.reservations, "consumedAmount") - consumedBefore;
+  const lossDelta = sumM4GrainReservationField(consumed.reservations, "lossAmount") - lossBefore;
+  const shortageDelta =
+    sumM4GrainReservationField(consumed.reservations, "shortageAmount") - shortageBefore;
+  const nextReservations = m4.grainSupplyReservations.map((entry) => {
+    const updated = consumed.reservations.find(
+      (reservation) =>
+        reservation.reservationId === entry.reservationId &&
+        reservation.source.kind === entry.source.kind &&
+        reservation.source.populationGroupId === entry.source.populationGroupId
+    );
+    return updated ?? entry;
+  });
+
+  return acceptM4CampaignState(
+    world,
+    command,
+    {
+      ...m4,
+      grainSupplyReservations: nextReservations
+    },
+    (nextWorld) => [
+      {
+        schemaVersion: 1,
+        kind: "sim.grain-supply-consumed",
+        commandId: command.commandId,
+        actor: command.actor,
+        reservationId,
+        campaignPlanId: campaignPlan.id,
+        consumedAmount: consumedDelta,
+        lossAmount: lossDelta,
+        shortageAmount: shortageDelta,
+        carriedAmountAfter: carriedAfter,
+        lossReasonCode: command.payload.lossReasonCode,
+        revisionBefore: world.meta.revision,
+        revisionAfter: nextWorld.meta.revision
+      }
+    ]
+  );
+}
+
+function evaluateReleaseCampaignGrainSupply(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.release-campaign-grain-supply" }>
+): EvaluationResult {
+  const m2 = world.state.m2;
+  if (m2 === undefined) {
+    return {
+      ok: false,
+      error: {
+        code: "m2-state-missing",
+        path: "state.m2",
+        message: "sim.release-campaign-grain-supply requires an M2 economy state."
+      }
+    };
+  }
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.release-campaign-grain-supply");
+  }
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectGrainSupply("state.m4", "M4 campaign state is missing.");
+  }
+  const reservationId = parseGrainSupplyReservationId(command.payload.reservationId);
+  const reservations = m4.grainSupplyReservations.filter(
+    (entry) => entry.reservationId === reservationId
+  );
+  if (reservations.length === 0) {
+    return badIdError(
+      "payload.reservationId",
+      "sim.release-campaign-grain-supply references missing reservation."
+    );
+  }
+  if (reservations.every((entry) => entry.carriedAmount === 0)) {
+    return rejectGrainSupply(
+      "payload.reservationId",
+      "Grain supply reservation has no carried grain."
+    );
+  }
+  const campaignPlanId = m4GrainReservationCampaignPlanId(reservations);
+  if (campaignPlanId === null) {
+    return rejectGrainSupply(
+      "payload.reservationId",
+      "GrainSupplyReservationId spans multiple campaign plans."
+    );
+  }
+  const campaignPlan = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (campaignPlan === undefined) {
+    return rejectGrainSupply("payload.reservationId", "Grain reservation campaign is missing.");
+  }
+  const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
+  if (ownerPolityId === null || !actorHasPolityAuthority(m3, command.actor, ownerPolityId)) {
+    return authorityDeniedError();
+  }
+
+  const releaseByPopulationGroupId = new Map<number, number>();
+  const releasedAmount = reservations.reduce(
+    (sum, reservation) => sum + reservation.carriedAmount,
+    0
+  );
+  for (const reservation of reservations) {
+    if (reservation.source.kind === "m2-population-group" && reservation.carriedAmount > 0) {
+      releaseByPopulationGroupId.set(
+        reservation.source.populationGroupId,
+        (releaseByPopulationGroupId.get(reservation.source.populationGroupId) ?? 0) +
+          reservation.carriedAmount
+      );
+    }
+  }
+  const nextM2 = canonicalizeM2EconomyPopulationState({
+    ...m2,
+    populationGroups: m2.populationGroups.map((group) => ({
+      ...group,
+      grainStock: group.grainStock + (releaseByPopulationGroupId.get(group.id) ?? 0)
+    }))
+  });
+  const nextReservations = m4.grainSupplyReservations.map((entry) =>
+    entry.reservationId === reservationId
+      ? {
+          ...entry,
+          carriedAmount: 0,
+          expectedDaysOfSupply: 0,
+          status: "released" as const,
+          statusReasonCode: command.payload.reasonCode,
+          reasonCodes: [...entry.reasonCodes, command.payload.reasonCode].sort(compareText)
+        }
+      : entry
+  );
+
+  return acceptM4CampaignAndM2State(
+    world,
+    command,
+    nextM2,
+    {
+      ...m4,
+      grainSupplyReservations: nextReservations
+    },
+    (nextWorld) => [
+      {
+        schemaVersion: 1,
+        kind: "sim.grain-supply-released",
+        commandId: command.commandId,
+        actor: command.actor,
+        reservationId,
+        campaignPlanId: campaignPlan.id,
+        releasedAmount,
+        revisionBefore: world.meta.revision,
+        revisionAfter: nextWorld.meta.revision
+      }
+    ],
+    (nextWorld) =>
+      [...releaseByPopulationGroupId.keys()]
+        .sort((left, right) => left - right)
+        .map((populationGroupId) =>
+          nextWorld.state.m2?.populationGroups.find((group) => group.id === populationGroupId)
+        )
+        .filter((group): group is M2PopulationGroupStateV0 => group !== undefined)
+        .map((group) => m2PopulationGroupDelta(nextWorld, group))
+  );
 }
 
 function evaluateVerifyStateHash(
@@ -3967,11 +4763,15 @@ function authorityDeniedDomainError(): DomainErrorV1 {
 function m3MissingError(commandKind: string): EvaluationResult {
   return {
     ok: false,
-    error: {
-      code: "m3-state-missing",
-      path: "state.m3",
-      message: `${commandKind} requires an M3 polity vassalage state.`
-    }
+    error: m3MissingDomainError(commandKind)
+  };
+}
+
+function m3MissingDomainError(commandKind: string): DomainErrorV1 {
+  return {
+    code: "m3-state-missing",
+    path: "state.m3",
+    message: `${commandKind} requires an M3 polity vassalage state.`
   };
 }
 
@@ -4642,6 +5442,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM4FactionKnowledgeQuery(runtime, query);
     case "sim.list-m4-muster-commitments":
       return executeM4MusterCommitmentsQuery(runtime, query);
+    case "sim.preview-m4-grain-supply":
+      return executeM4GrainSupplyPreviewQuery(runtime, query);
   }
 }
 
@@ -4819,6 +5621,142 @@ function copyM4MusterCommitmentReadModel(
     statusReasonCode: commitment.statusReasonCode,
     reasonCodes: [...commitment.reasonCodes],
     localCostHooks: commitment.localCostHooks.map(copyM4MusterLocalCostHook)
+  };
+}
+
+function executeM4GrainSupplyPreviewQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.preview-m4-grain-supply" }>
+): QueryResultV1 {
+  const m2 = runtime.world.state.m2;
+  if (m2 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m2-state-missing",
+        path: "state.m2",
+        message: "sim.preview-m4-grain-supply requires an M2 economy state."
+      }
+    };
+  }
+  const m3 = runtime.world.state.m3;
+  if (m3 === undefined) {
+    return {
+      status: "rejected",
+      error: m3MissingDomainError("sim.preview-m4-grain-supply")
+    };
+  }
+  const m4 = runtime.world.state.m4;
+  const campaignPlanId = parseCampaignPlanId(query.payload.campaignPlanId);
+  const campaignPlan = m4?.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (m4 === undefined || campaignPlan === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.campaignPlanId",
+        message: "sim.preview-m4-grain-supply references a missing CampaignPlanId."
+      }
+    };
+  }
+  const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
+  if (ownerPolityId === null) {
+    return {
+      status: "rejected",
+      error: {
+        code: "grain-supply-invalid",
+        path: "payload.campaignPlanId",
+        message: "Campaign owner polity is unavailable."
+      }
+    };
+  }
+  const plannedTroops = plannedM4MusterTroops(m4, campaignPlanId);
+  const required = multiplySafe(
+    plannedTroops,
+    query.payload.plannedMarchDays,
+    query.payload.grainPerTroopPerDay
+  );
+  const dailyNeed = multiplySafe(plannedTroops, query.payload.grainPerTroopPerDay, 1);
+  if (required === null || dailyNeed === null) {
+    return {
+      status: "rejected",
+      error: {
+        code: "grain-supply-invalid",
+        path: "payload.plannedMarchDays",
+        message: "M4 grain forecast quantity exceeds Number.MAX_SAFE_INTEGER."
+      }
+    };
+  }
+
+  const reservations = m4.grainSupplyReservations
+    .filter((reservation) => reservation.campaignPlanId === campaignPlanId)
+    .map(copyM4GrainSupplyReservationReadModel);
+  const grainReserved = reservations.reduce(
+    (sum, reservation) => sum + reservation.carriedAmount,
+    0
+  );
+  const sourceForecasts = m4ControlledGrainSources(runtime.world, m2, ownerPolityId).map(
+    (source) => ({
+      source: {
+        kind: "m2-population-group" as const,
+        populationGroupId: source.group.id,
+        districtId: source.group.districtId
+      },
+      availableAmount: source.group.grainStock
+    })
+  );
+  const grainAvailableToReserve = sourceForecasts.reduce(
+    (sum, source) => sum + source.availableAmount,
+    0
+  );
+  const reasonCodes = m4GrainForecastReasonCodes({
+    world: runtime.world,
+    plan: campaignPlan,
+    plannedTroops,
+    grainRequired: required,
+    grainReserved,
+    grainAvailableToReserve
+  });
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.preview-m4-grain-supply",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      campaignPlanId,
+      plannedTroops,
+      plannedMarchDays: query.payload.plannedMarchDays,
+      plannedStartDay: campaignPlan.startWindow.earliestDay,
+      grainRequired: required,
+      grainReserved,
+      grainAvailableToReserve,
+      expectedDaysOfSupply: dailyNeed === 0 ? 0 : floorDivide(grainReserved, dailyNeed),
+      sourceForecasts,
+      reservations,
+      reasonCodes
+    }
+  };
+}
+
+function copyM4GrainSupplyReservationReadModel(
+  reservation: M4GrainSupplyReservationStateV0
+): M4GrainSupplyReservationReadModelV1 {
+  return {
+    reservationId: reservation.reservationId,
+    campaignPlanId: reservation.campaignPlanId,
+    source: copyM4GrainSupplySource(reservation.source),
+    reservedAmount: reservation.reservedAmount,
+    carriedAmount: reservation.carriedAmount,
+    consumedAmount: reservation.consumedAmount,
+    shortageAmount: reservation.shortageAmount,
+    lossAmount: reservation.lossAmount,
+    lossReasonCode: reservation.lossReasonCode,
+    expectedDailyConsumption: reservation.expectedDailyConsumption,
+    expectedDaysOfSupply: reservation.expectedDaysOfSupply,
+    status: reservation.status,
+    statusReasonCode: reservation.statusReasonCode,
+    reasonCodes: [...reservation.reasonCodes]
   };
 }
 
@@ -6012,6 +6950,12 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
       return { ...event };
     case "sim.m3-postwar-governance-applied":
       return { ...event };
+    case "sim.grain-supply-reserved":
+      return { ...event };
+    case "sim.grain-supply-consumed":
+      return { ...event };
+    case "sim.grain-supply-released":
+      return { ...event };
     case "sim.state-hash-verified":
       return { ...event };
   }
@@ -6227,6 +7171,234 @@ function parseSavedDomainEvent(
         }
       };
     }
+    case "sim.grain-supply-reserved": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const reservationId = readPositiveIdRecordField(
+        record,
+        "reservationId",
+        `${path}.reservationId`,
+        reasons
+      );
+      const campaignPlanId = readPositiveIdRecordField(
+        record,
+        "campaignPlanId",
+        `${path}.campaignPlanId`,
+        reasons
+      );
+      const reservedAmount = readNumberRecordField(
+        record,
+        "reservedAmount",
+        `${path}.reservedAmount`,
+        reasons
+      );
+      const sourceCount = readNumberRecordField(
+        record,
+        "sourceCount",
+        `${path}.sourceCount`,
+        reasons
+      );
+      const expectedDailyConsumption = readNumberRecordField(
+        record,
+        "expectedDailyConsumption",
+        `${path}.expectedDailyConsumption`,
+        reasons
+      );
+      const expectedDaysOfSupply = readNumberRecordField(
+        record,
+        "expectedDaysOfSupply",
+        `${path}.expectedDaysOfSupply`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        reservationId === undefined ||
+        campaignPlanId === undefined ||
+        reservedAmount === undefined ||
+        sourceCount === undefined ||
+        expectedDailyConsumption === undefined ||
+        expectedDaysOfSupply === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          reservationId,
+          campaignPlanId,
+          reservedAmount,
+          sourceCount,
+          expectedDailyConsumption,
+          expectedDaysOfSupply,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.grain-supply-consumed": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const reservationId = readPositiveIdRecordField(
+        record,
+        "reservationId",
+        `${path}.reservationId`,
+        reasons
+      );
+      const campaignPlanId = readPositiveIdRecordField(
+        record,
+        "campaignPlanId",
+        `${path}.campaignPlanId`,
+        reasons
+      );
+      const consumedAmount = readNumberRecordField(
+        record,
+        "consumedAmount",
+        `${path}.consumedAmount`,
+        reasons
+      );
+      const lossAmount = readNumberRecordField(record, "lossAmount", `${path}.lossAmount`, reasons);
+      const shortageAmount = readNumberRecordField(
+        record,
+        "shortageAmount",
+        `${path}.shortageAmount`,
+        reasons
+      );
+      const carriedAmountAfter = readNumberRecordField(
+        record,
+        "carriedAmountAfter",
+        `${path}.carriedAmountAfter`,
+        reasons
+      );
+      const lossReasonCode = readNullableStringRecordField(
+        record,
+        "lossReasonCode",
+        `${path}.lossReasonCode`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        reservationId === undefined ||
+        campaignPlanId === undefined ||
+        consumedAmount === undefined ||
+        lossAmount === undefined ||
+        shortageAmount === undefined ||
+        carriedAmountAfter === undefined ||
+        lossReasonCode === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          reservationId,
+          campaignPlanId,
+          consumedAmount,
+          lossAmount,
+          shortageAmount,
+          carriedAmountAfter,
+          lossReasonCode,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.grain-supply-released": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const reservationId = readPositiveIdRecordField(
+        record,
+        "reservationId",
+        `${path}.reservationId`,
+        reasons
+      );
+      const campaignPlanId = readPositiveIdRecordField(
+        record,
+        "campaignPlanId",
+        `${path}.campaignPlanId`,
+        reasons
+      );
+      const releasedAmount = readNumberRecordField(
+        record,
+        "releasedAmount",
+        `${path}.releasedAmount`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        reservationId === undefined ||
+        campaignPlanId === undefined ||
+        releasedAmount === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          reservationId,
+          campaignPlanId,
+          releasedAmount,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
     case "sim.state-hash-verified": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
@@ -6278,6 +7450,27 @@ function readStringRecordField(
       code: "invalid-schema",
       path,
       message: `Saved event ${key} must be a string.`
+    });
+    return undefined;
+  }
+  return value;
+}
+
+function readNullableStringRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): string | null | undefined {
+  const value = record[key];
+  if (value === null) {
+    return null;
+  }
+  if (typeof value !== "string") {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a string or null.`
     });
     return undefined;
   }

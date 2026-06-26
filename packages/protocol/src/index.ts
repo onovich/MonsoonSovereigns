@@ -446,6 +446,51 @@ export interface RecordMusterResponseCommandV1 {
   };
 }
 
+export interface ReserveCampaignGrainSupplyCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.reserve-campaign-grain-supply";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly reservationId: number;
+    readonly campaignPlanId: number;
+    readonly requestedAmount: number;
+    readonly expectedDailyConsumption: number;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
+export interface ConsumeCampaignGrainSupplyCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.consume-campaign-grain-supply";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly reservationId: number;
+    readonly consumedAmount: number;
+    readonly lossAmount: number;
+    readonly lossReasonCode: string | null;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
+export interface ReleaseCampaignGrainSupplyCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.release-campaign-grain-supply";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly reservationId: number;
+    readonly reasonCode: string;
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -467,6 +512,9 @@ export type GameCommandV1 =
   | CancelCampaignObjectiveCommandV1
   | CreateMusterCommitmentCommandV1
   | RecordMusterResponseCommandV1
+  | ReserveCampaignGrainSupplyCommandV1
+  | ConsumeCampaignGrainSupplyCommandV1
+  | ReleaseCampaignGrainSupplyCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -563,6 +611,17 @@ export interface ListM4MusterCommitmentsQueryV1 {
   };
 }
 
+export interface PreviewM4GrainSupplyQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.preview-m4-grain-supply";
+  readonly payload: {
+    readonly queryId: string;
+    readonly campaignPlanId: number;
+    readonly plannedMarchDays: number;
+    readonly grainPerTroopPerDay: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -576,7 +635,8 @@ export type GameQueryV1 =
   | CompareM3PostwarGovernanceOutcomesQueryV1
   | ListM4CampaignPlansQueryV1
   | ListM4FactionKnowledgeQueryV1
-  | ListM4MusterCommitmentsQueryV1;
+  | ListM4MusterCommitmentsQueryV1
+  | PreviewM4GrainSupplyQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1344,6 +1404,54 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.reserve-campaign-grain-supply": {
+      const payload = parseReserveCampaignGrainSupplyPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.consume-campaign-grain-supply": {
+      const payload = parseConsumeCampaignGrainSupplyPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.release-campaign-grain-supply": {
+      const payload = parseReleaseCampaignGrainSupplyPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -1461,6 +1569,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.list-m4-muster-commitments": {
       const payload = parseListM4MusterCommitmentsPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.preview-m4-grain-supply": {
+      const payload = parsePreviewM4GrainSupplyPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -2612,6 +2735,149 @@ function parseRecordMusterResponsePayload(
   };
 }
 
+function parseReserveCampaignGrainSupplyPayload(
+  input: unknown
+): ProtocolParseResult<ReserveCampaignGrainSupplyCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.reserve-campaign-grain-supply payload must be an object."
+    );
+  }
+  const reservationId = parsePositiveSafeInteger(input["reservationId"], "payload.reservationId");
+  if (!reservationId.ok) {
+    return reservationId;
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const requestedAmount = parsePositiveSafeInteger(
+    input["requestedAmount"],
+    "payload.requestedAmount"
+  );
+  if (!requestedAmount.ok) {
+    return requestedAmount;
+  }
+  const expectedDailyConsumption = parsePositiveSafeInteger(
+    input["expectedDailyConsumption"],
+    "payload.expectedDailyConsumption"
+  );
+  if (!expectedDailyConsumption.ok) {
+    return expectedDailyConsumption;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+
+  return {
+    ok: true,
+    value: {
+      reservationId: reservationId.value,
+      campaignPlanId: campaignPlanId.value,
+      requestedAmount: requestedAmount.value,
+      expectedDailyConsumption: expectedDailyConsumption.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseConsumeCampaignGrainSupplyPayload(
+  input: unknown
+): ProtocolParseResult<ConsumeCampaignGrainSupplyCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.consume-campaign-grain-supply payload must be an object."
+    );
+  }
+  const reservationId = parsePositiveSafeInteger(input["reservationId"], "payload.reservationId");
+  if (!reservationId.ok) {
+    return reservationId;
+  }
+  const consumedAmount = parseNonnegativeSafeInteger(
+    input["consumedAmount"],
+    "payload.consumedAmount"
+  );
+  if (!consumedAmount.ok) {
+    return consumedAmount;
+  }
+  const lossAmount = parseNonnegativeSafeInteger(input["lossAmount"], "payload.lossAmount");
+  if (!lossAmount.ok) {
+    return lossAmount;
+  }
+  const lossReasonCode =
+    input["lossReasonCode"] === null
+      ? { ok: true as const, value: null }
+      : parseReasonCode(input["lossReasonCode"], "payload.lossReasonCode");
+  if (!lossReasonCode.ok) {
+    return lossReasonCode;
+  }
+  if (lossAmount.value > 0 && lossReasonCode.value === null) {
+    return protocolError(
+      "invalid-payload",
+      "payload.lossReasonCode",
+      "payload.lossReasonCode is required when lossAmount is positive."
+    );
+  }
+  if (lossAmount.value === 0 && lossReasonCode.value !== null) {
+    return protocolError(
+      "invalid-payload",
+      "payload.lossReasonCode",
+      "payload.lossReasonCode must be null when lossAmount is zero."
+    );
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+  if (consumedAmount.value === 0 && lossAmount.value === 0) {
+    return protocolError(
+      "invalid-payload",
+      "payload.consumedAmount",
+      "grain supply consumption must consume or lose a positive amount."
+    );
+  }
+
+  return {
+    ok: true,
+    value: {
+      reservationId: reservationId.value,
+      consumedAmount: consumedAmount.value,
+      lossAmount: lossAmount.value,
+      lossReasonCode: lossReasonCode.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseReleaseCampaignGrainSupplyPayload(
+  input: unknown
+): ProtocolParseResult<ReleaseCampaignGrainSupplyCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.release-campaign-grain-supply payload must be an object."
+    );
+  }
+  const reservationId = parsePositiveSafeInteger(input["reservationId"], "payload.reservationId");
+  if (!reservationId.ok) {
+    return reservationId;
+  }
+  const reasonCode = parseReasonCode(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+  return { ok: true, value: { reservationId: reservationId.value, reasonCode: reasonCode.value } };
+}
+
 function parseM4MusterCommitmentSource(
   input: unknown,
   path: string
@@ -2768,6 +3034,10 @@ function parseReasonCodes(input: unknown, path: string): ProtocolParseResult<rea
     reasonCodes.push(reasonCode.value);
   }
   return { ok: true, value: reasonCodes };
+}
+
+function parseReasonCode(input: unknown, path: string): ProtocolParseResult<string> {
+  return parseNonEmptyProtocolString(input, path);
 }
 
 function parseM3ObligationCategory(
@@ -3100,6 +3370,57 @@ function parseListM4MusterCommitmentsPayload(
     value: {
       queryId,
       campaignPlanId: campaignPlanId.value
+    }
+  };
+}
+
+function parsePreviewM4GrainSupplyPayload(
+  input: unknown
+): ProtocolParseResult<PreviewM4GrainSupplyQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.preview-m4-grain-supply payload must be an object."
+    );
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const plannedMarchDays = parsePositiveSafeInteger(
+    input["plannedMarchDays"],
+    "payload.plannedMarchDays"
+  );
+  if (!plannedMarchDays.ok) {
+    return plannedMarchDays;
+  }
+  const grainPerTroopPerDay = parsePositiveSafeInteger(
+    input["grainPerTroopPerDay"],
+    "payload.grainPerTroopPerDay"
+  );
+  if (!grainPerTroopPerDay.ok) {
+    return grainPerTroopPerDay;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      campaignPlanId: campaignPlanId.value,
+      plannedMarchDays: plannedMarchDays.value,
+      grainPerTroopPerDay: grainPerTroopPerDay.value
     }
   };
 }

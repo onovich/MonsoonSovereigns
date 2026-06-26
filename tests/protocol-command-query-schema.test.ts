@@ -597,6 +597,90 @@ describe("SIM-003 protocol command/query schemas", () => {
     expect(
       parseGameCommandV1({
         schemaVersion: 1,
+        kind: "sim.reserve-campaign-grain-supply",
+        commandId: "cmd.m4.grain.reserve",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          reservationId: 1,
+          campaignPlanId: 1,
+          requestedAmount: 120,
+          expectedDailyConsumption: 10,
+          reasonCodes: ["grain.reserve.planned-campaign"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.consume-campaign-grain-supply",
+        commandId: "cmd.m4.grain.consume",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          reservationId: 1,
+          consumedAmount: 60,
+          lossAmount: 5,
+          lossReasonCode: "grain.loss.spoilage",
+          reasonCodes: ["grain.consume.march-forecast"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.release-campaign-grain-supply",
+        commandId: "cmd.m4.grain.release",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          reservationId: 1,
+          reasonCode: "grain.release.cancelled-plan"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-m4-grain-supply",
+        payload: {
+          queryId: "m4.grain.1",
+          campaignPlanId: 1,
+          plannedMarchDays: 12,
+          grainPerTroopPerDay: 2
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.consume-campaign-grain-supply",
+        commandId: "cmd.m4.grain.bad-loss",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          reservationId: 1,
+          consumedAmount: 60,
+          lossAmount: 5,
+          lossReasonCode: null,
+          reasonCodes: ["grain.consume.march-forecast"]
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.lossReasonCode",
+        message: "payload.lossReasonCode is required when lossAmount is positive."
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
         kind: "sim.create-muster-commitment",
         commandId: "cmd.m4.muster.bad",
         actor: { kind: "player", id: "polity:1" },

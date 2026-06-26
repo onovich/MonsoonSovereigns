@@ -2,7 +2,7 @@
   "id": "M4-GRAIN-SUPPLY-001",
   "summary": "Implement M4 campaign grain supply reservations and consumption forecast",
   "milestone": "M4",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -71,7 +71,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f0188-9c3b-7783-92a6-b1c99cd8bc8c",
-      "status": "review_ready_r2",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "nickname": "Delta the 4th",
@@ -79,7 +79,7 @@
       "branch_or_worktree": "feat/m4-grain-supply",
       "start_state": "START_CONFIRMED",
       "start_submission_id": "019f0188-f940-7fb3-a27e-50b4437f26bb",
-      "updated_at": "2026-06-26T02:12:01Z",
+      "updated_at": "2026-06-26T02:19:19Z",
       "review_ready_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-REVIEW__simulation_engineer.json",
       "review_ready_at": "2026-06-26T01:51:26Z",
       "request_changes_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
@@ -88,11 +88,12 @@
       "review_ready_r2_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-R2-REVIEW__simulation_engineer.json",
       "review_ready_r2_at": "2026-06-26T02:09:16Z",
       "review_ready_handoff_r2": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-R2-REVIEW__simulation_engineer.json",
-      "review_ready_at_r2": "2026-06-26T02:12:01Z"
+      "review_ready_at_r2": "2026-06-26T02:12:01Z",
+      "lead_accept_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "systems_architect": {
       "thread_id": "019f0188-b041-7d10-a689-85f3283e4013",
-      "status": "reviewing_r2",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Lintel the 4th",
@@ -100,7 +101,7 @@
       "branch_or_worktree": "feat/m4-grain-supply",
       "start_state": "AWAITING_REVIEW_READY",
       "await_submission_id": "019f0188-f9ba-7b10-a3fe-d3613580a235",
-      "updated_at": "2026-06-26T02:12:01Z",
+      "updated_at": "2026-06-26T02:19:19Z",
       "review_ready_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-REVIEW__simulation_engineer.json",
       "review_ready_submission_id": "019f019f-608f-73c3-940a-d180ae6deb84",
       "review_started_at": "2026-06-26T01:51:26Z",
@@ -110,10 +111,13 @@
       "awaiting_r2_review_at": "2026-06-26T02:09:16Z",
       "review_ready_handoff_r2": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-R2-REVIEW__simulation_engineer.json",
       "review_ready_submission_id_r2": "019f01b2-309b-79d3-a3e4-d041c0aedb54",
-      "review_started_at_r2": "2026-06-26T02:12:01Z"
+      "review_started_at_r2": "2026-06-26T02:12:01Z",
+      "accept_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-SYSTEMS-R2-ACCEPT__systems_architect.json",
+      "lead_accept_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-26T02:19:19Z"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task should reuse M2 grain/economy scaffolds and keep the M4 model explicit and serializable.",
     "Do not introduce runtime SQL, object graph serialization, or a generic resource manager.",
@@ -121,5 +125,5 @@
     "Promoted to READY after M4-MUSTER-PREP-COMMITMENTS-001 entered origin/main and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T02:12:01Z"
+  "updated_at": "2026-06-26T02:19:19Z"
 }
