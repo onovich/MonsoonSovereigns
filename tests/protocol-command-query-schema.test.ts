@@ -553,6 +553,76 @@ describe("SIM-003 protocol command/query schemas", () => {
     expect(
       parseGameCommandV1({
         schemaVersion: 1,
+        kind: "sim.create-muster-commitment",
+        commandId: "cmd.m4.muster.create",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          commitmentId: 1,
+          campaignPlanId: 1,
+          source: { kind: "m3-obligation", obligationId: 7 },
+          promisedTroops: 60,
+          dueDay: 20,
+          assemblyWindow: { earliestDay: 12, latestDay: 18 },
+          reasonCodes: ["muster.reason.obligation-request"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.record-muster-response",
+        commandId: "cmd.m4.muster.response",
+        actor: { kind: "ai", id: "polity:2" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          commitmentId: 1,
+          assembledTroops: 40,
+          delayedTroops: 20,
+          refusedTroops: 0,
+          releasedTroops: 0,
+          reasonCodes: ["muster.response.partial-assembly"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m4-muster-commitments",
+        payload: { queryId: "m4.muster.1", campaignPlanId: 1 }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.create-muster-commitment",
+        commandId: "cmd.m4.muster.bad",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          commitmentId: 1,
+          campaignPlanId: 1,
+          source: { kind: "m3-obligation", obligationId: 7 },
+          promisedTroops: -1,
+          dueDay: 20,
+          assemblyWindow: { earliestDay: 12, latestDay: 18 },
+          reasonCodes: ["muster.reason.obligation-request"]
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.promisedTroops",
+        message: "payload.promisedTroops must be a positive safe integer."
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
         kind: "sim.create-campaign-objective",
         commandId: "cmd.m4.campaign.bad",
         actor: { kind: "player", id: "polity:1" },

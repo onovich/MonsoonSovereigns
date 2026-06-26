@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-SYSTEMS-R2-ACCEPT",
+  "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 systems_architect review accepts M4 muster preparation and mobilized force commitments. The prior response authority/provenance blocker is fixed: debtor response advancement and creditor release advancement are now mutually exclusive in sim.record-muster-response validation, release authority is selected only after mixed advancement is rejected, and the previous creditor-fabricates-assembly reproduction now rejects without mutating the commitment. The implementation remains scoped to sim-core/protocol/tests, keeps player and AI on the same GameCommand path, includes canonical hash/runtime validation/query copy coverage, and does not expand into grain consumption, route capacity execution, march execution, siege, battle, postwar settlement, UI, full diplomacy, save-format milestone work, or new dependencies.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/sim-core-m4-muster-prep-commitments.test.ts",
+    "project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-SYSTEMS-REQUEST-CHANGES__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m4-muster-prep-commitments",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "Get-Content -Raw project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Inspected R2 writer handoff and claimed evidence."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Current branch is feat/m4-muster-prep-commitments. Modified tracked files are limited to packages/protocol/src/index.ts, packages/sim-core/package.json, packages/sim-core/src/command-query-v1.ts, packages/sim-core/src/world-state-v0.ts, tests/protocol-command-query-schema.test.ts, and tests/sim-core-m4-campaign-objectives.test.ts. The new tests/sim-core-m4-muster-prep-commitments.test.ts remains untracked and must be staged by the integrator."
+    },
+    {
+      "command": "Manual R2 diff inspection of packages/sim-core/src/command-query-v1.ts and tests/sim-core-m4-muster-prep-commitments.test.ts",
+      "exit_code": 0,
+      "result": "Verified validateMusterResponsePayload now computes hasDebtorResponseAdvance and hasCreditorReleaseAdvance and rejects mixed advancement before authority selection. Verified tests cover creditor mixed release/assembly fabrication rejection, debtor release authority denial, creditor mixed release/delay/refusal rejection, over-release rejection, and legitimate debtor-response then creditor-release acceptance."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module one-off prior blocker reproduction",
+      "exit_code": 0,
+      "result": "Previously accepted creditor command with assembledTroops 40 and releasedTroops 40 now rejects with code muster-commitment-invalid at payload.commitmentId and message 'Muster response quantities and release quantities must advance in separate commands.' Commitment remains assembledTroops 0, delayedTroops 0, refusedTroops 0, releasedTroops 0, status promised."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-MUSTER-PREP-COMMITMENTS-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed: 16 test files, 113 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed: 1 test file, 8 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed. Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture boundaries, determinism, root Vitest 27 files / 180 tests, and web package tests 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed Prettier check, ESLint, workspace typecheck, and architecture boundary checks."
+    },
+    {
+      "command": "rg scans for Math.random, Date.now, performance.now, new Date, React, Pixi, Electron, and node:fs over touched sim-core/protocol implementation files",
+      "exit_code": 1,
+      "result": "No forbidden authoritative random/time APIs or React/Pixi/Electron/Node fs imports were found in the touched implementation files."
+    }
+  ],
+  "decisions": [
+    "Accepted R2 fix because response authority is now separated without adding a broader protocol split or scope expansion.",
+    "Kept the existing sim.record-muster-response schema as a minimal milestone-appropriate abstraction; validation enforces the debtor-response versus creditor-release modes.",
+    "Confirmed the package.json script change only adds the new sim-core muster test file and introduces no dependency changes."
+  ],
+  "risks": [
+    "Save-format persistence for M4 muster state remains intentionally out of scope and must be handled by a later M4 save-runtime task before claiming save/load persistence for this state.",
+    "The new tests/sim-core-m4-muster-prep-commitments.test.ts is still untracked in the current worktree status and must be staged during integration."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route ACCEPT to lead_orchestrator. M4-MUSTER-PREP-COMMITMENTS-001 may proceed to the next required review/integration step; ensure the untracked muster test file is staged before commit.",
+  "created_at": "2026-06-26T09:12:09+08:00"
+}

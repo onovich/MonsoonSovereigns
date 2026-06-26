@@ -401,6 +401,51 @@ export interface CancelCampaignObjectiveCommandV1 {
   };
 }
 
+export type M4MusterCommitmentSourceV1 = {
+  readonly kind: "m3-obligation";
+  readonly obligationId: number;
+};
+
+export interface M4MusterAssemblyWindowV1 {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}
+
+export interface CreateMusterCommitmentCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.create-muster-commitment";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly commitmentId: number;
+    readonly campaignPlanId: number;
+    readonly source: M4MusterCommitmentSourceV1;
+    readonly promisedTroops: number;
+    readonly dueDay: number;
+    readonly assemblyWindow: M4MusterAssemblyWindowV1;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
+export interface RecordMusterResponseCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.record-muster-response";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly commitmentId: number;
+    readonly assembledTroops: number;
+    readonly delayedTroops: number;
+    readonly refusedTroops: number;
+    readonly releasedTroops: number;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -420,6 +465,8 @@ export type GameCommandV1 =
   | CreateCampaignObjectiveCommandV1
   | UpdateCampaignObjectiveCommandV1
   | CancelCampaignObjectiveCommandV1
+  | CreateMusterCommitmentCommandV1
+  | RecordMusterResponseCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -507,6 +554,15 @@ export interface ListM4FactionKnowledgeQueryV1 {
   };
 }
 
+export interface ListM4MusterCommitmentsQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m4-muster-commitments";
+  readonly payload: {
+    readonly queryId: string;
+    readonly campaignPlanId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -519,7 +575,8 @@ export type GameQueryV1 =
   | PreviewM3PostwarGovernanceQueryV1
   | CompareM3PostwarGovernanceOutcomesQueryV1
   | ListM4CampaignPlansQueryV1
-  | ListM4FactionKnowledgeQueryV1;
+  | ListM4FactionKnowledgeQueryV1
+  | ListM4MusterCommitmentsQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1255,6 +1312,38 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.create-muster-commitment": {
+      const payload = parseCreateMusterCommitmentPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.record-muster-response": {
+      const payload = parseRecordMusterResponsePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -1357,6 +1446,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.list-m4-faction-knowledge": {
       const payload = parseListM4FactionKnowledgePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.list-m4-muster-commitments": {
+      const payload = parseListM4MusterCommitmentsPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -2386,6 +2490,169 @@ function parseCancelCampaignObjectivePayload(
   };
 }
 
+function parseCreateMusterCommitmentPayload(
+  input: unknown
+): ProtocolParseResult<CreateMusterCommitmentCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.create-muster-commitment payload must be an object."
+    );
+  }
+  const commitmentId = parsePositiveSafeInteger(input["commitmentId"], "payload.commitmentId");
+  if (!commitmentId.ok) {
+    return commitmentId;
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const source = parseM4MusterCommitmentSource(input["source"], "payload.source");
+  if (!source.ok) {
+    return source;
+  }
+  const promisedTroops = parsePositiveSafeInteger(
+    input["promisedTroops"],
+    "payload.promisedTroops"
+  );
+  if (!promisedTroops.ok) {
+    return promisedTroops;
+  }
+  const dueDay = parseNonnegativeSafeInteger(input["dueDay"], "payload.dueDay");
+  if (!dueDay.ok) {
+    return dueDay;
+  }
+  const assemblyWindow = parseM4MusterAssemblyWindow(
+    input["assemblyWindow"],
+    "payload.assemblyWindow"
+  );
+  if (!assemblyWindow.ok) {
+    return assemblyWindow;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+
+  return {
+    ok: true,
+    value: {
+      commitmentId: commitmentId.value,
+      campaignPlanId: campaignPlanId.value,
+      source: source.value,
+      promisedTroops: promisedTroops.value,
+      dueDay: dueDay.value,
+      assemblyWindow: assemblyWindow.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseRecordMusterResponsePayload(
+  input: unknown
+): ProtocolParseResult<RecordMusterResponseCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.record-muster-response payload must be an object."
+    );
+  }
+  const commitmentId = parsePositiveSafeInteger(input["commitmentId"], "payload.commitmentId");
+  if (!commitmentId.ok) {
+    return commitmentId;
+  }
+  const assembledTroops = parseNonnegativeSafeInteger(
+    input["assembledTroops"],
+    "payload.assembledTroops"
+  );
+  if (!assembledTroops.ok) {
+    return assembledTroops;
+  }
+  const delayedTroops = parseNonnegativeSafeInteger(
+    input["delayedTroops"],
+    "payload.delayedTroops"
+  );
+  if (!delayedTroops.ok) {
+    return delayedTroops;
+  }
+  const refusedTroops = parseNonnegativeSafeInteger(
+    input["refusedTroops"],
+    "payload.refusedTroops"
+  );
+  if (!refusedTroops.ok) {
+    return refusedTroops;
+  }
+  const releasedTroops = parseNonnegativeSafeInteger(
+    input["releasedTroops"],
+    "payload.releasedTroops"
+  );
+  if (!releasedTroops.ok) {
+    return releasedTroops;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+
+  return {
+    ok: true,
+    value: {
+      commitmentId: commitmentId.value,
+      assembledTroops: assembledTroops.value,
+      delayedTroops: delayedTroops.value,
+      refusedTroops: refusedTroops.value,
+      releasedTroops: releasedTroops.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseM4MusterCommitmentSource(
+  input: unknown,
+  path: string
+): ProtocolParseResult<M4MusterCommitmentSourceV1> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", path, `${path} must be an object.`);
+  }
+  if (input["kind"] !== "m3-obligation") {
+    return protocolError("invalid-payload", `${path}.kind`, `${path}.kind must be m3-obligation.`);
+  }
+  const obligationId = parsePositiveSafeInteger(input["obligationId"], `${path}.obligationId`);
+  if (!obligationId.ok) {
+    return obligationId;
+  }
+  return { ok: true, value: { kind: "m3-obligation", obligationId: obligationId.value } };
+}
+
+function parseM4MusterAssemblyWindow(
+  input: unknown,
+  path: string
+): ProtocolParseResult<M4MusterAssemblyWindowV1> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", path, `${path} must be an object.`);
+  }
+  const earliestDay = parseNonnegativeSafeInteger(input["earliestDay"], `${path}.earliestDay`);
+  if (!earliestDay.ok) {
+    return earliestDay;
+  }
+  const latestDay = parseNonnegativeSafeInteger(input["latestDay"], `${path}.latestDay`);
+  if (!latestDay.ok) {
+    return latestDay;
+  }
+  return {
+    ok: true,
+    value: {
+      earliestDay: earliestDay.value,
+      latestDay: latestDay.value
+    }
+  };
+}
+
 function parseM4CampaignOwner(
   input: unknown,
   path: string
@@ -2798,6 +3065,41 @@ function parseListM4FactionKnowledgePayload(
     value: {
       queryId,
       observerPolityId: observerPolityId.value
+    }
+  };
+}
+
+function parseListM4MusterCommitmentsPayload(
+  input: unknown
+): ProtocolParseResult<ListM4MusterCommitmentsQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.list-m4-muster-commitments payload must be an object."
+    );
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      campaignPlanId: campaignPlanId.value
     }
   };
 }

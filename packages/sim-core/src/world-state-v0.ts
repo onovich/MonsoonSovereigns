@@ -16,6 +16,7 @@ export type M3AppointmentAuditEventId = Brand<number, "M3AppointmentAuditEventId
 export type M3SuccessionId = Brand<number, "M3SuccessionId">;
 export type CampaignPlanId = Brand<number, "CampaignPlanId">;
 export type FactionKnowledgeSnapshotId = Brand<number, "FactionKnowledgeSnapshotId">;
+export type MobilizedForceCommitmentId = Brand<number, "MobilizedForceCommitmentId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -526,6 +527,57 @@ export interface M4CampaignPlanStateV0 {
   readonly updatedDay: GameDay;
 }
 
+export type M4MusterCommitmentStatusV0 =
+  | "promised"
+  | "assembled"
+  | "delayed"
+  | "refused"
+  | "released";
+
+export interface M4MusterAssemblyWindowV0 {
+  readonly earliestDay: GameDay;
+  readonly latestDay: GameDay;
+}
+
+export type M4MusterCommitmentSourceV0 = {
+  readonly kind: "m3-obligation";
+  readonly obligationId: M3ObligationId;
+  readonly debtorPolityId: PolityId;
+  readonly creditorPolityId: PolityId;
+};
+
+export type M4MusterLocalCostHookV0 =
+  | {
+      readonly kind: "economic-labor-reservation";
+      readonly districtId: DistrictId;
+      readonly laborAmount: number;
+      readonly reasonCode: string;
+    }
+  | {
+      readonly kind: "loyalty-pressure";
+      readonly polityId: PolityId;
+      readonly pressureBps: number;
+      readonly reasonCode: string;
+    };
+
+export interface M4MobilizedForceCommitmentStateV0 {
+  readonly id: MobilizedForceCommitmentId;
+  readonly campaignPlanId: CampaignPlanId;
+  readonly source: M4MusterCommitmentSourceV0;
+  readonly promisedTroops: number;
+  readonly dueDay: GameDay;
+  readonly assemblyWindow: M4MusterAssemblyWindowV0;
+  readonly plannedAssemblyDay: GameDay;
+  readonly assembledTroops: number;
+  readonly delayedTroops: number;
+  readonly refusedTroops: number;
+  readonly releasedTroops: number;
+  readonly status: M4MusterCommitmentStatusV0;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly localCostHooks: readonly M4MusterLocalCostHookV0[];
+}
+
 export type M4FactionKnowledgeSourceKindV0 = "scout" | "merchant" | "envoy" | "report";
 
 export interface M4FactionKnowledgeSourceV0 {
@@ -582,6 +634,7 @@ export interface M4CampaignStateV0 {
   readonly schemaVersion: 1;
   readonly campaignPlans: readonly M4CampaignPlanStateV0[];
   readonly factionKnowledgeSnapshots: readonly M4FactionKnowledgeSnapshotStateV0[];
+  readonly mobilizedForceCommitments: readonly M4MobilizedForceCommitmentStateV0[];
 }
 
 export interface M3AdministrativeBurdenProfileInputV0 {
@@ -802,6 +855,10 @@ export function parseCampaignPlanId(value: unknown): CampaignPlanId {
 
 export function parseFactionKnowledgeSnapshotId(value: unknown): FactionKnowledgeSnapshotId {
   return parsePositiveInteger(value, "FactionKnowledgeSnapshotId") as FactionKnowledgeSnapshotId;
+}
+
+export function parseMobilizedForceCommitmentId(value: unknown): MobilizedForceCommitmentId {
+  return parsePositiveInteger(value, "MobilizedForceCommitmentId") as MobilizedForceCommitmentId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -1707,6 +1764,7 @@ function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): v
 
   const campaignPlans = input["campaignPlans"];
   const factionKnowledgeSnapshots = input["factionKnowledgeSnapshots"];
+  const mobilizedForceCommitments = input["mobilizedForceCommitments"];
   if (!Array.isArray(campaignPlans)) {
     errors.push({
       code: "invalid-schema",
@@ -1729,6 +1787,21 @@ function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): v
       validateM4FactionKnowledgeSnapshotEntry(
         entry,
         `state.m4.factionKnowledgeSnapshots[${index}]`,
+        errors
+      )
+    );
+  }
+  if (!Array.isArray(mobilizedForceCommitments)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m4.mobilizedForceCommitments",
+      message: "state.m4.mobilizedForceCommitments must be an array."
+    });
+  } else {
+    mobilizedForceCommitments.forEach((entry, index) =>
+      validateM4MobilizedForceCommitmentEntry(
+        entry,
+        `state.m4.mobilizedForceCommitments[${index}]`,
         errors
       )
     );
@@ -1813,6 +1886,47 @@ function validateM4FactionKnowledgeSnapshotEntry(
   );
 }
 
+function validateM4MobilizedForceCommitmentEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4MobilizedForceCommitmentState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "id", `${path}.id`, "MobilizedForceCommitmentId", errors);
+  validatePositiveIntegerField(
+    input,
+    "campaignPlanId",
+    `${path}.campaignPlanId`,
+    "CampaignPlanId",
+    errors
+  );
+  validateM4MusterCommitmentSourceEntry(input["source"], `${path}.source`, errors);
+  validatePositiveIntegerField(input, "promisedTroops", `${path}.promisedTroops`, "Troops", errors);
+  validateNonnegativeIntegerField(input, "dueDay", `${path}.dueDay`, errors);
+  validateM4MusterAssemblyWindowEntry(input["assemblyWindow"], `${path}.assemblyWindow`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "plannedAssemblyDay",
+    `${path}.plannedAssemblyDay`,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "assembledTroops", `${path}.assembledTroops`, errors);
+  validateNonnegativeIntegerField(input, "delayedTroops", `${path}.delayedTroops`, errors);
+  validateNonnegativeIntegerField(input, "refusedTroops", `${path}.refusedTroops`, errors);
+  validateNonnegativeIntegerField(input, "releasedTroops", `${path}.releasedTroops`, errors);
+  validateM4MusterCommitmentStatusValue(input["status"], `${path}.status`, errors);
+  validateNonEmptyStringField(input, "statusReasonCode", `${path}.statusReasonCode`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateM4Array(
+    input["localCostHooks"],
+    `${path}.localCostHooks`,
+    errors,
+    validateM4CostHookEntry
+  );
+}
+
 function validateM4Array(
   input: unknown,
   path: string,
@@ -1824,6 +1938,101 @@ function validateM4Array(
     return;
   }
   input.forEach((entry, index) => validateEntry(entry, `${path}[${index}]`, errors));
+}
+
+function validateM4MusterCommitmentSourceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4MusterCommitmentSource", errors)) {
+    return;
+  }
+  validateStringUnionField(input, "kind", `${path}.kind`, ["m3-obligation"], errors);
+  validatePositiveIntegerField(
+    input,
+    "obligationId",
+    `${path}.obligationId`,
+    "M3ObligationId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "debtorPolityId",
+    `${path}.debtorPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "creditorPolityId",
+    `${path}.creditorPolityId`,
+    "PolityId",
+    errors
+  );
+}
+
+function validateM4MusterAssemblyWindowEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4MusterAssemblyWindow", errors)) {
+    return;
+  }
+  validateNonnegativeIntegerField(input, "earliestDay", `${path}.earliestDay`, errors);
+  validateNonnegativeIntegerField(input, "latestDay", `${path}.latestDay`, errors);
+}
+
+function validateM4MusterCommitmentStatusValue(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    input === "promised" ||
+    input === "assembled" ||
+    input === "delayed" ||
+    input === "refused" ||
+    input === "released"
+  ) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: "M4 muster commitment status is invalid."
+  });
+}
+
+function validateM4CostHookEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4MusterLocalCostHook", errors)) {
+    return;
+  }
+  if (input["kind"] === "economic-labor-reservation") {
+    validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+    validateNonnegativeIntegerField(input, "laborAmount", `${path}.laborAmount`, errors);
+    validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+    return;
+  }
+  if (input["kind"] === "loyalty-pressure") {
+    validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+    validateIntegerFieldInRange(input, "pressureBps", `${path}.pressureBps`, 0, 10_000, errors);
+    validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path: `${path}.kind`,
+    message:
+      "M4 muster local cost hook kind must be economic-labor-reservation or loyalty-pressure."
+  });
 }
 
 function validateM4KnownObjectiveEntry(
@@ -3586,7 +3795,8 @@ export function createM4CampaignStateV0(
   return canonicalizeM4CampaignStateV0({
     schemaVersion: 1,
     campaignPlans: input?.campaignPlans ?? [],
-    factionKnowledgeSnapshots: input?.factionKnowledgeSnapshots ?? []
+    factionKnowledgeSnapshots: input?.factionKnowledgeSnapshots ?? [],
+    mobilizedForceCommitments: input?.mobilizedForceCommitments ?? []
   });
 }
 
@@ -3658,7 +3868,36 @@ export function canonicalizeM4CampaignStateV0(m4: M4CampaignStateV0): M4Campaign
           confidenceBps: parseBps(estimate.confidenceBps, "M4 defender confidenceBps")
         }))
       })
-    )
+    ),
+    mobilizedForceCommitments: sortM4MobilizedForceCommitments(
+      m4.mobilizedForceCommitments ?? []
+    ).map((commitment) => ({
+      id: parseMobilizedForceCommitmentId(commitment.id),
+      campaignPlanId: parseCampaignPlanId(commitment.campaignPlanId),
+      source: copyM4MusterCommitmentSource(commitment.source),
+      promisedTroops: parsePositiveInteger(commitment.promisedTroops, "M4 promisedTroops"),
+      dueDay: parseGameDay(commitment.dueDay),
+      assemblyWindow: {
+        earliestDay: parseGameDay(commitment.assemblyWindow.earliestDay),
+        latestDay: parseGameDay(commitment.assemblyWindow.latestDay)
+      },
+      plannedAssemblyDay: parseGameDay(commitment.plannedAssemblyDay),
+      assembledTroops: parseNonnegativeInteger(commitment.assembledTroops, "M4 assembledTroops"),
+      delayedTroops: parseNonnegativeInteger(commitment.delayedTroops, "M4 delayedTroops"),
+      refusedTroops: parseNonnegativeInteger(commitment.refusedTroops, "M4 refusedTroops"),
+      releasedTroops: parseNonnegativeInteger(commitment.releasedTroops, "M4 releasedTroops"),
+      status: parseM4MusterCommitmentStatus(commitment.status),
+      statusReasonCode: parseDisplayNameKey(
+        commitment.statusReasonCode,
+        "M4 muster statusReasonCode"
+      ),
+      reasonCodes: sortText(commitment.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M4 muster reasonCode")
+      ),
+      localCostHooks: sortM4MusterLocalCostHooks(commitment.localCostHooks).map(
+        copyM4MusterLocalCostHook
+      )
+    }))
   };
 }
 
@@ -4210,6 +4449,39 @@ export function copyM4CampaignTarget(target: M4CampaignTargetV0): M4CampaignTarg
   }
 }
 
+export function copyM4MusterCommitmentSource(
+  source: M4MusterCommitmentSourceV0
+): M4MusterCommitmentSourceV0 {
+  switch (source.kind) {
+    case "m3-obligation":
+      return {
+        kind: "m3-obligation",
+        obligationId: parseM3ObligationId(source.obligationId),
+        debtorPolityId: parsePolityId(source.debtorPolityId),
+        creditorPolityId: parsePolityId(source.creditorPolityId)
+      };
+  }
+}
+
+export function copyM4MusterLocalCostHook(hook: M4MusterLocalCostHookV0): M4MusterLocalCostHookV0 {
+  switch (hook.kind) {
+    case "economic-labor-reservation":
+      return {
+        kind: "economic-labor-reservation",
+        districtId: parseDistrictId(hook.districtId),
+        laborAmount: parseNonnegativeInteger(hook.laborAmount, "M4 laborAmount"),
+        reasonCode: parseDisplayNameKey(hook.reasonCode, "M4 economic cost hook reasonCode")
+      };
+    case "loyalty-pressure":
+      return {
+        kind: "loyalty-pressure",
+        polityId: parsePolityId(hook.polityId),
+        pressureBps: parseBps(hook.pressureBps, "M4 loyalty pressureBps"),
+        reasonCode: parseDisplayNameKey(hook.reasonCode, "M4 loyalty cost hook reasonCode")
+      };
+  }
+}
+
 export function parseM4CampaignObjectiveKind(value: unknown): M4CampaignObjectiveKindV0 {
   if (
     value === "prepare" ||
@@ -4231,6 +4503,20 @@ export function parseM4CampaignPlanStatus(value: unknown): M4CampaignPlanStatusV
   }
 
   throw new Error("M4 campaign plan status is invalid.");
+}
+
+export function parseM4MusterCommitmentStatus(value: unknown): M4MusterCommitmentStatusV0 {
+  if (
+    value === "promised" ||
+    value === "assembled" ||
+    value === "delayed" ||
+    value === "refused" ||
+    value === "released"
+  ) {
+    return value;
+  }
+
+  throw new Error("M4 muster commitment status is invalid.");
 }
 
 export function parseM4FactionKnowledgeSourceKind(value: unknown): M4FactionKnowledgeSourceKindV0 {
@@ -4474,6 +4760,67 @@ function sortM4FactionKnowledgeSnapshots(
       left.knowledgeVersion - right.knowledgeVersion ||
       left.snapshotId - right.snapshotId
   );
+}
+
+function sortM4MobilizedForceCommitments(
+  values: readonly M4MobilizedForceCommitmentStateV0[]
+): readonly M4MobilizedForceCommitmentStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.campaignPlanId - right.campaignPlanId ||
+      left.dueDay - right.dueDay ||
+      compareM4MusterCommitmentSource(left.source, right.source) ||
+      left.promisedTroops - right.promisedTroops ||
+      left.assembledTroops - right.assembledTroops ||
+      left.delayedTroops - right.delayedTroops ||
+      left.refusedTroops - right.refusedTroops ||
+      left.releasedTroops - right.releasedTroops ||
+      compareText(left.status, right.status) ||
+      compareSortedTextList(left.reasonCodes, right.reasonCodes) ||
+      left.id - right.id
+  );
+}
+
+function compareM4MusterCommitmentSource(
+  left: M4MusterCommitmentSourceV0,
+  right: M4MusterCommitmentSourceV0
+): number {
+  return (
+    compareText(left.kind, right.kind) ||
+    left.obligationId - right.obligationId ||
+    left.debtorPolityId - right.debtorPolityId ||
+    left.creditorPolityId - right.creditorPolityId
+  );
+}
+
+function sortM4MusterLocalCostHooks(
+  values: readonly M4MusterLocalCostHookV0[]
+): readonly M4MusterLocalCostHookV0[] {
+  return [...values].sort((left, right) => compareM4MusterLocalCostHook(left, right));
+}
+
+function compareM4MusterLocalCostHook(
+  left: M4MusterLocalCostHookV0,
+  right: M4MusterLocalCostHookV0
+): number {
+  if (left.kind !== right.kind) {
+    return compareText(left.kind, right.kind);
+  }
+  if (left.kind === "economic-labor-reservation" && right.kind === "economic-labor-reservation") {
+    return (
+      left.districtId - right.districtId ||
+      left.laborAmount - right.laborAmount ||
+      compareText(left.reasonCode, right.reasonCode)
+    );
+  }
+  if (left.kind === "loyalty-pressure" && right.kind === "loyalty-pressure") {
+    return (
+      left.polityId - right.polityId ||
+      left.pressureBps - right.pressureBps ||
+      compareText(left.reasonCode, right.reasonCode)
+    );
+  }
+  return 0;
 }
 
 function sortM4KnownObjectives(
@@ -4818,6 +5165,9 @@ function formatM4CanonicalLines(m4: M4CampaignStateV0 | undefined): readonly str
     `state.m4.campaignPlans=${formatM4CampaignPlans(m4.campaignPlans)}`,
     `state.m4.factionKnowledgeSnapshots=${formatM4FactionKnowledgeSnapshots(
       m4.factionKnowledgeSnapshots
+    )}`,
+    `state.m4.mobilizedForceCommitments=${formatM4MobilizedForceCommitments(
+      m4.mobilizedForceCommitments
     )}`
   ];
 }
@@ -4860,6 +5210,53 @@ function formatM4FactionKnowledgeSnapshots(
       ].join(":")
     )
     .join(",");
+}
+
+function formatM4MobilizedForceCommitments(
+  values: readonly M4MobilizedForceCommitmentStateV0[]
+): string {
+  return sortM4MobilizedForceCommitments(values)
+    .map((value) =>
+      [
+        value.id,
+        value.campaignPlanId,
+        formatM4MusterCommitmentSource(value.source),
+        value.promisedTroops,
+        value.dueDay,
+        `${value.assemblyWindow.earliestDay}/${value.assemblyWindow.latestDay}`,
+        value.plannedAssemblyDay,
+        value.assembledTroops,
+        value.delayedTroops,
+        value.refusedTroops,
+        value.releasedTroops,
+        value.status,
+        value.statusReasonCode,
+        sortText(value.reasonCodes).join("/"),
+        sortM4MusterLocalCostHooks(value.localCostHooks).map(formatM4MusterLocalCostHook).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM4MusterCommitmentSource(source: M4MusterCommitmentSourceV0): string {
+  switch (source.kind) {
+    case "m3-obligation":
+      return [
+        source.kind,
+        source.obligationId,
+        source.debtorPolityId,
+        source.creditorPolityId
+      ].join(".");
+  }
+}
+
+function formatM4MusterLocalCostHook(hook: M4MusterLocalCostHookV0): string {
+  switch (hook.kind) {
+    case "economic-labor-reservation":
+      return [hook.kind, hook.districtId, hook.laborAmount, hook.reasonCode].join(".");
+    case "loyalty-pressure":
+      return [hook.kind, hook.polityId, hook.pressureBps, hook.reasonCode].join(".");
+  }
 }
 
 function formatM4KnownObjective(value: M4KnownObjectiveEstimateV0): string {
@@ -6501,6 +6898,10 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
   const personIds = idsOf(world.definitions.persons);
   const districtIds = idsOf(world.definitions.districts);
   const routeIds = idsOf(world.definitions.routes);
+  const m3ObligationById = new Map<number, M3ObligationStateV0>();
+  world.state.m3?.obligations.forEach((obligation) => {
+    m3ObligationById.set(obligation.id, obligation);
+  });
 
   m4.campaignPlans.forEach((plan, index) => {
     if (planIds.has(plan.id)) {
@@ -6539,6 +6940,65 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
         message: "M4 campaign updatedDay must be >= createdDay."
       });
     }
+  });
+
+  const commitmentIds = new Set<number>();
+  m4.mobilizedForceCommitments.forEach((commitment, index) => {
+    if (commitmentIds.has(commitment.id)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m4.mobilizedForceCommitments",
+        message: `Duplicate M4 mobilized force commitment row for MobilizedForceCommitmentId ${commitment.id}.`
+      });
+    }
+    commitmentIds.add(commitment.id);
+    if (!planIds.has(commitment.campaignPlanId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.mobilizedForceCommitments[${index}].campaignPlanId`,
+        message: "M4 muster commitment references missing CampaignPlanId."
+      });
+    }
+    validateM4MusterCommitmentSourceReference(
+      commitment.source,
+      m3ObligationById,
+      `state.m4.mobilizedForceCommitments[${index}].source`,
+      errors
+    );
+    if (commitment.assemblyWindow.earliestDay > commitment.assemblyWindow.latestDay) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.mobilizedForceCommitments[${index}].assemblyWindow`,
+        message: "M4 muster assemblyWindow earliestDay must be <= latestDay."
+      });
+    }
+    if (
+      commitment.plannedAssemblyDay < commitment.assemblyWindow.earliestDay ||
+      commitment.plannedAssemblyDay > commitment.assemblyWindow.latestDay
+    ) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.mobilizedForceCommitments[${index}].plannedAssemblyDay`,
+        message: "M4 plannedAssemblyDay must be inside assemblyWindow."
+      });
+    }
+    if (commitment.dueDay < commitment.assemblyWindow.earliestDay) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.mobilizedForceCommitments[${index}].dueDay`,
+        message: "M4 muster dueDay must be >= assemblyWindow earliestDay."
+      });
+    }
+    validateM4MusterCommitmentQuantities(commitment, index, errors);
+    commitment.localCostHooks.forEach((hook, hookIndex) => {
+      validateM4MusterCostHookReference(
+        hook,
+        polityIds,
+        districtIds,
+        `state.m4.mobilizedForceCommitments[${index}].localCostHooks[${hookIndex}]`,
+        errors
+      );
+    });
   });
 
   const snapshotIds = new Set<number>();
@@ -6677,6 +7137,98 @@ function validateM4TargetReference(
           code: "bad-reference",
           path: `${path}.polityId`,
           message: "M4 campaign target references missing PolityId."
+        });
+      }
+      return;
+  }
+}
+
+function validateM4MusterCommitmentSourceReference(
+  source: M4MusterCommitmentSourceV0,
+  m3ObligationById: ReadonlyMap<number, M3ObligationStateV0>,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  switch (source.kind) {
+    case "m3-obligation": {
+      const obligation = m3ObligationById.get(source.obligationId);
+      if (obligation === undefined) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.obligationId`,
+          message: "M4 muster commitment references missing M3 troop obligation."
+        });
+        return;
+      }
+      if (obligation.obligationKind !== "troop") {
+        errors.push({
+          code: "invalid-schema",
+          path: `${path}.obligationId`,
+          message: "M4 muster commitment source obligation must be a troop obligation."
+        });
+      }
+      if (
+        obligation.debtorPolityId !== source.debtorPolityId ||
+        obligation.creditorPolityId !== source.creditorPolityId
+      ) {
+        errors.push({
+          code: "invalid-schema",
+          path,
+          message: "M4 muster commitment source polities must match source obligation."
+        });
+      }
+      return;
+    }
+  }
+}
+
+function validateM4MusterCommitmentQuantities(
+  commitment: M4MobilizedForceCommitmentStateV0,
+  index: number,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    commitment.assembledTroops + commitment.delayedTroops + commitment.refusedTroops >
+    commitment.promisedTroops
+  ) {
+    errors.push({
+      code: "invalid-schema",
+      path: `state.m4.mobilizedForceCommitments[${index}]`,
+      message: "M4 muster response quantities must not exceed promisedTroops."
+    });
+  }
+  if (commitment.releasedTroops > commitment.assembledTroops) {
+    errors.push({
+      code: "invalid-schema",
+      path: `state.m4.mobilizedForceCommitments[${index}].releasedTroops`,
+      message: "M4 releasedTroops must not exceed assembledTroops."
+    });
+  }
+}
+
+function validateM4MusterCostHookReference(
+  hook: M4MusterLocalCostHookV0,
+  polityIds: ReadonlySet<number>,
+  districtIds: ReadonlySet<number>,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  switch (hook.kind) {
+    case "economic-labor-reservation":
+      if (!districtIds.has(hook.districtId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.districtId`,
+          message: "M4 economic muster cost hook references missing DistrictId."
+        });
+      }
+      return;
+    case "loyalty-pressure":
+      if (!polityIds.has(hook.polityId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `${path}.polityId`,
+          message: "M4 loyalty muster cost hook references missing PolityId."
         });
       }
       return;
@@ -6911,7 +7463,8 @@ function isM4StateLike(value: unknown): value is M4CampaignStateV0 {
   return (
     value["schemaVersion"] === 1 &&
     Array.isArray(value["campaignPlans"]) &&
-    Array.isArray(value["factionKnowledgeSnapshots"])
+    Array.isArray(value["factionKnowledgeSnapshots"]) &&
+    Array.isArray(value["mobilizedForceCommitments"])
   );
 }
 
