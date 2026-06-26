@@ -1,0 +1,113 @@
+{
+  "message_id": "MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-SYSTEMS-REQUEST-CHANGES",
+  "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Systems architecture review inspected the replacement writer handoff and the current working-tree diff. Scope, dependency direction, deterministic hash coverage, path limits, and the main validation suites look acceptable, but sim.record-muster-response has a blocking authority/provenance defect: a creditor can increase releasedTroops and, in the same command, also increase debtor-owned assembled/delayed/refused response quantities. A one-off reproduction accepted a campaign-owner command that moved a commitment from assembledTroops 0 to 40 and releasedTroops 40, fabricating a debtor assembly response without debtor authority. This violates the task's player/AI shared command and commitment-source provenance requirements.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/sim-core-m4-muster-prep-commitments.test.ts",
+    "project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-muster-prep-commitments",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "Get-Content -Raw project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Inspected replacement writer REVIEW handoff and claimed evidence."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Current branch is feat/m4-muster-prep-commitments. Modified tracked files are packages/protocol/src/index.ts, packages/sim-core/package.json, packages/sim-core/src/command-query-v1.ts, packages/sim-core/src/world-state-v0.ts, tests/protocol-command-query-schema.test.ts, and tests/sim-core-m4-campaign-objectives.test.ts. Untracked implementation test is tests/sim-core-m4-muster-prep-commitments.test.ts."
+    },
+    {
+      "command": "git diff --stat; git diff --name-only",
+      "exit_code": 0,
+      "result": "Tracked diff is limited to allowed protocol, sim-core, and tests paths. No forbidden app/web, desktop, UI, save-format, content, docs/decisions, PROJECT_STATUS, MANIFEST, SHA256SUMS, or validation report paths are modified."
+    },
+    {
+      "command": "Manual diff inspection of packages/sim-core/src/command-query-v1.ts and packages/sim-core/src/world-state-v0.ts",
+      "exit_code": 0,
+      "result": "Detected blocking issue at command-query-v1.ts:2875-2889. The acting polity is chosen solely by whether releasedTroops increases, then the code copies assembledTroops/delayedTroops/refusedTroops/releasedTroops from the same payload. validateMusterResponsePayload at command-query-v1.ts:3184-3230 does not forbid creditor-authorized release commands from also increasing debtor response quantities."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module one-off in-memory reproduction",
+      "exit_code": 0,
+      "result": "Reproduction created a valid M3 troop-backed M4 muster commitment, then submitted sim.record-muster-response as actor polity:1 (creditor/campaign owner) with assembledTroops 40 and releasedTroops 40 from a prior 0/0 state. Result was accepted, revision advanced to 2, and commitment state recorded assembledTroops 40, releasedTroops 40, status released."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-MUSTER-PREP-COMMITMENTS-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed: 16 test files, 112 tests. Existing tests do not cover the creditor-directly-creates-assembly-while-releasing case."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed: 1 test file, 8 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed. Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture boundaries, determinism, root Vitest 27 files / 179 tests, and web package tests 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed Prettier check, ESLint, workspace typecheck, and architecture boundary checks."
+    },
+    {
+      "command": "rg scans for Math.random, Date.now, performance.now, new Date, React, Pixi, Electron, node:fs, and fs over touched sim-core/protocol implementation files",
+      "exit_code": 0,
+      "result": "No forbidden authoritative random/time APIs or React/Pixi/Electron/Node fs imports were found in the touched implementation files."
+    }
+  ],
+  "decisions": [
+    "Scope review found no product-scope expansion into grain consumption, route capacity execution, march execution, siege, battle, postwar settlement, UI, full diplomacy, save-format milestone work, or new dependencies.",
+    "The package.json change only adds the new muster test file to the @monsoon/sim-core test script; it does not add or alter dependencies.",
+    "M4 muster state is included in canonicalizeM4CampaignStateV0, runtime validation, and hash formatting, and query copy behavior is explicitly tested.",
+    "The review cannot accept until response authority is split so debtor-owned quantities cannot be advanced by creditor release authority."
+  ],
+  "risks": [
+    "The current command model can produce authoritative commitment records showing debtor troops assembled when only the creditor acted. That undermines the task requirement for auditable commitment records with stable source provenance.",
+    "Because the current positive release test releases only after a debtor assembly command, the green suite misses the direct creditor fabrication case."
+  ],
+  "blockers": [
+    {
+      "path": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "2875-2889, 3184-3230",
+      "issue": "sim.record-muster-response chooses either creditor or debtor authority based only on releasedTroops increasing, then applies all response quantities from that same payload. A creditor can therefore increase assembledTroops/delayedTroops/refusedTroops while releasing.",
+      "required_change": "Separate authority and monotonic advancement rules for debtor response quantities versus creditor release quantities. A debtor-authorized response may increase assembledTroops, delayedTroops, or refusedTroops but must not increase releasedTroops. A creditor-authorized release may increase releasedTroops only against already assembled troops and must not increase assembledTroops, delayedTroops, or refusedTroops in the same command. Equivalent explicit command split is also acceptable if it keeps player/AI parity and schema clarity.",
+      "required_tests": "Add negative tests proving creditor/campaign owner cannot create assembled, delayed, or refused quantities by including a release increase in the same command; debtor cannot increase releasedTroops; creditor can release only previously assembled troops; and the legitimate debtor-response-then-creditor-release flow still passes."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route REQUEST_CHANGES back to replacement simulation_engineer 019f0163-f8a2-7462-8fa4-9eca83a5a3f4. Do not mark M4-MUSTER-PREP-COMMITMENTS-001 accepted until the response authority/provenance blocker is fixed and retested.",
+  "created_at": "2026-06-26T09:04:12+08:00"
+}
