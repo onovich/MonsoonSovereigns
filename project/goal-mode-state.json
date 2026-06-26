@@ -10,7 +10,7 @@
       "task_id": "M5-PLAYER-RESEARCH-001",
       "role": "gameplay_designer",
       "thread_id": "019f0532-ad92-7bc3-950e-8bb269289d7e",
-      "status": "review_ready",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -23,14 +23,16 @@
       "start_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-LEAD-TO-GAMEPLAY-START-CONFIRMED.json",
       "base_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
-      "updated_at": "2026-06-27T02:42:56+08:00",
-      "review_ready_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json"
+      "updated_at": "2026-06-27T02:49:15+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T02:49:15+08:00"
     },
     "019f053d-cda9-7a51-a8e0-b6c82cae1c0e": {
       "task_id": "M5-PLAYER-RESEARCH-001",
       "role": "qa_reviewer",
       "thread_id": "019f053d-cda9-7a51-a8e0-b6c82cae1c0e",
-      "status": "reviewing",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -42,7 +44,9 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-WRITER-TO-QA-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
-      "updated_at": "2026-06-27T02:42:56+08:00"
+      "updated_at": "2026-06-27T02:49:15+08:00",
+      "lead_accept_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T02:49:15+08:00"
     }
   },
   "last_integrated_task": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
@@ -83,7 +87,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T02:42:56+08:00",
+  "last_updated_at": "2026-06-27T02:49:15+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -95,7 +99,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T02:42:56+08:00",
+  "updated_at": "2026-06-27T02:49:15+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -326,7 +330,7 @@
   "task_notes": {
     "M5-PERFORMANCE-GATE-001": "CLOSED after PR #118 entered main at bd47faee8e6780a96f92402f47361012be40f3e1. Evidence-only M5 performance/stability gate accepted by independent qa_reviewer; child threads closed. Next dependency-ready M5 task is M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "CLOSED after PR #120 entered main at b173c980e02e3d2365fdb4d022c7c4392918cca9. Local Web/unsigned Windows distributable smoke evidence accepted by security and QA; child threads closed.",
-    "M5-PLAYER-RESEARCH-001": "REVIEW routed to qa_reviewer for privacy/scope/research evidence acceptance."
+    "M5-PLAYER-RESEARCH-001": "ACCEPTED after gameplay_designer REVIEW, qa_reviewer ACCEPT, and lead validation; pending PR CI/main integration before CLOSED."
   },
   "m5_web_windows_distributable": {
     "status": "CLOSED",
@@ -372,7 +376,7 @@
     "next_ready_tasks": []
   },
   "m5_player_research": {
-    "status": "REVIEW_QA_ROUTED",
+    "status": "ACCEPTED_PENDING_INTEGRATION",
     "branch_or_worktree": "research/m5-player-research",
     "writer_thread_id": "019f0532-ad92-7bc3-950e-8bb269289d7e",
     "writer_nickname": "Ledger the 10th",
@@ -381,11 +385,15 @@
     "started_at": "2026-06-27T02:30:48+08:00",
     "base_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
     "human_gate_required": false,
-    "next_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
+    "next_action": "Open PR, wait for CI, merge to main, then close M5-PLAYER-RESEARCH-001 and continue to the next READY task or Human Gate.",
     "review_ready_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-27T02:37:09+08:00",
     "qa_thread_id": "019f053d-cda9-7a51-a8e0-b6c82cae1c0e",
     "qa_route": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-WRITER-TO-QA-REVIEW.json",
-    "routed_to_qa_at": "2026-06-27T02:42:56+08:00"
+    "routed_to_qa_at": "2026-06-27T02:42:56+08:00",
+    "qa_review_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T02:49:15+08:00"
   }
 }
