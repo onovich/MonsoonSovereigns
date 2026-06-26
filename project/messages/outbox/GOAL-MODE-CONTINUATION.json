@@ -2,17 +2,48 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_DETERMINISM_REPLAY_CLOSED",
+  "status": "M4_STRESS_VALIDATION_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "83ecd0c07fbe29f0d449180c00710bb10568a105",
+  "origin_main": "e64b69d3ebc345431cf86aa40c8eaea0fcf2216a",
   "current_milestone": "M4",
-  "current_task": null,
-  "current_task_status": "CLOSED",
+  "current_task": "M4-STRESS-VALIDATION-001",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-DETERMINISM-REPLAY-001",
-  "ready_tasks": [
-    "M4-STRESS-VALIDATION-001"
-  ],
-  "active_threads": {},
+  "ready_tasks": [],
+  "active_threads": {
+    "019f034b-f9c7-77f0-a178-7d76527ee5c8": {
+      "thread_id": "019f034b-f9c7-77f0-a178-7d76527ee5c8",
+      "status": "started",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Canary the 6th",
+      "responsibility": "primary M4 stress validation writer for rainy-season, withdrawal, AI trace, siege/war-report, and measured stress evidence",
+      "branch_or_worktree": "test/m4-stress-validation",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_submission_id": "019f034c-72a6-7063-9bd0-160c6f1acf3c",
+      "start_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T09:40:18.870Z"
+    },
+    "019f034c-0dbf-7122-b874-684fe62a157a": {
+      "thread_id": "019f034c-0dbf-7122-b874-684fe62a157a",
+      "status": "standby",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Witness the 7th",
+      "responsibility": "independent read-only QA review for M4 stress validation evidence",
+      "branch_or_worktree": "test/m4-stress-validation",
+      "start_state": "AWAITING_REVIEW_READY",
+      "spawn_result": "spawn_agent",
+      "await_submission_id": "019f034c-72d2-76d1-8f71-6be141db780e",
+      "start_handoff": "project/messages/outbox/M4-STRESS-VALIDATION-001__MSG-20260626-M4-STRESS-VALIDATION-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T09:40:18.870Z"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -29,7 +60,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Start M4-STRESS-VALIDATION-001 with test_engineer writer and qa_reviewer, preserving stress-validation allowed paths and no product scope expansion.",
+  "next_machine_action": "Await test_engineer REVIEW handoff for M4-STRESS-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -37,7 +68,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T09:35:21.180Z",
+  "last_updated_at": "2026-06-26T09:40:18.870Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -61,12 +92,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T09:35:21.180Z",
-  "current_tasks": [],
-  "last_integrated_task": "M4-DETERMINISM-REPLAY-001",
-  "last_main_commit": "83ecd0c07fbe29f0d449180c00710bb10568a105",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-26T09:40:18.870Z",
+  "current_tasks": [
     "M4-STRESS-VALIDATION-001"
   ],
-  "next_action": "Start M4-STRESS-VALIDATION-001 with test_engineer writer and qa_reviewer, preserving stress-validation allowed paths and no product scope expansion."
+  "last_integrated_task": "M4-DETERMINISM-REPLAY-001",
+  "last_main_commit": "e64b69d3ebc345431cf86aa40c8eaea0fcf2216a",
+  "next_ready_tasks": [],
+  "next_action": "Await test_engineer REVIEW handoff for M4-STRESS-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates."
 }
