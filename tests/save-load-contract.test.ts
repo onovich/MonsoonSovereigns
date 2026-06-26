@@ -29,7 +29,10 @@ import {
   type SimulationRuntimeV1,
   type WorldStateV0
 } from "../packages/sim-core/src/index";
-import { createM4DeterminismReplayScriptV1 } from "../packages/protocol/src/index";
+import {
+  createM4DeterminismReplayScriptV1,
+  createM5PlayableLoopScriptV1
+} from "../packages/protocol/src/index";
 
 const {
   runSaveLoadCanaryInWorkerCompatibleAdapter,
@@ -564,7 +567,9 @@ describe("M4-DETERMINISM-REPLAY-001 complete loop replay", () => {
     expect(validateReplayWorld(replayedRuntime.world)).toBe(true);
   });
 
-  test("rejects M4 save requests and missing-M4 load snapshots explicitly", () => {
+  test("round-trips M4 save requests and still rejects missing-M4 load snapshots explicitly", () => {
+    const script = createM4DeterminismReplayScriptV1();
+    const replayedRuntime = replayM4Script(script);
     const m4Boot = bootSimulationV1({
       protocolVersion: 1,
       fixture: "m4.determinism-replay-001"
@@ -574,13 +579,23 @@ describe("M4-DETERMINISM-REPLAY-001 complete loop replay", () => {
     }
     const compatibilityRuntime = createM2M3CompatibilityRuntime();
 
-    expect(() =>
-      requestSaveV1(m4Boot.runtime, {
-        appVersion: "0.0.0",
-        source: "test",
-        codecVersion: "save-envelope-v1"
-      })
-    ).toThrow("M4 runtime state is not supported by save-format v1.");
+    const m4Saved = requestSaveV1(replayedRuntime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+    const m4Loaded = loadSaveV1(m4Boot.runtime, m4Saved.bytes, {
+      expectedContentManifestHash: m4Saved.envelope.header.contentManifestHash,
+      expectedScenarioId: m4Saved.envelope.header.scenarioId
+    });
+
+    expect(m4Loaded.status).toBe("loaded");
+    if (m4Loaded.status !== "loaded") {
+      throw new Error("Expected M4 replay save to load.");
+    }
+    expect(m4Loaded.stateHash).toBe(replayedRuntime.world.meta.stateHash);
+    expect(m4Loaded.runtime.world.state.m4?.postwarCandidates).toHaveLength(1);
+    expect(validateReplayWorld(m4Loaded.runtime.world)).toBe(true);
 
     const saved = requestSaveV1(compatibilityRuntime, {
       appVersion: "0.0.0",
@@ -602,6 +617,71 @@ describe("M4-DETERMINISM-REPLAY-001 complete loop replay", () => {
       message: "Save snapshot is missing required M4 runtime state for this runtime."
     });
     expect(loaded.runtime.world.meta.stateHash).toBe(m4Boot.runtime.world.meta.stateHash);
+  });
+
+  test("rejects injected nested M4 extra keys before hydration", () => {
+    const replayed = replayM5SuccessScript();
+    const saved = requestSaveV1(replayed.runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+
+    const tamperedBytes = rewriteSaveM4WithValidChecksum(saved.bytes, (m4) => {
+      const postwarCandidates = readRecordArray(m4, "postwarCandidates");
+      const first = postwarCandidates[0];
+      if (first === undefined) {
+        throw new Error("Expected M4 postwar candidate.");
+      }
+      first["extraHiddenAuthority"] = {
+        hiddenTroops: 999_999,
+        bypassCommand: true
+      };
+    });
+    const loaded = loadSaveV1(replayed.bootRuntime, tamperedBytes, {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+
+    expect(loaded.status).toBe("rejected");
+    if (loaded.status !== "rejected") {
+      throw new Error("Expected M4 save with injected extra key to reject.");
+    }
+    expect(loaded.reasons[0]?.code).toBe("checksum-mismatch");
+    expect(loaded.runtime.world.meta.stateHash).toBe(replayed.bootRuntime.world.meta.stateHash);
+  });
+
+  test("rejects malformed nested M4 postwar candidate fields", () => {
+    const replayed = replayM5SuccessScript();
+    const saved = requestSaveV1(replayed.runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+
+    const tamperedBytes = rewriteSaveM4WithValidChecksum(saved.bytes, (m4) => {
+      const postwarCandidates = readRecordArray(m4, "postwarCandidates");
+      const first = postwarCandidates[0];
+      if (first === undefined) {
+        throw new Error("Expected M4 postwar candidate.");
+      }
+      first["validM3Methods"] = ["tribute-only", "extra-hidden-authority"];
+    });
+    const loaded = loadSaveV1(replayed.bootRuntime, tamperedBytes, {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+
+    expect(loaded.status).toBe("rejected");
+    if (loaded.status !== "rejected") {
+      throw new Error("Expected malformed M4 save to reject.");
+    }
+    expect(loaded.reasons).toContainEqual({
+      code: "invalid-schema",
+      path: "body.authoritativeSnapshot.state.m4.postwarCandidates[0].validM3Methods[1]",
+      message: "M4 postwar method is invalid."
+    });
+    expect(loaded.runtime.world.meta.stateHash).toBe(replayed.bootRuntime.world.meta.stateHash);
   });
 });
 
@@ -643,6 +723,31 @@ function replayM4Script(
   }
 
   return runtime;
+}
+
+function replayM5SuccessScript(): {
+  readonly bootRuntime: SimulationRuntimeV1;
+  readonly runtime: SimulationRuntimeV1;
+} {
+  const script = createM5PlayableLoopScriptV1();
+  const boot = bootSimulationV1(script.boot);
+  if (boot.status !== "booted") {
+    throw new Error("Expected M5 replay boot.");
+  }
+
+  let runtime = boot.runtime;
+  for (const command of script.successCommands) {
+    const submitted = submitCommandV1(runtime, command);
+    if (submitted.result.status !== "accepted") {
+      throw new Error(JSON.stringify(submitted.result.error));
+    }
+    runtime = submitted.runtime;
+  }
+
+  return {
+    bootRuntime: boot.runtime,
+    runtime
+  };
 }
 
 function createM2M3CompatibilityRuntime(): SimulationRuntimeV1 {
@@ -1151,10 +1256,38 @@ function rewriteSaveM3WithValidChecksum(
   return new TextEncoder().encode(canonicalJson(decoded));
 }
 
+function rewriteSaveM4WithValidChecksum(
+  bytes: Uint8Array,
+  mutate: (m4: Record<string, unknown>) => void
+): Uint8Array {
+  const decoded = JSON.parse(new TextDecoder().decode(bytes)) as unknown;
+  if (!isRecord(decoded)) {
+    throw new Error("Expected save envelope object.");
+  }
+  const header = readRecord(decoded, "header");
+  const body = readRecord(decoded, "body");
+  const snapshot = readRecord(body, "authoritativeSnapshot");
+  const state = readRecord(snapshot, "state");
+  const m4 = readRecord(state, "m4");
+  mutate(m4);
+  header["checksum"] = fixedHex(hashText(canonicalJson(body)));
+
+  return new TextEncoder().encode(canonicalJson(decoded));
+}
+
 function readRecord(record: Record<string, unknown>, key: string): Record<string, unknown> {
   const value = record[key];
   if (!isRecord(value)) {
     throw new Error(`Expected ${key} object.`);
+  }
+
+  return value;
+}
+
+function readRecordArray(record: Record<string, unknown>, key: string): Record<string, unknown>[] {
+  const value = record[key];
+  if (!Array.isArray(value) || !value.every(isRecord)) {
+    throw new Error(`Expected ${key} object array.`);
   }
 
   return value;

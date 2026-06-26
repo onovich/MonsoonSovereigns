@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW",
+  "task_id": "M5-SIM-PLAYABLE-LOOP-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes address systems_architect REQUEST_CHANGES by replacing generic M4 save unknown[] copying with explicit nested M4 save DTOs, parsers, and copy functions that rebuild only known fields; adding malformed/extra nested M4 save coverage; and replacing the direct same-source M5 worker-compatible adapter with a real Node Worker JSON message boundary inside allowed apps/sim-runner/test paths.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "tests/save-load-contract.test.ts",
+    "apps/sim-runner/src/m5-playable-loop-worker.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "tests/sim-core-m5-playable-loop.test.ts",
+    "project/tasks/active/M5-SIM-PLAYABLE-LOOP-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m5-sim-playable-loop",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "R2 implementation touched allowed paths only: apps/sim-runner, packages/save-format, tests, and allowed project task/state/message files."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "23 test files passed; 172 tests passed. Includes M5 worker message-boundary test and M4 malformed/extra save coverage through save-load-contract."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 16 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Hello, command/query, save/load, M4 replay, and M5 playable loop hashes matched. M5 Node hash bf042e42; M5 worker-compatible hash bf042e42; loaded hash bf042e42."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root vitest 34 files/244 tests passed; web vitest 1 file/4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol typecheck",
+      "exit_code": 1,
+      "result": "ERR_PNPM_RECURSIVE_RUN_NO_SCRIPT: selected package still has no typecheck script."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-SIM-PLAYABLE-LOOP-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-SIM-PLAYABLE-LOOP-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer review handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Chose save-format boundary stripping/rejection rather than preserving unknown nested M4 keys: imported M4 save data is reconstructed from explicit known fields only, and tampered raw bodies with unknown extra keys no longer pass checksum validation after parser canonicalization.",
+    "Added explicit nested M4 save DTO/parser/copy coverage for campaign plans, faction knowledge snapshots, mobilized force commitments, grain supply reservations, marches, field engagements, sieges, withdrawals, war outcomes, postwar candidates, and their nested union/object fields.",
+    "Kept M5 gameplay intent unchanged: accepted M4 replay plus M3 tribute-only postwar governance, duplicate-settlement failure branch, no UI/client/content/manual battle/server/telemetry/multiplayer/mod scope.",
+    "Implemented real worker-compatible M5 evidence through apps/sim-runner/src/m5-playable-loop-worker.mjs using JSON request/response over Node worker_threads; apps/web remains untouched because it is forbidden."
+  ],
+  "risks": [
+    {
+      "severity": "P2",
+      "summary": "M4 save-format schema is now explicit but large; systems_architect should review field coverage against accepted M4 runtime state before QA routing."
+    },
+    {
+      "severity": "P3",
+      "summary": "The M5 worker-compatible path is a Node Worker message boundary, not the forbidden apps/web worker. It exercises serialization/message crossing without UI/client path changes."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R2 fixes for explicit nested M4 save schema boundary, hidden-field rejection/stripping coverage, and real M5 worker-compatible message-boundary coverage. If accepted, route onward to qa_reviewer.",
+  "created_at": "2026-06-26T16:05:00Z"
+}

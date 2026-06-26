@@ -1,0 +1,125 @@
+{
+  "message_id": "MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW",
+  "task_id": "M5-SIM-PLAYABLE-LOOP-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "The branch stays within the task allowed paths and the ordinary test matrix passes, but the M4 save-format change is not an explicit nested schema. A review probe showed a save with an injected nested M4 postwarCandidate field can be re-checksummed, loaded successfully, and preserved in runtime.world.state.m4 while the state hash remains unchanged. The M5 worker-compatible hash evidence also uses a same-source direct adapter, which is insufficient for the task's Node/Worker-host contract requirement.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "tests/save-load-contract.test.ts",
+    "tests/sim-core-m5-playable-loop.test.ts",
+    "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m5-sim-playable-loop",
+  "commit": "9132ca7d6cd041390d596a26768799cc2e77f834",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## feat/m5-sim-playable-loop...origin/feat/m5-sim-playable-loop; no dirty tracked or untracked files before writing this review handoff."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff is limited to allowed paths: apps/sim-runner, packages/protocol, packages/save-format, packages/sim-core, tests, project task/state/message files. No apps/web, desktop, client-core, ui, content-source, tools, gate docs, roadmap, manifest, release, or acceptance-matrix files are changed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "23 test files passed; 170 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed; 14 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Hello, command/query, save/load, M4 replay, and M5 playable loop hashes matched. M5 Node and worker-compatible final hash bf042e42; M5 loaded hash bf042e42; postwar arrangements 1."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root vitest 34 files/242 tests passed; web vitest 1 file/4 tests passed."
+    },
+    {
+      "command": "Get-Command taskctl",
+      "exit_code": 1,
+      "result": "taskctl is not installed on PATH in this shell, so the repository script path was used for the required task validation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-SIM-PLAYABLE-LOOP-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-SIM-PLAYABLE-LOOP-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer review handoff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <M4 nested extra-field save/load probe>",
+      "exit_code": 0,
+      "result": "Defect reproduced: after injecting state.m4.postwarCandidates[0].extraHiddenAuthority and recreating a valid checksum, loadSaveV1 returned loaded with stateHash bf042e42 and preserved the injected extraHiddenAuthority object."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES is required. The branch does not need an ADR or Human Gate for the intended M4 save-format schema evolution, but the current implementation is not acceptable because nested M4 save entries are not explicit DTOs and can preserve hidden authoritative fields.",
+    "Diff scope is acceptable. All changed files are inside M5-SIM-PLAYABLE-LOOP-001 allowed_paths, and no forbidden paths were touched.",
+    "The M5 loop correctly reuses accepted M4 replay, M3 postwar governance, versioned GameCommandV1 paths, bounded duplicate-settlement rejection, and deterministic state hashes. No manual node battle, full diplomacy, complex naval warfare, telemetry, server, multiplayer, arbitrary-code scripting, UI, desktop, or content-source scope was added.",
+    "The added sim.m3-postwar-governance-applied event-tail parser is directionally acceptable: it validates schemaVersion, kind, actor, IDs, method, reasonCodes, revisions, and rejects unsupported event kinds through the existing invalid-schema path."
+  ],
+  "risks": [
+    {
+      "severity": "P1",
+      "path": "packages/save-format/src/index.ts:491",
+      "summary": "SaveM4CampaignStateDto uses readonly unknown[] for all nested M4 collections. parseM4RecordArray/parseM4Record at packages/save-format/src/index.ts:1893 and copyJsonRecord/copyJsonValue at packages/save-format/src/index.ts:4619 preserve arbitrary nested keys. sim-core validateWorldStateV0 validates required fields but does not reject extra keys, so hidden data can survive load outside the state hash."
+    },
+    {
+      "severity": "P2",
+      "path": "apps/sim-runner/src/run-determinism.mjs:141",
+      "summary": "runM5PlayableLoopInWorkerCompatibleAdapter directly calls runM5PlayableLoopV1, and tests/sim-core-m5-playable-loop.test.ts:85 does the same. This proves same-function repeatability, not a worker/message boundary or Worker-host contract."
+    }
+  ],
+  "blockers": [
+    {
+      "path": "packages/save-format/src/index.ts",
+      "required_change": "Replace the M4 unknown[] DTO with full explicit nested M4 save DTOs, parsers, and copy functions for campaignPlans, factionKnowledgeSnapshots, mobilizedForceCommitments, grainSupplyReservations, marches, fieldEngagements, sieges, withdrawals, warOutcomes, postwarCandidates, and their nested union/object fields. Do not preserve unknown extra keys from imported saves; either reject extra keys at the save-format boundary or copy only known schema fields before hydration."
+    },
+    {
+      "path": "tests/save-load-contract.test.ts",
+      "required_change": "Add negative save/load coverage proving malformed nested M4 fields and extra nested M4 keys are rejected or stripped before hydration, including the reviewed case: state.m4.postwarCandidates[0].extraHiddenAuthority must not load into runtime.world.state.m4 with an unchanged state hash."
+    },
+    {
+      "path": "apps/sim-runner/src/run-determinism.mjs and tests/sim-core-m5-playable-loop.test.ts",
+      "required_change": "Replace or supplement the same-source M5 worker-compatible adapter with a real worker-compatible contract path inside allowed files. The test must cross a serialization/message boundary comparable to the existing worker contract rather than directly calling runM5PlayableLoopV1 twice."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Route back to the original simulation_engineer writer. Fix the M4 save-format nested DTO/schema boundary and the M5 worker-compatible contract evidence, then rerun the listed validation matrix plus the new malformed/extra M4 save schema tests and return an R2 writer handoff.",
+  "created_at": "2026-06-26T13:31:36Z"
+}
