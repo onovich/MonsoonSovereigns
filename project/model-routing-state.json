@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T04:18:00+08:00",
+  "updated_at": "2026-06-27T04:35:00+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1882,7 +1882,7 @@
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "CLOSED after PR #120 entered main at b173c980e02e3d2365fdb4d022c7c4392918cca9; next ready task pending taskctl ready after closure integration.",
     "M5-PLAYER-RESEARCH-001": "CLOSED after PR #122 entered main at 8b6ef6542d2d1a8270618ec8bae2161eb94c2e9d; next ready task pending taskctl ready after closure integration.",
     "M5-MANUAL-NODE-BATTLE-DECISION-001": "CLOSED after PR #125 entered main at daf09128b3c15bee26664a9b750a625ed8384767; decision is DEFER_MANUAL_NODE_BATTLE; no implementation or blocking spike/research task is authorized for the 1.0 mainline.",
-    "M5-EXIT-HUMAN-GATE-001": "IN_PROGRESS after M5 manual node battle decision closure; this is the formal M5 passage gate and does not pass M5 or start M6 until evidence, reviewer acceptance, PR, CI, and main integration complete."
+    "M5-EXIT-HUMAN-GATE-001": "REVIEW with lead recommendation M5_GATE = PASS_WITH_LIMITS in docs/GATE-M5.md; awaiting systems_architect and qa_reviewer acceptance."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -1947,7 +1947,7 @@
       "closed_at": "2026-06-27T04:18:00+08:00"
     },
     "M5-EXIT-HUMAN-GATE-001": {
-      "status": "IN_PROGRESS",
+      "status": "REVIEW",
       "owner_role": "lead_orchestrator",
       "reviewer_role": "qa_reviewer",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -1956,7 +1956,10 @@
       "manual_decision_integrated_pr": 125,
       "manual_decision_integrated_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
       "branch_or_worktree": "gate/m5-exit-human-gate",
-      "updated_at": "2026-06-27T04:18:00+08:00"
+      "updated_at": "2026-06-27T04:35:00+08:00",
+      "gate_doc": "docs/GATE-M5.md",
+      "review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+      "recommended_result": "PASS_WITH_LIMITS"
     }
   }
 }

@@ -9,7 +9,7 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M5-EXIT-HUMAN-GATE-001",
-      "status": "in_progress",
+      "status": "review",
       "role": "lead_orchestrator"
     }
   },
@@ -38,10 +38,11 @@
   "human_gate": {
     "required": false,
     "active_gate_task_id": "M5-EXIT-HUMAN-GATE-001",
-    "approval_scope": "M5_EXIT_GATE_START_AND_CONDITIONAL_EVALUATION",
+    "approval_scope": "M5_EXIT_GATE_REVIEW",
     "approval_source": "Codex attachment bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt",
-    "note": "M5 Exit Gate is in progress but M5 is not passed; M6 is not started.",
-    "recorded_at": "2026-06-27T04:18:00+08:00"
+    "recommended_result": "PASS_WITH_LIMITS",
+    "note": "M5 Exit Gate is in REVIEW; M5 is not passed and M6 is not started until independent acceptance, PR, CI, merge, sync, and closure.",
+    "recorded_at": "2026-06-27T04:35:00+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -55,7 +56,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T04:18:00+08:00",
+  "last_updated_at": "2026-06-27T04:35:00+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -67,7 +68,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T04:18:00+08:00",
+  "updated_at": "2026-06-27T04:35:00+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -423,9 +424,9 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Integrate this closure/start checkpoint, then continue M5 Exit Gate evidence evaluation with independent reviewer acceptance before any M5_GATE result or M6 transition.",
+  "next_action": "Route M5 Exit Gate review to systems_architect and qa_reviewer. If both ACCEPT and PR CI passes, integrate and close M5 before advancing to M6.",
   "m5_exit_human_gate": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
     "branch_or_worktree": "gate/m5-exit-human-gate",
     "start_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
@@ -434,6 +435,9 @@
     "started_at": "2026-06-27T04:18:00+08:00",
     "m5_gate_result": null,
     "m6_started": false,
-    "updated_at": "2026-06-27T04:18:00+08:00"
+    "updated_at": "2026-06-27T04:35:00+08:00",
+    "gate_doc": "docs/GATE-M5.md",
+    "review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+    "recommended_result": "PASS_WITH_LIMITS"
   }
 }

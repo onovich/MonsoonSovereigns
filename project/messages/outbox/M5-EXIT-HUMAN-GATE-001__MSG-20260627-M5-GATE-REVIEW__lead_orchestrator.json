@@ -1,0 +1,110 @@
+{
+  "message_id": "MSG-20260627-M5-GATE-REVIEW",
+  "task_id": "M5-EXIT-HUMAN-GATE-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Lead recommends M5_GATE = PASS_WITH_LIMITS after evaluating all M5 evidence tasks, the explicit product-owner manual node battle decision, local validation commands, and known limitations. All M5 implementation/evidence dependencies are CLOSED; M5-EXIT-HUMAN-GATE-001 remains in REVIEW pending independent systems_architect and qa_reviewer acceptance. This gate does not implement product code, does not start M6, and does not authorize manual node battle.",
+  "artifacts": [
+    "docs/GATE-M5.md",
+    "docs/28-manual-node-battle-decision.md",
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "gate/m5-exit-human-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Lockfile is up to date; supply-chain policy check passed for 396 entries."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture boundary checks passed; boundary self-test produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check and sim determinism passed; root Vitest 35 files / 249 tests passed; Web Vitest 1 file / 4 tests passed. M5 hash and loaded hash both bf042e42."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "M1, M2, and M3 fixture manifests validated: 4a438525, 9ab72b0b, 76b75849."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed with existing large chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed with existing large chunk warnings and cleaned output."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; IPC remains runtime/fullscreen only."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke output created under .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium 8/8 passed, including M5 playable flow and required desktop viewport overflow checks."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650 days; throughput 14716 days/sec; p50 57600 ns; p95 105100 ns; p99 176700 ns; save 1771500 ns; load 2576600 ns."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All M5 evidence tasks are CLOSED; M5 Exit was IN_PROGRESS before this REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready task while M5 Exit is active."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before writing the gate document."
+    }
+  ],
+  "decisions": [
+    "Recommend M5_GATE = PASS_WITH_LIMITS.",
+    "Carry forward bounded limits: minimal internal player research, desktop import/export not implemented, no-action-heavy AI evidence, duplicate React key warnings, existing large chunk warnings, and inherited M4 process limit.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and outside M5 and the 1.0 mainline.",
+    "Do not advance to M6 until independent reviewers ACCEPT, PR CI passes, the gate enters main, and M5-EXIT-HUMAN-GATE-001 is closed."
+  ],
+  "risks": [
+    "Reviewer may request stronger evidence or classify any accepted limitation as BLOCKED; in that case M5 must not pass.",
+    "M6 task graph must not be created until the M5 gate result is integrated and closed on main."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review docs/GATE-M5.md and supporting artifacts. ACCEPT only if PASS_WITH_LIMITS is justified, all M5 dependencies are closed, local validation evidence is sufficient, no unresolved Human Gate remains, and no forbidden product/runtime scope changed. Otherwise REQUEST_CHANGES with exact file and evidence references.",
+  "created_at": "2026-06-27T04:35:00+08:00"
+}
