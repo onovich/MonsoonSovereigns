@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import {
+  parseM4CampaignAiDecisionTraceV1,
   parseGameCommandV1,
   parseGameQueryV1,
   parseSimulationMessageV1
@@ -1030,6 +1031,69 @@ describe("SIM-003 protocol command/query schemas", () => {
         code: "invalid-payload",
         path: "payload.stockAmount",
         message: "payload.stockAmount must be a positive safe integer."
+      }
+    });
+  });
+
+  test("accepts and rejects M4 campaign AI decision trace schema", () => {
+    expect(
+      parseM4CampaignAiDecisionTraceV1({
+        schemaVersion: 1,
+        actor: { kind: "ai", id: "polity:1" },
+        observerPolityId: 1,
+        day: 10,
+        revision: 4,
+        decisionKind: "wait",
+        selectedCampaignPlanId: 10,
+        selectedCandidateId: "wait:10",
+        commandKind: null,
+        commandId: null,
+        primaryReasonCode: "m4.ai.wait.supply-shortfall",
+        reasonCodes: ["m4.ai.wait.supply-shortfall"],
+        candidates: [
+          {
+            candidateId: "wait:10",
+            decisionKind: "wait",
+            campaignPlanId: 10,
+            commandKind: null,
+            score: 5_000,
+            reasonCodes: ["m4.ai.wait.supply-shortfall"]
+          }
+        ]
+      }).ok
+    ).toBe(true);
+    expect(
+      parseM4CampaignAiDecisionTraceV1({
+        schemaVersion: 1,
+        actor: { kind: "ai", id: "polity:1" },
+        observerPolityId: 1,
+        day: 10,
+        revision: 4,
+        decisionKind: "grand-strategy",
+        selectedCampaignPlanId: 10,
+        selectedCandidateId: "bad:10",
+        commandKind: null,
+        commandId: null,
+        primaryReasonCode: "m4.ai.invalid",
+        reasonCodes: ["m4.ai.invalid"],
+        candidates: [
+          {
+            candidateId: "bad:10",
+            decisionKind: "wait",
+            campaignPlanId: 10,
+            commandKind: "sim.inspect-world-state",
+            score: 1,
+            reasonCodes: ["m4.ai.invalid"]
+          }
+        ]
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "decisionKind",
+        message:
+          "decisionKind must be no-action, wait, create-objective, change-objective, cancel, start-march, reinforce, continue, or withdraw."
       }
     });
   });

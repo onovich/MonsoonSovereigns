@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-R4-ACCEPT",
+  "task_id": "M4-CAMPAIGN-AI-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R4 systems architecture review accepts M4-CAMPAIGN-AI-001. The prior bounded trace blockers are fixed: planner output now clamps to the shared protocol maximum of 16 candidates, parser and planner use the same exported limit, truncated traces retain selectedCandidateId, and a multi-candidate oversize regression proves parser success.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/campaign-ai-v1.ts",
+    "tests/sim-core-m4-campaign-ai.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-CAMPAIGN-AI-001.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R4-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-ai",
+  "commit": "5e6d04557f33",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean worktree on feat/m4-campaign-ai before writing this systems_architect ACCEPT handoff."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Branch diff is confined to allowed task scope: packages/protocol, packages/sim-core, tests, project task/model/goal/thread/message/route files. No forbidden paths were observed."
+    },
+    {
+      "command": "Manual R4 diff inspection of packages/protocol/src/index.ts, packages/sim-core/src/campaign-ai-v1.ts, and tests/sim-core-m4-campaign-ai.test.ts",
+      "exit_code": 0,
+      "result": "Verified M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES = 16 is exported from protocol, used by parseM4CampaignAiDecisionTraceV1 candidate-array validation, and imported by planM4CampaignAiTurnV1 trace bounding. boundM4AiCandidates clamps oversized maxTraceCandidates, keeps the selected candidate, fills remaining slots in deterministic candidateId order, and emits a stable candidateId-sorted trace."
+    },
+    {
+      "command": "rg -n \"M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES|boundM4AiCandidates|selectedCandidateId|maxTraceCandidates|parseM4CampaignAiCandidateTraceArray|99\" packages/protocol/src/index.ts packages/sim-core/src/campaign-ai-v1.ts tests/sim-core-m4-campaign-ai.test.ts",
+      "exit_code": 0,
+      "result": "Confirmed the shared max constant, planner clamp, selectedCandidateId retention path, parser max check, and oversize regression with maxTraceCandidates 99 are present."
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|runtime\\.world|\\.state\\.|acceptedCommandIds|eventTail|commandTail|new Date|Object\\.keys|for \\(const .* in\" packages/sim-core/src/campaign-ai-v1.ts packages/protocol/src/index.ts tests/sim-core-m4-campaign-ai.test.ts",
+      "exit_code": 0,
+      "result": "No authority-time/random or hidden WorldState access found in campaign-ai-v1.ts or protocol changes. Matches are limited to tests that inspect submitted command effects or construct fixtures."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m4-campaign-ai.test.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "Focused regression gate passed: 2 files, 18 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "22 sim-core test files passed; 165 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 protocol test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest passed with 33 files and 233 tests; web Vitest passed with 1 file and 3 tests."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-AI-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid and in REVIEW routed to systems_architect."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R4-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer R4 handoff JSON validates against project/schemas/handoff.schema.json."
+    }
+  ],
+  "decisions": [
+    "ACCEPT. The prior P1 blocker is resolved because planner trace output cannot exceed the same M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES limit enforced by the protocol parser.",
+    "ACCEPT. The prior P2 blocker is resolved because truncation now reserves a slot for the selected candidate before deterministic filler selection; the emitted bounded trace is sorted by stable candidateId and retains selectedCandidateId.",
+    "ACCEPT. The new regression creates more than 16 candidates, requests maxTraceCandidates 99, selects a high-priority withdrawal candidate outside the earliest cancel candidates, asserts the protocol max, asserts selectedCandidateId presence, and parses the generated trace successfully.",
+    "The campaign AI remains a pure planner/read-model consumer: campaign-ai-v1.ts calls querySimulationV1 and returns null or existing GameCommandV1 payloads. No direct authoritative WorldState mutation, hidden runtime.world access, real-time API, Math.random, or object-graph serialization was found.",
+    "Command parity remains preserved. AI outputs use existing player-facing GameCommandV1 kinds for objective update/create/cancel, march start, muster response, siege choice, and withdrawal; no AI-only command path or implicit RPC surface was introduced.",
+    "The protocol addition remains narrow, serializable, and versioned: a trace schema version, explicit decision-kind union, bounded candidate array, scalar fields, reason-code arrays, and a shared max constant. No save-format or worker-message schema change was introduced."
+  ],
+  "risks": [
+    "Residual R3 risk is normal for campaign AI over command/query contracts and should proceed to independent qa_reviewer review before lead acceptance/integration.",
+    "The planner is still intentionally shallow and single-turn; richer strategic AI should remain out of this task and require explicit future tasking.",
+    "Trace DTOs are protocol-visible but not authoritative state or save-format data in this task."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Proceed with independent qa_reviewer review for M4-CAMPAIGN-AI-001 before lead_orchestrator marks the task ACCEPTED or CLOSED.",
+  "created_at": "2026-06-26T07:27:51Z"
+}

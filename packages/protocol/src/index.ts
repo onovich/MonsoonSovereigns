@@ -92,6 +92,43 @@ export type M4WithdrawalTriggerV1 =
   | "siege"
   | "loss"
   | "objective-complete";
+export const M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION = 1;
+export const M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES = 16;
+export type M4CampaignAiDecisionKindV1 =
+  | "no-action"
+  | "wait"
+  | "create-objective"
+  | "change-objective"
+  | "cancel"
+  | "start-march"
+  | "reinforce"
+  | "continue"
+  | "withdraw";
+
+export interface M4CampaignAiCandidateTraceV1 {
+  readonly candidateId: string;
+  readonly decisionKind: M4CampaignAiDecisionKindV1;
+  readonly campaignPlanId: number | null;
+  readonly commandKind: GameCommandV1["kind"] | null;
+  readonly score: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M4CampaignAiDecisionTraceV1 {
+  readonly schemaVersion: typeof M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION;
+  readonly actor: CommandActorV1;
+  readonly observerPolityId: number;
+  readonly day: number;
+  readonly revision: number;
+  readonly decisionKind: M4CampaignAiDecisionKindV1;
+  readonly selectedCampaignPlanId: number | null;
+  readonly selectedCandidateId: string | null;
+  readonly commandKind: GameCommandV1["kind"] | null;
+  readonly commandId: string | null;
+  readonly primaryReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly candidates: readonly M4CampaignAiCandidateTraceV1[];
+}
 
 export interface CommandActorV1 {
   readonly kind: CommandActorKindV1;
@@ -606,6 +643,37 @@ export type GameCommandV1 =
   | ApplyM4SiegeChoiceCommandV1
   | ResolveM4CampaignWithdrawalCommandV1
   | VerifyStateHashCommandV1;
+
+const GAME_COMMAND_KINDS: readonly GameCommandV1["kind"][] = [
+  "sim.advance-day",
+  "debug.set-district-control",
+  "sim.commit-labor",
+  "sim.set-polity-suzerain",
+  "sim.create-obligation",
+  "sim.record-obligation-fulfillment",
+  "sim.appoint-office",
+  "sim.appoint-offices-bulk",
+  "sim.update-office-policy",
+  "sim.update-jurisdiction-policy",
+  "sim.enfeoff-district",
+  "sim.record-character-status",
+  "sim.resolve-succession",
+  "sim.create-character-relationship",
+  "sim.apply-m3-postwar-governance",
+  "sim.create-campaign-objective",
+  "sim.update-campaign-objective",
+  "sim.cancel-campaign-objective",
+  "sim.create-muster-commitment",
+  "sim.record-muster-response",
+  "sim.reserve-campaign-grain-supply",
+  "sim.consume-campaign-grain-supply",
+  "sim.release-campaign-grain-supply",
+  "sim.start-campaign-march",
+  "sim.resolve-m4-field-engagement",
+  "sim.apply-m4-siege-choice",
+  "sim.resolve-m4-campaign-withdrawal",
+  "sim.verify-state-hash"
+];
 
 export interface GetStateHashQueryV1 {
   readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
@@ -1679,6 +1747,97 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
     default:
       return protocolError("unknown-command-kind", "kind", "GameCommand kind is not supported.");
   }
+}
+
+export function parseM4CampaignAiDecisionTraceV1(
+  input: unknown
+): ProtocolParseResult<M4CampaignAiDecisionTraceV1> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", "$", "M4 campaign AI trace must be an object.");
+  }
+  if (input["schemaVersion"] !== M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION) {
+    return protocolError(
+      "invalid-payload",
+      "schemaVersion",
+      "M4 campaign AI trace schemaVersion must be 1."
+    );
+  }
+  const actor = parseCommandActor(input["actor"]);
+  if (!actor.ok) {
+    return actor;
+  }
+  const observerPolityId = parsePositiveSafeInteger(input["observerPolityId"], "observerPolityId");
+  if (!observerPolityId.ok) {
+    return observerPolityId;
+  }
+  const day = parseNonnegativeSafeInteger(input["day"], "day");
+  if (!day.ok) {
+    return day;
+  }
+  const revision = parseNonnegativeSafeInteger(input["revision"], "revision");
+  if (!revision.ok) {
+    return revision;
+  }
+  const decisionKind = parseM4CampaignAiDecisionKind(input["decisionKind"], "decisionKind");
+  if (!decisionKind.ok) {
+    return decisionKind;
+  }
+  const selectedCampaignPlanId = parseNullablePositiveSafeInteger(
+    input["selectedCampaignPlanId"],
+    "selectedCampaignPlanId"
+  );
+  if (!selectedCampaignPlanId.ok) {
+    return selectedCampaignPlanId;
+  }
+  const selectedCandidateId = parseNullableProtocolString(
+    input["selectedCandidateId"],
+    "selectedCandidateId"
+  );
+  if (!selectedCandidateId.ok) {
+    return selectedCandidateId;
+  }
+  const commandKind = parseNullableGameCommandKind(input["commandKind"], "commandKind");
+  if (!commandKind.ok) {
+    return commandKind;
+  }
+  const commandId = parseNullableCommandId(input["commandId"], "commandId");
+  if (!commandId.ok) {
+    return commandId;
+  }
+  const primaryReasonCode = parseNonEmptyProtocolString(
+    input["primaryReasonCode"],
+    "primaryReasonCode"
+  );
+  if (!primaryReasonCode.ok) {
+    return primaryReasonCode;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+  const candidates = parseM4CampaignAiCandidateTraceArray(input["candidates"]);
+  if (!candidates.ok) {
+    return candidates;
+  }
+
+  return {
+    ok: true,
+    value: {
+      schemaVersion: M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION,
+      actor: actor.value,
+      observerPolityId: observerPolityId.value,
+      day: day.value,
+      revision: revision.value,
+      decisionKind: decisionKind.value,
+      selectedCampaignPlanId: selectedCampaignPlanId.value,
+      selectedCandidateId: selectedCandidateId.value,
+      commandKind: commandKind.value,
+      commandId: commandId.value,
+      primaryReasonCode: primaryReasonCode.value,
+      reasonCodes: reasonCodes.value,
+      candidates: candidates.value
+    }
+  };
 }
 
 export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV1> {
@@ -3316,6 +3475,138 @@ function parseReasonCodes(input: unknown, path: string): ProtocolParseResult<rea
 }
 
 function parseReasonCode(input: unknown, path: string): ProtocolParseResult<string> {
+  return parseNonEmptyProtocolString(input, path);
+}
+
+function parseM4CampaignAiCandidateTraceArray(
+  input: unknown
+): ProtocolParseResult<readonly M4CampaignAiCandidateTraceV1[]> {
+  if (!Array.isArray(input) || input.length === 0) {
+    return protocolError("invalid-payload", "candidates", "candidates must be a non-empty array.");
+  }
+  if (input.length > M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES) {
+    return protocolError(
+      "invalid-payload",
+      "candidates",
+      `candidates must contain at most ${M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES} entries.`
+    );
+  }
+  const candidates: M4CampaignAiCandidateTraceV1[] = [];
+  for (let index = 0; index < input.length; index += 1) {
+    const parsed = parseM4CampaignAiCandidateTrace(input[index], `candidates[${index}]`);
+    if (!parsed.ok) {
+      return parsed;
+    }
+    candidates.push(parsed.value);
+  }
+  return { ok: true, value: candidates };
+}
+
+function parseM4CampaignAiCandidateTrace(
+  input: unknown,
+  path: string
+): ProtocolParseResult<M4CampaignAiCandidateTraceV1> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", path, `${path} must be an object.`);
+  }
+  const candidateId = parseNonEmptyProtocolString(input["candidateId"], `${path}.candidateId`);
+  if (!candidateId.ok) {
+    return candidateId;
+  }
+  const decisionKind = parseM4CampaignAiDecisionKind(input["decisionKind"], `${path}.decisionKind`);
+  if (!decisionKind.ok) {
+    return decisionKind;
+  }
+  const campaignPlanId = parseNullablePositiveSafeInteger(
+    input["campaignPlanId"],
+    `${path}.campaignPlanId`
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const commandKind = parseNullableGameCommandKind(input["commandKind"], `${path}.commandKind`);
+  if (!commandKind.ok) {
+    return commandKind;
+  }
+  const score = parseNonnegativeSafeInteger(input["score"], `${path}.score`);
+  if (!score.ok) {
+    return score;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], `${path}.reasonCodes`);
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+  return {
+    ok: true,
+    value: {
+      candidateId: candidateId.value,
+      decisionKind: decisionKind.value,
+      campaignPlanId: campaignPlanId.value,
+      commandKind: commandKind.value,
+      score: score.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseM4CampaignAiDecisionKind(
+  input: unknown,
+  path: string
+): ProtocolParseResult<M4CampaignAiDecisionKindV1> {
+  if (
+    input === "no-action" ||
+    input === "wait" ||
+    input === "create-objective" ||
+    input === "change-objective" ||
+    input === "cancel" ||
+    input === "start-march" ||
+    input === "reinforce" ||
+    input === "continue" ||
+    input === "withdraw"
+  ) {
+    return { ok: true, value: input };
+  }
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be no-action, wait, create-objective, change-objective, cancel, start-march, reinforce, continue, or withdraw.`
+  );
+}
+
+function parseNullableGameCommandKind(
+  input: unknown,
+  path: string
+): ProtocolParseResult<GameCommandV1["kind"] | null> {
+  if (input === null) {
+    return { ok: true, value: null };
+  }
+  if (GAME_COMMAND_KINDS.includes(input as GameCommandV1["kind"])) {
+    return { ok: true, value: input as GameCommandV1["kind"] };
+  }
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be a supported GameCommand kind or null.`
+  );
+}
+
+function parseNullableCommandId(input: unknown, path: string): ProtocolParseResult<string | null> {
+  if (input === null) {
+    return { ok: true, value: null };
+  }
+  if (typeof input === "string" && COMMAND_ID_PATTERN.test(input)) {
+    return { ok: true, value: input };
+  }
+  return protocolError("invalid-payload", path, `${path} must be a command id or null.`);
+}
+
+function parseNullableProtocolString(
+  input: unknown,
+  path: string
+): ProtocolParseResult<string | null> {
+  if (input === null) {
+    return { ok: true, value: null };
+  }
   return parseNonEmptyProtocolString(input, path);
 }
 

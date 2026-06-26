@@ -1,0 +1,87 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW",
+  "task_id": "M4-CAMPAIGN-AI-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented minimal M4 campaign AI as a pure query-driven planner that returns normal GameCommandV1 payloads or a bounded serializable reason-coded trace for target selection, waiting, objective change, cancellation, reinforcement, siege continuation, withdrawal, postwar-risk waiting, start-march, and no-action outcomes.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/campaign-ai-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-campaign-ai.test.ts",
+    "project/tasks/active/M4-CAMPAIGN-AI-001.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-ai",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only allowed task files are modified: packages/protocol/src/index.ts, packages/sim-core/package.json, packages/sim-core/src/index.ts, tests/protocol-command-query-schema.test.ts, project/tasks/active/M4-CAMPAIGN-AI-001.json, plus new packages/sim-core/src/campaign-ai-v1.ts, tests/sim-core-m4-campaign-ai.test.ts, and this outbox handoff."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed. Architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "22 sim-core test files passed; 164 tests passed, including tests/sim-core-m4-campaign-ai.test.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 protocol test file passed; 9 tests passed, including M4 campaign AI trace parser coverage."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest passed with 33 files and 232 tests; web Vitest passed with 1 file and 3 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-AI-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-CAMPAIGN-AI-001.json with status REVIEW routed to systems_architect."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Handoff JSON validated successfully against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "node -e \"const fs=require('node:fs'); const task=JSON.parse(fs.readFileSync('project/tasks/active/M4-CAMPAIGN-AI-001.json','utf8')); const msg=JSON.parse(fs.readFileSync('project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json','utf8')); if(task.status!=='REVIEW'||task.route_to!=='systems_architect'||msg.status!=='REVIEW'||msg.route_to!=='systems_architect'||!Array.isArray(msg.tests_run)||msg.tests_run.length<10) throw new Error('shape check failed'); console.log('JSON shape OK M4-CAMPAIGN-AI-001 REVIEW handoff');\"",
+      "exit_code": 0,
+      "result": "JSON shape OK M4-CAMPAIGN-AI-001 REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Kept AI in sim-core as a pure planner (`planM4CampaignAiTurnV1`) that uses `querySimulationV1` read models and returns commands for the existing `submitCommandV1` path; it does not write WorldState.",
+    "Added a protocol-level `M4CampaignAiDecisionTraceV1` DTO and parser for bounded serializable traces without adding a new worker message or authoritative state field.",
+    "Decision order is deliberately minimal and deterministic: withdrawal/reinforcement/siege continuation/cancel/objective change/start/wait/postwar-risk/create/no-action candidates are scored with stable candidate-id tie-breakers.",
+    "AI uses existing M4 command kinds only: update/create/cancel objective, start march, record muster response, apply siege choice, and resolve withdrawal.",
+    "No full diplomacy AI, grand strategy, personality model, arbitrary-code scripting, telemetry, server/multiplayer, manual node battle, complex naval warfare, save-format changes, UI changes, or M5 content was added."
+  ],
+  "risks": [
+    "R3 remains because this adds campaign AI decision behavior over authoritative command/query contracts and must be reviewed for deterministic ordering, hidden-state access, and command parity.",
+    "The planner is intentionally shallow and single-turn; future richer AI should remain separate from this minimal traceable substrate and continue through explicit tasks.",
+    "Trace DTO is protocol-visible but not persisted in WorldState or save-format in this task."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 campaign AI planner, protocol trace schema, and tests; ACCEPT or REQUEST_CHANGES. QA review should follow per R3 process after systems architecture review.",
+  "created_at": "2026-06-26T07:10:00Z"
+}
