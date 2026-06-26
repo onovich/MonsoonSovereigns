@@ -2,7 +2,7 @@
   "id": "M4-DETERMINISM-REPLAY-001",
   "summary": "Validate M4 deterministic campaign replay, combat replay, and runtime persistence boundaries",
   "milestone": "M4",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -71,13 +71,57 @@
     "git diff --check"
   ],
   "branch_or_worktree": "test/m4-determinism-replay",
-  "threads": {},
-  "route_to": "qa_reviewer",
+  "threads": {
+    "test_engineer": {
+      "thread_id": "019f0313-1f78-70d2-ad1a-033e799c63d4",
+      "status": "accepted",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Probe the 6th",
+      "responsibility": "primary M4 deterministic replay and persistence-boundary validation writer",
+      "branch_or_worktree": "test/m4-determinism-replay",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_submission_id": "019f0313-be0f-7872-b74b-3f2432b49b90",
+      "updated_at": "2026-06-26T09:28:46.332Z",
+      "review_ready_handoff": "project/messages/outbox/M4-DETERMINISM-REPLAY-001__MSG-20260626-M4-DETERMINISM-REPLAY-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-26T09:19:33Z",
+      "status_probe_submission_id": "019f031e-ed57-7c41-a9a0-7e1254418b2a",
+      "fix_request_submission_id": "019f032e-2b8e-7591-8c0a-650f200aadda",
+      "lead_accept_handoff": "project/messages/outbox/M4-DETERMINISM-REPLAY-001__MSG-20260626-M4-DETERMINISM-REPLAY-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-26T09:28:46.332Z"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0313-78ab-7f21-a5e1-e1a4d7955ed2",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Auditor the 6th",
+      "responsibility": "independent read-only QA review for M4 deterministic replay validation",
+      "branch_or_worktree": "test/m4-determinism-replay",
+      "start_state": "AWAITING_REVIEW_READY",
+      "spawn_result": "spawn_agent",
+      "await_submission_id": "019f0313-e155-7082-bc8e-8a5718e9e646",
+      "updated_at": "2026-06-26T09:28:46.332Z",
+      "status_note": "Writer REVIEW handoff routed by lead; QA review in progress.",
+      "review_ready_handoff": "project/messages/outbox/M4-DETERMINISM-REPLAY-001__MSG-20260626-M4-DETERMINISM-REPLAY-REVIEW__test_engineer.json",
+      "review_ready_submission_id": "019f033a-0e3f-7fe1-94aa-502d8e423b41",
+      "review_started_at": "2026-06-26T09:19:33Z",
+      "qa_accept_handoff": "project/messages/outbox/M4-DETERMINISM-REPLAY-001__MSG-20260626-M4-DETERMINISM-REPLAY-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M4-DETERMINISM-REPLAY-001__MSG-20260626-M4-DETERMINISM-REPLAY-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-26T09:28:46.332Z"
+    }
+  },
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task validates determinism and persistence boundaries; it should not broaden M4 gameplay.",
     "If save-format changes are required, keep them explicit, schema-backed, and reviewed; stop if compatibility risk exceeds task scope.",
     "Explicit exclusions for M4 remain: manual node battle, complex naval warfare, full diplomacy, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, and frozen product or architecture changes."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T08:31:28.671Z"
+  "updated_at": "2026-06-26T09:28:46.332Z"
 }

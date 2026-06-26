@@ -1070,7 +1070,10 @@ export interface CompareM3PostwarGovernanceOutcomesResultV1 {
   readonly outcomes: readonly M3PostwarGovernanceOutcomeReadModelV1[];
 }
 
-export type SimulationFixtureIdV1 = "m1.abstract-graph-30" | "minimal-m1";
+export type SimulationFixtureIdV1 =
+  | "m1.abstract-graph-30"
+  | "minimal-m1"
+  | "m4.determinism-replay-001";
 
 export interface FixtureBootSimulationInputV1 {
   readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
@@ -1100,6 +1103,15 @@ export interface SaveLoadCanaryScriptV1 {
   readonly commands: readonly GameCommandV1[];
   readonly expectedContentManifestHash: string;
   readonly expectedScenarioId: SimulationFixtureIdV1;
+}
+
+export interface M4DeterminismReplayScriptV1 {
+  readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  readonly boot: {
+    readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+    readonly fixture: "m4.determinism-replay-001";
+  };
+  readonly commands: readonly GameCommandV1[];
 }
 
 export type ProtocolErrorCodeV1 =
@@ -1266,6 +1278,207 @@ export function createSaveLoadCanaryScriptV1(): SaveLoadCanaryScriptV1 {
         expectedRevision: 1
       }
     ]
+  };
+}
+
+export function createM4DeterminismReplayScriptV1(): M4DeterminismReplayScriptV1 {
+  const protocolVersion = SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  const commands: GameCommandV1[] = [
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.create-campaign-objective",
+      commandId: "m4.replay.create-objective",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 20,
+      expectedRevision: 0,
+      payload: {
+        campaignPlanId: 10,
+        owner: { kind: "polity", polityId: 1 },
+        target: { kind: "district", districtId: 3 },
+        objectiveKind: "besiege",
+        startWindow: { earliestDay: 20, latestDay: 20 },
+        reasonCodes: ["campaign.reason.deterministic-replay"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.create-muster-commitment",
+      commandId: "m4.replay.create-muster",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 20,
+      expectedRevision: 1,
+      payload: {
+        commitmentId: 100,
+        campaignPlanId: 10,
+        source: { kind: "m3-obligation", obligationId: 1 },
+        promisedTroops: 80,
+        dueDay: 30,
+        assemblyWindow: { earliestDay: 20, latestDay: 20 },
+        reasonCodes: ["muster.reason.obligation-request"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.record-muster-response",
+      commandId: "m4.replay.record-muster",
+      actor: { kind: "ai", id: "polity:2" },
+      expectedDay: 20,
+      expectedRevision: 2,
+      payload: {
+        commitmentId: 100,
+        assembledTroops: 80,
+        delayedTroops: 0,
+        refusedTroops: 0,
+        releasedTroops: 0,
+        reasonCodes: ["muster.response.assembled"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.reserve-campaign-grain-supply",
+      commandId: "m4.replay.reserve-grain",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 20,
+      expectedRevision: 3,
+      payload: {
+        reservationId: 501,
+        campaignPlanId: 10,
+        requestedAmount: 240,
+        expectedDailyConsumption: 1,
+        reasonCodes: ["grain.reserve.planned-campaign"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.start-campaign-march",
+      commandId: "m4.replay.start-march",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 20,
+      expectedRevision: 4,
+      payload: {
+        marchId: 701,
+        campaignPlanId: 10,
+        originDistrictId: 1,
+        plannedDepartureDay: 20,
+        grainPerTroopPerDay: 1,
+        reasonCodes: ["march.reason.accepted-route-plan"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.advance-day",
+      commandId: "m4.replay.advance-1",
+      actor: { kind: "system", id: "scheduler" },
+      expectedDay: 20,
+      expectedRevision: 5
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.advance-day",
+      commandId: "m4.replay.advance-2",
+      actor: { kind: "system", id: "scheduler" },
+      expectedDay: 21,
+      expectedRevision: 6
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.resolve-m4-field-engagement",
+      commandId: "m4.replay.resolve-engagement",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 22,
+      expectedRevision: 7,
+      payload: {
+        engagementId: 901,
+        campaignPlanId: 10,
+        marchId: 701,
+        defenderPolityId: 2,
+        defenderEstimatedTroops: 20,
+        defenderFortification: 400,
+        reasonCodes: ["engagement.reason.enemy-intercepted"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.apply-m4-siege-choice",
+      commandId: "m4.replay.siege-invest",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 22,
+      expectedRevision: 8,
+      payload: {
+        siegeId: 801,
+        campaignPlanId: 10,
+        marchId: 701,
+        choice: "invest-blockade",
+        defenderPolityId: 2,
+        fortification: 400,
+        defenderEstimatedTroops: 20,
+        defenderSupply: 120,
+        reasonCodes: ["siege.choice.invest-blockade"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.apply-m4-siege-choice",
+      commandId: "m4.replay.siege-assault",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 22,
+      expectedRevision: 9,
+      payload: {
+        siegeId: 801,
+        campaignPlanId: 10,
+        marchId: 701,
+        choice: "assault",
+        defenderPolityId: 2,
+        fortification: 400,
+        defenderEstimatedTroops: 20,
+        defenderSupply: 120,
+        reasonCodes: ["siege.choice.assault"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.apply-m4-siege-choice",
+      commandId: "m4.replay.siege-accept",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 22,
+      expectedRevision: 10,
+      payload: {
+        siegeId: 801,
+        campaignPlanId: 10,
+        marchId: 701,
+        choice: "accept-surrender",
+        defenderPolityId: 2,
+        fortification: 400,
+        defenderEstimatedTroops: 0,
+        defenderSupply: 0,
+        reasonCodes: ["siege.choice.accept-surrender"]
+      }
+    },
+    {
+      schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+      kind: "sim.resolve-m4-campaign-withdrawal",
+      commandId: "m4.replay.postwar",
+      actor: { kind: "player", id: "polity:1" },
+      expectedDay: 22,
+      expectedRevision: 11,
+      payload: {
+        withdrawalId: 901,
+        campaignPlanId: 10,
+        marchId: 701,
+        siegeId: 801,
+        triggerReason: "objective-complete",
+        reasonCodes: ["withdrawal.reason.objective-complete"]
+      }
+    }
+  ];
+
+  return {
+    protocolVersion,
+    boot: {
+      protocolVersion,
+      fixture: "m4.determinism-replay-001"
+    },
+    commands
   };
 }
 
@@ -2203,7 +2416,11 @@ export function parseBootSimulationInputV1(
     );
   }
 
-  if (input["fixture"] === "minimal-m1" || input["fixture"] === "m1.abstract-graph-30") {
+  if (
+    input["fixture"] === "minimal-m1" ||
+    input["fixture"] === "m1.abstract-graph-30" ||
+    input["fixture"] === "m4.determinism-replay-001"
+  ) {
     return {
       ok: true,
       value: {
@@ -2250,7 +2467,7 @@ export function parseBootSimulationInputV1(
   return protocolError(
     "invalid-payload",
     "fixture",
-    "BootSimulationInput fixture must be minimal-m1 or m1.abstract-graph-30."
+    "BootSimulationInput fixture must be minimal-m1, m1.abstract-graph-30, or m4.determinism-replay-001."
   );
 }
 

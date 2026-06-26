@@ -1,0 +1,86 @@
+{
+  "message_id": "MSG-20260626-M4-DETERMINISM-REPLAY-REVIEW",
+  "task_id": "M4-DETERMINISM-REPLAY-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Deterministic M4 replay fixture now covers objective creation through muster, supply, route, march, automatic engagement/siege, withdrawal, and postwar candidate creation. Node and worker-compatible execution paths produce identical M4 hashes and tail hashes. M4 save requests are explicitly rejected, and loading an M4 runtime from a snapshot without M4 state fails with a semantic-invariant error at state.m4.",
+  "artifacts": [
+    "apps/sim-runner/src/run-determinism.mjs",
+    "apps/web/src/host-hash-canary/compute-host-hash-canary.ts",
+    "apps/web/src/worker/hello-simulation-adapter.d.mts",
+    "apps/web/src/worker/hello-simulation-adapter.mjs",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/src/m4-determinism-replay-v1.ts",
+    "project/tasks/active/M4-DETERMINISM-REPLAY-001.json",
+    "tests/save-load-contract.test.ts"
+  ],
+  "branch_or_worktree": "test/m4-determinism-replay",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "PASS; showed only the expected modified files in allowed paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "PASS; 22 test files, 167 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "PASS; 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "PASS; 2 files, 14 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "PASS; Node and worker-compatible M4 hashes matched at 232f62ab, with stable engagement, siege, withdrawal, and postwar candidate outputs."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS; root vitest 33 files / 239 tests and web package 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; formatting, lint, typecheck, and architecture checks succeeded after fixing the touched files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-DETERMINISM-REPLAY-001",
+      "exit_code": 0,
+      "result": "PASS; task state validated as REVIEW."
+    },
+    {
+      "command": "node -e JSON.parse(readFileSync('project/tasks/active/M4-DETERMINISM-REPLAY-001.json', 'utf8'))",
+      "exit_code": 0,
+      "result": "PASS; task JSON shape and REVIEW routing validated."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no whitespace or patch-format issues."
+    }
+  ],
+  "decisions": [
+    "Deterministic M4 replay coverage is implemented as an explicit command sequence and verified across Node and worker-compatible paths using the same fixture.",
+    "M4 save-format persistence is intentionally rejected with a precise compatibility error instead of expanding the save schema within this task boundary.",
+    "The browser worker host hash canary now includes M4 replay hashes so the deterministic path is covered outside the package-level tests as well."
+  ],
+  "risks": [
+    "M4 runtime persistence remains unsupported in save-format v1 and will continue to reject M4 save requests until a future task extends the schema on purpose.",
+    "The replay fixture is intentionally narrow to the acceptance criteria and does not introduce unrelated gameplay, UI, networking, telemetry, or modding behavior."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the deterministic M4 replay fixture, Node/worker parity evidence, and the explicit M4 save/load compatibility boundary.",
+  "created_at": "2026-06-26T09:16:23.2930462Z"
+}

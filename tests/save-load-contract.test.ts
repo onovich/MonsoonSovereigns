@@ -12,23 +12,29 @@ import {
 } from "../packages/save-format/src/index";
 import { createSaveLoadCanaryScriptV1, type GameCommandV1 } from "../packages/protocol/src/index";
 import {
-  bootSimulationV1,
+  canonicalizeM2EconomyPopulationState,
   createM2EconomyPopulationStateV0,
   createM3PolityVassalageStateV0,
   createWorldStateV0,
+  bootSimulationV1,
   defineDistrict,
   definePerson,
   definePolity,
+  hashWorldStateV0,
   loadSaveV1,
   requestSaveV1,
+  runM4DeterminismReplayV1,
   runSaveLoadCanaryV1,
   submitCommandV1,
   type SimulationRuntimeV1,
   type WorldStateV0
 } from "../packages/sim-core/src/index";
+import { createM4DeterminismReplayScriptV1 } from "../packages/protocol/src/index";
 
-const { runSaveLoadCanaryInWorkerCompatibleAdapter } =
-  await import("../apps/web/src/worker/hello-simulation-adapter.mjs");
+const {
+  runSaveLoadCanaryInWorkerCompatibleAdapter,
+  runM4DeterminismReplayInWorkerCompatibleAdapter
+} = await import("../apps/web/src/worker/hello-simulation-adapter.mjs");
 
 const m2FixtureUrl = new URL(
   "../content-source/m2-fixtures/prototype-world-30-districts.json",
@@ -490,6 +496,115 @@ describe("SIM-005 Node runner and Worker save/load contract", () => {
   });
 });
 
+describe("M4-DETERMINISM-REPLAY-001 complete loop replay", () => {
+  test("replays the complete M4 loop with stable Node and worker hashes", () => {
+    const script = createM4DeterminismReplayScriptV1();
+    const nodeResult = runM4DeterminismReplayV1(script);
+    const workerResult = runM4DeterminismReplayInWorkerCompatibleAdapter(script);
+
+    expect(nodeResult).toEqual(workerResult);
+    expect(nodeResult).toMatchObject({
+      finalDay: 22,
+      finalRevision: 12,
+      postwarCandidateCount: 1,
+      campaignPlanStatus: "completed",
+      campaignPlanStatusReasonCode: "campaign.objective.postwar-candidate-created"
+    });
+
+    const replayedRuntime = replayM4Script(script);
+    const m4 = replayedRuntime.world.state.m4;
+    if (m4 === undefined) {
+      throw new Error("Expected M4 replay state.");
+    }
+
+    expect(replayedRuntime.world.meta.stateHash).toBe(nodeResult.finalHash);
+    expect(m4.fieldEngagements).toHaveLength(1);
+    expect(m4.fieldEngagements[0]).toMatchObject({
+      engagementId: 901,
+      outcome: "attacker-victory",
+      attackerTroopsBefore: 80,
+      attackerTroopsAfter: 72,
+      defenderEstimatedTroopsBefore: 20,
+      defenderEstimatedTroopsAfter: 0,
+      attackerCasualties: 8,
+      defenderCasualties: 20,
+      supplyLoss: 40,
+      reasonCodes: expect.arrayContaining([
+        "engagement.outcome.attacker-victory",
+        "engagement.reason.force-superiority",
+        "engagement.reason.defender-fortification",
+        "engagement.reason.supply-ready"
+      ])
+    });
+    expect(m4.sieges).toHaveLength(1);
+    expect(m4.sieges[0]).toMatchObject({
+      siegeId: 801,
+      status: "surrendered",
+      statusReasonCode: "siege.surrender.accepted",
+      surrenderEligible: true
+    });
+    expect(m4.withdrawals).toHaveLength(1);
+    expect(m4.withdrawals[0]).toMatchObject({
+      withdrawalId: 901,
+      campaignPlanId: 10,
+      siegeId: 801,
+      triggerReason: "objective-complete",
+      kind: "orderly-withdrawal"
+    });
+    expect(m4.postwarCandidates).toHaveLength(1);
+    expect(m4.postwarCandidates[0]).toMatchObject({
+      candidateId: "m4.campaign.10.candidate.1",
+      sourceWarOutcomeId: 1,
+      settlementId: "m4.campaign.10.outcome.1",
+      victorPolityId: 1,
+      localPolityId: 2,
+      districtId: 3,
+      validM3Methods: ["direct-control", "restore-vassal-ruler", "tribute-only"]
+    });
+    expect(validateReplayWorld(replayedRuntime.world)).toBe(true);
+  });
+
+  test("rejects M4 save requests and missing-M4 load snapshots explicitly", () => {
+    const m4Boot = bootSimulationV1({
+      protocolVersion: 1,
+      fixture: "m4.determinism-replay-001"
+    });
+    if (m4Boot.status !== "booted") {
+      throw new Error("Expected M4 replay boot.");
+    }
+    const compatibilityRuntime = createM2M3CompatibilityRuntime();
+
+    expect(() =>
+      requestSaveV1(m4Boot.runtime, {
+        appVersion: "0.0.0",
+        source: "test",
+        codecVersion: "save-envelope-v1"
+      })
+    ).toThrow("M4 runtime state is not supported by save-format v1.");
+
+    const saved = requestSaveV1(compatibilityRuntime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+    const loaded = loadSaveV1(m4Boot.runtime, saved.bytes, {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+
+    expect(loaded.status).toBe("rejected");
+    if (loaded.status !== "rejected") {
+      throw new Error("Expected missing-M4 save load to reject.");
+    }
+    expect(loaded.reasons).toContainEqual({
+      code: "semantic-invariant",
+      path: "state.m4",
+      message: "Save snapshot is missing required M4 runtime state for this runtime."
+    });
+    expect(loaded.runtime.world.meta.stateHash).toBe(m4Boot.runtime.world.meta.stateHash);
+  });
+});
+
 function bootMinimalRuntime(): Extract<ReturnType<typeof bootSimulationV1>, { status: "booted" }> {
   const boot = bootSimulationV1({ protocolVersion: 1, fixture: "minimal-m1" });
   if (boot.status !== "booted") {
@@ -508,6 +623,85 @@ function bootM3Runtime(): { readonly runtime: SimulationRuntimeV1 } {
       eventTail: []
     }
   };
+}
+
+function replayM4Script(
+  script: ReturnType<typeof createM4DeterminismReplayScriptV1>
+): SimulationRuntimeV1 {
+  const boot = bootSimulationV1(script.boot);
+  if (boot.status !== "booted") {
+    throw new Error("Expected replay boot.");
+  }
+
+  let runtime = boot.runtime;
+  for (const command of script.commands) {
+    const submitted = submitCommandV1(runtime, command);
+    if (submitted.result.status !== "accepted") {
+      throw new Error(JSON.stringify(submitted.result.error));
+    }
+    runtime = submitted.runtime;
+  }
+
+  return runtime;
+}
+
+function createM2M3CompatibilityRuntime(): SimulationRuntimeV1 {
+  const definitions = {
+    polities: [
+      definePolity({ id: 1, displayNameKey: "compat.polity.attacker" }),
+      definePolity({ id: 2, displayNameKey: "compat.polity.defender" })
+    ],
+    persons: [definePerson({ id: 1, displayNameKey: "compat.person.commander" })],
+    districts: [
+      defineDistrict({ id: 1, displayNameKey: "compat.district.origin" }),
+      defineDistrict({ id: 2, displayNameKey: "compat.district.midpoint" }),
+      defineDistrict({ id: 3, displayNameKey: "compat.district.target" })
+    ],
+    settlements: [],
+    routes: []
+  };
+  const world = createWorldStateV0({
+    seed: 1531,
+    contentManifestHash: "m4-determinism-replay-compat",
+    currentDay: 22,
+    revision: 12,
+    definitions,
+    m2: canonicalizeM2EconomyPopulationState(createM2EconomyPopulationStateV0(definitions)),
+    m3: createM3PolityVassalageStateV0(definitions, {
+      polities: [
+        { polityId: 1, directSuzerainPolityId: null },
+        { polityId: 2, directSuzerainPolityId: null }
+      ]
+    })
+  });
+
+  return {
+    world: {
+      ...world,
+      meta: { ...world.meta, stateHash: hashWorldStateV0(world) }
+    },
+    acceptedCommandIds: [],
+    commandTail: [],
+    eventTail: []
+  };
+}
+
+function validateReplayWorld(world: WorldStateV0): boolean {
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return false;
+  }
+
+  return (
+    world.meta.currentDay === 22 &&
+    world.meta.revision === 12 &&
+    m4.campaignPlans.length === 1 &&
+    m4.campaignPlans[0]?.status === "completed" &&
+    m4.fieldEngagements.length === 1 &&
+    m4.sieges.length === 1 &&
+    m4.withdrawals.length === 1 &&
+    m4.postwarCandidates.length === 1
+  );
 }
 
 function createM3World(): WorldStateV0 {

@@ -2,17 +2,20 @@ import { exit, stdout } from "node:process";
 import {
   createCommandQueryCanaryScript,
   createHelloThirtyDayRequest,
+  createM4DeterminismReplayScriptV1,
   createSaveLoadCanaryScriptV1
 } from "@monsoon/protocol";
 import {
   runCommandQueryCanaryV1,
   runHelloSimulation,
+  runM4DeterminismReplayV1,
   runSaveLoadCanaryV1
 } from "@monsoon/sim-core";
 
 const {
   runCommandQueryCanaryInWorkerCompatibleAdapter,
   runHelloSimulationInWorkerCompatibleAdapter,
+  runM4DeterminismReplayInWorkerCompatibleAdapter,
   runSaveLoadCanaryInWorkerCompatibleAdapter
 } = await import("../../web/src/worker/hello-simulation-adapter.mjs");
 
@@ -72,3 +75,32 @@ if (
 }
 
 stdout.write("Deterministic save/load simulation matched.\n");
+
+const m4ReplayScript = createM4DeterminismReplayScriptV1();
+const nodeM4Result = runM4DeterminismReplayV1(m4ReplayScript);
+const workerM4Result = runM4DeterminismReplayInWorkerCompatibleAdapter(m4ReplayScript);
+
+stdout.write(`Node M4 hash: ${nodeM4Result.finalHash}\n`);
+stdout.write(`Worker-compatible M4 hash: ${workerM4Result.finalHash}\n`);
+stdout.write(`M4 engagement hash: ${nodeM4Result.engagementHash}\n`);
+stdout.write(`M4 siege hash: ${nodeM4Result.siegeHash}\n`);
+stdout.write(`M4 withdrawal hash: ${nodeM4Result.withdrawalHash}\n`);
+stdout.write(`M4 postwar candidates: ${nodeM4Result.postwarCandidateCount}\n`);
+
+if (
+  nodeM4Result.finalHash !== workerM4Result.finalHash ||
+  nodeM4Result.engagementHash !== workerM4Result.engagementHash ||
+  nodeM4Result.siegeHash !== workerM4Result.siegeHash ||
+  nodeM4Result.withdrawalHash !== workerM4Result.withdrawalHash ||
+  nodeM4Result.postwarCandidateCount !== workerM4Result.postwarCandidateCount
+) {
+  stdout.write("Deterministic M4 replay hash mismatch.\n");
+  exit(1);
+}
+
+if (nodeM4Result.postwarCandidateCount !== 1 || workerM4Result.postwarCandidateCount !== 1) {
+  stdout.write("Deterministic M4 replay did not create exactly one postwar candidate.\n");
+  exit(1);
+}
+
+stdout.write("Deterministic M4 replay simulation matched.\n");

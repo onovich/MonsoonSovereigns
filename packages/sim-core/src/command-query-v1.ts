@@ -8,6 +8,7 @@ import {
   type GameCommandV1,
   type GameQueryV1,
   type M3PostwarGovernanceMethodV1,
+  type M4DeterminismReplayScriptV1,
   type SaveLoadCanaryScriptV1,
   type ProtocolErrorCodeV1,
   type SerializableProtocolErrorV1
@@ -27,6 +28,7 @@ import {
 import { advanceWorldByGameDay, getGameCalendarDate } from "./scheduler-v0.ts";
 import { bootWorldStateFromRuntimeContentPackV1 } from "./boot-content-runtime-v1.ts";
 import { previewM2TransportRouteV0 } from "./m2-route-transport-v0.ts";
+import { createM4DeterminismReplayWorldStateV0 } from "./m4-determinism-replay-v1.ts";
 import {
   M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH,
   M1_ABSTRACT_GRAPH_30_SCENARIO_ID,
@@ -1059,6 +1061,19 @@ export interface SaveLoadCanaryResultV1 {
   readonly saveByteLength: number;
 }
 
+export interface M4DeterminismReplayResultV1 {
+  readonly status: "ok";
+  readonly finalHash: string;
+  readonly finalDay: number;
+  readonly finalRevision: number;
+  readonly engagementHash: string;
+  readonly siegeHash: string;
+  readonly withdrawalHash: string;
+  readonly postwarCandidateCount: number;
+  readonly campaignPlanStatus: M4CampaignPlanStateV0["status"];
+  readonly campaignPlanStatusReasonCode: string | null;
+}
+
 export function bootSimulationV1(input: unknown): BootSimulationResultV1 {
   const parsed = parseBootSimulationInputV1(input);
   if (!parsed.ok) {
@@ -1176,6 +1191,10 @@ export function requestSaveV1(
   runtime: SimulationRuntimeV1,
   build: SaveBuildMetadataV1
 ): RequestSaveOutputV1 {
+  if (runtime.world.state.m4 !== undefined) {
+    throw new Error("Save request rejected: M4 runtime state is not supported by save-format v1.");
+  }
+
   const envelope = createSaveEnvelopeV1({
     build,
     scenarioId: scenarioIdForRuntime(runtime),
@@ -1229,6 +1248,14 @@ export function loadSaveV1(
           {
             path: "state.m3",
             message: "Save snapshot is missing required M3 runtime state for this runtime."
+          }
+        ];
+      }
+      if (runtime.world.state.m4 !== undefined && !hasM4RuntimeState(candidate)) {
+        return [
+          {
+            path: "state.m4",
+            message: "Save snapshot is missing required M4 runtime state for this runtime."
           }
         ];
       }
@@ -1335,6 +1362,62 @@ export function runSaveLoadCanaryV1(input: SaveLoadCanaryScriptV1): SaveLoadCana
   };
 }
 
+export function runM4DeterminismReplayV1(
+  input: M4DeterminismReplayScriptV1
+): M4DeterminismReplayResultV1 {
+  const boot = bootSimulationV1(input.boot);
+  if (boot.status !== "booted") {
+    throw new Error(`M4 determinism replay boot rejected: ${boot.error.code}.`);
+  }
+
+  let runtime = boot.runtime;
+  let engagementHash = runtime.world.meta.stateHash;
+  let siegeHash = runtime.world.meta.stateHash;
+  let withdrawalHash = runtime.world.meta.stateHash;
+
+  for (const command of input.commands) {
+    const submitted = submitCommandV1(runtime, command);
+    if (submitted.result.status !== "accepted") {
+      throw new Error(`M4 determinism replay command rejected: ${submitted.result.error.code}.`);
+    }
+
+    runtime = submitted.runtime;
+    if (command.kind === "sim.resolve-m4-field-engagement") {
+      engagementHash = runtime.world.meta.stateHash;
+    } else if (
+      command.kind === "sim.apply-m4-siege-choice" &&
+      command.payload.choice === "accept-surrender"
+    ) {
+      siegeHash = runtime.world.meta.stateHash;
+    } else if (command.kind === "sim.resolve-m4-campaign-withdrawal") {
+      withdrawalHash = runtime.world.meta.stateHash;
+    }
+  }
+
+  const campaignPlan = runtime.world.state.m4?.campaignPlans.find((plan) => plan.id === 10);
+  if (campaignPlan === undefined) {
+    throw new Error("M4 determinism replay did not create the campaign plan.");
+  }
+
+  const m4 = runtime.world.state.m4;
+  if (m4 === undefined || m4.postwarCandidates.length === 0) {
+    throw new Error("M4 determinism replay did not create a postwar candidate.");
+  }
+
+  return {
+    status: "ok",
+    finalHash: runtime.world.meta.stateHash,
+    finalDay: runtime.world.meta.currentDay,
+    finalRevision: runtime.world.meta.revision,
+    engagementHash,
+    siegeHash,
+    withdrawalHash,
+    postwarCandidateCount: m4.postwarCandidates.length,
+    campaignPlanStatus: campaignPlan.status,
+    campaignPlanStatusReasonCode: campaignPlan.statusReasonCode
+  };
+}
+
 function bootParsedSimulationV1(input: BootSimulationInputV1): BootSimulationResultV1 {
   if (input.protocolVersion !== SIMULATION_MESSAGE_PROTOCOL_VERSION) {
     return {
@@ -1358,7 +1441,9 @@ function bootParsedSimulationV1(input: BootSimulationInputV1): BootSimulationRes
           world:
             input.fixture === "m1.abstract-graph-30"
               ? createAbstractGraph30WorldStateV0()
-              : createMinimalM1WorldStateV0()
+              : input.fixture === "minimal-m1"
+                ? createMinimalM1WorldStateV0()
+                : createM4DeterminismReplayWorldStateV0()
         };
 
   if (worldResult.status === "rejected") {
@@ -10981,6 +11066,15 @@ function hasM3RuntimeState(candidate: unknown): boolean {
 
   const state = candidate["state"];
   return isRecord(state) && state["m3"] !== undefined;
+}
+
+function hasM4RuntimeState(candidate: unknown): boolean {
+  if (!isRecord(candidate)) {
+    return false;
+  }
+
+  const state = candidate["state"];
+  return isRecord(state) && state["m4"] !== undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
