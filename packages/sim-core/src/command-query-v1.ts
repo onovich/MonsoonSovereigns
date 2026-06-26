@@ -4877,7 +4877,10 @@ function evaluateResolveM4FieldEngagement(
   if (m4.fieldEngagements.some((engagement) => engagement.engagementId === engagementId)) {
     return rejectEngagementState("payload.engagementId", "FieldEngagementId already exists.");
   }
-  if (campaignPlan.target.kind !== "district" || march.currentDistrictId !== march.targetDistrictId) {
+  if (
+    campaignPlan.target.kind !== "district" ||
+    march.currentDistrictId !== march.targetDistrictId
+  ) {
     return rejectEngagementState(
       "payload.marchId",
       "Field engagement requires an arrived district-target march."
@@ -4943,7 +4946,10 @@ function evaluateResolveM4FieldEngagement(
               outcome.outcome === "attacker-victory"
                 ? "campaign.objective.field-engagement-won"
                 : "campaign.objective.field-engagement-lost",
-            reasonCodes: uniqueSortedText([...plan.reasonCodes, ...outcome.reasonCodes], compareText),
+            reasonCodes: uniqueSortedText(
+              [...plan.reasonCodes, ...outcome.reasonCodes],
+              compareText
+            ),
             updatedDay: world.meta.currentDay
           }
         : plan
@@ -4992,7 +4998,10 @@ function evaluateApplyM4SiegeChoice(
     return { ok: false, error: context.error };
   }
   const { m4, campaignPlan, march, ownerPolityId } = context.value;
-  if (campaignPlan.target.kind !== "district" || march.currentDistrictId !== march.targetDistrictId) {
+  if (
+    campaignPlan.target.kind !== "district" ||
+    march.currentDistrictId !== march.targetDistrictId
+  ) {
     return rejectSiegeState("payload.marchId", "Siege choice requires an arrived district march.");
   }
   const siegeId = parseSiegeId(command.payload.siegeId);
@@ -5083,12 +5092,15 @@ type M4CombatContextResult =
     }
   | { readonly ok: false; readonly error: DomainErrorV1 };
 
-function validateM4CombatCommandContext(inputWorld: WorldStateV0, input: {
-  readonly command: GameCommandV1;
-  readonly campaignPlanId: number;
-  readonly marchId: number;
-  readonly errorCode: "engagement-state-invalid" | "siege-state-invalid";
-}): M4CombatContextResult {
+function validateM4CombatCommandContext(
+  inputWorld: WorldStateV0,
+  input: {
+    readonly command: GameCommandV1;
+    readonly campaignPlanId: number;
+    readonly marchId: number;
+    readonly errorCode: "engagement-state-invalid" | "siege-state-invalid";
+  }
+): M4CombatContextResult {
   const m3 = inputWorld.state.m3;
   if (m3 === undefined) {
     return { ok: false, error: m3MissingDomainError(input.command.kind) };
@@ -5184,8 +5196,12 @@ function resolveM4FieldEngagementOutcome(input: {
   const reasonCodes = [
     ...input.reasonCodes,
     isAttackerVictory ? "engagement.outcome.attacker-victory" : "engagement.outcome.defender-holds",
-    attackerPower >= defenderPower ? "engagement.reason.force-superiority" : "engagement.reason.defender-force-estimate",
-    input.defenderFortification > 0 ? "engagement.reason.defender-fortification" : "engagement.reason.open-field",
+    attackerPower >= defenderPower
+      ? "engagement.reason.force-superiority"
+      : "engagement.reason.defender-force-estimate",
+    input.defenderFortification > 0
+      ? "engagement.reason.defender-fortification"
+      : "engagement.reason.open-field",
     input.march.supply.status === "well-supplied"
       ? "engagement.reason.supply-ready"
       : "engagement.reason.supply-strained",
@@ -5265,7 +5281,10 @@ function investM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM4
     supplyLoss: 0,
     surrenderEligible: false,
     surrenderReasonCodes: [],
-    reasonCodes: uniqueSortedText([...input.command.payload.reasonCodes, "siege.invested.blockade"], compareText),
+    reasonCodes: uniqueSortedText(
+      [...input.command.payload.reasonCodes, "siege.invested.blockade"],
+      compareText
+    ),
     creditHooks: [],
     reputationHooks: [],
     startedDay: input.world.meta.currentDay,
@@ -5275,7 +5294,13 @@ function investM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM4
     ok: true,
     value: {
       siege,
-      campaignPlan: updateM4CampaignForSiege(input.campaignPlan, input.world.meta.currentDay, "active", "campaign.objective.siege-invested", siege.reasonCodes),
+      campaignPlan: updateM4CampaignForSiege(
+        input.campaignPlan,
+        input.world.meta.currentDay,
+        "active",
+        "campaign.objective.siege-invested",
+        siege.reasonCodes
+      ),
       march: input.march,
       attackerCasualtyDelta: 0,
       defenderCasualtyDelta: 0,
@@ -5285,16 +5310,22 @@ function investM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM4
   };
 }
 
-function continueM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM4SiegeChoiceResult {
+function continueM4Siege(
+  input: Parameters<typeof applyM4SiegeChoice>[0]
+): ApplyM4SiegeChoiceResult {
   if (input.siege === undefined) {
     return { ok: false, error: rejectSiegeStateError("payload.siegeId", "Siege is missing.") };
   }
   const dailyNeed = input.siege.attackerTroops * input.march.grainPerTroopPerDay;
   const supplyLoss = minimumTwo(input.march.supply.carriedGrain, dailyNeed);
   const shortage = dailyNeed - supplyLoss;
-  const attackerCasualties = shortage === 0
-    ? 0
-    : minimumTwo(input.siege.attackerTroops, floorDivide(shortage, input.march.grainPerTroopPerDay) + 1);
+  const attackerCasualties =
+    shortage === 0
+      ? 0
+      : minimumTwo(
+          input.siege.attackerTroops,
+          floorDivide(shortage, input.march.grainPerTroopPerDay) + 1
+        );
   const defenderSupplyLoss = minimumTwo(
     input.siege.defenderSupply,
     floorDivide(input.siege.attackerTroops, 3) + 1
@@ -5365,7 +5396,9 @@ function continueM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): Apply
         input.campaignPlan,
         input.world.meta.currentDay,
         supplyCollapse ? "cancelled" : "active",
-        supplyCollapse ? "campaign.objective.siege-supply-failed" : "campaign.objective.siege-continues",
+        supplyCollapse
+          ? "campaign.objective.siege-supply-failed"
+          : "campaign.objective.siege-continues",
         reasonCodes
       ),
       march: applyM4CombatLossesToMarch(input.march, {
@@ -5394,12 +5427,18 @@ function assaultM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM
   const attackerCasualties = minimumTwo(
     input.siege.attackerTroops,
     breached
-      ? floorDivide(input.siege.defenderEstimatedTroops, 3) + floorDivide(input.siege.fortification, 150) + 1
-      : floorDivide(input.siege.defenderEstimatedTroops, 2) + floorDivide(input.siege.fortification, 80) + 1
+      ? floorDivide(input.siege.defenderEstimatedTroops, 3) +
+          floorDivide(input.siege.fortification, 150) +
+          1
+      : floorDivide(input.siege.defenderEstimatedTroops, 2) +
+          floorDivide(input.siege.fortification, 80) +
+          1
   );
   const defenderCasualties = minimumTwo(
     input.siege.defenderEstimatedTroops,
-    breached ? floorDivide(input.siege.attackerTroops, 2) + 1 : floorDivide(input.siege.attackerTroops, 4)
+    breached
+      ? floorDivide(input.siege.attackerTroops, 2) + 1
+      : floorDivide(input.siege.attackerTroops, 4)
   );
   const supplyLoss = minimumTwo(
     input.march.supply.carriedGrain,
@@ -5438,7 +5477,11 @@ function assaultM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM
     ],
     reputationHooks: [
       ...input.siege.reputationHooks,
-      ...m4CombatReputationHooks(input.ownerPolityId, breached ? "attacker-victory" : "defender-holds", attackerCasualties)
+      ...m4CombatReputationHooks(
+        input.ownerPolityId,
+        breached ? "attacker-victory" : "defender-holds",
+        attackerCasualties
+      )
     ],
     updatedDay: input.world.meta.currentDay
   };
@@ -5450,7 +5493,9 @@ function assaultM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM
         input.campaignPlan,
         input.world.meta.currentDay,
         "active",
-        breached ? "campaign.objective.siege-breached" : "campaign.objective.siege-assault-repulsed",
+        breached
+          ? "campaign.objective.siege-breached"
+          : "campaign.objective.siege-assault-repulsed",
         reasonCodes
       ),
       march: applyM4CombatLossesToMarch(input.march, {
@@ -5538,10 +5583,15 @@ function closeM4Siege(
         input.campaignPlan,
         input.world.meta.currentDay,
         campaignStatus,
-        status === "withdrawn" ? "campaign.objective.siege-withdrawn" : "campaign.objective.siege-lifted",
+        status === "withdrawn"
+          ? "campaign.objective.siege-withdrawn"
+          : "campaign.objective.siege-lifted",
         reasonCodes
       ),
-      march: status === "withdrawn" ? { ...input.march, status: "cancelled" as const, statusReasonCode: reasonCode } : input.march,
+      march:
+        status === "withdrawn"
+          ? { ...input.march, status: "cancelled" as const, statusReasonCode: reasonCode }
+          : input.march,
       attackerCasualtyDelta: 0,
       defenderCasualtyDelta: 0,
       supplyLossDelta: 0,
@@ -5562,7 +5612,10 @@ function updateM4CampaignForSiege(
     objectiveKind: status === "cancelled" ? "withdraw" : campaignPlan.objectiveKind,
     status,
     statusReasonCode,
-    reasonCodes: uniqueSortedText([...campaignPlan.reasonCodes, ...reasonCodes, statusReasonCode], compareText),
+    reasonCodes: uniqueSortedText(
+      [...campaignPlan.reasonCodes, ...reasonCodes, statusReasonCode],
+      compareText
+    ),
     updatedDay: day
   };
 }
@@ -9882,7 +9935,11 @@ function readM4CampaignHooksRecordField(
     return undefined;
   }
 
-  const hooks: { readonly polityId: PolityId; readonly amount: number; readonly reasonCode: string }[] = [];
+  const hooks: {
+    readonly polityId: PolityId;
+    readonly amount: number;
+    readonly reasonCode: string;
+  }[] = [];
   value.forEach((entry, index) => {
     if (!isRecord(entry)) {
       reasons.push({
@@ -9937,12 +9994,7 @@ function readM4CampaignStatusRecordField(
   reasons: SaveLoadRejectionReasonV1[]
 ): M4CampaignPlanStateV0["status"] | undefined {
   const value = record[key];
-  if (
-    value === "planned" ||
-    value === "active" ||
-    value === "cancelled" ||
-    value === "completed"
-  ) {
+  if (value === "planned" || value === "active" || value === "cancelled" || value === "completed") {
     return value;
   }
   reasons.push({

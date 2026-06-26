@@ -3921,10 +3921,7 @@ function parseApplyM4SiegeChoicePayload(
   };
 }
 
-function parseM4SiegeChoice(
-  value: unknown,
-  path: string
-): ProtocolParseResult<M4SiegeChoiceV1> {
+function parseM4SiegeChoice(value: unknown, path: string): ProtocolParseResult<M4SiegeChoiceV1> {
   if (
     value === "invest-blockade" ||
     value === "assault" ||

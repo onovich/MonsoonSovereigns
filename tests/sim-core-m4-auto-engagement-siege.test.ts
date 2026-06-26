@@ -144,7 +144,10 @@ describe("M4-AUTO-ENGAGEMENT-SIEGE-001 deterministic combat choice loop", () => 
 
   test("lifts siege without completing or cancelling the campaign objective", () => {
     let runtime = runtimeWithCombat();
-    runtime = accepted(runtime, siegeCommand("m4.siege.lift.invest", runtime, "invest-blockade", 803));
+    runtime = accepted(
+      runtime,
+      siegeCommand("m4.siege.lift.invest", runtime, "invest-blockade", 803)
+    );
     runtime = accepted(runtime, siegeCommand("m4.siege.lift", runtime, "lift-siege", 803));
 
     expect(firstSiege(runtime.world)).toMatchObject({
@@ -168,7 +171,10 @@ describe("M4-AUTO-ENGAGEMENT-SIEGE-001 deterministic combat choice loop", () => 
         fortification: 500
       })
     );
-    runtime = accepted(runtime, siegeCommand("m4.siege.supply-failure.continue", runtime, "continue", 804));
+    runtime = accepted(
+      runtime,
+      siegeCommand("m4.siege.supply-failure.continue", runtime, "continue", 804)
+    );
 
     const siege = firstSiege(runtime.world);
     const marchState = firstMarch(runtime.world);
@@ -196,18 +202,14 @@ describe("M4-AUTO-ENGAGEMENT-SIEGE-001 deterministic combat choice loop", () => 
     }
     const reversed: M4CampaignStateV0 = {
       ...m4,
-      fieldEngagements: [
-        fieldEngagementFixture(902, 702),
-        fieldEngagementFixture(901, 701)
-      ],
+      fieldEngagements: [fieldEngagementFixture(902, 702), fieldEngagementFixture(901, 701)],
       sieges: [siegeFixture(802, 702), siegeFixture(801, 701)]
     };
     const canonical = canonicalizeM4CampaignStateV0(reversed);
 
-    expect(canonical.fieldEngagements.map((engagement) => Number(engagement.engagementId))).toEqual([
-      901,
-      902
-    ]);
+    expect(canonical.fieldEngagements.map((engagement) => Number(engagement.engagementId))).toEqual(
+      [901, 902]
+    );
     expect(canonical.sieges.map((siege) => Number(siege.siegeId))).toEqual([801, 802]);
   });
 
@@ -261,8 +263,14 @@ describe("M4-AUTO-ENGAGEMENT-SIEGE-001 deterministic combat choice loop", () => 
 
   test("keeps force and supply nonnegative while accounting all losses explicitly", () => {
     let runtime = runtimeWithCombat();
-    runtime = accepted(runtime, siegeCommand("m4.siege.accounting.invest", runtime, "invest-blockade", 806));
-    runtime = accepted(runtime, siegeCommand("m4.siege.accounting.assault", runtime, "assault", 806));
+    runtime = accepted(
+      runtime,
+      siegeCommand("m4.siege.accounting.invest", runtime, "invest-blockade", 806)
+    );
+    runtime = accepted(
+      runtime,
+      siegeCommand("m4.siege.accounting.assault", runtime, "assault", 806)
+    );
 
     const siege = firstSiege(runtime.world);
     const marchState = firstMarch(runtime.world);
@@ -366,10 +374,12 @@ function m4CombatEventTail(): readonly DomainEventV1[] {
   ];
 }
 
-function runtimeWithCombat(input: {
-  readonly activeTroops?: number;
-  readonly carriedGrain?: number;
-} = {}): SimulationRuntimeV1 {
+function runtimeWithCombat(
+  input: {
+    readonly activeTroops?: number;
+    readonly carriedGrain?: number;
+  } = {}
+): SimulationRuntimeV1 {
   const world = worldWithCombat(input);
   return {
     world,

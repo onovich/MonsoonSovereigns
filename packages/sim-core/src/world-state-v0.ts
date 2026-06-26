@@ -2402,14 +2402,48 @@ function validateM4FieldEngagementEntry(
   if (!validateRecordEntry(input, path, "M4FieldEngagementState", errors)) {
     return;
   }
-  validatePositiveIntegerField(input, "engagementId", `${path}.engagementId`, "FieldEngagementId", errors);
-  validatePositiveIntegerField(input, "campaignPlanId", `${path}.campaignPlanId`, "CampaignPlanId", errors);
+  validatePositiveIntegerField(
+    input,
+    "engagementId",
+    `${path}.engagementId`,
+    "FieldEngagementId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "campaignPlanId",
+    `${path}.campaignPlanId`,
+    "CampaignPlanId",
+    errors
+  );
   validatePositiveIntegerField(input, "marchId", `${path}.marchId`, "CampaignMarchId", errors);
-  validatePositiveIntegerField(input, "attackerPolityId", `${path}.attackerPolityId`, "PolityId", errors);
-  validatePositiveIntegerField(input, "defenderPolityId", `${path}.defenderPolityId`, "PolityId", errors);
+  validatePositiveIntegerField(
+    input,
+    "attackerPolityId",
+    `${path}.attackerPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "defenderPolityId",
+    `${path}.defenderPolityId`,
+    "PolityId",
+    errors
+  );
   validateM4CampaignTargetEntry(input["target"], `${path}.target`, errors);
-  validateNonnegativeIntegerField(input, "attackerTroopsBefore", `${path}.attackerTroopsBefore`, errors);
-  validateNonnegativeIntegerField(input, "attackerTroopsAfter", `${path}.attackerTroopsAfter`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "attackerTroopsBefore",
+    `${path}.attackerTroopsBefore`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "attackerTroopsAfter",
+    `${path}.attackerTroopsAfter`,
+    errors
+  );
   validateNonnegativeIntegerField(
     input,
     "defenderEstimatedTroopsBefore",
@@ -2422,10 +2456,25 @@ function validateM4FieldEngagementEntry(
     `${path}.defenderEstimatedTroopsAfter`,
     errors
   );
-  validateNonnegativeIntegerField(input, "attackerCasualties", `${path}.attackerCasualties`, errors);
-  validateNonnegativeIntegerField(input, "defenderCasualties", `${path}.defenderCasualties`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "attackerCasualties",
+    `${path}.attackerCasualties`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "defenderCasualties",
+    `${path}.defenderCasualties`,
+    errors
+  );
   validateNonnegativeIntegerField(input, "supplyLoss", `${path}.supplyLoss`, errors);
-  validateNonnegativeIntegerField(input, "defenderFortification", `${path}.defenderFortification`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "defenderFortification",
+    `${path}.defenderFortification`,
+    errors
+  );
   validateM4FieldEngagementOutcomeValue(input["outcome"], `${path}.outcome`, errors);
   validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
   validateM4Array(input["creditHooks"], `${path}.creditHooks`, errors, validateM4CampaignHookEntry);
@@ -2438,20 +2487,40 @@ function validateM4FieldEngagementEntry(
   validateNonnegativeIntegerField(input, "resolvedDay", `${path}.resolvedDay`, errors);
 }
 
-function validateM4SiegeEntry(
-  input: unknown,
-  path: string,
-  errors: WorldInvariantError[]
-): void {
+function validateM4SiegeEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
   if (!validateRecordEntry(input, path, "M4SiegeState", errors)) {
     return;
   }
   validatePositiveIntegerField(input, "siegeId", `${path}.siegeId`, "SiegeId", errors);
-  validatePositiveIntegerField(input, "campaignPlanId", `${path}.campaignPlanId`, "CampaignPlanId", errors);
+  validatePositiveIntegerField(
+    input,
+    "campaignPlanId",
+    `${path}.campaignPlanId`,
+    "CampaignPlanId",
+    errors
+  );
   validatePositiveIntegerField(input, "marchId", `${path}.marchId`, "CampaignMarchId", errors);
-  validatePositiveIntegerField(input, "targetDistrictId", `${path}.targetDistrictId`, "DistrictId", errors);
-  validatePositiveIntegerField(input, "attackerPolityId", `${path}.attackerPolityId`, "PolityId", errors);
-  validatePositiveIntegerField(input, "defenderPolityId", `${path}.defenderPolityId`, "PolityId", errors);
+  validatePositiveIntegerField(
+    input,
+    "targetDistrictId",
+    `${path}.targetDistrictId`,
+    "DistrictId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "attackerPolityId",
+    `${path}.attackerPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "defenderPolityId",
+    `${path}.defenderPolityId`,
+    "PolityId",
+    errors
+  );
   validateM4SiegeStatusValue(input["status"], `${path}.status`, errors);
   validateNonEmptyStringField(input, "statusReasonCode", `${path}.statusReasonCode`, errors);
   validateNonnegativeIntegerField(input, "fortification", `${path}.fortification`, errors);
@@ -2467,8 +2536,18 @@ function validateM4SiegeEntry(
   validateNonnegativeIntegerField(input, "blockadeDays", `${path}.blockadeDays`, errors);
   validateNonnegativeIntegerField(input, "assaultCount", `${path}.assaultCount`, errors);
   validateNonnegativeIntegerField(input, "attackerTroops", `${path}.attackerTroops`, errors);
-  validateNonnegativeIntegerField(input, "attackerCasualties", `${path}.attackerCasualties`, errors);
-  validateNonnegativeIntegerField(input, "defenderCasualties", `${path}.defenderCasualties`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "attackerCasualties",
+    `${path}.attackerCasualties`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "defenderCasualties",
+    `${path}.defenderCasualties`,
+    errors
+  );
   validateNonnegativeIntegerField(input, "supplyLoss", `${path}.supplyLoss`, errors);
   validateBooleanField(input, "surrenderEligible", `${path}.surrenderEligible`, errors);
   validateStringArrayField(input["surrenderReasonCodes"], `${path}.surrenderReasonCodes`, errors);
@@ -8499,7 +8578,10 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
         message: "M4 field engagement references missing CampaignMarchId."
       });
     }
-    if (!polityIds.has(engagement.attackerPolityId) || !polityIds.has(engagement.defenderPolityId)) {
+    if (
+      !polityIds.has(engagement.attackerPolityId) ||
+      !polityIds.has(engagement.defenderPolityId)
+    ) {
       errors.push({
         code: "bad-reference",
         path: `state.m4.fieldEngagements[${index}]`,
@@ -8513,7 +8595,10 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
       `state.m4.fieldEngagements[${index}].target`,
       errors
     );
-    if (engagement.attackerTroopsBefore - engagement.attackerCasualties !== engagement.attackerTroopsAfter) {
+    if (
+      engagement.attackerTroopsBefore - engagement.attackerCasualties !==
+      engagement.attackerTroopsAfter
+    ) {
       errors.push({
         code: "invalid-schema",
         path: `state.m4.fieldEngagements[${index}].attackerCasualties`,
