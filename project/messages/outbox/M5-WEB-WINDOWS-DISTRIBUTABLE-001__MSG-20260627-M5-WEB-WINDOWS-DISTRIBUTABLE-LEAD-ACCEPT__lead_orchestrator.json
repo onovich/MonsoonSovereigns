@@ -1,0 +1,73 @@
+{
+  "message_id": "MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-ACCEPT",
+  "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M5-WEB-WINDOWS-DISTRIBUTABLE-001 after release_engineer R2 REVIEW, independent security_reviewer ACCEPT, independent qa_reviewer ACCEPT, and lead validation gates. The branch adds a narrow MONSOON_SMOKE_WEB packaged-web evidence entry while preserving normal desktop shell and host-hash priority, plus a packaged M5 smoke script. The accepted boundary is local/smoke-only distributable evidence: M5 packaged launch, command preview/confirm, client-session save/load checkpoint, Electron security canaries, and host hash determinism. Import/export button count 0 remains an explicit caveat because no desktop file import/export IPC exists in this slice; future file import/export requires a separate reviewed bridge.",
+  "artifacts": [
+    "apps/desktop/src/main/main.ts",
+    "apps/desktop/scripts/package-smoke.mjs",
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/m5-web-windows-distributable / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "reviewed_handoffs": {
+    "release_r2_review": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+    "security_accept": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+    "qa_accept": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-QA-REVIEW__qa_reviewer.json"
+  },
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID qa_reviewer ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID security_reviewer ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+      "exit_code": 0,
+      "result": "VALID task file before lead acceptance update."
+    },
+    {
+      "command": "lead gates rerun before security/QA route",
+      "exit_code": 0,
+      "result": "pnpm build:web, pnpm desktop:security-check, pnpm desktop:package, node apps/desktop/scripts/package-smoke.mjs, pnpm test:e2e, Electron host hash canary, desktop format/lint/typecheck, and git diff --check passed."
+    },
+    {
+      "command": "independent security_reviewer and qa_reviewer reruns",
+      "exit_code": 0,
+      "result": "Both reviewers recorded material gates passing and accepted the current package-smoke/import-export caveat."
+    }
+  ],
+  "decisions": [
+    "Accept task for PR/CI/main integration; do not mark CLOSED until PR CI passes, branch enters main, and local main is synchronized.",
+    "Accept MONSOON_SMOKE_WEB as a local evidence switch only. It does not change normal desktop shell behavior and does not override MONSOON_HOST_HASH_CANARY.",
+    "Accept import/export button count 0 as explicit caveat at current product boundary: desktop exposes no file import/export IPC, and package-smoke proves client-session save/load checkpoint without renderer filesystem access.",
+    "Preserve local/smoke-only scope. This task does not make a release, signing, store, telemetry, accounts, public launch, branding, or commercial decision.",
+    "Future desktop file import/export must be separately designed and reviewed with allowlisted dialogs, path constraints, schema validation, malformed-input tests, and security evidence."
+  ],
+  "risks": [
+    {
+      "risk": "Current ACCEPT covers client-session save/load checkpoint only, not future desktop file import/export UX or file-system adapter behavior."
+    },
+    {
+      "risk": "A future product decision to launch M5 web UI by default in desktop requires a separate task; current normal mode remains security shell."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit lead acceptance, push branch, open PR, wait for CI, merge into main, then close M5-WEB-WINDOWS-DISTRIBUTABLE-001 and continue to the next READY task.",
+  "created_at": "2026-06-27T02:20:48+08:00"
+}
