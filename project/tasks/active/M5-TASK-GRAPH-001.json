@@ -1,0 +1,106 @@
+{
+  "id": "M5-TASK-GRAPH-001",
+  "summary": "Create minimal M5 playable vertical slice task graph",
+  "milestone": "M5",
+  "status": "IN_PROGRESS",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M4-EXIT-VALIDATION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M5-TASK-GRAPH-001.json",
+      "project/tasks/active/M5-*.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Create a minimal, dependency-ordered M5 task DAG under project/tasks/active with explicit owner_role, reviewer_role, risk_level, dependencies, allowed_paths, forbidden_paths, acceptance_criteria, required_tests, route_to, and notes for every M5 task.",
+    "The M5 DAG covers Roadmap and acceptance-matrix M5 goals without implementing them: a repeatable 2-4 hour playable vertical slice, multi-year AI run without rescue, Web/Windows distributable evidence, player research, performance gate, and the manual battle decision.",
+    "The M5 DAG explicitly preserves Human Gates for M5 formal passage, manual node battle decision, frozen product/platform/core architecture changes, paid services, accounts/secrets, server/multiplayer, telemetry, arbitrary-code mods, release/commercial decisions, branding, major cultural-risk decisions, and irreversible migrations.",
+    "Tasks are small enough for independent writer/reviewer routing, with no overlapping writer ownership for the same package or file region.",
+    "No product code, package code, content-source data, roadmap edits, accepted ADR changes, M5 implementation work, production dependency changes, release work, telemetry, networking, or mod support is performed by this planning task.",
+    "systems_architect writer and independent qa_reviewer reviewer produce validated handoffs before lead acceptance."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-TASK-GRAPH-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON validation for all new M5 task files and DAG acyclicity/dependency existence/status shape",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <qa-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m5-task-graph",
+  "threads": {
+    "systems_architect": {
+      "thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
+      "status": "started",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Keystone the 8th",
+      "responsibility": "primary M5 task graph writer",
+      "branch_or_worktree": "chore/m5-task-graph",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "updated_at": "2026-06-26T11:41:00Z",
+      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-START-CONFIRMED.json",
+      "start_submission_id": "019f03bb-a878-7412-888e-63ca1ffa4cfc"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
+      "status": "standby",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Auditor the 8th",
+      "responsibility": "independent read-only M5 task graph acceptance reviewer",
+      "branch_or_worktree": "chore/m5-task-graph",
+      "start_state": "AWAITING_REVIEW_READY",
+      "spawn_result": "spawn_agent",
+      "updated_at": "2026-06-26T11:41:00Z",
+      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-QA-STANDBY-CONFIRMED.json",
+      "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba"
+    }
+  },
+  "route_to": "systems_architect",
+  "notes": [
+    "M5 starts only after M4 Gate PASS_WITH_LIMITS entered origin/main and M4-EXIT-VALIDATION-001 is CLOSED.",
+    "This task creates or restores the M5 task graph only; it must not implement playable-slice, AI, distribution, player-research, performance, manual battle, release, telemetry, server, mod, or content-production behavior.",
+    "M5 formal passage remains a Human Gate and must not be marked passed automatically.",
+    "Manual node battle remains a Human Gate and must be represented as a decision task or blocked gate rather than silently added to implementation.",
+    "M4 Gate process limit remains accepted but must not be summarized as systems_architect acceptance."
+  ],
+  "created_at": "2026-06-26T11:40:00.000Z",
+  "updated_at": "2026-06-26T11:41:00Z"
+}
