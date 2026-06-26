@@ -1,0 +1,109 @@
+{
+  "message_id": "MSG-20260626-M4-CLIENT-CAMPAIGN-UI-QA-REVIEW",
+  "task_id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA reviewed the dirty working-tree implementation on feat/m4-client-campaign-planning-ui. The actual diff stays within allowed paths, avoids forbidden paths and scope drift, keeps M4 client state as disposable read-model projection data, submits protocol-typed GameCommand DTOs through the UI callback boundary, and exposes campaign planning, supply/route risks, siege/withdrawal state, AI reasons, and war report/postwar handoff information with Playwright coverage.",
+  "artifacts": [
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json",
+    "project/messages/outbox/M4-CLIENT-CAMPAIGN-PLANNING-UI-001__MSG-20260626-M4-CLIENT-CAMPAIGN-UI-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+  "commit": null,
+  "base_commit": "48858e8426e9d6e91f5aa20a38cd05c53fe56cba",
+  "head_commit": "5cb96ba4f533f4a98a40f69fb33cc8fe36baba47",
+  "reviewed_state": "HEAD plus uncommitted writer implementation and writer REVIEW handoff in the working tree.",
+  "findings": [],
+  "acceptance_evidence": [
+    "Path check found 14 changed/untracked paths and all are inside task allowed_paths; none match forbidden_paths.",
+    "Static boundary scan found no changed client/ui code importing sim-core, storing WorldState, adding Redux/store authority, owning Pixi DisplayObjects, using nodeIntegration, telemetry, Math.random, Date.now, any, or as unknown as.",
+    "packages/client-core/src/index.ts imports M4 command and AI trace types from @monsoon/protocol and builds CreateCampaignObjective, StartCampaignMarch, ApplyM4SiegeChoice, ResolveM4CampaignWithdrawal, and CancelCampaignObjective GameCommandV1 DTOs with expected day/revision.",
+    "packages/ui/src/index.tsx keeps M4 commands behind onM4CommandSubmit and renders reason chips for campaign forecast, supply/route, muster, march/siege/withdrawal, AI decision candidates, war report, and postwar candidate methods.",
+    "apps/web/src/shell/web-client-shell.tsx records submitted command DTO kind/actor as presentation status only; it does not mutate authoritative simulation state.",
+    "tests/e2e/web-shell.spec.ts covers M4 planning, command submission buttons, route/supply risk reasons, siege choice, withdrawal, AI reason display, and war report/postwar handoff rendering.",
+    "War report UI displays losses, supply loss, resolved day, postwar handoff candidate/methods, and protocol-provided reason codes without duplicating sim-core outcome formulas."
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch feat/m4-client-campaign-planning-ui with expected dirty writer files and untracked writer REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json",
+      "exit_code": 0,
+      "result": "Task id/status/route matched M4-CLIENT-CAMPAIGN-PLANNING-UI-001, REVIEW, qa_reviewer; allowed_paths 12, forbidden_paths 22."
+    },
+    {
+      "command": "node -e changed/untracked allowed/forbidden path check",
+      "exit_code": 0,
+      "result": "14 paths checked; forbidden=[], outside=[]."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 test file passed; 3 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web production build passed; existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "5 Playwright chromium tests passed, including M4 campaign planning flow."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic sim-runner hashes matched; 33 Vitest files and 237 tests passed; web Vitest passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT because the implementation satisfies the task acceptance criteria with no blocking correctness, architecture-boundary, path, dependency, or test-evidence issues found.",
+    "Accepted the current fixture-backed web shell pattern as consistent with the existing M3 client UI boundary: this task builds client read-model projection and protocol DTO submission controls, not a new live simulation Worker integration layer.",
+    "Accepted client-side M4 readiness/reason aggregation as display-only projection over protocol-visible fields, not authoritative simulation or duplicated outcome/supply/siege formulas."
+  ],
+  "risks": [
+    "The web shell still uses bootstrapped fixture/read-model snapshots and an onM4CommandSubmit status callback rather than a live Worker submit/CommandResult path. This is consistent with the current client shell pattern but should be replaced by live SimulationPort wiring in a future integration task.",
+    "M4 protocol result row interfaces are mirrored narrowly in client-core because protocol currently exposes query kinds and command DTOs but not all query result DTO types. Structural tests cover the projection fixture, but a future protocol export/contract test would reduce drift risk."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate the accepted M4 client campaign planning UI after verifying the QA handoff and normal integration gates.",
+  "created_at": "2026-06-26T08:23:00Z"
+}

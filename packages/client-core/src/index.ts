@@ -1,7 +1,10 @@
 import {
   GAME_COMMAND_SCHEMA_VERSION,
   HELLO_SIMULATION_PROTOCOL_VERSION,
+  type ApplyM4SiegeChoiceCommandV1,
   type BulkAppointOfficesCommandV1,
+  type CancelCampaignObjectiveCommandV1,
+  type CreateCampaignObjectiveCommandV1,
   type GameCommandV1,
   type HelloSimulationResultDto,
   type ListM2EconomySummariesResultV1,
@@ -10,8 +13,16 @@ import {
   type ListM3SuccessionCrisesResultV1,
   type M2TransportRouteKindV1,
   type M3PostwarGovernanceMethodV1,
+  type M4CampaignAiDecisionTraceV1,
+  type M4CampaignObjectiveKindV1,
+  type M4CampaignOwnerV1,
+  type M4CampaignTargetV1,
+  type M4SiegeChoiceV1,
+  type M4WithdrawalTriggerV1,
   type PreviewM2TransportRouteResultV1,
-  type PreviewM3PostwarGovernanceResultV1
+  type PreviewM3PostwarGovernanceResultV1,
+  type ResolveM4CampaignWithdrawalCommandV1,
+  type StartCampaignMarchCommandV1
 } from "@monsoon/protocol";
 
 export const CLIENT_READ_MODEL_PROTOCOL_VERSION = 1;
@@ -26,6 +37,11 @@ export type ClientCharacterId = Brand<number, "ClientCharacterId">;
 export type ClientOfficeId = Brand<number, "ClientOfficeId">;
 export type ClientPolicyId = Brand<number, "ClientPolicyId">;
 export type ClientPolityId = Brand<number, "ClientPolityId">;
+export type ClientCampaignPlanId = Brand<number, "ClientCampaignPlanId">;
+export type ClientCampaignMarchId = Brand<number, "ClientCampaignMarchId">;
+export type ClientSiegeId = Brand<number, "ClientSiegeId">;
+export type ClientWithdrawalId = Brand<number, "ClientWithdrawalId">;
+export type ClientWarOutcomeId = Brand<number, "ClientWarOutcomeId">;
 
 export type ClientReadModelStatus = "booting" | "ready";
 
@@ -38,6 +54,7 @@ export interface ClientReadModelSnapshot {
   readonly panels: ClientPanelReadModelSnapshot;
   readonly districtList: ClientDistrictListReadModelSnapshot;
   readonly m3Appointment: ClientM3AppointmentReadModelSnapshot;
+  readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
 }
 
 export interface HelloSimulationSummaryReadModel {
@@ -396,12 +413,556 @@ export interface ClientM3BulkAppointmentCatalogRow {
   readonly reasonCodes: readonly string[];
 }
 
+export interface ClientM4CampaignReadModelSnapshot {
+  readonly revision: ClientReadModelRevision;
+  readonly day: number;
+  readonly commandActor: ClientM3CommandActorReadModel;
+  readonly provenance: ClientM4CampaignProvenanceReadModel;
+  readonly selectedCampaignPlanId: ClientCampaignPlanId | null;
+  readonly commandDefaults: ClientM4CampaignCommandDefaultsReadModel;
+  readonly planningDraft: ClientM4CampaignPlanningDraftReadModel;
+  readonly plans: readonly ClientM4CampaignPlanReadModel[];
+  readonly muster: ClientM4MusterReadModel;
+  readonly grain: ClientM4GrainSupplyReadModel;
+  readonly route: ClientM4RouteForecastReadModel;
+  readonly marches: readonly ClientM4MarchReadModel[];
+  readonly sieges: readonly ClientM4SiegeReadModel[];
+  readonly withdrawals: readonly ClientM4WithdrawalReadModel[];
+  readonly aiReason: ClientM4AiReasonReadModel;
+  readonly warReports: readonly ClientM4WarReportReadModel[];
+  readonly reasonSummaries: readonly ClientM4ReasonSummaryReadModel[];
+}
+
+export interface ClientM4CampaignProvenanceReadModel {
+  readonly kind: "protocol-query-projection";
+  readonly note: string;
+}
+
+export interface ClientM4CampaignCommandDefaultsReadModel {
+  readonly nextCampaignPlanId: ClientCampaignPlanId;
+  readonly nextMarchId: ClientCampaignMarchId;
+  readonly nextWithdrawalId: ClientWithdrawalId;
+  readonly originDistrictId: ClientDistrictId;
+  readonly grainPerTroopPerDay: number;
+  readonly withdrawalTrigger: M4WithdrawalTriggerV1;
+}
+
+export interface ClientM4CampaignPlanningDraftReadModel {
+  readonly owner: M4CampaignOwnerV1;
+  readonly ownerLabel: string;
+  readonly target: M4CampaignTargetV1;
+  readonly targetLabel: string;
+  readonly objectiveKind: M4CampaignObjectiveKindV1;
+  readonly startWindow: ClientM4StartWindowReadModel;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4StartWindowReadModel {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}
+
+export interface ClientM4CampaignPlanReadModel {
+  readonly campaignPlanId: ClientCampaignPlanId;
+  readonly owner: M4CampaignOwnerV1;
+  readonly ownerLabel: string;
+  readonly target: M4CampaignTargetV1;
+  readonly targetLabel: string;
+  readonly objectiveKind: M4CampaignObjectiveKindV1;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly forecast: ClientM4CampaignForecastReadModel;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4CampaignForecastReadModel {
+  readonly status: "ready" | "blocked" | "cancelled" | "completed";
+  readonly earliestStartDay: number;
+  readonly latestStartDay: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4MusterReadModel {
+  readonly readiness: "ready" | "partial" | "blocked" | "empty";
+  readonly promisedTroops: number;
+  readonly assembledTroops: number;
+  readonly delayedTroops: number;
+  readonly refusedTroops: number;
+  readonly releasedTroops: number;
+  readonly commitments: readonly ClientM4MusterCommitmentReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4MusterCommitmentReadModel {
+  readonly commitmentId: number;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly promisedTroops: number;
+  readonly assembledTroops: number;
+  readonly delayedTroops: number;
+  readonly refusedTroops: number;
+  readonly dueDay: number;
+  readonly plannedAssemblyDay: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4GrainSupplyReadModel {
+  readonly plannedTroops: number;
+  readonly plannedMarchDays: number;
+  readonly plannedStartDay: number;
+  readonly grainRequired: number;
+  readonly grainReserved: number;
+  readonly grainAvailableToReserve: number;
+  readonly expectedDaysOfSupply: number;
+  readonly reservations: readonly ClientM4GrainReservationReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4GrainReservationReadModel {
+  readonly reservationId: number;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly reservedAmount: number;
+  readonly carriedAmount: number;
+  readonly consumedAmount: number;
+  readonly shortageAmount: number;
+  readonly lossAmount: number;
+  readonly lossReasonCode: string | null;
+  readonly expectedDaysOfSupply: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4RouteForecastReadModel {
+  readonly targetDistrictId: ClientDistrictId;
+  readonly plannedTroops: number;
+  readonly carriedSupplyAvailable: number;
+  readonly carriedSupplyLimit: number;
+  readonly bottleneckCapacity: number;
+  readonly sourceForecasts: readonly ClientM4RouteSourceForecastReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4RouteSourceForecastReadModel {
+  readonly reservationId: number;
+  readonly originDistrictId: ClientDistrictId;
+  readonly destinationDistrictId: ClientDistrictId;
+  readonly status: "capacity-exceeded" | "reachable" | "unreachable";
+  readonly carriedSupplyAmount: number;
+  readonly carriedSupplyLimit: number;
+  readonly bottleneckCapacity: number;
+  readonly travelDays: number;
+  readonly earliestArrivalDay: number;
+  readonly latestArrivalDay: number;
+  readonly overloadedReasonCode: string | null;
+  readonly seasonRiskReasonCodes: readonly string[];
+}
+
+export interface ClientM4MarchReadModel {
+  readonly marchId: ClientCampaignMarchId;
+  readonly campaignPlanId: ClientCampaignPlanId;
+  readonly originDistrictId: ClientDistrictId;
+  readonly targetDistrictId: ClientDistrictId;
+  readonly currentDistrictId: ClientDistrictId;
+  readonly activeTroops: number;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly supply: ClientM4MarchSupplyReadModel;
+  readonly predictedArrivalWindow: ClientM4ArrivalWindowReadModel;
+  readonly actualArrivalDay: number | null;
+  readonly joinedTroops: number;
+  readonly failedCommitmentIds: readonly number[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4MarchSupplyReadModel {
+  readonly status: string;
+  readonly carriedGrain: number;
+  readonly consumedGrain: number;
+  readonly shortageGrain: number;
+  readonly delayedDays: number;
+}
+
+export interface ClientM4ArrivalWindowReadModel {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}
+
+export interface ClientM4SiegeReadModel {
+  readonly siegeId: ClientSiegeId;
+  readonly campaignPlanId: ClientCampaignPlanId;
+  readonly marchId: ClientCampaignMarchId;
+  readonly targetDistrictId: ClientDistrictId;
+  readonly attackerPolityId: ClientPolityId;
+  readonly defenderPolityId: ClientPolityId;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly fortification: number;
+  readonly defenderEstimatedTroops: number;
+  readonly defenderSupply: number;
+  readonly siegeProgress: number;
+  readonly daysInvested: number;
+  readonly attackerTroops: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly surrenderEligible: boolean;
+  readonly surrenderReasonCodes: readonly string[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4WithdrawalReadModel {
+  readonly withdrawalId: ClientWithdrawalId;
+  readonly campaignPlanId: ClientCampaignPlanId;
+  readonly marchId: ClientCampaignMarchId | null;
+  readonly siegeId: ClientSiegeId | null;
+  readonly kind: string;
+  readonly triggerReason: M4WithdrawalTriggerV1;
+  readonly troopsBefore: number;
+  readonly troopsExtracted: number;
+  readonly casualties: number;
+  readonly supplyLoss: number;
+  readonly reasonCodes: readonly string[];
+  readonly resolvedDay: number;
+}
+
+export interface ClientM4AiReasonReadModel {
+  readonly decisionKind: string;
+  readonly selectedCampaignPlanId: ClientCampaignPlanId | null;
+  readonly commandKind: GameCommandV1["kind"] | null;
+  readonly primaryReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly candidates: readonly ClientM4AiCandidateReadModel[];
+}
+
+export interface ClientM4AiCandidateReadModel {
+  readonly candidateId: string;
+  readonly decisionKind: string;
+  readonly campaignPlanId: ClientCampaignPlanId | null;
+  readonly commandKind: GameCommandV1["kind"] | null;
+  readonly score: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4WarReportReadModel {
+  readonly outcomeId: ClientWarOutcomeId;
+  readonly campaignPlanId: ClientCampaignPlanId;
+  readonly victorPolityId: ClientPolityId;
+  readonly localPolityId: ClientPolityId;
+  readonly targetDistrictId: ClientDistrictId;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly withdrawalId: ClientWithdrawalId | null;
+  readonly siegeId: ClientSiegeId | null;
+  readonly postwarCandidate: ClientM4PostwarCandidateReadModel | null;
+  readonly reasonCodes: readonly string[];
+  readonly resolvedDay: number;
+}
+
+export interface ClientM4PostwarCandidateReadModel {
+  readonly candidateId: string;
+  readonly sourceWarOutcomeId: ClientWarOutcomeId;
+  readonly settlementId: string;
+  readonly victorPolityId: ClientPolityId;
+  readonly localPolityId: ClientPolityId;
+  readonly districtId: ClientDistrictId;
+  readonly validM3Methods: readonly M3PostwarGovernanceMethodV1[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4ReasonSummaryReadModel {
+  readonly reasonCode: string;
+  readonly count: number;
+  readonly sourceKinds: readonly ClientM4ReasonSourceKind[];
+}
+
+export type ClientM4ReasonSourceKind =
+  | "ai"
+  | "campaign"
+  | "grain"
+  | "march"
+  | "muster"
+  | "route"
+  | "siege"
+  | "war-report"
+  | "withdrawal";
+
+export interface ClientM4CampaignProjectionInput {
+  readonly campaignPlans: ClientM4CampaignPlansProtocolResult;
+  readonly muster: ClientM4MusterProtocolResult;
+  readonly grain: ClientM4GrainSupplyProtocolResult;
+  readonly route: ClientM4RouteForecastProtocolResult;
+  readonly march: ClientM4MarchProtocolResult;
+  readonly siege: ClientM4SiegeProtocolResult;
+  readonly withdrawal: ClientM4WithdrawalProtocolResult;
+  readonly warOutcomes: ClientM4WarOutcomesProtocolResult;
+  readonly aiTrace: M4CampaignAiDecisionTraceV1;
+  readonly catalog: ClientM4CampaignCatalogInput;
+}
+
+export interface ClientM4CampaignCatalogInput {
+  readonly commandActor: ClientM3CommandActorReadModel;
+  readonly commandDefaults: {
+    readonly nextCampaignPlanId: number;
+    readonly nextMarchId: number;
+    readonly nextWithdrawalId: number;
+    readonly originDistrictId: number;
+    readonly grainPerTroopPerDay: number;
+    readonly withdrawalTrigger: M4WithdrawalTriggerV1;
+  };
+  readonly planningDraft: {
+    readonly owner: M4CampaignOwnerV1;
+    readonly target: M4CampaignTargetV1;
+    readonly objectiveKind: M4CampaignObjectiveKindV1;
+    readonly startWindow: ClientM4StartWindowReadModel;
+    readonly reasonCodes: readonly string[];
+  };
+  readonly polityLabels: readonly { readonly polityId: number; readonly displayName: string }[];
+  readonly districtLabels: readonly { readonly districtId: number; readonly displayName: string }[];
+  readonly characterLabels: readonly {
+    readonly characterId: number;
+    readonly displayName: string;
+  }[];
+}
+
+export interface ClientM4CampaignPlansProtocolResult {
+  readonly kind: "sim.list-m4-campaign-plans";
+  readonly day: number;
+  readonly revision: number;
+  readonly plans: readonly ClientM4CampaignPlanProtocolRow[];
+}
+
+export interface ClientM4CampaignPlanProtocolRow {
+  readonly campaignPlanId: number;
+  readonly owner: M4CampaignOwnerV1;
+  readonly target: M4CampaignTargetV1;
+  readonly objectiveKind: M4CampaignObjectiveKindV1;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly forecast: ClientM4CampaignForecastReadModel;
+}
+
+export interface ClientM4MusterProtocolResult {
+  readonly kind: "sim.list-m4-muster-commitments";
+  readonly day: number;
+  readonly revision: number;
+  readonly campaignPlanId: number;
+  readonly commitments: readonly ClientM4MusterProtocolRow[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4MusterProtocolRow {
+  readonly commitmentId: number;
+  readonly campaignPlanId: number;
+  readonly promisedTroops: number;
+  readonly dueDay: number;
+  readonly plannedAssemblyDay: number;
+  readonly assembledTroops: number;
+  readonly delayedTroops: number;
+  readonly refusedTroops: number;
+  readonly releasedTroops: number;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4GrainSupplyProtocolResult {
+  readonly kind: "sim.preview-m4-grain-supply";
+  readonly day: number;
+  readonly revision: number;
+  readonly campaignPlanId: number;
+  readonly plannedTroops: number;
+  readonly plannedMarchDays: number;
+  readonly plannedStartDay: number;
+  readonly grainRequired: number;
+  readonly grainReserved: number;
+  readonly grainAvailableToReserve: number;
+  readonly expectedDaysOfSupply: number;
+  readonly reservations: readonly ClientM4GrainReservationProtocolRow[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4GrainReservationProtocolRow {
+  readonly reservationId: number;
+  readonly campaignPlanId: number;
+  readonly reservedAmount: number;
+  readonly carriedAmount: number;
+  readonly consumedAmount: number;
+  readonly shortageAmount: number;
+  readonly lossAmount: number;
+  readonly lossReasonCode: string | null;
+  readonly expectedDaysOfSupply: number;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4RouteForecastProtocolResult {
+  readonly kind: "sim.preview-m4-route-transport-capacity";
+  readonly day: number;
+  readonly revision: number;
+  readonly campaignPlanId: number;
+  readonly targetDistrictId: number;
+  readonly plannedTroops: number;
+  readonly carriedSupplyAvailable: number;
+  readonly carriedSupplyLimit: number;
+  readonly bottleneckCapacity: number;
+  readonly sourceForecasts: readonly ClientM4RouteSourceForecastProtocolRow[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4RouteSourceForecastProtocolRow {
+  readonly reservationId: number;
+  readonly originDistrictId: number;
+  readonly destinationDistrictId: number;
+  readonly status: "capacity-exceeded" | "reachable" | "unreachable";
+  readonly carriedSupplyAmount: number;
+  readonly carriedSupplyLimit: number;
+  readonly bottleneckCapacity: number;
+  readonly travelWindow: {
+    readonly earliestArrivalDay: number;
+    readonly latestArrivalDay: number;
+    readonly travelDays: number;
+  };
+  readonly overloadedReasonCode: string | null;
+  readonly seasonRiskReasonCodes: readonly string[];
+}
+
+export interface ClientM4MarchProtocolResult {
+  readonly kind: "sim.list-m4-march-state";
+  readonly day: number;
+  readonly revision: number;
+  readonly campaignPlanId: number;
+  readonly marches: readonly ClientM4MarchProtocolRow[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4MarchProtocolRow {
+  readonly marchId: number;
+  readonly campaignPlanId: number;
+  readonly originDistrictId: number;
+  readonly targetDistrictId: number;
+  readonly currentDistrictId: number;
+  readonly activeTroops: number;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly supply: ClientM4MarchSupplyReadModel;
+  readonly predictedArrivalWindow: ClientM4ArrivalWindowReadModel;
+  readonly actualArrivalDay: number | null;
+  readonly joinedCommitmentTroops: readonly {
+    readonly commitmentId: number;
+    readonly joinedTroops: number;
+  }[];
+  readonly failedCommitmentIds: readonly number[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4SiegeProtocolResult {
+  readonly kind: "sim.list-m4-siege-state";
+  readonly day: number;
+  readonly revision: number;
+  readonly campaignPlanId: number;
+  readonly sieges: readonly ClientM4SiegeProtocolRow[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4SiegeProtocolRow {
+  readonly siegeId: number;
+  readonly campaignPlanId: number;
+  readonly marchId: number;
+  readonly targetDistrictId: number;
+  readonly attackerPolityId: number;
+  readonly defenderPolityId: number;
+  readonly status: string;
+  readonly statusReasonCode: string;
+  readonly fortification: number;
+  readonly defenderEstimatedTroops: number;
+  readonly defenderSupply: number;
+  readonly siegeProgress: number;
+  readonly daysInvested: number;
+  readonly attackerTroops: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly surrenderEligible: boolean;
+  readonly surrenderReasonCodes: readonly string[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4WithdrawalProtocolResult {
+  readonly kind: "sim.list-m4-withdrawal-state";
+  readonly day: number;
+  readonly revision: number;
+  readonly campaignPlanId: number;
+  readonly withdrawals: readonly ClientM4WithdrawalProtocolRow[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4WithdrawalProtocolRow {
+  readonly withdrawalId: number;
+  readonly campaignPlanId: number;
+  readonly marchId: number | null;
+  readonly siegeId: number | null;
+  readonly kind: string;
+  readonly triggerReason: M4WithdrawalTriggerV1;
+  readonly troopsBefore: number;
+  readonly troopsExtracted: number;
+  readonly casualties: number;
+  readonly supplyLoss: number;
+  readonly reasonCodes: readonly string[];
+  readonly resolvedDay: number;
+}
+
+export interface ClientM4WarOutcomesProtocolResult {
+  readonly kind: "sim.list-m4-war-outcomes";
+  readonly day: number;
+  readonly revision: number;
+  readonly campaignPlanId: number;
+  readonly outcomes: readonly ClientM4WarOutcomeProtocolRow[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM4WarOutcomeProtocolRow {
+  readonly outcomeId: number;
+  readonly campaignPlanId: number;
+  readonly victorPolityId: number;
+  readonly localPolityId: number;
+  readonly targetDistrictId: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly withdrawalId: number | null;
+  readonly siegeId: number | null;
+  readonly postwarCandidate: ClientM4PostwarCandidateProtocolRow | null;
+  readonly reasonCodes: readonly string[];
+  readonly resolvedDay: number;
+}
+
+export interface ClientM4PostwarCandidateProtocolRow {
+  readonly candidateId: string;
+  readonly sourceWarOutcomeId: number;
+  readonly settlementId: string;
+  readonly victorPolityId: number;
+  readonly localPolityId: number;
+  readonly districtId: number;
+  readonly validM3Methods: readonly M3PostwarGovernanceMethodV1[];
+  readonly reasonCodes: readonly string[];
+}
+
 export interface ClientM3CommandContextInput {
   readonly snapshot: ClientM3AppointmentReadModelSnapshot;
   readonly commandId: string;
 }
 
 export type ClientM3SubmittedCommand = GameCommandV1;
+export type ClientM4SubmittedCommand = GameCommandV1;
+export type ClientM4SiegeChoice = M4SiegeChoiceV1;
+
+export interface ClientM4CommandContextInput {
+  readonly snapshot: ClientM4CampaignReadModelSnapshot;
+  readonly commandId: string;
+}
 
 export type ClientDistrictSortKey =
   | "cash"
@@ -503,7 +1064,8 @@ export function createInitialClientReadModelSnapshot(): ClientReadModelSnapshot 
       ]
     },
     districtList: createEmptyDistrictListReadModel(revision),
-    m3Appointment: createEmptyM3AppointmentReadModel(revision)
+    m3Appointment: createEmptyM3AppointmentReadModel(revision),
+    m4Campaign: createEmptyM4CampaignReadModel(revision)
   };
 }
 
@@ -577,7 +1139,8 @@ export function createM2PrototypeClientReadModelSnapshot(
       ]
     },
     districtList: fixture.districtList,
-    m3Appointment: createM3AppointmentReadModelFixture(baseSnapshot.revision)
+    m3Appointment: createM3AppointmentReadModelFixture(baseSnapshot.revision),
+    m4Campaign: createM4CampaignReadModelFixture(baseSnapshot.revision)
   };
 }
 
@@ -698,7 +1261,8 @@ export function applyClientReadModelDelta(
       return {
         ...projectHelloSimulationResult(delta.result),
         districtList: snapshot.districtList,
-        m3Appointment: snapshot.m3Appointment
+        m3Appointment: snapshot.m3Appointment,
+        m4Campaign: snapshot.m4Campaign
       };
     case "replace":
       return delta.snapshot;
@@ -775,7 +1339,8 @@ export function projectHelloSimulationResult(
       ]
     },
     districtList: createEmptyDistrictListReadModel(revision),
-    m3Appointment: createEmptyM3AppointmentReadModel(revision)
+    m3Appointment: createEmptyM3AppointmentReadModel(revision),
+    m4Campaign: createEmptyM4CampaignReadModel(revision)
   };
 }
 
@@ -1118,6 +1683,516 @@ export function createM3BulkAppointmentCommand(
   };
 }
 
+export function createM4CampaignReadModelFixture(
+  revision = createClientReadModelRevision(1)
+): ClientM4CampaignReadModelSnapshot {
+  return projectM4CampaignReadModelFromProtocolReadModels(
+    createM4CampaignProtocolProjectionFixture(Number(revision))
+  );
+}
+
+export function createM4CampaignProtocolProjectionFixture(
+  revision: number
+): ClientM4CampaignProjectionInput {
+  const day = 150;
+  const campaignPlanId = 10;
+  const marchId = 701;
+  const siegeId = 801;
+  const withdrawalId = 901;
+  const outcomeId = 1001;
+  return {
+    campaignPlans: {
+      kind: "sim.list-m4-campaign-plans",
+      day,
+      revision,
+      plans: [
+        {
+          campaignPlanId,
+          owner: { kind: "polity", polityId: 1 },
+          target: { kind: "district", districtId: 3 },
+          objectiveKind: "besiege",
+          status: "active",
+          statusReasonCode: "campaign.objective.march-started",
+          reasonCodes: ["campaign.reason.dry-season-range", "campaign.reason.target-fortified"],
+          forecast: {
+            status: "ready",
+            earliestStartDay: 150,
+            latestStartDay: 178,
+            reasonCodes: ["campaign.forecast.start-range-open"]
+          }
+        }
+      ]
+    },
+    muster: {
+      kind: "sim.list-m4-muster-commitments",
+      day,
+      revision,
+      campaignPlanId,
+      commitments: [
+        {
+          commitmentId: 101,
+          campaignPlanId,
+          promisedTroops: 80,
+          dueDay: 146,
+          plannedAssemblyDay: 148,
+          assembledTroops: 60,
+          delayedTroops: 20,
+          refusedTroops: 0,
+          releasedTroops: 0,
+          status: "partial",
+          statusReasonCode: "muster.response.partial-assembly",
+          reasonCodes: ["muster.reason.obligation-request", "muster.response.partial-assembly"]
+        },
+        {
+          commitmentId: 102,
+          campaignPlanId,
+          promisedTroops: 40,
+          dueDay: 149,
+          plannedAssemblyDay: 149,
+          assembledTroops: 40,
+          delayedTroops: 0,
+          refusedTroops: 0,
+          releasedTroops: 0,
+          status: "assembled",
+          statusReasonCode: "muster.response.assembled",
+          reasonCodes: ["muster.reason.local-garrison", "muster.response.assembled"]
+        }
+      ],
+      reasonCodes: ["muster.query.filtered-by-campaign"]
+    },
+    grain: {
+      kind: "sim.preview-m4-grain-supply",
+      day,
+      revision,
+      campaignPlanId,
+      plannedTroops: 100,
+      plannedMarchDays: 16,
+      plannedStartDay: 150,
+      grainRequired: 1_600,
+      grainReserved: 1_120,
+      grainAvailableToReserve: 2_300,
+      expectedDaysOfSupply: 11,
+      reservations: [
+        {
+          reservationId: 501,
+          campaignPlanId,
+          reservedAmount: 1_200,
+          carriedAmount: 1_120,
+          consumedAmount: 220,
+          shortageAmount: 0,
+          lossAmount: 80,
+          lossReasonCode: "grain.loss.river-spoilage",
+          expectedDaysOfSupply: 11,
+          status: "carried",
+          statusReasonCode: "grain.reserve.planned-campaign",
+          reasonCodes: ["grain.reserve.planned-campaign", "grain.loss.river-spoilage"]
+        }
+      ],
+      reasonCodes: ["grain.forecast.short-of-full-window", "grain.forecast.reserve-available"]
+    },
+    route: {
+      kind: "sim.preview-m4-route-transport-capacity",
+      day,
+      revision,
+      campaignPlanId,
+      targetDistrictId: 3,
+      plannedTroops: 100,
+      carriedSupplyAvailable: 1_120,
+      carriedSupplyLimit: 900,
+      bottleneckCapacity: 900,
+      sourceForecasts: [
+        {
+          reservationId: 501,
+          originDistrictId: 1,
+          destinationDistrictId: 3,
+          status: "capacity-exceeded",
+          carriedSupplyAmount: 1_120,
+          carriedSupplyLimit: 900,
+          bottleneckCapacity: 900,
+          travelWindow: {
+            earliestArrivalDay: 162,
+            latestArrivalDay: 190,
+            travelDays: 12
+          },
+          overloadedReasonCode: "route.capacity.carried-supply-over-bottleneck",
+          seasonRiskReasonCodes: ["route.season.monsoon-risk", "route.season.river-navigation-risk"]
+        }
+      ],
+      reasonCodes: ["route.forecast.carried-supply-over-bottleneck", "route.forecast.seasonal-risk"]
+    },
+    march: {
+      kind: "sim.list-m4-march-state",
+      day,
+      revision,
+      campaignPlanId,
+      marches: [
+        {
+          marchId,
+          campaignPlanId,
+          originDistrictId: 1,
+          targetDistrictId: 3,
+          currentDistrictId: 2,
+          activeTroops: 96,
+          status: "marching",
+          statusReasonCode: "march.status.en-route",
+          supply: {
+            status: "strained",
+            carriedGrain: 900,
+            consumedGrain: 220,
+            shortageGrain: 0,
+            delayedDays: 2
+          },
+          predictedArrivalWindow: {
+            earliestDay: 162,
+            latestDay: 190
+          },
+          actualArrivalDay: null,
+          joinedCommitmentTroops: [
+            { commitmentId: 101, joinedTroops: 60 },
+            { commitmentId: 102, joinedTroops: 40 }
+          ],
+          failedCommitmentIds: [],
+          reasonCodes: ["march.supply.strained", "reinforcement.timing.partial-late"]
+        }
+      ],
+      reasonCodes: ["march.query.filtered-by-campaign"]
+    },
+    siege: {
+      kind: "sim.list-m4-siege-state",
+      day,
+      revision,
+      campaignPlanId,
+      sieges: [
+        {
+          siegeId,
+          campaignPlanId,
+          marchId,
+          targetDistrictId: 3,
+          attackerPolityId: 1,
+          defenderPolityId: 2,
+          status: "active",
+          statusReasonCode: "siege.status.invested",
+          fortification: 420,
+          defenderEstimatedTroops: 58,
+          defenderSupply: 260,
+          siegeProgress: 65,
+          daysInvested: 9,
+          attackerTroops: 92,
+          attackerCasualties: 4,
+          defenderCasualties: 11,
+          supplyLoss: 90,
+          surrenderEligible: false,
+          surrenderReasonCodes: ["siege.surrender.not-yet"],
+          reasonCodes: ["siege.choice.invest-blockade", "siege.progress.blockade"]
+        }
+      ],
+      reasonCodes: ["siege.query.filtered-by-campaign"]
+    },
+    withdrawal: {
+      kind: "sim.list-m4-withdrawal-state",
+      day,
+      revision,
+      campaignPlanId,
+      withdrawals: [
+        {
+          withdrawalId,
+          campaignPlanId,
+          marchId,
+          siegeId,
+          kind: "forced-retreat",
+          triggerReason: "supply",
+          troopsBefore: 92,
+          troopsExtracted: 78,
+          casualties: 14,
+          supplyLoss: 260,
+          reasonCodes: ["withdrawal.reason.supply-collapse", "withdrawal.cost.failed-baggage"],
+          resolvedDay: 194
+        }
+      ],
+      reasonCodes: ["withdrawal.query.filtered-by-campaign"]
+    },
+    warOutcomes: {
+      kind: "sim.list-m4-war-outcomes",
+      day,
+      revision,
+      campaignPlanId,
+      outcomes: [
+        {
+          outcomeId,
+          campaignPlanId,
+          victorPolityId: 1,
+          localPolityId: 2,
+          targetDistrictId: 3,
+          attackerCasualties: 18,
+          defenderCasualties: 31,
+          supplyLoss: 350,
+          withdrawalId,
+          siegeId,
+          postwarCandidate: {
+            candidateId: "m4.campaign.10.outcome.1",
+            sourceWarOutcomeId: outcomeId,
+            settlementId: "m4.campaign.10.settlement",
+            victorPolityId: 1,
+            localPolityId: 2,
+            districtId: 3,
+            validM3Methods: ["direct-control", "restore-vassal-ruler"],
+            reasonCodes: ["postwar.candidate.from-war-outcome", "postwar.methods.m3-compatible"]
+          },
+          reasonCodes: [
+            "war-outcome.siege-pressure",
+            "war-outcome.withdrawal-supply",
+            "postwar.candidate.ready"
+          ],
+          resolvedDay: 196
+        }
+      ],
+      reasonCodes: ["war-outcome.query.filtered-by-campaign"]
+    },
+    aiTrace: {
+      schemaVersion: 1,
+      actor: { kind: "ai", id: "polity:2" },
+      observerPolityId: 2,
+      day,
+      revision,
+      decisionKind: "withdraw",
+      selectedCampaignPlanId: campaignPlanId,
+      selectedCandidateId: "ai.withdraw.supply",
+      commandKind: "sim.resolve-m4-campaign-withdrawal",
+      commandId: "ai.m4.withdraw.1",
+      primaryReasonCode: "m4.ai.withdraw.supply-collapse",
+      reasonCodes: ["m4.ai.withdraw.supply-collapse", "m4.ai.wait.monsoon-risk"],
+      candidates: [
+        {
+          candidateId: "ai.withdraw.supply",
+          decisionKind: "withdraw",
+          campaignPlanId,
+          commandKind: "sim.resolve-m4-campaign-withdrawal",
+          score: 92,
+          reasonCodes: ["m4.ai.withdraw.supply-collapse"]
+        },
+        {
+          candidateId: "ai.continue.siege",
+          decisionKind: "continue",
+          campaignPlanId,
+          commandKind: "sim.apply-m4-siege-choice",
+          score: 61,
+          reasonCodes: ["m4.ai.continue.siege-pressure", "route.forecast.seasonal-risk"]
+        }
+      ]
+    },
+    catalog: createM4CampaignCatalogFixture()
+  };
+}
+
+export function projectM4CampaignReadModelFromProtocolReadModels(
+  input: ClientM4CampaignProjectionInput
+): ClientM4CampaignReadModelSnapshot {
+  const revision = createClientReadModelRevision(input.campaignPlans.revision);
+  const plans = input.campaignPlans.plans.map((plan) => ({
+    campaignPlanId: createClientCampaignPlanId(plan.campaignPlanId),
+    owner: plan.owner,
+    ownerLabel: formatM4OwnerLabel(plan.owner, input.catalog),
+    target: plan.target,
+    targetLabel: formatM4TargetLabel(plan.target, input.catalog),
+    objectiveKind: plan.objectiveKind,
+    status: plan.status,
+    statusReasonCode: plan.statusReasonCode,
+    forecast: plan.forecast,
+    reasonCodes: plan.reasonCodes
+  }));
+  const selectedCampaignPlanId = plans[0]?.campaignPlanId ?? null;
+  const muster = projectM4Muster(input.muster);
+  const grain = projectM4Grain(input.grain);
+  const route = projectM4Route(input.route);
+  const marches = input.march.marches.map(projectM4March);
+  const sieges = input.siege.sieges.map(projectM4Siege);
+  const withdrawals = input.withdrawal.withdrawals.map(projectM4Withdrawal);
+  const aiReason = projectM4AiReason(input.aiTrace);
+  const warReports = input.warOutcomes.outcomes.map(projectM4WarReport);
+
+  return {
+    revision,
+    day: input.campaignPlans.day,
+    commandActor: input.catalog.commandActor,
+    provenance: {
+      kind: "protocol-query-projection",
+      note: "M4 campaign workspace projected from protocol command/query read models; supply, route, siege, withdrawal, AI, and postwar reason codes are provided by simulation boundaries, not recalculated in UI."
+    },
+    selectedCampaignPlanId,
+    commandDefaults: {
+      nextCampaignPlanId: createClientCampaignPlanId(
+        input.catalog.commandDefaults.nextCampaignPlanId
+      ),
+      nextMarchId: createClientCampaignMarchId(input.catalog.commandDefaults.nextMarchId),
+      nextWithdrawalId: createClientWithdrawalId(input.catalog.commandDefaults.nextWithdrawalId),
+      originDistrictId: createClientDistrictId(input.catalog.commandDefaults.originDistrictId),
+      grainPerTroopPerDay: input.catalog.commandDefaults.grainPerTroopPerDay,
+      withdrawalTrigger: input.catalog.commandDefaults.withdrawalTrigger
+    },
+    planningDraft: {
+      owner: input.catalog.planningDraft.owner,
+      ownerLabel: formatM4OwnerLabel(input.catalog.planningDraft.owner, input.catalog),
+      target: input.catalog.planningDraft.target,
+      targetLabel: formatM4TargetLabel(input.catalog.planningDraft.target, input.catalog),
+      objectiveKind: input.catalog.planningDraft.objectiveKind,
+      startWindow: input.catalog.planningDraft.startWindow,
+      reasonCodes: input.catalog.planningDraft.reasonCodes
+    },
+    plans,
+    muster,
+    grain,
+    route,
+    marches,
+    sieges,
+    withdrawals,
+    aiReason,
+    warReports,
+    reasonSummaries: summarizeM4ReasonCodes({
+      plans,
+      muster,
+      grain,
+      route,
+      marches,
+      sieges,
+      withdrawals,
+      aiReason,
+      warReports
+    })
+  };
+}
+
+export function createM4CampaignPlanCommand(
+  input: ClientM4CommandContextInput
+): CreateCampaignObjectiveCommandV1 {
+  return {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.create-campaign-objective",
+    commandId: input.commandId,
+    actor: input.snapshot.commandActor,
+    expectedDay: input.snapshot.day,
+    expectedRevision: Number(input.snapshot.revision),
+    payload: {
+      campaignPlanId: Number(input.snapshot.commandDefaults.nextCampaignPlanId),
+      owner: input.snapshot.planningDraft.owner,
+      target: input.snapshot.planningDraft.target,
+      objectiveKind: input.snapshot.planningDraft.objectiveKind,
+      startWindow: input.snapshot.planningDraft.startWindow,
+      reasonCodes: input.snapshot.planningDraft.reasonCodes
+    }
+  };
+}
+
+export function createM4CancelCampaignCommand(
+  input: ClientM4CommandContextInput & { readonly campaignPlanId: ClientCampaignPlanId }
+): CancelCampaignObjectiveCommandV1 {
+  return {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.cancel-campaign-objective",
+    commandId: input.commandId,
+    actor: input.snapshot.commandActor,
+    expectedDay: input.snapshot.day,
+    expectedRevision: Number(input.snapshot.revision),
+    payload: {
+      campaignPlanId: Number(input.campaignPlanId),
+      reasonCode: "client.m4.cancel-before-rainy-season"
+    }
+  };
+}
+
+export function createM4StartMarchCommand(
+  input: ClientM4CommandContextInput & { readonly campaignPlanId: ClientCampaignPlanId }
+): StartCampaignMarchCommandV1 {
+  const plan = findM4CampaignPlan(input.snapshot.plans, input.campaignPlanId);
+  return {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.start-campaign-march",
+    commandId: input.commandId,
+    actor: input.snapshot.commandActor,
+    expectedDay: input.snapshot.day,
+    expectedRevision: Number(input.snapshot.revision),
+    payload: {
+      marchId: Number(input.snapshot.commandDefaults.nextMarchId),
+      campaignPlanId: Number(input.campaignPlanId),
+      originDistrictId: Number(input.snapshot.commandDefaults.originDistrictId),
+      plannedDepartureDay: plan?.forecast.earliestStartDay ?? input.snapshot.day,
+      grainPerTroopPerDay: input.snapshot.commandDefaults.grainPerTroopPerDay,
+      reasonCodes: ["client.m4.start-march.from-planner"]
+    }
+  };
+}
+
+export function createM4SiegeChoiceCommand(
+  input: ClientM4CommandContextInput & {
+    readonly siegeId: ClientSiegeId;
+    readonly choice: M4SiegeChoiceV1;
+  }
+): ApplyM4SiegeChoiceCommandV1 {
+  const siege = findM4Siege(input.snapshot.sieges, input.siegeId);
+  if (siege === null) {
+    throw new Error(`Missing M4 siege ${Number(input.siegeId)} for choice command.`);
+  }
+  return {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.apply-m4-siege-choice",
+    commandId: input.commandId,
+    actor: input.snapshot.commandActor,
+    expectedDay: input.snapshot.day,
+    expectedRevision: Number(input.snapshot.revision),
+    payload: {
+      siegeId: Number(siege.siegeId),
+      campaignPlanId: Number(siege.campaignPlanId),
+      marchId: Number(siege.marchId),
+      choice: input.choice,
+      defenderPolityId: Number(siege.defenderPolityId),
+      fortification: siege.fortification,
+      defenderEstimatedTroops: siege.defenderEstimatedTroops,
+      defenderSupply: siege.defenderSupply,
+      reasonCodes: [`client.m4.siege-choice.${input.choice}`]
+    }
+  };
+}
+
+export function createM4WithdrawalCommand(
+  input: ClientM4CommandContextInput & { readonly campaignPlanId: ClientCampaignPlanId }
+): ResolveM4CampaignWithdrawalCommandV1 {
+  const march = input.snapshot.marches.find(
+    (candidate) => candidate.campaignPlanId === input.campaignPlanId
+  );
+  const siege = input.snapshot.sieges.find(
+    (candidate) => candidate.campaignPlanId === input.campaignPlanId
+  );
+  return {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.resolve-m4-campaign-withdrawal",
+    commandId: input.commandId,
+    actor: input.snapshot.commandActor,
+    expectedDay: input.snapshot.day,
+    expectedRevision: Number(input.snapshot.revision),
+    payload: {
+      withdrawalId: Number(input.snapshot.commandDefaults.nextWithdrawalId),
+      campaignPlanId: Number(input.campaignPlanId),
+      marchId: march === undefined ? null : Number(march.marchId),
+      siegeId: siege === undefined ? null : Number(siege.siegeId),
+      triggerReason: input.snapshot.commandDefaults.withdrawalTrigger,
+      reasonCodes: ["client.m4.withdraw.from-planner"]
+    }
+  };
+}
+
+export function findM4CampaignPlan(
+  plans: readonly ClientM4CampaignPlanReadModel[],
+  campaignPlanId: ClientCampaignPlanId
+): ClientM4CampaignPlanReadModel | null {
+  return plans.find((plan) => plan.campaignPlanId === campaignPlanId) ?? null;
+}
+
+export function findM4Siege(
+  sieges: readonly ClientM4SiegeReadModel[],
+  siegeId: ClientSiegeId
+): ClientM4SiegeReadModel | null {
+  return sieges.find((siege) => siege.siegeId === siegeId) ?? null;
+}
+
 export function findM3Office(
   offices: readonly ClientM3OfficeReadModel[],
   officeId: ClientOfficeId
@@ -1134,6 +2209,478 @@ export function findM3Character(
   }
 
   return characters.find((character) => character.characterId === characterId) ?? null;
+}
+
+function createEmptyM4CampaignReadModel(
+  revision: ClientReadModelRevision
+): ClientM4CampaignReadModelSnapshot {
+  const emptyPlanId = createClientCampaignPlanId(1);
+  return {
+    revision,
+    day: 0,
+    commandActor: { kind: "player", id: "polity:1" },
+    provenance: {
+      kind: "protocol-query-projection",
+      note: "No M4 campaign read-model slice has been projected yet."
+    },
+    selectedCampaignPlanId: null,
+    commandDefaults: {
+      nextCampaignPlanId: emptyPlanId,
+      nextMarchId: createClientCampaignMarchId(1),
+      nextWithdrawalId: createClientWithdrawalId(1),
+      originDistrictId: createClientDistrictId(1),
+      grainPerTroopPerDay: 1,
+      withdrawalTrigger: "ordered"
+    },
+    planningDraft: {
+      owner: { kind: "polity", polityId: 1 },
+      ownerLabel: "Polity 1",
+      target: { kind: "district", districtId: 1 },
+      targetLabel: "District 1",
+      objectiveKind: "prepare",
+      startWindow: { earliestDay: 0, latestDay: 0 },
+      reasonCodes: []
+    },
+    plans: [],
+    muster: {
+      readiness: "empty",
+      promisedTroops: 0,
+      assembledTroops: 0,
+      delayedTroops: 0,
+      refusedTroops: 0,
+      releasedTroops: 0,
+      commitments: [],
+      reasonCodes: []
+    },
+    grain: {
+      plannedTroops: 0,
+      plannedMarchDays: 0,
+      plannedStartDay: 0,
+      grainRequired: 0,
+      grainReserved: 0,
+      grainAvailableToReserve: 0,
+      expectedDaysOfSupply: 0,
+      reservations: [],
+      reasonCodes: []
+    },
+    route: {
+      targetDistrictId: createClientDistrictId(1),
+      plannedTroops: 0,
+      carriedSupplyAvailable: 0,
+      carriedSupplyLimit: 0,
+      bottleneckCapacity: 0,
+      sourceForecasts: [],
+      reasonCodes: []
+    },
+    marches: [],
+    sieges: [],
+    withdrawals: [],
+    aiReason: {
+      decisionKind: "no-action",
+      selectedCampaignPlanId: null,
+      commandKind: null,
+      primaryReasonCode: "m4.ai.no-trace",
+      reasonCodes: ["m4.ai.no-trace"],
+      candidates: []
+    },
+    warReports: [],
+    reasonSummaries: []
+  };
+}
+
+function projectM4Muster(input: ClientM4MusterProtocolResult): ClientM4MusterReadModel {
+  const commitments = input.commitments.map((commitment) => ({
+    commitmentId: commitment.commitmentId,
+    status: commitment.status,
+    statusReasonCode: commitment.statusReasonCode,
+    promisedTroops: commitment.promisedTroops,
+    assembledTroops: commitment.assembledTroops,
+    delayedTroops: commitment.delayedTroops,
+    refusedTroops: commitment.refusedTroops,
+    releasedTroops: commitment.releasedTroops,
+    dueDay: commitment.dueDay,
+    plannedAssemblyDay: commitment.plannedAssemblyDay,
+    reasonCodes: commitment.reasonCodes
+  }));
+  const promisedTroops = commitments.reduce(
+    (sum, commitment) => sum + commitment.promisedTroops,
+    0
+  );
+  const assembledTroops = commitments.reduce(
+    (sum, commitment) => sum + commitment.assembledTroops,
+    0
+  );
+  const delayedTroops = commitments.reduce((sum, commitment) => sum + commitment.delayedTroops, 0);
+  const refusedTroops = commitments.reduce((sum, commitment) => sum + commitment.refusedTroops, 0);
+  const releasedTroops = commitments.reduce(
+    (sum, commitment) => sum + commitment.releasedTroops,
+    0
+  );
+
+  return {
+    readiness: determineM4MusterReadiness({
+      promisedTroops,
+      assembledTroops,
+      delayedTroops,
+      refusedTroops
+    }),
+    promisedTroops,
+    assembledTroops,
+    delayedTroops,
+    refusedTroops,
+    releasedTroops,
+    commitments,
+    reasonCodes: input.reasonCodes
+  };
+}
+
+function determineM4MusterReadiness(input: {
+  readonly promisedTroops: number;
+  readonly assembledTroops: number;
+  readonly delayedTroops: number;
+  readonly refusedTroops: number;
+}): ClientM4MusterReadModel["readiness"] {
+  if (input.promisedTroops === 0) {
+    return "empty";
+  }
+  if (input.refusedTroops > 0) {
+    return "blocked";
+  }
+  if (input.delayedTroops > 0 || input.assembledTroops < input.promisedTroops) {
+    return "partial";
+  }
+  return "ready";
+}
+
+function projectM4Grain(input: ClientM4GrainSupplyProtocolResult): ClientM4GrainSupplyReadModel {
+  return {
+    plannedTroops: input.plannedTroops,
+    plannedMarchDays: input.plannedMarchDays,
+    plannedStartDay: input.plannedStartDay,
+    grainRequired: input.grainRequired,
+    grainReserved: input.grainReserved,
+    grainAvailableToReserve: input.grainAvailableToReserve,
+    expectedDaysOfSupply: input.expectedDaysOfSupply,
+    reservations: input.reservations.map((reservation) => ({
+      reservationId: reservation.reservationId,
+      status: reservation.status,
+      statusReasonCode: reservation.statusReasonCode,
+      reservedAmount: reservation.reservedAmount,
+      carriedAmount: reservation.carriedAmount,
+      consumedAmount: reservation.consumedAmount,
+      shortageAmount: reservation.shortageAmount,
+      lossAmount: reservation.lossAmount,
+      lossReasonCode: reservation.lossReasonCode,
+      expectedDaysOfSupply: reservation.expectedDaysOfSupply,
+      reasonCodes: reservation.reasonCodes
+    })),
+    reasonCodes: input.reasonCodes
+  };
+}
+
+function projectM4Route(
+  input: ClientM4RouteForecastProtocolResult
+): ClientM4RouteForecastReadModel {
+  return {
+    targetDistrictId: createClientDistrictId(input.targetDistrictId),
+    plannedTroops: input.plannedTroops,
+    carriedSupplyAvailable: input.carriedSupplyAvailable,
+    carriedSupplyLimit: input.carriedSupplyLimit,
+    bottleneckCapacity: input.bottleneckCapacity,
+    sourceForecasts: input.sourceForecasts.map((forecast) => ({
+      reservationId: forecast.reservationId,
+      originDistrictId: createClientDistrictId(forecast.originDistrictId),
+      destinationDistrictId: createClientDistrictId(forecast.destinationDistrictId),
+      status: forecast.status,
+      carriedSupplyAmount: forecast.carriedSupplyAmount,
+      carriedSupplyLimit: forecast.carriedSupplyLimit,
+      bottleneckCapacity: forecast.bottleneckCapacity,
+      travelDays: forecast.travelWindow.travelDays,
+      earliestArrivalDay: forecast.travelWindow.earliestArrivalDay,
+      latestArrivalDay: forecast.travelWindow.latestArrivalDay,
+      overloadedReasonCode: forecast.overloadedReasonCode,
+      seasonRiskReasonCodes: forecast.seasonRiskReasonCodes
+    })),
+    reasonCodes: input.reasonCodes
+  };
+}
+
+function projectM4March(march: ClientM4MarchProtocolRow): ClientM4MarchReadModel {
+  return {
+    marchId: createClientCampaignMarchId(march.marchId),
+    campaignPlanId: createClientCampaignPlanId(march.campaignPlanId),
+    originDistrictId: createClientDistrictId(march.originDistrictId),
+    targetDistrictId: createClientDistrictId(march.targetDistrictId),
+    currentDistrictId: createClientDistrictId(march.currentDistrictId),
+    activeTroops: march.activeTroops,
+    status: march.status,
+    statusReasonCode: march.statusReasonCode,
+    supply: march.supply,
+    predictedArrivalWindow: march.predictedArrivalWindow,
+    actualArrivalDay: march.actualArrivalDay,
+    joinedTroops: march.joinedCommitmentTroops.reduce(
+      (sum, joined) => sum + joined.joinedTroops,
+      0
+    ),
+    failedCommitmentIds: march.failedCommitmentIds,
+    reasonCodes: march.reasonCodes
+  };
+}
+
+function projectM4Siege(siege: ClientM4SiegeProtocolRow): ClientM4SiegeReadModel {
+  return {
+    siegeId: createClientSiegeId(siege.siegeId),
+    campaignPlanId: createClientCampaignPlanId(siege.campaignPlanId),
+    marchId: createClientCampaignMarchId(siege.marchId),
+    targetDistrictId: createClientDistrictId(siege.targetDistrictId),
+    attackerPolityId: createClientPolityId(siege.attackerPolityId),
+    defenderPolityId: createClientPolityId(siege.defenderPolityId),
+    status: siege.status,
+    statusReasonCode: siege.statusReasonCode,
+    fortification: siege.fortification,
+    defenderEstimatedTroops: siege.defenderEstimatedTroops,
+    defenderSupply: siege.defenderSupply,
+    siegeProgress: siege.siegeProgress,
+    daysInvested: siege.daysInvested,
+    attackerTroops: siege.attackerTroops,
+    attackerCasualties: siege.attackerCasualties,
+    defenderCasualties: siege.defenderCasualties,
+    supplyLoss: siege.supplyLoss,
+    surrenderEligible: siege.surrenderEligible,
+    surrenderReasonCodes: siege.surrenderReasonCodes,
+    reasonCodes: siege.reasonCodes
+  };
+}
+
+function projectM4Withdrawal(
+  withdrawal: ClientM4WithdrawalProtocolRow
+): ClientM4WithdrawalReadModel {
+  return {
+    withdrawalId: createClientWithdrawalId(withdrawal.withdrawalId),
+    campaignPlanId: createClientCampaignPlanId(withdrawal.campaignPlanId),
+    marchId: withdrawal.marchId === null ? null : createClientCampaignMarchId(withdrawal.marchId),
+    siegeId: withdrawal.siegeId === null ? null : createClientSiegeId(withdrawal.siegeId),
+    kind: withdrawal.kind,
+    triggerReason: withdrawal.triggerReason,
+    troopsBefore: withdrawal.troopsBefore,
+    troopsExtracted: withdrawal.troopsExtracted,
+    casualties: withdrawal.casualties,
+    supplyLoss: withdrawal.supplyLoss,
+    reasonCodes: withdrawal.reasonCodes,
+    resolvedDay: withdrawal.resolvedDay
+  };
+}
+
+function projectM4AiReason(trace: M4CampaignAiDecisionTraceV1): ClientM4AiReasonReadModel {
+  return {
+    decisionKind: trace.decisionKind,
+    selectedCampaignPlanId:
+      trace.selectedCampaignPlanId === null
+        ? null
+        : createClientCampaignPlanId(trace.selectedCampaignPlanId),
+    commandKind: trace.commandKind,
+    primaryReasonCode: trace.primaryReasonCode,
+    reasonCodes: trace.reasonCodes,
+    candidates: trace.candidates.map((candidate) => ({
+      candidateId: candidate.candidateId,
+      decisionKind: candidate.decisionKind,
+      campaignPlanId:
+        candidate.campaignPlanId === null
+          ? null
+          : createClientCampaignPlanId(candidate.campaignPlanId),
+      commandKind: candidate.commandKind,
+      score: candidate.score,
+      reasonCodes: candidate.reasonCodes
+    }))
+  };
+}
+
+function projectM4WarReport(outcome: ClientM4WarOutcomeProtocolRow): ClientM4WarReportReadModel {
+  return {
+    outcomeId: createClientWarOutcomeId(outcome.outcomeId),
+    campaignPlanId: createClientCampaignPlanId(outcome.campaignPlanId),
+    victorPolityId: createClientPolityId(outcome.victorPolityId),
+    localPolityId: createClientPolityId(outcome.localPolityId),
+    targetDistrictId: createClientDistrictId(outcome.targetDistrictId),
+    attackerCasualties: outcome.attackerCasualties,
+    defenderCasualties: outcome.defenderCasualties,
+    supplyLoss: outcome.supplyLoss,
+    withdrawalId:
+      outcome.withdrawalId === null ? null : createClientWithdrawalId(outcome.withdrawalId),
+    siegeId: outcome.siegeId === null ? null : createClientSiegeId(outcome.siegeId),
+    postwarCandidate:
+      outcome.postwarCandidate === null
+        ? null
+        : {
+            candidateId: outcome.postwarCandidate.candidateId,
+            sourceWarOutcomeId: createClientWarOutcomeId(
+              outcome.postwarCandidate.sourceWarOutcomeId
+            ),
+            settlementId: outcome.postwarCandidate.settlementId,
+            victorPolityId: createClientPolityId(outcome.postwarCandidate.victorPolityId),
+            localPolityId: createClientPolityId(outcome.postwarCandidate.localPolityId),
+            districtId: createClientDistrictId(outcome.postwarCandidate.districtId),
+            validM3Methods: outcome.postwarCandidate.validM3Methods,
+            reasonCodes: outcome.postwarCandidate.reasonCodes
+          },
+    reasonCodes: outcome.reasonCodes,
+    resolvedDay: outcome.resolvedDay
+  };
+}
+
+interface M4ReasonSummarySourceInput {
+  readonly plans: readonly ClientM4CampaignPlanReadModel[];
+  readonly muster: ClientM4MusterReadModel;
+  readonly grain: ClientM4GrainSupplyReadModel;
+  readonly route: ClientM4RouteForecastReadModel;
+  readonly marches: readonly ClientM4MarchReadModel[];
+  readonly sieges: readonly ClientM4SiegeReadModel[];
+  readonly withdrawals: readonly ClientM4WithdrawalReadModel[];
+  readonly aiReason: ClientM4AiReasonReadModel;
+  readonly warReports: readonly ClientM4WarReportReadModel[];
+}
+
+function summarizeM4ReasonCodes(
+  input: M4ReasonSummarySourceInput
+): readonly ClientM4ReasonSummaryReadModel[] {
+  const accumulator = new Map<
+    string,
+    { count: number; sourceKinds: Set<ClientM4ReasonSourceKind> }
+  >();
+  const add = (reasonCodes: readonly string[], sourceKind: ClientM4ReasonSourceKind): void => {
+    for (const reasonCode of reasonCodes) {
+      const existing = accumulator.get(reasonCode);
+      if (existing === undefined) {
+        accumulator.set(reasonCode, { count: 1, sourceKinds: new Set([sourceKind]) });
+      } else {
+        existing.count += 1;
+        existing.sourceKinds.add(sourceKind);
+      }
+    }
+  };
+
+  for (const plan of input.plans) {
+    add(plan.reasonCodes, "campaign");
+    add(plan.forecast.reasonCodes, "campaign");
+    add([plan.statusReasonCode], "campaign");
+  }
+  add(input.muster.reasonCodes, "muster");
+  for (const commitment of input.muster.commitments) {
+    add(commitment.reasonCodes, "muster");
+    add([commitment.statusReasonCode], "muster");
+  }
+  add(input.grain.reasonCodes, "grain");
+  for (const reservation of input.grain.reservations) {
+    add(reservation.reasonCodes, "grain");
+    add([reservation.statusReasonCode], "grain");
+    if (reservation.lossReasonCode !== null) {
+      add([reservation.lossReasonCode], "grain");
+    }
+  }
+  add(input.route.reasonCodes, "route");
+  for (const forecast of input.route.sourceForecasts) {
+    add(forecast.seasonRiskReasonCodes, "route");
+    if (forecast.overloadedReasonCode !== null) {
+      add([forecast.overloadedReasonCode], "route");
+    }
+  }
+  for (const march of input.marches) {
+    add(march.reasonCodes, "march");
+    add([march.statusReasonCode, `march.supply.${march.supply.status}`], "march");
+  }
+  for (const siege of input.sieges) {
+    add(siege.reasonCodes, "siege");
+    add(siege.surrenderReasonCodes, "siege");
+    add([siege.statusReasonCode], "siege");
+  }
+  for (const withdrawal of input.withdrawals) {
+    add(withdrawal.reasonCodes, "withdrawal");
+    add([`withdrawal.trigger.${withdrawal.triggerReason}`], "withdrawal");
+  }
+  add(input.aiReason.reasonCodes, "ai");
+  add([input.aiReason.primaryReasonCode], "ai");
+  for (const candidate of input.aiReason.candidates) {
+    add(candidate.reasonCodes, "ai");
+  }
+  for (const report of input.warReports) {
+    add(report.reasonCodes, "war-report");
+    if (report.postwarCandidate !== null) {
+      add(report.postwarCandidate.reasonCodes, "war-report");
+    }
+  }
+
+  return [...accumulator.entries()]
+    .map(([reasonCode, summary]) => ({
+      reasonCode,
+      count: summary.count,
+      sourceKinds: [...summary.sourceKinds].sort()
+    }))
+    .sort(
+      (left, right) => right.count - left.count || left.reasonCode.localeCompare(right.reasonCode)
+    );
+}
+
+function createM4CampaignCatalogFixture(): ClientM4CampaignCatalogInput {
+  return {
+    commandActor: { kind: "player", id: "polity:1" },
+    commandDefaults: {
+      nextCampaignPlanId: 11,
+      nextMarchId: 702,
+      nextWithdrawalId: 902,
+      originDistrictId: 1,
+      grainPerTroopPerDay: 1,
+      withdrawalTrigger: "ordered"
+    },
+    planningDraft: {
+      owner: { kind: "polity", polityId: 1 },
+      target: { kind: "district", districtId: 3 },
+      objectiveKind: "besiege",
+      startWindow: { earliestDay: 150, latestDay: 178 },
+      reasonCodes: ["client.m4.plan.before-rainy-season", "campaign.reason.dry-season-range"]
+    },
+    polityLabels: [
+      { polityId: 1, displayName: "Validation Court" },
+      { polityId: 2, displayName: "Validation Local Ruler" }
+    ],
+    districtLabels: [
+      { districtId: 1, displayName: "Prototype District 001" },
+      { districtId: 2, displayName: "Prototype District 002" },
+      { districtId: 3, displayName: "Prototype District 003" }
+    ],
+    characterLabels: [{ characterId: 1, displayName: "Validation Commander" }]
+  };
+}
+
+function formatM4OwnerLabel(
+  owner: M4CampaignOwnerV1,
+  catalog: ClientM4CampaignCatalogInput
+): string {
+  if (owner.kind === "polity") {
+    return (
+      catalog.polityLabels.find((polity) => polity.polityId === owner.polityId)?.displayName ??
+      `Polity ${owner.polityId}`
+    );
+  }
+  return (
+    catalog.characterLabels.find((character) => character.characterId === owner.characterId)
+      ?.displayName ?? `Character ${owner.characterId}`
+  );
+}
+
+function formatM4TargetLabel(
+  target: M4CampaignTargetV1,
+  catalog: ClientM4CampaignCatalogInput
+): string {
+  if (target.kind === "district") {
+    return (
+      catalog.districtLabels.find((district) => district.districtId === target.districtId)
+        ?.displayName ?? `District ${target.districtId}`
+    );
+  }
+  return (
+    catalog.polityLabels.find((polity) => polity.polityId === target.polityId)?.displayName ??
+    `Polity ${target.polityId}`
+  );
 }
 
 function createEmptyM3AppointmentReadModel(
@@ -1656,6 +3203,46 @@ export function createClientPolityId(value: number): ClientPolityId {
   }
 
   return value as ClientPolityId;
+}
+
+export function createClientCampaignPlanId(value: number): ClientCampaignPlanId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client campaign plan id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientCampaignPlanId;
+}
+
+export function createClientCampaignMarchId(value: number): ClientCampaignMarchId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client campaign march id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientCampaignMarchId;
+}
+
+export function createClientSiegeId(value: number): ClientSiegeId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client siege id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientSiegeId;
+}
+
+export function createClientWithdrawalId(value: number): ClientWithdrawalId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client withdrawal id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientWithdrawalId;
+}
+
+export function createClientWarOutcomeId(value: number): ClientWarOutcomeId {
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Client war outcome id must be a positive integer, received ${value}.`);
+  }
+
+  return value as ClientWarOutcomeId;
 }
 
 export function createClientMapAnchorId(value: string): ClientMapAnchorId {

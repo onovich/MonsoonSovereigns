@@ -11,12 +11,19 @@
     sans-serif;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -143,8 +150,8 @@ input {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
-  border-inline-start: 1px solid #c4ccd1;
   background: #ffffff;
+  box-shadow: inset 1px 0 0 #c4ccd1;
 }
 
 .client-shell__header {
@@ -583,6 +590,171 @@ input {
   overflow-wrap: anywhere;
 }
 
+.m4-campaign {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 0 22px 24px;
+}
+
+.m4-campaign__header {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(360px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+  border-block-start: 1px solid #d8dee2;
+  padding-block-start: 18px;
+}
+
+.m4-campaign__header h2,
+.m4-campaign__panel h3,
+.m4-campaign__detail h3 {
+  margin: 0;
+  color: #172126;
+  line-height: 1.25;
+}
+
+.m4-campaign__header h2 {
+  margin-block-end: 6px;
+  font-size: 1.12rem;
+}
+
+.m4-campaign__header p {
+  margin: 0;
+  color: #53636b;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.m4-campaign__summary,
+.m4-campaign__metrics {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+.m4-campaign__summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.m4-campaign__metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.m4-campaign__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+
+.m4-campaign__summary > *,
+.m4-campaign__grid > *,
+.m4-campaign__metrics > * {
+  min-width: 0;
+}
+
+.m4-campaign__panel {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border-block-start: 1px solid #d8dee2;
+  padding-block-start: 12px;
+}
+
+.m4-campaign__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.m4-campaign__controls label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  color: #516069;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.m4-campaign__controls select {
+  min-width: 0;
+  border: 1px solid #aab4ba;
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 8px 10px;
+  color: #1d2430;
+  text-transform: none;
+}
+
+.m4-campaign__detail,
+.m4-campaign__fact {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid #d8dee2;
+  border-radius: 4px;
+  background: #fbfcfc;
+  padding: 10px;
+}
+
+.m4-campaign__detail dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.m4-campaign__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.m4-campaign__actions button {
+  max-width: 100%;
+  min-height: 34px;
+  border: 1px solid #8fa0a6;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #263238;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: normal;
+}
+
+.m4-campaign__actions button:not(:disabled) {
+  border-color: #5f6f42;
+  background: #f1f5e8;
+  color: #3f5228;
+}
+
+.m4-campaign__command-status {
+  border: 1px solid #b7c18f;
+  border-radius: 4px;
+  background: #f6f8ed;
+  padding: 8px 10px;
+  color: #3f5228;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.m4-campaign__stack,
+.m4-campaign__reason-summary {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.m4-campaign__fact strong,
+.m4-campaign__fact span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 1080px) {
   .client-shell {
     grid-template-columns: 1fr;
@@ -599,11 +771,13 @@ input {
 
   .client-shell__operations {
     border-block-start: 1px solid #c4ccd1;
-    border-inline-start: 0;
+    box-shadow: none;
   }
 
   .m3-appointment__header,
-  .m3-appointment__grid {
+  .m3-appointment__grid,
+  .m4-campaign__header,
+  .m4-campaign__grid {
     grid-template-columns: 1fr;
   }
 }
@@ -650,14 +824,19 @@ input {
     padding-inline-start: 0;
   }
 
-  .m3-appointment {
+  .m3-appointment,
+  .m4-campaign {
     padding: 0 14px 18px;
   }
 
   .m3-appointment__summary,
   .m3-appointment__controls,
   .m3-appointment__detail dl,
-  .m3-appointment__bulk-row {
+  .m3-appointment__bulk-row,
+  .m4-campaign__summary,
+  .m4-campaign__metrics,
+  .m4-campaign__controls,
+  .m4-campaign__detail dl {
     grid-template-columns: 1fr;
   }
 }

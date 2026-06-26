@@ -115,6 +115,52 @@ test("M3 appointment workspace submits appointment and bulk command DTOs", async
   );
 });
 
+test("M4 campaign planning submits commands and renders risks, AI reasons, and war report", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const workspace = page.getByLabel("M4 campaign planning workspace");
+  await expect(workspace).toHaveAttribute("data-plan-count", "1");
+  await expect(workspace).toHaveAttribute("data-muster-readiness", "partial");
+  await expect(workspace).toHaveAttribute("data-war-report-count", "1");
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
+    "route.season.monsoon-risk"
+  );
+  await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText(
+    "withdrawal.reason.supply-collapse"
+  );
+  await expect(page.getByLabel("M4 AI reasons")).toContainText("m4.ai.withdraw.supply-collapse");
+  await expect(page.getByLabel("M4 war report")).toContainText("postwar.candidate.ready");
+  await expect(page.getByLabel("M4 war report")).toContainText("restore-vassal-ruler");
+
+  await page.getByRole("button", { name: "Submit plan" }).click();
+  await expect(page.getByLabel("M4 command status")).toContainText(
+    "sim.create-campaign-objective ready for polity:1"
+  );
+
+  await page.getByRole("button", { name: "Start march" }).click();
+  await expect(page.getByLabel("M4 command status")).toContainText(
+    "sim.start-campaign-march ready for polity:1"
+  );
+
+  await page.getByLabel("Select M4 siege choice").selectOption("assault");
+  await page.getByRole("button", { name: "Submit siege choice" }).click();
+  await expect(page.getByLabel("M4 command status")).toContainText(
+    "sim.apply-m4-siege-choice ready for polity:1"
+  );
+
+  await page.getByRole("button", { name: "Withdraw" }).click();
+  await expect(page.getByLabel("M4 command status")).toContainText(
+    "sim.resolve-m4-campaign-withdrawal ready for polity:1"
+  );
+
+  await page.getByRole("button", { name: "Cancel plan" }).click();
+  await expect(page.getByLabel("M4 command status")).toContainText(
+    "sim.cancel-campaign-objective ready for polity:1"
+  );
+});
+
 test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");

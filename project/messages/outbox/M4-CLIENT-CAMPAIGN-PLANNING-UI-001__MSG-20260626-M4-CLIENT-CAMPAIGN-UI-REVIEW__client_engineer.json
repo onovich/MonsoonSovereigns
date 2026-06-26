@@ -1,0 +1,116 @@
+{
+  "message_id": "MSG-20260626-M4-CLIENT-CAMPAIGN-UI-REVIEW",
+  "task_id": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M4 campaign planning UI read-model projection, command DTO submission controls, supply/route risk review, siege/withdrawal choices, AI reason display, and war report rendering without storing WorldState or modifying sim-core.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json"
+  ],
+  "branch_or_worktree": "feat/m4-client-campaign-planning-ui",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree contained only allowed task changes under apps/web, packages/client-core, packages/ui, tests, and project task/handoff paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 file passed; 11 tests passed, including M4 campaign read-model projection and command DTO builders."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 file passed; 5 tests passed, including M4 campaign planning, supply/route risk, AI reason, and war report server render coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core typecheck",
+      "exit_code": 0,
+      "result": "TypeScript strict package check passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui typecheck",
+      "exit_code": 0,
+      "result": "TypeScript strict package check passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 file passed; 3 tests passed with bootstrapped M4 read-model assertions."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production web build passed; Vite reported existing chunk-size warnings for large bundles."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic sim runner matched; 33 Vitest files passed with 237 tests; web Vitest passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 1,
+      "result": "Initial run had 4/5 passing; 1440px viewport overflow assertion failed by 1px after M4 layout addition."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "5 Playwright tests passed after CSS layout fix, including M4 campaign planning command flow, supply/route forecast, siege/withdrawal command flow, AI reasons, and war report rendering."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M4-CLIENT-CAMPAIGN-PLANNING-UI-001.json",
+      "exit_code": 0,
+      "result": "Parsed task JSON; id matched; status REVIEW; route_to qa_reviewer; allowed_paths 12; forbidden_paths 22."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "Initial post-handoff check stopped at Prettier formatting warnings in packages/client-core/src/index.ts, packages/ui/src/index.tsx, and tests/client-core-m2-district-list.test.ts."
+    },
+    {
+      "command": "pnpm exec prettier --write packages/client-core/src/index.ts packages/ui/src/index.tsx tests/client-core-m2-district-list.test.ts",
+      "exit_code": 0,
+      "result": "Formatted the three changed files reported by pnpm check."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed."
+    }
+  ],
+  "decisions": [
+    "Kept M4 client read-models as disposable UI slices in client-core and did not add Redux or store full WorldState.",
+    "Used protocol command DTO builders for plan, cancel, start march, siege choice, and withdrawal submission instead of mutating UI state as authority.",
+    "Did not change sim-core, protocol command/query schemas, Electron, platform, save-format, or production dependencies.",
+    "Used Playwright coverage rather than Storybook because the repository already has e2e web-shell coverage and no apps/storybook directory."
+  ],
+  "risks": [
+    "Client-core mirrors protocol-visible M4 query result row shapes as thin projection input interfaces because those result interfaces are currently package-internal to sim-core and not exported from protocol.",
+    "The current web shell still uses fixture-backed read-model snapshots; reviewer should verify this remains acceptable for M4 UI coverage and does not imply authoritative state."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Perform independent QA review of M4 client campaign planning UI against the task acceptance criteria, path constraints, command/query boundaries, viewport behavior, and test evidence.",
+  "created_at": "2026-06-26T08:13:30Z"
+}

@@ -2,10 +2,17 @@ import {
   calculateClientVirtualWindow,
   createM3AppointmentCommand,
   createM3BulkAppointmentCommand,
+  createM4CampaignPlanCommand,
+  createM4CancelCampaignCommand,
+  createM4SiegeChoiceCommand,
+  createM4StartMarchCommand,
+  createM4WithdrawalCommand,
   findClientDistrictRow,
   findM3Character,
   findM3Office,
+  findM4CampaignPlan,
   selectClientDistrictRows,
+  type ClientCampaignPlanId,
   type ClientDistrictRowReadModel,
   type ClientDistrictSortDirection,
   type ClientDistrictSortKey,
@@ -18,6 +25,17 @@ import {
   type ClientM3CharacterReadModel,
   type ClientM3OfficeReadModel,
   type ClientM3SubmittedCommand,
+  type ClientM4CampaignPlanReadModel,
+  type ClientM4CampaignReadModelSnapshot,
+  type ClientM4GrainSupplyReadModel,
+  type ClientM4MarchReadModel,
+  type ClientM4MusterReadModel,
+  type ClientM4RouteForecastReadModel,
+  type ClientM4SiegeChoice,
+  type ClientM4SiegeReadModel,
+  type ClientM4SubmittedCommand,
+  type ClientM4WarReportReadModel,
+  type ClientM4WithdrawalReadModel,
   type ClientOfficeId,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
@@ -34,6 +52,8 @@ export interface ClientShellViewProps {
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
   readonly onM3CommandSubmit: (command: ClientM3SubmittedCommand) => void;
   readonly m3CommandStatus: string | null;
+  readonly onM4CommandSubmit: (command: ClientM4SubmittedCommand) => void;
+  readonly m4CommandStatus: string | null;
 }
 
 const DISTRICT_ROW_HEIGHT_PX = 44;
@@ -50,7 +70,9 @@ export function ClientShellView({
   onZoomLevelChange,
   onSelectedEntityChange,
   onM3CommandSubmit,
-  m3CommandStatus
+  m3CommandStatus,
+  onM4CommandSubmit,
+  m4CommandStatus
 }: ClientShellViewProps): ReactElement {
   const selectedDistrictId =
     selectedEntity?.kind === "settlement"
@@ -67,6 +89,11 @@ export function ClientShellView({
   const [selectedM3CandidateKey, setSelectedM3CandidateKey] = useState("");
   const [showRejectedM3Candidates, setShowRejectedM3Candidates] = useState(true);
   const [m3SubmitSequence, setM3SubmitSequence] = useState(0);
+  const [selectedM4CampaignPlanId, setSelectedM4CampaignPlanId] =
+    useState<ClientCampaignPlanId | null>(snapshot.m4Campaign.selectedCampaignPlanId);
+  const [selectedM4SiegeChoice, setSelectedM4SiegeChoice] =
+    useState<ClientM4SiegeChoice>("invest-blockade");
+  const [m4SubmitSequence, setM4SubmitSequence] = useState(0);
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -124,6 +151,13 @@ export function ClientShellView({
     visibleM3CandidateEligibilities.find(
       (eligibility) => Number(eligibility.characterId).toString() === selectedM3CandidateKey
     ) ?? firstEligibleM3Candidate;
+  const selectedM4Campaign =
+    selectedM4CampaignPlanId === null
+      ? (snapshot.m4Campaign.plans[0] ?? null)
+      : (findM4CampaignPlan(snapshot.m4Campaign.plans, selectedM4CampaignPlanId) ??
+        snapshot.m4Campaign.plans[0] ??
+        null);
+  const selectedM4Siege = snapshot.m4Campaign.sieges[0] ?? null;
 
   function handleFilterChange(event: ChangeEvent<HTMLInputElement>): void {
     setFilter(event.currentTarget.value);
@@ -190,6 +224,87 @@ export function ClientShellView({
       createM3BulkAppointmentCommand({
         snapshot: snapshot.m3Appointment,
         commandId: `client.m3.bulk-appointment.${snapshot.m3Appointment.revision}.${nextSequence}`
+      })
+    );
+  }
+
+  function handleM4CampaignChange(event: ChangeEvent<HTMLSelectElement>): void {
+    const campaignPlanId = Number(event.currentTarget.value);
+    const campaign = snapshot.m4Campaign.plans.find(
+      (plan) => Number(plan.campaignPlanId) === campaignPlanId
+    );
+    setSelectedM4CampaignPlanId(campaign?.campaignPlanId ?? null);
+  }
+
+  function handleM4SiegeChoiceChange(event: ChangeEvent<HTMLSelectElement>): void {
+    const nextChoice = parseM4SiegeChoice(event.currentTarget.value);
+    setSelectedM4SiegeChoice(nextChoice);
+  }
+
+  function nextM4CommandId(prefix: string): string {
+    const nextSequence = m4SubmitSequence + 1;
+    setM4SubmitSequence(nextSequence);
+    return `${prefix}.${snapshot.m4Campaign.revision}.${nextSequence}`;
+  }
+
+  function handleSubmitM4Plan(): void {
+    onM4CommandSubmit(
+      createM4CampaignPlanCommand({
+        snapshot: snapshot.m4Campaign,
+        commandId: nextM4CommandId("client.m4.plan")
+      })
+    );
+  }
+
+  function handleSubmitM4StartMarch(): void {
+    if (selectedM4Campaign === null) {
+      return;
+    }
+    onM4CommandSubmit(
+      createM4StartMarchCommand({
+        snapshot: snapshot.m4Campaign,
+        commandId: nextM4CommandId("client.m4.start-march"),
+        campaignPlanId: selectedM4Campaign.campaignPlanId
+      })
+    );
+  }
+
+  function handleSubmitM4Cancel(): void {
+    if (selectedM4Campaign === null) {
+      return;
+    }
+    onM4CommandSubmit(
+      createM4CancelCampaignCommand({
+        snapshot: snapshot.m4Campaign,
+        commandId: nextM4CommandId("client.m4.cancel"),
+        campaignPlanId: selectedM4Campaign.campaignPlanId
+      })
+    );
+  }
+
+  function handleSubmitM4SiegeChoice(): void {
+    if (selectedM4Siege === null) {
+      return;
+    }
+    onM4CommandSubmit(
+      createM4SiegeChoiceCommand({
+        snapshot: snapshot.m4Campaign,
+        commandId: nextM4CommandId("client.m4.siege"),
+        siegeId: selectedM4Siege.siegeId,
+        choice: selectedM4SiegeChoice
+      })
+    );
+  }
+
+  function handleSubmitM4Withdrawal(): void {
+    if (selectedM4Campaign === null) {
+      return;
+    }
+    onM4CommandSubmit(
+      createM4WithdrawalCommand({
+        snapshot: snapshot.m4Campaign,
+        commandId: nextM4CommandId("client.m4.withdraw"),
+        campaignPlanId: selectedM4Campaign.campaignPlanId
       })
     );
   }
@@ -388,6 +503,21 @@ export function ClientShellView({
           onRejectedToggle={handleM3RejectedToggle}
           onSubmitAppointment={handleSubmitM3Appointment}
           onSubmitBulk={handleSubmitM3BulkAppointments}
+        />
+
+        <M4CampaignWorkspace
+          snapshot={snapshot.m4Campaign}
+          selectedCampaign={selectedM4Campaign}
+          selectedSiege={selectedM4Siege}
+          selectedSiegeChoice={selectedM4SiegeChoice}
+          commandStatus={m4CommandStatus}
+          onCampaignChange={handleM4CampaignChange}
+          onSiegeChoiceChange={handleM4SiegeChoiceChange}
+          onSubmitPlan={handleSubmitM4Plan}
+          onSubmitStartMarch={handleSubmitM4StartMarch}
+          onSubmitCancel={handleSubmitM4Cancel}
+          onSubmitSiegeChoice={handleSubmitM4SiegeChoice}
+          onSubmitWithdrawal={handleSubmitM4Withdrawal}
         />
       </section>
     </main>
@@ -757,6 +887,385 @@ function M3AppointmentWorkspace({
   );
 }
 
+interface M4CampaignWorkspaceProps {
+  readonly snapshot: ClientM4CampaignReadModelSnapshot;
+  readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly selectedSiege: ClientM4SiegeReadModel | null;
+  readonly selectedSiegeChoice: ClientM4SiegeChoice;
+  readonly commandStatus: string | null;
+  readonly onCampaignChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onSiegeChoiceChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onSubmitPlan: () => void;
+  readonly onSubmitStartMarch: () => void;
+  readonly onSubmitCancel: () => void;
+  readonly onSubmitSiegeChoice: () => void;
+  readonly onSubmitWithdrawal: () => void;
+}
+
+function M4CampaignWorkspace({
+  snapshot,
+  selectedCampaign,
+  selectedSiege,
+  selectedSiegeChoice,
+  commandStatus,
+  onCampaignChange,
+  onSiegeChoiceChange,
+  onSubmitPlan,
+  onSubmitStartMarch,
+  onSubmitCancel,
+  onSubmitSiegeChoice,
+  onSubmitWithdrawal
+}: M4CampaignWorkspaceProps): ReactElement {
+  return (
+    <section
+      className="m4-campaign"
+      aria-label="M4 campaign planning workspace"
+      data-plan-count={snapshot.plans.length}
+      data-muster-readiness={snapshot.muster.readiness}
+      data-grain-days={snapshot.grain.expectedDaysOfSupply}
+      data-route-risk-count={snapshot.route.reasonCodes.length}
+      data-war-report-count={snapshot.warReports.length}
+    >
+      <div className="m4-campaign__header">
+        <div>
+          <h2>M4 campaign planning</h2>
+          <p>{snapshot.provenance.note}</p>
+        </div>
+        <dl className="m4-campaign__summary">
+          <Metric label="Window" value={formatM4Window(snapshot.planningDraft.startWindow)} />
+          <Metric label="Muster" value={snapshot.muster.readiness} />
+          <Metric label="Supply days" value={snapshot.grain.expectedDaysOfSupply.toString()} />
+          <Metric label="War reports" value={snapshot.warReports.length.toString()} />
+        </dl>
+      </div>
+
+      <div className="m4-campaign__grid">
+        <section className="m4-campaign__panel" aria-label="Campaign command panel">
+          <div className="m4-campaign__controls">
+            <label>
+              <span>Campaign</span>
+              <select
+                aria-label="Select M4 campaign plan"
+                value={
+                  selectedCampaign === null
+                    ? ""
+                    : Number(selectedCampaign.campaignPlanId).toString()
+                }
+                onChange={onCampaignChange}
+              >
+                {snapshot.plans.map((plan) => (
+                  <option key={plan.campaignPlanId} value={Number(plan.campaignPlanId).toString()}>
+                    {plan.targetLabel} / {plan.status}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Siege choice</span>
+              <select
+                aria-label="Select M4 siege choice"
+                value={selectedSiegeChoice}
+                onChange={onSiegeChoiceChange}
+              >
+                {M4_SIEGE_CHOICES.map((choice) => (
+                  <option key={choice} value={choice}>
+                    {choice}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="m4-campaign__detail">
+            <h3>{selectedCampaign?.targetLabel ?? snapshot.planningDraft.targetLabel}</h3>
+            <dl>
+              <Metric
+                label="Owner"
+                value={selectedCampaign?.ownerLabel ?? snapshot.planningDraft.ownerLabel}
+              />
+              <Metric
+                label="Objective"
+                value={selectedCampaign?.objectiveKind ?? snapshot.planningDraft.objectiveKind}
+              />
+              <Metric label="Forecast" value={selectedCampaign?.forecast.status ?? "draft"} />
+              <Metric
+                label="Start range"
+                value={
+                  selectedCampaign === null
+                    ? formatM4Window(snapshot.planningDraft.startWindow)
+                    : formatM4Window({
+                        earliestDay: selectedCampaign.forecast.earliestStartDay,
+                        latestDay: selectedCampaign.forecast.latestStartDay
+                      })
+                }
+              />
+            </dl>
+            <ReasonChips
+              reasonCodes={
+                selectedCampaign === null
+                  ? snapshot.planningDraft.reasonCodes
+                  : [
+                      selectedCampaign.statusReasonCode,
+                      ...selectedCampaign.reasonCodes,
+                      ...selectedCampaign.forecast.reasonCodes
+                    ]
+              }
+            />
+          </div>
+
+          <div className="m4-campaign__actions">
+            <button
+              type="button"
+              onClick={onSubmitPlan}
+              data-command-kind="sim.create-campaign-objective"
+            >
+              Submit plan
+            </button>
+            <button
+              type="button"
+              disabled={selectedCampaign === null}
+              onClick={onSubmitStartMarch}
+              data-command-kind="sim.start-campaign-march"
+            >
+              Start march
+            </button>
+            <button
+              type="button"
+              disabled={selectedCampaign === null}
+              onClick={onSubmitCancel}
+              data-command-kind="sim.cancel-campaign-objective"
+            >
+              Cancel plan
+            </button>
+            <button
+              type="button"
+              disabled={selectedSiege === null}
+              onClick={onSubmitSiegeChoice}
+              data-command-kind="sim.apply-m4-siege-choice"
+            >
+              Submit siege choice
+            </button>
+            <button
+              type="button"
+              disabled={selectedCampaign === null}
+              onClick={onSubmitWithdrawal}
+              data-command-kind="sim.resolve-m4-campaign-withdrawal"
+            >
+              Withdraw
+            </button>
+          </div>
+
+          {commandStatus === null ? null : (
+            <output className="m4-campaign__command-status" aria-label="M4 command status">
+              {commandStatus}
+            </output>
+          )}
+        </section>
+
+        <M4MusterPanel muster={snapshot.muster} />
+        <M4SupplyRoutePanel grain={snapshot.grain} route={snapshot.route} />
+        <M4MarchSiegePanel
+          marches={snapshot.marches}
+          sieges={snapshot.sieges}
+          withdrawals={snapshot.withdrawals}
+        />
+        <M4AiPanel snapshot={snapshot} />
+        <M4WarReportPanel reports={snapshot.warReports} />
+      </div>
+    </section>
+  );
+}
+
+function M4MusterPanel({ muster }: { readonly muster: ClientM4MusterReadModel }): ReactElement {
+  return (
+    <section className="m4-campaign__panel" aria-label="M4 muster readiness">
+      <h3>Muster readiness</h3>
+      <dl className="m4-campaign__metrics">
+        <Metric label="Promised" value={formatInteger(muster.promisedTroops)} />
+        <Metric label="Assembled" value={formatInteger(muster.assembledTroops)} />
+        <Metric label="Delayed" value={formatInteger(muster.delayedTroops)} />
+        <Metric label="Refused" value={formatInteger(muster.refusedTroops)} />
+      </dl>
+      <div className="m4-campaign__stack">
+        {muster.commitments.map((commitment) => (
+          <div className="m4-campaign__fact" key={commitment.commitmentId}>
+            <strong>Commitment {commitment.commitmentId}</strong>
+            <span>
+              {commitment.status}; {commitment.assembledTroops}/{commitment.promisedTroops} troops;
+              day {commitment.plannedAssemblyDay}
+            </span>
+            <ReasonChips reasonCodes={[commitment.statusReasonCode, ...commitment.reasonCodes]} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M4SupplyRoutePanel({
+  grain,
+  route
+}: {
+  readonly grain: ClientM4GrainSupplyReadModel;
+  readonly route: ClientM4RouteForecastReadModel;
+}): ReactElement {
+  return (
+    <section className="m4-campaign__panel" aria-label="M4 supply and route forecast">
+      <h3>Supply and route forecast</h3>
+      <dl className="m4-campaign__metrics">
+        <Metric label="Required" value={formatInteger(grain.grainRequired)} />
+        <Metric label="Reserved" value={formatInteger(grain.grainReserved)} />
+        <Metric label="Available" value={formatInteger(grain.grainAvailableToReserve)} />
+        <Metric label="Bottleneck" value={formatInteger(route.bottleneckCapacity)} />
+      </dl>
+      <ReasonChips reasonCodes={[...grain.reasonCodes, ...route.reasonCodes]} />
+      <div className="m4-campaign__stack">
+        {route.sourceForecasts.map((forecast) => (
+          <div className="m4-campaign__fact" key={forecast.reservationId}>
+            <strong>Route reservation {forecast.reservationId}</strong>
+            <span>
+              {forecast.status}; {forecast.travelDays} days; arrival {forecast.earliestArrivalDay}-
+              {forecast.latestArrivalDay}
+            </span>
+            <ReasonChips
+              reasonCodes={[
+                ...(forecast.overloadedReasonCode === null ? [] : [forecast.overloadedReasonCode]),
+                ...forecast.seasonRiskReasonCodes
+              ]}
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M4MarchSiegePanel({
+  marches,
+  sieges,
+  withdrawals
+}: {
+  readonly marches: readonly ClientM4MarchReadModel[];
+  readonly sieges: readonly ClientM4SiegeReadModel[];
+  readonly withdrawals: readonly ClientM4WithdrawalReadModel[];
+}): ReactElement {
+  return (
+    <section className="m4-campaign__panel" aria-label="M4 march siege withdrawal state">
+      <h3>March, siege, withdrawal</h3>
+      <div className="m4-campaign__stack">
+        {marches.map((march) => (
+          <div className="m4-campaign__fact" key={march.marchId}>
+            <strong>March {march.marchId}</strong>
+            <span>
+              {march.status}; troops {march.activeTroops}; supply {march.supply.status}; arrival{" "}
+              {march.predictedArrivalWindow.earliestDay}-{march.predictedArrivalWindow.latestDay}
+            </span>
+            <ReasonChips reasonCodes={[march.statusReasonCode, ...march.reasonCodes]} />
+          </div>
+        ))}
+        {sieges.map((siege) => (
+          <div className="m4-campaign__fact" key={siege.siegeId}>
+            <strong>Siege {siege.siegeId}</strong>
+            <span>
+              {siege.status}; progress {siege.siegeProgress}; losses {siege.attackerCasualties}/
+              {siege.defenderCasualties}; supply loss {siege.supplyLoss}
+            </span>
+            <ReasonChips
+              reasonCodes={[
+                siege.statusReasonCode,
+                ...siege.reasonCodes,
+                ...siege.surrenderReasonCodes
+              ]}
+            />
+          </div>
+        ))}
+        {withdrawals.map((withdrawal) => (
+          <div className="m4-campaign__fact" key={withdrawal.withdrawalId}>
+            <strong>Withdrawal {withdrawal.withdrawalId}</strong>
+            <span>
+              {withdrawal.kind}; {withdrawal.triggerReason}; extracted {withdrawal.troopsExtracted}/
+              {withdrawal.troopsBefore}; casualties {withdrawal.casualties}
+            </span>
+            <ReasonChips reasonCodes={withdrawal.reasonCodes} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M4AiPanel({
+  snapshot
+}: {
+  readonly snapshot: ClientM4CampaignReadModelSnapshot;
+}): ReactElement {
+  return (
+    <section className="m4-campaign__panel" aria-label="M4 AI reasons">
+      <h3>AI reasons</h3>
+      <div className="m4-campaign__fact">
+        <strong>{snapshot.aiReason.decisionKind}</strong>
+        <span>{snapshot.aiReason.commandKind ?? "no command"}</span>
+        <ReasonChips
+          reasonCodes={[snapshot.aiReason.primaryReasonCode, ...snapshot.aiReason.reasonCodes]}
+        />
+      </div>
+      <div className="m4-campaign__stack">
+        {snapshot.aiReason.candidates.map((candidate) => (
+          <div className="m4-campaign__fact" key={candidate.candidateId}>
+            <strong>{candidate.candidateId}</strong>
+            <span>
+              {candidate.decisionKind}; score {candidate.score}
+            </span>
+            <ReasonChips reasonCodes={candidate.reasonCodes} />
+          </div>
+        ))}
+      </div>
+      <div className="m4-campaign__reason-summary">
+        {snapshot.reasonSummaries.slice(0, 8).map((summary) => (
+          <div className="m4-campaign__fact" key={summary.reasonCode}>
+            <strong>{summary.reasonCode}</strong>
+            <span>
+              {summary.count} / {summary.sourceKinds.join(", ")}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M4WarReportPanel({
+  reports
+}: {
+  readonly reports: readonly ClientM4WarReportReadModel[];
+}): ReactElement {
+  return (
+    <section className="m4-campaign__panel" aria-label="M4 war report">
+      <h3>War report</h3>
+      <div className="m4-campaign__stack">
+        {reports.map((report) => (
+          <div className="m4-campaign__fact" key={report.outcomeId}>
+            <strong>Outcome {report.outcomeId}</strong>
+            <span>
+              losses {report.attackerCasualties}/{report.defenderCasualties}; supply loss{" "}
+              {report.supplyLoss}; day {report.resolvedDay}
+            </span>
+            {report.postwarCandidate === null ? null : (
+              <span>
+                Handoff {report.postwarCandidate.candidateId}; methods{" "}
+                {report.postwarCandidate.validM3Methods.join(", ")}
+              </span>
+            )}
+            <ReasonChips
+              reasonCodes={[...report.reasonCodes, ...(report.postwarCandidate?.reasonCodes ?? [])]}
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 interface OfficeDetailProps {
   readonly office: ClientM3OfficeReadModel | null;
   readonly selectedCharacter: ClientM3CharacterReadModel | null;
@@ -879,6 +1388,27 @@ function formatNullableCharacter(characterId: number | null): string {
   return characterId === null ? "Vacant" : `Character ${characterId}`;
 }
 
+function formatM4Window(window: {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}): string {
+  return `day ${window.earliestDay}-${window.latestDay}`;
+}
+
+function parseM4SiegeChoice(value: string): ClientM4SiegeChoice {
+  switch (value) {
+    case "invest-blockade":
+    case "assault":
+    case "continue":
+    case "accept-surrender":
+    case "lift-siege":
+    case "withdraw":
+      return value;
+    default:
+      throw new Error(`Unsupported M4 siege choice ${value}.`);
+  }
+}
+
 function formatRouteCell(row: ClientDistrictRowReadModel): string {
   if (row.route.totalCost === null) {
     return row.route.status;
@@ -922,3 +1452,12 @@ function getHighResolutionTime(): number {
 
   return timer.now();
 }
+
+const M4_SIEGE_CHOICES: readonly ClientM4SiegeChoice[] = [
+  "invest-blockade",
+  "assault",
+  "continue",
+  "accept-surrender",
+  "lift-siege",
+  "withdraw"
+];
