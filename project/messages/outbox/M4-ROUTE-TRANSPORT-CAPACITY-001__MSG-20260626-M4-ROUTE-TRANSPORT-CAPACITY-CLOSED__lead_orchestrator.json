@@ -1,0 +1,77 @@
+{
+  "message_id": "MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-CLOSED",
+  "task_id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M4 route and transport capacity planning forecast task is CLOSED after accepted implementation entered origin/main through PR #90 with all required CI checks passing. Route-capacity child threads were closed, M4-MARCH-SUPPLY-STATE-001 was promoted to READY, and goal-mode state now points at the next M4 task.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m4-route-transport-capacity.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json",
+    "project/tasks/active/M4-MARCH-SUPPLY-STATE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "chore/close-m4-route-transport-capacity",
+  "commit": null,
+  "integrated_pr": 90,
+  "integrated_main_commit": "2431e897676838057d2e29201b0528b5ebbf29c2",
+  "ci_checks": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "result": "PASS"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "result": "PASS"
+    }
+  ],
+  "closed_threads": [
+    {
+      "role": "simulation_engineer",
+      "thread_id": "019f01ca-2ecb-7223-a4a1-ff03e0b527cb",
+      "status": "closed"
+    },
+    {
+      "role": "systems_architect",
+      "thread_id": "019f01ca-42ce-78d2-8e19-da4887343bb3",
+      "status": "closed"
+    },
+    {
+      "role": "qa_reviewer",
+      "thread_id": "019f01df-cfe0-7bd2-a412-c67a7441ef96",
+      "status": "closed"
+    }
+  ],
+  "next_ready_tasks": [
+    "M4-MARCH-SUPPLY-STATE-001"
+  ],
+  "tests_run": [
+    {
+      "command": "gh pr checks 90 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Both required PR Gate jobs passed."
+    },
+    {
+      "command": "taskctl validate M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "exit_code": 0,
+      "result": "VALID before closure."
+    }
+  ],
+  "decisions": [
+    "Closed only after PR #90 entered origin/main at the verified main commit.",
+    "Promoted the dependency-ready march/supply task to READY without modifying product code.",
+    "Cleared route-capacity active thread records after platform close_agent calls returned completed status."
+  ],
+  "risks": [
+    "M4-MARCH-SUPPLY-STATE-001 is the first task allowed to add actual march execution state; route forecast remains planning-only."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Start M4-MARCH-SUPPLY-STATE-001 immediately under Autonomous Goal Mode.",
+  "created_at": "2026-06-26T03:20:00Z"
+}

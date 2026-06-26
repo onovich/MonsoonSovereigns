@@ -120,3 +120,9 @@ M4 current progress: `M4-TASK-GRAPH-001` has produced a systems_architect REVIEW
 ## 9. M4 Task Graph Snapshot
 
 M4-TASK-GRAPH-001 is CLOSED after PR #82 entered origin/main at `4bee35829c9a37eff405d59cfe4af1a605434928`. The next READY M4 task is `M4-CAMPAIGN-OBJECTIVES-001`; it is limited to the minimal campaign objective and planning-knowledge substrate and must not absorb muster, supply, march, siege, UI, or validation work.
+
+## 10. M4 Campaign Logistics Snapshot
+
+`M4-CAMPAIGN-OBJECTIVES-001`, `M4-MUSTER-PREP-COMMITMENTS-001`, `M4-GRAIN-SUPPLY-001`, and `M4-ROUTE-TRANSPORT-CAPACITY-001` are CLOSED on `origin/main`. `M4-ROUTE-TRANSPORT-CAPACITY-001` entered main through PR #90 at `2431e897676838057d2e29201b0528b5ebbf29c2` after systems_architect ACCEPT, independent qa_reviewer ACCEPT, lead gates, and both PR Gate jobs passed.
+
+The current milestone remains **M4 / Campaign, Logistics, Siege, and Postwar War Outcome Loop**. The next READY M4 task is `M4-MARCH-SUPPLY-STATE-001`, limited to deterministic daily march execution, supply state, and reinforcement timing. It must not absorb siege decisions, automatic battle resolution, postwar governance, campaign AI policy, or client UI behavior.
