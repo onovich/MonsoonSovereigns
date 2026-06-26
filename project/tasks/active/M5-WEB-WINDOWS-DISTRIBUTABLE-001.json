@@ -2,7 +2,7 @@
   "id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
   "summary": "Produce Web and Windows distributable evidence",
   "milestone": "M5",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "release_engineer",
   "reviewer_role": "security_reviewer",
   "risk_level": "R3",
@@ -66,7 +66,7 @@
       "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
       "role": "release_engineer",
       "thread_id": "019f0508-95e6-76c2-92dd-d3cbb7311085",
-      "status": "request_changes",
+      "status": "review_ready",
       "configured_model": "gpt-5.3-codex-spark",
       "configured_effort": "medium",
       "actual_model": "unknown",
@@ -79,21 +79,42 @@
       "start_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-TO-RELEASE-START-CONFIRMED.json",
       "base_main_commit": "54bfb063db57696bcf3f065f3d40656a6e7c5e4e",
-      "updated_at": "2026-06-27T01:52:59+08:00",
-      "review_ready_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-REVIEW__release_engineer.json",
+      "updated_at": "2026-06-27T02:02:49+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
       "request_changes_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
-      "request_changes_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-REQUEST-CHANGES-TO-RELEASE.json"
+      "request_changes_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-REQUEST-CHANGES-TO-RELEASE.json",
+      "review_ready_at": "2026-06-27T02:02:49+08:00",
+      "review_ready_round": 2
+    },
+    "security_reviewer": {
+      "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+      "role": "security_reviewer",
+      "thread_id": "019f0519-1337-7572-88c9-806afeb5325b",
+      "status": "reviewing",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Sentinel the 10th",
+      "responsibility": "independent read-only security review of M5 Web and Windows distributable evidence",
+      "branch_or_worktree": "chore/m5-web-windows-distributable",
+      "start_state": "SECURITY_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-R2-TO-SECURITY-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+      "updated_at": "2026-06-27T02:02:49+08:00"
     }
   },
-  "route_to": "release_engineer",
+  "route_to": "security_reviewer",
   "notes": [
     "This proves distributability only; it is not a release, commercial, store, branding, signing, telemetry, or account task.",
     "Do not weaken Electron security settings or add arbitrary IPC to make smoke tests pass.",
     "Lead started release_engineer writer thread 019f0508-95e6-76c2-92dd-d3cbb7311085 (Courier the 10th) after M5-PERFORMANCE-GATE-001 closure entered main.",
-    "Lead requested changes because the writer REVIEW handoff was not schema-valid and the required Windows package M5 interactive smoke failed."
+    "Lead requested changes because the writer REVIEW handoff was not schema-valid and the required Windows package M5 interactive smoke failed.",
+    "Release engineer produced R2 REVIEW with schema-valid handoff and reproducible package-smoke evidence; lead routed to independent security_reviewer."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-27T01:52:59+08:00",
+  "updated_at": "2026-06-27T02:02:49+08:00",
   "started_at": "2026-06-27T01:44:50+08:00",
   "ready_at": "2026-06-27T01:44:50+08:00",
   "start_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-START__lead_orchestrator.json",
@@ -101,6 +122,9 @@
   "request_changes_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
   "request_changes_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-REQUEST-CHANGES-TO-RELEASE.json",
   "request_changes_round": 1,
-  "review_ready_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-REVIEW__release_engineer.json",
-  "review_ready_at": "2026-06-26T17:50:51.889Z"
+  "review_ready_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+  "review_ready_at": "2026-06-27T02:02:49+08:00",
+  "review_ready_round": 2,
+  "review_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-R2-TO-SECURITY-REVIEW.json",
+  "security_thread_id": "019f0519-1337-7572-88c9-806afeb5325b"
 }

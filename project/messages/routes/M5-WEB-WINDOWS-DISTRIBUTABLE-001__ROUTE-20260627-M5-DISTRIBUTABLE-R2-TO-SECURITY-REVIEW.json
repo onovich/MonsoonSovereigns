@@ -1,0 +1,24 @@
+{
+  "route_id": "ROUTE-20260627-M5-DISTRIBUTABLE-R2-TO-SECURITY-REVIEW",
+  "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "security_reviewer",
+  "to_thread_id": "019f0519-1337-7572-88c9-806afeb5325b",
+  "status": "SENT",
+  "route_type": "REVIEW",
+  "branch_or_worktree": "chore/m5-web-windows-distributable",
+  "source_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+  "created_at": "2026-06-27T02:02:49+08:00",
+  "delivery": {
+    "method": "multi_agent_v1.send_input",
+    "submission_id": "019f051a-383e-7ac2-991d-2b39e70b4b35",
+    "sent_at": "2026-06-27T02:02:49+08:00"
+  },
+  "review_focus": [
+    "Allowed-path diff and no forbidden-path drift.",
+    "MONSOON_SMOKE_WEB entry switch remains evidence-only and does not weaken normal desktop or host hash behavior.",
+    "Electron security remains strict: nodeIntegration=false, contextIsolation=true, sandbox=true, CSP, navigation restriction, preload validation, limited IPC.",
+    "Package smoke adequacy for M5 launch/save-load/import-export boundary; import/export locator count is 0 and must be judged explicitly.",
+    "No telemetry/accounts/network/store/signing/branding/commercial/public release drift."
+  ]
+}
