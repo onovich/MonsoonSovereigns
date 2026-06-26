@@ -160,3 +160,11 @@ The task defines a planning-only M5 playable-slice contract in `project/tasks/ac
 No formal historical content, production dependency, product code, package code, content-source data, roadmap edit, acceptance-matrix edit, ADR, gate doc, release artifact, telemetry, server/multiplayer behavior, arbitrary-code mod support, branding, commercial decision, frozen architecture/platform/core decision, or irreversible migration is added by this task.
 
 M5 formal passage, manual node battle, telemetry, server/multiplayer, arbitrary-code mods, release/commercial choices, branding, major cultural-risk decisions, frozen product/platform/core architecture changes, irreversible migrations, and paid services/accounts/secrets remain Human Gates. The next dependency-ready task is `M5-SIM-PLAYABLE-LOOP-001`.
+
+## 14. M5 Player Research Review Snapshot
+
+`M5-PLAYER-RESEARCH-001` is in REVIEW on branch `research/m5-player-research`.
+
+The gameplay_designer writer executed a minimal privacy-safe player-research pilot against the accepted local M5 slice using two internal anonymous observation sessions and repository-auditable evidence. The observations covered whether the visible slice communicates the goal, command preview, campaign risk, AI reasons, save/load checkpoint behavior, and postwar consequences. The evidence records no telemetry, accounts, paid services, remote network collection, hidden personal data, formal historical content, code changes, content-source changes, or formal M5 passage decision.
+
+Preliminary classification: no blocker defects were recorded. Bounded follow-ups are limited to external/non-author participant sessions under explicit consent if Human Gate wants stronger player evidence, fixing or reviewing duplicate React key warnings observed in repeated reason-code chip rendering, future clarification that current save/load is a client-session checkpoint rather than desktop file import/export, historical_researcher routing for any later formal names/symbols/cultural content, and preserving the accepted limitation that the current live multi-year AI run is no-action-only. Subjective preferences are limited to reason-code density and command-label readability. M5 formal passage remains `M5-EXIT-HUMAN-GATE-001`, not this research task.

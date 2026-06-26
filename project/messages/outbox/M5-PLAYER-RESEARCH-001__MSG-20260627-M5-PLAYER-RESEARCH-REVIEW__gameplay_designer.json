@@ -1,0 +1,117 @@
+{
+  "message_id": "MSG-20260627-M5-PLAYER-RESEARCH-REVIEW",
+  "task_id": "M5-PLAYER-RESEARCH-001",
+  "from_role": "gameplay_designer",
+  "status": "REVIEW",
+  "summary": "Ran and documented the minimal M5 player-research protocol as a privacy-safe internal anonymous pilot against the accepted local M5 slice. Evidence covers 2 anonymous observation sessions: S1 followed the success path through goal reading, command preview, first command confirmation, save checkpoint, cancel, load checkpoint, and 15 confirmed commands to success; S2 followed a failure/repeat branch showing duplicate postwar settlement rejection and restart repeatability. Observations recorded comprehension evidence for goals, command previews, campaign risk, AI reasons, save/load checkpoint behavior, and postwar consequences. No telemetry, accounts, paid service, remote network collection, hidden personal data, formal historical content, product scope expansion, app/package/content changes, or M5 formal passage decision was introduced.",
+  "artifacts": [
+    "project/tasks/active/M5-PLAYER-RESEARCH-001.json",
+    "PROJECT_STATUS.md",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "research/m5-player-research / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial pre-edit status had no output; working tree was clean before task updates."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-PLAYER-RESEARCH-001",
+      "exit_code": 0,
+      "result": "Initial validation passed before task updates: VALID project/tasks/active/M5-PLAYER-RESEARCH-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list parsed successfully; M5-PLAYER-RESEARCH-001 was IN_PROGRESS before this REVIEW update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready task output while M5-PLAYER-RESEARCH-001 was active."
+    },
+    {
+      "command": "pnpm --filter web dev -- --port 5173",
+      "exit_code": 0,
+      "result": "Started local Vite dev server on 127.0.0.1; requested ports 5173 and 5174 were busy, so Vite selected http://127.0.0.1:5175/. Server was stopped after the observation run."
+    },
+    {
+      "command": "PowerShell here-string piped to node --input-type=module for local Playwright M5 observation at http://127.0.0.1:5175/",
+      "exit_code": 0,
+      "result": "Two anonymous internal sessions completed. S1 observed scenario m5.composite.river-gate.v0, visible goal text, first preview sim.create-campaign-objective with campaign.reason.deterministic-replay, AI/risk/supply/season reasons including m4.ai.withdraw.supply-collapse and route.season.monsoon-risk, save m5.save.client-session-written, cancel phase cancelled, load restored running at m5.step.02.sim.create-muster-commitment, and final success with 15 confirmed commands. S2 observed failure phase for duplicate postwar governance via sim.apply-m3-postwar-governance and m5.slice.duplicate-postwar-governance, then restart repeatability to sim.create-campaign-objective."
+    },
+    {
+      "command": "Ctrl+C stop of local Vite server",
+      "exit_code": 1,
+      "result": "Server stopped. Console output surfaced duplicate React key warnings for repeated reason-code chip keys; recorded as a bounded follow-up rather than a blocker because the observed path still completed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-PLAYER-RESEARCH-001",
+      "exit_code": 0,
+      "result": "Final validation passed after REVIEW update: VALID project/tasks/active/M5-PLAYER-RESEARCH-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list parsed successfully; M5-PLAYER-RESEARCH-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output; no dependency-ready task is listed while M5-PLAYER-RESEARCH-001 is in REVIEW."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format errors."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified allowed files only: PROJECT_STATUS.md, project/tasks/active/M5-PLAYER-RESEARCH-001.json, project/tasks/thread-registry.json; untracked allowed handoff project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-REVIEW__gameplay_designer.json."
+    }
+  ],
+  "decisions": [
+    "Set M5-PLAYER-RESEARCH-001 to REVIEW and route_to=qa_reviewer; do not mark ACCEPTED or CLOSED.",
+    "Treat the research as a minimal internal anonymous pilot plus repository-auditable evidence, not as external user research or formal M5 passage.",
+    "Privacy handling: no participant names, accounts, email, demographic data, device fingerprint, screen recording, voice, chat logs, telemetry, remote network collection, paid service, or hidden personal-data capture were collected.",
+    "Blocker classification: no blocker defects observed during the two-session pilot.",
+    "Bounded follow-up classification: run 2-3 external or non-author participant sessions under explicit consent if Human Gate wants stronger player evidence; fix or review duplicate React key warnings in repeated reason-code chip rendering; clarify current save/load as client-session checkpoint rather than desktop file import/export; keep the accepted no-action-only live AI limitation visible in later gate evidence.",
+    "Subjective preference classification: reason-code panels are useful but dense, and non-expert players may need shorter labels beside command kind strings.",
+    "Cultural/historical routing: no historical or cultural concern was adjudicated. Any future formal names, claims, identities, symbols, language, art, music, or event content must be tagged and routed to historical_researcher or Human Gate."
+  ],
+  "risks": [
+    {
+      "risk": "Sample size is intentionally tiny: 2 internal anonymous observation sessions, not recruited player research.",
+      "impact": "Acceptable for minimal protocol evidence, but it should not be used alone for M5 formal passage."
+    },
+    {
+      "risk": "Sessions were compressed through the current deterministic scripted UI rather than full 2-4 hour human play.",
+      "impact": "The protocol documents how to observe the 2-4 hour repeatable session, but duration and comprehension rates remain starting hypotheses until broader human sessions run."
+    },
+    {
+      "risk": "Duplicate React key warnings appeared for repeated reason-code chips during local observation.",
+      "impact": "Not a blocker for this research path, but it can cause unsupported duplicate/omitted child behavior and should be fixed or reviewed in a bounded UI follow-up."
+    },
+    {
+      "risk": "Current save/load evidence is a client-session checkpoint, not a desktop file import/export flow.",
+      "impact": "This matches accepted M5 slice/distributable caveats; future desktop file import/export must be separate scoped work."
+    },
+    {
+      "risk": "Accepted M5 multi-year AI evidence records zero live accepted AI commands and 730 no-action decisions.",
+      "impact": "Do not present this as proof of rich long-run AI strategy; it remains validation evidence with explicit limitation."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M5-PLAYER-RESEARCH-001 minimal research evidence, especially privacy handling, session count, anonymized observations, blocker/follow-up/preference classification, duplicate-key follow-up handling, cultural/historical routing, and the absence of a formal M5 passage decision.",
+  "created_at": "2026-06-27T02:37:09+08:00"
+}
