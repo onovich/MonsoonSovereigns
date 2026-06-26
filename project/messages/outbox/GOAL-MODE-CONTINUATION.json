@@ -2,34 +2,37 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_AUTO_ENGAGEMENT_SIEGE_REVIEW",
+  "status": "M4_AUTO_ENGAGEMENT_SIEGE_REQUEST_CHANGES",
   "project": "Monsoon Sovereigns",
   "origin_main": "5027a57d7b7e0f980b9fd7979724f0fc76b5ed06",
   "current_milestone": "M4",
   "current_task": "M4-AUTO-ENGAGEMENT-SIEGE-001",
-  "current_task_status": "REVIEW",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-MARCH-SUPPLY-STATE-001",
   "ready_tasks": [],
   "active_threads": {
     "019f023d-5f45-7372-8f16-4b55c6818ea2": {
       "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
       "role": "simulation_engineer",
-      "status": "review_ready",
+      "status": "request_changes",
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
       "start_submission_id": "019f023d-bc63-7123-be72-4b8387ba640f",
       "status_probe_submission_id": "019f024c-ee6c-7881-b39f-9d21e0d8869a",
       "continue_submission_id": "019f024d-6742-7243-8aeb-1eabe9a52f8f",
-      "review_ready_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-REVIEW__simulation_engineer.json"
+      "review_ready_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-REVIEW__simulation_engineer.json",
+      "request_changes_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+      "request_changes_submission_id": "019f0261-54c3-7f13-ba37-e0854882550f"
     },
     "019f023d-7347-7712-b832-3f825603ae21": {
       "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
       "role": "systems_architect",
-      "status": "reviewing",
+      "status": "request_changes",
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
       "await_submission_id": "019f023d-bce4-7920-99ff-dcb42e231393",
       "status_note": "Reviewer ready; no writer handoff yet.",
       "review_ready_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-REVIEW__simulation_engineer.json",
-      "review_ready_submission_id": "019f0259-b2dc-79b3-ae1b-f61d2fc8adb3"
+      "review_ready_submission_id": "019f0259-b2dc-79b3-ae1b-f61d2fc8adb3",
+      "request_changes_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-SYSTEMS-REQUEST-CHANGES__systems_architect.json"
     }
   },
   "unresolved_risks": [
@@ -48,7 +51,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Await systems_architect review for M4-AUTO-ENGAGEMENT-SIEGE-001; route REQUEST_CHANGES back to original writer or proceed to lead gates after ACCEPT.",
+  "next_machine_action": "Await original simulation_engineer R2 REVIEW handoff after systems_architect REQUEST_CHANGES fixes, validate it, and route R2 back to systems_architect.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -56,7 +59,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T05:13:00Z",
+  "last_updated_at": "2026-06-26T05:24:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -80,12 +83,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T05:13:00Z",
+  "updated_at": "2026-06-26T05:24:00Z",
   "current_tasks": [
     "M4-AUTO-ENGAGEMENT-SIEGE-001"
   ],
   "last_integrated_task": "M4-MARCH-SUPPLY-STATE-001",
   "last_main_commit": "5027a57d7b7e0f980b9fd7979724f0fc76b5ed06",
   "next_ready_tasks": [],
-  "next_action": "Await systems_architect review for M4-AUTO-ENGAGEMENT-SIEGE-001; route REQUEST_CHANGES back to original writer or proceed to lead gates after ACCEPT."
+  "next_action": "Await original simulation_engineer R2 REVIEW handoff after systems_architect REQUEST_CHANGES fixes, validate it, and route R2 back to systems_architect."
 }
