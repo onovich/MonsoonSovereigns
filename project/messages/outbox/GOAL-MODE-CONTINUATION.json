@@ -7,13 +7,13 @@
   "origin_main": "3e649ac5f739dfea75511ad0cb1193fc7df713aa",
   "current_milestone": "M5",
   "current_task": "M5-TASK-GRAPH-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M4-EXIT-VALIDATION-001",
   "ready_tasks": [],
   "active_threads": {
     "019f03b9-f591-7ee2-9c75-e04665cb063f": {
       "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
-      "status": "standby",
+      "status": "reviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -24,13 +24,15 @@
       "start_state": "AWAITING_REVIEW_READY",
       "spawn_result": "spawn_agent",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:35:00.000Z",
-      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-QA-STANDBY-CONFIRMED.json",
-      "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba"
+      "updated_at": "2026-06-26T12:41:00Z",
+      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
+      "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba",
+      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0"
     },
     "019f03c6-5a70-7023-8a02-6e9f6edfe1e2": {
       "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
-      "status": "started",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -43,9 +45,10 @@
       "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
       "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:35:30Z",
+      "updated_at": "2026-06-26T12:40:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
-      "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a"
+      "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a",
+      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
     }
   },
   "unresolved_risks": [
@@ -64,7 +67,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Await replacement systems_architect REVIEW handoff for M5-TASK-GRAPH-001; route to qa_reviewer after valid handoff.",
+  "next_machine_action": "Route systems_architect REVIEW handoff for M5-TASK-GRAPH-001 to qa_reviewer; integrate only after ACCEPT and gates.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -72,7 +75,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T12:35:30Z",
+  "last_updated_at": "2026-06-26T12:41:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -104,14 +107,14 @@
       "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T12:35:30Z",
+  "updated_at": "2026-06-26T12:41:00Z",
   "current_tasks": [
     "M5-TASK-GRAPH-001"
   ],
   "last_integrated_task": "M4-EXIT-VALIDATION-001",
   "last_main_commit": "3e649ac5f739dfea75511ad0cb1193fc7df713aa",
   "next_ready_tasks": [],
-  "next_action": "Await replacement systems_architect REVIEW handoff for M5-TASK-GRAPH-001; route to qa_reviewer after valid handoff.",
+  "next_action": "Route systems_architect REVIEW handoff for M5-TASK-GRAPH-001 to qa_reviewer; integrate only after ACCEPT and gates.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
