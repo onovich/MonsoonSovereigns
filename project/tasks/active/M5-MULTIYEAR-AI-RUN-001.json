@@ -118,6 +118,24 @@
       "closed_at": "2026-06-27T00:01:55+08:00",
       "close_reason": "stale_after_two_wait_windows_and_narrowing_no_handoff",
       "replaced_by": "019f04aa-f0c6-7523-8ac4-2c42a1db5709"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f04c6-0df4-7fd2-9788-380f620b2f6a",
+      "status": "reviewing",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Witness the 9th",
+      "responsibility": "independent read-only QA review of M5 multi-year AI run validation",
+      "branch_or_worktree": "test/m5-multiyear-ai-run",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-WRITER-R3-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
+      "review_commit": "703585f2",
+      "review_submission_id": "019f04c6-623e-7fb2-9959-2377e7500eb4",
+      "updated_at": "2026-06-27T00:32:00+08:00"
     }
   },
   "route_to": "qa_reviewer",
@@ -130,7 +148,7 @@
     "Replacement test_engineer produced R3 REVIEW after fixing lint/typecheck issues; lead gates passed and the live no-action-only command path limitation remains explicit for QA review."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-27T00:29:58+08:00",
+  "updated_at": "2026-06-27T00:32:00+08:00",
   "ready_at": "2026-06-26T23:23:27+08:00",
   "started_at": "2026-06-26T23:23:27+08:00",
   "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
@@ -155,5 +173,9 @@
   "request_changes_r2_submission_id": "019f04bf-0056-7f93-a821-f56940bc7732",
   "review_ready_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
   "review_ready_at": "2026-06-27T00:29:58+08:00",
-  "review_ready_round": 3
+  "review_ready_round": 3,
+  "review_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-WRITER-R3-TO-QA-REVIEW.json",
+  "qa_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-WRITER-R3-TO-QA-REVIEW.json",
+  "qa_thread_id": "019f04c6-0df4-7fd2-9788-380f620b2f6a",
+  "review_commit": "703585f2"
 }
