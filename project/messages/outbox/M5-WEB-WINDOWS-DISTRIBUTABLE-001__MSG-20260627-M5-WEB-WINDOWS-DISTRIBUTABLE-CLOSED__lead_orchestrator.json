@@ -1,0 +1,79 @@
+{
+  "message_id": "MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-CLOSED",
+  "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M5-WEB-WINDOWS-DISTRIBUTABLE-001 is CLOSED only after PR #120 passed CI, merged into main, local main synchronized to origin/main, and active release/security/QA child threads were closed. The integrated branch adds local/smoke-only Web and unsigned Windows distributable evidence with a MONSOON_SMOKE_WEB test entry and packaged M5 smoke script. Import/export button count 0 remains an accepted caveat: current desktop exposes no file import/export IPC, and this task proves client-session save/load checkpoint behavior only.",
+  "artifacts": [
+    "apps/desktop/src/main/main.ts",
+    "apps/desktop/scripts/package-smoke.mjs",
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/m5-web-windows-distributable-close / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "b173c980e02e3d2365fdb4d022c7c4392918cca9",
+  "integrated_pr": 120,
+  "integrated_main_commit": "b173c980e02e3d2365fdb4d022c7c4392918cca9",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/120",
+  "child_threads_closed": [
+    {
+      "role": "release_engineer",
+      "thread_id": "019f0508-95e6-76c2-92dd-d3cbb7311085",
+      "close_tool_result": "closed_after_completed_r2_review_and_main_integration"
+    },
+    {
+      "role": "security_reviewer",
+      "thread_id": "019f0519-1337-7572-88c9-806afeb5325b",
+      "close_tool_result": "closed_after_completed_accept_and_main_integration"
+    },
+    {
+      "role": "qa_reviewer",
+      "thread_id": "019f0522-68ba-7313-9361-89e262f4dec0",
+      "close_tool_result": "closed_after_completed_accept_and_main_integration"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "gh pr checks 120 --watch",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 1m52s; Windows Desktop Smoke Artifact passed in 56s."
+    },
+    {
+      "command": "gh pr merge 120 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "Merged PR #120 and fast-forwarded local main to b173c980e02e3d2365fdb4d022c7c4392918cca9."
+    },
+    {
+      "command": "git rev-parse HEAD && git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "Local main and origin/main both resolve to b173c980e02e3d2365fdb4d022c7c4392918cca9 before closure branch edits."
+    },
+    {
+      "command": "multi_agent_v1.close_agent <release_engineer, security_reviewer, qa_reviewer>",
+      "exit_code": 0,
+      "result": "All active task child threads returned completed previous_status and were closed."
+    }
+  ],
+  "decisions": [
+    "Mark M5-WEB-WINDOWS-DISTRIBUTABLE-001 CLOSED because accepted implementation and review evidence are integrated into origin/main via PR #120.",
+    "Keep M5 formal passage out of scope; this is task-level closure only.",
+    "Carry the current-surface caveat forward: no desktop file import/export bridge is proven or accepted by this task."
+  ],
+  "next_ready_tasks": [],
+  "risks": [
+    "P3 caveat: current task covers client-session save/load checkpoint only, not future desktop file import/export UX or file-system adapter behavior.",
+    "P3 caveat: MONSOON_SMOKE_WEB is an evidence switch; any future default desktop launch into M5 web UI requires separate task/review."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit closure, open closure PR, wait for CI, merge into main, then select the next READY M5 task or Human Gate task according to taskctl ready.",
+  "created_at": "2026-06-27T02:25:42+08:00"
+}
