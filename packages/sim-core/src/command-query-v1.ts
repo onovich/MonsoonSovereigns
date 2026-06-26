@@ -9460,6 +9460,280 @@ function parseSavedDomainEvent(
         }
       };
     }
+    case "sim.m4-field-engagement-resolved": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const engagementId = readPositiveIdRecordField(
+        record,
+        "engagementId",
+        `${path}.engagementId`,
+        reasons
+      );
+      const campaignPlanId = readPositiveIdRecordField(
+        record,
+        "campaignPlanId",
+        `${path}.campaignPlanId`,
+        reasons
+      );
+      const marchId = readPositiveIdRecordField(record, "marchId", `${path}.marchId`, reasons);
+      const attackerPolityId = readPositiveIdRecordField(
+        record,
+        "attackerPolityId",
+        `${path}.attackerPolityId`,
+        reasons
+      );
+      const defenderPolityId = readPositiveIdRecordField(
+        record,
+        "defenderPolityId",
+        `${path}.defenderPolityId`,
+        reasons
+      );
+      const outcome = readM4FieldEngagementOutcomeRecordField(
+        record,
+        "outcome",
+        `${path}.outcome`,
+        reasons
+      );
+      const attackerCasualties = readNumberRecordField(
+        record,
+        "attackerCasualties",
+        `${path}.attackerCasualties`,
+        reasons
+      );
+      const defenderCasualties = readNumberRecordField(
+        record,
+        "defenderCasualties",
+        `${path}.defenderCasualties`,
+        reasons
+      );
+      const supplyLoss = readNumberRecordField(record, "supplyLoss", `${path}.supplyLoss`, reasons);
+      const campaignStatusBefore = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusBefore",
+        `${path}.campaignStatusBefore`,
+        reasons
+      );
+      const campaignStatusAfter = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusAfter",
+        `${path}.campaignStatusAfter`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const creditHooks = readM4CampaignHooksRecordField(
+        record,
+        "creditHooks",
+        `${path}.creditHooks`,
+        reasons
+      );
+      const reputationHooks = readM4CampaignHooksRecordField(
+        record,
+        "reputationHooks",
+        `${path}.reputationHooks`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        engagementId === undefined ||
+        campaignPlanId === undefined ||
+        marchId === undefined ||
+        attackerPolityId === undefined ||
+        defenderPolityId === undefined ||
+        outcome === undefined ||
+        attackerCasualties === undefined ||
+        defenderCasualties === undefined ||
+        supplyLoss === undefined ||
+        campaignStatusBefore === undefined ||
+        campaignStatusAfter === undefined ||
+        reasonCodes === undefined ||
+        creditHooks === undefined ||
+        reputationHooks === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          engagementId,
+          campaignPlanId,
+          marchId,
+          attackerPolityId: parsePolityId(attackerPolityId),
+          defenderPolityId: parsePolityId(defenderPolityId),
+          outcome,
+          attackerCasualties,
+          defenderCasualties,
+          supplyLoss,
+          campaignStatusBefore,
+          campaignStatusAfter,
+          reasonCodes,
+          creditHooks,
+          reputationHooks,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.m4-siege-choice-applied": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const siegeId = readPositiveIdRecordField(record, "siegeId", `${path}.siegeId`, reasons);
+      const campaignPlanId = readPositiveIdRecordField(
+        record,
+        "campaignPlanId",
+        `${path}.campaignPlanId`,
+        reasons
+      );
+      const marchId = readPositiveIdRecordField(record, "marchId", `${path}.marchId`, reasons);
+      const choice = readM4SiegeChoiceRecordField(record, "choice", `${path}.choice`, reasons);
+      const statusBefore = readNullableM4SiegeStatusRecordField(
+        record,
+        "statusBefore",
+        `${path}.statusBefore`,
+        reasons
+      );
+      const statusAfter = readM4SiegeStatusRecordField(
+        record,
+        "statusAfter",
+        `${path}.statusAfter`,
+        reasons
+      );
+      const attackerCasualties = readNumberRecordField(
+        record,
+        "attackerCasualties",
+        `${path}.attackerCasualties`,
+        reasons
+      );
+      const defenderCasualties = readNumberRecordField(
+        record,
+        "defenderCasualties",
+        `${path}.defenderCasualties`,
+        reasons
+      );
+      const supplyLoss = readNumberRecordField(record, "supplyLoss", `${path}.supplyLoss`, reasons);
+      const campaignStatusBefore = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusBefore",
+        `${path}.campaignStatusBefore`,
+        reasons
+      );
+      const campaignStatusAfter = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusAfter",
+        `${path}.campaignStatusAfter`,
+        reasons
+      );
+      const surrenderEligible = readBooleanRecordField(
+        record,
+        "surrenderEligible",
+        `${path}.surrenderEligible`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const creditHooks = readM4CampaignHooksRecordField(
+        record,
+        "creditHooks",
+        `${path}.creditHooks`,
+        reasons
+      );
+      const reputationHooks = readM4CampaignHooksRecordField(
+        record,
+        "reputationHooks",
+        `${path}.reputationHooks`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        siegeId === undefined ||
+        campaignPlanId === undefined ||
+        marchId === undefined ||
+        choice === undefined ||
+        statusBefore === undefined ||
+        statusAfter === undefined ||
+        attackerCasualties === undefined ||
+        defenderCasualties === undefined ||
+        supplyLoss === undefined ||
+        campaignStatusBefore === undefined ||
+        campaignStatusAfter === undefined ||
+        surrenderEligible === undefined ||
+        reasonCodes === undefined ||
+        creditHooks === undefined ||
+        reputationHooks === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          siegeId,
+          campaignPlanId,
+          marchId,
+          choice,
+          statusBefore,
+          statusAfter,
+          attackerCasualties,
+          defenderCasualties,
+          supplyLoss,
+          campaignStatusBefore,
+          campaignStatusAfter,
+          surrenderEligible,
+          reasonCodes,
+          creditHooks,
+          reputationHooks,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
     case "sim.state-hash-verified": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
@@ -9554,6 +9828,190 @@ function readNumberRecordField(
     return undefined;
   }
   return value;
+}
+
+function readBooleanRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): boolean | undefined {
+  const value = record[key];
+  if (typeof value !== "boolean") {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a boolean.`
+    });
+    return undefined;
+  }
+  return value;
+}
+
+function readStringArrayRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): readonly string[] | undefined {
+  const value = record[key];
+  if (!Array.isArray(value) || !value.every((entry) => typeof entry === "string")) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a string array.`
+    });
+    return undefined;
+  }
+  return [...value];
+}
+
+function readM4CampaignHooksRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4FieldEngagementStateV0["creditHooks"] | undefined {
+  const value = record[key];
+  if (!Array.isArray(value)) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be an M4 campaign hook array.`
+    });
+    return undefined;
+  }
+
+  const hooks: { readonly polityId: PolityId; readonly amount: number; readonly reasonCode: string }[] = [];
+  value.forEach((entry, index) => {
+    if (!isRecord(entry)) {
+      reasons.push({
+        code: "invalid-schema",
+        path: `${path}[${index}]`,
+        message: `Saved event ${key} entry must be an object.`
+      });
+      return;
+    }
+    const polityId = readPositiveIdRecordField(
+      entry,
+      "polityId",
+      `${path}[${index}].polityId`,
+      reasons
+    );
+    const amount = readNumberRecordField(entry, "amount", `${path}[${index}].amount`, reasons);
+    const reasonCode = readStringRecordField(
+      entry,
+      "reasonCode",
+      `${path}[${index}].reasonCode`,
+      reasons
+    );
+    if (polityId !== undefined && amount !== undefined && reasonCode !== undefined) {
+      hooks.push({ polityId: parsePolityId(polityId), amount, reasonCode });
+    }
+  });
+  return hooks;
+}
+
+function readM4FieldEngagementOutcomeRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4FieldEngagementOutcomeV0 | undefined {
+  const value = record[key];
+  if (value === "attacker-victory" || value === "defender-holds") {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be attacker-victory or defender-holds.`
+  });
+  return undefined;
+}
+
+function readM4CampaignStatusRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4CampaignPlanStateV0["status"] | undefined {
+  const value = record[key];
+  if (
+    value === "planned" ||
+    value === "active" ||
+    value === "cancelled" ||
+    value === "completed"
+  ) {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M4 campaign status.`
+  });
+  return undefined;
+}
+
+function readM4SiegeChoiceRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4SiegeChoiceV0 | undefined {
+  const value = record[key];
+  if (
+    value === "invest-blockade" ||
+    value === "assault" ||
+    value === "continue" ||
+    value === "accept-surrender" ||
+    value === "lift-siege" ||
+    value === "withdraw"
+  ) {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M4 siege choice.`
+  });
+  return undefined;
+}
+
+function readM4SiegeStatusRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4SiegeStatusV0 | undefined {
+  const value = record[key];
+  if (
+    value === "blockading" ||
+    value === "surrender-ready" ||
+    value === "surrendered" ||
+    value === "lifted" ||
+    value === "withdrawn"
+  ) {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M4 siege status.`
+  });
+  return undefined;
+}
+
+function readNullableM4SiegeStatusRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4SiegeStatusV0 | null | undefined {
+  if (record[key] === null) {
+    return null;
+  }
+  return readM4SiegeStatusRecordField(record, key, path, reasons);
 }
 
 function readLaborPurposeRecordField(

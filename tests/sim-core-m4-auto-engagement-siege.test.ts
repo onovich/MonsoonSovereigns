@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import {
+  bootSimulationV1,
   canonicalizeM4CampaignStateV0,
   createM3PolityVassalageStateV0,
   createM4CampaignStateV0,
@@ -16,8 +17,11 @@ import {
   parseRouteId,
   parseSiegeId,
   querySimulationV1,
+  loadSaveV1,
+  requestSaveV1,
   submitCommandV1,
   validateWorldStateV0,
+  type DomainEventV1,
   type M4CampaignStateV0,
   type SimulationRuntimeV1,
   type WorldDefinitionsV0,
@@ -223,6 +227,38 @@ describe("M4-AUTO-ENGAGEMENT-SIEGE-001 deterministic combat choice loop", () => 
     expect(player.world.meta.stateHash).toBe(ai.world.meta.stateHash);
   });
 
+  test("player and AI use the same siege choice command path without hidden state differences", () => {
+    let player = runtimeWithCombat();
+    player = accepted(
+      player,
+      siegeCommand("m4.siege.parity.player.invest", player, "invest-blockade", 808, {
+        actorKind: "player"
+      })
+    );
+    player = accepted(
+      player,
+      siegeCommand("m4.siege.parity.player.assault", player, "assault", 808, {
+        actorKind: "player"
+      })
+    );
+
+    let ai = runtimeWithCombat();
+    ai = accepted(
+      ai,
+      siegeCommand("m4.siege.parity.ai.invest", ai, "invest-blockade", 808, {
+        actorKind: "ai"
+      })
+    );
+    ai = accepted(
+      ai,
+      siegeCommand("m4.siege.parity.ai.assault", ai, "assault", 808, {
+        actorKind: "ai"
+      })
+    );
+
+    expect(player.world.meta.stateHash).toBe(ai.world.meta.stateHash);
+  });
+
   test("keeps force and supply nonnegative while accounting all losses explicitly", () => {
     let runtime = runtimeWithCombat();
     runtime = accepted(runtime, siegeCommand("m4.siege.accounting.invest", runtime, "invest-blockade", 806));
@@ -238,7 +274,97 @@ describe("M4-AUTO-ENGAGEMENT-SIEGE-001 deterministic combat choice loop", () => 
     expect(siege.defenderEstimatedTroops + siege.defenderCasualties).toBe(20);
     expect(marchState.supply.carriedGrain + siege.supplyLoss).toBe(240);
   });
+
+  test("round-trips new M4 combat event tails through save/load parsing", () => {
+    const boot = bootMinimalRuntime();
+    const eventTail = m4CombatEventTail();
+    const runtime: SimulationRuntimeV1 = {
+      ...boot.runtime,
+      eventTail
+    };
+    const saved = requestSaveV1(runtime, {
+      appVersion: "0.0.0",
+      source: "node-runner",
+      codecVersion: "save-envelope-v1"
+    });
+    const loaded = loadSaveV1(boot.runtime, saved.bytes, {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+
+    expect(loaded.status).toBe("loaded");
+    if (loaded.status !== "loaded") {
+      throw new Error("Expected M4 combat event-tail save to load.");
+    }
+    expect(loaded.runtime.eventTail).toEqual(eventTail);
+  });
 });
+
+function bootMinimalRuntime(): Extract<ReturnType<typeof bootSimulationV1>, { status: "booted" }> {
+  const boot = bootSimulationV1({ protocolVersion: 1, fixture: "minimal-m1" });
+  if (boot.status !== "booted") {
+    throw new Error("Expected minimal boot.");
+  }
+  return boot;
+}
+
+function m4CombatEventTail(): readonly DomainEventV1[] {
+  return [
+    {
+      schemaVersion: 1,
+      kind: "sim.m4-field-engagement-resolved",
+      commandId: "m4.save.engagement",
+      actor: { kind: "player", id: "polity:1" },
+      engagementId: 901,
+      campaignPlanId: 10,
+      marchId: 701,
+      attackerPolityId: parsePolityId(1),
+      defenderPolityId: parsePolityId(2),
+      outcome: "attacker-victory",
+      attackerCasualties: 8,
+      defenderCasualties: 20,
+      supplyLoss: 40,
+      campaignStatusBefore: "active",
+      campaignStatusAfter: "active",
+      reasonCodes: ["engagement.outcome.attacker-victory"],
+      creditHooks: [
+        { polityId: parsePolityId(1), amount: 20, reasonCode: "credit.m4.field-victory" }
+      ],
+      reputationHooks: [
+        { polityId: parsePolityId(1), amount: -8, reasonCode: "reputation.m4.casualties" }
+      ],
+      revisionBefore: 0,
+      revisionAfter: 1
+    },
+    {
+      schemaVersion: 1,
+      kind: "sim.m4-siege-choice-applied",
+      commandId: "m4.save.siege",
+      actor: { kind: "ai", id: "polity:1" },
+      siegeId: 801,
+      campaignPlanId: 10,
+      marchId: 701,
+      choice: "assault",
+      statusBefore: "blockading",
+      statusAfter: "surrender-ready",
+      attackerCasualties: 8,
+      defenderCasualties: 20,
+      supplyLoss: 80,
+      campaignStatusBefore: "active",
+      campaignStatusAfter: "active",
+      surrenderEligible: true,
+      reasonCodes: ["siege.assault.breach", "siege.surrender.assault-breach"],
+      creditHooks: [
+        { polityId: parsePolityId(1), amount: 20, reasonCode: "credit.m4.siege-progress" }
+      ],
+      reputationHooks: [
+        { polityId: parsePolityId(1), amount: -8, reasonCode: "reputation.m4.assault-losses" }
+      ],
+      revisionBefore: 1,
+      revisionAfter: 2
+    }
+  ];
+}
 
 function runtimeWithCombat(input: {
   readonly activeTroops?: number;
@@ -412,13 +538,14 @@ function siegeCommand(
     readonly defenderSupply?: number;
     readonly defenderEstimatedTroops?: number;
     readonly fortification?: number;
+    readonly actorKind?: "ai" | "player";
   } = {}
 ): ApplyM4SiegeChoiceCommandV1 {
   return {
     schemaVersion: 1,
     kind: "sim.apply-m4-siege-choice",
     commandId,
-    actor: { kind: "player", id: "polity:1" },
+    actor: { kind: input.actorKind ?? "player", id: "polity:1" },
     expectedDay: runtime.world.meta.currentDay,
     expectedRevision: runtime.world.meta.revision,
     payload: {

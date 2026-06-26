@@ -1,0 +1,70 @@
+{
+  "message_id": "MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-R2-REVIEW",
+  "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Addressed systems_architect REQUEST_CHANGES for M4-AUTO-ENGAGEMENT-SIEGE-001. Added save/load event-tail parser support for sim.m4-field-engagement-resolved and sim.m4-siege-choice-applied, including reasonCodes, casualty/loss fields, status fields, and credit/reputation hook arrays. Added regression coverage for save/load parsing of new M4 combat events and player/AI parity for sim.apply-m4-siege-choice. Task status is REVIEW and route_to is systems_architect.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m4-auto-engagement-siege.test.ts",
+    "project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json"
+  ],
+  "branch_or_worktree": "feat/m4-auto-engagement-siege",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified packages/sim-core/src/command-query-v1.ts, tests/sim-core-m4-auto-engagement-siege.test.ts, project task JSON; new R2 REVIEW handoff JSON in project/messages/outbox."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "20 test files passed, 145 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and Worker-compatible hashes matched for hello, command/query, and save/load canaries."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 31 root test files/212 tests passed; web package 1 file/3 tests passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-AUTO-ENGAGEMENT-SIEGE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-AUTO-ENGAGEMENT-SIEGE-001",
+      "exit_code": 0,
+      "result": "JSON OK; task status REVIEW and route_to systems_architect."
+    }
+  ],
+  "decisions": [
+    "P1 fixed inside sim-core only: parseSavedDomainEvent now accepts both new M4 combat event kinds written by domainEventToRecord.",
+    "P1 regression uses a minimal runtime with M4 combat eventTail records, intentionally avoiding save-format or M4 snapshot persistence changes.",
+    "P2 fixed with player/AI parity coverage for invest-blockade plus assault through sim.apply-m4-siege-choice and matching authoritative world state hash.",
+    "No manual battle, tactical/3D UI, diplomacy/peace, multiplayer/server, client UI, save-format, content, or out-of-scope systems were added."
+  ],
+  "risks": [
+    "R3 risk remains active because this task changes authoritative sim-core command/event parsing and M4 combat state behavior.",
+    "M4 world snapshot persistence remains outside this task; this R2 fix covers event-tail serialization compatibility only, per reviewer instruction not to touch packages/save-format."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R2 fixes for the P1 save/load event-tail parser gap and P2 siege player/AI parity coverage. Do not mark ACCEPTED/CLOSED until reviewer approval.",
+  "created_at": "2026-06-26T05:27:11Z"
+}

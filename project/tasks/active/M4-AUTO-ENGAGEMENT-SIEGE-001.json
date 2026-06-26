@@ -2,7 +2,7 @@
   "id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
   "summary": "Implement M4 automatic engagement resolution and siege choice loop",
   "milestone": "M4",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -72,7 +72,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f023d-5f45-7372-8f16-4b55c6818ea2",
-      "status": "request_changes",
+      "status": "review_ready_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "nickname": "Clockwork the 5th",
@@ -80,7 +80,7 @@
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
       "start_state": "START_CONFIRMED",
       "start_submission_id": "019f023d-bc63-7123-be72-4b8387ba640f",
-      "updated_at": "2026-06-26T05:24:00Z",
+      "updated_at": "2026-06-26T05:29:00Z",
       "status_probe_submission_id": "019f024c-ee6c-7881-b39f-9d21e0d8869a",
       "continue_submission_id": "019f024d-6742-7243-8aeb-1eabe9a52f8f",
       "status_probe_result": "still implementing; protocol/schema additions in place; sim-core engagement/siege plumbing in progress; tests next; ETA 60-90 minutes",
@@ -88,11 +88,14 @@
       "review_ready_at": "2026-06-26T05:11:24Z",
       "request_changes_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
       "request_changes_submission_id": "019f0261-54c3-7f13-ba37-e0854882550f",
-      "request_changes_round": 1
+      "request_changes_round": 1,
+      "review_ready_r2_at": "2026-06-26T05:26:03Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-R2-REVIEW__simulation_engineer.json",
+      "review_ready_at_r2": "2026-06-26T05:27:11Z"
     },
     "systems_architect": {
       "thread_id": "019f023d-7347-7712-b832-3f825603ae21",
-      "status": "request_changes",
+      "status": "reviewing_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Lintel the 5th",
@@ -100,16 +103,19 @@
       "branch_or_worktree": "feat/m4-auto-engagement-siege",
       "start_state": "AWAITING_REVIEW_READY",
       "await_submission_id": "019f023d-bce4-7920-99ff-dcb42e231393",
-      "updated_at": "2026-06-26T05:24:00Z",
+      "updated_at": "2026-06-26T05:29:00Z",
       "status_note": "Reviewer reported ready but no writer REVIEW handoff existed yet; keep awaiting real handoff.",
       "review_ready_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-REVIEW__simulation_engineer.json",
       "review_ready_submission_id": "019f0259-b2dc-79b3-ae1b-f61d2fc8adb3",
       "review_started_at": "2026-06-26T05:13:00Z",
       "request_changes_handoff": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
-      "request_changes_at": "2026-06-26T05:22:00Z"
+      "request_changes_at": "2026-06-26T05:22:00Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-R2-REVIEW__simulation_engineer.json",
+      "review_ready_submission_id_r2": "019f0266-8b25-7672-a8e7-d025d3acdedd",
+      "review_started_at_r2": "2026-06-26T05:29:00Z"
     }
   },
-  "route_to": "simulation_engineer",
+  "route_to": "systems_architect",
   "notes": [
     "This is automatic resolution for the M4 vertical slice, not a commitment to manual node battles; H-007 remains a later decision.",
     "Keep siege choices command/query based and deterministic; do not hide settlement or diplomacy logic in this task.",
@@ -117,5 +123,5 @@
     "Promoted to READY after M4-MARCH-SUPPLY-STATE-001 entered origin/main at 2ab85022eaa89e5ab3b4b1f421fe422beb4b38ff and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T05:24:00Z"
+  "updated_at": "2026-06-26T05:29:00Z"
 }
