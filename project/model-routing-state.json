@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T02:19:19Z",
+  "updated_at": "2026-06-26T02:33:22Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1273,6 +1273,26 @@
       "closed_at": "2026-06-26T01:21:22Z",
       "integrated_main_commit": "af5427ec99753dd2159c01327c47afe4a3e0bef5",
       "integrated_pr": 86
+    },
+    {
+      "thread_id": "019f0188-9c3b-7783-92a6-b1c99cd8bc8c",
+      "role": "simulation_engineer",
+      "task_id": "M4-GRAIN-SUPPLY-001",
+      "status": "closed",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T02:33:22Z",
+      "integrated_main_commit": "ea0ebff0b0b861563acf0fedc409fa0d0d14a72f",
+      "integrated_pr": 88
+    },
+    {
+      "thread_id": "019f0188-b041-7d10-a689-85f3283e4013",
+      "role": "systems_architect",
+      "task_id": "M4-GRAIN-SUPPLY-001",
+      "status": "closed",
+      "close_reason": "task_closed_after_r2_accept_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T02:33:22Z",
+      "integrated_main_commit": "ea0ebff0b0b861563acf0fedc409fa0d0d14a72f",
+      "integrated_pr": 88
     }
   ],
   "active_threads": [
@@ -1354,6 +1374,7 @@
   },
   "task_notes": {
     "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",
-    "M4-GRAIN-SUPPLY-001": "ACCEPTED after simulation_engineer R2, systems_architect ACCEPT, and lead integration gates passed locally. Pending PR CI and main integration before CLOSED."
+    "M4-GRAIN-SUPPLY-001": "CLOSED after PR #88 entered main at ea0ebff0b0b861563acf0fedc409fa0d0d14a72f. simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-ROUTE-TRANSPORT-CAPACITY-001.",
+    "M4-ROUTE-TRANSPORT-CAPACITY-001": "READY after M4-GRAIN-SUPPLY-001 closure. This task owns route and transport capacity planning forecasts only."
   }
 }
