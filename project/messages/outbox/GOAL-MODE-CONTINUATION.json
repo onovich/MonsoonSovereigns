@@ -2,17 +2,30 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_AUTO_ENGAGEMENT_SIEGE_CLOSED",
+  "status": "M4_WITHDRAWAL_POSTWAR_HANDOFF_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "b09cf6b7982f3644256a9422f824b2f2639bf000",
+  "origin_main": "bb0da3beab52a9ccff90d0018bc84f22d6f75092",
   "current_milestone": "M4",
   "current_task": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
-  "current_task_status": "READY",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-AUTO-ENGAGEMENT-SIEGE-001",
-  "ready_tasks": [
-    "M4-WITHDRAWAL-POSTWAR-HANDOFF-001"
-  ],
-  "active_threads": {},
+  "ready_tasks": [],
+  "active_threads": {
+    "019f0276-d4a3-71e3-8f61-5ce7786bd8bb": {
+      "task_id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+      "role": "simulation_engineer",
+      "status": "in_progress",
+      "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+      "start_submission_id": "019f0277-cccc-7db1-ab92-c21ccd863f31"
+    },
+    "019f0276-e8ae-7a50-ad3c-9a7c96947032": {
+      "task_id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+      "role": "systems_architect",
+      "status": "awaiting_review_ready",
+      "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+      "await_submission_id": "019f0277-ce07-7600-870d-82dc21c9a101"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -29,7 +42,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Start M4-WITHDRAWAL-POSTWAR-HANDOFF-001: create branch/worktree, spawn simulation_engineer and systems_architect, send START/AWAIT messages, then execute the task under its allowed paths.",
+  "next_machine_action": "Await simulation_engineer REVIEW handoff for M4-WITHDRAWAL-POSTWAR-HANDOFF-001, validate it, route to systems_architect, review/fix, then integrate through PR/CI before closing.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -37,7 +50,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T05:44:00Z",
+  "last_updated_at": "2026-06-26T05:50:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -61,12 +74,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T05:44:00Z",
-  "current_tasks": [],
-  "last_integrated_task": "M4-AUTO-ENGAGEMENT-SIEGE-001",
-  "last_main_commit": "b09cf6b7982f3644256a9422f824b2f2639bf000",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-26T05:50:00Z",
+  "current_tasks": [
     "M4-WITHDRAWAL-POSTWAR-HANDOFF-001"
   ],
-  "next_action": "Start M4-WITHDRAWAL-POSTWAR-HANDOFF-001: create branch/worktree, spawn simulation_engineer and systems_architect, send START/AWAIT messages, then execute the task under its allowed paths."
+  "last_integrated_task": "M4-AUTO-ENGAGEMENT-SIEGE-001",
+  "last_main_commit": "bb0da3beab52a9ccff90d0018bc84f22d6f75092",
+  "next_ready_tasks": [],
+  "next_action": "Await simulation_engineer REVIEW handoff for M4-WITHDRAWAL-POSTWAR-HANDOFF-001, validate it, route to systems_architect, review/fix, then integrate through PR/CI before closing."
 }

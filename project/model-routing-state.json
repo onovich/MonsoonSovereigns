@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T05:44:00Z",
+  "updated_at": "2026-06-26T05:50:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1295,7 +1295,38 @@
       "integrated_pr": 88
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0276-d4a3-71e3-8f61-5ce7786bd8bb",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f0277-cccc-7db1-ab92-c21ccd863f31",
+      "updated_at": "2026-06-26T05:50:00Z",
+      "responsibility": "primary M4 withdrawal and postwar result handoff writer"
+    },
+    {
+      "task_id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+      "role": "systems_architect",
+      "thread_id": "019f0276-e8ae-7a50-ad3c-9a7c96947032",
+      "status": "awaiting_review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+      "start_state": "AWAITING_REVIEW_READY",
+      "await_submission_id": "019f0277-ce07-7600-870d-82dc21c9a101",
+      "updated_at": "2026-06-26T05:50:00Z",
+      "responsibility": "architecture reviewer for M4 withdrawal and postwar handoff"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1349,6 +1380,6 @@
     "M4-ROUTE-TRANSPORT-CAPACITY-001": "CLOSED after PR #90 entered main at 2431e897676838057d2e29201b0528b5ebbf29c2. simulation_engineer thread 019f01ca-2ecb-7223-a4a1-ff03e0b527cb implemented route/transport capacity forecasts; systems_architect thread 019f01ca-42ce-78d2-8e19-da4887343bb3 accepted; independent qa_reviewer thread 019f01df-cfe0-7bd2-a412-c67a7441ef96 accepted; lead gates and PR CI passed. Next READY task is M4-MARCH-SUPPLY-STATE-001.",
     "M4-MARCH-SUPPLY-STATE-001": "CLOSED after PR #92 entered main at 2ab85022eaa89e5ab3b4b1f421fe422beb4b38ff. simulation_engineer thread 019f01f4-764d-7220-ab55-c1735c3c9bf4 implemented deterministic daily march execution, supply state, reinforcement timing, canonical m4.marches hashing, and regressions; systems_architect thread 019f01f4-8a58-7753-bdae-37ae559fc7bc requested two rounds of changes and accepted R3; lead gates and PR CI passed. Next READY task is M4-AUTO-ENGAGEMENT-SIEGE-001.",
     "M4-AUTO-ENGAGEMENT-SIEGE-001": "CLOSED after PR #94 entered main at b09cf6b7982f3644256a9422f824b2f2639bf000. simulation_engineer thread 019f023d-5f45-7372-8f16-4b55c6818ea2 implemented deterministic automatic field engagement and M4 siege choice loop; systems_architect thread 019f023d-7347-7712-b832-3f825603ae21 requested event-tail parser and siege parity fixes and accepted R2; lead gates and PR CI passed. Next READY task is M4-WITHDRAWAL-POSTWAR-HANDOFF-001.",
-    "M4-WITHDRAWAL-POSTWAR-HANDOFF-001": "READY after M4-AUTO-ENGAGEMENT-SIEGE-001 closure. This task owns withdrawal, campaign result, and postwar candidate handoff to accepted M3 governance only; full diplomacy, peace treaties, rebellion systems, formal historical content, campaign UI, and M5 content remain excluded."
+    "M4-WITHDRAWAL-POSTWAR-HANDOFF-001": "IN_PROGRESS on feat/m4-withdrawal-postwar-handoff. simulation_engineer thread 019f0276-d4a3-71e3-8f61-5ce7786bd8bb received START_CONFIRMED by send_input 019f0277-cccc-7db1-ab92-c21ccd863f31; systems_architect thread 019f0276-e8ae-7a50-ad3c-9a7c96947032 received AWAITING_REVIEW_READY by send_input 019f0277-ce07-7600-870d-82dc21c9a101."
   }
 }
