@@ -4483,7 +4483,9 @@ function sortM4KnownObjectives(
     (left, right) =>
       left.campaignPlanId - right.campaignPlanId ||
       compareM4CampaignTarget(left.target, right.target) ||
-      compareText(left.objectiveKind, right.objectiveKind)
+      compareText(left.objectiveKind, right.objectiveKind) ||
+      left.confidenceBps - right.confidenceBps ||
+      compareSortedTextList(left.reasonCodes, right.reasonCodes)
   );
 }
 
@@ -4492,20 +4494,53 @@ function sortM4RouteEstimates(values: readonly M4RouteEstimateV0[]): readonly M4
     (left, right) =>
       left.routeId - right.routeId ||
       left.fromDistrictId - right.fromDistrictId ||
-      left.toDistrictId - right.toDistrictId
+      left.toDistrictId - right.toDistrictId ||
+      left.travelCostEstimate - right.travelCostEstimate ||
+      left.capacityEstimate - right.capacityEstimate ||
+      left.confidenceBps - right.confidenceBps
   );
 }
 
 function sortM4SupplyEstimates(
   values: readonly M4SupplyEstimateV0[]
 ): readonly M4SupplyEstimateV0[] {
-  return [...values].sort((left, right) => left.districtId - right.districtId);
+  return [...values].sort(
+    (left, right) =>
+      left.districtId - right.districtId ||
+      left.supplyMin - right.supplyMin ||
+      left.supplyMax - right.supplyMax ||
+      left.confidenceBps - right.confidenceBps
+  );
 }
 
 function sortM4DefenderEstimates(
   values: readonly M4DefenderEstimateV0[]
 ): readonly M4DefenderEstimateV0[] {
-  return [...values].sort((left, right) => compareM4CampaignTarget(left.target, right.target));
+  return [...values].sort(
+    (left, right) =>
+      compareM4CampaignTarget(left.target, right.target) ||
+      left.defenderMin - right.defenderMin ||
+      left.defenderMax - right.defenderMax ||
+      left.confidenceBps - right.confidenceBps
+  );
+}
+
+function compareSortedTextList(left: readonly string[], right: readonly string[]): number {
+  const sortedLeft = sortText(left);
+  const sortedRight = sortText(right);
+  const lengthCompare = sortedLeft.length - sortedRight.length;
+  if (lengthCompare !== 0) {
+    return lengthCompare;
+  }
+
+  for (let index = 0; index < sortedLeft.length; index += 1) {
+    const valueCompare = compareText(sortedLeft[index] ?? "", sortedRight[index] ?? "");
+    if (valueCompare !== 0) {
+      return valueCompare;
+    }
+  }
+
+  return 0;
 }
 
 function compareM4CampaignTarget(left: M4CampaignTargetV0, right: M4CampaignTargetV0): number {

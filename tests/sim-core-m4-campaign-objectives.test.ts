@@ -13,6 +13,7 @@ import {
   parseGameDay,
   parsePersonId,
   parsePolityId,
+  parseRouteId,
   querySimulationV1,
   submitCommandV1,
   validateWorldStateV0,
@@ -172,6 +173,61 @@ describe("M4-CAMPAIGN-OBJECTIVES-001 campaign objectives and FactionKnowledge", 
     expect(first).toEqual(second);
   });
 
+  test("canonicalizes duplicate-key FactionKnowledge estimates with stable tie-breakers", () => {
+    const first = canonicalizeM4CampaignStateV0({
+      schemaVersion: 1,
+      campaignPlans: [],
+      factionKnowledgeSnapshots: [
+        {
+          ...knowledgeSnapshot(2),
+          knownObjectives: [
+            { ...knownObjective(10, "campaign.reason.b"), confidenceBps: 7_000 },
+            { ...knownObjective(10, "campaign.reason.a"), confidenceBps: 6_000 }
+          ],
+          routeEstimates: [
+            { ...routeEstimate(1), travelCostEstimate: 14, capacityEstimate: 50 },
+            { ...routeEstimate(1), travelCostEstimate: 12, capacityEstimate: 80 }
+          ],
+          supplyEstimates: [
+            { ...supplyEstimate(2), supplyMin: 500, supplyMax: 700 },
+            { ...supplyEstimate(2), supplyMin: 400, supplyMax: 600 }
+          ],
+          defenderEstimates: [
+            { ...defenderEstimate(2), defenderMin: 120, defenderMax: 240 },
+            { ...defenderEstimate(2), defenderMin: 100, defenderMax: 220 }
+          ]
+        }
+      ]
+    });
+    const second = canonicalizeM4CampaignStateV0({
+      schemaVersion: 1,
+      campaignPlans: [],
+      factionKnowledgeSnapshots: [
+        {
+          ...knowledgeSnapshot(2),
+          knownObjectives: [
+            { ...knownObjective(10, "campaign.reason.a"), confidenceBps: 6_000 },
+            { ...knownObjective(10, "campaign.reason.b"), confidenceBps: 7_000 }
+          ],
+          routeEstimates: [
+            { ...routeEstimate(1), travelCostEstimate: 12, capacityEstimate: 80 },
+            { ...routeEstimate(1), travelCostEstimate: 14, capacityEstimate: 50 }
+          ],
+          supplyEstimates: [
+            { ...supplyEstimate(2), supplyMin: 400, supplyMax: 600 },
+            { ...supplyEstimate(2), supplyMin: 500, supplyMax: 700 }
+          ],
+          defenderEstimates: [
+            { ...defenderEstimate(2), defenderMin: 100, defenderMax: 220 },
+            { ...defenderEstimate(2), defenderMin: 120, defenderMax: 240 }
+          ]
+        }
+      ]
+    });
+
+    expect(first).toEqual(second);
+  });
+
   test("planning queries are read-only and expose forecasts, reasons, and knowledge estimates", () => {
     const world = worldWithM4({
       campaignPlans: [campaignPlan(10)],
@@ -239,13 +295,13 @@ function definitions(): WorldDefinitionsV0 {
     settlements: [],
     routes: [
       {
-        id: 1 as never,
+        id: parseRouteId(1),
         fromDistrictId: parseDistrictId(1),
         toDistrictId: parseDistrictId(2),
         lengthInMapUnits: 10
       },
       {
-        id: 2 as never,
+        id: parseRouteId(2),
         fromDistrictId: parseDistrictId(2),
         toDistrictId: parseDistrictId(3),
         lengthInMapUnits: 20
@@ -334,7 +390,7 @@ function routeEstimate(
   routeId: number
 ): M4CampaignStateV0["factionKnowledgeSnapshots"][number]["routeEstimates"][number] {
   return {
-    routeId: routeId as never,
+    routeId: parseRouteId(routeId),
     fromDistrictId: parseDistrictId(1),
     toDistrictId: parseDistrictId(2),
     travelCostEstimate: 12,
