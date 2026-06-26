@@ -2,7 +2,7 @@
   "id": "M5-TASK-GRAPH-001",
   "summary": "Create minimal M5 playable vertical slice task graph",
   "milestone": "M5",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -61,7 +61,7 @@
   "threads": {
     "systems_architect": {
       "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
-      "status": "review_ready",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -74,15 +74,16 @@
       "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
       "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:35:30Z",
+      "updated_at": "2026-06-26T12:47:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
       "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a",
       "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "review_ready_at": "2026-06-26T12:40:00Z"
+      "review_ready_at": "2026-06-26T12:40:00Z",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "qa_reviewer": {
       "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
-      "status": "reviewing",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -92,12 +93,13 @@
       "branch_or_worktree": "chore/m5-task-graph",
       "start_state": "AWAITING_REVIEW_READY",
       "spawn_result": "spawn_agent",
-      "updated_at": "2026-06-26T12:41:00Z",
+      "updated_at": "2026-06-26T12:47:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
       "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba",
       "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
       "review_ready_at": "2026-06-26T12:40:00Z",
-      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0"
+      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
     },
     "previous_systems_architect": {
       "thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
@@ -119,7 +121,7 @@
       "replaced_by": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "M5 starts only after M4 Gate PASS_WITH_LIMITS entered origin/main and M4-EXIT-VALIDATION-001 is CLOSED.",
     "This task creates or restores the M5 task graph only; it must not implement playable-slice, AI, distribution, player-research, performance, manual battle, release, telemetry, server, mod, or content-production behavior.",
@@ -130,5 +132,8 @@
     "Replacement systems_architect inspected the recovered M5 graph at f2598fc72562 and routed the planning-only graph to independent QA review without advancing downstream M5 tasks."
   ],
   "created_at": "2026-06-26T11:40:00.000Z",
-  "updated_at": "2026-06-26T12:41:00Z"
+  "updated_at": "2026-06-26T12:47:00Z",
+  "accepted_at": "2026-06-26T12:47:00Z",
+  "qa_accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
 }

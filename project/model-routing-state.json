@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T12:41:00Z",
+  "updated_at": "2026-06-26T12:47:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1512,7 +1512,7 @@
       "task_id": "M5-TASK-GRAPH-001",
       "role": "qa_reviewer",
       "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
-      "status": "reviewing",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1523,17 +1523,18 @@
       "start_state": "AWAITING_REVIEW_READY",
       "spawn_result": "spawn_agent",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:41:00Z",
+      "updated_at": "2026-06-26T12:47:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
       "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba",
       "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0"
+      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
     },
     {
       "task_id": "M5-TASK-GRAPH-001",
       "role": "systems_architect",
       "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
-      "status": "review_ready",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1546,10 +1547,11 @@
       "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
       "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:40:00Z",
+      "updated_at": "2026-06-26T12:47:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
       "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a",
-      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
     }
   ],
   "task_effects": {
@@ -1602,7 +1604,7 @@
     "M4-DETERMINISM-REPLAY-001": "CLOSED after PR #102 entered main at 83ecd0c07fbe29f0d449180c00710bb10568a105. test_engineer thread 019f0313-1f78-70d2-ad1a-033e799c63d4 produced a valid REVIEW handoff; qa_reviewer thread 019f0313-78ab-7f21-a5e1-e1a4d7955ed2 independently accepted after schema fix; lead gates and PR CI passed. Next READY task is M4-STRESS-VALIDATION-001.",
     "M4-STRESS-VALIDATION-001": "CLOSED after PR #104 entered main at 0eb040e9a3a32ec39e36f83e5d46df5f0cde3feb. Replacement test_engineer thread 019f036c-21de-7512-b545-18c05bf892bb produced valid R2 REVIEW handoff; qa_reviewer thread 019f034c-0dbf-7122-b874-684fe62a157a accepted R2; lead gates and PR CI passed. Next READY task is M4-EXIT-VALIDATION-001.",
     "M4-EXIT-VALIDATION-001": "CLOSED after PR #107 entered main at 3e649ac5f739dfea75511ad0cb1193fc7df713aa. M4_GATE = PASS_WITH_LIMITS; M5 task graph is now the next active planning task.",
-    "M5-TASK-GRAPH-001": "REVIEW after replacement systems_architect handoff project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json. Downstream M5 tasks remain DRAFT; QA review pending. QA route submission 019f03cf-1efb-71a0-9c7e-4f07616608c0 recorded."
+    "M5-TASK-GRAPH-001": "ACCEPTED pending PR after systems REVIEW and qa_reviewer ACCEPT project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json. Downstream M5 tasks remain DRAFT and Human Gates preserved."
   },
   "task_notes": {
     "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",
@@ -1614,6 +1616,6 @@
     "M4-CAMPAIGN-AI-001": "CLOSED after PR #98 entered main at d5cd9fa8cd4525dce68a705c4540d27453d38048. simulation_engineer thread 019f02b3-174c-7790-b18a-9c07603d9459 produced R3/R4 handoffs; systems_architect thread 019f02b3-2b4a-7a82-b147-01dd71eac736 requested changes and accepted R4; qa_reviewer thread 019f02d5-8524-7d92-9eb0-87d130546936 accepted; lead gates and PR CI passed. Next READY task is M4-CLIENT-CAMPAIGN-PLANNING-UI-001.",
     "M4-STRESS-VALIDATION-001": "CLOSED after PR #105 entered main at 96abe397327a81e5922aed61c022255dc20f2baa. Validation-only M4 stress evidence task produced accepted stress coverage, closure handoff, clean task graph, and no product scope expansion.",
     "M4-EXIT-VALIDATION-001": "CLOSED after M4 gate PR #106 entered main. M4_GATE = PASS_WITH_LIMITS with accepted process limit; M5 formal passage remains a Human Gate.",
-    "M5-TASK-GRAPH-001": "REVIEW. Systems handoff is valid and routes planning-only M5 task graph to QA."
+    "M5-TASK-GRAPH-001": "ACCEPTED pending PR. Planning-only M5 task graph accepted; close only after PR merge and main sync."
   }
 }

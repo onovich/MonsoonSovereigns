@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT",
+  "task_id": "M5-TASK-GRAPH-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M5-TASK-GRAPH-001. The review verified the actual chore/m5-task-graph diff at e9786544, the systems_architect REVIEW handoff, and the M5 task graph. M5-TASK-GRAPH-001 is REVIEW, all 9 downstream M5 tasks remain DRAFT, the graph is acyclic with existing dependencies, M5 formal passage and manual node battle remain explicit Human Gates, and no product/package/content/tool/CI/gate/roadmap/ADR/manifest paths changed. The graph is planning-only and does not pre-approve telemetry, server/multiplayer, arbitrary-code mods, release/commercial/branding decisions, paid services, frozen architecture changes, or the manual node battle implementation. M4_GATE remains PASS_WITH_LIMITS as an accepted process limit and is not restated as systems_architect acceptance.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
+    "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "project/tasks/active/M5-TASK-GRAPH-001.json",
+    "project/tasks/active/M5-SLICE-DEFINITION-001.json",
+    "project/tasks/active/M5-SIM-PLAYABLE-LOOP-001.json",
+    "project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json",
+    "project/tasks/active/M5-MULTIYEAR-AI-RUN-001.json",
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "project/tasks/active/M5-PERFORMANCE-GATE-001.json",
+    "project/tasks/active/M5-PLAYER-RESEARCH-001.json",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json"
+  ],
+  "branch_or_worktree": "chore/m5-task-graph / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "HEAD e9786544; origin/main 3e649ac5; worktree clean before QA handoff creation",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On branch chore/m5-task-graph tracking origin/chore/m5-task-graph; worktree clean before QA handoff creation."
+    },
+    {
+      "command": "git log --oneline --decorate -5",
+      "exit_code": 0,
+      "result": "HEAD and origin/chore/m5-task-graph are e9786544 chore(process): route M5 task graph to QA; prior graph commit f2598fc7; origin/main is 3e649ac5."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Branch diff is confined to PROJECT_STATUS.md, project goal/model/thread state, M5 task JSONs, and project/messages handoff/route files."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- apps packages content-source tools .github docs/decisions docs/GATE-M0.md docs/GATE-M1.md docs/GATE-M2.md docs/GATE-M3.md docs/GATE-M4.md docs/11-roadmap.md docs/13-risk-register-and-test-strategy.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output; no product/package/content/tool/CI/gate/roadmap/ADR/manifest forbidden paths changed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-TASK-GRAPH-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M4-EXIT-VALIDATION-001 is CLOSED; M5-TASK-GRAPH-001 is REVIEW; all downstream M5 tasks are DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M5-TASK-GRAPH-001 remains in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect REVIEW handoff."
+    },
+    {
+      "command": "node -e taskctl validate for every M5 task file",
+      "exit_code": 0,
+      "result": "taskctl validate all M5 ok count=10."
+    },
+    {
+      "command": "node -e JSON validation for all M5 task files and DAG acyclicity/dependency/status/Human Gate shape",
+      "exit_code": 0,
+      "result": "M5 JSON DAG check ok files=10 edges=21 internalEdges=20 downstreamDraft=9 humanGates=2."
+    },
+    {
+      "command": "rg/Select-String roadmap and M5 gate terms",
+      "exit_code": 0,
+      "result": "Roadmap and acceptance matrix M5 goals match the graph: 2-4 hour playable slice, multi-year AI without rescue, Web/Windows distributable evidence, player research, performance gate, and manual battle decision."
+    },
+    {
+      "command": "rg M4_GATE/PASS_WITH_LIMITS/process-limit evidence in docs/GATE-M4.md, PROJECT_STATUS.md, M5 task graph, and systems handoff",
+      "exit_code": 0,
+      "result": "M4_GATE remains PASS_WITH_LIMITS as a process limit; systems handoff explicitly says it did not describe the limit as systems_architect acceptance."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output before QA handoff creation."
+    }
+  ],
+  "decisions": [
+    "ACCEPT M5-TASK-GRAPH-001 for lead_orchestrator integration.",
+    "The M5 task graph is dependency-ordered and acyclic: 10 M5 task files, 21 dependency edges, 20 internal M5 edges, and all dependencies exist in project/tasks/active.",
+    "All downstream M5 tasks remain DRAFT: slice definition, simulation loop, client playable UI, multi-year AI run, Web/Windows distributable evidence, performance gate, player research, manual node battle decision, and M5 exit Human Gate.",
+    "M5 formal passage remains a Human Gate in M5-EXIT-HUMAN-GATE-001 and must not be auto-passed by reviewer handoff or CI.",
+    "Manual node battle remains a separate Human Gate in M5-MANUAL-NODE-BATTLE-DECISION-001; the graph does not implement, approve, or silently route manual battle implementation.",
+    "Allowed and forbidden paths are scoped per task; future implementation tasks are still DRAFT and require their own writer/reviewer evidence before any product/package edits.",
+    "No current diff touches product code, package code, content-source data, tools, CI, prior gate docs, roadmap, acceptance matrix, ADRs, manifests, release checksum/report files, or dependency manifests.",
+    "Telemetry, server/multiplayer, arbitrary-code mods, release/commercial/branding, paid services, accounts/secrets, frozen architecture/platform/core changes, cultural-risk decisions, irreversible migrations, and manual node battle remain explicit exclusions or Human Gate stop conditions.",
+    "M4_GATE PASS_WITH_LIMITS is preserved as an accepted process limit caused by missing systems handoff after real stalled systems writer threads; this review found no wording that converts it into systems_architect acceptance."
+  ],
+  "risks": [
+    "This ACCEPT covers only the planning DAG; it is not evidence that the playable slice, AI run, player research, performance gate, distributable smoke, or formal M5 passage exists.",
+    "Several downstream M5 tasks are R3/R4 because they will later touch deterministic authority state, protocol/save schemas, client read-model surfaces, Electron packaging/security, performance evidence, and Human Gate decisions.",
+    "M5 implementation must keep preserving M4 exclusions unless a later explicit Human Gate or ADR authorizes a change."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead should integrate this QA ACCEPT handoff, run normal integration gates, and only then accept/close M5-TASK-GRAPH-001 or select the next dependency-ready M5 task. Do not mark M5 formally passed or start manual node battle implementation from this graph review.",
+  "created_at": "2026-06-26T12:45:00Z"
+}

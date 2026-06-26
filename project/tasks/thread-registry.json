@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-26T12:41:00Z",
+  "updated_at": "2026-06-26T12:47:00Z",
   "leadership": {
     "active_leads": [
       {
@@ -1719,7 +1719,7 @@
       "task_id": "M5-TASK-GRAPH-001",
       "role": "systems_architect",
       "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
-      "status": "review_ready",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1732,16 +1732,17 @@
       "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
       "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:40:00Z",
+      "updated_at": "2026-06-26T12:47:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
       "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a",
-      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "M5-TASK-GRAPH-001:qa_reviewer": {
       "task_id": "M5-TASK-GRAPH-001",
       "role": "qa_reviewer",
       "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
-      "status": "reviewing",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1752,11 +1753,12 @@
       "start_state": "AWAITING_REVIEW_READY",
       "spawn_result": "spawn_agent",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:41:00Z",
+      "updated_at": "2026-06-26T12:47:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
       "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba",
       "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0"
+      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
     },
     "M5-TASK-GRAPH-001:systems_architect:partial:019f03b9-e19b-7592-8f0b-963615f5186e": {
       "task_id": "M5-TASK-GRAPH-001",
