@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T13:00:00Z",
+  "updated_at": "2026-06-26T13:05:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1564,7 +1564,25 @@
       "close_tool_result": "not_found_at_closure_time_no_fabricated_close_result"
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M5-SLICE-DEFINITION-001",
+      "role": "gameplay_designer",
+      "thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Ledger the 8th",
+      "responsibility": "primary gameplay_designer writer for bounded M5 playable-slice contract",
+      "branch_or_worktree": "design/m5-slice-definition",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T13:05:00Z"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1627,6 +1645,7 @@
     "M4-CAMPAIGN-AI-001": "CLOSED after PR #98 entered main at d5cd9fa8cd4525dce68a705c4540d27453d38048. simulation_engineer thread 019f02b3-174c-7790-b18a-9c07603d9459 produced R3/R4 handoffs; systems_architect thread 019f02b3-2b4a-7a82-b147-01dd71eac736 requested changes and accepted R4; qa_reviewer thread 019f02d5-8524-7d92-9eb0-87d130546936 accepted; lead gates and PR CI passed. Next READY task is M4-CLIENT-CAMPAIGN-PLANNING-UI-001.",
     "M4-STRESS-VALIDATION-001": "CLOSED after PR #105 entered main at 96abe397327a81e5922aed61c022255dc20f2baa. Validation-only M4 stress evidence task produced accepted stress coverage, closure handoff, clean task graph, and no product scope expansion.",
     "M4-EXIT-VALIDATION-001": "CLOSED after M4 gate PR #106 entered main. M4_GATE = PASS_WITH_LIMITS with accepted process limit; M5 formal passage remains a Human Gate.",
-    "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117. Planning-only M5 graph accepted and integrated; downstream M5 tasks remain DRAFT, with M5-SLICE-DEFINITION-001 dependency-ready. M5 formal passage and manual node battle remain Human Gates."
+    "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117. Planning-only M5 graph accepted and integrated; downstream M5 tasks remain DRAFT, with M5-SLICE-DEFINITION-001 dependency-ready. M5 formal passage and manual node battle remain Human Gates.",
+    "M5-SLICE-DEFINITION-001": "IN_PROGRESS with gameplay_designer writer thread 019f03e1-ab85-78d3-ab7a-f200abbdd76f. Scope is planning-only M5 playable-slice contract; no product code or Human Gate decisions."
   }
 }

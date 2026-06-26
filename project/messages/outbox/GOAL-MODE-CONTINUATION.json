@@ -2,17 +2,31 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M5_TASK_GRAPH_CLOSED_SLICE_DEFINITION_READY",
+  "status": "M5_SLICE_DEFINITION_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "8b771272a9cfa790282043fcd092c1ce59fd0117",
+  "origin_main": "e6d539ebf8ea1bd032ef5ad5aa1e4beb467ed802",
   "current_milestone": "M5",
   "current_task": "M5-SLICE-DEFINITION-001",
-  "current_task_status": "READY_NOT_STARTED",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M5-TASK-GRAPH-001",
-  "ready_tasks": [
-    "M5-SLICE-DEFINITION-001"
-  ],
-  "active_threads": {},
+  "ready_tasks": [],
+  "active_threads": {
+    "019f03e1-ab85-78d3-ab7a-f200abbdd76f": {
+      "thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Ledger the 8th",
+      "responsibility": "primary gameplay_designer writer for bounded M5 playable-slice contract",
+      "branch_or_worktree": "design/m5-slice-definition",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T13:05:00Z"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -29,7 +43,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Start M5-SLICE-DEFINITION-001 with the owner/reviewer requirements from its task file; preserve M5 Human Gates.",
+  "next_machine_action": "Wait for gameplay_designer writer handoff, validate it, then route M5-SLICE-DEFINITION-001 to systems_architect review.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -37,7 +51,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T13:00:00Z",
+  "last_updated_at": "2026-06-26T13:05:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -69,14 +83,14 @@
       "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T13:00:00Z",
-  "current_tasks": [],
-  "last_integrated_task": "M5-TASK-GRAPH-001",
-  "last_main_commit": "8b771272a9cfa790282043fcd092c1ce59fd0117",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-26T13:05:00Z",
+  "current_tasks": [
     "M5-SLICE-DEFINITION-001"
   ],
-  "next_action": "Start M5-SLICE-DEFINITION-001 with the owner/reviewer requirements from its task file; preserve M5 Human Gates.",
+  "last_integrated_task": "M5-TASK-GRAPH-001",
+  "last_main_commit": "e6d539ebf8ea1bd032ef5ad5aa1e4beb467ed802",
+  "next_ready_tasks": [],
+  "next_action": "Wait for gameplay_designer writer handoff, validate it, then route M5-SLICE-DEFINITION-001 to systems_architect review.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -128,5 +142,12 @@
     "lead_close_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-26T13:00:00Z",
     "next_ready_task": "M5-SLICE-DEFINITION-001"
+  },
+  "m5_slice_definition": {
+    "status": "IN_PROGRESS",
+    "branch_or_worktree": "design/m5-slice-definition",
+    "writer_thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
+    "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
+    "started_at": "2026-06-26T13:05:00Z"
   }
 }
