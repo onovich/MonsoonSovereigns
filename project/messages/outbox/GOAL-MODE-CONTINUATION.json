@@ -6,11 +6,35 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "4cd5cd1fc1073c3c76aaca8d78b8be182e30898a",
   "current_milestone": "M4",
-  "current_task": null,
+  "current_task": "M4-ROUTE-TRANSPORT-CAPACITY-001",
   "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-CAMPAIGN-OBJECTIVES-001",
   "ready_tasks": [],
-  "active_threads": {},
+  "active_threads": {
+    "019f01ca-2ecb-7223-a4a1-ff03e0b527cb": {
+      "task_id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "role": "simulation_engineer",
+      "status": "accepted",
+      "branch_or_worktree": "feat/m4-route-transport-capacity",
+      "lead_accept_handoff": "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-LEAD-ACCEPT__lead_orchestrator.json"
+    },
+    "019f01ca-42ce-78d2-8e19-da4887343bb3": {
+      "task_id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "role": "systems_architect",
+      "status": "accepted",
+      "branch_or_worktree": "feat/m4-route-transport-capacity",
+      "accept_handoff": "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-SYSTEMS-ACCEPT__systems_architect.json",
+      "lead_accept_handoff": "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-LEAD-ACCEPT__lead_orchestrator.json"
+    },
+    "019f01df-cfe0-7bd2-a412-c67a7441ef96": {
+      "task_id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "role": "qa_reviewer",
+      "status": "accepted",
+      "branch_or_worktree": "feat/m4-route-transport-capacity",
+      "accept_handoff": "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-QA-ACCEPT__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-LEAD-ACCEPT__lead_orchestrator.json"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -59,12 +83,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T02:33:22Z",
-  "current_tasks": [],
-  "last_integrated_task": "M4-GRAIN-SUPPLY-001",
-  "last_main_commit": "ea0ebff0b0b861563acf0fedc409fa0d0d14a72f",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-26T03:11:35Z",
+  "current_tasks": [
     "M4-ROUTE-TRANSPORT-CAPACITY-001"
   ],
-  "next_action": "Start M4-ROUTE-TRANSPORT-CAPACITY-001 immediately with simulation_engineer writer and systems_architect reviewer."
+  "last_integrated_task": "M4-GRAIN-SUPPLY-001",
+  "last_main_commit": "ec47ded867e1bace6ec5ad21d40c1f16cc1fe9cb",
+  "next_ready_tasks": [],
+  "next_action": "Commit accepted implementation, create PR, wait for CI, merge to main, close M4-ROUTE-TRANSPORT-CAPACITY-001, then continue to next READY M4 task."
 }

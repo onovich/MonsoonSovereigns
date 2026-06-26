@@ -1,0 +1,114 @@
+{
+  "message_id": "MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-SYSTEMS-ACCEPT",
+  "task_id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems architecture review accepts M4-ROUTE-TRANSPORT-CAPACITY-001. The implementation adds one narrow read-only query, sim.preview-m4-route-transport-capacity, reusing existing M2 route/season preview logic and existing M4 campaign, muster, and grain reservation state. The diff stays inside allowed paths, adds no commands, dependencies, save-format milestone work, UI, march execution, battle, siege, formal content, complex naval warfare, fleets, or amphibious behavior. Deterministic route tie-breakers, capacity bottleneck/overload reporting, travel-window fields, carried supply limits, monsoon/season risk reason ordering, and read-only behavior are covered by tests and verified by independent gates.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-route-transport-capacity.test.ts",
+    "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-route-transport-capacity",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Reviewed current working-tree diff on feat/m4-route-transport-capacity. Modified tracked files are packages/protocol/src/index.ts, packages/sim-core/package.json, packages/sim-core/src/command-query-v1.ts, and tests/protocol-command-query-schema.test.ts. New untracked files are tests/sim-core-m4-route-transport-capacity.test.ts and this systems_architect ACCEPT handoff. The writer REVIEW handoff and task JSON are tracked in the current branch and have no remaining working-tree diff."
+    },
+    {
+      "command": "Manual diff inspection of protocol, sim-core query implementation, package script, task JSON, protocol schema test, and tests/sim-core-m4-route-transport-capacity.test.ts",
+      "exit_code": 0,
+      "result": "Verified the new public surface is a read-only GameQuery only; protocol payload is narrow to queryId and campaignPlanId; sim-core validates M2/M4/campaign/target references; source forecasts derive from carried M4 grain reservations and include planned M4 muster troop count; route segments are copied from M2 preview results; no command path or WorldState mutation is added by the forecast."
+    },
+    {
+      "command": "rg preview-m4-route|RouteTransportCapacity|M4RouteTransport|route.forecast|route.season -n packages tests project",
+      "exit_code": 0,
+      "result": "Confirmed all new route-capacity symbols are limited to packages/protocol/src/index.ts, packages/sim-core/src/command-query-v1.ts, tests/protocol-command-query-schema.test.ts, tests/sim-core-m4-route-transport-capacity.test.ts, task metadata, and handoffs."
+    },
+    {
+      "command": "rg Math.random|Date.now|performance.now|Object.keys|new Date|fs|node:|react|pixi|electron packages/sim-core/src/command-query-v1.ts tests/sim-core-m4-route-transport-capacity.test.ts -n",
+      "exit_code": 0,
+      "result": "No forbidden randomness, real-time, React, Pixi, Electron, or Node fs imports were found in the touched sim-core implementation. Test-only node:fs matches were absent; the command returned only fixture helper line matches unrelated to platform imports."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "18 test files passed; 125 tests passed, including tests/sim-core-m4-route-transport-capacity.test.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed, including protocol parse coverage for sim.preview-m4-route-transport-capacity."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 29 files / 192 tests passed; web Vitest 1 file / 3 tests passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed across configured repository targets."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts, including sim-core."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "exit_code": 0,
+      "result": "Task JSON parse/shape ok; status REVIEW; route_to systems_architect; risk R3."
+    }
+  ],
+  "decisions": [
+    "ACCEPT. Scope is limited to the allowed protocol, sim-core, test, task, and handoff paths. No forbidden paths were modified.",
+    "The new query is suitable for this milestone because it is read-only, campaign-scoped by CampaignPlanId, and does not add a command, implicit RPC layer, persistent route-plan object graph, march execution, or generalized logistics manager.",
+    "Deterministic route selection delegates to the accepted M2 route preview path, which uses sorted directed edges and explicit route-id/direction tie-breakers. New M4 tests cover stable output across shuffled route and reservation ordering.",
+    "Capacity math is explicit at the forecast level: each carried grain source records routeSegments, bottleneckCapacity, carriedSupplyAmount, carriedSupplyLimit, overloadedReasonCode, and travelWindow; aggregate result reports carriedSupplyAvailable, carriedSupplyLimit, and the minimum per-source bottleneck.",
+    "Season and monsoon risks are stable reason codes sorted by explicit rank. Tests lock monsoon and road-delay ordering and confirm repeated queries produce identical results.",
+    "Player/AI parity is preserved because no new command is introduced. The query reads the same M4 campaign, muster, and grain state regardless of whether prior commands were submitted by player or AI through existing shared GameCommand paths.",
+    "River/water handling remains the accepted M2 routeKind seasonal capacity/cost modifier. The diff does not introduce fleets, naval battles, amphibious operations, or independent water-route state."
+  ],
+  "risks": [
+    "This is an R3 protocol/query surface and should continue to qa_reviewer or the configured R3 downstream gate before lead marks the task ACCEPTED/CLOSED.",
+    "The aggregate carriedSupplyLimit intentionally sums per-source limits while aggregate bottleneckCapacity reports the minimum per-source bottleneck. This is acceptable as a planning forecast, but future simultaneous convoy execution would need a separate shared-edge capacity reservation model and ADR/task.",
+    "Forecasts currently support district campaign targets only. Polity-target route planning remains outside this task and should require an explicit target-to-district policy before implementation.",
+    "Save-format milestone work remains out of scope. The new query does not require save DTO changes, but future M4 save-runtime work must decide persistence compatibility for any M4 runtime fields it owns."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route this ACCEPT to lead_orchestrator. The implementation is acceptable from systems_architect review; proceed with the required R3 downstream QA/integration gate before marking M4-ROUTE-TRANSPORT-CAPACITY-001 ACCEPTED or CLOSED. Ensure the modified protocol/sim-core/test files plus the untracked new route-capacity test and this reviewer handoff are staged during integration.",
+  "created_at": "2026-06-26T10:58:09+08:00"
+}

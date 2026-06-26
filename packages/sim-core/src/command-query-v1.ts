@@ -101,8 +101,10 @@ import {
   type M4MobilizedForceCommitmentStateV0,
   type M4MusterCommitmentStatusV0,
   type M2EconomyPopulationStateV0,
+  type GameDay,
   type M2LaborCommitmentPurposeV0,
   type M2RouteKindV0,
+  type M2SeasonalMonthStateV0,
   type M2PopulationGroupStateV0,
   type PersonId,
   type PopulationGroupId,
@@ -591,6 +593,19 @@ export type QueryResultV1 =
             readonly sourceForecasts: readonly M4GrainSupplySourceForecastReadModelV1[];
             readonly reservations: readonly M4GrainSupplyReservationReadModelV1[];
             readonly reasonCodes: readonly string[];
+          }
+        | {
+            readonly kind: "sim.preview-m4-route-transport-capacity";
+            readonly day: number;
+            readonly revision: number;
+            readonly campaignPlanId: number;
+            readonly targetDistrictId: DistrictId;
+            readonly plannedTroops: number;
+            readonly carriedSupplyAvailable: number;
+            readonly carriedSupplyLimit: number;
+            readonly bottleneckCapacity: number;
+            readonly sourceForecasts: readonly M4RouteTransportSourceForecastReadModelV1[];
+            readonly reasonCodes: readonly string[];
           };
     }
   | {
@@ -802,6 +817,29 @@ export interface M4GrainSupplyReservationReadModelV1 {
   readonly status: M4GrainSupplyReservationStatusV0;
   readonly statusReasonCode: string;
   readonly reasonCodes: readonly string[];
+}
+
+export interface M4RouteTransportTravelWindowReadModelV1 {
+  readonly earliestDepartureDay: GameDay;
+  readonly latestDepartureDay: GameDay;
+  readonly earliestArrivalDay: number;
+  readonly latestArrivalDay: number;
+  readonly travelDays: number;
+}
+
+export interface M4RouteTransportSourceForecastReadModelV1 {
+  readonly reservationId: number;
+  readonly source: M4GrainSupplyReservationStateV0["source"];
+  readonly originDistrictId: DistrictId;
+  readonly destinationDistrictId: DistrictId;
+  readonly status: "capacity-exceeded" | "reachable" | "unreachable";
+  readonly carriedSupplyAmount: number;
+  readonly carriedSupplyLimit: number;
+  readonly bottleneckCapacity: number;
+  readonly travelWindow: M4RouteTransportTravelWindowReadModelV1;
+  readonly routeSegments: readonly M2TransportRoutePreviewEdgeReadModelV1[];
+  readonly overloadedReasonCode: string | null;
+  readonly seasonRiskReasonCodes: readonly string[];
 }
 
 interface CommandEvaluationV1 {
@@ -5444,6 +5482,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM4MusterCommitmentsQuery(runtime, query);
     case "sim.preview-m4-grain-supply":
       return executeM4GrainSupplyPreviewQuery(runtime, query);
+    case "sim.preview-m4-route-transport-capacity":
+      return executeM4RouteTransportCapacityPreviewQuery(runtime, query);
   }
 }
 
@@ -5737,6 +5777,311 @@ function executeM4GrainSupplyPreviewQuery(
       reasonCodes
     }
   };
+}
+
+function executeM4RouteTransportCapacityPreviewQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.preview-m4-route-transport-capacity" }>
+): QueryResultV1 {
+  const m2 = runtime.world.state.m2;
+  if (m2 === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "m2-state-missing",
+        path: "state.m2",
+        message: "sim.preview-m4-route-transport-capacity requires an M2 transport state."
+      }
+    };
+  }
+  const m4 = runtime.world.state.m4;
+  const campaignPlanId = parseCampaignPlanId(query.payload.campaignPlanId);
+  const campaignPlan = m4?.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (m4 === undefined || campaignPlan === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.campaignPlanId",
+        message: "sim.preview-m4-route-transport-capacity references a missing CampaignPlanId."
+      }
+    };
+  }
+  if (campaignPlan.target.kind !== "district") {
+    return {
+      status: "rejected",
+      error: {
+        code: "campaign-objective-invalid",
+        path: "payload.campaignPlanId",
+        message: "M4 route transport capacity forecast requires a district target."
+      }
+    };
+  }
+  const targetDistrictId = campaignPlan.target.districtId;
+
+  const sourceForecasts = m4.grainSupplyReservations
+    .filter(
+      (reservation) =>
+        reservation.campaignPlanId === campaignPlanId && reservation.carriedAmount > 0
+    )
+    .sort(compareM4GrainSupplyReservationForConsumption)
+    .map((reservation) =>
+      forecastM4RouteTransportSource({
+        world: runtime.world,
+        reservation,
+        targetDistrictId,
+        earliestDepartureDay: campaignPlan.startWindow.earliestDay,
+        latestDepartureDay: campaignPlan.startWindow.latestDay
+      })
+    );
+  const carriedSupplyAvailable = sourceForecasts.reduce(
+    (sum, forecast) => sum + forecast.carriedSupplyAmount,
+    0
+  );
+  const carriedSupplyLimit = sourceForecasts.reduce(
+    (sum, forecast) => sum + forecast.carriedSupplyLimit,
+    0
+  );
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.preview-m4-route-transport-capacity",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      campaignPlanId,
+      targetDistrictId,
+      plannedTroops: plannedM4MusterTroops(m4, campaignPlanId),
+      carriedSupplyAvailable,
+      carriedSupplyLimit,
+      bottleneckCapacity: aggregateM4RouteBottleneckCapacity(sourceForecasts),
+      sourceForecasts,
+      reasonCodes: m4RouteTransportForecastReasonCodes(sourceForecasts)
+    }
+  };
+}
+
+function forecastM4RouteTransportSource(input: {
+  readonly world: WorldStateV0;
+  readonly reservation: M4GrainSupplyReservationStateV0;
+  readonly targetDistrictId: DistrictId;
+  readonly earliestDepartureDay: GameDay;
+  readonly latestDepartureDay: GameDay;
+}): M4RouteTransportSourceForecastReadModelV1 {
+  const preview = previewM2TransportRouteV0(input.world, {
+    originDistrictId: input.reservation.source.districtId,
+    destinationDistrictId: input.targetDistrictId,
+    stockAmount: input.reservation.carriedAmount,
+    day: input.earliestDepartureDay
+  });
+  if (preview.status === "unreachable") {
+    return {
+      reservationId: input.reservation.reservationId,
+      source: copyM4GrainSupplySource(input.reservation.source),
+      originDistrictId: input.reservation.source.districtId,
+      destinationDistrictId: input.targetDistrictId,
+      status: "unreachable",
+      carriedSupplyAmount: input.reservation.carriedAmount,
+      carriedSupplyLimit: 0,
+      bottleneckCapacity: 0,
+      travelWindow: {
+        earliestDepartureDay: input.earliestDepartureDay,
+        latestDepartureDay: input.latestDepartureDay,
+        earliestArrivalDay: input.earliestDepartureDay,
+        latestArrivalDay: input.latestDepartureDay,
+        travelDays: 0
+      },
+      routeSegments: [],
+      overloadedReasonCode: "route.capacity.unreachable",
+      seasonRiskReasonCodes: []
+    };
+  }
+
+  const carriedSupplyLimit =
+    preview.bottleneckCapacity < input.reservation.carriedAmount
+      ? preview.bottleneckCapacity
+      : input.reservation.carriedAmount;
+  return {
+    reservationId: input.reservation.reservationId,
+    source: copyM4GrainSupplySource(input.reservation.source),
+    originDistrictId: input.reservation.source.districtId,
+    destinationDistrictId: input.targetDistrictId,
+    status: preview.status,
+    carriedSupplyAmount: input.reservation.carriedAmount,
+    carriedSupplyLimit,
+    bottleneckCapacity: preview.bottleneckCapacity,
+    travelWindow: {
+      earliestDepartureDay: input.earliestDepartureDay,
+      latestDepartureDay: input.latestDepartureDay,
+      earliestArrivalDay: input.earliestDepartureDay + preview.totalCost,
+      latestArrivalDay: input.latestDepartureDay + preview.totalCost,
+      travelDays: preview.totalCost
+    },
+    routeSegments: preview.edges.map((edge) => ({ ...edge })),
+    overloadedReasonCode:
+      preview.status === "capacity-exceeded"
+        ? "route.capacity.carried-supply-over-bottleneck"
+        : null,
+    seasonRiskReasonCodes: m4RouteSeasonRiskReasonCodes(
+      input.world,
+      preview.monthOfYear,
+      preview.edges
+    )
+  };
+}
+
+function aggregateM4RouteBottleneckCapacity(
+  forecasts: readonly M4RouteTransportSourceForecastReadModelV1[]
+): number {
+  if (forecasts.length === 0) {
+    return 0;
+  }
+  return forecasts.reduce(
+    (minimum, forecast) =>
+      forecast.bottleneckCapacity < minimum ? forecast.bottleneckCapacity : minimum,
+    Number.MAX_SAFE_INTEGER
+  );
+}
+
+function m4RouteTransportForecastReasonCodes(
+  forecasts: readonly M4RouteTransportSourceForecastReadModelV1[]
+): readonly string[] {
+  const reasonCodes: string[] = [];
+  if (forecasts.length === 0) {
+    reasonCodes.push("route.forecast.no-carried-supply");
+  }
+  if (forecasts.some((forecast) => forecast.status === "unreachable")) {
+    reasonCodes.push("route.forecast.unreachable");
+  }
+  if (forecasts.some((forecast) => forecast.status === "capacity-exceeded")) {
+    reasonCodes.push("route.forecast.carried-supply-over-bottleneck", "route.forecast.overloaded");
+  }
+  if (forecasts.some((forecast) => forecast.seasonRiskReasonCodes.length > 0)) {
+    reasonCodes.push("route.forecast.seasonal-risk");
+  }
+  if (reasonCodes.length === 0) {
+    reasonCodes.push("route.forecast.capacity-ready");
+  }
+  return uniqueSortedText(reasonCodes, compareM4RouteTransportReasonCode);
+}
+
+function m4RouteSeasonRiskReasonCodes(
+  world: WorldStateV0,
+  monthOfYear: number,
+  routeSegments: readonly M2TransportRoutePreviewEdgeReadModelV1[]
+): readonly string[] {
+  const reasonCodes: string[] = [];
+  for (const segment of routeSegments) {
+    const month = m4RouteSegmentSeasonMonth(world, monthOfYear, segment);
+    if (month === undefined) {
+      continue;
+    }
+    if (month.monsoonIntensityBps >= 7_000) {
+      reasonCodes.push("route.season.monsoon-risk");
+    }
+    if (segment.routeKind === "road" && month.roadTravelCostBps >= 12_000) {
+      reasonCodes.push("route.season.road-delay-risk");
+    }
+    if (segment.routeKind === "river" && month.riverNavigabilityBps <= 7_000) {
+      reasonCodes.push("route.season.river-navigation-risk");
+    }
+    if (segment.routeKind === "coast" && month.monsoonIntensityBps >= 7_000) {
+      reasonCodes.push("route.season.coast-monsoon-risk");
+    }
+  }
+  return uniqueSortedText(reasonCodes, compareM4RouteTransportReasonCode);
+}
+
+function m4RouteSegmentSeasonMonth(
+  world: WorldStateV0,
+  monthOfYear: number,
+  segment: M2TransportRoutePreviewEdgeReadModelV1
+): M2SeasonalMonthStateV0 | undefined {
+  const m2 = world.state.m2;
+  if (m2 === undefined) {
+    return undefined;
+  }
+  const fromMonth = m4SeasonMonthByDistrictId(m2, segment.fromDistrictId, monthOfYear);
+  const toMonth = m4SeasonMonthByDistrictId(m2, segment.toDistrictId, monthOfYear);
+  if (fromMonth === undefined) {
+    return toMonth;
+  }
+  if (toMonth === undefined) {
+    return fromMonth;
+  }
+  return {
+    month: fromMonth.month,
+    monsoonIntensityBps: floorDivide(
+      fromMonth.monsoonIntensityBps + toMonth.monsoonIntensityBps,
+      2
+    ),
+    agricultureWorkBps: floorDivide(fromMonth.agricultureWorkBps + toMonth.agricultureWorkBps, 2),
+    riverNavigabilityBps: floorDivide(
+      fromMonth.riverNavigabilityBps + toMonth.riverNavigabilityBps,
+      2
+    ),
+    roadTravelCostBps: floorDivide(fromMonth.roadTravelCostBps + toMonth.roadTravelCostBps, 2)
+  };
+}
+
+function m4SeasonMonthByDistrictId(
+  m2: M2EconomyPopulationStateV0,
+  districtId: DistrictId,
+  monthOfYear: number
+): M2SeasonalMonthStateV0 | undefined {
+  const seasonality = m2.transport.districtSeasonality.find(
+    (entry) => entry.districtId === districtId
+  );
+  const curve = m2.transport.regionalCurves.find(
+    (entry) => entry.id === seasonality?.regionalCurveId
+  );
+  return curve?.monthlyValues[monthOfYear - 1];
+}
+
+function uniqueSortedText(
+  values: readonly string[],
+  compare: (left: string, right: string) => number
+): readonly string[] {
+  const unique: string[] = [];
+  for (const value of [...values].sort(compare)) {
+    if (!unique.includes(value)) {
+      unique.push(value);
+    }
+  }
+  return unique;
+}
+
+function compareM4RouteTransportReasonCode(left: string, right: string): number {
+  return (
+    m4RouteTransportReasonRank(left) - m4RouteTransportReasonRank(right) || compareText(left, right)
+  );
+}
+
+function m4RouteTransportReasonRank(reasonCode: string): number {
+  switch (reasonCode) {
+    case "route.forecast.no-carried-supply":
+      return 1;
+    case "route.forecast.unreachable":
+      return 2;
+    case "route.forecast.carried-supply-over-bottleneck":
+      return 3;
+    case "route.forecast.overloaded":
+      return 4;
+    case "route.forecast.seasonal-risk":
+      return 5;
+    case "route.forecast.capacity-ready":
+      return 6;
+    case "route.season.monsoon-risk":
+      return 10;
+    case "route.season.road-delay-risk":
+      return 11;
+    case "route.season.river-navigation-risk":
+      return 12;
+    case "route.season.coast-monsoon-risk":
+      return 13;
+    default:
+      return 99;
+  }
 }
 
 function copyM4GrainSupplyReservationReadModel(

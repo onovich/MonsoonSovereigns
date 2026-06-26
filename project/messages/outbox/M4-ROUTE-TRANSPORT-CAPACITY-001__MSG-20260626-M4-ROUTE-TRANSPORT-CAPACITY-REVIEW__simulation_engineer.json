@@ -1,0 +1,127 @@
+{
+  "message_id": "MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW",
+  "task_id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M4 campaign-only route and transport capacity planning forecasts. The new sim.preview-m4-route-transport-capacity query validates campaign references, reuses accepted M2 route/season transport preview logic, combines current M4 grain reservations and mobilized force commitments, and returns route segments, per-source bottleneck capacity, travel window, carried supply limit, overload reason, and monsoon/season risk reason codes. Scope intentionally excludes march execution, route mutation, battle, siege, UI, economy expansion, naval warfare, save-format work, server, Rust/WASM, and new dependencies.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-route-transport-capacity.test.ts",
+    "project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json",
+    "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-route-transport-capacity",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test -- tests/sim-core-m4-route-transport-capacity.test.ts",
+      "exit_code": 1,
+      "result": "Expected pre-implementation failure: new query was rejected as unknown-query-kind; 5 new route capacity tests failed before implementation."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test -- tests/sim-core-m4-route-transport-capacity.test.ts",
+      "exit_code": 0,
+      "result": "18 test files passed; 125 tests passed after implementation, including the new M4 route capacity tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed. Protocol schema coverage includes sim.preview-m4-route-transport-capacity."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 1,
+      "result": "Prettier initially flagged tests/sim-core-m4-route-transport-capacity.test.ts and packages/sim-core/src/command-query-v1.ts; both files were formatted."
+    },
+    {
+      "command": "pnpm exec prettier --write tests/sim-core-m4-route-transport-capacity.test.ts packages/sim-core/src/command-query-v1.ts",
+      "exit_code": 0,
+      "result": "Formatted the two touched files reported by format:check."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 1,
+      "result": "Initial typecheck caught missing GameDay import and target narrowing through callback; both were fixed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed after fixes."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "18 test files passed; 125 tests passed. This is the exact required sim-core package test command and now includes tests/sim-core-m4-route-transport-capacity.test.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node hash 61e0ba1c matched Worker-compatible hash 61e0ba1c; command/query hash d275faa4 matched; save/load hash 28074edd matched; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic canaries matched; root Vitest 29 files/192 tests passed; web Vitest 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed for repository lint targets."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts, including sim-core."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style after formatting."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Implementation and handoff changes: packages/protocol/src/index.ts, packages/sim-core/package.json, packages/sim-core/src/command-query-v1.ts, project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json, tests/protocol-command-query-schema.test.ts, tests/sim-core-m4-route-transport-capacity.test.ts, and the new REVIEW handoff JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-ROUTE-TRANSPORT-CAPACITY-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "exit_code": 0,
+      "result": "M4-ROUTE-TRANSPORT-CAPACITY-001 JSON parse/shape ok; status REVIEW; route_to systems_architect; risk R3."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json."
+    }
+  ],
+  "decisions": [
+    "Added one narrow protocol query kind, sim.preview-m4-route-transport-capacity, instead of adding commands or persistent planning state. This is an R3 protocol/query surface change and routes to systems_architect.",
+    "Added tests/sim-core-m4-route-transport-capacity.test.ts to the explicit @monsoon/sim-core test script so the required package test gate covers the new forecast invariants.",
+    "Forecasts are read-only and derive from existing M2 transport routes/seasonal curves plus M4 mobilizedForceCommitments and grainSupplyReservations. No WorldState mutation, route state mutation, march execution, battle, siege, UI, save-format, or economy expansion was added.",
+    "Water/river behavior remains only the simple accepted M2 routeKind capacity/cost modifier; the M4 query copies M2 preview segment data and does not introduce fleets, naval battles, amphibious logic, or independent water-route state.",
+    "Equivalent route choices rely on the existing M2 stable tie-breakers, and M4 tests lock behavior across shuffled route and reservation ordering.",
+    "Season risk reasons are deterministic reason codes derived from the planned departure month and M2 seasonal curve values on returned route segments."
+  ],
+  "risks": [
+    "R3: protocol query surface changed. systems_architect should verify the query shape is acceptable before lead integration; QA review may still be required by the R3 policy before acceptance.",
+    "Aggregate carriedSupplyLimit sums per-source limits and aggregate bottleneckCapacity reports the minimum per-source bottleneck. This is intentionally a planning forecast, not reservation of shared edge capacity across simultaneous convoys.",
+    "Forecasts currently require district campaign targets. Polity-target route planning remains outside this task until a future target-to-district policy is approved."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review M4-ROUTE-TRANSPORT-CAPACITY-001 on branch feat/m4-route-transport-capacity. Verify the protocol query, deterministic M2 route reuse, read-only forecast behavior, overload/season reason codes, and scope boundaries. Return ACCEPT, REQUEST_CHANGES, or BLOCK; do not mark ACCEPTED or CLOSED from this writer handoff alone.",
+  "created_at": "2026-06-26T02:50:16Z"
+}

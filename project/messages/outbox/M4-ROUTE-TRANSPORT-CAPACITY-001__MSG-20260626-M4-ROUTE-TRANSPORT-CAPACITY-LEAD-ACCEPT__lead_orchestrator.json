@@ -1,0 +1,85 @@
+{
+  "message_id": "MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-LEAD-ACCEPT",
+  "task_id": "M4-ROUTE-TRANSPORT-CAPACITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M4 route and transport capacity planning forecasts after systems_architect ACCEPT, independent QA ACCEPT, and lead integration gates. The task adds a narrow read-only route-capacity forecast query over existing M2 route/season transport plus M4 grain and force commitments, with deterministic route/capacity/season reason tests and no march execution, battle/siege, UI, full economy, save-format, or naval expansion.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-route-transport-capacity.test.ts",
+    "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-SYSTEMS-ACCEPT__systems_architect.json",
+    "project/messages/outbox/M4-ROUTE-TRANSPORT-CAPACITY-001__MSG-20260626-M4-ROUTE-TRANSPORT-CAPACITY-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m4-route-transport-capacity",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "validate-handoff systems ACCEPT",
+      "exit_code": 0,
+      "result": "VALID systems_architect ACCEPT handoff."
+    },
+    {
+      "command": "validate-handoff QA ACCEPT",
+      "exit_code": 0,
+      "result": "VALID qa_reviewer ACCEPT handoff."
+    },
+    {
+      "command": "taskctl validate M4-ROUTE-TRANSPORT-CAPACITY-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed: 18 files, 125 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed: 1 file, 8 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed; hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture boundaries, determinism, root Vitest 29 files / 192 tests, and web tests 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format, lint, workspace typecheck, and architecture boundary checks."
+    },
+    {
+      "command": "git diff scope scan with rg",
+      "exit_code": 1,
+      "result": "No forbidden path/scope, nondeterministic API, UI/platform import, save-format, naval/fleet, or explicit any matches in implementation diff."
+    }
+  ],
+  "decisions": [
+    "Accepted after systems_architect and independent qa_reviewer verified the R3 route-capacity forecast implementation.",
+    "Kept implementation as read-only GameQuery with no command, event, persistent route planning object, or march execution state.",
+    "Package script change only adds the new route-capacity test file; no dependency changes."
+  ],
+  "risks": [
+    "Future simultaneous convoy/shared-edge capacity reservation requires a separate task/ADR; current aggregate capacity is planning-only.",
+    "Polity-target route planning remains out of scope and is intentionally rejected until an explicit target-to-district policy is approved.",
+    "Save-format milestone work remains out of scope for this query-only task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit accepted implementation, create PR, require CI, merge to main, close task only after integration.",
+  "created_at": "2026-06-26T03:11:35Z"
+}
