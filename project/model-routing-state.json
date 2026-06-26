@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T05:01:21+08:00",
+  "updated_at": "2026-06-27T05:12:06+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1766,7 +1766,27 @@
       "lead_close_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-CLOSED__lead_orchestrator.json"
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M6-TASK-GRAPH-001",
+      "role": "systems_architect",
+      "thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
+      "status": "writing",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Lintel",
+      "responsibility": "primary systems_architect writer for M6 task graph",
+      "branch_or_worktree": "chore/m6-task-graph",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
+      "base_main_commit": "b02c522dcd2ea8766d018d13ff8e11571f20dd8a",
+      "updated_at": "2026-06-27T05:12:06+08:00"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1840,7 +1860,7 @@
     "M5-PLAYER-RESEARCH-001": "CLOSED after PR #122 entered main at 8b6ef6542d2d1a8270618ec8bae2161eb94c2e9d; next ready task pending taskctl ready after closure integration.",
     "M5-MANUAL-NODE-BATTLE-DECISION-001": "CLOSED after decision PR #125 and closure/start PR #126; current main is 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313. Decision remains DEFER_MANUAL_NODE_BATTLE.",
     "M5-EXIT-HUMAN-GATE-001": "CLOSED after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011. M5_GATE = PASS_WITH_LIMITS; M6-TASK-GRAPH-001 is READY.",
-    "M6-TASK-GRAPH-001": "READY after M5 Gate PASS_WITH_LIMITS closure. This is planning-only and must create the minimal M6 Alpha system-complete task DAG without implementing M6 product code or re-opening manual node battle for 1.0."
+    "M6-TASK-GRAPH-001": "IN_PROGRESS with systems_architect writer thread 019f05c6-3b96-7da2-8a8a-7baf7d2ba53b. This is planning-only and must create the minimal M6 Alpha system-complete task DAG without implementing M6 product code or re-opening manual node battle for 1.0."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -1941,19 +1961,24 @@
       "closed_at": "2026-06-27T05:01:21+08:00"
     },
     "M6-TASK-GRAPH-001": {
-      "status": "READY",
+      "status": "IN_PROGRESS",
       "owner_role": "systems_architect",
       "reviewer_role": "qa_reviewer",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "systems_thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
+      "systems_thread_nickname": "Lintel",
       "branch_or_worktree": "chore/m6-task-graph",
       "created_at": "2026-06-27T05:01:21+08:00",
-      "updated_at": "2026-06-27T05:01:21+08:00",
+      "started_at": "2026-06-27T05:12:06+08:00",
+      "updated_at": "2026-06-27T05:12:06+08:00",
       "depends_on": [
         "M5-EXIT-HUMAN-GATE-001"
       ],
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "human_gate_required": false,
-      "next_action": "Start M6-TASK-GRAPH-001 with systems_architect writer and independent qa_reviewer review."
+      "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
+      "next_action": "Await systems_architect REVIEW handoff, then route to independent qa_reviewer."
     }
   }
 }

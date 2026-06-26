@@ -2,7 +2,7 @@
   "id": "M6-TASK-GRAPH-001",
   "summary": "Create minimal M6 Alpha system-complete task graph",
   "milestone": "M6",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -61,7 +61,9 @@
     "git diff --check"
   ],
   "branch_or_worktree": "chore/m6-task-graph",
-  "threads": {},
+  "threads": {
+    "systems_architect": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b"
+  },
   "route_to": "lead_orchestrator",
   "notes": [
     "M6 starts only after M5 Gate PASS_WITH_LIMITS entered origin/main and M5-EXIT-HUMAN-GATE-001 is CLOSED.",
@@ -71,5 +73,11 @@
     "M5 Gate PASS_WITH_LIMITS carries forward bounded limits from docs/GATE-M5.md and must not be re-described as an unconditional PASS."
   ],
   "created_at": "2026-06-27T05:01:21+08:00",
-  "updated_at": "2026-06-27T05:01:21+08:00"
+  "updated_at": "2026-06-27T05:12:06+08:00",
+  "lifecycle": {
+    "ready_at": "2026-06-27T05:01:21+08:00",
+    "in_progress_at": "2026-06-27T05:12:06+08:00"
+  },
+  "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json"
 }
