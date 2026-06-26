@@ -25,7 +25,7 @@
     },
     "019f03ed-169e-7481-95f2-e9e5c4d765ba": {
       "thread_id": "019f03ed-169e-7481-95f2-e9e5c4d765ba",
-      "status": "in_review",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -37,7 +37,26 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "updated_at": "2026-06-26T13:40:00Z"
+      "updated_at": "2026-06-26T14:00:00Z",
+      "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+      "accepted_at": "2026-06-26T13:55:00Z"
+    },
+    "019f03f4-39f3-71c1-859d-cfa5fb8a544a": {
+      "thread_id": "019f03f4-39f3-71c1-859d-cfa5fb8a544a",
+      "status": "in_review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gate the 8th",
+      "responsibility": "independent read-only QA review of bounded M5 playable-slice contract",
+      "branch_or_worktree": "design/m5-slice-definition",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-SYSTEMS-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+      "writer_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "updated_at": "2026-06-26T14:00:00Z"
     }
   },
   "last_integrated_task": "M5-TASK-GRAPH-001",
@@ -78,7 +97,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-26T13:40:00Z",
+  "last_updated_at": "2026-06-26T14:00:00Z",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -90,7 +109,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-26T13:40:00Z",
+  "updated_at": "2026-06-26T14:00:00Z",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -101,7 +120,7 @@
     "human_gate_required": false
   },
   "m5_slice_definition": {
-    "status": "REVIEW",
+    "status": "QA_REVIEW",
     "branch_or_worktree": "design/m5-slice-definition",
     "writer_thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
     "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
@@ -113,6 +132,11 @@
     "reviewer_thread_id": "019f03ed-169e-7481-95f2-e9e5c4d765ba",
     "review_route": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-WRITER-TO-SYSTEMS-REVIEW.json",
     "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-    "routed_at": "2026-06-26T13:40:00Z"
+    "routed_at": "2026-06-26T13:40:00Z",
+    "systems_review_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "ACCEPT",
+    "qa_thread_id": "019f03f4-39f3-71c1-859d-cfa5fb8a544a",
+    "qa_route": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-SYSTEMS-TO-QA-REVIEW.json",
+    "routed_to_qa_at": "2026-06-26T14:00:00Z"
   }
 }

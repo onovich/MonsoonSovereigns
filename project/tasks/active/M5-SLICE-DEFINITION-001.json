@@ -538,7 +538,7 @@
     },
     "systems_architect": {
       "thread_id": "019f03ed-169e-7481-95f2-e9e5c4d765ba",
-      "status": "in_review",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -550,17 +550,37 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "updated_at": "2026-06-26T13:40:00Z"
+      "updated_at": "2026-06-26T14:00:00Z",
+      "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+      "accepted_at": "2026-06-26T13:55:00Z"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f03f4-39f3-71c1-859d-cfa5fb8a544a",
+      "status": "in_review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gate the 8th",
+      "responsibility": "independent read-only QA review of bounded M5 playable-slice contract",
+      "branch_or_worktree": "design/m5-slice-definition",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-SYSTEMS-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+      "writer_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "updated_at": "2026-06-26T14:00:00Z"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "qa_reviewer",
   "notes": [
     "This narrows M5 scope before implementation evidence tasks.",
     "If the contract requires a frozen architecture, platform, branding, commercial, release, telemetry, networking, mod, or manual battle decision, stop and route to Human Gate.",
     "Lead started gameplay_designer writer thread 019f03e1-ab85-78d3-ab7a-f200abbdd76f after M5 task graph closure entered main.",
     "Contract is routed to systems_architect for review; gameplay_designer does not approve its own design implementation.",
-    "Lead routed writer REVIEW handoff to systems_architect thread 019f03ed-169e-7481-95f2-e9e5c4d765ba."
+    "Lead routed writer REVIEW handoff to systems_architect thread 019f03ed-169e-7481-95f2-e9e5c4d765ba.",
+    "systems_architect accepted the contract and lead routed independent QA review to thread 019f03f4-39f3-71c1-859d-cfa5fb8a544a."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-26T13:40:00Z"
+  "updated_at": "2026-06-26T14:00:00Z"
 }
