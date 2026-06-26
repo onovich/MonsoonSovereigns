@@ -1,0 +1,91 @@
+{
+  "message_id": "MSG-20260626-M4-WITHDRAWAL-POSTWAR-HANDOFF-SYSTEMS-REQUEST-CHANGES-R2",
+  "task_id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R2 systems architecture review cannot accept M4 withdrawal/postwar handoff yet. The R2 fixes address source-ledger grain return, WarOutcome/PostwarCandidate deep-copying, and failed-extraction coverage, and all required gates passed locally. However, objective-complete still does not require a march reference before creating a WarOutcome/PostwarCandidate, so a completed campaign with a surrendered siege can be handed off with payload.marchId null and bypass the required siege/march match. The new return-ledger ordering also lacks a unique stable source tie-breaker for multi-source reservation rows.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+    "project/tasks/active/M4-WITHDRAWAL-POSTWAR-HANDOFF-001.json",
+    "project/messages/outbox/M4-WITHDRAWAL-POSTWAR-HANDOFF-001__MSG-20260626-M4-WITHDRAWAL-POSTWAR-HANDOFF-REVIEW-R2__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m4-withdrawal-postwar-handoff with R2 worktree changes in packages/sim-core/src/command-query-v1.ts, tests/sim-core-m4-withdrawal-postwar-handoff.test.ts, allowed coordination state, and untracked REVIEW-R2 handoff."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 10 tests. Existing tests do not cover objective-complete with payload.marchId null."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "TypeScript noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 21 files, 155 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 8 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 32 files and 222 tests passed; web Vitest 1 file and 3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+      "exit_code": 0,
+      "result": "Task JSON validated successfully in REVIEW state."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-WITHDRAWAL-POSTWAR-HANDOFF-001__MSG-20260626-M4-WITHDRAWAL-POSTWAR-HANDOFF-REVIEW-R2__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer REVIEW-R2 handoff JSON validated successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Keep REQUEST_CHANGES because prior blocker 1 requires objective-complete to match a completed campaign result to both target and march, but validateObjectiveCompleteHandoffResult accepts march null.",
+    "Accept the R2 direction for source-ledger grain return, read-model deep-copying, and failed-extraction coverage, subject to the deterministic ledger tie-breaker cleanup below.",
+    "No hard-exclusion implementation was found in the R2 diff: no full diplomacy, peace treaties, rebellion system, formal historical content, campaign planning UI, M5 content, manual node battle, complex naval warfare, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, save-format package change, or parallel postwar settlement model."
+  ],
+  "risks": [
+    {
+      "severity": "P1",
+      "path": "packages/sim-core/src/command-query-v1.ts:6053",
+      "issue": "validateObjectiveCompleteHandoffResult checks siege/march equality only when input.march is non-null. Because evaluateResolveM4CampaignWithdrawal passes march null when payload.marchId is null, objective-complete can still create a WarOutcome/PostwarCandidate without an explicit march reference matching the surrendered siege result."
+    },
+    {
+      "severity": "P2",
+      "path": "packages/sim-core/src/command-query-v1.ts:6234",
+      "issue": "compareM4GrainReservationForReturnLedger returns only reservationId. Grain reservations may contain multiple rows for the same reservationId from different sources, and partial return allocation can then depend on existing array order instead of a unique stable source tie-breaker."
+    }
+  ],
+  "blockers": [
+    "For objective-complete, require payload.marchId to resolve to a march and require siege.marchId === march.marchId before creating WarOutcome/PostwarCandidate; add a regression proving objective-complete with marchId null is rejected and does not create outcomes/candidates.",
+    "Update compareM4GrainReservationForReturnLedger to include a unique stable source tie-breaker such as source kind, districtId, populationGroupId, and then reservation quantity/status fields if needed; add or extend a test with multiple source rows sharing a reservationId where returned grain is allocated deterministically."
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the remaining objective-complete march-reference gate and deterministic ledger ordering issue, rerun the required M4-WITHDRAWAL-POSTWAR-HANDOFF-001 gates, and return REVIEW-R3 to systems_architect.",
+  "created_at": "2026-06-26T06:27:44Z"
+}
