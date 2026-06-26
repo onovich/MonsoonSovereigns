@@ -37,6 +37,7 @@ import {
   hashWorldStateV0,
   parseDistrictId,
   parseGameDay,
+  parseCampaignMarchId,
   parseM3AppointmentAuditEventId,
   parseM3FulfillmentId,
   parseM3OfficeId,
@@ -91,6 +92,10 @@ import {
   type M3SuccessionOutcomeV0,
   type M3SuccessionSupportSourceStateV0,
   type M4CampaignOwnerV0,
+  type M4CampaignMarchRouteSegmentStateV0,
+  type M4CampaignMarchStateV0,
+  type M4CampaignMarchSupplyStatusV0,
+  type M4CampaignMarchStatusV0,
   type M4CampaignPlanStateV0,
   type M4CampaignStateV0,
   type M4CampaignTargetV0,
@@ -133,6 +138,7 @@ export type DomainErrorCodeV1 =
   | "illegal-vassalage"
   | "m2-state-missing"
   | "m3-state-missing"
+  | "march-state-invalid"
   | "muster-commitment-invalid"
   | "obligation-actor-invalid"
   | "obligation-due-period-invalid"
@@ -606,6 +612,14 @@ export type QueryResultV1 =
             readonly bottleneckCapacity: number;
             readonly sourceForecasts: readonly M4RouteTransportSourceForecastReadModelV1[];
             readonly reasonCodes: readonly string[];
+          }
+        | {
+            readonly kind: "sim.list-m4-march-state";
+            readonly day: number;
+            readonly revision: number;
+            readonly campaignPlanId: number;
+            readonly marches: readonly M4CampaignMarchReadModelV1[];
+            readonly reasonCodes: readonly string[];
           };
     }
   | {
@@ -840,6 +854,45 @@ export interface M4RouteTransportSourceForecastReadModelV1 {
   readonly routeSegments: readonly M2TransportRoutePreviewEdgeReadModelV1[];
   readonly overloadedReasonCode: string | null;
   readonly seasonRiskReasonCodes: readonly string[];
+}
+
+export interface M4CampaignMarchSupplyReadModelV1 {
+  readonly status: M4CampaignMarchSupplyStatusV0;
+  readonly carriedGrain: number;
+  readonly consumedGrain: number;
+  readonly shortageGrain: number;
+  readonly delayedDays: number;
+}
+
+export interface M4CampaignArrivalWindowReadModelV1 {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}
+
+export interface M4CampaignMarchJoinedCommitmentTroopsReadModelV1 {
+  readonly commitmentId: number;
+  readonly joinedTroops: number;
+}
+
+export interface M4CampaignMarchReadModelV1 {
+  readonly marchId: number;
+  readonly campaignPlanId: number;
+  readonly originDistrictId: DistrictId;
+  readonly targetDistrictId: DistrictId;
+  readonly currentDistrictId: DistrictId;
+  readonly currentSegmentIndex: number;
+  readonly progressOnSegmentDays: number;
+  readonly activeTroops: number;
+  readonly grainPerTroopPerDay: number;
+  readonly supply: M4CampaignMarchSupplyReadModelV1;
+  readonly status: M4CampaignMarchStatusV0;
+  readonly statusReasonCode: string;
+  readonly predictedArrivalWindow: M4CampaignArrivalWindowReadModelV1;
+  readonly actualArrivalDay: number | null;
+  readonly joinedCommitmentIds: readonly number[];
+  readonly joinedCommitmentTroops: readonly M4CampaignMarchJoinedCommitmentTroopsReadModelV1[];
+  readonly failedCommitmentIds: readonly number[];
+  readonly reasonCodes: readonly string[];
 }
 
 interface CommandEvaluationV1 {
@@ -1253,6 +1306,8 @@ function validateAndEvaluateCommand(
       return evaluateConsumeCampaignGrainSupply(runtime.world, command);
     case "sim.release-campaign-grain-supply":
       return evaluateReleaseCampaignGrainSupply(runtime.world, command);
+    case "sim.start-campaign-march":
+      return evaluateStartCampaignMarch(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -1293,7 +1348,12 @@ function evaluateAdvanceDay(
   world: WorldStateV0,
   command: Extract<GameCommandV1, { readonly kind: "sim.advance-day" }>
 ): CommandEvaluationV1 {
-  const nextWorld = advanceWorldByGameDay(world);
+  const advancedWorld = advanceWorldByGameDay(world);
+  const nextM4 = advanceM4DailyMarches(advancedWorld);
+  const nextWorld =
+    nextM4 === null
+      ? advancedWorld
+      : restampAdvancedWorldState(advancedWorld, { ...advancedWorld.state, m4: nextM4 });
   return {
     command,
     nextWorld,
@@ -1319,6 +1379,27 @@ function evaluateAdvanceDay(
         stateHash: nextWorld.meta.stateHash
       }
     ]
+  };
+}
+
+function restampAdvancedWorldState(
+  world: WorldStateV0,
+  state: WorldStateV0["state"]
+): WorldStateV0 {
+  const withoutHash: WorldStateV0 = {
+    ...world,
+    state,
+    meta: {
+      ...world.meta,
+      stateHash: ""
+    }
+  };
+  return {
+    ...withoutHash,
+    meta: {
+      ...withoutHash.meta,
+      stateHash: hashWorldStateV0(withoutHash)
+    }
   };
 }
 
@@ -3711,13 +3792,20 @@ function validateMusterResponsePayload(
   }
   if (
     command.payload.assembledTroops < commitment.assembledTroops ||
-    command.payload.delayedTroops < commitment.delayedTroops ||
     command.payload.refusedTroops < commitment.refusedTroops ||
     command.payload.releasedTroops < commitment.releasedTroops
   ) {
     return musterCommitmentDomainError(
       "payload.commitmentId",
       "Muster response quantities cannot decrease."
+    );
+  }
+  const assembledTroopIncrease = command.payload.assembledTroops - commitment.assembledTroops;
+  const delayedTroopDecrease = commitment.delayedTroops - command.payload.delayedTroops;
+  if (delayedTroopDecrease > 0 && delayedTroopDecrease !== assembledTroopIncrease) {
+    return musterCommitmentDomainError(
+      "payload.delayedTroops",
+      "Muster delayedTroops can only decrease when the same count becomes assembled."
     );
   }
   if (
@@ -4110,6 +4198,564 @@ function evaluateReleaseCampaignGrainSupply(
         .filter((group): group is M2PopulationGroupStateV0 => group !== undefined)
         .map((group) => m2PopulationGroupDelta(nextWorld, group))
   );
+}
+
+function evaluateStartCampaignMarch(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.start-campaign-march" }>
+): EvaluationResult {
+  const m2 = world.state.m2;
+  if (m2 === undefined) {
+    return {
+      ok: false,
+      error: {
+        code: "m2-state-missing",
+        path: "state.m2",
+        message: "sim.start-campaign-march requires an M2 transport state."
+      }
+    };
+  }
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingError("sim.start-campaign-march");
+  }
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectMarchState("state.m4", "M4 campaign state is missing.");
+  }
+
+  const marchId = parseCampaignMarchId(command.payload.marchId);
+  if (m4.marches.some((march) => march.marchId === marchId)) {
+    return rejectMarchState("payload.marchId", "CampaignMarchId already exists.");
+  }
+  const campaignPlanId = parseCampaignPlanId(command.payload.campaignPlanId);
+  const campaignPlan = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (campaignPlan === undefined) {
+    return badIdError(
+      "payload.campaignPlanId",
+      "sim.start-campaign-march references missing campaign."
+    );
+  }
+  if (campaignPlan.status === "cancelled" || campaignPlan.status === "completed") {
+    return rejectMarchState("payload.campaignPlanId", "CampaignPlan cannot start a march.");
+  }
+  if (campaignPlan.target.kind !== "district") {
+    return rejectMarchState(
+      "payload.campaignPlanId",
+      "M4 deterministic march execution requires a district target."
+    );
+  }
+  if (
+    m4.marches.some(
+      (march) =>
+        march.campaignPlanId === campaignPlanId &&
+        march.status !== "arrived" &&
+        march.status !== "cancelled"
+    )
+  ) {
+    return rejectMarchState("payload.campaignPlanId", "CampaignPlan already has an active march.");
+  }
+
+  const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
+  if (ownerPolityId === null || !actorHasPolityAuthority(m3, command.actor, ownerPolityId)) {
+    return authorityDeniedError();
+  }
+  const originDistrictId = parseDistrictId(command.payload.originDistrictId);
+  if (!world.definitions.districts.some((district) => district.id === originDistrictId)) {
+    return badIdError(
+      "payload.originDistrictId",
+      "sim.start-campaign-march references missing origin district."
+    );
+  }
+  const plannedDepartureDay = parseGameDay(command.payload.plannedDepartureDay);
+  if (
+    plannedDepartureDay < campaignPlan.startWindow.earliestDay ||
+    plannedDepartureDay > campaignPlan.startWindow.latestDay ||
+    plannedDepartureDay < world.meta.currentDay
+  ) {
+    return rejectMarchState(
+      "payload.plannedDepartureDay",
+      "plannedDepartureDay must be within the campaign start range and not before current day."
+    );
+  }
+
+  const carriedGrain = m4.grainSupplyReservations
+    .filter(
+      (reservation) =>
+        reservation.campaignPlanId === campaignPlanId &&
+        reservation.carriedAmount > 0 &&
+        reservation.status !== "released" &&
+        reservation.status !== "consumed"
+    )
+    .reduce((sum, reservation) => sum + reservation.carriedAmount, 0);
+  if (carriedGrain <= 0) {
+    return rejectMarchState(
+      "payload.campaignPlanId",
+      "Campaign march requires reserved carried grain."
+    );
+  }
+
+  const routePreview = previewM2TransportRouteV0(world, {
+    originDistrictId,
+    destinationDistrictId: campaignPlan.target.districtId,
+    stockAmount: carriedGrain,
+    day: plannedDepartureDay
+  });
+  if (routePreview.status === "unreachable" || routePreview.edges.length === 0) {
+    return rejectMarchState(
+      "payload.originDistrictId",
+      "Accepted campaign target is unreachable from origin district."
+    );
+  }
+
+  const joinedCommitmentIds = initialM4MarchJoinedCommitmentIds({
+    m4,
+    campaignPlanId,
+    plannedDepartureDay
+  });
+  const joinedCommitmentTroops = m4MarchJoinedCommitmentTroopsFromIds(m4, joinedCommitmentIds);
+  const failedCommitmentIds = initialM4MarchFailedCommitmentIds({ m4, campaignPlanId });
+  const activeTroops = joinedCommitmentTroops.reduce((sum, joined) => sum + joined.joinedTroops, 0);
+  if (activeTroops <= 0) {
+    return rejectMarchState(
+      "payload.campaignPlanId",
+      "Campaign march requires at least one assembled troop commitment."
+    );
+  }
+
+  const routeSegments = routePreview.edges.map((edge) => ({
+    routeId: edge.routeId,
+    fromDistrictId: edge.fromDistrictId,
+    toDistrictId: edge.toDistrictId,
+    travelDays: edge.seasonalCost,
+    capacity: edge.seasonalCapacity,
+    seasonRiskReasonCodes: m4RouteSeasonRiskReasonCodes(world, routePreview.monthOfYear, [edge])
+  }));
+  const status: M4CampaignMarchStatusV0 =
+    plannedDepartureDay <= world.meta.currentDay ? "marching" : "planned";
+  const reasonCodes = uniqueSortedText(
+    [
+      ...command.payload.reasonCodes,
+      "march.started",
+      ...routeSegments.flatMap((segment) => segment.seasonRiskReasonCodes)
+    ],
+    compareText
+  );
+  const march: M4CampaignMarchStateV0 = {
+    marchId,
+    campaignPlanId,
+    originDistrictId,
+    targetDistrictId: campaignPlan.target.districtId,
+    currentDistrictId: originDistrictId,
+    routeSegments,
+    currentSegmentIndex: 0,
+    progressOnSegmentDays: 0,
+    activeTroops,
+    grainPerTroopPerDay: command.payload.grainPerTroopPerDay,
+    supply: {
+      status: "well-supplied",
+      carriedGrain,
+      consumedGrain: 0,
+      shortageGrain: 0,
+      delayedDays: 0
+    },
+    status,
+    statusReasonCode: status === "marching" ? "march.started" : "march.planned",
+    reasonCodes,
+    startedDay: plannedDepartureDay,
+    updatedDay: world.meta.currentDay,
+    predictedArrivalWindow: {
+      earliestDay: parseGameDay(plannedDepartureDay + routePreview.totalCost),
+      latestDay: parseGameDay(plannedDepartureDay + routePreview.totalCost)
+    },
+    actualArrivalDay: null,
+    joinedCommitmentIds,
+    joinedCommitmentTroops,
+    failedCommitmentIds
+  };
+
+  return acceptM4CampaignState(world, command, {
+    ...m4,
+    campaignPlans: m4.campaignPlans.map((plan) =>
+      plan.id === campaignPlanId
+        ? {
+            ...plan,
+            status: "active",
+            statusReasonCode: "campaign.objective.march-started",
+            updatedDay: world.meta.currentDay,
+            reasonCodes: uniqueSortedText(
+              [...plan.reasonCodes, "campaign.objective.march-started"],
+              compareText
+            )
+          }
+        : plan
+    ),
+    grainSupplyReservations: m4.grainSupplyReservations.map((reservation) =>
+      reservation.campaignPlanId === campaignPlanId && reservation.carriedAmount > 0
+        ? {
+            ...reservation,
+            carriedAmount: 0,
+            expectedDaysOfSupply: 0,
+            status: "consumed" as const,
+            statusReasonCode: "grain.supply.assigned-to-march",
+            reasonCodes: uniqueSortedText(
+              [...reservation.reasonCodes, "grain.supply.assigned-to-march"],
+              compareText
+            )
+          }
+        : reservation
+    ),
+    marches: [...m4.marches, march]
+  });
+}
+
+function advanceM4DailyMarches(world: WorldStateV0): M4CampaignStateV0 | null {
+  const m4 = world.state.m4;
+  if (m4 === undefined || m4.marches.length === 0) {
+    return null;
+  }
+
+  let changed = false;
+  const marches = [...m4.marches].sort(compareM4MarchForDailyExecution).map((march) => {
+    const advanced = advanceM4DailyMarch(world, m4, march);
+    changed = changed || advanced !== march;
+    return advanced;
+  });
+  if (!changed) {
+    return null;
+  }
+  return canonicalizeM4CampaignStateV0({ ...m4, marches });
+}
+
+function advanceM4DailyMarch(
+  world: WorldStateV0,
+  m4: M4CampaignStateV0,
+  march: M4CampaignMarchStateV0
+): M4CampaignMarchStateV0 {
+  if (march.status === "arrived" || march.status === "cancelled") {
+    return march;
+  }
+  if (world.meta.currentDay < march.startedDay) {
+    return march;
+  }
+
+  let activeTroops = march.activeTroops;
+  const joinedCommitmentIds = [...march.joinedCommitmentIds];
+  const joinedTroopsByCommitmentId = new Map<number, number>(
+    march.joinedCommitmentTroops.map((joined) => [joined.commitmentId, joined.joinedTroops])
+  );
+  const failedCommitmentIds = [...march.failedCommitmentIds];
+  const reasonCodes = [...march.reasonCodes];
+  let joinedReinforcementThisDay = false;
+  for (const commitment of m4.mobilizedForceCommitments
+    .filter((entry) => entry.campaignPlanId === march.campaignPlanId)
+    .sort(compareM4MusterCommitmentForMarchJoin)) {
+    if (failedCommitmentIds.includes(commitment.id)) {
+      continue;
+    }
+    const alreadyJoinedTroops = joinedTroopsByCommitmentId.get(commitment.id) ?? 0;
+    if (
+      (alreadyJoinedTroops === 0 && commitment.status === "refused") ||
+      (alreadyJoinedTroops === 0 &&
+        world.meta.currentDay > commitment.dueDay &&
+        commitment.assembledTroops === 0)
+    ) {
+      failedCommitmentIds.push(commitment.id);
+      reasonCodes.push("march.reinforcement.failed-to-arrive");
+      continue;
+    }
+    const availableTroops = commitment.assembledTroops - commitment.releasedTroops;
+    if (
+      availableTroops > alreadyJoinedTroops &&
+      world.meta.currentDay >= commitment.plannedAssemblyDay
+    ) {
+      const joinedTroopDelta = availableTroops - alreadyJoinedTroops;
+      if (!joinedCommitmentIds.includes(commitment.id)) {
+        joinedCommitmentIds.push(commitment.id);
+      }
+      joinedTroopsByCommitmentId.set(commitment.id, availableTroops);
+      activeTroops += joinedTroopDelta;
+      joinedReinforcementThisDay = true;
+      reasonCodes.push(
+        world.meta.currentDay > commitment.plannedAssemblyDay
+          ? "march.reinforcement.late-arrival"
+          : "march.reinforcement.joined"
+      );
+    }
+  }
+
+  const currentSegment = march.routeSegments[march.currentSegmentIndex];
+  if (currentSegment === undefined) {
+    return {
+      ...march,
+      activeTroops,
+      joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
+      failedCommitmentIds: sortNumericIds(failedCommitmentIds),
+      status: "arrived",
+      statusReasonCode: "march.arrived",
+      actualArrivalDay: march.actualArrivalDay ?? world.meta.currentDay,
+      updatedDay: world.meta.currentDay,
+      reasonCodes: uniqueSortedText([...reasonCodes, "march.arrived"], compareText)
+    };
+  }
+
+  if (currentSegment.seasonRiskReasonCodes.includes("route.season.monsoon-risk")) {
+    return {
+      ...march,
+      activeTroops,
+      joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
+      failedCommitmentIds: sortNumericIds(failedCommitmentIds),
+      status: "paused",
+      statusReasonCode: "march.paused.rainy-season",
+      updatedDay: world.meta.currentDay,
+      reasonCodes: uniqueSortedText([...reasonCodes, "march.paused.rainy-season"], compareText)
+    };
+  }
+  if (joinedReinforcementThisDay && world.meta.currentDay > march.startedDay) {
+    return {
+      ...march,
+      activeTroops,
+      joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
+      failedCommitmentIds: sortNumericIds(failedCommitmentIds),
+      status: "delayed",
+      statusReasonCode: "march.delayed.reinforcement-synchronization",
+      updatedDay: world.meta.currentDay,
+      reasonCodes: uniqueSortedText(
+        [...reasonCodes, "march.delayed.reinforcement-synchronization"],
+        compareText
+      )
+    };
+  }
+
+  const dailyNeed = multiplySafe(activeTroops, march.grainPerTroopPerDay, 1);
+  if (dailyNeed === null) {
+    return {
+      ...march,
+      activeTroops,
+      joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
+      failedCommitmentIds: sortNumericIds(failedCommitmentIds),
+      status: "delayed",
+      statusReasonCode: "march.delayed.supply-shortage",
+      updatedDay: world.meta.currentDay,
+      reasonCodes: uniqueSortedText([...reasonCodes, "march.supply.out-of-supply"], compareText)
+    };
+  }
+  const deliverableGrain = minimumInteger(
+    march.supply.carriedGrain,
+    dailyNeed,
+    currentSegment.capacity
+  );
+  const shortageGrain = dailyNeed - deliverableGrain;
+  const nextSupplyStatus = deriveM4MarchSupplyStatus(
+    deliverableGrain,
+    dailyNeed,
+    currentSegment.capacity
+  );
+  const baseSupply = {
+    status: nextSupplyStatus,
+    carriedGrain: march.supply.carriedGrain - deliverableGrain,
+    consumedGrain: march.supply.consumedGrain + deliverableGrain,
+    shortageGrain: march.supply.shortageGrain + shortageGrain,
+    delayedDays: shortageGrain > 0 ? march.supply.delayedDays + 1 : march.supply.delayedDays
+  };
+  if (shortageGrain > 0) {
+    return {
+      ...march,
+      activeTroops,
+      supply: baseSupply,
+      joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+      joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
+      failedCommitmentIds: sortNumericIds(failedCommitmentIds),
+      status: "delayed",
+      statusReasonCode: "march.delayed.supply-shortage",
+      updatedDay: world.meta.currentDay,
+      reasonCodes: uniqueSortedText(
+        [...reasonCodes, "march.delayed.supply-shortage", `march.supply.${nextSupplyStatus}`],
+        compareText
+      )
+    };
+  }
+
+  const progressed = progressM4MarchSegment(march, currentSegment, world.meta.currentDay);
+  return {
+    ...march,
+    ...progressed,
+    activeTroops,
+    supply: baseSupply,
+    statusReasonCode: progressed.status === "arrived" ? "march.arrived" : "march.advanced",
+    updatedDay: world.meta.currentDay,
+    joinedCommitmentIds: sortNumericIds(joinedCommitmentIds),
+    joinedCommitmentTroops: sortM4MarchJoinedCommitmentTroops(joinedTroopsByCommitmentId),
+    failedCommitmentIds: sortNumericIds(failedCommitmentIds),
+    reasonCodes: uniqueSortedText(
+      [
+        ...reasonCodes,
+        progressed.status === "arrived" ? "march.arrived" : "march.advanced",
+        `march.supply.${nextSupplyStatus}`
+      ],
+      compareText
+    )
+  };
+}
+
+function progressM4MarchSegment(
+  march: M4CampaignMarchStateV0,
+  segment: M4CampaignMarchRouteSegmentStateV0,
+  currentDay: GameDay
+): Pick<
+  M4CampaignMarchStateV0,
+  | "status"
+  | "currentDistrictId"
+  | "currentSegmentIndex"
+  | "progressOnSegmentDays"
+  | "actualArrivalDay"
+> {
+  const nextProgress = march.progressOnSegmentDays + 1;
+  if (nextProgress < segment.travelDays) {
+    return {
+      status: "marching",
+      currentDistrictId: march.currentDistrictId,
+      currentSegmentIndex: march.currentSegmentIndex,
+      progressOnSegmentDays: nextProgress,
+      actualArrivalDay: march.actualArrivalDay
+    };
+  }
+  const nextSegmentIndex = march.currentSegmentIndex + 1;
+  if (nextSegmentIndex >= march.routeSegments.length) {
+    return {
+      status: "arrived",
+      currentDistrictId: segment.toDistrictId,
+      currentSegmentIndex: nextSegmentIndex,
+      progressOnSegmentDays: 0,
+      actualArrivalDay: currentDay
+    };
+  }
+  return {
+    status: "marching",
+    currentDistrictId: segment.toDistrictId,
+    currentSegmentIndex: nextSegmentIndex,
+    progressOnSegmentDays: 0,
+    actualArrivalDay: march.actualArrivalDay
+  };
+}
+
+function deriveM4MarchSupplyStatus(
+  delivered: number,
+  dailyNeed: number,
+  capacity: number
+): M4CampaignMarchSupplyStatusV0 {
+  if (dailyNeed === 0 || delivered >= dailyNeed) {
+    return "well-supplied";
+  }
+  if (delivered > 0 && delivered >= capacity) {
+    return "strained";
+  }
+  if (delivered > 0) {
+    return "hungry";
+  }
+  return "out-of-supply";
+}
+
+function initialM4MarchJoinedCommitmentIds(input: {
+  readonly m4: M4CampaignStateV0;
+  readonly campaignPlanId: number;
+  readonly plannedDepartureDay: GameDay;
+}): readonly M4MobilizedForceCommitmentStateV0["id"][] {
+  return input.m4.mobilizedForceCommitments
+    .filter(
+      (commitment) =>
+        commitment.campaignPlanId === input.campaignPlanId &&
+        commitment.assembledTroops > commitment.releasedTroops &&
+        commitment.plannedAssemblyDay <= input.plannedDepartureDay
+    )
+    .sort(compareM4MusterCommitmentForMarchJoin)
+    .map((commitment) => commitment.id);
+}
+
+function m4MarchJoinedCommitmentTroopsFromIds(
+  m4: M4CampaignStateV0,
+  commitmentIds: readonly M4MobilizedForceCommitmentStateV0["id"][]
+): M4CampaignMarchStateV0["joinedCommitmentTroops"] {
+  return commitmentIds
+    .map((commitmentId) => {
+      const commitment = m4.mobilizedForceCommitments.find((entry) => entry.id === commitmentId);
+      return {
+        commitmentId,
+        joinedTroops:
+          commitment === undefined ? 0 : commitment.assembledTroops - commitment.releasedTroops
+      };
+    })
+    .filter((joined) => joined.joinedTroops > 0);
+}
+
+function initialM4MarchFailedCommitmentIds(input: {
+  readonly m4: M4CampaignStateV0;
+  readonly campaignPlanId: number;
+}): readonly M4MobilizedForceCommitmentStateV0["id"][] {
+  return input.m4.mobilizedForceCommitments
+    .filter(
+      (commitment) =>
+        commitment.campaignPlanId === input.campaignPlanId && commitment.status === "refused"
+    )
+    .sort(compareM4MusterCommitmentForMarchJoin)
+    .map((commitment) => commitment.id);
+}
+
+function rejectMarchState(path: string, message: string): EvaluationResult {
+  return {
+    ok: false,
+    error: {
+      code: "march-state-invalid",
+      path,
+      message
+    }
+  };
+}
+
+function compareM4MarchForDailyExecution(
+  left: M4CampaignMarchStateV0,
+  right: M4CampaignMarchStateV0
+): number {
+  return (
+    left.campaignPlanId - right.campaignPlanId ||
+    left.startedDay - right.startedDay ||
+    left.marchId - right.marchId
+  );
+}
+
+function compareM4MusterCommitmentForMarchJoin(
+  left: M4MobilizedForceCommitmentStateV0,
+  right: M4MobilizedForceCommitmentStateV0
+): number {
+  return (
+    left.plannedAssemblyDay - right.plannedAssemblyDay ||
+    left.dueDay - right.dueDay ||
+    left.id - right.id
+  );
+}
+
+function minimumInteger(first: number, second: number, third: number): number {
+  return Math.min(first, second, third);
+}
+
+function sortNumericIds<TValue extends number>(values: readonly TValue[]): readonly TValue[] {
+  return [...values].sort((left, right) => left - right);
+}
+
+function sortM4MarchJoinedCommitmentTroops(
+  joinedTroopsByCommitmentId: ReadonlyMap<number, number>
+): M4CampaignMarchStateV0["joinedCommitmentTroops"] {
+  return [...joinedTroopsByCommitmentId.entries()]
+    .filter((entry) => entry[1] > 0)
+    .sort((left, right) => left[0] - right[0])
+    .map(([commitmentId, joinedTroops]) => ({
+      commitmentId: parseMobilizedForceCommitmentId(commitmentId),
+      joinedTroops
+    }));
 }
 
 function evaluateVerifyStateHash(
@@ -5484,6 +6130,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM4GrainSupplyPreviewQuery(runtime, query);
     case "sim.preview-m4-route-transport-capacity":
       return executeM4RouteTransportCapacityPreviewQuery(runtime, query);
+    case "sim.list-m4-march-state":
+      return executeM4MarchStateQuery(runtime, query);
   }
 }
 
@@ -6102,6 +6750,62 @@ function copyM4GrainSupplyReservationReadModel(
     status: reservation.status,
     statusReasonCode: reservation.statusReasonCode,
     reasonCodes: [...reservation.reasonCodes]
+  };
+}
+
+function executeM4MarchStateQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.list-m4-march-state" }>
+): QueryResultV1 {
+  const campaignPlanId = parseCampaignPlanId(query.payload.campaignPlanId);
+  const m4 = runtime.world.state.m4;
+  if (m4 === undefined || !m4.campaignPlans.some((plan) => plan.id === campaignPlanId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.campaignPlanId",
+        message: "sim.list-m4-march-state references a missing CampaignPlanId."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m4-march-state",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      campaignPlanId,
+      marches: m4.marches
+        .filter((march) => march.campaignPlanId === campaignPlanId)
+        .sort(compareM4MarchForDailyExecution)
+        .map(copyM4CampaignMarchReadModel),
+      reasonCodes: ["march.query.filtered-by-campaign"]
+    }
+  };
+}
+
+function copyM4CampaignMarchReadModel(march: M4CampaignMarchStateV0): M4CampaignMarchReadModelV1 {
+  return {
+    marchId: march.marchId,
+    campaignPlanId: march.campaignPlanId,
+    originDistrictId: march.originDistrictId,
+    targetDistrictId: march.targetDistrictId,
+    currentDistrictId: march.currentDistrictId,
+    currentSegmentIndex: march.currentSegmentIndex,
+    progressOnSegmentDays: march.progressOnSegmentDays,
+    activeTroops: march.activeTroops,
+    grainPerTroopPerDay: march.grainPerTroopPerDay,
+    supply: { ...march.supply },
+    status: march.status,
+    statusReasonCode: march.statusReasonCode,
+    predictedArrivalWindow: { ...march.predictedArrivalWindow },
+    actualArrivalDay: march.actualArrivalDay,
+    joinedCommitmentIds: [...march.joinedCommitmentIds],
+    joinedCommitmentTroops: march.joinedCommitmentTroops.map((joined) => ({ ...joined })),
+    failedCommitmentIds: [...march.failedCommitmentIds],
+    reasonCodes: [...march.reasonCodes]
   };
 }
 

@@ -491,6 +491,23 @@ export interface ReleaseCampaignGrainSupplyCommandV1 {
   };
 }
 
+export interface StartCampaignMarchCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.start-campaign-march";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly marchId: number;
+    readonly campaignPlanId: number;
+    readonly originDistrictId: number;
+    readonly plannedDepartureDay: number;
+    readonly grainPerTroopPerDay: number;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -515,6 +532,7 @@ export type GameCommandV1 =
   | ReserveCampaignGrainSupplyCommandV1
   | ConsumeCampaignGrainSupplyCommandV1
   | ReleaseCampaignGrainSupplyCommandV1
+  | StartCampaignMarchCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -631,6 +649,15 @@ export interface PreviewM4RouteTransportCapacityQueryV1 {
   };
 }
 
+export interface ListM4MarchStateQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m4-march-state";
+  readonly payload: {
+    readonly queryId: string;
+    readonly campaignPlanId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -646,7 +673,8 @@ export type GameQueryV1 =
   | ListM4FactionKnowledgeQueryV1
   | ListM4MusterCommitmentsQueryV1
   | PreviewM4GrainSupplyQueryV1
-  | PreviewM4RouteTransportCapacityQueryV1;
+  | PreviewM4RouteTransportCapacityQueryV1
+  | ListM4MarchStateQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1462,6 +1490,22 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.start-campaign-march": {
+      const payload = parseStartCampaignMarchPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -1609,6 +1653,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.preview-m4-route-transport-capacity": {
       const payload = parsePreviewM4RouteTransportCapacityPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.list-m4-march-state": {
+      const payload = parseListM4MarchStatePayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -3481,6 +3540,101 @@ function parsePreviewM4RouteTransportCapacityPayload(
     value: {
       queryId,
       campaignPlanId: campaignPlanId.value
+    }
+  };
+}
+
+function parseListM4MarchStatePayload(
+  input: unknown
+): ProtocolParseResult<ListM4MarchStateQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.list-m4-march-state payload must be an object."
+    );
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      campaignPlanId: campaignPlanId.value
+    }
+  };
+}
+
+function parseStartCampaignMarchPayload(
+  input: unknown
+): ProtocolParseResult<StartCampaignMarchCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.start-campaign-march payload must be an object."
+    );
+  }
+  const marchId = parsePositiveSafeInteger(input["marchId"], "payload.marchId");
+  if (!marchId.ok) {
+    return marchId;
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const originDistrictId = parsePositiveSafeInteger(
+    input["originDistrictId"],
+    "payload.originDistrictId"
+  );
+  if (!originDistrictId.ok) {
+    return originDistrictId;
+  }
+  const plannedDepartureDay = parseNonnegativeSafeInteger(
+    input["plannedDepartureDay"],
+    "payload.plannedDepartureDay"
+  );
+  if (!plannedDepartureDay.ok) {
+    return plannedDepartureDay;
+  }
+  const grainPerTroopPerDay = parsePositiveSafeInteger(
+    input["grainPerTroopPerDay"],
+    "payload.grainPerTroopPerDay"
+  );
+  if (!grainPerTroopPerDay.ok) {
+    return grainPerTroopPerDay;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+
+  return {
+    ok: true,
+    value: {
+      marchId: marchId.value,
+      campaignPlanId: campaignPlanId.value,
+      originDistrictId: originDistrictId.value,
+      plannedDepartureDay: plannedDepartureDay.value,
+      grainPerTroopPerDay: grainPerTroopPerDay.value,
+      reasonCodes: reasonCodes.value
     }
   };
 }

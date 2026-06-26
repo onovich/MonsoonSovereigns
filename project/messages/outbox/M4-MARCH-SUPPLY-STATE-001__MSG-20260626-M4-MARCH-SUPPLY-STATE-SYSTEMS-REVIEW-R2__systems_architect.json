@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R2",
+  "task_id": "M4-MARCH-SUPPLY-STATE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "R2 architecture review inspected writer R2 handoff, actual diff through commit e78704cd, route segment ordering, quantity-aware reinforcement joins, schema/invariant paths, package boundaries, and required tests. The two R1 P1 blockers are materially addressed, and scope remains inside sim-core/protocol/tests/process paths. However, the new authoritative march state is still omitted from canonical WorldState text/state hash, and malformed march state missing joinedCommitmentTroops can throw inside validateWorldStateV0 instead of returning structured errors.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m4-march-supply-state.test.ts",
+    "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json",
+    "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R2__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m4-march-supply-state",
+  "commit": "e78704cd",
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-march-supply-state.test.ts tests/protocol-command-query-schema.test.ts --config vitest.config.ts",
+      "exit_code": 0,
+      "result": "2 test files passed; 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "19 test files passed; 133 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible command/query and save/load deterministic hashes matched."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 30 root Vitest files and 200 tests passed; web Vitest 1 file and 3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-MARCH-SUPPLY-STATE-001",
+      "exit_code": 0,
+      "result": "Task JSON validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer R2 handoff validated."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "rg -n \"state\\.m4\\.marches=\" packages/sim-core/src/world-state-v0.ts",
+      "exit_code": 1,
+      "result": "No canonical state.m4.marches line exists in world-state-v0.ts."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <validateWorldStateV0 missing joinedCommitmentTroops reproduction>",
+      "exit_code": 0,
+      "result": "validateWorldStateV0 threw: Cannot read properties of undefined (reading 'map')."
+    }
+  ],
+  "decisions": [
+    "R2 route segment order fix is accepted in principle: canonicalization now preserves routeSegments array order, and the descending route regression covers canonicalization plus daily execution.",
+    "R2 quantity-aware reinforcement fix is accepted in principle: joinedCommitmentTroops records per-commitment joined quantity and the partial late assembly regression covers no duplicate troop gain.",
+    "Do not accept the task until m4.marches participates in canonical WorldState text/stateHash and malformed joinedCommitmentTroops input is handled as a structured validation error."
+  ],
+  "risks": [
+    "Save-format remains intentionally unchanged due task boundaries; M4 march persistence should stay a separate explicit follow-up.",
+    "Rainy-season pause remains plan-time based on accepted route season risk; this is acceptable for this task if retained as a documented assumption."
+  ],
+  "blockers": [
+    {
+      "severity": "P1",
+      "file": "packages/sim-core/src/world-state-v0.ts",
+      "lines": "5881-5898",
+      "behavior": "formatM4CanonicalLines serializes schemaVersion, campaignPlans, factionKnowledgeSnapshots, mobilizedForceCommitments, and grainSupplyReservations, but not marches. M4 march state is now authoritative WorldState containing currentDistrictId, currentSegmentIndex, progress, supply, arrival day, joinedCommitmentIds, joinedCommitmentTroops, and failedCommitmentIds. Omitting it from canonical text means two worlds can have different authoritative march state with the same stateHash when other fields match, undermining deterministic replay/hash validation.",
+      "required_change": "Add deterministic canonical formatting for state.m4.marches, preserving ordered routeSegments while using stable ordering for unordered sublists such as reasonCodes and joinedCommitmentTroops. Add a regression proving hashWorldStateV0/canonicalWorldStateV0Text changes when march progress, supply, arrival, or joinedCommitmentTroops changes."
+    },
+    {
+      "severity": "P1",
+      "file": "packages/sim-core/src/world-state-v0.ts",
+      "lines": "2224-2230,7870-7877",
+      "behavior": "validateM4CampaignMarchEntry treats joinedCommitmentTroops as optional, but validateM4RuntimeState unconditionally calls march.joinedCommitmentTroops.map. A malformed or older candidate march missing joinedCommitmentTroops therefore throws Cannot read properties of undefined (reading 'map') instead of returning a structured invalid-schema error. This violates the repository error model for schema validation and is especially risky because joinedCommitmentTroops was just added to the authoritative shape.",
+      "required_change": "Either make joinedCommitmentTroops required in shape validation and return an invalid-schema error when absent, or normalize it before runtime validation in a clearly tested boundary. Add a regression that validateWorldStateV0 does not throw and returns a structured error for a march missing joinedCommitmentTroops."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the canonical march hashing omission and missing joinedCommitmentTroops validation throw, add focused regressions, rerun the required gates, and return a new REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-26T04:20:06Z"
+}

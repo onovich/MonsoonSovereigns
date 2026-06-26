@@ -643,6 +643,24 @@ describe("SIM-003 protocol command/query schemas", () => {
       }).ok
     ).toBe(true);
     expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.start-campaign-march",
+        commandId: "cmd.m4.march.start",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          marchId: 701,
+          campaignPlanId: 1,
+          originDistrictId: 1,
+          plannedDepartureDay: 10,
+          grainPerTroopPerDay: 1,
+          reasonCodes: ["march.order.accepted"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
       parseGameQueryV1({
         schemaVersion: 1,
         kind: "sim.preview-m4-grain-supply",
@@ -660,6 +678,16 @@ describe("SIM-003 protocol command/query schemas", () => {
         kind: "sim.preview-m4-route-transport-capacity",
         payload: {
           queryId: "m4.route-capacity.1",
+          campaignPlanId: 1
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m4-march-state",
+        payload: {
+          queryId: "m4.march.1",
           campaignPlanId: 1
         }
       }).ok
@@ -738,6 +766,31 @@ describe("SIM-003 protocol command/query schemas", () => {
         path: "payload.objectiveKind",
         message:
           "payload.objectiveKind must be prepare, march, besiege, relieve, withdraw, or postwar-result-candidate."
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.start-campaign-march",
+        commandId: "cmd.m4.march.bad-grain",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          marchId: 701,
+          campaignPlanId: 1,
+          originDistrictId: 1,
+          plannedDepartureDay: 10,
+          grainPerTroopPerDay: 0,
+          reasonCodes: ["march.order.accepted"]
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.grainPerTroopPerDay",
+        message: "payload.grainPerTroopPerDay must be a positive safe integer."
       }
     });
   });
