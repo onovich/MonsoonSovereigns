@@ -2,7 +2,7 @@
   "id": "M5-MULTIYEAR-AI-RUN-001",
   "summary": "Validate multi-year AI run without rescue",
   "milestone": "M5",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -70,7 +70,7 @@
   "threads": {
     "test_engineer": {
       "thread_id": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
-      "status": "review_ready_after_qa_fix",
+      "status": "accepted_pending_pr",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -84,7 +84,7 @@
       "predecessor_close_reason": "stale_after_two_wait_windows_and_narrowing_no_handoff",
       "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-REPLACEMENT-START__lead_orchestrator.json",
       "base_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
-      "updated_at": "2026-06-27T00:43:30+08:00",
+      "updated_at": "2026-06-27T00:50:00+08:00",
       "start_submission_id": "019f04ac-0cd3-7d50-ae91-4dfc1f27db36",
       "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-LEAD-TO-TEST-REPLACEMENT-START.json",
       "request_changes_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
@@ -95,7 +95,9 @@
       "review_ready_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
       "review_ready_at": "2026-06-27T00:29:58+08:00",
       "review_ready_round": 3,
-      "qa_fix_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-FIX__lead_orchestrator.json"
+      "qa_fix_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-FIX__lead_orchestrator.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T00:50:00+08:00"
     },
     "test_engineer:stale:019f0486-71a5-7cd3-950c-933d86afb0fc": {
       "thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
@@ -122,7 +124,7 @@
     },
     "qa_reviewer": {
       "thread_id": "019f04c6-0df4-7fd2-9788-380f620b2f6a",
-      "status": "rereviewing",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -136,14 +138,17 @@
       "review_source_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
       "review_commit": "703585f2",
       "review_submission_id": "019f04c6-623e-7fb2-9959-2377e7500eb4",
-      "updated_at": "2026-06-27T00:44:20+08:00",
+      "updated_at": "2026-06-27T00:50:00+08:00",
       "review_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-REVIEW__qa_reviewer.json",
       "qa_fix_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-FIX__lead_orchestrator.json",
       "qa_fix_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-QA-FIX-TO-QA-REREVIEW.json",
-      "qa_fix_submission_id": "019f04d2-b3bb-7dc0-a7a2-b0c0885fc9ce"
+      "qa_fix_submission_id": "019f04d2-b3bb-7dc0-a7a2-b0c0885fc9ce",
+      "accept_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-R2-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T00:50:00+08:00"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is validation evidence, not grand-strategy AI expansion.",
     "Do not use telemetry or background network reporting to collect results.",
@@ -151,10 +156,11 @@
     "Lead closed stale test_engineer thread 019f0486-71a5-7cd3-950c-933d86afb0fc after two wait windows and a narrowing instruction produced no handoff; replacement test_engineer thread 019f04aa-f0c6-7523-8ac4-2c42a1db5709 (Canary the 9th) started.",
     "Lead added pnpm-lock.yaml to allowed_paths as a minimal scope correction because the task explicitly requires pnpm --filter @monsoon/sim-ai test and the new workspace-local @monsoon/sim-ai package must be represented in the lockfile for frozen installs; this adds no external dependency and must be reviewed by qa_reviewer.",
     "Replacement test_engineer produced R3 REVIEW after fixing lint/typecheck issues; lead gates passed and the live no-action-only command path limitation remains explicit for QA review.",
-    "Independent QA requested a formatting-only change; lead formatted packages/sim-ai/src/m5-multiyear-ai-run.ts and recorded targeted Prettier passing evidence for QA re-review."
+    "Independent QA requested a formatting-only change; lead formatted packages/sim-ai/src/m5-multiyear-ai-run.ts and recorded targeted Prettier passing evidence for QA re-review.",
+    "Independent qa_reviewer accepted R2 after the targeted Prettier formatting fix; lead accepted for PR/CI/main integration. Task remains ACCEPTED pending PR and is not CLOSED until main integration is confirmed."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-27T00:44:20+08:00",
+  "updated_at": "2026-06-27T00:50:00+08:00",
   "ready_at": "2026-06-26T23:23:27+08:00",
   "started_at": "2026-06-26T23:23:27+08:00",
   "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
@@ -185,9 +191,12 @@
   "qa_thread_id": "019f04c6-0df4-7fd2-9788-380f620b2f6a",
   "review_commit": "703585f2",
   "qa_review_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-REVIEW__qa_reviewer.json",
-  "qa_status": "REQUEST_CHANGES",
+  "qa_status": "ACCEPT",
   "qa_fix_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-FIX__lead_orchestrator.json",
   "qa_fix_at": "2026-06-27T00:43:30+08:00",
   "qa_fix_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-QA-FIX-TO-QA-REREVIEW.json",
-  "qa_fix_submission_id": "019f04d2-b3bb-7dc0-a7a2-b0c0885fc9ce"
+  "qa_fix_submission_id": "019f04d2-b3bb-7dc0-a7a2-b0c0885fc9ce",
+  "accepted_at": "2026-06-27T00:50:00+08:00",
+  "qa_accept_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-R2-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-LEAD-ACCEPT__lead_orchestrator.json"
 }
