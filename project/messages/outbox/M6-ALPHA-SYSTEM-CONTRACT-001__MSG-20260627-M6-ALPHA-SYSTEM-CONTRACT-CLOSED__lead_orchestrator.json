@@ -1,0 +1,52 @@
+{
+  "message_id": "MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-CLOSED",
+  "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M6-ALPHA-SYSTEM-CONTRACT-001 is CLOSED after PR #131 passed CI, was merged, and entered main. The bounded M6 Alpha system-complete contract is now the accepted planning basis for downstream M6 tasks. Next dependency-ready M6 tasks are M6-DIPLOMACY-LEGITIMACY-001 and M6-SCENARIO-DATA-PIPELINE-001; lead will start M6-DIPLOMACY-LEGITIMACY-001 after this closure checkpoint enters main.",
+  "artifacts": [
+    "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+    "PROJECT_STATUS.md",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/close-m6-alpha-system-contract / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
+  "tests_run": [
+    {
+      "command": "gh pr view 131 --json number,url,state,mergeCommit,mergedAt",
+      "exit_code": 0,
+      "result": "PR #131 is MERGED at 4310aee1805b069ddef28fe3fd52ab25a8ae3365."
+    },
+    {
+      "command": "gh pr checks 131 --watch --interval 15",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "After PR #131 merge, M6-DIPLOMACY-LEGITIMACY-001 and M6-SCENARIO-DATA-PIPELINE-001 are dependency-ready."
+    }
+  ],
+  "decisions": [
+    "CLOSED: Accepted M6 Alpha contract entered main through PR #131.",
+    "Do not start downstream work until this closure checkpoint enters main.",
+    "Choose M6-DIPLOMACY-LEGITIMACY-001 as the next highest-priority dependency-ready M6 task, while M6-SCENARIO-DATA-PIPELINE-001 remains also dependency-ready.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE and all Human Gates."
+  ],
+  "risks": [
+    "Untracked ui-samples/ exists and remains unrelated, unstaged, and untouched.",
+    "Downstream M6 work must not expand the accepted Alpha contract into M7 content lock, M8 release hardening, full diplomacy, server/multiplayer, telemetry, or manual node battle."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open and merge closure PR, sync main, then start M6-DIPLOMACY-LEGITIMACY-001 with a simulation_engineer writer.",
+  "created_at": "2026-06-27T06:35:40+08:00"
+}

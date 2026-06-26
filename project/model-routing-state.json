@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T06:29:00+08:00",
+  "updated_at": "2026-06-27T06:35:40+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1768,17 +1768,17 @@
   ],
   "active_threads": [
     {
-      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_integration_pending",
+      "status": "dependency_ready_pending_start",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead integration for accepted M6 Alpha system contract",
-      "branch_or_worktree": "design/m6-alpha-system-contract",
-      "updated_at": "2026-06-27T06:29:00+08:00"
+      "responsibility": "lead start for next dependency-ready M6 task after M6 Alpha contract closure",
+      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
+      "updated_at": "2026-06-27T06:35:40+08:00"
     }
   ],
   "task_effects": {
@@ -1992,13 +1992,13 @@
       "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
     },
     "M6-ALPHA-SYSTEM-CONTRACT-001": {
-      "status": "ACCEPTED",
+      "status": "CLOSED",
       "owner_role": "gameplay_designer",
       "reviewer_role": "systems_architect",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "design/m6-alpha-system-contract",
       "created_by_task_graph_pr": 129,
-      "updated_at": "2026-06-27T06:29:00+08:00",
+      "updated_at": "2026-06-27T06:35:40+08:00",
       "human_gate_required": false,
       "next_action": "Open PR, wait for CI, merge to main, then close task.",
       "writer_thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
@@ -2023,7 +2023,27 @@
       "systems_status": "ACCEPT",
       "lead_accept_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T06:29:00+08:00",
-      "child_threads_closed": true
+      "child_threads_closed": true,
+      "integrated_pr": 131,
+      "integrated_main_commit": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/131",
+      "lead_close_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T06:35:40+08:00",
+      "next_ready_tasks": [
+        "M6-DIPLOMACY-LEGITIMACY-001",
+        "M6-SCENARIO-DATA-PIPELINE-001"
+      ]
+    },
+    "M6-DIPLOMACY-LEGITIMACY-001": {
+      "status": "DEPENDENCY_READY_PENDING_START",
+      "owner_role": "simulation_engineer",
+      "reviewer_role": "systems_architect",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
+      "dependencies_satisfied_by": "M6-ALPHA-SYSTEM-CONTRACT-001",
+      "updated_at": "2026-06-27T06:35:40+08:00",
+      "human_gate_required": false,
+      "next_action": "Start after closure checkpoint enters main."
     }
   }
 }
