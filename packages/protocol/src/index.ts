@@ -93,6 +93,7 @@ export type M4WithdrawalTriggerV1 =
   | "loss"
   | "objective-complete";
 export const M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION = 1;
+export const M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES = 16;
 export type M4CampaignAiDecisionKindV1 =
   | "no-action"
   | "wait"
@@ -3483,11 +3484,11 @@ function parseM4CampaignAiCandidateTraceArray(
   if (!Array.isArray(input) || input.length === 0) {
     return protocolError("invalid-payload", "candidates", "candidates must be a non-empty array.");
   }
-  if (input.length > 16) {
+  if (input.length > M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES) {
     return protocolError(
       "invalid-payload",
       "candidates",
-      "candidates must contain at most 16 entries."
+      `candidates must contain at most ${M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES} entries.`
     );
   }
   const candidates: M4CampaignAiCandidateTraceV1[] = [];

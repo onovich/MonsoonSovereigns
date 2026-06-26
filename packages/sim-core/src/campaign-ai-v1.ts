@@ -1,5 +1,6 @@
 import {
   GAME_COMMAND_SCHEMA_VERSION,
+  M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES,
   M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION,
   type ApplyM4SiegeChoiceCommandV1,
   type CancelCampaignObjectiveCommandV1,
@@ -23,6 +24,8 @@ import {
   type QueryResultV1,
   type SimulationRuntimeV1
 } from "./command-query-v1.ts";
+
+const DEFAULT_M4_CAMPAIGN_AI_TRACE_CANDIDATE_LIMIT = 5;
 
 export interface PlanM4CampaignAiTurnInputV1 {
   readonly actorId: string;
@@ -98,7 +101,11 @@ export function planM4CampaignAiTurnV1(
     knowledge
   });
   const selected = selectM4AiCandidate(candidates);
-  const boundedCandidates = boundM4AiCandidates(candidates, input.maxTraceCandidates ?? 5);
+  const boundedCandidates = boundM4AiCandidates(
+    candidates,
+    selected,
+    input.maxTraceCandidates ?? DEFAULT_M4_CAMPAIGN_AI_TRACE_CANDIDATE_LIMIT
+  );
 
   return {
     command: selected.command,
@@ -757,12 +764,22 @@ function selectM4AiCandidate(candidates: readonly M4AiCandidate[]): M4AiCandidat
 
 function boundM4AiCandidates(
   candidates: readonly M4AiCandidate[],
+  selected: M4AiCandidate,
   maxTraceCandidates: number
 ): readonly M4AiCandidate[] {
   const positiveLimit = maxTraceCandidates > 0 ? maxTraceCandidates : 1;
-  return [...candidates]
+  const traceLimit =
+    positiveLimit > M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES
+      ? M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES
+      : positiveLimit;
+  const fillerLimit = traceLimit - 1;
+  const filler = [...candidates]
+    .filter((candidate) => candidate.candidateId !== selected.candidateId)
     .sort((left, right) => compareText(left.candidateId, right.candidateId))
-    .slice(0, positiveLimit);
+    .slice(0, fillerLimit);
+  return [selected, ...filler].sort((left, right) =>
+    compareText(left.candidateId, right.candidateId)
+  );
 }
 
 function candidateToTrace(candidate: M4AiCandidate): M4CampaignAiCandidateTraceV1 {

@@ -33,7 +33,10 @@ import {
   type WorldStateV0
 } from "../packages/sim-core/src/index";
 
-import { parseM4CampaignAiDecisionTraceV1 } from "../packages/protocol/src/index";
+import {
+  M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES,
+  parseM4CampaignAiDecisionTraceV1
+} from "../packages/protocol/src/index";
 
 import type { GameCommandV1 } from "../packages/protocol/src/index";
 
@@ -225,6 +228,39 @@ describe("M4-CAMPAIGN-AI-001 minimal campaign AI planning", () => {
       [...first.trace.candidates.map((candidate) => candidate.candidateId)].sort()
     );
     expect(JSON.parse(JSON.stringify(first.trace))).toEqual(first.trace);
+  });
+
+  test("clamps oversized trace requests and retains selected candidate after truncation", () => {
+    const expiredPlans = Array.from({ length: 20 }, (_unused, index) =>
+      campaignPlan({ id: index + 1, earliestDay: 1, latestDay: 2 })
+    );
+    const runtime = runtimeWithM4({
+      currentDay: 30,
+      campaignPlans: [...expiredPlans, campaignPlan({ id: 99, status: "active" })],
+      marches: [
+        march({
+          campaignPlanId: 99,
+          supplyStatus: "out-of-supply",
+          carriedGrain: 0,
+          activeTroops: 40
+        })
+      ]
+    });
+
+    const planned = planM4CampaignAiTurnV1(
+      runtime,
+      aiInput("m4.ai.trace-clamp", { maxTraceCandidates: 99 })
+    );
+    const selectedCandidateId = planned.trace.selectedCandidateId;
+
+    expect(planned.trace.decisionKind).toBe("withdraw");
+    expect(planned.trace.candidates.length).toBeLessThanOrEqual(
+      M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES
+    );
+    expect(planned.trace.candidates.map((candidate) => candidate.candidateId)).toContain(
+      selectedCandidateId
+    );
+    expect(parseM4CampaignAiDecisionTraceV1(planned.trace).ok).toBe(true);
   });
 
   test("uses player/AI command parity and keeps trace size bounded", () => {
@@ -419,13 +455,14 @@ function populationGroup(districtId: number, grainStock: number) {
 }
 
 function campaignPlan(input: {
+  readonly id?: number;
   readonly targetDistrictId?: number;
   readonly earliestDay?: number;
   readonly latestDay?: number;
   readonly status?: "planned" | "active";
 }): M4CampaignStateV0["campaignPlans"][number] {
   return {
-    id: parseCampaignPlanId(10),
+    id: parseCampaignPlanId(input.id ?? 10),
     owner: { kind: "polity", polityId: parsePolityId(1) },
     target: { kind: "district", districtId: parseDistrictId(input.targetDistrictId ?? 3) },
     objectiveKind: "besiege",
@@ -499,13 +536,14 @@ function reservation(
 }
 
 function march(input: {
+  readonly campaignPlanId?: number;
   readonly supplyStatus: "well-supplied" | "hungry" | "out-of-supply";
   readonly carriedGrain: number;
   readonly activeTroops: number;
 }): M4CampaignStateV0["marches"][number] {
   return {
     marchId: parseCampaignMarchId(701),
-    campaignPlanId: parseCampaignPlanId(10),
+    campaignPlanId: parseCampaignPlanId(input.campaignPlanId ?? 10),
     originDistrictId: parseDistrictId(1),
     targetDistrictId: parseDistrictId(3),
     currentDistrictId: parseDistrictId(3),
