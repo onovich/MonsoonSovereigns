@@ -1,0 +1,117 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-OBJECTIVES-LEAD-ACCEPT",
+  "task_id": "M4-CAMPAIGN-OBJECTIVES-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M4-CAMPAIGN-OBJECTIVES-001 after replacement simulation_engineer implementation, systems_architect REQUEST_CHANGES, R2 deterministic FactionKnowledge fix, and systems_architect R2 ACCEPT. The task adds only the minimal M4 campaign objective/FactionKnowledge substrate, shared player/AI GameCommand paths, and read-only planning/knowledge queries; it does not implement muster, supply consumption, march execution, siege/combat, UI, save-format expansion, full diplomacy, rebellion, or manual battle behavior. The task remains ACCEPTED until PR CI and main integration complete.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-SYSTEMS-R2-ACCEPT__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-objectives",
+  "commit": "324830a3 R2 fix; accepted-state commit pending",
+  "tests_run": [
+    {
+      "command": "validate-handoff writer REVIEW",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "validate-handoff systems REQUEST_CHANGES",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "validate-handoff writer R2 REVIEW",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "validate-handoff systems R2 ACCEPT",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "validate-handoff lead ACCEPT",
+      "exit_code": 0,
+      "result": "VALID after update"
+    },
+    {
+      "command": "taskctl validate M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "taskctl list/ready",
+      "exit_code": 0,
+      "result": "M4-CAMPAIGN-OBJECTIVES-001 ACCEPTED; next dependency-ready candidate M4-MUSTER-PREP-COMMITMENTS-001 appears but remains unstarted until this task enters main and closes"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-campaign-objectives.test.ts",
+      "exit_code": 0,
+      "result": "1 file / 7 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file / 8 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "15 files / 106 tests passed"
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "hello 61e0ba1c; command/query d275faa4; save/load 28074edd; byte length 10920"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture boundaries passed; determinism passed; root 26 files / 173 tests passed; web 1 file / 3 tests passed"
+    }
+  ],
+  "decisions": [
+    "Accepted optional in-memory state.m4 for M4 campaign objectives; save-format expansion remains out of scope for this task.",
+    "Accepted complete deterministic tie-breakers for FactionKnowledge duplicate logical keys.",
+    "Accepted shared player/AI GameCommand v1 create/update/cancel paths and read-only planning/knowledge queries.",
+    "Kept downstream M4 systems out of scope: muster, supply consumption, march, siege/combat, UI, save/replay persistence, full diplomacy, rebellion, and manual battle."
+  ],
+  "risks": [
+    "M4 CampaignPlan and FactionKnowledge state is in-memory only until a later approved M4 save/replay task opens persistence scope.",
+    "Downstream M4 tasks must not assume supply, march, siege, combat, or AI planning behavior exists yet."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Run lead integration gates, commit accepted state, open PR, require CI, merge to main, close this task, then promote the next dependency-ready M4 task.",
+  "created_at": "2026-06-26T00:14:52Z"
+}

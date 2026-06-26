@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW",
+  "task_id": "M4-CAMPAIGN-OBJECTIVES-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the minimal M4 campaign objective and FactionKnowledge substrate under the allowed sim-core/protocol/test paths. The implementation adds authoritative in-memory M4 CampaignPlan state with branded IDs, owner, objective target, start range, status and reason codes; player and AI command parity through shared GameCommand v1 create/update/cancel paths; deterministic FactionKnowledge snapshots with source/version metadata; and read-only planning/knowledge queries with forecast and reason fields. It intentionally does not implement muster, supply consumption, march execution, siege/combat, UI, save-format expansion, full diplomacy, rebellion, or manual battle behavior.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-objectives",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified allowed files: packages/protocol/src/index.ts, packages/sim-core/package.json, packages/sim-core/src/command-query-v1.ts, packages/sim-core/src/world-state-v0.ts, tests/protocol-command-query-schema.test.ts. New allowed files: tests/sim-core-m4-campaign-objectives.test.ts and this REVIEW handoff."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-campaign-objectives.test.ts",
+      "exit_code": 0,
+      "result": "6 tests passed. Covers stable branded campaign IDs, objective validation, player/AI command parity, update/cancel reason codes, deterministic FactionKnowledge ordering, and read-only planning/knowledge queries."
+    },
+    {
+      "command": "pnpm exec vitest run tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "8 tests passed, including M4 campaign objective command and planning query schema acceptance/rejection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Protocol schema test suite passed: 1 file, 8 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Sim-core package suite passed: 15 files, 105 tests. Includes M4 campaign objectives and existing boot-boundary, command/query, M2, M3, worker contract, and save/load contract regressions."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible deterministic hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed, determinism passed, root Vitest passed 26 files / 172 tests, and web package tests passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "All workspace typecheck scripts passed after adding explicit protocol boundary narrowing."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed across configured apps, packages, tests, Storybook, and tools globs."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all configured matched files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed; required keys, task id, R3 risk level, sim-core allowed path, and save-format forbidden path verified."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID REVIEW handoff JSON."
+    }
+  ],
+  "decisions": [
+    "M4 state is added as optional in-memory state.m4 in WorldStateV0 and participates in canonical hash/invariant validation, but save-format DTO expansion is intentionally not implemented because packages/save-format/** is forbidden for this task.",
+    "Campaign objective commands use the same GameCommand v1 parser/evaluator for player and AI actors; no AI-only state writes or truth reads were added.",
+    "No DomainEvent or StateDelta variants were added for M4 in this task, avoiding save event-tail parser expansion; read-only queries expose current M4 plans and FactionKnowledge read models instead.",
+    "FactionKnowledge snapshots are deterministic, source/versioned, observer-scoped, and canonicalized with explicit stable tie-breakers for objectives, route estimates, supply estimates, and defender estimates.",
+    "Forecast query reason codes use start-range terminology to avoid the repository sim-core host-API boundary scanner's forbidden lowercase window token."
+  ],
+  "risks": [
+    "R3: protocol and authoritative sim-core state changed, so systems_architect should review command/query boundaries, hash/canonical ordering, and save-format exclusion.",
+    "M4 CampaignPlan state is currently in-memory only. Save/replay persistence must be handled by the later M4 determinism/replay or explicit save-runtime task before relying on M4 state across save/load.",
+    "No muster, supply, march, siege, combat, postwar execution, or AI planning behavior is implemented here by design; downstream tasks must build on this substrate without assuming those mechanics exist."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 campaign objective/FactionKnowledge substrate for architecture boundaries, deterministic ordering, player/AI GameCommand parity, read-only query safety, and scope discipline. Do not mark ACCEPTED or CLOSED until reviewer acceptance and lead integration.",
+  "created_at": "2026-06-26T08:00:00+08:00"
+}

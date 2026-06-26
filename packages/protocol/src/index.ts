@@ -71,6 +71,13 @@ export type M3PostwarGovernanceMethodV1 =
   | "direct-control"
   | "restore-vassal-ruler"
   | "tribute-only";
+export type M4CampaignObjectiveKindV1 =
+  | "prepare"
+  | "march"
+  | "besiege"
+  | "relieve"
+  | "withdraw"
+  | "postwar-result-candidate";
 
 export interface CommandActorV1 {
   readonly kind: CommandActorKindV1;
@@ -336,6 +343,64 @@ export interface ApplyM3PostwarGovernanceCommandV1 {
   };
 }
 
+export type M4CampaignOwnerV1 =
+  | { readonly kind: "commander"; readonly characterId: number }
+  | { readonly kind: "polity"; readonly polityId: number };
+export type M4CampaignTargetV1 =
+  | { readonly kind: "district"; readonly districtId: number }
+  | { readonly kind: "polity"; readonly polityId: number };
+
+export interface M4CampaignStartWindowV1 {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}
+
+export interface CreateCampaignObjectiveCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.create-campaign-objective";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly campaignPlanId: number;
+    readonly owner: M4CampaignOwnerV1;
+    readonly target: M4CampaignTargetV1;
+    readonly objectiveKind: M4CampaignObjectiveKindV1;
+    readonly startWindow: M4CampaignStartWindowV1;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
+export interface UpdateCampaignObjectiveCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.update-campaign-objective";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly campaignPlanId: number;
+    readonly target: M4CampaignTargetV1;
+    readonly objectiveKind: M4CampaignObjectiveKindV1;
+    readonly startWindow: M4CampaignStartWindowV1;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
+export interface CancelCampaignObjectiveCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.cancel-campaign-objective";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly campaignPlanId: number;
+    readonly reasonCode: string;
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -352,6 +417,9 @@ export type GameCommandV1 =
   | ResolveSuccessionCommandV1
   | CreateCharacterRelationshipCommandV1
   | ApplyM3PostwarGovernanceCommandV1
+  | CreateCampaignObjectiveCommandV1
+  | UpdateCampaignObjectiveCommandV1
+  | CancelCampaignObjectiveCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -425,6 +493,20 @@ export interface CompareM3PostwarGovernanceOutcomesQueryV1 {
   };
 }
 
+export interface ListM4CampaignPlansQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m4-campaign-plans";
+}
+
+export interface ListM4FactionKnowledgeQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m4-faction-knowledge";
+  readonly payload: {
+    readonly queryId: string;
+    readonly observerPolityId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -435,7 +517,9 @@ export type GameQueryV1 =
   | ListM3SuccessionCrisesQueryV1
   | PreviewM2TransportRouteQueryV1
   | PreviewM3PostwarGovernanceQueryV1
-  | CompareM3PostwarGovernanceOutcomesQueryV1;
+  | CompareM3PostwarGovernanceOutcomesQueryV1
+  | ListM4CampaignPlansQueryV1
+  | ListM4FactionKnowledgeQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1123,6 +1207,54 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.create-campaign-objective": {
+      const payload = parseCreateCampaignObjectivePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.update-campaign-objective": {
+      const payload = parseUpdateCampaignObjectivePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.cancel-campaign-objective": {
+      const payload = parseCancelCampaignObjectivePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -1170,6 +1302,7 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     case "sim.list-m3-administrative-burden":
     case "sim.list-m3-decision-scaffolds":
     case "sim.list-m3-succession-crises":
+    case "sim.list-m4-campaign-plans":
       return {
         ok: true,
         value: {
@@ -1209,6 +1342,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.compare-m3-postwar-governance-outcomes": {
       const payload = parseCompareM3PostwarGovernanceOutcomesPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.list-m4-faction-knowledge": {
+      const payload = parseListM4FactionKnowledgePayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -2127,6 +2275,234 @@ function parseApplyM3PostwarGovernancePayload(
   };
 }
 
+function parseCreateCampaignObjectivePayload(
+  input: unknown
+): ProtocolParseResult<CreateCampaignObjectiveCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.create-campaign-objective payload must be an object."
+    );
+  }
+  const base = parseCampaignObjectivePayloadBase(input, "sim.create-campaign-objective");
+  if (!base.ok) {
+    return base;
+  }
+  const owner = parseM4CampaignOwner(input["owner"], "payload.owner");
+  if (!owner.ok) {
+    return owner;
+  }
+
+  return {
+    ok: true,
+    value: {
+      ...base.value,
+      owner: owner.value
+    }
+  };
+}
+
+function parseUpdateCampaignObjectivePayload(
+  input: unknown
+): ProtocolParseResult<UpdateCampaignObjectiveCommandV1["payload"]> {
+  return parseCampaignObjectivePayloadBase(input, "sim.update-campaign-objective");
+}
+
+function parseCampaignObjectivePayloadBase(
+  input: unknown,
+  commandKind: string
+): ProtocolParseResult<UpdateCampaignObjectiveCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", "payload", `${commandKind} payload must be an object.`);
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const target = parseM4CampaignTarget(input["target"], "payload.target");
+  if (!target.ok) {
+    return target;
+  }
+  const objectiveKind = parseM4CampaignObjectiveKind(
+    input["objectiveKind"],
+    "payload.objectiveKind"
+  );
+  if (!objectiveKind.ok) {
+    return objectiveKind;
+  }
+  const startWindow = parseM4CampaignStartWindow(input["startWindow"], "payload.startWindow");
+  if (!startWindow.ok) {
+    return startWindow;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+
+  return {
+    ok: true,
+    value: {
+      campaignPlanId: campaignPlanId.value,
+      target: target.value,
+      objectiveKind: objectiveKind.value,
+      startWindow: startWindow.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseCancelCampaignObjectivePayload(
+  input: unknown
+): ProtocolParseResult<CancelCampaignObjectiveCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.cancel-campaign-objective payload must be an object."
+    );
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      campaignPlanId: campaignPlanId.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseM4CampaignOwner(
+  input: unknown,
+  path: string
+): ProtocolParseResult<M4CampaignOwnerV1> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", path, `${path} must be an object.`);
+  }
+  if (input["kind"] === "commander") {
+    const characterId = parsePositiveSafeInteger(input["characterId"], `${path}.characterId`);
+    if (!characterId.ok) {
+      return characterId;
+    }
+    return { ok: true, value: { kind: "commander", characterId: characterId.value } };
+  }
+  if (input["kind"] === "polity") {
+    const polityId = parsePositiveSafeInteger(input["polityId"], `${path}.polityId`);
+    if (!polityId.ok) {
+      return polityId;
+    }
+    return { ok: true, value: { kind: "polity", polityId: polityId.value } };
+  }
+  return protocolError(
+    "invalid-payload",
+    `${path}.kind`,
+    `${path}.kind must be commander or polity.`
+  );
+}
+
+function parseM4CampaignTarget(
+  input: unknown,
+  path: string
+): ProtocolParseResult<M4CampaignTargetV1> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", path, `${path} must be an object.`);
+  }
+  if (input["kind"] === "district") {
+    const districtId = parsePositiveSafeInteger(input["districtId"], `${path}.districtId`);
+    if (!districtId.ok) {
+      return districtId;
+    }
+    return { ok: true, value: { kind: "district", districtId: districtId.value } };
+  }
+  if (input["kind"] === "polity") {
+    const polityId = parsePositiveSafeInteger(input["polityId"], `${path}.polityId`);
+    if (!polityId.ok) {
+      return polityId;
+    }
+    return { ok: true, value: { kind: "polity", polityId: polityId.value } };
+  }
+  return protocolError(
+    "invalid-payload",
+    `${path}.kind`,
+    `${path}.kind must be district or polity.`
+  );
+}
+
+function parseM4CampaignObjectiveKind(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M4CampaignObjectiveKindV1> {
+  if (
+    value === "prepare" ||
+    value === "march" ||
+    value === "besiege" ||
+    value === "relieve" ||
+    value === "withdraw" ||
+    value === "postwar-result-candidate"
+  ) {
+    return { ok: true, value };
+  }
+
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be prepare, march, besiege, relieve, withdraw, or postwar-result-candidate.`
+  );
+}
+
+function parseM4CampaignStartWindow(
+  input: unknown,
+  path: string
+): ProtocolParseResult<M4CampaignStartWindowV1> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", path, `${path} must be an object.`);
+  }
+  const earliestDay = parseNonnegativeSafeInteger(input["earliestDay"], `${path}.earliestDay`);
+  if (!earliestDay.ok) {
+    return earliestDay;
+  }
+  const latestDay = parseNonnegativeSafeInteger(input["latestDay"], `${path}.latestDay`);
+  if (!latestDay.ok) {
+    return latestDay;
+  }
+  return {
+    ok: true,
+    value: {
+      earliestDay: earliestDay.value,
+      latestDay: latestDay.value
+    }
+  };
+}
+
+function parseReasonCodes(input: unknown, path: string): ProtocolParseResult<readonly string[]> {
+  if (!Array.isArray(input) || input.length === 0) {
+    return protocolError("invalid-payload", path, `${path} must be a non-empty array.`);
+  }
+  const reasonCodes: string[] = [];
+  for (let index = 0; index < input.length; index += 1) {
+    const reasonCode = parseNonEmptyProtocolString(input[index], `${path}[${index}]`);
+    if (!reasonCode.ok) {
+      return reasonCode;
+    }
+    reasonCodes.push(reasonCode.value);
+  }
+  return { ok: true, value: reasonCodes };
+}
+
 function parseM3ObligationCategory(
   value: unknown,
   path: string
@@ -2389,6 +2765,41 @@ function parseCompareM3PostwarGovernanceOutcomesPayload(
   input: unknown
 ): ProtocolParseResult<CompareM3PostwarGovernanceOutcomesQueryV1["payload"]> {
   return parseM3PostwarGovernanceQueryBase(input, "sim.compare-m3-postwar-governance-outcomes");
+}
+
+function parseListM4FactionKnowledgePayload(
+  input: unknown
+): ProtocolParseResult<ListM4FactionKnowledgeQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.list-m4-faction-knowledge payload must be an object."
+    );
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const observerPolityId = parsePositiveSafeInteger(
+    input["observerPolityId"],
+    "payload.observerPolityId"
+  );
+  if (!observerPolityId.ok) {
+    return observerPolityId;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      observerPolityId: observerPolityId.value
+    }
+  };
 }
 
 function parseM3PostwarGovernanceQueryBase(

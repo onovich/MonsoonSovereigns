@@ -47,10 +47,15 @@ import {
   parsePersonId,
   parsePopulationGroupId,
   parsePolityId,
+  parseCampaignPlanId,
   parseWorldRevision,
   validateWorldStateV0,
   canonicalizeM2EconomyPopulationState,
   canonicalizeM3PolityVassalageState,
+  canonicalizeM4CampaignStateV0,
+  copyM4CampaignOwner,
+  copyM4CampaignTarget,
+  createM4CampaignStateV0,
   computeM3AdministrativeBurdenProfileV0,
   type DistrictControlState,
   type DistrictId,
@@ -80,6 +85,12 @@ import {
   type M3SuccessionCrisisStateV0,
   type M3SuccessionOutcomeV0,
   type M3SuccessionSupportSourceStateV0,
+  type M4CampaignOwnerV0,
+  type M4CampaignPlanStateV0,
+  type M4CampaignStateV0,
+  type M4CampaignTargetV0,
+  type M4FactionKnowledgeSnapshotStateV0,
+  type M4KnownObjectiveEstimateV0,
   type M2EconomyPopulationStateV0,
   type M2LaborCommitmentPurposeV0,
   type M2RouteKindV0,
@@ -97,6 +108,7 @@ export type DomainErrorCodeV1 =
   | "bad-id"
   | "authority-denied"
   | "bulk-command-rejected"
+  | "campaign-objective-invalid"
   | "character-location-invalid"
   | "character-unavailable"
   | "duplicate-command"
@@ -491,6 +503,19 @@ export type QueryResultV1 =
             readonly revision: number;
             readonly months: number;
             readonly outcomes: readonly M3PostwarGovernanceOutcomeReadModelV1[];
+          }
+        | {
+            readonly kind: "sim.list-m4-campaign-plans";
+            readonly day: number;
+            readonly revision: number;
+            readonly plans: readonly M4CampaignPlanReadModelV1[];
+          }
+        | {
+            readonly kind: "sim.list-m4-faction-knowledge";
+            readonly day: number;
+            readonly revision: number;
+            readonly observerPolityId: number;
+            readonly snapshots: readonly M4FactionKnowledgeSnapshotReadModelV1[];
           };
     }
   | {
@@ -629,6 +654,38 @@ export interface M3PostwarGovernanceOutcomeReadModelV1 {
   readonly averageReliabilityBps: number;
   readonly totalMilitaryContributionTroops: number;
   readonly averageRiskBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M4CampaignForecastReadModelV1 {
+  readonly status: "ready" | "blocked" | "cancelled" | "completed";
+  readonly earliestStartDay: number;
+  readonly latestStartDay: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M4CampaignPlanReadModelV1 {
+  readonly campaignPlanId: number;
+  readonly owner: M4CampaignOwnerV0;
+  readonly target: M4CampaignTargetV0;
+  readonly objectiveKind: M4CampaignPlanStateV0["objectiveKind"];
+  readonly status: M4CampaignPlanStateV0["status"];
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly forecast: M4CampaignForecastReadModelV1;
+}
+
+export interface M4FactionKnowledgeSnapshotReadModelV1 {
+  readonly snapshotId: number;
+  readonly observerPolityId: number;
+  readonly subjectPolityId: number;
+  readonly knowledgeVersion: number;
+  readonly recordedDay: number;
+  readonly source: M4FactionKnowledgeSnapshotStateV0["source"];
+  readonly knownObjectives: readonly M4KnownObjectiveEstimateV0[];
+  readonly routeEstimates: M4FactionKnowledgeSnapshotStateV0["routeEstimates"];
+  readonly supplyEstimates: M4FactionKnowledgeSnapshotStateV0["supplyEstimates"];
+  readonly defenderEstimates: M4FactionKnowledgeSnapshotStateV0["defenderEstimates"];
   readonly reasonCodes: readonly string[];
 }
 
@@ -1027,6 +1084,12 @@ function validateAndEvaluateCommand(
       return evaluateCreateCharacterRelationship(runtime.world, command);
     case "sim.apply-m3-postwar-governance":
       return evaluateApplyM3PostwarGovernance(runtime.world, command);
+    case "sim.create-campaign-objective":
+      return evaluateCreateCampaignObjective(runtime.world, command);
+    case "sim.update-campaign-objective":
+      return evaluateUpdateCampaignObjective(runtime.world, command);
+    case "sim.cancel-campaign-objective":
+      return evaluateCancelCampaignObjective(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -2520,6 +2583,263 @@ function evaluateApplyM3PostwarGovernance(
   };
 }
 
+function evaluateCreateCampaignObjective(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.create-campaign-objective" }>
+): EvaluationResult {
+  const m4 = world.state.m4 ?? createM4CampaignStateV0(world.definitions);
+  const campaignPlanId = parseCampaignPlanId(command.payload.campaignPlanId);
+  if (m4.campaignPlans.some((plan) => plan.id === campaignPlanId)) {
+    return rejectCampaignObjective("payload.campaignPlanId", "CampaignPlanId already exists.");
+  }
+
+  const validationError = validateCampaignObjectivePayload(world, {
+    target: command.payload.target,
+    owner: command.payload.owner,
+    startWindow: command.payload.startWindow
+  });
+  if (validationError !== null) {
+    return validationError;
+  }
+
+  const plan: M4CampaignPlanStateV0 = {
+    id: campaignPlanId,
+    owner: commandOwnerToM4(command.payload.owner),
+    target: commandTargetToM4(command.payload.target),
+    objectiveKind: command.payload.objectiveKind,
+    startWindow: {
+      earliestDay: parseGameDay(command.payload.startWindow.earliestDay),
+      latestDay: parseGameDay(command.payload.startWindow.latestDay)
+    },
+    status: "planned",
+    statusReasonCode: "campaign.objective.created",
+    reasonCodes: [...command.payload.reasonCodes].sort(compareText),
+    createdDay: world.meta.currentDay,
+    updatedDay: world.meta.currentDay
+  };
+
+  return acceptM4CampaignState(world, command, {
+    ...m4,
+    campaignPlans: [...m4.campaignPlans, plan]
+  });
+}
+
+function evaluateUpdateCampaignObjective(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.update-campaign-objective" }>
+): EvaluationResult {
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectCampaignObjective("state.m4", "M4 campaign state is missing.");
+  }
+  const campaignPlanId = parseCampaignPlanId(command.payload.campaignPlanId);
+  const existing = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (existing === undefined) {
+    return rejectCampaignObjective("payload.campaignPlanId", "CampaignPlanId does not exist.");
+  }
+  if (existing.status === "cancelled" || existing.status === "completed") {
+    return rejectCampaignObjective("payload.campaignPlanId", "CampaignPlan is no longer editable.");
+  }
+
+  const validationError = validateCampaignObjectivePayload(world, {
+    target: command.payload.target,
+    startWindow: command.payload.startWindow
+  });
+  if (validationError !== null) {
+    return validationError;
+  }
+
+  const updatedPlan: M4CampaignPlanStateV0 = {
+    ...existing,
+    target: commandTargetToM4(command.payload.target),
+    objectiveKind: command.payload.objectiveKind,
+    startWindow: {
+      earliestDay: parseGameDay(command.payload.startWindow.earliestDay),
+      latestDay: parseGameDay(command.payload.startWindow.latestDay)
+    },
+    statusReasonCode: "campaign.objective.updated",
+    reasonCodes: [...command.payload.reasonCodes].sort(compareText),
+    updatedDay: world.meta.currentDay
+  };
+
+  return acceptM4CampaignState(world, command, {
+    ...m4,
+    campaignPlans: m4.campaignPlans.map((plan) => (plan.id === campaignPlanId ? updatedPlan : plan))
+  });
+}
+
+function evaluateCancelCampaignObjective(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.cancel-campaign-objective" }>
+): EvaluationResult {
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    return rejectCampaignObjective("state.m4", "M4 campaign state is missing.");
+  }
+  const campaignPlanId = parseCampaignPlanId(command.payload.campaignPlanId);
+  const existing = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (existing === undefined) {
+    return rejectCampaignObjective("payload.campaignPlanId", "CampaignPlanId does not exist.");
+  }
+  if (existing.status === "completed") {
+    return rejectCampaignObjective(
+      "payload.campaignPlanId",
+      "Completed CampaignPlan cannot be cancelled."
+    );
+  }
+
+  const updatedPlan: M4CampaignPlanStateV0 = {
+    ...existing,
+    status: "cancelled",
+    statusReasonCode: command.payload.reasonCode,
+    reasonCodes: [...existing.reasonCodes, command.payload.reasonCode].sort(compareText),
+    updatedDay: world.meta.currentDay
+  };
+
+  return acceptM4CampaignState(world, command, {
+    ...m4,
+    campaignPlans: m4.campaignPlans.map((plan) => (plan.id === campaignPlanId ? updatedPlan : plan))
+  });
+}
+
+function acceptM4CampaignState(
+  world: WorldStateV0,
+  command: GameCommandV1,
+  m4: M4CampaignStateV0
+): EvaluationResult {
+  const nextWorld = commitRuntimeState(world, {
+    ...world.state,
+    m4: canonicalizeM4CampaignStateV0(m4)
+  });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      events: [],
+      deltas: [],
+      wouldChangeState: nextWorld.meta.stateHash !== world.meta.stateHash
+    }
+  };
+}
+
+function validateCampaignObjectivePayload(
+  world: WorldStateV0,
+  input: {
+    readonly owner?: Extract<
+      GameCommandV1,
+      { readonly kind: "sim.create-campaign-objective" }
+    >["payload"]["owner"];
+    readonly target: Extract<
+      GameCommandV1,
+      { readonly kind: "sim.create-campaign-objective" }
+    >["payload"]["target"];
+    readonly startWindow: { readonly earliestDay: number; readonly latestDay: number };
+  }
+): EvaluationResult | null {
+  if (input.startWindow.earliestDay > input.startWindow.latestDay) {
+    return rejectCampaignObjective(
+      "payload.startWindow",
+      "startWindow earliestDay must be <= latestDay."
+    );
+  }
+  if (input.owner !== undefined) {
+    const ownerError = validateCampaignOwnerReference(world, input.owner);
+    if (ownerError !== null) {
+      return ownerError;
+    }
+  }
+  return validateCampaignTargetReference(world, input.target);
+}
+
+function validateCampaignOwnerReference(
+  world: WorldStateV0,
+  owner: Extract<
+    GameCommandV1,
+    { readonly kind: "sim.create-campaign-objective" }
+  >["payload"]["owner"]
+): EvaluationResult | null {
+  switch (owner.kind) {
+    case "commander":
+      return world.definitions.persons.some((person) => person.id === owner.characterId)
+        ? null
+        : rejectCampaignObjective(
+            "payload.owner.characterId",
+            "Campaign owner commander is missing."
+          );
+    case "polity":
+      return world.definitions.polities.some((polity) => polity.id === owner.polityId)
+        ? null
+        : rejectCampaignObjective("payload.owner.polityId", "Campaign owner polity is missing.");
+  }
+}
+
+function validateCampaignTargetReference(
+  world: WorldStateV0,
+  target: Extract<
+    GameCommandV1,
+    { readonly kind: "sim.create-campaign-objective" }
+  >["payload"]["target"]
+): EvaluationResult | null {
+  switch (target.kind) {
+    case "district":
+      return world.definitions.districts.some((district) => district.id === target.districtId)
+        ? null
+        : rejectCampaignObjective(
+            "payload.target.districtId",
+            "Campaign target district is missing."
+          );
+    case "polity":
+      return world.definitions.polities.some((polity) => polity.id === target.polityId)
+        ? null
+        : rejectCampaignObjective("payload.target.polityId", "Campaign target polity is missing.");
+  }
+}
+
+function commandOwnerToM4(
+  owner: Extract<
+    GameCommandV1,
+    { readonly kind: "sim.create-campaign-objective" }
+  >["payload"]["owner"]
+): M4CampaignOwnerV0 {
+  switch (owner.kind) {
+    case "commander":
+      return { kind: "commander", characterId: parsePersonId(owner.characterId) };
+    case "polity":
+      return { kind: "polity", polityId: parsePolityId(owner.polityId) };
+  }
+}
+
+function commandTargetToM4(
+  target: Extract<
+    GameCommandV1,
+    { readonly kind: "sim.create-campaign-objective" }
+  >["payload"]["target"]
+): M4CampaignTargetV0 {
+  switch (target.kind) {
+    case "district":
+      return { kind: "district", districtId: parseDistrictId(target.districtId) };
+    case "polity":
+      return { kind: "polity", polityId: parsePolityId(target.polityId) };
+  }
+}
+
+function rejectCampaignObjective(path: string, message: string): EvaluationResult {
+  return {
+    ok: false,
+    error: {
+      code: "campaign-objective-invalid",
+      path,
+      message
+    }
+  };
+}
+
 function evaluateVerifyStateHash(
   world: WorldStateV0,
   command: Extract<GameCommandV1, { readonly kind: "sim.verify-state-hash" }>
@@ -3878,7 +4198,131 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM3PostwarGovernancePreviewQuery(runtime, query);
     case "sim.compare-m3-postwar-governance-outcomes":
       return executeM3PostwarGovernanceOutcomesQuery(runtime, query);
+    case "sim.list-m4-campaign-plans":
+      return executeM4CampaignPlansQuery(runtime);
+    case "sim.list-m4-faction-knowledge":
+      return executeM4FactionKnowledgeQuery(runtime, query);
   }
+}
+
+function executeM4CampaignPlansQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
+  const m4 = runtime.world.state.m4;
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m4-campaign-plans",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      plans:
+        m4?.campaignPlans.map((plan) => ({
+          campaignPlanId: plan.id,
+          owner: copyM4CampaignOwner(plan.owner),
+          target: copyM4CampaignTarget(plan.target),
+          objectiveKind: plan.objectiveKind,
+          status: plan.status,
+          statusReasonCode: plan.statusReasonCode,
+          reasonCodes: [...plan.reasonCodes],
+          forecast: forecastM4CampaignPlan(runtime.world, plan)
+        })) ?? []
+    }
+  };
+}
+
+function executeM4FactionKnowledgeQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.list-m4-faction-knowledge" }>
+): QueryResultV1 {
+  const observerPolityId = parsePolityId(query.payload.observerPolityId);
+  if (!runtime.world.definitions.polities.some((polity) => polity.id === observerPolityId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.observerPolityId",
+        message: "sim.list-m4-faction-knowledge references a missing observer PolityId."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m4-faction-knowledge",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      observerPolityId,
+      snapshots:
+        runtime.world.state.m4?.factionKnowledgeSnapshots
+          .filter((snapshot) => snapshot.observerPolityId === observerPolityId)
+          .map(copyM4KnowledgeSnapshotReadModel) ?? []
+    }
+  };
+}
+
+function forecastM4CampaignPlan(
+  world: WorldStateV0,
+  plan: M4CampaignPlanStateV0
+): M4CampaignForecastReadModelV1 {
+  if (plan.status === "cancelled") {
+    return {
+      status: "cancelled",
+      earliestStartDay: plan.startWindow.earliestDay,
+      latestStartDay: plan.startWindow.latestDay,
+      reasonCodes: [plan.statusReasonCode]
+    };
+  }
+  if (plan.status === "completed") {
+    return {
+      status: "completed",
+      earliestStartDay: plan.startWindow.earliestDay,
+      latestStartDay: plan.startWindow.latestDay,
+      reasonCodes: [plan.statusReasonCode]
+    };
+  }
+  if (world.meta.currentDay > plan.startWindow.latestDay) {
+    return {
+      status: "blocked",
+      earliestStartDay: plan.startWindow.earliestDay,
+      latestStartDay: plan.startWindow.latestDay,
+      reasonCodes: ["campaign.forecast.start-range-expired", plan.statusReasonCode]
+    };
+  }
+
+  return {
+    status: "ready",
+    earliestStartDay: plan.startWindow.earliestDay,
+    latestStartDay: plan.startWindow.latestDay,
+    reasonCodes: ["campaign.forecast.start-range-open"]
+  };
+}
+
+function copyM4KnowledgeSnapshotReadModel(
+  snapshot: M4FactionKnowledgeSnapshotStateV0
+): M4FactionKnowledgeSnapshotReadModelV1 {
+  return {
+    snapshotId: snapshot.snapshotId,
+    observerPolityId: snapshot.observerPolityId,
+    subjectPolityId: snapshot.subjectPolityId,
+    knowledgeVersion: snapshot.knowledgeVersion,
+    recordedDay: snapshot.recordedDay,
+    source: { ...snapshot.source },
+    knownObjectives: snapshot.knownObjectives.map((objective) => ({
+      campaignPlanId: objective.campaignPlanId,
+      target: copyM4CampaignTarget(objective.target),
+      objectiveKind: objective.objectiveKind,
+      confidenceBps: objective.confidenceBps,
+      reasonCodes: [...objective.reasonCodes]
+    })),
+    routeEstimates: snapshot.routeEstimates.map((estimate) => ({ ...estimate })),
+    supplyEstimates: snapshot.supplyEstimates.map((estimate) => ({ ...estimate })),
+    defenderEstimates: snapshot.defenderEstimates.map((estimate) => ({
+      target: copyM4CampaignTarget(estimate.target),
+      defenderMin: estimate.defenderMin,
+      defenderMax: estimate.defenderMax,
+      confidenceBps: estimate.confidenceBps
+    })),
+    reasonCodes: ["faction-knowledge.snapshot.visible"]
+  };
 }
 
 function executeM2EconomySummariesQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
