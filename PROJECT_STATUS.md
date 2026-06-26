@@ -150,3 +150,13 @@ Current milestone is **M5 / Playable Vertical Slice**, but this closure does not
 M5 current progress: `M5-TASK-GRAPH-001` is CLOSED after PR #108 entered `origin/main` at `8b771272a9cfa790282043fcd092c1ce59fd0117`; the closure checkpoint is being recorded on branch `chore/close-m5-task-graph`. The accepted graph is planning-only. Downstream M5 tasks remain DRAFT until selected by the lead, and `taskctl ready` selects `M5-SLICE-DEFINITION-001` as the next dependency-ready M5 task.
 
 M5 formal passage remains a Human Gate. Manual node battle, telemetry, server/multiplayer, arbitrary-code mods, paid services/accounts/secrets, release/commercial decisions, branding, frozen product/platform/core changes, major cultural-risk decisions, and irreversible migrations remain outside autonomous implementation unless an explicit Human Gate approves them.
+
+## 13. M5 Slice Definition Review Snapshot
+
+`M5-SLICE-DEFINITION-001` is in `REVIEW` on branch `design/m5-slice-definition` with gameplay_designer writer thread `019f03e1-ab85-78d3-ab7a-f200abbdd76f`.
+
+The task defines a planning-only M5 playable-slice contract in `project/tasks/active/M5-SLICE-DEFINITION-001.json`. The contract narrows M5 to a repeatable 2-4 hour composite/fictional slice using accepted M1-M4 systems: deterministic command/query/save authority, M2 economy/population/route pressure, M3 offices/vassal obligations/postwar governance/succession pressure, and M4 campaign logistics/automatic engagement/siege/withdrawal/AI trace surfaces.
+
+No formal historical content, production dependency, product code, package code, content-source data, roadmap edit, acceptance-matrix edit, ADR, gate doc, release artifact, telemetry, server/multiplayer behavior, arbitrary-code mod support, branding, commercial decision, frozen architecture/platform/core decision, or irreversible migration is added by this task.
+
+M5 formal passage, manual node battle, telemetry, server/multiplayer, arbitrary-code mods, release/commercial choices, branding, major cultural-risk decisions, frozen product/platform/core architecture changes, and irreversible migrations remain Human Gates. The next required action is systems_architect review of the writer handoff `project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json`; this status snapshot does not approve implementation.

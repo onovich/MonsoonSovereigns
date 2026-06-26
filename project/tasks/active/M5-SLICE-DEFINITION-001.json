@@ -2,7 +2,7 @@
   "id": "M5-SLICE-DEFINITION-001",
   "summary": "Define bounded M5 playable-slice contract",
   "milestone": "M5",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -54,11 +54,474 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
     "git diff --check"
   ],
+  "contract": {
+    "target": {
+      "name": "M5 playable slice contract v0",
+      "intent": "Define the smallest repeatable 2-4 hour playable slice that proves vassal networks, agent politics, population/labor pressure, monsoon campaign timing, logistics, succession pressure, and non-map-painting victory using accepted M1-M4 systems only.",
+      "content_tag": "COMPOSITE_FICTIONAL_PLACEHOLDER",
+      "historical_policy": "No formal historical content is introduced by this contract. Any named scenario, real polity mapping, cultural symbol, language, person list, event, or asset direction must route to historical_researcher before production content.",
+      "implementation_policy": "This task defines contract only. Product code, package code, content-source data, production dependencies, roadmap edits, acceptance-matrix edits, ADRs, gate docs, release artifacts, and implementation files remain out of scope."
+    },
+    "start_state": {
+      "scenario_id": "m5.composite.river-gate.v0",
+      "world_basis": "Accepted M1 deterministic scheduler/command/query/save envelope, M2 economy/population/route fixture substrate, M3 polity/office/character/vassal/postwar substrate, and M4 campaign/logistics/siege/withdrawal/AI substrate.",
+      "polities": {
+        "major_polities": 2,
+        "minor_polities": 3,
+        "labels": [
+          "player court",
+          "rival court",
+          "tributary minor",
+          "buffer minor",
+          "market-route minor"
+        ],
+        "note": "Labels are gameplay placeholders, not final historical identities."
+      },
+      "map_shape": {
+        "starting_hypothesis": "12-18 political centers and 30-48 districts, with one river trunk, one land bottleneck, one fortified target, and two alternate supply origins.",
+        "validation_metric": "The player can read control, suzerain relation, route risk, and target state without opening developer tools.",
+        "validation_way": "M5 client UI Playwright no-overlap checks plus M5 player research comprehension notes."
+      },
+      "calendar": {
+        "starting_hypothesis": "Start in a dry campaign window with a monsoon transition inside the session.",
+        "validation_metric": "At least one plan becomes better, delayed, or cancelled because route/supply/season reasons change.",
+        "validation_way": "M5 sim replay, AI trace, and player research reason-code review."
+      },
+      "resources": {
+        "starting_hypothesis": "Player has enough cash, grain, labor, and obligations for one credible campaign, not enough to ignore harvest and transport constraints.",
+        "validation_metric": "Players face at least one real tradeoff between mobilizing households, reserving grain, relying on a vassal, or delaying campaign start.",
+        "validation_way": "M5 sim acceptance tests and player research decision logs."
+      },
+      "political_pressure": {
+        "starting_hypothesis": "One office appointment, one vassal obligation, one succession or ruler-availability pressure, and one postwar governance choice are active within the slice.",
+        "validation_metric": "At least three non-identical viable governance/campaign routes can complete or partially complete the goal.",
+        "validation_way": "M5 player research, deterministic branch replays, and postwar comparison read models."
+      }
+    },
+    "player_goal": {
+      "primary_goal": "By the end of the session, secure and preserve recognition over the contested target through a campaign or negotiated postwar arrangement, then keep the arrangement stable long enough to show obligation, administration, and loyalty consequences.",
+      "non_painting_rule": "A district changing actual controller is insufficient. Success requires an auditable postwar or vassal arrangement, source-ledger costs, and no unresolved breach that makes the result immediately void.",
+      "session_length": {
+        "starting_hypothesis": "2-4 hours for a first playable pass, 60-120 minutes for a repeat pass after familiarity.",
+        "validation_metric": "Median time to reach success/failure, number of forced restarts, and whether players can explain why the result happened.",
+        "validation_way": "M5-PLAYER-RESEARCH-001 manual/anonymized observations; no telemetry or network collection."
+      }
+    },
+    "player_decisions": [
+      {
+        "id": "appoint_campaign_agent",
+        "decision": "Choose and appoint a campaign or district agent before committing to war.",
+        "required_surfaces": [
+          "sim.appoint-office",
+          "sim.appoint-offices-bulk",
+          "sim.update-office-policy",
+          "sim.list-m3-decision-scaffolds",
+          "sim.list-m3-administrative-burden"
+        ],
+        "advantage": "A better-fit agent improves execution reliability, forecast quality, or local compliance for a specific office or policy.",
+        "cost": "The appointment consumes political capacity, can displace another office holder, can raise administrative burden, and may empower an agent with local interests.",
+        "dependencies": "Requires eligible office, visible candidate reasons, jurisdiction/policy context, and protocol command preview.",
+        "counter": "A rival or local bloc can exploit strained relationships, succession support, overburdened administration, or a misfit policy to reduce compliance.",
+        "design_guard": "Characters are not total attribute cards. Public ability values are context inputs; interests, relationships, office fit, information, and reason codes must drive the decision."
+      },
+      {
+        "id": "shape_obligation_package",
+        "decision": "Ask a minor polity or vassal for troops, grain, access, storage, or a lighter obligation package.",
+        "required_surfaces": [
+          "sim.set-polity-suzerain",
+          "sim.create-obligation",
+          "sim.record-obligation-fulfillment",
+          "sim.create-muster-commitment",
+          "sim.record-muster-response",
+          "sim.list-m4-muster-commitments"
+        ],
+        "advantage": "Obligations convert political recognition into concrete campaign support without requiring direct annexation.",
+        "cost": "Heavy obligations increase arrears, breach risk, relationship damage, and future refusal pressure through explicit obligation accounting.",
+        "dependencies": "Requires valid suzerain relation, no suzerain cycle, obligation source ledger, due/cadence rules, and visible fulfillment history.",
+        "counter": "The vassal can partially fulfill, defer, refuse, or breach; a rival can target the same minor through visible weakness or delayed protection.",
+        "design_guard": "No culture or ethnicity has a fixed obedience buff. Compliance must come from obligation terms, history, distance, protection, interests, and current constraints."
+      },
+      {
+        "id": "mobilize_labor_and_grain",
+        "decision": "Commit households, retainers, grain, and cash to build campaign readiness.",
+        "required_surfaces": [
+          "sim.commit-labor",
+          "sim.reserve-campaign-grain-supply",
+          "sim.consume-campaign-grain-supply",
+          "sim.release-campaign-grain-supply",
+          "sim.list-m2-economy-summaries",
+          "sim.preview-m4-grain-supply"
+        ],
+        "advantage": "Early mobilization and grain reservation increase safe operating days and reduce campaign collapse risk.",
+        "cost": "Mobilized households reduce seasonal labor, delayed release can waste grain, and professional retainers consume cash and grain over time.",
+        "dependencies": "Requires M2 population/resource state, M4 grain source ledger, explicit reservation/consumption/release, and harvest/season read models.",
+        "counter": "The rival can wait out supplies, season risk can spoil route/grain assumptions, and over-mobilization can weaken the next harvest.",
+        "design_guard": "No hidden global penalty. Every consequence must attach to source ledgers, local labor, harvest impact, grain loss, or visible reason codes."
+      },
+      {
+        "id": "choose_route_and_window",
+        "decision": "Pick campaign objective, route, transport origin, and start window.",
+        "required_surfaces": [
+          "sim.create-campaign-objective",
+          "sim.update-campaign-objective",
+          "sim.cancel-campaign-objective",
+          "sim.preview-m2-transport-route",
+          "sim.preview-m4-route-transport-capacity",
+          "sim.list-m4-campaign-plans",
+          "sim.list-m4-faction-knowledge"
+        ],
+        "advantage": "A strong route/window can reach the target before monsoon risk, enemy reinforcement, or supply exhaustion.",
+        "cost": "Planning ties up commitments, exposes intent, can become stale, and may need cancellation before sunk costs become worse.",
+        "dependencies": "Requires faction knowledge age, route/season forecast, muster readiness, grain forecast, and start-window reason codes.",
+        "counter": "Enemy knowledge, delayed muster, river/road capacity shifts, and changing season risk can make waiting or cancellation correct.",
+        "design_guard": "Monsoon is not a global debuff. It must alter specific route capacity, disease/siege/supply risk, river conditions, or timing reasons."
+      },
+      {
+        "id": "resolve_campaign_and_siege",
+        "decision": "Commit to march, automatic engagement, siege choice, withdrawal, or negotiated end.",
+        "required_surfaces": [
+          "sim.start-campaign-march",
+          "sim.resolve-m4-field-engagement",
+          "sim.apply-m4-siege-choice",
+          "sim.resolve-m4-campaign-withdrawal",
+          "sim.list-m4-march-state",
+          "sim.list-m4-siege-state",
+          "sim.list-m4-withdrawal-state",
+          "sim.list-m4-war-outcomes"
+        ],
+        "advantage": "A well-timed campaign can create a postwar candidate and shift recognition without direct permanent annexation.",
+        "cost": "Casualties, supply loss, credit hooks, siege delay, breach damage, and withdrawal consequences flow back into economy, loyalty, and obligations.",
+        "dependencies": "Requires active campaign plan, march state, supply state, siege or field engagement state, and deterministic combat/siege resolution.",
+        "counter": "The defender can benefit from time, fortification, supply exhaustion, relief risk, or the attacker's need to withdraw before monsoon.",
+        "design_guard": "Manual node battle remains out of scope. Automatic engagement and siege choices must remain deterministic and replayable."
+      },
+      {
+        "id": "select_postwar_arrangement",
+        "decision": "Choose direct control, restored vassal ruler, or tribute-only settlement after a campaign result.",
+        "required_surfaces": [
+          "sim.preview-m3-postwar-governance",
+          "sim.compare-m3-postwar-governance-outcomes",
+          "sim.apply-m3-postwar-governance",
+          "sim.list-m3-administrative-burden",
+          "sim.list-m4-war-outcomes"
+        ],
+        "advantage": "Different arrangements convert victory into different mixes of control, obligation, continuity, and risk.",
+        "cost": "Direct control needs garrison/admin capacity, restored vassal keeps local autonomy and future breach risk, tribute-only has lower control and weaker military leverage.",
+        "dependencies": "Requires valid postwar candidate, no duplicate same-district settlement, M3 obligation compatibility, and 24-month comparison preview.",
+        "counter": "Local elites, arrears, administrative overload, succession pressure, or a rival's protection offer can undermine the arrangement.",
+        "design_guard": "Victory is not color fill. The result must remain a political arrangement with auditable terms and future failure modes."
+      },
+      {
+        "id": "handle_succession_pressure",
+        "decision": "Respond to ruler unavailability or succession pressure before it breaks appointments, obligations, or vassal recognition.",
+        "required_surfaces": [
+          "sim.record-character-status",
+          "sim.resolve-succession",
+          "sim.create-character-relationship",
+          "sim.list-m3-succession-crises"
+        ],
+        "advantage": "A timely settlement can preserve a vassal network or keep a campaign chain legitimate after a leadership shock.",
+        "cost": "Supporting one claimant can damage another relationship, expose hostage/relationship dependencies, or change office execution.",
+        "dependencies": "Requires active succession/crisis read model, candidate support sources, relationship data, and reason-code preview.",
+        "counter": "Rivals and local powers can contest legitimacy, exploit weak hostages/relationships, or refuse to inherit old obligations.",
+        "design_guard": "Succession is a network reevaluation, not a global stability number."
+      }
+    ],
+    "state": {
+      "authoritative_state": [
+        "M1 WorldState, GameDay, deterministic RNG, GameCommand/Event/Query v1, save envelope, replay tail, and state hash.",
+        "M2 district, economy, population, labor, grain/cash, route, agriculture, and seasonal state.",
+        "M3 polity, suzerain chain, obligations, offices, characters, appointment policies, administrative burden, succession, and postwar governance state.",
+        "M4 campaign objective, faction knowledge, muster, grain supply, transport forecast, march/supply, engagement, siege, withdrawal, war outcome, postwar candidate, and AI trace state."
+      ],
+      "client_state_rule": "Client and UI may hold read models and UI selection state only; they must not own or mutate authoritative WorldState.",
+      "save_rule": "Slice save/load must use accepted save envelope and explicit protocol/load rejection behavior; no irreversible migration is authorized."
+    },
+    "update_frequency": {
+      "daily": [
+        "GameDay advance, march movement, supply consumption, siege pressure, route/season risk, AI campaign decision opportunity, state hash update."
+      ],
+      "monthly_or_periodic": [
+        "Administrative burden projection, obligation due/arrears review, labor/population recovery, harvest or resource cycle, office/policy execution summaries."
+      ],
+      "event_driven": [
+        "Appointment, obligation creation/fulfillment, campaign objective create/update/cancel, muster response, grain reserve/release, start march, field engagement, siege choice, withdrawal, postwar arrangement, succession resolution, save/load."
+      ],
+      "replay_checkpoints": [
+        "Initial state",
+        "pre-campaign decision",
+        "pre-march",
+        "pre-siege or engagement",
+        "postwar candidate",
+        "post-arrangement stabilization",
+        "final success/failure"
+      ]
+    },
+    "formula_intent": [
+      "Expose formula consequences through reason codes, deltas, and source-ledger rows rather than hidden global modifiers.",
+      "Make each advantage local and conditional: offices improve specific execution paths; obligations provide specific resources; routes change timing and risk; postwar methods shift control/obligation/admin tradeoffs.",
+      "Costs should be delayed when appropriate but still attributable to concrete ledgers such as labor, grain, cash, obligation arrears, administrative burden, credit/reliability hooks, casualties, or relationship/support reason codes.",
+      "Do not use culture, ethnicity, or modern identity categories as fixed mechanical buffs or penalties.",
+      "Do not reduce characters to one aggregate score. Public ability values support office fit, but relationships, interests, information, health/status, local power base, and institutional policy must remain visible factors.",
+      "Difficulty and AI behavior must not rely on hidden resource cheats. Any future difficulty advantage requires explicit listing and must preserve core rules."
+    ],
+    "invariants": [
+      "Same seed, same start state, and same command sequence produce the same final state hash in Node runner and Worker/browser host.",
+      "Every player and AI state change uses versioned GameCommandV1 or explicit system scheduler command paths.",
+      "No Math.random, Date.now, object iteration ordering dependence, or unspecified tie-breaker may affect simulation results.",
+      "No UI, renderer, Electron main, or client store mutates authoritative WorldState directly.",
+      "One district has one actual controller at a time; suzerain chains are acyclic; obligations are auditable and cannot be double-counted.",
+      "M2 resource changes conserve explicit source ledgers; troop/tribute fulfillment cannot create grain, cash, labor, or headcount from nothing.",
+      "Postwar arrangements cannot duplicate or replace same-district settlement paths without explicit accepted rules.",
+      "Campaign cancellation, withdrawal, siege, and postwar results leave reason-coded evidence and cannot erase already-paid costs.",
+      "AI trace size remains bounded and serializable.",
+      "Manual node battle, telemetry, server/multiplayer, and arbitrary-code mods remain absent."
+    ],
+    "ai_behavior": {
+      "parity": "AI submits the same GameCommandV1 command kinds as the player and can also decide no-action/wait when no command is justified.",
+      "minimum_behaviors": [
+        "Create or update one visible campaign objective when knowledge supports it.",
+        "Wait with reason codes for supply shortfall, seasonal risk, stale knowledge, or missing muster.",
+        "Start a march only when muster, route, and grain forecasts are ready.",
+        "Reinforce or partially answer obligations using muster response paths.",
+        "Continue, cancel, withdraw, or change objective with explicit trace reasons.",
+        "Avoid a postwar action when high postwar risk is visible instead of blindly expanding."
+      ],
+      "constraints": [
+        "No full diplomacy AI, grand strategy personality simulation, hidden map knowledge, background telemetry, server coordination, or arbitrary-code scripting.",
+        "No culture/identity fixed preferences. AI preferences must derive from visible state, obligations, relationships, knowledge age, logistics, and risk."
+      ],
+      "evidence": [
+        "M5-MULTIYEAR-AI-RUN-001 must record bounded trace summaries for wait/no-action/withdraw/target-change decisions.",
+        "M5 player-facing UI must expose primary AI reason codes where they affect player understanding."
+      ]
+    },
+    "ui_explanation": {
+      "required_explanations": [
+        "Current goal and remaining success/failure conditions.",
+        "Top three reason codes for appointment, obligation, campaign forecast, route/supply risk, AI action, siege state, withdrawal, and postwar arrangement.",
+        "Before/after preview for commands that change offices, obligations, campaign plans, grain reservations, siege choice, withdrawal, or postwar governance.",
+        "Replay/save evidence: current day, seed or scenario id, command count, replay checkpoint, and current state hash.",
+        "Out-of-scope indicators where needed: manual node battle is unavailable in M5 unless Human Gate later authorizes it."
+      ],
+      "read_model_rule": "UI explanations must be projected from protocol query/read models and reason codes; client code must not duplicate simulation formulas.",
+      "accessibility_and_layout": "M5-CLIENT-PLAYABLE-UI-001 must verify text does not overlap at supported desktop viewports and that dense decision panels remain scannable."
+    },
+    "success_conditions": [
+      "Player reaches a postwar or vassal arrangement for the contested target using accepted M3/M4 command paths.",
+      "The arrangement remains valid through the required stabilization window with no unresolved duplicate settlement, suzerain cycle, unpaid mandatory source-ledger violation, or immediate authority collapse.",
+      "The session records at least one appointment decision, one labor/grain/logistics decision, one route/window decision, one campaign or cancellation decision, and one postwar or vassal obligation decision.",
+      "Final replay evidence includes start hash, command sequence identity, final hash, save/load round-trip, and matching Node/Worker results.",
+      "Player research can show that at least a majority of observed players can state why they succeeded, failed, waited, withdrew, or cancelled without needing formulas."
+    ],
+    "failure_conditions": [
+      "Player court loses every maintainable power center or no eligible successor/political continuity path remains.",
+      "The campaign collapses from supply, season, siege, or withdrawal consequences and no valid political arrangement is made by the slice end.",
+      "The target changes actual control but lacks any valid postwar/vassal arrangement, obligation term, or stabilization evidence.",
+      "Mandatory obligations or administrative burden enter an unrecoverable breach state caused by player decisions before success is locked.",
+      "Replay/save/load hashes diverge, an invariant fails, or an authoritative state mutation bypasses GameCommand paths.",
+      "A required Human Gate decision is encountered and not explicitly approved; the task must stop rather than treat it as success."
+    ],
+    "required_command_surfaces": [
+      "sim.advance-day",
+      "sim.verify-state-hash",
+      "sim.commit-labor",
+      "sim.set-polity-suzerain",
+      "sim.create-obligation",
+      "sim.record-obligation-fulfillment",
+      "sim.appoint-office",
+      "sim.appoint-offices-bulk",
+      "sim.update-office-policy",
+      "sim.update-jurisdiction-policy",
+      "sim.enfeoff-district",
+      "sim.record-character-status",
+      "sim.resolve-succession",
+      "sim.create-character-relationship",
+      "sim.apply-m3-postwar-governance",
+      "sim.create-campaign-objective",
+      "sim.update-campaign-objective",
+      "sim.cancel-campaign-objective",
+      "sim.create-muster-commitment",
+      "sim.record-muster-response",
+      "sim.reserve-campaign-grain-supply",
+      "sim.consume-campaign-grain-supply",
+      "sim.release-campaign-grain-supply",
+      "sim.start-campaign-march",
+      "sim.resolve-m4-field-engagement",
+      "sim.apply-m4-siege-choice",
+      "sim.resolve-m4-campaign-withdrawal"
+    ],
+    "required_read_models": [
+      "sim.get-state-hash",
+      "sim.get-calendar",
+      "sim.list-district-summaries",
+      "sim.list-m2-economy-summaries",
+      "sim.preview-m2-transport-route",
+      "sim.list-m3-administrative-burden",
+      "sim.list-m3-decision-scaffolds",
+      "sim.list-m3-succession-crises",
+      "sim.preview-m3-postwar-governance",
+      "sim.compare-m3-postwar-governance-outcomes",
+      "sim.list-m4-campaign-plans",
+      "sim.list-m4-faction-knowledge",
+      "sim.list-m4-muster-commitments",
+      "sim.preview-m4-grain-supply",
+      "sim.preview-m4-route-transport-capacity",
+      "sim.list-m4-march-state",
+      "sim.list-m4-siege-state",
+      "sim.list-m4-withdrawal-state",
+      "sim.list-m4-war-outcomes"
+    ],
+    "replay_evidence": [
+      "Named scenario id, content/fixture manifest hash, seed, start day, start state hash, and platform/host.",
+      "Ordered command ids with actor kind, command kind, preview/submit result, event tail, and rejection reason where relevant.",
+      "Save export/import or load-save checkpoint at minimum before campaign start and after postwar arrangement.",
+      "Node runner and Worker/browser final state hash equality for the same command sequence.",
+      "AI trace summary containing selected candidate, primary reason, bounded candidate list, and no-action/wait/withdraw/target-change counts.",
+      "Player research evidence records manual/anonymized observations only; no telemetry or network collection."
+    ],
+    "parameters": [
+      {
+        "name": "session_length_minutes",
+        "starting_hypothesis": "120-240 minutes for first pass.",
+        "metric": "Observed time to success/failure and number of abandoned sessions.",
+        "validation_way": "M5-PLAYER-RESEARCH-001."
+      },
+      {
+        "name": "repeat_session_minutes",
+        "starting_hypothesis": "60-120 minutes after familiarity.",
+        "metric": "Observed repeat pass time and whether players choose a different viable route.",
+        "validation_way": "M5-PLAYER-RESEARCH-001."
+      },
+      {
+        "name": "in_game_duration_days",
+        "starting_hypothesis": "540-900 days, enough for one campaign window, one monsoon transition, one harvest pressure, and postwar stabilization.",
+        "metric": "At least one season-driven plan change and one postwar outcome comparison occur.",
+        "validation_way": "M5-SIM-PLAYABLE-LOOP-001 and M5-MULTIYEAR-AI-RUN-001."
+      },
+      {
+        "name": "decision_count",
+        "starting_hypothesis": "6-10 meaningful player decisions on a successful path.",
+        "metric": "Decisions with distinct cost/dependency/counter evidence, not clicks that only confirm a linear script.",
+        "validation_way": "Command log review and player research."
+      },
+      {
+        "name": "polity_and_map_scale",
+        "starting_hypothesis": "2 major polities, 3 minor polities, 30-48 districts, 12-18 centers.",
+        "metric": "UI remains readable and Node/Worker replay stays within M5 performance budget.",
+        "validation_way": "M5-PERFORMANCE-GATE-001 and M5-CLIENT-PLAYABLE-UI-001."
+      },
+      {
+        "name": "ai_multiyear_duration",
+        "starting_hypothesis": "At least 3 in-game years without rescue commands.",
+        "metric": "No invariant failures, bounded rejection rate, bounded trace size, final hash repeatability.",
+        "validation_way": "M5-MULTIYEAR-AI-RUN-001."
+      },
+      {
+        "name": "success_comprehension_rate",
+        "starting_hypothesis": "Most observed players can describe the top reasons for their outcome after the session.",
+        "metric": "Manual research notes: understood goal, next action, risk, and outcome reasons.",
+        "validation_way": "M5-PLAYER-RESEARCH-001."
+      }
+    ],
+    "boundaries": [
+      "No formal M5 passage. M5-EXIT-HUMAN-GATE-001 remains the formal Human Gate.",
+      "No manual node battle, tactical battle UI, 3D battle, or complex naval warfare.",
+      "No frozen product, platform, or core architecture change.",
+      "No telemetry, analytics pipeline, accounts, paid services, secrets, server, multiplayer, remote collection, or arbitrary-code mod support.",
+      "No release, commercial, store, branding, logo, trademark, signing, installer, public distribution, MANIFEST, SHA256SUMS, or VALIDATION_REPORT work.",
+      "No formal historical names, claims, identities, cultural symbols, art, music, or language content without historical_researcher routing.",
+      "No irreversible save/content migration.",
+      "No new production dependency."
+    ],
+    "exploits": [
+      {
+        "risk": "Cancel-spam to scout without cost.",
+        "counter": "Preview is allowed, but submitted plans, commitments, and reservations must leave reason-coded opportunity or source-ledger consequences when accepted."
+      },
+      {
+        "risk": "Infinite vassal support through repeated obligation fulfillment.",
+        "counter": "M3 obligation accounting and M4 muster commitments must reject double counting and preserve source ledgers."
+      },
+      {
+        "risk": "Direct control becomes a dominant reward.",
+        "counter": "Direct control must carry visible admin/garrison/opportunity costs and be compared against restored-vassal and tribute-only outcomes."
+      },
+      {
+        "risk": "Monsoon becomes a generic punishment instead of planning.",
+        "counter": "Route, river, supply, siege, disease, or timing reasons must explain the effect and allow planning around it."
+      },
+      {
+        "risk": "Assault or siege choice gives free progress.",
+        "counter": "Siege progress must expose casualties, supply, morale, credit, surrender, or withdrawal reasons."
+      },
+      {
+        "risk": "Character min-maxing ignores politics.",
+        "counter": "Office fit must include relationship, interest, local base, policy continuity, status, and eligibility reasons, not only public ability values."
+      },
+      {
+        "risk": "AI uses hidden knowledge or free resources.",
+        "counter": "AI trace must cite visible FactionKnowledge, obligation, supply, route, and campaign read-model inputs and submit normal GameCommands."
+      },
+      {
+        "risk": "Player treats map color as victory.",
+        "counter": "Success requires valid arrangement, obligation/admin evidence, and stabilization; actual control alone is not enough."
+      }
+    ],
+    "vertical_slice_acceptance": [
+      "M5-SLICE-DEFINITION-001 reaches REVIEW with this contract and systems_architect review requested; gameplay_designer does not self-approve implementation.",
+      "M5-SIM-PLAYABLE-LOOP-001 implements the contract through accepted authoritative sim/protocol/save paths and proves deterministic replay.",
+      "M5-CLIENT-PLAYABLE-UI-001 lets the player inspect goal, issue commands, preview consequences, save/load, and understand reason codes without holding WorldState in client state.",
+      "M5-WEB-WINDOWS-DISTRIBUTABLE-001 proves local Web and unsigned Windows smoke distributability without release/commercial/branding/security drift.",
+      "M5-MULTIYEAR-AI-RUN-001 proves multiple AI years without rescue, hidden telemetry, or command parity breach.",
+      "M5-PERFORMANCE-GATE-001 reports concrete Web, Windows, Node, save/load, and read-model measurements.",
+      "M5-PLAYER-RESEARCH-001 records manual/anonymized observations about comprehension, 2-4 hour repeatability, and product-pillar proof.",
+      "M5-MANUAL-NODE-BATTLE-DECISION-001 and M5-EXIT-HUMAN-GATE-001 remain explicit Human Gates; no reviewer or CI result can auto-pass them."
+    ]
+  },
+  "acceptance_evidence": {
+    "contract_contains_required_sections": [
+      "target",
+      "player_decisions",
+      "state",
+      "update_frequency",
+      "formula_intent",
+      "invariants",
+      "ai_behavior",
+      "ui_explanation",
+      "boundaries",
+      "exploits",
+      "vertical_slice_acceptance"
+    ],
+    "human_gates_preserved": [
+      "M5 formal passage",
+      "manual node battle",
+      "frozen product/platform/core architecture changes",
+      "telemetry",
+      "server/multiplayer",
+      "arbitrary-code mods",
+      "release/commercial",
+      "branding",
+      "major cultural-risk decisions",
+      "irreversible migrations"
+    ],
+    "forbidden_outputs_not_created": [
+      "formal historical content",
+      "production dependencies",
+      "roadmap edits",
+      "acceptance-matrix edits",
+      "ADR edits",
+      "gate docs",
+      "release artifacts",
+      "implementation files"
+    ],
+    "review_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json"
+  },
   "branch_or_worktree": "design/m5-slice-definition",
   "threads": {
     "gameplay_designer": {
       "thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
-      "status": "in_progress",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -69,15 +532,18 @@
       "start_state": "START_CONFIRMED",
       "spawn_result": "spawn_agent",
       "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T13:05:00Z"
+      "review_ready_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "review_ready_at": "2026-06-26T13:30:00Z",
+      "updated_at": "2026-06-26T13:30:00Z"
     }
   },
   "route_to": "systems_architect",
   "notes": [
     "This narrows M5 scope before implementation evidence tasks.",
     "If the contract requires a frozen architecture, platform, branding, commercial, release, telemetry, networking, mod, or manual battle decision, stop and route to Human Gate.",
-    "Lead started gameplay_designer writer thread 019f03e1-ab85-78d3-ab7a-f200abbdd76f after M5 task graph closure entered main."
+    "Lead started gameplay_designer writer thread 019f03e1-ab85-78d3-ab7a-f200abbdd76f after M5 task graph closure entered main.",
+    "Contract is routed to systems_architect for review; gameplay_designer does not approve its own design implementation."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-26T13:05:00Z"
+  "updated_at": "2026-06-26T13:30:00Z"
 }

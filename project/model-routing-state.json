@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T13:05:00Z",
+  "updated_at": "2026-06-26T13:30:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1569,7 +1569,7 @@
       "task_id": "M5-SLICE-DEFINITION-001",
       "role": "gameplay_designer",
       "thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
-      "status": "in_progress",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1580,7 +1580,9 @@
       "start_state": "START_CONFIRMED",
       "spawn_result": "spawn_agent",
       "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T13:05:00Z"
+      "review_ready_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "review_ready_at": "2026-06-26T13:30:00Z",
+      "updated_at": "2026-06-26T13:30:00Z"
     }
   ],
   "task_effects": {
@@ -1646,6 +1648,6 @@
     "M4-STRESS-VALIDATION-001": "CLOSED after PR #105 entered main at 96abe397327a81e5922aed61c022255dc20f2baa. Validation-only M4 stress evidence task produced accepted stress coverage, closure handoff, clean task graph, and no product scope expansion.",
     "M4-EXIT-VALIDATION-001": "CLOSED after M4 gate PR #106 entered main. M4_GATE = PASS_WITH_LIMITS with accepted process limit; M5 formal passage remains a Human Gate.",
     "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117. Planning-only M5 graph accepted and integrated; downstream M5 tasks remain DRAFT, with M5-SLICE-DEFINITION-001 dependency-ready. M5 formal passage and manual node battle remain Human Gates.",
-    "M5-SLICE-DEFINITION-001": "IN_PROGRESS with gameplay_designer writer thread 019f03e1-ab85-78d3-ab7a-f200abbdd76f. Scope is planning-only M5 playable-slice contract; no product code or Human Gate decisions."
+    "M5-SLICE-DEFINITION-001": "REVIEW with gameplay_designer writer thread 019f03e1-ab85-78d3-ab7a-f200abbdd76f. Scope is a planning-only M5 playable-slice contract routed to systems_architect; no product code, formal historical content, production dependency, or Human Gate decision."
   }
 }

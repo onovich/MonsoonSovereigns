@@ -1,0 +1,74 @@
+{
+  "message_id": "MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW",
+  "task_id": "M5-SLICE-DEFINITION-001",
+  "from_role": "gameplay_designer",
+  "status": "REVIEW",
+  "summary": "Defined the bounded M5 playable-slice contract as a planning-only artifact and moved M5-SLICE-DEFINITION-001 to REVIEW. The contract specifies start state, player goal, success/failure conditions, required GameCommand and read-model surfaces, replay evidence, AI behavior, UI explanations, invariants, parameters with metrics/validation, exploit counters, out-of-scope boundaries, and Human Gates. No product code, package code, content-source data, formal historical content, production dependency, roadmap edit, acceptance-matrix edit, ADR, gate doc, release artifact, telemetry, server/multiplayer behavior, arbitrary-code mod support, branding, commercial decision, frozen architecture/platform/core decision, or irreversible migration was added.",
+  "artifacts": [
+    "project/tasks/active/M5-SLICE-DEFINITION-001.json",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "design/m5-slice-definition / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "not committed; working tree on design/m5-slice-definition",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified: PROJECT_STATUS.md, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M5-SLICE-DEFINITION-001.json, project/tasks/thread-registry.json. Untracked: project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-SLICE-DEFINITION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M5-SLICE-DEFINITION-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M5-SLICE-DEFINITION-001 is REVIEW; M5-TASK-GRAPH-001 is CLOSED; downstream M5 implementation, evidence, and Human Gate tasks remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output because M5-SLICE-DEFINITION-001 is in REVIEW and downstream M5 tasks remain gated by dependencies."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M5-SLICE-DEFINITION-001",
+      "exit_code": 0,
+      "result": "M5 slice contract shape ok decisions=7 commands=27 readModels=19."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    }
+  ],
+  "decisions": [
+    "Set M5-SLICE-DEFINITION-001 status to REVIEW and routed the contract to systems_architect rather than accepting it locally.",
+    "Defined the slice as COMPOSITE_FICTIONAL_PLACEHOLDER and required historical_researcher routing before any formal historical names, claims, identities, cultural symbols, language, art, music, or event content is produced.",
+    "The playable goal is non-map-painting: actual control alone is insufficient; success requires valid postwar/vassal arrangement evidence, source-ledger costs, stabilization, and deterministic replay proof.",
+    "Every player-facing advantage in the contract has explicit cost, dependency, and counter entries.",
+    "Formula intent rejects hidden global penalties, fixed culture/ethnicity buffs, and character total-score card design; consequences must come from explicit ledgers, reasons, relationships, offices, obligations, route/season state, and governance arrangements.",
+    "Required command and read-model surfaces are limited to accepted M1-M4 protocol paths. Any later required schema or architecture extension must be routed by systems_architect before implementation.",
+    "M5 formal passage, manual node battle, frozen product/platform/core changes, telemetry, server/multiplayer, arbitrary-code mods, release/commercial choices, branding, major cultural-risk decisions, irreversible migrations, paid services/accounts/secrets, and production dependency changes remain out of scope or Human Gates."
+  ],
+  "risks": [
+    "The contract is intentionally broad enough to guide downstream M5 implementation; systems_architect should check that the required surfaces do not imply hidden protocol or save-format changes.",
+    "The start-state scale and session duration are starting hypotheses only; M5 sim, performance, and player-research tasks must validate or revise them with evidence.",
+    "The composite/fictional placeholder avoids formal history now, but future content production will need historical_researcher review before real names, identities, symbols, or cultural details are used.",
+    "Manual node battle remains unresolved and must not be inferred from this contract."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the M5 playable-slice contract for architecture fit, accepted M1-M4 surface reuse, Human Gate preservation, no hidden global penalties, no fixed culture/person buff shortcuts, implementation boundaries, and downstream evidence readiness. Return ACCEPT or REQUEST_CHANGES; do not mark M5 formally passed.",
+  "created_at": "2026-06-26T13:30:00Z"
+}
