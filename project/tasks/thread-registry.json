@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-26T11:08:03.000Z",
+  "updated_at": "2026-06-26T11:16:51.648Z",
   "leadership": {
     "active_leads": [
       {
@@ -1552,7 +1552,7 @@
       "task_id": "M4-EXIT-VALIDATION-001",
       "role": "systems_architect",
       "thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
-      "status": "started",
+      "status": "closed_no_handoff",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1565,29 +1565,31 @@
       "replaces_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
       "predecessor_chain": [
         "019f0389-b54a-7191-b5f2-0813f6bca0ad",
-        "019f0396-8e7d-73b0-9384-52f7deed12fd"
+        "019f0396-8e7d-73b0-9384-52f7deed12fd",
+        "019f03a0-2734-7250-a9fd-080899d5fde1"
       ],
       "predecessor_close_reason": "stalled_no_review_handoff_after_narrowing_instruction",
-      "start_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T11:08:03.000Z"
+      "close_reason": "stalled_no_review_handoff_after_narrowing_instruction",
+      "closed_at": "2026-06-26T11:16:51.648Z",
+      "updated_at": "2026-06-26T11:16:51.648Z"
     },
     "M4-EXIT-VALIDATION-001:qa_reviewer": {
       "task_id": "M4-EXIT-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f0389-c958-75c2-aba8-64c6425531e0",
-      "status": "standby",
+      "status": "reviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "nickname": "Auditor the 7th",
-      "responsibility": "independent read-only QA review for M4 exit gate",
+      "responsibility": "independent read-only QA review for M4 exit gate lead reconciliation",
       "branch_or_worktree": "chore/m4-exit-gate",
-      "start_state": "AWAITING_REVIEW_READY",
+      "start_state": "REVIEW_ROUTED",
       "spawn_result": "spawn_agent",
-      "await_submission_id": "019f038b-35cd-7cd2-8ea3-6c1d6daca32c",
-      "start_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T11:08:03.000Z"
+      "review_ready_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-LEAD-RECONCILIATION-REVIEW__lead_orchestrator.json",
+      "gate_doc": "docs/GATE-M4.md",
+      "updated_at": "2026-06-26T11:16:51.648Z"
     },
     "M4-EXIT-VALIDATION-001:systems_architect:replaced:019f0389-b54a-7191-b5f2-0813f6bca0ad": {
       "task_id": "M4-EXIT-VALIDATION-001",
@@ -1633,6 +1635,49 @@
       "closed_at": "2026-06-26T11:08:03.000Z",
       "replaced_by": "019f03a0-2734-7250-a9fd-080899d5fde1",
       "replacement_nickname": "Meridian the 7th"
+    },
+    "M4-EXIT-VALIDATION-001:systems_architect:replaced:019f03a0-2734-7250-a9fd-080899d5fde1": {
+      "task_id": "M4-EXIT-VALIDATION-001",
+      "role": "systems_architect",
+      "thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
+      "status": "closed",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Meridian the 7th",
+      "responsibility": "second replacement primary M4 exit gate evidence and docs writer",
+      "branch_or_worktree": "chore/m4-exit-gate",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "replaces_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
+      "predecessor_chain": [
+        "019f0389-b54a-7191-b5f2-0813f6bca0ad",
+        "019f0396-8e7d-73b0-9384-52f7deed12fd",
+        "019f03a0-2734-7250-a9fd-080899d5fde1"
+      ],
+      "predecessor_close_reason": "stalled_no_review_handoff_after_narrowing_instruction",
+      "close_reason": "stalled_no_review_handoff_after_narrowing_instruction",
+      "closed_at": "2026-06-26T11:16:51.648Z",
+      "updated_at": "2026-06-26T11:16:51.648Z",
+      "replaced_by": null,
+      "replacement_nickname": null
+    },
+    "M4-EXIT-VALIDATION-001:lead_reconciliation": {
+      "task_id": "M4-EXIT-VALIDATION-001",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "role": "lead_orchestrator",
+      "status": "review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "responsibility": "lead reconciliation of M4 gate evidence after three systems writer stalls; not a systems_architect handoff",
+      "branch_or_worktree": "chore/m4-exit-gate",
+      "review_ready_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-LEAD-RECONCILIATION-REVIEW__lead_orchestrator.json",
+      "gate_doc": "docs/GATE-M4.md",
+      "gate_recommendation": "PASS_WITH_LIMITS",
+      "updated_at": "2026-06-26T11:16:51.648Z"
     }
   }
 }

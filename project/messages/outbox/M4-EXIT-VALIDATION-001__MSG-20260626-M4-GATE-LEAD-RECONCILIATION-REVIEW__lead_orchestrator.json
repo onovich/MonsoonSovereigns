@@ -1,0 +1,118 @@
+{
+  "message_id": "MSG-20260626-M4-GATE-LEAD-RECONCILIATION-REVIEW",
+  "task_id": "M4-EXIT-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Lead reconciliation routes M4 exit gate evidence for independent QA review after three real systems_architect writer threads stalled and were closed without REVIEW handoffs or file changes. Product and technical evidence support M4_GATE = PASS_WITH_LIMITS, with the limit explicitly tied to the missing systems writer handoff and prototype-level H-004/H-005 evidence. This handoff does not fabricate a systems_architect result and does not start M5.",
+  "artifacts": [
+    "docs/GATE-M4.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/M4-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
+    "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-LEAD-RECONCILIATION-REVIEW__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/m4-exit-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "4783a6ed (origin/chore/m4-exit-gate before lead reconciliation edits)",
+  "tests_run": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "All 16 workspace projects were already up to date under pnpm 11.0.0."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture boundaries passed; boundary self-test produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check and sim determinism passed; root Vitest 33 files / 240 tests passed; web Vitest 1 file / 4 tests passed. M4 node/worker hash 232f62ab, engagement 334e0df0, siege ac35e97e, withdrawal 232f62ab, postwar candidates 1."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "M1 manifest 4a438525, M2 manifest 9ab72b0b, and M3 manifest 76b75849 validated."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Hello 61e0ba1c, command/query d275faa4, save/load 28074edd, M4 node/worker 232f62ab, engagement 334e0df0, siege ac35e97e, withdrawal 232f62ab."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "Node v24.13.1 win32 x64; 3650 days; throughput 6706 days/sec; p50 112600ns; p95 292500ns; p99 717000ns; saveByteLength 9980."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed with existing large chunk warning only."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed with existing large chunk warning only; output was cleaned."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; renderer navigation is restricted; IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke output was created under .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright 6/6 passed, including M4 campaign planning and 4000-row stress fixture."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-m4-campaign-objectives.test.ts tests/sim-core-m4-grain-supply.test.ts tests/sim-core-m4-march-supply-state.test.ts tests/sim-core-m4-auto-engagement-siege.test.ts tests/sim-core-m4-withdrawal-postwar-handoff.test.ts tests/sim-core-m4-campaign-ai.test.ts tests/sim-core-m4-determinism-replay.test.ts tests/sim-core-m4-stress-validation.test.ts",
+      "exit_code": 0,
+      "result": "Focused M4 scenario run passed: 6 files / 55 tests. Two requested files were not present in this checkout and were ignored by Vitest's resolved selection."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All prior M4 tasks are CLOSED; M4-EXIT-VALIDATION-001 was active before this reconciliation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M4 exit validation is active."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before reconciliation edits."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch chore/m4-exit-gate was clean and tracking origin/chore/m4-exit-gate before reconciliation edits."
+    }
+  ],
+  "decisions": [
+    "Recommend M4_GATE = PASS_WITH_LIMITS pending independent QA review and lead integration.",
+    "Do not fabricate a systems_architect handoff; record the three stalled systems writer threads as process evidence.",
+    "Treat H-004/H-005 evidence as prototype validation only, not final M5 player-study proof.",
+    "Do not start M5 from this reconciliation; M5 remains outside this task.",
+    "Keep the diff limited to allowed gate docs, status, and message paths."
+  ],
+  "risks": [
+    "The required systems_architect writer handoff is absent after three real writer stalls; QA must decide whether this process limit is acceptable or requires a different review path.",
+    "Vite and Storybook large chunk warnings remain non-blocking existing warnings.",
+    "M4 stress and AI evidence validate prototype behavior and determinism, not final M5 player acceptance."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Perform independent read-only QA review of docs/GATE-M4.md, the lead reconciliation handoff, actual diff scope, task/thread state, and the cited command evidence. Return ACCEPT only if PASS_WITH_LIMITS is acceptable despite the missing systems_architect handoff; otherwise return REQUEST_CHANGES or BLOCKED with exact required remediation.",
+  "created_at": "2026-06-26T11:16:51.648Z"
+}
