@@ -1,0 +1,122 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-OBJECTIVES-SYSTEMS-REQUEST-CHANGES",
+  "task_id": "M4-CAMPAIGN-OBJECTIVES-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Architecture review of writer commit d89d6aea found the M4 campaign objective substrate broadly within allowed sim-core/protocol/test scope, with passing declared validation gates, but it cannot be accepted because FactionKnowledge canonical ordering is not deterministic for duplicate logical estimate keys. sortM4KnownObjectives, sortM4RouteEstimates, sortM4SupplyEstimates, and sortM4DefenderEstimates stop at non-unique keys, while validateM4RuntimeState does not reject duplicate estimate keys. A read-only probe confirmed two supplyEstimates for the same district with different values canonicalize differently when input order is swapped, violating the task requirement for deterministic FactionKnowledge ordering and explicit stable tie-breakers.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-objectives",
+  "commit": "d89d6aea48f393e322bfccd52afd53d01a2fe44b",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list showed M4-CAMPAIGN-OBJECTIVES-001 in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks emitted while M4-CAMPAIGN-OBJECTIVES-001 remains in REVIEW."
+    },
+    {
+      "command": "git diff --check origin/main..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed; task id, REVIEW status, R3 risk level, sim-core allowed path, and save-format forbidden path verified."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Protocol schema test suite passed: 1 file, 8 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Sim-core package suite passed: 15 files, 105 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible deterministic hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest passed 26 files / 172 tests; web package tests passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed."
+    },
+    {
+      "command": "rg 'Math\\.random|Date\\.now|performance\\.now|React|Pixi|Electron|document\\.|window\\.|localStorage|from ''fs''|from \"fs\"|node:fs|require\\(' packages/sim-core/src -n",
+      "exit_code": 1,
+      "result": "No forbidden real-time, random, DOM, React, Pixi, Electron, localStorage, or Node IO matches in sim-core."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e M4 duplicate-key FactionKnowledge canonicalization probe",
+      "exit_code": 0,
+      "result": "Printed 'canonical differs' for two otherwise identical M4 states whose same-district supplyEstimates were supplied in opposite orders."
+    }
+  ],
+  "decisions": [
+    "Review outcome is REQUEST_CHANGES because the deterministic FactionKnowledge ordering gap is reproducible and directly violates the task acceptance criteria.",
+    "No blocking issue was found with sim-core importing React, Pixi, Electron, DOM, Node IO, Math.random, Date.now, or real-time APIs.",
+    "The implementation otherwise keeps player and AI actors on the same GameCommandV1 create/update/cancel paths and does not add muster, supply consumption, march execution, siege/combat execution, UI, save-format expansion, full diplomacy, rebellion, or manual battle behavior."
+  ],
+  "risks": [
+    "If duplicate logical FactionKnowledge estimates are intended to be legal, all estimate comparators must include complete stable tie-breakers over semantically relevant fields so canonical state, hashes, and read models do not depend on construction order.",
+    "If duplicate logical FactionKnowledge estimates are not intended to be legal, validateM4RuntimeState must reject them with deterministic error paths and regression coverage.",
+    "tests/sim-core-m4-campaign-objectives.test.ts uses 'as never' to fabricate RouteId values; this weakens branded-ID test discipline and should be replaced with parseRouteId."
+  ],
+  "blockers": [
+    {
+      "path": "packages/sim-core/src/world-state-v0.ts",
+      "line": 4479,
+      "issue": "M4 FactionKnowledge estimate sorting does not provide unique stable tie-breakers for duplicate logical keys, and validation does not reject those duplicates.",
+      "required_fix": "Either reject duplicate estimate keys as invalid invariants, or extend sortM4KnownObjectives, sortM4RouteEstimates, sortM4SupplyEstimates, and sortM4DefenderEstimates with complete stable tie-breakers over all semantically relevant fields. Add regression coverage proving duplicate-key estimates in different orders canonicalize identically or are rejected consistently."
+    },
+    {
+      "path": "tests/sim-core-m4-campaign-objectives.test.ts",
+      "line": 242,
+      "issue": "Tests fabricate RouteId values with 'as never'.",
+      "required_fix": "Use parseRouteId(...) in M4 tests instead of 'as never' casts."
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix deterministic FactionKnowledge ordering or duplicate-key validation, add a regression test for the duplicate-key ordering case, replace M4 test RouteId 'as never' casts with parseRouteId, rerun the required validation matrix, and return a new REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-26T08:02:11.2438821+08:00"
+}
