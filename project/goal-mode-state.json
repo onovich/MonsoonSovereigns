@@ -9,15 +9,16 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active_orchestrating",
+      "status": "active_orchestrating_replacement",
       "role": "lead_orchestrator"
     },
     "simulation_engineer": {
-      "thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+      "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "status": "active",
       "role": "simulation_engineer",
-      "nickname": "Delta the 2nd"
+      "nickname": "Engine the 2nd",
+      "replaces_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1"
     }
   },
   "last_integrated_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
@@ -65,7 +66,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T06:42:07+08:00",
+  "last_updated_at": "2026-06-27T07:18:10+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -77,7 +78,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T06:42:07+08:00",
+  "updated_at": "2026-06-27T07:18:10+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -435,7 +436,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Wait for simulation_engineer REVIEW handoff, validate scope/tests, then route to systems_architect reviewer.",
+  "next_action": "Await replacement simulation_engineer REVIEW or PARTIAL handoff for M6-DIPLOMACY-LEGITIMACY-001.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -554,7 +555,7 @@
     ]
   },
   "m6_diplomacy_legitimacy": {
-    "status": "IN_PROGRESS",
+    "status": "IN_PROGRESS_REPLACEMENT_ACTIVE",
     "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
     "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -567,8 +568,31 @@
     "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Writer implements deterministic diplomacy and legitimacy substrate within allowed paths.",
+    "next_action": "Replacement writer continues existing implementation and returns REVIEW or PARTIAL handoff.",
     "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
-    "route_sent_at": "2026-06-27T06:42:07+08:00"
+    "route_sent_at": "2026-06-27T06:42:07+08:00",
+    "replacement_writer_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
+    "replacement_writer_nickname": "Engine the 2nd",
+    "replaces_writer_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+    "replacement_start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-REPLACEMENT-START.json",
+    "replacement_at": "2026-06-27T07:16:51+08:00",
+    "preserved_uncommitted_tracked_files": [
+      "packages/protocol/src/index.ts",
+      "packages/save-format/src/index.ts",
+      "packages/sim-ai/package.json",
+      "packages/sim-ai/src/index.ts",
+      "packages/sim-core/package.json",
+      "packages/sim-core/src/command-query-v1.ts",
+      "packages/sim-core/src/world-state-v0.ts",
+      "tests/protocol-command-query-schema.test.ts"
+    ],
+    "preserved_uncommitted_untracked_files": [
+      "packages/sim-ai/src/m6-diplomacy-ai.ts",
+      "tests/sim-ai-m6-diplomacy-ai.test.ts",
+      "tests/sim-core-m6-diplomacy-legitimacy.test.ts"
+    ],
+    "replacement_submission_id": "019f0639-a8c7-7760-814b-0b8518db84a1",
+    "replacement_route_sent_at": "2026-06-27T07:18:10+08:00"
   }
 }

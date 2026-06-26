@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T06:42:07+08:00",
+  "updated_at": "2026-06-27T07:18:10+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2693,7 +2693,7 @@
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_orchestrating",
+      "status": "active_orchestrating_replacement",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -2702,11 +2702,11 @@
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
       "start_state": "IN_PROGRESS_ROUTED_TO_SIMULATION_ENGINEER",
       "created_at": "2026-06-27T06:35:40+08:00",
-      "updated_at": "2026-06-27T06:42:07+08:00",
+      "updated_at": "2026-06-27T07:18:10+08:00",
       "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
       "previous_integrated_pr": 131,
       "previous_integrated_main_commit": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
-      "next_action": "Start after this closure checkpoint enters main.",
+      "next_action": "Await replacement simulation_engineer REVIEW or PARTIAL handoff.",
       "base_main_commit": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
       "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-START.json",
@@ -2714,13 +2714,22 @@
       "simulation_engineer_nickname": "Delta the 2nd",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-      "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb"
+      "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
+      "replaced_simulation_engineer_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+      "replacement_simulation_engineer_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
+      "replacement_simulation_engineer_nickname": "Engine the 2nd",
+      "replacement_start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-REPLACEMENT-START__lead_orchestrator.json",
+      "replacement_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-REPLACEMENT-START.json",
+      "replacement_reason": "original writer closed after repeated wait timeouts and no heartbeat response; uncommitted allowed-path work is preserved for replacement continuation",
+      "replacement_at": "2026-06-27T07:16:51+08:00",
+      "replacement_submission_id": "019f0639-a8c7-7760-814b-0b8518db84a1",
+      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00"
     },
     "M6-DIPLOMACY-LEGITIMACY-001:simulation_engineer": {
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "simulation_engineer",
       "thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
-      "status": "active",
+      "status": "closed_stalled_no_handoff",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -2774,10 +2783,67 @@
         "VALIDATION_REPORT.md"
       ],
       "created_at": "2026-06-27T06:41:07+08:00",
-      "updated_at": "2026-06-27T06:42:07+08:00",
+      "updated_at": "2026-06-27T07:16:51+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-      "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb"
+      "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
+      "closed_at": "2026-06-27T07:16:51+08:00",
+      "close_reason": "closed_after_repeated_wait_timeouts_and_heartbeat_no_response",
+      "replaced_by": "019f0637-1627-75c1-9805-0a63c78f3b9e",
+      "replaced_by_nickname": "Engine the 2nd"
+    },
+    "M6-DIPLOMACY-LEGITIMACY-001:simulation_engineer:replacement": {
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Engine the 2nd",
+      "responsibility": "replacement simulation_engineer writer for deterministic diplomacy and legitimacy substrate; continue existing uncommitted allowed-path implementation",
+      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
+      "start_state": "REPLACEMENT_START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "replaces_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+      "replacement_start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-REPLACEMENT-START__lead_orchestrator.json",
+      "replacement_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-REPLACEMENT-START.json",
+      "base_branch_head_commit": "c1ded8fa1cd3803aebe8f1cde3b4a6fa01135a2b",
+      "preserved_uncommitted_tracked_files": [
+        "packages/protocol/src/index.ts",
+        "packages/save-format/src/index.ts",
+        "packages/sim-ai/package.json",
+        "packages/sim-ai/src/index.ts",
+        "packages/sim-core/package.json",
+        "packages/sim-core/src/command-query-v1.ts",
+        "packages/sim-core/src/world-state-v0.ts",
+        "tests/protocol-command-query-schema.test.ts"
+      ],
+      "preserved_uncommitted_untracked_files": [
+        "packages/sim-ai/src/m6-diplomacy-ai.ts",
+        "tests/sim-ai-m6-diplomacy-ai.test.ts",
+        "tests/sim-core-m6-diplomacy-legitimacy.test.ts"
+      ],
+      "created_at": "2026-06-27T07:16:51+08:00",
+      "updated_at": "2026-06-27T07:18:10+08:00",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "replacement_submission_id": "019f0639-a8c7-7760-814b-0b8518db84a1",
+      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00"
     }
-  }
+  },
+  "replaced_threads": [
+    {
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+      "nickname": "Delta the 2nd",
+      "status": "closed_stalled_no_handoff",
+      "replaced_by": "019f0637-1627-75c1-9805-0a63c78f3b9e",
+      "replaced_by_nickname": "Engine the 2nd",
+      "reason": "closed_after_repeated_wait_timeouts_and_heartbeat_no_response",
+      "replaced_at": "2026-06-27T07:16:51+08:00"
+    }
+  ]
 }

@@ -1,0 +1,121 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-REPLACEMENT-START",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead replaced the original simulation_engineer writer after repeated wait timeouts and no heartbeat response. Existing uncommitted allowed-path diplomacy/legitimacy implementation work is preserved for the replacement simulation_engineer to continue, test, and hand off as REVIEW or PARTIAL.",
+  "artifacts": [
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-REPLACEMENT-START__lead_orchestrator.json",
+    "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-REPLACEMENT-START.json",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-ai/package.json",
+    "packages/sim-ai/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "packages/sim-ai/src/m6-diplomacy-ai.ts",
+    "tests/sim-ai-m6-diplomacy-ai.test.ts",
+    "tests/sim-core-m6-diplomacy-legitimacy.test.ts"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "c1ded8fa1cd3803aebe8f1cde3b4a6fa01135a2b",
+  "tests_run": [
+    {
+      "command": "multi_agent_v1.close_agent 019f0616-e69a-7be1-a688-ed29590a37f1",
+      "exit_code": 0,
+      "result": "Previous writer status was running; no REVIEW/PARTIAL handoff was produced."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent simulation_engineer",
+      "exit_code": 0,
+      "result": "Spawned replacement simulation_engineer thread 019f0637-1627-75c1-9805-0a63c78f3b9e, nickname Engine the 2nd."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Existing uncommitted implementation changes are present in allowed paths; ui-samples/ remains unrelated and untouched."
+    }
+  ],
+  "decisions": [
+    "Close original writer as stalled without handoff after repeated waits and heartbeat no response.",
+    "Preserve existing uncommitted allowed-path implementation work for replacement continuation instead of reverting it.",
+    "Replacement writer must not touch PROJECT_STATUS.md or forbidden paths and must return REVIEW or PARTIAL handoff."
+  ],
+  "risks": [
+    "Existing uncommitted code may be incomplete or test-failing; replacement writer must validate rather than assume correctness.",
+    "R4 task touches shared sim/protocol/save surfaces and requires systems_architect review before acceptance.",
+    "Untracked ui-samples/ remains unrelated, unstaged, and untouched."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Continue from the preserved uncommitted implementation, run required tests, fix or narrow as needed, and produce REVIEW or PARTIAL handoff for M6-DIPLOMACY-LEGITIMACY-001.",
+  "created_at": "2026-06-27T07:16:51+08:00",
+  "replacement_start_confirmed": {
+    "old_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+    "replacement_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
+    "replacement_nickname": "Engine the 2nd",
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/protocol/**",
+      "packages/save-format/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/content-tools/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ],
+    "preserved_uncommitted_tracked_files": [
+      "packages/protocol/src/index.ts",
+      "packages/save-format/src/index.ts",
+      "packages/sim-ai/package.json",
+      "packages/sim-ai/src/index.ts",
+      "packages/sim-core/package.json",
+      "packages/sim-core/src/command-query-v1.ts",
+      "packages/sim-core/src/world-state-v0.ts",
+      "tests/protocol-command-query-schema.test.ts"
+    ],
+    "preserved_uncommitted_untracked_files": [
+      "packages/sim-ai/src/m6-diplomacy-ai.ts",
+      "tests/sim-ai-m6-diplomacy-ai.test.ts",
+      "tests/sim-core-m6-diplomacy-legitimacy.test.ts"
+    ],
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+  }
+}
