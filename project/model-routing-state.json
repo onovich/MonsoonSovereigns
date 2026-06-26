@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T15:20:00Z",
+  "updated_at": "2026-06-26T15:35:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1664,6 +1664,24 @@
       "review_ready_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_at": "2026-06-26T15:20:00Z",
       "updated_at": "2026-06-26T15:20:00Z"
+    },
+    {
+      "task_id": "M5-SIM-PLAYABLE-LOOP-001",
+      "role": "systems_architect",
+      "thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
+      "status": "in_review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Meridian the 9th",
+      "responsibility": "systems_architect review of deterministic M5 playable simulation loop and save-format boundary",
+      "branch_or_worktree": "feat/m5-sim-playable-loop",
+      "start_state": "REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-TO-SYSTEMS-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
+      "updated_at": "2026-06-26T15:35:00Z"
     }
   ],
   "task_effects": {
@@ -1731,6 +1749,6 @@
     "M4-EXIT-VALIDATION-001": "CLOSED after M4 gate PR #106 entered main. M4_GATE = PASS_WITH_LIMITS with accepted process limit; M5 formal passage remains a Human Gate.",
     "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117. Planning-only M5 graph accepted and integrated; downstream M5 tasks remain DRAFT, with M5-SLICE-DEFINITION-001 dependency-ready. M5 formal passage and manual node battle remain Human Gates.",
     "M5-SLICE-DEFINITION-001": "CLOSED after PR #110 entered main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042. Planning-only M5 slice contract integrated; M5-SIM-PLAYABLE-LOOP-001 is next ready. M5 formal passage and manual node battle remain Human Gates.",
-    "M5-SIM-PLAYABLE-LOOP-001": "REVIEW with simulation_engineer writer handoff project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json ready for systems_architect. Scope is deterministic M5 simulation loop only; client/UI/content/release/Human Gate decisions remain out of scope."
+    "M5-SIM-PLAYABLE-LOOP-001": "REVIEW routed to systems_architect thread 019f0417-d858-7a83-b482-b02660bf72c9 after simulation_engineer writer handoff."
   }
 }
