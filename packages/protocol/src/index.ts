@@ -78,6 +78,13 @@ export type M4CampaignObjectiveKindV1 =
   | "relieve"
   | "withdraw"
   | "postwar-result-candidate";
+export type M4SiegeChoiceV1 =
+  | "invest-blockade"
+  | "assault"
+  | "continue"
+  | "accept-surrender"
+  | "lift-siege"
+  | "withdraw";
 
 export interface CommandActorV1 {
   readonly kind: CommandActorKindV1;
@@ -508,6 +515,44 @@ export interface StartCampaignMarchCommandV1 {
   };
 }
 
+export interface ResolveM4FieldEngagementCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.resolve-m4-field-engagement";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly engagementId: number;
+    readonly campaignPlanId: number;
+    readonly marchId: number;
+    readonly defenderPolityId: number;
+    readonly defenderEstimatedTroops: number;
+    readonly defenderFortification: number;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
+export interface ApplyM4SiegeChoiceCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.apply-m4-siege-choice";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly siegeId: number;
+    readonly campaignPlanId: number;
+    readonly marchId: number;
+    readonly choice: M4SiegeChoiceV1;
+    readonly defenderPolityId: number;
+    readonly fortification: number;
+    readonly defenderEstimatedTroops: number;
+    readonly defenderSupply: number;
+    readonly reasonCodes: readonly string[];
+  };
+}
+
 export type GameCommandV1 =
   | AdvanceDayCommandV1
   | DebugSetDistrictControlCommandV1
@@ -533,6 +578,8 @@ export type GameCommandV1 =
   | ConsumeCampaignGrainSupplyCommandV1
   | ReleaseCampaignGrainSupplyCommandV1
   | StartCampaignMarchCommandV1
+  | ResolveM4FieldEngagementCommandV1
+  | ApplyM4SiegeChoiceCommandV1
   | VerifyStateHashCommandV1;
 
 export interface GetStateHashQueryV1 {
@@ -658,6 +705,15 @@ export interface ListM4MarchStateQueryV1 {
   };
 }
 
+export interface ListM4SiegeStateQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m4-siege-state";
+  readonly payload: {
+    readonly queryId: string;
+    readonly campaignPlanId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -674,7 +730,8 @@ export type GameQueryV1 =
   | ListM4MusterCommitmentsQueryV1
   | PreviewM4GrainSupplyQueryV1
   | PreviewM4RouteTransportCapacityQueryV1
-  | ListM4MarchStateQueryV1;
+  | ListM4MarchStateQueryV1
+  | ListM4SiegeStateQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1506,6 +1563,38 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
         }
       };
     }
+    case "sim.resolve-m4-field-engagement": {
+      const payload = parseResolveM4FieldEngagementPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.apply-m4-siege-choice": {
+      const payload = parseApplyM4SiegeChoicePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.verify-state-hash": {
       const expectedHash = input["expectedHash"];
       if (typeof expectedHash !== "string" || !HASH_PATTERN.test(expectedHash)) {
@@ -1668,6 +1757,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.list-m4-march-state": {
       const payload = parseListM4MarchStatePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.list-m4-siege-state": {
+      const payload = parseListM4SiegeStatePayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -3579,6 +3683,41 @@ function parseListM4MarchStatePayload(
   };
 }
 
+function parseListM4SiegeStatePayload(
+  input: unknown
+): ProtocolParseResult<ListM4SiegeStateQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.list-m4-siege-state payload must be an object."
+    );
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      campaignPlanId: campaignPlanId.value
+    }
+  };
+}
+
 function parseStartCampaignMarchPayload(
   input: unknown
 ): ProtocolParseResult<StartCampaignMarchCommandV1["payload"]> {
@@ -3637,6 +3776,171 @@ function parseStartCampaignMarchPayload(
       reasonCodes: reasonCodes.value
     }
   };
+}
+
+function parseResolveM4FieldEngagementPayload(
+  input: unknown
+): ProtocolParseResult<ResolveM4FieldEngagementCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.resolve-m4-field-engagement payload must be an object."
+    );
+  }
+  const engagementId = parsePositiveSafeInteger(input["engagementId"], "payload.engagementId");
+  if (!engagementId.ok) {
+    return engagementId;
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const marchId = parsePositiveSafeInteger(input["marchId"], "payload.marchId");
+  if (!marchId.ok) {
+    return marchId;
+  }
+  const defenderPolityId = parsePositiveSafeInteger(
+    input["defenderPolityId"],
+    "payload.defenderPolityId"
+  );
+  if (!defenderPolityId.ok) {
+    return defenderPolityId;
+  }
+  const defenderEstimatedTroops = parseNonnegativeSafeInteger(
+    input["defenderEstimatedTroops"],
+    "payload.defenderEstimatedTroops"
+  );
+  if (!defenderEstimatedTroops.ok) {
+    return defenderEstimatedTroops;
+  }
+  const defenderFortification = parseNonnegativeSafeInteger(
+    input["defenderFortification"],
+    "payload.defenderFortification"
+  );
+  if (!defenderFortification.ok) {
+    return defenderFortification;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+
+  return {
+    ok: true,
+    value: {
+      engagementId: engagementId.value,
+      campaignPlanId: campaignPlanId.value,
+      marchId: marchId.value,
+      defenderPolityId: defenderPolityId.value,
+      defenderEstimatedTroops: defenderEstimatedTroops.value,
+      defenderFortification: defenderFortification.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseApplyM4SiegeChoicePayload(
+  input: unknown
+): ProtocolParseResult<ApplyM4SiegeChoiceCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.apply-m4-siege-choice payload must be an object."
+    );
+  }
+  const siegeId = parsePositiveSafeInteger(input["siegeId"], "payload.siegeId");
+  if (!siegeId.ok) {
+    return siegeId;
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+  const marchId = parsePositiveSafeInteger(input["marchId"], "payload.marchId");
+  if (!marchId.ok) {
+    return marchId;
+  }
+  const choice = parseM4SiegeChoice(input["choice"], "payload.choice");
+  if (!choice.ok) {
+    return choice;
+  }
+  const defenderPolityId = parsePositiveSafeInteger(
+    input["defenderPolityId"],
+    "payload.defenderPolityId"
+  );
+  if (!defenderPolityId.ok) {
+    return defenderPolityId;
+  }
+  const fortification = parseNonnegativeSafeInteger(
+    input["fortification"],
+    "payload.fortification"
+  );
+  if (!fortification.ok) {
+    return fortification;
+  }
+  const defenderEstimatedTroops = parseNonnegativeSafeInteger(
+    input["defenderEstimatedTroops"],
+    "payload.defenderEstimatedTroops"
+  );
+  if (!defenderEstimatedTroops.ok) {
+    return defenderEstimatedTroops;
+  }
+  const defenderSupply = parseNonnegativeSafeInteger(
+    input["defenderSupply"],
+    "payload.defenderSupply"
+  );
+  if (!defenderSupply.ok) {
+    return defenderSupply;
+  }
+  const reasonCodes = parseReasonCodes(input["reasonCodes"], "payload.reasonCodes");
+  if (!reasonCodes.ok) {
+    return reasonCodes;
+  }
+
+  return {
+    ok: true,
+    value: {
+      siegeId: siegeId.value,
+      campaignPlanId: campaignPlanId.value,
+      marchId: marchId.value,
+      choice: choice.value,
+      defenderPolityId: defenderPolityId.value,
+      fortification: fortification.value,
+      defenderEstimatedTroops: defenderEstimatedTroops.value,
+      defenderSupply: defenderSupply.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseM4SiegeChoice(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M4SiegeChoiceV1> {
+  if (
+    value === "invest-blockade" ||
+    value === "assault" ||
+    value === "continue" ||
+    value === "accept-surrender" ||
+    value === "lift-siege" ||
+    value === "withdraw"
+  ) {
+    return { ok: true, value };
+  }
+
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be invest-blockade, assault, continue, accept-surrender, lift-siege, or withdraw.`
+  );
 }
 
 function parseM3PostwarGovernanceQueryBase(

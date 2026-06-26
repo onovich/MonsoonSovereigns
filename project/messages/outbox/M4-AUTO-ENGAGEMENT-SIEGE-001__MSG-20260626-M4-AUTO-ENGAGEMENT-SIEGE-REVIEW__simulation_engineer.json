@@ -1,0 +1,79 @@
+{
+  "message_id": "MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-REVIEW",
+  "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented deterministic M4 automatic field engagement resolution and the minimal siege choice loop through shared GameCommand paths. Added explicit M4 field engagement and siege state, serializable command events, siege-state query support, protocol schema parsing, and focused scenario/property coverage. Task status is REVIEW and route_to is systems_architect.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-auto-engagement-siege.test.ts",
+    "project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json"
+  ],
+  "branch_or_worktree": "feat/m4-auto-engagement-siege",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified protocol, sim-core, task JSON, protocol test; new tests/sim-core-m4-auto-engagement-siege.test.ts; new REVIEW handoff JSON in project/messages/outbox."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "20 test files passed, 143 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and Worker-compatible hashes matched for hello, command/query, and save/load canaries."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 31 root test files/210 tests passed; web package 1 file/3 tests passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-AUTO-ENGAGEMENT-SIEGE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-AUTO-ENGAGEMENT-SIEGE-001",
+      "exit_code": 0,
+      "result": "JSON OK; task status REVIEW and route_to systems_architect."
+    },
+    {
+      "command": "node -e handoff JSON parse/schema shape check",
+      "exit_code": 0,
+      "result": "HANDOFF JSON OK; status REVIEW and route_to systems_architect."
+    }
+  ],
+  "decisions": [
+    "Field engagements resolve from explicit command inputs: engagement id, campaign plan, march, defender polity, defender estimated troops, defender fortification, and reason codes.",
+    "Siege choices are limited to invest/blockade, assault, continue, accept-surrender, lift-siege, and withdraw, all through sim.apply-m4-siege-choice for player and AI parity.",
+    "Surrender readiness is represented by explicit siege fields and reason codes tied to defender supply, force ratio, fortification progress, assault breach, and time invested.",
+    "No manual node battle, tactical UI, 3D battle, diplomacy, peace treaty, multiplayer/server, client UI, save-format, or content changes were made."
+  ],
+  "risks": [
+    "Risk level remains R3 because protocol and authoritative simulation surfaces changed; systems_architect review is requested.",
+    "New M4 combat state is authoritative sim-core state only. Save-format persistence for these new arrays is intentionally not implemented in this task because save-format is forbidden/out of scope."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review deterministic M4 field engagement and siege command/state/event/query implementation for architecture acceptance. Do not mark ACCEPTED/CLOSED until reviewer approval.",
+  "created_at": "2026-06-26T05:11:24Z"
+}
