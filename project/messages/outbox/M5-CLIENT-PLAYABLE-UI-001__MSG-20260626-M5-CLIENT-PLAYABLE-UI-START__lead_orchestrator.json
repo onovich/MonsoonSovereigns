@@ -1,0 +1,63 @@
+{
+  "message_id": "MSG-20260626-M5-CLIENT-PLAYABLE-UI-START",
+  "task_id": "M5-CLIENT-PLAYABLE-UI-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead starts M5-CLIENT-PLAYABLE-UI-001 after M5-SIM-PLAYABLE-LOOP-001 closed on origin/main. The task is routed to client_engineer writer with strict allowed/forbidden paths, no sim-core/save-format/desktop/content/tool/doc-gate scope, no direct authoritative WorldState mutation, no manual battle UI, and no telemetry/server/multiplayer/release/commercial expansion.",
+  "artifacts": [
+    "project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-START__lead_orchestrator.json",
+    "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-LEAD-TO-CLIENT-START-CONFIRMED.json"
+  ],
+  "branch_or_worktree": "feat/m5-client-playable-ui / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "03afd416a7d07c1cf1c6c21f84b9c059b2a1ffca",
+  "origin_main": "03afd416a7d07c1cf1c6c21f84b9c059b2a1ffca",
+  "writer": {
+    "role": "client_engineer",
+    "thread_id": "019f045c-18cd-72c1-9c03-6a48b6ff56e0",
+    "nickname": "Lantern the 9th",
+    "configured_model": "gpt-5.5",
+    "configured_effort": "high",
+    "actual_model": "unknown",
+    "actual_effort": "unknown"
+  },
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main at 03afd416a7d07c1cf1c6c21f84b9c059b2a1ffca before branch start; branch feat/m5-client-playable-ui created."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M5-CLIENT-PLAYABLE-UI-001 and M5-MULTIYEAR-AI-RUN-001 are dependency-ready; lead selects the first listed task."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent client_engineer",
+      "exit_code": 0,
+      "result": "Spawned 019f045c-18cd-72c1-9c03-6a48b6ff56e0 (Lantern the 9th)."
+    },
+    {
+      "command": "multi_agent_v1.send_input START_CONFIRMED",
+      "exit_code": 0,
+      "result": "submission_id 019f045c-66e2-78d3-8489-2e502c75e28e"
+    }
+  ],
+  "decisions": [
+    "Start M5-CLIENT-PLAYABLE-UI-001 as the highest-priority READY M5 task after M5 sim loop closure entered main.",
+    "Use client_engineer as primary writer; route to qa_reviewer only after writer REVIEW handoff is produced.",
+    "Keep manual node battle, formal M5 passage, telemetry, server/multiplayer, release/commercial, and direct authoritative state mutation out of scope."
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement the M5 playable client flow within allowed paths, run required tests, and produce writer REVIEW handoff for qa_reviewer.",
+  "created_at": "2026-06-26T22:37:00+08:00",
+  "risks": [
+    "M5 client task touches user-facing UI, Storybook, Playwright, read-model, and protocol boundary surfaces; writer must keep client state thin and avoid duplicating sim formulas.",
+    "Manual node battle, telemetry, server/multiplayer, release/commercial scope, and direct authoritative WorldState mutation remain out of scope."
+  ]
+}
