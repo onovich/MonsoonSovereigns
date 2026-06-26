@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260626-M5-MULTIYEAR-AI-RUN-START",
+  "task_id": "M5-MULTIYEAR-AI-RUN-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M5-MULTIYEAR-AI-RUN-001 after M5-CLIENT-PLAYABLE-UI-001 closure entered origin/main. The test_engineer writer must validate a fixed-seed multi-year M5 AI run through existing GameCommand paths without rescue commands or scope expansion.",
+  "artifacts": [
+    "project/tasks/active/M5-MULTIYEAR-AI-RUN-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "test/m5-multiyear-ai-run / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
+  "base_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
+  "writer_thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
+  "writer_nickname": "Probe the 9th",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main was synchronized at f6fd838aebee543c792e5b32f0d6b3a2ed347de0 before creating branch test/m5-multiyear-ai-run."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Dependency-ready candidates were M5-MULTIYEAR-AI-RUN-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001 before starting this task."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent test_engineer",
+      "exit_code": 0,
+      "result": "Spawned test_engineer thread 019f0486-71a5-7cd3-950c-933d86afb0fc (Probe the 9th)."
+    }
+  ],
+  "decisions": [
+    "Start only M5-MULTIYEAR-AI-RUN-001 now; do not start the distributable task in parallel because the active writer should use the sim/headless/test package area without competing process churn.",
+    "Treat taskctl ready DRAFT rows as dependency-ready candidates, then advance the selected task to IN_PROGRESS through persisted task state.",
+    "Keep M5 formal passage, manual node battle, telemetry, server/multiplayer, and full diplomacy out of scope."
+  ],
+  "risks": [
+    "P3: Long-running test coverage can be slow; writer should keep fixture duration sufficient for multi-year evidence but bounded for CI.",
+    "P3: AI trace evidence must stay deterministic and bounded without adding telemetry or analytics."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer",
+  "requested_action": "Implement the scoped multi-year AI run validation, run required gates, write REVIEW handoff, and route to qa_reviewer. Do not mark ACCEPTED or CLOSED.",
+  "created_at": "2026-06-26T23:23:27+08:00"
+}

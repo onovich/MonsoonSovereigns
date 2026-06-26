@@ -2,18 +2,37 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M5_CLIENT_PLAYABLE_UI_CLOSED",
+  "status": "M5_MULTIYEAR_AI_RUN_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "5502087977416f2720e084337b65c16c472a4d14",
+  "origin_main": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
   "current_milestone": "M5",
-  "current_task": null,
-  "current_task_status": "CLOSED",
+  "current_task": "M5-MULTIYEAR-AI-RUN-001",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M5-CLIENT-PLAYABLE-UI-001",
   "ready_tasks": [
-    "M5-MULTIYEAR-AI-RUN-001",
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
   ],
-  "active_threads": {},
+  "active_threads": {
+    "019f0486-71a5-7cd3-950c-933d86afb0fc": {
+      "task_id": "M5-MULTIYEAR-AI-RUN-001",
+      "role": "test_engineer",
+      "thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
+      "status": "active",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Probe the 9th",
+      "responsibility": "primary test_engineer writer for M5 multi-year AI run validation",
+      "branch_or_worktree": "test/m5-multiyear-ai-run",
+      "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
+      "base_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
+      "updated_at": "2026-06-26T23:24:10+08:00",
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f0488-29f8-7511-bc27-28cfd8f41c17",
+      "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260626-M5-AI-RUN-LEAD-TO-TEST-START-CONFIRMED.json"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -30,7 +49,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Commit closure, open closure PR, wait for CI, merge to main, then start M5-MULTIYEAR-AI-RUN-001 as the highest-priority dependency-ready M5 task.",
+  "next_machine_action": "Wait for M5-MULTIYEAR-AI-RUN-001 writer REVIEW handoff, validate it, route to independent qa_reviewer, then integrate on ACCEPT.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -38,7 +57,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T23:16:28+08:00",
+  "last_updated_at": "2026-06-26T23:24:10+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -70,15 +89,16 @@
       "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T23:16:28+08:00",
-  "current_tasks": [],
+  "updated_at": "2026-06-26T23:24:10+08:00",
+  "current_tasks": [
+    "M5-MULTIYEAR-AI-RUN-001"
+  ],
   "last_integrated_task": "M5-CLIENT-PLAYABLE-UI-001",
-  "last_main_commit": "5502087977416f2720e084337b65c16c472a4d14",
+  "last_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
   "next_ready_tasks": [
-    "M5-MULTIYEAR-AI-RUN-001",
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
   ],
-  "next_action": "Commit closure, open closure PR, wait for CI, merge to main, then start M5-MULTIYEAR-AI-RUN-001 as the highest-priority dependency-ready M5 task.",
+  "next_action": "Wait for M5-MULTIYEAR-AI-RUN-001 writer REVIEW handoff, validate it, route to independent qa_reviewer, then integrate on ACCEPT.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -236,5 +256,17 @@
       "M5-MULTIYEAR-AI-RUN-001",
       "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
     ]
+  },
+  "m5_multiyear_ai_run": {
+    "status": "IN_PROGRESS",
+    "branch_or_worktree": "test/m5-multiyear-ai-run",
+    "writer_thread_id": "019f0486-71a5-7cd3-950c-933d86afb0fc",
+    "writer_nickname": "Probe the 9th",
+    "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
+    "started_at": "2026-06-26T23:23:27+08:00",
+    "next_action": "Wait for M5-MULTIYEAR-AI-RUN-001 writer REVIEW handoff, validate it, route to independent qa_reviewer, then integrate on ACCEPT.",
+    "human_gate_required": false,
+    "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260626-M5-AI-RUN-LEAD-TO-TEST-START-CONFIRMED.json",
+    "start_submission_id": "019f0488-29f8-7511-bc27-28cfd8f41c17"
   }
 }
