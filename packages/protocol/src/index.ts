@@ -622,6 +622,15 @@ export interface PreviewM4GrainSupplyQueryV1 {
   };
 }
 
+export interface PreviewM4RouteTransportCapacityQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.preview-m4-route-transport-capacity";
+  readonly payload: {
+    readonly queryId: string;
+    readonly campaignPlanId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -636,7 +645,8 @@ export type GameQueryV1 =
   | ListM4CampaignPlansQueryV1
   | ListM4FactionKnowledgeQueryV1
   | ListM4MusterCommitmentsQueryV1
-  | PreviewM4GrainSupplyQueryV1;
+  | PreviewM4GrainSupplyQueryV1
+  | PreviewM4RouteTransportCapacityQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1584,6 +1594,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.preview-m4-grain-supply": {
       const payload = parsePreviewM4GrainSupplyPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.preview-m4-route-transport-capacity": {
+      const payload = parsePreviewM4RouteTransportCapacityPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -3421,6 +3446,41 @@ function parsePreviewM4GrainSupplyPayload(
       campaignPlanId: campaignPlanId.value,
       plannedMarchDays: plannedMarchDays.value,
       grainPerTroopPerDay: grainPerTroopPerDay.value
+    }
+  };
+}
+
+function parsePreviewM4RouteTransportCapacityPayload(
+  input: unknown
+): ProtocolParseResult<PreviewM4RouteTransportCapacityQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.preview-m4-route-transport-capacity payload must be an object."
+    );
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const campaignPlanId = parsePositiveSafeInteger(
+    input["campaignPlanId"],
+    "payload.campaignPlanId"
+  );
+  if (!campaignPlanId.ok) {
+    return campaignPlanId;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId,
+      campaignPlanId: campaignPlanId.value
     }
   };
 }

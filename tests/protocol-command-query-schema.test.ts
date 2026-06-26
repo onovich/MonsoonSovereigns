@@ -655,6 +655,16 @@ describe("SIM-003 protocol command/query schemas", () => {
       }).ok
     ).toBe(true);
     expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-m4-route-transport-capacity",
+        payload: {
+          queryId: "m4.route-capacity.1",
+          campaignPlanId: 1
+        }
+      }).ok
+    ).toBe(true);
+    expect(
       parseGameCommandV1({
         schemaVersion: 1,
         kind: "sim.consume-campaign-grain-supply",
