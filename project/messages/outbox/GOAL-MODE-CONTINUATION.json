@@ -2,17 +2,72 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M5_TASK_GRAPH_CLOSED_SLICE_DEFINITION_READY",
+  "status": "M5_SLICE_DEFINITION_ACCEPTED_PENDING_PR",
   "project": "Monsoon Sovereigns",
-  "origin_main": "8b771272a9cfa790282043fcd092c1ce59fd0117",
+  "origin_main": "e6d539ebf8ea1bd032ef5ad5aa1e4beb467ed802",
   "current_milestone": "M5",
   "current_task": "M5-SLICE-DEFINITION-001",
-  "current_task_status": "READY_NOT_STARTED",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M5-TASK-GRAPH-001",
-  "ready_tasks": [
-    "M5-SLICE-DEFINITION-001"
-  ],
-  "active_threads": {},
+  "ready_tasks": [],
+  "active_threads": {
+    "019f03e1-ab85-78d3-ab7a-f200abbdd76f": {
+      "thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Ledger the 8th",
+      "responsibility": "primary gameplay_designer writer for bounded M5 playable-slice contract",
+      "branch_or_worktree": "design/m5-slice-definition",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
+      "review_ready_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "review_ready_at": "2026-06-26T13:30:00Z",
+      "updated_at": "2026-06-26T14:10:00Z",
+      "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "accepted_at": "2026-06-26T13:30:00Z"
+    },
+    "019f03ed-169e-7481-95f2-e9e5c4d765ba": {
+      "thread_id": "019f03ed-169e-7481-95f2-e9e5c4d765ba",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Meridian the 8th",
+      "responsibility": "systems_architect review of bounded M5 playable-slice contract",
+      "branch_or_worktree": "design/m5-slice-definition",
+      "start_state": "REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-WRITER-TO-SYSTEMS-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "updated_at": "2026-06-26T14:10:00Z",
+      "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+      "accepted_at": "2026-06-26T13:55:00Z"
+    },
+    "019f03f4-39f3-71c1-859d-cfa5fb8a544a": {
+      "thread_id": "019f03f4-39f3-71c1-859d-cfa5fb8a544a",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gate the 8th",
+      "responsibility": "independent read-only QA review of bounded M5 playable-slice contract",
+      "branch_or_worktree": "design/m5-slice-definition",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-SYSTEMS-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+      "writer_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+      "updated_at": "2026-06-26T14:10:00Z",
+      "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-QA-REVIEW__qa_reviewer.json",
+      "accepted_at": "2026-06-26T14:05:00Z"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -29,7 +84,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Start M5-SLICE-DEFINITION-001 with the owner/reviewer requirements from its task file; preserve M5 Human Gates.",
+  "next_machine_action": "Open PR for M5-SLICE-DEFINITION-001, wait for CI, merge, sync main, close the task, then continue to the next dependency-ready M5 task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -37,7 +92,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T13:00:00Z",
+  "last_updated_at": "2026-06-26T14:10:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -69,14 +124,14 @@
       "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T13:00:00Z",
-  "current_tasks": [],
-  "last_integrated_task": "M5-TASK-GRAPH-001",
-  "last_main_commit": "8b771272a9cfa790282043fcd092c1ce59fd0117",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-26T14:10:00Z",
+  "current_tasks": [
     "M5-SLICE-DEFINITION-001"
   ],
-  "next_action": "Start M5-SLICE-DEFINITION-001 with the owner/reviewer requirements from its task file; preserve M5 Human Gates.",
+  "last_integrated_task": "M5-TASK-GRAPH-001",
+  "last_main_commit": "e6d539ebf8ea1bd032ef5ad5aa1e4beb467ed802",
+  "next_ready_tasks": [],
+  "next_action": "Open PR for M5-SLICE-DEFINITION-001, wait for CI, merge, sync main, close the task, then continue to the next dependency-ready M5 task.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -128,5 +183,29 @@
     "lead_close_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-26T13:00:00Z",
     "next_ready_task": "M5-SLICE-DEFINITION-001"
+  },
+  "m5_slice_definition": {
+    "status": "ACCEPTED_PENDING_PR",
+    "branch_or_worktree": "design/m5-slice-definition",
+    "writer_thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
+    "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
+    "started_at": "2026-06-26T13:05:00Z",
+    "review_ready_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+    "review_ready_at": "2026-06-26T13:30:00Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close M5-SLICE-DEFINITION-001 and continue to the next ready M5 task.",
+    "human_gate_required": false,
+    "reviewer_thread_id": "019f03ed-169e-7481-95f2-e9e5c4d765ba",
+    "review_route": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-WRITER-TO-SYSTEMS-REVIEW.json",
+    "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
+    "routed_at": "2026-06-26T13:40:00Z",
+    "systems_review_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "ACCEPT",
+    "qa_thread_id": "019f03f4-39f3-71c1-859d-cfa5fb8a544a",
+    "qa_route": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-SYSTEMS-TO-QA-REVIEW.json",
+    "routed_to_qa_at": "2026-06-26T14:00:00Z",
+    "qa_review_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-26T14:10:00Z"
   }
 }
