@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T00:30:28Z",
+  "updated_at": "2026-06-26T00:47:33Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1236,6 +1236,23 @@
       "configured_effort_after_amendment": "xhigh",
       "migration_status": "closed_after_r2_accept_and_main_integration",
       "accepted_task_reopened": false
+    },
+    {
+      "thread_id": "019f0152-40b7-7a73-b231-48227617563f",
+      "role": "simulation_engineer",
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "status": "closed_disconnected_before_handoff",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f0154-a0e3-77c3-8d64-de653e6e4ac0",
+      "status_probe_submission_id": "019f0160-7c8a-79b1-a29b-de4fdfefe8ea",
+      "close_reason": "no_review_handoff_after_wait_and_status_probe",
+      "replaced_by": "019f0163-f8a2-7462-8fa4-9eca83a5a3f4",
+      "closed_at": "2026-06-26T00:47:33Z"
     }
   ],
   "active_threads": [
@@ -1316,6 +1333,6 @@
     "M4-MUSTER-PREP-COMMITMENTS-001": "READY after M4 campaign objectives closure. This task owns muster preparation and mobilized force commitments only."
   },
   "task_notes": {
-    "M4-MUSTER-PREP-COMMITMENTS-001": "IN_PROGRESS after lead sent START_CONFIRMED to simulation_engineer and AWAIT_REVIEW_READY to systems_architect. Scope is limited to M4 muster preparation and mobilized force commitments."
+    "M4-MUSTER-PREP-COMMITMENTS-001": "IN_PROGRESS with replacement simulation_engineer after the first writer was closed before a REVIEW handoff. Existing uncommitted implementation diff is preserved for replacement completion and systems review."
   }
 }

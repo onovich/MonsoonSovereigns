@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-26T00:30:28Z",
+  "updated_at": "2026-06-26T00:47:33Z",
   "leadership": {
     "active_leads": [
       {
@@ -853,17 +853,18 @@
     "M4-MUSTER-PREP-COMMITMENTS-001:simulation_engineer": {
       "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
       "role": "simulation_engineer",
-      "thread_id": "019f0152-40b7-7a73-b231-48227617563f",
+      "thread_id": "019f0163-f8a2-7462-8fa4-9eca83a5a3f4",
       "status": "active",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m4-muster-prep-commitments",
-      "start_state": "START_CONFIRMED",
-      "updated_at": "2026-06-26T00:30:28Z",
-      "responsibility": "primary M4 muster preparation and mobilized commitments writer",
-      "start_submission_id": "019f0154-a0e3-77c3-8d64-de653e6e4ac0"
+      "start_state": "START_CONFIRMED_REPLACEMENT",
+      "updated_at": "2026-06-26T00:47:33Z",
+      "responsibility": "replacement primary M4 muster preparation and mobilized commitments writer",
+      "replaces_thread_id": "019f0152-40b7-7a73-b231-48227617563f",
+      "start_submission_id": "019f0164-4dbf-7b21-8a75-127af6d0099e"
     },
     "M4-MUSTER-PREP-COMMITMENTS-001:systems_architect": {
       "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
@@ -876,9 +877,31 @@
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m4-muster-prep-commitments",
       "start_state": "AWAITING_REVIEW_READY",
-      "updated_at": "2026-06-26T00:30:28Z",
+      "updated_at": "2026-06-26T00:47:33Z",
       "responsibility": "architecture reviewer for M4 muster preparation and commitments",
-      "await_submission_id": "019f0154-a122-7851-8156-52b9e0aa1f2b"
+      "await_submission_id": "019f0154-a122-7851-8156-52b9e0aa1f2b",
+      "replacement_writer_notice_submission_id": "019f0164-4dcf-7ee3-aef3-9ce2b52ae800",
+      "replacement_writer_thread_id": "019f0163-f8a2-7462-8fa4-9eca83a5a3f4"
+    },
+    "M4-MUSTER-PREP-COMMITMENTS-001:simulation_engineer:replaced:019f0152-40b7-7a73-b231-48227617563f": {
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0152-40b7-7a73-b231-48227617563f",
+      "status": "closed_disconnected_before_handoff",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_state": "START_CONFIRMED",
+      "updated_at": "2026-06-26T00:47:33Z",
+      "responsibility": "primary M4 muster preparation and mobilized commitments writer",
+      "start_submission_id": "019f0154-a0e3-77c3-8d64-de653e6e4ac0",
+      "status_probe_submission_id": "019f0160-7c8a-79b1-a29b-de4fdfefe8ea",
+      "close_reason": "no_review_handoff_after_wait_and_status_probe",
+      "replaced_by": "019f0163-f8a2-7462-8fa4-9eca83a5a3f4",
+      "replaced_at": "2026-06-26T00:47:33Z",
+      "closed_at": "2026-06-26T00:47:33Z"
     }
   }
 }
