@@ -1,0 +1,66 @@
+{
+  "id": "M5-SLICE-DEFINITION-001",
+  "summary": "Define bounded M5 playable-slice contract",
+  "milestone": "M5",
+  "status": "DRAFT",
+  "owner_role": "gameplay_designer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M5-TASK-GRAPH-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M5-SLICE-DEFINITION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Define a minimal 2-4 hour repeatable playable-slice contract using accepted M1-M4 systems without implementing production code.",
+    "Specify start state, player goal, success/failure conditions, required command surfaces, required read models, and replay evidence.",
+    "Explicitly preserve Human Gates for M5 formal passage, manual node battle decision, frozen product/platform/core architecture changes, telemetry, server/multiplayer, arbitrary-code mods, release/commercial choices, branding, and major cultural-risk decisions.",
+    "Do not add formal historical content, production dependencies, roadmap edits, acceptance-matrix edits, ADR edits, gate docs, release artifacts, or implementation files."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-SLICE-DEFINITION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M5-SLICE-DEFINITION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "design/m5-slice-definition",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "This narrows M5 scope before implementation evidence tasks.",
+    "If the contract requires a frozen architecture, platform, branding, commercial, release, telemetry, networking, mod, or manual battle decision, stop and route to Human Gate."
+  ],
+  "created_at": "2026-06-26T12:30:00Z",
+  "updated_at": "2026-06-26T12:30:00Z"
+}

@@ -1,0 +1,81 @@
+{
+  "id": "M5-PERFORMANCE-GATE-001",
+  "summary": "Run M5 performance and stability gate",
+  "milestone": "M5",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M5-CLIENT-PLAYABLE-UI-001",
+    "M5-MULTIYEAR-AI-RUN-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/sim-runner/**",
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/protocol/**",
+      "packages/sim-testkit/**",
+      "tests/**",
+      "project/tasks/active/M5-PERFORMANCE-GATE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "M5 performance evidence covers Web playable slice, Windows desktop smoke slice, Node runner deterministic simulation, save/load timings, and large read-model/map stress surfaces relevant to the slice.",
+    "Measurements report concrete numbers against accepted budgets or explicit PASS_WITH_LIMITS evidence; no performance claim is based on expectation alone.",
+    "Any optimization preserves determinism, single-writer WorldState authority, read-model boundaries, protocol schemas, Electron security, and player/AI command parity.",
+    "The task does not add telemetry, remote analytics, server infrastructure, arbitrary-code mods, commercial release work, or broad future-proof managers."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm check",
+    "pnpm test",
+    "pnpm sim:determinism",
+    "pnpm sim:perf-baseline",
+    "pnpm build:web",
+    "pnpm desktop:security-check",
+    "pnpm desktop:package",
+    "pnpm e2e",
+    "Measured Web frame/update responsiveness, Node multi-year run duration/memory, and save/load/import/export timings.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-PERFORMANCE-GATE-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "test/m5-performance-gate",
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "Performance changes must be evidence-driven and local to the measured bottleneck.",
+    "If budgets need to change, record explicit PASS_WITH_LIMITS evidence and route to systems_architect plus QA."
+  ],
+  "created_at": "2026-06-26T12:30:00Z",
+  "updated_at": "2026-06-26T12:30:00Z"
+}

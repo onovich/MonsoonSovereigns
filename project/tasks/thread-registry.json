@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-26T11:41:00Z",
+  "updated_at": "2026-06-26T12:35:30Z",
   "leadership": {
     "active_leads": [
       {
@@ -1718,21 +1718,23 @@
     "M5-TASK-GRAPH-001:systems_architect": {
       "task_id": "M5-TASK-GRAPH-001",
       "role": "systems_architect",
-      "thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
+      "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
       "status": "started",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "nickname": "Keystone the 8th",
-      "responsibility": "primary M5 task graph writer",
+      "nickname": "Lintel the 8th",
+      "responsibility": "replacement systems_architect reviewer/writer for M5 task graph after partial no-handoff output",
       "branch_or_worktree": "chore/m5-task-graph",
-      "start_state": "START_CONFIRMED",
+      "start_state": "START_CONFIRMED_REPLACEMENT",
       "spawn_result": "spawn_agent",
+      "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
+      "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T11:41:00Z",
-      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-START-CONFIRMED.json",
-      "start_submission_id": "019f03bb-a878-7412-888e-63ca1ffa4cfc"
+      "updated_at": "2026-06-26T12:35:30Z",
+      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
+      "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a"
     },
     "M5-TASK-GRAPH-001:qa_reviewer": {
       "task_id": "M5-TASK-GRAPH-001",
@@ -1749,9 +1751,31 @@
       "start_state": "AWAITING_REVIEW_READY",
       "spawn_result": "spawn_agent",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T11:41:00Z",
+      "updated_at": "2026-06-26T12:35:00.000Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-QA-STANDBY-CONFIRMED.json",
       "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba"
+    },
+    "M5-TASK-GRAPH-001:systems_architect:partial:019f03b9-e19b-7592-8f0b-963615f5186e": {
+      "task_id": "M5-TASK-GRAPH-001",
+      "role": "systems_architect",
+      "thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
+      "status": "closed_partial_no_handoff",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Keystone the 8th",
+      "responsibility": "primary M5 task graph writer",
+      "branch_or_worktree": "chore/m5-task-graph",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T12:35:00.000Z",
+      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-START-CONFIRMED.json",
+      "start_submission_id": "019f03bb-a878-7412-888e-63ca1ffa4cfc",
+      "close_reason": "partial_task_graph_without_systems_review_handoff",
+      "closed_at": "2026-06-26T12:35:00.000Z",
+      "replaced_by": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2"
     }
   }
 }

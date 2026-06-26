@@ -1,0 +1,67 @@
+{
+  "id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "summary": "Human Gate for manual node battle decision",
+  "milestone": "M5",
+  "status": "DRAFT",
+  "owner_role": "lead_orchestrator",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M5-PLAYER-RESEARCH-001",
+    "M5-PERFORMANCE-GATE-001",
+    "M5-MULTIYEAR-AI-RUN-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "The task records M5 evidence relevant to whether manual node battle is worth independent development, but does not implement or approve manual battle by itself.",
+    "A human explicitly decides one of: defer manual node battle, authorize a future bounded research/spike task, or authorize a future implementation task with separate scope and review.",
+    "The decision preserves automatic battle/siege determinism and does not introduce tactical battle UI, 3D battle, complex naval battle, server/multiplayer, telemetry, arbitrary-code mods, release, branding, or commercial decisions.",
+    "If no explicit human decision is present, status remains BLOCKED or DRAFT and autonomous continuation must not create manual battle implementation tasks."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-MANUAL-NODE-BATTLE-DECISION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <decision-handoff>",
+    "Manual Human Gate evidence includes explicit approval/deferral text, date, actor, and selected decision path.",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "gate/m5-manual-node-battle-decision",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is a Human Gate placeholder and must not become READY through autonomous selection alone.",
+    "Do not implement manual node battle, tactical battle UI, 3D battle, or battle content in this task.",
+    "If humans authorize follow-up work, create a new bounded task/ADR as appropriate; do not mutate this decision task into implementation."
+  ],
+  "created_at": "2026-06-26T12:30:00Z",
+  "updated_at": "2026-06-26T12:30:00Z"
+}

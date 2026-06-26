@@ -1,0 +1,80 @@
+{
+  "id": "M5-CLIENT-PLAYABLE-UI-001",
+  "summary": "Implement M5 playable client flow",
+  "milestone": "M5",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M5-SIM-PLAYABLE-LOOP-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "apps/storybook/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "packages/platform-browser/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/save-format/**",
+      "apps/desktop/**",
+      "packages/platform-electron/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "The player can start the accepted M5 slice, inspect goals, issue required decisions, preview consequences, save/load, and complete or fail the slice through protocol commands.",
+    "React/client state stores only UI state and read models, not authoritative WorldState; Pixi remains a render cache.",
+    "The UI surfaces AI/player reason codes, campaign risk, supply/season state, battle/siege outcomes, and postwar consequences needed by the slice without adding manual battle UI.",
+    "Storybook and Playwright coverage prove the main slice flow, save/load flow, failure/cancel flow, large table/map stability, and no text overlap at supported desktop viewports.",
+    "No Electron Node integration, direct renderer filesystem access, telemetry, account system, server/multiplayer, arbitrary-code mod support, branding, or release/commercial decision is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter @monsoon/map-renderer test",
+    "pnpm build:storybook",
+    "pnpm build:web",
+    "pnpm e2e",
+    "Playwright tests cover M5 start-to-finish, save/load, command preview/confirm/result, AI reason display, postwar display, and no-overlap checks.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-CLIENT-PLAYABLE-UI-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m5-client-playable-ui",
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "Keep client code thin over protocol/read models; do not duplicate sim formulas in UI.",
+    "Manual node battle remains out of scope and must not be prototyped in this task."
+  ],
+  "created_at": "2026-06-26T12:30:00Z",
+  "updated_at": "2026-06-26T12:30:00Z"
+}
