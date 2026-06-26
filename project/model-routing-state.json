@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T00:56:00+08:00",
+  "updated_at": "2026-06-27T01:32:54+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1766,7 +1766,50 @@
       "lead_close_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-CLOSED__lead_orchestrator.json"
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M5-PERFORMANCE-GATE-001",
+      "role": "test_engineer",
+      "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
+      "status": "review_ready",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gauge the 9th",
+      "responsibility": "primary test_engineer writer for M5 performance and stability gate",
+      "branch_or_worktree": "test/m5-performance-gate",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
+      "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
+      "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
+      "updated_at": "2026-06-27T01:16:50+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-27T01:16:50+08:00"
+    },
+    {
+      "task_id": "M5-PERFORMANCE-GATE-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
+      "status": "reviewing",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gate the 10th",
+      "responsibility": "independent read-only QA review of M5 performance and stability gate",
+      "branch_or_worktree": "test/m5-performance-gate",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-WRITER-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "81aacaea",
+      "review_submission_id": "019f04f2-3e8a-7a21-ab80-7909e1d415fc",
+      "updated_at": "2026-06-27T01:19:30+08:00"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1834,6 +1877,22 @@
     "M5-SLICE-DEFINITION-001": "CLOSED after PR #110 entered main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042. Planning-only M5 slice contract integrated; M5-SIM-PLAYABLE-LOOP-001 is next ready. M5 formal passage and manual node battle remain Human Gates.",
     "M5-SIM-PLAYABLE-LOOP-001": "CLOSED after PR #112 entered main at fee2ccfeefd7ad73bbfc37442c4224000ad75496. Deterministic M5 simulation slice loop integrated; child threads closed; next ready M5 tasks are M5-CLIENT-PLAYABLE-UI-001 and M5-MULTIYEAR-AI-RUN-001.",
     "M5-CLIENT-PLAYABLE-UI-001": "CLOSED after PR #114 entered main at 5502087977416f2720e084337b65c16c472a4d14. client_engineer thread 019f045c-18cd-72c1-9c03-6a48b6ff56e0 produced REVIEW handoff; independent qa_reviewer thread 019f046f-ee05-76e1-97fe-74c083fc227d accepted; lead gates and PR CI passed. Child threads closed. Next dependency-ready M5 tasks are M5-MULTIYEAR-AI-RUN-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
-    "M5-MULTIYEAR-AI-RUN-001": "CLOSED after PR #116 entered main at 809209369a9ca21f32f6e0887758c5f0e670dd41. Replacement test_engineer R3 and independent qa_reviewer R2 accepted; CI passed; child threads closed. Next dependency-ready M5 tasks are M5-PERFORMANCE-GATE-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001."
+    "M5-MULTIYEAR-AI-RUN-001": "CLOSED after PR #116 entered main at 809209369a9ca21f32f6e0887758c5f0e670dd41. Replacement test_engineer R3 and independent qa_reviewer R2 accepted; CI passed; child threads closed. Next dependency-ready M5 tasks are M5-PERFORMANCE-GATE-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
+    "M5-PERFORMANCE-GATE-001": "Lead accepted performance gate after independent QA ACCEPT; task is pending PR/CI/main integration."
+  },
+  "current_tasks": {
+    "M5-PERFORMANCE-GATE-001": {
+      "status": "ACCEPTED_PENDING_INTEGRATION",
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer",
+      "branch_or_worktree": "test/m5-performance-gate",
+      "writer_thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
+      "qa_thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T01:32:54+08:00",
+      "next_action": "PR/CI/main integration before CLOSED"
+    }
   }
 }

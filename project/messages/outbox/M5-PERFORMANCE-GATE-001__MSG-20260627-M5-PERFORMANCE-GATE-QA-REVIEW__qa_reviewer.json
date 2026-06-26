@@ -1,0 +1,143 @@
+{
+  "message_id": "MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW",
+  "task_id": "M5-PERFORMANCE-GATE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Independent QA reviewed review commit 81aacaea against base 116053b6f837a44f4d4b9892a18c1b50aa95305f and re-ran the material gates. The diff is evidence/status/handoff only, with no apps/packages/tests/content-source/tools/docs product drift. Writer evidence covers pnpm check, pnpm test, sim determinism, sim perf baseline, web build, desktop security/package, Chromium e2e, Web responsiveness, 730-day Node multi-year duration/RSS, and M5 save/load plus client-core session export/import timing. The import/export caveat is acceptable for the current slice because the desktop bridge exposes only runtime/fullscreen; QA recommends PASS for this task, not REQUEST_CHANGES.",
+  "artifacts": [
+    "project/tasks/active/M5-PERFORMANCE-GATE-001.json",
+    "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-WRITER-TO-QA-REVIEW.json"
+  ],
+  "branch_or_worktree": "test/m5-performance-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "81aacaea",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean before QA handoff creation; no tracked or untracked changes after validation reruns."
+    },
+    {
+      "command": "git diff --name-status 116053b6f837a44f4d4b9892a18c1b50aa95305f..81aacaea",
+      "exit_code": 0,
+      "result": "Only project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, project/tasks/active/M5-PERFORMANCE-GATE-001.json, and M5 performance gate outbox/route messages changed."
+    },
+    {
+      "command": "git diff --name-only 116053b6f837a44f4d4b9892a18c1b50aa95305f..81aacaea -- apps packages tests content-source tools .github docs PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output; no business code, tests, content, tooling, CI, docs, release manifest, checksum, or validation report drift in the reviewed diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-PERFORMANCE-GATE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-PERFORMANCE-GATE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list parsed; M5-PERFORMANCE-GATE-001 remains REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M5-WEB-WINDOWS-DISTRIBUTABLE-001 remains the next ready-listed M5 task."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; boundary self-test produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check, sim determinism, root Vitest 35 files / 249 tests, and web Vitest 1 file / 4 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning remains non-blocking."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, M4 232f62ab/334e0df0/ac35e97e, M5 bf042e42 with loaded hash bf042e42."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650-day baseline passed: 14449 days/sec, p50 57200 ns, p95 108100 ns, p99 187400 ns, save 1693700 ns, load 2412100 ns, saveByteLength 9980."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web production build passed in 215ms; non-blocking chunk-size warning remained."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security check passed; preload exposes only monsoonDesktop, renderer navigation is restricted, and allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke passed; output .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium 8/8 passed, including M5 playable save/load flow and desktop viewport overflow coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m5-multiyear-ai-run",
+      "exit_code": 0,
+      "result": "730-day M5 multi-year AI run passed: final hash a83d87d8, schedule hash 1ddcf36b, trace hash 1811680d, noDeadlock true, invariant failures 0, AI attempts 730, AI accepted commands 0."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"<QA M5 multi-year duration/RSS probe>\"",
+      "exit_code": 0,
+      "result": "Three 730-day validation runs completed in 204.07ms, 126.83ms, and 118.17ms; peak RSS 102800 KiB."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"<QA client-core M5 session export/import timing probe>\"",
+      "exit_code": 0,
+      "result": "createM5SessionSave/parseM5SessionSave timing reproduced writer scale: saveLength 325, export 0.273 us/op, import 0.494 us/op, checkpoint m5.step.06.sim.advance-day, stateHash 61e0ba1c."
+    },
+    {
+      "command": "PowerShell here-string piped to node --input-type=module for a one-shot local Vite + Playwright web responsiveness probe",
+      "exit_code": 0,
+      "result": "Measured initialLoad 177.97ms, M2 derivation 0ms, M2 selection 0ms, economy switch 69.77ms, routes switch 144.64ms, zoom update 55.34ms, M5 save 50.47ms, M5 load 47.29ms, saveLength 236. Temporary Vite process was stopped afterward."
+    },
+    {
+      "command": "rg -n \"telemetry|analytics|server|multiplayer|commercial|release|Steam|tracking|remote\" project/tasks/active/M5-PERFORMANCE-GATE-001.json project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json project/goal-mode-state.json project/model-routing-state.json project/tasks/thread-registry.json",
+      "exit_code": 0,
+      "result": "No scope drift found. Hits are explicit non-goal text, release_engineer role names, the next ready task name, or writer wording about a local Vite server."
+    },
+    {
+      "command": "rg -n \"monsoonDesktop|desktop:getRuntimeInfo|desktop:setFullscreen|contextBridge|ipcRenderer|ipcMain\" apps/desktop",
+      "exit_code": 0,
+      "result": "Confirmed current desktop bridge exposes runtime/fullscreen only; no desktop import/export bridge exists in this slice."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format errors."
+    }
+  ],
+  "decisions": [
+    "ACCEPT route_to=lead_orchestrator. Do not mark CLOSED in this QA handoff.",
+    "Gate recommendation is PASS for M5-PERFORMANCE-GATE-001. PASS_WITH_LIMITS is not required for the current task because the import/export boundary caveat matches the implemented M5 session surface and the desktop bridge intentionally lacks file import/export IPC.",
+    "Writer used the repository's real e2e script `pnpm test:e2e`; task JSON still lists stale alias `pnpm e2e`, but the actual required coverage ran and passed.",
+    "Review commit 81aacaea adds the writer handoff and process state only. Current branch HEAD bf8da77 only adds QA routing state beyond the specified review commit, also process-only.",
+    "No telemetry, analytics, server, multiplayer, arbitrary-code mod, release/commercial, product, platform, save/schema, RNG/time, or architecture scope drift was found."
+  ],
+  "risks": [
+    "Future desktop file import/export work must add a separate platform/file-bridge timing once such a surface exists; current M5 evidence only measures client-core session JSON export/import and UI save/load state.",
+    "Task required_tests contains stale `pnpm e2e` wording while the actual root script is `pnpm test:e2e`; this is non-blocking for acceptance because the real script passed.",
+    "Writer handoff command strings for ad hoc timing probes use abbreviated inline code markers. QA reconstructed and re-ran equivalent probes successfully, so this is not a blocker for this evidence-only gate."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate the ACCEPT review for M5-PERFORMANCE-GATE-001, keep the task out of CLOSED until lead integration, and preserve the client-core import/export caveat for future platform import/export work.",
+  "created_at": "2026-06-27T01:30:31+08:00"
+}

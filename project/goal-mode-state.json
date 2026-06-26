@@ -2,12 +2,62 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M5",
-  "current_tasks": [],
-  "active_threads": {},
+  "current_tasks": [
+    "M5-PERFORMANCE-GATE-001"
+  ],
+  "active_threads": {
+    "019f04e2-2734-7221-80cd-9b0875d64ea0": {
+      "task_id": "M5-PERFORMANCE-GATE-001",
+      "role": "test_engineer",
+      "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
+      "status": "accepted_pending_integration",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gauge the 9th",
+      "responsibility": "primary test_engineer writer for M5 performance and stability gate",
+      "branch_or_worktree": "test/m5-performance-gate",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
+      "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
+      "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
+      "updated_at": "2026-06-27T01:32:54+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-27T01:16:50+08:00",
+      "qa_review_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T01:32:54+08:00"
+    },
+    "019f04f1-fb6a-7460-9e18-1227973bb6e4": {
+      "task_id": "M5-PERFORMANCE-GATE-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
+      "status": "accepted_pending_integration",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Gate the 10th",
+      "responsibility": "independent read-only QA review of M5 performance and stability gate",
+      "branch_or_worktree": "test/m5-performance-gate",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-WRITER-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "81aacaea",
+      "review_submission_id": "019f04f2-3e8a-7a21-ab80-7909e1d415fc",
+      "updated_at": "2026-06-27T01:32:54+08:00",
+      "review_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T01:32:54+08:00"
+    }
+  },
   "last_integrated_task": "M5-MULTIYEAR-AI-RUN-001",
-  "last_main_commit": "809209369a9ca21f32f6e0887758c5f0e670dd41",
+  "last_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
   "next_ready_tasks": [
-    "M5-PERFORMANCE-GATE-001",
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
   ],
   "unresolved_risks": [
@@ -45,7 +95,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T00:56:00+08:00",
+  "last_updated_at": "2026-06-27T01:32:54+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -57,7 +107,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T00:56:00+08:00",
+  "updated_at": "2026-06-27T01:32:54+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -249,5 +299,31 @@
       "replaced_by": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
-  ]
+  ],
+  "m5_performance_gate": {
+    "status": "ACCEPTED_PENDING_INTEGRATION",
+    "branch_or_worktree": "test/m5-performance-gate",
+    "writer_thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
+    "writer_nickname": "Gauge the 9th",
+    "start_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
+    "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
+    "started_at": "2026-06-27T01:05:00+08:00",
+    "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
+    "human_gate_required": false,
+    "next_action": "Open PR, wait for CI, merge to main, then close M5-PERFORMANCE-GATE-001 and continue to M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
+    "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+    "review_ready_at": "2026-06-27T01:16:50+08:00",
+    "qa_thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
+    "qa_route": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-WRITER-TO-QA-REVIEW.json",
+    "review_commit": "81aacaea",
+    "routed_to_qa_at": "2026-06-27T01:19:30+08:00",
+    "qa_review_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T01:32:54+08:00"
+  },
+  "task_notes": {
+    "M5-PERFORMANCE-GATE-001": "ACCEPTED after test_engineer REVIEW and independent qa_reviewer ACCEPT. Evidence-only performance/stability gate, no product code drift. Pending PR CI and main integration before CLOSED."
+  }
 }
