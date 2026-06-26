@@ -13,6 +13,7 @@ export * from "./deterministic-rng.ts";
 export * from "./boot-content-runtime-v1.ts";
 export * from "./m2-route-transport-v0.ts";
 export * from "./command-query-v1.ts";
+export * from "./campaign-ai-v1.ts";
 
 interface HelloSimulationState {
   readonly day: number;
