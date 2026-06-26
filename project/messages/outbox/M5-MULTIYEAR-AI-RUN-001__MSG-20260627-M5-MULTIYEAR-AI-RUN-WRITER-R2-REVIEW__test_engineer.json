@@ -1,0 +1,87 @@
+{
+  "message_id": "MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R2-REVIEW",
+  "task_id": "M5-MULTIYEAR-AI-RUN-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Repaired the late predecessor output so @monsoon/sim-ai typecheck passes again. The live multi-year AI runner now normalizes polity IDs across the actor boundary, permits nullable selected-candidate evidence for no-action traces, and prints an explicit explanation when the accepted M5 slice produces zero live AI command acceptances. The run still stays deterministic, replays the accepted slice, uses the same GameCommand path as players, and records bounded summary evidence for no deadlock, zero invariant failures, bounded trace size, bounded rejection rates, and explainable no-action/wait/withdraw/target-change reasons. No telemetry, analytics, server, multiplayer, arbitrary-code AI scripting, personality simulation, or full diplomacy AI was added.",
+  "artifacts": [
+    "apps/sim-runner/package.json",
+    "apps/sim-runner/src/run-m5-multiyear-ai-run.mjs",
+    "packages/sim-ai/package.json",
+    "packages/sim-ai/tsconfig.json",
+    "packages/sim-ai/src/index.ts",
+    "packages/sim-ai/src/m5-multiyear-ai-run.ts",
+    "pnpm-lock.yaml",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/M5-MULTIYEAR-AI-RUN-001.json",
+    "project/tasks/thread-registry.json",
+    "tests/sim-ai-multiyear-ai-run.test.ts",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R2-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "test/m5-multiyear-ai-run / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Workspace still contained the predecessor branch output plus the repaired untracked package and task artifacts; no forbidden-path writes were introduced."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "23 test files passed; 172 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "1 test file passed; 1 test passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and the accepted M5 playable loop."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundary checks passed; root vitest passed with 35 files / 249 tests; web test passed with 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m5-multiyear-ai-run",
+      "exit_code": 0,
+      "result": "Final hash a83d87d8; schedule hash 1ddcf36b; trace hash 1811680d; no deadlock true; invariant failures 0; AI attempts 730; AI accepted commands 0; AI no-action decisions 730; max AI trace candidates 1; explicit no-action explanation printed for the replayed M5 slice."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-MULTIYEAR-AI-RUN-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M5-MULTIYEAR-AI-RUN-001.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Fix the polity actor boundary by converting polity IDs to plain numbers before passing them into the M4 campaign AI planner, and fail fast if the selected roster index is out of range.",
+    "Allow nullable selected-candidate evidence in the M5 trace summary because the no-action path has no candidate id to report.",
+    "Document the live no-action-only limitation explicitly instead of fabricating rescue commands or expanding the slice into additional campaign state.",
+    "Keep the runner and tests focused on deterministic validation of the accepted slice plus AI reason evidence; do not add telemetry, analytics, server, multiplayer, arbitrary-code AI scripting, personality simulation, or full diplomacy AI."
+  ],
+  "risks": [
+    "The live M5 continuation still records 0 accepted AI commands because the accepted slice replay exposes no actionable live candidates; QA should confirm that this scope limit is acceptable.",
+    "The branch still carries predecessor-authored package-lock and task/state churn, but the repair pass did not expand beyond the allowed paths.",
+    "The implementation intentionally relies on deterministic probe fixtures for the reason-evidence summary and does not introduce any telemetry or background reporting."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the repaired typecheck, deterministic headless run, and the documented no-action-only live evidence; if acceptable, route to lead_orchestrator.",
+  "created_at": "2026-06-27T00:17:00+08:00"
+}

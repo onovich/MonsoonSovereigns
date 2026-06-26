@@ -1,0 +1,17 @@
+{
+  "name": "@monsoon/sim-ai",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run --root ../.. tests/sim-ai-multiyear-ai-run.test.ts"
+  },
+  "dependencies": {
+    "@monsoon/protocol": "workspace:*",
+    "@monsoon/sim-core": "workspace:*"
+  }
+}
