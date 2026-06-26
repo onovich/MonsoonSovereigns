@@ -18,6 +18,13 @@
       "status": "review_ready",
       "role": "gameplay_designer",
       "nickname": "Monsoon"
+    },
+    "systems_architect": {
+      "thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
+      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+      "status": "active",
+      "role": "systems_architect",
+      "nickname": "Keystone the 2nd"
     }
   },
   "last_integrated_task": "M6-TASK-GRAPH-001",
@@ -63,7 +70,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T06:10:00+08:00",
+  "last_updated_at": "2026-06-27T06:20:30+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -75,7 +82,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T06:10:00+08:00",
+  "updated_at": "2026-06-27T06:20:30+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -433,7 +440,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Validate gameplay_designer REVIEW handoff, then route to systems_architect reviewer.",
+  "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-ALPHA-SYSTEM-CONTRACT-001.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -526,8 +533,15 @@
     "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-27T06:10:00+08:00",
     "reviewer_role": "systems_architect",
-    "next_action": "Route gameplay_designer REVIEW handoff to systems_architect reviewer.",
+    "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES.",
     "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
-    "route_sent_at": "2026-06-27T06:05:24+08:00"
+    "route_sent_at": "2026-06-27T06:05:24+08:00",
+    "systems_architect_thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
+    "systems_architect_nickname": "Keystone the 2nd",
+    "review_route_file": "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-WRITER-TO-SYSTEMS-REVIEW.json",
+    "review_commit": "5d4e349efbcf75f9c5a4adc483515e750c60db5d",
+    "routed_to_systems_at": "2026-06-27T06:19:55+08:00",
+    "systems_review_submission_id": "019f0604-e29d-7502-89b8-c4ec62522fa8",
+    "systems_route_sent_at": "2026-06-27T06:20:30+08:00"
   }
 }

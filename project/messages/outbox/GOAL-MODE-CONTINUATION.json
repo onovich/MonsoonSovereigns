@@ -23,6 +23,13 @@
       "status": "review_ready",
       "role": "gameplay_designer",
       "nickname": "Monsoon"
+    },
+    "systems_architect": {
+      "thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
+      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+      "status": "active",
+      "role": "systems_architect",
+      "nickname": "Keystone the 2nd"
     }
   },
   "unresolved_risks": [
@@ -46,7 +53,7 @@
     "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is in REVIEW with gameplay_designer writer handoff ready for systems_architect review.",
     "recorded_at": "2026-06-27T06:03:31+08:00"
   },
-  "next_machine_action": "Validate gameplay_designer REVIEW handoff, then route to systems_architect reviewer.",
+  "next_machine_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-ALPHA-SYSTEM-CONTRACT-001.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -54,7 +61,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T06:10:00+08:00",
+  "last_updated_at": "2026-06-27T06:20:30+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -94,14 +101,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T06:10:00+08:00",
+  "updated_at": "2026-06-27T06:20:30+08:00",
   "current_tasks": [
     "M6-ALPHA-SYSTEM-CONTRACT-001"
   ],
   "last_integrated_task": "M6-TASK-GRAPH-001",
   "last_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
   "next_ready_tasks": [],
-  "next_action": "Validate gameplay_designer REVIEW handoff, then route to systems_architect reviewer.",
+  "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-ALPHA-SYSTEM-CONTRACT-001.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -547,15 +554,22 @@
     "writer_nickname": "Monsoon",
     "start_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-LEAD-TO-GAMEPLAY-START.json",
-    "started_at": "2026-06-27T06:03:31+08:00",
+    "started_at": "2026-06-27T06:02:12+08:00",
     "base_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-27T06:10:00+08:00",
     "reviewer_role": "systems_architect",
-    "next_action": "Route gameplay_designer REVIEW handoff to systems_architect reviewer.",
+    "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES.",
     "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
-    "route_sent_at": "2026-06-27T06:05:24+08:00"
+    "route_sent_at": "2026-06-27T06:05:24+08:00",
+    "systems_architect_thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
+    "systems_architect_nickname": "Keystone the 2nd",
+    "review_route_file": "project/messages/routes/M6-ALPHA-SYSTEM-CONTRACT-001__ROUTE-20260627-M6-ALPHA-CONTRACT-WRITER-TO-SYSTEMS-REVIEW.json",
+    "review_commit": "5d4e349efbcf75f9c5a4adc483515e750c60db5d",
+    "routed_to_systems_at": "2026-06-27T06:19:55+08:00",
+    "systems_review_submission_id": "019f0604-e29d-7502-89b8-c4ec62522fa8",
+    "systems_route_sent_at": "2026-06-27T06:20:30+08:00"
   }
 }
