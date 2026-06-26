@@ -1,0 +1,182 @@
+{
+  "message_id": "MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW",
+  "task_id": "M5-CLIENT-PLAYABLE-UI-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts commit 383badb1dfe9ecb24a2e4ac3caffbb0825eaa7db for M5-CLIENT-PLAYABLE-UI-001. The real implementation diff from 03afd416a7d07c1cf1c6c21f84b9c059b2a1ffca to 383badb1 stays inside allowed paths and touches no forbidden sim-core, sim-ai, save-format, desktop, Electron, content-source, tools, roadmap, gate, status, release, manifest, checksum, or validation-report paths. The UI projects the accepted M5 command script and M3/M4 read-model evidence through client-core/UI/Web surfaces, stores only UI session progress plus read-model slices, exposes M5 goal, command preview/confirm/result status, client checkpoint save/load, AI/player reason codes, campaign risk, supply/season, automatic battle/siege/withdrawal evidence, and postwar consequences, and introduces no manual battle UI, telemetry, accounts, server/multiplayer, arbitrary-code mod, branding, release, or commercial scope.",
+  "artifacts": [
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-START__lead_orchestrator.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW__qa_reviewer.json",
+    "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-LEAD-TO-CLIENT-START-CONFIRMED.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json",
+    "project/tasks/thread-registry.json",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "branch_or_worktree": "feat/m5-client-playable-ui / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "383badb1dfe9ecb24a2e4ac3caffbb0825eaa7db",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch feat/m5-client-playable-ui; clean before QA handoff creation. Current HEAD is a6041100 routing-only, with reviewed implementation commit 383badb1 as parent."
+    },
+    {
+      "command": "git diff --name-status --no-renames 03afd416a7d07c1cf1c6c21f84b9c059b2a1ffca..383badb1dfe9ecb24a2e4ac3caffbb0825eaa7db",
+      "exit_code": 0,
+      "result": "Changed files are apps/web shell test/shell/style, packages/client-core, packages/ui, tests, project task/state/message/route files. No packages/sim-core, packages/sim-ai, packages/save-format, apps/desktop, packages/platform-electron, content-source, tools, docs gate/roadmap/status/release forbidden paths are in the implementation diff."
+    },
+    {
+      "command": "PowerShell scope scan against M5-CLIENT-PLAYABLE-UI-001 allowed_paths and forbidden_paths for 03afd416..383badb1",
+      "exit_code": 0,
+      "result": "outsideAllowed=[]; forbidden=[]."
+    },
+    {
+      "command": "git diff --check 03afd416a7d07c1cf1c6c21f84b9c059b2a1ffca..383badb1dfe9ecb24a2e4ac3caffbb0825eaa7db",
+      "exit_code": 0,
+      "result": "No whitespace errors in reviewed implementation diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-CLIENT-PLAYABLE-UI-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 14 tests passed, including M5 protocol script projection, no WorldState leak string regression, current command preview, client session save/load evidence, and malformed/future save rejection reason codes."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed, including M5 playable workspace SSR coverage for start/preview/confirm/save/load/manual-battle-out-of-scope/AI-risk/postwar surfaces."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed; Pixi read-model render/cache behavior remains green."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 test file passed; 4 tests passed; Web shell snapshot and SSR include M5 playable read model and no WorldState leak string."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed; protocol schema regression remains green after client consumption of M5 script surfaces."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core typecheck",
+      "exit_code": 0,
+      "result": "Affected client-core typecheck passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui typecheck",
+      "exit_code": 0,
+      "result": "Affected UI typecheck passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer typecheck",
+      "exit_code": 0,
+      "result": "Affected map-renderer typecheck passed."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "Affected Web app typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "Repository lint passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed for all matched files."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violation(s)."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Hello, command/query, save/load, M4 replay, and M5 playable loop Node/Worker-compatible hashes matched; M5 final hash bf042e42 and loaded hash bf042e42 matched."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web production build passed; Vite reported the existing large chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed using the repo's actual script. The existing WebClientShell story is reused; .storybook is outside task allowed_paths. Vite reported the existing large chunk warning."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "8 Playwright tests passed, including M5 start-to-finish, save/load, preview/confirm/result status, AI reason display, postwar display, failure/cancel flow, 4000-row stress continuity, and M5 no-horizontal-overflow checks at 1280x720, 1280x800, 1920x1080, and 2560x1080."
+    },
+    {
+      "command": "pnpm run build:storybook",
+      "exit_code": 1,
+      "result": "Expected script-name check: package.json has no build:storybook script. The actual repo script is storybook:build, which passed."
+    },
+    {
+      "command": "pnpm run e2e",
+      "exit_code": 1,
+      "result": "Expected script-name check: package.json has no e2e script. The actual repo script is test:e2e, which passed."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No business-code or generated-file changes after QA validation before writing this QA handoff."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: Scope is compliant. The reviewed implementation diff is limited to allowed apps/web, packages/client-core, packages/ui, tests, and project task/message/state paths; forbidden simulation, AI, save-format, desktop/Electron, content-source, tools, gate, roadmap, status, release, manifest, checksum, and validation report paths are absent.",
+    "ACCEPT: Client authority boundary is preserved. React state added in packages/ui is limited to M5 UI session progress, preview id, confirmed command ids, client checkpoint text, and status strings; client-core exposes read-model DTOs and GameCommandV1 command DTOs, not authoritative WorldState mutation.",
+    "ACCEPT: The UI presents the required M5 surfaces: goal and conditions, command preview/confirm/result status, client checkpoint save/load, AI reason codes, campaign risk, supply and season state, automatic field engagement/siege/withdrawal evidence, postwar consequences, replay evidence, and reason summaries.",
+    "ACCEPT: Manual battle and commercial/network scope remain absent. The only manual battle text is an explicit out-of-scope notice; no tactical/manual battle UI, telemetry, account system, server/multiplayer, arbitrary-code mod, branding, release, or commercial path was introduced.",
+    "ACCEPT: Storybook limitation is acceptable for this task. The active Storybook config lives under .storybook, which is outside allowed_paths, so the writer reused the existing WebClientShell story; the updated Web shell includes the M5 workspace and pnpm storybook:build passed.",
+    "ACCEPT: Playwright coverage is sufficient for this task's UI risk: M5 start-to-finish, save/load, preview/confirm/result status, AI reason display, postwar display, failure/cancel, large table/map continuity, and supported desktop no-horizontal-overflow checks all ran and passed.",
+    "ACCEPT: The task file's stale required command names were handled correctly. The repo has storybook:build and test:e2e, not build:storybook or e2e; actual scripts passed and missing-script checks were recorded as expected."
+  ],
+  "risks": [
+    {
+      "risk": "Storybook coverage is through the existing WebClientShell story rather than a newly added dedicated M5 story file because .storybook is outside this task's allowed_paths.",
+      "impact": "Acceptable for M5-CLIENT-PLAYABLE-UI-001 because WebClientShell now renders the M5 workspace and the Storybook build passed; future UI-state matrix work may still want dedicated stories when allowed."
+    },
+    {
+      "risk": "The client flow submits GameCommandV1 DTOs and displays protocol/read-model evidence, but does not add a new authoritative browser worker execution adapter for every M5 command.",
+      "impact": "Acceptable for this client UI task because the accepted M5 sim loop and Node/Worker-compatible determinism evidence remain green, and this task's boundary is the playable protocol/read-model UI surface."
+    },
+    {
+      "risk": "Web and Storybook builds still emit the pre-existing Vite large chunk warning.",
+      "impact": "Non-blocking; no new dependency or release artifact scope was added."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may accept M5-CLIENT-PLAYABLE-UI-001 for integration review. Do not mark ACCEPTED/CLOSED until lead acceptance, PR/CI, and main integration gates complete.",
+  "created_at": "2026-06-26T23:06:20.5926935+08:00"
+}

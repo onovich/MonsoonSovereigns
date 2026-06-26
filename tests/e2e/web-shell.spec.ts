@@ -196,6 +196,64 @@ test("M4 stress fixture renders campaign planning and war report under 4000-row 
   );
 });
 
+test("M5 playable flow previews confirms saves loads and reaches result", async ({ page }) => {
+  await page.goto("/");
+
+  const workspace = page.getByLabel("M5 playable slice workspace");
+  await expect(workspace).toHaveAttribute("data-scenario-id", "m5.composite.river-gate.v0");
+  await expect(workspace).toHaveAttribute("data-phase", "not-started");
+  await expect(page.getByLabel("M5 AI risk supply season")).toContainText(
+    "m4.ai.withdraw.supply-collapse"
+  );
+  await expect(page.getByLabel("M5 AI risk supply season")).toContainText(
+    "route.season.monsoon-risk"
+  );
+  await expect(page.getByLabel("M5 postwar consequences")).toContainText("postwar.candidate.ready");
+  await expect(page.getByLabel("M5 postwar consequences")).toContainText(
+    "Manual node battle UI is unavailable in M5."
+  );
+
+  await page.getByRole("button", { name: "Start M5 slice" }).click();
+  await expect(workspace).toHaveAttribute("data-phase", "running");
+  await page.getByRole("button", { name: "Preview command" }).click();
+  await expect(page.getByLabel("M5 command preview")).toHaveAttribute(
+    "data-command-kind",
+    "sim.create-campaign-objective"
+  );
+  await expect(page.getByLabel("M5 command preview")).toContainText(
+    "campaign.reason.deterministic-replay"
+  );
+
+  await page.getByRole("button", { name: "Confirm command" }).click();
+  await expect(page.getByLabel("M5 command status")).toContainText(
+    "sim.create-campaign-objective confirmed for polity:1"
+  );
+  await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
+
+  await page.getByRole("button", { name: "Save checkpoint" }).click();
+  await expect(page.getByLabel("M5 save status")).toContainText("m5.save.client-session-written");
+  await expect(workspace).toHaveAttribute("data-save-present", "true");
+
+  await page.getByRole("button", { name: "Cancel slice" }).click();
+  await expect(workspace).toHaveAttribute("data-phase", "cancelled");
+  await page.getByRole("button", { name: "Load checkpoint" }).click();
+  await expect(workspace).toHaveAttribute("data-phase", "running");
+  await expect(page.getByLabel("M5 save status")).toContainText("m5.load.client-session-restored");
+
+  for (let index = 1; index < 15; index += 1) {
+    await page.getByRole("button", { name: "Preview command" }).click();
+    await page.getByRole("button", { name: "Confirm command" }).click();
+  }
+  await expect(workspace).toHaveAttribute("data-phase", "success");
+  await expect(workspace).toHaveAttribute("data-confirmed-count", "15");
+
+  await page.getByRole("button", { name: "Preview failure" }).click();
+  await expect(workspace).toHaveAttribute("data-phase", "failure");
+  await expect(page.getByLabel("M5 command preview")).toContainText(
+    "m5.slice.duplicate-postwar-governance"
+  );
+});
+
 test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
@@ -215,6 +273,38 @@ test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page })
 
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
   expect(overflow.gridRight).toBeLessThanOrEqual(overflow.clientWidth);
+});
+
+test("M5 workspace has no horizontal overflow across required desktop viewports", async ({
+  page
+}) => {
+  const viewports = [
+    { width: 1280, height: 720 },
+    { width: 1280, height: 800 },
+    { width: 1920, height: 1080 },
+    { width: 2560, height: 1080 }
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await expect(page.getByLabel("M5 playable slice workspace")).toBeVisible();
+    const overflow = await page.evaluate(() => {
+      const workspace = document.querySelector(".m5-playable");
+      if (workspace === null) {
+        throw new Error("Expected M5 playable workspace.");
+      }
+      const workspaceBox = workspace.getBoundingClientRect();
+      return {
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        workspaceRight: workspaceBox.right
+      };
+    });
+
+    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+    expect(overflow.workspaceRight).toBeLessThanOrEqual(overflow.clientWidth);
+  }
 });
 
 async function expectMountedPixiMapRenderer(page: Page): Promise<Locator> {

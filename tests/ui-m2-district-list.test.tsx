@@ -98,6 +98,26 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("restore-vassal-ruler");
     expect(markup).not.toContain("WorldState");
   });
+
+  test("renders M5 playable flow, save load, AI risk, and postwar consequence surfaces", () => {
+    const snapshot = createM2PrototypeClientReadModelSnapshot();
+    const markup = renderToStaticMarkup(createShell(snapshot));
+
+    expect(markup).toContain("M5 playable slice");
+    expect(markup).toContain('aria-label="M5 playable slice workspace"');
+    expect(markup).toContain('data-scenario-id="m5.composite.river-gate.v0"');
+    expect(markup).toContain('data-phase="not-started"');
+    expect(markup).toContain("Start M5 slice");
+    expect(markup).toContain("Preview command");
+    expect(markup).toContain("Confirm command");
+    expect(markup).toContain("Save checkpoint");
+    expect(markup).toContain("Load checkpoint");
+    expect(markup).toContain("Manual node battle UI is unavailable in M5.");
+    expect(markup).toContain("m4.ai.withdraw.supply-collapse");
+    expect(markup).toContain("route.season.monsoon-risk");
+    expect(markup).toContain("postwar.candidate.ready");
+    expect(markup).not.toContain("WorldState");
+  });
 });
 
 function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]) {
@@ -116,6 +136,8 @@ function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]
       m3CommandStatus={null}
       onM4CommandSubmit={() => undefined}
       m4CommandStatus={null}
+      onM5CommandSubmit={() => undefined}
+      m5CommandStatus={null}
       mapSurface={<div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />}
     />
   );
