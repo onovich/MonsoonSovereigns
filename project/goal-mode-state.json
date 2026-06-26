@@ -2,55 +2,13 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M5",
-  "current_tasks": [
-    "M5-TASK-GRAPH-001"
+  "current_tasks": [],
+  "active_threads": {},
+  "last_integrated_task": "M5-TASK-GRAPH-001",
+  "last_main_commit": "8b771272a9cfa790282043fcd092c1ce59fd0117",
+  "next_ready_tasks": [
+    "M5-SLICE-DEFINITION-001"
   ],
-  "active_threads": {
-    "019f03b9-f591-7ee2-9c75-e04665cb063f": {
-      "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
-      "status": "accepted",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Auditor the 8th",
-      "responsibility": "independent read-only M5 task graph acceptance reviewer",
-      "branch_or_worktree": "chore/m5-task-graph",
-      "start_state": "AWAITING_REVIEW_READY",
-      "spawn_result": "spawn_agent",
-      "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:47:00Z",
-      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
-      "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba",
-      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0",
-      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
-    },
-    "019f03c6-5a70-7023-8a02-6e9f6edfe1e2": {
-      "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
-      "status": "accepted",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Lintel the 8th",
-      "responsibility": "replacement systems_architect reviewer/writer for M5 task graph after partial no-handoff output",
-      "branch_or_worktree": "chore/m5-task-graph",
-      "start_state": "START_CONFIRMED_REPLACEMENT",
-      "spawn_result": "spawn_agent",
-      "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
-      "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
-      "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:47:00Z",
-      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
-      "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a",
-      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
-    }
-  },
-  "last_integrated_task": "M4-EXIT-VALIDATION-001",
-  "last_main_commit": "3e649ac5f739dfea75511ad0cb1193fc7df713aa",
-  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -86,7 +44,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-26T12:47:00Z",
+  "last_updated_at": "2026-06-26T13:00:00Z",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -98,5 +56,14 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-26T12:41:00Z"
+  "updated_at": "2026-06-26T13:00:00Z",
+  "m5_task_graph": {
+    "status": "CLOSED",
+    "integrated_pr": 108,
+    "integrated_main_commit": "8b771272a9cfa790282043fcd092c1ce59fd0117",
+    "lead_close_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+    "next_ready_task": "M5-SLICE-DEFINITION-001",
+    "closed_at": "2026-06-26T13:00:00Z",
+    "human_gate_required": false
+  }
 }

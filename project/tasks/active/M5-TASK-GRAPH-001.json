@@ -2,7 +2,7 @@
   "id": "M5-TASK-GRAPH-001",
   "summary": "Create minimal M5 playable vertical slice task graph",
   "milestone": "M5",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -57,11 +57,11 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
     "git diff --check"
   ],
-  "branch_or_worktree": "chore/m5-task-graph",
+  "branch_or_worktree": "chore/m5-task-graph -> main -> chore/close-m5-task-graph",
   "threads": {
     "systems_architect": {
       "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -74,16 +74,22 @@
       "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
       "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
       "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T12:47:00Z",
+      "updated_at": "2026-06-26T13:00:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
       "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a",
       "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
       "review_ready_at": "2026-06-26T12:40:00Z",
-      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T13:00:00Z",
+      "integrated_main_commit": "8b771272a9cfa790282043fcd092c1ce59fd0117",
+      "integrated_pr": 108,
+      "lead_close_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "not_found_at_closure_time_no_fabricated_close_result"
     },
     "qa_reviewer": {
       "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -93,13 +99,19 @@
       "branch_or_worktree": "chore/m5-task-graph",
       "start_state": "AWAITING_REVIEW_READY",
       "spawn_result": "spawn_agent",
-      "updated_at": "2026-06-26T12:47:00Z",
+      "updated_at": "2026-06-26T13:00:00Z",
       "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
       "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba",
       "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
       "review_ready_at": "2026-06-26T12:40:00Z",
       "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0",
-      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T13:00:00Z",
+      "integrated_main_commit": "8b771272a9cfa790282043fcd092c1ce59fd0117",
+      "integrated_pr": 108,
+      "lead_close_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "closed_after_completed_accept"
     },
     "previous_systems_architect": {
       "thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
@@ -129,11 +141,16 @@
     "Manual node battle remains a Human Gate and must be represented as a decision task or blocked gate rather than silently added to implementation.",
     "M4 Gate process limit remains accepted but must not be summarized as systems_architect acceptance.",
     "First systems_architect produced partial M5 task graph files but no REVIEW handoff; replacement systems_architect must validate/fix the graph and produce the systems REVIEW handoff before QA review.",
-    "Replacement systems_architect inspected the recovered M5 graph at f2598fc72562 and routed the planning-only graph to independent QA review without advancing downstream M5 tasks."
+    "Replacement systems_architect inspected the recovered M5 graph at f2598fc72562 and routed the planning-only graph to independent QA review without advancing downstream M5 tasks.",
+    "CLOSED after PR #108 entered origin/main at 8b771272a9cfa790282043fcd092c1ce59fd0117; next READY M5 task is M5-SLICE-DEFINITION-001."
   ],
   "created_at": "2026-06-26T11:40:00.000Z",
-  "updated_at": "2026-06-26T12:47:00Z",
+  "updated_at": "2026-06-26T13:00:00Z",
   "accepted_at": "2026-06-26T12:47:00Z",
   "qa_accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json",
-  "lead_accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
+  "lead_accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+  "closed_at": "2026-06-26T13:00:00Z",
+  "integrated_main_commit": "8b771272a9cfa790282043fcd092c1ce59fd0117",
+  "integrated_pr": 108,
+  "lead_close_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json"
 }
