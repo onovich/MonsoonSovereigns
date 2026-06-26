@@ -2,10 +2,32 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M5",
-  "current_tasks": [],
-  "active_threads": {},
+  "current_tasks": [
+    "M5-PLAYER-RESEARCH-001"
+  ],
+  "active_threads": {
+    "019f0532-ad92-7bc3-950e-8bb269289d7e": {
+      "task_id": "M5-PLAYER-RESEARCH-001",
+      "role": "gameplay_designer",
+      "thread_id": "019f0532-ad92-7bc3-950e-8bb269289d7e",
+      "status": "running",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Ledger the 10th",
+      "responsibility": "primary gameplay_designer writer for minimal M5 player research protocol and evidence",
+      "branch_or_worktree": "research/m5-player-research",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-LEAD-TO-GAMEPLAY-START-CONFIRMED.json",
+      "base_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
+      "updated_at": "2026-06-27T02:30:48+08:00"
+    }
+  },
   "last_integrated_task": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
-  "last_main_commit": "b173c980e02e3d2365fdb4d022c7c4392918cca9",
+  "last_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -42,7 +64,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T02:25:42+08:00",
+  "last_updated_at": "2026-06-27T02:30:48+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -54,7 +76,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T02:25:42+08:00",
+  "updated_at": "2026-06-27T02:30:48+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -284,7 +306,8 @@
   },
   "task_notes": {
     "M5-PERFORMANCE-GATE-001": "CLOSED after PR #118 entered main at bd47faee8e6780a96f92402f47361012be40f3e1. Evidence-only M5 performance/stability gate accepted by independent qa_reviewer; child threads closed. Next dependency-ready M5 task is M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
-    "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "CLOSED after PR #120 entered main at b173c980e02e3d2365fdb4d022c7c4392918cca9. Local Web/unsigned Windows distributable smoke evidence accepted by security and QA; child threads closed."
+    "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "CLOSED after PR #120 entered main at b173c980e02e3d2365fdb4d022c7c4392918cca9. Local Web/unsigned Windows distributable smoke evidence accepted by security and QA; child threads closed.",
+    "M5-PLAYER-RESEARCH-001": "IN_PROGRESS with gameplay_designer thread 019f0532-ad92-7bc3-950e-8bb269289d7e; awaiting REVIEW handoff for qa_reviewer."
   },
   "m5_web_windows_distributable": {
     "status": "CLOSED",
@@ -328,5 +351,17 @@
       "019f0522-68ba-7313-9361-89e262f4dec0"
     ],
     "next_ready_tasks": []
+  },
+  "m5_player_research": {
+    "status": "IN_PROGRESS",
+    "branch_or_worktree": "research/m5-player-research",
+    "writer_thread_id": "019f0532-ad92-7bc3-950e-8bb269289d7e",
+    "writer_nickname": "Ledger the 10th",
+    "start_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-LEAD-TO-GAMEPLAY-START-CONFIRMED.json",
+    "started_at": "2026-06-27T02:30:48+08:00",
+    "base_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
+    "human_gate_required": false,
+    "next_action": "Wait for gameplay_designer REVIEW handoff, then route to qa_reviewer."
   }
 }

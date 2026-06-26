@@ -6,13 +6,33 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
   "current_milestone": "M5",
-  "current_task": null,
+  "current_task": "M5-PLAYER-RESEARCH-001",
   "current_task_status": "REVIEW",
   "last_closed_task": "M5-MULTIYEAR-AI-RUN-001",
   "ready_tasks": [
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
   ],
-  "active_threads": {},
+  "active_threads": {
+    "019f0532-ad92-7bc3-950e-8bb269289d7e": {
+      "task_id": "M5-PLAYER-RESEARCH-001",
+      "role": "gameplay_designer",
+      "thread_id": "019f0532-ad92-7bc3-950e-8bb269289d7e",
+      "status": "running",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Ledger the 10th",
+      "responsibility": "primary gameplay_designer writer for minimal M5 player research protocol and evidence",
+      "branch_or_worktree": "research/m5-player-research",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-LEAD-TO-GAMEPLAY-START-CONFIRMED.json",
+      "base_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
+      "updated_at": "2026-06-27T02:30:48+08:00"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -77,12 +97,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T02:25:42+08:00",
-  "current_tasks": [],
+  "updated_at": "2026-06-27T02:30:48+08:00",
+  "current_tasks": [
+    "M5-PLAYER-RESEARCH-001"
+  ],
   "last_integrated_task": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
-  "last_main_commit": "b173c980e02e3d2365fdb4d022c7c4392918cca9",
+  "last_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
   "next_ready_tasks": [],
-  "next_action": "Run taskctl ready after closure merge and start the next dependency-ready task unless a Human Gate is required.",
+  "next_action": "Wait for gameplay_designer REVIEW handoff, validate it, then route to qa_reviewer.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -366,5 +388,17 @@
       "019f0522-68ba-7313-9361-89e262f4dec0"
     ],
     "next_ready_tasks": []
+  },
+  "m5_player_research": {
+    "status": "IN_PROGRESS",
+    "branch_or_worktree": "research/m5-player-research",
+    "writer_thread_id": "019f0532-ad92-7bc3-950e-8bb269289d7e",
+    "writer_nickname": "Ledger the 10th",
+    "start_handoff": "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M5-PLAYER-RESEARCH-001__ROUTE-20260627-M5-PLAYER-RESEARCH-LEAD-TO-GAMEPLAY-START-CONFIRMED.json",
+    "started_at": "2026-06-27T02:30:48+08:00",
+    "base_main_commit": "d03a922afa1b71c8ee5730b0cbf05a984aed55ae",
+    "human_gate_required": false,
+    "next_action": "Wait for gameplay_designer REVIEW handoff, then route to qa_reviewer."
   }
 }
