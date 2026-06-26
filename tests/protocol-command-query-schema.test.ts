@@ -695,6 +695,85 @@ describe("SIM-003 protocol command/query schemas", () => {
     expect(
       parseGameCommandV1({
         schemaVersion: 1,
+        kind: "sim.resolve-m4-field-engagement",
+        commandId: "cmd.m4.engagement.resolve",
+        actor: { kind: "ai", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          engagementId: 1,
+          campaignPlanId: 1,
+          marchId: 701,
+          defenderPolityId: 2,
+          defenderEstimatedTroops: 60,
+          defenderFortification: 400,
+          reasonCodes: ["engagement.reason.enemy-intercepted"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.apply-m4-siege-choice",
+        commandId: "cmd.m4.siege.choice",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          siegeId: 1,
+          campaignPlanId: 1,
+          marchId: 701,
+          choice: "invest-blockade",
+          defenderPolityId: 2,
+          fortification: 400,
+          defenderEstimatedTroops: 60,
+          defenderSupply: 300,
+          reasonCodes: ["siege.choice.invest-blockade"]
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m4-siege-state",
+        payload: {
+          queryId: "m4.siege.1",
+          campaignPlanId: 1
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.apply-m4-siege-choice",
+        commandId: "cmd.m4.siege.bad-choice",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          siegeId: 1,
+          campaignPlanId: 1,
+          marchId: 701,
+          choice: "negotiate-peace",
+          defenderPolityId: 2,
+          fortification: 400,
+          defenderEstimatedTroops: 60,
+          defenderSupply: 300,
+          reasonCodes: ["siege.choice.invalid"]
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.choice",
+        message:
+          "payload.choice must be invest-blockade, assault, continue, accept-surrender, lift-siege, or withdraw."
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
         kind: "sim.consume-campaign-grain-supply",
         commandId: "cmd.m4.grain.bad-loss",
         actor: { kind: "ai", id: "polity:1" },

@@ -1,0 +1,114 @@
+{
+  "message_id": "MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-SYSTEMS-R2-ACCEPT",
+  "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 architecture review accepts M4-AUTO-ENGAGEMENT-SIEGE-001. The R2 fix adds parseSavedDomainEvent support for sim.m4-field-engagement-resolved and sim.m4-siege-choice-applied, adds save/load regression coverage for the new M4 combat event tail without modifying packages/save-format, and adds player/AI parity coverage for sim.apply-m4-siege-choice. Scope remains limited to deterministic automatic field engagement and the M4 siege choice loop through shared GameCommand paths.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/package.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-auto-engagement-siege.test.ts",
+    "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-auto-engagement-siege",
+  "commit": "e4852a0b1fc6966dd47108b134f5e91e9d5aa799",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## feat/m4-auto-engagement-siege; clean before this reviewer ACCEPT handoff was added."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff is limited to allowed protocol, sim-core, tests, project task/state, and project messages/routes paths. No forbidden client UI, desktop, save-format, content, docs/decisions, GitHub workflow, or product status paths were changed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "20 test files passed, 145 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and Worker-compatible hashes matched for hello, command/query, and save/load canaries."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 31 root test files/212 tests passed; web package 1 file/3 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Workspace typecheck passed for all packages with typecheck scripts."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-AUTO-ENGAGEMENT-SIEGE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R2 REVIEW handoff."
+    },
+    {
+      "command": "node -e JSON parse check for task and writer R2 handoff",
+      "exit_code": 0,
+      "result": "JSON parsed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol typecheck",
+      "exit_code": 1,
+      "result": "Not applicable: @monsoon/protocol has no package-level typecheck script. Root pnpm typecheck was run and passed."
+    }
+  ],
+  "findings": [],
+  "decisions": [
+    "ACCEPT: R2 fixes the prior P1 by adding sim-core parseSavedDomainEvent cases for sim.m4-field-engagement-resolved and sim.m4-siege-choice-applied, matching the event kinds already written by domainEventToRecord.",
+    "ACCEPT: R2 adds a focused save/load regression that round-trips a runtime eventTail containing both new M4 combat events; packages/save-format remains untouched.",
+    "ACCEPT: R2 adds sim.apply-m4-siege-choice player/AI parity coverage using invest-blockade plus assault and matching authoritative state hashes.",
+    "State mutation remains inside sim-core command evaluation paths, and player/AI actors share the same GameCommand semantics.",
+    "The implementation uses deterministic integer formulas, explicit reason/status codes, stable sorted canonicalization/read-model ordering, and no Math.random/Date.now authority.",
+    "Casualty and supply accounting is explicit in state and events, with world-state validation and tests covering nonnegative force/supply counts.",
+    "Protocol commands and siege read models remain explicit serializable payloads; package boundary checks passed.",
+    "No hard-excluded scope was observed: no manual node battle, tactical battle UI, 3D battle, complex naval battle, full diplomacy, peace treaties, multiplayer/server behavior, client UI, save-format changes, or product/architecture drift."
+  ],
+  "risks": [
+    "R3 remains inherently active because the task changes authoritative sim-core world state, command/event/query protocol surfaces, and deterministic hash coverage; current evidence is sufficient for this milestone slice.",
+    "M4 world snapshot schema migration remains outside this task. This acceptance covers the required event-tail save/load compatibility only, with no packages/save-format changes."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead orchestration for acceptance/closure of M4-AUTO-ENGAGEMENT-SIEGE-001.",
+  "created_at": "2026-06-26T05:34:00Z"
+}

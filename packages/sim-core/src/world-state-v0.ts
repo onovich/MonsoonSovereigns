@@ -16,6 +16,8 @@ export type M3AppointmentAuditEventId = Brand<number, "M3AppointmentAuditEventId
 export type M3SuccessionId = Brand<number, "M3SuccessionId">;
 export type CampaignPlanId = Brand<number, "CampaignPlanId">;
 export type CampaignMarchId = Brand<number, "CampaignMarchId">;
+export type FieldEngagementId = Brand<number, "FieldEngagementId">;
+export type SiegeId = Brand<number, "SiegeId">;
 export type FactionKnowledgeSnapshotId = Brand<number, "FactionKnowledgeSnapshotId">;
 export type MobilizedForceCommitmentId = Brand<number, "MobilizedForceCommitmentId">;
 export type GrainSupplyReservationId = Brand<number, "GrainSupplyReservationId">;
@@ -674,6 +676,79 @@ export interface M4CampaignMarchStateV0 {
   readonly failedCommitmentIds: readonly MobilizedForceCommitmentId[];
 }
 
+export type M4FieldEngagementOutcomeV0 = "attacker-victory" | "defender-holds";
+
+export interface M4CampaignHookStateV0 {
+  readonly polityId: PolityId;
+  readonly amount: number;
+  readonly reasonCode: string;
+}
+
+export interface M4FieldEngagementStateV0 {
+  readonly engagementId: FieldEngagementId;
+  readonly campaignPlanId: CampaignPlanId;
+  readonly marchId: CampaignMarchId;
+  readonly attackerPolityId: PolityId;
+  readonly defenderPolityId: PolityId;
+  readonly target: M4CampaignTargetV0;
+  readonly attackerTroopsBefore: number;
+  readonly attackerTroopsAfter: number;
+  readonly defenderEstimatedTroopsBefore: number;
+  readonly defenderEstimatedTroopsAfter: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly defenderFortification: number;
+  readonly outcome: M4FieldEngagementOutcomeV0;
+  readonly reasonCodes: readonly string[];
+  readonly creditHooks: readonly M4CampaignHookStateV0[];
+  readonly reputationHooks: readonly M4CampaignHookStateV0[];
+  readonly resolvedDay: GameDay;
+}
+
+export type M4SiegeChoiceV0 =
+  | "invest-blockade"
+  | "assault"
+  | "continue"
+  | "accept-surrender"
+  | "lift-siege"
+  | "withdraw";
+export type M4SiegeStatusV0 =
+  | "blockading"
+  | "surrender-ready"
+  | "surrendered"
+  | "lifted"
+  | "withdrawn";
+
+export interface M4SiegeStateV0 {
+  readonly siegeId: SiegeId;
+  readonly campaignPlanId: CampaignPlanId;
+  readonly marchId: CampaignMarchId;
+  readonly targetDistrictId: DistrictId;
+  readonly attackerPolityId: PolityId;
+  readonly defenderPolityId: PolityId;
+  readonly status: M4SiegeStatusV0;
+  readonly statusReasonCode: string;
+  readonly fortification: number;
+  readonly defenderEstimatedTroops: number;
+  readonly defenderSupply: number;
+  readonly siegeProgress: number;
+  readonly daysInvested: number;
+  readonly blockadeDays: number;
+  readonly assaultCount: number;
+  readonly attackerTroops: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly surrenderEligible: boolean;
+  readonly surrenderReasonCodes: readonly string[];
+  readonly reasonCodes: readonly string[];
+  readonly creditHooks: readonly M4CampaignHookStateV0[];
+  readonly reputationHooks: readonly M4CampaignHookStateV0[];
+  readonly startedDay: GameDay;
+  readonly updatedDay: GameDay;
+}
+
 export type M4FactionKnowledgeSourceKindV0 = "scout" | "merchant" | "envoy" | "report";
 
 export interface M4FactionKnowledgeSourceV0 {
@@ -733,6 +808,8 @@ export interface M4CampaignStateV0 {
   readonly mobilizedForceCommitments: readonly M4MobilizedForceCommitmentStateV0[];
   readonly grainSupplyReservations: readonly M4GrainSupplyReservationStateV0[];
   readonly marches: readonly M4CampaignMarchStateV0[];
+  readonly fieldEngagements: readonly M4FieldEngagementStateV0[];
+  readonly sieges: readonly M4SiegeStateV0[];
 }
 
 export interface M3AdministrativeBurdenProfileInputV0 {
@@ -953,6 +1030,14 @@ export function parseCampaignPlanId(value: unknown): CampaignPlanId {
 
 export function parseCampaignMarchId(value: unknown): CampaignMarchId {
   return parsePositiveInteger(value, "CampaignMarchId") as CampaignMarchId;
+}
+
+export function parseFieldEngagementId(value: unknown): FieldEngagementId {
+  return parsePositiveInteger(value, "FieldEngagementId") as FieldEngagementId;
+}
+
+export function parseSiegeId(value: unknown): SiegeId {
+  return parsePositiveInteger(value, "SiegeId") as SiegeId;
 }
 
 export function parseFactionKnowledgeSnapshotId(value: unknown): FactionKnowledgeSnapshotId {
@@ -1873,6 +1958,8 @@ function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): v
   const mobilizedForceCommitments = input["mobilizedForceCommitments"];
   const grainSupplyReservations = input["grainSupplyReservations"];
   const marches = input["marches"];
+  const fieldEngagements = input["fieldEngagements"];
+  const sieges = input["sieges"];
   if (!Array.isArray(campaignPlans)) {
     errors.push({
       code: "invalid-schema",
@@ -1931,6 +2018,17 @@ function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): v
   }
   if (marches !== undefined) {
     validateM4Array(marches, "state.m4.marches", errors, validateM4CampaignMarchEntry);
+  }
+  if (fieldEngagements !== undefined) {
+    validateM4Array(
+      fieldEngagements,
+      "state.m4.fieldEngagements",
+      errors,
+      validateM4FieldEngagementEntry
+    );
+  }
+  if (sieges !== undefined) {
+    validateM4Array(sieges, "state.m4.sieges", errors, validateM4SiegeEntry);
   }
 }
 
@@ -2296,6 +2394,188 @@ function validateM4MarchSupplyEntry(
   validateNonnegativeIntegerField(input, "delayedDays", `${path}.delayedDays`, errors);
 }
 
+function validateM4FieldEngagementEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4FieldEngagementState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "engagementId",
+    `${path}.engagementId`,
+    "FieldEngagementId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "campaignPlanId",
+    `${path}.campaignPlanId`,
+    "CampaignPlanId",
+    errors
+  );
+  validatePositiveIntegerField(input, "marchId", `${path}.marchId`, "CampaignMarchId", errors);
+  validatePositiveIntegerField(
+    input,
+    "attackerPolityId",
+    `${path}.attackerPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "defenderPolityId",
+    `${path}.defenderPolityId`,
+    "PolityId",
+    errors
+  );
+  validateM4CampaignTargetEntry(input["target"], `${path}.target`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "attackerTroopsBefore",
+    `${path}.attackerTroopsBefore`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "attackerTroopsAfter",
+    `${path}.attackerTroopsAfter`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "defenderEstimatedTroopsBefore",
+    `${path}.defenderEstimatedTroopsBefore`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "defenderEstimatedTroopsAfter",
+    `${path}.defenderEstimatedTroopsAfter`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "attackerCasualties",
+    `${path}.attackerCasualties`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "defenderCasualties",
+    `${path}.defenderCasualties`,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "supplyLoss", `${path}.supplyLoss`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "defenderFortification",
+    `${path}.defenderFortification`,
+    errors
+  );
+  validateM4FieldEngagementOutcomeValue(input["outcome"], `${path}.outcome`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateM4Array(input["creditHooks"], `${path}.creditHooks`, errors, validateM4CampaignHookEntry);
+  validateM4Array(
+    input["reputationHooks"],
+    `${path}.reputationHooks`,
+    errors,
+    validateM4CampaignHookEntry
+  );
+  validateNonnegativeIntegerField(input, "resolvedDay", `${path}.resolvedDay`, errors);
+}
+
+function validateM4SiegeEntry(input: unknown, path: string, errors: WorldInvariantError[]): void {
+  if (!validateRecordEntry(input, path, "M4SiegeState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "siegeId", `${path}.siegeId`, "SiegeId", errors);
+  validatePositiveIntegerField(
+    input,
+    "campaignPlanId",
+    `${path}.campaignPlanId`,
+    "CampaignPlanId",
+    errors
+  );
+  validatePositiveIntegerField(input, "marchId", `${path}.marchId`, "CampaignMarchId", errors);
+  validatePositiveIntegerField(
+    input,
+    "targetDistrictId",
+    `${path}.targetDistrictId`,
+    "DistrictId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "attackerPolityId",
+    `${path}.attackerPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "defenderPolityId",
+    `${path}.defenderPolityId`,
+    "PolityId",
+    errors
+  );
+  validateM4SiegeStatusValue(input["status"], `${path}.status`, errors);
+  validateNonEmptyStringField(input, "statusReasonCode", `${path}.statusReasonCode`, errors);
+  validateNonnegativeIntegerField(input, "fortification", `${path}.fortification`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "defenderEstimatedTroops",
+    `${path}.defenderEstimatedTroops`,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "defenderSupply", `${path}.defenderSupply`, errors);
+  validateNonnegativeIntegerField(input, "siegeProgress", `${path}.siegeProgress`, errors);
+  validateNonnegativeIntegerField(input, "daysInvested", `${path}.daysInvested`, errors);
+  validateNonnegativeIntegerField(input, "blockadeDays", `${path}.blockadeDays`, errors);
+  validateNonnegativeIntegerField(input, "assaultCount", `${path}.assaultCount`, errors);
+  validateNonnegativeIntegerField(input, "attackerTroops", `${path}.attackerTroops`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "attackerCasualties",
+    `${path}.attackerCasualties`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "defenderCasualties",
+    `${path}.defenderCasualties`,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "supplyLoss", `${path}.supplyLoss`, errors);
+  validateBooleanField(input, "surrenderEligible", `${path}.surrenderEligible`, errors);
+  validateStringArrayField(input["surrenderReasonCodes"], `${path}.surrenderReasonCodes`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateM4Array(input["creditHooks"], `${path}.creditHooks`, errors, validateM4CampaignHookEntry);
+  validateM4Array(
+    input["reputationHooks"],
+    `${path}.reputationHooks`,
+    errors,
+    validateM4CampaignHookEntry
+  );
+  validateNonnegativeIntegerField(input, "startedDay", `${path}.startedDay`, errors);
+  validateNonnegativeIntegerField(input, "updatedDay", `${path}.updatedDay`, errors);
+}
+
+function validateM4CampaignHookEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M4CampaignHookState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validateNonnegativeIntegerField(input, "amount", `${path}.amount`, errors);
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
 function validateM4ArrivalWindowEntry(
   input: unknown,
   path: string,
@@ -2437,6 +2717,44 @@ function validateM4CampaignMarchSupplyStatusValue(
     code: "invalid-schema",
     path,
     message: "M4 campaign march supply status is invalid."
+  });
+}
+
+function validateM4FieldEngagementOutcomeValue(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (input === "attacker-victory" || input === "defender-holds") {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: "M4 field engagement outcome is invalid."
+  });
+}
+
+function validateM4SiegeStatusValue(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    input === "blockading" ||
+    input === "surrender-ready" ||
+    input === "surrendered" ||
+    input === "lifted" ||
+    input === "withdrawn"
+  ) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: "M4 siege status is invalid."
   });
 }
 
@@ -4285,7 +4603,9 @@ export function createM4CampaignStateV0(
     factionKnowledgeSnapshots: input?.factionKnowledgeSnapshots ?? [],
     mobilizedForceCommitments: input?.mobilizedForceCommitments ?? [],
     grainSupplyReservations: input?.grainSupplyReservations ?? [],
-    marches: input?.marches ?? []
+    marches: input?.marches ?? [],
+    fieldEngagements: input?.fieldEngagements ?? [],
+    sieges: input?.sieges ?? []
   });
 }
 
@@ -4475,6 +4795,91 @@ export function canonicalizeM4CampaignStateV0(m4: M4CampaignStateV0): M4Campaign
       failedCommitmentIds: sortNumericIds(march.failedCommitmentIds).map(
         parseMobilizedForceCommitmentId
       )
+    })),
+    fieldEngagements: sortM4FieldEngagements(m4.fieldEngagements ?? []).map((engagement) => ({
+      engagementId: parseFieldEngagementId(engagement.engagementId),
+      campaignPlanId: parseCampaignPlanId(engagement.campaignPlanId),
+      marchId: parseCampaignMarchId(engagement.marchId),
+      attackerPolityId: parsePolityId(engagement.attackerPolityId),
+      defenderPolityId: parsePolityId(engagement.defenderPolityId),
+      target: copyM4CampaignTarget(engagement.target),
+      attackerTroopsBefore: parseNonnegativeInteger(
+        engagement.attackerTroopsBefore,
+        "M4 engagement attackerTroopsBefore"
+      ),
+      attackerTroopsAfter: parseNonnegativeInteger(
+        engagement.attackerTroopsAfter,
+        "M4 engagement attackerTroopsAfter"
+      ),
+      defenderEstimatedTroopsBefore: parseNonnegativeInteger(
+        engagement.defenderEstimatedTroopsBefore,
+        "M4 engagement defenderEstimatedTroopsBefore"
+      ),
+      defenderEstimatedTroopsAfter: parseNonnegativeInteger(
+        engagement.defenderEstimatedTroopsAfter,
+        "M4 engagement defenderEstimatedTroopsAfter"
+      ),
+      attackerCasualties: parseNonnegativeInteger(
+        engagement.attackerCasualties,
+        "M4 engagement attackerCasualties"
+      ),
+      defenderCasualties: parseNonnegativeInteger(
+        engagement.defenderCasualties,
+        "M4 engagement defenderCasualties"
+      ),
+      supplyLoss: parseNonnegativeInteger(engagement.supplyLoss, "M4 engagement supplyLoss"),
+      defenderFortification: parseNonnegativeInteger(
+        engagement.defenderFortification,
+        "M4 engagement defenderFortification"
+      ),
+      outcome: parseM4FieldEngagementOutcome(engagement.outcome),
+      reasonCodes: sortText(engagement.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M4 engagement reasonCode")
+      ),
+      creditHooks: sortM4CampaignHooks(engagement.creditHooks).map(copyM4CampaignHook),
+      reputationHooks: sortM4CampaignHooks(engagement.reputationHooks).map(copyM4CampaignHook),
+      resolvedDay: parseGameDay(engagement.resolvedDay)
+    })),
+    sieges: sortM4Sieges(m4.sieges ?? []).map((siege) => ({
+      siegeId: parseSiegeId(siege.siegeId),
+      campaignPlanId: parseCampaignPlanId(siege.campaignPlanId),
+      marchId: parseCampaignMarchId(siege.marchId),
+      targetDistrictId: parseDistrictId(siege.targetDistrictId),
+      attackerPolityId: parsePolityId(siege.attackerPolityId),
+      defenderPolityId: parsePolityId(siege.defenderPolityId),
+      status: parseM4SiegeStatus(siege.status),
+      statusReasonCode: parseDisplayNameKey(siege.statusReasonCode, "M4 siege statusReasonCode"),
+      fortification: parseNonnegativeInteger(siege.fortification, "M4 siege fortification"),
+      defenderEstimatedTroops: parseNonnegativeInteger(
+        siege.defenderEstimatedTroops,
+        "M4 siege defenderEstimatedTroops"
+      ),
+      defenderSupply: parseNonnegativeInteger(siege.defenderSupply, "M4 siege defenderSupply"),
+      siegeProgress: parseNonnegativeInteger(siege.siegeProgress, "M4 siegeProgress"),
+      daysInvested: parseNonnegativeInteger(siege.daysInvested, "M4 siege daysInvested"),
+      blockadeDays: parseNonnegativeInteger(siege.blockadeDays, "M4 siege blockadeDays"),
+      assaultCount: parseNonnegativeInteger(siege.assaultCount, "M4 siege assaultCount"),
+      attackerTroops: parseNonnegativeInteger(siege.attackerTroops, "M4 siege attackerTroops"),
+      attackerCasualties: parseNonnegativeInteger(
+        siege.attackerCasualties,
+        "M4 siege attackerCasualties"
+      ),
+      defenderCasualties: parseNonnegativeInteger(
+        siege.defenderCasualties,
+        "M4 siege defenderCasualties"
+      ),
+      supplyLoss: parseNonnegativeInteger(siege.supplyLoss, "M4 siege supplyLoss"),
+      surrenderEligible: parseBoolean(siege.surrenderEligible, "M4 siege surrenderEligible"),
+      surrenderReasonCodes: sortText(siege.surrenderReasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M4 siege surrenderReasonCode")
+      ),
+      reasonCodes: sortText(siege.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M4 siege reasonCode")
+      ),
+      creditHooks: sortM4CampaignHooks(siege.creditHooks).map(copyM4CampaignHook),
+      reputationHooks: sortM4CampaignHooks(siege.reputationHooks).map(copyM4CampaignHook),
+      startedDay: parseGameDay(siege.startedDay),
+      updatedDay: parseGameDay(siege.updatedDay)
     }))
   };
 }
@@ -5071,6 +5476,14 @@ export function copyM4GrainSupplySource(source: M4GrainSupplySourceV0): M4GrainS
   }
 }
 
+export function copyM4CampaignHook(hook: M4CampaignHookStateV0): M4CampaignHookStateV0 {
+  return {
+    polityId: parsePolityId(hook.polityId),
+    amount: parseNonnegativeInteger(hook.amount, "M4 campaign hook amount"),
+    reasonCode: parseDisplayNameKey(hook.reasonCode, "M4 campaign hook reasonCode")
+  };
+}
+
 export function parseM4CampaignObjectiveKind(value: unknown): M4CampaignObjectiveKindV0 {
   if (
     value === "prepare" ||
@@ -5150,6 +5563,43 @@ export function parseM4CampaignMarchSupplyStatus(value: unknown): M4CampaignMarc
   }
 
   throw new Error("M4 campaign march supply status is invalid.");
+}
+
+export function parseM4FieldEngagementOutcome(value: unknown): M4FieldEngagementOutcomeV0 {
+  if (value === "attacker-victory" || value === "defender-holds") {
+    return value;
+  }
+
+  throw new Error("M4 field engagement outcome is invalid.");
+}
+
+export function parseM4SiegeChoice(value: unknown): M4SiegeChoiceV0 {
+  if (
+    value === "invest-blockade" ||
+    value === "assault" ||
+    value === "continue" ||
+    value === "accept-surrender" ||
+    value === "lift-siege" ||
+    value === "withdraw"
+  ) {
+    return value;
+  }
+
+  throw new Error("M4 siege choice is invalid.");
+}
+
+export function parseM4SiegeStatus(value: unknown): M4SiegeStatusV0 {
+  if (
+    value === "blockading" ||
+    value === "surrender-ready" ||
+    value === "surrendered" ||
+    value === "lifted" ||
+    value === "withdrawn"
+  ) {
+    return value;
+  }
+
+  throw new Error("M4 siege status is invalid.");
 }
 
 export function parseM4FactionKnowledgeSourceKind(value: unknown): M4FactionKnowledgeSourceKindV0 {
@@ -5444,6 +5894,37 @@ function sortM4CampaignMarches(
       left.campaignPlanId - right.campaignPlanId ||
       left.startedDay - right.startedDay ||
       left.marchId - right.marchId
+  );
+}
+
+function sortM4FieldEngagements(
+  values: readonly M4FieldEngagementStateV0[]
+): readonly M4FieldEngagementStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.campaignPlanId - right.campaignPlanId ||
+      left.resolvedDay - right.resolvedDay ||
+      left.engagementId - right.engagementId
+  );
+}
+
+function sortM4Sieges(values: readonly M4SiegeStateV0[]): readonly M4SiegeStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.campaignPlanId - right.campaignPlanId ||
+      left.startedDay - right.startedDay ||
+      left.siegeId - right.siegeId
+  );
+}
+
+function sortM4CampaignHooks(
+  values: readonly M4CampaignHookStateV0[]
+): readonly M4CampaignHookStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.polityId - right.polityId ||
+      left.amount - right.amount ||
+      compareText(left.reasonCode, right.reasonCode)
   );
 }
 
@@ -5893,7 +6374,9 @@ function formatM4CanonicalLines(m4: M4CampaignStateV0 | undefined): readonly str
     `state.m4.grainSupplyReservations=${formatM4GrainSupplyReservations(
       m4.grainSupplyReservations
     )}`,
-    `state.m4.marches=${formatM4CampaignMarches(m4.marches ?? [])}`
+    `state.m4.marches=${formatM4CampaignMarches(m4.marches ?? [])}`,
+    `state.m4.fieldEngagements=${formatM4FieldEngagements(m4.fieldEngagements ?? [])}`,
+    `state.m4.sieges=${formatM4Sieges(m4.sieges ?? [])}`
   ];
 }
 
@@ -6037,6 +6520,73 @@ function formatM4CampaignMarchSupply(value: M4CampaignMarchSupplyStateV0): strin
     value.shortageGrain,
     value.delayedDays
   ].join(".");
+}
+
+function formatM4FieldEngagements(values: readonly M4FieldEngagementStateV0[]): string {
+  return sortM4FieldEngagements(values)
+    .map((value) =>
+      [
+        value.engagementId,
+        value.campaignPlanId,
+        value.marchId,
+        value.attackerPolityId,
+        value.defenderPolityId,
+        formatM4CampaignTarget(value.target),
+        value.attackerTroopsBefore,
+        value.attackerTroopsAfter,
+        value.defenderEstimatedTroopsBefore,
+        value.defenderEstimatedTroopsAfter,
+        value.attackerCasualties,
+        value.defenderCasualties,
+        value.supplyLoss,
+        value.defenderFortification,
+        value.outcome,
+        sortText(value.reasonCodes).join("/"),
+        sortM4CampaignHooks(value.creditHooks).map(formatM4CampaignHook).join("/"),
+        sortM4CampaignHooks(value.reputationHooks).map(formatM4CampaignHook).join("/"),
+        value.resolvedDay
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM4Sieges(values: readonly M4SiegeStateV0[]): string {
+  return sortM4Sieges(values)
+    .map((value) =>
+      [
+        value.siegeId,
+        value.campaignPlanId,
+        value.marchId,
+        value.targetDistrictId,
+        value.attackerPolityId,
+        value.defenderPolityId,
+        value.status,
+        value.statusReasonCode,
+        value.fortification,
+        value.defenderEstimatedTroops,
+        value.defenderSupply,
+        value.siegeProgress,
+        value.daysInvested,
+        value.blockadeDays,
+        value.assaultCount,
+        value.attackerTroops,
+        value.attackerCasualties,
+        value.defenderCasualties,
+        value.supplyLoss,
+        value.surrenderEligible ? "yes" : "no",
+        sortText(value.surrenderReasonCodes).join("/"),
+        sortText(value.reasonCodes).join("/"),
+        sortM4CampaignHooks(value.creditHooks).map(formatM4CampaignHook).join("/"),
+        sortM4CampaignHooks(value.reputationHooks).map(formatM4CampaignHook).join("/"),
+        value.startedDay,
+        value.updatedDay
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM4CampaignHook(value: M4CampaignHookStateV0): string {
+  return [value.polityId, value.amount, value.reasonCode].join(".");
 }
 
 function sortM4CampaignMarchJoinedCommitmentTroops(
@@ -8002,6 +8552,123 @@ function validateM4RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
         });
       }
     });
+  });
+
+  const fieldEngagementIds = new Set<number>();
+  (m4.fieldEngagements ?? []).forEach((engagement, index) => {
+    if (fieldEngagementIds.has(engagement.engagementId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m4.fieldEngagements",
+        message: `Duplicate M4 field engagement row for FieldEngagementId ${engagement.engagementId}.`
+      });
+    }
+    fieldEngagementIds.add(engagement.engagementId);
+    if (!planIds.has(engagement.campaignPlanId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.fieldEngagements[${index}].campaignPlanId`,
+        message: "M4 field engagement references missing CampaignPlanId."
+      });
+    }
+    if (!marchIds.has(engagement.marchId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.fieldEngagements[${index}].marchId`,
+        message: "M4 field engagement references missing CampaignMarchId."
+      });
+    }
+    if (
+      !polityIds.has(engagement.attackerPolityId) ||
+      !polityIds.has(engagement.defenderPolityId)
+    ) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.fieldEngagements[${index}]`,
+        message: "M4 field engagement references missing polity."
+      });
+    }
+    validateM4TargetReference(
+      engagement.target,
+      polityIds,
+      districtIds,
+      `state.m4.fieldEngagements[${index}].target`,
+      errors
+    );
+    if (
+      engagement.attackerTroopsBefore - engagement.attackerCasualties !==
+      engagement.attackerTroopsAfter
+    ) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.fieldEngagements[${index}].attackerCasualties`,
+        message: "M4 field engagement attacker casualties must equal before minus after troops."
+      });
+    }
+    if (
+      engagement.defenderEstimatedTroopsBefore - engagement.defenderCasualties !==
+      engagement.defenderEstimatedTroopsAfter
+    ) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.fieldEngagements[${index}].defenderCasualties`,
+        message: "M4 field engagement defender casualties must equal before minus after estimate."
+      });
+    }
+  });
+
+  const siegeIds = new Set<number>();
+  (m4.sieges ?? []).forEach((siege, index) => {
+    if (siegeIds.has(siege.siegeId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m4.sieges",
+        message: `Duplicate M4 siege row for SiegeId ${siege.siegeId}.`
+      });
+    }
+    siegeIds.add(siege.siegeId);
+    if (!planIds.has(siege.campaignPlanId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.sieges[${index}].campaignPlanId`,
+        message: "M4 siege references missing CampaignPlanId."
+      });
+    }
+    if (!marchIds.has(siege.marchId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.sieges[${index}].marchId`,
+        message: "M4 siege references missing CampaignMarchId."
+      });
+    }
+    if (!districtIds.has(siege.targetDistrictId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.sieges[${index}].targetDistrictId`,
+        message: "M4 siege references missing target DistrictId."
+      });
+    }
+    if (!polityIds.has(siege.attackerPolityId) || !polityIds.has(siege.defenderPolityId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m4.sieges[${index}]`,
+        message: "M4 siege references missing polity."
+      });
+    }
+    if (siege.updatedDay < siege.startedDay) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.sieges[${index}].updatedDay`,
+        message: "M4 siege updatedDay must be >= startedDay."
+      });
+    }
+    if (!siege.surrenderEligible && siege.status === "surrender-ready") {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m4.sieges[${index}].surrenderEligible`,
+        message: "M4 surrender-ready siege must be surrenderEligible."
+      });
+    }
   });
 
   const snapshotIds = new Set<number>();

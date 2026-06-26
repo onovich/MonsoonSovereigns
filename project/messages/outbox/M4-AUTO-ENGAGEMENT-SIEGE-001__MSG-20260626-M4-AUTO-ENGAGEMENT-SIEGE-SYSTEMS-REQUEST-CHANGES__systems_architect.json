@@ -1,0 +1,110 @@
+{
+  "message_id": "MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-SYSTEMS-REQUEST-CHANGES",
+  "task_id": "M4-AUTO-ENGAGEMENT-SIEGE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Architecture review requests changes for M4-AUTO-ENGAGEMENT-SIEGE-001. The implementation is scoped to allowed sim-core/protocol/tests/process paths, keeps automatic engagement and siege choices in shared GameCommand paths, uses deterministic integer formulas and stable ordering, and the required test commands pass. However, the new M4 combat domain events are written by requestSaveV1/domainEventToRecord but are not accepted by parseSavedDomainEvent, so a runtime with an M4 combat event tail can produce a save that loadSaveV1 rejects as an unsupported event kind. This violates the task requirement for serializable events/status updates and needs a sim-core parser/test fix before acceptance.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/package.json",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m4-auto-engagement-siege.test.ts",
+    "project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-auto-engagement-siege",
+  "commit": "b9bf27af",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-AUTO-ENGAGEMENT-SIEGE-001__MSG-20260626-M4-AUTO-ENGAGEMENT-SIEGE-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## feat/m4-auto-engagement-siege; clean before reviewer handoff file was added."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff is limited to allowed paths: packages/protocol, packages/sim-core, tests, project task/model/goal/thread state, and project messages/routes. No forbidden client UI, desktop, save-format, content, docs/decisions, GitHub workflow, or product status files were changed."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "20 test files passed, 143 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and Worker-compatible hashes matched for hello, command/query, and save/load canaries."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 31 root test files/210 tests passed; web package 1 file/3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-AUTO-ENGAGEMENT-SIEGE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-AUTO-ENGAGEMENT-SIEGE-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task and writer handoff",
+      "exit_code": 0,
+      "result": "Task status REVIEW route_to systems_architect; writer handoff status REVIEW route_to systems_architect."
+    },
+    {
+      "command": "node -e static scan for new M4 event save parser cases",
+      "exit_code": 0,
+      "result": "domainEventToRecord_has_field=true; domainEventToRecord_has_siege=true; parseSavedDomainEvent_has_field=false; parseSavedDomainEvent_has_siege=false."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "P1",
+      "path": "packages/sim-core/src/command-query-v1.ts",
+      "line": 9016,
+      "summary": "New M4 combat events are serialized into save event tails but cannot be loaded back.",
+      "evidence": "domainEventToRecord handles sim.m4-field-engagement-resolved and sim.m4-siege-choice-applied at lines 9016-9019. parseSavedDomainEvent has no matching cases before its default unsupported-kind rejection at lines 9492-9498. A static scan confirmed parseSavedDomainEvent_has_field=false and parseSavedDomainEvent_has_siege=false.",
+      "impact": "After resolving a field engagement or applying a siege choice, requestSaveV1 can write the new event kind into eventTail. loadSaveV1 then rejects that same event kind as unsupported. This violates the acceptance requirement for serializable casualty/loss/status events and leaves the new public event surface without save/load compatibility evidence.",
+      "requested_change": "In packages/sim-core/src/command-query-v1.ts, add parseSavedDomainEvent support for sim.m4-field-engagement-resolved and sim.m4-siege-choice-applied, including reasonCodes, casualty/loss fields, status fields, and credit/reputation hook arrays. Add a focused save/load regression covering a runtime with at least one new M4 combat event in eventTail. Keep packages/save-format untouched unless lead opens a separate save-format task."
+    },
+    {
+      "severity": "P2",
+      "path": "tests/sim-core-m4-auto-engagement-siege.test.ts",
+      "line": 212,
+      "summary": "Shared player/AI command-path coverage does not exercise the siege-choice command.",
+      "evidence": "The parity test at lines 212-223 covers sim.resolve-m4-field-engagement with player and AI actors. The siege helper always constructs actor kind player, so sim.apply-m4-siege-choice lacks equivalent player/AI parity coverage.",
+      "impact": "The implementation uses the shared GameCommand dispatch path, but the task's required property/invariant coverage explicitly calls out shared player/AI command paths. Adding one siege-choice parity assertion will lock this boundary for the second new command.",
+      "requested_change": "Add a focused player/AI parity test for sim.apply-m4-siege-choice, such as invest-blockade or invest plus assault, and assert equivalent authoritative state hash or equivalent siege read model."
+    }
+  ],
+  "decisions": [
+    "No forbidden product scope was observed: no manual node battle, tactical battle UI, 3D battle, complex naval battle, full diplomacy, peace treaty, multiplayer/server behavior, client UI, save-format package change, or product/architecture drift.",
+    "No new production dependency was introduced.",
+    "The field engagement and siege systems use sim-core command evaluation paths and protocol command schemas shared by player and AI actors.",
+    "The implementation uses integer formulas, explicit reason codes, stable sorted canonicalization, and no Math.random/Date.now/performance.now authority.",
+    "The review result is REQUEST_CHANGES rather than BLOCKED because the required fix can stay inside allowed sim-core/tests paths."
+  ],
+  "risks": [
+    "R3 risk remains active because this task changes authoritative WorldState, command/event/query protocol surfaces, and deterministic hash coverage.",
+    "M4 save-format persistence remains explicitly out of scope for this task. The requested event-tail parser fix is in sim-core and should not be expanded into a save-format package migration without lead approval."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the P1 event-tail parser/save-load regression and add the P2 siege player/AI parity coverage, rerun the required tests, and return a revised REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-26T05:22:00Z"
+}

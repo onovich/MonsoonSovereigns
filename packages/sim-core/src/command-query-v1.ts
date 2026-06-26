@@ -38,6 +38,7 @@ import {
   parseDistrictId,
   parseGameDay,
   parseCampaignMarchId,
+  parseFieldEngagementId,
   parseM3AppointmentAuditEventId,
   parseM3FulfillmentId,
   parseM3OfficeId,
@@ -51,6 +52,7 @@ import {
   parseCampaignPlanId,
   parseGrainSupplyReservationId,
   parseMobilizedForceCommitmentId,
+  parseSiegeId,
   parseWorldRevision,
   validateWorldStateV0,
   canonicalizeM2EconomyPopulationState,
@@ -99,12 +101,17 @@ import {
   type M4CampaignPlanStateV0,
   type M4CampaignStateV0,
   type M4CampaignTargetV0,
+  type M4FieldEngagementOutcomeV0,
+  type M4FieldEngagementStateV0,
   type M4FactionKnowledgeSnapshotStateV0,
   type M4GrainSupplyReservationStateV0,
   type M4GrainSupplyReservationStatusV0,
   type M4KnownObjectiveEstimateV0,
   type M4MobilizedForceCommitmentStateV0,
   type M4MusterCommitmentStatusV0,
+  type M4SiegeChoiceV0,
+  type M4SiegeStateV0,
+  type M4SiegeStatusV0,
   type M2EconomyPopulationStateV0,
   type GameDay,
   type M2LaborCommitmentPurposeV0,
@@ -129,6 +136,7 @@ export type DomainErrorCodeV1 =
   | "character-unavailable"
   | "duplicate-command"
   | "duplicate-fulfillment"
+  | "engagement-state-invalid"
   | "grain-supply-invalid"
   | "hash-mismatch"
   | "insufficient-labor"
@@ -151,6 +159,7 @@ export type DomainErrorCodeV1 =
   | "duplicate-obligation-settlement"
   | "stale-day"
   | "stale-revision"
+  | "siege-state-invalid"
   | "unknown-command-kind"
   | "unknown-query-kind"
   | "unsupported-command-version"
@@ -335,6 +344,51 @@ export type DomainEventV1 =
       readonly reservationId: number;
       readonly campaignPlanId: number;
       readonly releasedAmount: number;
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m4-field-engagement-resolved";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly engagementId: number;
+      readonly campaignPlanId: number;
+      readonly marchId: number;
+      readonly attackerPolityId: PolityId;
+      readonly defenderPolityId: PolityId;
+      readonly outcome: M4FieldEngagementOutcomeV0;
+      readonly attackerCasualties: number;
+      readonly defenderCasualties: number;
+      readonly supplyLoss: number;
+      readonly campaignStatusBefore: M4CampaignPlanStateV0["status"];
+      readonly campaignStatusAfter: M4CampaignPlanStateV0["status"];
+      readonly reasonCodes: readonly string[];
+      readonly creditHooks: M4FieldEngagementStateV0["creditHooks"];
+      readonly reputationHooks: M4FieldEngagementStateV0["reputationHooks"];
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m4-siege-choice-applied";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly siegeId: number;
+      readonly campaignPlanId: number;
+      readonly marchId: number;
+      readonly choice: M4SiegeChoiceV0;
+      readonly statusBefore: M4SiegeStatusV0 | null;
+      readonly statusAfter: M4SiegeStatusV0;
+      readonly attackerCasualties: number;
+      readonly defenderCasualties: number;
+      readonly supplyLoss: number;
+      readonly campaignStatusBefore: M4CampaignPlanStateV0["status"];
+      readonly campaignStatusAfter: M4CampaignPlanStateV0["status"];
+      readonly surrenderEligible: boolean;
+      readonly reasonCodes: readonly string[];
+      readonly creditHooks: M4SiegeStateV0["creditHooks"];
+      readonly reputationHooks: M4SiegeStateV0["reputationHooks"];
       readonly revisionBefore: number;
       readonly revisionAfter: number;
     };
@@ -620,6 +674,14 @@ export type QueryResultV1 =
             readonly campaignPlanId: number;
             readonly marches: readonly M4CampaignMarchReadModelV1[];
             readonly reasonCodes: readonly string[];
+          }
+        | {
+            readonly kind: "sim.list-m4-siege-state";
+            readonly day: number;
+            readonly revision: number;
+            readonly campaignPlanId: number;
+            readonly sieges: readonly M4SiegeReadModelV1[];
+            readonly reasonCodes: readonly string[];
           };
     }
   | {
@@ -893,6 +955,41 @@ export interface M4CampaignMarchReadModelV1 {
   readonly joinedCommitmentTroops: readonly M4CampaignMarchJoinedCommitmentTroopsReadModelV1[];
   readonly failedCommitmentIds: readonly number[];
   readonly reasonCodes: readonly string[];
+}
+
+export interface M4CampaignHookReadModelV1 {
+  readonly polityId: number;
+  readonly amount: number;
+  readonly reasonCode: string;
+}
+
+export interface M4SiegeReadModelV1 {
+  readonly siegeId: number;
+  readonly campaignPlanId: number;
+  readonly marchId: number;
+  readonly targetDistrictId: DistrictId;
+  readonly attackerPolityId: PolityId;
+  readonly defenderPolityId: PolityId;
+  readonly status: M4SiegeStatusV0;
+  readonly statusReasonCode: string;
+  readonly fortification: number;
+  readonly defenderEstimatedTroops: number;
+  readonly defenderSupply: number;
+  readonly siegeProgress: number;
+  readonly daysInvested: number;
+  readonly blockadeDays: number;
+  readonly assaultCount: number;
+  readonly attackerTroops: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly surrenderEligible: boolean;
+  readonly surrenderReasonCodes: readonly string[];
+  readonly reasonCodes: readonly string[];
+  readonly creditHooks: readonly M4CampaignHookReadModelV1[];
+  readonly reputationHooks: readonly M4CampaignHookReadModelV1[];
+  readonly startedDay: number;
+  readonly updatedDay: number;
 }
 
 interface CommandEvaluationV1 {
@@ -1308,6 +1405,10 @@ function validateAndEvaluateCommand(
       return evaluateReleaseCampaignGrainSupply(runtime.world, command);
     case "sim.start-campaign-march":
       return evaluateStartCampaignMarch(runtime.world, command);
+    case "sim.resolve-m4-field-engagement":
+      return evaluateResolveM4FieldEngagement(runtime.world, command);
+    case "sim.apply-m4-siege-choice":
+      return evaluateApplyM4SiegeChoice(runtime.world, command);
     case "sim.verify-state-hash":
       return evaluateVerifyStateHash(runtime.world, command);
   }
@@ -4758,6 +4859,900 @@ function sortM4MarchJoinedCommitmentTroops(
     }));
 }
 
+function evaluateResolveM4FieldEngagement(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.resolve-m4-field-engagement" }>
+): EvaluationResult {
+  const context = validateM4CombatCommandContext(world, {
+    command,
+    campaignPlanId: command.payload.campaignPlanId,
+    marchId: command.payload.marchId,
+    errorCode: "engagement-state-invalid"
+  });
+  if (!context.ok) {
+    return { ok: false, error: context.error };
+  }
+  const { m4, campaignPlan, march, ownerPolityId } = context.value;
+  const engagementId = parseFieldEngagementId(command.payload.engagementId);
+  if (m4.fieldEngagements.some((engagement) => engagement.engagementId === engagementId)) {
+    return rejectEngagementState("payload.engagementId", "FieldEngagementId already exists.");
+  }
+  if (
+    campaignPlan.target.kind !== "district" ||
+    march.currentDistrictId !== march.targetDistrictId
+  ) {
+    return rejectEngagementState(
+      "payload.marchId",
+      "Field engagement requires an arrived district-target march."
+    );
+  }
+  const defenderPolityId = parsePolityId(command.payload.defenderPolityId);
+  if (!world.definitions.polities.some((polity) => polity.id === defenderPolityId)) {
+    return badIdError("payload.defenderPolityId", "Field engagement defender polity is missing.");
+  }
+  if (defenderPolityId === ownerPolityId) {
+    return rejectEngagementState("payload.defenderPolityId", "Field engagement needs opposition.");
+  }
+
+  const outcome = resolveM4FieldEngagementOutcome({
+    engagementId,
+    march,
+    defenderPolityId,
+    defenderEstimatedTroops: command.payload.defenderEstimatedTroops,
+    defenderFortification: command.payload.defenderFortification,
+    reasonCodes: command.payload.reasonCodes
+  });
+  const updatedMarch = applyM4CombatLossesToMarch(march, {
+    activeTroops: outcome.attackerTroopsAfter,
+    supplyLoss: outcome.supplyLoss,
+    reasonCodes: outcome.reasonCodes
+  });
+  const campaignStatusBefore = campaignPlan.status;
+  const campaignStatusAfter: M4CampaignPlanStateV0["status"] =
+    outcome.outcome === "attacker-victory" ? "active" : "cancelled";
+  const engagement: M4FieldEngagementStateV0 = {
+    engagementId,
+    campaignPlanId: campaignPlan.id,
+    marchId: march.marchId,
+    attackerPolityId: ownerPolityId,
+    defenderPolityId,
+    target: copyM4CampaignTarget(campaignPlan.target),
+    attackerTroopsBefore: march.activeTroops,
+    attackerTroopsAfter: outcome.attackerTroopsAfter,
+    defenderEstimatedTroopsBefore: command.payload.defenderEstimatedTroops,
+    defenderEstimatedTroopsAfter: outcome.defenderEstimatedTroopsAfter,
+    attackerCasualties: outcome.attackerCasualties,
+    defenderCasualties: outcome.defenderCasualties,
+    supplyLoss: outcome.supplyLoss,
+    defenderFortification: command.payload.defenderFortification,
+    outcome: outcome.outcome,
+    reasonCodes: outcome.reasonCodes,
+    creditHooks: m4CombatCreditHooks(ownerPolityId, outcome.outcome, outcome.defenderCasualties),
+    reputationHooks: m4CombatReputationHooks(
+      ownerPolityId,
+      outcome.outcome,
+      outcome.attackerCasualties
+    ),
+    resolvedDay: world.meta.currentDay
+  };
+  const nextM4 = {
+    ...m4,
+    campaignPlans: m4.campaignPlans.map((plan) =>
+      plan.id === campaignPlan.id
+        ? {
+            ...plan,
+            status: campaignStatusAfter,
+            statusReasonCode:
+              outcome.outcome === "attacker-victory"
+                ? "campaign.objective.field-engagement-won"
+                : "campaign.objective.field-engagement-lost",
+            reasonCodes: uniqueSortedText(
+              [...plan.reasonCodes, ...outcome.reasonCodes],
+              compareText
+            ),
+            updatedDay: world.meta.currentDay
+          }
+        : plan
+    ),
+    marches: m4.marches.map((entry) => (entry.marchId === march.marchId ? updatedMarch : entry)),
+    fieldEngagements: [...m4.fieldEngagements, engagement]
+  };
+
+  return acceptM4CampaignState(world, command, nextM4, (nextWorld) => [
+    {
+      schemaVersion: 1,
+      kind: "sim.m4-field-engagement-resolved",
+      commandId: command.commandId,
+      actor: command.actor,
+      engagementId,
+      campaignPlanId: campaignPlan.id,
+      marchId: march.marchId,
+      attackerPolityId: ownerPolityId,
+      defenderPolityId,
+      outcome: outcome.outcome,
+      attackerCasualties: outcome.attackerCasualties,
+      defenderCasualties: outcome.defenderCasualties,
+      supplyLoss: outcome.supplyLoss,
+      campaignStatusBefore,
+      campaignStatusAfter,
+      reasonCodes: outcome.reasonCodes,
+      creditHooks: engagement.creditHooks,
+      reputationHooks: engagement.reputationHooks,
+      revisionBefore: world.meta.revision,
+      revisionAfter: nextWorld.meta.revision
+    }
+  ]);
+}
+
+function evaluateApplyM4SiegeChoice(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.apply-m4-siege-choice" }>
+): EvaluationResult {
+  const context = validateM4CombatCommandContext(world, {
+    command,
+    campaignPlanId: command.payload.campaignPlanId,
+    marchId: command.payload.marchId,
+    errorCode: "siege-state-invalid"
+  });
+  if (!context.ok) {
+    return { ok: false, error: context.error };
+  }
+  const { m4, campaignPlan, march, ownerPolityId } = context.value;
+  if (
+    campaignPlan.target.kind !== "district" ||
+    march.currentDistrictId !== march.targetDistrictId
+  ) {
+    return rejectSiegeState("payload.marchId", "Siege choice requires an arrived district march.");
+  }
+  const siegeId = parseSiegeId(command.payload.siegeId);
+  const existing = m4.sieges.find((siege) => siege.siegeId === siegeId);
+  if (command.payload.choice === "invest-blockade" && existing !== undefined) {
+    return rejectSiegeState("payload.siegeId", "SiegeId already exists.");
+  }
+  if (command.payload.choice !== "invest-blockade" && existing === undefined) {
+    return rejectSiegeState("payload.siegeId", "Siege choice references missing siege.");
+  }
+  const defenderPolityId = parsePolityId(command.payload.defenderPolityId);
+  if (!world.definitions.polities.some((polity) => polity.id === defenderPolityId)) {
+    return badIdError("payload.defenderPolityId", "Siege defender polity is missing.");
+  }
+  if (defenderPolityId === ownerPolityId) {
+    return rejectSiegeState("payload.defenderPolityId", "Siege requires an opposing defender.");
+  }
+  if (existing !== undefined && isTerminalM4SiegeStatus(existing.status)) {
+    return rejectSiegeState("payload.siegeId", "Siege is already terminal.");
+  }
+
+  const statusBefore = existing?.status ?? null;
+  const campaignStatusBefore = campaignPlan.status;
+  const resolved = applyM4SiegeChoice({
+    world,
+    command,
+    siege: existing,
+    campaignPlan,
+    march,
+    ownerPolityId,
+    defenderPolityId
+  });
+  if (!resolved.ok) {
+    return { ok: false, error: resolved.error };
+  }
+  const nextSiege = resolved.value.siege;
+  const nextM4 = {
+    ...m4,
+    campaignPlans: m4.campaignPlans.map((plan) =>
+      plan.id === campaignPlan.id ? resolved.value.campaignPlan : plan
+    ),
+    marches: m4.marches.map((entry) =>
+      entry.marchId === march.marchId ? resolved.value.march : entry
+    ),
+    sieges:
+      existing === undefined
+        ? [...m4.sieges, nextSiege]
+        : m4.sieges.map((siege) => (siege.siegeId === siegeId ? nextSiege : siege))
+  };
+
+  return acceptM4CampaignState(world, command, nextM4, (nextWorld) => [
+    {
+      schemaVersion: 1,
+      kind: "sim.m4-siege-choice-applied",
+      commandId: command.commandId,
+      actor: command.actor,
+      siegeId,
+      campaignPlanId: campaignPlan.id,
+      marchId: march.marchId,
+      choice: command.payload.choice,
+      statusBefore,
+      statusAfter: nextSiege.status,
+      attackerCasualties: resolved.value.attackerCasualtyDelta,
+      defenderCasualties: resolved.value.defenderCasualtyDelta,
+      supplyLoss: resolved.value.supplyLossDelta,
+      campaignStatusBefore,
+      campaignStatusAfter: resolved.value.campaignPlan.status,
+      surrenderEligible: nextSiege.surrenderEligible,
+      reasonCodes: resolved.value.reasonCodes,
+      creditHooks: nextSiege.creditHooks,
+      reputationHooks: nextSiege.reputationHooks,
+      revisionBefore: world.meta.revision,
+      revisionAfter: nextWorld.meta.revision
+    }
+  ]);
+}
+
+type M4CombatContextResult =
+  | {
+      readonly ok: true;
+      readonly value: {
+        readonly m4: M4CampaignStateV0;
+        readonly m3: NonNullable<WorldStateV0["state"]["m3"]>;
+        readonly campaignPlan: M4CampaignPlanStateV0;
+        readonly march: M4CampaignMarchStateV0;
+        readonly ownerPolityId: PolityId;
+      };
+    }
+  | { readonly ok: false; readonly error: DomainErrorV1 };
+
+function validateM4CombatCommandContext(
+  inputWorld: WorldStateV0,
+  input: {
+    readonly command: GameCommandV1;
+    readonly campaignPlanId: number;
+    readonly marchId: number;
+    readonly errorCode: "engagement-state-invalid" | "siege-state-invalid";
+  }
+): M4CombatContextResult {
+  const m3 = inputWorld.state.m3;
+  if (m3 === undefined) {
+    return { ok: false, error: m3MissingDomainError(input.command.kind) };
+  }
+  const m4 = inputWorld.state.m4;
+  if (m4 === undefined) {
+    return {
+      ok: false,
+      error: { code: input.errorCode, path: "state.m4", message: "M4 campaign state is missing." }
+    };
+  }
+  const campaignPlanId = parseCampaignPlanId(input.campaignPlanId);
+  const campaignPlan = m4.campaignPlans.find((plan) => plan.id === campaignPlanId);
+  if (campaignPlan === undefined) {
+    return { ok: false, error: badIdDomainError("payload.campaignPlanId", "Campaign missing.") };
+  }
+  if (campaignPlan.status === "cancelled" || campaignPlan.status === "completed") {
+    return {
+      ok: false,
+      error: {
+        code: input.errorCode,
+        path: "payload.campaignPlanId",
+        message: "CampaignPlan cannot accept combat commands."
+      }
+    };
+  }
+  const marchId = parseCampaignMarchId(input.marchId);
+  const march = m4.marches.find(
+    (entry) => entry.marchId === marchId && entry.campaignPlanId === campaignPlanId
+  );
+  if (march === undefined) {
+    return { ok: false, error: badIdDomainError("payload.marchId", "Campaign march missing.") };
+  }
+  if (march.status !== "arrived" || march.activeTroops === 0) {
+    return {
+      ok: false,
+      error: {
+        code: input.errorCode,
+        path: "payload.marchId",
+        message: "Combat commands require an arrived march with active troops."
+      }
+    };
+  }
+  const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
+  if (ownerPolityId === null || !actorHasPolityAuthority(m3, input.command.actor, ownerPolityId)) {
+    return { ok: false, error: authorityDeniedDomainError() };
+  }
+  return { ok: true, value: { m4, m3, campaignPlan, march, ownerPolityId } };
+}
+
+function resolveM4FieldEngagementOutcome(input: {
+  readonly engagementId: number;
+  readonly march: M4CampaignMarchStateV0;
+  readonly defenderPolityId: PolityId;
+  readonly defenderEstimatedTroops: number;
+  readonly defenderFortification: number;
+  readonly reasonCodes: readonly string[];
+}): {
+  readonly outcome: M4FieldEngagementOutcomeV0;
+  readonly attackerTroopsAfter: number;
+  readonly defenderEstimatedTroopsAfter: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly reasonCodes: readonly string[];
+} {
+  const supplyBps = m4MarchSupplyPowerBps(input.march.supply.status);
+  const attackerPower = input.march.activeTroops * supplyBps;
+  const defenderPower = input.defenderEstimatedTroops * 10_000 + input.defenderFortification * 100;
+  const tieBreakerFavoursAttacker =
+    attackerPower === defenderPower && input.engagementId <= input.defenderPolityId;
+  const isAttackerVictory = attackerPower > defenderPower || tieBreakerFavoursAttacker;
+  const attackerCasualties = minimumTwo(
+    input.march.activeTroops,
+    isAttackerVictory
+      ? floorDivide(input.defenderEstimatedTroops, 4) +
+          floorDivide(input.defenderFortification, 200) +
+          1
+      : floorDivide(input.defenderEstimatedTroops, 2) +
+          floorDivide(input.defenderFortification, 100) +
+          1
+  );
+  const defenderCasualties = minimumTwo(
+    input.defenderEstimatedTroops,
+    isAttackerVictory
+      ? floorDivide(input.march.activeTroops, 3) + 1
+      : floorDivide(input.march.activeTroops, 5)
+  );
+  const supplyLoss = minimumTwo(
+    input.march.supply.carriedGrain,
+    floorDivide(input.march.activeTroops * input.march.grainPerTroopPerDay, 2)
+  );
+  const reasonCodes = [
+    ...input.reasonCodes,
+    isAttackerVictory ? "engagement.outcome.attacker-victory" : "engagement.outcome.defender-holds",
+    attackerPower >= defenderPower
+      ? "engagement.reason.force-superiority"
+      : "engagement.reason.defender-force-estimate",
+    input.defenderFortification > 0
+      ? "engagement.reason.defender-fortification"
+      : "engagement.reason.open-field",
+    input.march.supply.status === "well-supplied"
+      ? "engagement.reason.supply-ready"
+      : "engagement.reason.supply-strained",
+    ...(tieBreakerFavoursAttacker ? ["engagement.reason.stable-id-tie-breaker"] : [])
+  ];
+  return {
+    outcome: isAttackerVictory ? "attacker-victory" : "defender-holds",
+    attackerTroopsAfter: input.march.activeTroops - attackerCasualties,
+    defenderEstimatedTroopsAfter: input.defenderEstimatedTroops - defenderCasualties,
+    attackerCasualties,
+    defenderCasualties,
+    supplyLoss,
+    reasonCodes: uniqueSortedText(reasonCodes, compareText)
+  };
+}
+
+type ApplyM4SiegeChoiceResult =
+  | {
+      readonly ok: true;
+      readonly value: {
+        readonly siege: M4SiegeStateV0;
+        readonly campaignPlan: M4CampaignPlanStateV0;
+        readonly march: M4CampaignMarchStateV0;
+        readonly attackerCasualtyDelta: number;
+        readonly defenderCasualtyDelta: number;
+        readonly supplyLossDelta: number;
+        readonly reasonCodes: readonly string[];
+      };
+    }
+  | { readonly ok: false; readonly error: DomainErrorV1 };
+
+function applyM4SiegeChoice(input: {
+  readonly world: WorldStateV0;
+  readonly command: Extract<GameCommandV1, { readonly kind: "sim.apply-m4-siege-choice" }>;
+  readonly siege: M4SiegeStateV0 | undefined;
+  readonly campaignPlan: M4CampaignPlanStateV0;
+  readonly march: M4CampaignMarchStateV0;
+  readonly ownerPolityId: PolityId;
+  readonly defenderPolityId: PolityId;
+}): ApplyM4SiegeChoiceResult {
+  switch (input.command.payload.choice) {
+    case "invest-blockade":
+      return investM4Siege(input);
+    case "continue":
+      return continueM4Siege(input);
+    case "assault":
+      return assaultM4Siege(input);
+    case "accept-surrender":
+      return acceptM4SiegeSurrender(input);
+    case "lift-siege":
+      return closeM4Siege(input, "lifted", "siege.lifted", "active");
+    case "withdraw":
+      return closeM4Siege(input, "withdrawn", "siege.withdrawn", "cancelled");
+  }
+}
+
+function investM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM4SiegeChoiceResult {
+  const siege: M4SiegeStateV0 = {
+    siegeId: parseSiegeId(input.command.payload.siegeId),
+    campaignPlanId: input.campaignPlan.id,
+    marchId: input.march.marchId,
+    targetDistrictId: input.march.targetDistrictId,
+    attackerPolityId: input.ownerPolityId,
+    defenderPolityId: input.defenderPolityId,
+    status: "blockading",
+    statusReasonCode: "siege.invested.blockade",
+    fortification: input.command.payload.fortification,
+    defenderEstimatedTroops: input.command.payload.defenderEstimatedTroops,
+    defenderSupply: input.command.payload.defenderSupply,
+    siegeProgress: 0,
+    daysInvested: 0,
+    blockadeDays: 0,
+    assaultCount: 0,
+    attackerTroops: input.march.activeTroops,
+    attackerCasualties: 0,
+    defenderCasualties: 0,
+    supplyLoss: 0,
+    surrenderEligible: false,
+    surrenderReasonCodes: [],
+    reasonCodes: uniqueSortedText(
+      [...input.command.payload.reasonCodes, "siege.invested.blockade"],
+      compareText
+    ),
+    creditHooks: [],
+    reputationHooks: [],
+    startedDay: input.world.meta.currentDay,
+    updatedDay: input.world.meta.currentDay
+  };
+  return {
+    ok: true,
+    value: {
+      siege,
+      campaignPlan: updateM4CampaignForSiege(
+        input.campaignPlan,
+        input.world.meta.currentDay,
+        "active",
+        "campaign.objective.siege-invested",
+        siege.reasonCodes
+      ),
+      march: input.march,
+      attackerCasualtyDelta: 0,
+      defenderCasualtyDelta: 0,
+      supplyLossDelta: 0,
+      reasonCodes: siege.reasonCodes
+    }
+  };
+}
+
+function continueM4Siege(
+  input: Parameters<typeof applyM4SiegeChoice>[0]
+): ApplyM4SiegeChoiceResult {
+  if (input.siege === undefined) {
+    return { ok: false, error: rejectSiegeStateError("payload.siegeId", "Siege is missing.") };
+  }
+  const dailyNeed = input.siege.attackerTroops * input.march.grainPerTroopPerDay;
+  const supplyLoss = minimumTwo(input.march.supply.carriedGrain, dailyNeed);
+  const shortage = dailyNeed - supplyLoss;
+  const attackerCasualties =
+    shortage === 0
+      ? 0
+      : minimumTwo(
+          input.siege.attackerTroops,
+          floorDivide(shortage, input.march.grainPerTroopPerDay) + 1
+        );
+  const defenderSupplyLoss = minimumTwo(
+    input.siege.defenderSupply,
+    floorDivide(input.siege.attackerTroops, 3) + 1
+  );
+  const progressDelta = Math.max(
+    0,
+    floorDivide(input.siege.attackerTroops, 20) +
+      (input.siege.blockadeDays + 1) * 5 -
+      floorDivide(input.siege.fortification, 100)
+  );
+  const defenderSupply = input.siege.defenderSupply - defenderSupplyLoss;
+  const siegeProgress = input.siege.siegeProgress + progressDelta;
+  const daysInvested = input.siege.daysInvested + 1;
+  const surrenderReasonCodes = m4SurrenderReasonCodes({
+    defenderSupply,
+    attackerTroops: input.siege.attackerTroops - attackerCasualties,
+    defenderEstimatedTroops: input.siege.defenderEstimatedTroops,
+    siegeProgress,
+    fortification: input.siege.fortification,
+    daysInvested
+  });
+  const surrenderEligible = surrenderReasonCodes.length > 0;
+  const supplyCollapse = input.siege.attackerTroops - attackerCasualties === 0;
+  const status: M4SiegeStatusV0 = supplyCollapse
+    ? "withdrawn"
+    : surrenderEligible
+      ? "surrender-ready"
+      : "blockading";
+  const reasonCodes = uniqueSortedText(
+    [
+      ...input.siege.reasonCodes,
+      ...input.command.payload.reasonCodes,
+      shortage > 0 ? "siege.continue.supply-shortage" : "siege.continue.blockade-maintained",
+      supplyCollapse ? "siege.failure.supply-collapse" : "siege.progress.updated",
+      ...surrenderReasonCodes
+    ],
+    compareText
+  );
+  const siege = {
+    ...input.siege,
+    status,
+    statusReasonCode: supplyCollapse
+      ? "siege.failure.supply-collapse"
+      : surrenderEligible
+        ? "siege.surrender.conditions-met"
+        : "siege.continue.blockade-maintained",
+    defenderSupply,
+    siegeProgress,
+    daysInvested,
+    blockadeDays: input.siege.blockadeDays + 1,
+    attackerTroops: input.siege.attackerTroops - attackerCasualties,
+    attackerCasualties: input.siege.attackerCasualties + attackerCasualties,
+    supplyLoss: input.siege.supplyLoss + supplyLoss,
+    surrenderEligible,
+    surrenderReasonCodes,
+    reasonCodes,
+    reputationHooks: [
+      ...input.siege.reputationHooks,
+      ...m4SupplyReputationHooks(input.ownerPolityId, shortage)
+    ],
+    updatedDay: input.world.meta.currentDay
+  };
+  return {
+    ok: true,
+    value: {
+      siege,
+      campaignPlan: updateM4CampaignForSiege(
+        input.campaignPlan,
+        input.world.meta.currentDay,
+        supplyCollapse ? "cancelled" : "active",
+        supplyCollapse
+          ? "campaign.objective.siege-supply-failed"
+          : "campaign.objective.siege-continues",
+        reasonCodes
+      ),
+      march: applyM4CombatLossesToMarch(input.march, {
+        activeTroops: siege.attackerTroops,
+        supplyLoss,
+        reasonCodes
+      }),
+      attackerCasualtyDelta: attackerCasualties,
+      defenderCasualtyDelta: 0,
+      supplyLossDelta: supplyLoss,
+      reasonCodes
+    }
+  };
+}
+
+function assaultM4Siege(input: Parameters<typeof applyM4SiegeChoice>[0]): ApplyM4SiegeChoiceResult {
+  if (input.siege === undefined) {
+    return { ok: false, error: rejectSiegeStateError("payload.siegeId", "Siege is missing.") };
+  }
+  const attackerPower = input.siege.attackerTroops * 10_000;
+  const defenderPower =
+    input.siege.defenderEstimatedTroops * 10_000 + input.siege.fortification * 100;
+  const tieBreakerFavoursAttacker =
+    attackerPower === defenderPower && input.siege.siegeId <= input.siege.defenderPolityId;
+  const breached = attackerPower > defenderPower || tieBreakerFavoursAttacker;
+  const attackerCasualties = minimumTwo(
+    input.siege.attackerTroops,
+    breached
+      ? floorDivide(input.siege.defenderEstimatedTroops, 3) +
+          floorDivide(input.siege.fortification, 150) +
+          1
+      : floorDivide(input.siege.defenderEstimatedTroops, 2) +
+          floorDivide(input.siege.fortification, 80) +
+          1
+  );
+  const defenderCasualties = minimumTwo(
+    input.siege.defenderEstimatedTroops,
+    breached
+      ? floorDivide(input.siege.attackerTroops, 2) + 1
+      : floorDivide(input.siege.attackerTroops, 4)
+  );
+  const supplyLoss = minimumTwo(
+    input.march.supply.carriedGrain,
+    input.siege.attackerTroops * input.march.grainPerTroopPerDay
+  );
+  const surrenderReasonCodes = breached ? ["siege.surrender.assault-breach"] : [];
+  const reasonCodes = uniqueSortedText(
+    [
+      ...input.siege.reasonCodes,
+      ...input.command.payload.reasonCodes,
+      breached ? "siege.assault.breach" : "siege.assault.repulsed",
+      ...surrenderReasonCodes
+    ],
+    compareText
+  );
+  const status: M4SiegeStatusV0 = breached ? "surrender-ready" : "blockading";
+  const siege: M4SiegeStateV0 = {
+    ...input.siege,
+    status,
+    statusReasonCode: breached ? "siege.surrender.assault-breach" : "siege.assault.repulsed",
+    defenderEstimatedTroops: input.siege.defenderEstimatedTroops - defenderCasualties,
+    siegeProgress: breached
+      ? input.siege.fortification
+      : input.siege.siegeProgress + floorDivide(input.siege.fortification, 4),
+    assaultCount: input.siege.assaultCount + 1,
+    attackerTroops: input.siege.attackerTroops - attackerCasualties,
+    attackerCasualties: input.siege.attackerCasualties + attackerCasualties,
+    defenderCasualties: input.siege.defenderCasualties + defenderCasualties,
+    supplyLoss: input.siege.supplyLoss + supplyLoss,
+    surrenderEligible: breached,
+    surrenderReasonCodes,
+    reasonCodes,
+    creditHooks: [
+      ...input.siege.creditHooks,
+      ...m4SiegeCreditHooks(input.ownerPolityId, breached, defenderCasualties)
+    ],
+    reputationHooks: [
+      ...input.siege.reputationHooks,
+      ...m4CombatReputationHooks(
+        input.ownerPolityId,
+        breached ? "attacker-victory" : "defender-holds",
+        attackerCasualties
+      )
+    ],
+    updatedDay: input.world.meta.currentDay
+  };
+  return {
+    ok: true,
+    value: {
+      siege,
+      campaignPlan: updateM4CampaignForSiege(
+        input.campaignPlan,
+        input.world.meta.currentDay,
+        "active",
+        breached
+          ? "campaign.objective.siege-breached"
+          : "campaign.objective.siege-assault-repulsed",
+        reasonCodes
+      ),
+      march: applyM4CombatLossesToMarch(input.march, {
+        activeTroops: siege.attackerTroops,
+        supplyLoss,
+        reasonCodes
+      }),
+      attackerCasualtyDelta: attackerCasualties,
+      defenderCasualtyDelta: defenderCasualties,
+      supplyLossDelta: supplyLoss,
+      reasonCodes
+    }
+  };
+}
+
+function acceptM4SiegeSurrender(
+  input: Parameters<typeof applyM4SiegeChoice>[0]
+): ApplyM4SiegeChoiceResult {
+  if (input.siege === undefined || !input.siege.surrenderEligible) {
+    return {
+      ok: false,
+      error: rejectSiegeStateError(
+        "payload.siegeId",
+        "Surrender cannot be accepted until explicit surrender conditions are met."
+      )
+    };
+  }
+  const reasonCodes = uniqueSortedText(
+    [...input.siege.reasonCodes, ...input.command.payload.reasonCodes, "siege.surrender.accepted"],
+    compareText
+  );
+  const siege = {
+    ...input.siege,
+    status: "surrendered" as const,
+    statusReasonCode: "siege.surrender.accepted",
+    reasonCodes,
+    creditHooks: [...input.siege.creditHooks, ...m4SiegeCreditHooks(input.ownerPolityId, true, 0)],
+    updatedDay: input.world.meta.currentDay
+  };
+  return {
+    ok: true,
+    value: {
+      siege,
+      campaignPlan: updateM4CampaignForSiege(
+        input.campaignPlan,
+        input.world.meta.currentDay,
+        "completed",
+        "campaign.objective.siege-surrendered",
+        reasonCodes
+      ),
+      march: input.march,
+      attackerCasualtyDelta: 0,
+      defenderCasualtyDelta: 0,
+      supplyLossDelta: 0,
+      reasonCodes
+    }
+  };
+}
+
+function closeM4Siege(
+  input: Parameters<typeof applyM4SiegeChoice>[0],
+  status: "lifted" | "withdrawn",
+  reasonCode: string,
+  campaignStatus: M4CampaignPlanStateV0["status"]
+): ApplyM4SiegeChoiceResult {
+  if (input.siege === undefined) {
+    return { ok: false, error: rejectSiegeStateError("payload.siegeId", "Siege is missing.") };
+  }
+  const reasonCodes = uniqueSortedText(
+    [...input.siege.reasonCodes, ...input.command.payload.reasonCodes, reasonCode],
+    compareText
+  );
+  const siege = {
+    ...input.siege,
+    status,
+    statusReasonCode: reasonCode,
+    reasonCodes,
+    updatedDay: input.world.meta.currentDay
+  };
+  return {
+    ok: true,
+    value: {
+      siege,
+      campaignPlan: updateM4CampaignForSiege(
+        input.campaignPlan,
+        input.world.meta.currentDay,
+        campaignStatus,
+        status === "withdrawn"
+          ? "campaign.objective.siege-withdrawn"
+          : "campaign.objective.siege-lifted",
+        reasonCodes
+      ),
+      march:
+        status === "withdrawn"
+          ? { ...input.march, status: "cancelled" as const, statusReasonCode: reasonCode }
+          : input.march,
+      attackerCasualtyDelta: 0,
+      defenderCasualtyDelta: 0,
+      supplyLossDelta: 0,
+      reasonCodes
+    }
+  };
+}
+
+function updateM4CampaignForSiege(
+  campaignPlan: M4CampaignPlanStateV0,
+  day: GameDay,
+  status: M4CampaignPlanStateV0["status"],
+  statusReasonCode: string,
+  reasonCodes: readonly string[]
+): M4CampaignPlanStateV0 {
+  return {
+    ...campaignPlan,
+    objectiveKind: status === "cancelled" ? "withdraw" : campaignPlan.objectiveKind,
+    status,
+    statusReasonCode,
+    reasonCodes: uniqueSortedText(
+      [...campaignPlan.reasonCodes, ...reasonCodes, statusReasonCode],
+      compareText
+    ),
+    updatedDay: day
+  };
+}
+
+function applyM4CombatLossesToMarch(
+  march: M4CampaignMarchStateV0,
+  input: {
+    readonly activeTroops: number;
+    readonly supplyLoss: number;
+    readonly reasonCodes: readonly string[];
+  }
+): M4CampaignMarchStateV0 {
+  return {
+    ...march,
+    activeTroops: input.activeTroops,
+    supply: {
+      ...march.supply,
+      carriedGrain: march.supply.carriedGrain - input.supplyLoss,
+      shortageGrain: march.supply.shortageGrain
+    },
+    reasonCodes: uniqueSortedText([...march.reasonCodes, ...input.reasonCodes], compareText)
+  };
+}
+
+function m4SurrenderReasonCodes(input: {
+  readonly defenderSupply: number;
+  readonly attackerTroops: number;
+  readonly defenderEstimatedTroops: number;
+  readonly siegeProgress: number;
+  readonly fortification: number;
+  readonly daysInvested: number;
+}): readonly string[] {
+  const reasonCodes: string[] = [];
+  if (input.defenderSupply === 0) {
+    reasonCodes.push("siege.surrender.defender-supply-exhausted");
+  }
+  if (input.attackerTroops >= input.defenderEstimatedTroops * 2 && input.daysInvested >= 2) {
+    reasonCodes.push("siege.surrender.force-ratio-pressure");
+  }
+  if (input.siegeProgress >= input.fortification && input.fortification > 0) {
+    reasonCodes.push("siege.surrender.fortification-breached");
+  }
+  if (input.daysInvested >= 3 && input.defenderSupply <= input.defenderEstimatedTroops) {
+    reasonCodes.push("siege.surrender.time-pressure");
+  }
+  return uniqueSortedText(reasonCodes, compareText);
+}
+
+function m4MarchSupplyPowerBps(status: M4CampaignMarchSupplyStatusV0): number {
+  switch (status) {
+    case "well-supplied":
+      return 10_000;
+    case "strained":
+      return 7_500;
+    case "hungry":
+      return 5_000;
+    case "out-of-supply":
+      return 2_500;
+  }
+}
+
+function m4CombatCreditHooks(
+  polityId: PolityId,
+  outcome: M4FieldEngagementOutcomeV0,
+  defenderCasualties: number
+): M4FieldEngagementStateV0["creditHooks"] {
+  return outcome === "attacker-victory"
+    ? [{ polityId, amount: defenderCasualties + 1, reasonCode: "campaign.credit.engagement-win" }]
+    : [];
+}
+
+function m4SiegeCreditHooks(
+  polityId: PolityId,
+  succeeded: boolean,
+  defenderCasualties: number
+): M4SiegeStateV0["creditHooks"] {
+  return succeeded
+    ? [{ polityId, amount: defenderCasualties + 1, reasonCode: "campaign.credit.siege-success" }]
+    : [];
+}
+
+function m4CombatReputationHooks(
+  polityId: PolityId,
+  outcome: M4FieldEngagementOutcomeV0,
+  attackerCasualties: number
+): M4FieldEngagementStateV0["reputationHooks"] {
+  return attackerCasualties === 0
+    ? []
+    : [
+        {
+          polityId,
+          amount: attackerCasualties,
+          reasonCode:
+            outcome === "attacker-victory"
+              ? "campaign.reputation.costly-victory"
+              : "campaign.reputation.defeat-losses"
+        }
+      ];
+}
+
+function m4SupplyReputationHooks(
+  polityId: PolityId,
+  shortage: number
+): M4SiegeStateV0["reputationHooks"] {
+  return shortage === 0
+    ? []
+    : [{ polityId, amount: shortage, reasonCode: "campaign.reputation.siege-supply-failure" }];
+}
+
+function isTerminalM4SiegeStatus(status: M4SiegeStatusV0): boolean {
+  return status === "surrendered" || status === "lifted" || status === "withdrawn";
+}
+
+function compareM4SiegeForChoiceResolution(left: M4SiegeStateV0, right: M4SiegeStateV0): number {
+  return (
+    left.campaignPlanId - right.campaignPlanId ||
+    left.startedDay - right.startedDay ||
+    left.siegeId - right.siegeId
+  );
+}
+
+function minimumTwo(first: number, second: number): number {
+  return Math.min(first, second);
+}
+
+function rejectEngagementState(path: string, message: string): EvaluationResult {
+  return { ok: false, error: { code: "engagement-state-invalid", path, message } };
+}
+
+function rejectSiegeState(path: string, message: string): EvaluationResult {
+  return { ok: false, error: rejectSiegeStateError(path, message) };
+}
+
+function rejectSiegeStateError(path: string, message: string): DomainErrorV1 {
+  return { code: "siege-state-invalid", path, message };
+}
+
 function evaluateVerifyStateHash(
   world: WorldStateV0,
   command: Extract<GameCommandV1, { readonly kind: "sim.verify-state-hash" }>
@@ -6132,6 +7127,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM4RouteTransportCapacityPreviewQuery(runtime, query);
     case "sim.list-m4-march-state":
       return executeM4MarchStateQuery(runtime, query);
+    case "sim.list-m4-siege-state":
+      return executeM4SiegeStateQuery(runtime, query);
   }
 }
 
@@ -6806,6 +7803,70 @@ function copyM4CampaignMarchReadModel(march: M4CampaignMarchStateV0): M4Campaign
     joinedCommitmentTroops: march.joinedCommitmentTroops.map((joined) => ({ ...joined })),
     failedCommitmentIds: [...march.failedCommitmentIds],
     reasonCodes: [...march.reasonCodes]
+  };
+}
+
+function executeM4SiegeStateQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.list-m4-siege-state" }>
+): QueryResultV1 {
+  const campaignPlanId = parseCampaignPlanId(query.payload.campaignPlanId);
+  const m4 = runtime.world.state.m4;
+  if (m4 === undefined || !m4.campaignPlans.some((plan) => plan.id === campaignPlanId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.campaignPlanId",
+        message: "sim.list-m4-siege-state references a missing CampaignPlanId."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-m4-siege-state",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      campaignPlanId,
+      sieges: m4.sieges
+        .filter((siege) => siege.campaignPlanId === campaignPlanId)
+        .sort(compareM4SiegeForChoiceResolution)
+        .map(copyM4SiegeReadModel),
+      reasonCodes: ["siege.query.filtered-by-campaign"]
+    }
+  };
+}
+
+function copyM4SiegeReadModel(siege: M4SiegeStateV0): M4SiegeReadModelV1 {
+  return {
+    siegeId: siege.siegeId,
+    campaignPlanId: siege.campaignPlanId,
+    marchId: siege.marchId,
+    targetDistrictId: siege.targetDistrictId,
+    attackerPolityId: siege.attackerPolityId,
+    defenderPolityId: siege.defenderPolityId,
+    status: siege.status,
+    statusReasonCode: siege.statusReasonCode,
+    fortification: siege.fortification,
+    defenderEstimatedTroops: siege.defenderEstimatedTroops,
+    defenderSupply: siege.defenderSupply,
+    siegeProgress: siege.siegeProgress,
+    daysInvested: siege.daysInvested,
+    blockadeDays: siege.blockadeDays,
+    assaultCount: siege.assaultCount,
+    attackerTroops: siege.attackerTroops,
+    attackerCasualties: siege.attackerCasualties,
+    defenderCasualties: siege.defenderCasualties,
+    supplyLoss: siege.supplyLoss,
+    surrenderEligible: siege.surrenderEligible,
+    surrenderReasonCodes: [...siege.surrenderReasonCodes],
+    reasonCodes: [...siege.reasonCodes],
+    creditHooks: siege.creditHooks.map((hook) => ({ ...hook })),
+    reputationHooks: siege.reputationHooks.map((hook) => ({ ...hook })),
+    startedDay: siege.startedDay,
+    updatedDay: siege.updatedDay
   };
 }
 
@@ -8005,6 +9066,10 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
       return { ...event };
     case "sim.grain-supply-released":
       return { ...event };
+    case "sim.m4-field-engagement-resolved":
+      return { ...event };
+    case "sim.m4-siege-choice-applied":
+      return { ...event };
     case "sim.state-hash-verified":
       return { ...event };
   }
@@ -8448,6 +9513,280 @@ function parseSavedDomainEvent(
         }
       };
     }
+    case "sim.m4-field-engagement-resolved": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const engagementId = readPositiveIdRecordField(
+        record,
+        "engagementId",
+        `${path}.engagementId`,
+        reasons
+      );
+      const campaignPlanId = readPositiveIdRecordField(
+        record,
+        "campaignPlanId",
+        `${path}.campaignPlanId`,
+        reasons
+      );
+      const marchId = readPositiveIdRecordField(record, "marchId", `${path}.marchId`, reasons);
+      const attackerPolityId = readPositiveIdRecordField(
+        record,
+        "attackerPolityId",
+        `${path}.attackerPolityId`,
+        reasons
+      );
+      const defenderPolityId = readPositiveIdRecordField(
+        record,
+        "defenderPolityId",
+        `${path}.defenderPolityId`,
+        reasons
+      );
+      const outcome = readM4FieldEngagementOutcomeRecordField(
+        record,
+        "outcome",
+        `${path}.outcome`,
+        reasons
+      );
+      const attackerCasualties = readNumberRecordField(
+        record,
+        "attackerCasualties",
+        `${path}.attackerCasualties`,
+        reasons
+      );
+      const defenderCasualties = readNumberRecordField(
+        record,
+        "defenderCasualties",
+        `${path}.defenderCasualties`,
+        reasons
+      );
+      const supplyLoss = readNumberRecordField(record, "supplyLoss", `${path}.supplyLoss`, reasons);
+      const campaignStatusBefore = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusBefore",
+        `${path}.campaignStatusBefore`,
+        reasons
+      );
+      const campaignStatusAfter = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusAfter",
+        `${path}.campaignStatusAfter`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const creditHooks = readM4CampaignHooksRecordField(
+        record,
+        "creditHooks",
+        `${path}.creditHooks`,
+        reasons
+      );
+      const reputationHooks = readM4CampaignHooksRecordField(
+        record,
+        "reputationHooks",
+        `${path}.reputationHooks`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        engagementId === undefined ||
+        campaignPlanId === undefined ||
+        marchId === undefined ||
+        attackerPolityId === undefined ||
+        defenderPolityId === undefined ||
+        outcome === undefined ||
+        attackerCasualties === undefined ||
+        defenderCasualties === undefined ||
+        supplyLoss === undefined ||
+        campaignStatusBefore === undefined ||
+        campaignStatusAfter === undefined ||
+        reasonCodes === undefined ||
+        creditHooks === undefined ||
+        reputationHooks === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          engagementId,
+          campaignPlanId,
+          marchId,
+          attackerPolityId: parsePolityId(attackerPolityId),
+          defenderPolityId: parsePolityId(defenderPolityId),
+          outcome,
+          attackerCasualties,
+          defenderCasualties,
+          supplyLoss,
+          campaignStatusBefore,
+          campaignStatusAfter,
+          reasonCodes,
+          creditHooks,
+          reputationHooks,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
+    case "sim.m4-siege-choice-applied": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const siegeId = readPositiveIdRecordField(record, "siegeId", `${path}.siegeId`, reasons);
+      const campaignPlanId = readPositiveIdRecordField(
+        record,
+        "campaignPlanId",
+        `${path}.campaignPlanId`,
+        reasons
+      );
+      const marchId = readPositiveIdRecordField(record, "marchId", `${path}.marchId`, reasons);
+      const choice = readM4SiegeChoiceRecordField(record, "choice", `${path}.choice`, reasons);
+      const statusBefore = readNullableM4SiegeStatusRecordField(
+        record,
+        "statusBefore",
+        `${path}.statusBefore`,
+        reasons
+      );
+      const statusAfter = readM4SiegeStatusRecordField(
+        record,
+        "statusAfter",
+        `${path}.statusAfter`,
+        reasons
+      );
+      const attackerCasualties = readNumberRecordField(
+        record,
+        "attackerCasualties",
+        `${path}.attackerCasualties`,
+        reasons
+      );
+      const defenderCasualties = readNumberRecordField(
+        record,
+        "defenderCasualties",
+        `${path}.defenderCasualties`,
+        reasons
+      );
+      const supplyLoss = readNumberRecordField(record, "supplyLoss", `${path}.supplyLoss`, reasons);
+      const campaignStatusBefore = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusBefore",
+        `${path}.campaignStatusBefore`,
+        reasons
+      );
+      const campaignStatusAfter = readM4CampaignStatusRecordField(
+        record,
+        "campaignStatusAfter",
+        `${path}.campaignStatusAfter`,
+        reasons
+      );
+      const surrenderEligible = readBooleanRecordField(
+        record,
+        "surrenderEligible",
+        `${path}.surrenderEligible`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const creditHooks = readM4CampaignHooksRecordField(
+        record,
+        "creditHooks",
+        `${path}.creditHooks`,
+        reasons
+      );
+      const reputationHooks = readM4CampaignHooksRecordField(
+        record,
+        "reputationHooks",
+        `${path}.reputationHooks`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        siegeId === undefined ||
+        campaignPlanId === undefined ||
+        marchId === undefined ||
+        choice === undefined ||
+        statusBefore === undefined ||
+        statusAfter === undefined ||
+        attackerCasualties === undefined ||
+        defenderCasualties === undefined ||
+        supplyLoss === undefined ||
+        campaignStatusBefore === undefined ||
+        campaignStatusAfter === undefined ||
+        surrenderEligible === undefined ||
+        reasonCodes === undefined ||
+        creditHooks === undefined ||
+        reputationHooks === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          siegeId,
+          campaignPlanId,
+          marchId,
+          choice,
+          statusBefore,
+          statusAfter,
+          attackerCasualties,
+          defenderCasualties,
+          supplyLoss,
+          campaignStatusBefore,
+          campaignStatusAfter,
+          surrenderEligible,
+          reasonCodes,
+          creditHooks,
+          reputationHooks,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
     case "sim.state-hash-verified": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
@@ -8542,6 +9881,189 @@ function readNumberRecordField(
     return undefined;
   }
   return value;
+}
+
+function readBooleanRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): boolean | undefined {
+  const value = record[key];
+  if (typeof value !== "boolean") {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a boolean.`
+    });
+    return undefined;
+  }
+  return value;
+}
+
+function readStringArrayRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): readonly string[] | undefined {
+  const value = record[key];
+  if (!Array.isArray(value) || !value.every((entry) => typeof entry === "string")) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be a string array.`
+    });
+    return undefined;
+  }
+  return [...value];
+}
+
+function readM4CampaignHooksRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4FieldEngagementStateV0["creditHooks"] | undefined {
+  const value = record[key];
+  if (!Array.isArray(value)) {
+    reasons.push({
+      code: "invalid-schema",
+      path,
+      message: `Saved event ${key} must be an M4 campaign hook array.`
+    });
+    return undefined;
+  }
+
+  const hooks: {
+    readonly polityId: PolityId;
+    readonly amount: number;
+    readonly reasonCode: string;
+  }[] = [];
+  value.forEach((entry, index) => {
+    if (!isRecord(entry)) {
+      reasons.push({
+        code: "invalid-schema",
+        path: `${path}[${index}]`,
+        message: `Saved event ${key} entry must be an object.`
+      });
+      return;
+    }
+    const polityId = readPositiveIdRecordField(
+      entry,
+      "polityId",
+      `${path}[${index}].polityId`,
+      reasons
+    );
+    const amount = readNumberRecordField(entry, "amount", `${path}[${index}].amount`, reasons);
+    const reasonCode = readStringRecordField(
+      entry,
+      "reasonCode",
+      `${path}[${index}].reasonCode`,
+      reasons
+    );
+    if (polityId !== undefined && amount !== undefined && reasonCode !== undefined) {
+      hooks.push({ polityId: parsePolityId(polityId), amount, reasonCode });
+    }
+  });
+  return hooks;
+}
+
+function readM4FieldEngagementOutcomeRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4FieldEngagementOutcomeV0 | undefined {
+  const value = record[key];
+  if (value === "attacker-victory" || value === "defender-holds") {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be attacker-victory or defender-holds.`
+  });
+  return undefined;
+}
+
+function readM4CampaignStatusRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4CampaignPlanStateV0["status"] | undefined {
+  const value = record[key];
+  if (value === "planned" || value === "active" || value === "cancelled" || value === "completed") {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M4 campaign status.`
+  });
+  return undefined;
+}
+
+function readM4SiegeChoiceRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4SiegeChoiceV0 | undefined {
+  const value = record[key];
+  if (
+    value === "invest-blockade" ||
+    value === "assault" ||
+    value === "continue" ||
+    value === "accept-surrender" ||
+    value === "lift-siege" ||
+    value === "withdraw"
+  ) {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M4 siege choice.`
+  });
+  return undefined;
+}
+
+function readM4SiegeStatusRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4SiegeStatusV0 | undefined {
+  const value = record[key];
+  if (
+    value === "blockading" ||
+    value === "surrender-ready" ||
+    value === "surrendered" ||
+    value === "lifted" ||
+    value === "withdrawn"
+  ) {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be a valid M4 siege status.`
+  });
+  return undefined;
+}
+
+function readNullableM4SiegeStatusRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M4SiegeStatusV0 | null | undefined {
+  if (record[key] === null) {
+    return null;
+  }
+  return readM4SiegeStatusRecordField(record, key, path, reasons);
 }
 
 function readLaborPurposeRecordField(
