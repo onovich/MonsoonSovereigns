@@ -2,37 +2,40 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_MARCH_SUPPLY_STATE_REVIEW_R2",
+  "status": "M4_MARCH_SUPPLY_STATE_REQUEST_CHANGES_R2",
   "project": "Monsoon Sovereigns",
   "origin_main": "41a965943e7a83e531a693f55031954f88c2c824",
   "current_milestone": "M4",
   "current_task": "M4-MARCH-SUPPLY-STATE-001",
-  "current_task_status": "REVIEW",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-ROUTE-TRANSPORT-CAPACITY-001",
   "ready_tasks": [],
   "active_threads": {
     "019f01f4-764d-7220-ab55-c1735c3c9bf4": {
       "task_id": "M4-MARCH-SUPPLY-STATE-001",
       "role": "simulation_engineer",
-      "status": "review_ready_r2",
+      "status": "request_changes_r2",
       "branch_or_worktree": "feat/m4-march-supply-state",
       "start_submission_id": "019f01f4-cbd1-7ec3-b5b0-df4b0ffb0ae2",
       "review_ready_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
       "request_changes_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW__systems_architect.json",
       "request_changes_submission_id": "019f0218-c5f5-73b3-9e33-97f17fdc6206",
-      "review_ready_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json"
+      "review_ready_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json",
+      "request_changes_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R2__systems_architect.json",
+      "request_changes_submission_id_r2": "019f0229-96a0-7c81-a769-ee583dbc72db"
     },
     "019f01f4-8a58-7753-bdae-37ae559fc7bc": {
       "task_id": "M4-MARCH-SUPPLY-STATE-001",
       "role": "systems_architect",
-      "status": "reviewing_r2",
+      "status": "request_changes_r2",
       "branch_or_worktree": "feat/m4-march-supply-state",
       "await_submission_id": "019f01f4-cbed-76c0-9d20-5e2fa394c37f",
       "review_ready_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_submission_id": "019f0210-a10d-74e1-9932-c9b7eadc22dd",
       "request_changes_handoff": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW__systems_architect.json",
       "review_ready_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-WRITER-REVIEW-R2__simulation_engineer.json",
-      "review_ready_submission_id_r2": "019f0224-efb2-76d0-bf8b-36577e03f91d"
+      "review_ready_submission_id_r2": "019f0224-efb2-76d0-bf8b-36577e03f91d",
+      "request_changes_handoff_r2": "project/messages/outbox/M4-MARCH-SUPPLY-STATE-001__MSG-20260626-M4-MARCH-SUPPLY-STATE-SYSTEMS-REVIEW-R2__systems_architect.json"
     }
   },
   "unresolved_risks": [
@@ -51,7 +54,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Await systems_architect R2 review for M4-MARCH-SUPPLY-STATE-001; proceed to lead/QA gates after ACCEPT or route further REQUEST_CHANGES to the original writer.",
+  "next_machine_action": "Await original simulation_engineer R3 REVIEW handoff after systems_architect R2 REQUEST_CHANGES fixes, validate it, and route R3 back to systems_architect.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -59,7 +62,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T04:15:00Z",
+  "last_updated_at": "2026-06-26T04:22:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -83,12 +86,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T04:15:00Z",
+  "updated_at": "2026-06-26T04:22:00Z",
   "current_tasks": [
     "M4-MARCH-SUPPLY-STATE-001"
   ],
   "last_integrated_task": "M4-ROUTE-TRANSPORT-CAPACITY-001",
   "last_main_commit": "41a965943e7a83e531a693f55031954f88c2c824",
   "next_ready_tasks": [],
-  "next_action": "Await systems_architect R2 review for M4-MARCH-SUPPLY-STATE-001; proceed to lead/QA gates after ACCEPT or route further REQUEST_CHANGES to the original writer."
+  "next_action": "Await original simulation_engineer R3 REVIEW handoff after systems_architect R2 REQUEST_CHANGES fixes, validate it, and route R3 back to systems_architect."
 }
