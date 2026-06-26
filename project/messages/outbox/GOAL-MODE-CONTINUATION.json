@@ -6,13 +6,18 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "118edeac00ee4bac365abf2199ec5470bb2d00cd",
   "current_milestone": "M5",
-  "current_task": "M5-MANUAL-NODE-BATTLE-DECISION-001",
-  "current_task_status": "ACCEPTED",
+  "current_task": "M5-EXIT-HUMAN-GATE-001",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M5-PLAYER-RESEARCH-001",
-  "ready_tasks": [
-    "M5-EXIT-HUMAN-GATE-001"
-  ],
-  "active_threads": {},
+  "ready_tasks": [],
+  "active_threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "task_id": "M5-EXIT-HUMAN-GATE-001",
+      "status": "in_progress",
+      "role": "lead_orchestrator"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -27,14 +32,13 @@
   ],
   "human_gate": {
     "required": false,
-    "resolved_task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
-    "resolution": "DEFER_MANUAL_NODE_BATTLE",
-    "resolved_by": "product_owner",
-    "resolved_at": "2026-06-27T03:55:00+08:00",
-    "decision_document": "docs/28-manual-node-battle-decision.md",
-    "next_gate_after_integration": "M5-EXIT-HUMAN-GATE-001"
+    "active_gate_task_id": "M5-EXIT-HUMAN-GATE-001",
+    "approval_scope": "M5_EXIT_GATE_START_AND_CONDITIONAL_EVALUATION",
+    "approval_source": "Codex attachment bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt",
+    "note": "M5 Exit Gate is in progress but M5 is not passed; M6 is not started.",
+    "recorded_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_machine_action": "Integrate the accepted manual node battle decision PR; after it enters main, close M5-MANUAL-NODE-BATTLE-DECISION-001 and start M5-EXIT-HUMAN-GATE-001 as the next separate gate.",
+  "next_machine_action": "Integrate this closure/start checkpoint, then continue M5 Exit Gate evidence evaluation with independent reviewer acceptance before any M5_GATE result or M6 transition.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -42,7 +46,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T04:12:00+08:00",
+  "last_updated_at": "2026-06-27T04:18:00+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -82,16 +86,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T04:12:00+08:00",
+  "updated_at": "2026-06-27T04:18:00+08:00",
   "current_tasks": [
-    "M5-MANUAL-NODE-BATTLE-DECISION-001"
-  ],
-  "last_integrated_task": "M5-PLAYER-RESEARCH-001",
-  "last_main_commit": "118edeac00ee4bac365abf2199ec5470bb2d00cd",
-  "next_ready_tasks": [
     "M5-EXIT-HUMAN-GATE-001"
   ],
-  "next_action": "Integrate the accepted manual node battle decision PR; after it enters main, close M5-MANUAL-NODE-BATTLE-DECISION-001 and start M5-EXIT-HUMAN-GATE-001 as the next separate gate.",
+  "last_integrated_task": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "last_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
+  "next_ready_tasks": [],
+  "next_action": "Integrate this closure/start checkpoint, then continue M5 Exit Gate evidence evaluation with independent reviewer acceptance before any M5_GATE result or M6 transition.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -408,7 +410,7 @@
     "next_ready_tasks": []
   },
   "m5_manual_node_battle_decision": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
     "branch_or_worktree": "gate/m5-manual-node-battle-decision",
     "handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json",
@@ -416,7 +418,7 @@
     "human_gate_required": false,
     "selected_decision": "DEFER_MANUAL_NODE_BATTLE",
     "next_action": "Integrate the accepted decision PR. Because taskctl treats ACCEPTED dependencies as ready, M5-EXIT-HUMAN-GATE-001 is the next dependency-ready gate, but it must not be started until the decision enters main and M5-MANUAL-NODE-BATTLE-DECISION-001 is closed.",
-    "updated_at": "2026-06-27T04:12:00+08:00",
+    "updated_at": "2026-06-27T04:18:00+08:00",
     "decision": {
       "code": "DEFER_MANUAL_NODE_BATTLE",
       "document": "docs/28-manual-node-battle-decision.md",
@@ -433,10 +435,14 @@
     "qa_reviewer_thread_id": "019f0583-e4fe-71b0-bd4c-b66cb198a4c9",
     "systems_review_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-SYSTEMS-REVIEW__systems_architect.json",
     "qa_review_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-QA-REVIEW__qa_reviewer.json",
-    "lead_accept_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-LEAD-ACCEPT__lead_orchestrator.json"
+    "lead_accept_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-LEAD-ACCEPT__lead_orchestrator.json",
+    "integrated_pr": 125,
+    "integrated_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
+    "lead_close_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T04:18:00+08:00"
   },
   "status_audit_reconciliation": {
-    "status": "ACCEPTED",
+    "status": "CLOSED_WITH_DECISION_CHECKPOINT",
     "audit": "project/audits/STATUS-AUDIT-20260627.md",
     "items": {
       "goal_mode_last_main_commit": "updated_to_current_origin_main_before_decision_merge",
@@ -444,6 +450,18 @@
       "gate_docs_m1_m4": "recorded_as_historical_evidence_docs_not_final_closure_ledgers",
       "taskctl_validate_no_id": "recorded_known_tooling_limitation_no_tool_change"
     },
-    "updated_at": "2026-06-27T04:10:00+08:00"
+    "updated_at": "2026-06-27T04:18:00+08:00"
+  },
+  "m5_exit_human_gate": {
+    "status": "IN_PROGRESS",
+    "task_id": "M5-EXIT-HUMAN-GATE-001",
+    "branch_or_worktree": "gate/m5-exit-human-gate",
+    "start_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "manual_decision_closed_at": "2026-06-27T04:18:00+08:00",
+    "started_at": "2026-06-27T04:18:00+08:00",
+    "m5_gate_result": null,
+    "m6_started": false,
+    "updated_at": "2026-06-27T04:18:00+08:00"
   }
 }

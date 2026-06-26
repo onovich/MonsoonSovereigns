@@ -175,7 +175,9 @@ Product owner decision received on 2026-06-27: `M5-MANUAL-NODE-BATTLE-DECISION-0
 
 Manual node battle is deferred from M5 and from the 1.0 mainline. The current 1.0 mainline continues with automatic/abstract battle resolution, campaign preparation, march, supply, siege, withdrawal, and postwar governance. Do not create a manual node battle implementation task, and do not create a manual node battle spike or research task that blocks M5, M6, M7, or M8. Manual node battle may be listed only as a post-1.0 expansion candidate or future research candidate, and that future note is not current implementation authorization.
 
-The decision is recorded in `docs/28-manual-node-battle-decision.md`. After this decision checkpoint enters `origin/main`, `M5-MANUAL-NODE-BATTLE-DECISION-001` should be `CLOSED`, `human_gate.required` should be false for this decision, and `M5-EXIT-HUMAN-GATE-001` should become the next M5 gate.
+The decision is recorded in `docs/28-manual-node-battle-decision.md`. The decision checkpoint entered `origin/main` through PR #125 at `daf09128b3c15bee26664a9b750a625ed8384767`. `M5-MANUAL-NODE-BATTLE-DECISION-001` is now being closed by the follow-up closure checkpoint, and `M5-EXIT-HUMAN-GATE-001` is the next M5 gate.
+
+`M5-EXIT-HUMAN-GATE-001` has started as a separate formal M5 passage gate. It is not yet passed, does not start M6 by itself, and must produce its own evidence, reviewer acceptance, PR, CI, and main integration before any milestone advance.
 
 Ledger reconciliation notes:
 

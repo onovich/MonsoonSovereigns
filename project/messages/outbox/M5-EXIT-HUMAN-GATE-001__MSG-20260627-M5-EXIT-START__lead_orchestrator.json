@@ -1,0 +1,53 @@
+{
+  "message_id": "MSG-20260627-M5-EXIT-START",
+  "task_id": "M5-EXIT-HUMAN-GATE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M5-EXIT-HUMAN-GATE-001 is started after M5-MANUAL-NODE-BATTLE-DECISION-001 was accepted and integrated through PR #125. The product owner explicitly resolved the manual node battle Human Gate as DEFER_MANUAL_NODE_BATTLE and authorized M5 Exit Gate to begin. This start record does not pass M5, does not create docs/GATE-M5.md, does not start M6, and does not change product/runtime code.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/28-manual-node-battle-decision.md",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
+    "C:/Users/Administrator/.codex/attachments/bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt"
+  ],
+  "branch_or_worktree": "gate/m5-manual-decision-close-exit-start / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "daf09128b3c15bee26664a9b750a625ed8384767",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M5-EXIT-HUMAN-GATE-001 was the next dependency-ready task before this start checkpoint."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status M5-MANUAL-NODE-BATTLE-DECISION-001 CLOSED; taskctl set-status M5-EXIT-HUMAN-GATE-001 READY; taskctl set-status M5-EXIT-HUMAN-GATE-001 IN_PROGRESS",
+      "exit_code": 0,
+      "result": "Manual decision was moved to CLOSED; M5 Exit moved through READY to IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-thread M5-EXIT-HUMAN-GATE-001 lead_orchestrator 019eff50-c69d-7612-a90b-7024a47e0af5",
+      "exit_code": 0,
+      "result": "M5 Exit lead thread recorded in task registry."
+    }
+  ],
+  "decisions": [
+    "Start M5-EXIT-HUMAN-GATE-001 because the manual node battle Human Gate is resolved and integrated.",
+    "Do not pass M5 in this start checkpoint.",
+    "Do not start M6 in this start checkpoint.",
+    "Do not create manual node battle implementation or blocking research/spike work."
+  ],
+  "risks": [
+    "M5 Exit must still validate all M5 evidence and receive independent acceptance before any M5_GATE result is integrated.",
+    "Formal M5 passage must distinguish PASS, PASS_WITH_LIMITS, BLOCKED, and follow-up routing without hiding known limitations."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "After this closure/start checkpoint enters main, continue M5 Exit Gate evaluation and spawn required reviewers for the gate evidence.",
+  "created_at": "2026-06-27T04:18:00+08:00"
+}
