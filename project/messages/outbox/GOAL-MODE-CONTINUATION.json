@@ -2,17 +2,38 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_CLIENT_CAMPAIGN_PLANNING_UI_CLOSED",
+  "status": "M4_DETERMINISM_REPLAY_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "5efbf12ef69ce7a4bfb1ef647a584052528a7740",
+  "origin_main": "d4dc0ca6a06291a033506fbd35cfd7037332296d",
   "current_milestone": "M4",
-  "current_task": null,
-  "current_task_status": "CLOSED",
+  "current_task": "M4-DETERMINISM-REPLAY-001",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
-  "ready_tasks": [
-    "M4-DETERMINISM-REPLAY-001"
-  ],
-  "active_threads": {},
+  "ready_tasks": [],
+  "active_threads": {
+    "019f0313-1f78-70d2-ad1a-033e799c63d4": {
+      "task_id": "M4-DETERMINISM-REPLAY-001",
+      "role": "test_engineer",
+      "status": "active",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "branch_or_worktree": "test/m4-determinism-replay",
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f0313-be0f-7872-b74b-3f2432b49b90",
+      "updated_at": "2026-06-26T08:37:48Z"
+    },
+    "019f0313-78ab-7f21-a5e1-e1a4d7955ed2": {
+      "task_id": "M4-DETERMINISM-REPLAY-001",
+      "role": "qa_reviewer",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "branch_or_worktree": "test/m4-determinism-replay",
+      "start_state": "AWAITING_REVIEW_READY",
+      "await_submission_id": "019f0313-e155-7082-bc8e-8a5718e9e646",
+      "updated_at": "2026-06-26T08:37:48Z"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -29,7 +50,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Start M4-DETERMINISM-REPLAY-001 with test_engineer writer and qa_reviewer, preserving determinism/replay allowed paths and no product scope expansion.",
+  "next_machine_action": "Await test_engineer REVIEW handoff, validate deterministic replay evidence, route to qa_reviewer, and continue M4 gates.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -37,7 +58,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T08:31:36Z",
+  "last_updated_at": "2026-06-26T08:37:48Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -61,12 +82,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T08:31:36Z",
-  "current_tasks": [],
-  "last_integrated_task": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
-  "last_main_commit": "5efbf12ef69ce7a4bfb1ef647a584052528a7740",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-26T08:37:48Z",
+  "current_tasks": [
     "M4-DETERMINISM-REPLAY-001"
   ],
-  "next_action": "Start M4-DETERMINISM-REPLAY-001 with test_engineer writer and qa_reviewer, preserving determinism/replay allowed paths and no product scope expansion."
+  "last_integrated_task": "M4-CLIENT-CAMPAIGN-PLANNING-UI-001",
+  "last_main_commit": "d4dc0ca6a06291a033506fbd35cfd7037332296d",
+  "next_ready_tasks": [],
+  "next_action": "Await test_engineer REVIEW handoff, validate deterministic replay evidence, route to qa_reviewer, and continue M4 gates."
 }
