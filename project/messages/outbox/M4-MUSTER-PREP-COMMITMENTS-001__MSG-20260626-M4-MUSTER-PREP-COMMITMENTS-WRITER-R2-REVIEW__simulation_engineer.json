@@ -1,0 +1,70 @@
+{
+  "message_id": "MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-R2-REVIEW",
+  "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes the systems_architect REQUEST_CHANGES blocker in sim.record-muster-response. The command now enforces disjoint authority modes: debtor-authorized responses may advance assembledTroops, delayedTroops, or refusedTroops without increasing releasedTroops; creditor-authorized releases may advance releasedTroops only while assembled/delayed/refused remain unchanged. Mixed response-plus-release advancement is rejected before authority selection, preventing the creditor/campaign owner from fabricating debtor assembly while releasing.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m4-muster-prep-commitments.test.ts",
+    "project/messages/outbox/M4-MUSTER-PREP-COMMITMENTS-001__MSG-20260626-M4-MUSTER-PREP-COMMITMENTS-WRITER-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-muster-prep-commitments",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed: 16 files, 113 tests. New R2 regression covers creditor mixed release/assembly fabrication rejection, debtor release authority denial, creditor mixed release/delayed/refused rejection, creditor over-release rejection, and legitimate debtor-response-then-creditor-release acceptance."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed: 1 file, 8 tests. Command schema shape is unchanged in R2."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible deterministic hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, workspace typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed, determinism passed, root Vitest passed 27 files / 180 tests, and web package tests passed 1 file / 3 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-MUSTER-PREP-COMMITMENTS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-MUSTER-PREP-COMMITMENTS-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-MUSTER-PREP-COMMITMENTS-001",
+      "exit_code": 0,
+      "result": "Parsed task JSON and verified expected task id, required scope/test arrays, status IN_PROGRESS, and risk R3."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    }
+  ],
+  "decisions": [
+    "Kept the existing sim.record-muster-response schema for the smallest focused fix; no protocol split was needed.",
+    "Added monotonic mode detection inside validateMusterResponsePayload: debtor response advancement and creditor release advancement cannot occur in the same command.",
+    "Kept release authority determined only after validation proves release is the sole advancing quantity, so a creditor cannot bundle debtor-owned assembled/delayed/refused changes with release.",
+    "Preserved player/AI parity because the same GameCommand path and actor authority checks apply to both actor kinds."
+  ],
+  "risks": [
+    "R3 remains in effect because the task changes authoritative command/state behavior and protocol surface.",
+    "Save-format persistence for M4 muster state remains intentionally out of scope for this task and is unchanged by R2."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R2 response-authority fix for M4-MUSTER-PREP-COMMITMENTS-001 and route to systems_architect thread 019f0152-54c5-7d40-a504-dfc1a75082e1. Do not mark ACCEPTED or CLOSED until reviewer acceptance.",
+  "created_at": "2026-06-26T09:08:10+08:00"
+}
