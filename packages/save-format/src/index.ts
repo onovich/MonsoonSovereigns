@@ -2194,7 +2194,13 @@ function parseM4CampaignState(
     errors,
     parseM4GrainSupplyReservation
   );
-  const marches = parseM4Array(input["marches"], `${path}.marches`, "M4 marches", errors, parseM4CampaignMarch);
+  const marches = parseM4Array(
+    input["marches"],
+    `${path}.marches`,
+    "M4 marches",
+    errors,
+    parseM4CampaignMarch
+  );
   const fieldEngagements = parseM4Array(
     input["fieldEngagements"],
     `${path}.fieldEngagements`,
@@ -2260,7 +2266,11 @@ function parseM4Array<TEntry>(
   path: string,
   label: string,
   errors: SaveLoadRejectionReasonV1[],
-  parseEntry: (entry: unknown, path: string, errors: SaveLoadRejectionReasonV1[]) => TEntry | undefined
+  parseEntry: (
+    entry: unknown,
+    path: string,
+    errors: SaveLoadRejectionReasonV1[]
+  ) => TEntry | undefined
 ): readonly TEntry[] | undefined {
   if (!Array.isArray(input)) {
     errors.push(reason("invalid-schema", path, `${label} must be an array.`));
@@ -2311,10 +2321,15 @@ function parseM4CampaignPlan(
     id: readPositiveSafeInteger(record, "id", `${path}.id`, errors) ?? 0,
     owner,
     target,
-    objectiveKind: parseM4CampaignObjectiveKind(record["objectiveKind"], `${path}.objectiveKind`, errors),
+    objectiveKind: parseM4CampaignObjectiveKind(
+      record["objectiveKind"],
+      `${path}.objectiveKind`,
+      errors
+    ),
     startWindow,
     status: parseM4CampaignPlanStatus(record["status"], `${path}.status`, errors),
-    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    statusReasonCode:
+      readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
     reasonCodes,
     createdDay: readNonnegativeSafeInteger(record, "createdDay", `${path}.createdDay`, errors) ?? 0,
     updatedDay: readNonnegativeSafeInteger(record, "updatedDay", `${path}.updatedDay`, errors) ?? 0
@@ -2331,10 +2346,34 @@ function parseM4FactionKnowledgeSnapshot(
     return undefined;
   }
   const source = parseM4FactionKnowledgeSource(record["source"], `${path}.source`, errors);
-  const knownObjectives = parseM4Array(record["knownObjectives"], `${path}.knownObjectives`, "M4 knownObjectives", errors, parseM4KnownObjectiveEstimate);
-  const routeEstimates = parseM4Array(record["routeEstimates"], `${path}.routeEstimates`, "M4 routeEstimates", errors, parseM4RouteEstimate);
-  const supplyEstimates = parseM4Array(record["supplyEstimates"], `${path}.supplyEstimates`, "M4 supplyEstimates", errors, parseM4SupplyEstimate);
-  const defenderEstimates = parseM4Array(record["defenderEstimates"], `${path}.defenderEstimates`, "M4 defenderEstimates", errors, parseM4DefenderEstimate);
+  const knownObjectives = parseM4Array(
+    record["knownObjectives"],
+    `${path}.knownObjectives`,
+    "M4 knownObjectives",
+    errors,
+    parseM4KnownObjectiveEstimate
+  );
+  const routeEstimates = parseM4Array(
+    record["routeEstimates"],
+    `${path}.routeEstimates`,
+    "M4 routeEstimates",
+    errors,
+    parseM4RouteEstimate
+  );
+  const supplyEstimates = parseM4Array(
+    record["supplyEstimates"],
+    `${path}.supplyEstimates`,
+    "M4 supplyEstimates",
+    errors,
+    parseM4SupplyEstimate
+  );
+  const defenderEstimates = parseM4Array(
+    record["defenderEstimates"],
+    `${path}.defenderEstimates`,
+    "M4 defenderEstimates",
+    errors,
+    parseM4DefenderEstimate
+  );
   if (
     source === undefined ||
     knownObjectives === undefined ||
@@ -2352,8 +2391,10 @@ function parseM4FactionKnowledgeSnapshot(
     subjectPolityId:
       readPositiveSafeInteger(record, "subjectPolityId", `${path}.subjectPolityId`, errors) ?? 0,
     knowledgeVersion:
-      readNonnegativeSafeInteger(record, "knowledgeVersion", `${path}.knowledgeVersion`, errors) ?? 0,
-    recordedDay: readNonnegativeSafeInteger(record, "recordedDay", `${path}.recordedDay`, errors) ?? 0,
+      readNonnegativeSafeInteger(record, "knowledgeVersion", `${path}.knowledgeVersion`, errors) ??
+      0,
+    recordedDay:
+      readNonnegativeSafeInteger(record, "recordedDay", `${path}.recordedDay`, errors) ?? 0,
     source,
     knownObjectives,
     routeEstimates,
@@ -2372,9 +2413,19 @@ function parseM4MobilizedForceCommitment(
     return undefined;
   }
   const source = parseM4MusterCommitmentSource(record["source"], `${path}.source`, errors);
-  const assemblyWindow = parseM4StartWindow(record["assemblyWindow"], `${path}.assemblyWindow`, errors);
+  const assemblyWindow = parseM4StartWindow(
+    record["assemblyWindow"],
+    `${path}.assemblyWindow`,
+    errors
+  );
   const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
-  const localCostHooks = parseM4Array(record["localCostHooks"], `${path}.localCostHooks`, "M4 localCostHooks", errors, parseM4MusterLocalCostHook);
+  const localCostHooks = parseM4Array(
+    record["localCostHooks"],
+    `${path}.localCostHooks`,
+    "M4 localCostHooks",
+    errors,
+    parseM4MusterLocalCostHook
+  );
   if (source === undefined || assemblyWindow === undefined || localCostHooks === undefined) {
     return undefined;
   }
@@ -2389,7 +2440,12 @@ function parseM4MobilizedForceCommitment(
     dueDay: readNonnegativeSafeInteger(record, "dueDay", `${path}.dueDay`, errors) ?? 0,
     assemblyWindow,
     plannedAssemblyDay:
-      readNonnegativeSafeInteger(record, "plannedAssemblyDay", `${path}.plannedAssemblyDay`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "plannedAssemblyDay",
+        `${path}.plannedAssemblyDay`,
+        errors
+      ) ?? 0,
     assembledTroops:
       readNonnegativeSafeInteger(record, "assembledTroops", `${path}.assembledTroops`, errors) ?? 0,
     delayedTroops:
@@ -2399,7 +2455,8 @@ function parseM4MobilizedForceCommitment(
     releasedTroops:
       readNonnegativeSafeInteger(record, "releasedTroops", `${path}.releasedTroops`, errors) ?? 0,
     status: parseM4MusterCommitmentStatus(record["status"], `${path}.status`, errors),
-    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    statusReasonCode:
+      readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
     reasonCodes,
     localCostHooks
   };
@@ -2437,11 +2494,22 @@ function parseM4GrainSupplyReservation(
     lossAmount: readNonnegativeSafeInteger(record, "lossAmount", `${path}.lossAmount`, errors) ?? 0,
     lossReasonCode: readNullableString(record, "lossReasonCode", `${path}.lossReasonCode`, errors),
     expectedDailyConsumption:
-      readPositiveSafeInteger(record, "expectedDailyConsumption", `${path}.expectedDailyConsumption`, errors) ?? 0,
+      readPositiveSafeInteger(
+        record,
+        "expectedDailyConsumption",
+        `${path}.expectedDailyConsumption`,
+        errors
+      ) ?? 0,
     expectedDaysOfSupply:
-      readNonnegativeSafeInteger(record, "expectedDaysOfSupply", `${path}.expectedDaysOfSupply`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "expectedDaysOfSupply",
+        `${path}.expectedDaysOfSupply`,
+        errors
+      ) ?? 0,
     status: parseM4GrainSupplyReservationStatus(record["status"], `${path}.status`, errors),
-    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    statusReasonCode:
+      readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
     reasonCodes
   };
 }
@@ -2455,7 +2523,13 @@ function parseM4CampaignMarch(
   if (record === undefined) {
     return undefined;
   }
-  const routeSegments = parseM4Array(record["routeSegments"], `${path}.routeSegments`, "M4 routeSegments", errors, parseM4MarchRouteSegment);
+  const routeSegments = parseM4Array(
+    record["routeSegments"],
+    `${path}.routeSegments`,
+    "M4 routeSegments",
+    errors,
+    parseM4MarchRouteSegment
+  );
   const supply = parseM4MarchSupply(record["supply"], `${path}.supply`, errors);
   const predictedArrivalWindow = parseM4StartWindow(
     record["predictedArrivalWindow"],
@@ -2463,7 +2537,11 @@ function parseM4CampaignMarch(
     errors
   );
   const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
-  const joinedCommitmentIds = parsePositiveIntegerArray(record["joinedCommitmentIds"], `${path}.joinedCommitmentIds`, errors);
+  const joinedCommitmentIds = parsePositiveIntegerArray(
+    record["joinedCommitmentIds"],
+    `${path}.joinedCommitmentIds`,
+    errors
+  );
   const joinedCommitmentTroops = parseM4Array(
     record["joinedCommitmentTroops"],
     `${path}.joinedCommitmentTroops`,
@@ -2471,7 +2549,11 @@ function parseM4CampaignMarch(
     errors,
     parseM4JoinedCommitmentTroops
   );
-  const failedCommitmentIds = parsePositiveIntegerArray(record["failedCommitmentIds"], `${path}.failedCommitmentIds`, errors);
+  const failedCommitmentIds = parsePositiveIntegerArray(
+    record["failedCommitmentIds"],
+    `${path}.failedCommitmentIds`,
+    errors
+  );
   if (
     routeSegments === undefined ||
     supply === undefined ||
@@ -2492,18 +2574,36 @@ function parseM4CampaignMarch(
     targetDistrictId:
       readPositiveSafeInteger(record, "targetDistrictId", `${path}.targetDistrictId`, errors) ?? 0,
     currentDistrictId:
-      readPositiveSafeInteger(record, "currentDistrictId", `${path}.currentDistrictId`, errors) ?? 0,
+      readPositiveSafeInteger(record, "currentDistrictId", `${path}.currentDistrictId`, errors) ??
+      0,
     routeSegments,
     currentSegmentIndex:
-      readNonnegativeSafeInteger(record, "currentSegmentIndex", `${path}.currentSegmentIndex`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "currentSegmentIndex",
+        `${path}.currentSegmentIndex`,
+        errors
+      ) ?? 0,
     progressOnSegmentDays:
-      readNonnegativeSafeInteger(record, "progressOnSegmentDays", `${path}.progressOnSegmentDays`, errors) ?? 0,
-    activeTroops: readNonnegativeSafeInteger(record, "activeTroops", `${path}.activeTroops`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "progressOnSegmentDays",
+        `${path}.progressOnSegmentDays`,
+        errors
+      ) ?? 0,
+    activeTroops:
+      readNonnegativeSafeInteger(record, "activeTroops", `${path}.activeTroops`, errors) ?? 0,
     grainPerTroopPerDay:
-      readPositiveSafeInteger(record, "grainPerTroopPerDay", `${path}.grainPerTroopPerDay`, errors) ?? 0,
+      readPositiveSafeInteger(
+        record,
+        "grainPerTroopPerDay",
+        `${path}.grainPerTroopPerDay`,
+        errors
+      ) ?? 0,
     supply,
     status: parseM4CampaignMarchStatus(record["status"], `${path}.status`, errors),
-    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    statusReasonCode:
+      readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
     reasonCodes,
     startedDay: readNonnegativeSafeInteger(record, "startedDay", `${path}.startedDay`, errors) ?? 0,
     updatedDay: readNonnegativeSafeInteger(record, "updatedDay", `${path}.updatedDay`, errors) ?? 0,
@@ -2531,8 +2631,20 @@ function parseM4FieldEngagement(
   }
   const target = parseM4CampaignTarget(record["target"], `${path}.target`, errors);
   const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
-  const creditHooks = parseM4Array(record["creditHooks"], `${path}.creditHooks`, "M4 creditHooks", errors, parseM4CampaignHook);
-  const reputationHooks = parseM4Array(record["reputationHooks"], `${path}.reputationHooks`, "M4 reputationHooks", errors, parseM4CampaignHook);
+  const creditHooks = parseM4Array(
+    record["creditHooks"],
+    `${path}.creditHooks`,
+    "M4 creditHooks",
+    errors,
+    parseM4CampaignHook
+  );
+  const reputationHooks = parseM4Array(
+    record["reputationHooks"],
+    `${path}.reputationHooks`,
+    "M4 reputationHooks",
+    errors,
+    parseM4CampaignHook
+  );
   if (target === undefined || creditHooks === undefined || reputationHooks === undefined) {
     return undefined;
   }
@@ -2549,25 +2661,61 @@ function parseM4FieldEngagement(
       readPositiveSafeInteger(record, "defenderPolityId", `${path}.defenderPolityId`, errors) ?? 0,
     target,
     attackerTroopsBefore:
-      readNonnegativeSafeInteger(record, "attackerTroopsBefore", `${path}.attackerTroopsBefore`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "attackerTroopsBefore",
+        `${path}.attackerTroopsBefore`,
+        errors
+      ) ?? 0,
     attackerTroopsAfter:
-      readNonnegativeSafeInteger(record, "attackerTroopsAfter", `${path}.attackerTroopsAfter`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "attackerTroopsAfter",
+        `${path}.attackerTroopsAfter`,
+        errors
+      ) ?? 0,
     defenderEstimatedTroopsBefore:
-      readNonnegativeSafeInteger(record, "defenderEstimatedTroopsBefore", `${path}.defenderEstimatedTroopsBefore`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "defenderEstimatedTroopsBefore",
+        `${path}.defenderEstimatedTroopsBefore`,
+        errors
+      ) ?? 0,
     defenderEstimatedTroopsAfter:
-      readNonnegativeSafeInteger(record, "defenderEstimatedTroopsAfter", `${path}.defenderEstimatedTroopsAfter`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "defenderEstimatedTroopsAfter",
+        `${path}.defenderEstimatedTroopsAfter`,
+        errors
+      ) ?? 0,
     attackerCasualties:
-      readNonnegativeSafeInteger(record, "attackerCasualties", `${path}.attackerCasualties`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "attackerCasualties",
+        `${path}.attackerCasualties`,
+        errors
+      ) ?? 0,
     defenderCasualties:
-      readNonnegativeSafeInteger(record, "defenderCasualties", `${path}.defenderCasualties`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "defenderCasualties",
+        `${path}.defenderCasualties`,
+        errors
+      ) ?? 0,
     supplyLoss: readNonnegativeSafeInteger(record, "supplyLoss", `${path}.supplyLoss`, errors) ?? 0,
     defenderFortification:
-      readNonnegativeSafeInteger(record, "defenderFortification", `${path}.defenderFortification`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "defenderFortification",
+        `${path}.defenderFortification`,
+        errors
+      ) ?? 0,
     outcome: parseM4FieldEngagementOutcome(record["outcome"], `${path}.outcome`, errors),
     reasonCodes,
     creditHooks,
     reputationHooks,
-    resolvedDay: readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
+    resolvedDay:
+      readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
   };
 }
 
@@ -2580,10 +2728,26 @@ function parseM4Siege(
   if (record === undefined) {
     return undefined;
   }
-  const surrenderReasonCodes = parseStringArray(record["surrenderReasonCodes"], `${path}.surrenderReasonCodes`, errors);
+  const surrenderReasonCodes = parseStringArray(
+    record["surrenderReasonCodes"],
+    `${path}.surrenderReasonCodes`,
+    errors
+  );
   const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
-  const creditHooks = parseM4Array(record["creditHooks"], `${path}.creditHooks`, "M4 creditHooks", errors, parseM4CampaignHook);
-  const reputationHooks = parseM4Array(record["reputationHooks"], `${path}.reputationHooks`, "M4 reputationHooks", errors, parseM4CampaignHook);
+  const creditHooks = parseM4Array(
+    record["creditHooks"],
+    `${path}.creditHooks`,
+    "M4 creditHooks",
+    errors,
+    parseM4CampaignHook
+  );
+  const reputationHooks = parseM4Array(
+    record["reputationHooks"],
+    `${path}.reputationHooks`,
+    "M4 reputationHooks",
+    errors,
+    parseM4CampaignHook
+  );
   if (creditHooks === undefined || reputationHooks === undefined) {
     return undefined;
   }
@@ -2600,11 +2764,17 @@ function parseM4Siege(
     defenderPolityId:
       readPositiveSafeInteger(record, "defenderPolityId", `${path}.defenderPolityId`, errors) ?? 0,
     status: parseM4SiegeStatus(record["status"], `${path}.status`, errors),
-    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    statusReasonCode:
+      readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
     fortification:
       readNonnegativeSafeInteger(record, "fortification", `${path}.fortification`, errors) ?? 0,
     defenderEstimatedTroops:
-      readNonnegativeSafeInteger(record, "defenderEstimatedTroops", `${path}.defenderEstimatedTroops`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "defenderEstimatedTroops",
+        `${path}.defenderEstimatedTroops`,
+        errors
+      ) ?? 0,
     defenderSupply:
       readNonnegativeSafeInteger(record, "defenderSupply", `${path}.defenderSupply`, errors) ?? 0,
     siegeProgress:
@@ -2618,11 +2788,26 @@ function parseM4Siege(
     attackerTroops:
       readNonnegativeSafeInteger(record, "attackerTroops", `${path}.attackerTroops`, errors) ?? 0,
     attackerCasualties:
-      readNonnegativeSafeInteger(record, "attackerCasualties", `${path}.attackerCasualties`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "attackerCasualties",
+        `${path}.attackerCasualties`,
+        errors
+      ) ?? 0,
     defenderCasualties:
-      readNonnegativeSafeInteger(record, "defenderCasualties", `${path}.defenderCasualties`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "defenderCasualties",
+        `${path}.defenderCasualties`,
+        errors
+      ) ?? 0,
     supplyLoss: readNonnegativeSafeInteger(record, "supplyLoss", `${path}.supplyLoss`, errors) ?? 0,
-    surrenderEligible: readBoolean(record, "surrenderEligible", `${path}.surrenderEligible`, errors),
+    surrenderEligible: readBoolean(
+      record,
+      "surrenderEligible",
+      `${path}.surrenderEligible`,
+      errors
+    ),
     surrenderReasonCodes,
     reasonCodes,
     creditHooks,
@@ -2641,8 +2826,20 @@ function parseM4Withdrawal(
   if (record === undefined) {
     return undefined;
   }
-  const creditHooks = parseM4Array(record["creditHooks"], `${path}.creditHooks`, "M4 creditHooks", errors, parseM4CampaignHook);
-  const reputationHooks = parseM4Array(record["reputationHooks"], `${path}.reputationHooks`, "M4 reputationHooks", errors, parseM4CampaignHook);
+  const creditHooks = parseM4Array(
+    record["creditHooks"],
+    `${path}.creditHooks`,
+    "M4 creditHooks",
+    errors,
+    parseM4CampaignHook
+  );
+  const reputationHooks = parseM4Array(
+    record["reputationHooks"],
+    `${path}.reputationHooks`,
+    "M4 reputationHooks",
+    errors,
+    parseM4CampaignHook
+  );
   const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
   if (creditHooks === undefined || reputationHooks === undefined) {
     return undefined;
@@ -2656,7 +2853,11 @@ function parseM4Withdrawal(
     marchId: readNullablePositiveSafeInteger(record, "marchId", `${path}.marchId`, errors),
     siegeId: readNullablePositiveSafeInteger(record, "siegeId", `${path}.siegeId`, errors),
     kind: parseM4WithdrawalKind(record["kind"], `${path}.kind`, errors),
-    triggerReason: parseM4WithdrawalTrigger(record["triggerReason"], `${path}.triggerReason`, errors),
+    triggerReason: parseM4WithdrawalTrigger(
+      record["triggerReason"],
+      `${path}.triggerReason`,
+      errors
+    ),
     troopsBefore:
       readNonnegativeSafeInteger(record, "troopsBefore", `${path}.troopsBefore`, errors) ?? 0,
     troopsExtracted:
@@ -2666,7 +2867,8 @@ function parseM4Withdrawal(
     creditHooks,
     reputationHooks,
     reasonCodes,
-    resolvedDay: readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
+    resolvedDay:
+      readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
   };
 }
 
@@ -2699,15 +2901,31 @@ function parseM4WarOutcome(
     targetDistrictId:
       readPositiveSafeInteger(record, "targetDistrictId", `${path}.targetDistrictId`, errors) ?? 0,
     attackerCasualties:
-      readNonnegativeSafeInteger(record, "attackerCasualties", `${path}.attackerCasualties`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "attackerCasualties",
+        `${path}.attackerCasualties`,
+        errors
+      ) ?? 0,
     defenderCasualties:
-      readNonnegativeSafeInteger(record, "defenderCasualties", `${path}.defenderCasualties`, errors) ?? 0,
+      readNonnegativeSafeInteger(
+        record,
+        "defenderCasualties",
+        `${path}.defenderCasualties`,
+        errors
+      ) ?? 0,
     supplyLoss: readNonnegativeSafeInteger(record, "supplyLoss", `${path}.supplyLoss`, errors) ?? 0,
-    withdrawalId: readNullablePositiveSafeInteger(record, "withdrawalId", `${path}.withdrawalId`, errors),
+    withdrawalId: readNullablePositiveSafeInteger(
+      record,
+      "withdrawalId",
+      `${path}.withdrawalId`,
+      errors
+    ),
     siegeId: readNullablePositiveSafeInteger(record, "siegeId", `${path}.siegeId`, errors),
     postwarCandidate,
     reasonCodes,
-    resolvedDay: readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
+    resolvedDay:
+      readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
   };
 }
 
@@ -2733,7 +2951,8 @@ function parseM4PostwarCandidate(
   return {
     candidateId: readNonEmptyString(record, "candidateId", `${path}.candidateId`, errors) ?? "",
     sourceWarOutcomeId:
-      readPositiveSafeInteger(record, "sourceWarOutcomeId", `${path}.sourceWarOutcomeId`, errors) ?? 0,
+      readPositiveSafeInteger(record, "sourceWarOutcomeId", `${path}.sourceWarOutcomeId`, errors) ??
+      0,
     settlementId: readNonEmptyString(record, "settlementId", `${path}.settlementId`, errors) ?? "",
     victorPolityId:
       readPositiveSafeInteger(record, "victorPolityId", `${path}.victorPolityId`, errors) ?? 0,
@@ -2758,7 +2977,8 @@ function parseM4CampaignOwner(
   if (kind === "commander") {
     return {
       kind,
-      characterId: readPositiveSafeInteger(record, "characterId", `${path}.characterId`, errors) ?? 0
+      characterId:
+        readPositiveSafeInteger(record, "characterId", `${path}.characterId`, errors) ?? 0
     };
   }
   if (kind === "polity") {
@@ -2848,7 +3068,11 @@ function parseM4KnownObjectiveEstimate(
     campaignPlanId:
       readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
     target,
-    objectiveKind: parseM4CampaignObjectiveKind(record["objectiveKind"], `${path}.objectiveKind`, errors),
+    objectiveKind: parseM4CampaignObjectiveKind(
+      record["objectiveKind"],
+      `${path}.objectiveKind`,
+      errors
+    ),
     confidenceBps:
       readNonnegativeSafeInteger(record, "confidenceBps", `${path}.confidenceBps`, errors) ?? 0,
     reasonCodes
@@ -2871,9 +3095,11 @@ function parseM4RouteEstimate(
     toDistrictId:
       readPositiveSafeInteger(record, "toDistrictId", `${path}.toDistrictId`, errors) ?? 0,
     travelCostEstimate:
-      readPositiveSafeInteger(record, "travelCostEstimate", `${path}.travelCostEstimate`, errors) ?? 0,
+      readPositiveSafeInteger(record, "travelCostEstimate", `${path}.travelCostEstimate`, errors) ??
+      0,
     capacityEstimate:
-      readNonnegativeSafeInteger(record, "capacityEstimate", `${path}.capacityEstimate`, errors) ?? 0,
+      readNonnegativeSafeInteger(record, "capacityEstimate", `${path}.capacityEstimate`, errors) ??
+      0,
     confidenceBps:
       readNonnegativeSafeInteger(record, "confidenceBps", `${path}.confidenceBps`, errors) ?? 0
   };
@@ -5135,9 +5361,7 @@ function copyM4CampaignState(m4: SaveM4CampaignStateDto): SaveM4CampaignStateDto
     schemaVersion: 1,
     campaignPlans: m4.campaignPlans.map(copyM4CampaignPlan),
     factionKnowledgeSnapshots: m4.factionKnowledgeSnapshots.map(copyM4FactionKnowledgeSnapshot),
-    mobilizedForceCommitments: m4.mobilizedForceCommitments.map(
-      copyM4MobilizedForceCommitment
-    ),
+    mobilizedForceCommitments: m4.mobilizedForceCommitments.map(copyM4MobilizedForceCommitment),
     grainSupplyReservations: m4.grainSupplyReservations.map(copyM4GrainSupplyReservation),
     marches: m4.marches.map(copyM4CampaignMarch),
     fieldEngagements: m4.fieldEngagements.map(copyM4FieldEngagement),

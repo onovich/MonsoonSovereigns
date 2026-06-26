@@ -10471,7 +10471,12 @@ function parseSavedDomainEvent(
         `${path}.localPolityId`,
         reasons
       );
-      const districtId = readPositiveIdRecordField(record, "districtId", `${path}.districtId`, reasons);
+      const districtId = readPositiveIdRecordField(
+        record,
+        "districtId",
+        `${path}.districtId`,
+        reasons
+      );
       const obligationIds = readPositiveIdArrayRecordField(
         record,
         "obligationIds",
