@@ -1,0 +1,67 @@
+{
+  "id": "M5-PLAYER-RESEARCH-001",
+  "summary": "Run minimal M5 player research",
+  "milestone": "M5",
+  "status": "DRAFT",
+  "owner_role": "gameplay_designer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+    "M5-PERFORMANCE-GATE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M5-PLAYER-RESEARCH-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A minimal player-research protocol is executed against the accepted M5 slice without telemetry, accounts, network collection, paid services, or hidden personal-data capture.",
+    "Research evidence records whether players can understand goals, command previews, campaign risk, AI reasons, save/load, and postwar consequences in a 2-4 hour repeatable session.",
+    "Findings distinguish blocker defects, bounded follow-up tasks, and subjective preferences without expanding product scope or deciding M5 formal passage.",
+    "Any cultural/historical concern is tagged and routed to historical_researcher or Human Gate review before formal content or asset production."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-PLAYER-RESEARCH-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "Research evidence lists session count, anonymized observations, blocker/follow-up classification, privacy handling, and no telemetry/network collection.",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "research/m5-player-research",
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "Use manual/anonymized observations only unless a separate Human Gate approves different data handling.",
+    "M5 formal passage remains a separate Human Gate even if this research passes."
+  ],
+  "created_at": "2026-06-26T12:30:00Z",
+  "updated_at": "2026-06-26T12:30:00Z"
+}

@@ -1,0 +1,76 @@
+{
+  "id": "M5-EXIT-HUMAN-GATE-001",
+  "summary": "Human Gate for formal M5 passage",
+  "milestone": "M5",
+  "status": "DRAFT",
+  "owner_role": "lead_orchestrator",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M5-SLICE-DEFINITION-001",
+    "M5-SIM-PLAYABLE-LOOP-001",
+    "M5-CLIENT-PLAYABLE-UI-001",
+    "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+    "M5-MULTIYEAR-AI-RUN-001",
+    "M5-PERFORMANCE-GATE-001",
+    "M5-PLAYER-RESEARCH-001",
+    "M5-MANUAL-NODE-BATTLE-DECISION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Formal M5 passage is recorded only after explicit Human Gate approval and after all required M5 evidence tasks are accepted.",
+    "Evidence covers repeatable 2-4 hour playable vertical slice, multi-year AI run without rescue, Web/Windows distributable proof, player research, performance gate, and the manual node battle decision outcome.",
+    "The gate distinguishes PASS, PASS_WITH_LIMITS, BLOCKED, and follow-up decisions without fabricating reviewer acceptance or hiding process limits.",
+    "The task does not implement product code, create release artifacts, decide commercial/branding/store presence, add telemetry/server/multiplayer/arbitrary-code mods, or change frozen product/platform/core architecture decisions.",
+    "Autonomous Goal Mode must stop here unless the human approval is explicit and recorded."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-EXIT-HUMAN-GATE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON validation for all M5 evidence tasks, dependency statuses, handoffs, and Human Gate record",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <gate-handoff>",
+    "Human Gate approval record includes explicit approval text, date, actor, M5 result, limits, and follow-up routing.",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "gate/m5-exit-human-gate",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is the formal M5 Human Gate and must not be auto-passed by a reviewer handoff or CI result.",
+    "Do not create docs/GATE-M5.md, MANIFEST.md, SHA256SUMS.txt, VALIDATION_REPORT.md, release packages, or commercial/branding artifacts unless a later explicitly authorized gate task allows them.",
+    "If any evidence is incomplete, record BLOCKED or PASS_WITH_LIMITS; do not mark M5 passed."
+  ],
+  "created_at": "2026-06-26T12:30:00Z",
+  "updated_at": "2026-06-26T12:30:00Z"
+}

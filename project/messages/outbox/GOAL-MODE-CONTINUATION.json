@@ -2,15 +2,57 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_EXIT_VALIDATION_CLOSED_M5_TASK_GRAPH_NEXT",
+  "status": "M5_TASK_GRAPH_ACCEPTED_PENDING_PR",
   "project": "Monsoon Sovereigns",
-  "origin_main": "f0fdbf1ba745ac8ffc78a2dba190c9abb1e888f1",
+  "origin_main": "3e649ac5f739dfea75511ad0cb1193fc7df713aa",
   "current_milestone": "M5",
-  "current_task": null,
-  "current_task_status": "CLOSED",
+  "current_task": "M5-TASK-GRAPH-001",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M4-EXIT-VALIDATION-001",
   "ready_tasks": [],
-  "active_threads": {},
+  "active_threads": {
+    "019f03b9-f591-7ee2-9c75-e04665cb063f": {
+      "thread_id": "019f03b9-f591-7ee2-9c75-e04665cb063f",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Auditor the 8th",
+      "responsibility": "independent read-only M5 task graph acceptance reviewer",
+      "branch_or_worktree": "chore/m5-task-graph",
+      "start_state": "AWAITING_REVIEW_READY",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T12:47:00Z",
+      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-SYSTEMS-REVIEW-TO-QA.json",
+      "start_submission_id": "019f03bb-a884-7f30-8bf5-b7effec2beba",
+      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "review_submission_id": "019f03cf-1efb-71a0-9c7e-4f07616608c0",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-QA-ACCEPT__qa_reviewer.json"
+    },
+    "019f03c6-5a70-7023-8a02-6e9f6edfe1e2": {
+      "thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Lintel the 8th",
+      "responsibility": "replacement systems_architect reviewer/writer for M5 task graph after partial no-handoff output",
+      "branch_or_worktree": "chore/m5-task-graph",
+      "start_state": "START_CONFIRMED_REPLACEMENT",
+      "spawn_result": "spawn_agent",
+      "replaces_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
+      "predecessor_close_reason": "partial_task_graph_without_systems_review_handoff",
+      "start_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-START__lead_orchestrator.json",
+      "updated_at": "2026-06-26T12:47:00Z",
+      "route_file": "project/messages/routes/M5-TASK-GRAPH-001__ROUTE-20260626-M5-GRAPH-LEAD-TO-SYSTEMS-REPLACEMENT.json",
+      "start_submission_id": "019f03c7-121b-71c1-b2e2-67c15e40c89a",
+      "review_ready_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "accept_handoff": "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -27,7 +69,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Create or recover M5 task graph as the next autonomous action; do not treat M5 formal passage, manual node battle, frozen decisions, server, telemetry, mods, or release as pre-approved.",
+  "next_machine_action": "Commit M5 task graph ACCEPT state, open PR, wait for CI, merge, sync main, then close M5-TASK-GRAPH-001 and promote first dependency-ready M5 task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -35,7 +77,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T11:32:55.179Z",
+  "last_updated_at": "2026-06-26T12:47:00Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -67,12 +109,14 @@
       "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T11:32:55.179Z",
-  "current_tasks": [],
+  "updated_at": "2026-06-26T12:47:00Z",
+  "current_tasks": [
+    "M5-TASK-GRAPH-001"
+  ],
   "last_integrated_task": "M4-EXIT-VALIDATION-001",
-  "last_main_commit": "f0fdbf1ba745ac8ffc78a2dba190c9abb1e888f1",
+  "last_main_commit": "3e649ac5f739dfea75511ad0cb1193fc7df713aa",
   "next_ready_tasks": [],
-  "next_action": "Create or recover M5 task graph as the next autonomous action; do not treat M5 formal passage, manual node battle, frozen decisions, server, telemetry, mods, or release as pre-approved.",
+  "next_action": "Commit M5 task graph ACCEPT state, open PR, wait for CI, merge, sync main, then close M5-TASK-GRAPH-001 and promote first dependency-ready M5 task.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -109,5 +153,12 @@
     "systems_handoff_available": false,
     "process_limit": "three systems_architect writer threads stalled and were closed without REVIEW handoff; QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
+  },
+  "m5_task_graph_replacement": {
+    "replaced_thread_id": "019f03b9-e19b-7592-8f0b-963615f5186e",
+    "replacement_thread_id": "019f03c6-5a70-7023-8a02-6e9f6edfe1e2",
+    "close_reason": "partial_task_graph_without_systems_review_handoff",
+    "closed_at": "2026-06-26T12:35:00.000Z",
+    "replacement_nickname": "Lintel the 8th"
   }
 }
