@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T00:21:19Z",
+  "updated_at": "2026-06-26T00:30:28Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1238,7 +1238,36 @@
       "accepted_task_reopened": false
     }
   ],
-  "active_threads": [],
+  "active_threads": [
+    {
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0152-40b7-7a73-b231-48227617563f",
+      "status": "start_pending",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_state": "START_PENDING",
+      "updated_at": "2026-06-26T00:26:54Z",
+      "responsibility": "primary M4 muster preparation and mobilized commitments writer"
+    },
+    {
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "role": "systems_architect",
+      "thread_id": "019f0152-54c5-7d40-a504-dfc1a75082e1",
+      "status": "awaiting_review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_state": "AWAITING_REVIEW_READY",
+      "updated_at": "2026-06-26T00:26:54Z",
+      "responsibility": "architecture reviewer for M4 muster preparation and commitments"
+    }
+  ],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1285,5 +1314,8 @@
     "M4-TASK-GRAPH-001": "CLOSED after PR #82 entered main at 4bee35829c9a37eff405d59cfe4af1a605434928. systems_architect thread 019f00f4-e7ae-7c71-9a8a-8e8285c9500d created the minimal M4 DAG, qa_reviewer thread 019f00f5-07f1-7ec0-b362-6dc0599efaab accepted it, CI passed, and lead closed both child threads. Next READY task is M4-CAMPAIGN-OBJECTIVES-001.",
     "M4-CAMPAIGN-OBJECTIVES-001": "CLOSED after PR #84 entered main at ff2675e8b8222e9006df3e5a9848526d2edeaa85. Replacement simulation_engineer implemented M4 campaign objective/FactionKnowledge substrate; systems_architect requested deterministic duplicate-key fixes and accepted R2. Next READY task is M4-MUSTER-PREP-COMMITMENTS-001.",
     "M4-MUSTER-PREP-COMMITMENTS-001": "READY after M4 campaign objectives closure. This task owns muster preparation and mobilized force commitments only."
+  },
+  "task_notes": {
+    "M4-MUSTER-PREP-COMMITMENTS-001": "IN_PROGRESS after lead sent START_CONFIRMED to simulation_engineer and AWAIT_REVIEW_READY to systems_architect. Scope is limited to M4 muster preparation and mobilized force commitments."
   }
 }

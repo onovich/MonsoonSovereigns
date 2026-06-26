@@ -2,17 +2,30 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M4_CAMPAIGN_OBJECTIVES_CLOSED_MUSTER_READY",
+  "status": "M4_MUSTER_PREP_COMMITMENTS_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "ff2675e8b8222e9006df3e5a9848526d2edeaa85",
+  "origin_main": "4cd5cd1fc1073c3c76aaca8d78b8be182e30898a",
   "current_milestone": "M4",
   "current_task": "M4-MUSTER-PREP-COMMITMENTS-001",
-  "current_task_status": "READY",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M4-CAMPAIGN-OBJECTIVES-001",
-  "ready_tasks": [
-    "M4-MUSTER-PREP-COMMITMENTS-001"
-  ],
-  "active_threads": [],
+  "ready_tasks": [],
+  "active_threads": {
+    "019f0152-40b7-7a73-b231-48227617563f": {
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "role": "simulation_engineer",
+      "status": "active",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "start_submission_id": "019f0154-a0e3-77c3-8d64-de653e6e4ac0"
+    },
+    "019f0152-54c5-7d40-a504-dfc1a75082e1": {
+      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
+      "role": "systems_architect",
+      "status": "awaiting_review_ready",
+      "branch_or_worktree": "feat/m4-muster-prep-commitments",
+      "await_submission_id": "019f0154-a122-7851-8156-52b9e0aa1f2b"
+    }
+  },
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -27,10 +40,9 @@
   ],
   "human_gate": {
     "required": false,
-    "reason": null,
-    "approval": "M0-EXIT-AND-M1-AUTONOMOUS-ENTRY-001 cleared the M0 milestone exit gate and authorized autonomous execution within the documented gates."
+    "reason": ""
   },
-  "next_machine_action": "Start M4-MUSTER-PREP-COMMITMENTS-001 on branch feat/m4-muster-prep-commitments with simulation_engineer writer and systems_architect reviewer; keep scope to muster preparation and mobilized force commitments only.",
+  "next_machine_action": "Await simulation_engineer REVIEW handoff for M4-MUSTER-PREP-COMMITMENTS-001, validate it, route to systems_architect, review/fix, then integrate through PR/CI before closing the task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -38,7 +50,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T00:21:19Z",
+  "last_updated_at": "2026-06-26T00:26:54Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -61,5 +73,13 @@
       "replaced_by": "019f011e-d31b-7f50-87a7-b92e135d4b7e",
       "replaced_at": "2026-06-25T23:30:39Z"
     }
-  ]
+  ],
+  "updated_at": "2026-06-26T00:30:28Z",
+  "current_tasks": [
+    "M4-MUSTER-PREP-COMMITMENTS-001"
+  ],
+  "last_integrated_task": "M4-CAMPAIGN-OBJECTIVES-001",
+  "last_main_commit": "4cd5cd1fc1073c3c76aaca8d78b8be182e30898a",
+  "next_ready_tasks": [],
+  "next_action": "Wait for simulation_engineer REVIEW handoff, validate it, route to systems_architect, run review/fix loop, then integrate after ACCEPT."
 }
