@@ -2,12 +2,12 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M5_PERFORMANCE_GATE_IN_PROGRESS",
+  "status": "M5_PERFORMANCE_GATE_REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
   "current_milestone": "M5",
   "current_task": "M5-PERFORMANCE-GATE-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M5-MULTIYEAR-AI-RUN-001",
   "ready_tasks": [
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
@@ -17,7 +17,7 @@
       "task_id": "M5-PERFORMANCE-GATE-001",
       "role": "test_engineer",
       "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
-      "status": "active",
+      "status": "review_ready",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -31,7 +31,9 @@
       "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
       "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
       "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
-      "updated_at": "2026-06-27T01:05:00+08:00"
+      "updated_at": "2026-06-27T01:16:50+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-27T01:16:50+08:00"
     }
   },
   "unresolved_risks": [
@@ -50,7 +52,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Wait for M5-PERFORMANCE-GATE-001 writer REVIEW handoff, validate it, route to independent qa_reviewer, then integrate on ACCEPT.",
+  "next_machine_action": "Route M5-PERFORMANCE-GATE-001 REVIEW to independent qa_reviewer, then integrate on ACCEPT or route REQUEST_CHANGES.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -58,7 +60,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T01:05:00+08:00",
+  "last_updated_at": "2026-06-27T01:16:50+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -98,7 +100,7 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T01:05:00+08:00",
+  "updated_at": "2026-06-27T01:16:50+08:00",
   "current_tasks": [
     "M5-PERFORMANCE-GATE-001"
   ],
@@ -107,7 +109,7 @@
   "next_ready_tasks": [
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
   ],
-  "next_action": "Wait for M5-PERFORMANCE-GATE-001 writer REVIEW handoff, validate it, route to independent qa_reviewer, then integrate on ACCEPT.",
+  "next_action": "Route M5-PERFORMANCE-GATE-001 REVIEW to independent qa_reviewer, then integrate on ACCEPT or route REQUEST_CHANGES.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -315,7 +317,7 @@
     ]
   },
   "m5_performance_gate": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "branch_or_worktree": "test/m5-performance-gate",
     "writer_thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
     "writer_nickname": "Gauge the 9th",
@@ -325,6 +327,8 @@
     "started_at": "2026-06-27T01:05:00+08:00",
     "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
     "human_gate_required": false,
-    "next_action": "Wait for test_engineer REVIEW handoff, then route to independent qa_reviewer."
+    "next_action": "Route M5-PERFORMANCE-GATE-001 REVIEW to independent qa_reviewer, then integrate on ACCEPT or route REQUEST_CHANGES.",
+    "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+    "review_ready_at": "2026-06-27T01:16:50+08:00"
   }
 }

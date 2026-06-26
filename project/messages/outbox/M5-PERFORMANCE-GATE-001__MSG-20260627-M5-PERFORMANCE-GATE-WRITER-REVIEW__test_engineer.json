@@ -1,0 +1,115 @@
+{
+  "message_id": "MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW",
+  "task_id": "M5-PERFORMANCE-GATE-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Evidence-only M5 performance/stability gate completed on the current slice. `pnpm check`, `pnpm test`, `pnpm sim:determinism`, `pnpm sim:perf-baseline`, `pnpm build:web`, `pnpm desktop:security-check`, `pnpm desktop:package`, `pnpm test:e2e`, taskctl validation/list/ready, and `git diff --check` all passed. Live Web probe against the local Vite server measured initial load 522.78ms, M2 derivation 0.1ms, M2 selection 0ms, mode switch 79.68ms, routes switch 66.88ms, zoom update 60.46ms, M5 save median 44.99ms, M5 load median 50.84ms, and client-core session export/import at 0.28/0.508 us per op. M5 multi-year validation ran 3 times at 210.19ms, 133.47ms, and 126.10ms with peak RSS 107780 KiB.",
+  "artifacts": [
+    "packages/sim-core/scripts/performance-baseline.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "packages/sim-ai/src/index.ts",
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/desktop/scripts/security-check.mjs",
+    "apps/desktop/scripts/package.mjs",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M5-PERFORMANCE-GATE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "test/m5-performance-gate",
+  "commit": "b9b63b5a8b86b1b07ade5e9670d50b55f82b7286",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean working tree after the gate run; no tracked or untracked changes remained."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check, sim determinism, root Vitest 35 files / 249 tests, and web Vitest 1 file / 4 tests passed. Existing MODULE_TYPELESS_PACKAGE_JSON warning remained non-blocking."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched for hello 61e0ba1c, command/query d275faa4, save/load 28074edd, M4 232f62ab/334e0df0/ac35e97e, and M5 bf042e42."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650-day baseline passed; throughput 14531 days/sec; p50 57300 ns; p95 113300 ns; p99 177100 ns; save 2139800 ns; load 2529100 ns; saveByteLength 9980."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build completed in 225ms and emitted the web and host-hash-canary bundles."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only the named monsoonDesktop bridge; renderer navigation is restricted; IPC channels remain desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke output written to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright 8/8 passed on Chromium."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"<Playwright web responsiveness + M5 session save/import-export probe>\"",
+      "exit_code": 0,
+      "result": "Live web probe measured initial load 522.78ms, M2 derivation 0.1ms, M2 selection 0ms, economy switch 79.68ms, routes switch 66.88ms, zoom update 60.46ms, M5 save median 44.99ms, M5 load median 50.84ms, client-core export/import 0.28/0.508 us per op, save length 209, checkpoint m5.step.01.sim.create-campaign-objective, and stateHash 61e0ba1c."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"<M5 multi-year duration/memory probe>\"",
+      "exit_code": 0,
+      "result": "Three 730-day validation runs completed in 210.19ms, 133.47ms, and 126.10ms; peak RSS was 107780 KiB."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-PERFORMANCE-GATE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M5-PERFORMANCE-GATE-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed all tasks; M5-WEB-WINDOWS-DISTRIBUTABLE-001 remains the next READY M5 task."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M5-WEB-WINDOWS-DISTRIBUTABLE-001 DRAFT release_engineer Produce Web and Windows distributable evidence"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format errors."
+    }
+  ],
+  "decisions": [
+    "Used the repo's actual scripts rather than stale task aliases: root `test:e2e`, `desktop:security-check`, `desktop:package`, `sim:determinism`, and `sim:perf-baseline` all exist and passed.",
+    "Measured Web responsiveness against the live Vite server and the existing M2/M5 DOM metrics instead of inventing a synthetic benchmark.",
+    "Measured client-core session export/import at the `createM5SessionSave` / `parseM5SessionSave` boundary because the current desktop bridge exposes runtime/fullscreen only and does not provide a separate import/export command surface.",
+    "No code change was required for this gate; the work was evidence collection plus task-status routing."
+  ],
+  "risks": [
+    "The import/export timing evidence is at the client-core M5 session boundary, not a dedicated desktop file-picker bridge, because the current slice does not expose one.",
+    "The existing `MODULE_TYPELESS_PACKAGE_JSON` warning in `pnpm test` remains non-blocking and is not new to this task."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the recorded M5 performance/stability evidence and decide whether the gate can pass as-is or needs PASS_WITH_LIMITS handling for the client-core import/export boundary caveat.",
+  "created_at": "2026-06-27T01:13:08.5695598+08:00"
+}

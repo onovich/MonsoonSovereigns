@@ -10,7 +10,7 @@
       "task_id": "M5-PERFORMANCE-GATE-001",
       "role": "test_engineer",
       "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
-      "status": "active",
+      "status": "review_ready",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -24,7 +24,9 @@
       "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
       "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
       "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
-      "updated_at": "2026-06-27T01:05:00+08:00"
+      "updated_at": "2026-06-27T01:16:50+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-27T01:16:50+08:00"
     }
   },
   "last_integrated_task": "M5-MULTIYEAR-AI-RUN-001",
@@ -67,7 +69,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T01:05:00+08:00",
+  "last_updated_at": "2026-06-27T01:16:50+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -79,7 +81,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T01:05:00+08:00",
+  "updated_at": "2026-06-27T01:16:50+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -273,7 +275,7 @@
     }
   ],
   "m5_performance_gate": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "branch_or_worktree": "test/m5-performance-gate",
     "writer_thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
     "writer_nickname": "Gauge the 9th",
@@ -283,6 +285,8 @@
     "started_at": "2026-06-27T01:05:00+08:00",
     "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
     "human_gate_required": false,
-    "next_action": "Wait for test_engineer REVIEW handoff, then route to independent qa_reviewer."
+    "next_action": "Route writer REVIEW handoff to independent qa_reviewer.",
+    "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+    "review_ready_at": "2026-06-27T01:16:50+08:00"
   }
 }

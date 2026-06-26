@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T01:05:00+08:00",
+  "updated_at": "2026-06-27T01:16:50+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1771,7 +1771,7 @@
       "task_id": "M5-PERFORMANCE-GATE-001",
       "role": "test_engineer",
       "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
-      "status": "active",
+      "status": "review_ready",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -1785,7 +1785,9 @@
       "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
       "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
       "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
-      "updated_at": "2026-06-27T01:05:00+08:00"
+      "updated_at": "2026-06-27T01:16:50+08:00",
+      "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+      "review_ready_at": "2026-06-27T01:16:50+08:00"
     }
   ],
   "task_effects": {
@@ -1856,6 +1858,6 @@
     "M5-SIM-PLAYABLE-LOOP-001": "CLOSED after PR #112 entered main at fee2ccfeefd7ad73bbfc37442c4224000ad75496. Deterministic M5 simulation slice loop integrated; child threads closed; next ready M5 tasks are M5-CLIENT-PLAYABLE-UI-001 and M5-MULTIYEAR-AI-RUN-001.",
     "M5-CLIENT-PLAYABLE-UI-001": "CLOSED after PR #114 entered main at 5502087977416f2720e084337b65c16c472a4d14. client_engineer thread 019f045c-18cd-72c1-9c03-6a48b6ff56e0 produced REVIEW handoff; independent qa_reviewer thread 019f046f-ee05-76e1-97fe-74c083fc227d accepted; lead gates and PR CI passed. Child threads closed. Next dependency-ready M5 tasks are M5-MULTIYEAR-AI-RUN-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
     "M5-MULTIYEAR-AI-RUN-001": "CLOSED after PR #116 entered main at 809209369a9ca21f32f6e0887758c5f0e670dd41. Replacement test_engineer R3 and independent qa_reviewer R2 accepted; CI passed; child threads closed. Next dependency-ready M5 tasks are M5-PERFORMANCE-GATE-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
-    "M5-PERFORMANCE-GATE-001": "IN_PROGRESS after lead started test_engineer thread 019f04e2-2734-7221-80cd-9b0875d64ea0 (Gauge the 9th) on branch test/m5-performance-gate."
+    "M5-PERFORMANCE-GATE-001": "REVIEW after test_engineer produced performance/stability evidence handoff. No product code changed; QA should assess PASS/PASS_WITH_LIMITS evidence and import/export boundary caveat."
   }
 }
