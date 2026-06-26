@@ -25,24 +25,28 @@
       "spawn_result": "spawn_agent",
       "await_submission_id": "019f038b-35cd-7cd2-8ea3-6c1d6daca32c",
       "start_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T11:00:43.084Z"
+      "updated_at": "2026-06-26T11:08:03.000Z"
     },
-    "019f0396-8e7d-73b0-9384-52f7deed12fd": {
-      "thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
+    "019f03a0-2734-7250-a9fd-080899d5fde1": {
+      "thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
       "status": "started",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "nickname": "Keystone the 7th",
-      "responsibility": "replacement primary M4 exit gate evidence and docs writer",
+      "nickname": "Meridian the 7th",
+      "responsibility": "second replacement primary M4 exit gate evidence and docs writer",
       "branch_or_worktree": "chore/m4-exit-gate",
       "start_state": "START_CONFIRMED",
       "spawn_result": "spawn_agent",
-      "replaces_thread_id": "019f0389-b54a-7191-b5f2-0813f6bca0ad",
-      "predecessor_close_reason": "stalled_no_review_handoff_after_gate_evidence_update",
+      "replaces_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
+      "predecessor_chain": [
+        "019f0389-b54a-7191-b5f2-0813f6bca0ad",
+        "019f0396-8e7d-73b0-9384-52f7deed12fd"
+      ],
+      "predecessor_close_reason": "stalled_no_review_handoff_after_narrowing_instruction",
       "start_handoff": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-START__lead_orchestrator.json",
-      "updated_at": "2026-06-26T11:00:43.084Z"
+      "updated_at": "2026-06-26T11:08:03.000Z"
     }
   },
   "unresolved_risks": [
@@ -61,7 +65,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Await replacement systems_architect REVIEW handoff for M4-EXIT-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates.",
+  "next_machine_action": "Await second replacement systems_architect REVIEW handoff for M4-EXIT-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -69,7 +73,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T11:00:43.084Z",
+  "last_updated_at": "2026-06-26T11:08:03.000Z",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -101,19 +105,23 @@
       "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T11:00:43.084Z",
+  "updated_at": "2026-06-26T11:08:03.000Z",
   "current_tasks": [
     "M4-EXIT-VALIDATION-001"
   ],
   "last_integrated_task": "M4-STRESS-VALIDATION-001",
   "last_main_commit": "96abe397327a81e5922aed61c022255dc20f2baa",
   "next_ready_tasks": [],
-  "next_action": "Await replacement systems_architect REVIEW handoff for M4-EXIT-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates.",
+  "next_action": "Await second replacement systems_architect REVIEW handoff for M4-EXIT-VALIDATION-001; route to qa_reviewer, then integrate only after ACCEPT and gates.",
   "m4_exit_replacement": {
-    "replaced_thread_id": "019f0389-b54a-7191-b5f2-0813f6bca0ad",
-    "replacement_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
-    "close_reason": "stalled_no_review_handoff_after_gate_evidence_update",
-    "closed_at": "2026-06-26T11:00:43.084Z",
-    "replacement_nickname": "Keystone the 7th"
+    "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
+    "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
+    "close_reason": "stalled_no_review_handoff_after_narrowing_instruction",
+    "closed_at": "2026-06-26T11:08:03.000Z",
+    "replacement_nickname": "Meridian the 7th",
+    "predecessor_chain": [
+      "019f0389-b54a-7191-b5f2-0813f6bca0ad",
+      "019f0396-8e7d-73b0-9384-52f7deed12fd"
+    ]
   }
 }
