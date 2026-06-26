@@ -9,22 +9,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "active_orchestrating",
+      "status": "accepted_integration_pending",
       "role": "lead_orchestrator"
-    },
-    "gameplay_designer": {
-      "thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
-      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "review_ready",
-      "role": "gameplay_designer",
-      "nickname": "Monsoon"
-    },
-    "systems_architect": {
-      "thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
-      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "active",
-      "role": "systems_architect",
-      "nickname": "Keystone the 2nd"
     }
   },
   "last_integrated_task": "M6-TASK-GRAPH-001",
@@ -55,8 +41,8 @@
     "approval_scope": "NONE",
     "approval_source": "M5 Gate closure after PR #127 and M6 task graph closure after PR #130; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is in REVIEW with gameplay_designer writer handoff ready for systems_architect review.",
-    "recorded_at": "2026-06-27T06:02:12+08:00"
+    "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is ACCEPTED after systems_architect review and awaits PR integration.",
+    "recorded_at": "2026-06-27T06:29:00+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -70,7 +56,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T06:20:30+08:00",
+  "last_updated_at": "2026-06-27T06:29:00+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -82,7 +68,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T06:20:30+08:00",
+  "updated_at": "2026-06-27T06:29:00+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -440,7 +426,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-ALPHA-SYSTEM-CONTRACT-001.",
+  "next_action": "Open PR for M6-ALPHA-SYSTEM-CONTRACT-001, wait for CI, merge to main, then close task and select next READY M6 task.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -518,7 +504,7 @@
     "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
   },
   "m6_alpha_system_contract": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "branch_or_worktree": "design/m6-alpha-system-contract",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -533,7 +519,7 @@
     "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-27T06:10:00+08:00",
     "reviewer_role": "systems_architect",
-    "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES.",
+    "next_action": "Open PR, wait for CI, merge to main, then close task.",
     "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
     "route_sent_at": "2026-06-27T06:05:24+08:00",
     "systems_architect_thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
@@ -542,6 +528,11 @@
     "review_commit": "5d4e349efbcf75f9c5a4adc483515e750c60db5d",
     "routed_to_systems_at": "2026-06-27T06:19:55+08:00",
     "systems_review_submission_id": "019f0604-e29d-7502-89b8-c4ec62522fa8",
-    "systems_route_sent_at": "2026-06-27T06:20:30+08:00"
+    "systems_route_sent_at": "2026-06-27T06:20:30+08:00",
+    "systems_review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T06:29:00+08:00",
+    "child_threads_closed": true
   }
 }

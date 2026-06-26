@@ -2,34 +2,20 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_ALPHA_SYSTEM_CONTRACT_REVIEW",
+  "status": "M6_ALPHA_SYSTEM_CONTRACT_ACCEPTED_PENDING_PR",
   "project": "Monsoon Sovereigns",
   "origin_main": "ce81452b47b456c81705eb6469d92ae429bca718",
   "current_milestone": "M6",
   "current_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M6-TASK-GRAPH-001",
   "ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "active_orchestrating",
+      "status": "accepted_integration_pending",
       "role": "lead_orchestrator"
-    },
-    "gameplay_designer": {
-      "thread_id": "019f05f2-2542-7db1-b9cf-8f1890569919",
-      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "review_ready",
-      "role": "gameplay_designer",
-      "nickname": "Monsoon"
-    },
-    "systems_architect": {
-      "thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
-      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "status": "active",
-      "role": "systems_architect",
-      "nickname": "Keystone the 2nd"
     }
   },
   "unresolved_risks": [
@@ -50,10 +36,10 @@
     "approval_scope": "NONE",
     "approval_source": "M5 Gate closure after PR #127 and M6 task graph closure after PR #130; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is in REVIEW with gameplay_designer writer handoff ready for systems_architect review.",
-    "recorded_at": "2026-06-27T06:03:31+08:00"
+    "note": "No active Human Gate. M6-ALPHA-SYSTEM-CONTRACT-001 is ACCEPTED after systems_architect review and awaits PR integration.",
+    "recorded_at": "2026-06-27T06:29:00+08:00"
   },
-  "next_machine_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-ALPHA-SYSTEM-CONTRACT-001.",
+  "next_machine_action": "Open PR for M6-ALPHA-SYSTEM-CONTRACT-001, wait for CI, merge to main, then close task and select next READY M6 task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -61,7 +47,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T06:20:30+08:00",
+  "last_updated_at": "2026-06-27T06:29:00+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -101,14 +87,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T06:20:30+08:00",
+  "updated_at": "2026-06-27T06:29:00+08:00",
   "current_tasks": [
     "M6-ALPHA-SYSTEM-CONTRACT-001"
   ],
   "last_integrated_task": "M6-TASK-GRAPH-001",
   "last_main_commit": "ce81452b47b456c81705eb6469d92ae429bca718",
   "next_ready_tasks": [],
-  "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-ALPHA-SYSTEM-CONTRACT-001.",
+  "next_action": "Open PR for M6-ALPHA-SYSTEM-CONTRACT-001, wait for CI, merge to main, then close task and select next READY M6 task.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -546,7 +532,7 @@
     "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
   },
   "m6_alpha_system_contract": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "branch_or_worktree": "design/m6-alpha-system-contract",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -561,7 +547,7 @@
     "review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-27T06:10:00+08:00",
     "reviewer_role": "systems_architect",
-    "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES.",
+    "next_action": "Open PR, wait for CI, merge to main, then close task.",
     "start_submission_id": "019f05f7-0c1a-7512-a01e-e2c312e34935",
     "route_sent_at": "2026-06-27T06:05:24+08:00",
     "systems_architect_thread_id": "019f0603-f7e8-7542-88b3-44b9081339c3",
@@ -570,6 +556,11 @@
     "review_commit": "5d4e349efbcf75f9c5a4adc483515e750c60db5d",
     "routed_to_systems_at": "2026-06-27T06:19:55+08:00",
     "systems_review_submission_id": "019f0604-e29d-7502-89b8-c4ec62522fa8",
-    "systems_route_sent_at": "2026-06-27T06:20:30+08:00"
+    "systems_route_sent_at": "2026-06-27T06:20:30+08:00",
+    "systems_review_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M6-ALPHA-SYSTEM-CONTRACT-001__MSG-20260627-M6-ALPHA-SYSTEM-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T06:29:00+08:00",
+    "child_threads_closed": true
   }
 }
