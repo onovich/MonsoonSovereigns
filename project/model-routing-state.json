@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T07:18:10+08:00",
+  "updated_at": "2026-06-27T07:30:21+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1794,6 +1794,20 @@
       "responsibility": "replacement simulation_engineer writer for deterministic diplomacy and legitimacy substrate",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
       "updated_at": "2026-06-27T07:16:51+08:00"
+    },
+    {
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "role": "systems_architect",
+      "thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Meridian the 2nd",
+      "responsibility": "systems_architect review of M6 diplomacy and legitimacy substrate",
+      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
+      "updated_at": "2026-06-27T07:29:40+08:00"
     }
   ],
   "task_effects": {
@@ -2056,9 +2070,9 @@
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
       "dependencies_satisfied_by": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "updated_at": "2026-06-27T07:18:10+08:00",
+      "updated_at": "2026-06-27T07:30:21+08:00",
       "human_gate_required": false,
-      "next_action": "Await replacement simulation_engineer REVIEW or PARTIAL handoff.",
+      "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES.",
       "writer_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
       "writer_nickname": "Delta the 2nd",
       "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
@@ -2075,7 +2089,14 @@
       "replacement_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-REPLACEMENT-START.json",
       "replacement_at": "2026-06-27T07:16:51+08:00",
       "replacement_submission_id": "019f0639-a8c7-7760-814b-0b8518db84a1",
-      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00"
+      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00",
+      "systems_architect_thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+      "systems_architect_nickname": "Meridian the 2nd",
+      "review_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REVIEW.json",
+      "review_commit": "15a337f3b70e947adc4fbe7c592d49f7702207be",
+      "routed_to_systems_at": "2026-06-27T07:29:40+08:00",
+      "systems_review_submission_id": "019f0644-caee-71f2-950b-e23cdd110ec8",
+      "systems_route_sent_at": "2026-06-27T07:30:21+08:00"
     }
   }
 }

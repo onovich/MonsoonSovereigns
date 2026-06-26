@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T07:18:10+08:00",
+  "updated_at": "2026-06-27T07:30:21+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2702,11 +2702,11 @@
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
       "start_state": "IN_PROGRESS_ROUTED_TO_SIMULATION_ENGINEER",
       "created_at": "2026-06-27T06:35:40+08:00",
-      "updated_at": "2026-06-27T07:18:10+08:00",
+      "updated_at": "2026-06-27T07:30:21+08:00",
       "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
       "previous_integrated_pr": 131,
       "previous_integrated_main_commit": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
-      "next_action": "Await replacement simulation_engineer REVIEW or PARTIAL handoff.",
+      "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES.",
       "base_main_commit": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
       "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-START.json",
@@ -2723,7 +2723,14 @@
       "replacement_reason": "original writer closed after repeated wait timeouts and no heartbeat response; uncommitted allowed-path work is preserved for replacement continuation",
       "replacement_at": "2026-06-27T07:16:51+08:00",
       "replacement_submission_id": "019f0639-a8c7-7760-814b-0b8518db84a1",
-      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00"
+      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00",
+      "systems_architect_thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+      "systems_architect_nickname": "Meridian the 2nd",
+      "systems_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json",
+      "review_commit": "15a337f3b70e947adc4fbe7c592d49f7702207be",
+      "routed_to_systems_at": "2026-06-27T07:29:40+08:00",
+      "systems_review_submission_id": "019f0644-caee-71f2-950b-e23cdd110ec8"
     },
     "M6-DIPLOMACY-LEGITIMACY-001:simulation_engineer": {
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
@@ -2796,7 +2803,7 @@
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "simulation_engineer",
       "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
-      "status": "active",
+      "status": "review_routed",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -2826,11 +2833,36 @@
         "tests/sim-core-m6-diplomacy-legitimacy.test.ts"
       ],
       "created_at": "2026-06-27T07:16:51+08:00",
-      "updated_at": "2026-06-27T07:18:10+08:00",
+      "updated_at": "2026-06-27T07:29:40+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "replacement_submission_id": "019f0639-a8c7-7760-814b-0b8518db84a1",
-      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00"
+      "replacement_route_sent_at": "2026-06-27T07:18:10+08:00",
+      "review_ready_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json",
+      "review_commit": "15a337f3b70e947adc4fbe7c592d49f7702207be",
+      "routed_to_systems_at": "2026-06-27T07:29:40+08:00"
+    },
+    "M6-DIPLOMACY-LEGITIMACY-001:systems_architect": {
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "role": "systems_architect",
+      "thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Meridian the 2nd",
+      "responsibility": "systems_architect review of M6 diplomacy and legitimacy substrate",
+      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
+      "start_state": "REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json",
+      "review_commit": "15a337f3b70e947adc4fbe7c592d49f7702207be",
+      "created_at": "2026-06-27T07:29:40+08:00",
+      "updated_at": "2026-06-27T07:30:21+08:00",
+      "read_only": true,
+      "review_submission_id": "019f0644-caee-71f2-950b-e23cdd110ec8"
     }
   },
   "replaced_threads": [
