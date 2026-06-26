@@ -1,0 +1,131 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-AI-QA-ACCEPT",
+  "task_id": "M4-CAMPAIGN-AI-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA review accepts M4-CAMPAIGN-AI-001 after systems_architect ACCEPT-R4. Current HEAD 35e63a06703107ad375a26928fcd9e7188abcdca is clean; business code commit 5e6d04557f33 implements the R4 bounded trace fix. Required focused, package, deterministic, full test, check, task, handoff, whitespace, scope, and boundary evidence passed. No P0/P1 correctness, determinism, authoritative mutation, command/query parity, forbidden-path, or scope-creep issue was found.",
+  "artifacts": [
+    "packages/sim-core/src/campaign-ai-v1.ts",
+    "packages/protocol/src/index.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/package.json",
+    "tests/sim-core-m4-campaign-ai.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-CAMPAIGN-AI-001.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R4-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-R4-ACCEPT__systems_architect.json",
+    "project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-ai",
+  "commit": "35e63a06703107ad375a26928fcd9e7188abcdca",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Current HEAD is clean on feat/m4-campaign-ai after process route commit 35e63a06 advanced during review."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff is confined to allowed task scope: packages/protocol, packages/sim-core, tests, project task/model/goal/thread/message/route files."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- apps/web apps/desktop packages/client-core packages/map-renderer packages/ui packages/platform packages/save-format packages/content-schema packages/content-runtime content-source tools .github docs PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No forbidden-path changes were listed."
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|runtime\\.world|acceptedCommandIds|commandTail|eventTail\" packages/sim-core/src/campaign-ai-v1.ts",
+      "exit_code": 1,
+      "result": "No random/time API, hidden runtime.world access, or command/event tail access found in the AI planner."
+    },
+    {
+      "command": "Select-String -Path packages/sim-core/src/campaign-ai-v1.ts -Pattern 'react','pixi','electron','node:fs'",
+      "exit_code": 0,
+      "result": "No forbidden React/Pixi/Electron/Node fs imports or references found."
+    },
+    {
+      "command": "pnpm exec vitest run --root . tests/sim-core-m4-campaign-ai.test.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "Focused regression gate passed: 2 test files, 18 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Sim-core package tests passed: 22 files, 165 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Protocol package tests passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest passed 33 files / 233 tests; web Vitest passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "taskctl validate M4-CAMPAIGN-AI-001",
+      "exit_code": 1,
+      "result": "Bare taskctl command is not available in this shell PATH; reviewed with repository taskctl script instead."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-AI-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-CAMPAIGN-AI-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R3-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R3 REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems REQUEST_CHANGES handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-R4-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R4 REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-AI-001__MSG-20260626-M4-CAMPAIGN-AI-SYSTEMS-R4-ACCEPT__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems R4 ACCEPT handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "ACCEPT. R4 fixed the prior bounded trace blocker: packages/protocol/src/index.ts exports M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES = 16, the protocol parser rejects larger candidate arrays, and packages/sim-core/src/campaign-ai-v1.ts clamps planner output to the same constant.",
+    "ACCEPT. Truncated traces retain selectedCandidateId and emit deterministic candidateId-sorted entries; tests/sim-core-m4-campaign-ai.test.ts includes an oversize maxTraceCandidates 99 regression that selects withdraw, retains the selected candidate, stays within protocol max, and parses successfully.",
+    "ACCEPT. The AI planner consumes querySimulationV1 read models and returns null or existing GameCommandV1 payloads. It does not directly mutate authoritative WorldState, touch runtime.world, or introduce an AI-only command surface.",
+    "ACCEPT. Scenario coverage exercises supply/season wait, objective change, reinforcement, withdrawal, cancellation, siege continuation, no-action determinism/serialization, start-march command parity, and trace bounds.",
+    "ACCEPT. Branch diff does not touch forbidden UI, desktop, save-format, content, docs, CI, or product-status paths; no full diplomacy AI, multi-year grand strategy, personality simulation, telemetry, server/multiplayer, manual battle, complex naval warfare, or M5 content was added."
+  ],
+  "risks": [
+    "Residual R3 risk is normal for campaign AI over command/query contracts and should be handled by lead integration gates.",
+    "AI-specific postwar-risk behavior is code-reviewed through buildPostwarRiskCandidate and the sim.list-m4-war-outcomes / sim.compare-m3-postwar-governance-outcomes query surface; there is no dedicated postwar-risk scenario in tests/sim-core-m4-campaign-ai.test.ts, but upstream M4 war-outcome and M3 postwar query tests cover the read models. This is non-blocking and not a P0/P1 issue.",
+    "The planner is intentionally shallow and single-turn; richer strategy remains out of scope for this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "lead_orchestrator may proceed with task acceptance/integration for M4-CAMPAIGN-AI-001. Do not route back to simulation_engineer unless lead wants additional non-blocking postwar-risk scenario coverage.",
+  "created_at": "2026-06-26T07:40:30Z"
+}
