@@ -1,0 +1,92 @@
+{
+  "message_id": "MSG-20260627-M5-MANUAL-BATTLE-DEFER-SYSTEMS-REVIEW",
+  "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems architecture review ACCEPTS the process-only defer decision. The product-owner decision is recorded as DEFER_MANUAL_NODE_BATTLE, manual node battle remains outside M5 and the 1.0 mainline, no implementation or blocking spike/research task is authorized for M5/M6/M7/M8, no game/runtime/package/content code changed, and M5 Exit remains a separate unpassed Human Gate after this decision is integrated.",
+  "artifacts": [
+    "docs/28-manual-node-battle-decision.md",
+    "PROJECT_STATUS.md",
+    "project/audits/STATUS-AUDIT-20260627.md",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+    "project/tasks/thread-registry.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "gate/m5-manual-node-battle-decision / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "bade259a9ea302809cc2d7124409acf128c291e0",
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "Passed with no whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M5-MANUAL-NODE-BATTLE-DECISION-001 is REVIEW; M5-EXIT-HUMAN-GATE-001 is DRAFT; prior M0-M4 tasks and completed M5 evidence tasks are CLOSED; no M6/M7/M8 tasks are listed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output: no dependency-ready task while the manual node battle decision remains in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-MANUAL-NODE-BATTLE-DECISION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-EXIT-HUMAN-GATE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-EXIT-HUMAN-GATE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID lead REVIEW handoff."
+    },
+    {
+      "command": "git diff --name-only HEAD^ HEAD -- packages apps content-source tools .github docs/decisions docs/11-roadmap.md docs/13-risk-register-and-test-strategy.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output: review snapshot commit did not change forbidden package, runtime, content, CI, ADR, roadmap, acceptance-matrix, release, or manifest paths."
+    },
+    {
+      "command": "git diff --name-only HEAD -- packages apps content-source tools .github docs/decisions docs/11-roadmap.md docs/13-risk-register-and-test-strategy.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output: current uncommitted coordination state also has no forbidden package/runtime/content/roadmap/release path changes."
+    },
+    {
+      "command": "rg --files project/tasks/active | rg \"M[678]|MANUAL|manual|BATTLE|battle|NODE|node\"",
+      "exit_code": 0,
+      "result": "Only project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json matched; no manual battle implementation task and no M6/M7/M8 task file was found."
+    },
+    {
+      "command": "node -e <json-state-consistency-check>",
+      "exit_code": 0,
+      "result": "Parsed goal-mode, continuation, both M5 task files, thread registry, and model-routing state; unique active lead was true; duplicate registry entry keys were zero; systems_architect and qa_reviewer were both reviewing this task; model-routing current task recorded decision DEFER_MANUAL_NODE_BATTLE and status REVIEW."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: docs/28-manual-node-battle-decision.md lines 7 and 9 record Decision = Defer manual node battle from 1.0 and Decision code = DEFER_MANUAL_NODE_BATTLE.",
+    "ACCEPT: docs/28-manual-node-battle-decision.md lines 32, 46, 48, 56-60, 66, and 83-85 keep manual node battle out of M5 and the 1.0 M6/M7/M8 mainline, prohibit implementation/blocking spike tasks, and prevent future-research notes from acting as implementation authorization.",
+    "ACCEPT: project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json fields decision.manual_node_battle_in_m5=false, decision.manual_node_battle_in_1_0_mainline=false, decision.implementation_task_authorized=false, decision.blocking_spike_authorized=false, and decision.post_1_0_candidate_allowed=true match the product-owner decision.",
+    "ACCEPT: project/tasks/active/M5-EXIT-HUMAN-GATE-001.json remains status DRAFT, depends on M5-MANUAL-NODE-BATTLE-DECISION-001, and states formal M5 passage requires separate explicit Human Gate approval.",
+    "ACCEPT: project/goal-mode-state.json and GOAL-MODE-CONTINUATION.json set human_gate.required=false for this resolved decision, resolution=DEFER_MANUAL_NODE_BATTLE, next_gate_after_integration=M5-EXIT-HUMAN-GATE-001, current task REVIEW, and next_ready_tasks/ready_tasks empty before integration.",
+    "ACCEPT: PROJECT_STATUS.md section 15 records the product-owner decision, preserves automatic/abstract battle plus campaign preparation, march, supply, siege, withdrawal, and postwar governance, and reconciles M4 PR #106/#107, historical gate docs, and taskctl no-id limitation as ledger notes.",
+    "ACCEPT: project/audits/STATUS-AUDIT-20260627.md preserves the pre-decision STATUS_AUDIT_CONFLICT record and adds a follow-up resolution section rather than erasing historical/tooling notes."
+  ],
+  "risks": [
+    "M5-MANUAL-NODE-BATTLE-DECISION-001 is still REVIEW, not CLOSED, until lead integration and independent QA acceptance complete.",
+    "M5-EXIT-HUMAN-GATE-001 must remain a separate Human Gate and must not be treated as passed by this systems review.",
+    "taskctl.mjs validate without a task id remains a documented tooling limitation; this review did not change tool behavior."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Complete independent qa_reviewer review of the same decision snapshot. Lead should integrate and close M5-MANUAL-NODE-BATTLE-DECISION-001 only after QA also ACCEPTS; then M5-EXIT-HUMAN-GATE-001 may become the next separate gate.",
+  "created_at": "2026-06-27T04:06:28.9941697+08:00"
+}

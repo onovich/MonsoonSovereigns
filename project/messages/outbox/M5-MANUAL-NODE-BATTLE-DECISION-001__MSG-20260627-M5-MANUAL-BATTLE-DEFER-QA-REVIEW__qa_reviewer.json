@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260627-M5-MANUAL-BATTLE-DEFER-QA-REVIEW",
+  "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts the M5 manual node battle defer decision at review snapshot bade259a. The product-owner decision is recorded as DEFER_MANUAL_NODE_BATTLE, keeps manual node battle out of M5 and the 1.0 mainline, authorizes no implementation task and no blocking spike or research task for M5/M6/M7/M8, preserves accepted automatic and abstract campaign battle systems, and leaves M5-EXIT-HUMAN-GATE-001 as a separate DRAFT gate after this decision is integrated and closed. The reviewed commit changed only process, status, audit, task, and handoff files; no apps, packages, content-source, tools, dependency, runtime, battle, campaign, supply, siege, or postwar implementation files changed.",
+  "artifacts": [
+    "docs/28-manual-node-battle-decision.md",
+    "PROJECT_STATUS.md",
+    "project/audits/STATUS-AUDIT-20260627.md",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+    "project/tasks/thread-registry.json",
+    "project/model-routing-state.json",
+    "C:/Users/Administrator/.codex/attachments/bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt"
+  ],
+  "branch_or_worktree": "gate/m5-manual-node-battle-decision / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "bade259a",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On gate/m5-manual-node-battle-decision at bade259a. Current dirty state before this QA handoff was limited to reviewer coordination state and route files."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in tracked working-tree diffs."
+    },
+    {
+      "command": "git diff --check bade259a^ bade259a",
+      "exit_code": 0,
+      "result": "No whitespace errors in the review snapshot commit diff."
+    },
+    {
+      "command": "git diff --name-status bade259a^ bade259a",
+      "exit_code": 0,
+      "result": "Commit changed PROJECT_STATUS.md, docs/28-manual-node-battle-decision.md, project/audits/STATUS-AUDIT-20260627.md, project/goal-mode-state.json, GOAL-MODE-CONTINUATION, the lead REVIEW handoff, and the manual-node-battle decision task only."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M5-MANUAL-NODE-BATTLE-DECISION-001 is REVIEW; M5-EXIT-HUMAN-GATE-001 is DRAFT; prior M0-M4 and completed M5 evidence tasks are CLOSED; no M6/M7/M8 tasks are listed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready task is emitted while the manual node battle decision remains in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-MANUAL-NODE-BATTLE-DECISION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-EXIT-HUMAN-GATE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-EXIT-HUMAN-GATE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID lead REVIEW handoff."
+    },
+    {
+      "command": "rg --files project/tasks | rg \"M[678]|MANUAL|manual|BATTLE|battle|NODE|node\"",
+      "exit_code": 0,
+      "result": "Only project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json matched among task files; no manual battle implementation or blocking spike/research task file exists."
+    },
+    {
+      "command": "node -e <json parse and field checks>",
+      "exit_code": 0,
+      "result": "Parsed state/task/handoff registry JSON. Verified decision_status=REVIEW, decision_code=DEFER_MANUAL_NODE_BATTLE, implementation_task_authorized=false, blocking_spike_authorized=false, manual_node_battle_in_m5=false, manual_node_battle_in_1_0_mainline=false, exit_status=DRAFT, human_gate.required=false, next_gate_after_integration=M5-EXIT-HUMAN-GATE-001, current_milestone=M5, next_ready_tasks=[]."
+    },
+    {
+      "command": "node -e <M5 Exit dependency status check>",
+      "exit_code": 0,
+      "result": "All M5-EXIT-HUMAN-GATE-001 dependencies except M5-MANUAL-NODE-BATTLE-DECISION-001 are CLOSED; the decision task is REVIEW, so M5 Exit is correctly not started yet."
+    },
+    {
+      "command": "node -e <thread-registry duplicate active/review check>",
+      "exit_code": 0,
+      "result": "No thread id has more than one active or reviewing registry entry; unique_active_lead_check is PASS with one active lead."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: docs/28-manual-node-battle-decision.md records Decision code DEFER_MANUAL_NODE_BATTLE and states manual node battle is not part of M5 or the 1.0 mainline.",
+    "ACCEPT: The task decision fields explicitly set implementation_task_authorized=false, blocking_spike_authorized=false, manual_node_battle_in_m5=false, and manual_node_battle_in_1_0_mainline=false.",
+    "ACCEPT: No runtime, package, content, campaign, battle, supply, siege, or postwar implementation files changed in commit bade259a or the current tracked coordination diff.",
+    "ACCEPT: M6/M7/M8 are not started; taskctl list contains no M6, M7, or M8 task rows and project/tasks contains no M6/M7/M8 task files.",
+    "ACCEPT: M5 Exit remains separate and unpassed; M5-EXIT-HUMAN-GATE-001 is DRAFT, depends on the manual decision, and is recorded as next_gate_after_integration rather than current ready work.",
+    "ACCEPT: STATUS_AUDIT_CONFLICT items are reconciled minimally by updating last_main_commit/human-gate state, clarifying PR #106 vs PR #107 in PROJECT_STATUS/docs/28, preserving docs/GATE-M1.md through docs/GATE-M4.md as historical evidence docs, and recording taskctl no-id validation as a known tooling limitation."
+  ],
+  "risks": [
+    "docs/11-roadmap.md still contains older roadmap wording that M6 includes the final decision on whether to implement manual battle; this is not a blocker because the later accepted decision document and PROJECT_STATUS.md explicitly resolve that decision as deferred from 1.0 and forbid treating future research notes as current implementation authorization.",
+    "The branch is still in REVIEW and M5-MANUAL-NODE-BATTLE-DECISION-001 is not CLOSED yet; M5-EXIT-HUMAN-GATE-001 should become ready only after lead integrates required reviewer ACCEPTs and closes this decision task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate QA ACCEPT only after required reviewer gates are complete. Then close M5-MANUAL-NODE-BATTLE-DECISION-001, keep manual node battle deferred from M5 and the 1.0 mainline, and advance M5-EXIT-HUMAN-GATE-001 as the next separate Human Gate without starting M6/M7/M8.",
+  "created_at": "2026-06-27T04:05:43.4979425+08:00"
+}

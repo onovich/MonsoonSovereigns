@@ -1,0 +1,94 @@
+{
+  "message_id": "MSG-20260627-M5-MANUAL-BATTLE-DEFER-LEAD-ACCEPT",
+  "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M5-MANUAL-NODE-BATTLE-DECISION-001 after systems_architect and qa_reviewer both returned ACCEPT on the process-only DEFER_MANUAL_NODE_BATTLE decision. The accepted decision keeps manual node battle out of M5 and the 1.0 mainline, authorizes no implementation task and no blocking spike or research task for M5/M6/M7/M8, preserves automatic and abstract campaign battle systems, reconciles the status audit ledger minimally, and leaves M5-EXIT-HUMAN-GATE-001 as the next separate gate only after this task enters main and is closed.",
+  "artifacts": [
+    "docs/28-manual-node-battle-decision.md",
+    "PROJECT_STATUS.md",
+    "project/audits/STATUS-AUDIT-20260627.md",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/routes/M5-MANUAL-NODE-BATTLE-DECISION-001__ROUTE-20260627-M5-MANUAL-BATTLE-LEAD-TO-SYSTEMS-REVIEW.json",
+    "project/messages/routes/M5-MANUAL-NODE-BATTLE-DECISION-001__ROUTE-20260627-M5-MANUAL-BATTLE-LEAD-TO-QA-REVIEW.json"
+  ],
+  "branch_or_worktree": "gate/m5-manual-node-battle-decision / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "bade259a9ea302809cc2d7124409acf128c291e0",
+  "tests_run": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in the decision/review coordination diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M5-MANUAL-NODE-BATTLE-DECISION-001 is REVIEW before lead acceptance; M5-EXIT-HUMAN-GATE-001 is DRAFT; no M6/M7/M8 task rows exist."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready task emitted while the manual node battle decision remains in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-MANUAL-NODE-BATTLE-DECISION-001",
+      "exit_code": 0,
+      "result": "Manual decision task schema is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-EXIT-HUMAN-GATE-001",
+      "exit_code": 0,
+      "result": "M5 Exit Human Gate task schema is valid and remains DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "Lead REVIEW handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "systems_architect ACCEPT handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "qa_reviewer ACCEPT handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list | Select-String 'M5-MANUAL|M5-EXIT'",
+      "exit_code": 0,
+      "result": "After lead acceptance, M5-MANUAL-NODE-BATTLE-DECISION-001 is ACCEPTED and M5-EXIT-HUMAN-GATE-001 remains DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "After lead acceptance, taskctl lists M5-EXIT-HUMAN-GATE-001 as the next dependency-ready gate. Lead must not start it until this accepted decision enters main and is closed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: Product-owner decision is DEFER_MANUAL_NODE_BATTLE.",
+    "ACCEPT: Manual node battle is not in M5 and not in the 1.0 mainline.",
+    "ACCEPT: No manual node battle implementation task, blocking spike, or blocking research task is authorized for M5, M6, M7, or M8.",
+    "ACCEPT: Existing automatic/abstract battle, campaign preparation, march, supply, siege, withdrawal, postwar governance, and campaign AI systems remain preserved.",
+    "ACCEPT: M5 Exit remains a separate Human Gate; this decision does not pass M5 or start M6."
+  ],
+  "risks": [
+    "M5-EXIT-HUMAN-GATE-001 appears in taskctl ready after lead ACCEPTED because taskctl treats ACCEPTED dependencies as satisfied; it must not actually start until this accepted decision is integrated and M5-MANUAL-NODE-BATTLE-DECISION-001 is closed on main.",
+    "docs/11-roadmap.md still contains older M6 wording about deciding whether to implement manual battle; the later accepted decision and PROJECT_STATUS override current operational routing for the 1.0 task graph."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Create and merge the process-only PR. After it enters main, close M5-MANUAL-NODE-BATTLE-DECISION-001 and then make M5-EXIT-HUMAN-GATE-001 the next separate gate.",
+  "created_at": "2026-06-27T04:09:00+08:00"
+}
