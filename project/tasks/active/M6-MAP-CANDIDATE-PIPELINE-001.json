@@ -1,0 +1,79 @@
+{
+  "id": "M6-MAP-CANDIDATE-PIPELINE-001",
+  "summary": "Implement complete map candidate pipeline path",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M6-SCENARIO-DATA-PIPELINE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "content-source/**",
+      "apps/content-tools/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "packages/map-renderer/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/tasks/active/M6-MAP-CANDIDATE-PIPELINE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/save-format/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/sim-runner/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A complete Alpha map candidate path exists from validated source data through deterministic compiled map payloads to map-renderer-compatible read models.",
+    "Map candidate IDs, district references, route references, water/land classifications, and rendering order are stable and explicitly schema-validated.",
+    "Map renderer changes remain presentational and do not become authoritative state, hidden simulation input, or React-managed per-entity Pixi object ownership.",
+    "The task does not final-lock exact borders, production art style, formal cultural symbols, complex naval warfare, 3D battle, manual node battle, or release map content."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm content:validate",
+    "pnpm --filter @monsoon/map-renderer test",
+    "pnpm test",
+    "Map candidate tests cover deterministic ordering, bad references, route/water classification, renderer read-model shape, and no sim-core authority import.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-MAP-CANDIDATE-PIPELINE-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m6-map-candidate-pipeline",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is a candidate pipeline path, not final M7 map/content lock.",
+    "Historical uncertainty must remain visible through source labels and review notes.",
+    "Do not add map-derived simulation authority outside explicit content/runtime boundaries."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

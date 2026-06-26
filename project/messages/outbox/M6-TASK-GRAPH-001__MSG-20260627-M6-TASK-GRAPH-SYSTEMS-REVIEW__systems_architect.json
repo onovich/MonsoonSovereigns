@@ -1,0 +1,97 @@
+{
+  "message_id": "MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW",
+  "task_id": "M6-TASK-GRAPH-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Created a planning-only, dependency-ordered M6 Alpha system-complete task DAG. The graph covers start-to-victory playability, diplomacy, legitimacy, succession completion, layered AI, policy/event/encyclopedia surfaces, three-scenario data pipeline, map candidate path, batch auto-run and balance dashboard, accessibility core flows, adviser intervention evidence, Alpha no P0/P1 validation, and M6 exit validation without implementing product code.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/tasks/active/M6-TASK-GRAPH-001.json",
+    "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+    "project/tasks/active/M6-SCENARIO-DATA-PIPELINE-001.json",
+    "project/tasks/active/M6-MAP-CANDIDATE-PIPELINE-001.json",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/active/M6-SUCCESSION-COMPLETION-001.json",
+    "project/tasks/active/M6-POLICY-EVENT-RUNTIME-001.json",
+    "project/tasks/active/M6-START-TO-VICTORY-SIM-LOOP-001.json",
+    "project/tasks/active/M6-LAYERED-AI-001.json",
+    "project/tasks/active/M6-CLIENT-ALPHA-SURFACES-001.json",
+    "project/tasks/active/M6-ACCESSIBILITY-CORE-FLOWS-001.json",
+    "project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json",
+    "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+    "project/tasks/active/M6-ALPHA-NO-P0P1-VALIDATION-001.json",
+    "project/tasks/active/M6-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m6-task-graph / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified allowed coordination/status files are present; new untracked M6 task files and this systems handoff are present under allowed paths. Pre-existing untracked ui-samples/ remains and was not touched."
+    },
+    {
+      "command": "node -e authored changed-path scope guard for M6-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "scope guard ok authoredPaths=21 ignoredPreexisting=3; authored paths are limited to allowed task/status/message paths and do not include forbidden apps/packages/content-source/tools/CI/docs/gate/roadmap paths."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M6-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M6-TASK-GRAPH-001 is REVIEW; M6-ALPHA-SYSTEM-CONTRACT-001 is READY but dependency-gated by the REVIEW graph; the other 13 downstream M6 tasks are DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready output while M6-TASK-GRAPH-001 remains in REVIEW."
+    },
+    {
+      "command": "node -e taskctl validate for every M6 task file",
+      "exit_code": 0,
+      "result": "taskctl validate all M6 ok count=15."
+    },
+    {
+      "command": "node -e JSON validation for all new M6 task files and DAG acyclicity/dependency/status shape",
+      "exit_code": 0,
+      "result": "M6 JSON DAG check ok files=15 edges=41 graphStatus=REVIEW firstReady=M6-ALPHA-SYSTEM-CONTRACT-001 downstreamDraft=13."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Handoff schema validation passes."
+    }
+  ],
+  "decisions": [
+    "Created a minimal M6 DAG with 14 downstream tasks: Alpha contract, scenario data pipeline, map candidate pipeline, diplomacy/legitimacy, succession completion, policy/event runtime, start-to-victory sim loop, layered AI, client Alpha surfaces, accessibility core flows, batch auto-run/balance dashboard, adviser intervention evidence, Alpha no P0/P1 validation, and M6 exit validation.",
+    "Set M6-ALPHA-SYSTEM-CONTRACT-001 as the first executable downstream task with status READY; it remains dependency-gated until M6-TASK-GRAPH-001 is accepted/closed. All other downstream M6 tasks remain DRAFT.",
+    "Preserved DEFER_MANUAL_NODE_BATTLE exactly: no manual node battle implementation task exists, no blocking manual node battle spike/research task exists for M6/M7/M8, and manual node battle is only mentioned as a post-1.0 non-blocking candidate note.",
+    "Kept the graph planning-only. No apps, packages, content-source, tools, CI, dependency manifests, roadmap, acceptance matrix, prior gate docs, accepted ADRs, release artifacts, telemetry, server/multiplayer behavior, arbitrary-code mod support, or frozen product/platform/core architecture decisions were modified.",
+    "Split downstream scopes to keep sim-core decoupled from React/Pixi/Electron/Node IO, preserve single-writer authority, same GameCommand paths for player and AI, explicit schemas, deterministic ordering, and stable IDs.",
+    "No ADR is required for this graph because it does not change architecture; downstream tasks must write ADRs before architecture, save-format, protocol, platform, dependency, or irreversible migration changes."
+  ],
+  "risks": [
+    "M6 is broad; several downstream tasks are R4 because they will later touch diplomacy, legitimacy, succession, start-to-victory simulation, layered AI, save/protocol compatibility, and milestone validation.",
+    "Three-scenario and map candidate work has historical/cultural risk and must keep source labels, uncertainty labels, and review routing before formal content acceptance.",
+    "Client Alpha surfaces and balance dashboard can easily duplicate simulation rules or become hidden telemetry; their scopes explicitly require read-model-only UI and local-only evidence.",
+    "Pre-existing untracked ui-samples/ remains in the workspace and was not touched by this task."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Perform independent QA review of the M6 task graph for roadmap/acceptance-matrix coverage, dependency ordering, first-ready/downstream-DRAFT status, DEFER_MANUAL_NODE_BATTLE preservation, allowed/forbidden path discipline, architecture-boundary safety, and handoff validity. Accept or request changes.",
+  "created_at": "2026-06-27T05:17:00+08:00"
+}

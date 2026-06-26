@@ -1,0 +1,81 @@
+{
+  "id": "M6-LAYERED-AI-001",
+  "summary": "Implement layered AI for full Alpha runs",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R4",
+  "dependencies": [
+    "M6-START-TO-VICTORY-SIM-LOOP-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-ai/**",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/tasks/active/M6-LAYERED-AI-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/content-tools/**",
+      "packages/save-format/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Layered AI can operate strategic, diplomatic, succession, policy, campaign, and recovery decisions across a full Alpha run without player rescue.",
+    "Every AI action is emitted as the same GameCommand payload available to the player and every no-action/wait/target/change decision exposes bounded reason traces.",
+    "AI layers are deterministic, explicitly ordered, bounded in candidate counts, and cannot mutate authoritative state outside command submission.",
+    "The implementation avoids a future-proof general manager, hidden scoring singleton, runtime script engine, server service, telemetry dependency, or manual node battle assumptions."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-ai test",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "AI property/regression tests cover command parity, trace truncation, deterministic tie-breakers, no rescue hooks, full-run survival, and reason coverage for no-action/wait/withdraw/target/policy/diplomacy decisions.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-LAYERED-AI-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m6-layered-ai",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "Layered AI means bounded decision strata, not a general manager abstraction.",
+    "No AI-specific privileged command path is allowed.",
+    "If AI needs new read models, keep them serializable and protocol-visible."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

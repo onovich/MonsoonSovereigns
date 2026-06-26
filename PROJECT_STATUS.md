@@ -187,3 +187,13 @@ Ledger reconciliation notes:
 - `docs/GATE-M1.md` through `docs/GATE-M4.md` are historical gate evidence documents, not final closure ledgers.
 - `taskctl.mjs validate` without a task id is a known tooling limitation that returns `Task not found: undefined`; use `taskctl list`, `taskctl ready`, and explicit `taskctl validate <TASK_ID>`.
 - `project/audits/STATUS-AUDIT-20260627.md` is included as the read-only audit evidence that drove this reconciliation.
+
+## 16. M6 Task Graph Review Snapshot
+
+`M6-TASK-GRAPH-001` is ACCEPTED on branch `chore/m6-task-graph`. The systems_architect writer created a planning-only M6 Alpha task DAG under `project/tasks/active/M6-*.json`; independent `qa_reviewer` accepted it through `project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json`. The graph still requires PR, CI, merge, sync, and closure before downstream M6 implementation starts.
+
+The DAG covers start-to-victory playability, diplomacy, legitimacy, succession completion, layered AI, policy/event/encyclopedia surfaces, three-scenario data pipeline, map candidate path, batch auto-run and balance dashboard, accessibility core flows, Alpha no P0/P1 validation, adviser intervention evidence, and M6 exit validation. The first executable downstream task is `M6-ALPHA-SYSTEM-CONTRACT-001`; all other downstream M6 tasks remain `DRAFT`.
+
+The graph preserves `DEFER_MANUAL_NODE_BATTLE` exactly. It creates no manual node battle implementation task and no blocking manual node battle spike or research task for M6, M7, or M8. Manual node battle remains only a post-1.0 non-blocking candidate note and is not current implementation authorization.
+
+This planning task does not modify product code, package code, content-source data, tools, CI, roadmap, acceptance matrix, prior gate documents, accepted ADRs, dependency manifests, release artifacts, telemetry, server/multiplayer behavior, arbitrary-code mod support, or frozen product/platform/core architecture decisions.

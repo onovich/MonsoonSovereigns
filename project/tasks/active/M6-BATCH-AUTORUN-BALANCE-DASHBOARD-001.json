@@ -1,0 +1,82 @@
+{
+  "id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+  "summary": "Implement local batch auto-run and balance dashboard evidence",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "balance_analyst",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M6-LAYERED-AI-001",
+    "M6-START-TO-VICTORY-SIM-LOOP-001",
+    "M6-SCENARIO-DATA-PIPELINE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/sim-runner/**",
+      "apps/web/**",
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/protocol/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "tests/**",
+      "project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "apps/content-tools/**",
+      "packages/save-format/**",
+      "packages/map-renderer/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "A local deterministic batch auto-run command runs multiple Alpha scenarios/seeds and records bounded balance metrics for victory paths, AI collapses, succession crises, diplomacy outcomes, economy pressure, war/postwar losses, and no-rescue completion.",
+    "A local balance dashboard reads generated artifacts and presents aggregate trends without remote telemetry, accounts, paid services, servers, hidden personal data, or production analytics.",
+    "Batch outputs are reproducible, schema-versioned, small enough for CI/local evidence, and do not become authoritative WorldState or save payloads.",
+    "Balance evidence identifies P0/P1 candidates and tuning risks without automatically changing content or simulation rules."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-ai test",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm build:web",
+    "pnpm test",
+    "Batch auto-run smoke covers at least three scenarios, multiple deterministic seeds, schema validation, and dashboard rendering of generated local artifacts.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m6-batch-autorun-balance-dashboard",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is local Alpha balance evidence, not telemetry or live analytics.",
+    "Do not add remote services, accounts, secrets, runtime SQL databases, ORMs, or paid APIs.",
+    "Dashboard UI must stay read-only over generated artifacts."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

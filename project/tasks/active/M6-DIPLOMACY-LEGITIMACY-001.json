@@ -1,0 +1,82 @@
+{
+  "id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "summary": "Complete deterministic diplomacy and legitimacy substrate",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R4",
+  "dependencies": [
+    "M6-ALPHA-SYSTEM-CONTRACT-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/protocol/**",
+      "packages/save-format/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/content-tools/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Diplomacy and legitimacy are represented in authoritative sim-core state with stable branded IDs, explicit schema versioning, reason-coded events, and deterministic tie-breakers.",
+    "Player and AI diplomacy actions use the same GameCommand paths and produce serializable rejection reasons without UI-only mutation or hidden AI privileges.",
+    "Legitimacy affects start-to-victory decisions, obligations, succession pressure, war/postwar consequences, and AI reasoning without becoming a generic global manager.",
+    "Save/load and replay preserve diplomacy and legitimacy state and reject malformed, missing, or future-version payloads safely."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/sim-ai test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm sim:determinism",
+    "pnpm test",
+    "Property/invariant tests cover command parity, stable ordering, no diplomacy graph cycles, legitimacy conservation/reason codes, and save rejection paths.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-DIPLOMACY-LEGITIMACY-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "Do not implement a hidden grand-strategy manager or implicit RPC layer.",
+    "Do not add server, multiplayer, telemetry, arbitrary-code scripting, full peace-treaty UI, or manual node battle.",
+    "Protocol or save-format changes beyond explicit additive schemas require systems_architect review and ADR if they change a frozen contract."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

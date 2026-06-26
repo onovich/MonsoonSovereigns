@@ -1,0 +1,70 @@
+{
+  "id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+  "summary": "Collect adviser intervention evidence for Alpha flows",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "gameplay_designer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M6-CLIENT-ALPHA-SURFACES-001",
+    "M6-LAYERED-AI-001",
+    "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Evidence records whether adviser interventions help players understand Alpha goals, risks, diplomacy, legitimacy, succession, policy/event choices, campaign consequences, and victory progress without taking control away from the player.",
+    "Evidence distinguishes useful intervention, ignored intervention, harmful intervention, and missing intervention using anonymized/local observation or deterministic run review only.",
+    "The task records blocker defects and bounded follow-ups without expanding product scope, adding telemetry, collecting personal data, or deciding M6 exit by itself.",
+    "Cultural or historical concerns found during adviser text review are tagged and routed to historical_researcher or Human Gate before formal content acceptance."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ADVISER-INTERVENTION-EVIDENCE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "Adviser evidence lists session/run count, local privacy handling, intervention classifications, blocker/follow-up split, and no telemetry/network collection.",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "research/m6-adviser-intervention-evidence",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is Alpha evidence only; it does not authorize telemetry or external research without a separate gate.",
+    "Do not modify product code in this evidence task.",
+    "If evidence needs new adviser behavior, route a separate allowed implementation task instead of expanding this one."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}
