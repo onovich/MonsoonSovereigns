@@ -1,7 +1,4 @@
-import {
-  createM5PlayableLoopScriptV1,
-  type GameCommandV1
-} from "@monsoon/protocol";
+import { createM5PlayableLoopScriptV1, type GameCommandV1 } from "@monsoon/protocol";
 import {
   canonicalizeM2EconomyPopulationState,
   bootSimulationV1,
@@ -463,16 +460,16 @@ function runReasonEvidenceProbeV1(
   if (planned.command !== null) {
     const submitted = submitCommandV1(runtime, planned.command);
     if (submitted.result.status !== "accepted") {
-      throw new Error(
-        `M5 multi-year AI probe command rejected: ${submitted.result.error.code}.`
-      );
+      throw new Error(`M5 multi-year AI probe command rejected: ${submitted.result.error.code}.`);
     }
     nextRuntime = submitted.runtime;
   }
 
   const validationErrors = validateWorldStateV0(nextRuntime.world);
   if (validationErrors.length > 0) {
-    throw new Error(`M5 multi-year AI probe invalid runtime: ${validationErrors[0]?.path ?? "unknown"}.`);
+    throw new Error(
+      `M5 multi-year AI probe invalid runtime: ${validationErrors[0]?.path ?? "unknown"}.`
+    );
   }
 
   return {
@@ -513,7 +510,11 @@ function createAiProbeRuntimeV1(input: M5AiProbeRuntimeInput): SimulationRuntime
   });
   const m2 = canonicalizeM2EconomyPopulationState({
     ...baseM2,
-    populationGroups: [probePopulationGroupV1(1, 1_000), probePopulationGroupV1(2, 1_000), probePopulationGroupV1(3, 1_000)]
+    populationGroups: [
+      probePopulationGroupV1(1, 1_000),
+      probePopulationGroupV1(2, 1_000),
+      probePopulationGroupV1(3, 1_000)
+    ]
   });
   const world = createWorldStateV0({
     seed: 1531,
@@ -838,7 +839,9 @@ function probeTroopObligationAuditEventV1(): NonNullable<
 function validateAndCountWorldState(world: WorldStateV1OrV0): number {
   const validationErrors = validateWorldStateV0(world);
   if (validationErrors.length > 0) {
-    throw new Error(`M5 multi-year AI invariant failure: ${validationErrors[0]?.path ?? "unknown"}.`);
+    throw new Error(
+      `M5 multi-year AI invariant failure: ${validationErrors[0]?.path ?? "unknown"}.`
+    );
   }
   return 1;
 }
@@ -852,12 +855,17 @@ function nextNumericCampaignPlanId(runtime: SimulationRuntimeV1): number {
 }
 
 function nextNumericCampaignMarchId(runtime: SimulationRuntimeV1): number {
-  return runtime.world.state.m4?.marches.reduce((max, march) => Math.max(max, march.marchId), 0) ?? 0;
+  return (
+    runtime.world.state.m4?.marches.reduce((max, march) => Math.max(max, march.marchId), 0) ?? 0
+  );
 }
 
 function nextNumericWithdrawalId(runtime: SimulationRuntimeV1): number {
   return (
-    runtime.world.state.m4?.withdrawals.reduce((max, withdrawal) => Math.max(max, withdrawal.withdrawalId), 0) ?? 0
+    runtime.world.state.m4?.withdrawals.reduce(
+      (max, withdrawal) => Math.max(max, withdrawal.withdrawalId),
+      0
+    ) ?? 0
   );
 }
 

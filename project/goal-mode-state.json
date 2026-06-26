@@ -38,7 +38,7 @@
       "task_id": "M5-MULTIYEAR-AI-RUN-001",
       "role": "qa_reviewer",
       "thread_id": "019f04c6-0df4-7fd2-9788-380f620b2f6a",
-      "status": "reviewing",
+      "status": "rereviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -50,7 +50,11 @@
       "review_source_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
       "review_commit": "703585f2",
       "review_submission_id": "019f04c6-623e-7fb2-9959-2377e7500eb4",
-      "updated_at": "2026-06-27T00:32:00+08:00"
+      "updated_at": "2026-06-27T00:44:20+08:00",
+      "review_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-REVIEW__qa_reviewer.json",
+      "qa_fix_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-FIX__lead_orchestrator.json",
+      "qa_fix_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-QA-FIX-TO-QA-REREVIEW.json",
+      "qa_fix_submission_id": "019f04d2-b3bb-7dc0-a7a2-b0c0885fc9ce"
     }
   },
   "last_integrated_task": "M5-CLIENT-PLAYABLE-UI-001",
@@ -93,7 +97,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T00:32:00+08:00",
+  "last_updated_at": "2026-06-27T00:44:20+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -105,7 +109,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T00:32:00+08:00",
+  "updated_at": "2026-06-27T00:44:20+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -232,14 +236,14 @@
     ]
   },
   "m5_multiyear_ai_run": {
-    "status": "REVIEW_QA_ROUTED",
+    "status": "QA_REREVIEW",
     "branch_or_worktree": "test/m5-multiyear-ai-run",
     "writer_thread_id": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
     "writer_nickname": "Canary the 9th",
     "start_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260626-M5-MULTIYEAR-AI-RUN-START__lead_orchestrator.json",
     "started_at": "2026-06-26T23:23:27+08:00",
     "base_main_commit": "f6fd838aebee543c792e5b32f0d6b3a2ed347de0",
-    "next_action": "Wait for independent qa_reviewer ACCEPT or REQUEST_CHANGES.",
+    "next_action": "Wait for independent qa_reviewer R2 ACCEPT or REQUEST_CHANGES.",
     "human_gate_required": false,
     "route_file": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260626-M5-AI-RUN-LEAD-TO-TEST-START-CONFIRMED.json",
     "start_submission_id": "019f0488-29f8-7511-bc27-28cfd8f41c17",
@@ -264,7 +268,13 @@
     "qa_thread_id": "019f04c6-0df4-7fd2-9788-380f620b2f6a",
     "qa_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-WRITER-R3-TO-QA-REVIEW.json",
     "review_commit": "703585f2",
-    "routed_to_qa_at": "2026-06-27T00:32:00+08:00"
+    "routed_to_qa_at": "2026-06-27T00:32:00+08:00",
+    "qa_status": "REQUEST_CHANGES",
+    "qa_review_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-REVIEW__qa_reviewer.json",
+    "qa_fix_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-FIX__lead_orchestrator.json",
+    "qa_fix_at": "2026-06-27T00:43:30+08:00",
+    "qa_fix_route": "project/messages/routes/M5-MULTIYEAR-AI-RUN-001__ROUTE-20260627-M5-AI-RUN-QA-FIX-TO-QA-REREVIEW.json",
+    "qa_fix_submission_id": "019f04d2-b3bb-7dc0-a7a2-b0c0885fc9ce"
   },
   "replaced_threads": [
     {

@@ -1,0 +1,138 @@
+{
+  "message_id": "MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-REVIEW",
+  "task_id": "M5-MULTIYEAR-AI-RUN-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA reviewed commit 703585f2 against base f6fd838aebee543c792e5b32f0d6b3a2ed347de0. Diff scope, deterministic authority, forbidden-path scans, workspace-local pnpm-lock.yaml churn, and the explicitly disclosed live no-action-only limitation are acceptable for this task. Acceptance is blocked because a targeted Prettier check over the newly added files fails for packages/sim-ai/src/m5-multiyear-ai-run.ts, while the root pnpm format:check glob does not cover packages/sim-ai or apps/sim-runner/src and therefore hid the issue.",
+  "artifacts": [
+    "apps/sim-runner/src/run-m5-multiyear-ai-run.mjs",
+    "packages/sim-ai/src/m5-multiyear-ai-run.ts",
+    "packages/sim-ai/package.json",
+    "pnpm-lock.yaml",
+    "tests/sim-ai-multiyear-ai-run.test.ts",
+    "project/tasks/active/M5-MULTIYEAR-AI-RUN-001.json",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "test/m5-multiyear-ai-run / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "703585f273bdf4c7466c207e55967168892ca868",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before writing this QA handoff; branch HEAD was 1eb5b180a8feb5be853d1e0d048de9b0faa303cc with review target commit 703585f2."
+    },
+    {
+      "command": "git diff --name-status f6fd838aebee543c792e5b32f0d6b3a2ed347de0 703585f2",
+      "exit_code": 0,
+      "result": "Changed files stay within task allowed paths. No forbidden web/client/desktop/content/tools/docs/gate/status artifacts were modified. pnpm-lock.yaml only adds workspace-local @monsoon/sim-ai links and no external dependency."
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|new Date|setTimeout|setInterval|randomUUID|crypto|Object\\.keys|Object\\.entries|for \\(const .* in\" packages/sim-ai apps/sim-runner/src/run-m5-multiyear-ai-run.mjs tests/sim-ai-multiyear-ai-run.test.ts",
+      "exit_code": 1,
+      "result": "No matches in the new runner, sim-ai implementation, or focused test."
+    },
+    {
+      "command": "rg -n \"telemetry|analytics|server|multiplayer|socket|http|fetch|WebSocket|eval\\(|Function\\(|personality|diplomacy|manual battle|node battle|battle UI\" packages/sim-ai apps/sim-runner/src/run-m5-multiyear-ai-run.mjs tests/sim-ai-multiyear-ai-run.test.ts apps/sim-runner/package.json packages/sim-ai/package.json",
+      "exit_code": 0,
+      "result": "Only benign package.json script-key matches and the accepted-slice script variable appeared; no telemetry, analytics, server, multiplayer, arbitrary-code scripting, personality simulation, full diplomacy AI, or manual battle implementation was found."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Root Prettier check passed, but its configured globs do not cover packages/sim-ai or apps/sim-runner/src, so this command did not validate the newly added package and runner source."
+    },
+    {
+      "command": "pnpm exec prettier --check \"packages/sim-ai/**/*.{json,md,ts}\" \"apps/sim-runner/src/run-m5-multiyear-ai-run.mjs\"",
+      "exit_code": 1,
+      "result": "FAILED: packages/sim-ai/src/m5-multiyear-ai-run.ts has Prettier style issues."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed. Root lint covers packages/sim-ai/src and tests but not apps/sim-runner/src."
+    },
+    {
+      "command": "pnpm exec eslint --no-error-on-unmatched-pattern \"apps/sim-runner/src/run-m5-multiyear-ai-run.mjs\"",
+      "exit_code": 0,
+      "result": "Targeted lint of the new sim-runner CLI passed."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed, including packages/sim-ai typecheck."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "23 test files passed; 172 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "1 test file passed; 1 test passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m5-multiyear-ai-run",
+      "exit_code": 0,
+      "result": "Final hash a83d87d8; schedule hash 1ddcf36b; trace hash 1811680d; no deadlock true; invariant failures 0; AI attempts 730; AI accepted commands 0; AI no-action decisions 730; command rejections 0; max trace candidates 1; reason evidence includes no-action, wait, withdraw, and target-change codes."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { runM5MultiYearAiValidationV1 } from './packages/sim-ai/src/index.ts'; const r=runM5MultiYearAiValidationV1({seed:'m5-multiyear-ai-run-001',durationDays:730}); console.log(JSON.stringify({live:r.live,evidence:Object.fromEntries(Object.entries(r.reasonEvidence).map(([k,v])=>[k,{decisionKind:v.decisionKind,commandKind:v.commandKind,accepted:v.accepted,reason:v.primaryReasonCode}]))},null,2));\"",
+      "exit_code": 0,
+      "result": "Confirmed live accepted commands are 0; deterministic probes accept withdraw via sim.resolve-m4-campaign-withdrawal and target-change via sim.update-campaign-objective through submitCommandV1, while wait and no-action correctly produce no command."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism runner passed; root Vitest passed 35 files / 249 tests; web Vitest passed 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-MULTIYEAR-AI-RUN-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M5-MULTIYEAR-AI-RUN-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-WRITER-R3-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R3 handoff."
+    },
+    {
+      "command": "git diff --check f6fd838aebee543c792e5b32f0d6b3a2ed347de0 703585f2",
+      "exit_code": 0,
+      "result": "No whitespace errors in the reviewed commit diff."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES is limited to the format/gate-coverage defect; no production behavior change is requested by QA.",
+    "The pnpm-lock.yaml allowed-path correction is acceptable because the diff only represents workspace-local @monsoon/sim-ai links required for frozen installs and adds no external dependency.",
+    "The live no-action-only limitation is acceptable for this task because it is explicitly reported, the run has 730 deterministic AI attempts without rescue, no invariant failures, no command rejections, and command acceptance is exercised where deterministic probes produce commands. This remains a limitation to carry into M5 gate evidence rather than hide.",
+    "Authority and determinism are acceptable: AI planner commands, when non-null, are submitted through submitCommandV1; actor order uses deterministic RNG over numeric sorted polity IDs; no Math.random, Date.now, performance.now, network, telemetry, or forbidden scope was found."
+  ],
+  "risks": [
+    {
+      "risk": "Live continuation still records AI accepted commands: 0 and AI no-action decisions: 730. This is accepted only as an explicit M5 validation limitation, not as evidence of active long-run AI strategy."
+    },
+    {
+      "risk": "Root pnpm format:check currently misses packages/sim-ai and apps/sim-runner/src; root lint also misses apps/sim-runner/src. Targeted lint passed, but the format miss hid a real formatting failure."
+    }
+  ],
+  "blockers": [
+    {
+      "severity": "P2 gate failure",
+      "file": "packages/sim-ai/src/m5-multiyear-ai-run.ts",
+      "symbol": "Prettier formatting",
+      "reproduction": "pnpm exec prettier --check \"packages/sim-ai/**/*.{json,md,ts}\" \"apps/sim-runner/src/run-m5-multiyear-ai-run.mjs\"",
+      "impact": "The task cannot be accepted with a changed source file failing the repository formatter, and the passing root pnpm format:check is misleading because its globs do not include the new package.",
+      "required_fix": "Format packages/sim-ai/src/m5-multiyear-ai-run.ts, rerun the targeted Prettier check, and record the passing evidence. Lead should decide whether to expand scope for root package.json format/lint glob coverage or track that as a separate process follow-up."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route the minimal formatting repair to the original test_engineer and do not mark M5-MULTIYEAR-AI-RUN-001 accepted until the targeted Prettier check passes and the evidence is recorded. No behavioral implementation change is requested.",
+  "created_at": "2026-06-27T00:39:34+08:00"
+}
