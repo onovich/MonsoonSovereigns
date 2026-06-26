@@ -1,0 +1,26 @@
+{
+  "route_id": "ROUTE-20260627-M5-MANUAL-BATTLE-LEAD-TO-SYSTEMS-REVIEW",
+  "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "to_thread_id": "019f0583-b519-7e92-a76d-f3ff067db978",
+  "status": "SENT",
+  "route_type": "REVIEW",
+  "branch_or_worktree": "gate/m5-manual-node-battle-decision",
+  "source_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+  "review_commit": "bade259a",
+  "created_at": "2026-06-27T04:00:45+08:00",
+  "delivery": {
+    "method": "multi_agent_v1.send_input",
+    "submission_id": "019f0585-673e-7e70-acf1-db816b3eeb03",
+    "sent_at": "2026-06-27T04:00:45+08:00"
+  },
+  "review_focus": [
+    "Decision only selects DEFER_MANUAL_NODE_BATTLE.",
+    "No manual node battle implementation or blocking spike/research task is authorized.",
+    "No product code, runtime code, content, dependencies, or gate documents changed.",
+    "Manual node battle Human Gate is resolved while M5 Exit remains separate.",
+    "STATUS_AUDIT_CONFLICT ledger items are minimally reconciled or preserved as historical/tooling notes.",
+    "M5-EXIT-HUMAN-GATE-001 remains the next gate after integration."
+  ]
+}
