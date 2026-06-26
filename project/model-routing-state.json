@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T03:11:35Z",
+  "updated_at": "2026-06-26T03:20:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1295,36 +1295,7 @@
       "integrated_pr": 88
     }
   ],
-  "active_threads": [
-    {
-      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
-      "role": "simulation_engineer",
-      "thread_id": "019f0152-40b7-7a73-b231-48227617563f",
-      "status": "start_pending",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "feat/m4-muster-prep-commitments",
-      "start_state": "START_PENDING",
-      "updated_at": "2026-06-26T00:26:54Z",
-      "responsibility": "primary M4 muster preparation and mobilized commitments writer"
-    },
-    {
-      "task_id": "M4-MUSTER-PREP-COMMITMENTS-001",
-      "role": "systems_architect",
-      "thread_id": "019f0152-54c5-7d40-a504-dfc1a75082e1",
-      "status": "awaiting_review_ready",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "feat/m4-muster-prep-commitments",
-      "start_state": "AWAITING_REVIEW_READY",
-      "updated_at": "2026-06-26T00:26:54Z",
-      "responsibility": "architecture reviewer for M4 muster preparation and commitments"
-    }
-  ],
+  "active_threads": [],
   "task_effects": {
     "FOUNDATION-001": "ACCEPTED; not reopened solely for model routing change; eligible for M0 gate recheck by qa_reviewer xhigh.",
     "FOUNDATION-002": "DRAFT; next writer uses systems_architect gpt-5.5 xhigh; reviewer qa_reviewer gpt-5.5 xhigh.",
@@ -1375,6 +1346,7 @@
   "task_notes": {
     "M4-MUSTER-PREP-COMMITMENTS-001": "CLOSED after PR #86 entered main at af5427ec99753dd2159c01327c47afe4a3e0bef5. Replacement simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-GRAIN-SUPPLY-001.",
     "M4-GRAIN-SUPPLY-001": "CLOSED after PR #88 entered main at ea0ebff0b0b861563acf0fedc409fa0d0d14a72f. simulation_engineer fixed systems_architect REQUEST_CHANGES; systems_architect accepted R2; lead gates and PR CI passed. Next READY task is M4-ROUTE-TRANSPORT-CAPACITY-001.",
-    "M4-ROUTE-TRANSPORT-CAPACITY-001": "ACCEPTED after simulation_engineer handoff, systems_architect ACCEPT, independent qa_reviewer ACCEPT, and lead integration gates passed locally. Pending PR CI and main integration before CLOSED."
+    "M4-ROUTE-TRANSPORT-CAPACITY-001": "CLOSED after PR #90 entered main at 2431e897676838057d2e29201b0528b5ebbf29c2. simulation_engineer thread 019f01ca-2ecb-7223-a4a1-ff03e0b527cb implemented route/transport capacity forecasts; systems_architect thread 019f01ca-42ce-78d2-8e19-da4887343bb3 accepted; independent qa_reviewer thread 019f01df-cfe0-7bd2-a412-c67a7441ef96 accepted; lead gates and PR CI passed. Next READY task is M4-MARCH-SUPPLY-STATE-001.",
+    "M4-MARCH-SUPPLY-STATE-001": "READY after M4-ROUTE-TRANSPORT-CAPACITY-001 closure. This task owns deterministic daily march execution, supply state, and reinforcement timing; it must not absorb siege, battle, postwar governance, campaign AI, or client UI behavior."
   }
 }
