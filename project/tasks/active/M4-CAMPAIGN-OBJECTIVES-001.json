@@ -2,7 +2,7 @@
   "id": "M4-CAMPAIGN-OBJECTIVES-001",
   "summary": "Implement minimal M4 campaign objectives and planning knowledge model",
   "milestone": "M4",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -71,7 +71,7 @@
   "threads": {
     "simulation_engineer": {
       "thread_id": "019f011e-bf0d-7693-8a28-15a919e7ea2c",
-      "status": "review_handoff_committed_r2",
+      "status": "accepted_after_systems_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "nickname": "Delta the 3rd",
@@ -79,7 +79,7 @@
       "branch_or_worktree": "feat/m4-campaign-objectives",
       "start_state": "START_CONFIRMED",
       "replaces_thread_id": "019f0114-5efd-79a0-bf93-f8d6e566f134",
-      "updated_at": "2026-06-26T00:10:59Z",
+      "updated_at": "2026-06-26T00:14:52Z",
       "start_submission_id": "019f0120-18e2-7252-826b-82aedf416be9",
       "review_ready_handoff": "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json",
       "review_commit": "d89d6aea",
@@ -90,7 +90,7 @@
     },
     "systems_architect": {
       "thread_id": "019f011e-d31b-7f50-87a7-b92e135d4b7e",
-      "status": "reviewing_r2",
+      "status": "accepted_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "nickname": "Lintel the 3rd",
@@ -98,7 +98,7 @@
       "branch_or_worktree": "feat/m4-campaign-objectives",
       "start_state": "AWAITING_REVIEW_READY",
       "replaces_thread_id": "019f0114-755e-7763-a7c5-bea403684924",
-      "updated_at": "2026-06-26T00:10:59Z",
+      "updated_at": "2026-06-26T00:14:52Z",
       "await_submission_id": "019f0120-190f-7b83-84f4-7df287c9e8f7",
       "review_ready_handoff": "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json",
       "review_ready_submission_id": "019f0135-7fc1-7330-bce0-15d0f1b3b4d5",
@@ -106,10 +106,11 @@
       "request_changes_handoff": "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
       "review_ready_handoff_r2": "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-R2-REVIEW__simulation_engineer.json",
       "review_ready_submission_id_r2": "019f0143-db5b-7aa0-b666-9fb137d5fe2d",
-      "review_commit_r2": "324830a3"
+      "review_commit_r2": "324830a3",
+      "accept_handoff": "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-SYSTEMS-R2-ACCEPT__systems_architect.json"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task creates only the M4 objective/knowledge substrate; it must not absorb muster, supply, march, siege, UI, or validation work.",
     "Stop and route to systems_architect if objective modeling requires a save-format, protocol-compatibility, or frozen-decision ADR beyond the task scope.",
@@ -117,7 +118,7 @@
     "Promoted to READY after M4-TASK-GRAPH-001 entered origin/main and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T00:10:59Z",
+  "updated_at": "2026-06-26T00:14:52Z",
   "replaced_threads": [
     {
       "role": "simulation_engineer",

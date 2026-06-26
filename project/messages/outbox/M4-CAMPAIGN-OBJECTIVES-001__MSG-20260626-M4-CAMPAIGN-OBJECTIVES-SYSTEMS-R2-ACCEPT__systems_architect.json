@@ -1,0 +1,121 @@
+{
+  "message_id": "MSG-20260626-M4-CAMPAIGN-OBJECTIVES-SYSTEMS-R2-ACCEPT",
+  "task_id": "M4-CAMPAIGN-OBJECTIVES-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 architecture review accepts M4-CAMPAIGN-OBJECTIVES-001. The prior REQUEST_CHANGES blocker is resolved: M4 FactionKnowledge canonical sorting now includes stable tie-breakers for duplicate logical known-objective, route, supply, and defender estimate keys, and a direct probe confirms same-district duplicate supply estimates canonicalize identically when input order is swapped. The R2 regression covers duplicate-key estimates supplied in different orders, and the M4 test fixtures now use parseRouteId instead of 'as never'. The implementation remains inside allowed sim-core/protocol/test/process scope, keeps player and AI actors on the same GameCommandV1 paths, preserves read-only planning queries, and does not add muster, supply consumption, march execution, siege/combat execution, UI, save-format expansion, full diplomacy, rebellion, or manual battle behavior.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-m4-campaign-objectives.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+    "project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-campaign-objectives",
+  "commit": "324830a324295020a6c4519da65334dd09a5eaf2",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-CAMPAIGN-OBJECTIVES-001__MSG-20260626-M4-CAMPAIGN-OBJECTIVES-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer REVIEW handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M4-CAMPAIGN-OBJECTIVES-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list showed M4-CAMPAIGN-OBJECTIVES-001 in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks emitted while M4-CAMPAIGN-OBJECTIVES-001 remains in REVIEW."
+    },
+    {
+      "command": "git diff --check origin/main..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e M4 duplicate-key FactionKnowledge canonicalization probe",
+      "exit_code": 0,
+      "result": "Printed 'canonical equal' for two otherwise identical M4 states whose same-district supplyEstimates were supplied in opposite orders."
+    },
+    {
+      "command": "rg -n \"as never\" tests/sim-core-m4-campaign-objectives.test.ts packages/sim-core/src/world-state-v0.ts",
+      "exit_code": 1,
+      "result": "No remaining 'as never' branded-ID fabrication in the M4 test or touched sim-core file."
+    },
+    {
+      "command": "rg -n --glob 'packages/sim-core/src/**' -e 'Math\\\\.random' -e 'Date\\\\.now' -e 'performance\\\\.now' -e 'React' -e 'Pixi' -e 'Electron' -e 'document\\\\.' -e 'window\\\\.' -e 'localStorage' -e 'from \"fs\"' -e \"from 'fs'\" -e 'node:fs' -e 'require\\\\(' .",
+      "exit_code": 1,
+      "result": "No forbidden real-time, random, DOM, React, Pixi, Electron, localStorage, or Node IO matches in sim-core source."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-campaign-objectives.test.ts",
+      "exit_code": 0,
+      "result": "Focused M4 suite passed: 1 file, 7 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Protocol schema suite passed: 1 file, 8 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Sim-core package suite passed: 15 files, 106 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible deterministic hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd; save/load byte length 10920."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest passed 26 files / 173 tests; web package tests passed 1 file / 3 tests."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit_code": 0,
+      "result": "Recursive workspace typecheck passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "Prettier format check passed."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-CAMPAIGN-OBJECTIVES-001",
+      "exit_code": 0,
+      "result": "Task JSON parsed; task id, REVIEW status, R3 risk level, sim-core allowed path, and save-format forbidden path verified."
+    }
+  ],
+  "decisions": [
+    "Accepted deterministic duplicate-key canonicalization as an appropriate scoped fix because duplicate knowledge observations can be valid when every semantic field participates in ordering.",
+    "Accepted the complete tie-breaker ordering for known objectives, route estimates, supply estimates, and defender estimates.",
+    "Accepted the RouteId fixture cleanup: tests now use parseRouteId instead of branded-ID fabrication.",
+    "No new ADR is required because R2 does not change frozen architecture decisions; it repairs deterministic canonicalization within the approved task scope."
+  ],
+  "risks": [
+    "M4 CampaignPlan and FactionKnowledge state remains in-memory only until a later approved M4 save/replay task opens persistence scope.",
+    "Downstream M4 tasks must not treat this substrate as implemented muster, supply consumption, march execution, siege/combat execution, or AI planning behavior."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate M4-CAMPAIGN-OBJECTIVES-001 after lead_orchestrator verifies final diff scope, handoff chain, task state, and autonomous goal-mode gates.",
+  "created_at": "2026-06-26T08:13:27.3517494+08:00"
+}
