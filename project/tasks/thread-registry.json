@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T05:24:00+08:00",
+  "updated_at": "2026-06-27T05:42:29+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2474,7 +2474,7 @@
       "task_id": "M6-TASK-GRAPH-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "in_progress",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -2483,7 +2483,7 @@
       "branch_or_worktree": "chore/m6-task-graph",
       "start_state": "READY_AFTER_M5_GATE_CLOSED",
       "created_at": "2026-06-27T05:01:21+08:00",
-      "updated_at": "2026-06-27T05:17:00+08:00",
+      "updated_at": "2026-06-27T05:42:29+08:00",
       "m5_gate_result": "PASS_WITH_LIMITS",
       "m5_gate_integrated_pr": 127,
       "m5_gate_integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
@@ -2497,13 +2497,17 @@
       "qa_reviewer_thread_id": "019f05d6-407f-7833-b397-ab103b09d257",
       "qa_route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
       "routed_to_qa_at": "2026-06-27T05:24:00+08:00",
-      "next_action": "Await independent qa_reviewer review."
+      "qa_review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+      "qa_status": "ACCEPT",
+      "lead_accept_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T05:42:29+08:00",
+      "next_action": "Open PR for accepted M6 task graph; after CI/merge/sync, close M6-TASK-GRAPH-001 and start M6-ALPHA-SYSTEM-CONTRACT-001."
     },
     "M6-TASK-GRAPH-001:systems_architect": {
       "task_id": "M6-TASK-GRAPH-001",
       "role": "systems_architect",
       "thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
-      "status": "review_ready",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -2519,13 +2523,15 @@
       "created_at": "2026-06-27T05:12:06+08:00",
       "review_ready_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
       "review_ready_at": "2026-06-27T05:17:00+08:00",
-      "updated_at": "2026-06-27T05:17:00+08:00"
+      "result": "REVIEW",
+      "closed_at": "2026-06-27T05:42:29+08:00",
+      "updated_at": "2026-06-27T05:42:29+08:00"
     },
     "M6-TASK-GRAPH-001:qa_reviewer": {
       "task_id": "M6-TASK-GRAPH-001",
       "role": "qa_reviewer",
       "thread_id": "019f05d6-407f-7833-b397-ab103b09d257",
-      "status": "reviewing",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -2539,8 +2545,11 @@
       "review_source_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "a2a6599e",
       "review_submission_id": "019f05d6-a8ad-7952-87fc-dec7f0040ef8",
+      "review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+      "result": "ACCEPT",
+      "closed_at": "2026-06-27T05:42:29+08:00",
       "created_at": "2026-06-27T05:24:00+08:00",
-      "updated_at": "2026-06-27T05:24:00+08:00"
+      "updated_at": "2026-06-27T05:42:29+08:00"
     }
   }
 }

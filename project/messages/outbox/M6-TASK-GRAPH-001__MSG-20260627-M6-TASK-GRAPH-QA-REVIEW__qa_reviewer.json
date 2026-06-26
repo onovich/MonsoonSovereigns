@@ -1,0 +1,121 @@
+{
+  "message_id": "MSG-20260627-M6-TASK-GRAPH-QA-REVIEW",
+  "task_id": "M6-TASK-GRAPH-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA review accepts the M6 task graph. The graph covers the Roadmap and acceptance-matrix M6 scope, preserves DEFER_MANUAL_NODE_BATTLE, has an acyclic dependency order, leaves M6-TASK-GRAPH-001 in REVIEW, exposes only M6-ALPHA-SYSTEM-CONTRACT-001 as the first downstream READY task, and keeps all other downstream M6 tasks in DRAFT. No forbidden product, package, content-source, tools, CI, roadmap, acceptance-matrix, prior gate, ADR, or product-code path was modified by the reviewed task graph.",
+  "artifacts": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/GATE-M5.md",
+    "project/tasks/active/M6-TASK-GRAPH-001.json",
+    "project/tasks/active/M6-ACCESSIBILITY-CORE-FLOWS-001.json",
+    "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+    "project/tasks/active/M6-ALPHA-NO-P0P1-VALIDATION-001.json",
+    "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+    "project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json",
+    "project/tasks/active/M6-CLIENT-ALPHA-SURFACES-001.json",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/active/M6-EXIT-VALIDATION-001.json",
+    "project/tasks/active/M6-LAYERED-AI-001.json",
+    "project/tasks/active/M6-MAP-CANDIDATE-PIPELINE-001.json",
+    "project/tasks/active/M6-POLICY-EVENT-RUNTIME-001.json",
+    "project/tasks/active/M6-SCENARIO-DATA-PIPELINE-001.json",
+    "project/tasks/active/M6-START-TO-VICTORY-SIM-LOOP-001.json",
+    "project/tasks/active/M6-SUCCESSION-COMPLETION-001.json",
+    "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "chore/m6-task-graph / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "a2a6599e",
+  "observed_head": "b9860836a5b55ca31793656f37761b29ea287907",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial review observed route/state changes while QA routing was being recorded. Final pre-handoff status showed no tracked working-tree diff and only pre-existing untracked ui-samples/ files, which are not accepted as M6-TASK-GRAPH-001 artifacts."
+    },
+    {
+      "command": "git diff --name-only main...a2a6599e",
+      "exit_code": 0,
+      "result": "23 changed paths, all under allowed planning/status/message/task/model-routing/thread-registry areas for the review commit."
+    },
+    {
+      "command": "git diff --name-only main...HEAD",
+      "exit_code": 0,
+      "result": "24 changed paths after route commit b9860836; added only QA routing/thread-registration metadata beyond a2a6599e."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-TASK-GRAPH-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M6-TASK-GRAPH-001 is REVIEW; M6-ALPHA-SYSTEM-CONTRACT-001 is READY; the other 13 downstream M6 tasks are DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready output while M6-TASK-GRAPH-001 remains in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect REVIEW handoff."
+    },
+    {
+      "command": "PowerShell loop: taskctl validate every project/tasks/active/M6-*.json",
+      "exit_code": 0,
+      "result": "taskctl validate all M6 ok count=15."
+    },
+    {
+      "command": "node -e JSON DAG/status check for all M6 tasks",
+      "exit_code": 0,
+      "result": "M6 JSON DAG/status check ok files=15 edges=41 graphStatus=REVIEW firstReady=M6-ALPHA-SYSTEM-CONTRACT-001 downstreamNonDraft=0."
+    },
+    {
+      "command": "node -e routing/state check for goal-mode-state, model-routing-state, thread-registry, and QA route",
+      "exit_code": 0,
+      "result": "routing/state check ok: milestone M6, task M6-TASK-GRAPH-001, systems thread review_ready, QA thread reviewing, reviewCommit=a2a6599e, next_ready_tasks length 0."
+    },
+    {
+      "command": "PowerShell changed-path scope guard for main...a2a6599e and main...HEAD",
+      "exit_code": 0,
+      "result": "scope guard ok for a2a6599e changedPaths=23; scope guard ok for HEAD changedPaths=24."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported for current working tree diff."
+    },
+    {
+      "command": "git diff --check main...a2a6599e",
+      "exit_code": 0,
+      "result": "No whitespace errors reported for review commit diff."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M6 graph coverage matches Roadmap and acceptance matrix M6: start-to-victory, diplomacy, legitimacy, succession completion, layered AI, policy/event/encyclopedia surfaces, three-scenario data pipeline, map candidate path, batch auto-run/balance dashboard, accessibility core flows, Alpha no P0/P1, adviser intervention, and M6 exit gate.",
+    "ACCEPT: Dependency graph is ordered and acyclic. M6-TASK-GRAPH-001 remains REVIEW; M6-ALPHA-SYSTEM-CONTRACT-001 is the only first downstream READY task and is planning-only; all other downstream M6 tasks remain DRAFT.",
+    "ACCEPT: DEFER_MANUAL_NODE_BATTLE is preserved. No M6 manual node battle implementation task, blocking spike, or blocking research task exists; mentions are exclusions or post-1.0 non-blocking candidate notes.",
+    "ACCEPT: The reviewed diff does not modify forbidden apps/packages/content-source/tools/.github/docs gate/roadmap/acceptance-matrix/ADR/product-code paths. The later b9860836 route commit only records QA routing/thread metadata.",
+    "ACCEPT: Architecture boundaries and Human Gates are preserved in task scopes. Downstream tasks require command parity, deterministic ordering, explicit schemas, no sim-core UI/DOM/Electron imports, no telemetry/server/accounts/mods, and ADR/Human Gate escalation where needed.",
+    "ACCEPT: No fabricated reviewer acceptance found. Systems handoff is REVIEW and valid; this QA handoff is the independent acceptance routed to lead_orchestrator."
+  ],
+  "risks": [
+    "Current HEAD is b9860836 because a route-only commit was added after the requested review commit a2a6599e. QA reviewed a2a6599e as requested and checked that b9860836 only adds QA route/thread registration metadata.",
+    "Pre-existing untracked ui-samples/ files remain in the workspace and are not part of this acceptance.",
+    "M6 remains broad and several downstream tasks are R4; this acceptance covers the graph only, not future implementation correctness."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may accept M6-TASK-GRAPH-001 after validating this QA handoff, then close/integrate the planning task before starting downstream M6 implementation.",
+  "created_at": "2026-06-27T05:40:39+08:00"
+}

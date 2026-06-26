@@ -6,16 +6,18 @@
     "M6-TASK-GRAPH-001"
   ],
   "active_threads": {
-    "qa_reviewer": {
-      "thread_id": "019f05d6-407f-7833-b397-ab103b09d257",
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-TASK-GRAPH-001",
-      "status": "reviewing",
-      "role": "qa_reviewer"
+      "status": "accepted_pending_integration",
+      "role": "lead_orchestrator"
     }
   },
   "last_integrated_task": "M5-EXIT-HUMAN-GATE-001",
   "last_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
-  "next_ready_tasks": [],
+  "next_ready_tasks": [
+    "M6-ALPHA-SYSTEM-CONTRACT-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -56,7 +58,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T05:24:00+08:00",
+  "last_updated_at": "2026-06-27T05:42:29+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -68,7 +70,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T05:24:00+08:00",
+  "updated_at": "2026-06-27T05:42:29+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -426,7 +428,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Await independent qa_reviewer review for M6-TASK-GRAPH-001; do not start downstream M6 implementation before QA and lead acceptance.",
+  "next_action": "Integrate the accepted M6 task graph through PR and CI. M6-ALPHA-SYSTEM-CONTRACT-001 is dependency-ready but must not start until M6-TASK-GRAPH-001 enters main and is CLOSED.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -473,12 +475,13 @@
     ]
   },
   "m6_task_graph": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-TASK-GRAPH-001",
     "branch_or_worktree": "chore/m6-task-graph",
     "created_at": "2026-06-27T05:01:21+08:00",
     "started_at": "2026-06-27T05:12:06+08:00",
     "review_ready_at": "2026-06-27T05:17:00+08:00",
+    "updated_at": "2026-06-27T05:42:29+08:00",
     "systems_architect_thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
     "systems_architect_nickname": "Lintel",
     "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
@@ -488,9 +491,14 @@
     "qa_reviewer_nickname": "Gate",
     "qa_route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
     "routed_to_qa_at": "2026-06-27T05:24:00+08:00",
+    "qa_review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T05:42:29+08:00",
+    "reviewer_threads_closed": true,
     "first_downstream_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "downstream_task_count": 14,
     "human_gate_required": false,
-    "next_action": "Await independent qa_reviewer review of the M6 task DAG."
+    "next_action": "Open PR for the accepted M6 task graph; after CI/merge/sync, close M6-TASK-GRAPH-001 and start M6-ALPHA-SYSTEM-CONTRACT-001."
   }
 }
