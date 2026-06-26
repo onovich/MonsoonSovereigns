@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T01:39:05+08:00",
+  "updated_at": "2026-06-27T02:20:48+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1878,7 +1878,8 @@
     "M5-SIM-PLAYABLE-LOOP-001": "CLOSED after PR #112 entered main at fee2ccfeefd7ad73bbfc37442c4224000ad75496. Deterministic M5 simulation slice loop integrated; child threads closed; next ready M5 tasks are M5-CLIENT-PLAYABLE-UI-001 and M5-MULTIYEAR-AI-RUN-001.",
     "M5-CLIENT-PLAYABLE-UI-001": "CLOSED after PR #114 entered main at 5502087977416f2720e084337b65c16c472a4d14. client_engineer thread 019f045c-18cd-72c1-9c03-6a48b6ff56e0 produced REVIEW handoff; independent qa_reviewer thread 019f046f-ee05-76e1-97fe-74c083fc227d accepted; lead gates and PR CI passed. Child threads closed. Next dependency-ready M5 tasks are M5-MULTIYEAR-AI-RUN-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
     "M5-MULTIYEAR-AI-RUN-001": "CLOSED after PR #116 entered main at 809209369a9ca21f32f6e0887758c5f0e670dd41. Replacement test_engineer R3 and independent qa_reviewer R2 accepted; CI passed; child threads closed. Next dependency-ready M5 tasks are M5-PERFORMANCE-GATE-001 and M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
-    "M5-PERFORMANCE-GATE-001": "CLOSED after PR #118 entered main at bd47faee8e6780a96f92402f47361012be40f3e1; next READY M5 task is M5-WEB-WINDOWS-DISTRIBUTABLE-001."
+    "M5-PERFORMANCE-GATE-001": "CLOSED after PR #118 entered main at bd47faee8e6780a96f92402f47361012be40f3e1; next READY M5 task is M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
+    "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "Lead accepted after security and QA acceptance; task is pending PR/CI/main integration."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -1894,6 +1895,35 @@
       "next_ready_tasks": [
         "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
       ]
+    },
+    "M5-WEB-WINDOWS-DISTRIBUTABLE-001": {
+      "status": "ACCEPTED_PENDING_INTEGRATION",
+      "owner_role": "release_engineer",
+      "reviewer_role": "security_reviewer+qa_reviewer",
+      "branch_or_worktree": "chore/m5-web-windows-distributable",
+      "writer_thread_id": "019f0508-95e6-76c2-92dd-d3cbb7311085",
+      "configured_model": "gpt-5.3-codex-spark",
+      "configured_effort": "medium",
+      "start_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-TO-RELEASE-START-CONFIRMED.json",
+      "started_at": "2026-06-27T01:44:50+08:00",
+      "next_action": "PR/CI/main integration before CLOSED",
+      "review_ready_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+      "request_changes_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-REQUEST-CHANGES-TO-RELEASE.json",
+      "request_changes_at": "2026-06-27T01:52:59+08:00",
+      "security_thread_id": "019f0519-1337-7572-88c9-806afeb5325b",
+      "review_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-R2-TO-SECURITY-REVIEW.json",
+      "routed_to_security_at": "2026-06-27T02:02:49+08:00",
+      "qa_thread_id": "019f0522-68ba-7313-9361-89e262f4dec0",
+      "security_review_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+      "security_status": "ACCEPT",
+      "qa_route": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-SECURITY-TO-QA-REVIEW.json",
+      "routed_to_qa_at": "2026-06-27T02:13:00+08:00",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T02:20:48+08:00"
     }
   }
 }

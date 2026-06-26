@@ -1,0 +1,137 @@
+{
+  "message_id": "MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-QA-REVIEW",
+  "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Independent read-only functional QA review finds the repaired R2 package smoke sufficient for M5-WEB-WINDOWS-DISTRIBUTABLE-001 at the current M5 slice boundary. The packaged Electron smoke launches the M5 playable workspace from the unsigned package, exercises start, preview, confirm, client-session save, cancel, and load recovery, and the required Web build, security check, package build, Chromium e2e, Electron host-hash canary, handoff validation, task validation, desktop checks, and diff checks pass. Import/export button count 0 is accepted as an explicit functional caveat because the current M5 client surface implements client-session save/load checkpoint behavior, the slice definition allows load-save checkpoint as the minimum save boundary, and the current desktop preload/IPC surface intentionally has no file import/export bridge.",
+  "artifacts": [
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+    "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-SECURITY-TO-QA-REVIEW.json",
+    "apps/desktop/src/main/main.ts",
+    "apps/desktop/scripts/package-smoke.mjs",
+    "packages/ui/src/index.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/platform/src/index.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/m5-web-windows-distributable / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "885f124b",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean working tree on chore/m5-web-windows-distributable before QA handoff creation."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are apps/desktop/scripts/package-smoke.mjs, apps/desktop/src/main/main.ts, and allowed project task/message/state files only."
+    },
+    {
+      "command": "git diff origin/main...HEAD -- apps/desktop/src/main/main.ts apps/desktop/scripts/package-smoke.mjs",
+      "exit_code": 0,
+      "result": "Reviewed exact product-code diff. main.ts only adds MONSOON_SMOKE_WEB packaged web entry selection while preserving MONSOON_HOST_HASH_CANARY priority; package-smoke launches packaged Electron and verifies M5 workspace, runtime bridge, command preview/confirm, save, cancel, and load."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+      "exit_code": 0,
+      "result": "VALID release_engineer R2 REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID security_reviewer ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format errors."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production Web build passed; dist/index.html and dist/host-hash-canary.html generated. Existing chunk-size warning is non-blocking."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security check passed. nodeIntegration=false, contextIsolation=true, sandbox=true, renderer file navigation restricted, preload exposes only monsoonDesktop, and allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Unsigned local package generated at .tmp/desktop-package/MonsoonSovereigns-win32-x64 with main, preload, renderer, web assets, and platform adapter artifacts."
+    },
+    {
+      "command": "node apps/desktop/scripts/package-smoke.mjs",
+      "exit_code": 0,
+      "result": "PASS. Packaged app launched M5 workspace, runtime bridge was present, command preview/confirm passed, client-session save wrote m5.save.client-session-written, cancel/load restored m5.load.client-session-restored, final phase was running, confirmed count was 1, and Import/export button count was 0 as caveat."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- -b electron",
+      "exit_code": 0,
+      "result": "PASS. Electron renderer dedicated worker matched Node baseline: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS. 8 Chromium tests passed, including M5 playable flow through save/load, success/failure, and required desktop viewport overflow checks."
+    },
+    {
+      "command": "pnpm --filter desktop format:check",
+      "exit_code": 0,
+      "result": "PASS. All desktop matched files use Prettier code style."
+    },
+    {
+      "command": "pnpm --filter desktop lint",
+      "exit_code": 0,
+      "result": "PASS. Desktop ESLint completed without findings."
+    },
+    {
+      "command": "pnpm --filter desktop typecheck",
+      "exit_code": 0,
+      "result": "PASS. Desktop TypeScript noEmit check completed."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- packages/sim-core packages/sim-ai content-source tools .github docs/decisions docs/GATE-M0.md docs/GATE-M1.md docs/GATE-M2.md docs/GATE-M3.md docs/GATE-M4.md docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No forbidden-path changes."
+    },
+    {
+      "command": "rg -n \"telemetry|account|store|signing|branding|commercial|public release|showOpenDialog|showSaveDialog|openExternal|openPath|autoUpdater|fetch|XMLHttpRequest|WebSocket|node:net|node:http|node:https\" apps/desktop/src/main/main.ts apps/desktop/scripts/package-smoke.mjs -S",
+      "exit_code": 0,
+      "result": "No scope-drift hits in changed product files; the only match was the literal test label string 'M5 load status'."
+    }
+  ],
+  "decisions": [
+    "ACCEPT route_to=lead_orchestrator. This QA handoff does not mark the task CLOSED.",
+    "The repaired package smoke satisfies the M5-WEB-WINDOWS-DISTRIBUTABLE-001 acceptance criteria at the current M5 slice boundary: it proves local Web build output, unsigned packaged Electron launch, M5 playable workspace availability, command flow, client-session save/load recovery, security canary, and deterministic Electron host hash canary.",
+    "Import/export button count 0 is acceptable as an explicit caveat, not a REQUEST_CHANGES blocker. The current M5 UI exposes Save checkpoint and Load checkpoint, packages/client-core provides a schema-checked M5 client-session save parser, M5-SLICE-DEFINITION-001 allows save export/import or load-save checkpoint at minimum, and the desktop preload/IPC surface intentionally exposes no file import/export bridge.",
+    "The caveat means no desktop file import/export bridge or OS file picker behavior is accepted by this review. Any future desktop file import/export must be a separate task with allowlisted dialogs, schema validation, path constraints, malformed-input tests, and security review.",
+    "The required test representation is sufficient. The task wording lists pnpm e2e, but this repository's actual script is pnpm test:e2e; R2 recorded the alias caveat and QA reran pnpm test:e2e successfully.",
+    "No scope drift found into telemetry, accounts, network services, store integration, signing, branding, commercial/public release, release manifests, CI, content-source, sim-core, sim-ai, tools, or gate/roadmap/ADR files."
+  ],
+  "risks": [
+    {
+      "risk": "The current ACCEPT covers client-session save/load checkpoint behavior only. It does not prove file import/export UX or desktop file-system adapter behavior because those surfaces do not exist in this slice."
+    },
+    {
+      "risk": "MONSOON_SMOKE_WEB is an evidence switch for packaged smoke; normal desktop mode still loads the security shell. A future product decision to make the packaged app open the M5 web UI by default would need an explicit task and review."
+    },
+    {
+      "risk": "package-smoke intentionally fails rather than bypasses if MONSOON_HOST_HASH_CANARY is forced in the caller environment because main.ts preserves host-hash priority."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate this ACCEPT QA review with the existing security ACCEPT and decide the next process step. Do not treat this handoff as CLOSED; it is functional QA acceptance with the documented import/export caveat.",
+  "created_at": "2026-06-27T02:18:27+08:00"
+}

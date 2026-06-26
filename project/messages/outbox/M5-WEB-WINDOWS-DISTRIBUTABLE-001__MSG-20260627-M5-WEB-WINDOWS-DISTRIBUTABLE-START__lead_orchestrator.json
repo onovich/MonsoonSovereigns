@@ -1,0 +1,123 @@
+{
+  "message_id": "MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-START",
+  "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead starts M5-WEB-WINDOWS-DISTRIBUTABLE-001 on branch chore/m5-web-windows-distributable after M5-PERFORMANCE-GATE-001 entered main and was closed. The writer is a real release_engineer subagent. The task must produce local/smoke-only Web and unsigned Windows distributable evidence without weakening Electron security or expanding into release, store, accounts, telemetry, services, signing, branding, or public launch decisions.",
+  "artifacts": [
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-START__lead_orchestrator.json",
+    "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-TO-RELEASE-START-CONFIRMED.json"
+  ],
+  "branch_or_worktree": "chore/m5-web-windows-distributable / D:\\WebProjects\\MonsoonSovereigns",
+  "base_main_commit": "54bfb063db57696bcf3f065f3d40656a6e7c5e4e",
+  "spawned_thread": {
+    "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+    "role": "release_engineer",
+    "thread_id": "019f0508-95e6-76c2-92dd-d3cbb7311085",
+    "status": "running",
+    "configured_model": "gpt-5.3-codex-spark",
+    "configured_effort": "medium",
+    "actual_model": "unknown",
+    "actual_effort": "unknown",
+    "nickname": "Courier the 10th",
+    "responsibility": "primary release_engineer writer for M5 Web and unsigned Windows distributable smoke evidence",
+    "branch_or_worktree": "chore/m5-web-windows-distributable",
+    "start_state": "START_CONFIRMED",
+    "spawn_result": "spawn_agent",
+    "start_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-LEAD-TO-RELEASE-START-CONFIRMED.json",
+    "base_main_commit": "54bfb063db57696bcf3f065f3d40656a6e7c5e4e",
+    "updated_at": "2026-06-27T01:44:50+08:00"
+  },
+  "allowed_paths": [
+    "apps/web/**",
+    "apps/desktop/**",
+    "packages/platform-browser/**",
+    "packages/platform-electron/**",
+    "packages/protocol/**",
+    "tests/**",
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/**",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "forbidden_paths": [
+    "packages/sim-core/**",
+    "packages/sim-ai/**",
+    "content-source/**",
+    "tools/**",
+    ".github/**",
+    "docs/decisions/**",
+    "docs/GATE-M0.md",
+    "docs/GATE-M1.md",
+    "docs/GATE-M2.md",
+    "docs/GATE-M3.md",
+    "docs/GATE-M4.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "PROJECT_STATUS.md",
+    "MANIFEST.md",
+    "SHA256SUMS.txt",
+    "VALIDATION_REPORT.md"
+  ],
+  "acceptance_focus": [
+    "Local Web build and unsigned Windows Electron smoke package can launch the M5 slice and pass deterministic host hash/security canaries.",
+    "Electron keeps nodeIntegration=false, contextIsolation=true, sandbox=true, strict preload/IPC validation, and no arbitrary channel/path/shell-open exposure.",
+    "Web save/import/export and Electron save adapter behavior are smoke-tested without direct renderer filesystem access and without adding accounts, network services, telemetry, or release-store integration.",
+    "Evidence remains local/smoke-only and does not make a commercial release, store, branding, signing, telemetry, paid service, account, or public release decision."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm build:web",
+    "pnpm desktop:security-check",
+    "pnpm desktop:package",
+    "pnpm test:e2e or documented alias caveat if pnpm e2e is absent",
+    "Windows package smoke launches the M5 slice and verifies save/import/export boundaries plus host hash/security canary results",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+    "git diff --check"
+  ],
+  "decisions": [
+    "The writer may update only allowed paths and must not weaken Electron security to make smoke tests pass.",
+    "The task may record a PASS_WITH_LIMITS caveat if current save/import/export platform surfaces are narrower than the task wording, but any new IPC/file behavior must stay schema-validated and renderer-safe.",
+    "Do not mark ACCEPTED or CLOSED from the writer thread; route REVIEW to security_reviewer."
+  ],
+  "blockers": [],
+  "route_to": "release_engineer",
+  "requested_action": "Implement or gather the M5 Web/Windows distributable smoke evidence, run required gates, write REVIEW handoff, and route to security_reviewer.",
+  "created_at": "2026-06-27T01:44:50+08:00",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main was confirmed before creating branch chore/m5-web-windows-distributable."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+      "exit_code": 0,
+      "result": "Task schema valid before START checkpoint."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent release_engineer",
+      "exit_code": 0,
+      "result": "Spawned real release_engineer thread 019f0508-95e6-76c2-92dd-d3cbb7311085 (Courier the 10th)."
+    },
+    {
+      "command": "multi_agent_v1.send_input",
+      "exit_code": 0,
+      "result": "Sent START_CONFIRMED formal route; submission_id 019f050a-75ea-7382-8f24-e7fa33d4dba9."
+    }
+  ],
+  "risks": [
+    "Task must not weaken Electron security or add arbitrary IPC/path/shell exposure to satisfy smoke evidence.",
+    "Task required_tests mentions pnpm e2e; repo actual script may be pnpm test:e2e and must be recorded if alias is absent.",
+    "M5 formal passage and manual node battle remain separate Human Gates."
+  ]
+}

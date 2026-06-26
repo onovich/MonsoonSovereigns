@@ -1,0 +1,111 @@
+{
+  "message_id": "MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW",
+  "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+  "from_role": "security_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT. Independent read-only security review of release_engineer R2 found no exploitable Electron or release-scope regression. The reviewed diff is limited to allowed desktop/process paths; MONSOON_SMOKE_WEB only selects the packaged web entry for smoke evidence, normal desktop shell still loads the security shell, and MONSOON_HOST_HASH_CANARY keeps priority. Electron remains nodeIntegration=false, contextIsolation=true, sandbox=true, webSecurity=true with CSP, renderer-root navigation restriction, denied window opens, schema-validated fullscreen IPC, and only desktop:getRuntimeInfo / desktop:setFullscreen exposed. Package smoke proves M5 packaged launch plus save/load/client-session boundary; import/export controls count 0 is accepted for this security review because no desktop file import/export bridge exists in the current slice and adding one would be new security surface.",
+  "artifacts": [
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+    "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-R2-TO-SECURITY-REVIEW.json",
+    "project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json",
+    "apps/desktop/src/main/main.ts",
+    "apps/desktop/src/main/security.ts",
+    "apps/desktop/src/preload/preload.cts",
+    "apps/desktop/scripts/security-check.mjs",
+    "apps/desktop/scripts/package-smoke.mjs",
+    "packages/platform/src/index.ts",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/m5-web-windows-distributable / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "4a6ba845",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before security handoff creation; branch chore/m5-web-windows-distributable."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are apps/desktop/scripts/package-smoke.mjs, apps/desktop/src/main/main.ts, and allowed project task/message/state files only. No forbidden paths, dependency files, CI, gate docs, release manifests, content-source, sim-core, sim-ai, tools, telemetry, branding, signing, store, or commercial-release files changed."
+    },
+    {
+      "command": "git diff origin/main...HEAD -- apps/desktop/src/main/main.ts apps/desktop/scripts/package-smoke.mjs",
+      "exit_code": 0,
+      "result": "Reviewed exact R2 code diff. main.ts adds MONSOON_SMOKE_WEB entry selection only when MONSOON_HOST_HASH_CANARY is not set; package-smoke launches the packaged app with MONSOON_SMOKE_WEB=1 and asserts M5 workspace, runtime bridge, command preview/confirm, save, cancel, and load behavior."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+      "exit_code": 0,
+      "result": "VALID release_engineer R2 REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-WEB-WINDOWS-DISTRIBUTABLE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format errors."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web production build passed; output includes dist/index.html and dist/host-hash-canary.html. Existing chunk-size warning is non-blocking."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; renderer file navigation is restricted to the packaged renderer root; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Fresh desktop smoke package generated at .tmp/desktop-package/MonsoonSovereigns-win32-x64 with main, preload, renderer, and platform adapter artifacts."
+    },
+    {
+      "command": "node apps/desktop/scripts/package-smoke.mjs",
+      "exit_code": 0,
+      "result": "PASS. Packaged app launched M5 workspace in running phase, confirmed count 1, runtime bridge present, Save checkpoint wrote m5.save.client-session-written, Cancel/Load restored m5.load.client-session-restored. Import/export button count was 0 and logged as current-surface caveat."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:host-hash-canary -- -b electron",
+      "exit_code": 0,
+      "result": "Electron renderer dedicated worker matched Node baseline: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, save byte length 10920."
+    },
+    {
+      "command": "node --input-type=module -e \"<packaged normal desktop shell probe>\"",
+      "exit_code": 0,
+      "result": "Without MONSOON_SMOKE_WEB, packaged app exposed the secure desktop shell once, M5 workspace count was 0, and bridge keys were getRuntimeInfo,setFullscreen."
+    },
+    {
+      "command": "node --input-type=module -e \"<packaged smoke CSP/navigation probe>\"",
+      "exit_code": 0,
+      "result": "In MONSOON_SMOKE_WEB mode, inline script injection was blocked by CSP, probe value stayed 0, and attempted navigation to https://example.com remained on the packaged file URL."
+    },
+    {
+      "command": "rg -n \"shell|openExternal|openPath|showOpenDialog|showSaveDialog|ipcMain|ipcRenderer|contextBridge|node:fs|child_process|autoUpdater|net\\.\" apps/desktop packages/platform apps/web -S",
+      "exit_code": 0,
+      "result": "No arbitrary shell-open, dialog, path, filesystem bridge, net service, auto-updater, or extra Electron IPC surface found in the desktop/platform sources. Hits were the expected two IPC handlers, sandbox preload bridge, security/package scripts, and the unexposed platform type-level openExternal contract."
+    }
+  ],
+  "decisions": [
+    "ACCEPT route_to=lead_orchestrator. Do not mark CLOSED in this security handoff; QA/release functional acceptance remains downstream.",
+    "The R2 diff is within allowed_paths. Product code changes are limited to apps/desktop/src/main/main.ts and apps/desktop/scripts/package-smoke.mjs; the remaining changes are allowed project task/message/routing state.",
+    "MONSOON_SMOKE_WEB is accepted as an evidence/test entry switch because it only changes the loaded local file entry to renderer/web/index.html for smoke mode. It does not add IPC, filesystem, shell-open, network, remote-code, or direct renderer authority.",
+    "MONSOON_HOST_HASH_CANARY behavior is preserved because main.ts selects the smoke web entry only when smokeWebMode is true and hostHashCanaryMode is false. The Electron host-hash canary matched Node baseline after R2.",
+    "Electron security posture is accepted: nodeIntegration=false, contextIsolation=true, sandbox=true, webSecurity=true, allowRunningInsecureContent=false, strict CSP, denied window opens, renderer-root file navigation, and only desktop:getRuntimeInfo / desktop:setFullscreen IPC.",
+    "Import/export controls count 0 is not a blocker for this security review or for the current task's distributable boundary evidence. The current desktop bridge intentionally has no file import/export IPC; package smoke exercises the M5 client-session save/load serialization boundary and confirms absence of direct renderer filesystem access. Future desktop file import/export must be a separate reviewed bridge with allowlisted dialogs, path constraints, schema validation, malformed-input tests, and security evidence.",
+    "No telemetry, accounts, network services, store integration, installer signing, branding, commercial release, public release decision, arbitrary-code mod support, remote code execution, dependency change, license drift, compression/archive extraction surface, or malformed archive input surface was introduced."
+  ],
+  "risks": [
+    "The package-smoke import/export locator count is 0 by current design. Functional QA should keep the known caveat visible: no explicit desktop file import/export bridge is proven in this slice.",
+    "If a later task adds desktop file import/export, this ACCEPT does not cover it; that work must add exact channel allowlists, path traversal defenses, malformed save/archive rejection tests, and renderer-safe IPC.",
+    "package-smoke inherits process.env. If a caller manually sets MONSOON_HOST_HASH_CANARY=1 while running package-smoke, host-hash mode intentionally takes priority and the M5 smoke would fail rather than silently weakening the canary."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate this ACCEPT security review and route next to qa_reviewer for functional validation; do not mark the task CLOSED until the required downstream acceptance is complete.",
+  "created_at": "2026-06-27T02:10:32.4253791+08:00"
+}

@@ -17,6 +17,7 @@ import {
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const rendererRoot = join(currentDir, "../renderer");
 const hostHashCanaryMode = process.env["MONSOON_HOST_HASH_CANARY"] === "1";
+const smokeWebMode = process.env["MONSOON_SMOKE_WEB"] === "1";
 
 function applyContentSecurityPolicy(): void {
   session.defaultSession.webRequest.onHeadersReceived(
@@ -82,11 +83,13 @@ function createMainWindow(): BrowserWindow {
     window.show();
   });
 
-  void window.loadFile(
-    hostHashCanaryMode
-      ? join(rendererRoot, "web", "host-hash-canary.html")
-      : join(rendererRoot, "index.html")
-  );
+  const entry =
+    smokeWebMode && !hostHashCanaryMode
+      ? join(rendererRoot, "web", "index.html")
+      : hostHashCanaryMode
+        ? join(rendererRoot, "web", "host-hash-canary.html")
+        : join(rendererRoot, "index.html");
+  void window.loadFile(entry);
   return window;
 }
 
