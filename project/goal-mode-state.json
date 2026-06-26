@@ -6,11 +6,11 @@
     "M6-TASK-GRAPH-001"
   ],
   "active_threads": {
-    "systems_architect": {
-      "thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
+    "qa_reviewer": {
+      "thread_id": "019f05d6-407f-7833-b397-ab103b09d257",
       "task_id": "M6-TASK-GRAPH-001",
-      "status": "review_ready",
-      "role": "systems_architect"
+      "status": "reviewing",
+      "role": "qa_reviewer"
     }
   },
   "last_integrated_task": "M5-EXIT-HUMAN-GATE-001",
@@ -56,7 +56,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T05:17:00+08:00",
+  "last_updated_at": "2026-06-27T05:24:00+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -68,7 +68,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:24:00+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -426,7 +426,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Route M6-TASK-GRAPH-001 systems_architect REVIEW handoff to independent qa_reviewer; do not start downstream M6 implementation before QA and lead acceptance.",
+  "next_action": "Await independent qa_reviewer review for M6-TASK-GRAPH-001; do not start downstream M6 implementation before QA and lead acceptance.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -484,6 +484,10 @@
     "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
     "systems_review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_reviewer_thread_id": "019f05d6-407f-7833-b397-ab103b09d257",
+    "qa_reviewer_nickname": "Gate",
+    "qa_route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+    "routed_to_qa_at": "2026-06-27T05:24:00+08:00",
     "first_downstream_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "downstream_task_count": 14,
     "human_gate_required": false,
