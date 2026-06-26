@@ -1,0 +1,81 @@
+{
+  "id": "M6-SCENARIO-DATA-PIPELINE-001",
+  "summary": "Implement three-scenario data pipeline",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "historical_researcher",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M6-ALPHA-SYSTEM-CONTRACT-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "content-source/**",
+      "apps/content-tools/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/tasks/active/M6-SCENARIO-DATA-PIPELINE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/sim-runner/**",
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/save-format/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Three Alpha scenario data sets compile through explicit schemas with stable IDs, source or claim labels, dependency ordering, and deterministic manifest output.",
+    "Scenario records distinguish HISTORICAL, INFERRED, COMPOSITE, and FICTIONAL material and reject unlabeled or unsourced formal claims.",
+    "The pipeline validates references needed by diplomacy, legitimacy, succession, map candidates, policy, events, encyclopedia entries, and start-to-victory fixtures without implementing those systems.",
+    "No production art, audio, branding, cultural symbol lock, commercial release artifact, telemetry, server behavior, or arbitrary-code mod support is added."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm content:validate",
+    "pnpm --filter @monsoon/content-schema test",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm test",
+    "Content compatibility tests cover bad references, missing labels, unstable IDs, duplicate scenario keys, and deterministic manifest output.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SCENARIO-DATA-PIPELINE-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m6-scenario-data-pipeline",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This task may create data-pipeline scaffolding and minimal Alpha scenario data, but it is not M7 content lock.",
+    "Formal names, symbols, language, or culture-specific assets require historical/cultural review before acceptance.",
+    "Stop and route to systems_architect if content schemas require cross-boundary runtime object graphs or implicit RPC."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

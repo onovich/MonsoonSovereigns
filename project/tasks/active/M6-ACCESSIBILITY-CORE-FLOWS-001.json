@@ -1,0 +1,82 @@
+{
+  "id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "summary": "Validate and harden accessibility core flows",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M6-CLIENT-ALPHA-SURFACES-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/tasks/active/M6-ACCESSIBILITY-CORE-FLOWS-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "apps/sim-runner/**",
+      "apps/content-tools/**",
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/save-format/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Core Alpha flows are keyboard reachable, focus-visible, screen-reader labelable, and usable without color-only state for scenario start, command preview/confirm, map navigation, diplomacy, succession, policy/event choices, encyclopedia, save/load checkpoint, and victory/failure review.",
+    "Accessibility work uses existing UI patterns and minimal dependencies; any new production dependency includes purpose, maintenance, license, alternatives, and bundle impact before acceptance.",
+    "Automated and manual evidence records viewport, keyboard, focus order, reduced-motion/status update handling, and major known limits without claiming final M7/M8 accessibility completion.",
+    "Accessibility fixes do not introduce client-side authoritative state, hidden network calls, telemetry, accounts, or Electron IPC changes."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm test",
+    "Accessibility evidence includes keyboard-only smoke, focus-order checks, viewport overflow checks, non-color status checks, and screen-reader label spot checks for core flows.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m6-accessibility-core-flows",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is core-flow Alpha accessibility, not final localization or platform matrix completion.",
+    "Do not add telemetry or account features to collect accessibility evidence.",
+    "If a new accessibility dependency is necessary, route dependency justification before implementation."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

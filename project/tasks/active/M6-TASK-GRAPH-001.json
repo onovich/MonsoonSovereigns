@@ -2,7 +2,7 @@
   "id": "M6-TASK-GRAPH-001",
   "summary": "Create minimal M6 Alpha system-complete task graph",
   "milestone": "M6",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -56,7 +56,7 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
     "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
     "node -e JSON validation for all new M6 task files and DAG acyclicity/dependency existence/status shape",
-    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <qa-handoff>",
     "git diff --check"
   ],
@@ -70,14 +70,18 @@
     "This task creates or restores the M6 task graph only; it must not implement diplomacy, legitimacy, layered AI, policy/events, encyclopedia, scenarios, map candidates, balance dashboard, accessibility, or Alpha validation behavior.",
     "Manual node battle remains deferred from M5 and the 1.0 mainline; do not create an implementation task or blocking spike/research task for M6, M7, or M8.",
     "M6 may create tasks that document the already-made manual node battle deferral only as non-blocking post-1.0 candidate tracking, not implementation authorization.",
-    "M5 Gate PASS_WITH_LIMITS carries forward bounded limits from docs/GATE-M5.md and must not be re-described as an unconditional PASS."
+    "M5 Gate PASS_WITH_LIMITS carries forward bounded limits from docs/GATE-M5.md and must not be re-described as an unconditional PASS.",
+    "Created a dependency-ordered M6 DAG with the first executable downstream task set to READY and all other downstream M6 tasks left in DRAFT for lead selection after QA review.",
+    "The M6 DAG contains no manual node battle implementation task and no blocking manual node battle spike or research task for M6, M7, or M8."
   ],
   "created_at": "2026-06-27T05:01:21+08:00",
-  "updated_at": "2026-06-27T05:12:06+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00",
   "lifecycle": {
     "ready_at": "2026-06-27T05:01:21+08:00",
-    "in_progress_at": "2026-06-27T05:12:06+08:00"
+    "in_progress_at": "2026-06-27T05:12:06+08:00",
+    "review_at": "2026-06-27T05:17:00+08:00"
   },
   "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
-  "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json"
+  "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
+  "review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
 }

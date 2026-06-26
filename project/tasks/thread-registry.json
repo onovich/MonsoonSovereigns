@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T05:12:06+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2483,7 +2483,7 @@
       "branch_or_worktree": "chore/m6-task-graph",
       "start_state": "READY_AFTER_M5_GATE_CLOSED",
       "created_at": "2026-06-27T05:01:21+08:00",
-      "updated_at": "2026-06-27T05:12:06+08:00",
+      "updated_at": "2026-06-27T05:17:00+08:00",
       "m5_gate_result": "PASS_WITH_LIMITS",
       "m5_gate_integrated_pr": 127,
       "m5_gate_integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
@@ -2492,13 +2492,15 @@
       "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
       "systems_architect_thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
       "started_at": "2026-06-27T05:12:06+08:00",
-      "next_action": "Await systems_architect REVIEW handoff for M6 task graph."
+      "review_ready_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "review_ready_at": "2026-06-27T05:17:00+08:00",
+      "next_action": "Route systems_architect REVIEW handoff to independent qa_reviewer."
     },
     "M6-TASK-GRAPH-001:systems_architect": {
       "task_id": "M6-TASK-GRAPH-001",
       "role": "systems_architect",
       "thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
-      "status": "writing",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -2512,7 +2514,9 @@
       "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
       "base_main_commit": "b02c522dcd2ea8766d018d13ff8e11571f20dd8a",
       "created_at": "2026-06-27T05:12:06+08:00",
-      "updated_at": "2026-06-27T05:12:06+08:00"
+      "review_ready_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "review_ready_at": "2026-06-27T05:17:00+08:00",
+      "updated_at": "2026-06-27T05:17:00+08:00"
     }
   }
 }

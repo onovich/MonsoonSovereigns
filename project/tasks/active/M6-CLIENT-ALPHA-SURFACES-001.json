@@ -1,0 +1,86 @@
+{
+  "id": "M6-CLIENT-ALPHA-SURFACES-001",
+  "summary": "Implement Alpha playability, policy, event, and encyclopedia surfaces",
+  "milestone": "M6",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R3",
+  "dependencies": [
+    "M6-START-TO-VICTORY-SIM-LOOP-001",
+    "M6-POLICY-EVENT-RUNTIME-001",
+    "M6-MAP-CANDIDATE-PIPELINE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "packages/protocol/**",
+      "packages/content-runtime/**",
+      "packages/content-schema/**",
+      "tests/**",
+      "project/tasks/active/M6-CLIENT-ALPHA-SURFACES-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/desktop/**",
+      "apps/sim-runner/**",
+      "apps/content-tools/**",
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/save-format/**",
+      "packages/platform/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "The Web client exposes a complete Alpha flow from scenario selection through one victory path using read models and command submission, without directly mutating authoritative WorldState.",
+    "Major M6 systems have non-placeholder surfaces for diplomacy, legitimacy, succession, policies, events, encyclopedia references, AI/adviser reasons, map candidate display, save/load checkpoint state, and victory/failure status.",
+    "React and client stores do not hold full WorldState, do not manage per-entity Pixi DisplayObjects, and do not duplicate sim-core rule authority.",
+    "Storybook or Playwright coverage demonstrates the core Alpha flow and verifies that no manual node battle, telemetry, server account, or arbitrary-code mod UI is introduced."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter @monsoon/map-renderer test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm test",
+    "Playwright or Storybook coverage includes Alpha start-to-victory flow, diplomacy/legitimacy/succession surfaces, policy/event choices, encyclopedia navigation, map candidate rendering, and no placeholder major-system panels.",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-CLIENT-ALPHA-SURFACES-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "feat/m6-client-alpha-surfaces",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "Keep client surfaces thin and read-model driven; shared interpretation belongs in protocol/client-core, not duplicated ad hoc in React views.",
+    "No Electron Node integration, desktop file bridge, telemetry, accounts, release, or commercial decision is in scope.",
+    "Manual node battle must not appear as an implementation surface."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

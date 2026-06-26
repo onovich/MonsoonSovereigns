@@ -1,0 +1,68 @@
+{
+  "id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+  "summary": "Define bounded M6 Alpha system-complete contract",
+  "milestone": "M6",
+  "status": "READY",
+  "owner_role": "gameplay_designer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R3",
+  "dependencies": [
+    "M6-TASK-GRAPH-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Define the minimum M6 Alpha contract for a start-to-victory playthrough, including start conditions, one accepted victory condition, failure conditions, evidence requirements, and no-placeholder major system expectations.",
+    "Map the contract to accepted M1-M5 systems and the M6 DAG without adding product code, content-source data, dependencies, release artifacts, or roadmap changes.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE exactly: manual node battle may appear only as a post-1.0 non-blocking candidate note and not as M6/M7/M8 implementation, spike, research, validation, or exit-gate dependency.",
+    "Preserve Human Gates for frozen product, platform, core architecture, paid services, accounts or secrets, server or multiplayer, telemetry, arbitrary-code mods, commercial or branding decisions, major cultural-risk decisions, irreversible migrations, and any formal 1.0 scope reversal."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ALPHA-SYSTEM-CONTRACT-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M6-ALPHA-SYSTEM-CONTRACT-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "design/m6-alpha-system-contract",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This is the first executable M6 task after the graph closes; it is planning-only and does not implement Alpha features.",
+    "The contract must keep M6 system-complete scope minimal and must not expand into M7 content lock, M8 release work, or post-1.0 expansion candidates.",
+    "If the contract needs a frozen decision change or manual node battle reversal, stop and route to Human Gate instead of continuing."
+  ],
+  "created_at": "2026-06-27T05:17:00+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00"
+}

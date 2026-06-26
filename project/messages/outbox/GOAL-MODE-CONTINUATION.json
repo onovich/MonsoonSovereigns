@@ -2,19 +2,19 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_TASK_GRAPH_IN_PROGRESS",
+  "status": "M6_TASK_GRAPH_REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "b09675c115b81ee05b7894071afb6f10000af011",
   "current_milestone": "M6",
   "current_task": "M6-TASK-GRAPH-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M5-EXIT-HUMAN-GATE-001",
   "ready_tasks": [],
   "active_threads": {
     "systems_architect": {
       "thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
       "task_id": "M6-TASK-GRAPH-001",
-      "status": "writing",
+      "status": "review_ready",
       "role": "systems_architect"
     }
   },
@@ -36,10 +36,10 @@
     "approval_scope": "NONE",
     "approval_source": "M5 Gate closure after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011",
     "recommended_result": null,
-    "note": "No active Human Gate. M5_GATE = PASS_WITH_LIMITS is closed; M6-TASK-GRAPH-001 is READY.",
+    "note": "No active Human Gate. M5_GATE = PASS_WITH_LIMITS is closed; M6-TASK-GRAPH-001 is in REVIEW.",
     "recorded_at": "2026-06-27T05:01:21+08:00"
   },
-  "next_machine_action": "Continue M6-TASK-GRAPH-001 with systems_architect writer thread 019f05c6-3b96-7da2-8a8a-7baf7d2ba53b; route to independent qa_reviewer after REVIEW handoff.",
+  "next_machine_action": "Route M6-TASK-GRAPH-001 systems_architect REVIEW handoff to independent qa_reviewer; do not start downstream M6 implementation before QA and lead acceptance.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -47,7 +47,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T05:12:06+08:00",
+  "last_updated_at": "2026-06-27T05:17:00+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -87,14 +87,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T05:12:06+08:00",
+  "updated_at": "2026-06-27T05:17:00+08:00",
   "current_tasks": [
     "M6-TASK-GRAPH-001"
   ],
   "last_integrated_task": "M5-EXIT-HUMAN-GATE-001",
   "last_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
   "next_ready_tasks": [],
-  "next_action": "Continue M6-TASK-GRAPH-001 with systems_architect writer thread 019f05c6-3b96-7da2-8a8a-7baf7d2ba53b; route to independent qa_reviewer after REVIEW handoff.",
+  "next_action": "Route M6-TASK-GRAPH-001 systems_architect REVIEW handoff to independent qa_reviewer; do not start downstream M6 implementation before QA and lead acceptance.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -501,16 +501,20 @@
     ]
   },
   "m6_task_graph": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M6-TASK-GRAPH-001",
     "branch_or_worktree": "chore/m6-task-graph",
     "created_at": "2026-06-27T05:01:21+08:00",
     "started_at": "2026-06-27T05:12:06+08:00",
+    "review_ready_at": "2026-06-27T05:17:00+08:00",
     "systems_architect_thread_id": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
     "systems_architect_nickname": "Lintel",
     "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
+    "systems_review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "first_downstream_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
+    "downstream_task_count": 14,
     "human_gate_required": false,
-    "next_action": "Await systems_architect REVIEW handoff for the M6 task DAG."
+    "next_action": "Await independent qa_reviewer review of the M6 task DAG."
   }
 }
