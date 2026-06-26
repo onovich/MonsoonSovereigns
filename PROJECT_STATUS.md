@@ -190,7 +190,7 @@ Ledger reconciliation notes:
 
 ## 16. M6 Task Graph Review Snapshot
 
-`M6-TASK-GRAPH-001` is ACCEPTED on branch `chore/m6-task-graph`. The systems_architect writer created a planning-only M6 Alpha task DAG under `project/tasks/active/M6-*.json`; independent `qa_reviewer` accepted it through `project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json`. The graph still requires PR, CI, merge, sync, and closure before downstream M6 implementation starts.
+`M6-TASK-GRAPH-001` is CLOSED after PR #129 entered `origin/main` at `4aef9108da1e659354a4a726b07b4b6dad56f966`. The systems_architect writer created a planning-only M6 Alpha task DAG under `project/tasks/active/M6-*.json`; independent `qa_reviewer` accepted it through `project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json`. The next READY M6 task is `M6-ALPHA-SYSTEM-CONTRACT-001`.
 
 The DAG covers start-to-victory playability, diplomacy, legitimacy, succession completion, layered AI, policy/event/encyclopedia surfaces, three-scenario data pipeline, map candidate path, batch auto-run and balance dashboard, accessibility core flows, Alpha no P0/P1 validation, adviser intervention evidence, and M6 exit validation. The first executable downstream task is `M6-ALPHA-SYSTEM-CONTRACT-001`; all other downstream M6 tasks remain `DRAFT`.
 

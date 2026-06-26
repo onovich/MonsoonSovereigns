@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T05:42:29+08:00",
+  "updated_at": "2026-06-27T05:51:38+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2474,7 +2474,7 @@
       "task_id": "M6-TASK-GRAPH-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -2483,7 +2483,7 @@
       "branch_or_worktree": "chore/m6-task-graph",
       "start_state": "READY_AFTER_M5_GATE_CLOSED",
       "created_at": "2026-06-27T05:01:21+08:00",
-      "updated_at": "2026-06-27T05:42:29+08:00",
+      "updated_at": "2026-06-27T05:51:38+08:00",
       "m5_gate_result": "PASS_WITH_LIMITS",
       "m5_gate_integrated_pr": 127,
       "m5_gate_integrated_main_commit": "b09675c115b81ee05b7894071afb6f10000af011",
@@ -2501,7 +2501,11 @@
       "qa_status": "ACCEPT",
       "lead_accept_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T05:42:29+08:00",
-      "next_action": "Open PR for accepted M6 task graph; after CI/merge/sync, close M6-TASK-GRAPH-001 and start M6-ALPHA-SYSTEM-CONTRACT-001."
+      "integrated_pr": 129,
+      "integrated_main_commit": "4aef9108da1e659354a4a726b07b4b6dad56f966",
+      "lead_close_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T05:51:38+08:00",
+      "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
     },
     "M6-TASK-GRAPH-001:systems_architect": {
       "task_id": "M6-TASK-GRAPH-001",
@@ -2550,6 +2554,25 @@
       "closed_at": "2026-06-27T05:42:29+08:00",
       "created_at": "2026-06-27T05:24:00+08:00",
       "updated_at": "2026-06-27T05:42:29+08:00"
+    },
+    "M6-ALPHA-SYSTEM-CONTRACT-001:lead_orchestrator": {
+      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "ready_to_start",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "responsibility": "lead start for M6 Alpha system contract",
+      "branch_or_worktree": "design/m6-alpha-system-contract",
+      "start_state": "READY_AFTER_M6_TASK_GRAPH_CLOSED",
+      "created_at": "2026-06-27T05:51:38+08:00",
+      "updated_at": "2026-06-27T05:51:38+08:00",
+      "m6_task_graph_integrated_pr": 129,
+      "m6_task_graph_integrated_main_commit": "4aef9108da1e659354a4a726b07b4b6dad56f966",
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "next_action": "Spawn gameplay_designer writer after this closure checkpoint enters main."
     }
   }
 }
