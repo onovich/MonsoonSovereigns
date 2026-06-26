@@ -2,13 +2,13 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M5",
-  "current_tasks": [],
-  "active_threads": {},
-  "last_integrated_task": "M5-PLAYER-RESEARCH-001",
-  "last_main_commit": "22a3473eb10d4008500e499ae135333e7d974311",
-  "next_ready_tasks": [
+  "current_tasks": [
     "M5-MANUAL-NODE-BATTLE-DECISION-001"
   ],
+  "active_threads": {},
+  "last_integrated_task": "M5-PLAYER-RESEARCH-001",
+  "last_main_commit": "118edeac00ee4bac365abf2199ec5470bb2d00cd",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -29,20 +29,13 @@
     }
   ],
   "human_gate": {
-    "required": true,
-    "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
-    "reason": "Manual node battle decision is an explicit Human Gate. Autonomous continuation must not defer, approve, authorize, implement, or create manual battle implementation tasks without explicit human decision text.",
-    "options": [
-      "defer manual node battle",
-      "authorize a future bounded research/spike task",
-      "authorize a future implementation task with separate scope and review"
-    ],
-    "evidence": [
-      "taskctl ready lists M5-MANUAL-NODE-BATTLE-DECISION-001 as the only remaining dependency-ready M5 item.",
-      "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json acceptance criteria require an explicit human decision.",
-      "M5-PLAYER-RESEARCH-001 is CLOSED after closure PR #123 advanced main to 22a3473eb10d4008500e499ae135333e7d974311."
-    ],
-    "triggered_at": "2026-06-27T03:02:00+08:00"
+    "required": false,
+    "resolved_task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+    "resolution": "DEFER_MANUAL_NODE_BATTLE",
+    "resolved_by": "product_owner",
+    "resolved_at": "2026-06-27T03:55:00+08:00",
+    "decision_document": "docs/28-manual-node-battle-decision.md",
+    "next_gate_after_integration": "M5-EXIT-HUMAN-GATE-001"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -56,7 +49,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T03:02:00+08:00",
+  "last_updated_at": "2026-06-27T03:55:00+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -68,7 +61,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T03:02:00+08:00",
+  "updated_at": "2026-06-27T03:55:00+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -382,14 +375,37 @@
     "closure_note": "Closure PR #123 recorded M5-PLAYER-RESEARCH-001 CLOSED and advanced origin/main beyond PR #122 integration."
   },
   "m5_manual_node_battle_decision": {
-    "status": "HUMAN_GATE_REQUIRED",
+    "status": "REVIEW",
     "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
-    "branch_or_worktree": "gate/m5-manual-node-battle-pending",
+    "branch_or_worktree": "gate/m5-manual-node-battle-decision",
     "handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json",
-    "last_main_commit": "22a3473eb10d4008500e499ae135333e7d974311",
-    "human_gate_required": true,
-    "selected_decision": null,
-    "next_action": "Await explicit human decision: defer manual node battle, authorize a future bounded research/spike task, or authorize a future implementation task with separate scope and review.",
-    "updated_at": "2026-06-27T03:02:00+08:00"
+    "last_main_commit": "118edeac00ee4bac365abf2199ec5470bb2d00cd",
+    "human_gate_required": false,
+    "selected_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "Await systems_architect and qa_reviewer ACCEPT, then integrate decision and advance M5-EXIT-HUMAN-GATE-001 after merge.",
+    "updated_at": "2026-06-27T03:55:00+08:00",
+    "decision": {
+      "code": "DEFER_MANUAL_NODE_BATTLE",
+      "document": "docs/28-manual-node-battle-decision.md",
+      "product_owner_approval": "Codex attachment bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt",
+      "status": "REVIEW_PENDING",
+      "manual_node_battle_in_m5": false,
+      "manual_node_battle_in_1_0_mainline": false,
+      "implementation_task_authorized": false,
+      "blocking_spike_authorized": false,
+      "post_1_0_candidate_allowed": true,
+      "updated_at": "2026-06-27T03:55:00+08:00"
+    }
+  },
+  "status_audit_reconciliation": {
+    "status": "IN_PROGRESS",
+    "audit": "project/audits/STATUS-AUDIT-20260627.md",
+    "items": {
+      "goal_mode_last_main_commit": "updated_to_current_origin_main_before_decision_merge",
+      "m4_pr_106_107": "clarified_in_PROJECT_STATUS_and_decision_doc",
+      "gate_docs_m1_m4": "recorded_as_historical_evidence_docs_not_final_closure_ledgers",
+      "taskctl_validate_no_id": "recorded_known_tooling_limitation_no_tool_change"
+    },
+    "updated_at": "2026-06-27T03:55:00+08:00"
   }
 }

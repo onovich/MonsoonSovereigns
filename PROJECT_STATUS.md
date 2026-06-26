@@ -171,12 +171,15 @@ No blocker defects were accepted. Bounded follow-ups remain: optional external/n
 
 ## 15. M5 Manual Node Battle Human Gate Snapshot
 
-`taskctl ready` now lists only `M5-MANUAL-NODE-BATTLE-DECISION-001`, whose task file explicitly marks it as a Human Gate for the manual node battle decision. Autonomous continuation must stop here and must not defer, approve, authorize, implement, or create manual battle implementation work without explicit human decision text.
+Product owner decision received on 2026-06-27: `M5-MANUAL-NODE-BATTLE-DECISION-001` is resolved as `DEFER_MANUAL_NODE_BATTLE`.
 
-The allowed human decision paths are:
+Manual node battle is deferred from M5 and from the 1.0 mainline. The current 1.0 mainline continues with automatic/abstract battle resolution, campaign preparation, march, supply, siege, withdrawal, and postwar governance. Do not create a manual node battle implementation task, and do not create a manual node battle spike or research task that blocks M5, M6, M7, or M8. Manual node battle may be listed only as a post-1.0 expansion candidate or future research candidate, and that future note is not current implementation authorization.
 
-1. Defer manual node battle.
-2. Authorize a future bounded research/spike task.
-3. Authorize a future implementation task with separate scope and review.
+The decision is recorded in `docs/28-manual-node-battle-decision.md`. After this decision checkpoint enters `origin/main`, `M5-MANUAL-NODE-BATTLE-DECISION-001` should be `CLOSED`, `human_gate.required` should be false for this decision, and `M5-EXIT-HUMAN-GATE-001` should become the next M5 gate.
 
-Until one of those paths is explicitly selected by a human, `project/goal-mode-state.json` and `project/messages/outbox/GOAL-MODE-CONTINUATION.json` record `human_gate.required = true`, with `M5-MANUAL-NODE-BATTLE-DECISION-001` as the next ready item. M5 formal passage remains blocked behind this decision and the separate `M5-EXIT-HUMAN-GATE-001`.
+Ledger reconciliation notes:
+
+- PR #106 is the M4 Gate validation/evidence PR; PR #107 is the M4 exit closure PR. M4 remains `PASS_WITH_LIMITS`.
+- `docs/GATE-M1.md` through `docs/GATE-M4.md` are historical gate evidence documents, not final closure ledgers.
+- `taskctl.mjs validate` without a task id is a known tooling limitation that returns `Task not found: undefined`; use `taskctl list`, `taskctl ready`, and explicit `taskctl validate <TASK_ID>`.
+- `project/audits/STATUS-AUDIT-20260627.md` is included as the read-only audit evidence that drove this reconciliation.
