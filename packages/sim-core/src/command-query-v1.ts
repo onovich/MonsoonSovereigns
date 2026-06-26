@@ -6085,6 +6085,16 @@ function validateObjectiveCompleteHandoffResult(input: {
       }
     };
   }
+  if (input.march === null) {
+    return {
+      ok: false,
+      error: {
+        code: "withdrawal-state-invalid",
+        path: "payload.marchId",
+        message: "Objective-complete withdrawal requires an explicit march result reference."
+      }
+    };
+  }
   if (
     input.campaignPlan.target.kind !== "district" ||
     input.siege.targetDistrictId !== input.campaignPlan.target.districtId
@@ -6098,7 +6108,7 @@ function validateObjectiveCompleteHandoffResult(input: {
       }
     };
   }
-  if (input.march !== null && input.siege.marchId !== input.march.marchId) {
+  if (input.siege.marchId !== input.march.marchId) {
     return {
       ok: false,
       error: {
@@ -6235,7 +6245,35 @@ function compareM4GrainReservationForReturnLedger(
   left: M4GrainSupplyReservationStateV0,
   right: M4GrainSupplyReservationStateV0
 ): number {
-  return left.reservationId - right.reservationId;
+  return (
+    left.reservationId - right.reservationId ||
+    compareText(left.source.kind, right.source.kind) ||
+    left.source.districtId - right.source.districtId ||
+    left.source.populationGroupId - right.source.populationGroupId ||
+    left.reservedAmount - right.reservedAmount ||
+    left.carriedAmount - right.carriedAmount ||
+    left.consumedAmount - right.consumedAmount ||
+    left.shortageAmount - right.shortageAmount ||
+    left.lossAmount - right.lossAmount ||
+    compareNullableText(left.lossReasonCode, right.lossReasonCode) ||
+    left.expectedDailyConsumption - right.expectedDailyConsumption ||
+    left.expectedDaysOfSupply - right.expectedDaysOfSupply ||
+    compareText(left.status, right.status) ||
+    compareText(left.statusReasonCode, right.statusReasonCode)
+  );
+}
+
+function compareNullableText(left: string | null, right: string | null): number {
+  if (left === null && right === null) {
+    return 0;
+  }
+  if (left === null) {
+    return -1;
+  }
+  if (right === null) {
+    return 1;
+  }
+  return compareText(left, right);
 }
 
 function campaignReservationIds(

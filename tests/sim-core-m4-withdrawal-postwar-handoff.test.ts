@@ -166,6 +166,54 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
   });
 
+  test("allocates partial returned grain deterministically across shared reservation IDs", () => {
+    const firstRuntime = accepted(
+      runtimeWithM4({
+        populationGroups: [
+          populationGroupWithId(51, 1, 1_000),
+          populationGroupWithId(52, 2, 1_000),
+          populationGroup(3, 1_000)
+        ],
+        campaignPlan: activeCampaignPlan(),
+        commitments: [commitment(100, 60, "assembled", 60)],
+        reservations: [reservation(501, 2, 200, 52), reservation(501, 1, 200, 51)],
+        marches: [arrivedMarch({ activeTroops: 60, carriedGrain: 150 })]
+      }),
+      withdrawalCommand("m4.withdraw.shared-reservation.a", runtimeWithM4({}), {
+        withdrawalId: 912,
+        triggerReason: "ordered",
+        marchId: 701,
+        reasonCodes: ["withdrawal.reason.player-ordered"]
+      })
+    );
+    const secondRuntime = accepted(
+      runtimeWithM4({
+        populationGroups: [
+          populationGroupWithId(51, 1, 1_000),
+          populationGroupWithId(52, 2, 1_000),
+          populationGroup(3, 1_000)
+        ],
+        campaignPlan: activeCampaignPlan(),
+        commitments: [commitment(100, 60, "assembled", 60)],
+        reservations: [reservation(501, 1, 200, 51), reservation(501, 2, 200, 52)],
+        marches: [arrivedMarch({ activeTroops: 60, carriedGrain: 150 })]
+      }),
+      withdrawalCommand("m4.withdraw.shared-reservation.b", runtimeWithM4({}), {
+        withdrawalId: 912,
+        triggerReason: "ordered",
+        marchId: 701,
+        reasonCodes: ["withdrawal.reason.player-ordered"]
+      })
+    );
+
+    expect(grainStock(firstRuntime, 51)).toBe(1_150);
+    expect(grainStock(firstRuntime, 52)).toBe(1_000);
+    expect(grainStock(secondRuntime, 51)).toBe(1_150);
+    expect(grainStock(secondRuntime, 52)).toBe(1_000);
+    expect(validateWorldStateV0(firstRuntime.world)).toEqual([]);
+    expect(validateWorldStateV0(secondRuntime.world)).toEqual([]);
+  });
+
   test("cancels before departure when rainy-season route risk closes the window", () => {
     const runtime = accepted(
       runtimeWithM4({
@@ -387,6 +435,27 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
     );
     expect(missingResult.result.status).toBe("rejected");
     expect(warOutcomeQuery(completedWithoutResult).outcomes).toHaveLength(0);
+
+    const completedWithNullMarch = runtimeWithM4({
+      campaignPlan: completedCampaignPlan(),
+      commitments: [commitment(100, 80, "assembled", 80)],
+      marches: [arrivedMarch({ activeTroops: 72, carriedGrain: 120 })],
+      sieges: [siege(801, "surrendered")]
+    });
+    const nullMarchResult = submitCommandV1(
+      completedWithNullMarch,
+      withdrawalCommand("m4.postwar.null-march", completedWithNullMarch, {
+        withdrawalId: 913,
+        triggerReason: "objective-complete",
+        marchId: null,
+        siegeId: 801,
+        reasonCodes: ["withdrawal.reason.objective-complete"]
+      })
+    );
+    expect(nullMarchResult.result.status).toBe("rejected");
+    const nullMarchOutcomes = warOutcomeQuery(nullMarchResult.runtime);
+    expect(nullMarchOutcomes.outcomes).toHaveLength(0);
+    expect(nullMarchOutcomes.postwarCandidates).toHaveLength(0);
   });
 
   test("war outcome read models cannot alias nested authoritative arrays", () => {
@@ -1007,6 +1076,16 @@ function warOutcomeQuery(runtime: SimulationRuntimeV1): M4WarOutcomeQueryResult 
     throw new Error("Expected M4 war outcome query.");
   }
   return queried.result as M4WarOutcomeQueryResult;
+}
+
+function grainStock(runtime: SimulationRuntimeV1, populationGroupId: number): number {
+  const group = runtime.world.state.m2?.populationGroups.find(
+    (entry) => entry.id === populationGroupId
+  );
+  if (group === undefined) {
+    throw new Error(`Expected population group ${populationGroupId}.`);
+  }
+  return group.grainStock;
 }
 
 function totalM2AndM4Grain(world: WorldStateV0): number {
