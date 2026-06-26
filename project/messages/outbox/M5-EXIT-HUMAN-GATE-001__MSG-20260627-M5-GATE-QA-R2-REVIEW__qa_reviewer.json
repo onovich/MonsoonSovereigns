@@ -1,0 +1,83 @@
+{
+  "message_id": "MSG-20260627-M5-GATE-QA-R2-REVIEW",
+  "task_id": "M5-EXIT-HUMAN-GATE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA re-review ACCEPTS M5-EXIT-HUMAN-GATE-001 after the lead fixed the prior P1 status-ledger findings. GOAL-MODE-CONTINUATION and goal-mode-state now agree on M5 Exit REVIEW, current origin/main baseline 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313, closed manual-node-battle decision, m5_gate_result null, and m6_started false. PASS_WITH_LIMITS remains justified by the integrated M5 evidence and explicit bounded limits.",
+  "artifacts": [
+    "docs/GATE-M5.md",
+    "docs/28-manual-node-battle-decision.md",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-FIX__lead_orchestrator.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "gate/m5-exit-human-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "940890e13bfcb771c773b2b02d2bf74fb5b0979a",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On gate/m5-exit-human-gate at 940890e1; fix is status/documentation/message scope only."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-EXIT-HUMAN-GATE-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All M5 evidence dependencies are CLOSED; M5-EXIT-HUMAN-GATE-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready task while M5 Exit is in review."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-FIX__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "QA fix handoff is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "Lead REVIEW handoff is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems ACCEPT handoff is valid."
+    },
+    {
+      "command": "node -e JSON cross-check for fixed P1 fields, task statuses, M6 state, manual decision preservation, and diff scope",
+      "exit_code": 0,
+      "result": "All dependencies CLOSED; M5 Exit REVIEW; M6 not started; continuation and goal-mode stale fields fixed; manual decision remains DEFER_MANUAL_NODE_BATTLE with implementation/spike authorization false; no forbidden-path violations."
+    }
+  ],
+  "decisions": [
+    "ACCEPT M5-EXIT-HUMAN-GATE-001 for QA after R2 ledger repair.",
+    "Accept the lead recommendation M5_GATE = PASS_WITH_LIMITS, pending lead integration, PR CI, merge, main sync, and task closure.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and outside M5 and the 1.0 mainline.",
+    "Do not start M6 until the gate is integrated, CI passes, main is synchronized, and M5-EXIT-HUMAN-GATE-001 is closed."
+  ],
+  "risks": [
+    "Known accepted limits remain: minimal internal player research, no desktop file import/export bridge, no-action-heavy AI evidence, duplicate React key warnings, existing chunk warnings, and inherited M4 process limit.",
+    "This review did not rerun full pnpm validation because the R2 fix is state-ledger and handoff scoped; original M5 Gate local validation remains recorded in docs/GATE-M5.md and the lead review handoff."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate QA ACCEPT with systems ACCEPT, run PR/CI and closure steps, and do not advance to M6 until M5 Exit is merged, synchronized, and closed.",
+  "created_at": "2026-06-27T05:05:00+08:00"
+}

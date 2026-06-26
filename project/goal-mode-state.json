@@ -9,12 +9,12 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M5-EXIT-HUMAN-GATE-001",
-      "status": "in_progress",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator"
     }
   },
   "last_integrated_task": "M5-MANUAL-NODE-BATTLE-DECISION-001",
-  "last_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
+  "last_main_commit": "4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -38,10 +38,11 @@
   "human_gate": {
     "required": false,
     "active_gate_task_id": "M5-EXIT-HUMAN-GATE-001",
-    "approval_scope": "M5_EXIT_GATE_START_AND_CONDITIONAL_EVALUATION",
+    "approval_scope": "M5_EXIT_GATE_ACCEPTED_PENDING_INTEGRATION",
     "approval_source": "Codex attachment bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt",
-    "note": "M5 Exit Gate is in progress but M5 is not passed; M6 is not started.",
-    "recorded_at": "2026-06-27T04:18:00+08:00"
+    "recommended_result": "PASS_WITH_LIMITS",
+    "note": "M5 Exit Gate reviewers accepted PASS_WITH_LIMITS; M5 is not CLOSED and M6 is not started until PR, CI, merge, sync, and closure.",
+    "recorded_at": "2026-06-27T04:49:00+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -55,7 +56,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T04:18:00+08:00",
+  "last_updated_at": "2026-06-27T04:49:00+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -67,7 +68,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T04:18:00+08:00",
+  "updated_at": "2026-06-27T04:49:00+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -385,22 +386,22 @@
     "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
     "branch_or_worktree": "gate/m5-manual-node-battle-decision",
     "handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-HUMAN-GATE-REQUIRED__lead_orchestrator.json",
-    "last_main_commit": "118edeac00ee4bac365abf2199ec5470bb2d00cd",
+    "last_main_commit": "4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313",
     "human_gate_required": false,
     "selected_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Integrate the accepted decision PR. Because taskctl treats ACCEPTED dependencies as ready, M5-EXIT-HUMAN-GATE-001 is the next dependency-ready gate, but it must not be started until the decision enters main and M5-MANUAL-NODE-BATTLE-DECISION-001 is closed.",
-    "updated_at": "2026-06-27T04:18:00+08:00",
+    "next_action": "M5 manual node battle decision is CLOSED; M5-EXIT-HUMAN-GATE-001 is ACCEPTED pending PR integration and M6 is not started.",
+    "updated_at": "2026-06-27T04:49:00+08:00",
     "decision": {
       "code": "DEFER_MANUAL_NODE_BATTLE",
       "document": "docs/28-manual-node-battle-decision.md",
       "product_owner_approval": "Codex attachment bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt",
-      "status": "REVIEW_PENDING",
+      "status": "CLOSED",
       "manual_node_battle_in_m5": false,
       "manual_node_battle_in_1_0_mainline": false,
       "implementation_task_authorized": false,
       "blocking_spike_authorized": false,
       "post_1_0_candidate_allowed": true,
-      "updated_at": "2026-06-27T03:55:00+08:00"
+      "updated_at": "2026-06-27T04:48:00+08:00"
     },
     "systems_architect_thread_id": "019f0583-b519-7e92-a76d-f3ff067db978",
     "qa_reviewer_thread_id": "019f0583-e4fe-71b0-bd4c-b66cb198a4c9",
@@ -410,7 +411,9 @@
     "integrated_pr": 125,
     "integrated_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
     "lead_close_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json",
-    "closed_at": "2026-06-27T04:18:00+08:00"
+    "closed_at": "2026-06-27T04:18:00+08:00",
+    "closure_pr": 126,
+    "closure_main_commit": "4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313"
   },
   "status_audit_reconciliation": {
     "status": "CLOSED_WITH_DECISION_CHECKPOINT",
@@ -423,9 +426,9 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Integrate this closure/start checkpoint, then continue M5 Exit Gate evidence evaluation with independent reviewer acceptance before any M5_GATE result or M6 transition.",
+  "next_action": "Integrate the accepted M5 Exit Gate through PR and CI. M5 is not closed and M6 is not started until merge, sync, and closure are recorded.",
   "m5_exit_human_gate": {
-    "status": "IN_PROGRESS",
+    "status": "ACCEPTED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
     "branch_or_worktree": "gate/m5-exit-human-gate",
     "start_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
@@ -434,6 +437,19 @@
     "started_at": "2026-06-27T04:18:00+08:00",
     "m5_gate_result": null,
     "m6_started": false,
-    "updated_at": "2026-06-27T04:18:00+08:00"
+    "updated_at": "2026-06-27T04:49:00+08:00",
+    "gate_doc": "docs/GATE-M5.md",
+    "review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+    "recommended_result": "PASS_WITH_LIMITS",
+    "systems_architect_thread_id": "019f05a1-a06f-7563-975a-bd7bd2be4351",
+    "qa_reviewer_thread_id": "019f05a1-d0c1-75d3-8bfc-ade6d5fb3c38",
+    "systems_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_initial_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-REVIEW__qa_reviewer.json",
+    "qa_fix_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-FIX__lead_orchestrator.json",
+    "qa_r2_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-R2-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T04:49:00+08:00",
+    "accepted_result": "PASS_WITH_LIMITS",
+    "reviewer_threads_closed": true
   }
 }

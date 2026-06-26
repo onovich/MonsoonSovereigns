@@ -2,7 +2,7 @@
   "id": "M5-EXIT-HUMAN-GATE-001",
   "summary": "Human Gate for formal M5 passage",
   "milestone": "M5",
-  "status": "IN_PROGRESS",
+  "status": "ACCEPTED",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -66,7 +66,9 @@
   ],
   "branch_or_worktree": "gate/m5-exit-human-gate",
   "threads": {
-    "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5"
+    "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "systems_architect": "019f05a1-a06f-7563-975a-bd7bd2be4351",
+    "qa_reviewer": "019f05a1-d0c1-75d3-8bfc-ade6d5fb3c38"
   },
   "route_to": "lead_orchestrator",
   "notes": [
@@ -78,10 +80,12 @@
     "docs/GATE-M5.md is allowed for the M5 Exit evaluation because the product-owner decision explicitly authorized starting the gate; creation still requires gate evidence and reviewer acceptance."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-27T04:18:00+08:00",
+  "updated_at": "2026-06-27T04:49:00+08:00",
   "lifecycle": {
     "ready_at": "2026-06-27T04:16:29+08:00",
-    "in_progress_at": "2026-06-27T04:18:00+08:00"
+    "in_progress_at": "2026-06-27T04:18:00+08:00",
+    "review_at": "2026-06-27T04:35:00+08:00",
+    "accepted_at": "2026-06-27T04:49:00+08:00"
   },
   "start_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
   "prerequisite_decision": {
@@ -96,5 +100,14 @@
     "source": "Codex attachment bd35b618-425a-4c23-a433-58c7a687d4d0/pasted-text.txt",
     "scope": "M5 Exit Gate may begin after manual node battle Human Gate is resolved; M5 passage still requires evidence and independent acceptance.",
     "recorded_at": "2026-06-27T04:18:00+08:00"
-  }
+  },
+  "gate_doc": "docs/GATE-M5.md",
+  "recommended_result": "PASS_WITH_LIMITS",
+  "review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+  "systems_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-SYSTEMS-REVIEW__systems_architect.json",
+  "qa_initial_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-REVIEW__qa_reviewer.json",
+  "qa_fix_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-FIX__lead_orchestrator.json",
+  "qa_r2_review_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-R2-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_result": "PASS_WITH_LIMITS"
 }

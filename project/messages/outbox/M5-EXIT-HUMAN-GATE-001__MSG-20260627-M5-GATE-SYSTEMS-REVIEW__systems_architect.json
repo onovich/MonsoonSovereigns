@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260627-M5-GATE-SYSTEMS-REVIEW",
+  "task_id": "M5-EXIT-HUMAN-GATE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems architecture review ACCEPTS M5-EXIT-HUMAN-GATE-001 as M5_GATE = PASS_WITH_LIMITS. The recommendation is supported by closed M5 evidence tasks, valid closure handoffs, local validation, explicit bounded limits, and the accepted DEFER_MANUAL_NODE_BATTLE Human Gate decision. M5 Exit remains REVIEW, M6 is not started, no manual node battle implementation or blocking spike is authorized, and the reviewed diff stays within allowed documentation/process/message/state paths with no product/runtime/content/roadmap/release or forbidden architecture-scope change.",
+  "reviewed_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+  "branch_or_worktree": "gate/m5-exit-human-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "base_commit": "4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313",
+  "head_commit": "940890e13bfcb771c773b2b02d2bf74fb5b0979a",
+  "commit": "940890e13bfcb771c773b2b02d2bf74fb5b0979a",
+  "artifacts": [
+    "docs/GATE-M5.md",
+    "docs/28-manual-node-battle-decision.md",
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/routes/M5-EXIT-HUMAN-GATE-001__ROUTE-20260627-M5-GATE-LEAD-TO-SYSTEMS-REVIEW.json",
+    "project/messages/routes/M5-EXIT-HUMAN-GATE-001__ROUTE-20260627-M5-GATE-LEAD-TO-QA-REVIEW.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M5-TASK-GRAPH-001__MSG-20260626-M5-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-PLAYER-RESEARCH-001__MSG-20260627-M5-PLAYER-RESEARCH-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch gate/m5-exit-human-gate. Before writing this review handoff, tracked changes were only project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M5-EXIT-HUMAN-GATE-001.json, and project/tasks/thread-registry.json; untracked files were the two M5 gate route JSON files."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "940890e13bfcb771c773b2b02d2bf74fb5b0979a."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-EXIT-HUMAN-GATE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-EXIT-HUMAN-GATE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All M5 evidence dependencies are CLOSED; M5-EXIT-HUMAN-GATE-001 is REVIEW; no M6 task is listed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output: no dependency-ready task while M5 Exit is active in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID lead REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <each M5 closure handoff cited by docs/GATE-M5.md>",
+      "exit_code": 0,
+      "result": "VALID for M5-TASK-GRAPH-001, M5-SLICE-DEFINITION-001, M5-SIM-PLAYABLE-LOOP-001, M5-CLIENT-PLAYABLE-UI-001, M5-MULTIYEAR-AI-RUN-001, M5-PERFORMANCE-GATE-001, M5-WEB-WINDOWS-DISTRIBUTABLE-001, M5-PLAYER-RESEARCH-001, and M5-MANUAL-NODE-BATTLE-DECISION-001 closure handoffs."
+    },
+    {
+      "command": "git diff --name-status 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313..HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are docs/GATE-M5.md, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, the lead M5 gate REVIEW handoff, project/model-routing-state.json, project/tasks/active/M5-EXIT-HUMAN-GATE-001.json, and project/tasks/thread-registry.json."
+    },
+    {
+      "command": "git diff --name-status 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313..HEAD -- apps packages content-source tools .github docs/decisions docs/GATE-M0.md docs/GATE-M1.md docs/GATE-M2.md docs/GATE-M3.md docs/GATE-M4.md docs/11-roadmap.md docs/13-risk-register-and-test-strategy.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output: review snapshot has zero forbidden product/runtime/content/tool/CI/ADR/prior-gate/roadmap/acceptance-matrix/release-manifest path changes."
+    },
+    {
+      "command": "git diff --name-status -- apps packages content-source tools .github docs/decisions docs/GATE-M0.md docs/GATE-M1.md docs/GATE-M2.md docs/GATE-M3.md docs/GATE-M4.md docs/11-roadmap.md docs/13-risk-register-and-test-strategy.md docs/23-milestone-acceptance-matrix.md docs/27-autonomous-goal-mode.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output: current uncommitted coordination state also has zero forbidden path changes."
+    },
+    {
+      "command": "rg --files project/tasks/active | rg \"M6|M7|M8|MANUAL|manual|BATTLE|battle|NODE|node\"",
+      "exit_code": 0,
+      "result": "Only project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json matched; no M6/M7/M8 task file and no manual battle implementation task was found."
+    },
+    {
+      "command": "node -e <json consistency check for task/dependency/state/handoff/manual-gate fields>",
+      "exit_code": 0,
+      "result": "PASS: M5-EXIT-HUMAN-GATE-001 is REVIEW; all eight exit dependencies are CLOSED; goal-mode-state and GOAL-MODE-CONTINUATION keep current_milestone=M5, current task M5-EXIT-HUMAN-GATE-001, no ready downstream tasks, m5_gate_result=null, and m6_started=false; manual node battle fields are DEFER_MANUAL_NODE_BATTLE with implementation_task_authorized=false and blocking_spike_authorized=false."
+    },
+    {
+      "command": "node -e <route JSON parse>",
+      "exit_code": 0,
+      "result": "Both M5 gate review routes are SENT, point at review commit 940890e1, and target systems_architect plus qa_reviewer from the lead REVIEW handoff."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: docs/GATE-M5.md lines 13-24 and 100-113 justify PASS_WITH_LIMITS with explicit bounded limits: minimal internal player research, desktop import/export not implemented, no-action-heavy AI evidence, duplicate React key warnings, large chunk warnings, and inherited M4 process limit. These are not hidden blockers.",
+    "ACCEPT: docs/GATE-M5.md lines 50-56 cite every required M5 evidence dependency as CLOSED, and taskctl list plus the JSON consistency check confirm M5-EXIT-HUMAN-GATE-001 is the only active REVIEW task.",
+    "ACCEPT: docs/GATE-M5.md lines 35-42 and docs/28-manual-node-battle-decision.md lines 83-85 preserve manual_node_battle_decision=DEFER_MANUAL_NODE_BATTLE, manual_node_battle_in_m5=false, and manual_node_battle_in_1_0_mainline=false. The active task JSON also records implementation_task_authorized=false and blocking_spike_authorized=false.",
+    "ACCEPT: docs/28-manual-node-battle-decision.md lines 46-60 prohibit M6/M7/M8 manual node battle implementation or blocking spike/research tasks. No such task file exists, and the M5 gate state records m6_started=false.",
+    "ACCEPT: docs/GATE-M5.md lines 62-75 cover the acceptance matrix and roadmap decision gates as PASS or PASS_WITH_LIMITS, with no manual battle, telemetry, server/multiplayer, arbitrary-code mod, release, branding, commercial, or frozen architecture authorization.",
+    "ACCEPT: no sim-core, React/Pixi/Electron runtime, Node IO, protocol, save/load schema, content-source, tool, CI, ADR, roadmap, release, dependency, secret, telemetry, server, multiplayer, or mod-support file changed in the reviewed diff. The single-writer authoritative simulation and player/AI command-parity boundaries are unaffected by this process-only gate.",
+    "ACCEPT_WITH_NOTE: the lead REVIEW handoff and docs/GATE-M5.md local validation table do not list taskctl validate M5-EXIT-HUMAN-GATE-001, although the task requires it. This systems review ran that command with exit code 0, so it is covered as reviewer evidence and is not a gate blocker."
+  ],
+  "findings": [],
+  "risks": [
+    "Non-blocking state hygiene: GOAL-MODE-CONTINUATION.json still carries a stale top-level status/origin_main lineage from the manual-node-battle phase, but its current_task, current_task_status, human_gate note, m5_exit_human_gate.status, m5_gate_result=null, and m6_started=false fields are correct and matched by project/goal-mode-state.json.",
+    "M5 is not passed by this systems review alone. It still requires independent qa_reviewer acceptance, lead integration, PR CI, merge, main synchronization, and task closure before current_milestone can advance to M6.",
+    "The accepted limits remain follow-up scope, not implementation authorization: external player research, desktop file import/export UX, richer AI/balance evidence, duplicate React key cleanup, and chunk-budget work require separate scoped tasks."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route this systems_architect ACCEPT to lead_orchestrator. Lead may proceed only after independent qa_reviewer acceptance, should preserve M5_GATE = PASS_WITH_LIMITS with the stated limits, must not start M6 until PR CI/merge/main sync/task closure, and must not authorize manual node battle implementation or blocking spike work.",
+  "created_at": "2026-06-27T04:39:39.7519209+08:00"
+}

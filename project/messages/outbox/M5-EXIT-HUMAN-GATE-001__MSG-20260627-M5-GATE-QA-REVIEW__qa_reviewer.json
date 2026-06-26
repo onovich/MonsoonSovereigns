@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260627-M5-GATE-QA-REVIEW",
+  "task_id": "M5-EXIT-HUMAN-GATE-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA cannot accept the M5 Exit Gate yet because the gate evidence is substantively sufficient, but the persisted continuation/state ledgers still carry stale top-level main/status fields from the manual-node-battle gate. Fix the status-only ledger fields and reroute QA. No product/runtime blocker was found.",
+  "artifacts": [
+    "docs/GATE-M5.md",
+    "docs/28-manual-node-battle-decision.md",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+    "M5 closure handoffs cited by docs/GATE-M5.md"
+  ],
+  "branch_or_worktree": "gate/m5-exit-human-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "940890e13bfcb771c773b2b02d2bf74fb5b0979a",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On gate/m5-exit-human-gate at 940890e1 with allowed-path modified status files and route files."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-EXIT-HUMAN-GATE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-EXIT-HUMAN-GATE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All M5 dependency tasks are CLOSED; M5-EXIT-HUMAN-GATE-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready task while M5 Exit is active."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "Lead REVIEW handoff is valid."
+    },
+    {
+      "command": "validate-handoff.mjs on all M5 closure handoffs cited by docs/GATE-M5.md",
+      "exit_code": 0,
+      "result": "All nine M5 closure handoffs validated."
+    },
+    {
+      "command": "node -e JSON cross-check for M5 statuses, closure handoffs, manual decision, M6 state, and diff scope",
+      "exit_code": 0,
+      "result": "All dependencies CLOSED, M5 Exit REVIEW, M6 not started, manual decision preserved, no forbidden-path diff. Also detected stale top-level continuation/status ledger fields."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "P1",
+      "file": "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+      "evidence": "Lines 5, 7, and 11 still record status=M5_MANUAL_NODE_BATTLE_DECISION_REVIEW, origin_main=118edeac00ee4bac365abf2199ec5470bb2d00cd, and last_closed_task=M5-PLAYER-RESEARCH-001, while lines 9-10 and 100/471 record M5-EXIT-HUMAN-GATE-001 REVIEW, last_integrated_task=M5-MANUAL-NODE-BATTLE-DECISION-001, and m6_started=false.",
+      "impact": "The continuation handoff is internally contradictory and can resume the autonomous flow from the old manual-node-battle gate or stale main commit instead of the M5 Exit review state.",
+      "necessary_fix": "Update top-level continuation fields to the M5 Exit review state, current origin/main 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313, and the last closed/integrated M5 manual decision checkpoint, without starting M6."
+    },
+    {
+      "severity": "P1",
+      "file": "project/goal-mode-state.json",
+      "evidence": "Line 23 records last_main_commit=daf09128b3c15bee26664a9b750a625ed8384767 while origin/main and docs/GATE-M5.md baseline are 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313; line 395 retains manual-decision last_main_commit=118edeac00ee4bac365abf2199ec5470bb2d00cd and line 404 retains decision.status=REVIEW_PENDING although the task is CLOSED.",
+      "impact": "The gate claims status reconciliation and closure, but the canonical goal-mode ledger still exposes stale commit and decision-state facts.",
+      "necessary_fix": "Reconcile goal-mode-state to the current M5 Exit review baseline and closed manual-node-battle decision while keeping current_milestone=M5, M5-EXIT-HUMAN-GATE-001 in REVIEW, m5_gate_result=null, and m6_started=false."
+    }
+  ],
+  "accepted_evidence": [
+    "PASS_WITH_LIMITS is justified by integrated M5 evidence and explicit bounded limits.",
+    "All M5 evidence dependencies are CLOSED according to taskctl and task JSON.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE with implementation_task_authorized=false and blocking_spike_authorized=false.",
+    "No product/runtime/package/content/tool/CI/roadmap/release forbidden-path changes were found.",
+    "No P0/P1 product, determinism, save/load, package-boundary, Electron security, dependency, secret, telemetry, server, multiplayer, mod, or manual-node-battle implementation blocker was found."
+  ],
+  "decisions": [
+    "REQUEST_CHANGES for status-ledger consistency before QA ACCEPT.",
+    "Do not classify the substantive M5 product evidence as failed; PASS_WITH_LIMITS remains plausible after the ledger repair.",
+    "Do not start M6, create a manual-node-battle implementation task, or create a blocking manual-node-battle spike while repairing the ledger."
+  ],
+  "risks": [
+    "If the stale continuation fields are left in place, a future autonomous continuation can resume from the wrong gate state or stale main commit.",
+    "The repair should stay status-only; product/runtime/code changes would require a new review scope."
+  ],
+  "blockers": [
+    "Stale and contradictory continuation/goal-mode status ledger fields must be repaired before QA ACCEPT."
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Make a minimal status-only repair to GOAL-MODE-CONTINUATION.json and goal-mode-state.json, rerun the required taskctl/handoff/diff checks, and reroute this gate to qa_reviewer. Do not change product/runtime code and do not start M6.",
+  "created_at": "2026-06-27T04:55:00+08:00"
+}
