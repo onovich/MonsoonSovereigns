@@ -10,9 +10,9 @@ Autonomy policy: MILESTONE-AUTONOMY-AMENDMENT-001 allows ordinary M1-M4 exits wi
 
 ## Result
 
-The product and technical evidence supports M4 exit as `PASS_WITH_LIMITS`, pending independent `qa_reviewer` acceptance and lead integration.
+The product and technical evidence supports M4 exit as `PASS_WITH_LIMITS`. Independent `qa_reviewer` accepted this result in `project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-QA-REVIEW__qa_reviewer.json`; final task closure still requires PR integration, CI, and main synchronization.
 
-The limit is procedural rather than a product-code failure: three real `systems_architect` writer threads were spawned for this gate and each was closed after stalling without a REVIEW handoff or file changes. This document is therefore a `lead_orchestrator` evidence reconciliation, not a fabricated systems handoff. The independent QA reviewer must either accept this reconciliation as sufficient for M4 exit or return `REQUEST_CHANGES`/`BLOCKED`.
+The limit is procedural rather than a product-code failure: three real `systems_architect` writer threads were spawned for this gate and each was closed after stalling without a REVIEW handoff or file changes. This document is therefore a `lead_orchestrator` evidence reconciliation, not a fabricated systems handoff. The independent QA reviewer accepted that process exception as explicit, bounded, and not disguised as systems acceptance.
 
 This gate does not start M5 work. It does not modify product code, package code, content-source data, tools, CI, accepted ADRs, roadmap files, acceptance-matrix files, prior gate docs, autonomous-goal docs, manifests, checksums, or validation reports.
 
@@ -100,4 +100,4 @@ No P0/P1 data corruption risk, deterministic authority blocker, package-boundary
 
 M4_GATE = PASS_WITH_LIMITS.
 
-The implementation evidence satisfies the M4 roadmap and acceptance-matrix criteria with explicit limits around prototype H-004/H-005 evidence and the missing systems writer handoff. The next required action is independent `qa_reviewer` validation of this reconciliation and the actual diff. M5 work must not start from this document alone.
+The implementation evidence satisfies the M4 roadmap and acceptance-matrix criteria with explicit limits around prototype H-004/H-005 evidence and the missing systems writer handoff. The next required action is PR integration, CI, main synchronization, and then task closure with the `PASS_WITH_LIMITS` process exception preserved. M5 work must not start from this document alone.
