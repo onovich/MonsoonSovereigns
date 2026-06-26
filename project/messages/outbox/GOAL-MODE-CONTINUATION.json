@@ -14,16 +14,17 @@
     "019f0188-9c3b-7783-92a6-b1c99cd8bc8c": {
       "task_id": "M4-GRAIN-SUPPLY-001",
       "role": "simulation_engineer",
-      "status": "active",
+      "status": "review_ready",
       "branch_or_worktree": "feat/m4-grain-supply",
-      "start_submission_id": "019f0188-f940-7fb3-a27e-50b4437f26bb"
+      "review_ready_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-REVIEW__simulation_engineer.json"
     },
     "019f0188-b041-7d10-a689-85f3283e4013": {
       "task_id": "M4-GRAIN-SUPPLY-001",
       "role": "systems_architect",
-      "status": "awaiting_review_ready",
+      "status": "reviewing",
       "branch_or_worktree": "feat/m4-grain-supply",
-      "await_submission_id": "019f0188-f9ba-7b10-a3fe-d3613580a235"
+      "review_ready_handoff": "project/messages/outbox/M4-GRAIN-SUPPLY-001__MSG-20260626-M4-GRAIN-SUPPLY-REVIEW__simulation_engineer.json",
+      "review_ready_submission_id": "019f019f-608f-73c3-940a-d180ae6deb84"
     }
   },
   "unresolved_risks": [
@@ -74,12 +75,12 @@
       "replaced_at": "2026-06-25T23:30:39Z"
     }
   ],
-  "updated_at": "2026-06-26T01:27:18Z",
+  "updated_at": "2026-06-26T01:51:26Z",
   "current_tasks": [
     "M4-GRAIN-SUPPLY-001"
   ],
   "last_integrated_task": "M4-MUSTER-PREP-COMMITMENTS-001",
   "last_main_commit": "0cba05e5617c59c7fea9d877c199da3ed845a6c4",
   "next_ready_tasks": [],
-  "next_action": "Await simulation_engineer REVIEW handoff for M4-GRAIN-SUPPLY-001, validate it, route to systems_architect, and continue review/fix/integration loop."
+  "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M4-GRAIN-SUPPLY-001."
 }
