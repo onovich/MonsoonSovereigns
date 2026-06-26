@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-26T16:05:00Z",
+  "updated_at": "2026-06-26T16:15:00Z",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1669,13 +1669,15 @@
       "request_changes_round": 1,
       "review_ready_r2_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
       "review_ready_r2_at": "2026-06-26T16:05:00Z",
-      "updated_at": "2026-06-26T16:05:00Z"
+      "updated_at": "2026-06-26T16:15:00Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
+      "review_ready_at_r2": "2026-06-26T16:05:00Z"
     },
     {
       "task_id": "M5-SIM-PLAYABLE-LOOP-001",
       "role": "systems_architect",
       "thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
-      "status": "request_changes",
+      "status": "in_review_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -1687,9 +1689,13 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
-      "updated_at": "2026-06-26T15:45:00Z",
+      "updated_at": "2026-06-26T16:15:00Z",
       "request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
-      "request_changes_at": "2026-06-26T15:45:00Z"
+      "request_changes_at": "2026-06-26T15:45:00Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
+      "review_ready_submission_id_r2": "019f0436-c717-7e22-8e5c-fac0de3a9fef",
+      "review_started_at_r2": "2026-06-26T16:15:00Z",
+      "route_file_r2": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-R2-TO-SYSTEMS-REVIEW.json"
     }
   ],
   "task_effects": {
@@ -1757,6 +1763,6 @@
     "M4-EXIT-VALIDATION-001": "CLOSED after M4 gate PR #106 entered main. M4_GATE = PASS_WITH_LIMITS with accepted process limit; M5 formal passage remains a Human Gate.",
     "M5-TASK-GRAPH-001": "CLOSED after PR #108 entered main at 8b771272a9cfa790282043fcd092c1ce59fd0117. Planning-only M5 graph accepted and integrated; downstream M5 tasks remain DRAFT, with M5-SLICE-DEFINITION-001 dependency-ready. M5 formal passage and manual node battle remain Human Gates.",
     "M5-SLICE-DEFINITION-001": "CLOSED after PR #110 entered main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042. Planning-only M5 slice contract integrated; M5-SIM-PLAYABLE-LOOP-001 is next ready. M5 formal passage and manual node battle remain Human Gates.",
-    "M5-SIM-PLAYABLE-LOOP-001": "REVIEW R2 with simulation_engineer handoff project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json ready for systems_architect after explicit nested M4 save DTO/parser fixes and real M5 worker message-boundary coverage."
+    "M5-SIM-PLAYABLE-LOOP-001": "R2 REVIEW routed to systems_architect after explicit M4 save DTO/schema and real Node worker message-boundary fixes."
   }
 }

@@ -32,7 +32,7 @@
     },
     "019f0417-d858-7a83-b482-b02660bf72c9": {
       "thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
-      "status": "request_changes",
+      "status": "in_review_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -44,9 +44,13 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
-      "updated_at": "2026-06-26T15:45:00Z",
+      "updated_at": "2026-06-26T16:15:00Z",
       "request_changes_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-SYSTEMS-REVIEW__systems_architect.json",
-      "request_changes_at": "2026-06-26T15:45:00Z"
+      "request_changes_at": "2026-06-26T15:45:00Z",
+      "review_ready_handoff_r2": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
+      "review_ready_submission_id_r2": "019f0436-c717-7e22-8e5c-fac0de3a9fef",
+      "review_started_at_r2": "2026-06-26T16:15:00Z",
+      "route_file_r2": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-R2-TO-SYSTEMS-REVIEW.json"
     }
   },
   "last_integrated_task": "M5-SLICE-DEFINITION-001",
@@ -87,7 +91,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-26T16:05:00Z",
+  "last_updated_at": "2026-06-26T16:15:00Z",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -99,7 +103,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-26T16:05:00Z",
+  "updated_at": "2026-06-26T16:15:00Z",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -139,7 +143,7 @@
     "closed_at": "2026-06-26T14:30:00Z"
   },
   "m5_sim_playable_loop": {
-    "status": "REVIEW_R2",
+    "status": "R2_SYSTEMS_REVIEW_ROUTED",
     "branch_or_worktree": "feat/m5-sim-playable-loop",
     "writer_thread_id": "019f0403-1c1a-79c0-a63b-bc4eb0075958",
     "start_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-START__lead_orchestrator.json",
@@ -147,7 +151,7 @@
     "started_at": "2026-06-26T14:45:00Z",
     "review_ready_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-REVIEW__simulation_engineer.json",
     "review_ready_at": "2026-06-26T15:20:00Z",
-    "next_action": "Route writer handoff to systems_architect for M5 simulation loop review, then QA after systems review.",
+    "next_action": "Route R2 writer handoff to systems_architect for review; route to QA only after systems review accepts.",
     "human_gate_required": false,
     "reviewer_thread_id": "019f0417-d858-7a83-b482-b02660bf72c9",
     "review_route": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-TO-SYSTEMS-REVIEW.json",
@@ -159,6 +163,8 @@
     "request_changes_at": "2026-06-26T15:45:00Z",
     "review_ready_r2_handoff": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
     "review_ready_r2_at": "2026-06-26T16:05:00Z",
-    "next_action": "Route R2 writer handoff to systems_architect for review; route to QA only after systems review accepts."
+    "review_ready_handoff_r2": "project/messages/outbox/M5-SIM-PLAYABLE-LOOP-001__MSG-20260626-M5-SIM-PLAYABLE-LOOP-WRITER-R2-REVIEW__simulation_engineer.json",
+    "systems_review_route_r2": "project/messages/routes/M5-SIM-PLAYABLE-LOOP-001__ROUTE-20260626-M5-SIM-LOOP-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+    "routed_at_r2": "2026-06-26T16:15:00Z"
   }
 }
