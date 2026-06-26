@@ -1,0 +1,49 @@
+{
+  "message_id": "MSG-20260627-M6-TASK-GRAPH-READY",
+  "task_id": "M6-TASK-GRAPH-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M6-TASK-GRAPH-001 is READY as the first M6 task after M5 Gate PASS_WITH_LIMITS closure. The task is planning-only and must create the minimal M6 Alpha system-complete DAG before M6 implementation begins.",
+  "artifacts": [
+    "project/tasks/active/M6-TASK-GRAPH-001.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md",
+    "docs/GATE-M5.md"
+  ],
+  "branch_or_worktree": "chore/m5-exit-close-m6-start / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "b09675c115b81ee05b7894071afb6f10000af011",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "M6 task graph seed task is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-TASK-GRAPH-001 is dependency-ready."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "M6 starts with a planning-only task graph task before implementation.",
+    "Manual node battle remains deferred from the 1.0 mainline and must not become a blocking M6/M7/M8 task.",
+    "M6 task graph must cover Roadmap M6 and acceptance matrix M6 goals without editing roadmap or acceptance matrix documents."
+  ],
+  "risks": [
+    "M6 scope is broad; task graph review must keep tasks small, ordered, and non-overlapping.",
+    "Any attempt to reverse DEFER_MANUAL_NODE_BATTLE is a Human Gate and is not authorized here."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "After this closure checkpoint enters main, start M6-TASK-GRAPH-001 with systems_architect writer and route the resulting graph to independent qa_reviewer review.",
+  "created_at": "2026-06-27T05:01:21+08:00"
+}

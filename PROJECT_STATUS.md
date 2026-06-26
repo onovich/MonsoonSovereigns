@@ -177,7 +177,9 @@ Manual node battle is deferred from M5 and from the 1.0 mainline. The current 1.
 
 The decision is recorded in `docs/28-manual-node-battle-decision.md`. The decision checkpoint entered `origin/main` through PR #125 at `daf09128b3c15bee26664a9b750a625ed8384767`; the closure/start checkpoint entered `origin/main` through PR #126 at `4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313`. `M5-MANUAL-NODE-BATTLE-DECISION-001` is CLOSED, and `M5-EXIT-HUMAN-GATE-001` is the current M5 gate.
 
-`M5-EXIT-HUMAN-GATE-001` is ACCEPTED on branch `gate/m5-exit-human-gate` with the lead recommendation `M5_GATE = PASS_WITH_LIMITS` in `docs/GATE-M5.md`. `systems_architect` accepted the gate, `qa_reviewer` requested ledger fixes and then accepted R2. M5 is not CLOSED and M6 is not started until this accepted gate enters main through PR, CI, merge, sync, and closure.
+`M5-EXIT-HUMAN-GATE-001` is CLOSED after PR #127 entered `origin/main` at `b09675c115b81ee05b7894071afb6f10000af011`. `docs/GATE-M5.md` records `M5_GATE = PASS_WITH_LIMITS`; `systems_architect` accepted the gate, `qa_reviewer` requested ledger fixes and then accepted R2, and both PR Gate jobs passed.
+
+Current milestone is **M6 / Alpha: System Complete**. The first READY M6 task is `M6-TASK-GRAPH-001`, which must create the minimal M6 task DAG before M6 implementation begins. M6 must preserve the product-owner decision `DEFER_MANUAL_NODE_BATTLE`: do not create a manual node battle implementation task, and do not create a manual node battle spike or research task that blocks M6, M7, or M8.
 
 Ledger reconciliation notes:
 
