@@ -1,0 +1,52 @@
+{
+  "message_id": "MSG-20260627-M5-GATE-QA-FIX",
+  "task_id": "M5-EXIT-HUMAN-GATE-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Lead fixed the qa_reviewer REQUEST_CHANGES for M5 Exit Gate by reconciling stale top-level continuation and goal-mode ledger fields. GOAL-MODE-CONTINUATION now records M5_EXIT_GATE_REVIEW, origin_main and last_main_commit at 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313, current task M5-EXIT-HUMAN-GATE-001 in REVIEW, and last_closed_task M5-MANUAL-NODE-BATTLE-DECISION-001. goal-mode-state now records last_main_commit and the manual decision sub-ledger at 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313, with manual decision status CLOSED. M5 remains not passed and M6 remains not started.",
+  "artifacts": [
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-FIX__lead_orchestrator.json",
+    "docs/GATE-M5.md",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json"
+  ],
+  "branch_or_worktree": "gate/m5-exit-human-gate / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "940890e1",
+  "tests_run": [
+    {
+      "command": "node -e <goal-mode-and-continuation-field-check>",
+      "exit_code": 0,
+      "result": "Verified goal-mode last_main_commit, continuation origin_main/last_main_commit, top-level continuation status/current task/last_closed_task, manual decision last_main_commit, manual decision status CLOSED, M5 Exit REVIEW, m5_gate_result null, and m6_started false."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "systems_architect ACCEPT handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-GATE-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "qa_reviewer REQUEST_CHANGES handoff is schema-valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors after the ledger reconciliation."
+    }
+  ],
+  "decisions": [
+    "Do not change the Gate recommendation: M5_GATE remains recommended as PASS_WITH_LIMITS pending reviewer acceptance.",
+    "Do not start M6; m6_started remains false and current_milestone remains M5.",
+    "Do not change product/runtime/content code; this fix is limited to process and state-ledger reconciliation."
+  ],
+  "risks": [
+    "QA must re-review the fixed state ledgers before lead can accept M5 Exit Gate."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Re-review the fixed state ledgers and Gate evidence. ACCEPT only if the previously reported stale continuation and goal-mode fields are resolved and no new blocker is introduced.",
+  "created_at": "2026-06-27T04:49:00+08:00"
+}
