@@ -1,0 +1,60 @@
+{
+  "message_id": "MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED",
+  "task_id": "M5-MANUAL-NODE-BATTLE-DECISION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M5-MANUAL-NODE-BATTLE-DECISION-001 is CLOSED after PR #125 passed required CI, merged into origin/main at daf09128b3c15bee26664a9b750a625ed8384767, and local main synchronized to origin/main. The accepted product-owner decision is DEFER_MANUAL_NODE_BATTLE. Manual node battle remains outside M5 and the 1.0 mainline; no implementation task or blocking spike/research task is authorized for M5/M6/M7/M8.",
+  "artifacts": [
+    "docs/28-manual-node-battle-decision.md",
+    "PROJECT_STATUS.md",
+    "project/audits/STATUS-AUDIT-20260627.md",
+    "project/tasks/active/M5-MANUAL-NODE-BATTLE-DECISION-001.json",
+    "project/tasks/active/M5-EXIT-HUMAN-GATE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "gate/m5-manual-decision-close-exit-start / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "daf09128b3c15bee26664a9b750a625ed8384767",
+  "tests_run": [
+    {
+      "command": "gh pr checks 125 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 1m49s; Windows Desktop Smoke Artifact passed in 53s."
+    },
+    {
+      "command": "gh pr merge 125 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "Merged PR #125 and fast-forwarded local main to daf09128b3c15bee26664a9b750a625ed8384767."
+    },
+    {
+      "command": "git rev-parse HEAD; git rev-parse main; git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "All resolved to daf09128b3c15bee26664a9b750a625ed8384767 before closure branch edits."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M5-EXIT-HUMAN-GATE-001 was the next dependency-ready task after PR #125 entered main."
+    }
+  ],
+  "decisions": [
+    "Close M5-MANUAL-NODE-BATTLE-DECISION-001 because the accepted decision and required reviewer evidence are integrated into origin/main through PR #125.",
+    "Keep manual node battle deferred from M5 and the 1.0 mainline.",
+    "Start M5-EXIT-HUMAN-GATE-001 as the next separate formal M5 passage gate; this closure does not pass M5 and does not start M6."
+  ],
+  "risks": [
+    "M5 Exit remains a Human Gate and must produce its own evidence and acceptance before M5 can pass.",
+    "Manual node battle may appear only as a post-1.0 candidate or future research candidate; that status remains non-authorizing for the 1.0 task graph."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate this closure/start checkpoint, then continue M5-EXIT-HUMAN-GATE-001 gate evaluation without treating M5 as passed.",
+  "created_at": "2026-06-27T04:18:00+08:00"
+}

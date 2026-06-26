@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T04:10:00+08:00",
+  "updated_at": "2026-06-27T04:18:00+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1881,7 +1881,8 @@
     "M5-PERFORMANCE-GATE-001": "CLOSED after PR #118 entered main at bd47faee8e6780a96f92402f47361012be40f3e1; next READY M5 task is M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001": "CLOSED after PR #120 entered main at b173c980e02e3d2365fdb4d022c7c4392918cca9; next ready task pending taskctl ready after closure integration.",
     "M5-PLAYER-RESEARCH-001": "CLOSED after PR #122 entered main at 8b6ef6542d2d1a8270618ec8bae2161eb94c2e9d; next ready task pending taskctl ready after closure integration.",
-    "M5-MANUAL-NODE-BATTLE-DECISION-001": "ACCEPTED after systems_architect and qa_reviewer accepted the DEFER_MANUAL_NODE_BATTLE process-only decision. Next action is PR integration, then closure and M5-EXIT-HUMAN-GATE-001 start."
+    "M5-MANUAL-NODE-BATTLE-DECISION-001": "CLOSED after PR #125 entered main at daf09128b3c15bee26664a9b750a625ed8384767; decision is DEFER_MANUAL_NODE_BATTLE; no implementation or blocking spike/research task is authorized for the 1.0 mainline.",
+    "M5-EXIT-HUMAN-GATE-001": "IN_PROGRESS after M5 manual node battle decision closure; this is the formal M5 passage gate and does not pass M5 or start M6 until evidence, reviewer acceptance, PR, CI, and main integration complete."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -1924,7 +1925,7 @@
       "next_ready_tasks": []
     },
     "M5-MANUAL-NODE-BATTLE-DECISION-001": {
-      "status": "ACCEPTED",
+      "status": "CLOSED",
       "owner_role": "lead_orchestrator",
       "reviewer_role": "systems_architect+qa_reviewer",
       "lead_review_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-DECISION-REVIEW__lead_orchestrator.json",
@@ -1935,11 +1936,27 @@
       "review_commit": "bade259a",
       "decision": "DEFER_MANUAL_NODE_BATTLE",
       "branch_or_worktree": "gate/m5-manual-node-battle-decision",
-      "updated_at": "2026-06-27T04:10:00+08:00",
+      "updated_at": "2026-06-27T04:18:00+08:00",
       "systems_review_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-SYSTEMS-REVIEW__systems_architect.json",
       "qa_review_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-QA-REVIEW__qa_reviewer.json",
       "lead_accept_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-LEAD-ACCEPT__lead_orchestrator.json",
-      "accepted_at": "2026-06-27T04:10:00+08:00"
+      "accepted_at": "2026-06-27T04:10:00+08:00",
+      "integrated_pr": 125,
+      "integrated_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
+      "lead_close_handoff": "project/messages/outbox/M5-MANUAL-NODE-BATTLE-DECISION-001__MSG-20260627-M5-MANUAL-BATTLE-DEFER-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T04:18:00+08:00"
+    },
+    "M5-EXIT-HUMAN-GATE-001": {
+      "status": "IN_PROGRESS",
+      "owner_role": "lead_orchestrator",
+      "reviewer_role": "qa_reviewer",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "start_handoff": "project/messages/outbox/M5-EXIT-HUMAN-GATE-001__MSG-20260627-M5-EXIT-START__lead_orchestrator.json",
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "manual_decision_integrated_pr": 125,
+      "manual_decision_integrated_main_commit": "daf09128b3c15bee26664a9b750a625ed8384767",
+      "branch_or_worktree": "gate/m5-exit-human-gate",
+      "updated_at": "2026-06-27T04:18:00+08:00"
     }
   }
 }
