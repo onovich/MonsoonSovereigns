@@ -2,7 +2,7 @@
   "id": "M5-SLICE-DEFINITION-001",
   "summary": "Define bounded M5 playable-slice contract",
   "milestone": "M5",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -521,7 +521,7 @@
   "threads": {
     "gameplay_designer": {
       "thread_id": "019f03e1-ab85-78d3-ab7a-f200abbdd76f",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -534,13 +534,19 @@
       "start_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-START__lead_orchestrator.json",
       "review_ready_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
       "review_ready_at": "2026-06-26T13:30:00Z",
-      "updated_at": "2026-06-26T14:10:00Z",
+      "updated_at": "2026-06-26T14:30:00Z",
       "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "accepted_at": "2026-06-26T13:30:00Z"
+      "accepted_at": "2026-06-26T13:30:00Z",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T14:30:00Z",
+      "integrated_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
+      "integrated_pr": 110,
+      "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "closed_after_completed_accept"
     },
     "systems_architect": {
       "thread_id": "019f03ed-169e-7481-95f2-e9e5c4d765ba",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -552,13 +558,19 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-WRITER-TO-SYSTEMS-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "updated_at": "2026-06-26T14:10:00Z",
+      "updated_at": "2026-06-26T14:30:00Z",
       "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
-      "accepted_at": "2026-06-26T13:55:00Z"
+      "accepted_at": "2026-06-26T13:55:00Z",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T14:30:00Z",
+      "integrated_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
+      "integrated_pr": 110,
+      "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "closed_after_completed_accept"
     },
     "qa_reviewer": {
       "thread_id": "019f03f4-39f3-71c1-859d-cfa5fb8a544a",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -571,9 +583,15 @@
       "route_file": "project/messages/routes/M5-SLICE-DEFINITION-001__ROUTE-20260626-M5-SLICE-SYSTEMS-TO-QA-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
       "writer_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-WRITER-REVIEW__gameplay_designer.json",
-      "updated_at": "2026-06-26T14:10:00Z",
+      "updated_at": "2026-06-26T14:30:00Z",
       "accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-QA-REVIEW__qa_reviewer.json",
-      "accepted_at": "2026-06-26T14:05:00Z"
+      "accepted_at": "2026-06-26T14:05:00Z",
+      "close_reason": "task_closed_after_pr_ci_and_main_integration",
+      "closed_at": "2026-06-26T14:30:00Z",
+      "integrated_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
+      "integrated_pr": 110,
+      "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json",
+      "close_tool_result": "closed_after_completed_accept"
     }
   },
   "route_to": "lead_orchestrator",
@@ -584,12 +602,17 @@
     "Contract is routed to systems_architect for review; gameplay_designer does not approve its own design implementation.",
     "Lead routed writer REVIEW handoff to systems_architect thread 019f03ed-169e-7481-95f2-e9e5c4d765ba.",
     "systems_architect accepted the contract and lead routed independent QA review to thread 019f03f4-39f3-71c1-859d-cfa5fb8a544a.",
-    "Lead accepted the systems_architect and independent QA reviewed M5 slice contract; task is ACCEPTED pending PR/CI/main integration, not CLOSED."
+    "Lead accepted the systems_architect and independent QA reviewed M5 slice contract; task is ACCEPTED pending PR/CI/main integration, not CLOSED.",
+    "CLOSED after PR #110 entered origin/main at 1eaf46fb109f8dca93ba50dd269cbcdea0fef042; next READY M5 task is M5-SIM-PLAYABLE-LOOP-001."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-26T14:10:00Z",
+  "updated_at": "2026-06-26T14:30:00Z",
   "accepted_at": "2026-06-26T14:10:00Z",
   "qa_accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-QA-REVIEW__qa_reviewer.json",
   "systems_accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-SYSTEMS-REVIEW__systems_architect.json",
-  "lead_accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-LEAD-ACCEPT__lead_orchestrator.json"
+  "lead_accept_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-LEAD-ACCEPT__lead_orchestrator.json",
+  "closed_at": "2026-06-26T14:30:00Z",
+  "integrated_main_commit": "1eaf46fb109f8dca93ba50dd269cbcdea0fef042",
+  "integrated_pr": 110,
+  "lead_close_handoff": "project/messages/outbox/M5-SLICE-DEFINITION-001__MSG-20260626-M5-SLICE-DEFINITION-CLOSED__lead_orchestrator.json"
 }

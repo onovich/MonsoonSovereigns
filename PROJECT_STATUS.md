@@ -153,10 +153,10 @@ M5 formal passage remains a Human Gate. Manual node battle, telemetry, server/mu
 
 ## 13. M5 Slice Definition Review Snapshot
 
-`M5-SLICE-DEFINITION-001` is `ACCEPTED` pending PR on branch `design/m5-slice-definition` after gameplay_designer REVIEW, systems_architect ACCEPT, independent qa_reviewer ACCEPT, and lead ACCEPT.
+`M5-SLICE-DEFINITION-001` is CLOSED after PR #110 entered `origin/main` at `1eaf46fb109f8dca93ba50dd269cbcdea0fef042`.
 
 The task defines a planning-only M5 playable-slice contract in `project/tasks/active/M5-SLICE-DEFINITION-001.json`. The contract narrows M5 to a repeatable 2-4 hour composite/fictional slice using accepted M1-M4 systems: deterministic command/query/save authority, M2 economy/population/route pressure, M3 offices/vassal obligations/postwar governance/succession pressure, and M4 campaign logistics/automatic engagement/siege/withdrawal/AI trace surfaces.
 
 No formal historical content, production dependency, product code, package code, content-source data, roadmap edit, acceptance-matrix edit, ADR, gate doc, release artifact, telemetry, server/multiplayer behavior, arbitrary-code mod support, branding, commercial decision, frozen architecture/platform/core decision, or irreversible migration is added by this task.
 
-M5 formal passage, manual node battle, telemetry, server/multiplayer, arbitrary-code mods, release/commercial choices, branding, major cultural-risk decisions, frozen product/platform/core architecture changes, irreversible migrations, and paid services/accounts/secrets remain Human Gates. The next required action is PR, CI, merge, and post-merge closure before any downstream M5 implementation task starts.
+M5 formal passage, manual node battle, telemetry, server/multiplayer, arbitrary-code mods, release/commercial choices, branding, major cultural-risk decisions, frozen product/platform/core architecture changes, irreversible migrations, and paid services/accounts/secrets remain Human Gates. The next dependency-ready task is `M5-SIM-PLAYABLE-LOOP-001`.
