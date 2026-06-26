@@ -2,23 +2,29 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_ALPHA_SYSTEM_CONTRACT_CLOSED_READY_NEXT",
+  "status": "M6_DIPLOMACY_LEGITIMACY_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
+  "origin_main": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
   "current_milestone": "M6",
   "current_task": "M6-DIPLOMACY-LEGITIMACY-001",
-  "current_task_status": "DEPENDENCY_READY_PENDING_START",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
   "ready_tasks": [
-    "M6-DIPLOMACY-LEGITIMACY-001",
     "M6-SCENARIO-DATA-PIPELINE-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "dependency_ready_pending_start",
+      "status": "active_orchestrating",
       "role": "lead_orchestrator"
+    },
+    "simulation_engineer": {
+      "thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "status": "active",
+      "role": "simulation_engineer",
+      "nickname": "Delta the 2nd"
     }
   },
   "unresolved_risks": [
@@ -37,12 +43,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 Alpha system contract PR #131 entered main; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
+    "approval_source": "M6 Alpha system contract closure PR #132 entered main; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
     "recommended_result": null,
-    "note": "No active Human Gate. Next dependency-ready M6 task is M6-DIPLOMACY-LEGITIMACY-001; M6-SCENARIO-DATA-PIPELINE-001 is also dependency-ready.",
-    "recorded_at": "2026-06-27T06:35:40+08:00"
+    "note": "No active Human Gate. M6-DIPLOMACY-LEGITIMACY-001 is IN_PROGRESS with simulation_engineer writer.",
+    "recorded_at": "2026-06-27T06:41:07+08:00"
   },
-  "next_machine_action": "Start M6-DIPLOMACY-LEGITIMACY-001 as the highest-priority dependency-ready M6 task after this closure checkpoint enters main.",
+  "next_machine_action": "Wait for simulation_engineer REVIEW handoff, validate scope/tests, then route to systems_architect reviewer.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -50,7 +56,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T06:35:40+08:00",
+  "last_updated_at": "2026-06-27T06:42:07+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -90,17 +96,16 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T06:35:40+08:00",
+  "updated_at": "2026-06-27T06:42:07+08:00",
   "current_tasks": [
     "M6-DIPLOMACY-LEGITIMACY-001"
   ],
   "last_integrated_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
-  "last_main_commit": "4310aee1805b069ddef28fe3fd52ab25a8ae3365",
+  "last_main_commit": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
   "next_ready_tasks": [
-    "M6-DIPLOMACY-LEGITIMACY-001",
     "M6-SCENARIO-DATA-PIPELINE-001"
   ],
-  "next_action": "Start M6-DIPLOMACY-LEGITIMACY-001 as the highest-priority dependency-ready M6 task after this closure checkpoint enters main.",
+  "next_action": "Wait for simulation_engineer REVIEW handoff, validate scope/tests, then route to systems_architect reviewer.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -579,12 +584,21 @@
     ]
   },
   "m6_diplomacy_legitimacy": {
-    "status": "DEPENDENCY_READY_PENDING_START",
+    "status": "IN_PROGRESS",
     "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
     "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
-    "created_by_task_graph_pr": 129,
-    "dependencies_satisfied_by": "M6-ALPHA-SYSTEM-CONTRACT-001",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+    "writer_nickname": "Delta the 2nd",
+    "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-START.json",
+    "started_at": "2026-06-27T06:41:07+08:00",
+    "base_main_commit": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
+    "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "human_gate_required": false,
-    "next_action": "Start with simulation_engineer writer and systems_architect review as required by the task file."
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "Writer implements deterministic diplomacy and legitimacy substrate within allowed paths.",
+    "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
+    "route_sent_at": "2026-06-27T06:42:07+08:00"
   }
 }
