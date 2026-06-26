@@ -1,0 +1,52 @@
+{
+  "message_id": "MSG-20260627-M6-TASK-GRAPH-CLOSED",
+  "task_id": "M6-TASK-GRAPH-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M6-TASK-GRAPH-001 is CLOSED after PR #129 passed required CI, merged into origin/main at 4aef9108da1e659354a4a726b07b4b6dad56f966, and local main synchronized. The next READY M6 task is M6-ALPHA-SYSTEM-CONTRACT-001.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M6-TASK-GRAPH-001.json",
+    "project/tasks/active/M6-ALPHA-SYSTEM-CONTRACT-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "main -> chore/close-m6-task-graph / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "4aef9108da1e659354a4a726b07b4b6dad56f966",
+  "tests_run": [
+    {
+      "command": "gh pr checks 129 --watch --fail-fast",
+      "exit_code": 0,
+      "result": "Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "gh pr merge 129 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #129 merged; origin/main advanced to 4aef9108da1e659354a4a726b07b4b6dad56f966 and local main fast-forwarded."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-ALPHA-SYSTEM-CONTRACT-001 is READY after M6 task graph entered main."
+    }
+  ],
+  "decisions": [
+    "Close M6-TASK-GRAPH-001 only after PR #129 entered main and local main matched origin/main.",
+    "Start M6-ALPHA-SYSTEM-CONTRACT-001 next with gameplay_designer writer and systems_architect review.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE: no manual node battle implementation or blocking M6/M7/M8 spike/research task is authorized."
+  ],
+  "risks": [
+    "M6 downstream tasks are broad and several are R4; each requires its own writer/reviewer gates.",
+    "M6-ALPHA-SYSTEM-CONTRACT-001 is a contract task, not authorization to skip downstream implementation reviews."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge this closure checkpoint, sync main, then start M6-ALPHA-SYSTEM-CONTRACT-001.",
+  "created_at": "2026-06-27T05:51:38+08:00"
+}

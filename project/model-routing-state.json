@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T05:42:29+08:00",
+  "updated_at": "2026-06-27T05:51:38+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1768,18 +1768,18 @@
   ],
   "active_threads": [
     {
-      "task_id": "M6-TASK-GRAPH-001",
+      "task_id": "M6-ALPHA-SYSTEM-CONTRACT-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "ready_to_start",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead integration for accepted M6 task graph",
-      "branch_or_worktree": "chore/m6-task-graph",
-      "lead_accept_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
-      "updated_at": "2026-06-27T05:42:29+08:00"
+      "responsibility": "lead start for first M6 downstream task after graph closure",
+      "branch_or_worktree": "design/m6-alpha-system-contract",
+      "last_closed_task": "M6-TASK-GRAPH-001",
+      "updated_at": "2026-06-27T05:51:38+08:00"
     }
   ],
   "task_effects": {
@@ -1855,7 +1855,8 @@
     "M5-PLAYER-RESEARCH-001": "CLOSED after PR #122 entered main at 8b6ef6542d2d1a8270618ec8bae2161eb94c2e9d; next ready task pending taskctl ready after closure integration.",
     "M5-MANUAL-NODE-BATTLE-DECISION-001": "CLOSED after decision PR #125 and closure/start PR #126; current main is 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313. Decision remains DEFER_MANUAL_NODE_BATTLE.",
     "M5-EXIT-HUMAN-GATE-001": "CLOSED after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011. M5_GATE = PASS_WITH_LIMITS; M6-TASK-GRAPH-001 is READY.",
-    "M6-TASK-GRAPH-001": "ACCEPTED after systems_architect REVIEW and independent qa_reviewer ACCEPT; awaiting PR CI, merge, sync, and closure before M6-ALPHA-SYSTEM-CONTRACT-001 starts. This is planning-only and created the minimal M6 Alpha system-complete task DAG without implementing M6 product code or re-opening manual node battle for 1.0."
+    "M6-TASK-GRAPH-001": "CLOSED after PR #129 entered main at 4aef9108da1e659354a4a726b07b4b6dad56f966. Planning-only M6 Alpha task DAG accepted; next READY M6 task is M6-ALPHA-SYSTEM-CONTRACT-001.",
+    "M6-ALPHA-SYSTEM-CONTRACT-001": "READY as the first M6 downstream task after M6 task graph closure. Use gameplay_designer writer and systems_architect reviewer."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -1956,7 +1957,7 @@
       "closed_at": "2026-06-27T05:01:21+08:00"
     },
     "M6-TASK-GRAPH-001": {
-      "status": "ACCEPTED",
+      "status": "CLOSED",
       "owner_role": "systems_architect",
       "reviewer_role": "qa_reviewer",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -1967,7 +1968,7 @@
       "branch_or_worktree": "chore/m6-task-graph",
       "created_at": "2026-06-27T05:01:21+08:00",
       "started_at": "2026-06-27T05:12:06+08:00",
-      "updated_at": "2026-06-27T05:42:29+08:00",
+      "updated_at": "2026-06-27T05:51:38+08:00",
       "depends_on": [
         "M5-EXIT-HUMAN-GATE-001"
       ],
@@ -1983,9 +1984,24 @@
       "lead_accept_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T05:42:29+08:00",
       "reviewer_threads_closed": true,
+      "integrated_pr": 129,
+      "integrated_main_commit": "4aef9108da1e659354a4a726b07b4b6dad56f966",
+      "lead_close_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T05:51:38+08:00",
       "first_downstream_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
       "downstream_task_count": 14,
-      "next_action": "Open PR for accepted M6 task graph; after CI/merge/sync, close M6-TASK-GRAPH-001 and start M6-ALPHA-SYSTEM-CONTRACT-001."
+      "next_action": "Start M6-ALPHA-SYSTEM-CONTRACT-001."
+    },
+    "M6-ALPHA-SYSTEM-CONTRACT-001": {
+      "status": "READY",
+      "owner_role": "gameplay_designer",
+      "reviewer_role": "systems_architect",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "branch_or_worktree": "design/m6-alpha-system-contract",
+      "created_by_task_graph_pr": 129,
+      "updated_at": "2026-06-27T05:51:38+08:00",
+      "human_gate_required": false,
+      "next_action": "Start with gameplay_designer writer and systems_architect review."
     }
   }
 }

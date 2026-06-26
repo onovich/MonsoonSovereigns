@@ -2,7 +2,7 @@
   "id": "M6-TASK-GRAPH-001",
   "summary": "Create minimal M6 Alpha system-complete task graph",
   "milestone": "M6",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -60,7 +60,7 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
     "git diff --check"
   ],
-  "branch_or_worktree": "chore/m6-task-graph",
+  "branch_or_worktree": "chore/m6-task-graph -> main -> chore/close-m6-task-graph",
   "threads": {
     "systems_architect": "019f05c6-3b96-7da2-8a8a-7baf7d2ba53b",
     "qa_reviewer": "019f05d6-407f-7833-b397-ab103b09d257"
@@ -76,16 +76,20 @@
     "The M6 DAG contains no manual node battle implementation task and no blocking manual node battle spike or research task for M6, M7, or M8."
   ],
   "created_at": "2026-06-27T05:01:21+08:00",
-  "updated_at": "2026-06-27T05:42:29+08:00",
+  "updated_at": "2026-06-27T05:51:38+08:00",
   "lifecycle": {
     "ready_at": "2026-06-27T05:01:21+08:00",
     "in_progress_at": "2026-06-27T05:12:06+08:00",
     "review_at": "2026-06-27T05:17:00+08:00",
-    "accepted_at": "2026-06-27T05:42:29+08:00"
+    "accepted_at": "2026-06-27T05:42:29+08:00",
+    "closed_at": "2026-06-27T05:51:38+08:00"
   },
   "start_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M6-TASK-GRAPH-001__ROUTE-20260627-M6-GRAPH-LEAD-TO-SYSTEMS-START.json",
   "review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
   "qa_review_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
-  "lead_accept_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
+  "lead_accept_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+  "integrated_pr": 129,
+  "integrated_main_commit": "4aef9108da1e659354a4a726b07b4b6dad56f966",
+  "lead_close_handoff": "project/messages/outbox/M6-TASK-GRAPH-001__MSG-20260627-M6-TASK-GRAPH-CLOSED__lead_orchestrator.json"
 }
