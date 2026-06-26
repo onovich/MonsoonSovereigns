@@ -2,7 +2,7 @@
   "id": "M4-MARCH-SUPPLY-STATE-001",
   "summary": "Implement M4 march execution, supply state, and reinforcement timing",
   "milestone": "M4",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -71,8 +71,33 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m4-march-supply-state",
-  "threads": {},
-  "route_to": "lead_orchestrator",
+  "threads": {
+    "simulation_engineer": {
+      "thread_id": "019f01f4-764d-7220-ab55-c1735c3c9bf4",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "nickname": "Delta the 5th",
+      "responsibility": "primary M4 deterministic march execution, supply state, and reinforcement timing writer",
+      "branch_or_worktree": "feat/m4-march-supply-state",
+      "start_state": "START_CONFIRMED",
+      "start_submission_id": "019f01f4-cbd1-7ec3-b5b0-df4b0ffb0ae2",
+      "updated_at": "2026-06-26T03:25:00Z"
+    },
+    "systems_architect": {
+      "thread_id": "019f01f4-8a58-7753-bdae-37ae559fc7bc",
+      "status": "awaiting_review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "nickname": "Meridian the 5th",
+      "responsibility": "architecture reviewer for M4 deterministic march execution and supply state",
+      "branch_or_worktree": "feat/m4-march-supply-state",
+      "start_state": "AWAITING_REVIEW_READY",
+      "await_submission_id": "019f01f4-cbed-76c0-9d20-5e2fa394c37f",
+      "updated_at": "2026-06-26T03:25:00Z"
+    }
+  },
+  "route_to": "simulation_engineer",
   "notes": [
     "March execution must stay deterministic and headless; UI/renderer must observe read models only.",
     "Keep reinforcement timing as campaign commitments joining an existing plan, not a full army organization system.",
@@ -80,5 +105,5 @@
     "Promoted to READY after M4-ROUTE-TRANSPORT-CAPACITY-001 entered origin/main at 2431e897676838057d2e29201b0528b5ebbf29c2 and was CLOSED."
   ],
   "created_at": "2026-06-25T22:49:34Z",
-  "updated_at": "2026-06-26T03:20:00Z"
+  "updated_at": "2026-06-26T03:25:00Z"
 }
