@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T02:02:49+08:00",
+  "updated_at": "2026-06-27T02:13:00+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2216,7 +2216,7 @@
       "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
       "role": "security_reviewer",
       "thread_id": "019f0519-1337-7572-88c9-806afeb5325b",
-      "status": "reviewing",
+      "status": "accepted_pending_qa",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -2228,7 +2228,28 @@
       "spawn_result": "spawn_agent",
       "route_file": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-R2-TO-SECURITY-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
-      "updated_at": "2026-06-27T02:02:49+08:00"
+      "updated_at": "2026-06-27T02:13:00+08:00",
+      "review_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+      "accepted_at": "2026-06-27T02:13:00+08:00"
+    },
+    "M5-WEB-WINDOWS-DISTRIBUTABLE-001:qa_reviewer": {
+      "task_id": "M5-WEB-WINDOWS-DISTRIBUTABLE-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f0522-68ba-7313-9361-89e262f4dec0",
+      "status": "reviewing",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Witness the 10th",
+      "responsibility": "independent read-only functional QA review of M5 Web and Windows distributable evidence",
+      "branch_or_worktree": "chore/m5-web-windows-distributable",
+      "start_state": "QA_REVIEW_ROUTED",
+      "spawn_result": "spawn_agent",
+      "route_file": "project/messages/routes/M5-WEB-WINDOWS-DISTRIBUTABLE-001__ROUTE-20260627-M5-DISTRIBUTABLE-SECURITY-TO-QA-REVIEW.json",
+      "review_source_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-R2-REVIEW__release_engineer.json",
+      "security_accept_handoff": "project/messages/outbox/M5-WEB-WINDOWS-DISTRIBUTABLE-001__MSG-20260627-M5-WEB-WINDOWS-DISTRIBUTABLE-SECURITY-REVIEW__security_reviewer.json",
+      "updated_at": "2026-06-27T02:13:00+08:00"
     }
   }
 }
