@@ -1,0 +1,70 @@
+{
+  "message_id": "MSG-20260626-M4-WITHDRAWAL-POSTWAR-HANDOFF-REVIEW",
+  "task_id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented deterministic M4 campaign withdrawal records, campaign result accounting, and WarOutcome/PostwarCandidate handoff DTOs for the accepted M3 postwar governance boundary without applying M3 governance directly.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-WITHDRAWAL-POSTWAR-HANDOFF-001.json",
+    "project/goal-mode-state.json"
+  ],
+  "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "21 files and 151 tests passed, including M4 withdrawal and postwar handoff scenarios."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file and 8 tests passed, including withdrawal command/query schema coverage."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched; command/query hash d275faa4; save/load hash 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; 32 root Vitest files and 218 tests passed; web 1 file and 3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+      "exit_code": 0,
+      "result": "Task JSON validated as REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M4-WITHDRAWAL-POSTWAR-HANDOFF-001 and REVIEW handoff JSON",
+      "exit_code": 0,
+      "result": "Task JSON and REVIEW handoff JSON parsed successfully with expected status, route, required keys, and tests_run shape."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Withdrawal is resolved through the shared GameCommand protocol surface and records orderly withdrawal, forced retreat, cancellation before departure, or failed extraction.",
+    "Objective-complete withdrawal creates explicit WarOutcome and PostwarCandidate DTO state for M3 preview/application callers; it does not bypass or apply M3 governance validation.",
+    "Forced retreat and failed extraction paths retain human and political costs through casualty accounting, supply loss, campaign reason codes, and reputation/credit hooks.",
+    "No tactical pursuit, naval evacuation, full diplomacy, peace treaty, rebellion, campaign planning UI, formal historical content, M5 content, telemetry, server, multiplayer, arbitrary-code mod, or save-format package work was added."
+  ],
+  "risks": [
+    "R3: authoritative M4 state, protocol command/query schema, and canonical hashing changed; systems_architect review is required.",
+    "The save-format package was intentionally untouched per forbidden paths; reviewers should confirm the sim-core-only DTO/state shape is the correct boundary for this milestone."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the M4 withdrawal, campaign result, and M3 postwar candidate handoff boundaries; ACCEPT or REQUEST_CHANGES.",
+  "created_at": "2026-06-26T06:05:57Z"
+}
