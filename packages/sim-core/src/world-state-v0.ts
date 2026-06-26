@@ -2221,14 +2221,12 @@ function validateM4CampaignMarchEntry(
     `${path}.failedCommitmentIds`,
     errors
   );
-  if (input["joinedCommitmentTroops"] !== undefined) {
-    validateM4Array(
-      input["joinedCommitmentTroops"],
-      `${path}.joinedCommitmentTroops`,
-      errors,
-      validateM4MarchJoinedCommitmentTroopsEntry
-    );
-  }
+  validateM4Array(
+    input["joinedCommitmentTroops"],
+    `${path}.joinedCommitmentTroops`,
+    errors,
+    validateM4MarchJoinedCommitmentTroopsEntry
+  );
   validateUniqueNumberArrayField(
     input["joinedCommitmentIds"],
     `${path}.joinedCommitmentIds`,
@@ -5894,7 +5892,8 @@ function formatM4CanonicalLines(m4: M4CampaignStateV0 | undefined): readonly str
     )}`,
     `state.m4.grainSupplyReservations=${formatM4GrainSupplyReservations(
       m4.grainSupplyReservations
-    )}`
+    )}`,
+    `state.m4.marches=${formatM4CampaignMarches(m4.marches ?? [])}`
   ];
 }
 
@@ -5987,6 +5986,65 @@ function formatM4GrainSupplyReservations(
       ].join(":")
     )
     .join(",");
+}
+
+function formatM4CampaignMarches(values: readonly M4CampaignMarchStateV0[]): string {
+  return sortM4CampaignMarches(values)
+    .map((value) =>
+      [
+        value.marchId,
+        value.campaignPlanId,
+        value.originDistrictId,
+        value.targetDistrictId,
+        value.currentDistrictId,
+        value.routeSegments.map(formatM4CampaignMarchRouteSegment).join("/"),
+        value.currentSegmentIndex,
+        value.progressOnSegmentDays,
+        value.activeTroops,
+        value.grainPerTroopPerDay,
+        formatM4CampaignMarchSupply(value.supply),
+        value.status,
+        value.statusReasonCode,
+        sortText(value.reasonCodes).join("/"),
+        value.startedDay,
+        value.updatedDay,
+        `${value.predictedArrivalWindow.earliestDay}/${value.predictedArrivalWindow.latestDay}`,
+        formatNullableNumber(value.actualArrivalDay),
+        sortNumericIds(value.joinedCommitmentIds).join("/"),
+        sortM4CampaignMarchJoinedCommitmentTroops(value.joinedCommitmentTroops).join("/"),
+        sortNumericIds(value.failedCommitmentIds).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM4CampaignMarchRouteSegment(value: M4CampaignMarchRouteSegmentStateV0): string {
+  return [
+    value.routeId,
+    value.fromDistrictId,
+    value.toDistrictId,
+    value.travelDays,
+    value.capacity,
+    sortText(value.seasonRiskReasonCodes).join(".")
+  ].join(".");
+}
+
+function formatM4CampaignMarchSupply(value: M4CampaignMarchSupplyStateV0): string {
+  return [
+    value.status,
+    value.carriedGrain,
+    value.consumedGrain,
+    value.shortageGrain,
+    value.delayedDays
+  ].join(".");
+}
+
+function sortM4CampaignMarchJoinedCommitmentTroops(
+  values: readonly M4CampaignMarchJoinedCommitmentTroopsStateV0[]
+): readonly string[] {
+  return [...values]
+    .sort((left, right) => left.commitmentId - right.commitmentId)
+    .map((value) => `${value.commitmentId}.${value.joinedTroops}`);
 }
 
 function formatM4MusterCommitmentSource(source: M4MusterCommitmentSourceV0): string {

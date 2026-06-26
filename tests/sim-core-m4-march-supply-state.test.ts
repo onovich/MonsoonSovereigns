@@ -300,6 +300,76 @@ describe("M4-MARCH-SUPPLY-STATE-001 deterministic march execution and supply sta
     );
   });
 
+  test("hash changes when authoritative march fields change", () => {
+    let runtime = runtimeWithM4({ commitments: [commitment(100, 60, "assembled", 60)] });
+    runtime = accepted(runtime, startMarchCommand("m4.march.hash.start", "player", runtime, 708));
+
+    const baseHash = hashWorldStateV0(runtime.world);
+    const marchState = firstMarch(runtime.world);
+    expect(baseHash).not.toBe(
+      hashWorldStateV0(
+        worldWithMarchPatch(runtime.world, {
+          progressOnSegmentDays: marchState.progressOnSegmentDays + 1
+        })
+      )
+    );
+    expect(baseHash).not.toBe(
+      hashWorldStateV0(
+        worldWithMarchPatch(runtime.world, {
+          supply: { ...marchState.supply, carriedGrain: marchState.supply.carriedGrain - 1 }
+        })
+      )
+    );
+    expect(baseHash).not.toBe(
+      hashWorldStateV0(
+        worldWithMarchPatch(runtime.world, {
+          actualArrivalDay: parseGameDay(runtime.world.meta.currentDay + 1)
+        })
+      )
+    );
+    expect(baseHash).not.toBe(
+      hashWorldStateV0(
+        worldWithMarchPatch(runtime.world, {
+          joinedCommitmentTroops: [
+            {
+              commitmentId: parseMobilizedForceCommitmentId(100),
+              joinedTroops: marchState.joinedCommitmentTroops[0]?.joinedTroops ?? 0
+            },
+            { commitmentId: parseMobilizedForceCommitmentId(101), joinedTroops: 1 }
+          ]
+        })
+      )
+    );
+  });
+
+  test("missing joinedCommitmentTroops returns structured validation error", () => {
+    const marchWithoutJoinedTroops = removeJoinedCommitmentTroops(march(701));
+    const malformedWorld = {
+      ...runtimeWithM4({ commitments: [commitment(100, 60, "assembled", 60)] }).world,
+      state: {
+        ...runtimeWithM4({ commitments: [commitment(100, 60, "assembled", 60)] }).world.state,
+        m4: {
+          schemaVersion: 1,
+          campaignPlans: [campaignPlan({})],
+          factionKnowledgeSnapshots: [],
+          mobilizedForceCommitments: [commitment(100, 60, "assembled", 60)],
+          grainSupplyReservations: [reservation(501, 1, 300)],
+          marches: [marchWithoutJoinedTroops]
+        }
+      }
+    };
+
+    expect(() => validateWorldStateV0(malformedWorld)).not.toThrow();
+    expect(validateWorldStateV0(malformedWorld)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "invalid-schema",
+          path: "state.m4.marches[0].joinedCommitmentTroops"
+        })
+      ])
+    );
+  });
+
   test("player and AI start march through the same command path", () => {
     const player = accepted(
       runtimeWithM4({ commitments: [commitment(100, 60, "assembled", 60)] }),
@@ -738,6 +808,43 @@ function accepted(runtime: SimulationRuntimeV1, command: GameCommandV1): Simulat
     throw new Error(JSON.stringify(submitted.result.error));
   }
   return submitted.runtime;
+}
+
+function firstMarch(world: WorldStateV0): M4CampaignStateV0["marches"][number] {
+  const marchState = world.state.m4?.marches[0];
+  if (marchState === undefined) {
+    throw new Error("Expected M4 march state.");
+  }
+  return marchState;
+}
+
+function worldWithMarchPatch(
+  world: WorldStateV0,
+  patch: Partial<M4CampaignStateV0["marches"][number]>
+): WorldStateV0 {
+  const m4 = world.state.m4;
+  if (m4 === undefined) {
+    throw new Error("Expected M4 state.");
+  }
+  const marchState = firstMarch(world);
+  return {
+    ...world,
+    state: {
+      ...world.state,
+      m4: {
+        ...m4,
+        marches: [{ ...marchState, ...patch }, ...m4.marches.slice(1)]
+      }
+    }
+  };
+}
+
+function removeJoinedCommitmentTroops(
+  marchState: M4CampaignStateV0["marches"][number]
+): Record<string, unknown> {
+  const candidate: Record<string, unknown> = { ...marchState };
+  delete candidate["joinedCommitmentTroops"];
+  return candidate;
 }
 
 function totalM2AndM4Grain(world: WorldStateV0): number {
