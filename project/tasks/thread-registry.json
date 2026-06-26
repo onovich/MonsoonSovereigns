@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T01:19:30+08:00",
+  "updated_at": "2026-06-27T01:32:54+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2132,7 +2132,7 @@
       "task_id": "M5-PERFORMANCE-GATE-001",
       "role": "test_engineer",
       "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
-      "status": "review_ready",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -2146,15 +2146,18 @@
       "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
       "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
       "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
-      "updated_at": "2026-06-27T01:16:50+08:00",
+      "updated_at": "2026-06-27T01:32:54+08:00",
       "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
-      "review_ready_at": "2026-06-27T01:16:50+08:00"
+      "review_ready_at": "2026-06-27T01:16:50+08:00",
+      "qa_review_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T01:32:54+08:00"
     },
     "M5-PERFORMANCE-GATE-001:qa_reviewer": {
       "task_id": "M5-PERFORMANCE-GATE-001",
       "role": "qa_reviewer",
       "thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
-      "status": "reviewing",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -2168,7 +2171,10 @@
       "review_source_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
       "review_commit": "81aacaea",
       "review_submission_id": "019f04f2-3e8a-7a21-ab80-7909e1d415fc",
-      "updated_at": "2026-06-27T01:19:30+08:00"
+      "updated_at": "2026-06-27T01:32:54+08:00",
+      "review_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T01:32:54+08:00"
     }
   }
 }
