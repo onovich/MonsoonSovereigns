@@ -1,4 +1,5 @@
 import { exit, stdout } from "node:process";
+import { Worker } from "node:worker_threads";
 import {
   createCommandQueryCanaryScript,
   createHelloThirtyDayRequest,
@@ -109,7 +110,7 @@ stdout.write("Deterministic M4 replay simulation matched.\n");
 
 const m5PlayableScript = createM5PlayableLoopScriptV1();
 const nodeM5Result = runM5PlayableLoopV1(m5PlayableScript);
-const workerM5Result = runM5PlayableLoopInWorkerCompatibleAdapter(m5PlayableScript);
+const workerM5Result = await runM5PlayableLoopInWorkerCompatibleAdapter(m5PlayableScript);
 
 stdout.write(`Node M5 hash: ${nodeM5Result.finalHash}\n`);
 stdout.write(`Worker-compatible M5 hash: ${workerM5Result.finalHash}\n`);
@@ -139,5 +140,34 @@ if (
 stdout.write("Deterministic M5 playable loop simulation matched.\n");
 
 function runM5PlayableLoopInWorkerCompatibleAdapter(script) {
-  return runM5PlayableLoopV1(script);
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(new URL("./m5-playable-loop-worker.mjs", import.meta.url), {
+      execArgv: ["--experimental-strip-types"]
+    });
+    const finish = () => {
+      worker.removeAllListeners();
+      void worker.terminate();
+    };
+
+    worker.once("message", (message) => {
+      finish();
+      try {
+        if (typeof message !== "string") {
+          throw new Error("M5 worker response must be a JSON string.");
+        }
+        const response = JSON.parse(message);
+        if (response?.status !== "ok") {
+          throw new Error(response?.message ?? "M5 worker returned an error.");
+        }
+        resolve(response.result);
+      } catch (error) {
+        reject(error);
+      }
+    });
+    worker.once("error", (error) => {
+      finish();
+      reject(error);
+    });
+    worker.postMessage(JSON.stringify({ kind: "run-m5-playable-loop-v1", script }));
+  });
 }

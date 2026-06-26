@@ -490,16 +490,373 @@ export interface SaveM3PolityVassalageStateDto {
 
 export interface SaveM4CampaignStateDto {
   readonly schemaVersion: 1;
-  readonly campaignPlans: readonly unknown[];
-  readonly factionKnowledgeSnapshots: readonly unknown[];
-  readonly mobilizedForceCommitments: readonly unknown[];
-  readonly grainSupplyReservations: readonly unknown[];
-  readonly marches: readonly unknown[];
-  readonly fieldEngagements: readonly unknown[];
-  readonly sieges: readonly unknown[];
-  readonly withdrawals: readonly unknown[];
-  readonly warOutcomes: readonly unknown[];
-  readonly postwarCandidates: readonly unknown[];
+  readonly campaignPlans: readonly SaveM4CampaignPlanStateDto[];
+  readonly factionKnowledgeSnapshots: readonly SaveM4FactionKnowledgeSnapshotStateDto[];
+  readonly mobilizedForceCommitments: readonly SaveM4MobilizedForceCommitmentStateDto[];
+  readonly grainSupplyReservations: readonly SaveM4GrainSupplyReservationStateDto[];
+  readonly marches: readonly SaveM4CampaignMarchStateDto[];
+  readonly fieldEngagements: readonly SaveM4FieldEngagementStateDto[];
+  readonly sieges: readonly SaveM4SiegeStateDto[];
+  readonly withdrawals: readonly SaveM4WithdrawalStateDto[];
+  readonly warOutcomes: readonly SaveM4WarOutcomeStateDto[];
+  readonly postwarCandidates: readonly SaveM4PostwarCandidateStateDto[];
+}
+
+export type SaveM4CampaignObjectiveKindDto =
+  | "prepare"
+  | "march"
+  | "besiege"
+  | "relieve"
+  | "withdraw"
+  | "postwar-result-candidate";
+export type SaveM4CampaignPlanStatusDto = "planned" | "active" | "cancelled" | "completed";
+export type SaveM4CampaignOwnerDto =
+  | { readonly kind: "commander"; readonly characterId: number }
+  | { readonly kind: "polity"; readonly polityId: number };
+export type SaveM4CampaignTargetDto =
+  | { readonly kind: "district"; readonly districtId: number }
+  | { readonly kind: "polity"; readonly polityId: number };
+
+export interface SaveM4CampaignStartWindowDto {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}
+
+export interface SaveM4CampaignPlanStateDto {
+  readonly id: number;
+  readonly owner: SaveM4CampaignOwnerDto;
+  readonly target: SaveM4CampaignTargetDto;
+  readonly objectiveKind: SaveM4CampaignObjectiveKindDto;
+  readonly startWindow: SaveM4CampaignStartWindowDto;
+  readonly status: SaveM4CampaignPlanStatusDto;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly createdDay: number;
+  readonly updatedDay: number;
+}
+
+export type SaveM4MusterCommitmentStatusDto =
+  | "promised"
+  | "assembled"
+  | "delayed"
+  | "refused"
+  | "released";
+
+export interface SaveM4MusterAssemblyWindowDto {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}
+
+export interface SaveM4MusterCommitmentSourceDto {
+  readonly kind: "m3-obligation";
+  readonly obligationId: number;
+  readonly debtorPolityId: number;
+  readonly creditorPolityId: number;
+}
+
+export type SaveM4MusterLocalCostHookDto =
+  | {
+      readonly kind: "economic-labor-reservation";
+      readonly districtId: number;
+      readonly laborAmount: number;
+      readonly reasonCode: string;
+    }
+  | {
+      readonly kind: "loyalty-pressure";
+      readonly polityId: number;
+      readonly pressureBps: number;
+      readonly reasonCode: string;
+    };
+
+export interface SaveM4MobilizedForceCommitmentStateDto {
+  readonly id: number;
+  readonly campaignPlanId: number;
+  readonly source: SaveM4MusterCommitmentSourceDto;
+  readonly promisedTroops: number;
+  readonly dueDay: number;
+  readonly assemblyWindow: SaveM4MusterAssemblyWindowDto;
+  readonly plannedAssemblyDay: number;
+  readonly assembledTroops: number;
+  readonly delayedTroops: number;
+  readonly refusedTroops: number;
+  readonly releasedTroops: number;
+  readonly status: SaveM4MusterCommitmentStatusDto;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly localCostHooks: readonly SaveM4MusterLocalCostHookDto[];
+}
+
+export interface SaveM4GrainSupplySourceDto {
+  readonly kind: "m2-population-group";
+  readonly populationGroupId: number;
+  readonly districtId: number;
+}
+
+export type SaveM4GrainSupplyReservationStatusDto =
+  | "reserved"
+  | "partially-consumed"
+  | "shortage"
+  | "consumed"
+  | "released";
+
+export interface SaveM4GrainSupplyReservationStateDto {
+  readonly reservationId: number;
+  readonly campaignPlanId: number;
+  readonly source: SaveM4GrainSupplySourceDto;
+  readonly reservedAmount: number;
+  readonly carriedAmount: number;
+  readonly consumedAmount: number;
+  readonly shortageAmount: number;
+  readonly lossAmount: number;
+  readonly lossReasonCode: string | null;
+  readonly expectedDailyConsumption: number;
+  readonly expectedDaysOfSupply: number;
+  readonly status: SaveM4GrainSupplyReservationStatusDto;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export type SaveM4CampaignMarchStatusDto =
+  | "planned"
+  | "marching"
+  | "paused"
+  | "delayed"
+  | "cancelled"
+  | "arrived";
+export type SaveM4CampaignMarchSupplyStatusDto =
+  | "well-supplied"
+  | "strained"
+  | "hungry"
+  | "out-of-supply";
+
+export interface SaveM4CampaignMarchRouteSegmentStateDto {
+  readonly routeId: number;
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+  readonly travelDays: number;
+  readonly capacity: number;
+  readonly seasonRiskReasonCodes: readonly string[];
+}
+
+export interface SaveM4CampaignMarchSupplyStateDto {
+  readonly status: SaveM4CampaignMarchSupplyStatusDto;
+  readonly carriedGrain: number;
+  readonly consumedGrain: number;
+  readonly shortageGrain: number;
+  readonly delayedDays: number;
+}
+
+export interface SaveM4CampaignMarchJoinedCommitmentTroopsStateDto {
+  readonly commitmentId: number;
+  readonly joinedTroops: number;
+}
+
+export interface SaveM4CampaignMarchStateDto {
+  readonly marchId: number;
+  readonly campaignPlanId: number;
+  readonly originDistrictId: number;
+  readonly targetDistrictId: number;
+  readonly currentDistrictId: number;
+  readonly routeSegments: readonly SaveM4CampaignMarchRouteSegmentStateDto[];
+  readonly currentSegmentIndex: number;
+  readonly progressOnSegmentDays: number;
+  readonly activeTroops: number;
+  readonly grainPerTroopPerDay: number;
+  readonly supply: SaveM4CampaignMarchSupplyStateDto;
+  readonly status: SaveM4CampaignMarchStatusDto;
+  readonly statusReasonCode: string;
+  readonly reasonCodes: readonly string[];
+  readonly startedDay: number;
+  readonly updatedDay: number;
+  readonly predictedArrivalWindow: SaveM4CampaignStartWindowDto;
+  readonly actualArrivalDay: number | null;
+  readonly joinedCommitmentIds: readonly number[];
+  readonly joinedCommitmentTroops: readonly SaveM4CampaignMarchJoinedCommitmentTroopsStateDto[];
+  readonly failedCommitmentIds: readonly number[];
+}
+
+export type SaveM4FieldEngagementOutcomeDto = "attacker-victory" | "defender-holds";
+
+export interface SaveM4CampaignHookStateDto {
+  readonly polityId: number;
+  readonly amount: number;
+  readonly reasonCode: string;
+}
+
+export interface SaveM4FieldEngagementStateDto {
+  readonly engagementId: number;
+  readonly campaignPlanId: number;
+  readonly marchId: number;
+  readonly attackerPolityId: number;
+  readonly defenderPolityId: number;
+  readonly target: SaveM4CampaignTargetDto;
+  readonly attackerTroopsBefore: number;
+  readonly attackerTroopsAfter: number;
+  readonly defenderEstimatedTroopsBefore: number;
+  readonly defenderEstimatedTroopsAfter: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly defenderFortification: number;
+  readonly outcome: SaveM4FieldEngagementOutcomeDto;
+  readonly reasonCodes: readonly string[];
+  readonly creditHooks: readonly SaveM4CampaignHookStateDto[];
+  readonly reputationHooks: readonly SaveM4CampaignHookStateDto[];
+  readonly resolvedDay: number;
+}
+
+export type SaveM4SiegeChoiceDto =
+  | "invest-blockade"
+  | "assault"
+  | "continue"
+  | "accept-surrender"
+  | "lift-siege"
+  | "withdraw";
+export type SaveM4SiegeStatusDto =
+  | "blockading"
+  | "surrender-ready"
+  | "surrendered"
+  | "lifted"
+  | "withdrawn";
+
+export interface SaveM4SiegeStateDto {
+  readonly siegeId: number;
+  readonly campaignPlanId: number;
+  readonly marchId: number;
+  readonly targetDistrictId: number;
+  readonly attackerPolityId: number;
+  readonly defenderPolityId: number;
+  readonly status: SaveM4SiegeStatusDto;
+  readonly statusReasonCode: string;
+  readonly fortification: number;
+  readonly defenderEstimatedTroops: number;
+  readonly defenderSupply: number;
+  readonly siegeProgress: number;
+  readonly daysInvested: number;
+  readonly blockadeDays: number;
+  readonly assaultCount: number;
+  readonly attackerTroops: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly surrenderEligible: boolean;
+  readonly surrenderReasonCodes: readonly string[];
+  readonly reasonCodes: readonly string[];
+  readonly creditHooks: readonly SaveM4CampaignHookStateDto[];
+  readonly reputationHooks: readonly SaveM4CampaignHookStateDto[];
+  readonly startedDay: number;
+  readonly updatedDay: number;
+}
+
+export type SaveM4WithdrawalKindDto =
+  | "orderly-withdrawal"
+  | "forced-retreat"
+  | "cancelled-before-departure"
+  | "failed-extraction";
+export type SaveM4WithdrawalTriggerDto =
+  | "ordered"
+  | "supply"
+  | "season"
+  | "siege"
+  | "loss"
+  | "objective-complete";
+
+export interface SaveM4WithdrawalStateDto {
+  readonly withdrawalId: number;
+  readonly campaignPlanId: number;
+  readonly marchId: number | null;
+  readonly siegeId: number | null;
+  readonly kind: SaveM4WithdrawalKindDto;
+  readonly triggerReason: SaveM4WithdrawalTriggerDto;
+  readonly troopsBefore: number;
+  readonly troopsExtracted: number;
+  readonly casualties: number;
+  readonly supplyLoss: number;
+  readonly creditHooks: readonly SaveM4CampaignHookStateDto[];
+  readonly reputationHooks: readonly SaveM4CampaignHookStateDto[];
+  readonly reasonCodes: readonly string[];
+  readonly resolvedDay: number;
+}
+
+export type SaveM4PostwarMethodDto = "direct-control" | "restore-vassal-ruler" | "tribute-only";
+
+export interface SaveM4PostwarCandidateStateDto {
+  readonly candidateId: string;
+  readonly sourceWarOutcomeId: number;
+  readonly settlementId: string;
+  readonly victorPolityId: number;
+  readonly localPolityId: number;
+  readonly districtId: number;
+  readonly validM3Methods: readonly SaveM4PostwarMethodDto[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface SaveM4WarOutcomeStateDto {
+  readonly outcomeId: number;
+  readonly campaignPlanId: number;
+  readonly victorPolityId: number;
+  readonly localPolityId: number;
+  readonly targetDistrictId: number;
+  readonly attackerCasualties: number;
+  readonly defenderCasualties: number;
+  readonly supplyLoss: number;
+  readonly withdrawalId: number | null;
+  readonly siegeId: number | null;
+  readonly postwarCandidate: SaveM4PostwarCandidateStateDto | null;
+  readonly reasonCodes: readonly string[];
+  readonly resolvedDay: number;
+}
+
+export type SaveM4FactionKnowledgeSourceKindDto = "scout" | "merchant" | "envoy" | "report";
+
+export interface SaveM4FactionKnowledgeSourceDto {
+  readonly kind: SaveM4FactionKnowledgeSourceKindDto;
+  readonly sourceId: string;
+  readonly reliabilityBps: number;
+}
+
+export interface SaveM4KnownObjectiveEstimateDto {
+  readonly campaignPlanId: number;
+  readonly target: SaveM4CampaignTargetDto;
+  readonly objectiveKind: SaveM4CampaignObjectiveKindDto;
+  readonly confidenceBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface SaveM4RouteEstimateDto {
+  readonly routeId: number;
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+  readonly travelCostEstimate: number;
+  readonly capacityEstimate: number;
+  readonly confidenceBps: number;
+}
+
+export interface SaveM4SupplyEstimateDto {
+  readonly districtId: number;
+  readonly supplyMin: number;
+  readonly supplyMax: number;
+  readonly confidenceBps: number;
+}
+
+export interface SaveM4DefenderEstimateDto {
+  readonly target: SaveM4CampaignTargetDto;
+  readonly defenderMin: number;
+  readonly defenderMax: number;
+  readonly confidenceBps: number;
+}
+
+export interface SaveM4FactionKnowledgeSnapshotStateDto {
+  readonly snapshotId: number;
+  readonly observerPolityId: number;
+  readonly subjectPolityId: number;
+  readonly knowledgeVersion: number;
+  readonly recordedDay: number;
+  readonly source: SaveM4FactionKnowledgeSourceDto;
+  readonly knownObjectives: readonly SaveM4KnownObjectiveEstimateDto[];
+  readonly routeEstimates: readonly SaveM4RouteEstimateDto[];
+  readonly supplyEstimates: readonly SaveM4SupplyEstimateDto[];
+  readonly defenderEstimates: readonly SaveM4DefenderEstimateDto[];
 }
 
 export interface SaveWorldRuntimeStateV0Dto {
@@ -1809,55 +2166,63 @@ function parseM4CampaignState(
     );
   }
 
-  const campaignPlans = parseM4RecordArray(
+  const campaignPlans = parseM4Array(
     input["campaignPlans"],
     `${path}.campaignPlans`,
     "M4 campaignPlans",
-    errors
+    errors,
+    parseM4CampaignPlan
   );
-  const factionKnowledgeSnapshots = parseM4RecordArray(
+  const factionKnowledgeSnapshots = parseM4Array(
     input["factionKnowledgeSnapshots"],
     `${path}.factionKnowledgeSnapshots`,
     "M4 factionKnowledgeSnapshots",
-    errors
+    errors,
+    parseM4FactionKnowledgeSnapshot
   );
-  const mobilizedForceCommitments = parseM4RecordArray(
+  const mobilizedForceCommitments = parseM4Array(
     input["mobilizedForceCommitments"],
     `${path}.mobilizedForceCommitments`,
     "M4 mobilizedForceCommitments",
-    errors
+    errors,
+    parseM4MobilizedForceCommitment
   );
-  const grainSupplyReservations = parseM4RecordArray(
+  const grainSupplyReservations = parseM4Array(
     input["grainSupplyReservations"],
     `${path}.grainSupplyReservations`,
     "M4 grainSupplyReservations",
-    errors
+    errors,
+    parseM4GrainSupplyReservation
   );
-  const marches = parseM4RecordArray(input["marches"], `${path}.marches`, "M4 marches", errors);
-  const fieldEngagements = parseM4RecordArray(
+  const marches = parseM4Array(input["marches"], `${path}.marches`, "M4 marches", errors, parseM4CampaignMarch);
+  const fieldEngagements = parseM4Array(
     input["fieldEngagements"],
     `${path}.fieldEngagements`,
     "M4 fieldEngagements",
-    errors
+    errors,
+    parseM4FieldEngagement
   );
-  const sieges = parseM4RecordArray(input["sieges"], `${path}.sieges`, "M4 sieges", errors);
-  const withdrawals = parseM4RecordArray(
+  const sieges = parseM4Array(input["sieges"], `${path}.sieges`, "M4 sieges", errors, parseM4Siege);
+  const withdrawals = parseM4Array(
     input["withdrawals"],
     `${path}.withdrawals`,
     "M4 withdrawals",
-    errors
+    errors,
+    parseM4Withdrawal
   );
-  const warOutcomes = parseM4RecordArray(
+  const warOutcomes = parseM4Array(
     input["warOutcomes"],
     `${path}.warOutcomes`,
     "M4 warOutcomes",
-    errors
+    errors,
+    parseM4WarOutcome
   );
-  const postwarCandidates = parseM4RecordArray(
+  const postwarCandidates = parseM4Array(
     input["postwarCandidates"],
     `${path}.postwarCandidates`,
     "M4 postwarCandidates",
-    errors
+    errors,
+    parseM4PostwarCandidate
   );
 
   if (
@@ -1890,31 +2255,1055 @@ function parseM4CampaignState(
   };
 }
 
-function parseM4RecordArray(
+function parseM4Array<TEntry>(
   input: unknown,
   path: string,
   label: string,
-  errors: SaveLoadRejectionReasonV1[]
-): readonly Record<string, unknown>[] | undefined {
+  errors: SaveLoadRejectionReasonV1[],
+  parseEntry: (entry: unknown, path: string, errors: SaveLoadRejectionReasonV1[]) => TEntry | undefined
+): readonly TEntry[] | undefined {
   if (!Array.isArray(input)) {
     errors.push(reason("invalid-schema", path, `${label} must be an array.`));
     return undefined;
   }
 
-  return input.map((entry, index) => parseM4Record(entry, `${path}[${index}]`, errors));
+  const entries: TEntry[] = [];
+  input.forEach((entry, index) => {
+    const parsed = parseEntry(entry, `${path}[${index}]`, errors);
+    if (parsed !== undefined) {
+      entries.push(parsed);
+    }
+  });
+  return entries;
 }
 
-function parseM4Record(
+function readM4Record(
   input: unknown,
   path: string,
   errors: SaveLoadRejectionReasonV1[]
-): Record<string, unknown> {
+): Record<string, unknown> | undefined {
   if (!isRecord(input)) {
     errors.push(reason("invalid-schema", path, "M4 save entry must be an object."));
-    return {};
+    return undefined;
   }
 
-  return copyJsonRecord(input);
+  return input;
+}
+
+function parseM4CampaignPlan(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignPlanStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const owner = parseM4CampaignOwner(record["owner"], `${path}.owner`, errors);
+  const target = parseM4CampaignTarget(record["target"], `${path}.target`, errors);
+  const startWindow = parseM4StartWindow(record["startWindow"], `${path}.startWindow`, errors);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  if (owner === undefined || target === undefined || startWindow === undefined) {
+    return undefined;
+  }
+
+  return {
+    id: readPositiveSafeInteger(record, "id", `${path}.id`, errors) ?? 0,
+    owner,
+    target,
+    objectiveKind: parseM4CampaignObjectiveKind(record["objectiveKind"], `${path}.objectiveKind`, errors),
+    startWindow,
+    status: parseM4CampaignPlanStatus(record["status"], `${path}.status`, errors),
+    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    reasonCodes,
+    createdDay: readNonnegativeSafeInteger(record, "createdDay", `${path}.createdDay`, errors) ?? 0,
+    updatedDay: readNonnegativeSafeInteger(record, "updatedDay", `${path}.updatedDay`, errors) ?? 0
+  };
+}
+
+function parseM4FactionKnowledgeSnapshot(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4FactionKnowledgeSnapshotStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const source = parseM4FactionKnowledgeSource(record["source"], `${path}.source`, errors);
+  const knownObjectives = parseM4Array(record["knownObjectives"], `${path}.knownObjectives`, "M4 knownObjectives", errors, parseM4KnownObjectiveEstimate);
+  const routeEstimates = parseM4Array(record["routeEstimates"], `${path}.routeEstimates`, "M4 routeEstimates", errors, parseM4RouteEstimate);
+  const supplyEstimates = parseM4Array(record["supplyEstimates"], `${path}.supplyEstimates`, "M4 supplyEstimates", errors, parseM4SupplyEstimate);
+  const defenderEstimates = parseM4Array(record["defenderEstimates"], `${path}.defenderEstimates`, "M4 defenderEstimates", errors, parseM4DefenderEstimate);
+  if (
+    source === undefined ||
+    knownObjectives === undefined ||
+    routeEstimates === undefined ||
+    supplyEstimates === undefined ||
+    defenderEstimates === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    snapshotId: readPositiveSafeInteger(record, "snapshotId", `${path}.snapshotId`, errors) ?? 0,
+    observerPolityId:
+      readPositiveSafeInteger(record, "observerPolityId", `${path}.observerPolityId`, errors) ?? 0,
+    subjectPolityId:
+      readPositiveSafeInteger(record, "subjectPolityId", `${path}.subjectPolityId`, errors) ?? 0,
+    knowledgeVersion:
+      readNonnegativeSafeInteger(record, "knowledgeVersion", `${path}.knowledgeVersion`, errors) ?? 0,
+    recordedDay: readNonnegativeSafeInteger(record, "recordedDay", `${path}.recordedDay`, errors) ?? 0,
+    source,
+    knownObjectives,
+    routeEstimates,
+    supplyEstimates,
+    defenderEstimates
+  };
+}
+
+function parseM4MobilizedForceCommitment(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4MobilizedForceCommitmentStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const source = parseM4MusterCommitmentSource(record["source"], `${path}.source`, errors);
+  const assemblyWindow = parseM4StartWindow(record["assemblyWindow"], `${path}.assemblyWindow`, errors);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  const localCostHooks = parseM4Array(record["localCostHooks"], `${path}.localCostHooks`, "M4 localCostHooks", errors, parseM4MusterLocalCostHook);
+  if (source === undefined || assemblyWindow === undefined || localCostHooks === undefined) {
+    return undefined;
+  }
+
+  return {
+    id: readPositiveSafeInteger(record, "id", `${path}.id`, errors) ?? 0,
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    source,
+    promisedTroops:
+      readPositiveSafeInteger(record, "promisedTroops", `${path}.promisedTroops`, errors) ?? 0,
+    dueDay: readNonnegativeSafeInteger(record, "dueDay", `${path}.dueDay`, errors) ?? 0,
+    assemblyWindow,
+    plannedAssemblyDay:
+      readNonnegativeSafeInteger(record, "plannedAssemblyDay", `${path}.plannedAssemblyDay`, errors) ?? 0,
+    assembledTroops:
+      readNonnegativeSafeInteger(record, "assembledTroops", `${path}.assembledTroops`, errors) ?? 0,
+    delayedTroops:
+      readNonnegativeSafeInteger(record, "delayedTroops", `${path}.delayedTroops`, errors) ?? 0,
+    refusedTroops:
+      readNonnegativeSafeInteger(record, "refusedTroops", `${path}.refusedTroops`, errors) ?? 0,
+    releasedTroops:
+      readNonnegativeSafeInteger(record, "releasedTroops", `${path}.releasedTroops`, errors) ?? 0,
+    status: parseM4MusterCommitmentStatus(record["status"], `${path}.status`, errors),
+    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    reasonCodes,
+    localCostHooks
+  };
+}
+
+function parseM4GrainSupplyReservation(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4GrainSupplyReservationStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const source = parseM4GrainSupplySource(record["source"], `${path}.source`, errors);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  if (source === undefined) {
+    return undefined;
+  }
+
+  return {
+    reservationId:
+      readPositiveSafeInteger(record, "reservationId", `${path}.reservationId`, errors) ?? 0,
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    source,
+    reservedAmount:
+      readNonnegativeSafeInteger(record, "reservedAmount", `${path}.reservedAmount`, errors) ?? 0,
+    carriedAmount:
+      readNonnegativeSafeInteger(record, "carriedAmount", `${path}.carriedAmount`, errors) ?? 0,
+    consumedAmount:
+      readNonnegativeSafeInteger(record, "consumedAmount", `${path}.consumedAmount`, errors) ?? 0,
+    shortageAmount:
+      readNonnegativeSafeInteger(record, "shortageAmount", `${path}.shortageAmount`, errors) ?? 0,
+    lossAmount: readNonnegativeSafeInteger(record, "lossAmount", `${path}.lossAmount`, errors) ?? 0,
+    lossReasonCode: readNullableString(record, "lossReasonCode", `${path}.lossReasonCode`, errors),
+    expectedDailyConsumption:
+      readPositiveSafeInteger(record, "expectedDailyConsumption", `${path}.expectedDailyConsumption`, errors) ?? 0,
+    expectedDaysOfSupply:
+      readNonnegativeSafeInteger(record, "expectedDaysOfSupply", `${path}.expectedDaysOfSupply`, errors) ?? 0,
+    status: parseM4GrainSupplyReservationStatus(record["status"], `${path}.status`, errors),
+    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    reasonCodes
+  };
+}
+
+function parseM4CampaignMarch(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignMarchStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const routeSegments = parseM4Array(record["routeSegments"], `${path}.routeSegments`, "M4 routeSegments", errors, parseM4MarchRouteSegment);
+  const supply = parseM4MarchSupply(record["supply"], `${path}.supply`, errors);
+  const predictedArrivalWindow = parseM4StartWindow(
+    record["predictedArrivalWindow"],
+    `${path}.predictedArrivalWindow`,
+    errors
+  );
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  const joinedCommitmentIds = parsePositiveIntegerArray(record["joinedCommitmentIds"], `${path}.joinedCommitmentIds`, errors);
+  const joinedCommitmentTroops = parseM4Array(
+    record["joinedCommitmentTroops"],
+    `${path}.joinedCommitmentTroops`,
+    "M4 joinedCommitmentTroops",
+    errors,
+    parseM4JoinedCommitmentTroops
+  );
+  const failedCommitmentIds = parsePositiveIntegerArray(record["failedCommitmentIds"], `${path}.failedCommitmentIds`, errors);
+  if (
+    routeSegments === undefined ||
+    supply === undefined ||
+    predictedArrivalWindow === undefined ||
+    joinedCommitmentIds === undefined ||
+    joinedCommitmentTroops === undefined ||
+    failedCommitmentIds === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    marchId: readPositiveSafeInteger(record, "marchId", `${path}.marchId`, errors) ?? 0,
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    originDistrictId:
+      readPositiveSafeInteger(record, "originDistrictId", `${path}.originDistrictId`, errors) ?? 0,
+    targetDistrictId:
+      readPositiveSafeInteger(record, "targetDistrictId", `${path}.targetDistrictId`, errors) ?? 0,
+    currentDistrictId:
+      readPositiveSafeInteger(record, "currentDistrictId", `${path}.currentDistrictId`, errors) ?? 0,
+    routeSegments,
+    currentSegmentIndex:
+      readNonnegativeSafeInteger(record, "currentSegmentIndex", `${path}.currentSegmentIndex`, errors) ?? 0,
+    progressOnSegmentDays:
+      readNonnegativeSafeInteger(record, "progressOnSegmentDays", `${path}.progressOnSegmentDays`, errors) ?? 0,
+    activeTroops: readNonnegativeSafeInteger(record, "activeTroops", `${path}.activeTroops`, errors) ?? 0,
+    grainPerTroopPerDay:
+      readPositiveSafeInteger(record, "grainPerTroopPerDay", `${path}.grainPerTroopPerDay`, errors) ?? 0,
+    supply,
+    status: parseM4CampaignMarchStatus(record["status"], `${path}.status`, errors),
+    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    reasonCodes,
+    startedDay: readNonnegativeSafeInteger(record, "startedDay", `${path}.startedDay`, errors) ?? 0,
+    updatedDay: readNonnegativeSafeInteger(record, "updatedDay", `${path}.updatedDay`, errors) ?? 0,
+    predictedArrivalWindow,
+    actualArrivalDay: readNullableNonnegativeSafeInteger(
+      record,
+      "actualArrivalDay",
+      `${path}.actualArrivalDay`,
+      errors
+    ),
+    joinedCommitmentIds,
+    joinedCommitmentTroops,
+    failedCommitmentIds
+  };
+}
+
+function parseM4FieldEngagement(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4FieldEngagementStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const target = parseM4CampaignTarget(record["target"], `${path}.target`, errors);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  const creditHooks = parseM4Array(record["creditHooks"], `${path}.creditHooks`, "M4 creditHooks", errors, parseM4CampaignHook);
+  const reputationHooks = parseM4Array(record["reputationHooks"], `${path}.reputationHooks`, "M4 reputationHooks", errors, parseM4CampaignHook);
+  if (target === undefined || creditHooks === undefined || reputationHooks === undefined) {
+    return undefined;
+  }
+
+  return {
+    engagementId:
+      readPositiveSafeInteger(record, "engagementId", `${path}.engagementId`, errors) ?? 0,
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    marchId: readPositiveSafeInteger(record, "marchId", `${path}.marchId`, errors) ?? 0,
+    attackerPolityId:
+      readPositiveSafeInteger(record, "attackerPolityId", `${path}.attackerPolityId`, errors) ?? 0,
+    defenderPolityId:
+      readPositiveSafeInteger(record, "defenderPolityId", `${path}.defenderPolityId`, errors) ?? 0,
+    target,
+    attackerTroopsBefore:
+      readNonnegativeSafeInteger(record, "attackerTroopsBefore", `${path}.attackerTroopsBefore`, errors) ?? 0,
+    attackerTroopsAfter:
+      readNonnegativeSafeInteger(record, "attackerTroopsAfter", `${path}.attackerTroopsAfter`, errors) ?? 0,
+    defenderEstimatedTroopsBefore:
+      readNonnegativeSafeInteger(record, "defenderEstimatedTroopsBefore", `${path}.defenderEstimatedTroopsBefore`, errors) ?? 0,
+    defenderEstimatedTroopsAfter:
+      readNonnegativeSafeInteger(record, "defenderEstimatedTroopsAfter", `${path}.defenderEstimatedTroopsAfter`, errors) ?? 0,
+    attackerCasualties:
+      readNonnegativeSafeInteger(record, "attackerCasualties", `${path}.attackerCasualties`, errors) ?? 0,
+    defenderCasualties:
+      readNonnegativeSafeInteger(record, "defenderCasualties", `${path}.defenderCasualties`, errors) ?? 0,
+    supplyLoss: readNonnegativeSafeInteger(record, "supplyLoss", `${path}.supplyLoss`, errors) ?? 0,
+    defenderFortification:
+      readNonnegativeSafeInteger(record, "defenderFortification", `${path}.defenderFortification`, errors) ?? 0,
+    outcome: parseM4FieldEngagementOutcome(record["outcome"], `${path}.outcome`, errors),
+    reasonCodes,
+    creditHooks,
+    reputationHooks,
+    resolvedDay: readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
+  };
+}
+
+function parseM4Siege(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4SiegeStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const surrenderReasonCodes = parseStringArray(record["surrenderReasonCodes"], `${path}.surrenderReasonCodes`, errors);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  const creditHooks = parseM4Array(record["creditHooks"], `${path}.creditHooks`, "M4 creditHooks", errors, parseM4CampaignHook);
+  const reputationHooks = parseM4Array(record["reputationHooks"], `${path}.reputationHooks`, "M4 reputationHooks", errors, parseM4CampaignHook);
+  if (creditHooks === undefined || reputationHooks === undefined) {
+    return undefined;
+  }
+
+  return {
+    siegeId: readPositiveSafeInteger(record, "siegeId", `${path}.siegeId`, errors) ?? 0,
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    marchId: readPositiveSafeInteger(record, "marchId", `${path}.marchId`, errors) ?? 0,
+    targetDistrictId:
+      readPositiveSafeInteger(record, "targetDistrictId", `${path}.targetDistrictId`, errors) ?? 0,
+    attackerPolityId:
+      readPositiveSafeInteger(record, "attackerPolityId", `${path}.attackerPolityId`, errors) ?? 0,
+    defenderPolityId:
+      readPositiveSafeInteger(record, "defenderPolityId", `${path}.defenderPolityId`, errors) ?? 0,
+    status: parseM4SiegeStatus(record["status"], `${path}.status`, errors),
+    statusReasonCode: readNonEmptyString(record, "statusReasonCode", `${path}.statusReasonCode`, errors) ?? "",
+    fortification:
+      readNonnegativeSafeInteger(record, "fortification", `${path}.fortification`, errors) ?? 0,
+    defenderEstimatedTroops:
+      readNonnegativeSafeInteger(record, "defenderEstimatedTroops", `${path}.defenderEstimatedTroops`, errors) ?? 0,
+    defenderSupply:
+      readNonnegativeSafeInteger(record, "defenderSupply", `${path}.defenderSupply`, errors) ?? 0,
+    siegeProgress:
+      readNonnegativeSafeInteger(record, "siegeProgress", `${path}.siegeProgress`, errors) ?? 0,
+    daysInvested:
+      readNonnegativeSafeInteger(record, "daysInvested", `${path}.daysInvested`, errors) ?? 0,
+    blockadeDays:
+      readNonnegativeSafeInteger(record, "blockadeDays", `${path}.blockadeDays`, errors) ?? 0,
+    assaultCount:
+      readNonnegativeSafeInteger(record, "assaultCount", `${path}.assaultCount`, errors) ?? 0,
+    attackerTroops:
+      readNonnegativeSafeInteger(record, "attackerTroops", `${path}.attackerTroops`, errors) ?? 0,
+    attackerCasualties:
+      readNonnegativeSafeInteger(record, "attackerCasualties", `${path}.attackerCasualties`, errors) ?? 0,
+    defenderCasualties:
+      readNonnegativeSafeInteger(record, "defenderCasualties", `${path}.defenderCasualties`, errors) ?? 0,
+    supplyLoss: readNonnegativeSafeInteger(record, "supplyLoss", `${path}.supplyLoss`, errors) ?? 0,
+    surrenderEligible: readBoolean(record, "surrenderEligible", `${path}.surrenderEligible`, errors),
+    surrenderReasonCodes,
+    reasonCodes,
+    creditHooks,
+    reputationHooks,
+    startedDay: readNonnegativeSafeInteger(record, "startedDay", `${path}.startedDay`, errors) ?? 0,
+    updatedDay: readNonnegativeSafeInteger(record, "updatedDay", `${path}.updatedDay`, errors) ?? 0
+  };
+}
+
+function parseM4Withdrawal(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4WithdrawalStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const creditHooks = parseM4Array(record["creditHooks"], `${path}.creditHooks`, "M4 creditHooks", errors, parseM4CampaignHook);
+  const reputationHooks = parseM4Array(record["reputationHooks"], `${path}.reputationHooks`, "M4 reputationHooks", errors, parseM4CampaignHook);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  if (creditHooks === undefined || reputationHooks === undefined) {
+    return undefined;
+  }
+
+  return {
+    withdrawalId:
+      readPositiveSafeInteger(record, "withdrawalId", `${path}.withdrawalId`, errors) ?? 0,
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    marchId: readNullablePositiveSafeInteger(record, "marchId", `${path}.marchId`, errors),
+    siegeId: readNullablePositiveSafeInteger(record, "siegeId", `${path}.siegeId`, errors),
+    kind: parseM4WithdrawalKind(record["kind"], `${path}.kind`, errors),
+    triggerReason: parseM4WithdrawalTrigger(record["triggerReason"], `${path}.triggerReason`, errors),
+    troopsBefore:
+      readNonnegativeSafeInteger(record, "troopsBefore", `${path}.troopsBefore`, errors) ?? 0,
+    troopsExtracted:
+      readNonnegativeSafeInteger(record, "troopsExtracted", `${path}.troopsExtracted`, errors) ?? 0,
+    casualties: readNonnegativeSafeInteger(record, "casualties", `${path}.casualties`, errors) ?? 0,
+    supplyLoss: readNonnegativeSafeInteger(record, "supplyLoss", `${path}.supplyLoss`, errors) ?? 0,
+    creditHooks,
+    reputationHooks,
+    reasonCodes,
+    resolvedDay: readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
+  };
+}
+
+function parseM4WarOutcome(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4WarOutcomeStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const postwarCandidate =
+    record["postwarCandidate"] === null
+      ? null
+      : parseM4PostwarCandidate(record["postwarCandidate"], `${path}.postwarCandidate`, errors);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  if (postwarCandidate === undefined) {
+    return undefined;
+  }
+
+  return {
+    outcomeId: readPositiveSafeInteger(record, "outcomeId", `${path}.outcomeId`, errors) ?? 0,
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    victorPolityId:
+      readPositiveSafeInteger(record, "victorPolityId", `${path}.victorPolityId`, errors) ?? 0,
+    localPolityId:
+      readPositiveSafeInteger(record, "localPolityId", `${path}.localPolityId`, errors) ?? 0,
+    targetDistrictId:
+      readPositiveSafeInteger(record, "targetDistrictId", `${path}.targetDistrictId`, errors) ?? 0,
+    attackerCasualties:
+      readNonnegativeSafeInteger(record, "attackerCasualties", `${path}.attackerCasualties`, errors) ?? 0,
+    defenderCasualties:
+      readNonnegativeSafeInteger(record, "defenderCasualties", `${path}.defenderCasualties`, errors) ?? 0,
+    supplyLoss: readNonnegativeSafeInteger(record, "supplyLoss", `${path}.supplyLoss`, errors) ?? 0,
+    withdrawalId: readNullablePositiveSafeInteger(record, "withdrawalId", `${path}.withdrawalId`, errors),
+    siegeId: readNullablePositiveSafeInteger(record, "siegeId", `${path}.siegeId`, errors),
+    postwarCandidate,
+    reasonCodes,
+    resolvedDay: readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0
+  };
+}
+
+function parseM4PostwarCandidate(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4PostwarCandidateStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const validM3Methods = parseM4PostwarMethodArray(
+    record["validM3Methods"],
+    `${path}.validM3Methods`,
+    errors
+  );
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  if (validM3Methods === undefined) {
+    return undefined;
+  }
+
+  return {
+    candidateId: readNonEmptyString(record, "candidateId", `${path}.candidateId`, errors) ?? "",
+    sourceWarOutcomeId:
+      readPositiveSafeInteger(record, "sourceWarOutcomeId", `${path}.sourceWarOutcomeId`, errors) ?? 0,
+    settlementId: readNonEmptyString(record, "settlementId", `${path}.settlementId`, errors) ?? "",
+    victorPolityId:
+      readPositiveSafeInteger(record, "victorPolityId", `${path}.victorPolityId`, errors) ?? 0,
+    localPolityId:
+      readPositiveSafeInteger(record, "localPolityId", `${path}.localPolityId`, errors) ?? 0,
+    districtId: readPositiveSafeInteger(record, "districtId", `${path}.districtId`, errors) ?? 0,
+    validM3Methods,
+    reasonCodes
+  };
+}
+
+function parseM4CampaignOwner(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignOwnerDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const kind = record["kind"];
+  if (kind === "commander") {
+    return {
+      kind,
+      characterId: readPositiveSafeInteger(record, "characterId", `${path}.characterId`, errors) ?? 0
+    };
+  }
+  if (kind === "polity") {
+    return {
+      kind,
+      polityId: readPositiveSafeInteger(record, "polityId", `${path}.polityId`, errors) ?? 0
+    };
+  }
+  errors.push(reason("invalid-schema", `${path}.kind`, "M4 campaign owner kind is invalid."));
+  return undefined;
+}
+
+function parseM4CampaignTarget(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignTargetDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const kind = record["kind"];
+  if (kind === "district") {
+    return {
+      kind,
+      districtId: readPositiveSafeInteger(record, "districtId", `${path}.districtId`, errors) ?? 0
+    };
+  }
+  if (kind === "polity") {
+    return {
+      kind,
+      polityId: readPositiveSafeInteger(record, "polityId", `${path}.polityId`, errors) ?? 0
+    };
+  }
+  errors.push(reason("invalid-schema", `${path}.kind`, "M4 campaign target kind is invalid."));
+  return undefined;
+}
+
+function parseM4StartWindow(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignStartWindowDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    earliestDay:
+      readNonnegativeSafeInteger(record, "earliestDay", `${path}.earliestDay`, errors) ?? 0,
+    latestDay: readNonnegativeSafeInteger(record, "latestDay", `${path}.latestDay`, errors) ?? 0
+  };
+}
+
+function parseM4FactionKnowledgeSource(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4FactionKnowledgeSourceDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    kind: parseM4FactionKnowledgeSourceKind(record["kind"], `${path}.kind`, errors),
+    sourceId: readNonEmptyString(record, "sourceId", `${path}.sourceId`, errors) ?? "",
+    reliabilityBps:
+      readNonnegativeSafeInteger(record, "reliabilityBps", `${path}.reliabilityBps`, errors) ?? 0
+  };
+}
+
+function parseM4KnownObjectiveEstimate(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4KnownObjectiveEstimateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const target = parseM4CampaignTarget(record["target"], `${path}.target`, errors);
+  const reasonCodes = parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors);
+  if (target === undefined) {
+    return undefined;
+  }
+  return {
+    campaignPlanId:
+      readPositiveSafeInteger(record, "campaignPlanId", `${path}.campaignPlanId`, errors) ?? 0,
+    target,
+    objectiveKind: parseM4CampaignObjectiveKind(record["objectiveKind"], `${path}.objectiveKind`, errors),
+    confidenceBps:
+      readNonnegativeSafeInteger(record, "confidenceBps", `${path}.confidenceBps`, errors) ?? 0,
+    reasonCodes
+  };
+}
+
+function parseM4RouteEstimate(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4RouteEstimateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    routeId: readPositiveSafeInteger(record, "routeId", `${path}.routeId`, errors) ?? 0,
+    fromDistrictId:
+      readPositiveSafeInteger(record, "fromDistrictId", `${path}.fromDistrictId`, errors) ?? 0,
+    toDistrictId:
+      readPositiveSafeInteger(record, "toDistrictId", `${path}.toDistrictId`, errors) ?? 0,
+    travelCostEstimate:
+      readPositiveSafeInteger(record, "travelCostEstimate", `${path}.travelCostEstimate`, errors) ?? 0,
+    capacityEstimate:
+      readNonnegativeSafeInteger(record, "capacityEstimate", `${path}.capacityEstimate`, errors) ?? 0,
+    confidenceBps:
+      readNonnegativeSafeInteger(record, "confidenceBps", `${path}.confidenceBps`, errors) ?? 0
+  };
+}
+
+function parseM4SupplyEstimate(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4SupplyEstimateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    districtId: readPositiveSafeInteger(record, "districtId", `${path}.districtId`, errors) ?? 0,
+    supplyMin: readNonnegativeSafeInteger(record, "supplyMin", `${path}.supplyMin`, errors) ?? 0,
+    supplyMax: readNonnegativeSafeInteger(record, "supplyMax", `${path}.supplyMax`, errors) ?? 0,
+    confidenceBps:
+      readNonnegativeSafeInteger(record, "confidenceBps", `${path}.confidenceBps`, errors) ?? 0
+  };
+}
+
+function parseM4DefenderEstimate(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4DefenderEstimateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const target = parseM4CampaignTarget(record["target"], `${path}.target`, errors);
+  if (target === undefined) {
+    return undefined;
+  }
+  return {
+    target,
+    defenderMin:
+      readNonnegativeSafeInteger(record, "defenderMin", `${path}.defenderMin`, errors) ?? 0,
+    defenderMax:
+      readNonnegativeSafeInteger(record, "defenderMax", `${path}.defenderMax`, errors) ?? 0,
+    confidenceBps:
+      readNonnegativeSafeInteger(record, "confidenceBps", `${path}.confidenceBps`, errors) ?? 0
+  };
+}
+
+function parseM4MusterCommitmentSource(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4MusterCommitmentSourceDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  if (record["kind"] !== "m3-obligation") {
+    errors.push(reason("invalid-schema", `${path}.kind`, "M4 muster source kind is invalid."));
+  }
+  return {
+    kind: "m3-obligation",
+    obligationId:
+      readPositiveSafeInteger(record, "obligationId", `${path}.obligationId`, errors) ?? 0,
+    debtorPolityId:
+      readPositiveSafeInteger(record, "debtorPolityId", `${path}.debtorPolityId`, errors) ?? 0,
+    creditorPolityId:
+      readPositiveSafeInteger(record, "creditorPolityId", `${path}.creditorPolityId`, errors) ?? 0
+  };
+}
+
+function parseM4MusterLocalCostHook(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4MusterLocalCostHookDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  const kind = record["kind"];
+  if (kind === "economic-labor-reservation") {
+    return {
+      kind,
+      districtId: readPositiveSafeInteger(record, "districtId", `${path}.districtId`, errors) ?? 0,
+      laborAmount:
+        readNonnegativeSafeInteger(record, "laborAmount", `${path}.laborAmount`, errors) ?? 0,
+      reasonCode: readNonEmptyString(record, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+    };
+  }
+  if (kind === "loyalty-pressure") {
+    return {
+      kind,
+      polityId: readPositiveSafeInteger(record, "polityId", `${path}.polityId`, errors) ?? 0,
+      pressureBps:
+        readNonnegativeSafeInteger(record, "pressureBps", `${path}.pressureBps`, errors) ?? 0,
+      reasonCode: readNonEmptyString(record, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+    };
+  }
+  errors.push(reason("invalid-schema", `${path}.kind`, "M4 local cost hook kind is invalid."));
+  return undefined;
+}
+
+function parseM4GrainSupplySource(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4GrainSupplySourceDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  if (record["kind"] !== "m2-population-group") {
+    errors.push(reason("invalid-schema", `${path}.kind`, "M4 grain source kind is invalid."));
+  }
+  return {
+    kind: "m2-population-group",
+    populationGroupId:
+      readPositiveSafeInteger(record, "populationGroupId", `${path}.populationGroupId`, errors) ??
+      0,
+    districtId: readPositiveSafeInteger(record, "districtId", `${path}.districtId`, errors) ?? 0
+  };
+}
+
+function parseM4MarchRouteSegment(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignMarchRouteSegmentStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    routeId: readPositiveSafeInteger(record, "routeId", `${path}.routeId`, errors) ?? 0,
+    fromDistrictId:
+      readPositiveSafeInteger(record, "fromDistrictId", `${path}.fromDistrictId`, errors) ?? 0,
+    toDistrictId:
+      readPositiveSafeInteger(record, "toDistrictId", `${path}.toDistrictId`, errors) ?? 0,
+    travelDays: readPositiveSafeInteger(record, "travelDays", `${path}.travelDays`, errors) ?? 0,
+    capacity: readNonnegativeSafeInteger(record, "capacity", `${path}.capacity`, errors) ?? 0,
+    seasonRiskReasonCodes: parseStringArray(
+      record["seasonRiskReasonCodes"],
+      `${path}.seasonRiskReasonCodes`,
+      errors
+    )
+  };
+}
+
+function parseM4MarchSupply(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignMarchSupplyStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    status: parseM4CampaignMarchSupplyStatus(record["status"], `${path}.status`, errors),
+    carriedGrain:
+      readNonnegativeSafeInteger(record, "carriedGrain", `${path}.carriedGrain`, errors) ?? 0,
+    consumedGrain:
+      readNonnegativeSafeInteger(record, "consumedGrain", `${path}.consumedGrain`, errors) ?? 0,
+    shortageGrain:
+      readNonnegativeSafeInteger(record, "shortageGrain", `${path}.shortageGrain`, errors) ?? 0,
+    delayedDays:
+      readNonnegativeSafeInteger(record, "delayedDays", `${path}.delayedDays`, errors) ?? 0
+  };
+}
+
+function parseM4JoinedCommitmentTroops(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignMarchJoinedCommitmentTroopsStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    commitmentId:
+      readPositiveSafeInteger(record, "commitmentId", `${path}.commitmentId`, errors) ?? 0,
+    joinedTroops:
+      readNonnegativeSafeInteger(record, "joinedTroops", `${path}.joinedTroops`, errors) ?? 0
+  };
+}
+
+function parseM4CampaignHook(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignHookStateDto | undefined {
+  const record = readM4Record(input, path, errors);
+  if (record === undefined) {
+    return undefined;
+  }
+  return {
+    polityId: readPositiveSafeInteger(record, "polityId", `${path}.polityId`, errors) ?? 0,
+    amount: readNonnegativeSafeInteger(record, "amount", `${path}.amount`, errors) ?? 0,
+    reasonCode: readNonEmptyString(record, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+  };
+}
+
+function parsePositiveIntegerArray(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): readonly number[] | undefined {
+  if (!Array.isArray(input)) {
+    errors.push(reason("invalid-schema", path, `${path} must be an array.`));
+    return undefined;
+  }
+  return input.map((entry, index) => {
+    if (isPositiveSafeInteger(entry)) {
+      return entry;
+    }
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}[${index}]`,
+        `${path}[${index}] must be a positive safe integer.`
+      )
+    );
+    return 0;
+  });
+}
+
+function parseM4PostwarMethodArray(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): readonly SaveM4PostwarMethodDto[] | undefined {
+  if (!Array.isArray(input)) {
+    errors.push(reason("invalid-schema", path, `${path} must be an array.`));
+    return undefined;
+  }
+  return input.map((entry, index) => parseM4PostwarMethod(entry, `${path}[${index}]`, errors));
+}
+
+function parseM4CampaignObjectiveKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignObjectiveKindDto {
+  if (
+    input === "prepare" ||
+    input === "march" ||
+    input === "besiege" ||
+    input === "relieve" ||
+    input === "withdraw" ||
+    input === "postwar-result-candidate"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 campaign objectiveKind is invalid."));
+  return "prepare";
+}
+
+function parseM4CampaignPlanStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignPlanStatusDto {
+  if (input === "planned" || input === "active" || input === "cancelled" || input === "completed") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 campaign status is invalid."));
+  return "planned";
+}
+
+function parseM4MusterCommitmentStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4MusterCommitmentStatusDto {
+  if (
+    input === "promised" ||
+    input === "assembled" ||
+    input === "delayed" ||
+    input === "refused" ||
+    input === "released"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 muster commitment status is invalid."));
+  return "promised";
+}
+
+function parseM4GrainSupplyReservationStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4GrainSupplyReservationStatusDto {
+  if (
+    input === "reserved" ||
+    input === "partially-consumed" ||
+    input === "shortage" ||
+    input === "consumed" ||
+    input === "released"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 grain reservation status is invalid."));
+  return "reserved";
+}
+
+function parseM4CampaignMarchStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignMarchStatusDto {
+  if (
+    input === "planned" ||
+    input === "marching" ||
+    input === "paused" ||
+    input === "delayed" ||
+    input === "cancelled" ||
+    input === "arrived"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 march status is invalid."));
+  return "planned";
+}
+
+function parseM4CampaignMarchSupplyStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4CampaignMarchSupplyStatusDto {
+  if (
+    input === "well-supplied" ||
+    input === "strained" ||
+    input === "hungry" ||
+    input === "out-of-supply"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 march supply status is invalid."));
+  return "well-supplied";
+}
+
+function parseM4FieldEngagementOutcome(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4FieldEngagementOutcomeDto {
+  if (input === "attacker-victory" || input === "defender-holds") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 field engagement outcome is invalid."));
+  return "defender-holds";
+}
+
+function parseM4SiegeStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4SiegeStatusDto {
+  if (
+    input === "blockading" ||
+    input === "surrender-ready" ||
+    input === "surrendered" ||
+    input === "lifted" ||
+    input === "withdrawn"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 siege status is invalid."));
+  return "blockading";
+}
+
+function parseM4WithdrawalKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4WithdrawalKindDto {
+  if (
+    input === "orderly-withdrawal" ||
+    input === "forced-retreat" ||
+    input === "cancelled-before-departure" ||
+    input === "failed-extraction"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 withdrawal kind is invalid."));
+  return "orderly-withdrawal";
+}
+
+function parseM4WithdrawalTrigger(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4WithdrawalTriggerDto {
+  if (
+    input === "ordered" ||
+    input === "supply" ||
+    input === "season" ||
+    input === "siege" ||
+    input === "loss" ||
+    input === "objective-complete"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 withdrawal trigger is invalid."));
+  return "ordered";
+}
+
+function parseM4PostwarMethod(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4PostwarMethodDto {
+  if (input === "direct-control" || input === "restore-vassal-ruler" || input === "tribute-only") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 postwar method is invalid."));
+  return "tribute-only";
+}
+
+function parseM4FactionKnowledgeSourceKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM4FactionKnowledgeSourceKindDto {
+  if (input === "scout" || input === "merchant" || input === "envoy" || input === "report") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M4 knowledge source kind is invalid."));
+  return "report";
 }
 
 function parseM3Array<TEntry>(
@@ -3744,16 +5133,320 @@ function copyOptionalCandidateRuntimeSlices(
 function copyM4CampaignState(m4: SaveM4CampaignStateDto): SaveM4CampaignStateDto {
   return {
     schemaVersion: 1,
-    campaignPlans: m4.campaignPlans.map(copyJsonValue),
-    factionKnowledgeSnapshots: m4.factionKnowledgeSnapshots.map(copyJsonValue),
-    mobilizedForceCommitments: m4.mobilizedForceCommitments.map(copyJsonValue),
-    grainSupplyReservations: m4.grainSupplyReservations.map(copyJsonValue),
-    marches: m4.marches.map(copyJsonValue),
-    fieldEngagements: m4.fieldEngagements.map(copyJsonValue),
-    sieges: m4.sieges.map(copyJsonValue),
-    withdrawals: m4.withdrawals.map(copyJsonValue),
-    warOutcomes: m4.warOutcomes.map(copyJsonValue),
-    postwarCandidates: m4.postwarCandidates.map(copyJsonValue)
+    campaignPlans: m4.campaignPlans.map(copyM4CampaignPlan),
+    factionKnowledgeSnapshots: m4.factionKnowledgeSnapshots.map(copyM4FactionKnowledgeSnapshot),
+    mobilizedForceCommitments: m4.mobilizedForceCommitments.map(
+      copyM4MobilizedForceCommitment
+    ),
+    grainSupplyReservations: m4.grainSupplyReservations.map(copyM4GrainSupplyReservation),
+    marches: m4.marches.map(copyM4CampaignMarch),
+    fieldEngagements: m4.fieldEngagements.map(copyM4FieldEngagement),
+    sieges: m4.sieges.map(copyM4Siege),
+    withdrawals: m4.withdrawals.map(copyM4Withdrawal),
+    warOutcomes: m4.warOutcomes.map(copyM4WarOutcome),
+    postwarCandidates: m4.postwarCandidates.map(copyM4PostwarCandidate)
+  };
+}
+
+function copyM4CampaignPlan(plan: SaveM4CampaignPlanStateDto): SaveM4CampaignPlanStateDto {
+  return {
+    id: plan.id,
+    owner: copyM4CampaignOwner(plan.owner),
+    target: copyM4CampaignTarget(plan.target),
+    objectiveKind: plan.objectiveKind,
+    startWindow: copyM4StartWindow(plan.startWindow),
+    status: plan.status,
+    statusReasonCode: plan.statusReasonCode,
+    reasonCodes: [...plan.reasonCodes],
+    createdDay: plan.createdDay,
+    updatedDay: plan.updatedDay
+  };
+}
+
+function copyM4CampaignOwner(owner: SaveM4CampaignOwnerDto): SaveM4CampaignOwnerDto {
+  switch (owner.kind) {
+    case "commander":
+      return { kind: "commander", characterId: owner.characterId };
+    case "polity":
+      return { kind: "polity", polityId: owner.polityId };
+  }
+}
+
+function copyM4CampaignTarget(target: SaveM4CampaignTargetDto): SaveM4CampaignTargetDto {
+  switch (target.kind) {
+    case "district":
+      return { kind: "district", districtId: target.districtId };
+    case "polity":
+      return { kind: "polity", polityId: target.polityId };
+  }
+}
+
+function copyM4StartWindow(window: SaveM4CampaignStartWindowDto): SaveM4CampaignStartWindowDto {
+  return {
+    earliestDay: window.earliestDay,
+    latestDay: window.latestDay
+  };
+}
+
+function copyM4FactionKnowledgeSnapshot(
+  snapshot: SaveM4FactionKnowledgeSnapshotStateDto
+): SaveM4FactionKnowledgeSnapshotStateDto {
+  return {
+    snapshotId: snapshot.snapshotId,
+    observerPolityId: snapshot.observerPolityId,
+    subjectPolityId: snapshot.subjectPolityId,
+    knowledgeVersion: snapshot.knowledgeVersion,
+    recordedDay: snapshot.recordedDay,
+    source: {
+      kind: snapshot.source.kind,
+      sourceId: snapshot.source.sourceId,
+      reliabilityBps: snapshot.source.reliabilityBps
+    },
+    knownObjectives: snapshot.knownObjectives.map((objective) => ({
+      campaignPlanId: objective.campaignPlanId,
+      target: copyM4CampaignTarget(objective.target),
+      objectiveKind: objective.objectiveKind,
+      confidenceBps: objective.confidenceBps,
+      reasonCodes: [...objective.reasonCodes]
+    })),
+    routeEstimates: snapshot.routeEstimates.map((estimate) => ({
+      routeId: estimate.routeId,
+      fromDistrictId: estimate.fromDistrictId,
+      toDistrictId: estimate.toDistrictId,
+      travelCostEstimate: estimate.travelCostEstimate,
+      capacityEstimate: estimate.capacityEstimate,
+      confidenceBps: estimate.confidenceBps
+    })),
+    supplyEstimates: snapshot.supplyEstimates.map((estimate) => ({
+      districtId: estimate.districtId,
+      supplyMin: estimate.supplyMin,
+      supplyMax: estimate.supplyMax,
+      confidenceBps: estimate.confidenceBps
+    })),
+    defenderEstimates: snapshot.defenderEstimates.map((estimate) => ({
+      target: copyM4CampaignTarget(estimate.target),
+      defenderMin: estimate.defenderMin,
+      defenderMax: estimate.defenderMax,
+      confidenceBps: estimate.confidenceBps
+    }))
+  };
+}
+
+function copyM4MobilizedForceCommitment(
+  commitment: SaveM4MobilizedForceCommitmentStateDto
+): SaveM4MobilizedForceCommitmentStateDto {
+  return {
+    id: commitment.id,
+    campaignPlanId: commitment.campaignPlanId,
+    source: { ...commitment.source },
+    promisedTroops: commitment.promisedTroops,
+    dueDay: commitment.dueDay,
+    assemblyWindow: copyM4StartWindow(commitment.assemblyWindow),
+    plannedAssemblyDay: commitment.plannedAssemblyDay,
+    assembledTroops: commitment.assembledTroops,
+    delayedTroops: commitment.delayedTroops,
+    refusedTroops: commitment.refusedTroops,
+    releasedTroops: commitment.releasedTroops,
+    status: commitment.status,
+    statusReasonCode: commitment.statusReasonCode,
+    reasonCodes: [...commitment.reasonCodes],
+    localCostHooks: commitment.localCostHooks.map(copyM4MusterLocalCostHook)
+  };
+}
+
+function copyM4MusterLocalCostHook(
+  hook: SaveM4MusterLocalCostHookDto
+): SaveM4MusterLocalCostHookDto {
+  switch (hook.kind) {
+    case "economic-labor-reservation":
+      return {
+        kind: hook.kind,
+        districtId: hook.districtId,
+        laborAmount: hook.laborAmount,
+        reasonCode: hook.reasonCode
+      };
+    case "loyalty-pressure":
+      return {
+        kind: hook.kind,
+        polityId: hook.polityId,
+        pressureBps: hook.pressureBps,
+        reasonCode: hook.reasonCode
+      };
+  }
+}
+
+function copyM4GrainSupplyReservation(
+  reservation: SaveM4GrainSupplyReservationStateDto
+): SaveM4GrainSupplyReservationStateDto {
+  return {
+    reservationId: reservation.reservationId,
+    campaignPlanId: reservation.campaignPlanId,
+    source: { ...reservation.source },
+    reservedAmount: reservation.reservedAmount,
+    carriedAmount: reservation.carriedAmount,
+    consumedAmount: reservation.consumedAmount,
+    shortageAmount: reservation.shortageAmount,
+    lossAmount: reservation.lossAmount,
+    lossReasonCode: reservation.lossReasonCode,
+    expectedDailyConsumption: reservation.expectedDailyConsumption,
+    expectedDaysOfSupply: reservation.expectedDaysOfSupply,
+    status: reservation.status,
+    statusReasonCode: reservation.statusReasonCode,
+    reasonCodes: [...reservation.reasonCodes]
+  };
+}
+
+function copyM4CampaignMarch(march: SaveM4CampaignMarchStateDto): SaveM4CampaignMarchStateDto {
+  return {
+    marchId: march.marchId,
+    campaignPlanId: march.campaignPlanId,
+    originDistrictId: march.originDistrictId,
+    targetDistrictId: march.targetDistrictId,
+    currentDistrictId: march.currentDistrictId,
+    routeSegments: march.routeSegments.map((segment) => ({
+      routeId: segment.routeId,
+      fromDistrictId: segment.fromDistrictId,
+      toDistrictId: segment.toDistrictId,
+      travelDays: segment.travelDays,
+      capacity: segment.capacity,
+      seasonRiskReasonCodes: [...segment.seasonRiskReasonCodes]
+    })),
+    currentSegmentIndex: march.currentSegmentIndex,
+    progressOnSegmentDays: march.progressOnSegmentDays,
+    activeTroops: march.activeTroops,
+    grainPerTroopPerDay: march.grainPerTroopPerDay,
+    supply: { ...march.supply },
+    status: march.status,
+    statusReasonCode: march.statusReasonCode,
+    reasonCodes: [...march.reasonCodes],
+    startedDay: march.startedDay,
+    updatedDay: march.updatedDay,
+    predictedArrivalWindow: copyM4StartWindow(march.predictedArrivalWindow),
+    actualArrivalDay: march.actualArrivalDay,
+    joinedCommitmentIds: [...march.joinedCommitmentIds],
+    joinedCommitmentTroops: march.joinedCommitmentTroops.map((entry) => ({
+      commitmentId: entry.commitmentId,
+      joinedTroops: entry.joinedTroops
+    })),
+    failedCommitmentIds: [...march.failedCommitmentIds]
+  };
+}
+
+function copyM4FieldEngagement(
+  engagement: SaveM4FieldEngagementStateDto
+): SaveM4FieldEngagementStateDto {
+  return {
+    engagementId: engagement.engagementId,
+    campaignPlanId: engagement.campaignPlanId,
+    marchId: engagement.marchId,
+    attackerPolityId: engagement.attackerPolityId,
+    defenderPolityId: engagement.defenderPolityId,
+    target: copyM4CampaignTarget(engagement.target),
+    attackerTroopsBefore: engagement.attackerTroopsBefore,
+    attackerTroopsAfter: engagement.attackerTroopsAfter,
+    defenderEstimatedTroopsBefore: engagement.defenderEstimatedTroopsBefore,
+    defenderEstimatedTroopsAfter: engagement.defenderEstimatedTroopsAfter,
+    attackerCasualties: engagement.attackerCasualties,
+    defenderCasualties: engagement.defenderCasualties,
+    supplyLoss: engagement.supplyLoss,
+    defenderFortification: engagement.defenderFortification,
+    outcome: engagement.outcome,
+    reasonCodes: [...engagement.reasonCodes],
+    creditHooks: engagement.creditHooks.map(copyM4CampaignHook),
+    reputationHooks: engagement.reputationHooks.map(copyM4CampaignHook),
+    resolvedDay: engagement.resolvedDay
+  };
+}
+
+function copyM4CampaignHook(hook: SaveM4CampaignHookStateDto): SaveM4CampaignHookStateDto {
+  return {
+    polityId: hook.polityId,
+    amount: hook.amount,
+    reasonCode: hook.reasonCode
+  };
+}
+
+function copyM4Siege(siege: SaveM4SiegeStateDto): SaveM4SiegeStateDto {
+  return {
+    siegeId: siege.siegeId,
+    campaignPlanId: siege.campaignPlanId,
+    marchId: siege.marchId,
+    targetDistrictId: siege.targetDistrictId,
+    attackerPolityId: siege.attackerPolityId,
+    defenderPolityId: siege.defenderPolityId,
+    status: siege.status,
+    statusReasonCode: siege.statusReasonCode,
+    fortification: siege.fortification,
+    defenderEstimatedTroops: siege.defenderEstimatedTroops,
+    defenderSupply: siege.defenderSupply,
+    siegeProgress: siege.siegeProgress,
+    daysInvested: siege.daysInvested,
+    blockadeDays: siege.blockadeDays,
+    assaultCount: siege.assaultCount,
+    attackerTroops: siege.attackerTroops,
+    attackerCasualties: siege.attackerCasualties,
+    defenderCasualties: siege.defenderCasualties,
+    supplyLoss: siege.supplyLoss,
+    surrenderEligible: siege.surrenderEligible,
+    surrenderReasonCodes: [...siege.surrenderReasonCodes],
+    reasonCodes: [...siege.reasonCodes],
+    creditHooks: siege.creditHooks.map(copyM4CampaignHook),
+    reputationHooks: siege.reputationHooks.map(copyM4CampaignHook),
+    startedDay: siege.startedDay,
+    updatedDay: siege.updatedDay
+  };
+}
+
+function copyM4Withdrawal(withdrawal: SaveM4WithdrawalStateDto): SaveM4WithdrawalStateDto {
+  return {
+    withdrawalId: withdrawal.withdrawalId,
+    campaignPlanId: withdrawal.campaignPlanId,
+    marchId: withdrawal.marchId,
+    siegeId: withdrawal.siegeId,
+    kind: withdrawal.kind,
+    triggerReason: withdrawal.triggerReason,
+    troopsBefore: withdrawal.troopsBefore,
+    troopsExtracted: withdrawal.troopsExtracted,
+    casualties: withdrawal.casualties,
+    supplyLoss: withdrawal.supplyLoss,
+    creditHooks: withdrawal.creditHooks.map(copyM4CampaignHook),
+    reputationHooks: withdrawal.reputationHooks.map(copyM4CampaignHook),
+    reasonCodes: [...withdrawal.reasonCodes],
+    resolvedDay: withdrawal.resolvedDay
+  };
+}
+
+function copyM4WarOutcome(outcome: SaveM4WarOutcomeStateDto): SaveM4WarOutcomeStateDto {
+  return {
+    outcomeId: outcome.outcomeId,
+    campaignPlanId: outcome.campaignPlanId,
+    victorPolityId: outcome.victorPolityId,
+    localPolityId: outcome.localPolityId,
+    targetDistrictId: outcome.targetDistrictId,
+    attackerCasualties: outcome.attackerCasualties,
+    defenderCasualties: outcome.defenderCasualties,
+    supplyLoss: outcome.supplyLoss,
+    withdrawalId: outcome.withdrawalId,
+    siegeId: outcome.siegeId,
+    postwarCandidate:
+      outcome.postwarCandidate === null ? null : copyM4PostwarCandidate(outcome.postwarCandidate),
+    reasonCodes: [...outcome.reasonCodes],
+    resolvedDay: outcome.resolvedDay
+  };
+}
+
+function copyM4PostwarCandidate(
+  candidate: SaveM4PostwarCandidateStateDto
+): SaveM4PostwarCandidateStateDto {
+  return {
+    candidateId: candidate.candidateId,
+    sourceWarOutcomeId: candidate.sourceWarOutcomeId,
+    settlementId: candidate.settlementId,
+    victorPolityId: candidate.victorPolityId,
+    localPolityId: candidate.localPolityId,
+    districtId: candidate.districtId,
+    validM3Methods: [...candidate.validM3Methods],
+    reasonCodes: [...candidate.reasonCodes]
   };
 }
 

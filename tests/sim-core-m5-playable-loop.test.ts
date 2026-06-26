@@ -1,3 +1,5 @@
+import { Worker } from "node:worker_threads";
+
 import { describe, expect, test } from "vitest";
 
 import { createM5PlayableLoopScriptV1 } from "../packages/protocol/src/index";
@@ -11,10 +13,10 @@ import {
 } from "../packages/sim-core/src/index";
 
 describe("M5-SIM-PLAYABLE-LOOP-001 deterministic playable loop", () => {
-  test("runs start-to-postwar success path with stable Node and worker-compatible hashes", () => {
+  test("runs start-to-postwar success path with stable Node and worker-compatible hashes", async () => {
     const script = createM5PlayableLoopScriptV1();
     const nodeResult = runM5PlayableLoopV1(script);
-    const workerResult = runM5PlayableLoopInWorkerCompatibleAdapter(script);
+    const workerResult = await runM5PlayableLoopInWorkerCompatibleAdapter(script);
 
     expect(nodeResult).toEqual(workerResult);
     expect(nodeResult).toMatchObject({
@@ -84,6 +86,44 @@ describe("M5-SIM-PLAYABLE-LOOP-001 deterministic playable loop", () => {
 
 function runM5PlayableLoopInWorkerCompatibleAdapter(
   script: Parameters<typeof runM5PlayableLoopV1>[0]
-): M5PlayableLoopResultV1 {
-  return runM5PlayableLoopV1(script);
+): Promise<M5PlayableLoopResultV1> {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(
+      new URL("../apps/sim-runner/src/m5-playable-loop-worker.mjs", import.meta.url),
+      { execArgv: ["--experimental-strip-types"] }
+    );
+    const finish = () => {
+      worker.removeAllListeners();
+      void worker.terminate();
+    };
+
+    worker.once("message", (message) => {
+      finish();
+      try {
+        if (typeof message !== "string") {
+          throw new Error("Expected M5 worker JSON string response.");
+        }
+        const response = JSON.parse(message) as unknown;
+        if (!isRecord(response) || response["status"] !== "ok") {
+          const errorMessage =
+            isRecord(response) && typeof response["message"] === "string"
+              ? response["message"]
+              : "M5 worker returned an invalid response.";
+          throw new Error(errorMessage);
+        }
+        resolve(response["result"] as M5PlayableLoopResultV1);
+      } catch (error) {
+        reject(error);
+      }
+    });
+    worker.once("error", (error) => {
+      finish();
+      reject(error);
+    });
+    worker.postMessage(JSON.stringify({ kind: "run-m5-playable-loop-v1", script }));
+  });
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
