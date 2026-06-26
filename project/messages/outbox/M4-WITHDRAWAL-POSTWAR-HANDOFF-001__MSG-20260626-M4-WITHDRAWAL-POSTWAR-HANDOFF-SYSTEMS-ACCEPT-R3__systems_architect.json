@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260626-M4-WITHDRAWAL-POSTWAR-HANDOFF-SYSTEMS-ACCEPT-R3",
+  "task_id": "M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "ACCEPT: R3 systems architecture review accepts M4 withdrawal and postwar handoff. The prior objective-complete and grain-ledger blockers are fixed: objective-complete now rejects null march references, requires a completed campaign, surrendered siege, matching target, and matching march before creating WarOutcome/PostwarCandidate; the orderly-withdrawal return ledger now has stable source and reservation-field tie-breakers; regressions cover null-march rejection with no outcomes/candidates and deterministic shared-reservation return allocation. The implementation remains scoped to M4 withdrawal/result DTO handoff into accepted M3 governance boundaries and does not add excluded systems.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/protocol/src/index.ts",
+    "tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M4-WITHDRAWAL-POSTWAR-HANDOFF-001.json",
+    "project/messages/outbox/M4-WITHDRAWAL-POSTWAR-HANDOFF-001__MSG-20260626-M4-WITHDRAWAL-POSTWAR-HANDOFF-REVIEW-R3__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m4-withdrawal-postwar-handoff",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m4-withdrawal-postwar-handoff. Active worktree before this ACCEPT handoff contained R3 changes in packages/sim-core/src/command-query-v1.ts, tests/sim-core-m4-withdrawal-postwar-handoff.test.ts, allowed coordination state, and untracked writer REVIEW-R3 handoff."
+    },
+    {
+      "command": "git diff --name-status origin/main",
+      "exit_code": 0,
+      "result": "Branch diff is limited to packages/protocol, packages/sim-core, tests, and allowed project task/message/route/model state files. No forbidden tracked path was modified."
+    },
+    {
+      "command": "git diff --name-only origin/main | rg <forbidden path pattern>",
+      "exit_code": 1,
+      "result": "No forbidden-path matches; rg exits 1 when no match is found."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m4-withdrawal-postwar-handoff.test.ts",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 11 tests, including null march objective-complete rejection and deterministic shared-reservation return allocation."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "TypeScript noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 21 files, 156 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 8 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 32 files and 223 tests passed; web Vitest 1 file and 3 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M4-WITHDRAWAL-POSTWAR-HANDOFF-001",
+      "exit_code": 0,
+      "result": "Task JSON validated successfully in REVIEW state."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M4-WITHDRAWAL-POSTWAR-HANDOFF-001__MSG-20260626-M4-WITHDRAWAL-POSTWAR-HANDOFF-REVIEW-R3__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "Writer REVIEW-R3 handoff JSON validated successfully."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task and REVIEW-R3 handoff",
+      "exit_code": 0,
+      "result": "Task JSON and writer REVIEW-R3 handoff parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Accepted objective-complete gating because WarOutcome/PostwarCandidate creation now requires completed campaign state, surrendered siege result, target match, explicit march reference, and siege.marchId equal to the resolved march.marchId.",
+    "Accepted the source-ledger withdrawal accounting because orderly returned grain is allocated by grain reservation source ledger with stable reservation/source/field tie-breakers and regression coverage for shared reservationId rows.",
+    "Accepted WarOutcome/PostwarCandidate query boundary copying because nested reasonCodes and validM3Methods arrays are copied before exposure and aliasing regression coverage passes.",
+    "Accepted failed-extraction coverage because the deterministic loss-trigger path records failed-extraction, human-loss reason codes, and troop conservation.",
+    "No hard-exclusion implementation was found: no full diplomacy, peace treaties, rebellion system, formal historical content, campaign planning UI, M5 content, manual node battle, complex naval warfare, 3D battle, multiplayer/server, telemetry, arbitrary-code mods, save-format package change, or parallel postwar settlement model."
+  ],
+  "risks": [
+    "Residual R3 risk is normal integration risk for authoritative M4 command/state/hash behavior; local sim-core, protocol, determinism, architecture, and full project tests passed.",
+    "Save-format package remains intentionally untouched per task scope; any future persisted compatibility work must be routed through an explicit save/schema task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may run integration gates and proceed with task acceptance workflow for M4-WITHDRAWAL-POSTWAR-HANDOFF-001.",
+  "created_at": "2026-06-26T06:37:04Z"
+}
