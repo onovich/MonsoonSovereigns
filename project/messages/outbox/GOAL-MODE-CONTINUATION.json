@@ -6,56 +6,13 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
   "current_milestone": "M5",
-  "current_task": "M5-PERFORMANCE-GATE-001",
+  "current_task": null,
   "current_task_status": "REVIEW",
   "last_closed_task": "M5-MULTIYEAR-AI-RUN-001",
   "ready_tasks": [
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
   ],
-  "active_threads": {
-    "019f04e2-2734-7221-80cd-9b0875d64ea0": {
-      "task_id": "M5-PERFORMANCE-GATE-001",
-      "role": "test_engineer",
-      "thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
-      "status": "review_ready",
-      "configured_model": "gpt-5.4-mini",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Gauge the 9th",
-      "responsibility": "primary test_engineer writer for M5 performance and stability gate",
-      "branch_or_worktree": "test/m5-performance-gate",
-      "start_state": "START_CONFIRMED",
-      "spawn_result": "spawn_agent",
-      "start_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-LEAD-TO-TEST-START-CONFIRMED.json",
-      "start_submission_id": "019f04e2-64ba-7393-b712-4d9fe6acd847",
-      "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
-      "updated_at": "2026-06-27T01:16:50+08:00",
-      "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
-      "review_ready_at": "2026-06-27T01:16:50+08:00"
-    },
-    "019f04f1-fb6a-7460-9e18-1227973bb6e4": {
-      "task_id": "M5-PERFORMANCE-GATE-001",
-      "role": "qa_reviewer",
-      "thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
-      "status": "reviewing",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Gate the 10th",
-      "responsibility": "independent read-only QA review of M5 performance and stability gate",
-      "branch_or_worktree": "test/m5-performance-gate",
-      "start_state": "QA_REVIEW_ROUTED",
-      "spawn_result": "spawn_agent",
-      "route_file": "project/messages/routes/M5-PERFORMANCE-GATE-001__ROUTE-20260627-M5-PERF-WRITER-TO-QA-REVIEW.json",
-      "review_source_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
-      "review_commit": "81aacaea",
-      "review_submission_id": "019f04f2-3e8a-7a21-ab80-7909e1d415fc",
-      "updated_at": "2026-06-27T01:19:30+08:00"
-    }
-  },
+  "active_threads": {},
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -120,16 +77,14 @@
       "replaced_at": "2026-06-27T00:01:55+08:00"
     }
   ],
-  "updated_at": "2026-06-27T01:32:54+08:00",
-  "current_tasks": [
-    "M5-PERFORMANCE-GATE-001"
-  ],
-  "last_integrated_task": "M5-MULTIYEAR-AI-RUN-001",
-  "last_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
+  "updated_at": "2026-06-27T01:39:05+08:00",
+  "current_tasks": [],
+  "last_integrated_task": "M5-PERFORMANCE-GATE-001",
+  "last_main_commit": "bd47faee8e6780a96f92402f47361012be40f3e1",
   "next_ready_tasks": [
     "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
   ],
-  "next_action": "Open and merge M5-PERFORMANCE-GATE-001 PR after CI, close it on main, then start M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
+  "next_action": "Start M5-WEB-WINDOWS-DISTRIBUTABLE-001 as the next dependency-ready M5 task.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -337,7 +292,7 @@
     ]
   },
   "m5_performance_gate": {
-    "status": "ACCEPTED_PENDING_INTEGRATION",
+    "status": "CLOSED",
     "branch_or_worktree": "test/m5-performance-gate",
     "writer_thread_id": "019f04e2-2734-7221-80cd-9b0875d64ea0",
     "writer_nickname": "Gauge the 9th",
@@ -347,7 +302,7 @@
     "started_at": "2026-06-27T01:05:00+08:00",
     "base_main_commit": "116053b6f837a44f4d4b9892a18c1b50aa95305f",
     "human_gate_required": false,
-    "next_action": "Open PR, wait for CI, merge to main, then close M5-PERFORMANCE-GATE-001 and continue to M5-WEB-WINDOWS-DISTRIBUTABLE-001.",
+    "next_action": "Start M5-WEB-WINDOWS-DISTRIBUTABLE-001 as the next dependency-ready M5 task.",
     "review_ready_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
     "review_ready_at": "2026-06-27T01:16:50+08:00",
     "qa_thread_id": "019f04f1-fb6a-7460-9e18-1227973bb6e4",
@@ -357,6 +312,18 @@
     "qa_review_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
     "qa_status": "ACCEPT",
     "lead_accept_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-LEAD-ACCEPT__lead_orchestrator.json",
-    "accepted_at": "2026-06-27T01:32:54+08:00"
+    "accepted_at": "2026-06-27T01:32:54+08:00",
+    "integrated_pr": 118,
+    "integrated_main_commit": "bd47faee8e6780a96f92402f47361012be40f3e1",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/118",
+    "lead_close_handoff": "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T01:39:05+08:00",
+    "child_threads_closed": [
+      "019f04e2-2734-7221-80cd-9b0875d64ea0",
+      "019f04f1-fb6a-7460-9e18-1227973bb6e4"
+    ],
+    "next_ready_tasks": [
+      "M5-WEB-WINDOWS-DISTRIBUTABLE-001"
+    ]
   }
 }
