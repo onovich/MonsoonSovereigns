@@ -133,6 +133,39 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
   });
 
+  test("returns orderly withdrawal grain to explicit source groups when district and population IDs differ", () => {
+    let runtime = runtimeWithM4({
+      populationGroups: [
+        populationGroupWithId(51, 1, 1_000),
+        populationGroup(2, 1_000),
+        populationGroup(3, 1_000)
+      ],
+      commitments: [commitment(100, 60, "assembled", 60)],
+      reservations: [reservation(501, 1, 300, 51)]
+    });
+    runtime = accepted(runtime, startMarchCommand("m4.withdraw.source-ledger.start", runtime, 701));
+    const grainBefore = totalM2AndM4Grain(runtime.world);
+
+    runtime = accepted(
+      runtime,
+      withdrawalCommand("m4.withdraw.source-ledger", runtime, {
+        withdrawalId: 907,
+        triggerReason: "ordered",
+        marchId: 701,
+        reasonCodes: ["withdrawal.reason.player-ordered"]
+      })
+    );
+
+    const sourceGroup = runtime.world.state.m2?.populationGroups.find((group) => group.id === 51);
+    expect(sourceGroup?.grainStock).toBe(1_300);
+    expect(firstWithdrawal(runtime)).toMatchObject({
+      kind: "orderly-withdrawal",
+      supplyLoss: 0
+    });
+    expect(totalM2AndM4Grain(runtime.world)).toBe(grainBefore);
+    expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
   test("cancels before departure when rainy-season route risk closes the window", () => {
     const runtime = accepted(
       runtimeWithM4({
@@ -192,6 +225,41 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
     });
     expect(firstMarch(runtime.world).activeTroops).toBe(59);
     expect(withdrawal.reasonCodes).toContain("withdrawal.cost.human-losses");
+    expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
+  test("records failed extraction with reason codes and troop conservation", () => {
+    const runtime = accepted(
+      runtimeWithM4({
+        campaignPlan: activeCampaignPlan(),
+        commitments: [commitment(100, 1, "assembled", 1)],
+        marches: [arrivedMarch({ activeTroops: 1, carriedGrain: 0, supplyStatus: "out-of-supply" })]
+      }),
+      withdrawalCommand("m4.withdraw.failed-extraction", runtimeWithM4({}), {
+        withdrawalId: 908,
+        triggerReason: "loss",
+        marchId: 701,
+        reasonCodes: ["withdrawal.reason.loss-threshold"]
+      })
+    );
+
+    const withdrawal = firstWithdrawal(runtime);
+    expect(withdrawal).toMatchObject({
+      kind: "failed-extraction",
+      triggerReason: "loss",
+      troopsBefore: 1,
+      troopsExtracted: 0,
+      casualties: 1
+    });
+    expect(withdrawal.troopsExtracted + withdrawal.casualties).toBe(withdrawal.troopsBefore);
+    expect(withdrawal.reasonCodes).toEqual(
+      expect.arrayContaining([
+        "withdrawal.failed-extraction",
+        "withdrawal.cost.human-losses",
+        "withdrawal.trigger.loss"
+      ])
+    );
+    expect(firstMarch(runtime.world).activeTroops).toBe(0);
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
   });
 
@@ -284,6 +352,95 @@ describe("M4-WITHDRAWAL-POSTWAR-HANDOFF-001 withdrawal and postwar handoff", () 
     expect(duplicate.result.status).toBe("rejected");
   });
 
+  test("rejects objective-complete handoff before an actual completed M4 campaign result", () => {
+    const activeRuntime = runtimeWithM4({
+      campaignPlan: activeCampaignPlan(),
+      commitments: [commitment(100, 80, "assembled", 80)],
+      marches: [arrivedMarch({ activeTroops: 72, carriedGrain: 120 })],
+      sieges: [siege(801, "surrendered")]
+    });
+    const premature = submitCommandV1(
+      activeRuntime,
+      withdrawalCommand("m4.postwar.premature-active", activeRuntime, {
+        withdrawalId: 909,
+        triggerReason: "objective-complete",
+        marchId: 701,
+        siegeId: 801,
+        reasonCodes: ["withdrawal.reason.objective-complete"]
+      })
+    );
+    expect(premature.result.status).toBe("rejected");
+
+    const completedWithoutResult = runtimeWithM4({
+      campaignPlan: completedCampaignPlan(),
+      commitments: [commitment(100, 80, "assembled", 80)],
+      marches: [arrivedMarch({ activeTroops: 72, carriedGrain: 120 })]
+    });
+    const missingResult = submitCommandV1(
+      completedWithoutResult,
+      withdrawalCommand("m4.postwar.missing-result", completedWithoutResult, {
+        withdrawalId: 910,
+        triggerReason: "objective-complete",
+        marchId: 701,
+        reasonCodes: ["withdrawal.reason.objective-complete"]
+      })
+    );
+    expect(missingResult.result.status).toBe("rejected");
+    expect(warOutcomeQuery(completedWithoutResult).outcomes).toHaveLength(0);
+  });
+
+  test("war outcome read models cannot alias nested authoritative arrays", () => {
+    const runtime = accepted(
+      runtimeWithM4({
+        campaignPlan: completedCampaignPlan(),
+        commitments: [commitment(100, 80, "assembled", 80)],
+        marches: [arrivedMarch({ activeTroops: 72, carriedGrain: 120 })],
+        sieges: [siege(801, "surrendered")]
+      }),
+      withdrawalCommand("m4.postwar.aliasing", runtimeWithM4({}), {
+        withdrawalId: 911,
+        triggerReason: "objective-complete",
+        marchId: 701,
+        siegeId: 801,
+        reasonCodes: ["withdrawal.reason.objective-complete"]
+      })
+    );
+
+    const outcomes = warOutcomeQuery(runtime);
+    const outcome = outcomes.outcomes[0] as {
+      readonly postwarCandidate: {
+        readonly validM3Methods: string[];
+        readonly reasonCodes: string[];
+      } | null;
+      readonly reasonCodes: string[];
+    };
+    const listedCandidate = outcomes.postwarCandidates[0] as {
+      readonly validM3Methods: string[];
+      readonly reasonCodes: string[];
+    };
+    outcome.reasonCodes.push("mutated.outcome.reason");
+    outcome.postwarCandidate?.validM3Methods.splice(
+      0,
+      outcome.postwarCandidate.validM3Methods.length
+    );
+    outcome.postwarCandidate?.reasonCodes.push("mutated.embedded-candidate.reason");
+    listedCandidate.reasonCodes.push("mutated.listed-candidate.reason");
+
+    const authoritativeOutcome = runtime.world.state.m4?.warOutcomes[0];
+    const authoritativeCandidate = runtime.world.state.m4?.postwarCandidates[0];
+    expect(authoritativeOutcome?.reasonCodes).not.toContain("mutated.outcome.reason");
+    expect(authoritativeOutcome?.postwarCandidate?.reasonCodes).not.toContain(
+      "mutated.embedded-candidate.reason"
+    );
+    expect(authoritativeCandidate?.reasonCodes).not.toContain("mutated.listed-candidate.reason");
+    expect(authoritativeCandidate?.validM3Methods).toEqual([
+      "direct-control",
+      "restore-vassal-ruler",
+      "tribute-only"
+    ]);
+    expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
   test("canonicalizes withdrawal ordering and hashes authoritative withdrawal fields", () => {
     const m4 = canonicalizeM4CampaignStateV0({
       ...createM4CampaignStateV0(definitions(), {
@@ -330,6 +487,7 @@ function runtimeWithM4(input: {
   readonly marches?: readonly M4CampaignStateV0["marches"][number][];
   readonly sieges?: readonly M4CampaignStateV0["sieges"][number][];
   readonly withdrawals?: readonly M4WithdrawalRecord[];
+  readonly populationGroups?: readonly ReturnType<typeof populationGroup>[];
 }): SimulationRuntimeV1 {
   return {
     world: worldWithM4(input),
@@ -347,6 +505,7 @@ function worldWithM4(input: {
   readonly marches?: readonly M4CampaignStateV0["marches"][number][];
   readonly sieges?: readonly M4CampaignStateV0["sieges"][number][];
   readonly withdrawals?: readonly M4WithdrawalRecord[];
+  readonly populationGroups?: readonly ReturnType<typeof populationGroup>[];
 }): WorldStateV0 {
   const defs = definitions();
   const baseM2 = createM2EconomyPopulationStateV0(defs, {
@@ -371,7 +530,7 @@ function worldWithM4(input: {
   });
   const m2 = canonicalizeM2EconomyPopulationState({
     ...baseM2,
-    populationGroups: [
+    populationGroups: input.populationGroups ?? [
       populationGroup(1, 1_000),
       populationGroup(2, 1_000),
       populationGroup(3, 1_000)
@@ -520,6 +679,13 @@ function populationGroup(districtId: number, grainStock: number) {
   };
 }
 
+function populationGroupWithId(populationGroupId: number, districtId: number, grainStock: number) {
+  return {
+    ...populationGroup(districtId, grainStock),
+    id: parsePopulationGroupId(populationGroupId)
+  };
+}
+
 function campaignPlan(input: {
   readonly earliestDay?: number;
   readonly latestDay?: number;
@@ -586,14 +752,15 @@ function commitment(
 function reservation(
   reservationId: number,
   districtId: number,
-  carriedAmount: number
+  carriedAmount: number,
+  populationGroupId = districtId
 ): M4CampaignStateV0["grainSupplyReservations"][number] {
   return {
     reservationId: parseGrainSupplyReservationId(reservationId),
     campaignPlanId: parseCampaignPlanId(10),
     source: {
       kind: "m2-population-group",
-      populationGroupId: parsePopulationGroupId(districtId),
+      populationGroupId: parsePopulationGroupId(populationGroupId),
       districtId: parseDistrictId(districtId)
     },
     reservedAmount: carriedAmount,

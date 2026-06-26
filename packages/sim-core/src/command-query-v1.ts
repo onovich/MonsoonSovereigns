@@ -5822,6 +5822,15 @@ function evaluateResolveM4CampaignWithdrawal(
   ) {
     return rejectWithdrawalState("payload.campaignPlanId", "Completed campaign cannot withdraw.");
   }
+  if (
+    command.payload.triggerReason === "objective-complete" &&
+    campaignPlan.status !== "completed"
+  ) {
+    return rejectWithdrawalState(
+      "payload.campaignPlanId",
+      "Objective-complete withdrawal requires a completed campaign result."
+    );
+  }
   const ownerPolityId = campaignOwnerPolityId(m3, campaignPlan.owner);
   if (ownerPolityId === null || !actorHasPolityAuthority(m3, command.actor, ownerPolityId)) {
     return authorityDeniedError();
@@ -5851,6 +5860,16 @@ function evaluateResolveM4CampaignWithdrawal(
   if (siegeId !== null && siege === null) {
     return badIdError("payload.siegeId", "Withdrawal references missing SiegeId.");
   }
+  if (command.payload.triggerReason === "objective-complete") {
+    const completedResult = validateObjectiveCompleteHandoffResult({
+      campaignPlan,
+      march,
+      siege
+    });
+    if (!completedResult.ok) {
+      return { ok: false, error: completedResult.error };
+    }
+  }
   if (
     command.payload.triggerReason === "objective-complete" &&
     m4.postwarCandidates.some(
@@ -5874,6 +5893,16 @@ function evaluateResolveM4CampaignWithdrawal(
     march === null || kind === "orderly-withdrawal" || kind === "cancelled-before-departure"
       ? 0
       : march.supply.carriedGrain;
+  if (
+    march !== null &&
+    kind === "orderly-withdrawal" &&
+    campaignGrainSourceLedgerCapacity(m4, campaignPlanId) < march.supply.carriedGrain
+  ) {
+    return rejectWithdrawalState(
+      "payload.marchId",
+      "Orderly withdrawal requires auditable grain source ledger capacity."
+    );
+  }
   const reasonCodes = uniqueSortedText(
     [
       ...command.payload.reasonCodes,
@@ -6021,6 +6050,67 @@ function withdrawalStatusReason(kind: M4WithdrawalKindV0): string {
   }
 }
 
+function validateObjectiveCompleteHandoffResult(input: {
+  readonly campaignPlan: M4CampaignPlanStateV0;
+  readonly march: M4CampaignMarchStateV0 | null;
+  readonly siege: M4SiegeStateV0 | null;
+}): { readonly ok: true } | { readonly ok: false; readonly error: DomainErrorV1 } {
+  if (input.campaignPlan.status !== "completed") {
+    return {
+      ok: false,
+      error: {
+        code: "withdrawal-state-invalid",
+        path: "payload.campaignPlanId",
+        message: "Objective-complete withdrawal requires a completed campaign result."
+      }
+    };
+  }
+  if (input.siege === null) {
+    return {
+      ok: false,
+      error: {
+        code: "withdrawal-state-invalid",
+        path: "payload.siegeId",
+        message: "Objective-complete withdrawal requires a completed siege result reference."
+      }
+    };
+  }
+  if (input.siege.status !== "surrendered") {
+    return {
+      ok: false,
+      error: {
+        code: "withdrawal-state-invalid",
+        path: "payload.siegeId",
+        message: "Objective-complete withdrawal requires a surrendered siege result."
+      }
+    };
+  }
+  if (
+    input.campaignPlan.target.kind !== "district" ||
+    input.siege.targetDistrictId !== input.campaignPlan.target.districtId
+  ) {
+    return {
+      ok: false,
+      error: {
+        code: "withdrawal-state-invalid",
+        path: "payload.siegeId",
+        message: "Objective-complete siege result must match the campaign target."
+      }
+    };
+  }
+  if (input.march !== null && input.siege.marchId !== input.march.marchId) {
+    return {
+      ok: false,
+      error: {
+        code: "withdrawal-state-invalid",
+        path: "payload.marchId",
+        message: "Objective-complete march must match the completed siege result."
+      }
+    };
+  }
+  return { ok: true };
+}
+
 function withdrawalCreditHooks(
   polityId: PolityId,
   trigger: M4WithdrawalTriggerV0
@@ -6067,15 +6157,21 @@ function applyWithdrawalSupplyToM2(
   if (march === null) {
     for (const reservation of m4.grainSupplyReservations) {
       if (reservation.campaignPlanId === campaignPlanId && reservation.carriedAmount > 0) {
-        returnByPopulationGroupId.set(
+        addM4ReturnedGrain(
+          returnByPopulationGroupId,
           reservation.source.populationGroupId,
-          (returnByPopulationGroupId.get(reservation.source.populationGroupId) ?? 0) +
-            reservation.carriedAmount
+          reservation.carriedAmount
         );
       }
     }
   } else if (kind === "orderly-withdrawal" && march.supply.carriedGrain > 0) {
-    returnByPopulationGroupId.set(march.originDistrictId, march.supply.carriedGrain);
+    for (const [populationGroupId, amount] of campaignGrainSourceReturnLedger(
+      m4,
+      campaignPlanId,
+      march.supply.carriedGrain
+    )) {
+      addM4ReturnedGrain(returnByPopulationGroupId, populationGroupId, amount);
+    }
   }
   if (returnByPopulationGroupId.size === 0) {
     return null;
@@ -6087,6 +6183,59 @@ function applyWithdrawalSupplyToM2(
       grainStock: group.grainStock + (returnByPopulationGroupId.get(group.id) ?? 0)
     }))
   });
+}
+
+function addM4ReturnedGrain(
+  returnByPopulationGroupId: Map<number, number>,
+  populationGroupId: number,
+  amount: number
+): void {
+  returnByPopulationGroupId.set(
+    populationGroupId,
+    (returnByPopulationGroupId.get(populationGroupId) ?? 0) + amount
+  );
+}
+
+function campaignGrainSourceLedgerCapacity(
+  m4: M4CampaignStateV0,
+  campaignPlanId: CampaignPlanId
+): number {
+  return m4.grainSupplyReservations
+    .filter((reservation) => reservation.campaignPlanId === campaignPlanId)
+    .reduce(
+      (sum, reservation) => sum + Math.max(0, reservation.reservedAmount - reservation.lossAmount),
+      0
+    );
+}
+
+function campaignGrainSourceReturnLedger(
+  m4: M4CampaignStateV0,
+  campaignPlanId: CampaignPlanId,
+  carriedGrain: number
+): readonly (readonly [number, number])[] {
+  let remaining = carriedGrain;
+  const returns: (readonly [number, number])[] = [];
+  for (const reservation of m4.grainSupplyReservations
+    .filter((entry) => entry.campaignPlanId === campaignPlanId)
+    .sort(compareM4GrainReservationForReturnLedger)) {
+    if (remaining <= 0) {
+      break;
+    }
+    const auditableAmount = Math.max(0, reservation.reservedAmount - reservation.lossAmount);
+    const returnedAmount = minimumTwo(remaining, auditableAmount);
+    if (returnedAmount > 0) {
+      returns.push([reservation.source.populationGroupId, returnedAmount]);
+      remaining -= returnedAmount;
+    }
+  }
+  return returns;
+}
+
+function compareM4GrainReservationForReturnLedger(
+  left: M4GrainSupplyReservationStateV0,
+  right: M4GrainSupplyReservationStateV0
+): number {
+  return left.reservationId - right.reservationId;
 }
 
 function campaignReservationIds(
@@ -6131,6 +6280,16 @@ function createWarOutcomeIfNeeded(input: {
         code: "withdrawal-state-invalid",
         path: "payload.campaignPlanId",
         message: "Postwar handoff requires a district campaign target."
+      }
+    };
+  }
+  if (input.siege === null || input.siege.status !== "surrendered") {
+    return {
+      ok: false,
+      error: {
+        code: "withdrawal-state-invalid",
+        path: "payload.siegeId",
+        message: "Postwar handoff requires a surrendered siege result."
       }
     };
   }
@@ -8413,7 +8572,21 @@ function executeM4WarOutcomesQuery(
 function copyM4WarOutcomeReadModel(outcome: M4WarOutcomeStateV0): M4WarOutcomeReadModelV1 {
   return {
     ...outcome,
-    postwarCandidate: outcome.postwarCandidate === null ? null : { ...outcome.postwarCandidate }
+    postwarCandidate:
+      outcome.postwarCandidate === null
+        ? null
+        : copyM4PostwarCandidateReadModel(outcome.postwarCandidate),
+    reasonCodes: [...outcome.reasonCodes]
+  };
+}
+
+function copyM4PostwarCandidateReadModel(
+  candidate: M4PostwarCandidateStateV0
+): M4PostwarCandidateReadModelV1 {
+  return {
+    ...candidate,
+    validM3Methods: [...candidate.validM3Methods],
+    reasonCodes: [...candidate.reasonCodes]
   };
 }
 
