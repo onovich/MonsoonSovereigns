@@ -1,0 +1,83 @@
+{
+  "message_id": "MSG-20260626-M5-CLIENT-PLAYABLE-UI-LEAD-ACCEPT",
+  "task_id": "M5-CLIENT-PLAYABLE-UI-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M5-CLIENT-PLAYABLE-UI-001 after client_engineer REVIEW and independent qa_reviewer ACCEPT. The branch implements the minimal M5 playable client flow through protocol/read-model driven React UI surfaces: M5 start, goal inspection, command preview/confirm/result status, client checkpoint save/load, AI and player reason codes, campaign risk, supply/season state, automatic battle/siege/withdrawal evidence, postwar consequences, and no-overlap Playwright coverage. The implementation stores only UI session progress and read-model slices in React/client code, does not import or mutate authoritative sim state, and does not add manual battle UI, telemetry, account/server/multiplayer, arbitrary-code mod, release, commercial, desktop/Electron, sim-core, sim-ai, or save-format scope.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/m5-client-playable-ui / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "a604110026323308f0756100d501708d1917d5ee",
+  "reviewed_handoffs": {
+    "writer_review": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
+    "qa_accept": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW__qa_reviewer.json"
+  },
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID qa_reviewer ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-CLIENT-PLAYABLE-UI-001",
+      "exit_code": 0,
+      "result": "VALID task file before lead acceptance update."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before lead acceptance."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test; pnpm --filter @monsoon/ui test; pnpm --filter @monsoon/map-renderer test; pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Lead quick gates passed: client-core 14 tests, UI 6 tests, map-renderer 2 tests, web 4 tests."
+    },
+    {
+      "command": "pnpm format:check; pnpm lint; affected package typechecks",
+      "exit_code": 0,
+      "result": "Lead quick gates passed before QA route. QA additionally verified architecture:check, sim:determinism, build:web, storybook:build, and test:e2e."
+    },
+    {
+      "command": "pnpm storybook:build; pnpm test:e2e; pnpm sim:determinism; pnpm architecture:check",
+      "exit_code": 0,
+      "result": "Independent QA recorded these gates passed; stale task aliases build:storybook/e2e do not exist, while repo actual scripts storybook:build/test:e2e passed."
+    }
+  ],
+  "decisions": [
+    "Accept the implementation for PR/CI/main integration. Do not mark CLOSED until PR CI passes, merge enters main, and local main is synchronized.",
+    "Accept the Storybook coverage limitation: .storybook is outside allowed_paths, so the existing WebClientShell story is reused and storybook:build passes with the M5 workspace included.",
+    "Accept client session save/load as a client replay checkpoint DTO, not an authoritative save-format envelope. Authoritative M5 simulation/runtime save evidence remains in M5-SIM-PLAYABLE-LOOP-001.",
+    "Preserve M5 formal passage and manual node battle as Human Gates; this task does not implement manual battle or pass M5."
+  ],
+  "risks": [
+    "P3: Storybook coverage is through the existing WebClientShell story rather than a dedicated M5 story file because .storybook is outside this task allowed_paths.",
+    "P3: Browser worker execution for every M5 command remains outside this client UI task; this task submits GameCommandV1 DTOs and displays protocol/read-model evidence.",
+    "P3: Web and Storybook builds continue to emit the pre-existing Vite large chunk warning."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit lead acceptance, push branch, open PR, wait for CI, merge into main, then close M5-CLIENT-PLAYABLE-UI-001 and continue to the next dependency-ready M5 task.",
+  "created_at": "2026-06-26T23:09:00+08:00"
+}

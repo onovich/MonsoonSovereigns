@@ -2,12 +2,12 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M5_CLIENT_PLAYABLE_UI_QA_REVIEW_ROUTED",
+  "status": "M5_CLIENT_PLAYABLE_UI_ACCEPTED_PENDING_PR",
   "project": "Monsoon Sovereigns",
   "origin_main": "03afd416a7d07c1cf1c6c21f84b9c059b2a1ffca",
   "current_milestone": "M5",
   "current_task": "M5-CLIENT-PLAYABLE-UI-001",
-  "current_task_status": "REVIEW_QA",
+  "current_task_status": "ACCEPTED_PENDING_PR",
   "last_closed_task": "M5-SIM-PLAYABLE-LOOP-001",
   "ready_tasks": [
     "M5-MULTIYEAR-AI-RUN-001"
@@ -17,7 +17,7 @@
       "task_id": "M5-CLIENT-PLAYABLE-UI-001",
       "role": "client_engineer",
       "thread_id": "019f045c-18cd-72c1-9c03-6a48b6ff56e0",
-      "status": "review_routed_to_qa",
+      "status": "accepted_pending_pr",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -26,14 +26,15 @@
       "responsibility": "primary client_engineer writer for M5 playable client flow",
       "branch_or_worktree": "feat/m5-client-playable-ui",
       "review_ready_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "383badb1dfe9ecb24a2e4ac3caffbb0825eaa7db",
-      "updated_at": "2026-06-26T23:00:00+08:00"
+      "qa_accept_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-LEAD-ACCEPT__lead_orchestrator.json",
+      "updated_at": "2026-06-26T23:09:00+08:00"
     },
     "019f046f-ee05-76e1-97fe-74c083fc227d": {
       "task_id": "M5-CLIENT-PLAYABLE-UI-001",
       "role": "qa_reviewer",
       "thread_id": "019f046f-ee05-76e1-97fe-74c083fc227d",
-      "status": "in_review",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -41,11 +42,11 @@
       "nickname": "Gate the 9th",
       "responsibility": "independent read-only QA review of M5 playable client flow",
       "branch_or_worktree": "feat/m5-client-playable-ui",
-      "route_file": "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-WRITER-TO-QA-REVIEW.json",
       "review_source_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "383badb1dfe9ecb24a2e4ac3caffbb0825eaa7db",
-      "review_submission_id": "019f0470-24d1-7df0-8593-35f63920f6d7",
-      "updated_at": "2026-06-26T23:00:00+08:00"
+      "accept_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW__qa_reviewer.json",
+      "accepted_at": "2026-06-26T23:09:00+08:00",
+      "lead_accept_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-LEAD-ACCEPT__lead_orchestrator.json",
+      "updated_at": "2026-06-26T23:09:00+08:00"
     }
   },
   "unresolved_risks": [
@@ -64,7 +65,7 @@
     "required": false,
     "reason": ""
   },
-  "next_machine_action": "Wait for qa_reviewer review; route REQUEST_CHANGES to client_engineer or integrate ACCEPT if QA passes.",
+  "next_machine_action": "Commit lead acceptance, push branch, create PR, wait for CI, merge to main, close M5-CLIENT-PLAYABLE-UI-001, then continue to next READY M5 task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -72,7 +73,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-26T23:00:00+08:00",
+  "last_updated_at": "2026-06-26T23:09:00+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -104,7 +105,7 @@
       "replaced_at": "2026-06-26T10:14:54.417Z"
     }
   ],
-  "updated_at": "2026-06-26T23:00:00+08:00",
+  "updated_at": "2026-06-26T23:09:00+08:00",
   "current_tasks": [
     "M5-CLIENT-PLAYABLE-UI-001"
   ],
@@ -113,7 +114,7 @@
   "next_ready_tasks": [
     "M5-MULTIYEAR-AI-RUN-001"
   ],
-  "next_action": "Wait for qa_reviewer review; route REQUEST_CHANGES to client_engineer or integrate ACCEPT if QA passes.",
+  "next_action": "Commit lead acceptance, push branch, create PR, wait for CI, merge to main, close M5-CLIENT-PLAYABLE-UI-001, then continue to next READY M5 task.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -242,7 +243,7 @@
     ]
   },
   "m5_client_playable_ui": {
-    "status": "QA_REVIEW_ROUTED",
+    "status": "ACCEPTED_PENDING_PR",
     "branch_or_worktree": "feat/m5-client-playable-ui",
     "writer_thread_id": "019f045c-18cd-72c1-9c03-6a48b6ff56e0",
     "writer_nickname": "Lantern the 9th",
@@ -250,12 +251,17 @@
     "route_file": "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-LEAD-TO-CLIENT-START-CONFIRMED.json",
     "start_submission_id": "019f045c-66e2-78d3-8489-2e502c75e28e",
     "started_at": "2026-06-26T22:37:00+08:00",
-    "next_action": "Wait for qa_reviewer review; route REQUEST_CHANGES to client_engineer or integrate ACCEPT if QA passes.",
+    "next_action": "Open PR, wait for CI, merge to main, then close M5-CLIENT-PLAYABLE-UI-001 and continue to the next dependency-ready M5 task.",
     "review_ready_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
     "review_commit": "383badb1dfe9ecb24a2e4ac3caffbb0825eaa7db",
     "qa_thread_id": "019f046f-ee05-76e1-97fe-74c083fc227d",
     "qa_route": "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-WRITER-TO-QA-REVIEW.json",
     "review_submission_id": "019f0470-24d1-7df0-8593-35f63920f6d7",
-    "routed_to_qa_at": "2026-06-26T23:00:00+08:00"
+    "routed_to_qa_at": "2026-06-26T23:00:00+08:00",
+    "qa_review_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-26T23:09:00+08:00",
+    "lead_accept_commit": "a604110026323308f0756100d501708d1917d5ee"
   }
 }
