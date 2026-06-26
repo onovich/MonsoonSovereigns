@@ -8,6 +8,7 @@ import {
   createM3AppointmentCommand,
   createM3AppointmentReadModelFixture,
   createM3BulkAppointmentCommand,
+  createM2PrototypeClientReadModelSnapshot,
   createM2PrototypeReadModelFixture,
   createM4CampaignPlanCommand,
   createM4CampaignReadModelFixture,
@@ -15,10 +16,14 @@ import {
   createM4SiegeChoiceCommand,
   createM4StartMarchCommand,
   createM4WithdrawalCommand,
+  createM5PlayableReadModelFixture,
+  createM5SessionSave,
   createSyntheticDistrictPressureFixture,
   findM3Office,
   findM4CampaignPlan,
   findClientDistrictRow,
+  getM5CurrentStep,
+  parseM5SessionSave,
   projectM2DistrictRowsFromProtocolReadModels,
   selectClientDistrictRows,
   withDistrictListReadModel
@@ -330,5 +335,66 @@ describe("M4 campaign planning client read model", () => {
     const plan = findM4CampaignPlan(fixture.plans, selectedPlanId);
     expect(plan?.targetLabel).toBe("Prototype District 003");
     expect(plan?.forecast.reasonCodes).toContain("campaign.forecast.start-range-open");
+  });
+});
+
+describe("M5 playable client read model", () => {
+  test("projects the accepted M5 protocol script without storing WorldState", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const fixture = createM5PlayableReadModelFixture(baseSnapshot);
+
+    expect(fixture.scenarioId).toBe("m5.composite.river-gate.v0");
+    expect(fixture.contentTag).toBe("COMPOSITE_FICTIONAL_PLACEHOLDER");
+    expect(fixture.steps).toHaveLength(15);
+    expect(fixture.steps[0]?.command.kind).toBe("sim.create-campaign-objective");
+    expect(fixture.steps[fixture.steps.length - 1]?.command.commandId).toBe(
+      "m5.slice.stabilize-day-2"
+    );
+    expect(fixture.failureStep.command.commandId).toBe("m5.slice.duplicate-postwar-governance");
+    expect(fixture.ai.primaryReasonCode).toBe("m4.ai.withdraw.supply-collapse");
+    expect(fixture.risk.routeReasonCodes).toContain("route.forecast.seasonal-risk");
+    expect(fixture.season.reasonCodes).toContain("route.season.monsoon-risk");
+    expect(fixture.postwar.methods).toContain("restore-vassal-ruler");
+    expect(fixture.goal.outOfScope).toContain("Manual node battle UI is unavailable in M5.");
+    expect(JSON.stringify(fixture)).not.toContain("WorldState");
+  });
+
+  test("exposes current command preview and client session save/load evidence", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const fixture = createM5PlayableReadModelFixture(baseSnapshot);
+    const currentStep = getM5CurrentStep(fixture, 0);
+    if (currentStep === null) {
+      throw new Error("Expected M5 current step.");
+    }
+
+    expect(currentStep.preview.commandKind).toBe("sim.create-campaign-objective");
+    expect(currentStep.reasonCodes).toContain("campaign.reason.deterministic-replay");
+
+    const save = createM5SessionSave({
+      snapshot: fixture,
+      phase: "running",
+      currentStepIndex: 1,
+      confirmedCommandIds: [currentStep.command.commandId]
+    });
+    const parsed = parseM5SessionSave(save);
+
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) {
+      throw new Error("Expected M5 save parse success.");
+    }
+    expect(parsed.value.phase).toBe("running");
+    expect(parsed.value.confirmedCommandIds).toEqual([currentStep.command.commandId]);
+    expect(parsed.value.checkpointLabel).toContain("sim.create-muster-commitment");
+  });
+
+  test("rejects malformed M5 client session saves with reason codes", () => {
+    expect(parseM5SessionSave("{")).toMatchObject({
+      ok: false,
+      reasonCode: "m5.save.invalid-json"
+    });
+    expect(parseM5SessionSave(JSON.stringify({ schemaVersion: 99 }))).toMatchObject({
+      ok: false,
+      reasonCode: "m5.save.unsupported-version"
+    });
   });
 });

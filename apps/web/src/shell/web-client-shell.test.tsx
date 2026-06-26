@@ -28,6 +28,10 @@ describe("web client shell", () => {
     expect(snapshot.m4Campaign.plans).toHaveLength(2);
     expect(snapshot.m4Campaign.muster.readiness).toBe("partial");
     expect(snapshot.m4Campaign.warReports).toHaveLength(2);
+    expect(snapshot.m5Playable.scenarioId).toBe("m5.composite.river-gate.v0");
+    expect(snapshot.m5Playable.steps.length).toBeGreaterThan(10);
+    expect(snapshot.m5Playable.ai.primaryReasonCode).toBe("m4.ai.withdraw.supply-collapse");
+    expect(snapshot.m5Playable.postwar.methods).toContain("restore-vassal-ruler");
     expect(snapshot.districtList.provenance.kind).toBe("simulation-read-model");
     expect(snapshot.revision).toBe(snapshot.simulation.finalRevision);
     expect(JSON.stringify(snapshot)).not.toContain("WorldState");
@@ -49,6 +53,8 @@ describe("web client shell", () => {
     expect(snapshot.m4Campaign.warReports[1]?.postwarCandidate?.validM3Methods).toContain(
       "restore-vassal-ruler"
     );
+    expect(snapshot.m5Playable.steps).toHaveLength(15);
+    expect(snapshot.m5Playable.supply.expectedDaysOfSupply).toBe(11);
   });
 
   it("renders React from read model snapshots without authority-bearing state", () => {
@@ -66,6 +72,8 @@ describe("web client shell", () => {
         m3CommandStatus={null}
         onM4CommandSubmit={() => undefined}
         m4CommandStatus={null}
+        onM5CommandSubmit={() => undefined}
+        m5CommandStatus={null}
         mapSurface={
           <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
         }
@@ -85,6 +93,9 @@ describe("web client shell", () => {
     expect(markup).toContain('data-muster-readiness="partial"');
     expect(markup).toContain("m4.ai.withdraw.supply-collapse");
     expect(markup).toContain("postwar.candidate.ready");
+    expect(markup).toContain('aria-label="M5 playable slice workspace"');
+    expect(markup).toContain("m5.composite.river-gate.v0");
+    expect(markup).toContain("Manual node battle UI is unavailable in M5.");
   });
 
   it("rebuilds the Pixi scene shell from the read model", () => {

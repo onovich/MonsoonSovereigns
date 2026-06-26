@@ -1,0 +1,124 @@
+{
+  "message_id": "MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW",
+  "task_id": "M5-CLIENT-PLAYABLE-UI-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the minimal M5 playable client flow as a protocol/read-model driven UI slice. The player can start the accepted M5 slice, inspect goals and success/failure conditions, preview and confirm protocol commands through the accepted M5 command script, see command results, cancel/failure preview, save/load a client replay checkpoint, and inspect AI reasons, campaign risk, supply, season, automatic battle/siege/withdrawal evidence, and postwar consequences. React stores only UI session progress and read-model slices; Pixi remains a map render cache; no sim-core, sim-ai, save-format, Electron, telemetry, server, multiplayer, account, branding, release, or manual battle scope was added.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json",
+    "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m5-client-playable-ui / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m5-client-playable-ui; modified allowed implementation/test files plus this task/handoff after final handoff creation."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 14 tests passed, including M5 playable read-model, command preview, save/load parser, malformed save rejection, and no WorldState leak checks."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 6 tests passed, including M5 playable workspace SSR coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed; existing map read-model delta/cache rebuild coverage remains green."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 test file passed; 4 tests passed; web shell snapshot now includes M5 playable read model and no WorldState leak."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed; protocol schema regression remains green."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core typecheck && pnpm --filter @monsoon/ui typecheck && pnpm --filter @monsoon/map-renderer typecheck && pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "All affected package typechecks passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "Repository lint passed."
+    },
+    {
+      "command": "pnpm format:check",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style after formatting the changed files."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web production build passed; Vite reported the existing large chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed using the repository's actual script name; the existing WebClientShell story now includes the M5 playable workspace. Vite reported the existing large chunk warning."
+    },
+    {
+      "command": "pnpm build:storybook",
+      "exit_code": 1,
+      "result": "Repository has no build:storybook script; pnpm suggested build:web. Actual Storybook build command is pnpm storybook:build and it passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "8 Playwright tests passed, including M5 start-to-finish, save/load, preview/confirm/result, AI reason display, postwar display, failure/cancel flow, 4000-row stress continuity, and no horizontal overflow at 1280x720, 1280x800, 1920x1080, and 2560x1080."
+    },
+    {
+      "command": "pnpm e2e",
+      "exit_code": 1,
+      "result": "Repository has no e2e script. Actual e2e command is pnpm test:e2e and it passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M5-CLIENT-PLAYABLE-UI-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M5-CLIENT-PLAYABLE-UI-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Implemented M5 client progression as UI session state plus read-model slices over createM5PlayableLoopScriptV1, not as client-owned WorldState or direct sim mutation.",
+    "Client save/load is a replay checkpoint DTO containing scenario id, phase, current command index, confirmed command ids, checkpoint label, and state hash; it is intentionally not an authoritative save-format envelope.",
+    "Raised the single-column responsive breakpoint to 1320px so 1280x720 and 1280x800 acceptance viewports avoid horizontal overflow with dense M3/M4/M5 panels.",
+    "Kept manual node battle visible only as out-of-scope text/reason evidence; no manual battle UI or tactical controls were added."
+  ],
+  "risks": [
+    {
+      "risk": "Storybook normal-state coverage is provided through the existing root WebClientShell story. The task allowed apps/storybook/**, but this repository's active Storybook config lives under .storybook, which was outside the allowed_paths for this task, so no new dedicated normal/empty/error/extreme/narrow story file was added."
+    },
+    {
+      "risk": "M5 client flow submits and displays protocol command DTOs and checkpoint evidence, but authoritative browser worker execution of the full M5 loop remains outside this client-only implementation unless a later task exposes an accepted worker adapter to apps/web."
+    },
+    {
+      "risk": "Web and Storybook builds pass with the pre-existing large chunk warning."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review M5-CLIENT-PLAYABLE-UI-001 for acceptance criteria, especially client/read-model authority boundaries, M5 command preview/confirm/result behavior, save/load checkpoint semantics, Playwright viewport/no-overlap evidence, Storybook coverage limitation, and absence of manual battle/Electron/telemetry/server scope.",
+  "created_at": "2026-06-26T22:53:47+08:00"
+}

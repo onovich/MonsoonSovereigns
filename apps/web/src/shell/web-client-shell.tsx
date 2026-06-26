@@ -4,7 +4,8 @@ import {
   type ClientMapMode,
   type ClientMapReadModelSnapshot,
   type ClientM3SubmittedCommand,
-  type ClientM4SubmittedCommand
+  type ClientM4SubmittedCommand,
+  type ClientM5SubmittedCommand
 } from "@monsoon/client-core";
 import {
   mountPixiMapRenderer,
@@ -24,6 +25,7 @@ export function WebClientShell(): ReactElement {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [m3CommandStatus, setM3CommandStatus] = useState<string | null>(null);
   const [m4CommandStatus, setM4CommandStatus] = useState<string | null>(null);
+  const [m5CommandStatus, setM5CommandStatus] = useState<string | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<ClientMapEntitySelection>({
     kind: "district",
     districtId: createClientDistrictId(1)
@@ -45,6 +47,10 @@ export function WebClientShell(): ReactElement {
     setM4CommandStatus(`${command.kind} ready for ${command.actor.id}`);
   }
 
+  function handleM5CommandSubmit(command: ClientM5SubmittedCommand): void {
+    setM5CommandStatus(`${command.kind} confirmed for ${command.actor.id}`);
+  }
+
   return (
     <ClientShellView
       snapshot={snapshot}
@@ -58,6 +64,8 @@ export function WebClientShell(): ReactElement {
       m3CommandStatus={m3CommandStatus}
       onM4CommandSubmit={handleM4CommandSubmit}
       m4CommandStatus={m4CommandStatus}
+      onM5CommandSubmit={handleM5CommandSubmit}
+      m5CommandStatus={m5CommandStatus}
       mapSurface={
         <PixiMapSurface
           snapshot={snapshot.map}

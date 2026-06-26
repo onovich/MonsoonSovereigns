@@ -7,10 +7,13 @@ import {
   createM4SiegeChoiceCommand,
   createM4StartMarchCommand,
   createM4WithdrawalCommand,
+  createM5SessionSave,
   findClientDistrictRow,
   findM3Character,
   findM3Office,
   findM4CampaignPlan,
+  getM5CurrentStep,
+  parseM5SessionSave,
   selectClientDistrictRows,
   type ClientCampaignPlanId,
   type ClientDistrictRowReadModel,
@@ -36,6 +39,10 @@ import {
   type ClientM4SubmittedCommand,
   type ClientM4WarReportReadModel,
   type ClientM4WithdrawalReadModel,
+  type ClientM5PlayablePhase,
+  type ClientM5PlayableReadModelSnapshot,
+  type ClientM5PlayableStepReadModel,
+  type ClientM5SubmittedCommand,
   type ClientOfficeId,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
@@ -54,6 +61,8 @@ export interface ClientShellViewProps {
   readonly m3CommandStatus: string | null;
   readonly onM4CommandSubmit: (command: ClientM4SubmittedCommand) => void;
   readonly m4CommandStatus: string | null;
+  readonly onM5CommandSubmit: (command: ClientM5SubmittedCommand) => void;
+  readonly m5CommandStatus: string | null;
 }
 
 const DISTRICT_ROW_HEIGHT_PX = 44;
@@ -72,7 +81,9 @@ export function ClientShellView({
   onM3CommandSubmit,
   m3CommandStatus,
   onM4CommandSubmit,
-  m4CommandStatus
+  m4CommandStatus,
+  onM5CommandSubmit,
+  m5CommandStatus
 }: ClientShellViewProps): ReactElement {
   const selectedDistrictId =
     selectedEntity?.kind === "settlement"
@@ -94,6 +105,12 @@ export function ClientShellView({
   const [selectedM4SiegeChoice, setSelectedM4SiegeChoice] =
     useState<ClientM4SiegeChoice>("invest-blockade");
   const [m4SubmitSequence, setM4SubmitSequence] = useState(0);
+  const [m5Phase, setM5Phase] = useState<ClientM5PlayablePhase>("not-started");
+  const [m5CurrentStepIndex, setM5CurrentStepIndex] = useState(0);
+  const [m5PreviewStepId, setM5PreviewStepId] = useState<string | null>(null);
+  const [m5ConfirmedCommandIds, setM5ConfirmedCommandIds] = useState<readonly string[]>([]);
+  const [m5SavedSession, setM5SavedSession] = useState("");
+  const [m5SaveStatus, setM5SaveStatus] = useState<string | null>(null);
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -309,6 +326,71 @@ export function ClientShellView({
     );
   }
 
+  function handleStartM5Slice(): void {
+    setM5Phase("running");
+    setM5CurrentStepIndex(0);
+    setM5PreviewStepId(null);
+    setM5SaveStatus(null);
+  }
+
+  function handlePreviewM5Command(): void {
+    const step = getM5CurrentStep(snapshot.m5Playable, m5CurrentStepIndex);
+    if (step === null) {
+      return;
+    }
+    setM5PreviewStepId(step.stepId);
+  }
+
+  function handleConfirmM5Command(): void {
+    const step = getM5CurrentStep(snapshot.m5Playable, m5CurrentStepIndex);
+    if (step === null || m5Phase !== "running") {
+      return;
+    }
+    onM5CommandSubmit(step.command);
+    const nextConfirmedCommandIds = [...m5ConfirmedCommandIds, step.command.commandId];
+    const nextStepIndex = m5CurrentStepIndex + 1;
+    setM5ConfirmedCommandIds(nextConfirmedCommandIds);
+    setM5CurrentStepIndex(nextStepIndex);
+    setM5PreviewStepId(null);
+    if (nextStepIndex >= snapshot.m5Playable.steps.length) {
+      setM5Phase("success");
+    }
+  }
+
+  function handleCancelM5Slice(): void {
+    setM5Phase("cancelled");
+    setM5PreviewStepId(null);
+  }
+
+  function handlePreviewM5Failure(): void {
+    setM5Phase("failure");
+    setM5PreviewStepId(snapshot.m5Playable.failureStep.stepId);
+  }
+
+  function handleSaveM5Session(): void {
+    const saveText = createM5SessionSave({
+      snapshot: snapshot.m5Playable,
+      phase: m5Phase,
+      currentStepIndex: m5CurrentStepIndex,
+      confirmedCommandIds: m5ConfirmedCommandIds
+    });
+    setM5SavedSession(saveText);
+    setM5SaveStatus("m5.save.client-session-written");
+  }
+
+  function handleLoadM5Session(): void {
+    const parsed = parseM5SessionSave(m5SavedSession);
+    if (!parsed.ok) {
+      setM5SaveStatus(parsed.reasonCode);
+      return;
+    }
+    setM5Phase(parsed.value.phase);
+    setM5CurrentStepIndex(parsed.value.currentStepIndex);
+    setM5ConfirmedCommandIds(parsed.value.confirmedCommandIds);
+    setM5PreviewStepId(null);
+    setM5SaveStatus(`m5.load.client-session-restored:${parsed.value.checkpointLabel}`);
+  }
+
   function handleZoomIn(): void {
     onZoomLevelChange(clampZoomLevel(zoomLevel + 0.25));
   }
@@ -518,6 +600,24 @@ export function ClientShellView({
           onSubmitCancel={handleSubmitM4Cancel}
           onSubmitSiegeChoice={handleSubmitM4SiegeChoice}
           onSubmitWithdrawal={handleSubmitM4Withdrawal}
+        />
+
+        <M5PlayableWorkspace
+          snapshot={snapshot.m5Playable}
+          phase={m5Phase}
+          currentStepIndex={m5CurrentStepIndex}
+          previewStepId={m5PreviewStepId}
+          confirmedCommandIds={m5ConfirmedCommandIds}
+          savedSession={m5SavedSession}
+          saveStatus={m5SaveStatus}
+          commandStatus={m5CommandStatus}
+          onStart={handleStartM5Slice}
+          onPreview={handlePreviewM5Command}
+          onConfirm={handleConfirmM5Command}
+          onCancel={handleCancelM5Slice}
+          onFailurePreview={handlePreviewM5Failure}
+          onSave={handleSaveM5Session}
+          onLoad={handleLoadM5Session}
         />
       </section>
     </main>
@@ -1259,6 +1359,273 @@ function M4WarReportPanel({
             <ReasonChips
               reasonCodes={[...report.reasonCodes, ...(report.postwarCandidate?.reasonCodes ?? [])]}
             />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+interface M5PlayableWorkspaceProps {
+  readonly snapshot: ClientM5PlayableReadModelSnapshot;
+  readonly phase: ClientM5PlayablePhase;
+  readonly currentStepIndex: number;
+  readonly previewStepId: string | null;
+  readonly confirmedCommandIds: readonly string[];
+  readonly savedSession: string;
+  readonly saveStatus: string | null;
+  readonly commandStatus: string | null;
+  readonly onStart: () => void;
+  readonly onPreview: () => void;
+  readonly onConfirm: () => void;
+  readonly onCancel: () => void;
+  readonly onFailurePreview: () => void;
+  readonly onSave: () => void;
+  readonly onLoad: () => void;
+}
+
+function M5PlayableWorkspace({
+  snapshot,
+  phase,
+  currentStepIndex,
+  previewStepId,
+  confirmedCommandIds,
+  savedSession,
+  saveStatus,
+  commandStatus,
+  onStart,
+  onPreview,
+  onConfirm,
+  onCancel,
+  onFailurePreview,
+  onSave,
+  onLoad
+}: M5PlayableWorkspaceProps): ReactElement {
+  const currentStep = getM5CurrentStep(snapshot, currentStepIndex);
+  const previewStep =
+    previewStepId === snapshot.failureStep.stepId
+      ? snapshot.failureStep
+      : (snapshot.steps.find((step) => step.stepId === previewStepId) ?? currentStep);
+  const isConfirmDisabled = phase !== "running" || currentStep === null;
+
+  return (
+    <section
+      className="m5-playable"
+      aria-label="M5 playable slice workspace"
+      data-scenario-id={snapshot.scenarioId}
+      data-phase={phase}
+      data-command-count={snapshot.steps.length}
+      data-current-step-index={currentStepIndex}
+      data-confirmed-count={confirmedCommandIds.length}
+      data-save-present={savedSession.length > 0 ? "true" : "false"}
+    >
+      <div className="m5-playable__header">
+        <div>
+          <h2>M5 playable slice</h2>
+          <p>{snapshot.provenance.note}</p>
+        </div>
+        <dl className="m5-playable__summary">
+          <Metric label="Phase" value={phase} />
+          <Metric label="Scenario" value={snapshot.scenarioId} />
+          <Metric label="Hash" value={snapshot.replay.currentHash} />
+          <Metric label="Commands" value={snapshot.replay.commandCount.toString()} />
+        </dl>
+      </div>
+
+      <div className="m5-playable__grid">
+        <section className="m5-playable__panel" aria-label="M5 goal and commands">
+          <h3>Goal</h3>
+          <p>{snapshot.goal.primaryGoal}</p>
+          <div className="m5-playable__actions">
+            <button type="button" onClick={onStart}>
+              Start M5 slice
+            </button>
+            <button type="button" onClick={onPreview} disabled={currentStep === null}>
+              Preview command
+            </button>
+            <button type="button" onClick={onConfirm} disabled={isConfirmDisabled}>
+              Confirm command
+            </button>
+            <button type="button" onClick={onCancel} disabled={phase !== "running"}>
+              Cancel slice
+            </button>
+            <button type="button" onClick={onFailurePreview}>
+              Preview failure
+            </button>
+          </div>
+          {commandStatus === null ? null : (
+            <output className="m5-playable__status" aria-label="M5 command status">
+              {commandStatus}
+            </output>
+          )}
+          <M5StepPreview step={previewStep} />
+        </section>
+
+        <section className="m5-playable__panel" aria-label="M5 save load flow">
+          <h3>Save / load</h3>
+          <div className="m5-playable__actions">
+            <button type="button" onClick={onSave}>
+              Save checkpoint
+            </button>
+            <button type="button" onClick={onLoad} disabled={savedSession.length === 0}>
+              Load checkpoint
+            </button>
+          </div>
+          <output
+            className="m5-playable__status"
+            aria-label="M5 save status"
+            data-save-length={savedSession.length}
+          >
+            {saveStatus ?? "m5.save.no-client-checkpoint"}
+          </output>
+          <code className="m5-playable__save-preview">
+            {savedSession.length === 0 ? "no client checkpoint" : savedSession}
+          </code>
+        </section>
+
+        <M5EvidencePanel snapshot={snapshot} />
+        <M5RiskPanel snapshot={snapshot} />
+        <M5PostwarPanel snapshot={snapshot} />
+        <M5ReasonSummaryPanel snapshot={snapshot} />
+      </div>
+    </section>
+  );
+}
+
+function M5StepPreview({
+  step
+}: {
+  readonly step: ClientM5PlayableStepReadModel | null;
+}): ReactElement {
+  if (step === null) {
+    return (
+      <div className="m5-playable__fact" aria-label="M5 command preview">
+        <strong>No command selected</strong>
+        <span>Start the slice to inspect the first accepted protocol command.</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="m5-playable__fact"
+      aria-label="M5 command preview"
+      data-command-kind={step.command.kind}
+      data-step-stage={step.stage}
+    >
+      <strong>{step.label}</strong>
+      <span>
+        {step.preview.commandKind}; {step.preview.commandId}; {step.actorLabel}
+      </span>
+      <span>{step.result.summary}</span>
+      <ReasonChips reasonCodes={step.reasonCodes} />
+    </div>
+  );
+}
+
+function M5EvidencePanel({
+  snapshot
+}: {
+  readonly snapshot: ClientM5PlayableReadModelSnapshot;
+}): ReactElement {
+  return (
+    <section className="m5-playable__panel" aria-label="M5 replay evidence">
+      <h3>Replay evidence</h3>
+      <dl className="m5-playable__metrics">
+        <Metric label="Boot" value={snapshot.replay.bootFixture} />
+        <Metric label="Start hash" value={snapshot.replay.startHash} />
+        <Metric label="Checkpoint" value={snapshot.replay.checkpointLabel} />
+        <Metric label="Day" value={snapshot.day.toString()} />
+      </dl>
+      <div className="m5-playable__stack">
+        {snapshot.goal.successConditions.map((condition) => (
+          <div className="m5-playable__fact" key={condition}>
+            <strong>Success</strong>
+            <span>{condition}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M5RiskPanel({
+  snapshot
+}: {
+  readonly snapshot: ClientM5PlayableReadModelSnapshot;
+}): ReactElement {
+  return (
+    <section className="m5-playable__panel" aria-label="M5 AI risk supply season">
+      <h3>AI / risk / supply / season</h3>
+      <div className="m5-playable__fact">
+        <strong>{snapshot.ai.decisionKind}</strong>
+        <span>{snapshot.ai.commandKind ?? "no command"}</span>
+        <ReasonChips reasonCodes={[snapshot.ai.primaryReasonCode, ...snapshot.ai.reasonCodes]} />
+      </div>
+      <dl className="m5-playable__metrics">
+        <Metric label="Risk" value={snapshot.risk.campaignRiskLabel} />
+        <Metric label="Supply days" value={snapshot.supply.expectedDaysOfSupply.toString()} />
+        <Metric label="Reserved" value={formatInteger(snapshot.supply.grainReserved)} />
+        <Metric label="Season" value={snapshot.season.windowLabel} />
+      </dl>
+      <ReasonChips
+        reasonCodes={[
+          ...snapshot.risk.routeReasonCodes,
+          ...snapshot.supply.reasonCodes,
+          ...snapshot.season.reasonCodes,
+          ...snapshot.risk.withdrawalReasonCodes
+        ]}
+      />
+    </section>
+  );
+}
+
+function M5PostwarPanel({
+  snapshot
+}: {
+  readonly snapshot: ClientM5PlayableReadModelSnapshot;
+}): ReactElement {
+  return (
+    <section className="m5-playable__panel" aria-label="M5 postwar consequences">
+      <h3>Postwar consequences</h3>
+      <dl className="m5-playable__metrics">
+        <Metric label="Candidates" value={snapshot.postwar.candidateCount.toString()} />
+        <Metric label="Methods" value={snapshot.postwar.methods.join(", ")} />
+      </dl>
+      <ReasonChips reasonCodes={snapshot.postwar.consequenceReasonCodes} />
+      <div className="m5-playable__stack">
+        {snapshot.goal.failureConditions.map((condition) => (
+          <div className="m5-playable__fact" key={condition}>
+            <strong>Failure</strong>
+            <span>{condition}</span>
+          </div>
+        ))}
+        {snapshot.goal.outOfScope.map((item) => (
+          <div className="m5-playable__fact" key={item}>
+            <strong>Out of scope</strong>
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M5ReasonSummaryPanel({
+  snapshot
+}: {
+  readonly snapshot: ClientM5PlayableReadModelSnapshot;
+}): ReactElement {
+  return (
+    <section className="m5-playable__panel" aria-label="M5 reason summaries">
+      <h3>Reason summaries</h3>
+      <div className="m5-playable__stack">
+        {snapshot.reasonSummaries.slice(0, 10).map((summary) => (
+          <div className="m5-playable__fact" key={summary.reasonCode}>
+            <strong>{summary.reasonCode}</strong>
+            <span>
+              {summary.count} / {summary.sourceKinds.join(", ")}
+            </span>
           </div>
         ))}
       </div>

@@ -2,7 +2,7 @@
   "id": "M5-CLIENT-PLAYABLE-UI-001",
   "summary": "Implement M5 playable client flow",
   "milestone": "M5",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -72,7 +72,7 @@
   "threads": {
     "client_engineer": {
       "thread_id": "019f045c-18cd-72c1-9c03-6a48b6ff56e0",
-      "status": "in_progress",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -85,18 +85,23 @@
       "start_submission_id": "019f045c-66e2-78d3-8489-2e502c75e28e",
       "start_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-LEAD-TO-CLIENT-START-CONFIRMED.json",
-      "updated_at": "2026-06-26T22:37:00+08:00"
+      "review_ready_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
+      "review_ready_at": "2026-06-26T22:53:47+08:00",
+      "updated_at": "2026-06-26T22:53:47+08:00"
     }
   },
-  "route_to": "client_engineer",
+  "route_to": "qa_reviewer",
   "notes": [
     "Keep client code thin over protocol/read models; do not duplicate sim formulas in UI.",
     "Manual node battle remains out of scope and must not be prototyped in this task.",
-    "Lead started client_engineer writer thread 019f045c-18cd-72c1-9c03-6a48b6ff56e0 (Lantern the 9th) after M5-SIM-PLAYABLE-LOOP-001 closure entered main."
+    "Lead started client_engineer writer thread 019f045c-18cd-72c1-9c03-6a48b6ff56e0 (Lantern the 9th) after M5-SIM-PLAYABLE-LOOP-001 closure entered main.",
+    "client_engineer produced REVIEW handoff for qa_reviewer; task is not ACCEPTED or CLOSED."
   ],
   "created_at": "2026-06-26T12:30:00Z",
-  "updated_at": "2026-06-26T22:37:00+08:00",
+  "updated_at": "2026-06-26T22:53:47+08:00",
   "started_at": "2026-06-26T22:37:00+08:00",
   "start_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-START__lead_orchestrator.json",
-  "route_file": "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-LEAD-TO-CLIENT-START-CONFIRMED.json"
+  "route_file": "project/messages/routes/M5-CLIENT-PLAYABLE-UI-001__ROUTE-20260626-M5-CLIENT-UI-LEAD-TO-CLIENT-START-CONFIRMED.json",
+  "review_ready_handoff": "project/messages/outbox/M5-CLIENT-PLAYABLE-UI-001__MSG-20260626-M5-CLIENT-PLAYABLE-UI-WRITER-REVIEW__client_engineer.json",
+  "review_ready_at": "2026-06-26T22:53:47+08:00"
 }

@@ -1,6 +1,7 @@
 import {
   GAME_COMMAND_SCHEMA_VERSION,
   HELLO_SIMULATION_PROTOCOL_VERSION,
+  createM5PlayableLoopScriptV1,
   type ApplyM4SiegeChoiceCommandV1,
   type BulkAppointOfficesCommandV1,
   type CancelCampaignObjectiveCommandV1,
@@ -19,6 +20,7 @@ import {
   type M4CampaignTargetV1,
   type M4SiegeChoiceV1,
   type M4WithdrawalTriggerV1,
+  type M5PlayableLoopScriptV1,
   type PreviewM2TransportRouteResultV1,
   type PreviewM3PostwarGovernanceResultV1,
   type ResolveM4CampaignWithdrawalCommandV1,
@@ -55,6 +57,7 @@ export interface ClientReadModelSnapshot {
   readonly districtList: ClientDistrictListReadModelSnapshot;
   readonly m3Appointment: ClientM3AppointmentReadModelSnapshot;
   readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
+  readonly m5Playable: ClientM5PlayableReadModelSnapshot;
 }
 
 export interface HelloSimulationSummaryReadModel {
@@ -958,6 +961,149 @@ export interface ClientM3CommandContextInput {
 export type ClientM3SubmittedCommand = GameCommandV1;
 export type ClientM4SubmittedCommand = GameCommandV1;
 export type ClientM4SiegeChoice = M4SiegeChoiceV1;
+export type ClientM5SubmittedCommand = GameCommandV1;
+
+export type ClientM5PlayablePhase = "not-started" | "running" | "success" | "failure" | "cancelled";
+
+export type ClientM5PlayableStepStage =
+  | "appointment"
+  | "obligation"
+  | "logistics"
+  | "campaign"
+  | "battle-siege"
+  | "postwar"
+  | "stabilization"
+  | "failure";
+
+export interface ClientM5PlayableReadModelSnapshot {
+  readonly revision: ClientReadModelRevision;
+  readonly scenarioId: "m5.composite.river-gate.v0";
+  readonly contentTag: "COMPOSITE_FICTIONAL_PLACEHOLDER";
+  readonly day: number;
+  readonly stateHash: string;
+  readonly commandActor: ClientM3CommandActorReadModel;
+  readonly provenance: ClientM5PlayableProvenanceReadModel;
+  readonly goal: ClientM5GoalReadModel;
+  readonly replay: ClientM5ReplayEvidenceReadModel;
+  readonly session: ClientM5SessionReadModel;
+  readonly steps: readonly ClientM5PlayableStepReadModel[];
+  readonly failureStep: ClientM5PlayableStepReadModel;
+  readonly ai: ClientM5AiReadModel;
+  readonly risk: ClientM5RiskReadModel;
+  readonly supply: ClientM5SupplyReadModel;
+  readonly season: ClientM5SeasonReadModel;
+  readonly postwar: ClientM5PostwarReadModel;
+  readonly reasonSummaries: readonly ClientM5ReasonSummaryReadModel[];
+}
+
+export interface ClientM5PlayableProvenanceReadModel {
+  readonly kind: "m5-protocol-script-projection";
+  readonly note: string;
+}
+
+export interface ClientM5GoalReadModel {
+  readonly primaryGoal: string;
+  readonly successConditions: readonly string[];
+  readonly failureConditions: readonly string[];
+  readonly outOfScope: readonly string[];
+}
+
+export interface ClientM5ReplayEvidenceReadModel {
+  readonly bootFixture: M5PlayableLoopScriptV1["boot"]["fixture"];
+  readonly startHash: string;
+  readonly currentHash: string;
+  readonly commandCount: number;
+  readonly checkpointLabel: string;
+}
+
+export interface ClientM5SessionReadModel {
+  readonly phase: ClientM5PlayablePhase;
+  readonly currentStepIndex: number;
+  readonly confirmedCommandIds: readonly string[];
+}
+
+export interface ClientM5PlayableStepReadModel {
+  readonly stepId: string;
+  readonly stage: ClientM5PlayableStepStage;
+  readonly label: string;
+  readonly command: GameCommandV1;
+  readonly actorLabel: string;
+  readonly preview: ClientM5CommandPreviewReadModel;
+  readonly result: ClientM5CommandResultReadModel;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM5CommandPreviewReadModel {
+  readonly commandKind: GameCommandV1["kind"];
+  readonly commandId: string;
+  readonly summary: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM5CommandResultReadModel {
+  readonly status: "pending" | "confirmed" | "rejected";
+  readonly summary: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM5AiReadModel {
+  readonly decisionKind: ClientM4AiReasonReadModel["decisionKind"];
+  readonly commandKind: GameCommandV1["kind"] | null;
+  readonly primaryReasonCode: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM5RiskReadModel {
+  readonly campaignRiskLabel: string;
+  readonly routeReasonCodes: readonly string[];
+  readonly withdrawalReasonCodes: readonly string[];
+}
+
+export interface ClientM5SupplyReadModel {
+  readonly expectedDaysOfSupply: number;
+  readonly grainReserved: number;
+  readonly grainRequired: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM5SeasonReadModel {
+  readonly windowLabel: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM5PostwarReadModel {
+  readonly candidateCount: number;
+  readonly methods: readonly M3PostwarGovernanceMethodV1[];
+  readonly consequenceReasonCodes: readonly string[];
+}
+
+export interface ClientM5ReasonSummaryReadModel {
+  readonly reasonCode: string;
+  readonly count: number;
+  readonly sourceKinds: readonly ClientM5ReasonSourceKind[];
+}
+
+export type ClientM5ReasonSourceKind =
+  | "ai"
+  | "campaign"
+  | "failure"
+  | "postwar"
+  | "season"
+  | "supply";
+
+export interface ClientM5SessionSaveV1 {
+  readonly schemaVersion: 1;
+  readonly scenarioId: ClientM5PlayableReadModelSnapshot["scenarioId"];
+  readonly phase: ClientM5PlayablePhase;
+  readonly currentStepIndex: number;
+  readonly confirmedCommandIds: readonly string[];
+  readonly checkpointLabel: string;
+  readonly stateHash: string;
+}
+
+export type ClientM5SessionSaveParseResult =
+  | { readonly ok: true; readonly value: ClientM5SessionSaveV1 }
+  | { readonly ok: false; readonly reasonCode: string; readonly message: string };
 
 export interface ClientM4CommandContextInput {
   readonly snapshot: ClientM4CampaignReadModelSnapshot;
@@ -1065,7 +1211,8 @@ export function createInitialClientReadModelSnapshot(): ClientReadModelSnapshot 
     },
     districtList: createEmptyDistrictListReadModel(revision),
     m3Appointment: createEmptyM3AppointmentReadModel(revision),
-    m4Campaign: createEmptyM4CampaignReadModel(revision)
+    m4Campaign: createEmptyM4CampaignReadModel(revision),
+    m5Playable: createEmptyM5PlayableReadModel(revision)
   };
 }
 
@@ -1113,6 +1260,11 @@ export function createM2PrototypeClientReadModelSnapshot(
   baseSnapshot = createInitialClientReadModelSnapshot()
 ): ClientReadModelSnapshot {
   const fixture = createM2PrototypeReadModelFixture(baseSnapshot.revision);
+  const m4Campaign = createM4CampaignReadModelFixture(baseSnapshot.revision);
+  const snapshotWithM4 = {
+    ...baseSnapshot,
+    m4Campaign
+  };
 
   return {
     ...baseSnapshot,
@@ -1140,7 +1292,8 @@ export function createM2PrototypeClientReadModelSnapshot(
     },
     districtList: fixture.districtList,
     m3Appointment: createM3AppointmentReadModelFixture(baseSnapshot.revision),
-    m4Campaign: createM4CampaignReadModelFixture(baseSnapshot.revision)
+    m4Campaign,
+    m5Playable: createM5PlayableReadModelFixture(snapshotWithM4)
   };
 }
 
@@ -1262,7 +1415,8 @@ export function applyClientReadModelDelta(
         ...projectHelloSimulationResult(delta.result),
         districtList: snapshot.districtList,
         m3Appointment: snapshot.m3Appointment,
-        m4Campaign: snapshot.m4Campaign
+        m4Campaign: snapshot.m4Campaign,
+        m5Playable: snapshot.m5Playable
       };
     case "replace":
       return delta.snapshot;
@@ -1340,7 +1494,8 @@ export function projectHelloSimulationResult(
     },
     districtList: createEmptyDistrictListReadModel(revision),
     m3Appointment: createEmptyM3AppointmentReadModel(revision),
-    m4Campaign: createEmptyM4CampaignReadModel(revision)
+    m4Campaign: createEmptyM4CampaignReadModel(revision),
+    m5Playable: createEmptyM5PlayableReadModel(revision)
   };
 }
 
@@ -2332,6 +2487,199 @@ export function findM4Siege(
   return sieges.find((siege) => siege.siegeId === siegeId) ?? null;
 }
 
+export function createM5PlayableReadModelFixture(
+  baseSnapshot: Pick<ClientReadModelSnapshot, "m4Campaign" | "revision" | "simulation">
+): ClientM5PlayableReadModelSnapshot {
+  const script = createM5PlayableLoopScriptV1();
+  const steps = script.successCommands.map((command, index) =>
+    createM5PlayableStep(command, index, "pending")
+  );
+  const firstStep = steps[0];
+  const m4 = baseSnapshot.m4Campaign;
+  const postwarMethods = collectM5PostwarMethods(m4.warReports);
+  const postwarReasonCodes = m4.warReports.flatMap((report) => [
+    ...report.reasonCodes,
+    ...(report.postwarCandidate?.reasonCodes ?? [])
+  ]);
+  const seasonReasonCodes = m4.route.sourceForecasts.flatMap(
+    (forecast) => forecast.seasonRiskReasonCodes
+  );
+  const withdrawalReasonCodes = m4.withdrawals.flatMap((withdrawal) => withdrawal.reasonCodes);
+
+  return {
+    revision: baseSnapshot.revision,
+    scenarioId: "m5.composite.river-gate.v0",
+    contentTag: "COMPOSITE_FICTIONAL_PLACEHOLDER",
+    day: m4.day,
+    stateHash: baseSnapshot.simulation.stateHash,
+    commandActor: { kind: "player", id: "polity:1" },
+    provenance: {
+      kind: "m5-protocol-script-projection",
+      note: "M5 playable client slice projected from accepted protocol command script and M3/M4 read models; UI owns only session progress and read-model slices."
+    },
+    goal: {
+      primaryGoal:
+        "Secure recognition over the contested target, settle postwar terms, and keep the arrangement stable through the visible checkpoint.",
+      successConditions: [
+        "Campaign produces a postwar or vassal arrangement for the contested target.",
+        "The arrangement has explicit method, source-ledger, and stabilization evidence.",
+        "Replay evidence preserves command sequence identity and visible state hash."
+      ],
+      failureConditions: [
+        "Supply, season, siege, or withdrawal leaves no valid arrangement.",
+        "Duplicate postwar settlement is rejected by protocol reason codes.",
+        "A Human Gate such as manual node battle is required and not approved."
+      ],
+      outOfScope: [
+        "Manual node battle UI is unavailable in M5.",
+        "Telemetry, accounts, server, multiplayer, and release/commercial surfaces are absent."
+      ]
+    },
+    replay: {
+      bootFixture: script.boot.fixture,
+      startHash: baseSnapshot.simulation.stateHash,
+      currentHash: baseSnapshot.simulation.stateHash,
+      commandCount: script.successCommands.length,
+      checkpointLabel: firstStep?.stepId ?? "m5.no-command"
+    },
+    session: {
+      phase: "not-started",
+      currentStepIndex: 0,
+      confirmedCommandIds: []
+    },
+    steps,
+    failureStep: createM5PlayableStep(script.duplicatePostwarCommand, steps.length, "rejected"),
+    ai: {
+      decisionKind: m4.aiReason.decisionKind,
+      commandKind: m4.aiReason.commandKind,
+      primaryReasonCode: m4.aiReason.primaryReasonCode,
+      reasonCodes: m4.aiReason.reasonCodes
+    },
+    risk: {
+      campaignRiskLabel: m4.route.reasonCodes.includes("route.forecast.seasonal-risk")
+        ? "seasonal route risk visible"
+        : "campaign risk visible",
+      routeReasonCodes: m4.route.reasonCodes,
+      withdrawalReasonCodes
+    },
+    supply: {
+      expectedDaysOfSupply: m4.grain.expectedDaysOfSupply,
+      grainReserved: m4.grain.grainReserved,
+      grainRequired: m4.grain.grainRequired,
+      reasonCodes: m4.grain.reasonCodes
+    },
+    season: {
+      windowLabel: formatM5Window(m4.planningDraft.startWindow),
+      reasonCodes: seasonReasonCodes
+    },
+    postwar: {
+      candidateCount: m4.warReports.filter((report) => report.postwarCandidate !== null).length,
+      methods: postwarMethods,
+      consequenceReasonCodes: postwarReasonCodes
+    },
+    reasonSummaries: summarizeM5ReasonCodes({
+      steps,
+      failureStep: createM5PlayableStep(script.duplicatePostwarCommand, steps.length, "rejected"),
+      aiReasonCodes: [m4.aiReason.primaryReasonCode, ...m4.aiReason.reasonCodes],
+      routeReasonCodes: m4.route.reasonCodes,
+      supplyReasonCodes: m4.grain.reasonCodes,
+      seasonReasonCodes,
+      withdrawalReasonCodes,
+      postwarReasonCodes
+    })
+  };
+}
+
+export function createM5SessionSave(input: {
+  readonly snapshot: ClientM5PlayableReadModelSnapshot;
+  readonly phase: ClientM5PlayablePhase;
+  readonly currentStepIndex: number;
+  readonly confirmedCommandIds: readonly string[];
+}): string {
+  const save: ClientM5SessionSaveV1 = {
+    schemaVersion: 1,
+    scenarioId: input.snapshot.scenarioId,
+    phase: input.phase,
+    currentStepIndex: input.currentStepIndex,
+    confirmedCommandIds: input.confirmedCommandIds,
+    checkpointLabel:
+      input.snapshot.steps[input.currentStepIndex]?.stepId ?? input.snapshot.replay.checkpointLabel,
+    stateHash: input.snapshot.replay.currentHash
+  };
+
+  return JSON.stringify(save);
+}
+
+export function parseM5SessionSave(input: string): ClientM5SessionSaveParseResult {
+  let value: unknown;
+  try {
+    value = JSON.parse(input);
+  } catch {
+    return {
+      ok: false,
+      reasonCode: "m5.save.invalid-json",
+      message: "M5 client session save must be valid JSON."
+    };
+  }
+
+  if (!isRecord(value)) {
+    return {
+      ok: false,
+      reasonCode: "m5.save.invalid-shape",
+      message: "M5 client session save must be an object."
+    };
+  }
+  if (value["schemaVersion"] !== 1 || value["scenarioId"] !== "m5.composite.river-gate.v0") {
+    return {
+      ok: false,
+      reasonCode: "m5.save.unsupported-version",
+      message: "M5 client session save has an unsupported schema or scenario."
+    };
+  }
+
+  const phase = parseM5PlayablePhase(value["phase"]);
+  const currentStepIndex = value["currentStepIndex"];
+  const confirmedCommandIds = value["confirmedCommandIds"];
+  const checkpointLabel = value["checkpointLabel"];
+  const stateHash = value["stateHash"];
+  if (
+    phase === null ||
+    typeof currentStepIndex !== "number" ||
+    !Number.isSafeInteger(currentStepIndex) ||
+    currentStepIndex < 0 ||
+    !Array.isArray(confirmedCommandIds) ||
+    !confirmedCommandIds.every((entry) => typeof entry === "string") ||
+    typeof checkpointLabel !== "string" ||
+    typeof stateHash !== "string"
+  ) {
+    return {
+      ok: false,
+      reasonCode: "m5.save.invalid-fields",
+      message: "M5 client session save fields are invalid."
+    };
+  }
+
+  return {
+    ok: true,
+    value: {
+      schemaVersion: 1,
+      scenarioId: "m5.composite.river-gate.v0",
+      phase,
+      currentStepIndex,
+      confirmedCommandIds: confirmedCommandIds.filter((entry) => typeof entry === "string"),
+      checkpointLabel,
+      stateHash
+    }
+  };
+}
+
+export function getM5CurrentStep(
+  snapshot: ClientM5PlayableReadModelSnapshot,
+  currentStepIndex: number
+): ClientM5PlayableStepReadModel | null {
+  return snapshot.steps[currentStepIndex] ?? null;
+}
+
 export function findM3Office(
   offices: readonly ClientM3OfficeReadModel[],
   officeId: ClientOfficeId
@@ -2348,6 +2696,303 @@ export function findM3Character(
   }
 
   return characters.find((character) => character.characterId === characterId) ?? null;
+}
+
+function createEmptyM5PlayableReadModel(
+  revision: ClientReadModelRevision
+): ClientM5PlayableReadModelSnapshot {
+  const emptyCommand: GameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.advance-day",
+    commandId: "m5.empty.advance",
+    actor: { kind: "system", id: "scheduler" },
+    expectedDay: 0,
+    expectedRevision: Number(revision)
+  };
+  const failureStep = createM5PlayableStep(emptyCommand, 0, "rejected");
+
+  return {
+    revision,
+    scenarioId: "m5.composite.river-gate.v0",
+    contentTag: "COMPOSITE_FICTIONAL_PLACEHOLDER",
+    day: 0,
+    stateHash: "not-started",
+    commandActor: { kind: "player", id: "polity:1" },
+    provenance: {
+      kind: "m5-protocol-script-projection",
+      note: "No M5 playable client read-model slice has been projected yet."
+    },
+    goal: {
+      primaryGoal: "Start the accepted M5 playable slice.",
+      successConditions: [],
+      failureConditions: [],
+      outOfScope: ["Manual node battle UI is unavailable in M5."]
+    },
+    replay: {
+      bootFixture: "m4.determinism-replay-001",
+      startHash: "not-started",
+      currentHash: "not-started",
+      commandCount: 0,
+      checkpointLabel: "m5.not-started"
+    },
+    session: {
+      phase: "not-started",
+      currentStepIndex: 0,
+      confirmedCommandIds: []
+    },
+    steps: [],
+    failureStep,
+    ai: {
+      decisionKind: "no-action",
+      commandKind: null,
+      primaryReasonCode: "m5.ai.not-started",
+      reasonCodes: []
+    },
+    risk: {
+      campaignRiskLabel: "not-started",
+      routeReasonCodes: [],
+      withdrawalReasonCodes: []
+    },
+    supply: {
+      expectedDaysOfSupply: 0,
+      grainReserved: 0,
+      grainRequired: 0,
+      reasonCodes: []
+    },
+    season: {
+      windowLabel: "not-started",
+      reasonCodes: []
+    },
+    postwar: {
+      candidateCount: 0,
+      methods: [],
+      consequenceReasonCodes: []
+    },
+    reasonSummaries: []
+  };
+}
+
+function createM5PlayableStep(
+  command: GameCommandV1,
+  index: number,
+  resultStatus: ClientM5CommandResultReadModel["status"]
+): ClientM5PlayableStepReadModel {
+  const reasonCodes = extractCommandReasonCodes(command);
+  const label = formatM5CommandLabel(command);
+  return {
+    stepId: `m5.step.${(index + 1).toString().padStart(2, "0")}.${command.kind}`,
+    stage: classifyM5CommandStage(command),
+    label,
+    command,
+    actorLabel: `${command.actor.kind}:${command.actor.id}`,
+    preview: {
+      commandKind: command.kind,
+      commandId: command.commandId,
+      summary: `Preview ${label}`,
+      reasonCodes
+    },
+    result: {
+      status: resultStatus,
+      summary:
+        resultStatus === "rejected"
+          ? "Rejected by accepted protocol path; shown as the M5 failure/cancel evidence."
+          : `Result will be reported by the authoritative simulation after ${command.kind}.`,
+      reasonCodes
+    },
+    reasonCodes
+  };
+}
+
+function extractCommandReasonCodes(command: GameCommandV1): readonly string[] {
+  switch (command.kind) {
+    case "sim.advance-day":
+    case "debug.set-district-control":
+    case "sim.verify-state-hash":
+      return [];
+    case "sim.commit-labor":
+      return ["m5.labor.mobilized-households"];
+    case "sim.set-polity-suzerain":
+    case "sim.record-obligation-fulfillment":
+    case "sim.appoint-office":
+    case "sim.update-office-policy":
+    case "sim.update-jurisdiction-policy":
+    case "sim.record-character-status":
+    case "sim.resolve-succession":
+    case "sim.apply-m3-postwar-governance":
+    case "sim.cancel-campaign-objective":
+    case "sim.release-campaign-grain-supply":
+      return [command.payload.reasonCode];
+    case "sim.create-obligation":
+      return ["m5.obligation.source-ledger-visible"];
+    case "sim.appoint-offices-bulk":
+      return command.payload.items.flatMap((item) => [item.reasonCode]);
+    case "sim.enfeoff-district":
+      return [command.payload.reasonCode];
+    case "sim.create-character-relationship":
+      return [command.payload.reasonCode];
+    case "sim.create-campaign-objective":
+    case "sim.update-campaign-objective":
+    case "sim.create-muster-commitment":
+    case "sim.record-muster-response":
+    case "sim.reserve-campaign-grain-supply":
+    case "sim.consume-campaign-grain-supply":
+    case "sim.start-campaign-march":
+    case "sim.resolve-m4-field-engagement":
+    case "sim.apply-m4-siege-choice":
+    case "sim.resolve-m4-campaign-withdrawal":
+      return command.payload.reasonCodes;
+  }
+}
+
+function classifyM5CommandStage(command: GameCommandV1): ClientM5PlayableStepStage {
+  switch (command.kind) {
+    case "sim.appoint-office":
+    case "sim.appoint-offices-bulk":
+    case "sim.update-office-policy":
+    case "sim.update-jurisdiction-policy":
+    case "sim.enfeoff-district":
+    case "sim.record-character-status":
+    case "sim.resolve-succession":
+    case "sim.create-character-relationship":
+      return "appointment";
+    case "sim.set-polity-suzerain":
+    case "sim.create-obligation":
+    case "sim.record-obligation-fulfillment":
+      return "obligation";
+    case "sim.commit-labor":
+    case "sim.reserve-campaign-grain-supply":
+    case "sim.consume-campaign-grain-supply":
+    case "sim.release-campaign-grain-supply":
+      return "logistics";
+    case "sim.create-campaign-objective":
+    case "sim.update-campaign-objective":
+    case "sim.cancel-campaign-objective":
+    case "sim.create-muster-commitment":
+    case "sim.record-muster-response":
+    case "sim.start-campaign-march":
+      return "campaign";
+    case "sim.resolve-m4-field-engagement":
+    case "sim.apply-m4-siege-choice":
+    case "sim.resolve-m4-campaign-withdrawal":
+      return "battle-siege";
+    case "sim.apply-m3-postwar-governance":
+      return command.commandId.includes("duplicate") ? "failure" : "postwar";
+    case "sim.advance-day":
+    case "sim.verify-state-hash":
+    case "debug.set-district-control":
+      return "stabilization";
+  }
+}
+
+function formatM5CommandLabel(command: GameCommandV1): string {
+  switch (command.kind) {
+    case "sim.create-campaign-objective":
+      return "Choose campaign objective and window";
+    case "sim.create-muster-commitment":
+      return "Request obligation-backed muster";
+    case "sim.record-muster-response":
+      return "Record vassal muster response";
+    case "sim.reserve-campaign-grain-supply":
+      return "Reserve campaign grain supply";
+    case "sim.start-campaign-march":
+      return "Start accepted campaign march";
+    case "sim.resolve-m4-field-engagement":
+      return "Resolve automatic field engagement";
+    case "sim.apply-m4-siege-choice":
+      return "Apply deterministic siege choice";
+    case "sim.resolve-m4-campaign-withdrawal":
+      return "Resolve campaign withdrawal and postwar handoff";
+    case "sim.apply-m3-postwar-governance":
+      return "Select postwar arrangement";
+    case "sim.advance-day":
+      return "Advance stabilization day";
+    default:
+      return command.kind;
+  }
+}
+
+function collectM5PostwarMethods(
+  reports: readonly ClientM4WarReportReadModel[]
+): readonly M3PostwarGovernanceMethodV1[] {
+  const methods = new Set<M3PostwarGovernanceMethodV1>();
+  for (const report of reports) {
+    for (const method of report.postwarCandidate?.validM3Methods ?? []) {
+      methods.add(method);
+    }
+  }
+  return [...methods].sort();
+}
+
+function summarizeM5ReasonCodes(input: {
+  readonly steps: readonly ClientM5PlayableStepReadModel[];
+  readonly failureStep: ClientM5PlayableStepReadModel;
+  readonly aiReasonCodes: readonly string[];
+  readonly routeReasonCodes: readonly string[];
+  readonly supplyReasonCodes: readonly string[];
+  readonly seasonReasonCodes: readonly string[];
+  readonly withdrawalReasonCodes: readonly string[];
+  readonly postwarReasonCodes: readonly string[];
+}): readonly ClientM5ReasonSummaryReadModel[] {
+  const accumulator = new Map<
+    string,
+    { count: number; sourceKinds: Set<ClientM5ReasonSourceKind> }
+  >();
+  const add = (reasonCodes: readonly string[], sourceKind: ClientM5ReasonSourceKind): void => {
+    for (const reasonCode of reasonCodes) {
+      const existing = accumulator.get(reasonCode);
+      if (existing === undefined) {
+        accumulator.set(reasonCode, { count: 1, sourceKinds: new Set([sourceKind]) });
+      } else {
+        existing.count += 1;
+        existing.sourceKinds.add(sourceKind);
+      }
+    }
+  };
+
+  for (const step of input.steps) {
+    add(step.reasonCodes, step.stage === "postwar" ? "postwar" : "campaign");
+  }
+  add(input.failureStep.reasonCodes, "failure");
+  add(input.aiReasonCodes, "ai");
+  add(input.routeReasonCodes, "campaign");
+  add(input.supplyReasonCodes, "supply");
+  add(input.seasonReasonCodes, "season");
+  add(input.withdrawalReasonCodes, "campaign");
+  add(input.postwarReasonCodes, "postwar");
+
+  return [...accumulator.entries()]
+    .map(([reasonCode, summary]) => ({
+      reasonCode,
+      count: summary.count,
+      sourceKinds: [...summary.sourceKinds].sort()
+    }))
+    .sort(
+      (left, right) => right.count - left.count || left.reasonCode.localeCompare(right.reasonCode)
+    );
+}
+
+function parseM5PlayablePhase(value: unknown): ClientM5PlayablePhase | null {
+  switch (value) {
+    case "not-started":
+    case "running":
+    case "success":
+    case "failure":
+    case "cancelled":
+      return value;
+    default:
+      return null;
+  }
+}
+
+function formatM5Window(window: {
+  readonly earliestDay: number;
+  readonly latestDay: number;
+}): string {
+  return `day ${window.earliestDay}-${window.latestDay}`;
+}
+
+function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function createEmptyM4CampaignReadModel(
