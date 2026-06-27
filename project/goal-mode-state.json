@@ -2,19 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [],
+  "current_tasks": [
+    "M6-MAP-CANDIDATE-PIPELINE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_between_tasks",
+      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+      "status": "active_orchestrating",
       "role": "lead_orchestrator"
+    },
+    "client_engineer": {
+      "thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
+      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+      "status": "active",
+      "role": "client_engineer",
+      "nickname": "Window"
     }
   },
   "last_integrated_task": "M6-SCENARIO-DATA-PIPELINE-001",
-  "last_main_commit": "7f83cd4da1dcd7fdc77be922225bef43c9127c74",
+  "last_main_commit": "1ecd9ee80f130a96317d86a8099ea000725af024",
   "next_ready_tasks": [
-    "M6-MAP-CANDIDATE-PIPELINE-001",
     "M6-SUCCESSION-COMPLETION-001"
   ],
   "unresolved_risks": [
@@ -40,10 +48,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M5 manual node battle decision remains DEFER_MANUAL_NODE_BATTLE; no active Human Gate after M6 scenario data integration.",
+    "approval_source": "M5 manual node battle decision remains DEFER_MANUAL_NODE_BATTLE; no active Human Gate for M6 map candidate pipeline.",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-SCENARIO-DATA-PIPELINE-001 is CLOSED; next READY tasks are M6-MAP-CANDIDATE-PIPELINE-001 and M6-SUCCESSION-COMPLETION-001.",
-    "recorded_at": "2026-06-27T15:19:54+08:00"
+    "note": "No active Human Gate. M6-MAP-CANDIDATE-PIPELINE-001 is IN_PROGRESS with client_engineer writer.",
+    "recorded_at": "2026-06-27T15:25:45+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -57,7 +65,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T15:19:54+08:00",
+  "last_updated_at": "2026-06-27T15:26:54+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -69,7 +77,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T15:19:54+08:00",
+  "updated_at": "2026-06-27T15:26:54+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -438,7 +446,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M6-MAP-CANDIDATE-PIPELINE-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
+  "next_action": "Wait for client_engineer REVIEW handoff for M6-MAP-CANDIDATE-PIPELINE-001, then route to systems_architect.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -716,5 +724,23 @@
       "M6-MAP-CANDIDATE-PIPELINE-001",
       "M6-SUCCESSION-COMPLETION-001"
     ]
+  },
+  "m6_map_candidate_pipeline": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+    "branch_or_worktree": "feat/m6-map-candidate-pipeline",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
+    "writer_nickname": "Window",
+    "start_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-LEAD-TO-CLIENT-START.json",
+    "started_at": "2026-06-27T15:25:45+08:00",
+    "base_main_commit": "1ecd9ee80f130a96317d86a8099ea000725af024",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "previous_closed_task": "M6-SCENARIO-DATA-PIPELINE-001",
+    "next_action": "client_engineer writer implements allowed-path map candidate pipeline and returns REVIEW handoff for systems_architect.",
+    "start_submission_id": "019f07f8-e8a4-71c2-8978-a75da0fa39ed",
+    "route_sent_at": "2026-06-27T15:26:54+08:00"
   }
 }
