@@ -1,0 +1,79 @@
+{
+  "message_id": "MSG-20260627-M6-LAYERED-AI-REVIEW",
+  "task_id": "M6-LAYERED-AI-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented a bounded deterministic M6 layered AI planner and validation runner in sim-ai. The planner uses an explicit Alpha agenda with strategic, campaign, recovery, succession, diplomatic, and policy layers; emits shared GameCommand payloads through submitCommandV1; keeps non-system gameplay actions on AI actors; preserves existing system-only support commands for scheduler/legitimacy authority; and exposes bounded reason traces for no-action, wait, withdraw, target, change, policy, and diplomacy decisions.",
+  "artifacts": [
+    "packages/sim-ai/src/m6-layered-ai.ts",
+    "packages/sim-ai/src/index.ts",
+    "packages/sim-ai/package.json",
+    "tests/sim-ai-m6-layered-ai.test.ts",
+    "project/tasks/active/M6-LAYERED-AI-001.json",
+    "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m6-layered-ai / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "cf22aefa",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before implementation commit: modified packages/sim-ai/package.json and packages/sim-ai/src/index.ts; untracked packages/sim-ai/src/m6-layered-ai.ts and tests/sim-ai-m6-layered-ai.test.ts. All paths were allowed by the task."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 1,
+      "result": "Pre-implementation regression failed as expected because runM6LayeredAlphaAiValidationV1 and planM6LayeredAiTurnV1 were not implemented."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "Post-implementation passed 3 test files / 6 tests, including full Alpha survival, command parity, bounded trace truncation, deterministic plan equality, no pre-submit mutation, no rescue hooks, and reason coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed 25 test files / 191 tests. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed; hello, command/query, save/load, M4, M5, and M6 Alpha Node/Worker-compatible hashes matched. M6 Alpha Node hash 260f46c3 matched Worker-compatible hash 260f46c3; terminal outcome victory."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture:check, sim:determinism, root vitest 40 files / 304 tests, and apps/web vitest 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-LAYERED-AI-001",
+      "exit_code": 0,
+      "result": "Task JSON valid before REVIEW metadata update."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before REVIEW metadata update."
+    }
+  ],
+  "decisions": [
+    "Kept the implementation in packages/sim-ai and tests; no protocol, save-format, scheduler, RNG, UI, content, runner, or docs changes were made.",
+    "Used an explicit bounded Alpha agenda instead of a future-proof manager, singleton scorer, script engine, telemetry, service, or manual battle assumption.",
+    "Converted player-available gameplay command templates to AI actors at planning time while preserving system-only scheduler and M6 legitimacy support commands because sim-core currently authorizes those only for domain system actors.",
+    "The layered planner reads public query surfaces for succession, diplomacy, and terminal preview reasons where available; it does not mutate WorldState before submitCommandV1."
+  ],
+  "risks": [
+    "Task risk remains R4 and needs systems_architect review. No new R3 protocol/save/scheduler/RNG change was introduced by this writer.",
+    "Policy active-event selection still relies on the accepted M6 Alpha fixture agenda because no public policy-event list query exists yet; the action is still submitted through sim.choose-policy-event-option and covered by command parity tests.",
+    "Postwar legitimacy remains a system support command under existing sim-core authority rules, so it is tracked separately from non-system AI gameplay actions."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the bounded layered AI implementation and tests for deterministic ordering, command parity, trace coverage, authority boundaries, and whether the system-support handling for scheduler/postwar legitimacy is acceptable for M6 Alpha. If accepted, route onward per the M6 review flow; do not mark ACCEPTED/CLOSED from this writer handoff alone.",
+  "created_at": "2026-06-27T22:37:02.459+08:00"
+}
