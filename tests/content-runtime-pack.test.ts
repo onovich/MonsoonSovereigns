@@ -3,9 +3,11 @@ import { describe, expect, test } from "vitest";
 import {
   createRuntimeContentPackIndexV0,
   createRuntimeM3CharacterOfficeContentPackIndexV0,
+  createRuntimeM6AlphaScenarioContentPackIndexV0,
   createRuntimeM3PolityVassalageContentPackIndexV0,
   createRuntimeM2WorldContentPackIndexV0,
   parseRuntimeM3CharacterOfficeContentPackV0,
+  parseRuntimeM6AlphaScenarioContentPackV0,
   parseRuntimeM3PolityVassalageContentPackV0,
   parseRuntimeM2WorldContentPackV0,
   parseRuntimeContentPackV0
@@ -498,3 +500,165 @@ describe("M3 runtime character office content pack", () => {
     ).toThrow("RuntimeM3CharacterOfficeContentPackV0");
   });
 });
+
+describe("M6 runtime alpha scenario content pack", () => {
+  test("parses scenario claim records and reference IDs without downstream system objects", () => {
+    const pack = parseRuntimeM6AlphaScenarioContentPackV0({
+      schemaVersion: 1,
+      kind: "runtime-m6-alpha-scenario-content-pack-v0",
+      fixtureId: "m6.runtime-alpha",
+      manifest: {
+        schemaVersion: 1,
+        fixtureId: "m6.runtime-alpha",
+        fixtureKind: "alpha-scenario-set",
+        syntheticScope: "m6-alpha-validation",
+        manifestHash: "abcdef12",
+        sourceCount: 1,
+        claimCount: 1,
+        referenceTargetCount: 8,
+        scenarioCount: 1
+      },
+      sources: [
+        {
+          sourceId: "source.docs.09",
+          sourceType: "project-research-baseline",
+          citationKey: "docs/09-world-history-culture.md",
+          accessNote: "Section-level project source."
+        }
+      ],
+      claims: [
+        {
+          claimId: "HIST-M6-RUNTIME",
+          claim: "Runtime test claim.",
+          historicity: "COMPOSITE",
+          confidence: "MEDIUM",
+          sourceIds: ["source.docs.09"],
+          sourcePassages: ["section 11"],
+          competingInterpretations: [],
+          gameAbstraction: "Runtime reference validation only.",
+          researchStatus: "SUMMARY_ONLY"
+        }
+      ],
+      referenceTargets: makeRuntimeReferenceTargets(),
+      scenarios: [
+        {
+          sourceId: "scenario.alpha.runtime",
+          scenarioKey: "alpha-runtime",
+          displayNameKey: "content.m6.alpha.scenario.runtime",
+          startYear: 1531,
+          dependencyOrder: 1,
+          historicity: "COMPOSITE",
+          materialClaimIds: ["HIST-M6-RUNTIME"],
+          references: makeRuntimeReferenceSets()
+        }
+      ]
+    });
+    const index = createRuntimeM6AlphaScenarioContentPackIndexV0(pack);
+
+    expect(index.getScenario("scenario.alpha.runtime")?.startYear).toBe(1531);
+    expect(index.getClaim("HIST-M6-RUNTIME")?.researchStatus).toBe("SUMMARY_ONLY");
+    expect(index.getSource("source.docs.09")?.sourceType).toBe("project-research-baseline");
+    expect(index).not.toHaveProperty("getDiplomacySystem");
+    expect(index).not.toHaveProperty("getVictoryEvaluator");
+  });
+
+  test("rejects runtime M6 packs with mismatched counts or unstable order", () => {
+    expect(() =>
+      parseRuntimeM6AlphaScenarioContentPackV0({
+        schemaVersion: 1,
+        kind: "runtime-m6-alpha-scenario-content-pack-v0",
+        fixtureId: "m6.runtime-alpha",
+        manifest: {
+          schemaVersion: 1,
+          fixtureId: "m6.runtime-alpha",
+          fixtureKind: "alpha-scenario-set",
+          syntheticScope: "m6-alpha-validation",
+          manifestHash: "abcdef12",
+          sourceCount: 1,
+          claimCount: 2,
+          referenceTargetCount: 8,
+          scenarioCount: 1
+        },
+        sources: [
+          {
+            sourceId: "source.docs.09",
+            sourceType: "project-research-baseline",
+            citationKey: "docs/09-world-history-culture.md",
+            accessNote: "Section-level project source."
+          }
+        ],
+        claims: [
+          {
+            claimId: "HIST-M6-Z-RUNTIME",
+            claim: "Runtime test claim.",
+            historicity: "COMPOSITE",
+            confidence: "MEDIUM",
+            sourceIds: ["source.docs.09"],
+            sourcePassages: ["section 11"],
+            competingInterpretations: [],
+            gameAbstraction: "Runtime reference validation only.",
+            researchStatus: "SUMMARY_ONLY"
+          },
+          {
+            claimId: "HIST-M6-A-RUNTIME",
+            claim: "Runtime test claim.",
+            historicity: "COMPOSITE",
+            confidence: "MEDIUM",
+            sourceIds: ["source.docs.09"],
+            sourcePassages: ["section 11"],
+            competingInterpretations: [],
+            gameAbstraction: "Runtime reference validation only.",
+            researchStatus: "SUMMARY_ONLY"
+          }
+        ],
+        referenceTargets: makeRuntimeReferenceTargets(),
+        scenarios: [
+          {
+            sourceId: "scenario.alpha.runtime",
+            scenarioKey: "alpha-runtime",
+            displayNameKey: "content.m6.alpha.scenario.runtime",
+            startYear: 1531,
+            dependencyOrder: 1,
+            historicity: "COMPOSITE",
+            materialClaimIds: ["HIST-M6-Z-RUNTIME"],
+            references: makeRuntimeReferenceSets()
+          }
+        ]
+      })
+    ).toThrow("RuntimeM6AlphaScenarioContentPackV0");
+  });
+});
+
+function makeRuntimeReferenceTargets() {
+  return {
+    diplomacy: [makeRuntimeReferenceTarget("diplomacy.alpha.runtime")],
+    legitimacy: [makeRuntimeReferenceTarget("legitimacy.alpha.runtime")],
+    succession: [makeRuntimeReferenceTarget("succession.alpha.runtime")],
+    mapCandidates: [makeRuntimeReferenceTarget("map.alpha.runtime")],
+    policies: [makeRuntimeReferenceTarget("policy.alpha.runtime")],
+    events: [makeRuntimeReferenceTarget("event.alpha.runtime")],
+    encyclopediaEntries: [makeRuntimeReferenceTarget("encyclopedia.alpha.runtime")],
+    startToVictoryFixtures: [makeRuntimeReferenceTarget("fixture.alpha.runtime")]
+  };
+}
+
+function makeRuntimeReferenceTarget(sourceId: string) {
+  return {
+    sourceId,
+    displayNameKey: "content.m6.alpha.reference.runtime",
+    claimId: "HIST-M6-RUNTIME"
+  };
+}
+
+function makeRuntimeReferenceSets() {
+  return {
+    diplomacy: ["diplomacy.alpha.runtime"],
+    legitimacy: ["legitimacy.alpha.runtime"],
+    succession: ["succession.alpha.runtime"],
+    mapCandidates: ["map.alpha.runtime"],
+    policies: ["policy.alpha.runtime"],
+    events: ["event.alpha.runtime"],
+    encyclopediaEntries: ["encyclopedia.alpha.runtime"],
+    startToVictoryFixtures: ["fixture.alpha.runtime"]
+  };
+}

@@ -2,7 +2,12 @@ import { readFile } from "node:fs/promises";
 
 import { compileContentPackV0 } from "./index.ts";
 
-const DEFAULT_FIXTURE_PATH = "../../content-source/m1-fixtures/abstract-graph-30.json";
+const DEFAULT_FIXTURE_PATHS: readonly string[] = [
+  "../../content-source/m1-fixtures/abstract-graph-30.json",
+  "../../content-source/m2-fixtures/prototype-world-30-districts.json",
+  "../../content-source/m3-fixtures/character-office-validation-64.json",
+  "../../content-source/m6-alpha-scenarios/alpha-scenario-set.json"
+];
 
 async function main(args: readonly string[]): Promise<number> {
   const command = args[0] ?? "validate";
@@ -11,7 +16,7 @@ async function main(args: readonly string[]): Promise<number> {
     return 1;
   }
 
-  const fixturePaths = args.length > 1 ? args.slice(1) : [DEFAULT_FIXTURE_PATH];
+  const fixturePaths = args.length > 1 ? args.slice(1) : DEFAULT_FIXTURE_PATHS;
   for (const fixturePath of fixturePaths) {
     const text = await readFile(fixturePath, "utf8");
     const parsed = JSON.parse(text) as unknown;
@@ -32,9 +37,13 @@ async function main(args: readonly string[]): Promise<number> {
       console.log(
         `Content validation passed: ${result.pack.fixtureId} districts=${result.pack.manifest.districtCount} settlements=${result.pack.manifest.settlementCount} regionalSeasonalCurves=${result.pack.manifest.regionalSeasonalCurveCount} routes=${result.pack.manifest.routeCount} mapGeometries=${result.pack.manifest.mapGeometryCount} manifestHash=${result.pack.manifest.manifestHash}`
       );
-    } else {
+    } else if (result.pack.kind === "runtime-m3-character-office-content-pack-v0") {
       console.log(
         `Content validation passed: ${result.pack.fixtureId} characters=${result.pack.manifest.characterCount} relationships=${result.pack.manifest.relationshipCount} offices=${result.pack.manifest.officeCount} landedPowers=${result.pack.manifest.landedPowerCount} officePolicies=${result.pack.manifest.officePolicyCount} enfeoffmentHooks=${result.pack.manifest.enfeoffmentHookCount} manifestHash=${result.pack.manifest.manifestHash}`
+      );
+    } else {
+      console.log(
+        `Content validation passed: ${result.pack.fixtureId} scenarios=${result.pack.manifest.scenarioCount} claims=${result.pack.manifest.claimCount} sources=${result.pack.manifest.sourceCount} referenceTargets=${result.pack.manifest.referenceTargetCount} manifestHash=${result.pack.manifest.manifestHash}`
       );
     }
   }

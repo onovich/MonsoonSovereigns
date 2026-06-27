@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "kind": "m6.alpha-scenario-set",
+  "fixtureId": "m6.alpha.scenario.set",
+  "fixtureKind": "alpha-scenario-set",
+  "syntheticScope": "m6-alpha-validation",
+  "sources": [
+    {
+      "sourceId": "source.docs.09",
+      "sourceType": "project-research-baseline",
+      "citationKey": "docs/09-world-history-culture.md",
+      "accessNote": "Project research baseline sections 3 and 11; not a page-verified formal source."
+    },
+    {
+      "sourceId": "source.docs.10",
+      "sourceType": "workflow-policy",
+      "citationKey": "docs/10-historical-research-policy.md",
+      "accessNote": "Project policy for claim records, source classes, uncertainty, and cultural-risk handling."
+    },
+    {
+      "sourceId": "source.docs.16",
+      "sourceType": "academic-bibliography-entry",
+      "citationKey": "docs/16-research-bibliography.md",
+      "accessNote": "Bibliography metadata only; page-level verification remains RESEARCH REQUIRED before M7 content lock."
+    },
+    {
+      "sourceId": "source.docs.23",
+      "sourceType": "workflow-policy",
+      "citationKey": "docs/23-milestone-acceptance-matrix.md",
+      "accessNote": "M6 acceptance-matrix row requiring three-scenario pipeline and Alpha system-complete evidence."
+    },
+    {
+      "sourceId": "source.gate.m5",
+      "sourceType": "gate-evidence",
+      "citationKey": "docs/GATE-M5.md",
+      "accessNote": "M5 gate evidence preserves composite/fictional vertical-slice limits and defers manual node battle."
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "HIST-M6-ALPHA-1531-ANCHOR",
+      "claim": "1531 is retained as an Alpha scenario anchor for the earlier edge-polity opening.",
+      "historicity": "HISTORICAL",
+      "confidence": "LOW",
+      "sourceIds": ["source.docs.09", "source.docs.16"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 3 working timeline and section 11 suggested scenarios",
+        "docs/16-research-bibliography.md section 2 Toungoo, Ayutthaya and surrounding bibliography"
+      ],
+      "competingInterpretations": [
+        "Exact dates and cause chains remain source-version dependent until page-verified claim records are produced."
+      ],
+      "gameAbstraction": "Use only as an Alpha start-year anchor; no formal person roster, title, or cultural symbol is locked.",
+      "researchStatus": "RESEARCH_REQUIRED"
+    },
+    {
+      "claimId": "HIST-M6-ALPHA-1569-ANCHOR",
+      "claim": "1569 is retained as an Alpha scenario anchor for the overextended suzerainty opening.",
+      "historicity": "HISTORICAL",
+      "confidence": "LOW",
+      "sourceIds": ["source.docs.09", "source.docs.16"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 3 working timeline and section 11 suggested scenarios",
+        "docs/16-research-bibliography.md section 2 Toungoo, Ayutthaya and surrounding bibliography"
+      ],
+      "competingInterpretations": [
+        "Formal campaign names, participants, and chronology require later triangulation before content lock."
+      ],
+      "gameAbstraction": "Use only as an Alpha pressure-state anchor for suzerainty, obligations, and war-outcome fixtures.",
+      "researchStatus": "RESEARCH_REQUIRED"
+    },
+    {
+      "claimId": "HIST-M6-ALPHA-1581-ANCHOR",
+      "claim": "1581 is retained as an Alpha scenario anchor for the succession and network-fracture opening.",
+      "historicity": "HISTORICAL",
+      "confidence": "LOW",
+      "sourceIds": ["source.docs.09", "source.docs.16"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 3 working timeline and section 11 suggested scenarios",
+        "docs/16-research-bibliography.md section 1 political cycles and section 2 regional bibliography"
+      ],
+      "competingInterpretations": [
+        "The Alpha pipeline does not decide whether later state failure is best explained by succession, logistics, local agency, or combined pressure."
+      ],
+      "gameAbstraction": "Use only as an Alpha opening that must validate succession and legitimacy references without locking final content.",
+      "researchStatus": "RESEARCH_REQUIRED"
+    },
+    {
+      "claimId": "HIST-M6-COMPOSITE-PLAYABLE-SET",
+      "claim": "The three Alpha scenarios are composite gameplay datasets, not a locked formal historical database.",
+      "historicity": "COMPOSITE",
+      "confidence": "MEDIUM",
+      "sourceIds": ["source.docs.09", "source.gate.m5"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 11 suggested scenarios",
+        "docs/GATE-M5.md content research and production cost decision gate"
+      ],
+      "competingInterpretations": [
+        "M7 may replace these composites with page-verified formal scenario records or narrower fictional training scenarios."
+      ],
+      "gameAbstraction": "Compile a deterministic scenario-set pack that validates cross-surface references without final scenario lock.",
+      "researchStatus": "SUMMARY_ONLY"
+    },
+    {
+      "claimId": "HIST-M6-FICTIONAL-VALIDATION-IDS",
+      "claim": "Internal Alpha scenario IDs, display keys, and reference-target IDs are fictional validation scaffolding.",
+      "historicity": "FICTIONAL",
+      "confidence": "HIGH",
+      "sourceIds": [],
+      "sourcePassages": [],
+      "competingInterpretations": [],
+      "gameAbstraction": "Stable IDs support compiler, manifest, and downstream-reference tests only.",
+      "researchStatus": "PAGE_VERIFIED"
+    },
+    {
+      "claimId": "HIST-M6-INFERRED-SYSTEM-SURFACES",
+      "claim": "The scenario pack must validate references for diplomacy, legitimacy, succession, map candidates, policy, events, encyclopedia entries, and start-to-victory fixtures.",
+      "historicity": "INFERRED",
+      "confidence": "MEDIUM",
+      "sourceIds": ["source.docs.23", "source.docs.10"],
+      "sourcePassages": [
+        "docs/23-milestone-acceptance-matrix.md M6 row",
+        "docs/10-historical-research-policy.md sections 3 and 10"
+      ],
+      "competingInterpretations": [
+        "The referenced surfaces may later be split into multiple packages, but this task only validates stable IDs."
+      ],
+      "gameAbstraction": "Represent each downstream surface as reference IDs; do not implement the systems here.",
+      "researchStatus": "SUMMARY_ONLY"
+    }
+  ],
+  "referenceTargets": {
+    "diplomacy": [
+      {
+        "sourceId": "diplomacy.alpha.envoy-pressure",
+        "displayNameKey": "content.m6.alpha.diplomacy.envoy_pressure",
+        "claimId": "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      }
+    ],
+    "legitimacy": [
+      {
+        "sourceId": "legitimacy.alpha.order-recognition",
+        "displayNameKey": "content.m6.alpha.legitimacy.order_recognition",
+        "claimId": "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      }
+    ],
+    "succession": [
+      {
+        "sourceId": "succession.alpha.court-continuity",
+        "displayNameKey": "content.m6.alpha.succession.court_continuity",
+        "claimId": "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      }
+    ],
+    "mapCandidates": [
+      {
+        "sourceId": "map.alpha.western-mainland-candidate",
+        "displayNameKey": "content.m6.alpha.map.western_mainland_candidate",
+        "claimId": "HIST-M6-COMPOSITE-PLAYABLE-SET"
+      }
+    ],
+    "policies": [
+      {
+        "sourceId": "policy.alpha.vassal-obligation-stress",
+        "displayNameKey": "content.m6.alpha.policy.vassal_obligation_stress",
+        "claimId": "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      }
+    ],
+    "events": [
+      {
+        "sourceId": "event.alpha.succession-pressure",
+        "displayNameKey": "content.m6.alpha.event.succession_pressure",
+        "claimId": "HIST-M6-COMPOSITE-PLAYABLE-SET"
+      }
+    ],
+    "encyclopediaEntries": [
+      {
+        "sourceId": "encyclopedia.alpha.claim-labels",
+        "displayNameKey": "content.m6.alpha.encyclopedia.claim_labels",
+        "claimId": "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      }
+    ],
+    "startToVictoryFixtures": [
+      {
+        "sourceId": "fixture.alpha.recognized-order-victory",
+        "displayNameKey": "content.m6.alpha.fixture.recognized_order_victory",
+        "claimId": "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "sourceId": "scenario.alpha.1531.edge-polity",
+      "scenarioKey": "alpha-1531-edge-polity",
+      "displayNameKey": "content.m6.alpha.scenario.1531_edge_polity",
+      "startYear": 1531,
+      "dependencyOrder": 1,
+      "historicity": "COMPOSITE",
+      "materialClaimIds": [
+        "HIST-M6-ALPHA-1531-ANCHOR",
+        "HIST-M6-COMPOSITE-PLAYABLE-SET",
+        "HIST-M6-FICTIONAL-VALIDATION-IDS",
+        "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      ],
+      "references": {
+        "diplomacy": ["diplomacy.alpha.envoy-pressure"],
+        "legitimacy": ["legitimacy.alpha.order-recognition"],
+        "succession": ["succession.alpha.court-continuity"],
+        "mapCandidates": ["map.alpha.western-mainland-candidate"],
+        "policies": ["policy.alpha.vassal-obligation-stress"],
+        "events": ["event.alpha.succession-pressure"],
+        "encyclopediaEntries": ["encyclopedia.alpha.claim-labels"],
+        "startToVictoryFixtures": ["fixture.alpha.recognized-order-victory"]
+      }
+    },
+    {
+      "sourceId": "scenario.alpha.1569.overextended-suzerainty",
+      "scenarioKey": "alpha-1569-overextended-suzerainty",
+      "displayNameKey": "content.m6.alpha.scenario.1569_overextended_suzerainty",
+      "startYear": 1569,
+      "dependencyOrder": 2,
+      "historicity": "COMPOSITE",
+      "materialClaimIds": [
+        "HIST-M6-ALPHA-1569-ANCHOR",
+        "HIST-M6-COMPOSITE-PLAYABLE-SET",
+        "HIST-M6-FICTIONAL-VALIDATION-IDS",
+        "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      ],
+      "references": {
+        "diplomacy": ["diplomacy.alpha.envoy-pressure"],
+        "legitimacy": ["legitimacy.alpha.order-recognition"],
+        "succession": ["succession.alpha.court-continuity"],
+        "mapCandidates": ["map.alpha.western-mainland-candidate"],
+        "policies": ["policy.alpha.vassal-obligation-stress"],
+        "events": ["event.alpha.succession-pressure"],
+        "encyclopediaEntries": ["encyclopedia.alpha.claim-labels"],
+        "startToVictoryFixtures": ["fixture.alpha.recognized-order-victory"]
+      }
+    },
+    {
+      "sourceId": "scenario.alpha.1581.succession-fracture",
+      "scenarioKey": "alpha-1581-succession-fracture",
+      "displayNameKey": "content.m6.alpha.scenario.1581_succession_fracture",
+      "startYear": 1581,
+      "dependencyOrder": 3,
+      "historicity": "COMPOSITE",
+      "materialClaimIds": [
+        "HIST-M6-ALPHA-1581-ANCHOR",
+        "HIST-M6-COMPOSITE-PLAYABLE-SET",
+        "HIST-M6-FICTIONAL-VALIDATION-IDS",
+        "HIST-M6-INFERRED-SYSTEM-SURFACES"
+      ],
+      "references": {
+        "diplomacy": ["diplomacy.alpha.envoy-pressure"],
+        "legitimacy": ["legitimacy.alpha.order-recognition"],
+        "succession": ["succession.alpha.court-continuity"],
+        "mapCandidates": ["map.alpha.western-mainland-candidate"],
+        "policies": ["policy.alpha.vassal-obligation-stress"],
+        "events": ["event.alpha.succession-pressure"],
+        "encyclopediaEntries": ["encyclopedia.alpha.claim-labels"],
+        "startToVictoryFixtures": ["fixture.alpha.recognized-order-victory"]
+      }
+    }
+  ]
+}

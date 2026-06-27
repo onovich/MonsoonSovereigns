@@ -5,9 +5,11 @@ import { describe, expect, test } from "vitest";
 import { compileContentPackV0, compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
 import {
   parseM1GraphFixtureSourceV0,
+  parseM6AlphaScenarioSetSourceV0,
   parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   type M1GraphFixtureSourceV0,
+  type M6AlphaScenarioSetSourceV0,
   type M3CharacterOfficeFixtureSourceV0,
   type M2WorldFixtureSourceV0
 } from "../packages/content-schema/src/index";
@@ -23,6 +25,10 @@ const m2BadFixtureManifestUrl = new URL(
 );
 const m3CharacterOfficeFixtureUrl = new URL(
   "../content-source/m3-fixtures/character-office-validation-64.json",
+  import.meta.url
+);
+const m6AlphaScenarioFixtureUrl = new URL(
+  "../content-source/m6-alpha-scenarios/alpha-scenario-set.json",
   import.meta.url
 );
 
@@ -568,9 +574,219 @@ describe("M3 Character Office Content Compiler v0", () => {
   });
 });
 
+describe("M6 Alpha Scenario Content Compiler v0", () => {
+  test("compiles the three Alpha scenario data sets with labels and deterministic references", async () => {
+    const source = await readM6AlphaScenarioFixture();
+    const pack = compileContentPackV0OrThrow(source);
+
+    expect(pack.kind).toBe("runtime-m6-alpha-scenario-content-pack-v0");
+    if (pack.kind !== "runtime-m6-alpha-scenario-content-pack-v0") {
+      throw new Error("Expected M6 alpha scenario runtime pack.");
+    }
+    expect(pack.fixtureId).toBe("m6.alpha.scenario.set");
+    expect(pack.manifest.scenarioCount).toBe(3);
+    expect(pack.manifest.claimCount).toBeGreaterThanOrEqual(6);
+    expect(pack.manifest.referenceTargetCount).toBe(8);
+    expect(pack.manifest.manifestHash).toMatch(/^[0-9a-f]{8}$/u);
+    expect(pack.scenarios.map((scenario) => scenario.scenarioKey)).toEqual([
+      "alpha-1531-edge-polity",
+      "alpha-1569-overextended-suzerainty",
+      "alpha-1581-succession-fracture"
+    ]);
+    expect(new Set(pack.claims.map((claim) => claim.historicity))).toEqual(
+      new Set(["HISTORICAL", "INFERRED", "COMPOSITE", "FICTIONAL"])
+    );
+    expect(
+      pack.claims
+        .filter((claim) => claim.historicity !== "FICTIONAL")
+        .every((claim) => claim.sourceIds.length > 0 && claim.sourcePassages.length > 0)
+    ).toBe(true);
+    expect(
+      pack.claims
+        .filter((claim) => claim.historicity === "FICTIONAL")
+        .every((claim) => claim.sourceIds.length === 0 && claim.sourcePassages.length === 0)
+    ).toBe(true);
+  });
+
+  test("fails M6 bad references across claims, reference targets, and scenarios", async () => {
+    const source = await readM6AlphaScenarioFixture();
+    const badSource = {
+      ...source,
+      claims: source.claims.map((claim, index) =>
+        index === 0 ? { ...claim, sourceIds: ["source.missing"] } : claim
+      ),
+      referenceTargets: {
+        ...source.referenceTargets,
+        diplomacy: source.referenceTargets.diplomacy.map((target, index) =>
+          index === 0 ? { ...target, claimId: "HIST-M6-MISSING" } : target
+        )
+      },
+      scenarios: source.scenarios.map((scenario, index) =>
+        index === 0
+          ? {
+              ...scenario,
+              materialClaimIds: ["HIST-M6-MISSING"],
+              references: {
+                ...scenario.references,
+                legitimacy: ["legitimacy.alpha.missing"]
+              }
+            }
+          : scenario
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "bad-reference", path: "claims[0].sourceIds[0]" }),
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "referenceTargets.diplomacy[0].claimId"
+        }),
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "scenarios[0].materialClaimIds[0]"
+        }),
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "scenarios[0].references.legitimacy[0]"
+        })
+      ])
+    );
+  });
+
+  test("fails M6 missing labels and unsourced formal claims", async () => {
+    const source = await readM6AlphaScenarioFixture();
+    const badSource = {
+      ...source,
+      claims: source.claims.map((claim, index) =>
+        index === 0 ? { ...claim, sourceIds: [], sourcePassages: [] } : claim
+      ),
+      scenarios: source.scenarios.map((scenario, index) =>
+        index === 0 ? { ...scenario, materialClaimIds: [] } : scenario
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "unsourced-claim", path: "claims[0].sourceIds" }),
+        expect.objectContaining({
+          code: "missing-label",
+          path: "scenarios[0].materialClaimIds"
+        })
+      ])
+    );
+  });
+
+  test("fails M6 formal claims with empty source or passage entries", async () => {
+    const source = await readM6AlphaScenarioFixture();
+    const badSource = {
+      ...source,
+      claims: source.claims.map((claim, index) =>
+        index === 0 ? { ...claim, sourceIds: [""], sourcePassages: [""] } : claim
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-schema", path: "claims[0].sourceIds" }),
+        expect.objectContaining({ code: "invalid-schema", path: "claims[0].sourcePassages" })
+      ])
+    );
+  });
+
+  test("fails M6 unstable IDs and duplicate scenario keys", async () => {
+    const source = await readM6AlphaScenarioFixture();
+    const badSource = {
+      ...source,
+      scenarios: [
+        {
+          ...source.scenarios[1],
+          scenarioKey: source.scenarios[0]?.scenarioKey ?? "alpha-1531-edge-polity"
+        },
+        source.scenarios[0],
+        source.scenarios[2]
+      ]
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "unstable-order", path: "scenarios[1].sourceId" }),
+        expect.objectContaining({
+          code: "duplicate-scenario-key",
+          path: "scenarios[1].scenarioKey"
+        }),
+        expect.objectContaining({
+          code: "unstable-order",
+          path: "scenarios[0].dependencyOrder"
+        })
+      ])
+    );
+  });
+
+  test("repeated M6 compiles produce the same manifest hash and runtime order", async () => {
+    const source = await readM6AlphaScenarioFixture();
+    const first = compileContentPackV0OrThrow(source);
+    const second = compileContentPackV0OrThrow(structuredClone(source));
+
+    if (
+      first.kind !== "runtime-m6-alpha-scenario-content-pack-v0" ||
+      second.kind !== "runtime-m6-alpha-scenario-content-pack-v0"
+    ) {
+      throw new Error("Expected M6 alpha scenario runtime packs.");
+    }
+    expect(second.manifest.manifestHash).toBe(first.manifest.manifestHash);
+    expect(second.scenarios.map((scenario) => scenario.sourceId)).toEqual(
+      first.scenarios.map((scenario) => scenario.sourceId)
+    );
+    expect(second.claims.map((claim) => claim.claimId)).toEqual(
+      first.claims.map((claim) => claim.claimId)
+    );
+  });
+
+  test("M6 manifest hash changes when claim text or competing interpretations change", async () => {
+    const source = await readM6AlphaScenarioFixture();
+    const first = compileContentPackV0OrThrow(source);
+    const changedClaimText = compileContentPackV0OrThrow({
+      ...source,
+      claims: source.claims.map((claim, index) =>
+        index === 0 ? { ...claim, claim: `${claim.claim} R2 manifest text change.` } : claim
+      )
+    });
+    const changedInterpretation = compileContentPackV0OrThrow({
+      ...source,
+      claims: source.claims.map((claim, index) =>
+        index === 0
+          ? {
+              ...claim,
+              competingInterpretations: [
+                ...claim.competingInterpretations,
+                "R2 manifest interpretation change."
+              ]
+            }
+          : claim
+      )
+    });
+
+    if (
+      first.kind !== "runtime-m6-alpha-scenario-content-pack-v0" ||
+      changedClaimText.kind !== "runtime-m6-alpha-scenario-content-pack-v0" ||
+      changedInterpretation.kind !== "runtime-m6-alpha-scenario-content-pack-v0"
+    ) {
+      throw new Error("Expected M6 alpha scenario runtime packs.");
+    }
+    expect(changedClaimText.manifest.manifestHash).not.toBe(first.manifest.manifestHash);
+    expect(changedInterpretation.manifest.manifestHash).not.toBe(first.manifest.manifestHash);
+  });
+});
+
 async function readM3CharacterOfficeFixture(): Promise<M3CharacterOfficeFixtureSourceV0> {
   const text = await readFile(m3CharacterOfficeFixtureUrl, "utf8");
   return parseM3CharacterOfficeFixtureSourceV0(JSON.parse(text) as unknown);
+}
+
+async function readM6AlphaScenarioFixture(): Promise<M6AlphaScenarioSetSourceV0> {
+  const text = await readFile(m6AlphaScenarioFixtureUrl, "utf8");
+  return parseM6AlphaScenarioSetSourceV0(JSON.parse(text) as unknown);
 }
 
 function parseM2BadFixtureManifest(input: unknown): M2BadFixtureManifest {

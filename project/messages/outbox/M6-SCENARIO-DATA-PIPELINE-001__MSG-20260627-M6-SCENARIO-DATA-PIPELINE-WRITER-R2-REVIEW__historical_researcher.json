@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-R2-REVIEW",
+  "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "R2 addresses lead REQUEST_CHANGES before QA route. The M6 manifest hash now includes claim text and competingInterpretations, so compiled-pack claim-record content changes affect deterministic manifest output. M6 source/runtime string-array validation now rejects empty string entries, and content-tools formal-claim semantics also treats empty sourceIds/sourcePassages as unsourced. FICTIONAL claims with empty source arrays remain valid.",
+  "artifacts": [
+    "apps/content-tools/src/m6-alpha-scenario.ts",
+    "packages/content-schema/src/m6-alpha-scenario.ts",
+    "packages/content-runtime/src/m6-alpha-scenario.ts",
+    "tests/content-tools-compiler.test.ts",
+    "project/tasks/active/M6-SCENARIO-DATA-PIPELINE-001.json",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-R2-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "feat/m6-scenario-data-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "d5bfd1f4fce0d1c0175a415362ba34457be8011a",
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 28 tests passed. New R2 tests cover empty formal claim source/passage entries and manifest hash changes for claim text and competing interpretations."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "M1/M2/M3/M6 fixtures validated; M6 manifestHash is now 6d1f6d64 after expanded claim-content hash coverage."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed without errors."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check passed; sim determinism matched Node/Worker hashes; root Vitest 37 files / 270 tests passed; Web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-R2-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "R2 handoff JSON validated against project schema."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SCENARIO-DATA-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-SCENARIO-DATA-PIPELINE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Final status lists task allowed-path changes plus unrelated untracked ui-samples/ left untouched."
+    }
+  ],
+  "decisions": [
+    "Expanded M6 deterministic manifest hash input to include every claim-record field emitted in the compiled runtime pack, including claim text and competingInterpretations.",
+    "Tightened M6 source and runtime string-array validators so arrays may be empty where semantically allowed, but present entries must be non-empty strings.",
+    "Kept FICTIONAL claims with empty sourceIds/sourcePassages valid; formal non-fictional claims with empty source or passage entries are rejected.",
+    "Kept the task scoped to validation data and reference IDs only; no diplomacy, legitimacy, succession, map, policy, event, encyclopedia, or victory system implementation was added."
+  ],
+  "risks": [
+    "The M6 manifest hash changed from 15f4c10c to 6d1f6d64 because it now covers additional claim-record content; this is an intentional deterministic compatibility change before acceptance.",
+    "Historical content remains Alpha validation scaffolding with RESEARCH_REQUIRED/SUMMARY_ONLY source status where full page verification has not been done.",
+    "Unrelated untracked ui-samples/ remains present and untouched."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Proceed with independent QA review of the R2 diff and updated tests.",
+  "created_at": "2026-06-27T14:58:30+08:00"
+}
