@@ -2,20 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [],
+  "current_tasks": [
+    "M6-SUCCESSION-COMPLETION-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "status": "active_orchestrating",
       "role": "lead_orchestrator"
+    },
+    "simulation_engineer": {
+      "thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+      "task_id": "M6-SUCCESSION-COMPLETION-001",
+      "status": "active_writer",
+      "role": "simulation_engineer",
+      "nickname": "Engine"
     }
   },
   "last_integrated_task": "M6-MAP-CANDIDATE-PIPELINE-001",
-  "last_main_commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
-  "next_ready_tasks": [
-    "M6-SUCCESSION-COMPLETION-001"
-  ],
+  "last_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -39,10 +46,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "No active Human Gate after M6 map candidate closure.",
+    "approval_source": "M5 manual node battle decision deferred; no active Human Gate for M6 succession completion.",
     "recommended_result": null,
-    "note": "Next READY task is M6-SUCCESSION-COMPLETION-001.",
-    "recorded_at": "2026-06-27T16:03:01+08:00"
+    "note": "M6-SUCCESSION-COMPLETION-001 is IN_PROGRESS with simulation_engineer writer Engine.",
+    "recorded_at": "2026-06-27T16:15:41.6114560+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -56,7 +63,6 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T16:03:01+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -68,7 +74,6 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T16:03:01+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -437,7 +442,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task.",
+  "next_action": "Wait for M6-SUCCESSION-COMPLETION-001 writer REVIEW handoff, then route to systems_architect.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -742,5 +747,26 @@
       "M6-SUCCESSION-COMPLETION-001"
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
-  }
+  },
+  "m6_succession_completion": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-SUCCESSION-COMPLETION-001",
+    "branch_or_worktree": "feat/m6-succession-completion",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+    "writer_nickname": "Engine",
+    "start_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-LEAD-TO-SIM-START.json",
+    "started_at": "2026-06-27T16:12:44+08:00",
+    "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
+    "previous_closed_task": "M6-MAP-CANDIDATE-PIPELINE-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "simulation_engineer writer returns REVIEW handoff for systems_architect review.",
+    "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
+    "updated_at": "2026-06-27T16:15:41.6114560+08:00",
+    "route_sent_at": "2026-06-27T16:15:41.6114560+08:00"
+  },
+  "last_updated_at": "2026-06-27T16:15:41.6114560+08:00",
+  "updated_at": "2026-06-27T16:15:41.6114560+08:00"
 }

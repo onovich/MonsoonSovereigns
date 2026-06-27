@@ -1,6 +1,5 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T16:03:01+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -3409,6 +3408,94 @@
       "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/137",
       "closed_at": "2026-06-27T16:03:01+08:00",
       "close_reason": "closed_after_accept_review_and_main_integration"
+    },
+    "M6-SUCCESSION-COMPLETION-001:simulation_engineer": {
+      "task_id": "M6-SUCCESSION-COMPLETION-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Engine",
+      "responsibility": "primary simulation_engineer writer for deterministic Alpha succession completion",
+      "branch_or_worktree": "feat/m6-succession-completion",
+      "start_state": "START_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "start_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-LEAD-TO-SIM-START.json",
+      "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
+      "allowed_paths": [
+        "packages/sim-core/**",
+        "packages/protocol/**",
+        "packages/save-format/**",
+        "apps/sim-runner/**",
+        "tests/**",
+        "project/tasks/active/M6-SUCCESSION-COMPLETION-001.json",
+        "project/tasks/thread-registry.json",
+        "project/messages/**",
+        "project/goal-mode-state.json",
+        "project/model-routing-state.json"
+      ],
+      "forbidden_paths": [
+        "apps/web/**",
+        "apps/desktop/**",
+        "apps/content-tools/**",
+        "packages/sim-ai/**",
+        "packages/client-core/**",
+        "packages/map-renderer/**",
+        "packages/ui/**",
+        "packages/content-schema/**",
+        "packages/content-runtime/**",
+        "content-source/**",
+        "tools/**",
+        ".github/**",
+        "docs/decisions/**",
+        "docs/GATE-M0.md",
+        "docs/GATE-M1.md",
+        "docs/GATE-M2.md",
+        "docs/GATE-M3.md",
+        "docs/GATE-M4.md",
+        "docs/GATE-M5.md",
+        "docs/11-roadmap.md",
+        "docs/23-milestone-acceptance-matrix.md",
+        "docs/27-autonomous-goal-mode.md",
+        "PROJECT_STATUS.md",
+        "MANIFEST.md",
+        "SHA256SUMS.txt",
+        "VALIDATION_REPORT.md"
+      ],
+      "created_at": "2026-06-27T16:12:44+08:00",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
+      "updated_at": "2026-06-27T16:15:41.6114560+08:00",
+      "route_sent_at": "2026-06-27T16:15:41.6114560+08:00"
+    },
+    "M6-SUCCESSION-COMPLETION-001:lead_orchestrator": {
+      "task_id": "M6-SUCCESSION-COMPLETION-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_orchestrating",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "responsibility": "lead orchestration for M6 succession completion",
+      "branch_or_worktree": "feat/m6-succession-completion",
+      "start_state": "IN_PROGRESS_ROUTED_TO_SIMULATION_ENGINEER",
+      "created_at": "2026-06-27T16:12:44+08:00",
+      "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
+      "start_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-LEAD-TO-SIM-START.json",
+      "simulation_engineer_thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+      "simulation_engineer_nickname": "Engine",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
+      "updated_at": "2026-06-27T16:15:41.6114560+08:00",
+      "route_sent_at": "2026-06-27T16:15:41.6114560+08:00"
     }
   },
   "replaced_threads": [
@@ -3444,5 +3531,6 @@
       "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response",
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
-  ]
+  ],
+  "updated_at": "2026-06-27T16:15:41.6114560+08:00"
 }

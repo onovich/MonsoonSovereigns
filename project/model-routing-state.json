@@ -1,7 +1,6 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T16:03:01+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -2293,5 +2292,24 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M6-SUCCESSION-COMPLETION-001."
+  "next_action": "Start M6-SUCCESSION-COMPLETION-001.",
+  "current_task": "M6-SUCCESSION-COMPLETION-001",
+  "m6_succession_completion": {
+    "status": "IN_PROGRESS",
+    "owner_role": "simulation_engineer",
+    "reviewer_role": "systems_architect",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+    "writer_nickname": "Engine",
+    "branch_or_worktree": "feat/m6-succession-completion",
+    "human_gate_required": false,
+    "start_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-LEAD-TO-SIM-START.json",
+    "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
+    "next_action": "simulation_engineer writer returns REVIEW handoff for systems_architect review.",
+    "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
+    "updated_at": "2026-06-27T16:15:41.6114560+08:00",
+    "route_sent_at": "2026-06-27T16:15:41.6114560+08:00"
+  },
+  "updated_at": "2026-06-27T16:15:41.6114560+08:00"
 }

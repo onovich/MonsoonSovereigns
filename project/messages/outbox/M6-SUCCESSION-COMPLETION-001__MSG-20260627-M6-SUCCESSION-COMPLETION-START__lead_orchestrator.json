@@ -1,0 +1,129 @@
+{
+  "message_id": "MSG-20260627-M6-SUCCESSION-COMPLETION-START",
+  "task_id": "M6-SUCCESSION-COMPLETION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead started M6-SUCCESSION-COMPLETION-001 after M6 map candidate pipeline closure entered origin/main. simulation_engineer writer thread 019f0823-18c3-73d1-9314-09f78d7ab0cc is assigned to complete deterministic Alpha succession resolution within task allowed paths.",
+  "artifacts": [
+    "project/tasks/active/M6-SUCCESSION-COMPLETION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-START__lead_orchestrator.json",
+    "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-LEAD-TO-SIM-START.json"
+  ],
+  "branch_or_worktree": "feat/m6-succession-completion / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main before branch creation; branch feat/m6-succession-completion created from 81e7984ff9a09b889a7cfcf10ac837f54409b21e."
+    },
+    {
+      "command": "git fetch origin --prune",
+      "exit_code": 0,
+      "result": "Fetched/pruned origin; main remained up to date."
+    },
+    {
+      "command": "git pull --ff-only origin main",
+      "exit_code": 0,
+      "result": "Already up to date."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-SUCCESSION-COMPLETION-001 was the only ready task."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SUCCESSION-COMPLETION-001",
+      "exit_code": 0,
+      "result": "VALID before status transition."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent simulation_engineer",
+      "exit_code": 0,
+      "result": "Spawned simulation_engineer writer thread 019f0823-18c3-73d1-9314-09f78d7ab0cc, nickname Engine."
+    }
+  ],
+  "decisions": [
+    "Start M6-SUCCESSION-COMPLETION-001 as the next taskctl READY M6 task after M6-MAP-CANDIDATE-PIPELINE-001 closure.",
+    "Keep succession completion deterministic and data-driven; no Math.random/Date.now for authoritative outcomes.",
+    "Do not implement M7/M8 content lock, UI, sim-ai, or formal historical content in this task.",
+    "Manual node battle remains deferred; no Human Gate is active."
+  ],
+  "risks": [
+    "R4 task crosses sim-core, protocol, save-format, and deterministic runtime boundaries; systems_architect review is required before acceptance.",
+    "Succession consequences must connect to diplomacy/legitimacy/offices/vassal obligations without duplicating those systems."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Complete deterministic Alpha succession resolution within allowed paths, run required tests, and return a simulation_engineer REVIEW handoff for systems_architect review.",
+  "created_at": "2026-06-27T16:12:44+08:00",
+  "start_confirmed": {
+    "to_thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+    "to_thread_nickname": "Engine",
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/save-format/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/tasks/active/M6-SUCCESSION-COMPLETION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/content-tools/**",
+      "packages/sim-ai/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ],
+    "acceptance_criteria": [
+      "M3 succession state machine is completed for Alpha playthroughs with deterministic candidate generation, eligibility, claim strength, legitimacy effects, and auditable resolution events.",
+      "Succession completion handles deaths, abdication-like scenario triggers, disputed succession, regency or temporary stewardship if accepted by the M6 contract, and recovery from malformed inputs without data corruption.",
+      "All succession commands, queries, events, and save fields are explicit, versioned, serializable schemas with stable IDs and no object-graph serialization.",
+      "Succession consequences connect to diplomacy, legitimacy, offices, vassal obligations, and start-to-victory outcomes without duplicating those systems."
+    ],
+    "required_tests": [
+      "git status --short",
+      "pnpm --filter @monsoon/sim-core test",
+      "pnpm --filter @monsoon/protocol test",
+      "pnpm --filter @monsoon/save-format test",
+      "pnpm sim:determinism",
+      "pnpm test",
+      "Property/invariant tests cover stable heir ordering, no cyclic title/claim references, disputed succession reason codes, save round-trip, and malformed/future payload rejection.",
+      "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SUCCESSION-COMPLETION-001",
+      "git diff --check"
+    ],
+    "previous_closed_task": "M6-MAP-CANDIDATE-PIPELINE-001",
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
+    "route_sent_at": "2026-06-27T16:15:41.6114560+08:00"
+  }
+}
