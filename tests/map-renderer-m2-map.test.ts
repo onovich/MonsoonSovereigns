@@ -1,13 +1,24 @@
+import { readFile } from "node:fs/promises";
+
 import { describe, expect, test } from "vitest";
 
 import { createM2PrototypeReadModelFixture } from "../packages/client-core/src/index";
+import { compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
+import { parseM6AlphaMapCandidateSetSourceV0 } from "../packages/content-schema/src/index";
 import {
   buildMapRenderPlan,
   createMemoryPixiMapNodeFactory,
   createMemoryPixiSceneLayer,
+  createM6AlphaMapCandidateReadModelSnapshot,
   createPixiMapScene,
   type PixiSceneLayer
 } from "../packages/map-renderer/src/index";
+
+const m6AlphaMapCandidateFixtureUrl = new URL(
+  "../content-source/m6-map-candidates/alpha-map-candidate-set.json",
+  import.meta.url
+);
+const mapRendererSourceUrl = new URL("../packages/map-renderer/src/index.ts", import.meta.url);
 
 describe("M2 map renderer read-model deltas", () => {
   test("builds seasonal, economy, and route plans from the M2 read model", () => {
@@ -72,6 +83,55 @@ describe("M2 map renderer read-model deltas", () => {
 
     scene.destroy();
     expect(stage.children).toHaveLength(0);
+  });
+});
+
+describe("M6 alpha map candidate renderer read model", () => {
+  test("projects compiled map candidates into map-renderer-compatible read models", async () => {
+    const sourceText = await readFile(m6AlphaMapCandidateFixtureUrl, "utf8");
+    const source = parseM6AlphaMapCandidateSetSourceV0(JSON.parse(sourceText) as unknown);
+    const pack = compileContentPackV0OrThrow(source);
+    if (pack.kind !== "runtime-m6-alpha-map-candidate-content-pack-v0") {
+      throw new Error("Expected M6 alpha map candidate runtime pack.");
+    }
+
+    const snapshot = createM6AlphaMapCandidateReadModelSnapshot(pack, {
+      candidateSourceId: "map.alpha.western-mainland-candidate",
+      revision: 6
+    });
+    const plan = buildMapRenderPlan(snapshot, {
+      mode: "seasonal",
+      zoomLevel: 1.8,
+      selectedEntity: null
+    });
+
+    expect(snapshot.revision).toBe(6);
+    expect(snapshot.bounds).toEqual({ widthInMapUnits: 640, heightInMapUnits: 420 });
+    expect(snapshot.districts).toHaveLength(4);
+    expect(snapshot.settlements).toHaveLength(2);
+    expect(snapshot.routes).toHaveLength(3);
+    expect(snapshot.anchors.map((anchor) => anchor.id)).toEqual([
+      "alpha-map-candidate",
+      "alpha-map-source-label",
+      "alpha-map-review-note"
+    ]);
+    expect(snapshot.districts.map((district) => district.seasonal.agriculturePhase)).toEqual([
+      "coastal-interface",
+      "water",
+      "land",
+      "land"
+    ]);
+    expect(plan.districts).toHaveLength(4);
+    expect(plan.routes.map((route) => route.points.length)).toEqual([3, 3, 3]);
+    expect(plan.labels.length).toBeGreaterThanOrEqual(4);
+  });
+
+  test("does not import sim-core authority into map-renderer", async () => {
+    const sourceText = await readFile(mapRendererSourceUrl, "utf8");
+
+    expect(sourceText).not.toContain("@monsoon/sim-core");
+    expect(sourceText).not.toContain("../sim-core");
+    expect(sourceText).not.toContain("WorldState");
   });
 });
 

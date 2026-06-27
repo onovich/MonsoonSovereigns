@@ -26,6 +26,7 @@ import type {
 } from "@monsoon/content-schema";
 
 export * from "./m6-alpha-scenario.ts";
+export * from "./m6-alpha-map-candidate.ts";
 
 export type Brand<TValue, TBrand extends string> = TValue & { readonly __brand: TBrand };
 

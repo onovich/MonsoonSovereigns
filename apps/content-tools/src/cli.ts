@@ -6,6 +6,7 @@ const DEFAULT_FIXTURE_PATHS: readonly string[] = [
   "../../content-source/m1-fixtures/abstract-graph-30.json",
   "../../content-source/m2-fixtures/prototype-world-30-districts.json",
   "../../content-source/m3-fixtures/character-office-validation-64.json",
+  "../../content-source/m6-map-candidates/alpha-map-candidate-set.json",
   "../../content-source/m6-alpha-scenarios/alpha-scenario-set.json"
 ];
 
@@ -40,6 +41,10 @@ async function main(args: readonly string[]): Promise<number> {
     } else if (result.pack.kind === "runtime-m3-character-office-content-pack-v0") {
       console.log(
         `Content validation passed: ${result.pack.fixtureId} characters=${result.pack.manifest.characterCount} relationships=${result.pack.manifest.relationshipCount} offices=${result.pack.manifest.officeCount} landedPowers=${result.pack.manifest.landedPowerCount} officePolicies=${result.pack.manifest.officePolicyCount} enfeoffmentHooks=${result.pack.manifest.enfeoffmentHookCount} manifestHash=${result.pack.manifest.manifestHash}`
+      );
+    } else if (result.pack.kind === "runtime-m6-alpha-map-candidate-content-pack-v0") {
+      console.log(
+        `Content validation passed: ${result.pack.fixtureId} mapCandidates=${result.pack.manifest.candidateCount} districts=${result.pack.manifest.districtCount} settlements=${result.pack.manifest.settlementCount} routes=${result.pack.manifest.routeCount} manifestHash=${result.pack.manifest.manifestHash}`
       );
     } else {
       console.log(

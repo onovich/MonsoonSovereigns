@@ -1,0 +1,81 @@
+{
+  "message_id": "MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW",
+  "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the Alpha map candidate pipeline from validated source data through deterministic runtime map candidate payloads to map-renderer-compatible read models. Renderer changes remain presentational and do not import sim-core or create authoritative state.",
+  "artifacts": [
+    "content-source/m6-map-candidates/alpha-map-candidate-set.json",
+    "packages/content-schema/src/m6-alpha-map-candidate.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/m6-alpha-map-candidate.ts",
+    "packages/content-runtime/src/index.ts",
+    "apps/content-tools/src/m6-alpha-map-candidate.ts",
+    "apps/content-tools/src/index.ts",
+    "apps/content-tools/src/cli.ts",
+    "apps/content-tools/package.json",
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/tsconfig.json",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/tasks/active/M6-MAP-CANDIDATE-PIPELINE-001.json",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m6-map-candidate-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Shows only allowed-path task changes plus pre-existing untracked ui-samples/; pnpm-lock.yaml is not modified."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Validated m1, m2, m3, m6 map candidate, and m6 scenario fixtures. New map candidate output: m6.alpha.map.candidate-set mapCandidates=1 districts=4 settlements=2 routes=3 manifestHash=4485a353."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "tests/map-renderer-m2-map.test.ts passed: 4 tests, including M6 map candidate read-model shape and no sim-core authority import."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/content-schema-graph-source.test.ts tests/content-runtime-pack.test.ts tests/content-tools-compiler.test.ts",
+      "exit_code": 0,
+      "result": "Focused schema/runtime/compiler tests passed: 3 files, 56 tests. Coverage includes deterministic ordering, bad references, route/water classification, runtime reference validation, and source schema validation."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check passed; sim:determinism passed; root vitest passed 37 files / 280 tests; web vitest passed 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-MAP-CANDIDATE-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-MAP-CANDIDATE-PIPELINE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Added a validation-only m6.alpha-map-candidate-set source format with explicit candidate IDs, district references, settlement references, route references, land/water classification, renderOrder, sourceLabel, and reviewNotes.",
+    "Compiled map candidates into deterministic runtime-m6-alpha-map-candidate-content-pack-v0 payloads with manifest counts, stable runtime IDs, route/district reference validation, and manifest hashing.",
+    "Added map-renderer createM6AlphaMapCandidateReadModelSnapshot as a presentational projection to existing ClientMapReadModelSnapshot shape; it uses local structural payload types to avoid adding a package dependency or lockfile change.",
+    "Updated content:validate to explicitly include content-source/m6-map-candidates/alpha-map-candidate-set.json.",
+    "Kept exact borders, production art style, formal cultural symbols, complex naval warfare, 3D battle, manual node battle, and release map content out of scope."
+  ],
+  "risks": [
+    "R3 boundary risk remains for systems_architect review: this touches content schema/runtime/tools and map-renderer read-model integration.",
+    "The map candidate is COMPOSITE/LOW confidence validation data; reviewNotes intentionally preserve uncertainty and do not lock final M7 map content.",
+    "map-renderer/tsconfig.json now enables allowImportingTsExtensions so it can typecheck workspace .ts exports already used through @monsoon/client-core; this is a TypeScript build-boundary adjustment, not runtime behavior."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review deterministic content/runtime/compiler boundaries, map-renderer presentational read-model projection, and acceptance evidence. Return ACCEPT or REQUEST_CHANGES; do not mark ACCEPTED until reviewer approval.",
+  "created_at": "2026-06-27T15:46:30+08:00"
+}

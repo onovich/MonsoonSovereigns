@@ -1,4 +1,11 @@
+import {
+  createClientDistrictId,
+  createClientMapAnchorId,
+  createClientReadModelRevision,
+  createClientSettlementId
+} from "@monsoon/client-core";
 import type {
+  ClientDistrictRouteStatus,
   ClientMapAnchorTone,
   ClientMapDistrictReadModel,
   ClientMapEntitySelection,
@@ -8,7 +15,6 @@ import type {
   ClientMapSettlementReadModel,
   ClientReadModelRevision
 } from "@monsoon/client-core";
-
 import { loadPixiRuntimeModule } from "./pixi-runtime.mjs";
 
 export interface MapRenderViewport {
@@ -30,6 +36,62 @@ export interface MapRenderPlan {
   readonly settlements: readonly MapSettlementRenderInstruction[];
   readonly routes: readonly MapRouteRenderInstruction[];
   readonly labels: readonly MapLabelRenderInstruction[];
+}
+
+export interface M6AlphaMapCandidateReadModelOptions {
+  readonly candidateSourceId: string;
+  readonly revision?: number;
+}
+
+export interface M6AlphaMapCandidateReadPayloadV0 {
+  readonly candidates: readonly M6AlphaMapCandidateReadCandidateV0[];
+}
+
+export interface M6AlphaMapCandidateReadCandidateV0 {
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly sourceLabel: "HISTORICAL" | "INFERRED" | "COMPOSITE" | "FICTIONAL";
+  readonly reviewNotes: readonly string[];
+  readonly bounds: {
+    readonly widthInMapUnits: number;
+    readonly heightInMapUnits: number;
+  };
+  readonly districts: readonly M6AlphaMapCandidateReadDistrictV0[];
+  readonly settlements: readonly M6AlphaMapCandidateReadSettlementV0[];
+  readonly routes: readonly M6AlphaMapCandidateReadRouteV0[];
+}
+
+export interface M6AlphaMapCandidateReadPointV0 {
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface M6AlphaMapCandidateReadDistrictV0 {
+  readonly id: number;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly landWaterClass: "land" | "water" | "coastal-interface";
+  readonly renderOrder: number;
+  readonly anchor: M6AlphaMapCandidateReadPointV0;
+  readonly polygon: readonly M6AlphaMapCandidateReadPointV0[];
+}
+
+export interface M6AlphaMapCandidateReadSettlementV0 {
+  readonly id: number;
+  readonly districtId: number;
+  readonly displayNameKey: string;
+  readonly renderOrder: number;
+  readonly anchor: M6AlphaMapCandidateReadPointV0;
+}
+
+export interface M6AlphaMapCandidateReadRouteV0 {
+  readonly id: number;
+  readonly routeKind: "road" | "river" | "coast";
+  readonly waterClass: "land" | "water" | "mixed";
+  readonly renderOrder: number;
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+  readonly points: readonly M6AlphaMapCandidateReadPointV0[];
 }
 
 export interface MapPointRenderInstruction {
@@ -279,6 +341,48 @@ export function buildMapRenderPlan(
     ),
     routes: snapshot.routes.map((route) => buildRouteInstruction(route, resolvedViewport)),
     labels: buildLabelInstructions(snapshot, resolvedViewport)
+  };
+}
+
+export function createM6AlphaMapCandidateReadModelSnapshot(
+  pack: M6AlphaMapCandidateReadPayloadV0,
+  options: M6AlphaMapCandidateReadModelOptions
+): ClientMapReadModelSnapshot {
+  const candidate = pack.candidates.find((entry) => entry.sourceId === options.candidateSourceId);
+  if (candidate === undefined) {
+    throw new Error(`M6 alpha map candidate ${options.candidateSourceId} was not found.`);
+  }
+
+  const districts = sortRuntimeDistrictsForRender(candidate.districts)
+    .map((district) => buildCandidateDistrictReadModel(district))
+    .sort((left, right) => Number(left.districtId) - Number(right.districtId));
+  const districtById = new Map(
+    districts.map((district) => [Number(district.districtId), district])
+  );
+  const settlements = [...candidate.settlements]
+    .sort(
+      (left, right) => left.renderOrder - right.renderOrder || Number(left.id) - Number(right.id)
+    )
+    .map((settlement) => ({
+      settlementId: createClientSettlementId(Number(settlement.id)),
+      districtId: createClientDistrictId(Number(settlement.districtId)),
+      displayName: settlement.displayNameKey,
+      anchor: {
+        xInMapUnits: settlement.anchor.x,
+        yInMapUnits: settlement.anchor.y
+      }
+    }));
+  const routes = sortRuntimeRoutesForRender(candidate.routes)
+    .map((route) => buildCandidateRouteReadModel(route, districtById))
+    .sort((left, right) => Number(left.originDistrictId) - Number(right.originDistrictId));
+
+  return {
+    revision: createClientReadModelRevision(options.revision ?? 0),
+    bounds: candidate.bounds,
+    anchors: buildCandidateAnchors(candidate),
+    districts,
+    settlements,
+    routes
   };
 }
 
@@ -879,6 +983,133 @@ function buildLabelInstructions(
   return labels;
 }
 
+function buildCandidateDistrictReadModel(
+  district: M6AlphaMapCandidateReadDistrictV0
+): ClientMapDistrictReadModel {
+  const districtId = createClientDistrictId(Number(district.id));
+  return {
+    districtId,
+    displayName: district.displayNameKey,
+    anchor: {
+      xInMapUnits: district.anchor.x,
+      yInMapUnits: district.anchor.y
+    },
+    polygon: district.polygon.map((point) => ({
+      xInMapUnits: point.x,
+      yInMapUnits: point.y
+    })),
+    seasonal: {
+      monthOfYear: 1,
+      agriculturePhase: district.landWaterClass,
+      label: `map-candidate:${district.landWaterClass}`
+    },
+    population: 0,
+    availableLabor: 0,
+    grainStock: 0,
+    cashStock: 0,
+    route: {
+      status: "unreachable",
+      destinationDistrictId: districtId,
+      stockAmount: 0,
+      totalCost: null,
+      bottleneckCapacity: null,
+      edgeCount: 0,
+      routeKinds: []
+    }
+  };
+}
+
+function buildCandidateRouteReadModel(
+  route: M6AlphaMapCandidateReadRouteV0,
+  districtById: ReadonlyMap<number, ClientMapDistrictReadModel>
+): ClientMapRouteReadModel {
+  const originDistrictId = createClientDistrictId(Number(route.fromDistrictId));
+  const destinationDistrictId = createClientDistrictId(Number(route.toDistrictId));
+  const origin = districtById.get(Number(route.fromDistrictId));
+  const destination = districtById.get(Number(route.toDistrictId));
+  const points =
+    route.points.length > 0
+      ? route.points.map((point) => ({
+          xInMapUnits: point.x,
+          yInMapUnits: point.y
+        }))
+      : [origin?.anchor, destination?.anchor].filter(isMapPoint);
+  const status = mapCandidateRouteStatus(route);
+
+  return {
+    originDistrictId,
+    destinationDistrictId,
+    status,
+    stockAmount: 0,
+    totalCost: status === "unreachable" ? null : route.renderOrder,
+    bottleneckCapacity: null,
+    routeKinds: [route.routeKind],
+    points
+  };
+}
+
+function buildCandidateAnchors(
+  candidate: M6AlphaMapCandidateReadCandidateV0
+): readonly MapAnchorCompatibleReadModel[] {
+  return [
+    {
+      id: createClientMapAnchorId("alpha-map-candidate"),
+      label: candidate.displayNameKey,
+      xInMapUnits: Math.floor(candidate.bounds.widthInMapUnits / 2),
+      yInMapUnits: 24,
+      tone: "primary"
+    },
+    {
+      id: createClientMapAnchorId("alpha-map-source-label"),
+      label: candidate.sourceLabel,
+      xInMapUnits: 88,
+      yInMapUnits: candidate.bounds.heightInMapUnits - 28,
+      tone: candidate.sourceLabel === "FICTIONAL" ? "muted" : "secondary"
+    },
+    {
+      id: createClientMapAnchorId("alpha-map-review-note"),
+      label: candidate.reviewNotes[0] ?? "Alpha map candidate review required.",
+      xInMapUnits: candidate.bounds.widthInMapUnits - 128,
+      yInMapUnits: candidate.bounds.heightInMapUnits - 28,
+      tone: "muted"
+    }
+  ];
+}
+
+type MapAnchorCompatibleReadModel = ClientMapReadModelSnapshot["anchors"][number];
+
+function mapCandidateRouteStatus(route: M6AlphaMapCandidateReadRouteV0): ClientDistrictRouteStatus {
+  if (route.routeKind === "road" && route.waterClass === "land") {
+    return "reachable";
+  }
+  if (route.waterClass === "mixed") {
+    return "capacity-exceeded";
+  }
+  return "reachable";
+}
+
+function sortRuntimeDistrictsForRender(
+  districts: readonly M6AlphaMapCandidateReadDistrictV0[]
+): readonly M6AlphaMapCandidateReadDistrictV0[] {
+  return [...districts].sort(
+    (left, right) => left.renderOrder - right.renderOrder || Number(left.id) - Number(right.id)
+  );
+}
+
+function sortRuntimeRoutesForRender(
+  routes: readonly M6AlphaMapCandidateReadRouteV0[]
+): readonly M6AlphaMapCandidateReadRouteV0[] {
+  return [...routes].sort(
+    (left, right) => left.renderOrder - right.renderOrder || Number(left.id) - Number(right.id)
+  );
+}
+
+function isMapPoint(
+  value: ClientMapDistrictReadModel["anchor"] | undefined
+): value is ClientMapDistrictReadModel["anchor"] {
+  return value !== undefined;
+}
+
 function districtFillColor(district: ClientMapDistrictReadModel, mode: ClientMapMode): number {
   switch (mode) {
     case "seasonal":
@@ -900,6 +1131,10 @@ function seasonalFillColor(phase: string): number {
       return 0x5f9f72;
     case "harvest":
       return 0xd6aa4a;
+    case "water":
+      return 0x9fc9d3;
+    case "coastal-interface":
+      return 0xc6d4ba;
     default:
       return 0xd9d1be;
   }

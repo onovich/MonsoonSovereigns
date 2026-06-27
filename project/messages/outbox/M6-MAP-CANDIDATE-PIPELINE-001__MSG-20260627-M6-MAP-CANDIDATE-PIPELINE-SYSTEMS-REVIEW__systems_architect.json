@@ -1,0 +1,116 @@
+{
+  "message_id": "MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW",
+  "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+  "from_role": "systems_architect",
+  "from_thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
+  "from_nickname": "Lintel",
+  "status": "ACCEPT",
+  "summary": "Accepted the M6 map candidate pipeline after read-only review of the actual diff, including the REQUEST_CHANGES loop for local ui-samples ignore hygiene.",
+  "artifacts": [
+    "content-source/m6-map-candidates/alpha-map-candidate-set.json",
+    "packages/content-schema/src/m6-alpha-map-candidate.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/content-runtime/src/m6-alpha-map-candidate.ts",
+    "packages/content-runtime/src/index.ts",
+    "apps/content-tools/src/m6-alpha-map-candidate.ts",
+    "apps/content-tools/src/index.ts",
+    "apps/content-tools/src/cli.ts",
+    "apps/content-tools/package.json",
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/tsconfig.json",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/tasks/active/M6-MAP-CANDIDATE-PIPELINE-001.json",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW__client_engineer.json",
+    "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-WRITER-TO-SYSTEMS-REVIEW.json",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "feat/m6-map-candidate-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Shows only task files and process files within allowed paths after local .git/info/exclude hides unrelated ui-samples/; no pnpm-lock.yaml drift."
+    },
+    {
+      "command": "git check-ignore -v ui-samples/",
+      "exit_code": 0,
+      "result": ".git/info/exclude:7:ui-samples/ ui-samples/"
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Validated m1, m2, m3, m6 map candidate, and m6 scenario fixtures. New map candidate output: m6.alpha.map.candidate-set mapCandidates=1 districts=4 settlements=2 routes=3 manifestHash=4485a353."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "tests/map-renderer-m2-map.test.ts passed: 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check passed; sim:determinism passed; root vitest passed 37 files / 280 tests; web vitest passed 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-MAP-CANDIDATE-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-MAP-CANDIDATE-PIPELINE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "The unrelated ui-samples/ directory is now locally ignored via .git/info/exclude and no longer appears in git status or git ls-files --others --exclude-standard.",
+    "No forbidden path, sim-core authority import, pnpm-lock.yaml drift, or unapproved production dependency was found in the reviewed task path.",
+    "The pipeline path from source schema to content-tools compiler to runtime pack to map-renderer-compatible read-model projection is present.",
+    "map-renderer remains presentational; architecture guard passed and no sim-core import was found."
+  ],
+  "risks": [
+    "Candidate content remains COMPOSITE/LOW validation data and does not lock final borders, production art, cultural symbols, release content, naval warfare, 3D, or manual node battle authorization."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may mark ACCEPTED, integrate through PR/CI, and close only after entering main.",
+  "created_at": "2026-06-27T15:56:05+08:00",
+  "captured_from_review_submission_ids": [
+    "019f080e-2be8-75d3-831a-65095732652f",
+    "019f0812-4098-7952-be7d-967f1978bc45"
+  ]
+}

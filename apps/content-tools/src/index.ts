@@ -25,6 +25,7 @@ import {
   type M2WorldFixtureSourceV0
 } from "@monsoon/content-schema";
 import {
+  type RuntimeM6AlphaMapCandidateContentPackV0,
   type RuntimeM6AlphaScenarioContentPackV0,
   parseContentEdgeId,
   parseContentCharacterId,
@@ -62,6 +63,7 @@ import {
 } from "@monsoon/content-runtime";
 
 import { compileM6AlphaScenarioContentPackV0 } from "./m6-alpha-scenario.ts";
+import { compileM6AlphaMapCandidateContentPackV0 } from "./m6-alpha-map-candidate.ts";
 
 export type ContentCompileErrorCode =
   | ContentSchemaError["code"]
@@ -71,6 +73,7 @@ export type ContentCompileErrorCode =
   | "invalid-eligibility"
   | "invalid-relationship"
   | "invalid-count"
+  | "invalid-classification"
   | "invalid-geometry"
   | "invalid-route"
   | "invalid-seasonal-curve"
@@ -94,7 +97,8 @@ export type ContentCompileResultV0 =
         | RuntimeContentPackV0
         | RuntimeM2WorldContentPackV0
         | RuntimeM3CharacterOfficeContentPackV0
-        | RuntimeM6AlphaScenarioContentPackV0;
+        | RuntimeM6AlphaScenarioContentPackV0
+        | RuntimeM6AlphaMapCandidateContentPackV0;
       readonly errors: readonly [];
     }
   | {
@@ -171,6 +175,10 @@ const INITIAL_HASH_OFFSET = 2_166_136_261;
 const HASH_PRIME = 16_777_619;
 
 export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
+  if (isRecord(input) && input["kind"] === "m6.alpha-map-candidate-set") {
+    return compileM6AlphaMapCandidateContentPackV0(input);
+  }
+
   if (isRecord(input) && input["kind"] === "m6.alpha-scenario-set") {
     return compileM6AlphaScenarioContentPackV0(input);
   }
@@ -218,7 +226,8 @@ export function compileContentPackV0OrThrow(
   | RuntimeContentPackV0
   | RuntimeM2WorldContentPackV0
   | RuntimeM3CharacterOfficeContentPackV0
-  | RuntimeM6AlphaScenarioContentPackV0 {
+  | RuntimeM6AlphaScenarioContentPackV0
+  | RuntimeM6AlphaMapCandidateContentPackV0 {
   const result = compileContentPackV0(input);
   if (result.status === "ok") {
     return result.pack;

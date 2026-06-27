@@ -3,6 +3,7 @@ export const M2_WORLD_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 export const M3_POLITY_VASSALAGE_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 export const M3_CHARACTER_OFFICE_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 
+export * from "./m6-alpha-map-candidate.ts";
 export * from "./m6-alpha-scenario.ts";
 
 export type M1GraphFixtureSourceKind = "m1.synthetic-abstract-graph";

@@ -5,10 +5,12 @@ import { describe, expect, test } from "vitest";
 import { compileContentPackV0, compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
 import {
   parseM1GraphFixtureSourceV0,
+  parseM6AlphaMapCandidateSetSourceV0,
   parseM6AlphaScenarioSetSourceV0,
   parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   type M1GraphFixtureSourceV0,
+  type M6AlphaMapCandidateSetSourceV0,
   type M6AlphaScenarioSetSourceV0,
   type M3CharacterOfficeFixtureSourceV0,
   type M2WorldFixtureSourceV0
@@ -29,6 +31,10 @@ const m3CharacterOfficeFixtureUrl = new URL(
 );
 const m6AlphaScenarioFixtureUrl = new URL(
   "../content-source/m6-alpha-scenarios/alpha-scenario-set.json",
+  import.meta.url
+);
+const m6AlphaMapCandidateFixtureUrl = new URL(
+  "../content-source/m6-map-candidates/alpha-map-candidate-set.json",
   import.meta.url
 );
 
@@ -779,6 +785,114 @@ describe("M6 Alpha Scenario Content Compiler v0", () => {
   });
 });
 
+describe("M6 Alpha Map Candidate Content Compiler v0", () => {
+  test("compiles map candidates with deterministic order, classifications, and review notes", async () => {
+    const source = await readM6AlphaMapCandidateFixture();
+    const pack = compileContentPackV0OrThrow(source);
+
+    expect(pack.kind).toBe("runtime-m6-alpha-map-candidate-content-pack-v0");
+    if (pack.kind !== "runtime-m6-alpha-map-candidate-content-pack-v0") {
+      throw new Error("Expected M6 alpha map candidate runtime pack.");
+    }
+    expect(pack.fixtureId).toBe("m6.alpha.map.candidate-set");
+    expect(pack.manifest.candidateCount).toBe(1);
+    expect(pack.manifest.districtCount).toBe(4);
+    expect(pack.manifest.routeCount).toBe(3);
+    expect(pack.manifest.manifestHash).toMatch(/^[0-9a-f]{8}$/u);
+    expect(pack.candidates[0]?.sourceId).toBe("map.alpha.western-mainland-candidate");
+    expect(pack.candidates[0]?.sourceLabel).toBe("COMPOSITE");
+    expect(pack.candidates[0]?.reviewNotes.join(" ")).toContain("not simulation authority");
+    expect(pack.candidates[0]?.districts.map((district) => district.sourceId)).toEqual([
+      "district.alpha.coastal-interface",
+      "district.alpha.delta-water",
+      "district.alpha.irrawaddy-core",
+      "district.alpha.sittaung-corridor"
+    ]);
+    expect(pack.candidates[0]?.routes.map((route) => route.waterClass)).toEqual([
+      "water",
+      "mixed",
+      "land"
+    ]);
+  });
+
+  test("fails map candidate bad district, settlement, and route references", async () => {
+    const source = await readM6AlphaMapCandidateFixture();
+    const candidate = requireFirstMapCandidate(source);
+    const result = compileContentPackV0({
+      ...source,
+      candidates: [
+        {
+          ...candidate,
+          settlements: candidate.settlements.map((settlement, index) =>
+            index === 0
+              ? { ...settlement, districtReferenceId: "district.alpha.missing" }
+              : settlement
+          ),
+          routes: candidate.routes.map((route, index) =>
+            index === 0 ? { ...route, toDistrictReferenceId: "district.alpha.missing" } : route
+          )
+        }
+      ]
+    });
+
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "candidates[0].settlements[0].districtReferenceId"
+        }),
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "candidates[0].routes[0].toDistrictReferenceId"
+        })
+      ])
+    );
+  });
+
+  test("fails route and water classification mismatches", async () => {
+    const source = await readM6AlphaMapCandidateFixture();
+    const candidate = requireFirstMapCandidate(source);
+    const result = compileContentPackV0({
+      ...source,
+      candidates: [
+        {
+          ...candidate,
+          routes: candidate.routes.map((route, index) =>
+            index === 2 ? { ...route, waterClass: "water" as const } : route
+          )
+        }
+      ]
+    });
+
+    expect(result.errors).toContainEqual(
+      expect.objectContaining({
+        code: "invalid-classification",
+        path: "candidates[0].routes[2].waterClass"
+      })
+    );
+  });
+
+  test("repeated map candidate compiles produce the same manifest hash and render order", async () => {
+    const source = await readM6AlphaMapCandidateFixture();
+    const first = compileContentPackV0OrThrow(source);
+    const second = compileContentPackV0OrThrow(structuredClone(source));
+
+    if (
+      first.kind !== "runtime-m6-alpha-map-candidate-content-pack-v0" ||
+      second.kind !== "runtime-m6-alpha-map-candidate-content-pack-v0"
+    ) {
+      throw new Error("Expected M6 alpha map candidate runtime packs.");
+    }
+    expect(second.manifest.manifestHash).toBe(first.manifest.manifestHash);
+    expect(second.candidates[0]?.districts.map((district) => district.renderOrder)).toEqual(
+      first.candidates[0]?.districts.map((district) => district.renderOrder)
+    );
+    expect(second.candidates[0]?.routes.map((route) => route.routeReferenceId)).toEqual(
+      first.candidates[0]?.routes.map((route) => route.routeReferenceId)
+    );
+  });
+});
+
 async function readM3CharacterOfficeFixture(): Promise<M3CharacterOfficeFixtureSourceV0> {
   const text = await readFile(m3CharacterOfficeFixtureUrl, "utf8");
   return parseM3CharacterOfficeFixtureSourceV0(JSON.parse(text) as unknown);
@@ -787,6 +901,21 @@ async function readM3CharacterOfficeFixture(): Promise<M3CharacterOfficeFixtureS
 async function readM6AlphaScenarioFixture(): Promise<M6AlphaScenarioSetSourceV0> {
   const text = await readFile(m6AlphaScenarioFixtureUrl, "utf8");
   return parseM6AlphaScenarioSetSourceV0(JSON.parse(text) as unknown);
+}
+
+async function readM6AlphaMapCandidateFixture(): Promise<M6AlphaMapCandidateSetSourceV0> {
+  const text = await readFile(m6AlphaMapCandidateFixtureUrl, "utf8");
+  return parseM6AlphaMapCandidateSetSourceV0(JSON.parse(text) as unknown);
+}
+
+function requireFirstMapCandidate(
+  source: M6AlphaMapCandidateSetSourceV0
+): M6AlphaMapCandidateSetSourceV0["candidates"][number] {
+  const candidate = source.candidates[0];
+  if (candidate === undefined) {
+    throw new Error("Expected M6 alpha map candidate fixture to contain a candidate.");
+  }
+  return candidate;
 }
 
 function parseM2BadFixtureManifest(input: unknown): M2BadFixtureManifest {
