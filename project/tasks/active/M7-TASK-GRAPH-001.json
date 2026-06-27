@@ -2,7 +2,7 @@
   "id": "M7-TASK-GRAPH-001",
   "summary": "Create minimal M7 Beta content and quality task graph",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -65,16 +65,21 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
-      "actual_effort": "xhigh"
+      "actual_effort": "xhigh",
+      "updated_at": "2026-06-28T04:14:55.1642622+08:00",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-28T04:14:55.1642622+08:00"
     },
     "systems_architect": {
       "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
       "nickname": "Keystone the 3rd",
-      "status": "completed_review_ready",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -84,17 +89,22 @@
       "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
       "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
       "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-28T04:03:00.0000000+08:00",
+      "updated_at": "2026-06-28T04:14:55.1642622+08:00",
       "review_commit": "2613c6c9d214cdab6f6e62bf47c1c1e3a0dfc16a",
       "review_metadata_fix_commit": "5179fda6",
       "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
       "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
-      "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00"
+      "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00",
+      "closed_at": "2026-06-28T04:14:55.1642622+08:00",
+      "close_reason": "closed_after_systems_review_and_independent_qa_accept",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "qa_reviewer": {
       "thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
       "nickname": "Auditor the 3rd",
-      "status": "active_reviewing",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -108,8 +118,13 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T04:03:00.0000000+08:00",
-      "updated_at": "2026-06-28T04:03:00.0000000+08:00",
-      "next_action": "Review M7 task graph and emit ACCEPT, REQUEST_CHANGES, or BLOCK handoff to lead_orchestrator."
+      "updated_at": "2026-06-28T04:14:55.1642622+08:00",
+      "next_action": "Review M7 task graph and emit ACCEPT, REQUEST_CHANGES, or BLOCK handoff to lead_orchestrator.",
+      "closed_at": "2026-06-28T04:14:55.1642622+08:00",
+      "close_reason": "closed_after_accept_handoff_to_lead",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json"
     }
   },
   "route_to": "qa_reviewer",
@@ -127,7 +142,7 @@
     "No product code, package code, content-source data, roadmap, acceptance matrix, prior gate, accepted ADR, CI, tool, release artifact, telemetry, server/multiplayer, mod, cloud, or manual battle work was performed."
   ],
   "created_at": "2026-06-28T03:43:49.1264386+08:00",
-  "updated_at": "2026-06-28T04:03:00.0000000+08:00",
+  "updated_at": "2026-06-28T04:14:55.1642622+08:00",
   "started_at": "2026-06-28T03:43:49.1264386+08:00",
   "base_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
   "previous_closed_task": "M6-EXIT-VALIDATION-001",
@@ -139,7 +154,7 @@
     "m6_closure_pr": 158,
     "m6_closure_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4"
   },
-  "next_action": "Await independent qa_reviewer verdict for M7 task graph.",
+  "next_action": "Push branch, open PR, wait for CI, merge to main, then close M7-TASK-GRAPH-001 before starting M7-CONTENT-LOCK-CONTRACT-001.",
   "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
   "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
@@ -333,5 +348,15 @@
   "qa_thread_nickname": "Auditor the 3rd",
   "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
   "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
-  "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00"
+  "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+  "qa_reviewed_at": "2026-06-28T04:12:00.0817003+08:00",
+  "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-28T04:14:55.1642622+08:00",
+  "accepted_head_commit": "b3ae5ed0b9ab5b1d8961dfb411221770a3c8290a",
+  "child_threads_closed": [
+    "019f0a9d-fc35-7953-b109-aa06340de057",
+    "019f0aaf-d094-7c30-a525-fb612fe5dccb"
+  ]
 }

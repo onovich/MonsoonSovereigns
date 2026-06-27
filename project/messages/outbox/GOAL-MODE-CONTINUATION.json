@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M7_TASK_GRAPH_REVIEW",
+  "status": "M7_TASK_GRAPH_ACCEPTED_PENDING_INTEGRATION",
   "project": "Monsoon Sovereigns",
   "origin_main": "5e68a74374a37fa2f3698ee846462c0525d7341a",
   "current_milestone": "M7",
@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-TASK-GRAPH-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M6-EXIT-VALIDATION-001",
   "last_integrated_task": "M6-EXIT-VALIDATION-001",
   "last_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
@@ -20,22 +20,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-TASK-GRAPH-001",
-      "status": "active",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator"
-    },
-    "systems_architect": {
-      "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
-      "nickname": "Keystone the 3rd",
-      "task_id": "M7-TASK-GRAPH-001",
-      "status": "completed_review_ready",
-      "role": "systems_architect"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
-      "nickname": "Auditor the 3rd",
-      "task_id": "M7-TASK-GRAPH-001",
-      "status": "active_reviewing",
-      "role": "qa_reviewer"
     }
   },
   "unresolved_risks": [
@@ -61,14 +47,14 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-TASK-GRAPH-001 is planning-only; no M7 Human Gate is active before task graph review.",
+    "approval_source": "M7-TASK-GRAPH-001 independent qa_reviewer ACCEPT; pending PR CI and main integration.",
     "recommended_result": null,
-    "note": "Current task is M7-TASK-GRAPH-001. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T03:43:49.1264386+08:00"
+    "note": "M7 task graph accepted pending integration. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T04:14:55.1642622+08:00"
   },
-  "next_machine_action": "Await independent qa_reviewer verdict for M7-TASK-GRAPH-001.",
+  "next_machine_action": "Push M7 task graph branch, open PR, wait for CI, merge, close M7-TASK-GRAPH-001, then start M7-CONTENT-LOCK-CONTRACT-001.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T04:03:00.0000000+08:00"
+  "last_updated_at": "2026-06-28T04:14:55.1642622+08:00"
 }

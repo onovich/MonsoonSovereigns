@@ -9,22 +9,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-TASK-GRAPH-001",
-      "status": "active",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator"
-    },
-    "systems_architect": {
-      "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
-      "nickname": "Keystone the 3rd",
-      "task_id": "M7-TASK-GRAPH-001",
-      "status": "completed_review_ready",
-      "role": "systems_architect"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
-      "nickname": "Auditor the 3rd",
-      "task_id": "M7-TASK-GRAPH-001",
-      "status": "active_reviewing",
-      "role": "qa_reviewer"
     }
   },
   "last_integrated_task": "M6-EXIT-VALIDATION-001",
@@ -53,10 +39,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-TASK-GRAPH-001 systems_architect REVIEW is planning-only; downstream formal content lock and manual playthrough acceptance remain future Human Gates.",
+    "approval_source": "M7-TASK-GRAPH-001 independent qa_reviewer ACCEPT; pending PR CI and main integration.",
     "recommended_result": null,
-    "note": "Route M7 task graph REVIEW handoff to qa_reviewer. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T03:55:00+08:00"
+    "note": "M7 task graph accepted pending integration. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T04:14:55.1642622+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -843,7 +829,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T04:03:00.0000000+08:00",
+  "last_updated_at": "2026-06-28T04:14:55.1642622+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1494,7 +1480,7 @@
     "note": "M7 task graph exists and awaits independent QA review before any downstream M7 work starts."
   },
   "m7_task_graph": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-TASK-GRAPH-001",
     "branch_or_worktree": "chore/m7-task-graph",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -1505,7 +1491,7 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "started_at": "2026-06-28T03:43:49.1264386+08:00",
-    "next_action": "Await independent qa_reviewer verdict for M7 task graph.",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
     "systems_architect_thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
     "systems_architect_nickname": "Keystone the 3rd",
     "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
@@ -1536,6 +1522,16 @@
     "qa_thread_nickname": "Auditor the 3rd",
     "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
     "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
-    "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00"
+    "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+    "qa_reviewed_at": "2026-06-28T04:12:00.0817003+08:00",
+    "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T04:14:55.1642622+08:00",
+    "accepted_head_commit": "b3ae5ed0b9ab5b1d8961dfb411221770a3c8290a",
+    "child_threads_closed": [
+      "019f0a9d-fc35-7953-b109-aa06340de057",
+      "019f0aaf-d094-7c30-a525-fb612fe5dccb"
+    ]
   }
 }

@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260628-M7-TASK-GRAPH-QA-REVIEW",
+  "task_id": "M7-TASK-GRAPH-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA review accepts the planning-only M7 Beta content and quality task graph. The DAG covers the Roadmap and acceptance-matrix M7 scope, preserves M6_GATE = PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE, keeps required Human Gates, leaves M7-CONTENT-LOCK-CONTRACT-001 as the only first downstream READY task while taskctl ready emits no task until graph closure, and modifies only allowed process/task/message/status paths.",
+  "artifacts": [
+    "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+    "project/tasks/active/M7-TASK-GRAPH-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json",
+    "project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json",
+    "project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json",
+    "project/tasks/active/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001.json",
+    "project/tasks/active/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.json",
+    "project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json",
+    "project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json",
+    "project/tasks/active/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001.json",
+    "project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-EXIT-VALIDATION-001.json",
+    "PROJECT_STATUS.md"
+  ],
+  "branch_or_worktree": "chore/m7-task-graph / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "b3ae5ed0",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output before writing this QA handoff; no unexpected dirty or untracked worktree state was present."
+    },
+    {
+      "command": "git diff --name-status 97ec517ca96727fe7fe66e27977c3d8b0d39d9f4..HEAD",
+      "exit_code": 0,
+      "result": "Diff contains PROJECT_STATUS.md, goal/model routing state, thread registry, M7 task JSON files, and M7 process messages/routes only. No apps, packages, content-source, tools, CI, roadmap, acceptance matrix, prior gate, ADR, manifest, checksum, or release artifact paths are modified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-TASK-GRAPH-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-TASK-GRAPH-001 is REVIEW; M7-CONTENT-LOCK-CONTRACT-001 is READY; the other 12 downstream M7 tasks are DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output while M7-TASK-GRAPH-001 remains REVIEW, so the first READY downstream task is still dependency-gated until graph closure."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "Get-Content -Raw -Encoding UTF8 docs/11-roadmap.md; Get-Content -Raw -Encoding UTF8 docs/23-milestone-acceptance-matrix.md; rg M7/Beta scope terms",
+      "exit_code": 0,
+      "result": "Roadmap M7 requires history/culture/language review, full scenario/person/event fill, balance and anti-snowball, performance/memory/loading, Chrome/Edge/Firefox/Windows matrix, save migration and cloud-save candidate, tutorial/hints/encyclopedia, audio/art/localization completion, and content lock. Acceptance matrix M7 requires content lock, large-scale balance/migration, platform/resolution/localization matrix, Beta culture review, and manual playthrough. The M7 DAG maps these to explicit downstream tasks."
+    },
+    {
+      "command": "Get-Content -Raw -Encoding UTF8 docs/GATE-M6.md; rg PASS_WITH_LIMITS/DEFER_MANUAL_NODE_BATTLE/manual node battle docs/28-manual-node-battle-decision.md PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "M6 remains PASS_WITH_LIMITS, not plain PASS or release readiness. DEFER_MANUAL_NODE_BATTLE remains binding for M6/M7/M8; no manual node battle implementation task or blocking spike/research/validation/exit dependency is authorized."
+    },
+    {
+      "command": "node -e independent JSON DAG shape, acyclicity, dependency existence, status, coverage keyword, and manual-node-battle guard check",
+      "exit_code": 0,
+      "result": "DAG_CHECK_OK; M7 DAG files=14; READY=M7-CONTENT-LOCK-CONTRACT-001; DRAFT downstream=12; graph edges=26; all dependencies exist or point to closed M6-EXIT-VALIDATION-001; no cycle found."
+    },
+    {
+      "command": "git diff --name-only 97ec517ca96727fe7fe66e27977c3d8b0d39d9f4..HEAD -- forbidden paths; independent changed-path scope guard",
+      "exit_code": 0,
+      "result": "Forbidden-path query produced no output. Scope guard reported changed=23 and SCOPE_CHECK_OK."
+    },
+    {
+      "command": "rg -g M7-*.json PASS_WITH_LIMITS/DEFER_MANUAL_NODE_BATTLE/Human Gate/cloud-save/telemetry/server/multiplayer/arbitrary-code/irreversible/release/commercial/branding project/tasks/active",
+      "exit_code": 0,
+      "result": "M7 task files consistently carry M6 PASS_WITH_LIMITS, DEFER_MANUAL_NODE_BATTLE, and Human Gate preservation notes for cultural risk, formal content lock, manual playthrough acceptance, release/commercial/branding, telemetry, server/multiplayer, cloud-save implementation/accounts/secrets, arbitrary-code mods, irreversible migration, and frozen product/platform/core changes."
+    }
+  ],
+  "decisions": [
+    "ACCEPT M7-TASK-GRAPH-001 for lead integration.",
+    "Reviewed actual HEAD b3ae5ed0 because the routed workspace contains a QA route/metadata commit after 5179fda6; that extra commit is limited to allowed routing/status/task metadata and is not a blocker.",
+    "M7-CONTENT-LOCK-CONTRACT-001 is acceptable as the only first downstream READY task, because taskctl ready emits no dependency-ready task while M7-TASK-GRAPH-001 is still REVIEW.",
+    "M6_GATE = PASS_WITH_LIMITS is preserved and is not rewritten as unconditional PASS or release readiness.",
+    "DEFER_MANUAL_NODE_BATTLE is preserved. The DAG creates no manual node battle implementation task and no M7/M8 blocking manual node battle spike, research, validation, or exit-gate dependency.",
+    "Human Gates remain explicit for major cultural-risk decisions, formal content lock acceptance, manual playthrough acceptance requiring human judgment, commercial/release/branding, telemetry, server/multiplayer, cloud-save implementation/accounts/secrets, arbitrary-code mods, irreversible migration, frozen product/platform/core changes, and any formal 1.0 scope reversal."
+  ],
+  "risks": [
+    "This acceptance covers only the planning DAG. Each downstream M7 task still needs its own writer evidence, reviewer handoff, actual commands, and Human Gate handling where applicable.",
+    "The graph intentionally does not prove content quality, balance quality, platform compatibility, save migration safety, or manual playthrough success yet; those are delegated to downstream M7 tasks."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may integrate and close M7-TASK-GRAPH-001, then route the first dependency-ready downstream task according to the accepted DAG and Human Gate constraints.",
+  "created_at": "2026-06-28T04:12:00.0817003+08:00"
+}
