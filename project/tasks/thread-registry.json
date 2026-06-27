@@ -4099,7 +4099,7 @@
       "task_id": "M6-LAYERED-AI-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_routing_review",
+      "status": "active_routing_request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -4111,22 +4111,28 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T22:24:44.466+08:00",
-      "updated_at": "2026-06-27T22:42:06.546+08:00",
-      "next_action": "Simulation writer must implement layered AI within allowed paths, run required tests, and emit REVIEW handoff routed to systems_architect.",
+      "updated_at": "2026-06-27T22:54:47.272+08:00",
+      "next_action": "Original simulation writer must fix systems REQUEST_CHANGES, rerun gates, and emit R2 REVIEW handoff routed to systems_architect.",
       "start_submission_id": "019f0979-3301-7040-9cb2-f43e04a440f7",
       "route_sent_at": "2026-06-27T22:26:33.497+08:00",
       "review_route_file": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-TO-SYSTEMS-REVIEW.json",
       "systems_architect_thread_id": "019f0986-396c-7010-a975-b12388543a64",
       "systems_architect_nickname": "Meridian the 2nd",
       "systems_review_submission_id": "019f0987-822b-7d61-95cf-e904749f6790",
-      "systems_route_sent_at": "2026-06-27T22:42:06.546+08:00"
+      "systems_route_sent_at": "2026-06-27T22:42:06.546+08:00",
+      "systems_status": "REQUEST_CHANGES",
+      "systems_review_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
+      "request_changes_submission_id": "019f0992-d923-7502-bb2a-1d6b70226dab",
+      "request_changes_sent_at": "2026-06-27T22:54:47.272+08:00"
     },
     "M6-LAYERED-AI-001:simulation_engineer": {
       "task_id": "M6-LAYERED-AI-001",
       "role": "simulation_engineer",
       "thread_id": "019f0976-c120-7a50-a3ab-08fced11c52c",
       "nickname": "Delta the 2nd",
-      "status": "review_handoff_sent",
+      "status": "active_fixing_request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -4138,21 +4144,27 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T22:24:44.466+08:00",
-      "updated_at": "2026-06-27T22:42:06.546+08:00",
-      "next_action": "Simulation writer must implement layered AI within allowed paths, run required tests, and emit REVIEW handoff routed to systems_architect.",
+      "updated_at": "2026-06-27T22:54:47.272+08:00",
+      "next_action": "Original simulation writer must fix systems REQUEST_CHANGES, rerun gates, and emit R2 REVIEW handoff routed to systems_architect.",
       "start_submission_id": "019f0979-3301-7040-9cb2-f43e04a440f7",
       "route_sent_at": "2026-06-27T22:26:33.497+08:00",
       "review_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-REVIEW__simulation_engineer.json",
       "review_commit": "65e6f660",
       "systems_review_submission_id": "019f0987-822b-7d61-95cf-e904749f6790",
-      "systems_route_sent_at": "2026-06-27T22:42:06.546+08:00"
+      "systems_route_sent_at": "2026-06-27T22:42:06.546+08:00",
+      "systems_status": "REQUEST_CHANGES",
+      "systems_review_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
+      "request_changes_submission_id": "019f0992-d923-7502-bb2a-1d6b70226dab",
+      "request_changes_sent_at": "2026-06-27T22:54:47.272+08:00"
     },
     "M6-LAYERED-AI-001:systems_architect": {
       "task_id": "M6-LAYERED-AI-001",
       "role": "systems_architect",
       "thread_id": "019f0986-396c-7010-a975-b12388543a64",
       "nickname": "Meridian the 2nd",
-      "status": "active_reviewing",
+      "status": "completed_request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -4165,10 +4177,16 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T22:41:03.350+08:00",
-      "updated_at": "2026-06-27T22:42:06.546+08:00",
-      "next_action": "systems_architect must review the M6 layered AI implementation at 65e6f660 and emit ACCEPT or REQUEST_CHANGES handoff routed to lead_orchestrator.",
+      "updated_at": "2026-06-27T22:54:47.272+08:00",
+      "next_action": "Original simulation writer must fix systems REQUEST_CHANGES, rerun gates, and emit R2 REVIEW handoff routed to systems_architect.",
       "systems_review_submission_id": "019f0987-822b-7d61-95cf-e904749f6790",
-      "systems_route_sent_at": "2026-06-27T22:42:06.546+08:00"
+      "systems_route_sent_at": "2026-06-27T22:42:06.546+08:00",
+      "systems_status": "REQUEST_CHANGES",
+      "systems_review_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
+      "request_changes_submission_id": "019f0992-d923-7502-bb2a-1d6b70226dab",
+      "request_changes_sent_at": "2026-06-27T22:54:47.272+08:00"
     }
   },
   "replaced_threads": [
@@ -4227,5 +4245,5 @@
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T22:42:06.546+08:00"
+  "updated_at": "2026-06-27T22:54:47.272+08:00"
 }
