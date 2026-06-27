@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T13:15:01+08:00",
+  "updated_at": "2026-06-27T13:28:38+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1771,44 +1771,42 @@
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_orchestrating_replacement",
+      "status": "active_orchestrating_request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration for M6 diplomacy and legitimacy replacement writer",
+      "responsibility": "lead orchestration for M6 diplomacy REQUEST_CHANGES loop",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
-      "updated_at": "2026-06-27T07:16:51+08:00"
+      "updated_at": "2026-06-27T13:28:38+08:00"
     },
     {
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "simulation_engineer",
       "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
-      "status": "active",
+      "status": "active_request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "nickname": "Engine the 2nd",
-      "replaces_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
-      "responsibility": "replacement simulation_engineer writer for deterministic diplomacy and legitimacy substrate",
+      "responsibility": "replacement writer fixing systems REQUEST_CHANGES",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
-      "updated_at": "2026-06-27T07:16:51+08:00"
+      "updated_at": "2026-06-27T13:28:38+08:00"
     },
     {
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "systems_architect",
       "thread_id": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
-      "status": "active",
+      "status": "request_changes_complete",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "nickname": "Keystone",
-      "replaces_thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
-      "responsibility": "replacement systems_architect review of M6 diplomacy and legitimacy substrate",
+      "responsibility": "systems review completed with REQUEST_CHANGES",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
-      "updated_at": "2026-06-27T13:14:06+08:00"
+      "updated_at": "2026-06-27T13:28:38+08:00"
     }
   ],
   "task_effects": {
@@ -2065,15 +2063,15 @@
       ]
     },
     "M6-DIPLOMACY-LEGITIMACY-001": {
-      "status": "IN_PROGRESS_REPLACEMENT_ACTIVE",
+      "status": "IN_PROGRESS_REQUEST_CHANGES",
       "owner_role": "simulation_engineer",
       "reviewer_role": "systems_architect",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
       "dependencies_satisfied_by": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "updated_at": "2026-06-27T13:15:01+08:00",
+      "updated_at": "2026-06-27T13:28:38+08:00",
       "human_gate_required": false,
-      "next_action": "Await replacement systems_architect ACCEPT or REQUEST_CHANGES.",
+      "next_action": "Await replacement simulation_engineer R2 REVIEW after systems REQUEST_CHANGES.",
       "writer_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
       "writer_nickname": "Delta the 2nd",
       "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
@@ -2102,7 +2100,11 @@
       "systems_replacement_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-SYSTEMS-REVIEW-REPLACEMENT__lead_orchestrator.json",
       "routed_to_replacement_systems_at": "2026-06-27T13:14:06+08:00",
       "replacement_systems_review_submission_id": "019f0780-60ad-76c3-8d2a-520efbf8b432",
-      "replacement_systems_route_sent_at": "2026-06-27T13:15:01+08:00"
+      "replacement_systems_route_sent_at": "2026-06-27T13:15:01+08:00",
+      "systems_review_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-REVIEW__systems_architect.json",
+      "systems_status": "REQUEST_CHANGES",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-SYSTEMS-REQUEST-CHANGES-TO-SIM.json"
     }
   }
 }

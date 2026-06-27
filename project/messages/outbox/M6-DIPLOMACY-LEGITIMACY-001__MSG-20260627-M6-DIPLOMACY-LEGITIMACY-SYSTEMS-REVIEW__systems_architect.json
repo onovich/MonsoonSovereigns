@@ -1,0 +1,164 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-REVIEW",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Replacement systems_architect performed a fresh read-only review of current HEAD f7e203feb48a30e8606019640391273c19f252dd and writer commit 15a337f3b70e947adc4fbe7c592d49f7702207be. Mechanical tests pass and changed paths stay within the task's allowed package/test/project-message scope, but M6 diplomacy/legitimacy commands currently accept unauthorized actors and the recognized-order obligation reason branch is dead code, so the task is not architecturally acceptable yet.",
+  "artifacts": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "docs/02-program-design-document.md",
+    "docs/03-technology-stack.md",
+    "docs/04-software-architecture.md",
+    "docs/05-coding-standards.md",
+    "docs/systems/07-diplomacy-legitimacy.md",
+    "docs/systems/08-ai-proposals-explainability.md",
+    "docs/systems/10-save-content-mods.md",
+    "docs/28-manual-node-battle-decision.md",
+    "docs/decisions/ADR-003-worker-authoritative-simulation.md",
+    "docs/decisions/ADR-004-deterministic-command-model.md",
+    "docs/decisions/ADR-006-polity-control-model.md",
+    "docs/decisions/ADR-009-deterministic-rng-domains.md",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REPLACEMENT-REVIEW.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-SYSTEMS-REVIEW-REPLACEMENT__lead_orchestrator.json",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-ai/src/m6-diplomacy-ai.ts",
+    "packages/sim-ai/src/index.ts",
+    "packages/sim-ai/package.json",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m6-diplomacy-legitimacy.test.ts",
+    "tests/sim-ai-m6-diplomacy-ai.test.ts"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "f7e203feb48a30e8606019640391273c19f252dd",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m6-diplomacy-legitimacy at f7e203fe; only pre-existing untracked ui-samples/ is present."
+    },
+    {
+      "command": "git diff --name-status 141e5fc9f4dd149b1701ca102bfafef61189e8b3..15a337f3b70e947adc4fbe7c592d49f7702207be",
+      "exit_code": 0,
+      "result": "Writer implementation changes are in allowed package/test/project-message/task paths: sim-core, sim-ai, protocol, save-format, tests, and project metadata/messages."
+    },
+    {
+      "command": "git diff --name-status 15a337f3b70e947adc4fbe7c592d49f7702207be..HEAD",
+      "exit_code": 0,
+      "result": "Post-writer changes are process routing/replacement metadata only under project paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "24 test files passed, 177 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "2 test files passed, 3 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol typecheck",
+      "exit_code": 1,
+      "result": "No selected package has a typecheck script; this is package-script absence, not a TypeScript diagnostic."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop canaries."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest 37 files / 257 tests passed; web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "node .agents\\skills\\monsoon-studio-orchestrator\\scripts\\taskctl.mjs validate M6-DIPLOMACY-LEGITIMACY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json."
+    },
+    {
+      "command": "git diff --check 141e5fc9f4dd149b1701ca102bfafef61189e8b3..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "rg literal boundary/determinism scans over reviewed source",
+      "exit_code": 0,
+      "result": "No React/Pixi/Electron/Node IO imports, Math.random, Date.now, performance.now, eval, new Function, dynamic import, any, unsafe double assertion, TODO/FIXME, skip, or .only found in reviewed source/test files; dynamic import hit only existing sim-core performance-baseline script outside authority source."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e <M6 unauthorized actor repro>",
+      "exit_code": 0,
+      "result": "sim.propose-diplomatic-agreement, sim.answer-diplomatic-agreement, and sim.record-legitimacy-source all returned accepted when actor was {kind:'player', id:'polity:999'} against polity 1/2 state."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: do not accept M6-DIPLOMACY-LEGITIMACY-001 until command authority and recognized-order obligation semantics are fixed and covered by tests.",
+    "No forbidden path modifications were found in the writer diff or current HEAD process diff; PROJECT_STATUS.md, UI/desktop/content/tools/docs gate/roadmap/acceptance matrix paths were not modified.",
+    "No manual node battle, server/multiplayer, telemetry, arbitrary-code scripting, full peace treaty UI, hidden grand-strategy manager, or implicit RPC surface was found in the reviewed implementation.",
+    "M6 state is represented in sim-core with branded IDs, schemaVersion 1, canonical ordering, reason-coded domain events/deltas, save DTOs, and save parser rejection for malformed/missing/future-version M6 payloads when the runtime expects M6 state.",
+    "Protocol/save changes appear additive/versioned and M1-M5 determinism tests still pass."
+  ],
+  "risks": [
+    "Mechanical tests pass but currently miss unauthorized diplomacy/legitimacy mutation paths.",
+    "M6 AI currently constructs commands with actor id ai:m6 in tests, unlike existing campaign AI conventions that use actor kind ai with id polity:<id>; adding authority checks will require aligning AI/test actor IDs or defining a narrow M6 authority rule.",
+    "The current recognized-order obligation branch cannot emit obligation-risk because activeObligationCount >= 0 is always true; this weakens the acceptance claim that obligations affect start-to-victory decisions.",
+    "Untracked ui-samples/ remains in the worktree and was not inspected or modified."
+  ],
+  "blockers": [
+    {
+      "severity": "P1",
+      "path": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "3295-3533",
+      "issue": "M6 diplomacy/legitimacy commands do not enforce actor authority. Any player/AI actor can propose between arbitrary polities, answer agreements, or record legitimacy sources for any polity. This violates the existing command validation model used by M3/M4 actorHasPolityAuthority and makes legitimacy/victory pressure directly forgeable through the public GameCommand union.",
+      "required_fix": "Add authority validation and tests: proposer must be authorized for proposerPolityId, answer must be authorized for the responding polity or explicitly system-scoped, and record-legitimacy-source must be restricted to system/domain-authorized paths or a documented authority rule. Update M6 AI to emit actor IDs compatible with that authority convention, and add rejection tests proving unauthorized player/AI actors cannot mutate M6 state."
+    },
+    {
+      "severity": "P1",
+      "path": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "9541-9601",
+      "issue": "Recognized-order obligation reasoning has a dead branch: activeObligationCount >= 0 is always true, so m6.recognized-order.obligation-risk cannot be produced and obligations do not affect canPursueVictory. This does not satisfy the task requirement that legitimacy/recognized-order decisions account for obligations.",
+      "required_fix": "Define the intended obligation semantics for M6 recognized-order decisions, implement a non-tautological rule, and add tests covering both obligation-clear and obligation-risk/blocked cases. If obligations are only informational, update the task acceptance claim before review; otherwise make canPursueVictory or reason-coded pressure reflect active/overdue obligation state."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route REQUEST_CHANGES to the replacement simulation_engineer. After fixes, return for another systems_architect review with focused tests for M6 actor authority, AI actor ID parity, and obligation-sensitive recognized-order decisions.",
+  "created_at": "2026-06-27T13:25:59.6895762+08:00"
+}

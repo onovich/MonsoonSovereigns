@@ -9,24 +9,22 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active_orchestrating_replacement",
+      "status": "active_orchestrating_request_changes",
       "role": "lead_orchestrator"
     },
     "simulation_engineer": {
       "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active",
+      "status": "active_request_changes",
       "role": "simulation_engineer",
-      "nickname": "Engine the 2nd",
-      "replaces_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1"
+      "nickname": "Engine the 2nd"
     },
     "systems_architect": {
       "thread_id": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active",
+      "status": "request_changes_complete",
       "role": "systems_architect",
-      "nickname": "Keystone",
-      "replaces_thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c"
+      "nickname": "Keystone"
     }
   },
   "last_integrated_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
@@ -74,7 +72,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T13:15:01+08:00",
+  "last_updated_at": "2026-06-27T13:28:38+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -86,7 +84,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T13:15:01+08:00",
+  "updated_at": "2026-06-27T13:28:38+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -444,7 +442,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Await replacement systems_architect ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001.",
+  "next_action": "Await replacement simulation_engineer R2 REVIEW after systems REQUEST_CHANGES.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -563,7 +561,7 @@
     ]
   },
   "m6_diplomacy_legitimacy": {
-    "status": "IN_PROGRESS_REPLACEMENT_ACTIVE",
+    "status": "IN_PROGRESS_REQUEST_CHANGES",
     "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
     "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -576,7 +574,7 @@
     "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await replacement systems_architect ACCEPT or REQUEST_CHANGES.",
+    "next_action": "Replacement simulation_engineer must fix authority validation and obligation semantics, then return R2 REVIEW.",
     "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
     "route_sent_at": "2026-06-27T06:42:07+08:00",
     "replacement_writer_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
@@ -613,6 +611,10 @@
     "systems_replacement_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-SYSTEMS-REVIEW-REPLACEMENT__lead_orchestrator.json",
     "routed_to_replacement_systems_at": "2026-06-27T13:14:06+08:00",
     "replacement_systems_review_submission_id": "019f0780-60ad-76c3-8d2a-520efbf8b432",
-    "replacement_systems_route_sent_at": "2026-06-27T13:15:01+08:00"
+    "replacement_systems_route_sent_at": "2026-06-27T13:15:01+08:00",
+    "systems_review_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "REQUEST_CHANGES",
+    "request_changes_round": 1,
+    "request_changes_route": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-SYSTEMS-REQUEST-CHANGES-TO-SIM.json"
   }
 }
