@@ -42,8 +42,8 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-TASK-GRAPH-001",
-    "updated_at": "2026-06-28T04:24:04.3200000+08:00"
+    "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+    "updated_at": "2026-06-28T04:31:17.9147991+08:00"
   },
   "retired_lead_threads": [
     {
@@ -2437,7 +2437,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T04:24:04.3200000+08:00",
+  "updated_at": "2026-06-28T04:31:17.9147991+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2938,9 +2938,9 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION"
   },
   "m7_start": {
-    "status": "TASK_GRAPH_CLOSED",
+    "status": "CONTENT_LOCK_CONTRACT_IN_PROGRESS",
     "current_milestone": "M7",
-    "next_action": "Start M7-CONTENT-LOCK-CONTRACT-001.",
+    "next_action": "Route M7-CONTENT-LOCK-CONTRACT-001 to gameplay_designer writer.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   },
@@ -3090,6 +3090,30 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
     "next_ready_tasks": [
       "M7-CONTENT-LOCK-CONTRACT-001"
-    ]
+    ],
+    "closure_pr": 160,
+    "closure_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+    "closure_recorded_at": "2026-06-28T04:31:17.9147991+08:00"
+  },
+  "m7_content_lock_contract": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+    "branch_or_worktree": "design/m7-content-lock-contract",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+    "writer_nickname": "Ledger the 3rd",
+    "owner_role": "gameplay_designer",
+    "reviewer_role": "systems_architect",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+    "started_at": "2026-06-28T04:31:17.9147991+08:00",
+    "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+    "next_action": "Route formal start message to gameplay_designer writer."
   }
 }

@@ -2,20 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-CONTENT-LOCK-CONTRACT-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-TASK-GRAPH-001",
-      "status": "closed_integrated",
+      "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+      "status": "active",
       "role": "lead_orchestrator"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+      "nickname": "Ledger the 3rd",
+      "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+      "status": "spawned_pending_route",
+      "role": "gameplay_designer"
     }
   },
   "last_integrated_task": "M7-TASK-GRAPH-001",
-  "last_main_commit": "bde9037d83b20f0fe6ea19e5d67b926d6ca161f7",
-  "next_ready_tasks": [
-    "M7-CONTENT-LOCK-CONTRACT-001"
-  ],
+  "last_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -39,10 +46,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-TASK-GRAPH-001 closed after PR #159 entered origin/main.",
+    "approval_source": "M7-CONTENT-LOCK-CONTRACT-001 is planning-only and does not approve formal content lock acceptance.",
     "recommended_result": null,
-    "note": "M7 task graph is CLOSED. Manual node battle remains DEFER_MANUAL_NODE_BATTLE. Next READY task is M7-CONTENT-LOCK-CONTRACT-001.",
-    "recorded_at": "2026-06-28T04:24:04.3200000+08:00"
+    "note": "No Human Gate is active. Formal content lock acceptance remains a future Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T04:31:17.9147991+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -829,7 +836,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T04:24:04.3200000+08:00",
+  "last_updated_at": "2026-06-28T04:31:17.9147991+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1540,6 +1547,32 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
     "next_ready_tasks": [
       "M7-CONTENT-LOCK-CONTRACT-001"
-    ]
+    ],
+    "closure_pr": 160,
+    "closure_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+    "closure_recorded_at": "2026-06-28T04:31:17.9147991+08:00"
+  },
+  "m7_content_lock_contract": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+    "branch_or_worktree": "design/m7-content-lock-contract",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+    "writer_nickname": "Ledger the 3rd",
+    "owner_role": "gameplay_designer",
+    "reviewer_role": "systems_architect",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "base_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+    "previous_closed_task": "M7-TASK-GRAPH-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+    "started_at": "2026-06-28T04:31:17.9147991+08:00",
+    "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+    "next_action": "Route formal start message to gameplay_designer writer."
   }
 }

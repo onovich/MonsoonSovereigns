@@ -2,7 +2,7 @@
   "id": "M7-CONTENT-LOCK-CONTRACT-001",
   "summary": "Define bounded M7 Beta content lock contract",
   "milestone": "M7",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -57,8 +57,36 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
     "git diff --check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "design/m7-content-lock-contract",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "started",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+      "base_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+      "nickname": "Ledger the 3rd",
+      "status": "spawned_pending_route",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "design/m7-content-lock-contract",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+      "created_at": "2026-06-28T04:31:17.9147991+08:00",
+      "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+      "next_action": "Await formal route message, then execute the planning-only content lock contract task."
+    }
+  },
   "route_to": "systems_architect",
   "notes": [
     "First executable downstream M7 task after the task graph is accepted; planning-only contract work.",
@@ -69,7 +97,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T04:31:17.9147991+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -84,5 +112,13 @@
     "irreversible save/content migration",
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
-  ]
+  ],
+  "started_at": "2026-06-28T04:31:17.9147991+08:00",
+  "base_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+  "previous_closed_task": "M7-TASK-GRAPH-001",
+  "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+  "writer_thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+  "writer_thread_nickname": "Ledger the 3rd",
+  "next_action": "gameplay_designer writer defines the planning-only M7 Beta content lock contract, writes a REVIEW handoff, and routes to systems_architect."
 }

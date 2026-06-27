@@ -11,8 +11,8 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-28T04:24:04.3200000+08:00",
-        "task_id": "M7-TASK-GRAPH-001"
+        "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+        "task_id": "M7-CONTENT-LOCK-CONTRACT-001"
       }
     ],
     "retired_leads": [
@@ -5065,6 +5065,45 @@
       "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
       "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-28T04:14:55.1642622+08:00"
+    },
+    "M7-CONTENT-LOCK-CONTRACT-001:lead_orchestrator": {
+      "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "started",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "design/m7-content-lock-contract",
+      "base_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+      "previous_closed_task": "M7-TASK-GRAPH-001",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+      "created_at": "2026-06-28T04:31:17.9147991+08:00",
+      "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+      "next_action": "Route formal start message to gameplay_designer writer."
+    },
+    "M7-CONTENT-LOCK-CONTRACT-001:gameplay_designer": {
+      "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+      "role": "gameplay_designer",
+      "thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+      "nickname": "Ledger the 3rd",
+      "status": "spawned_pending_route",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "design/m7-content-lock-contract",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "created_at": "2026-06-28T04:31:17.9147991+08:00",
+      "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+      "next_action": "Await formal route message."
     }
   },
   "replaced_threads": [
@@ -5154,5 +5193,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T04:24:04.3200000+08:00"
+  "updated_at": "2026-06-28T04:31:17.9147991+08:00"
 }
