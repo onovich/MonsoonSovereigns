@@ -2,7 +2,7 @@
   "id": "M6-ALPHA-NO-P0P1-VALIDATION-001",
   "summary": "Validate Alpha has no accepted P0 or P1 blockers",
   "milestone": "M6",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -90,34 +90,38 @@
     "test_engineer": {
       "thread_id": "019f0a52-c6b9-7c83-ba80-8a4b65292be8",
       "nickname": "Probe the 2nd",
-      "status": "completed_review_ready",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "review_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-REVIEW__test_engineer.json",
       "review_commit": "6df1af8b",
-      "updated_at": "2026-06-27T18:42:29.126Z"
+      "updated_at": "2026-06-27T18:42:29.126Z",
+      "closed_at": "2026-06-27T18:49:38.902Z"
     },
     "qa_reviewer": {
       "thread_id": "019f0a62-c563-7873-bce6-f37b8eef2cc9",
       "nickname": "Gate the 3rd",
-      "status": "active_reviewing",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "read_only": true
+      "read_only": true,
+      "closed_at": "2026-06-27T18:49:38.902Z",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-QA-REVIEW__qa_reviewer.json"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is the M6 Alpha no-P0/P1 evidence task, not the formal M6 exit gate.",
     "Do not hide failures behind PASS_WITH_LIMITS if a P0/P1 blocker remains accepted.",
     "Preserve M5 PASS_WITH_LIMITS context and re-check its carried limits explicitly."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T18:42:29.126Z",
+  "updated_at": "2026-06-27T18:49:38.902Z",
   "review_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-REVIEW__test_engineer.json",
   "review_commit": "6df1af8b",
   "started_at": "2026-06-27T18:24:52.572Z",
@@ -126,7 +130,7 @@
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "start_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-START__lead_orchestrator.json",
-  "next_action": "Await independent qa_reviewer verdict; route REQUEST_CHANGES back to test_engineer or ACCEPT to lead integration.",
+  "next_action": "Push branch, open PR, wait for CI, merge to main, sync main, then mark task CLOSED.",
   "route_file": "project/messages/routes/M6-ALPHA-NO-P0P1-VALIDATION-001__ROUTE-20260628-M6-NO-P0P1-LEAD-TO-TEST-START.json",
   "start_submission_id": "019f0a54-e008-7e93-b6ac-6c48a57e22e2",
   "route_sent_at": "2026-06-27T18:26:27.838Z",
@@ -134,5 +138,132 @@
   "qa_thread_nickname": "Gate the 3rd",
   "qa_route": "project/messages/routes/M6-ALPHA-NO-P0P1-VALIDATION-001__ROUTE-20260628-M6-NO-P0P1-WRITER-TO-QA-REVIEW.json",
   "qa_submission_id": "019f0a63-6929-7903-96c4-016a74b1bc1c",
-  "routed_to_qa_at": "2026-06-27T18:42:29.126Z"
+  "routed_to_qa_at": "2026-06-27T18:42:29.126Z",
+  "accepted_at": "2026-06-27T18:49:38.902Z",
+  "accepted_head_commit": "6df1af8ba30baa0178b185e5ac9d7bb4ce395f47",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-QA-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_tests_run": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "already up to date"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, architecture checks passed"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "root Vitest 41 files / 307 tests and web Vitest 1 file / 4 tests passed"
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "M1/M2/M3/M6 content validation passed"
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker parity and M6 Alpha terminal victory passed"
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650-day baseline passed"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite build passed; existing chunk-size warning only"
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed; chunk-size/plugin timing warnings only"
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security/preload/IPC checks passed"
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "desktop package smoke passed"
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright 11/11 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m6-batch-balance",
+      "exit_code": 0,
+      "result": "artifact hash 99d64950; 3 scenarios; 2 seeds; 6 runs; p0p1CandidateCount 0"
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 0,
+      "result": "1 file / 5 tests passed"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ALPHA-NO-P0P1-VALIDATION-001",
+      "exit_code": 0,
+      "result": "task JSON valid"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "writer REVIEW handoff valid"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "QA ACCEPT handoff valid"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ],
+  "child_threads_closed": [
+    "019f0a52-c6b9-7c83-ba80-8a4b65292be8",
+    "019f0a62-c563-7873-bce6-f37b8eef2cc9"
+  ],
+  "child_thread_close_summary": [
+    {
+      "thread_id": "019f0a52-c6b9-7c83-ba80-8a4b65292be8",
+      "role": "test_engineer",
+      "nickname": "Probe the 2nd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-27T18:49:38.902Z"
+    },
+    {
+      "thread_id": "019f0a62-c563-7873-bce6-f37b8eef2cc9",
+      "role": "qa_reviewer",
+      "nickname": "Gate the 3rd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-27T18:49:38.902Z"
+    }
+  ],
+  "non_blocking_risks": [
+    {
+      "id": "M6-NO-P0P1-BUILD-WARNINGS-001",
+      "severity": "P2",
+      "status": "accepted_non_blocking",
+      "summary": "Web/Storybook chunk-size or plugin timing warnings and MODULE_TYPELESS_PACKAGE_JSON warnings were observed, but all tests/builds passed and QA found no P0/P1 consequence."
+    },
+    {
+      "id": "M6-NO-P0P1-METADATA-RISK-001",
+      "severity": "P3",
+      "status": "accepted_non_blocking",
+      "summary": "Writer handoff internal commit field points to 64d7ff09 while route/task/QA review target pins 6df1af8b as authoritative.",
+      "disposition": "Do not rewrite reviewed writer handoff; lead ACCEPT records 6df1af8b as authoritative."
+    }
+  ]
 }

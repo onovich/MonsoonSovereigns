@@ -11,20 +11,6 @@
       "task_id": "M6-ALPHA-NO-P0P1-VALIDATION-001",
       "status": "active",
       "role": "lead_orchestrator"
-    },
-    "test_engineer": {
-      "thread_id": "019f0a52-c6b9-7c83-ba80-8a4b65292be8",
-      "nickname": "Probe the 2nd",
-      "task_id": "M6-ALPHA-NO-P0P1-VALIDATION-001",
-      "status": "completed_review_ready",
-      "role": "test_engineer"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f0a62-c563-7873-bce6-f37b8eef2cc9",
-      "nickname": "Gate the 3rd",
-      "task_id": "M6-ALPHA-NO-P0P1-VALIDATION-001",
-      "status": "active_reviewing",
-      "role": "qa_reviewer"
     }
   },
   "last_integrated_task": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
@@ -53,10 +39,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-ADVISER-INTERVENTION-EVIDENCE-001 closure checkpoint entered origin/main through PR #154 at 3bf69c58f4143242b47b3f0db93bcc03b28b1aa7; no Human Gate active.",
+    "approval_source": "M6-ALPHA-NO-P0P1-VALIDATION-001 accepted by independent QA; no Human Gate active and M6 exit not decided by this task.",
     "recommended_result": null,
-    "note": "M6-ALPHA-NO-P0P1-VALIDATION-001 started for M6 Alpha no-P0/P1 validation; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-27T18:24:52.572Z"
+    "note": "Continue with PR/CI/main integration and closure; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-27T18:49:38.902Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -843,8 +829,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T18:42:29.126Z",
-  "updated_at": "2026-06-27T18:42:29.126Z",
+  "last_updated_at": "2026-06-27T18:49:38.902Z",
+  "updated_at": "2026-06-27T18:49:38.902Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1379,7 +1365,7 @@
     "closure_main_commit": "3bf69c58f4143242b47b3f0db93bcc03b28b1aa7"
   },
   "m6_alpha_no_p0p1_validation": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-ALPHA-NO-P0P1-VALIDATION-001",
     "owner_role": "test_engineer",
     "reviewer_role": "qa_reviewer",
@@ -1393,10 +1379,10 @@
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "start_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-START__lead_orchestrator.json",
     "started_at": "2026-06-27T18:24:52.572Z",
-    "updated_at": "2026-06-27T18:42:29.126Z",
+    "updated_at": "2026-06-27T18:49:38.902Z",
     "review_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-REVIEW__test_engineer.json",
     "review_commit": "6df1af8b",
-    "next_action": "Await independent qa_reviewer verdict; integrate after ACCEPT.",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, sync main, then mark task CLOSED.",
     "route_file": "project/messages/routes/M6-ALPHA-NO-P0P1-VALIDATION-001__ROUTE-20260628-M6-NO-P0P1-LEAD-TO-TEST-START.json",
     "start_submission_id": "019f0a54-e008-7e93-b6ac-6c48a57e22e2",
     "route_sent_at": "2026-06-27T18:26:27.838Z",
@@ -1404,6 +1390,29 @@
     "qa_thread_nickname": "Gate the 3rd",
     "qa_route": "project/messages/routes/M6-ALPHA-NO-P0P1-VALIDATION-001__ROUTE-20260628-M6-NO-P0P1-WRITER-TO-QA-REVIEW.json",
     "qa_submission_id": "019f0a63-6929-7903-96c4-016a74b1bc1c",
-    "routed_to_qa_at": "2026-06-27T18:42:29.126Z"
+    "routed_to_qa_at": "2026-06-27T18:42:29.126Z",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T18:49:38.902Z",
+    "accepted_head_commit": "6df1af8ba30baa0178b185e5ac9d7bb4ce395f47",
+    "child_threads_closed": [
+      "019f0a52-c6b9-7c83-ba80-8a4b65292be8",
+      "019f0a62-c563-7873-bce6-f37b8eef2cc9"
+    ],
+    "non_blocking_risks": [
+      {
+        "id": "M6-NO-P0P1-BUILD-WARNINGS-001",
+        "severity": "P2",
+        "status": "accepted_non_blocking",
+        "summary": "Build/test warnings remain non-blocking; no P0/P1 consequence observed."
+      },
+      {
+        "id": "M6-NO-P0P1-METADATA-RISK-001",
+        "severity": "P3",
+        "status": "accepted_non_blocking",
+        "summary": "Writer handoff commit field differs from authoritative route/task/QA review commit; 6df1af8b is authoritative."
+      }
+    ]
   }
 }
