@@ -245,6 +245,11 @@ export type M3SuccessionTriggerV0 =
       readonly kind: "incapacity";
       readonly characterId: PersonId;
       readonly officeId: M3OfficeId | null;
+    }
+  | {
+      readonly kind: "abdication";
+      readonly characterId: PersonId;
+      readonly officeId: M3OfficeId | null;
     };
 export type M3SuccessionOutcomeV0 =
   | {
@@ -4485,7 +4490,13 @@ function validateM3SuccessionTriggerEntry(
     return;
   }
 
-  validateStringUnionField(input, "kind", `${path}.kind`, ["death", "incapacity"], errors);
+  validateStringUnionField(
+    input,
+    "kind",
+    `${path}.kind`,
+    ["death", "incapacity", "abdication"],
+    errors
+  );
   validatePositiveIntegerField(input, "characterId", `${path}.characterId`, "PersonId", errors);
   validateNullablePositiveIntegerField(input, "officeId", `${path}.officeId`, "M3OfficeId", errors);
 }
@@ -6111,6 +6122,12 @@ function copyM3SuccessionTrigger(trigger: M3SuccessionTriggerV0): M3SuccessionTr
     case "incapacity":
       return {
         kind: "incapacity",
+        characterId: parsePersonId(trigger.characterId),
+        officeId: trigger.officeId === null ? null : parseM3OfficeId(trigger.officeId)
+      };
+    case "abdication":
+      return {
+        kind: "abdication",
         characterId: parsePersonId(trigger.characterId),
         officeId: trigger.officeId === null ? null : parseM3OfficeId(trigger.officeId)
       };
@@ -8088,6 +8105,8 @@ function formatM3SuccessionTrigger(trigger: M3SuccessionTriggerV0): string {
       return `death:${trigger.characterId}:${formatNullableNumber(trigger.officeId)}`;
     case "incapacity":
       return `incapacity:${trigger.characterId}:${formatNullableNumber(trigger.officeId)}`;
+    case "abdication":
+      return `abdication:${trigger.characterId}:${formatNullableNumber(trigger.officeId)}`;
   }
 }
 
@@ -9269,7 +9288,16 @@ function validateM3AppointmentSemantics(
       });
     }
     validateM3SuccessionTriggerReferences(crisis.trigger, characterIds, officeIds, index, errors);
+    const candidateIds = new Set<number>();
     crisis.candidates.forEach((candidate, candidateIndex) => {
+      if (candidateIds.has(candidate.characterId)) {
+        errors.push({
+          code: "duplicate-runtime-state-row",
+          path: `state.m3.successionCrises[${index}].candidates`,
+          message: "M3 succession crisis contains a duplicate candidate."
+        });
+      }
+      candidateIds.add(candidate.characterId);
       if (!characterIds.has(candidate.characterId)) {
         errors.push({
           code: "bad-reference",
@@ -9277,7 +9305,22 @@ function validateM3AppointmentSemantics(
           message: "M3 succession candidate references missing character."
         });
       }
+      if (candidate.characterId === crisis.trigger.characterId) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m3.successionCrises[${index}].candidates[${candidateIndex}].characterId`,
+          message: "M3 succession trigger character must not be a candidate in the same crisis."
+        });
+      }
     });
+    validateM3SuccessionOutcomeReferences(
+      crisis,
+      candidateIds,
+      characterIds,
+      availableCharacterIds,
+      index,
+      errors
+    );
     if (crisis.status === "pending" && crisis.outcome !== null) {
       errors.push({
         code: "invalid-schema",
@@ -9292,6 +9335,112 @@ function validateM3AppointmentSemantics(
         message: "M3 resolved succession crisis must include an outcome."
       });
     }
+  });
+}
+
+function validateM3SuccessionOutcomeReferences(
+  crisis: M3SuccessionCrisisStateV0,
+  candidateIds: ReadonlySet<number>,
+  characterIds: ReadonlySet<number>,
+  availableCharacterIds: ReadonlySet<number>,
+  crisisIndex: number,
+  errors: WorldInvariantError[]
+): void {
+  if (crisis.outcome === null) {
+    return;
+  }
+  switch (crisis.outcome.kind) {
+    case "peaceful":
+      validateM3SuccessionOutcomeCandidateReference(
+        candidateIds,
+        crisis.outcome.successorCharacterId,
+        `state.m3.successionCrises[${crisisIndex}].outcome.successorCharacterId`,
+        errors
+      );
+      return;
+    case "regency":
+      validateM3SuccessionOutcomeCandidateReference(
+        candidateIds,
+        crisis.outcome.successorCharacterId,
+        `state.m3.successionCrises[${crisisIndex}].outcome.successorCharacterId`,
+        errors
+      );
+      if (crisis.outcome.regentCharacterId === crisis.outcome.successorCharacterId) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m3.successionCrises[${crisisIndex}].outcome.regentCharacterId`,
+          message: "M3 succession regent must differ from the successor."
+        });
+      }
+      validateM3SuccessionRegentReference(
+        characterIds,
+        availableCharacterIds,
+        crisis.outcome.regentCharacterId,
+        `state.m3.successionCrises[${crisisIndex}].outcome.regentCharacterId`,
+        errors
+      );
+      return;
+    case "disputed":
+      validateM3SuccessionOutcomeCandidateReference(
+        candidateIds,
+        crisis.outcome.leadingCharacterId,
+        `state.m3.successionCrises[${crisisIndex}].outcome.leadingCharacterId`,
+        errors
+      );
+      validateM3SuccessionOutcomeCandidateReference(
+        candidateIds,
+        crisis.outcome.rivalCharacterId,
+        `state.m3.successionCrises[${crisisIndex}].outcome.rivalCharacterId`,
+        errors
+      );
+      if (crisis.outcome.leadingCharacterId === crisis.outcome.rivalCharacterId) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m3.successionCrises[${crisisIndex}].outcome.rivalCharacterId`,
+          message: "M3 disputed succession rival must differ from the leading claimant."
+        });
+      }
+      return;
+  }
+}
+
+function validateM3SuccessionRegentReference(
+  characterIds: ReadonlySet<number>,
+  availableCharacterIds: ReadonlySet<number>,
+  characterId: number,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!characterIds.has(characterId)) {
+    errors.push({
+      code: "bad-reference",
+      path,
+      message: "M3 succession regent references missing character."
+    });
+    return;
+  }
+  if (!availableCharacterIds.has(characterId)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "M3 succession regent must be alive and not incapacitated."
+    });
+  }
+}
+
+function validateM3SuccessionOutcomeCandidateReference(
+  candidateIds: ReadonlySet<number>,
+  characterId: number,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (candidateIds.has(characterId)) {
+    return;
+  }
+  errors.push({
+    code: "bad-reference",
+    path,
+    message: "M3 succession outcome references a character outside the crisis candidates."
   });
 }
 

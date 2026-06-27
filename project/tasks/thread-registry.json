@@ -3484,7 +3484,7 @@
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "request_changes_routed",
+      "status": "accepted_pending_pr",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -3501,7 +3501,7 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
-      "updated_at": "2026-06-27T18:22:54.6238286+08:00",
+      "updated_at": "2026-06-27T18:41:10.9555961+08:00",
       "route_sent_at": "2026-06-27T16:15:41.6114560+08:00",
       "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
       "review_route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-TO-SYSTEMS-REVIEW.json",
@@ -3510,7 +3510,11 @@
       "systems_status": "REQUEST_CHANGES",
       "systems_review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
       "request_changes_round": 1,
-      "request_changes_route": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-SYSTEMS-REQUEST-CHANGES-TO-SIM.json"
+      "request_changes_route": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
+      "systems_status_r2": "ACCEPT",
+      "systems_review_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T18:41:10.9555961+08:00"
     },
     "M6-SUCCESSION-COMPLETION-001:systems_architect": {
       "task_id": "M6-SUCCESSION-COMPLETION-001",
@@ -3581,7 +3585,7 @@
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "systems_architect",
       "thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
-      "status": "active_r2_reviewing",
+      "status": "accepted_pending_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -3598,7 +3602,7 @@
       "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
       "read_only": true,
       "created_at": "2026-06-27T18:13:14.3823061+08:00",
-      "updated_at": "2026-06-27T18:35:23.4775298+08:00",
+      "updated_at": "2026-06-27T18:41:10.9555961+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "systems_review_submission_id": "019f0891-e025-7990-8612-ac234503462d",
@@ -3608,13 +3612,17 @@
       "review_source_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-R2-REVIEW__simulation_engineer.json",
       "review_route_file_r2": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-R2-TO-SYSTEMS-REVIEW.json",
       "review_submission_id_r2": "019f08a5-b087-79c0-a334-02d9ab91c3f8",
-      "routed_to_systems_r2_at": "2026-06-27T18:35:23.4775298+08:00"
+      "routed_to_systems_r2_at": "2026-06-27T18:35:23.4775298+08:00",
+      "systems_status_r2": "ACCEPT",
+      "systems_review_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T18:41:10.9555961+08:00"
     },
     "M6-SUCCESSION-COMPLETION-001:simulation_engineer:replacement": {
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "simulation_engineer",
       "thread_id": "019f089b-0acd-7f03-a6df-8af3092d8309",
-      "status": "r2_review_handoff_submitted",
+      "status": "accepted_pending_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -3630,13 +3638,17 @@
       "request_changes_route": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
       "systems_review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
       "created_at": "2026-06-27T18:23:57.2270701+08:00",
-      "updated_at": "2026-06-27T18:34:53.9345800+08:00",
+      "updated_at": "2026-06-27T18:41:10.9555961+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "request_changes_submission_id": "019f089b-b150-7453-81a6-e2b684640256",
       "request_changes_sent_at": "2026-06-27T18:24:29.3000772+08:00",
       "review_ready_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-R2-REVIEW__simulation_engineer.json",
-      "review_route_file_r2": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-R2-TO-SYSTEMS-REVIEW.json"
+      "review_route_file_r2": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+      "systems_status_r2": "ACCEPT",
+      "systems_review_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T18:41:10.9555961+08:00"
     }
   },
   "replaced_threads": [
@@ -3695,5 +3707,5 @@
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T18:35:23.4775298+08:00"
+  "updated_at": "2026-06-27T18:41:10.9555961+08:00"
 }

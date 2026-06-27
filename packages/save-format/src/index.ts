@@ -234,6 +234,11 @@ export type SaveM3SuccessionTriggerDto =
       readonly kind: "incapacity";
       readonly characterId: number;
       readonly officeId: number | null;
+    }
+  | {
+      readonly kind: "abdication";
+      readonly characterId: number;
+      readonly officeId: number | null;
     };
 export type SaveM3SuccessionOutcomeDto =
   | {
@@ -4654,12 +4659,20 @@ function parseM3SuccessionTrigger(
       officeId: readNullablePositiveSafeInteger(input, "officeId", `${path}.officeId`, errors)
     };
   }
+  if (input["kind"] === "abdication") {
+    return {
+      kind: "abdication",
+      characterId:
+        readPositiveSafeInteger(input, "characterId", `${path}.characterId`, errors) ?? 0,
+      officeId: readNullablePositiveSafeInteger(input, "officeId", `${path}.officeId`, errors)
+    };
+  }
   if (input["kind"] !== "death") {
     errors.push(
       reason(
         "invalid-schema",
         `${path}.kind`,
-        "M3 succession trigger kind must be death or incapacity."
+        "M3 succession trigger kind must be death, incapacity, or abdication."
       )
     );
   }
@@ -6371,6 +6384,8 @@ function copyM3SuccessionTrigger(trigger: SaveM3SuccessionTriggerDto): SaveM3Suc
       return { kind: "death", characterId: trigger.characterId, officeId: trigger.officeId };
     case "incapacity":
       return { kind: "incapacity", characterId: trigger.characterId, officeId: trigger.officeId };
+    case "abdication":
+      return { kind: "abdication", characterId: trigger.characterId, officeId: trigger.officeId };
   }
 }
 

@@ -365,7 +365,7 @@ export interface RecordCharacterStatusCommandV1 {
   readonly expectedRevision: number;
   readonly payload: {
     readonly characterId: number;
-    readonly status: "dead" | "incapacitated";
+    readonly status: "dead" | "incapacitated" | "abdicated";
     readonly reasonCode: string;
   };
 }
@@ -3247,11 +3247,11 @@ function parseRecordCharacterStatusPayload(
     return characterId;
   }
   const status = input["status"];
-  if (status !== "dead" && status !== "incapacitated") {
+  if (status !== "dead" && status !== "incapacitated" && status !== "abdicated") {
     return protocolError(
       "invalid-payload",
       "payload.status",
-      "status must be dead or incapacitated."
+      "status must be dead, incapacitated, or abdicated."
     );
   }
   const reasonCode = parseNonEmptyProtocolString(input["reasonCode"], "payload.reasonCode");
