@@ -2,12 +2,12 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_LAYERED_AI_REQUEST_CHANGES",
+  "status": "M6_LAYERED_AI_R2_REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "33a9d4fb1ee799157ccd27983040143bd1c0833a",
   "current_milestone": "M6",
   "current_task": "M6-LAYERED-AI-001",
-  "current_task_status": "IN_PROGRESS_REQUEST_CHANGES",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M6-CLIENT-ALPHA-SURFACES-001",
   "ready_tasks": [
     "M6-ACCESSIBILITY-CORE-FLOWS-001"
@@ -16,20 +16,20 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-LAYERED-AI-001",
-      "status": "active_routing_request_changes",
+      "status": "active_routing_r2_review",
       "role": "lead_orchestrator"
     },
     "simulation_engineer": {
       "thread_id": "019f0976-c120-7a50-a3ab-08fced11c52c",
       "task_id": "M6-LAYERED-AI-001",
-      "status": "active_fixing_request_changes",
+      "status": "r2_review_handoff_sent",
       "role": "simulation_engineer",
       "nickname": "Delta the 2nd"
     },
     "systems_architect": {
       "thread_id": "019f0986-396c-7010-a975-b12388543a64",
       "task_id": "M6-LAYERED-AI-001",
-      "status": "completed_request_changes",
+      "status": "active_reviewing_r2",
       "role": "systems_architect",
       "nickname": "Meridian the 2nd"
     }
@@ -55,7 +55,7 @@
     "note": "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; layered AI must not introduce telemetry, server, runtime script engine, or privileged AI command paths.",
     "recorded_at": "2026-06-27T22:24:44.466+08:00"
   },
-  "next_machine_action": "Original simulation writer must fix systems REQUEST_CHANGES, rerun gates, and emit R2 REVIEW handoff routed to systems_architect.",
+  "next_machine_action": "systems_architect must review the M6 layered AI R2 fixes and emit ACCEPT or REQUEST_CHANGES handoff routed to lead_orchestrator.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -63,7 +63,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T22:54:47.272+08:00",
+  "last_updated_at": "2026-06-27T23:02:50.378+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -90,7 +90,7 @@
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
-  "updated_at": "2026-06-27T22:54:47.272+08:00",
+  "updated_at": "2026-06-27T23:02:50.378+08:00",
   "current_tasks": [
     "M6-LAYERED-AI-001"
   ],
@@ -99,7 +99,7 @@
   "next_ready_tasks": [
     "M6-ACCESSIBILITY-CORE-FLOWS-001"
   ],
-  "next_action": "Original simulation writer must fix systems REQUEST_CHANGES, rerun gates, and emit R2 REVIEW handoff routed to systems_architect.",
+  "next_action": "systems_architect must review the M6 layered AI R2 fixes and emit ACCEPT or REQUEST_CHANGES handoff routed to lead_orchestrator.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -977,7 +977,7 @@
     ]
   },
   "m6_layered_ai": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M6-LAYERED-AI-001",
     "branch_or_worktree": "feat/m6-layered-ai",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -990,10 +990,10 @@
     "previous_closed_task": "M6-CLIENT-ALPHA-SURFACES-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Original simulation writer must fix systems REQUEST_CHANGES, rerun gates, and emit R2 REVIEW handoff routed to systems_architect.",
+    "next_action": "systems_architect must review the M6 layered AI R2 fixes and emit ACCEPT or REQUEST_CHANGES handoff routed to lead_orchestrator.",
     "start_submission_id": "019f0979-3301-7040-9cb2-f43e04a440f7",
     "route_sent_at": "2026-06-27T22:26:33.497+08:00",
-    "updated_at": "2026-06-27T22:54:47.272+08:00",
+    "updated_at": "2026-06-27T23:02:50.378+08:00",
     "systems_architect_thread_id": "019f0986-396c-7010-a975-b12388543a64",
     "systems_architect_nickname": "Meridian the 2nd",
     "review_route_file": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-TO-SYSTEMS-REVIEW.json",
@@ -1006,6 +1006,13 @@
     "request_changes_round": 1,
     "request_changes_route": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
     "request_changes_submission_id": "019f0992-d923-7502-bb2a-1d6b70226dab",
-    "request_changes_sent_at": "2026-06-27T22:54:47.272+08:00"
+    "request_changes_sent_at": "2026-06-27T22:54:47.272+08:00",
+    "review_round": 2,
+    "r2_review_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-R2-REVIEW__simulation_engineer.json",
+    "review_commit_r2": "558d412e",
+    "review_route_file_r2": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+    "routed_to_systems_r2_at": "2026-06-27T23:01:22.205+08:00",
+    "systems_review_submission_id_r2": "019f099a-692f-7351-8d48-a4fe6357b13b",
+    "systems_route_sent_r2_at": "2026-06-27T23:02:50.378+08:00"
   }
 }
