@@ -41,7 +41,9 @@
       "source": "nodeRepl.requestMeta plus project leadership state reconciliation"
     },
     "operational_state_after_transition_integration": "active",
-    "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them."
+    "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
+    "task_id": null,
+    "updated_at": "2026-06-28T03:36:23.0435839+08:00"
   },
   "retired_lead_threads": [
     {
@@ -2411,7 +2413,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T03:27:03.1315987+08:00",
+  "updated_at": "2026-06-28T03:36:23.0435839+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2862,7 +2864,7 @@
     "closure_main_commit": "cd5cebebfe6ac7b0dd07a7468abcba9da55fd765"
   },
   "m6_exit_validation": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M6-EXIT-VALIDATION-001",
     "branch_or_worktree": "gate/m6-exit-validation",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -2881,7 +2883,7 @@
     "start_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-START__lead_orchestrator.json",
     "started_at": "2026-06-27T19:01:08.850Z",
     "base_main_commit": "cd5cebebfe6ac7b0dd07a7468abcba9da55fd765",
-    "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
+    "next_action": "Create or recover M7-TASK-GRAPH-001.",
     "updated_at": "2026-06-27T19:19:27.664Z",
     "gate_result": "PASS_WITH_LIMITS",
     "gate_document": "docs/GATE-M6.md",
@@ -2903,6 +2905,19 @@
     "child_threads_closed": [
       "019f0a73-d825-79b1-91de-1259bdb6393f",
       "019f0a84-ee41-7203-ba9d-017893666e8c"
-    ]
+    ],
+    "integrated_pr": 157,
+    "integrated_main_commit": "5e68a74374a37fa2f3698ee846462c0525d7341a",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/157",
+    "lead_close_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-28T03:36:23.0435839+08:00",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION"
+  },
+  "m7_start": {
+    "status": "PENDING_TASK_GRAPH",
+    "current_milestone": "M7",
+    "next_action": "Create or recover M7-TASK-GRAPH-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }

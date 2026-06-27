@@ -10,13 +10,17 @@ Base main commit: `cd5cebebfe6ac7b0dd07a7468abcba9da55fd765`
 
 Review head before gate edits: `3096b241818f4ed55a53eb7f016ab1dbdd0cdd7a`
 
-Status: `ACCEPTED`, pending PR integration
+Status: `CLOSED`
+
+Integrated PR: #157
+
+Integrated main commit: `5e68a74374a37fa2f3698ee846462c0525d7341a`
 
 ## Gate Result
 
 `M6_GATE = PASS_WITH_LIMITS`
 
-This began as a systems_architect REVIEW recommendation. Independent `qa_reviewer` accepted it in `project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json`; lead integration may now proceed through PR and CI.
+This began as a systems_architect REVIEW recommendation. Independent `qa_reviewer` accepted it in `project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json`; PR #157 passed CI and entered `origin/main` at `5e68a74374a37fa2f3698ee846462c0525d7341a`.
 
 M6 Alpha system-complete exit criteria are satisfied:
 
@@ -114,4 +118,4 @@ These are not blockers for M6 exit, but they must not be hidden:
 
 ## Next Route
 
-Lead may integrate the accepted M6 gate after PR CI. This gate itself does not start M7 content lock; the next process step must follow repository task graph state after the gate is merged and closed on `main`.
+M6 is complete with `PASS_WITH_LIMITS`. This gate itself does not start M7 content lock; the next process step must create or recover the M7 task graph before any M7 content-lock implementation begins.
