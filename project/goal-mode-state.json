@@ -2,19 +2,17 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [
-    "M6-DIPLOMACY-LEGITIMACY-001"
-  ],
+  "current_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active_accepting_pending_integration",
+      "task_id": null,
+      "status": "active_between_tasks",
       "role": "lead_orchestrator"
     }
   },
-  "last_integrated_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
-  "last_main_commit": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
+  "last_integrated_task": "M6-DIPLOMACY-LEGITIMACY-001",
+  "last_main_commit": "96dd735d463d400a9e30b2112e4377cca7783d1e",
   "next_ready_tasks": [
     "M6-SCENARIO-DATA-PIPELINE-001"
   ],
@@ -43,8 +41,8 @@
     "approval_scope": "NONE",
     "approval_source": "M6 Alpha system contract closure PR #132 entered main; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-DIPLOMACY-LEGITIMACY-001 is IN_PROGRESS with simulation_engineer writer.",
-    "recorded_at": "2026-06-27T06:41:07+08:00"
+    "note": "No active Human Gate. M6-DIPLOMACY-LEGITIMACY-001 is CLOSED; next READY task is M6-SCENARIO-DATA-PIPELINE-001.",
+    "recorded_at": "2026-06-27T14:19:37+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -58,7 +56,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T14:12:37+08:00",
+  "last_updated_at": "2026-06-27T14:19:37+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -70,7 +68,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T14:12:37+08:00",
+  "updated_at": "2026-06-27T14:19:37+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -428,7 +426,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
+  "next_action": "Start M6-SCENARIO-DATA-PIPELINE-001 as the highest-priority dependency-ready M6 task.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -547,7 +545,7 @@
     ]
   },
   "m6_diplomacy_legitimacy": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
     "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -560,7 +558,7 @@
     "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
+    "next_action": "Start M6-SCENARIO-DATA-PIPELINE-001 as the highest-priority dependency-ready M6 task.",
     "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
     "route_sent_at": "2026-06-27T06:42:07+08:00",
     "replacement_writer_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
@@ -626,6 +624,14 @@
     "systems_route_sent_r3_at": "2026-06-27T14:03:55+08:00",
     "accepted_round": 3,
     "lead_accept_handoff_r3": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-R3-ACCEPT__lead_orchestrator.json",
-    "lead_accept_commit_r3": "cc9e42d2593907fe844947e52d793fa8d1475beb"
+    "lead_accept_commit_r3": "cc9e42d2593907fe844947e52d793fa8d1475beb",
+    "integrated_pr": 133,
+    "integrated_main_commit": "96dd735d463d400a9e30b2112e4377cca7783d1e",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/133",
+    "lead_close_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T14:19:37+08:00",
+    "next_ready_tasks": [
+      "M6-SCENARIO-DATA-PIPELINE-001"
+    ]
   }
 }
