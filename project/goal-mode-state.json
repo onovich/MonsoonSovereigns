@@ -9,15 +9,15 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
-      "status": "active_awaiting_writer_review",
+      "status": "active_routing_replacement_writer",
       "role": "lead_orchestrator"
     },
     "balance_analyst": {
-      "thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+      "thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
       "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
-      "status": "active_in_progress",
+      "status": "active_standby_pending_replacement_route",
       "role": "balance_analyst",
-      "nickname": "Abacus the 2nd"
+      "nickname": "Tide the 2nd"
     }
   },
   "last_integrated_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -46,10 +46,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 writer route sent; no Human Gate is active.",
+    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 writer replaced after unresponsive clean-worktree predecessor; no Human Gate is active.",
     "recommended_result": null,
-    "note": "Await writer REVIEW handoff.",
-    "recorded_at": "2026-06-28T00:35:13.413+08:00"
+    "note": "Proceed with replacement writer route.",
+    "recorded_at": "2026-06-28T00:45:04.397+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -286,6 +286,17 @@
       "replaced_by_nickname": "Canvas the 2nd",
       "reason": "closed_after_repeated_wait_timeouts_status_request_and_interrupt_no_handoff_transient_diff_not_committed",
       "replaced_at": "2026-06-27T23:48:50.046+08:00"
+    },
+    {
+      "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+      "role": "balance_analyst",
+      "thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+      "nickname": "Abacus the 2nd",
+      "status": "closed_running_no_handoff_clean_worktree",
+      "replaced_by": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+      "replaced_by_nickname": "Tide the 2nd",
+      "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response_no_handoff_clean_worktree",
+      "replaced_at": "2026-06-28T00:45:04.397+08:00"
     }
   ],
   "m5_performance_gate": {
@@ -816,8 +827,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T00:35:13.413+08:00",
-  "updated_at": "2026-06-28T00:35:13.413+08:00",
+  "last_updated_at": "2026-06-28T00:45:04.397+08:00",
+  "updated_at": "2026-06-28T00:45:04.397+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1113,8 +1124,8 @@
     "owner_role": "balance_analyst",
     "reviewer_role": "qa_reviewer",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
-    "writer_nickname": "Abacus the 2nd",
+    "writer_thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+    "writer_nickname": "Tide the 2nd",
     "branch_or_worktree": "feat/m6-batch-autorun-balance-dashboard",
     "base_main_commit": "3d725f8979ccaf26e552d0248d0cbe982587e232",
     "previous_closed_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -1123,9 +1134,15 @@
     "start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-START.json",
     "started_at": "2026-06-28T00:33:12.367+08:00",
-    "next_action": "Await balance_analyst REVIEW handoff, then route to qa_reviewer.",
-    "updated_at": "2026-06-28T00:35:13.413+08:00",
+    "next_action": "Send replacement route to balance_analyst writer and await REVIEW handoff.",
+    "updated_at": "2026-06-28T00:45:04.397+08:00",
     "route_sent_at": "2026-06-28T00:35:13.413+08:00",
-    "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c"
+    "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c",
+    "replaced_writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+    "replaced_writer_nickname": "Abacus the 2nd",
+    "replacement_start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-REPLACEMENT.json",
+    "replaced_at": "2026-06-28T00:45:04.397+08:00",
+    "writer_replacement_reason": "original balance_analyst closed after repeated waits and status request produced no handoff; worktree remained clean and no implementation diff is treated as authoritative"
   }
 }
