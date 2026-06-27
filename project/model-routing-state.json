@@ -2295,7 +2295,7 @@
   "next_action": "Start M6-SUCCESSION-COMPLETION-001.",
   "current_task": "M6-SUCCESSION-COMPLETION-001",
   "m6_succession_completion": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "owner_role": "simulation_engineer",
     "reviewer_role": "systems_architect",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -2306,10 +2306,18 @@
     "start_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-LEAD-TO-SIM-START.json",
     "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
-    "next_action": "simulation_engineer writer returns REVIEW handoff for systems_architect review.",
+    "next_action": "systems_architect reviewer returns ACCEPT, REQUEST_CHANGES, or BLOCKED handoff.",
     "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
-    "updated_at": "2026-06-27T16:15:41.6114560+08:00",
-    "route_sent_at": "2026-06-27T16:15:41.6114560+08:00"
+    "updated_at": "2026-06-27T18:13:47.6872590+08:00",
+    "route_sent_at": "2026-06-27T16:15:41.6114560+08:00",
+    "systems_architect_thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
+    "systems_architect_nickname": "Lintel",
+    "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
+    "review_route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-TO-SYSTEMS-REVIEW.json",
+    "replaced_systems_architect_thread_id": "019f0834-bb3c-7651-ba7d-a95ae31e8f03",
+    "replacement_reason": "prior paused reviewer thread unavailable after restart",
+    "systems_review_submission_id": "019f0891-e025-7990-8612-ac234503462d",
+    "systems_route_sent_at": "2026-06-27T18:13:47.6872590+08:00"
   },
-  "updated_at": "2026-06-27T16:15:41.6114560+08:00"
+  "updated_at": "2026-06-27T18:13:47.6872590+08:00"
 }

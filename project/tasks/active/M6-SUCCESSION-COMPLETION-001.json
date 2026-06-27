@@ -2,7 +2,7 @@
   "id": "M6-SUCCESSION-COMPLETION-001",
   "summary": "Complete succession resolution for Alpha playthroughs",
   "milestone": "M6",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -72,7 +72,8 @@
   "branch_or_worktree": "feat/m6-succession-completion",
   "threads": {
     "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "simulation_engineer": "019f0823-18c3-73d1-9314-09f78d7ab0cc"
+    "simulation_engineer": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+    "systems_architect": "019f0891-0ef3-7ef3-a367-08310be462fe"
   },
   "route_to": "lead_orchestrator",
   "notes": [
@@ -90,8 +91,17 @@
   "route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-LEAD-TO-SIM-START.json",
   "writer_thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
   "writer_nickname": "Engine",
-  "next_action": "simulation_engineer writer returns REVIEW handoff for systems_architect review.",
+  "next_action": "systems_architect reviewer returns ACCEPT, REQUEST_CHANGES, or BLOCKED handoff.",
   "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
-  "updated_at": "2026-06-27T16:15:41.6114560+08:00",
-  "route_sent_at": "2026-06-27T16:15:41.6114560+08:00"
+  "updated_at": "2026-06-27T18:13:47.6872590+08:00",
+  "route_sent_at": "2026-06-27T16:15:41.6114560+08:00",
+  "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
+  "review_route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-TO-SYSTEMS-REVIEW.json",
+  "systems_architect_thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
+  "systems_architect_nickname": "Lintel",
+  "routed_to_systems_at": "2026-06-27T18:13:14.3823061+08:00",
+  "replaced_systems_architect_thread_id": "019f0834-bb3c-7651-ba7d-a95ae31e8f03",
+  "replacement_reason": "prior_paused_reviewer_thread_unavailable_after_restart",
+  "systems_review_submission_id": "019f0891-e025-7990-8612-ac234503462d",
+  "systems_route_sent_at": "2026-06-27T18:13:47.6872590+08:00"
 }

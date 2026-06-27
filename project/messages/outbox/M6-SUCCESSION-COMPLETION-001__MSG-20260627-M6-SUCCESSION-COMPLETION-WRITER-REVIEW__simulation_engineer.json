@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW",
+  "task_id": "M6-SUCCESSION-COMPLETION-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Completed deterministic Alpha succession resolution: abdication-like succession triggers, peaceful/regency/disputed resolution consequences, M6 legitimacy source/profile integration, disputed recognized-order blocking, explicit protocol/save trigger schemas, event-tail save/load support, and focused property/invariant/save rejection coverage.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts"
+  ],
+  "branch_or_worktree": "feat/m6-succession-completion / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run --root ../.. tests/protocol-command-query-schema.test.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 1,
+      "result": "Initial red tests failed as expected: abdicated protocol payload rejected; abdication command rejected; succession resolution lacked M6 legitimacy; disputed succession was not a recognized-order blocker; succession save round-trip rejected."
+    },
+    {
+      "command": "pnpm exec vitest run --root ../.. tests/sim-core-m3-succession-state-machine.test.ts -t \"save round-trip\"",
+      "exit_code": 1,
+      "result": "Diagnostic run exposed save/load rejection from unsupported sim.m3-succession-updated event-tail entries."
+    },
+    {
+      "command": "pnpm exec vitest run --root ../.. tests/protocol-command-query-schema.test.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 0,
+      "result": "2 files / 25 tests passed after implementation."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "24 files / 184 tests passed. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file / 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 files / 16 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, M4 232f62ab, M5 bf042e42."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; sim determinism passed; root Vitest 37 files / 285 tests passed; web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "First run failed during sim-core typecheck because nextNumericId expected rows with id while M6 legitimacy sources use sourceId."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified files: packages/protocol/src/index.ts; packages/save-format/src/index.ts; packages/sim-core/src/command-query-v1.ts; packages/sim-core/src/world-state-v0.ts; tests/protocol-command-query-schema.test.ts; tests/sim-core-m3-succession-state-machine.test.ts."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SUCCESSION-COMPLETION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-SUCCESSION-COMPLETION-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Kept succession under the existing GameCommand path: sim.record-character-status now accepts status abdicated and sim.resolve-succession remains the only resolution command.",
+    "Represented abdication-like scenario triggers as explicit M3 succession trigger kind abdication in protocol/save/sim-core schemas without increasing schemaVersion.",
+    "On successful succession resolution, reused the M6 legitimacy source/profile substrate instead of duplicating a legitimacy system; sources use sourceKind succession-continuity and sourceRef m3.succession.<id>.",
+    "Mapped peaceful succession to +700 legitimacy, regency to +300, and disputed succession to -700 for vassal-rulers; disputed resolved crises remain recognized-order blockers.",
+    "Added save/load event-tail parsing for sim.m3-succession-updated so auditable succession events survive save round-trip."
+  ],
+  "risks": [
+    "R4/R3 boundary: this changes protocol, save DTOs, authoritative state validation, event-tail parsing, and recognized-order victory gating; systems_architect should review schema compatibility and whether abdication should require a future schemaVersion bump.",
+    "Legitimacy magnitudes are deterministic Alpha constants, not balanced final values; balance review may tune them later.",
+    "Regency is accepted as an M3/M6 Alpha temporary stewardship outcome because the existing M3 state machine already modeled regency; no separate stewardship office system was introduced."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review actual diff for architecture, determinism, save/protocol schema compatibility, scope compliance, and test adequacy.",
+  "created_at": "2026-06-27T16:29:13+08:00"
+}

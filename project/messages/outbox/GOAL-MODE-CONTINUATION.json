@@ -2,12 +2,12 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_SUCCESSION_COMPLETION_IN_PROGRESS",
+  "status": "M6_SUCCESSION_COMPLETION_REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
   "current_milestone": "M6",
   "current_task": "M6-SUCCESSION-COMPLETION-001",
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M6-MAP-CANDIDATE-PIPELINE-001",
   "ready_tasks": [],
   "active_threads": {
@@ -20,9 +20,18 @@
     "simulation_engineer": {
       "thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
       "task_id": "M6-SUCCESSION-COMPLETION-001",
-      "status": "active_writer",
+      "status": "review_handoff_submitted",
       "role": "simulation_engineer",
       "nickname": "Engine"
+    },
+    "systems_architect": {
+      "thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
+      "task_id": "M6-SUCCESSION-COMPLETION-001",
+      "status": "active_reviewing",
+      "role": "systems_architect",
+      "nickname": "Lintel",
+      "read_only": true,
+      "replaces_thread_id": "019f0834-bb3c-7651-ba7d-a95ae31e8f03"
     }
   },
   "unresolved_risks": [
@@ -41,12 +50,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M5 manual node battle decision deferred; no active Human Gate for M6 succession completion.",
+    "approval_source": "M5 manual node battle decision deferred; no active Human Gate for M6 succession review.",
     "recommended_result": null,
-    "note": "M6-SUCCESSION-COMPLETION-001 is IN_PROGRESS with simulation_engineer writer Engine.",
-    "recorded_at": "2026-06-27T16:16:39.6156855+08:00"
+    "note": "M6-SUCCESSION-COMPLETION-001 is in REVIEW with systems_architect reviewer Meridian.",
+    "recorded_at": "2026-06-27T18:10:49.0650327+08:00"
   },
-  "next_machine_action": "Wait for M6-SUCCESSION-COMPLETION-001 writer REVIEW handoff, then route to systems_architect.",
+  "next_machine_action": "Wait for systems_architect review handoff for M6-SUCCESSION-COMPLETION-001.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -54,7 +63,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T16:16:39.6156855+08:00",
+  "last_updated_at": "2026-06-27T18:13:47.6872590+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -81,14 +90,14 @@
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
-  "updated_at": "2026-06-27T16:16:39.6156855+08:00",
+  "updated_at": "2026-06-27T18:13:47.6872590+08:00",
   "current_tasks": [
     "M6-SUCCESSION-COMPLETION-001"
   ],
   "last_integrated_task": "M6-MAP-CANDIDATE-PIPELINE-001",
   "last_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
   "next_ready_tasks": [],
-  "next_action": "Wait for M6-SUCCESSION-COMPLETION-001 writer REVIEW handoff, then route to systems_architect.",
+  "next_action": "Wait for systems_architect review handoff for M6-SUCCESSION-COMPLETION-001.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -755,7 +764,7 @@
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
   "m6_succession_completion": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M6-SUCCESSION-COMPLETION-001",
     "branch_or_worktree": "feat/m6-succession-completion",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -768,9 +777,18 @@
     "previous_closed_task": "M6-MAP-CANDIDATE-PIPELINE-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "systems_architect reviewer returns ACCEPT, REQUEST_CHANGES, or BLOCKED handoff.",
     "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
-    "route_sent_at": "2026-06-27T16:16:39.6156855+08:00",
-    "updated_at": "2026-06-27T16:16:39.6156855+08:00",
-    "next_action": "simulation_engineer writer returns REVIEW handoff for systems_architect review."
+    "updated_at": "2026-06-27T18:13:47.6872590+08:00",
+    "route_sent_at": "2026-06-27T16:15:41.6114560+08:00",
+    "systems_architect_thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
+    "systems_architect_nickname": "Lintel",
+    "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
+    "review_route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-TO-SYSTEMS-REVIEW.json",
+    "routed_to_systems_at": "2026-06-27T18:10:49.0650327+08:00",
+    "replaced_systems_architect_thread_id": "019f0834-bb3c-7651-ba7d-a95ae31e8f03",
+    "replacement_reason": "prior paused reviewer thread unavailable after restart",
+    "systems_review_submission_id": "019f0891-e025-7990-8612-ac234503462d",
+    "systems_route_sent_at": "2026-06-27T18:13:47.6872590+08:00"
   }
 }
