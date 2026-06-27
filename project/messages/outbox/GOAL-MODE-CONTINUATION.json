@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_START_TO_VICTORY_SIM_LOOP_REQUEST_CHANGES",
+  "status": "M6_START_TO_VICTORY_SIM_LOOP_R2_SYSTEMS_REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "043a75a3dc678c32cfd7fa8e5ca31bbb91a6fbeb",
   "current_milestone": "M6",
@@ -20,7 +20,7 @@
     "simulation_engineer": {
       "thread_id": "019f08f4-6702-7fa3-adfb-316af1270ca1",
       "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
-      "status": "in_progress",
+      "status": "review_ready",
       "role": "simulation_engineer",
       "nickname": "Delta"
     },
@@ -51,10 +51,10 @@
     "approval_scope": "NONE",
     "approval_source": "M6 start-to-victory sim loop start; no Human Gate is active.",
     "recommended_result": null,
-    "note": "M6-START-TO-VICTORY-SIM-LOOP-001 is IN_PROGRESS with simulation_engineer writer.",
-    "recorded_at": "2026-06-27T20:02:10.863+08:00"
+    "note": "M6-START-TO-VICTORY-SIM-LOOP-001 is REVIEW with systems_architect R2 review in progress.",
+    "recorded_at": "2026-06-27T21:01:07.524+08:00"
   },
-  "next_machine_action": "Route systems_architect REQUEST_CHANGES to simulation_engineer for M6 start-to-victory fix.",
+  "next_machine_action": "Wait for systems_architect R2 review of M6 start-to-victory fix.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -62,7 +62,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T20:52:09.263+08:00",
+  "last_updated_at": "2026-06-27T21:01:07.524+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -89,14 +89,14 @@
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
-  "updated_at": "2026-06-27T20:52:09.263+08:00",
+  "updated_at": "2026-06-27T21:01:07.524+08:00",
   "current_tasks": [
     "M6-START-TO-VICTORY-SIM-LOOP-001"
   ],
   "last_integrated_task": "M6-POLICY-EVENT-RUNTIME-001",
   "last_main_commit": "043a75a3dc678c32cfd7fa8e5ca31bbb91a6fbeb",
   "next_ready_tasks": [],
-  "next_action": "Route systems_architect REQUEST_CHANGES to simulation_engineer for M6 start-to-victory fix.",
+  "next_action": "Wait for systems_architect R2 review of M6 start-to-victory fix.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -885,10 +885,10 @@
     "previous_closed_task": "M6-POLICY-EVENT-RUNTIME-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Simulation engineer fixes polity-scoped terminal postwar/governance evidence and regression test.",
+    "next_action": "Wait for systems_architect R2 review of polity-scoped terminal postwar/governance evidence fix.",
     "start_submission_id": "019f08f5-cbc2-70b3-a362-5bb7ce108ced",
     "route_sent_at": "2026-06-27T20:02:55.011+08:00",
-    "updated_at": "2026-06-27T20:52:09.263+08:00",
+    "updated_at": "2026-06-27T21:01:07.524+08:00",
     "systems_architect_thread_id": "019f0914-1645-7003-b1a3-d389719b8d7f",
     "systems_architect_nickname": "Meridian",
     "review_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-REVIEW__simulation_engineer.json",
@@ -902,6 +902,12 @@
     "request_changes_round": 1,
     "request_changes_route": "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
     "request_changes_submission_id": "019f0922-e09c-7f03-bd48-feb41ad1cf54",
-    "request_changes_sent_at": "2026-06-27T20:52:09.263+08:00"
+    "request_changes_sent_at": "2026-06-27T20:52:09.263+08:00",
+    "r2_review_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-R2-REVIEW__simulation_engineer.json",
+    "review_commit_r2": "7e41cd79d29d",
+    "review_route_file_r2": "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+    "routed_to_systems_r2_at": "2026-06-27T20:59:47.098+08:00",
+    "systems_review_submission_id_r2": "019f092b-4717-7df3-9c6f-1186c86bf5c0",
+    "systems_route_sent_r2_at": "2026-06-27T21:01:07.524+08:00"
   }
 }
