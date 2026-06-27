@@ -2,35 +2,22 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_SUCCESSION_COMPLETION_ACCEPTED_PENDING_PR",
+  "status": "M6_SUCCESSION_COMPLETION_CLOSED",
   "project": "Monsoon Sovereigns",
-  "origin_main": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
+  "origin_main": "190f93ca66d674c00766b807df350b75a6e4f06a",
   "current_milestone": "M6",
-  "current_task": "M6-SUCCESSION-COMPLETION-001",
-  "current_task_status": "ACCEPTED",
-  "last_closed_task": "M6-MAP-CANDIDATE-PIPELINE-001",
-  "ready_tasks": [],
+  "current_task": null,
+  "current_task_status": "CLOSED",
+  "last_closed_task": "M6-SUCCESSION-COMPLETION-001",
+  "ready_tasks": [
+    "M6-POLICY-EVENT-RUNTIME-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M6-SUCCESSION-COMPLETION-001",
-      "status": "accepted_pending_pr",
+      "task_id": "M6-POLICY-EVENT-RUNTIME-001",
+      "status": "active_orchestrating",
       "role": "lead_orchestrator"
-    },
-    "simulation_engineer": {
-      "thread_id": "019f089b-0acd-7f03-a6df-8af3092d8309",
-      "task_id": "M6-SUCCESSION-COMPLETION-001",
-      "status": "accepted_pending_main_integration",
-      "role": "simulation_engineer",
-      "nickname": "Engine"
-    },
-    "systems_architect": {
-      "thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
-      "task_id": "M6-SUCCESSION-COMPLETION-001",
-      "status": "accepted_pending_main_integration",
-      "role": "systems_architect",
-      "nickname": "Lintel",
-      "read_only": true
     }
   },
   "unresolved_risks": [
@@ -49,12 +36,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 succession systems R2 ACCEPT and lead gates passed; no Human Gate.",
+    "approval_source": "M6 succession completion closed; next task is dependency-ready and no Human Gate is active.",
     "recommended_result": null,
-    "note": "M6-SUCCESSION-COMPLETION-001 accepted pending PR/CI/main integration.",
-    "recorded_at": "2026-06-27T18:41:10.9555961+08:00"
+    "note": "Next READY task is M6-POLICY-EVENT-RUNTIME-001.",
+    "recorded_at": "2026-06-27T18:46:35.0133959+08:00"
   },
-  "next_machine_action": "Open PR for accepted M6 succession completion implementation.",
+  "next_machine_action": "Start M6-POLICY-EVENT-RUNTIME-001 as the next dependency-ready M6 task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -62,7 +49,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T18:41:10.9555961+08:00",
+  "last_updated_at": "2026-06-27T18:46:35.0133959+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -89,14 +76,14 @@
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
-  "updated_at": "2026-06-27T18:41:10.9555961+08:00",
-  "current_tasks": [
-    "M6-SUCCESSION-COMPLETION-001"
+  "updated_at": "2026-06-27T18:46:35.0133959+08:00",
+  "current_tasks": [],
+  "last_integrated_task": "M6-SUCCESSION-COMPLETION-001",
+  "last_main_commit": "190f93ca66d674c00766b807df350b75a6e4f06a",
+  "next_ready_tasks": [
+    "M6-POLICY-EVENT-RUNTIME-001"
   ],
-  "last_integrated_task": "M6-MAP-CANDIDATE-PIPELINE-001",
-  "last_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
-  "next_ready_tasks": [],
-  "next_action": "Open PR for accepted M6 succession completion implementation.",
+  "next_action": "Start M6-POLICY-EVENT-RUNTIME-001 as the next dependency-ready M6 task.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -763,7 +750,7 @@
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
   "m6_succession_completion": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M6-SUCCESSION-COMPLETION-001",
     "branch_or_worktree": "feat/m6-succession-completion",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -776,9 +763,9 @@
     "previous_closed_task": "M6-MAP-CANDIDATE-PIPELINE-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Commit accepted implementation, open PR, wait for CI, merge to main, then close task.",
+    "next_action": "Start M6-POLICY-EVENT-RUNTIME-001 as the next dependency-ready M6 task.",
     "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
-    "updated_at": "2026-06-27T18:41:10.9555961+08:00",
+    "updated_at": "2026-06-27T18:46:35.0133959+08:00",
     "route_sent_at": "2026-06-27T16:15:41.6114560+08:00",
     "systems_architect_thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
     "systems_architect_nickname": "Lintel",
@@ -805,6 +792,18 @@
     "systems_status_r2": "ACCEPT",
     "systems_review_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-R2-REVIEW__systems_architect.json",
     "lead_accept_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-LEAD-ACCEPT__lead_orchestrator.json",
-    "accepted_at": "2026-06-27T18:41:10.9555961+08:00"
+    "accepted_at": "2026-06-27T18:41:10.9555961+08:00",
+    "integrated_pr": 139,
+    "integrated_main_commit": "190f93ca66d674c00766b807df350b75a6e4f06a",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/139",
+    "lead_close_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T18:46:35.0133959+08:00",
+    "child_threads_closed": [
+      "019f089b-0acd-7f03-a6df-8af3092d8309",
+      "019f0891-0ef3-7ef3-a367-08310be462fe"
+    ],
+    "next_ready_tasks": [
+      "M6-POLICY-EVENT-RUNTIME-001"
+    ]
   }
 }
