@@ -204,10 +204,10 @@ This planning task does not modify product code, package code, content-source da
 
 The next dependency-ready M6 tasks are `M6-DIPLOMACY-LEGITIMACY-001` and `M6-SCENARIO-DATA-PIPELINE-001`. The lead will start `M6-DIPLOMACY-LEGITIMACY-001` first after this closure checkpoint enters main.
 
-## 18. M6 Adviser Intervention Evidence Review Snapshot
+## 18. M6 Adviser Intervention Evidence Closure Snapshot
 
-`M6-ADVISER-INTERVENTION-EVIDENCE-001` is ACCEPTED on branch `research/m6-adviser-intervention-evidence` after gameplay_designer REVIEW and independent read-only qa_reviewer ACCEPT. The accepted evidence remains process-only and local/privacy-safe: 0 new human/external sessions, 2 local design review passes, 6 deterministic batch runs from accepted artifact hash `99d64950`, no telemetry, no network collection, no personal data, no accounts, and no paid services.
+`M6-ADVISER-INTERVENTION-EVIDENCE-001` is CLOSED after PR #153 entered `origin/main` at `072ae2f5cfade1b0bc85ec3bab1c577395e279d4`. The task accepted bounded local/privacy-safe adviser intervention evidence: 0 new human/external sessions, 2 local design review passes, 6 deterministic batch runs from accepted artifact hash `99d64950`, no telemetry, no network collection, no personal data, no accounts, and no paid services.
 
 The evidence records useful, ignored, harmful-risk, and missing adviser interventions across Alpha goals, risk, diplomacy, legitimacy, succession, policy/event choices, campaign consequences, and victory progress while preserving player command control. No blocker defects were accepted. Bounded follow-ups remain separate future work: player-facing adviser labels, direct campaign/postwar consequence advice, optional consented local sessions, and historical/cultural routing. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`; this task does not decide M6 exit.
 
-QA accepted one non-blocking metadata risk: the writer REVIEW handoff internal `commit` field names `9a0d597`, while the formal route, task metadata, and QA review target pin `c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288` as authoritative. The lead records `c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288` as the accepted review commit and does not rewrite the reviewed writer handoff.
+The next dependency-ready M6 task is `M6-ALPHA-NO-P0P1-VALIDATION-001`, which must validate Alpha no accepted P0/P1 blockers before M6 exit validation.

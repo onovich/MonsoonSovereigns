@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260628-M6-ADVISER-EVIDENCE-CLOSED",
+  "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M6-ADVISER-INTERVENTION-EVIDENCE-001 is CLOSED after PR #153 passed CI, merged to origin/main at 072ae2f5cfade1b0bc85ec3bab1c577395e279d4, and local main was synchronized. The accepted evidence remains bounded and local/privacy-safe; no Human Gate is active. Next dependency-ready M6 task is M6-ALPHA-NO-P0P1-VALIDATION-001.",
+  "artifacts": [
+    "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "PROJECT_STATUS.md"
+  ],
+  "branch_or_worktree": "chore/close-m6-adviser-evidence",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "gh pr checks 153 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 2m2s; Windows Desktop Smoke Artifact passed in 49s."
+    },
+    {
+      "command": "gh pr view 153 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName",
+      "exit_code": 0,
+      "result": "PR #153 MERGED to main at 2026-06-27T18:17:11Z; merge commit 072ae2f5cfade1b0bc85ec3bab1c577395e279d4."
+    },
+    {
+      "command": "git pull --ff-only origin main",
+      "exit_code": 0,
+      "result": "main synchronized at 072ae2f5cfade1b0bc85ec3bab1c577395e279d4."
+    }
+  ],
+  "decisions": [
+    "Task moves from ACCEPTED to CLOSED only after PR #153 CI passed, merged, and main was synchronized.",
+    "No Human Gate is active; M6 exit is not decided by this evidence task.",
+    "Next ready task is M6-ALPHA-NO-P0P1-VALIDATION-001, but it starts only after this closure checkpoint enters main.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+  ],
+  "risks": [
+    "Evidence confidence is bounded because no new external/non-author participant sessions were run.",
+    "Writer handoff commit metadata mismatch remains recorded as accepted non-blocking P3 risk; c1edb91f is authoritative for review."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit closure checkpoint, push closure branch, open and merge closure PR, sync main, then start M6-ALPHA-NO-P0P1-VALIDATION-001.",
+  "created_at": "2026-06-27T18:18:51.074Z"
+}
