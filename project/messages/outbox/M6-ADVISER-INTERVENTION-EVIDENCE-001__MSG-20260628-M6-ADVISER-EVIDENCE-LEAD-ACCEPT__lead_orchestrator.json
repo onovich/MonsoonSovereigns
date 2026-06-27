@@ -1,0 +1,72 @@
+{
+  "message_id": "MSG-20260628-M6-ADVISER-EVIDENCE-LEAD-ACCEPT",
+  "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M6-ADVISER-INTERVENTION-EVIDENCE-001 after gameplay_designer REVIEW and independent read-only qa_reviewer ACCEPT. Evidence is bounded, local/privacy-safe, covers adviser usefulness/ignored/harmful/missing categories across Alpha goals and systems, records no blockers, preserves DEFER_MANUAL_NODE_BATTLE, and does not decide M6 exit or authorize product-code changes.",
+  "artifacts": [
+    "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "PROJECT_STATUS.md"
+  ],
+  "branch_or_worktree": "research/m6-adviser-intervention-evidence / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only QA handoff was untracked before lead ACCEPT; no forbidden path changes."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ADVISER-INTERVENTION-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list completed; M6-ADVISER-INTERVENTION-EVIDENCE-001 was REVIEW before lead ACCEPT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready tasks printed while current task remained REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID independent QA ACCEPT handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "ACCEPT after independent QA ACCEPT; task status moves REVIEW to ACCEPTED, not CLOSED until PR/CI/main integration completes.",
+    "Formal accepted review commit is c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288 from task metadata and QA route evidence.",
+    "Writer handoff internal commit field mismatch is accepted as non-blocking metadata risk because the route and QA review target pin the correct commit.",
+    "No product code, telemetry, network collection, personal data, accounts, paid services, M6 exit decision, manual node battle reopening, or formal historical/cultural acceptance is authorized.",
+    "Bounded follow-ups remain separate future tasks if selected: plain-language adviser labels, campaign/postwar consequence advice, optional consented local sessions, and historical routing."
+  ],
+  "risks": [
+    "Evidence confidence remains bounded because no new external/non-author participant sessions were run.",
+    "Reason-code-heavy adviser presentation and missing direct campaign/postwar adviser intervention remain follow-up risks, not current blockers.",
+    "M6-ADVISER-METADATA-RISK-001: writer handoff commit field mismatch is documented as non-blocking process metadata inconsistency."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit ACCEPT checkpoint, push branch, create PR, wait for CI, merge to main, sync main, then close task and continue M6.",
+  "created_at": "2026-06-27T18:13:29.663Z"
+}
