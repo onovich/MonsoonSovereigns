@@ -16,8 +16,15 @@
       "thread_id": "019f0a73-d825-79b1-91de-1259bdb6393f",
       "nickname": "Meridian the 3rd",
       "task_id": "M6-EXIT-VALIDATION-001",
-      "status": "review",
+      "status": "completed_review_ready",
       "role": "systems_architect"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0a84-ee41-7203-ba9d-017893666e8c",
+      "nickname": "Witness the 3rd",
+      "task_id": "M6-EXIT-VALIDATION-001",
+      "status": "active_reviewing",
+      "role": "qa_reviewer"
     }
   },
   "last_integrated_task": "M6-ALPHA-NO-P0P1-VALIDATION-001",
@@ -836,8 +843,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T19:02:24.492Z",
-  "updated_at": "2026-06-27T19:02:24.492Z",
+  "last_updated_at": "2026-06-27T19:19:27.664Z",
+  "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1448,13 +1455,19 @@
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "start_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-START__lead_orchestrator.json",
     "started_at": "2026-06-27T19:01:08.850Z",
-    "updated_at": "2026-06-28T03:30:00+08:00",
+    "updated_at": "2026-06-27T19:19:27.664Z",
     "gate_result": "PASS_WITH_LIMITS",
     "gate_document": "docs/GATE-M6.md",
     "review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
-    "next_action": "Await independent qa_reviewer review of docs/GATE-M6.md and systems_architect REVIEW handoff.",
+    "next_action": "Await independent qa_reviewer verdict; integrate after ACCEPT.",
     "route_file": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-LEAD-TO-SYSTEMS-START.json",
     "start_submission_id": "019f0a75-d474-7e80-b6c8-2dc0e4a264cc",
-    "route_sent_at": "2026-06-27T19:02:24.492Z"
+    "route_sent_at": "2026-06-27T19:02:24.492Z",
+    "review_commit": "3210cddc",
+    "qa_thread_id": "019f0a84-ee41-7203-ba9d-017893666e8c",
+    "qa_thread_nickname": "Witness the 3rd",
+    "qa_route": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-SYSTEMS-TO-QA-REVIEW.json",
+    "qa_submission_id": "019f0a85-4a58-7ec2-8260-c5ae939a9f0d",
+    "routed_to_qa_at": "2026-06-27T19:19:27.664Z"
   }
 }
