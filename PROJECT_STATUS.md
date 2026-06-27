@@ -211,3 +211,9 @@ The next dependency-ready M6 tasks are `M6-DIPLOMACY-LEGITIMACY-001` and `M6-SCE
 The evidence records useful, ignored, harmful-risk, and missing adviser interventions across Alpha goals, risk, diplomacy, legitimacy, succession, policy/event choices, campaign consequences, and victory progress while preserving player command control. No blocker defects were accepted. Bounded follow-ups remain separate future work: player-facing adviser labels, direct campaign/postwar consequence advice, optional consented local sessions, and historical/cultural routing. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`; this task does not decide M6 exit.
 
 The next dependency-ready M6 task is `M6-ALPHA-NO-P0P1-VALIDATION-001`, which must validate Alpha no accepted P0/P1 blockers before M6 exit validation.
+
+## 19. M6 Exit Gate Start Snapshot
+
+`M6-ALPHA-NO-P0P1-VALIDATION-001` is CLOSED after PR #156 entered `origin/main` at `cd5cebebfe6ac7b0dd07a7468abcba9da55fd765`. Current task is `M6-EXIT-VALIDATION-001` on branch `gate/m6-exit-validation`; it is the formal M6 Alpha system-complete validation gate.
+
+This gate may create `docs/GATE-M6.md` and update process/status files only. It must not modify product code, packages, content-source data, roadmap, acceptance matrix, prior gates, release artifacts, telemetry, server/multiplayer, arbitrary-code mods, branding/commercial decisions, or frozen architecture choices. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`; no Human Gate is active.
