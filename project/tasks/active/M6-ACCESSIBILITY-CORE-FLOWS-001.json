@@ -2,7 +2,7 @@
   "id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "summary": "Validate and harden accessibility core flows",
   "milestone": "M6",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -78,7 +78,7 @@
     "If a new accessibility dependency is necessary, route dependency justification before implementation."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-28T00:13:04.124+08:00",
+  "updated_at": "2026-06-28T00:20:54.339+08:00",
   "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "writer_thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
   "writer_nickname": "Canvas the 2nd",
@@ -89,7 +89,7 @@
   "previous_closed_task": "M6-LAYERED-AI-001",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "Lead accept M6 accessibility after QA ACCEPT and metadata reconciliation, then run integration gates.",
+  "next_action": "Open PR, wait for CI, merge on pass, sync main, write CLOSED checkpoint, and continue to the next READY M6 task.",
   "route_sent_at": "2026-06-27T23:28:32.873+08:00",
   "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
   "review_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
@@ -149,5 +149,43 @@
     "reconciled_at": "2026-06-28T00:13:04.124+08:00",
     "corrected_route_source_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
     "corrected_registry_review_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json"
-  }
+  },
+  "lead_accept_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-28T00:20:54.339+08:00",
+  "accepted_head_commit": "d13616db0e182b3ae4fede290eb43de718134d21",
+  "implementation_commit": "9d757bebcc093aa4ad2ba8eb97ce387c4c3c10d2",
+  "child_threads_closed": [
+    "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+    "019f09d1-b057-79a2-a472-f09bf2a67014"
+  ],
+  "child_thread_close_summary": [
+    {
+      "thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "role": "client_engineer",
+      "nickname": "Canvas the 2nd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-28T00:20:54.339+08:00"
+    },
+    {
+      "thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
+      "role": "qa_reviewer",
+      "nickname": "Gate the 2nd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-28T00:20:54.339+08:00"
+    }
+  ],
+  "lead_tests_recorded": [
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm test",
+    "pnpm check",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-QA-REVIEW__qa_reviewer.json",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "git diff --check",
+    "git diff --name-status origin/main...HEAD"
+  ]
 }
