@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T13:42:37+08:00",
+  "updated_at": "2026-06-27T13:51:23+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -2063,15 +2063,15 @@
       ]
     },
     "M6-DIPLOMACY-LEGITIMACY-001": {
-      "status": "REVIEW_R2",
+      "status": "ACCEPTED",
       "owner_role": "simulation_engineer",
       "reviewer_role": "systems_architect",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
       "dependencies_satisfied_by": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "updated_at": "2026-06-27T13:42:37+08:00",
+      "updated_at": "2026-06-27T13:51:23+08:00",
       "human_gate_required": false,
-      "next_action": "Await systems_architect R2 ACCEPT or REQUEST_CHANGES.",
+      "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
       "writer_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
       "writer_nickname": "Delta the 2nd",
       "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
@@ -2112,7 +2112,13 @@
       "review_commit_r2": "3f6cdf760c258d575c7bd947399a77f013f137c1",
       "routed_to_systems_r2_at": "2026-06-27T13:40:28+08:00",
       "systems_review_submission_id_r2": "019f0798-75ee-7981-b4be-d7279287d3f3",
-      "systems_route_sent_r2_at": "2026-06-27T13:42:37+08:00"
+      "systems_route_sent_r2_at": "2026-06-27T13:42:37+08:00",
+      "systems_review_handoff_r2": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "systems_status_r2": "ACCEPT",
+      "accepted_at": "2026-06-27T13:51:23+08:00",
+      "lead_accept_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_accept_commit": "25e49e6a7fb03b0e9a4ed98b24b8727d524e89a9",
+      "child_threads_closed": true
     }
   }
 }

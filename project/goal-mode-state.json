@@ -9,22 +9,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active_orchestrating_r2_review",
+      "status": "active_accepting_pending_integration",
       "role": "lead_orchestrator"
-    },
-    "simulation_engineer": {
-      "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "r2_review_routed",
-      "role": "simulation_engineer",
-      "nickname": "Engine the 2nd"
-    },
-    "systems_architect": {
-      "thread_id": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active_r2_review",
-      "role": "systems_architect",
-      "nickname": "Keystone"
     }
   },
   "last_integrated_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
@@ -72,7 +58,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T13:42:37+08:00",
+  "last_updated_at": "2026-06-27T13:51:23+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -84,7 +70,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T13:42:37+08:00",
+  "updated_at": "2026-06-27T13:51:23+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -442,7 +428,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Await systems_architect R2 ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001.",
+  "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -561,7 +547,7 @@
     ]
   },
   "m6_diplomacy_legitimacy": {
-    "status": "REVIEW_R2",
+    "status": "ACCEPTED",
     "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
     "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -574,7 +560,7 @@
     "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await systems_architect R2 ACCEPT or REQUEST_CHANGES.",
+    "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
     "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
     "route_sent_at": "2026-06-27T06:42:07+08:00",
     "replacement_writer_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
@@ -623,6 +609,12 @@
     "review_commit_r2": "3f6cdf760c258d575c7bd947399a77f013f137c1",
     "routed_to_systems_r2_at": "2026-06-27T13:40:28+08:00",
     "systems_review_submission_id_r2": "019f0798-75ee-7981-b4be-d7279287d3f3",
-    "systems_route_sent_r2_at": "2026-06-27T13:42:37+08:00"
+    "systems_route_sent_r2_at": "2026-06-27T13:42:37+08:00",
+    "systems_review_handoff_r2": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "systems_status_r2": "ACCEPT",
+    "accepted_at": "2026-06-27T13:51:23+08:00",
+    "lead_accept_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-ACCEPT__lead_orchestrator.json",
+    "lead_accept_commit": "25e49e6a7fb03b0e9a4ed98b24b8727d524e89a9",
+    "child_threads_closed": true
   }
 }
