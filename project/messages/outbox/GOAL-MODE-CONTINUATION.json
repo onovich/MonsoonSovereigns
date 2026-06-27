@@ -2,12 +2,12 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_DIPLOMACY_LEGITIMACY_ACCEPTED_PENDING_INTEGRATION",
+  "status": "M6_DIPLOMACY_LEGITIMACY_REVIEW_R3",
   "project": "Monsoon Sovereigns",
   "origin_main": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
   "current_milestone": "M6",
   "current_task": "M6-DIPLOMACY-LEGITIMACY-001",
-  "current_task_status": "ACCEPTED",
+  "current_task_status": "REVIEW_R3",
   "last_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
   "ready_tasks": [
     "M6-SCENARIO-DATA-PIPELINE-001"
@@ -55,7 +55,7 @@
     "note": "No active Human Gate. M6-DIPLOMACY-LEGITIMACY-001 is IN_PROGRESS with simulation_engineer writer.",
     "recorded_at": "2026-06-27T06:41:07+08:00"
   },
-  "next_machine_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
+  "next_machine_action": "Await systems_architect R3 ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001 CI/API-boundary fix.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -63,7 +63,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T13:51:23+08:00",
+  "last_updated_at": "2026-06-27T14:02:18+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -119,7 +119,7 @@
       "replaced_at": "2026-06-27T13:14:06+08:00"
     }
   ],
-  "updated_at": "2026-06-27T13:51:23+08:00",
+  "updated_at": "2026-06-27T14:02:18+08:00",
   "current_tasks": [
     "M6-DIPLOMACY-LEGITIMACY-001"
   ],
@@ -128,7 +128,7 @@
   "next_ready_tasks": [
     "M6-SCENARIO-DATA-PIPELINE-001"
   ],
-  "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
+  "next_action": "Await systems_architect R3 ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001 CI/API-boundary fix.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -607,7 +607,7 @@
     ]
   },
   "m6_diplomacy_legitimacy": {
-    "status": "ACCEPTED",
+    "status": "REVIEW_R3",
     "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
     "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -620,7 +620,7 @@
     "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
+    "next_action": "Await systems_architect R3 ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001 CI/API-boundary fix.",
     "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
     "route_sent_at": "2026-06-27T06:42:07+08:00",
     "replacement_writer_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
@@ -675,6 +675,12 @@
     "accepted_at": "2026-06-27T13:51:23+08:00",
     "lead_accept_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-ACCEPT__lead_orchestrator.json",
     "lead_accept_commit": "25e49e6a7fb03b0e9a4ed98b24b8727d524e89a9",
-    "child_threads_closed": true
+    "child_threads_closed": true,
+    "review_handoff_r3": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-CI-FIX-R3-REVIEW__lead_orchestrator.json",
+    "review_route_file_r3": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-CI-FIX-R3-TO-SYSTEMS-REVIEW.json",
+    "review_commit_r3": "a379d188c10fc93f19405a533e03b2e52f61a1fc",
+    "systems_review_handoff_r3": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "systems_status_r3": "PENDING",
+    "routed_to_systems_r3_at": "2026-06-27T14:02:18+08:00"
   }
 }

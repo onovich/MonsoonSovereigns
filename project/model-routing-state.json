@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T13:51:23+08:00",
+  "updated_at": "2026-06-27T14:02:18+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -2063,15 +2063,15 @@
       ]
     },
     "M6-DIPLOMACY-LEGITIMACY-001": {
-      "status": "ACCEPTED",
+      "status": "REVIEW_R3",
       "owner_role": "simulation_engineer",
       "reviewer_role": "systems_architect",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
       "dependencies_satisfied_by": "M6-ALPHA-SYSTEM-CONTRACT-001",
-      "updated_at": "2026-06-27T13:51:23+08:00",
+      "updated_at": "2026-06-27T14:02:18+08:00",
       "human_gate_required": false,
-      "next_action": "Run final integration gates and open PR for M6-DIPLOMACY-LEGITIMACY-001; close only after main integration.",
+      "next_action": "Await systems_architect R3 ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001 CI/API-boundary fix.",
       "writer_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
       "writer_nickname": "Delta the 2nd",
       "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
@@ -2118,7 +2118,13 @@
       "accepted_at": "2026-06-27T13:51:23+08:00",
       "lead_accept_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-ACCEPT__lead_orchestrator.json",
       "lead_accept_commit": "25e49e6a7fb03b0e9a4ed98b24b8727d524e89a9",
-      "child_threads_closed": true
+      "child_threads_closed": true,
+      "review_handoff_r3": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-CI-FIX-R3-REVIEW__lead_orchestrator.json",
+      "review_route_file_r3": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-CI-FIX-R3-TO-SYSTEMS-REVIEW.json",
+      "review_commit_r3": "a379d188c10fc93f19405a533e03b2e52f61a1fc",
+      "systems_review_handoff_r3": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "systems_status_r3": "PENDING",
+      "routed_to_systems_r3_at": "2026-06-27T14:02:18+08:00"
     }
   }
 }
