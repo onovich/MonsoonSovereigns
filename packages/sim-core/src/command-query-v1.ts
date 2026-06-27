@@ -3305,6 +3305,15 @@ function evaluateProposeDiplomaticAgreement(
   if (polityError !== null) {
     return { ok: false, error: polityError };
   }
+  const authorityError = validateM6PolityActorAuthority(
+    world,
+    command.actor,
+    proposerPolityId,
+    "sim.propose-diplomatic-agreement"
+  );
+  if (authorityError !== null) {
+    return { ok: false, error: authorityError };
+  }
   if (m6.agreements.some((agreement) => agreement.agreementId === agreementId)) {
     return {
       ok: false,
@@ -3403,6 +3412,15 @@ function evaluateAnswerDiplomaticAgreement(
       }
     };
   }
+  const authorityError = validateM6PolityActorAuthority(
+    world,
+    command.actor,
+    agreement.targetPolityId,
+    "sim.answer-diplomatic-agreement"
+  );
+  if (authorityError !== null) {
+    return { ok: false, error: authorityError };
+  }
   if (agreement.status !== "proposed") {
     return {
       ok: false,
@@ -3489,6 +3507,10 @@ function evaluateRecordLegitimacySource(
   const m6 = ensureM6State(world);
   const sourceId = parseM6LegitimacySourceId(command.payload.sourceId);
   const polityId = parsePolityId(command.payload.polityId);
+  const authorityError = validateM6LegitimacyActorAuthority(command.actor);
+  if (authorityError !== null) {
+    return { ok: false, error: authorityError };
+  }
   if (!world.definitions.polities.some((polity) => polity.id === polityId)) {
     return {
       ok: false,
@@ -7810,6 +7832,37 @@ function actorHasPolityAuthority(
   );
 }
 
+function validateM6PolityActorAuthority(
+  world: WorldStateV0,
+  actor: CommandActorV1,
+  polityId: PolityId,
+  commandKind: string
+): DomainErrorV1 | null {
+  const m3 = world.state.m3;
+  if (m3 === undefined) {
+    return m3MissingDomainError(commandKind);
+  }
+  return actorHasPolityAuthority(m3, actor, polityId) ? null : authorityDeniedDomainError();
+}
+
+function validateM6LegitimacyActorAuthority(actor: CommandActorV1): DomainErrorV1 | null {
+  if (
+    actor.kind === "system" &&
+    (actor.id === "m6-legitimacy" ||
+      actor.id === "m3.succession" ||
+      actor.id === "m4.postwar" ||
+      actor.id === "m6.validation")
+  ) {
+    return null;
+  }
+
+  return {
+    code: "authority-denied",
+    path: "actor.id",
+    message: "sim.record-legitimacy-source requires an M6 domain-authorized system actor."
+  };
+}
+
 function parseActorOfficeId(actorId: string): M3OfficeId | null {
   if (!actorId.startsWith("office:")) {
     return null;
@@ -7843,7 +7896,7 @@ function authorityDeniedDomainError(): DomainErrorV1 {
   return {
     code: "authority-denied",
     path: "actor.id",
-    message: "M3 command actor lacks polity or office authority."
+    message: "Command actor lacks polity or office authority."
   };
 }
 
@@ -9538,10 +9591,11 @@ function buildM6RecognizedOrderReadModel(
     (entry) => entry.polityId === polityId && entry.audience === "vassal-rulers"
   );
   const legitimacyScoreBps = profile?.scoreBps ?? 0;
-  const activeObligationCount =
-    runtime.world.state.m3?.obligations.filter(
-      (obligation) => obligation.creditorPolityId === polityId && obligation.status === "active"
-    ).length ?? 0;
+  const obligationSummary = summarizeM6RecognizedOrderObligations(
+    runtime.world.state.m3,
+    polityId,
+    runtime.world.meta.currentDay
+  );
   const pendingSuccessionCount =
     runtime.world.state.m3?.successionCrises.filter(
       (crisis) => crisis.polityId === polityId && crisis.status === "pending"
@@ -9557,7 +9611,8 @@ function buildM6RecognizedOrderReadModel(
   const reasonCodes = m6RecognizedOrderReasonCodes({
     recognizedByCount,
     legitimacyScoreBps,
-    activeObligationCount,
+    obligationRiskCount: obligationSummary.riskCount,
+    obligationBlockedCount: obligationSummary.blockedCount,
     pendingSuccessionCount,
     postwarEvidenceCount: postwarCandidateCount + postwarSourceCount
   });
@@ -9565,21 +9620,71 @@ function buildM6RecognizedOrderReadModel(
     polityId,
     recognizedByCount,
     legitimacyScoreBps,
-    activeObligationCount,
+    activeObligationCount: obligationSummary.activeCount,
     pendingSuccessionCount,
     postwarCandidateCount,
     canPursueVictory:
       recognizedByCount > 0 &&
       legitimacyScoreBps >= 1_000 &&
+      obligationSummary.riskCount === 0 &&
+      obligationSummary.blockedCount === 0 &&
       pendingSuccessionCount === 0,
     reasonCodes
   };
 }
 
+function summarizeM6RecognizedOrderObligations(
+  m3: WorldStateV0["state"]["m3"],
+  polityId: PolityId,
+  currentDay: GameDay
+): {
+  readonly activeCount: number;
+  readonly riskCount: number;
+  readonly blockedCount: number;
+} {
+  if (m3 === undefined) {
+    return { activeCount: 0, riskCount: 0, blockedCount: 0 };
+  }
+
+  let activeCount = 0;
+  let riskCount = 0;
+  let blockedCount = 0;
+  for (const obligation of m3.obligations) {
+    if (obligation.creditorPolityId !== polityId) {
+      continue;
+    }
+    if (obligation.status === "active") {
+      activeCount += 1;
+    }
+    if (
+      obligation.status === "breached" ||
+      obligation.accounting.defaultedAmount > 0 ||
+      obligation.breachReasonCode !== null
+    ) {
+      blockedCount += 1;
+      continue;
+    }
+    if (
+      obligation.status === "disputed" ||
+      obligation.disputeReasonCode !== null ||
+      obligation.accounting.arrearsAmount > 0 ||
+      (obligation.status === "active" &&
+        obligation.accounting.dueDay < currentDay &&
+        obligation.accounting.deliveredAmount + obligation.accounting.remittedAmount <
+          obligation.accounting.dueAmount)
+    ) {
+      riskCount += 1;
+    }
+  }
+
+  return { activeCount, riskCount, blockedCount };
+}
+
 function m6RecognizedOrderReasonCodes(input: {
   readonly recognizedByCount: number;
   readonly legitimacyScoreBps: number;
-  readonly activeObligationCount: number;
+  readonly obligationRiskCount: number;
+  readonly obligationBlockedCount: number;
   readonly pendingSuccessionCount: number;
   readonly postwarEvidenceCount: number;
 }): readonly string[] {
@@ -9590,9 +9695,11 @@ function m6RecognizedOrderReasonCodes(input: {
     input.legitimacyScoreBps >= 1_000
       ? "m6.recognized-order.legitimacy-sufficient"
       : "m6.recognized-order.legitimacy-insufficient",
-    input.activeObligationCount >= 0
-      ? "m6.recognized-order.obligations-clear"
-      : "m6.recognized-order.obligation-risk",
+    input.obligationBlockedCount > 0
+      ? "m6.recognized-order.obligation-blocked"
+      : input.obligationRiskCount > 0
+        ? "m6.recognized-order.obligation-risk"
+        : "m6.recognized-order.obligations-clear",
     input.pendingSuccessionCount === 0
       ? "m6.recognized-order.succession-clear"
       : "m6.recognized-order.succession-pending",

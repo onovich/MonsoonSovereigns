@@ -17,7 +17,7 @@ describe("M6 diplomacy AI command parity", () => {
   test("plans from public M6 queries and submits the same GameCommand as a player", () => {
     const runtime = bootRuntime();
     const planned = planM6DiplomacyAiTurnV1(runtime, {
-      actorId: "ai:m6",
+      actorId: "polity:2",
       actorPolityId: 2,
       targetPolityId: 1,
       commandIdPrefix: "m6.ai"
@@ -48,7 +48,7 @@ describe("M6 diplomacy AI command parity", () => {
   test("waits with reason codes when recognized order is already visible", () => {
     let runtime = bootRuntime();
     const planned = planM6DiplomacyAiTurnV1(runtime, {
-      actorId: "ai:m6",
+      actorId: "polity:2",
       actorPolityId: 2,
       targetPolityId: 1,
       commandIdPrefix: "m6.ai.done"
@@ -60,7 +60,7 @@ describe("M6 diplomacy AI command parity", () => {
       schemaVersion: 1,
       kind: "sim.answer-diplomatic-agreement",
       commandId: "m6.ai.done.accept",
-      actor: { kind: "player", id: "player:m6" },
+      actor: { kind: "player", id: "polity:1" },
       expectedDay: runtime.world.meta.currentDay,
       expectedRevision: runtime.world.meta.revision,
       payload: {
@@ -73,7 +73,7 @@ describe("M6 diplomacy AI command parity", () => {
     runtime = accepted.runtime;
 
     const wait = planM6DiplomacyAiTurnV1(runtime, {
-      actorId: "ai:m6",
+      actorId: "polity:2",
       actorPolityId: 2,
       targetPolityId: 1,
       commandIdPrefix: "m6.ai.wait"

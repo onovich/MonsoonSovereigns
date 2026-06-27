@@ -9,7 +9,11 @@ import {
   definePerson,
   definePolity,
   loadSaveV1,
+  parseGameDay,
+  parseM3ObligationAuditEventId,
+  parseM3ObligationId,
   parsePolityId,
+  parseWorldRevision,
   querySimulationV1,
   requestSaveV1,
   submitCommandV1,
@@ -57,7 +61,7 @@ describe("M6-DIPLOMACY-LEGITIMACY-001 deterministic substrate", () => {
     runtime = accepted(runtime, answerAgreementCommand("m6.diplomacy.accept", "ai", runtime, 1));
     runtime = accepted(
       runtime,
-      recordLegitimacyCommand("m6.legitimacy.succession", "player", runtime, 10, 1, 700)
+      recordLegitimacyCommand("m6.legitimacy.succession", "system", runtime, 10, 1, 700)
     );
     runtime = accepted(
       runtime,
@@ -108,6 +112,72 @@ describe("M6-DIPLOMACY-LEGITIMACY-001 deterministic substrate", () => {
       "m6.recognized-order.postwar-evidence-present"
     ]);
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
+  test("rejects unauthorized diplomacy and legitimacy actors without mutating M6 state", () => {
+    let runtime = bootM6Runtime();
+    const unauthorizedOffer = submitCommandV1(
+      runtime,
+      proposeAgreementCommand("m6.auth.offer", "player", runtime, 1, 2, 1, "polity:3")
+    );
+    expect(unauthorizedOffer.result).toMatchObject({
+      status: "rejected",
+      error: { code: "authority-denied", path: "actor.id" }
+    });
+    expect(unauthorizedOffer.runtime.world.meta.stateHash).toBe(runtime.world.meta.stateHash);
+
+    runtime = accepted(
+      runtime,
+      proposeAgreementCommand("m6.auth.valid-offer", "player", runtime, 1, 2, 1)
+    );
+    const unauthorizedAnswer = submitCommandV1(
+      runtime,
+      answerAgreementCommand("m6.auth.answer", "ai", runtime, 1, "polity:3")
+    );
+    expect(unauthorizedAnswer.result).toMatchObject({
+      status: "rejected",
+      error: { code: "authority-denied", path: "actor.id" }
+    });
+    expect(unauthorizedAnswer.runtime.world.meta.stateHash).toBe(runtime.world.meta.stateHash);
+
+    const unauthorizedLegitimacy = submitCommandV1(
+      runtime,
+      recordLegitimacyCommand("m6.auth.legitimacy", "player", runtime, 10, 1, 900)
+    );
+    expect(unauthorizedLegitimacy.result).toMatchObject({
+      status: "rejected",
+      error: { code: "authority-denied", path: "actor.id" }
+    });
+    expect(unauthorizedLegitimacy.runtime.world.meta.stateHash).toBe(runtime.world.meta.stateHash);
+  });
+
+  test("recognized-order distinguishes clear, risky, and blocked obligations", () => {
+    let clearRuntime = bootM6Runtime({ obligationMode: "clear" });
+    clearRuntime = createRecognizedOrder(clearRuntime);
+    const clearDecision = recognizedOrderDecision(clearRuntime, 1);
+    expect(clearDecision).toMatchObject({
+      activeObligationCount: 1,
+      canPursueVictory: true
+    });
+    expect(clearDecision.reasonCodes).toContain("m6.recognized-order.obligations-clear");
+
+    let riskRuntime = bootM6Runtime({ obligationMode: "risk" });
+    riskRuntime = createRecognizedOrder(riskRuntime);
+    const riskDecision = recognizedOrderDecision(riskRuntime, 1);
+    expect(riskDecision).toMatchObject({
+      activeObligationCount: 1,
+      canPursueVictory: false
+    });
+    expect(riskDecision.reasonCodes).toContain("m6.recognized-order.obligation-risk");
+
+    let blockedRuntime = bootM6Runtime({ obligationMode: "blocked" });
+    blockedRuntime = createRecognizedOrder(blockedRuntime);
+    const blockedDecision = recognizedOrderDecision(blockedRuntime, 1);
+    expect(blockedDecision).toMatchObject({
+      activeObligationCount: 0,
+      canPursueVictory: false
+    });
+    expect(blockedDecision.reasonCodes).toContain("m6.recognized-order.obligation-blocked");
   });
 
   test("rejects diplomacy graph cycles and serializes rejection reasons", () => {
@@ -263,20 +333,27 @@ describe("M6-DIPLOMACY-LEGITIMACY-001 deterministic substrate", () => {
   });
 });
 
-function bootM6Runtime(): SimulationRuntimeV1 {
-  const world = createM6World();
+function bootM6Runtime(input: { readonly obligationMode?: "clear" | "risk" | "blocked" } = {}): SimulationRuntimeV1 {
+  const world = createM6World(input);
   return { world, acceptedCommandIds: [], commandTail: [], eventTail: [] };
 }
 
-function createM6World(): WorldStateV0 {
+function createM6World(input: { readonly obligationMode?: "clear" | "risk" | "blocked" } = {}): WorldStateV0 {
   const definitions = m6Definitions();
+  const m3 =
+    input.obligationMode === undefined
+      ? createM3PolityVassalageStateV0(definitions)
+      : createM3PolityVassalageStateV0(definitions, {
+          obligations: [m6Obligation(input.obligationMode)],
+          obligationAuditEvents: [m6ObligationAuditEvent(input.obligationMode)]
+        });
   return createWorldStateV0({
     seed: 1531,
     contentManifestHash: "content.m6.diplomacy.validation",
-    currentDay: 0,
+    currentDay: input.obligationMode === undefined ? 0 : 30,
     revision: 0,
     definitions,
-    m3: createM3PolityVassalageStateV0(definitions),
+    m3,
     m6: createM6DiplomacyLegitimacyStateV0(definitions)
   });
 }
@@ -308,19 +385,50 @@ function accepted(runtime: SimulationRuntimeV1, command: GameCommandV1): Simulat
   return submitted.runtime;
 }
 
+function createRecognizedOrder(runtime: SimulationRuntimeV1): SimulationRuntimeV1 {
+  let nextRuntime = accepted(
+    runtime,
+    proposeAgreementCommand("m6.order.offer", "player", runtime, 1, 2, 1)
+  );
+  nextRuntime = accepted(nextRuntime, answerAgreementCommand("m6.order.accept", "ai", nextRuntime, 1));
+  nextRuntime = accepted(
+    nextRuntime,
+    recordLegitimacyCommand("m6.order.legitimacy", "system", nextRuntime, 10, 1, 1_100)
+  );
+  return nextRuntime;
+}
+
+function recognizedOrderDecision(runtime: SimulationRuntimeV1, polityId: number) {
+  const query = querySimulationV1(runtime, {
+    schemaVersion: 1,
+    kind: "sim.list-m6-recognized-order",
+    payload: { queryId: `m6.recognized.${polityId}`, polityId }
+  });
+  expect(query.status).toBe("ok");
+  if (query.status !== "ok" || query.result.kind !== "sim.list-m6-recognized-order") {
+    throw new Error("Expected recognized order query.");
+  }
+  const decision = query.result.decisions[0];
+  if (decision === undefined) {
+    throw new Error("Expected recognized order decision.");
+  }
+  return decision;
+}
+
 function proposeAgreementCommand(
   commandId: string,
   actorKind: "ai" | "player",
   runtime: SimulationRuntimeV1,
   proposerPolityId: number,
   targetPolityId: number,
-  agreementId: number
+  agreementId: number,
+  actorId = `polity:${proposerPolityId}`
 ): GameCommandV1 {
   return {
     schemaVersion: 1,
     kind: "sim.propose-diplomatic-agreement",
     commandId,
-    actor: { kind: actorKind, id: `${actorKind}:m6` },
+    actor: { kind: actorKind, id: actorId },
     expectedDay: runtime.world.meta.currentDay,
     expectedRevision: runtime.world.meta.revision,
     payload: {
@@ -340,13 +448,14 @@ function answerAgreementCommand(
   commandId: string,
   actorKind: "ai" | "player",
   runtime: SimulationRuntimeV1,
-  agreementId: number
+  agreementId: number,
+  actorId = `polity:${respondingPolityIdForAgreement(runtime, agreementId)}`
 ): GameCommandV1 {
   return {
     schemaVersion: 1,
     kind: "sim.answer-diplomatic-agreement",
     commandId,
-    actor: { kind: actorKind, id: `${actorKind}:m6` },
+    actor: { kind: actorKind, id: actorId },
     expectedDay: runtime.world.meta.currentDay,
     expectedRevision: runtime.world.meta.revision,
     payload: {
@@ -369,7 +478,10 @@ function recordLegitimacyCommand(
     schemaVersion: 1,
     kind: "sim.record-legitimacy-source",
     commandId,
-    actor: { kind: actorKind, id: `${actorKind}:m6` },
+    actor: {
+      kind: actorKind,
+      id: actorKind === "system" ? "m6-legitimacy" : `polity:${polityId}`
+    },
     expectedDay: runtime.world.meta.currentDay,
     expectedRevision: runtime.world.meta.revision,
     payload: {
@@ -384,6 +496,72 @@ function recordLegitimacyCommand(
           ? "legitimacy.source.postwar-settlement"
           : "legitimacy.source.succession-continuity"
     }
+  };
+}
+
+function respondingPolityIdForAgreement(runtime: SimulationRuntimeV1, agreementId: number): number {
+  const agreement = runtime.world.state.m6?.agreements.find((entry) => entry.agreementId === agreementId);
+  if (agreement === undefined) {
+    return 1;
+  }
+  return agreement.targetPolityId;
+}
+
+function m6Obligation(
+  mode: "clear" | "risk" | "blocked"
+): NonNullable<WorldStateV0["state"]["m3"]>["obligations"][number] {
+  return {
+    id: parseM3ObligationId(1),
+    debtorPolityId: parsePolityId(2),
+    creditorPolityId: parsePolityId(1),
+    obligationKind: "tribute",
+    obligationCategory: "regular-tribute",
+    obligationSource: {
+      kind: "vassalage",
+      sourceId: "m6.recognized-order.obligation.2-to-1",
+      debtorPolityId: parsePolityId(2),
+      creditorPolityId: parsePolityId(1)
+    },
+    requirement: { kind: "amount", resourceKind: "cash", amount: 100 },
+    due: { kind: "cadence", periodDays: 60, nextDueDay: parseGameDay(45) },
+    accounting: {
+      nominalAmount: 100,
+      dueAmount: 100,
+      deliveredAmount: mode === "clear" ? 100 : 0,
+      arrearsAmount: mode === "risk" ? 50 : 0,
+      defaultedAmount: mode === "blocked" ? 100 : 0,
+      remittedAmount: 0,
+      dueDay: parseGameDay(mode === "clear" ? 45 : 20),
+      cycle: 1,
+      troopResponseState: "none"
+    },
+    status: mode === "blocked" ? "breached" : "active",
+    disputeReasonCode: null,
+    breachReasonCode: mode === "blocked" ? "obligation.breach.validation" : null,
+    createdAuditEventId: parseM3ObligationAuditEventId(1),
+    latestAuditEventId: parseM3ObligationAuditEventId(1)
+  };
+}
+
+function m6ObligationAuditEvent(
+  mode: "clear" | "risk" | "blocked"
+): NonNullable<WorldStateV0["state"]["m3"]>["obligationAuditEvents"][number] {
+  return {
+    id: parseM3ObligationAuditEventId(1),
+    obligationId: parseM3ObligationId(1),
+    eventKind: "created",
+    eventDay: parseGameDay(0),
+    eventRevision: parseWorldRevision(0),
+    commandId: `m6.obligation.${mode}.fixture`,
+    actor: { kind: "system", id: "fixture" },
+    actionKind: null,
+    dueDay: null,
+    fulfillmentId: null,
+    fulfilledAmount: null,
+    statusAfter: mode === "blocked" ? "breached" : "active",
+    reasonCode: null,
+    reasonCodes: ["obligation.created", `m6.obligation.${mode}`],
+    reliabilityBps: 10_000
   };
 }
 

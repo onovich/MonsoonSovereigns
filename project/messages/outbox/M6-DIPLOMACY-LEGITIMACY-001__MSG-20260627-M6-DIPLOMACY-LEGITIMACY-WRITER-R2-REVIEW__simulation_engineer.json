@@ -1,0 +1,105 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-R2-REVIEW",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes systems_architect REQUEST_CHANGES by adding M6 command authority checks, aligning M6 AI actor IDs with the polity:<id> convention, and replacing the recognized-order obligation dead branch with clear/risk/blocked obligation semantics covered by tests.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m6-diplomacy-legitimacy.test.ts",
+    "tests/sim-ai-m6-diplomacy-ai.test.ts",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified allowed files: packages/sim-core/src/command-query-v1.ts, tests/sim-core-m6-diplomacy-legitimacy.test.ts, tests/sim-ai-m6-diplomacy-ai.test.ts, project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json, and this R2 handoff. Untracked ui-samples/ remains untouched."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "24 test files passed, 179 tests passed. Added M6 unauthorized actor rejection and recognized-order obligation clear/risk/blocked coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "2 test files passed, 3 tests passed. M6 AI test inputs now use actorId polity:2 and submitted AI commands keep actor kind ai with id polity:<actorPolityId>."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop canaries."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism passed; root Vitest passed 37 files / 259 tests; web Vitest passed 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-DIPLOMACY-LEGITIMACY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json after R2 REVIEW status update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-R2-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID handoff JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors after R2 task and handoff updates."
+    }
+  ],
+  "decisions": [
+    "sim.propose-diplomatic-agreement now requires actor authority over proposerPolityId through the existing M3 actorHasPolityAuthority convention.",
+    "sim.answer-diplomatic-agreement now requires actor authority over the responding polity, defined as the agreement targetPolityId; system actors retain the existing limited command authority behavior through actorHasPolityAuthority.",
+    "sim.record-legitimacy-source is now restricted to explicit M6 domain-authorized system actors: m6-legitimacy, m3.succession, m4.postwar, or m6.validation.",
+    "M6 AI tests and usage now follow the existing campaign AI actor convention: actor kind ai with id polity:<actorPolityId>.",
+    "M6 recognized-order obligation semantics are defined as clear when relevant creditor obligations are current, risk when obligations are disputed/overdue/in arrears, and blocked when obligations are breached/defaulted; risk or blocked prevents canPursueVictory.",
+    "No manual node battle, server/multiplayer, telemetry, arbitrary-code scripting, full peace treaty UI, hidden grand-strategy manager, UI, PROJECT_STATUS.md, or ui-samples/ changes were made."
+  ],
+  "risks": [
+    "R4 shared sim command/query behavior still requires systems_architect review.",
+    "The M6 domain-authorized system actor allowlist is intentionally narrow and may need later expansion only through explicit reviewed domain commands.",
+    "Recognized-order obligation semantics are minimal for M6 substrate: they use existing M3 obligation status/accounting and do not introduce a new obligation manager."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Perform R2 systems_architect review focused on M6 actor authority, AI actor ID parity, domain-authorized legitimacy source recording, and obligation-sensitive recognized-order decisions.",
+  "created_at": "2026-06-27T13:36:30+08:00"
+}
