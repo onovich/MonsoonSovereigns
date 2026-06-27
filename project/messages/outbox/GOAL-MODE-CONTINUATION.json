@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_BATCH_AUTORUN_BALANCE_DASHBOARD_REPLACEMENT_IN_PROGRESS",
+  "status": "M6_BATCH_AUTORUN_BALANCE_DASHBOARD_LEAD_IMPLEMENTATION_TAKEOVER",
   "project": "Monsoon Sovereigns",
   "origin_main": "3d725f8979ccaf26e552d0248d0cbe982587e232",
   "current_milestone": "M6",
@@ -14,15 +14,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
-      "status": "active_awaiting_writer_review",
+      "status": "active_lead_implementation_takeover",
       "role": "lead_orchestrator"
-    },
-    "balance_analyst": {
-      "thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
-      "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
-      "status": "active_in_progress",
-      "role": "balance_analyst",
-      "nickname": "Tide the 2nd"
     }
   },
   "unresolved_risks": [
@@ -41,12 +34,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 replacement writer route sent; no Human Gate is active.",
+    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 lead implementation takeover after two stalled writers; no product Human Gate is active.",
     "recommended_result": null,
-    "note": "Await replacement writer REVIEW handoff.",
-    "recorded_at": "2026-06-28T00:46:57.849+08:00"
+    "note": "Proceed with implementation and independent QA review.",
+    "recorded_at": "2026-06-28T00:54:17.462+08:00"
   },
-  "next_machine_action": "Await replacement balance_analyst REVIEW handoff for M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001, then route to qa_reviewer.",
+  "next_machine_action": "Lead implement M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 minimal scope, then route to independent qa_reviewer.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -54,7 +47,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-28T00:46:57.849+08:00",
+  "last_updated_at": "2026-06-28T00:54:17.462+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -101,16 +94,25 @@
       "replaced_by_nickname": "Tide the 2nd",
       "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response_no_handoff_clean_worktree",
       "replaced_at": "2026-06-28T00:45:04.397+08:00"
+    },
+    {
+      "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+      "role": "balance_analyst",
+      "thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+      "nickname": "Tide the 2nd",
+      "status": "closed_running_no_handoff_clean_worktree",
+      "reason": "closed_after_wait_timeout_status_request_no_response_no_handoff_clean_worktree",
+      "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T00:46:57.849+08:00",
+  "updated_at": "2026-06-28T00:54:17.462+08:00",
   "current_tasks": [
     "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
   ],
   "last_integrated_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "last_main_commit": "3d725f8979ccaf26e552d0248d0cbe982587e232",
   "next_ready_tasks": [],
-  "next_action": "Await replacement balance_analyst REVIEW handoff for M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001, then route to qa_reviewer.",
+  "next_action": "Lead implement M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 minimal scope, then route to independent qa_reviewer.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -1135,8 +1137,8 @@
     "start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-START.json",
     "started_at": "2026-06-28T00:33:12.367+08:00",
-    "next_action": "Await replacement balance_analyst REVIEW handoff, then route to qa_reviewer.",
-    "updated_at": "2026-06-28T00:46:57.849+08:00",
+    "next_action": "Lead implements minimal task scope, emits REVIEW handoff, and routes to independent qa_reviewer.",
+    "updated_at": "2026-06-28T00:54:17.462+08:00",
     "route_sent_at": "2026-06-28T00:35:13.413+08:00",
     "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c",
     "replaced_writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
@@ -1146,6 +1148,16 @@
     "replaced_at": "2026-06-28T00:45:04.397+08:00",
     "writer_replacement_reason": "original balance_analyst closed after repeated waits and status request produced no handoff; worktree remained clean and no implementation diff is treated as authoritative",
     "replacement_submission_id": "019f09f9-64a8-7843-a8bd-52ea6420661e",
-    "replacement_route_sent_at": "2026-06-28T00:46:57.849+08:00"
+    "replacement_route_sent_at": "2026-06-28T00:46:57.849+08:00",
+    "lead_implementation_takeover": {
+      "takeover_at": "2026-06-28T00:54:17.462+08:00",
+      "reason": "two routed balance_analyst writer threads stalled without REVIEW handoff or local file diff",
+      "first_writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+      "replacement_writer_thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+      "handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-LEAD-IMPLEMENTATION-START__lead_orchestrator.json",
+      "review_requirement": "independent qa_reviewer must review real diff and process exception before acceptance"
+    },
+    "second_replaced_writer_thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+    "second_writer_replacement_reason": "replacement balance_analyst closed after wait and status request produced no response, no handoff, and no file diff"
   }
 }
