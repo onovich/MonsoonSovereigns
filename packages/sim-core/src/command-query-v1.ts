@@ -10,6 +10,7 @@ import {
   type M3PostwarGovernanceMethodV1,
   type M4DeterminismReplayScriptV1,
   type M5PlayableLoopScriptV1,
+  type M6AlphaStartToVictoryScriptV1,
   type SaveLoadCanaryScriptV1,
   type ProtocolErrorCodeV1,
   type SerializableProtocolErrorV1
@@ -38,6 +39,7 @@ import {
 } from "./minimal-m1-fixture.ts";
 import {
   hashWorldStateV0,
+  parseContentManifestHash,
   parseDistrictId,
   parseGameDay,
   parseCampaignMarchId,
@@ -52,6 +54,9 @@ import {
   parseM6DiplomaticAgreementId,
   parseM6DiplomaticRelationId,
   parseM6LegitimacySourceId,
+  parseM6AlphaTerminalStateId,
+  parseM6PolicyDefinitionId,
+  parseM6PolicyEventDefinitionId,
   parseM6PolicyEventInstanceId,
   parseM6PolicyModifierId,
   parsePersonId,
@@ -66,6 +71,7 @@ import {
   canonicalizeM2EconomyPopulationState,
   canonicalizeM3PolityVassalageState,
   canonicalizeM4CampaignStateV0,
+  canonicalizeM6AlphaRuntimeStateV0,
   canonicalizeM6PolicyEventRuntimeStateV0,
   copyM4CampaignOwner,
   copyM4CampaignTarget,
@@ -73,6 +79,9 @@ import {
   copyM4MusterCommitmentSource,
   copyM4MusterLocalCostHook,
   createM4CampaignStateV0,
+  createM6AlphaRuntimeStateV0,
+  createM6DiplomacyLegitimacyStateV0,
+  createM6PolicyEventRuntimeStateV0,
   computeM3AdministrativeBurdenProfileV0,
   type DistrictControlState,
   type CampaignPlanId,
@@ -133,6 +142,8 @@ import {
   type M6LegitimacyAudienceV0,
   type M6LegitimacyProfileStateV0,
   type M6LegitimacySourceStateV0,
+  type M6AlphaTerminalOutcomeV0,
+  type M6AlphaTerminalStateV0,
   type M6PolicyEventRuntimeStateV0,
   type M6RecognitionEdgeStateV0,
   type M2EconomyPopulationStateV0,
@@ -166,6 +177,7 @@ export type DomainErrorCodeV1 =
   | "engagement-state-invalid"
   | "grain-supply-invalid"
   | "hash-mismatch"
+  | "alpha-terminal-state-invalid"
   | "insufficient-labor"
   | "invalid-content-pack"
   | "invalid-payload"
@@ -475,6 +487,18 @@ export type DomainEventV1 =
       readonly encyclopediaRefs: readonly string[];
       readonly revisionBefore: number;
       readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m6-alpha-terminal-state-recorded";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly terminalStateId: number;
+      readonly polityId: PolityId;
+      readonly outcome: M6AlphaTerminalOutcomeV0;
+      readonly reasonCodes: readonly string[];
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
     };
 
 export type StateDeltaV1 =
@@ -578,6 +602,15 @@ export type StateDeltaV1 =
       readonly polityId: PolityId;
       readonly audience: M6LegitimacyAudienceV0;
       readonly scoreBps: number;
+      readonly revision: number;
+      readonly stateHash: string;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "state.m6-alpha-terminal-updated";
+      readonly terminalStateId: number;
+      readonly polityId: PolityId;
+      readonly outcome: M6AlphaTerminalOutcomeV0;
       readonly revision: number;
       readonly stateHash: string;
     };
@@ -817,6 +850,13 @@ export type QueryResultV1 =
             readonly revision: number;
             readonly polityId: number;
             readonly decisions: readonly M6RecognizedOrderReadModelV1[];
+          }
+        | {
+            readonly kind: "sim.get-m6-alpha-terminal-state";
+            readonly day: number;
+            readonly revision: number;
+            readonly polityId: number;
+            readonly terminalState: M6AlphaTerminalReadModelV1;
           };
     }
   | {
@@ -933,6 +973,28 @@ export interface M6RecognizedOrderReadModelV1 {
   readonly pendingSuccessionCount: number;
   readonly postwarCandidateCount: number;
   readonly canPursueVictory: boolean;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6AlphaTerminalEvidenceReadModelV1 {
+  readonly recognizedByCount: number;
+  readonly legitimacyScoreBps: number;
+  readonly postwarArrangementCount: number;
+  readonly resolvedPolicyEventCount: number;
+  readonly successionResolvedCount: number;
+  readonly routeCount: number;
+  readonly populationGroupCount: number;
+}
+
+export interface M6AlphaTerminalReadModelV1 {
+  readonly schemaVersion: 1;
+  readonly terminalStateId: number;
+  readonly polityId: number;
+  readonly outcome: M6AlphaTerminalOutcomeV0;
+  readonly evaluatedDay: number;
+  readonly evaluatedRevision: number;
+  readonly maxDay: number;
+  readonly evidence: M6AlphaTerminalEvidenceReadModelV1;
   readonly reasonCodes: readonly string[];
 }
 
@@ -1248,6 +1310,24 @@ export interface M5PlayableLoopResultV1 {
   };
 }
 
+export interface M6AlphaStartToVictoryLoopResultV1 {
+  readonly status: "ok";
+  readonly terminalOutcome: M6AlphaTerminalOutcomeV0;
+  readonly terminalSchemaVersion: 1;
+  readonly finalHash: string;
+  readonly loadedHash: string;
+  readonly verifiedHash: string;
+  readonly finalDay: number;
+  readonly finalRevision: number;
+  readonly saveByteLength: number;
+  readonly commandCount: number;
+  readonly midRunLoadedHashMatches: boolean;
+  readonly malformedCommandRejected: boolean;
+  readonly malformedCommandStateHashUnchanged: boolean;
+  readonly noP0P1DataCorruption: boolean;
+  readonly evidence: M6AlphaTerminalEvidenceReadModelV1;
+}
+
 export function bootSimulationV1(input: unknown): BootSimulationResultV1 {
   const parsed = parseBootSimulationInputV1(input);
   if (!parsed.ok) {
@@ -1446,6 +1526,14 @@ export function loadSaveV1(
             path: "state.m6PolicyEvents",
             message:
               "Save snapshot is missing required M6 policy/event runtime state for this runtime."
+          }
+        ];
+      }
+      if (runtime.world.state.m6Alpha !== undefined && !hasM6AlphaRuntimeState(candidate)) {
+        return [
+          {
+            path: "state.m6Alpha",
+            message: "Save snapshot is missing required M6 Alpha runtime state for this runtime."
           }
         ];
       }
@@ -1679,6 +1767,122 @@ export function runM5PlayableLoopV1(input: M5PlayableLoopScriptV1): M5PlayableLo
   };
 }
 
+export function runM6AlphaStartToVictoryLoopV1(
+  input: M6AlphaStartToVictoryScriptV1
+): M6AlphaStartToVictoryLoopResultV1 {
+  const boot = bootSimulationV1(input.boot);
+  if (boot.status !== "booted") {
+    throw new Error(`M6 Alpha loop boot rejected: ${boot.error.code}.`);
+  }
+
+  let runtime = boot.runtime;
+  for (const command of input.commandsBeforeMidRunSave) {
+    runtime = submitRequiredM6AlphaCommand(runtime, command, "before mid-run save");
+  }
+
+  const midRunSaved = requestSaveV1(runtime, {
+    appVersion: "0.0.0",
+    source: "node-runner",
+    codecVersion: "save-envelope-v1"
+  });
+  const midRunLoaded = loadSaveV1(boot.runtime, midRunSaved.bytes, {
+    expectedContentManifestHash: runtime.world.meta.contentManifestHash,
+    expectedScenarioId: scenarioIdForRuntime(runtime)
+  });
+  if (midRunLoaded.status !== "loaded") {
+    throw new Error(
+      `M6 Alpha mid-run load rejected: ${midRunLoaded.reasons[0]?.code ?? "unknown"}.`
+    );
+  }
+  const midRunLoadedHashMatches =
+    midRunLoaded.runtime.world.meta.stateHash === runtime.world.meta.stateHash;
+  runtime = midRunLoaded.runtime;
+
+  const malformedHashBefore = runtime.world.meta.stateHash;
+  const malformed = submitCommandV1(runtime, input.malformedTerminalCommand);
+
+  for (const command of input.commandsAfterMidRunSave) {
+    runtime = submitRequiredM6AlphaCommand(runtime, command, "after mid-run save");
+  }
+  runtime = submitRequiredM6AlphaCommand(runtime, input.victoryTerminalCommand, "terminal");
+
+  const finalSaved = requestSaveV1(runtime, {
+    appVersion: "0.0.0",
+    source: "node-runner",
+    codecVersion: "save-envelope-v1"
+  });
+  const finalLoaded = loadSaveV1(boot.runtime, finalSaved.bytes, {
+    expectedContentManifestHash: runtime.world.meta.contentManifestHash,
+    expectedScenarioId: scenarioIdForRuntime(runtime)
+  });
+  if (finalLoaded.status !== "loaded") {
+    throw new Error(`M6 Alpha final load rejected: ${finalLoaded.reasons[0]?.code ?? "unknown"}.`);
+  }
+  const terminal = latestM6AlphaTerminalState(finalLoaded.runtime, 1);
+  const verify = submitCommandV1(finalLoaded.runtime, {
+    schemaVersion: 1,
+    kind: "sim.verify-state-hash",
+    commandId: "m6.alpha.verify-loaded-hash",
+    actor: { kind: "system", id: "m6-alpha-loop" },
+    expectedDay: finalLoaded.runtime.world.meta.currentDay,
+    expectedRevision: finalLoaded.runtime.world.meta.revision,
+    expectedHash: finalLoaded.runtime.world.meta.stateHash
+  });
+  if (verify.result.status !== "accepted") {
+    throw new Error(`M6 Alpha verify rejected: ${verify.result.error.code}.`);
+  }
+
+  return {
+    status: "ok",
+    terminalOutcome: terminal.outcome,
+    terminalSchemaVersion: terminal.schemaVersion,
+    finalHash: runtime.world.meta.stateHash,
+    loadedHash: finalLoaded.runtime.world.meta.stateHash,
+    verifiedHash: verify.runtime.world.meta.stateHash,
+    finalDay: runtime.world.meta.currentDay,
+    finalRevision: runtime.world.meta.revision,
+    saveByteLength: finalSaved.byteLength,
+    commandCount: input.commandsBeforeMidRunSave.length + input.commandsAfterMidRunSave.length + 1,
+    midRunLoadedHashMatches,
+    malformedCommandRejected: malformed.result.status === "rejected",
+    malformedCommandStateHashUnchanged:
+      malformed.runtime.world.meta.stateHash === malformedHashBefore,
+    noP0P1DataCorruption:
+      terminal.outcome === "victory" &&
+      validateWorldStateV0(finalLoaded.runtime.world).length === 0,
+    evidence: terminal.evidence
+  };
+}
+
+function submitRequiredM6AlphaCommand(
+  runtime: SimulationRuntimeV1,
+  command: GameCommandV1,
+  phase: string
+): SimulationRuntimeV1 {
+  const submitted = submitCommandV1(runtime, command);
+  if (submitted.result.status !== "accepted") {
+    throw new Error(
+      `M6 Alpha loop command rejected during ${phase}: ${submitted.result.error.code}.`
+    );
+  }
+  return submitted.runtime;
+}
+
+function latestM6AlphaTerminalState(
+  runtime: SimulationRuntimeV1,
+  polityId: number
+): M6AlphaTerminalReadModelV1 {
+  const query = querySimulationV1(runtime, {
+    schemaVersion: 1,
+    kind: "sim.get-m6-alpha-terminal-state",
+    payload: { queryId: "m6.alpha.result", polityId }
+  });
+  if (query.status !== "ok" || query.result.kind !== "sim.get-m6-alpha-terminal-state") {
+    throw new Error("M6 Alpha terminal query failed.");
+  }
+  return query.result.terminalState;
+}
+
 function bootParsedSimulationV1(input: BootSimulationInputV1): BootSimulationResultV1 {
   if (input.protocolVersion !== SIMULATION_MESSAGE_PROTOCOL_VERSION) {
     return {
@@ -1704,7 +1908,9 @@ function bootParsedSimulationV1(input: BootSimulationInputV1): BootSimulationRes
               ? createAbstractGraph30WorldStateV0()
               : input.fixture === "minimal-m1"
                 ? createMinimalM1WorldStateV0()
-                : createM4DeterminismReplayWorldStateV0()
+                : input.fixture === "m4.determinism-replay-001"
+                  ? createM4DeterminismReplayWorldStateV0()
+                  : createM6AlphaStartToVictoryWorldStateV0()
         };
 
   if (worldResult.status === "rejected") {
@@ -1724,6 +1930,191 @@ function bootParsedSimulationV1(input: BootSimulationInputV1): BootSimulationRes
       eventTail: []
     },
     stateHash: world.meta.stateHash
+  };
+}
+
+function createM6AlphaStartToVictoryWorldStateV0(): WorldStateV0 {
+  const world = createM4DeterminismReplayWorldStateV0();
+  if (world.state.m3 === undefined) {
+    throw new Error("M6 Alpha fixture requires M3 state.");
+  }
+  const nextM3 = canonicalizeM3PolityVassalageState({
+    ...world.state.m3,
+    characters: [
+      ...world.state.m3.characters,
+      {
+        characterId: parsePersonId(1),
+        polityId: parsePolityId(1),
+        alive: true,
+        incapacitated: false,
+        currentDistrictId: parseDistrictId(1),
+        commandBps: 7_000,
+        administrationBps: 6_000,
+        diplomacyBps: 6_000
+      },
+      {
+        characterId: parsePersonId(2),
+        polityId: parsePolityId(1),
+        alive: true,
+        incapacitated: false,
+        currentDistrictId: parseDistrictId(1),
+        commandBps: 7_000,
+        administrationBps: 6_000,
+        diplomacyBps: 6_000
+      }
+    ],
+    offices: [
+      ...world.state.m3.offices,
+      {
+        officeId: parseM3OfficeId(1),
+        polityId: parsePolityId(1),
+        jurisdiction: { kind: "polity", polityId: parsePolityId(1) },
+        officeKind: "minister",
+        primary: true,
+        holderCharacterId: parsePersonId(1),
+        policyId: parseM3PolicyId(1),
+        minimumCommandBps: 0,
+        minimumAdministrationBps: 0
+      }
+    ],
+    policies: [
+      ...world.state.m3.policies,
+      {
+        policyId: parseM3PolicyId(1),
+        target: { kind: "polity", polityId: parsePolityId(1) },
+        stance: "balanced",
+        intensityBps: 5_000
+      }
+    ],
+    successionCandidateProfiles: [
+      ...world.state.m3.successionCandidateProfiles,
+      {
+        polityId: parsePolityId(1),
+        characterId: parsePersonId(2),
+        requiresRegency: false,
+        supportSources: [
+          {
+            kind: "court",
+            strengthBps: 7_000,
+            sourceId: "m6.alpha.succession.court"
+          },
+          {
+            kind: "military",
+            strengthBps: 1_500,
+            sourceId: "m6.alpha.succession.military"
+          }
+        ]
+      }
+    ],
+    successionCrises: [
+      ...world.state.m3.successionCrises,
+      {
+        id: parseM3SuccessionId(1),
+        polityId: parsePolityId(1),
+        trigger: {
+          kind: "abdication",
+          characterId: parsePersonId(1),
+          officeId: parseM3OfficeId(1)
+        },
+        status: "pending",
+        startedDay: world.meta.currentDay,
+        resolvedDay: null,
+        candidates: [
+          {
+            characterId: parsePersonId(2),
+            requiresRegency: false,
+            supportSources: [
+              {
+                kind: "court",
+                strengthBps: 7_000,
+                sourceId: "m6.alpha.succession.court"
+              },
+              {
+                kind: "military",
+                strengthBps: 1_500,
+                sourceId: "m6.alpha.succession.military"
+              }
+            ],
+            supportTotalBps: 8_500
+          }
+        ],
+        outcome: null,
+        reasonCode: "m6.alpha.succession.pending"
+      }
+    ]
+  });
+  const nextWorldWithoutHash: WorldStateV0 = {
+    ...world,
+    definitions: {
+      ...world.definitions,
+      persons: [
+        ...world.definitions.persons,
+        { id: parsePersonId(2), displayNameKey: "person.m6.alpha.successor" }
+      ].sort((left, right) => left.id - right.id)
+    },
+    meta: {
+      ...world.meta,
+      contentManifestHash: parseContentManifestHash("m6-alpha-start-to-victory-fixture"),
+      stateHash: ""
+    },
+    state: {
+      ...world.state,
+      persons: [
+        ...world.state.persons,
+        { definitionId: parsePersonId(2), currentDistrictId: parseDistrictId(1) }
+      ].sort((left, right) => left.definitionId - right.definitionId),
+      m3: nextM3,
+      m6: createM6DiplomacyLegitimacyStateV0(world.definitions),
+      m6PolicyEvents: createM6PolicyEventRuntimeStateV0({
+        definitions: {
+          policies: [
+            {
+              policyId: parseM6PolicyDefinitionId(1),
+              sourceId: "m6.alpha.policy.harbor-duty",
+              displayNameKey: "content.m6.alpha.policy.harbor_duty",
+              reasonCodes: ["m6.alpha.policy.harbor-duty"],
+              encyclopediaRefs: ["encyclopedia.m6.alpha.harbor_duty"]
+            }
+          ],
+          events: [
+            {
+              eventDefinitionId: parseM6PolicyEventDefinitionId(1),
+              sourceId: "m6.alpha.policy.harbor-charter",
+              displayNameKey: "content.m6.alpha.policy.harbor_charter",
+              cause: {
+                kind: "day-at-least",
+                day: parseGameDay(25),
+                reasonCodes: ["m6.alpha.policy.cause.day-25"]
+              },
+              options: [
+                {
+                  optionId: 1,
+                  displayNameKey: "content.m6.alpha.policy.harbor_charter.accept",
+                  consequences: [
+                    {
+                      kind: "policy-modifier",
+                      policyId: parseM6PolicyDefinitionId(1),
+                      magnitudeBps: 250,
+                      durationDays: 30,
+                      reasonCode: "m6.alpha.policy.consequence.harbor-duty"
+                    }
+                  ],
+                  reasonCodes: ["m6.alpha.policy.option.accept"],
+                  encyclopediaRefs: ["encyclopedia.m6.alpha.harbor_charter.accept"]
+                }
+              ],
+              reasonCodes: ["m6.alpha.policy.event.harbor-charter"],
+              encyclopediaRefs: ["encyclopedia.m6.alpha.harbor_charter"]
+            }
+          ]
+        }
+      }),
+      m6Alpha: createM6AlphaRuntimeStateV0()
+    }
+  };
+  return {
+    ...nextWorldWithoutHash,
+    meta: { ...nextWorldWithoutHash.meta, stateHash: hashWorldStateV0(nextWorldWithoutHash) }
   };
 }
 
@@ -1785,6 +2176,8 @@ function validateAndEvaluateCommand(
       return evaluateRecordLegitimacySource(runtime.world, command);
     case "sim.choose-policy-event-option":
       return evaluateChoosePolicyEventOption(runtime.world, command);
+    case "sim.evaluate-m6-alpha-outcome":
+      return evaluateM6AlphaOutcome(runtime.world, command);
     case "sim.create-campaign-objective":
       return evaluateCreateCampaignObjective(runtime.world, command);
     case "sim.update-campaign-objective":
@@ -4105,6 +4498,176 @@ function policyEventError(path: string, message: string): EvaluationResult {
       message
     }
   };
+}
+
+function evaluateM6AlphaOutcome(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.evaluate-m6-alpha-outcome" }>
+): EvaluationResult {
+  const polityId = parsePolityId(command.payload.polityId);
+  if (!world.definitions.polities.some((polity) => polity.id === polityId)) {
+    return badIdError(
+      "payload.polityId",
+      "sim.evaluate-m6-alpha-outcome references a missing polity."
+    );
+  }
+  if (!actorCanEvaluateM6AlphaOutcome(command.actor, polityId)) {
+    return authorityDeniedError();
+  }
+  const terminalStateId = parseM6AlphaTerminalStateId(command.payload.terminalStateId);
+  const runtime = world.state.m6Alpha ?? createM6AlphaRuntimeStateV0();
+  if (runtime.terminalStates.some((terminal) => terminal.terminalStateId === terminalStateId)) {
+    return {
+      ok: false,
+      error: {
+        code: "alpha-terminal-state-invalid",
+        path: "payload.terminalStateId",
+        message: "sim.evaluate-m6-alpha-outcome terminalStateId has already been recorded."
+      }
+    };
+  }
+
+  const terminalState = buildM6AlphaTerminalState(world, command, terminalStateId, polityId);
+  const nextRuntime = canonicalizeM6AlphaRuntimeStateV0({
+    ...runtime,
+    terminalStates: [...runtime.terminalStates, terminalState]
+  });
+  const nextWorld = commitRuntimeState(world, {
+    ...world.state,
+    m6Alpha: nextRuntime
+  });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      events: [
+        {
+          schemaVersion: 1,
+          kind: "sim.m6-alpha-terminal-state-recorded",
+          commandId: command.commandId,
+          actor: command.actor,
+          terminalStateId,
+          polityId,
+          outcome: terminalState.outcome,
+          reasonCodes: terminalState.reasonCodes,
+          revisionBefore: world.meta.revision,
+          revisionAfter: nextWorld.meta.revision
+        }
+      ],
+      deltas: [
+        {
+          schemaVersion: 1,
+          kind: "state.m6-alpha-terminal-updated",
+          terminalStateId,
+          polityId,
+          outcome: terminalState.outcome,
+          revision: nextWorld.meta.revision,
+          stateHash: nextWorld.meta.stateHash
+        }
+      ],
+      wouldChangeState: true
+    }
+  };
+}
+
+function actorCanEvaluateM6AlphaOutcome(actor: CommandActorV1, polityId: PolityId): boolean {
+  if (actor.kind === "system") {
+    return true;
+  }
+  return actor.id === `polity:${polityId}`;
+}
+
+function buildM6AlphaTerminalState(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.evaluate-m6-alpha-outcome" }>,
+  terminalStateId: M6AlphaTerminalStateV0["terminalStateId"],
+  polityId: PolityId
+): M6AlphaTerminalStateV0 {
+  const evidence = buildM6AlphaTerminalEvidence(world, polityId);
+  const maxDay = parseGameDay(command.payload.maxDay);
+  const hasVictoryEvidence =
+    evidence.recognizedByCount > 0 &&
+    evidence.legitimacyScoreBps >= 1_000 &&
+    evidence.postwarArrangementCount > 0 &&
+    evidence.resolvedPolicyEventCount > 0 &&
+    evidence.successionResolvedCount > 0 &&
+    evidence.routeCount > 0 &&
+    evidence.populationGroupCount > 0;
+  const outcome: M6AlphaTerminalOutcomeV0 = hasVictoryEvidence
+    ? "victory"
+    : world.meta.currentDay > maxDay
+      ? "defeat"
+      : "continued-play";
+  return {
+    terminalStateId,
+    polityId,
+    outcome,
+    evaluatedDay: world.meta.currentDay,
+    evaluatedRevision: world.meta.revision,
+    maxDay,
+    evidence,
+    reasonCodes: sortedUniqueText([
+      command.payload.reasonCode,
+      `m6.alpha.outcome.${outcome}`,
+      ...m6AlphaEvidenceReasonCodes(evidence)
+    ])
+  };
+}
+
+function buildM6AlphaTerminalEvidence(
+  world: WorldStateV0,
+  polityId: PolityId
+): M6AlphaTerminalStateV0["evidence"] {
+  const recognized = buildM6RecognizedOrderReadModel(
+    { world, acceptedCommandIds: [], commandTail: [], eventTail: [] },
+    polityId
+  );
+  return {
+    recognizedByCount: recognized.recognizedByCount,
+    legitimacyScoreBps: recognized.legitimacyScoreBps,
+    postwarArrangementCount: world.state.m4?.postwarCandidates.length ?? 0,
+    resolvedPolicyEventCount: world.state.m6PolicyEvents?.resolvedEvents.length ?? 0,
+    successionResolvedCount:
+      world.state.m3?.successionCrises.filter(
+        (crisis) => crisis.polityId === polityId && crisis.status === "resolved"
+      ).length ?? 0,
+    routeCount: world.definitions.routes.length,
+    populationGroupCount: world.state.m2?.populationGroups.length ?? 0
+  };
+}
+
+function m6AlphaEvidenceReasonCodes(
+  evidence: M6AlphaTerminalStateV0["evidence"]
+): readonly string[] {
+  const reasonCodes: string[] = [];
+  if (evidence.recognizedByCount > 0) {
+    reasonCodes.push("m6.alpha.evidence.recognition");
+  }
+  if (evidence.legitimacyScoreBps >= 1_000) {
+    reasonCodes.push("m6.alpha.evidence.legitimacy");
+  }
+  if (evidence.postwarArrangementCount > 0) {
+    reasonCodes.push("m6.alpha.evidence.postwar");
+  }
+  if (evidence.resolvedPolicyEventCount > 0) {
+    reasonCodes.push("m6.alpha.evidence.policy-event");
+  }
+  if (evidence.successionResolvedCount > 0) {
+    reasonCodes.push("m6.alpha.evidence.succession");
+  }
+  if (evidence.routeCount > 0) {
+    reasonCodes.push("m6.alpha.evidence.routes");
+  }
+  if (evidence.populationGroupCount > 0) {
+    reasonCodes.push("m6.alpha.evidence.economy");
+  }
+  return reasonCodes;
 }
 
 function evaluateCreateCampaignObjective(
@@ -8965,6 +9528,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM6DiplomacyQuery(runtime, query);
     case "sim.list-m6-recognized-order":
       return executeM6RecognizedOrderQuery(runtime, query);
+    case "sim.get-m6-alpha-terminal-state":
+      return executeM6AlphaTerminalStateQuery(runtime, query);
   }
 }
 
@@ -9911,6 +10476,62 @@ function executeM6RecognizedOrderQuery(
   };
 }
 
+function executeM6AlphaTerminalStateQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.get-m6-alpha-terminal-state" }>
+): QueryResultV1 {
+  const polityId = parsePolityId(query.payload.polityId);
+  if (!runtime.world.definitions.polities.some((polity) => polity.id === polityId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.polityId",
+        message: "sim.get-m6-alpha-terminal-state references a missing PolityId."
+      }
+    };
+  }
+  const terminalState =
+    runtime.world.state.m6Alpha?.terminalStates
+      .filter((entry) => entry.polityId === polityId)
+      .sort(
+        (left, right) =>
+          right.evaluatedDay - left.evaluatedDay ||
+          right.evaluatedRevision - left.evaluatedRevision ||
+          right.terminalStateId - left.terminalStateId
+      )[0] ??
+    buildM6AlphaTerminalState(
+      runtime.world,
+      {
+        schemaVersion: 1,
+        kind: "sim.evaluate-m6-alpha-outcome",
+        commandId: `query.${query.payload.queryId}`,
+        actor: { kind: "system", id: "m6-alpha-query" },
+        expectedDay: runtime.world.meta.currentDay,
+        expectedRevision: runtime.world.meta.revision,
+        payload: {
+          terminalStateId: 1,
+          polityId,
+          maxDay: runtime.world.meta.currentDay,
+          reasonCode: "m6.alpha.query.derived"
+        }
+      },
+      parseM6AlphaTerminalStateId(1),
+      polityId
+    );
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.get-m6-alpha-terminal-state",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      polityId,
+      terminalState: copyM6AlphaTerminalReadModel(terminalState)
+    }
+  };
+}
+
 function copyM6RelationReadModel(
   relation: M6DiplomaticRelationStateV0
 ): M6DiplomaticRelationReadModelV1 {
@@ -9954,6 +10575,22 @@ function copyM6RecognitionEdgeReadModel(
     toPolityId: edge.toPolityId,
     agreementId: edge.agreementId,
     reasonCode: edge.reasonCode
+  };
+}
+
+function copyM6AlphaTerminalReadModel(
+  terminal: M6AlphaTerminalStateV0
+): M6AlphaTerminalReadModelV1 {
+  return {
+    schemaVersion: 1,
+    terminalStateId: terminal.terminalStateId,
+    polityId: terminal.polityId,
+    outcome: terminal.outcome,
+    evaluatedDay: terminal.evaluatedDay,
+    evaluatedRevision: terminal.evaluatedRevision,
+    maxDay: terminal.maxDay,
+    evidence: { ...terminal.evidence },
+    reasonCodes: [...terminal.reasonCodes]
   };
 }
 
@@ -11259,6 +11896,9 @@ function appendTail<TValue>(
 }
 
 function scenarioIdForRuntime(runtime: SimulationRuntimeV1): string {
+  if (runtime.world.meta.contentManifestHash === "m6-alpha-start-to-victory-fixture") {
+    return "m6.alpha-start-to-victory-001";
+  }
   if (runtime.world.meta.contentManifestHash === M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH) {
     return M1_ABSTRACT_GRAPH_30_SCENARIO_ID;
   }
@@ -11303,6 +11943,8 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
     case "sim.m6-legitimacy-source-recorded":
       return { ...event };
     case "sim.m6-policy-event-option-chosen":
+      return { ...event };
+    case "sim.m6-alpha-terminal-state-recorded":
       return { ...event };
     case "sim.state-hash-verified":
       return { ...event };
@@ -12491,6 +13133,69 @@ function parseSavedDomainEvent(
         }
       };
     }
+    case "sim.m6-alpha-terminal-state-recorded": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const terminalStateId = readPositiveIdRecordField(
+        record,
+        "terminalStateId",
+        `${path}.terminalStateId`,
+        reasons
+      );
+      const polityId = readPositiveIdRecordField(record, "polityId", `${path}.polityId`, reasons);
+      const outcome = readM6AlphaTerminalOutcomeRecordField(
+        record,
+        "outcome",
+        `${path}.outcome`,
+        reasons
+      );
+      const reasonCodes = readStringArrayRecordField(
+        record,
+        "reasonCodes",
+        `${path}.reasonCodes`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        terminalStateId === undefined ||
+        polityId === undefined ||
+        outcome === undefined ||
+        reasonCodes === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          terminalStateId,
+          polityId: parsePolityId(polityId),
+          outcome,
+          reasonCodes,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
     case "sim.state-hash-verified": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
@@ -12726,6 +13431,24 @@ function readM4FieldEngagementOutcomeRecordField(
     code: "invalid-schema",
     path,
     message: `Saved event ${key} must be attacker-victory or defender-holds.`
+  });
+  return undefined;
+}
+
+function readM6AlphaTerminalOutcomeRecordField(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  reasons: SaveLoadRejectionReasonV1[]
+): M6AlphaTerminalOutcomeV0 | undefined {
+  const value = record[key];
+  if (value === "victory" || value === "defeat" || value === "continued-play") {
+    return value;
+  }
+  reasons.push({
+    code: "invalid-schema",
+    path,
+    message: `Saved event ${key} must be victory, defeat, or continued-play.`
   });
   return undefined;
 }
@@ -13098,6 +13821,15 @@ function hasM6PolicyEventRuntimeState(candidate: unknown): boolean {
 
   const state = candidate["state"];
   return isRecord(state) && state["m6PolicyEvents"] !== undefined;
+}
+
+function hasM6AlphaRuntimeState(candidate: unknown): boolean {
+  if (!isRecord(candidate)) {
+    return false;
+  }
+
+  const state = candidate["state"];
+  return isRecord(state) && state["m6Alpha"] !== undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

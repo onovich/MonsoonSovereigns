@@ -28,6 +28,7 @@ export type M6PolicyDefinitionId = Brand<number, "M6PolicyDefinitionId">;
 export type M6PolicyEventDefinitionId = Brand<number, "M6PolicyEventDefinitionId">;
 export type M6PolicyEventInstanceId = Brand<number, "M6PolicyEventInstanceId">;
 export type M6PolicyModifierId = Brand<number, "M6PolicyModifierId">;
+export type M6AlphaTerminalStateId = Brand<number, "M6AlphaTerminalStateId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -1053,6 +1054,34 @@ export interface M6PolicyEventRuntimeStateV0 {
   readonly nextModifierId: number;
 }
 
+export type M6AlphaTerminalOutcomeV0 = "victory" | "defeat" | "continued-play";
+
+export interface M6AlphaTerminalEvidenceStateV0 {
+  readonly recognizedByCount: number;
+  readonly legitimacyScoreBps: number;
+  readonly postwarArrangementCount: number;
+  readonly resolvedPolicyEventCount: number;
+  readonly successionResolvedCount: number;
+  readonly routeCount: number;
+  readonly populationGroupCount: number;
+}
+
+export interface M6AlphaTerminalStateV0 {
+  readonly terminalStateId: M6AlphaTerminalStateId;
+  readonly polityId: PolityId;
+  readonly outcome: M6AlphaTerminalOutcomeV0;
+  readonly evaluatedDay: GameDay;
+  readonly evaluatedRevision: WorldRevision;
+  readonly maxDay: GameDay;
+  readonly evidence: M6AlphaTerminalEvidenceStateV0;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6AlphaRuntimeStateV0 {
+  readonly schemaVersion: 1;
+  readonly terminalStates: readonly M6AlphaTerminalStateV0[];
+}
+
 export interface M3AdministrativeBurdenProfileInputV0 {
   readonly polityId: unknown;
   readonly districtId: unknown;
@@ -1093,6 +1122,7 @@ export interface WorldRuntimeStateV0 {
   readonly m4?: M4CampaignStateV0;
   readonly m6?: M6DiplomacyLegitimacyStateV0;
   readonly m6PolicyEvents?: M6PolicyEventRuntimeStateV0;
+  readonly m6Alpha?: M6AlphaRuntimeStateV0;
 }
 
 export interface SchedulerStateV0 {
@@ -1208,6 +1238,7 @@ export interface CreateWorldStateV0Input {
   readonly m4?: M4CampaignStateV0;
   readonly m6?: M6DiplomacyLegitimacyStateV0;
   readonly m6PolicyEvents?: M6PolicyEventRuntimeStateV0;
+  readonly m6Alpha?: M6AlphaRuntimeStateV0;
 }
 
 const INITIAL_HASH_OFFSET = 2_166_136_261;
@@ -1323,6 +1354,10 @@ export function parseM6PolicyEventInstanceId(value: unknown): M6PolicyEventInsta
 
 export function parseM6PolicyModifierId(value: unknown): M6PolicyModifierId {
   return parsePositiveInteger(value, "M6PolicyModifierId") as M6PolicyModifierId;
+}
+
+export function parseM6AlphaTerminalStateId(value: unknown): M6AlphaTerminalStateId {
+  return parsePositiveInteger(value, "M6AlphaTerminalStateId") as M6AlphaTerminalStateId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -1538,7 +1573,8 @@ export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0
     input.m3,
     input.m4,
     input.m6,
-    input.m6PolicyEvents
+    input.m6PolicyEvents,
+    input.m6Alpha
   );
   const stateWithoutHash: WorldStateV0 = {
     meta: {
@@ -1607,6 +1643,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     ...formatM4CanonicalLines(world.state.m4),
     ...formatM6CanonicalLines(world.state.m6),
     ...formatM6PolicyEventCanonicalLines(world.state.m6PolicyEvents),
+    ...formatM6AlphaCanonicalLines(world.state.m6Alpha),
     `scheduler.schedulerVersion=${formatUnknown(
       getRecordPath(world, ["scheduler", "schedulerVersion"])
     )}`,
@@ -1651,6 +1688,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateM4EntryShapes(getRecordPath(world, ["state", "m4"]), errors);
   validateM6EntryShapes(getRecordPath(world, ["state", "m6"]), errors);
   validateM6PolicyEventEntryShapes(getRecordPath(world, ["state", "m6PolicyEvents"]), errors);
+  validateM6AlphaEntryShapes(getRecordPath(world, ["state", "m6Alpha"]), errors);
   if (errors.some((error) => error.code === "invalid-schema")) {
     return errors;
   }
@@ -1663,6 +1701,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateM4RuntimeState(world, errors);
   validateM6RuntimeState(world, errors);
   validateM6PolicyEventRuntimeState(world, errors);
+  validateM6AlphaRuntimeState(world, errors);
   validateRuntimeTableCoverage(world, errors);
   validateStateHash(world, errors);
   return errors;
@@ -2466,6 +2505,108 @@ function validateM6PolicyEventEntryShapes(input: unknown, errors: WorldInvariant
     "nextModifierId",
     "state.m6PolicyEvents.nextModifierId",
     "M6PolicyModifierId",
+    errors
+  );
+}
+
+function validateM6AlphaEntryShapes(input: unknown, errors: WorldInvariantError[]): void {
+  if (input === undefined) {
+    return;
+  }
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m6Alpha",
+      message: "M6 Alpha runtime state must be an object."
+    });
+    return;
+  }
+  if (input["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m6Alpha.schemaVersion",
+      message: "M6 Alpha schemaVersion must be 1."
+    });
+  }
+  validateM6Array(
+    input["terminalStates"],
+    "state.m6Alpha.terminalStates",
+    "M6 Alpha terminalStates",
+    errors,
+    validateM6AlphaTerminalStateEntry
+  );
+}
+
+function validateM6AlphaTerminalStateEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6AlphaTerminalState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "terminalStateId",
+    `${path}.terminalStateId`,
+    "M6AlphaTerminalStateId",
+    errors
+  );
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validateStringUnionField(
+    input,
+    "outcome",
+    `${path}.outcome`,
+    ["victory", "defeat", "continued-play"],
+    errors
+  );
+  validateNonnegativeIntegerField(input, "evaluatedDay", `${path}.evaluatedDay`, errors);
+  validateNonnegativeIntegerField(input, "evaluatedRevision", `${path}.evaluatedRevision`, errors);
+  validateNonnegativeIntegerField(input, "maxDay", `${path}.maxDay`, errors);
+  validateM6AlphaTerminalEvidenceEntry(input["evidence"], `${path}.evidence`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateM6AlphaTerminalEvidenceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6AlphaTerminalEvidence", errors)) {
+    return;
+  }
+  validateNonnegativeIntegerField(input, "recognizedByCount", `${path}.recognizedByCount`, errors);
+  validateIntegerFieldInRange(
+    input,
+    "legitimacyScoreBps",
+    `${path}.legitimacyScoreBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "postwarArrangementCount",
+    `${path}.postwarArrangementCount`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "resolvedPolicyEventCount",
+    `${path}.resolvedPolicyEventCount`,
+    errors
+  );
+  validateNonnegativeIntegerField(
+    input,
+    "successionResolvedCount",
+    `${path}.successionResolvedCount`,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "routeCount", `${path}.routeCount`, errors);
+  validateNonnegativeIntegerField(
+    input,
+    "populationGroupCount",
+    `${path}.populationGroupCount`,
     errors
   );
 }
@@ -5528,7 +5669,8 @@ function createRuntimeState(
   m3: M3PolityVassalageStateV0 | undefined,
   m4: M4CampaignStateV0 | undefined,
   m6: M6DiplomacyLegitimacyStateV0 | undefined,
-  m6PolicyEvents: M6PolicyEventRuntimeStateV0 | undefined
+  m6PolicyEvents: M6PolicyEventRuntimeStateV0 | undefined,
+  m6Alpha: M6AlphaRuntimeStateV0 | undefined
 ): WorldRuntimeStateV0 {
   const state: WorldRuntimeStateV0 = {
     polities: sortByNumericId(definitions.polities).map((definition) => ({
@@ -5556,7 +5698,8 @@ function createRuntimeState(
     m3 === undefined &&
     m4 === undefined &&
     m6 === undefined &&
-    m6PolicyEvents === undefined
+    m6PolicyEvents === undefined &&
+    m6Alpha === undefined
   ) {
     return state;
   }
@@ -5583,6 +5726,10 @@ function createRuntimeState(
       ...nextState,
       m6PolicyEvents: canonicalizeM6PolicyEventRuntimeStateV0(m6PolicyEvents)
     };
+  }
+
+  if (m6Alpha !== undefined) {
+    nextState = { ...nextState, m6Alpha: canonicalizeM6AlphaRuntimeStateV0(m6Alpha) };
   }
 
   return nextState;
@@ -5855,6 +6002,61 @@ export function canonicalizeM6PolicyEventRuntimeStateV0(
       "M6 nextEventInstanceId"
     ),
     nextModifierId: parsePositiveInteger(runtime.nextModifierId, "M6 nextModifierId")
+  };
+}
+
+export function createM6AlphaRuntimeStateV0(
+  input?: Partial<M6AlphaRuntimeStateV0>
+): M6AlphaRuntimeStateV0 {
+  return canonicalizeM6AlphaRuntimeStateV0({
+    schemaVersion: 1,
+    terminalStates: input?.terminalStates ?? []
+  });
+}
+
+export function canonicalizeM6AlphaRuntimeStateV0(
+  runtime: M6AlphaRuntimeStateV0
+): M6AlphaRuntimeStateV0 {
+  return {
+    schemaVersion: 1,
+    terminalStates: sortM6AlphaTerminalStates(runtime.terminalStates).map((terminal) => ({
+      terminalStateId: parseM6AlphaTerminalStateId(terminal.terminalStateId),
+      polityId: parsePolityId(terminal.polityId),
+      outcome: parseM6AlphaTerminalOutcome(terminal.outcome),
+      evaluatedDay: parseGameDay(terminal.evaluatedDay),
+      evaluatedRevision: parseWorldRevision(terminal.evaluatedRevision),
+      maxDay: parseGameDay(terminal.maxDay),
+      evidence: {
+        recognizedByCount: parseNonnegativeInteger(
+          terminal.evidence.recognizedByCount,
+          "M6 Alpha recognizedByCount"
+        ),
+        legitimacyScoreBps: parseBps(
+          terminal.evidence.legitimacyScoreBps,
+          "M6 Alpha legitimacyScoreBps"
+        ),
+        postwarArrangementCount: parseNonnegativeInteger(
+          terminal.evidence.postwarArrangementCount,
+          "M6 Alpha postwarArrangementCount"
+        ),
+        resolvedPolicyEventCount: parseNonnegativeInteger(
+          terminal.evidence.resolvedPolicyEventCount,
+          "M6 Alpha resolvedPolicyEventCount"
+        ),
+        successionResolvedCount: parseNonnegativeInteger(
+          terminal.evidence.successionResolvedCount,
+          "M6 Alpha successionResolvedCount"
+        ),
+        routeCount: parseNonnegativeInteger(terminal.evidence.routeCount, "M6 Alpha routeCount"),
+        populationGroupCount: parseNonnegativeInteger(
+          terminal.evidence.populationGroupCount,
+          "M6 Alpha populationGroupCount"
+        )
+      },
+      reasonCodes: sortText(terminal.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M6 Alpha terminal reasonCode")
+      )
+    }))
   };
 }
 
@@ -7003,6 +7205,13 @@ function parseM6LegitimacySourceKind(value: unknown): M6LegitimacySourceKindV0 {
   throw new Error("M6 legitimacy source kind is invalid.");
 }
 
+export function parseM6AlphaTerminalOutcome(value: unknown): M6AlphaTerminalOutcomeV0 {
+  if (value === "victory" || value === "defeat" || value === "continued-play") {
+    return value;
+  }
+  throw new Error("M6 Alpha terminal outcome is invalid.");
+}
+
 export function parseM4FactionKnowledgeSourceKind(value: unknown): M4FactionKnowledgeSourceKindV0 {
   if (value === "scout" || value === "merchant" || value === "envoy" || value === "report") {
     return value;
@@ -7451,6 +7660,17 @@ function sortM6PolicyModifiers(
       left.startDay - right.startDay ||
       left.eventInstanceId - right.eventInstanceId ||
       left.modifierId - right.modifierId
+  );
+}
+
+function sortM6AlphaTerminalStates(
+  values: readonly M6AlphaTerminalStateV0[]
+): readonly M6AlphaTerminalStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.terminalStateId - right.terminalStateId ||
+      left.polityId - right.polityId ||
+      left.evaluatedDay - right.evaluatedDay
   );
 }
 
@@ -7978,6 +8198,19 @@ function formatM6PolicyEventCanonicalLines(
   ];
 }
 
+function formatM6AlphaCanonicalLines(
+  runtime: M6AlphaRuntimeStateV0 | undefined
+): readonly string[] {
+  if (runtime === undefined) {
+    return [];
+  }
+
+  return [
+    `state.m6Alpha.schemaVersion=${runtime.schemaVersion}`,
+    `state.m6Alpha.terminalStates=${formatM6AlphaTerminalStates(runtime.terminalStates)}`
+  ];
+}
+
 function formatM6Relations(values: readonly M6DiplomaticRelationStateV0[]): string {
   return sortM6Relations(values)
     .map((value) =>
@@ -8152,6 +8385,29 @@ function formatM6PolicyModifiers(values: readonly M6PolicyModifierStateV0[]): st
         value.startDay,
         value.endDay,
         value.reasonCode
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6AlphaTerminalStates(values: readonly M6AlphaTerminalStateV0[]): string {
+  return sortM6AlphaTerminalStates(values)
+    .map((value) =>
+      [
+        value.terminalStateId,
+        value.polityId,
+        value.outcome,
+        value.evaluatedDay,
+        value.evaluatedRevision,
+        value.maxDay,
+        value.evidence.recognizedByCount,
+        value.evidence.legitimacyScoreBps,
+        value.evidence.postwarArrangementCount,
+        value.evidence.resolvedPolicyEventCount,
+        value.evidence.successionResolvedCount,
+        value.evidence.routeCount,
+        value.evidence.populationGroupCount,
+        sortText(value.reasonCodes).join("/")
       ].join(":")
     )
     .join(",");
@@ -11470,6 +11726,35 @@ function validateM6RecognitionAcyclicity(
   }
 }
 
+function validateM6AlphaRuntimeState(
+  world: WorldStateV0Candidate,
+  errors: WorldInvariantError[]
+): void {
+  const runtime = world.state.m6Alpha;
+  if (runtime === undefined || !isM6AlphaRuntimeLike(runtime)) {
+    return;
+  }
+
+  const polityIds = idsOf(world.definitions.polities);
+  const terminalIds = new Set<number>();
+  runtime.terminalStates.forEach((terminal, index) => {
+    if (terminalIds.has(terminal.terminalStateId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6Alpha.terminalStates",
+        message: `Duplicate M6 Alpha terminal state row for M6AlphaTerminalStateId ${terminal.terminalStateId}.`
+      });
+    }
+    terminalIds.add(terminal.terminalStateId);
+    validatePolityReference(
+      polityIds,
+      terminal.polityId,
+      `state.m6Alpha.terminalStates[${index}].polityId`,
+      errors
+    );
+  });
+}
+
 function hasM6RecognitionPath(
   edges: readonly M6RecognitionEdgeStateV0[],
   startPolityId: number,
@@ -11728,6 +12013,13 @@ function isM6PolicyEventRuntimeLike(value: unknown): value is M6PolicyEventRunti
     isPositiveInteger(value["nextEventInstanceId"]) &&
     isPositiveInteger(value["nextModifierId"])
   );
+}
+
+function isM6AlphaRuntimeLike(value: unknown): value is M6AlphaRuntimeStateV0 {
+  if (!isRecord(value)) {
+    return false;
+  }
+  return value["schemaVersion"] === 1 && Array.isArray(value["terminalStates"]);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

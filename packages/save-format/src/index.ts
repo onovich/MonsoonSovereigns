@@ -670,6 +670,34 @@ export interface SaveM6PolicyEventRuntimeStateDto {
   readonly nextModifierId: number;
 }
 
+export type SaveM6AlphaTerminalOutcomeDto = "victory" | "defeat" | "continued-play";
+
+export interface SaveM6AlphaTerminalEvidenceStateDto {
+  readonly recognizedByCount: number;
+  readonly legitimacyScoreBps: number;
+  readonly postwarArrangementCount: number;
+  readonly resolvedPolicyEventCount: number;
+  readonly successionResolvedCount: number;
+  readonly routeCount: number;
+  readonly populationGroupCount: number;
+}
+
+export interface SaveM6AlphaTerminalStateDto {
+  readonly terminalStateId: number;
+  readonly polityId: number;
+  readonly outcome: SaveM6AlphaTerminalOutcomeDto;
+  readonly evaluatedDay: number;
+  readonly evaluatedRevision: number;
+  readonly maxDay: number;
+  readonly evidence: SaveM6AlphaTerminalEvidenceStateDto;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface SaveM6AlphaRuntimeStateDto {
+  readonly schemaVersion: 1;
+  readonly terminalStates: readonly SaveM6AlphaTerminalStateDto[];
+}
+
 export type SaveM4CampaignObjectiveKindDto =
   | "prepare"
   | "march"
@@ -1038,6 +1066,7 @@ export interface SaveWorldRuntimeStateV0Dto {
   readonly m4?: SaveM4CampaignStateDto;
   readonly m6?: SaveM6DiplomacyLegitimacyStateDto;
   readonly m6PolicyEvents?: SaveM6PolicyEventRuntimeStateDto;
+  readonly m6Alpha?: SaveM6AlphaRuntimeStateDto;
 }
 
 export interface SaveWorldSnapshotV0Dto {
@@ -1154,6 +1183,7 @@ export interface WorldStateV0ForSave {
     readonly m4?: SaveM4CampaignStateDto;
     readonly m6?: SaveM6DiplomacyLegitimacyStateDto;
     readonly m6PolicyEvents?: SaveM6PolicyEventRuntimeStateDto;
+    readonly m6Alpha?: SaveM6AlphaRuntimeStateDto;
   };
 }
 
@@ -1304,7 +1334,8 @@ export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnap
     world.state.m3,
     world.state.m4,
     world.state.m6,
-    world.state.m6PolicyEvents
+    world.state.m6PolicyEvents,
+    world.state.m6Alpha
   );
 
   return {
@@ -1373,7 +1404,8 @@ export function saveWorldStateV0DtoToCandidate(snapshot: unknown, scheduler?: un
     parsedSnapshot.value.state.m3,
     parsedSnapshot.value.state.m4,
     parsedSnapshot.value.state.m6,
-    parsedSnapshot.value.state.m6PolicyEvents
+    parsedSnapshot.value.state.m6PolicyEvents,
+    parsedSnapshot.value.state.m6Alpha
   );
 
   return {
@@ -1780,6 +1812,14 @@ function parseWorldRuntimeState(
           "body.authoritativeSnapshot.state.m6PolicyEvents",
           errors
         );
+  const m6Alpha =
+    input["m6Alpha"] === undefined
+      ? undefined
+      : parseM6AlphaRuntimeState(
+          input["m6Alpha"],
+          "body.authoritativeSnapshot.state.m6Alpha",
+          errors
+        );
   if (
     polities === undefined ||
     persons === undefined ||
@@ -1790,13 +1830,14 @@ function parseWorldRuntimeState(
     (input["m3"] !== undefined && m3 === undefined) ||
     (input["m4"] !== undefined && m4 === undefined) ||
     (input["m6"] !== undefined && m6 === undefined) ||
-    (input["m6PolicyEvents"] !== undefined && m6PolicyEvents === undefined)
+    (input["m6PolicyEvents"] !== undefined && m6PolicyEvents === undefined) ||
+    (input["m6Alpha"] !== undefined && m6Alpha === undefined)
   ) {
     return undefined;
   }
 
   const state = { polities, persons, districts, settlements, routes };
-  return copyOptionalRuntimeSlices(state, m2, m3, m4, m6, m6PolicyEvents);
+  return copyOptionalRuntimeSlices(state, m2, m3, m4, m6, m6PolicyEvents, m6Alpha);
 }
 
 function parseSaveSchedulerV1Dto(
@@ -6004,7 +6045,8 @@ function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
     body.authoritativeSnapshot.state.m3,
     body.authoritativeSnapshot.state.m4,
     body.authoritativeSnapshot.state.m6,
-    body.authoritativeSnapshot.state.m6PolicyEvents
+    body.authoritativeSnapshot.state.m6PolicyEvents,
+    body.authoritativeSnapshot.state.m6Alpha
   );
 
   return {
@@ -6053,6 +6095,153 @@ function copySimpleDefinition(definition: SaveSimpleDefinitionDto): SaveSimpleDe
   };
 }
 
+function parseM6AlphaRuntimeState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6AlphaRuntimeStateDto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M6 Alpha runtime state must be an object."));
+    return undefined;
+  }
+  if (input["schemaVersion"] !== 1) {
+    errors.push(
+      reason("invalid-schema", `${path}.schemaVersion`, "M6 Alpha schemaVersion must be 1.")
+    );
+    return undefined;
+  }
+  const terminalStates = parseM6Array(
+    input["terminalStates"],
+    `${path}.terminalStates`,
+    "M6 Alpha terminalStates",
+    errors,
+    parseM6AlphaTerminalState
+  );
+  if (terminalStates === undefined) {
+    return undefined;
+  }
+
+  return {
+    schemaVersion: 1,
+    terminalStates
+  };
+}
+
+function parseM6AlphaTerminalState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6AlphaTerminalStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M6 Alpha terminal state must be an object."));
+    return fallbackM6AlphaTerminalState();
+  }
+  const evidence = parseM6AlphaTerminalEvidence(input["evidence"], `${path}.evidence`, errors);
+  return {
+    terminalStateId:
+      readPositiveSafeInteger(input, "terminalStateId", `${path}.terminalStateId`, errors) ?? 0,
+    polityId: readPositiveSafeInteger(input, "polityId", `${path}.polityId`, errors) ?? 0,
+    outcome: parseM6AlphaTerminalOutcome(input["outcome"], `${path}.outcome`, errors),
+    evaluatedDay:
+      readNonnegativeSafeInteger(input, "evaluatedDay", `${path}.evaluatedDay`, errors) ?? 0,
+    evaluatedRevision:
+      readNonnegativeSafeInteger(input, "evaluatedRevision", `${path}.evaluatedRevision`, errors) ??
+      0,
+    maxDay: readNonnegativeSafeInteger(input, "maxDay", `${path}.maxDay`, errors) ?? 0,
+    evidence,
+    reasonCodes: parseStringArray(input["reasonCodes"], `${path}.reasonCodes`, errors)
+  };
+}
+
+function parseM6AlphaTerminalEvidence(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6AlphaTerminalEvidenceStateDto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M6 Alpha terminal evidence must be an object."));
+    return fallbackM6AlphaTerminalEvidence();
+  }
+  return {
+    recognizedByCount:
+      readNonnegativeSafeInteger(input, "recognizedByCount", `${path}.recognizedByCount`, errors) ??
+      0,
+    legitimacyScoreBps: readBps(input, "legitimacyScoreBps", `${path}.legitimacyScoreBps`, errors),
+    postwarArrangementCount:
+      readNonnegativeSafeInteger(
+        input,
+        "postwarArrangementCount",
+        `${path}.postwarArrangementCount`,
+        errors
+      ) ?? 0,
+    resolvedPolicyEventCount:
+      readNonnegativeSafeInteger(
+        input,
+        "resolvedPolicyEventCount",
+        `${path}.resolvedPolicyEventCount`,
+        errors
+      ) ?? 0,
+    successionResolvedCount:
+      readNonnegativeSafeInteger(
+        input,
+        "successionResolvedCount",
+        `${path}.successionResolvedCount`,
+        errors
+      ) ?? 0,
+    routeCount: readNonnegativeSafeInteger(input, "routeCount", `${path}.routeCount`, errors) ?? 0,
+    populationGroupCount:
+      readNonnegativeSafeInteger(
+        input,
+        "populationGroupCount",
+        `${path}.populationGroupCount`,
+        errors
+      ) ?? 0
+  };
+}
+
+function parseM6AlphaTerminalOutcome(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6AlphaTerminalOutcomeDto {
+  if (input === "victory" || input === "defeat" || input === "continued-play") {
+    return input;
+  }
+  errors.push(
+    reason(
+      "invalid-schema",
+      path,
+      "M6 Alpha terminal outcome must be victory, defeat, or continued-play."
+    )
+  );
+  return "continued-play";
+}
+
+function fallbackM6AlphaTerminalState(): SaveM6AlphaTerminalStateDto {
+  return {
+    terminalStateId: 0,
+    polityId: 0,
+    outcome: "continued-play",
+    evaluatedDay: 0,
+    evaluatedRevision: 0,
+    maxDay: 0,
+    evidence: fallbackM6AlphaTerminalEvidence(),
+    reasonCodes: []
+  };
+}
+
+function fallbackM6AlphaTerminalEvidence(): SaveM6AlphaTerminalEvidenceStateDto {
+  return {
+    recognizedByCount: 0,
+    legitimacyScoreBps: 0,
+    postwarArrangementCount: 0,
+    resolvedPolicyEventCount: 0,
+    successionResolvedCount: 0,
+    routeCount: 0,
+    populationGroupCount: 0
+  };
+}
+
 function copySimpleRuntimeState(state: SaveSimpleRuntimeStateDto): SaveSimpleRuntimeStateDto {
   return {
     definitionId: state.definitionId
@@ -6074,12 +6263,13 @@ function copyDistrictControl(control: SaveDistrictControlDto): SaveDistrictContr
 }
 
 function copyOptionalRuntimeSlices(
-  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents">,
+  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents" | "m6Alpha">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
   m3: SaveM3PolityVassalageStateDto | undefined,
   m4: SaveM4CampaignStateDto | undefined,
   m6: SaveM6DiplomacyLegitimacyStateDto | undefined,
-  m6PolicyEvents: SaveM6PolicyEventRuntimeStateDto | undefined
+  m6PolicyEvents: SaveM6PolicyEventRuntimeStateDto | undefined,
+  m6Alpha: SaveM6AlphaRuntimeStateDto | undefined
 ): SaveWorldRuntimeStateV0Dto {
   return {
     ...base,
@@ -6089,17 +6279,22 @@ function copyOptionalRuntimeSlices(
     ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) }),
     ...(m6PolicyEvents === undefined
       ? {}
-      : { m6PolicyEvents: copyM6PolicyEventRuntimeState(m6PolicyEvents) })
+      : { m6PolicyEvents: copyM6PolicyEventRuntimeState(m6PolicyEvents) }),
+    ...(m6Alpha === undefined ? {} : { m6Alpha: copyM6AlphaRuntimeState(m6Alpha) })
   };
 }
 
 function copyOptionalCandidateRuntimeSlices(
-  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents">,
+  base: Omit<
+    WorldStateV0ForSave["state"],
+    "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents" | "m6Alpha"
+  >,
   m2: SaveM2EconomyPopulationStateDto | undefined,
   m3: SaveM3PolityVassalageStateDto | undefined,
   m4: SaveM4CampaignStateDto | undefined,
   m6: SaveM6DiplomacyLegitimacyStateDto | undefined,
-  m6PolicyEvents: SaveM6PolicyEventRuntimeStateDto | undefined
+  m6PolicyEvents: SaveM6PolicyEventRuntimeStateDto | undefined,
+  m6Alpha: SaveM6AlphaRuntimeStateDto | undefined
 ): WorldStateV0ForSave["state"] {
   return {
     ...base,
@@ -6109,7 +6304,24 @@ function copyOptionalCandidateRuntimeSlices(
     ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) }),
     ...(m6PolicyEvents === undefined
       ? {}
-      : { m6PolicyEvents: copyM6PolicyEventRuntimeState(m6PolicyEvents) })
+      : { m6PolicyEvents: copyM6PolicyEventRuntimeState(m6PolicyEvents) }),
+    ...(m6Alpha === undefined ? {} : { m6Alpha: copyM6AlphaRuntimeState(m6Alpha) })
+  };
+}
+
+function copyM6AlphaRuntimeState(runtime: SaveM6AlphaRuntimeStateDto): SaveM6AlphaRuntimeStateDto {
+  return {
+    schemaVersion: 1,
+    terminalStates: runtime.terminalStates.map((terminal) => ({
+      terminalStateId: terminal.terminalStateId,
+      polityId: terminal.polityId,
+      outcome: terminal.outcome,
+      evaluatedDay: terminal.evaluatedDay,
+      evaluatedRevision: terminal.evaluatedRevision,
+      maxDay: terminal.maxDay,
+      evidence: { ...terminal.evidence },
+      reasonCodes: [...terminal.reasonCodes]
+    }))
   };
 }
 

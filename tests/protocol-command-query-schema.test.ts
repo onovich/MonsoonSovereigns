@@ -1022,6 +1022,52 @@ describe("SIM-003 protocol command/query schemas", () => {
     expect(
       parseGameCommandV1({
         schemaVersion: 1,
+        kind: "sim.evaluate-m6-alpha-outcome",
+        commandId: "cmd.m6.alpha.outcome",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 25,
+        expectedRevision: 21,
+        payload: {
+          terminalStateId: 1,
+          polityId: 1,
+          maxDay: 60,
+          reasonCode: "m6.alpha.terminal.assess"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.get-m6-alpha-terminal-state",
+        payload: { queryId: "m6.alpha.terminal", polityId: 1 }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.evaluate-m6-alpha-outcome",
+        commandId: "cmd.m6.alpha.outcome.bad",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 25,
+        expectedRevision: 21,
+        payload: {
+          terminalStateId: 0,
+          polityId: 1,
+          maxDay: 60,
+          reasonCode: "m6.alpha.terminal.assess"
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.terminalStateId",
+        message: "payload.terminalStateId must be a positive safe integer."
+      }
+    });
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
         kind: "sim.record-legitimacy-source",
         commandId: "cmd.m6.legitimacy.bad",
         actor: { kind: "system", id: "m6-legitimacy" },

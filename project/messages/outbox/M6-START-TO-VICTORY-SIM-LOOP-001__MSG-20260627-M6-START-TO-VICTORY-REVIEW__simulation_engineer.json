@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260627-M6-START-TO-VICTORY-REVIEW",
+  "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the deterministic M6 Alpha start-to-victory simulation loop through authoritative sim-core state, scheduler-driven GameCommand submission, events, query, save/load, and Node/Worker-compatible replay. The loop reuses M2 economy/routes, M3 governance/succession, M4 campaign/postwar, M5 playable-loop evidence, and M6 diplomacy/legitimacy/policy-event substrate, and records explicit hash-covered terminal states for victory, defeat, and continued-play.",
+  "artifacts": [
+    "apps/sim-runner/src/m6-alpha-loop-worker.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m6-start-to-victory-loop.test.ts",
+    "project/tasks/active/M6-START-TO-VICTORY-SIM-LOOP-001.json",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m6-start-to-victory-sim-loop / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m6-start-to-victory-sim-loop; changes are limited to allowed task paths, with new M6 loop test and worker files untracked before review."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format:check, lint, full workspace typecheck, and architecture:check."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed 25 test files / 191 tests for existing sim-core suite."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 4 tests covering victory, defeat, continued-play, malformed command rejection, save/load mid-run, no invariant corruption, and Node/Worker hash parity."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 10 tests, including M6 Alpha terminal command/query schema parsing and malformed terminal id rejection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "Passed 2 test files / 16 tests for save-format and save/load contracts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "Passed 2 test files / 3 tests; existing AI tests remain on shared command path."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed; M6 Alpha Node hash 260f46c3 matched Worker-compatible hash 260f46c3, loaded hash 260f46c3, terminal outcome victory."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture:check, sim:determinism, root vitest 39 files / 296 tests, and apps/web vitest 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-START-TO-VICTORY-SIM-LOOP-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Added protocol-level versioned M6 Alpha terminal outcome command/query and script fixture so player and AI can use the same GameCommand path without UI or out-of-band mutation.",
+    "Stored M6 Alpha terminal states in WorldState runtime as canonicalized, validated, hash-covered state; terminal query can derive a read-only assessment before commit and returns committed terminal state after command submission.",
+    "The M6 Alpha fixture starts from accepted M4/M5 evidence and adds only the minimal M3 succession, M6 diplomacy/legitimacy, and policy-event runtime needed to prove one deterministic Alpha victory path.",
+    "Save-format V1 now round-trips the M6 Alpha runtime slice so mid-run save/load and replay preserve terminal-state determinism."
+  ],
+  "risks": [
+    "R4 task touches protocol, save-format, world-state hashing, and command/query dispatcher; systems architecture review should verify compatibility posture before QA route.",
+    "M6 Alpha scenario fixture is intentionally minimal and not M7 full content; it proves deterministic substrate integration rather than final campaign balance.",
+    "Terminal outcome thresholds are deterministic Alpha acceptance thresholds, not final design tuning."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the M6 Alpha start-to-victory loop and R4 protocol/save/state changes, then route to qa_reviewer if architecture review passes. Do not mark ACCEPTED/CLOSED from this handoff alone.",
+  "created_at": "2026-06-27T20:33:16.304+08:00"
+}
