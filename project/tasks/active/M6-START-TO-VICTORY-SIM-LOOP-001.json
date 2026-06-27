@@ -2,7 +2,7 @@
   "id": "M6-START-TO-VICTORY-SIM-LOOP-001",
   "summary": "Implement deterministic start-to-victory Alpha simulation loop",
   "milestone": "M6",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "simulation_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -85,7 +85,7 @@
     "Any save-format or protocol compatibility break requires explicit systems review and likely ADR."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T21:08:31.864+08:00",
+  "updated_at": "2026-06-27T21:14:43.141+08:00",
   "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "writer_thread_id": "019f08f4-6702-7fa3-adfb-316af1270ca1",
   "writer_nickname": "Delta",
@@ -96,7 +96,7 @@
   "previous_closed_task": "M6-POLICY-EVENT-RUNTIME-001",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "Open PR, wait for CI, merge to main, then close M6-START-TO-VICTORY-SIM-LOOP-001 and continue to the next READY M6 task.",
+  "next_action": "Start M6-CLIENT-ALPHA-SURFACES-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
   "start_submission_id": "019f08f5-cbc2-70b3-a362-5bb7ce108ced",
   "route_sent_at": "2026-06-27T20:02:55.011+08:00",
   "review_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-REVIEW__simulation_engineer.json",
@@ -127,5 +127,14 @@
   "child_threads_closed": [
     "019f08f4-6702-7fa3-adfb-316af1270ca1",
     "019f0914-1645-7003-b1a3-d389719b8d7f"
+  ],
+  "integrated_pr": 143,
+  "integrated_main_commit": "f43649a8c1fcca0886c229873d95edb7045267fc",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/143",
+  "lead_close_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-06-27T21:14:43.141+08:00",
+  "next_ready_tasks": [
+    "M6-CLIENT-ALPHA-SURFACES-001",
+    "M6-LAYERED-AI-001"
   ]
 }
