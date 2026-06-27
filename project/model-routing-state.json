@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T15:12:35+08:00",
+  "updated_at": "2026-06-27T15:19:54+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1884,7 +1884,7 @@
     "M5-EXIT-HUMAN-GATE-001": "CLOSED after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011. M5_GATE = PASS_WITH_LIMITS; M6-TASK-GRAPH-001 is READY.",
     "M6-TASK-GRAPH-001": "CLOSED after PR #129 entered main at 4aef9108da1e659354a4a726b07b4b6dad56f966. Planning-only M6 Alpha task DAG accepted; next READY M6 task is M6-ALPHA-SYSTEM-CONTRACT-001.",
     "M6-ALPHA-SYSTEM-CONTRACT-001": "REVIEW after gameplay_designer defined the bounded M6 Alpha system-complete contract; route writer handoff to systems_architect reviewer.",
-    "M6-SCENARIO-DATA-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to historical_researcher thread 019f07c1-17ed-7300-a467-cb7062d5064f on feat/m6-scenario-data-pipeline."
+    "M6-SCENARIO-DATA-PIPELINE-001": "CLOSED after PR #135 entered main at 7f83cd4da1dcd7fdc77be922225bef43c9127c74. Next READY M6 tasks are M6-MAP-CANDIDATE-PIPELINE-001 and M6-SUCCESSION-COMPLETION-001."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -2141,19 +2141,19 @@
       ]
     },
     "M6-SCENARIO-DATA-PIPELINE-001": {
-      "status": "ACCEPTED",
+      "status": "CLOSED",
       "owner_role": "historical_researcher",
       "reviewer_role": "qa_reviewer",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
       "writer_nickname": "Chronicle",
       "branch_or_worktree": "feat/m6-scenario-data-pipeline",
-      "updated_at": "2026-06-27T15:12:35+08:00",
+      "updated_at": "2026-06-27T15:19:54+08:00",
       "human_gate_required": false,
       "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
       "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
-      "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
+      "next_action": "Start M6-MAP-CANDIDATE-PIPELINE-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
       "route_sent_at": "2026-06-27T14:28:31+08:00",
       "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
       "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -2180,11 +2180,20 @@
       "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T15:12:35+08:00",
       "child_threads_closed": true,
-      "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb"
+      "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb",
+      "integrated_pr": 135,
+      "integrated_main_commit": "7f83cd4da1dcd7fdc77be922225bef43c9127c74",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/135",
+      "lead_close_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T15:19:54+08:00",
+      "next_ready_tasks": [
+        "M6-MAP-CANDIDATE-PIPELINE-001",
+        "M6-SUCCESSION-COMPLETION-001"
+      ]
     }
   },
   "m6_scenario_data_pipeline": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
     "branch_or_worktree": "feat/m6-scenario-data-pipeline",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -2196,7 +2205,7 @@
     "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
+    "next_action": "Start M6-MAP-CANDIDATE-PIPELINE-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
     "route_sent_at": "2026-06-27T14:28:31+08:00",
     "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
     "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -2230,7 +2239,7 @@
     "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
     "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
     "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
-    "updated_at": "2026-06-27T15:12:35+08:00",
+    "updated_at": "2026-06-27T15:19:54+08:00",
     "review_commit": "23bb150e",
     "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
     "qa_thread_nickname": "Witness",
@@ -2243,7 +2252,16 @@
     "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-27T15:12:35+08:00",
     "child_threads_closed": true,
-    "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb"
+    "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb",
+    "integrated_pr": 135,
+    "integrated_main_commit": "7f83cd4da1dcd7fdc77be922225bef43c9127c74",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/135",
+    "lead_close_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T15:19:54+08:00",
+    "next_ready_tasks": [
+      "M6-MAP-CANDIDATE-PIPELINE-001",
+      "M6-SUCCESSION-COMPLETION-001"
+    ]
   },
   "replaced_threads": [
     {

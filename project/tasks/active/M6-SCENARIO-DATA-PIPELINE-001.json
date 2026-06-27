@@ -2,7 +2,7 @@
   "id": "M6-SCENARIO-DATA-PIPELINE-001",
   "summary": "Implement three-scenario data pipeline",
   "milestone": "M6",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "historical_researcher",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -111,7 +111,7 @@
     "Stop and route to systems_architect if content schemas require cross-boundary runtime object graphs or implicit RPC."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T15:12:35+08:00",
+  "updated_at": "2026-06-27T15:19:54+08:00",
   "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
   "writer_nickname": "Chronicle",
@@ -121,7 +121,7 @@
   "started_at": "2026-06-27T14:27:24+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
+  "next_action": "Start M6-MAP-CANDIDATE-PIPELINE-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
   "route_sent_at": "2026-06-27T14:28:31+08:00",
   "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
   "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -174,5 +174,14 @@
   "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-06-27T15:12:35+08:00",
   "child_threads_closed": true,
-  "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb"
+  "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb",
+  "integrated_pr": 135,
+  "integrated_main_commit": "7f83cd4da1dcd7fdc77be922225bef43c9127c74",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/135",
+  "lead_close_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-06-27T15:19:54+08:00",
+  "next_ready_tasks": [
+    "M6-MAP-CANDIDATE-PIPELINE-001",
+    "M6-SUCCESSION-COMPLETION-001"
+  ]
 }
