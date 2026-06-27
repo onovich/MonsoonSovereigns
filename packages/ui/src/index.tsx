@@ -70,6 +70,7 @@ export interface ClientShellViewProps {
   readonly mapMode: ClientMapMode;
   readonly zoomLevel: number;
   readonly selectedEntity: ClientMapEntitySelection | null;
+  readonly m6BatchBalanceArtifact?: M6BatchBalanceDashboardArtifact | null;
   readonly onMapModeChange: (mode: ClientMapMode) => void;
   readonly onZoomLevelChange: (zoomLevel: number) => void;
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
@@ -93,6 +94,7 @@ export function ClientShellView({
   mapMode,
   zoomLevel,
   selectedEntity,
+  m6BatchBalanceArtifact = null,
   onMapModeChange,
   onZoomLevelChange,
   onSelectedEntityChange,
@@ -748,6 +750,9 @@ export function ClientShellView({
           onLoad={handleLoadM6Session}
           onFailurePreview={handlePreviewM6Failure}
         />
+        {m6BatchBalanceArtifact === null ? null : (
+          <M6BatchBalanceDashboard artifact={m6BatchBalanceArtifact} />
+        )}
       </section>
     </main>
   );
@@ -1973,6 +1978,179 @@ function M6AlphaWorkspace({
           replay={snapshot.replay}
         />
         <M6ReasonSummaryPanel summaries={snapshot.reasonSummaries} />
+      </div>
+    </section>
+  );
+}
+
+export interface M6BatchBalanceDashboardArtifact {
+  readonly schemaVersion: 1;
+  readonly kind: "m6.batch-balance-artifact.v1";
+  readonly artifactHash: string;
+  readonly generatedAt: "deterministic-local-run";
+  readonly generator: string;
+  readonly runs: readonly M6BatchBalanceDashboardRun[];
+  readonly aggregate: {
+    readonly scenarioCount: number;
+    readonly seedCount: number;
+    readonly runCount: number;
+    readonly victoryCount: number;
+    readonly continuedPlayCount: number;
+    readonly defeatCount: number;
+    readonly commandRejectedCount: number;
+    readonly noRescueCompletionCount: number;
+    readonly averageEconomyPressureScore: number;
+    readonly averageWarPostwarLossScore: number;
+    readonly p0p1CandidateCount: number;
+    readonly tuningRiskCount: number;
+  };
+  readonly p0p1Candidates: readonly string[];
+  readonly tuningRisks: readonly string[];
+}
+
+export interface M6BatchBalanceDashboardRun {
+  readonly runId: string;
+  readonly scenarioId: string;
+  readonly label: string;
+  readonly seed: number;
+  readonly plan: string;
+  readonly terminalOutcome: "victory" | "continued-play" | "defeat" | "command-rejected";
+  readonly finalHash: string;
+  readonly loadedHash: string | null;
+  readonly saveByteLength: number;
+  readonly commandCount: number;
+  readonly rejectedCommandId: string | null;
+  readonly rejectionCode: string | null;
+  readonly evidence: {
+    readonly recognizedByCount: number;
+    readonly legitimacyScoreBps: number;
+    readonly postwarArrangementCount: number;
+    readonly resolvedPolicyEventCount: number;
+    readonly successionResolvedCount: number;
+  };
+  readonly metrics: {
+    readonly victoryPath: 0 | 1;
+    readonly aiCollapse: 0 | 1;
+    readonly successionCrisis: 0 | 1;
+    readonly diplomacyRecognitions: number;
+    readonly economyPressureScore: number;
+    readonly warPostwarLossScore: number;
+    readonly noRescueCompletion: boolean;
+  };
+  readonly tuningRisks: readonly string[];
+  readonly p0p1Candidates: readonly string[];
+}
+
+export function M6BatchBalanceDashboard({
+  artifact
+}: {
+  readonly artifact: M6BatchBalanceDashboardArtifact;
+}): ReactElement {
+  const p0p1Label =
+    artifact.p0p1Candidates.length === 0 ? "none" : artifact.p0p1Candidates.join(", ");
+  const tuningRiskPreview =
+    artifact.tuningRisks.length === 0 ? ["none"] : artifact.tuningRisks.slice(0, 8);
+
+  return (
+    <section
+      className="m6-balance"
+      aria-label="M6 balance dashboard"
+      data-schema-version={artifact.schemaVersion}
+      data-run-count={artifact.aggregate.runCount}
+      data-scenario-count={artifact.aggregate.scenarioCount}
+      data-seed-count={artifact.aggregate.seedCount}
+      data-artifact-hash={artifact.artifactHash}
+    >
+      <div className="m6-balance__header">
+        <div>
+          <h2>M6 balance dashboard</h2>
+          <p>
+            {artifact.kind}; {artifact.generatedAt}; {artifact.generator}
+          </p>
+        </div>
+        <dl className="m6-balance__summary">
+          <Metric label="Runs" value={artifact.aggregate.runCount.toString()} />
+          <Metric label="Scenarios" value={artifact.aggregate.scenarioCount.toString()} />
+          <Metric label="Seeds" value={artifact.aggregate.seedCount.toString()} />
+          <Metric label="Hash" value={artifact.artifactHash} />
+        </dl>
+      </div>
+
+      <div className="m6-balance__grid">
+        <section className="m6-balance__panel" aria-label="M6 balance aggregate trends">
+          <h3>Aggregate trends</h3>
+          <dl className="m6-balance__metrics">
+            <Metric label="Victory" value={artifact.aggregate.victoryCount.toString()} />
+            <Metric label="Continued" value={artifact.aggregate.continuedPlayCount.toString()} />
+            <Metric label="Defeat" value={artifact.aggregate.defeatCount.toString()} />
+            <Metric label="Rejected" value={artifact.aggregate.commandRejectedCount.toString()} />
+            <Metric
+              label="No rescue"
+              value={artifact.aggregate.noRescueCompletionCount.toString()}
+            />
+            <Metric
+              label="Economy"
+              value={artifact.aggregate.averageEconomyPressureScore.toString()}
+            />
+            <Metric
+              label="War/postwar"
+              value={artifact.aggregate.averageWarPostwarLossScore.toString()}
+            />
+            <Metric label="P0/P1" value={artifact.aggregate.p0p1CandidateCount.toString()} />
+          </dl>
+        </section>
+
+        <section className="m6-balance__panel" aria-label="M6 balance risk candidates">
+          <h3>P0/P1 candidates and tuning risks</h3>
+          <div className="m6-balance__fact">
+            <strong>P0/P1 candidates</strong>
+            <span>{p0p1Label}</span>
+          </div>
+          <div className="m6-balance__stack" role="list">
+            {tuningRiskPreview.map((risk) => (
+              <div className="m6-balance__fact" key={risk} role="listitem">
+                <strong>{risk}</strong>
+                <span>Evidence only; no automatic tuning is applied.</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="m6-balance__panel" aria-label="M6 batch run evidence">
+          <h3>Run evidence</h3>
+          <div className="m6-balance__stack" role="list">
+            {artifact.runs.slice(0, 8).map((run) => (
+              <div
+                className="m6-balance__fact"
+                key={run.runId}
+                role="listitem"
+                data-run-id={run.runId}
+                data-terminal-outcome={run.terminalOutcome}
+                data-economy-pressure={run.metrics.economyPressureScore}
+                data-war-postwar-loss={run.metrics.warPostwarLossScore}
+              >
+                <strong>{run.label}</strong>
+                <span>
+                  seed {run.seed}; {run.terminalOutcome}; commands {run.commandCount}; hash{" "}
+                  {run.finalHash}
+                </span>
+                <span>
+                  recognition {run.evidence.recognizedByCount}; succession{" "}
+                  {run.evidence.successionResolvedCount}; postwar{" "}
+                  {run.evidence.postwarArrangementCount}
+                </span>
+                {run.rejectionCode === null ? null : (
+                  <span>
+                    rejected {run.rejectedCommandId ?? "unknown"}; {run.rejectionCode}
+                  </span>
+                )}
+                <ReasonChips
+                  reasonCodes={[...run.tuningRisks, ...run.p0p1Candidates, `plan:${run.plan}`]}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </section>
   );

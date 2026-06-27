@@ -1110,6 +1110,102 @@ select:focus-visible,
   padding-inline-start: 8px;
 }
 
+.m6-balance {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 0 22px 30px;
+}
+
+.m6-balance__header {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(360px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+  border-block-start: 1px solid #d8dee2;
+  padding-block-start: 18px;
+}
+
+.m6-balance__header h2,
+.m6-balance__panel h3 {
+  margin: 0;
+  color: #172126;
+  line-height: 1.25;
+}
+
+.m6-balance__header h2 {
+  margin-block-end: 6px;
+  font-size: 1.12rem;
+}
+
+.m6-balance__header p {
+  margin: 0;
+  color: #53636b;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.m6-balance__summary,
+.m6-balance__metrics {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+.m6-balance__summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.m6-balance__metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.m6-balance__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+
+.m6-balance__summary > *,
+.m6-balance__grid > *,
+.m6-balance__metrics > * {
+  min-width: 0;
+}
+
+.m6-balance__panel {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border-block-start: 1px solid #d8dee2;
+  padding-block-start: 12px;
+}
+
+.m6-balance__fact {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid #d8dee2;
+  border-radius: 4px;
+  background: #f9fbfb;
+  padding: 10px;
+}
+
+.m6-balance__stack {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.m6-balance__fact strong,
+.m6-balance__fact span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1147,7 +1243,9 @@ select:focus-visible,
   .m5-playable__header,
   .m5-playable__grid,
   .m6-alpha__header,
-  .m6-alpha__grid {
+  .m6-alpha__grid,
+  .m6-balance__header,
+  .m6-balance__grid {
     grid-template-columns: 1fr;
   }
 }
@@ -1197,7 +1295,8 @@ select:focus-visible,
   .m3-appointment,
   .m4-campaign,
   .m5-playable,
-  .m6-alpha {
+  .m6-alpha,
+  .m6-balance {
     padding: 0 14px 18px;
   }
 
@@ -1212,7 +1311,9 @@ select:focus-visible,
   .m5-playable__summary,
   .m5-playable__metrics,
   .m6-alpha__summary,
-  .m6-alpha__metrics {
+  .m6-alpha__metrics,
+  .m6-balance__summary,
+  .m6-balance__metrics {
     grid-template-columns: 1fr;
   }
 }
