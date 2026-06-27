@@ -90,6 +90,12 @@
       "nickname": "Estuary",
       "status": "review_ready",
       "role": "historical_researcher"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
+      "nickname": "Witness",
+      "status": "review_active",
+      "role": "qa_reviewer"
     }
   },
   "route_to": "qa_reviewer",
@@ -99,7 +105,7 @@
     "Stop and route to systems_architect if content schemas require cross-boundary runtime object graphs or implicit RPC."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T14:58:30+08:00",
+  "updated_at": "2026-06-27T15:04:01+08:00",
   "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
   "writer_nickname": "Chronicle",
@@ -109,7 +115,7 @@
   "started_at": "2026-06-27T14:27:24+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "replacement historical_researcher addresses lead REQUEST_CHANGES and returns R2 REVIEW handoff.",
+  "next_action": "qa_reviewer performs independent read-only review of R2 diff and returns ACCEPT / REQUEST_CHANGES / BLOCK.",
   "route_sent_at": "2026-06-27T14:28:31+08:00",
   "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
   "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -140,7 +146,7 @@
   "replacement_route_sent_at": "2026-06-27T14:46:34+08:00",
   "review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-R2-REVIEW__historical_researcher.json",
   "review_ready_at": "2026-06-27T14:58:30+08:00",
-  "review_commit": "d5bfd1f4fce0d1c0175a415362ba34457be8011a",
+  "review_commit": "23bb150e",
   "review_round": 2,
   "previous_review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-REVIEW__historical_researcher.json",
   "request_changes_round": 1,
@@ -149,5 +155,11 @@
   "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
   "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
   "request_changes_resolved_at": "2026-06-27T14:58:30+08:00",
-  "request_changes_resolution": "R2 expands claim manifest hash coverage and rejects empty formal-claim source/sourcePassage entries."
+  "request_changes_resolution": "R2 expands claim manifest hash coverage and rejects empty formal-claim source/sourcePassage entries.",
+  "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
+  "qa_thread_nickname": "Witness",
+  "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
+  "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
+  "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
+  "qa_route_sent_at": "2026-06-27T15:04:01+08:00"
 }

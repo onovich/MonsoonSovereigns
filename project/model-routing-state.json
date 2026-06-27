@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T14:56:19+08:00",
+  "updated_at": "2026-06-27T15:04:01+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -2141,19 +2141,19 @@
       ]
     },
     "M6-SCENARIO-DATA-PIPELINE-001": {
-      "status": "IN_PROGRESS",
+      "status": "REVIEW",
       "owner_role": "historical_researcher",
       "reviewer_role": "qa_reviewer",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
       "writer_nickname": "Chronicle",
       "branch_or_worktree": "feat/m6-scenario-data-pipeline",
-      "updated_at": "2026-06-27T14:56:19+08:00",
+      "updated_at": "2026-06-27T15:04:01+08:00",
       "human_gate_required": false,
       "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
       "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
-      "next_action": "replacement historical_researcher addresses lead REQUEST_CHANGES and returns R2 REVIEW handoff.",
+      "next_action": "qa_reviewer performs independent read-only review of R2 diff and returns ACCEPT / REQUEST_CHANGES / BLOCK.",
       "route_sent_at": "2026-06-27T14:28:31+08:00",
       "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
       "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -2168,11 +2168,17 @@
       "request_changes_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
       "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
       "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
-      "request_changes_sent_at": "2026-06-27T14:56:19+08:00"
+      "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
+      "review_commit": "23bb150e",
+      "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
+      "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
+      "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
+      "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
+      "qa_route_sent_at": "2026-06-27T15:04:01+08:00"
     }
   },
   "m6_scenario_data_pipeline": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
     "branch_or_worktree": "feat/m6-scenario-data-pipeline",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -2184,7 +2190,7 @@
     "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "replacement historical_researcher addresses lead REQUEST_CHANGES and returns R2 REVIEW handoff.",
+    "next_action": "qa_reviewer performs independent read-only review of R2 diff and returns ACCEPT / REQUEST_CHANGES / BLOCK.",
     "route_sent_at": "2026-06-27T14:28:31+08:00",
     "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
     "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -2218,7 +2224,14 @@
     "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
     "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
     "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
-    "updated_at": "2026-06-27T14:56:19+08:00"
+    "updated_at": "2026-06-27T15:03:04+08:00",
+    "review_commit": "23bb150e",
+    "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
+    "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
+    "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
+    "qa_route_sent_at": "2026-06-27T15:04:01+08:00"
   },
   "replaced_threads": [
     {
