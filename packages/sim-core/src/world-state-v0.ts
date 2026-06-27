@@ -21,6 +21,9 @@ export type SiegeId = Brand<number, "SiegeId">;
 export type FactionKnowledgeSnapshotId = Brand<number, "FactionKnowledgeSnapshotId">;
 export type MobilizedForceCommitmentId = Brand<number, "MobilizedForceCommitmentId">;
 export type GrainSupplyReservationId = Brand<number, "GrainSupplyReservationId">;
+export type M6DiplomaticRelationId = Brand<number, "M6DiplomaticRelationId">;
+export type M6DiplomaticAgreementId = Brand<number, "M6DiplomaticAgreementId">;
+export type M6LegitimacySourceId = Brand<number, "M6LegitimacySourceId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -872,6 +875,95 @@ export interface M4CampaignStateV0 {
   readonly postwarCandidates: readonly M4PostwarCandidateStateV0[];
 }
 
+export type M6DiplomaticAgreementKindV0 =
+  | "non-aggression"
+  | "military-access"
+  | "tribute-recognition";
+export type M6DiplomaticAgreementStatusV0 = "proposed" | "active" | "rejected";
+export type M6DiplomaticRecognitionDirectionV0 =
+  | "none"
+  | "proposer-recognizes-target"
+  | "target-recognizes-proposer";
+export type M6LegitimacyAudienceV0 =
+  | "court"
+  | "local-lords"
+  | "military-retinue"
+  | "merchants"
+  | "ritual-network"
+  | "vassal-rulers"
+  | "foreign-courts";
+export type M6LegitimacySourceKindV0 =
+  | "diplomatic-recognition"
+  | "obligation-fulfilled"
+  | "obligation-breached"
+  | "succession-continuity"
+  | "postwar-settlement"
+  | "campaign-consequence";
+
+export interface M6DiplomaticRelationStateV0 {
+  readonly relationId: M6DiplomaticRelationId;
+  readonly polityAId: PolityId;
+  readonly polityBId: PolityId;
+  readonly trustBps: number;
+  readonly affinityBps: number;
+  readonly fearBps: number;
+  readonly threatBps: number;
+  readonly interestAlignmentBps: number;
+  readonly historicalDebt: number;
+  readonly borderConflictBps: number;
+  readonly updatedDay: GameDay;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6DiplomaticAgreementStateV0 {
+  readonly agreementId: M6DiplomaticAgreementId;
+  readonly relationId: M6DiplomaticRelationId;
+  readonly proposerPolityId: PolityId;
+  readonly targetPolityId: PolityId;
+  readonly agreementKind: M6DiplomaticAgreementKindV0;
+  readonly status: M6DiplomaticAgreementStatusV0;
+  readonly startDay: GameDay;
+  readonly endDay: GameDay;
+  readonly recognitionDirection: M6DiplomaticRecognitionDirectionV0;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6RecognitionEdgeStateV0 {
+  readonly fromPolityId: PolityId;
+  readonly toPolityId: PolityId;
+  readonly agreementId: M6DiplomaticAgreementId;
+  readonly reasonCode: string;
+}
+
+export interface M6LegitimacySourceStateV0 {
+  readonly sourceId: M6LegitimacySourceId;
+  readonly polityId: PolityId;
+  readonly audience: M6LegitimacyAudienceV0;
+  readonly sourceKind: M6LegitimacySourceKindV0;
+  readonly magnitudeBps: number;
+  readonly sourceRef: string;
+  readonly reasonCode: string;
+  readonly createdDay: GameDay;
+}
+
+export interface M6LegitimacyProfileStateV0 {
+  readonly polityId: PolityId;
+  readonly audience: M6LegitimacyAudienceV0;
+  readonly scoreBps: number;
+  readonly pressureBps: number;
+  readonly sourceIds: readonly M6LegitimacySourceId[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6DiplomacyLegitimacyStateV0 {
+  readonly schemaVersion: 1;
+  readonly relations: readonly M6DiplomaticRelationStateV0[];
+  readonly agreements: readonly M6DiplomaticAgreementStateV0[];
+  readonly recognitionEdges: readonly M6RecognitionEdgeStateV0[];
+  readonly legitimacySources: readonly M6LegitimacySourceStateV0[];
+  readonly legitimacyProfiles: readonly M6LegitimacyProfileStateV0[];
+}
+
 export interface M3AdministrativeBurdenProfileInputV0 {
   readonly polityId: unknown;
   readonly districtId: unknown;
@@ -910,6 +1002,7 @@ export interface WorldRuntimeStateV0 {
   readonly m2?: M2EconomyPopulationStateV0;
   readonly m3?: M3PolityVassalageStateV0;
   readonly m4?: M4CampaignStateV0;
+  readonly m6?: M6DiplomacyLegitimacyStateV0;
 }
 
 export interface SchedulerStateV0 {
@@ -1023,6 +1116,7 @@ export interface CreateWorldStateV0Input {
   readonly m2?: M2EconomyPopulationStateV0;
   readonly m3?: M3PolityVassalageStateV0;
   readonly m4?: M4CampaignStateV0;
+  readonly m6?: M6DiplomacyLegitimacyStateV0;
 }
 
 const INITIAL_HASH_OFFSET = 2_166_136_261;
@@ -1110,6 +1204,18 @@ export function parseMobilizedForceCommitmentId(value: unknown): MobilizedForceC
 
 export function parseGrainSupplyReservationId(value: unknown): GrainSupplyReservationId {
   return parsePositiveInteger(value, "GrainSupplyReservationId") as GrainSupplyReservationId;
+}
+
+export function parseM6DiplomaticRelationId(value: unknown): M6DiplomaticRelationId {
+  return parsePositiveInteger(value, "M6DiplomaticRelationId") as M6DiplomaticRelationId;
+}
+
+export function parseM6DiplomaticAgreementId(value: unknown): M6DiplomaticAgreementId {
+  return parsePositiveInteger(value, "M6DiplomaticAgreementId") as M6DiplomaticAgreementId;
+}
+
+export function parseM6LegitimacySourceId(value: unknown): M6LegitimacySourceId {
+  return parsePositiveInteger(value, "M6LegitimacySourceId") as M6LegitimacySourceId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -1319,7 +1425,7 @@ export function createM2RouteTransportStateV0(
 
 export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0 {
   const definitions = canonicalizeDefinitions(input.definitions);
-  const state = createRuntimeState(definitions, input.m2, input.m3, input.m4);
+  const state = createRuntimeState(definitions, input.m2, input.m3, input.m4, input.m6);
   const stateWithoutHash: WorldStateV0 = {
     meta: {
       schemaVersion: WORLD_STATE_V0_SCHEMA_VERSION,
@@ -1385,6 +1491,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     ...formatM2CanonicalLines(world.state.m2),
     ...formatM3CanonicalLines(world.state.m3),
     ...formatM4CanonicalLines(world.state.m4),
+    ...formatM6CanonicalLines(world.state.m6),
     `scheduler.schedulerVersion=${formatUnknown(
       getRecordPath(world, ["scheduler", "schedulerVersion"])
     )}`,
@@ -1427,6 +1534,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateM2EntryShapes(getRecordPath(world, ["state", "m2"]), errors);
   validateM3EntryShapes(getRecordPath(world, ["state", "m3"]), errors);
   validateM4EntryShapes(getRecordPath(world, ["state", "m4"]), errors);
+  validateM6EntryShapes(getRecordPath(world, ["state", "m6"]), errors);
   if (errors.some((error) => error.code === "invalid-schema")) {
     return errors;
   }
@@ -1437,6 +1545,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateM2RuntimeState(world, errors);
   validateM3RuntimeState(world, errors);
   validateM4RuntimeState(world, errors);
+  validateM6RuntimeState(world, errors);
   validateRuntimeTableCoverage(world, errors);
   validateStateHash(world, errors);
   return errors;
@@ -2107,6 +2216,280 @@ function validateM4EntryShapes(input: unknown, errors: WorldInvariantError[]): v
       validateM4PostwarCandidateEntry
     );
   }
+}
+
+function validateM6EntryShapes(input: unknown, errors: WorldInvariantError[]): void {
+  if (input === undefined) {
+    return;
+  }
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m6",
+      message: "M6 diplomacy legitimacy state must be an object."
+    });
+    return;
+  }
+  if (input["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m6.schemaVersion",
+      message: "M6 diplomacy legitimacy schemaVersion must be 1."
+    });
+  }
+  validateM6Array(
+    input["relations"],
+    "state.m6.relations",
+    "M6 relations",
+    errors,
+    validateM6RelationEntry
+  );
+  validateM6Array(
+    input["agreements"],
+    "state.m6.agreements",
+    "M6 agreements",
+    errors,
+    validateM6AgreementEntry
+  );
+  validateM6Array(
+    input["recognitionEdges"],
+    "state.m6.recognitionEdges",
+    "M6 recognitionEdges",
+    errors,
+    validateM6RecognitionEdgeEntry
+  );
+  validateM6Array(
+    input["legitimacySources"],
+    "state.m6.legitimacySources",
+    "M6 legitimacySources",
+    errors,
+    validateM6LegitimacySourceEntry
+  );
+  validateM6Array(
+    input["legitimacyProfiles"],
+    "state.m6.legitimacyProfiles",
+    "M6 legitimacyProfiles",
+    errors,
+    validateM6LegitimacyProfileEntry
+  );
+}
+
+function validateM6Array(
+  input: unknown,
+  path: string,
+  label: string,
+  errors: WorldInvariantError[],
+  validateEntry: (entry: unknown, path: string, errors: WorldInvariantError[]) => void
+): void {
+  if (!Array.isArray(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: `${label} must be an array.`
+    });
+    return;
+  }
+  input.forEach((entry, index) => validateEntry(entry, `${path}[${index}]`, errors));
+}
+
+function validateM6RelationEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6DiplomaticRelationState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "relationId", `${path}.relationId`, "M6RelationId", errors);
+  validatePositiveIntegerField(input, "polityAId", `${path}.polityAId`, "PolityId", errors);
+  validatePositiveIntegerField(input, "polityBId", `${path}.polityBId`, "PolityId", errors);
+  validateIntegerFieldInRange(input, "trustBps", `${path}.trustBps`, 0, 10_000, errors);
+  validateIntegerFieldInRange(input, "affinityBps", `${path}.affinityBps`, 0, 10_000, errors);
+  validateIntegerFieldInRange(input, "fearBps", `${path}.fearBps`, 0, 10_000, errors);
+  validateIntegerFieldInRange(input, "threatBps", `${path}.threatBps`, 0, 10_000, errors);
+  validateIntegerFieldInRange(
+    input,
+    "interestAlignmentBps",
+    `${path}.interestAlignmentBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "historicalDebt", `${path}.historicalDebt`, errors);
+  validateIntegerFieldInRange(
+    input,
+    "borderConflictBps",
+    `${path}.borderConflictBps`,
+    0,
+    10_000,
+    errors
+  );
+  validateNonnegativeIntegerField(input, "updatedDay", `${path}.updatedDay`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateM6AgreementEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6DiplomaticAgreementState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "agreementId",
+    `${path}.agreementId`,
+    "M6AgreementId",
+    errors
+  );
+  validatePositiveIntegerField(input, "relationId", `${path}.relationId`, "M6RelationId", errors);
+  validatePositiveIntegerField(
+    input,
+    "proposerPolityId",
+    `${path}.proposerPolityId`,
+    "PolityId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "targetPolityId",
+    `${path}.targetPolityId`,
+    "PolityId",
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "agreementKind",
+    `${path}.agreementKind`,
+    ["non-aggression", "military-access", "tribute-recognition"],
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "status",
+    `${path}.status`,
+    ["proposed", "active", "rejected"],
+    errors
+  );
+  validateNonnegativeIntegerField(input, "startDay", `${path}.startDay`, errors);
+  validateNonnegativeIntegerField(input, "endDay", `${path}.endDay`, errors);
+  validateStringUnionField(
+    input,
+    "recognitionDirection",
+    `${path}.recognitionDirection`,
+    ["none", "proposer-recognizes-target", "target-recognizes-proposer"],
+    errors
+  );
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateM6RecognitionEdgeEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6RecognitionEdgeState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "fromPolityId", `${path}.fromPolityId`, "PolityId", errors);
+  validatePositiveIntegerField(input, "toPolityId", `${path}.toPolityId`, "PolityId", errors);
+  validatePositiveIntegerField(
+    input,
+    "agreementId",
+    `${path}.agreementId`,
+    "M6AgreementId",
+    errors
+  );
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
+function validateM6LegitimacySourceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6LegitimacySourceState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "sourceId",
+    `${path}.sourceId`,
+    "M6LegitimacySourceId",
+    errors
+  );
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validateStringUnionField(
+    input,
+    "audience",
+    `${path}.audience`,
+    [
+      "court",
+      "local-lords",
+      "military-retinue",
+      "merchants",
+      "ritual-network",
+      "vassal-rulers",
+      "foreign-courts"
+    ],
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "sourceKind",
+    `${path}.sourceKind`,
+    [
+      "diplomatic-recognition",
+      "obligation-fulfilled",
+      "obligation-breached",
+      "succession-continuity",
+      "postwar-settlement",
+      "campaign-consequence"
+    ],
+    errors
+  );
+  validateIntegerFieldInRange(
+    input,
+    "magnitudeBps",
+    `${path}.magnitudeBps`,
+    -10_000,
+    10_000,
+    errors
+  );
+  validateNonEmptyStringField(input, "sourceRef", `${path}.sourceRef`, errors);
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  validateNonnegativeIntegerField(input, "createdDay", `${path}.createdDay`, errors);
+}
+
+function validateM6LegitimacyProfileEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6LegitimacyProfileState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "polityId", `${path}.polityId`, "PolityId", errors);
+  validateStringUnionField(
+    input,
+    "audience",
+    `${path}.audience`,
+    [
+      "court",
+      "local-lords",
+      "military-retinue",
+      "merchants",
+      "ritual-network",
+      "vassal-rulers",
+      "foreign-courts"
+    ],
+    errors
+  );
+  validateIntegerFieldInRange(input, "scoreBps", `${path}.scoreBps`, 0, 10_000, errors);
+  validateIntegerFieldInRange(input, "pressureBps", `${path}.pressureBps`, 0, 10_000, errors);
+  validatePositiveIntegerArrayField(input["sourceIds"], `${path}.sourceIds`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
 }
 
 function validateM4CampaignPlanEntry(
@@ -4742,7 +5125,8 @@ function createRuntimeState(
   definitions: WorldDefinitionsV0,
   m2: M2EconomyPopulationStateV0 | undefined,
   m3: M3PolityVassalageStateV0 | undefined,
-  m4: M4CampaignStateV0 | undefined
+  m4: M4CampaignStateV0 | undefined,
+  m6: M6DiplomacyLegitimacyStateV0 | undefined
 ): WorldRuntimeStateV0 {
   const state: WorldRuntimeStateV0 = {
     polities: sortByNumericId(definitions.polities).map((definition) => ({
@@ -4765,7 +5149,7 @@ function createRuntimeState(
     }))
   };
 
-  if (m2 === undefined && m3 === undefined && m4 === undefined) {
+  if (m2 === undefined && m3 === undefined && m4 === undefined && m6 === undefined) {
     return state;
   }
 
@@ -4780,6 +5164,10 @@ function createRuntimeState(
 
   if (m4 !== undefined) {
     nextState = { ...nextState, m4: canonicalizeM4CampaignStateV0(m4) };
+  }
+
+  if (m6 !== undefined) {
+    nextState = { ...nextState, m6: canonicalizeM6DiplomacyLegitimacyStateV0(m6) };
   }
 
   return nextState;
@@ -4870,6 +5258,84 @@ export function createM4CampaignStateV0(
     warOutcomes: input?.warOutcomes ?? [],
     postwarCandidates: input?.postwarCandidates ?? []
   });
+}
+
+export function createM6DiplomacyLegitimacyStateV0(
+  _definitions: WorldDefinitionsV0,
+  input?: Partial<M6DiplomacyLegitimacyStateV0>
+): M6DiplomacyLegitimacyStateV0 {
+  return canonicalizeM6DiplomacyLegitimacyStateV0({
+    schemaVersion: 1,
+    relations: input?.relations ?? [],
+    agreements: input?.agreements ?? [],
+    recognitionEdges: input?.recognitionEdges ?? [],
+    legitimacySources: input?.legitimacySources ?? [],
+    legitimacyProfiles: input?.legitimacyProfiles ?? []
+  });
+}
+
+export function canonicalizeM6DiplomacyLegitimacyStateV0(
+  m6: M6DiplomacyLegitimacyStateV0
+): M6DiplomacyLegitimacyStateV0 {
+  return {
+    schemaVersion: 1,
+    relations: sortM6Relations(m6.relations).map((relation) => ({
+      relationId: parseM6DiplomaticRelationId(relation.relationId),
+      polityAId: parsePolityId(relation.polityAId),
+      polityBId: parsePolityId(relation.polityBId),
+      trustBps: parseBps(relation.trustBps, "M6 trustBps"),
+      affinityBps: parseBps(relation.affinityBps, "M6 affinityBps"),
+      fearBps: parseBps(relation.fearBps, "M6 fearBps"),
+      threatBps: parseBps(relation.threatBps, "M6 threatBps"),
+      interestAlignmentBps: parseBps(relation.interestAlignmentBps, "M6 interestAlignmentBps"),
+      historicalDebt: parseNonnegativeInteger(relation.historicalDebt, "M6 historicalDebt"),
+      borderConflictBps: parseBps(relation.borderConflictBps, "M6 borderConflictBps"),
+      updatedDay: parseGameDay(relation.updatedDay),
+      reasonCodes: sortText(relation.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M6 relation reasonCode")
+      )
+    })),
+    agreements: sortM6Agreements(m6.agreements).map((agreement) => ({
+      agreementId: parseM6DiplomaticAgreementId(agreement.agreementId),
+      relationId: parseM6DiplomaticRelationId(agreement.relationId),
+      proposerPolityId: parsePolityId(agreement.proposerPolityId),
+      targetPolityId: parsePolityId(agreement.targetPolityId),
+      agreementKind: parseM6DiplomaticAgreementKind(agreement.agreementKind),
+      status: parseM6DiplomaticAgreementStatus(agreement.status),
+      startDay: parseGameDay(agreement.startDay),
+      endDay: parseGameDay(agreement.endDay),
+      recognitionDirection: parseM6DiplomaticRecognitionDirection(agreement.recognitionDirection),
+      reasonCodes: sortText(agreement.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M6 agreement reasonCode")
+      )
+    })),
+    recognitionEdges: sortM6RecognitionEdges(m6.recognitionEdges).map((edge) => ({
+      fromPolityId: parsePolityId(edge.fromPolityId),
+      toPolityId: parsePolityId(edge.toPolityId),
+      agreementId: parseM6DiplomaticAgreementId(edge.agreementId),
+      reasonCode: parseDisplayNameKey(edge.reasonCode, "M6 recognition reasonCode")
+    })),
+    legitimacySources: sortM6LegitimacySources(m6.legitimacySources).map((source) => ({
+      sourceId: parseM6LegitimacySourceId(source.sourceId),
+      polityId: parsePolityId(source.polityId),
+      audience: parseM6LegitimacyAudience(source.audience),
+      sourceKind: parseM6LegitimacySourceKind(source.sourceKind),
+      magnitudeBps: parseSignedBps(source.magnitudeBps, "M6 magnitudeBps"),
+      sourceRef: parseDisplayNameKey(source.sourceRef, "M6 sourceRef"),
+      reasonCode: parseDisplayNameKey(source.reasonCode, "M6 source reasonCode"),
+      createdDay: parseGameDay(source.createdDay)
+    })),
+    legitimacyProfiles: sortM6LegitimacyProfiles(m6.legitimacyProfiles).map((profile) => ({
+      polityId: parsePolityId(profile.polityId),
+      audience: parseM6LegitimacyAudience(profile.audience),
+      scoreBps: parseBps(profile.scoreBps, "M6 scoreBps"),
+      pressureBps: parseBps(profile.pressureBps, "M6 pressureBps"),
+      sourceIds: sortNumericIds(profile.sourceIds).map(parseM6LegitimacySourceId),
+      reasonCodes: sortText(profile.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M6 profile reasonCode")
+      )
+    }))
+  };
 }
 
 export function canonicalizeM4CampaignStateV0(m4: M4CampaignStateV0): M4CampaignStateV0 {
@@ -5953,6 +6419,64 @@ function parseM4PostwarMethod(
   throw new Error("M4 postwar method is invalid.");
 }
 
+function parseM6DiplomaticAgreementKind(value: unknown): M6DiplomaticAgreementKindV0 {
+  if (
+    value === "non-aggression" ||
+    value === "military-access" ||
+    value === "tribute-recognition"
+  ) {
+    return value;
+  }
+  throw new Error("M6 diplomatic agreement kind is invalid.");
+}
+
+function parseM6DiplomaticAgreementStatus(value: unknown): M6DiplomaticAgreementStatusV0 {
+  if (value === "proposed" || value === "active" || value === "rejected") {
+    return value;
+  }
+  throw new Error("M6 diplomatic agreement status is invalid.");
+}
+
+function parseM6DiplomaticRecognitionDirection(value: unknown): M6DiplomaticRecognitionDirectionV0 {
+  if (
+    value === "none" ||
+    value === "proposer-recognizes-target" ||
+    value === "target-recognizes-proposer"
+  ) {
+    return value;
+  }
+  throw new Error("M6 diplomatic recognition direction is invalid.");
+}
+
+function parseM6LegitimacyAudience(value: unknown): M6LegitimacyAudienceV0 {
+  if (
+    value === "court" ||
+    value === "local-lords" ||
+    value === "military-retinue" ||
+    value === "merchants" ||
+    value === "ritual-network" ||
+    value === "vassal-rulers" ||
+    value === "foreign-courts"
+  ) {
+    return value;
+  }
+  throw new Error("M6 legitimacy audience is invalid.");
+}
+
+function parseM6LegitimacySourceKind(value: unknown): M6LegitimacySourceKindV0 {
+  if (
+    value === "diplomatic-recognition" ||
+    value === "obligation-fulfilled" ||
+    value === "obligation-breached" ||
+    value === "succession-continuity" ||
+    value === "postwar-settlement" ||
+    value === "campaign-consequence"
+  ) {
+    return value;
+  }
+  throw new Error("M6 legitimacy source kind is invalid.");
+}
+
 export function parseM4FactionKnowledgeSourceKind(value: unknown): M4FactionKnowledgeSourceKindV0 {
   if (value === "scout" || value === "merchant" || value === "envoy" || value === "report") {
     return value;
@@ -6293,6 +6817,59 @@ function sortM4PostwarCandidates(
     (left, right) =>
       left.sourceWarOutcomeId - right.sourceWarOutcomeId ||
       compareText(left.candidateId, right.candidateId)
+  );
+}
+
+function sortM6Relations(
+  values: readonly M6DiplomaticRelationStateV0[]
+): readonly M6DiplomaticRelationStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.polityAId - right.polityAId ||
+      left.polityBId - right.polityBId ||
+      left.relationId - right.relationId
+  );
+}
+
+function sortM6Agreements(
+  values: readonly M6DiplomaticAgreementStateV0[]
+): readonly M6DiplomaticAgreementStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.relationId - right.relationId ||
+      left.startDay - right.startDay ||
+      left.agreementId - right.agreementId
+  );
+}
+
+function sortM6RecognitionEdges(
+  values: readonly M6RecognitionEdgeStateV0[]
+): readonly M6RecognitionEdgeStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.fromPolityId - right.fromPolityId ||
+      left.toPolityId - right.toPolityId ||
+      left.agreementId - right.agreementId
+  );
+}
+
+function sortM6LegitimacySources(
+  values: readonly M6LegitimacySourceStateV0[]
+): readonly M6LegitimacySourceStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.polityId - right.polityId ||
+      compareText(left.audience, right.audience) ||
+      left.createdDay - right.createdDay ||
+      left.sourceId - right.sourceId
+  );
+}
+
+function sortM6LegitimacyProfiles(
+  values: readonly M6LegitimacyProfileStateV0[]
+): readonly M6LegitimacyProfileStateV0[] {
+  return [...values].sort(
+    (left, right) => left.polityId - right.polityId || compareText(left.audience, right.audience)
   );
 }
 
@@ -6780,6 +7357,101 @@ function formatM4CanonicalLines(m4: M4CampaignStateV0 | undefined): readonly str
     `state.m4.warOutcomes=${formatM4WarOutcomes(m4.warOutcomes ?? [])}`,
     `state.m4.postwarCandidates=${formatM4PostwarCandidates(m4.postwarCandidates ?? [])}`
   ];
+}
+
+function formatM6CanonicalLines(m6: M6DiplomacyLegitimacyStateV0 | undefined): readonly string[] {
+  if (m6 === undefined) {
+    return [];
+  }
+
+  return [
+    `state.m6.schemaVersion=${m6.schemaVersion}`,
+    `state.m6.relations=${formatM6Relations(m6.relations)}`,
+    `state.m6.agreements=${formatM6Agreements(m6.agreements)}`,
+    `state.m6.recognitionEdges=${formatM6RecognitionEdges(m6.recognitionEdges)}`,
+    `state.m6.legitimacySources=${formatM6LegitimacySources(m6.legitimacySources)}`,
+    `state.m6.legitimacyProfiles=${formatM6LegitimacyProfiles(m6.legitimacyProfiles)}`
+  ];
+}
+
+function formatM6Relations(values: readonly M6DiplomaticRelationStateV0[]): string {
+  return sortM6Relations(values)
+    .map((value) =>
+      [
+        value.relationId,
+        value.polityAId,
+        value.polityBId,
+        value.trustBps,
+        value.affinityBps,
+        value.fearBps,
+        value.threatBps,
+        value.interestAlignmentBps,
+        value.historicalDebt,
+        value.borderConflictBps,
+        value.updatedDay,
+        sortText(value.reasonCodes).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6Agreements(values: readonly M6DiplomaticAgreementStateV0[]): string {
+  return sortM6Agreements(values)
+    .map((value) =>
+      [
+        value.agreementId,
+        value.relationId,
+        value.proposerPolityId,
+        value.targetPolityId,
+        value.agreementKind,
+        value.status,
+        value.startDay,
+        value.endDay,
+        value.recognitionDirection,
+        sortText(value.reasonCodes).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6RecognitionEdges(values: readonly M6RecognitionEdgeStateV0[]): string {
+  return sortM6RecognitionEdges(values)
+    .map((value) =>
+      [value.fromPolityId, value.toPolityId, value.agreementId, value.reasonCode].join(":")
+    )
+    .join(",");
+}
+
+function formatM6LegitimacySources(values: readonly M6LegitimacySourceStateV0[]): string {
+  return sortM6LegitimacySources(values)
+    .map((value) =>
+      [
+        value.sourceId,
+        value.polityId,
+        value.audience,
+        value.sourceKind,
+        value.magnitudeBps,
+        value.sourceRef,
+        value.reasonCode,
+        value.createdDay
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6LegitimacyProfiles(values: readonly M6LegitimacyProfileStateV0[]): string {
+  return sortM6LegitimacyProfiles(values)
+    .map((value) =>
+      [
+        value.polityId,
+        value.audience,
+        value.scoreBps,
+        value.pressureBps,
+        sortNumericIds(value.sourceIds).join("/"),
+        sortText(value.reasonCodes).join("/")
+      ].join(":")
+    )
+    .join(",");
 }
 
 function formatM4CampaignPlans(values: readonly M4CampaignPlanStateV0[]): string {
@@ -9598,6 +10270,223 @@ function validateM2DistrictCoverage(input: M2DistrictCoverageInput): void {
   }
 }
 
+function validateM6RuntimeState(world: WorldStateV0Candidate, errors: WorldInvariantError[]): void {
+  const m6 = world.state.m6;
+  if (m6 === undefined) {
+    return;
+  }
+  if (!isM6StateLike(m6)) {
+    return;
+  }
+
+  const polityIds = idsOf(world.definitions.polities);
+  const relationIds = new Set<number>();
+  m6.relations.forEach((relation, index) => {
+    if (relationIds.has(relation.relationId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6.relations",
+        message: `Duplicate M6 diplomatic relation row for M6DiplomaticRelationId ${relation.relationId}.`
+      });
+    }
+    relationIds.add(relation.relationId);
+    if (relation.polityAId === relation.polityBId) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6.relations[${index}].polityBId`,
+        message: "M6 diplomatic relation endpoints must be different polities."
+      });
+    }
+    validatePolityReference(
+      polityIds,
+      relation.polityAId,
+      `state.m6.relations[${index}].polityAId`,
+      errors
+    );
+    validatePolityReference(
+      polityIds,
+      relation.polityBId,
+      `state.m6.relations[${index}].polityBId`,
+      errors
+    );
+  });
+
+  const agreementIds = new Set<number>();
+  m6.agreements.forEach((agreement, index) => {
+    if (agreementIds.has(agreement.agreementId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6.agreements",
+        message: `Duplicate M6 diplomatic agreement row for M6DiplomaticAgreementId ${agreement.agreementId}.`
+      });
+    }
+    agreementIds.add(agreement.agreementId);
+    if (!relationIds.has(agreement.relationId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m6.agreements[${index}].relationId`,
+        message: "M6 diplomatic agreement references missing relation."
+      });
+    }
+    validatePolityReference(
+      polityIds,
+      agreement.proposerPolityId,
+      `state.m6.agreements[${index}].proposerPolityId`,
+      errors
+    );
+    validatePolityReference(
+      polityIds,
+      agreement.targetPolityId,
+      `state.m6.agreements[${index}].targetPolityId`,
+      errors
+    );
+    if (agreement.proposerPolityId === agreement.targetPolityId) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6.agreements[${index}].targetPolityId`,
+        message: "M6 diplomatic agreement endpoints must be different polities."
+      });
+    }
+    if (agreement.endDay < agreement.startDay) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6.agreements[${index}].endDay`,
+        message: "M6 diplomatic agreement endDay must be >= startDay."
+      });
+    }
+  });
+
+  m6.recognitionEdges.forEach((edge, index) => {
+    validatePolityReference(
+      polityIds,
+      edge.fromPolityId,
+      `state.m6.recognitionEdges[${index}].fromPolityId`,
+      errors
+    );
+    validatePolityReference(
+      polityIds,
+      edge.toPolityId,
+      `state.m6.recognitionEdges[${index}].toPolityId`,
+      errors
+    );
+    if (!agreementIds.has(edge.agreementId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m6.recognitionEdges[${index}].agreementId`,
+        message: "M6 recognition edge references missing agreement."
+      });
+    }
+  });
+  validateM6RecognitionAcyclicity(m6.recognitionEdges, errors);
+
+  const sourceIds = new Set<number>();
+  m6.legitimacySources.forEach((source, index) => {
+    if (sourceIds.has(source.sourceId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6.legitimacySources",
+        message: `Duplicate M6 legitimacy source row for M6LegitimacySourceId ${source.sourceId}.`
+      });
+    }
+    sourceIds.add(source.sourceId);
+    validatePolityReference(
+      polityIds,
+      source.polityId,
+      `state.m6.legitimacySources[${index}].polityId`,
+      errors
+    );
+  });
+
+  const profileKeys = new Set<string>();
+  m6.legitimacyProfiles.forEach((profile, index) => {
+    const key = `${profile.polityId}:${profile.audience}`;
+    if (profileKeys.has(key)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6.legitimacyProfiles",
+        message: "Duplicate M6 legitimacy profile row for polity and audience."
+      });
+    }
+    profileKeys.add(key);
+    validatePolityReference(
+      polityIds,
+      profile.polityId,
+      `state.m6.legitimacyProfiles[${index}].polityId`,
+      errors
+    );
+    profile.sourceIds.forEach((sourceId, sourceIndex) => {
+      if (!sourceIds.has(sourceId)) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m6.legitimacyProfiles[${index}].sourceIds[${sourceIndex}]`,
+          message: "M6 legitimacy profile references missing source."
+        });
+      }
+    });
+  });
+}
+
+function validatePolityReference(
+  polityIds: ReadonlySet<number>,
+  polityId: number,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (polityIds.has(polityId)) {
+    return;
+  }
+  errors.push({
+    code: "bad-reference",
+    path,
+    message: `M6 state references missing PolityId ${polityId}.`
+  });
+}
+
+function validateM6RecognitionAcyclicity(
+  edges: readonly M6RecognitionEdgeStateV0[],
+  errors: WorldInvariantError[]
+): void {
+  const nodes = sortNumericIds([
+    ...new Set(edges.flatMap((edge) => [edge.fromPolityId, edge.toPolityId]))
+  ]);
+  for (const node of nodes) {
+    if (hasM6RecognitionPath(edges, node, node, new Set<number>())) {
+      errors.push({
+        code: "invalid-schema",
+        path: "state.m6.recognitionEdges",
+        message: "M6 recognition graph must be acyclic."
+      });
+      return;
+    }
+  }
+}
+
+function hasM6RecognitionPath(
+  edges: readonly M6RecognitionEdgeStateV0[],
+  startPolityId: number,
+  targetPolityId: number,
+  visitedPolityIds: Set<number>
+): boolean {
+  if (visitedPolityIds.has(startPolityId)) {
+    return false;
+  }
+  visitedPolityIds.add(startPolityId);
+  const outgoing = edges
+    .filter((edge) => edge.fromPolityId === startPolityId)
+    .sort(
+      (left, right) => left.toPolityId - right.toPolityId || left.agreementId - right.agreementId
+    );
+  for (const edge of outgoing) {
+    if (edge.toPolityId === targetPolityId) {
+      return true;
+    }
+    if (hasM6RecognitionPath(edges, edge.toPolityId, targetPolityId, visitedPolityIds)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function validateRuntimeTableCoverage(
   world: WorldStateV0Candidate,
   errors: WorldInvariantError[]
@@ -9796,6 +10685,21 @@ function isM4StateLike(value: unknown): value is M4CampaignStateV0 {
     Array.isArray(value["factionKnowledgeSnapshots"]) &&
     Array.isArray(value["mobilizedForceCommitments"]) &&
     Array.isArray(value["grainSupplyReservations"])
+  );
+}
+
+function isM6StateLike(value: unknown): value is M6DiplomacyLegitimacyStateV0 {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    value["schemaVersion"] === 1 &&
+    Array.isArray(value["relations"]) &&
+    Array.isArray(value["agreements"]) &&
+    Array.isArray(value["recognitionEdges"]) &&
+    Array.isArray(value["legitimacySources"]) &&
+    Array.isArray(value["legitimacyProfiles"])
   );
 }
 

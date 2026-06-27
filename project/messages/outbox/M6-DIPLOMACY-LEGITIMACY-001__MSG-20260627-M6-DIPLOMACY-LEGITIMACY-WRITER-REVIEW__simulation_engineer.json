@@ -1,0 +1,113 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Replacement simulation_engineer reviewed and continued the preserved uncommitted M6 diplomacy/legitimacy implementation, fixed save/load M6 slice preservation and a lint issue, and is routing the deterministic diplomacy and legitimacy substrate for systems_architect review.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "packages/sim-ai/src/m6-diplomacy-ai.ts",
+    "packages/sim-ai/src/index.ts",
+    "packages/sim-ai/package.json",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m6-diplomacy-legitimacy.test.ts",
+    "tests/sim-ai-m6-diplomacy-ai.test.ts",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Reviewed dirty worktree; implementation changes are in allowed package/test/project-message paths. Untracked ui-samples/ remains unrelated and untouched."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "24 test files passed, 177 tests passed, including tests/sim-core-m6-diplomacy-legitimacy.test.ts for command parity, stable ordering, no recognition cycles, legitimacy source conservation/reason codes, and save malformed/missing/future-version rejection paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "2 test files passed, 3 tests passed, including tests/sim-ai-m6-diplomacy-ai.test.ts for public-query AI planning and same GameCommand submission path."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 10 tests passed, including M6 diplomacy and legitimacy command/query schema acceptance and malformed sourceKind rejection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed, 16 tests passed, including save envelope and save/load contract coverage after M6 save-format parser changes."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop canaries."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism canaries matched; root Vitest passed 37 files / 257 tests; web Vitest passed 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint passed after removing an unused assignment in the M6 property test."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-DIPLOMACY-LEGITIMACY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json after REVIEW status update."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors after REVIEW status and handoff write."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json",
+      "exit_code": 0,
+      "result": "VALID handoff JSON."
+    }
+  ],
+  "decisions": [
+    "Preserved the previous writer's allowed-path implementation instead of reverting it.",
+    "Kept diplomacy and legitimacy authoritative in sim-core WorldState m6 state with explicit schemaVersion 1, branded IDs, reason-coded events and deterministic canonical ordering.",
+    "Kept player and AI on the same GameCommand paths: sim.propose-diplomatic-agreement, sim.answer-diplomatic-agreement, and sim.record-legitimacy-source.",
+    "Fixed save envelope copying so state.m6 is preserved through createSaveEnvelopeV1/copySaveBody, and added M6 required-slice rejection in loadSaveV1 when the runtime expects M6 state.",
+    "Did not touch PROJECT_STATUS.md, ui-samples/, UI packages, content-source, tools, docs gate files, or manual node battle scope."
+  ],
+  "risks": [
+    "R4 shared-surface change touches sim-core command/query/world-state, protocol schemas, save-format, and sim-ai; systems_architect review is required before acceptance.",
+    "M6 diplomacy is intentionally bounded substrate work, not full peace treaties, grand-strategy manager, server/multiplayer, telemetry, arbitrary-code scripting, or manual node battle.",
+    "Protocol/save changes are additive schema v1 surfaces but still need architecture scrutiny for long-term compatibility and replay semantics.",
+    "Untracked ui-samples/ remains present in the worktree and was not inspected or modified."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the M6 diplomacy/legitimacy substrate for architecture boundaries, deterministic authority, command parity, save/protocol compatibility, and R4 scope discipline. If accepted, route onward per project review flow.",
+  "created_at": "2026-06-27T07:24:00+08:00"
+}

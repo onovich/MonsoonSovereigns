@@ -1,0 +1,98 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-R3-ACCEPT",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M6-DIPLOMACY-LEGITIMACY-001 after systems_architect R3 ACCEPT of the CI/API-boundary fix. The accepted implementation includes deterministic M6 diplomacy and legitimacy in authoritative simulation state, actor-authority enforcement, recognized-order obligation gating, save/protocol integration, M6 AI command parity, and an approved AuthoritativeGameCommandV1 boundary that avoids forbidden client-core changes.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-ai/src/m6-diplomacy-ai.ts",
+    "tests/sim-core-m6-diplomacy-legitimacy.test.ts",
+    "tests/sim-ai-m6-diplomacy-ai.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/save-format-v1.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-R3-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "cc9e42d2593907fe844947e52d793fa8d1475beb",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems R3 ACCEPT handoff."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS after R3 fix: format:check, lint, recursive typecheck including client-core, and architecture boundaries."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "PASS: 24 files / 179 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "PASS: 2 files / 3 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "PASS: 1 file / 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "PASS: 2 files / 16 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "PASS: Node and worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS: architecture, determinism, root Vitest 37 files / 259 tests, web Vitest 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-DIPLOMACY-LEGITIMACY-001",
+      "exit_code": 0,
+      "result": "VALID before lead R3 ACCEPT update; final validation is run after this handoff is written."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before lead R3 ACCEPT update."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: AuthoritativeGameCommandV1 is approved as the M6 authoritative command union for downstream simulation/save/AI tasks.",
+    "ACCEPT: legacy GameCommandV1 remains pre-M6 for current client/M5 surfaces; M6 client tasks must explicitly opt into authoritative commands or define narrower client command types.",
+    "ACCEPT: M6 player and AI diplomacy/legitimacy commands use the same SimulationMessageV1 submit/preview parser/evaluator path without hidden AI-only privilege.",
+    "ACCEPT: sim-core authority validation remains the domain guard after parsing; the type split does not weaken command authorization.",
+    "ACCEPT: no forbidden client-core, app/UI, docs, PROJECT_STATUS, server, telemetry, manual node battle, or arbitrary scripting scope was added.",
+    "Proceed to final lead gates, PR, CI, merge to main, and only then mark task CLOSED."
+  ],
+  "risks": [
+    "parseGameCommandV1 keeps its historical name while returning AuthoritativeGameCommandV1; downstream docs/tasks should use explicit type names.",
+    "Future M6 client-facing work must avoid accidentally broadening legacy GameCommandV1 without task authorization.",
+    "Untracked ui-samples/ remains unrelated and untouched."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Run final integration gates, open and merge PR, sync main, then close M6-DIPLOMACY-LEGITIMACY-001 and continue to the next READY M6 task.",
+  "created_at": "2026-06-27T14:12:37+08:00"
+}

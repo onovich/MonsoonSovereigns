@@ -92,6 +92,29 @@ export type M4WithdrawalTriggerV1 =
   | "siege"
   | "loss"
   | "objective-complete";
+export type M6DiplomaticAgreementKindV1 =
+  | "non-aggression"
+  | "military-access"
+  | "tribute-recognition";
+export type M6DiplomaticRecognitionDirectionV1 =
+  | "none"
+  | "proposer-recognizes-target"
+  | "target-recognizes-proposer";
+export type M6LegitimacyAudienceV1 =
+  | "court"
+  | "local-lords"
+  | "military-retinue"
+  | "merchants"
+  | "ritual-network"
+  | "vassal-rulers"
+  | "foreign-courts";
+export type M6LegitimacySourceKindV1 =
+  | "diplomatic-recognition"
+  | "obligation-fulfilled"
+  | "obligation-breached"
+  | "succession-continuity"
+  | "postwar-settlement"
+  | "campaign-consequence";
 export const M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION = 1;
 export const M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES = 16;
 export type M4CampaignAiDecisionKindV1 =
@@ -394,6 +417,57 @@ export interface ApplyM3PostwarGovernanceCommandV1 {
   };
 }
 
+export interface ProposeDiplomaticAgreementCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.propose-diplomatic-agreement";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly agreementId: number;
+    readonly relationId: number;
+    readonly proposerPolityId: number;
+    readonly targetPolityId: number;
+    readonly agreementKind: M6DiplomaticAgreementKindV1;
+    readonly durationDays: number;
+    readonly recognitionDirection: M6DiplomaticRecognitionDirectionV1;
+    readonly reasonCode: string;
+  };
+}
+
+export interface AnswerDiplomaticAgreementCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.answer-diplomatic-agreement";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly agreementId: number;
+    readonly accepted: boolean;
+    readonly reasonCode: string;
+  };
+}
+
+export interface RecordLegitimacySourceCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.record-legitimacy-source";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly sourceId: number;
+    readonly polityId: number;
+    readonly audience: M6LegitimacyAudienceV1;
+    readonly sourceKind: M6LegitimacySourceKindV1;
+    readonly magnitudeBps: number;
+    readonly sourceRef: string;
+    readonly reasonCode: string;
+  };
+}
+
 export type M4CampaignOwnerV1 =
   | { readonly kind: "commander"; readonly characterId: number }
   | { readonly kind: "polity"; readonly polityId: number };
@@ -644,6 +718,13 @@ export type GameCommandV1 =
   | ResolveM4CampaignWithdrawalCommandV1
   | VerifyStateHashCommandV1;
 
+export type M6GameCommandV1 =
+  | ProposeDiplomaticAgreementCommandV1
+  | AnswerDiplomaticAgreementCommandV1
+  | RecordLegitimacySourceCommandV1;
+
+export type AuthoritativeGameCommandV1 = GameCommandV1 | M6GameCommandV1;
+
 const GAME_COMMAND_KINDS: readonly GameCommandV1["kind"][] = [
   "sim.advance-day",
   "debug.set-district-control",
@@ -825,6 +906,24 @@ export interface ListM4WarOutcomesQueryV1 {
   };
 }
 
+export interface ListM6DiplomacyQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m6-diplomacy";
+  readonly payload: {
+    readonly queryId: string;
+    readonly observerPolityId: number;
+  };
+}
+
+export interface ListM6RecognizedOrderQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-m6-recognized-order";
+  readonly payload: {
+    readonly queryId: string;
+    readonly polityId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -844,7 +943,9 @@ export type GameQueryV1 =
   | ListM4MarchStateQueryV1
   | ListM4SiegeStateQueryV1
   | ListM4WithdrawalStateQueryV1
-  | ListM4WarOutcomesQueryV1;
+  | ListM4WarOutcomesQueryV1
+  | ListM6DiplomacyQueryV1
+  | ListM6RecognizedOrderQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1154,13 +1255,13 @@ export type SimulationMessageV1 =
       readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
       readonly requestId: string;
       readonly type: "simulation.preview-command";
-      readonly payload: GameCommandV1;
+      readonly payload: AuthoritativeGameCommandV1;
     }
   | {
       readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
       readonly requestId: string;
       readonly type: "simulation.submit-command";
-      readonly payload: GameCommandV1;
+      readonly payload: AuthoritativeGameCommandV1;
     }
   | {
       readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
@@ -1543,7 +1644,9 @@ export function createM5PlayableLoopScriptV1(): M5PlayableLoopScriptV1 {
   };
 }
 
-export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameCommandV1> {
+export function parseGameCommandV1(
+  input: unknown
+): ProtocolParseResult<AuthoritativeGameCommandV1> {
   if (!isRecord(input)) {
     return protocolError("invalid-payload", "$", "GameCommand v1 must be an object.");
   }
@@ -1792,6 +1895,54 @@ export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameComm
     }
     case "sim.apply-m3-postwar-governance": {
       const payload = parseApplyM3PostwarGovernancePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.propose-diplomatic-agreement": {
+      const payload = parseProposeDiplomaticAgreementPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.answer-diplomatic-agreement": {
+      const payload = parseAnswerDiplomaticAgreementPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.record-legitimacy-source": {
+      const payload = parseRecordLegitimacySourcePayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -2306,6 +2457,45 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
           schemaVersion: GAME_QUERY_SCHEMA_VERSION,
           kind,
           payload: payload.value
+        }
+      };
+    }
+    case "sim.list-m6-diplomacy": {
+      const payload = parseM6PolityScopedQueryPayload(input["payload"], "sim.list-m6-diplomacy");
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: {
+            queryId: payload.value.queryId,
+            observerPolityId: payload.value.polityId
+          }
+        }
+      };
+    }
+    case "sim.list-m6-recognized-order": {
+      const payload = parseM6PolityScopedQueryPayload(
+        input["payload"],
+        "sim.list-m6-recognized-order"
+      );
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: {
+            queryId: payload.value.queryId,
+            polityId: payload.value.polityId
+          }
         }
       };
     }
@@ -3218,6 +3408,160 @@ function parseApplyM3PostwarGovernancePayload(
   };
 }
 
+function parseProposeDiplomaticAgreementPayload(
+  input: unknown
+): ProtocolParseResult<ProposeDiplomaticAgreementCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.propose-diplomatic-agreement payload must be an object."
+    );
+  }
+
+  const agreementId = parsePositiveSafeInteger(input["agreementId"], "payload.agreementId");
+  if (!agreementId.ok) {
+    return agreementId;
+  }
+  const relationId = parsePositiveSafeInteger(input["relationId"], "payload.relationId");
+  if (!relationId.ok) {
+    return relationId;
+  }
+  const proposerPolityId = parsePositiveSafeInteger(
+    input["proposerPolityId"],
+    "payload.proposerPolityId"
+  );
+  if (!proposerPolityId.ok) {
+    return proposerPolityId;
+  }
+  const targetPolityId = parsePositiveSafeInteger(
+    input["targetPolityId"],
+    "payload.targetPolityId"
+  );
+  if (!targetPolityId.ok) {
+    return targetPolityId;
+  }
+  const agreementKind = parseM6DiplomaticAgreementKind(
+    input["agreementKind"],
+    "payload.agreementKind"
+  );
+  if (!agreementKind.ok) {
+    return agreementKind;
+  }
+  const durationDays = parsePositiveSafeInteger(input["durationDays"], "payload.durationDays");
+  if (!durationDays.ok) {
+    return durationDays;
+  }
+  const recognitionDirection = parseM6DiplomaticRecognitionDirection(
+    input["recognitionDirection"],
+    "payload.recognitionDirection"
+  );
+  if (!recognitionDirection.ok) {
+    return recognitionDirection;
+  }
+  const reasonCode = parseReasonCode(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+
+  return {
+    ok: true,
+    value: {
+      agreementId: agreementId.value,
+      relationId: relationId.value,
+      proposerPolityId: proposerPolityId.value,
+      targetPolityId: targetPolityId.value,
+      agreementKind: agreementKind.value,
+      durationDays: durationDays.value,
+      recognitionDirection: recognitionDirection.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseAnswerDiplomaticAgreementPayload(
+  input: unknown
+): ProtocolParseResult<AnswerDiplomaticAgreementCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.answer-diplomatic-agreement payload must be an object."
+    );
+  }
+  const agreementId = parsePositiveSafeInteger(input["agreementId"], "payload.agreementId");
+  if (!agreementId.ok) {
+    return agreementId;
+  }
+  if (typeof input["accepted"] !== "boolean") {
+    return protocolError("invalid-payload", "payload.accepted", "accepted must be a boolean.");
+  }
+  const reasonCode = parseReasonCode(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+  return {
+    ok: true,
+    value: {
+      agreementId: agreementId.value,
+      accepted: input["accepted"],
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseRecordLegitimacySourcePayload(
+  input: unknown
+): ProtocolParseResult<RecordLegitimacySourceCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.record-legitimacy-source payload must be an object."
+    );
+  }
+  const sourceId = parsePositiveSafeInteger(input["sourceId"], "payload.sourceId");
+  if (!sourceId.ok) {
+    return sourceId;
+  }
+  const polityId = parsePositiveSafeInteger(input["polityId"], "payload.polityId");
+  if (!polityId.ok) {
+    return polityId;
+  }
+  const audience = parseM6LegitimacyAudience(input["audience"], "payload.audience");
+  if (!audience.ok) {
+    return audience;
+  }
+  const sourceKind = parseM6LegitimacySourceKind(input["sourceKind"], "payload.sourceKind");
+  if (!sourceKind.ok) {
+    return sourceKind;
+  }
+  const magnitudeBps = parseSignedBps(input["magnitudeBps"], "payload.magnitudeBps");
+  if (!magnitudeBps.ok) {
+    return magnitudeBps;
+  }
+  const sourceRef = parseNonEmptyProtocolString(input["sourceRef"], "payload.sourceRef");
+  if (!sourceRef.ok) {
+    return sourceRef;
+  }
+  const reasonCode = parseReasonCode(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+  return {
+    ok: true,
+    value: {
+      sourceId: sourceId.value,
+      polityId: polityId.value,
+      audience: audience.value,
+      sourceKind: sourceKind.value,
+      magnitudeBps: magnitudeBps.value,
+      sourceRef: sourceRef.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
 function parseCreateCampaignObjectivePayload(
   input: unknown
 ): ProtocolParseResult<CreateCampaignObjectiveCommandV1["payload"]> {
@@ -3924,6 +4268,81 @@ function parseM3PostwarGovernanceMethod(
   );
 }
 
+function parseM6DiplomaticAgreementKind(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M6DiplomaticAgreementKindV1> {
+  if (
+    value === "non-aggression" ||
+    value === "military-access" ||
+    value === "tribute-recognition"
+  ) {
+    return { ok: true, value };
+  }
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be non-aggression, military-access, or tribute-recognition.`
+  );
+}
+
+function parseM6DiplomaticRecognitionDirection(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M6DiplomaticRecognitionDirectionV1> {
+  if (
+    value === "none" ||
+    value === "proposer-recognizes-target" ||
+    value === "target-recognizes-proposer"
+  ) {
+    return { ok: true, value };
+  }
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be none, proposer-recognizes-target, or target-recognizes-proposer.`
+  );
+}
+
+function parseM6LegitimacyAudience(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M6LegitimacyAudienceV1> {
+  if (
+    value === "court" ||
+    value === "local-lords" ||
+    value === "military-retinue" ||
+    value === "merchants" ||
+    value === "ritual-network" ||
+    value === "vassal-rulers" ||
+    value === "foreign-courts"
+  ) {
+    return { ok: true, value };
+  }
+  return protocolError("invalid-payload", path, `${path} must be a valid M6 legitimacy audience.`);
+}
+
+function parseM6LegitimacySourceKind(
+  value: unknown,
+  path: string
+): ProtocolParseResult<M6LegitimacySourceKindV1> {
+  if (
+    value === "diplomatic-recognition" ||
+    value === "obligation-fulfilled" ||
+    value === "obligation-breached" ||
+    value === "succession-continuity" ||
+    value === "postwar-settlement" ||
+    value === "campaign-consequence"
+  ) {
+    return { ok: true, value };
+  }
+  return protocolError(
+    "invalid-payload",
+    path,
+    `${path} must be a valid M6 legitimacy source kind.`
+  );
+}
+
 function parseM3ObligationSettlementAction(
   value: unknown,
   path: string
@@ -4413,6 +4832,29 @@ function parseM4CampaignScopedQueryPayload(
     return campaignPlanId;
   }
   return { ok: true, value: { queryId, campaignPlanId: campaignPlanId.value } };
+}
+
+function parseM6PolityScopedQueryPayload(
+  input: unknown,
+  kind: string
+): ProtocolParseResult<{ readonly queryId: string; readonly polityId: number }> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", "payload", `${kind} payload must be an object.`);
+  }
+  const queryId = input["queryId"];
+  if (typeof queryId !== "string" || !COMMAND_ID_PATTERN.test(queryId)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+  const polityKey = kind === "sim.list-m6-diplomacy" ? "observerPolityId" : "polityId";
+  const polityId = parsePositiveSafeInteger(input[polityKey], `payload.${polityKey}`);
+  if (!polityId.ok) {
+    return polityId;
+  }
+  return { ok: true, value: { queryId, polityId: polityId.value } };
 }
 
 function parseStartCampaignMarchPayload(

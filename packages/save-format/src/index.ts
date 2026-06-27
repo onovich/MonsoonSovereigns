@@ -1,4 +1,6 @@
-import { parseGameCommandV1, type GameCommandV1 } from "@monsoon/protocol";
+import { parseGameCommandV1, type AuthoritativeGameCommandV1 } from "@monsoon/protocol";
+
+type GameCommandV1 = AuthoritativeGameCommandV1;
 
 export const SAVE_ENVELOPE_V1_MAGIC = "MONSOON_SOVEREIGNS_SAVE";
 export const SAVE_ENVELOPE_V1_SCHEMA_VERSION = 1;
@@ -502,6 +504,95 @@ export interface SaveM4CampaignStateDto {
   readonly postwarCandidates: readonly SaveM4PostwarCandidateStateDto[];
 }
 
+export type SaveM6DiplomaticAgreementKindDto =
+  | "non-aggression"
+  | "military-access"
+  | "tribute-recognition";
+export type SaveM6DiplomaticAgreementStatusDto = "proposed" | "active" | "rejected";
+export type SaveM6DiplomaticRecognitionDirectionDto =
+  | "none"
+  | "proposer-recognizes-target"
+  | "target-recognizes-proposer";
+export type SaveM6LegitimacyAudienceDto =
+  | "court"
+  | "local-lords"
+  | "military-retinue"
+  | "merchants"
+  | "ritual-network"
+  | "vassal-rulers"
+  | "foreign-courts";
+export type SaveM6LegitimacySourceKindDto =
+  | "diplomatic-recognition"
+  | "obligation-fulfilled"
+  | "obligation-breached"
+  | "succession-continuity"
+  | "postwar-settlement"
+  | "campaign-consequence";
+
+export interface SaveM6DiplomaticRelationStateDto {
+  readonly relationId: number;
+  readonly polityAId: number;
+  readonly polityBId: number;
+  readonly trustBps: number;
+  readonly affinityBps: number;
+  readonly fearBps: number;
+  readonly threatBps: number;
+  readonly interestAlignmentBps: number;
+  readonly historicalDebt: number;
+  readonly borderConflictBps: number;
+  readonly updatedDay: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface SaveM6DiplomaticAgreementStateDto {
+  readonly agreementId: number;
+  readonly relationId: number;
+  readonly proposerPolityId: number;
+  readonly targetPolityId: number;
+  readonly agreementKind: SaveM6DiplomaticAgreementKindDto;
+  readonly status: SaveM6DiplomaticAgreementStatusDto;
+  readonly startDay: number;
+  readonly endDay: number;
+  readonly recognitionDirection: SaveM6DiplomaticRecognitionDirectionDto;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface SaveM6RecognitionEdgeStateDto {
+  readonly fromPolityId: number;
+  readonly toPolityId: number;
+  readonly agreementId: number;
+  readonly reasonCode: string;
+}
+
+export interface SaveM6LegitimacySourceStateDto {
+  readonly sourceId: number;
+  readonly polityId: number;
+  readonly audience: SaveM6LegitimacyAudienceDto;
+  readonly sourceKind: SaveM6LegitimacySourceKindDto;
+  readonly magnitudeBps: number;
+  readonly sourceRef: string;
+  readonly reasonCode: string;
+  readonly createdDay: number;
+}
+
+export interface SaveM6LegitimacyProfileStateDto {
+  readonly polityId: number;
+  readonly audience: SaveM6LegitimacyAudienceDto;
+  readonly scoreBps: number;
+  readonly pressureBps: number;
+  readonly sourceIds: readonly number[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface SaveM6DiplomacyLegitimacyStateDto {
+  readonly schemaVersion: 1;
+  readonly relations: readonly SaveM6DiplomaticRelationStateDto[];
+  readonly agreements: readonly SaveM6DiplomaticAgreementStateDto[];
+  readonly recognitionEdges: readonly SaveM6RecognitionEdgeStateDto[];
+  readonly legitimacySources: readonly SaveM6LegitimacySourceStateDto[];
+  readonly legitimacyProfiles: readonly SaveM6LegitimacyProfileStateDto[];
+}
+
 export type SaveM4CampaignObjectiveKindDto =
   | "prepare"
   | "march"
@@ -868,6 +959,7 @@ export interface SaveWorldRuntimeStateV0Dto {
   readonly m2?: SaveM2EconomyPopulationStateDto;
   readonly m3?: SaveM3PolityVassalageStateDto;
   readonly m4?: SaveM4CampaignStateDto;
+  readonly m6?: SaveM6DiplomacyLegitimacyStateDto;
 }
 
 export interface SaveWorldSnapshotV0Dto {
@@ -982,6 +1074,7 @@ export interface WorldStateV0ForSave {
     readonly m2?: SaveM2EconomyPopulationStateDto;
     readonly m3?: SaveM3PolityVassalageStateDto;
     readonly m4?: SaveM4CampaignStateDto;
+    readonly m6?: SaveM6DiplomacyLegitimacyStateDto;
   };
 }
 
@@ -1130,7 +1223,8 @@ export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnap
     stateWithoutM2,
     world.state.m2,
     world.state.m3,
-    world.state.m4
+    world.state.m4,
+    world.state.m6
   );
 
   return {
@@ -1197,7 +1291,8 @@ export function saveWorldStateV0DtoToCandidate(snapshot: unknown, scheduler?: un
     stateWithoutM2,
     parsedSnapshot.value.state.m2,
     parsedSnapshot.value.state.m3,
-    parsedSnapshot.value.state.m4
+    parsedSnapshot.value.state.m4,
+    parsedSnapshot.value.state.m6
   );
 
   return {
@@ -1592,6 +1687,10 @@ function parseWorldRuntimeState(
     input["m4"] === undefined
       ? undefined
       : parseM4CampaignState(input["m4"], "body.authoritativeSnapshot.state.m4", errors);
+  const m6 =
+    input["m6"] === undefined
+      ? undefined
+      : parseM6DiplomacyLegitimacyState(input["m6"], "body.authoritativeSnapshot.state.m6", errors);
   if (
     polities === undefined ||
     persons === undefined ||
@@ -1600,13 +1699,14 @@ function parseWorldRuntimeState(
     routes === undefined ||
     (input["m2"] !== undefined && m2 === undefined) ||
     (input["m3"] !== undefined && m3 === undefined) ||
-    (input["m4"] !== undefined && m4 === undefined)
+    (input["m4"] !== undefined && m4 === undefined) ||
+    (input["m6"] !== undefined && m6 === undefined)
   ) {
     return undefined;
   }
 
   const state = { polities, persons, districts, settlements, routes };
-  return copyOptionalRuntimeSlices(state, m2, m3, m4);
+  return copyOptionalRuntimeSlices(state, m2, m3, m4, m6);
 }
 
 function parseSaveSchedulerV1Dto(
@@ -2258,6 +2358,211 @@ function parseM4CampaignState(
     withdrawals,
     warOutcomes,
     postwarCandidates
+  };
+}
+
+function parseM6DiplomacyLegitimacyState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6DiplomacyLegitimacyStateDto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M6 diplomacy legitimacy state must be an object."));
+    return undefined;
+  }
+  if (input["schemaVersion"] !== 1) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.schemaVersion`,
+        "M6 diplomacy legitimacy schemaVersion must be 1."
+      )
+    );
+  }
+  const relations = parseM6Array(
+    input["relations"],
+    `${path}.relations`,
+    "M6 relations",
+    errors,
+    parseM6Relation
+  );
+  const agreements = parseM6Array(
+    input["agreements"],
+    `${path}.agreements`,
+    "M6 agreements",
+    errors,
+    parseM6Agreement
+  );
+  const recognitionEdges = parseM6Array(
+    input["recognitionEdges"],
+    `${path}.recognitionEdges`,
+    "M6 recognitionEdges",
+    errors,
+    parseM6RecognitionEdge
+  );
+  const legitimacySources = parseM6Array(
+    input["legitimacySources"],
+    `${path}.legitimacySources`,
+    "M6 legitimacySources",
+    errors,
+    parseM6LegitimacySource
+  );
+  const legitimacyProfiles = parseM6Array(
+    input["legitimacyProfiles"],
+    `${path}.legitimacyProfiles`,
+    "M6 legitimacyProfiles",
+    errors,
+    parseM6LegitimacyProfile
+  );
+  if (
+    relations === undefined ||
+    agreements === undefined ||
+    recognitionEdges === undefined ||
+    legitimacySources === undefined ||
+    legitimacyProfiles === undefined
+  ) {
+    return undefined;
+  }
+  return {
+    schemaVersion: 1,
+    relations,
+    agreements,
+    recognitionEdges,
+    legitimacySources,
+    legitimacyProfiles
+  };
+}
+
+function parseM6Array<TEntry>(
+  input: unknown,
+  path: string,
+  label: string,
+  errors: SaveLoadRejectionReasonV1[],
+  parseEntry: (entry: unknown, path: string, errors: SaveLoadRejectionReasonV1[]) => TEntry
+): readonly TEntry[] | undefined {
+  if (!Array.isArray(input)) {
+    errors.push(reason("invalid-schema", path, `${label} must be an array.`));
+    return undefined;
+  }
+  return input.map((entry, index) => parseEntry(entry, `${path}[${index}]`, errors));
+}
+
+function readM6Record(
+  input: unknown,
+  path: string,
+  label: string,
+  errors: SaveLoadRejectionReasonV1[]
+): Record<string, unknown> {
+  if (isRecord(input)) {
+    return input;
+  }
+
+  errors.push(reason("invalid-schema", path, `${label} must be an object.`));
+  return {};
+}
+
+function parseM6Relation(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6DiplomaticRelationStateDto {
+  const record = readM6Record(input, path, "M6 relation", errors);
+  return {
+    relationId: readPositiveSafeInteger(record, "relationId", `${path}.relationId`, errors) ?? 0,
+    polityAId: readPositiveSafeInteger(record, "polityAId", `${path}.polityAId`, errors) ?? 0,
+    polityBId: readPositiveSafeInteger(record, "polityBId", `${path}.polityBId`, errors) ?? 0,
+    trustBps: readBps(record, "trustBps", `${path}.trustBps`, errors),
+    affinityBps: readBps(record, "affinityBps", `${path}.affinityBps`, errors),
+    fearBps: readBps(record, "fearBps", `${path}.fearBps`, errors),
+    threatBps: readBps(record, "threatBps", `${path}.threatBps`, errors),
+    interestAlignmentBps: readBps(
+      record,
+      "interestAlignmentBps",
+      `${path}.interestAlignmentBps`,
+      errors
+    ),
+    historicalDebt:
+      readNonnegativeSafeInteger(record, "historicalDebt", `${path}.historicalDebt`, errors) ?? 0,
+    borderConflictBps: readBps(record, "borderConflictBps", `${path}.borderConflictBps`, errors),
+    updatedDay: readNonnegativeSafeInteger(record, "updatedDay", `${path}.updatedDay`, errors) ?? 0,
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors)
+  };
+}
+
+function parseM6Agreement(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6DiplomaticAgreementStateDto {
+  const record = readM6Record(input, path, "M6 agreement", errors);
+  return {
+    agreementId: readPositiveSafeInteger(record, "agreementId", `${path}.agreementId`, errors) ?? 0,
+    relationId: readPositiveSafeInteger(record, "relationId", `${path}.relationId`, errors) ?? 0,
+    proposerPolityId:
+      readPositiveSafeInteger(record, "proposerPolityId", `${path}.proposerPolityId`, errors) ?? 0,
+    targetPolityId:
+      readPositiveSafeInteger(record, "targetPolityId", `${path}.targetPolityId`, errors) ?? 0,
+    agreementKind: parseM6AgreementKind(record["agreementKind"], `${path}.agreementKind`, errors),
+    status: parseM6AgreementStatus(record["status"], `${path}.status`, errors),
+    startDay: readNonnegativeSafeInteger(record, "startDay", `${path}.startDay`, errors) ?? 0,
+    endDay: readNonnegativeSafeInteger(record, "endDay", `${path}.endDay`, errors) ?? 0,
+    recognitionDirection: parseM6RecognitionDirection(
+      record["recognitionDirection"],
+      `${path}.recognitionDirection`,
+      errors
+    ),
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors)
+  };
+}
+
+function parseM6RecognitionEdge(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6RecognitionEdgeStateDto {
+  const record = readM6Record(input, path, "M6 recognition edge", errors);
+  return {
+    fromPolityId:
+      readPositiveSafeInteger(record, "fromPolityId", `${path}.fromPolityId`, errors) ?? 0,
+    toPolityId: readPositiveSafeInteger(record, "toPolityId", `${path}.toPolityId`, errors) ?? 0,
+    agreementId: readPositiveSafeInteger(record, "agreementId", `${path}.agreementId`, errors) ?? 0,
+    reasonCode: readString(record, "reasonCode", `${path}.reasonCode`, errors)
+  };
+}
+
+function parseM6LegitimacySource(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6LegitimacySourceStateDto {
+  const record = readM6Record(input, path, "M6 legitimacy source", errors);
+  return {
+    sourceId: readPositiveSafeInteger(record, "sourceId", `${path}.sourceId`, errors) ?? 0,
+    polityId: readPositiveSafeInteger(record, "polityId", `${path}.polityId`, errors) ?? 0,
+    audience: parseM6Audience(record["audience"], `${path}.audience`, errors),
+    sourceKind: parseM6SourceKind(record["sourceKind"], `${path}.sourceKind`, errors),
+    magnitudeBps:
+      readIntegerInRange(record, "magnitudeBps", `${path}.magnitudeBps`, -10_000, 10_000, errors) ??
+      0,
+    sourceRef: readString(record, "sourceRef", `${path}.sourceRef`, errors),
+    reasonCode: readString(record, "reasonCode", `${path}.reasonCode`, errors),
+    createdDay: readNonnegativeSafeInteger(record, "createdDay", `${path}.createdDay`, errors) ?? 0
+  };
+}
+
+function parseM6LegitimacyProfile(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6LegitimacyProfileStateDto {
+  const record = readM6Record(input, path, "M6 legitimacy profile", errors);
+  return {
+    polityId: readPositiveSafeInteger(record, "polityId", `${path}.polityId`, errors) ?? 0,
+    audience: parseM6Audience(record["audience"], `${path}.audience`, errors),
+    scoreBps: readBps(record, "scoreBps", `${path}.scoreBps`, errors),
+    pressureBps: readBps(record, "pressureBps", `${path}.pressureBps`, errors),
+    sourceIds: parsePositiveIntegerArray(record["sourceIds"], `${path}.sourceIds`, errors) ?? [],
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors)
   };
 }
 
@@ -3337,6 +3642,89 @@ function parseM4PostwarMethodArray(
     return undefined;
   }
   return input.map((entry, index) => parseM4PostwarMethod(entry, `${path}[${index}]`, errors));
+}
+
+function parseM6AgreementKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6DiplomaticAgreementKindDto {
+  if (
+    input === "non-aggression" ||
+    input === "military-access" ||
+    input === "tribute-recognition"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M6 agreementKind is invalid."));
+  return "non-aggression";
+}
+
+function parseM6AgreementStatus(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6DiplomaticAgreementStatusDto {
+  if (input === "proposed" || input === "active" || input === "rejected") {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M6 agreement status is invalid."));
+  return "proposed";
+}
+
+function parseM6RecognitionDirection(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6DiplomaticRecognitionDirectionDto {
+  if (
+    input === "none" ||
+    input === "proposer-recognizes-target" ||
+    input === "target-recognizes-proposer"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M6 recognitionDirection is invalid."));
+  return "none";
+}
+
+function parseM6Audience(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6LegitimacyAudienceDto {
+  if (
+    input === "court" ||
+    input === "local-lords" ||
+    input === "military-retinue" ||
+    input === "merchants" ||
+    input === "ritual-network" ||
+    input === "vassal-rulers" ||
+    input === "foreign-courts"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M6 legitimacy audience is invalid."));
+  return "court";
+}
+
+function parseM6SourceKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6LegitimacySourceKindDto {
+  if (
+    input === "diplomatic-recognition" ||
+    input === "obligation-fulfilled" ||
+    input === "obligation-breached" ||
+    input === "succession-continuity" ||
+    input === "postwar-settlement" ||
+    input === "campaign-consequence"
+  ) {
+    return input;
+  }
+  errors.push(reason("invalid-schema", path, "M6 legitimacy sourceKind is invalid."));
+  return "diplomatic-recognition";
 }
 
 function parseM4CampaignObjectiveKind(
@@ -5259,7 +5647,8 @@ function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
     stateWithoutM2,
     body.authoritativeSnapshot.state.m2,
     body.authoritativeSnapshot.state.m3,
-    body.authoritativeSnapshot.state.m4
+    body.authoritativeSnapshot.state.m4,
+    body.authoritativeSnapshot.state.m6
   );
 
   return {
@@ -5329,30 +5718,92 @@ function copyDistrictControl(control: SaveDistrictControlDto): SaveDistrictContr
 }
 
 function copyOptionalRuntimeSlices(
-  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3" | "m4">,
+  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3" | "m4" | "m6">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
   m3: SaveM3PolityVassalageStateDto | undefined,
-  m4: SaveM4CampaignStateDto | undefined
+  m4: SaveM4CampaignStateDto | undefined,
+  m6: SaveM6DiplomacyLegitimacyStateDto | undefined
 ): SaveWorldRuntimeStateV0Dto {
   return {
     ...base,
     ...(m2 === undefined ? {} : { m2: copyM2EconomyPopulationState(m2) }),
     ...(m3 === undefined ? {} : { m3: copyM3PolityVassalageState(m3) }),
-    ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) })
+    ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) }),
+    ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) })
   };
 }
 
 function copyOptionalCandidateRuntimeSlices(
-  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3" | "m4">,
+  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3" | "m4" | "m6">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
   m3: SaveM3PolityVassalageStateDto | undefined,
-  m4: SaveM4CampaignStateDto | undefined
+  m4: SaveM4CampaignStateDto | undefined,
+  m6: SaveM6DiplomacyLegitimacyStateDto | undefined
 ): WorldStateV0ForSave["state"] {
   return {
     ...base,
     ...(m2 === undefined ? {} : { m2: copyM2EconomyPopulationState(m2) }),
     ...(m3 === undefined ? {} : { m3: copyM3PolityVassalageState(m3) }),
-    ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) })
+    ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) }),
+    ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) })
+  };
+}
+
+function copyM6DiplomacyLegitimacyState(
+  m6: SaveM6DiplomacyLegitimacyStateDto
+): SaveM6DiplomacyLegitimacyStateDto {
+  return {
+    schemaVersion: 1,
+    relations: m6.relations.map((relation) => ({
+      relationId: relation.relationId,
+      polityAId: relation.polityAId,
+      polityBId: relation.polityBId,
+      trustBps: relation.trustBps,
+      affinityBps: relation.affinityBps,
+      fearBps: relation.fearBps,
+      threatBps: relation.threatBps,
+      interestAlignmentBps: relation.interestAlignmentBps,
+      historicalDebt: relation.historicalDebt,
+      borderConflictBps: relation.borderConflictBps,
+      updatedDay: relation.updatedDay,
+      reasonCodes: [...relation.reasonCodes]
+    })),
+    agreements: m6.agreements.map((agreement) => ({
+      agreementId: agreement.agreementId,
+      relationId: agreement.relationId,
+      proposerPolityId: agreement.proposerPolityId,
+      targetPolityId: agreement.targetPolityId,
+      agreementKind: agreement.agreementKind,
+      status: agreement.status,
+      startDay: agreement.startDay,
+      endDay: agreement.endDay,
+      recognitionDirection: agreement.recognitionDirection,
+      reasonCodes: [...agreement.reasonCodes]
+    })),
+    recognitionEdges: m6.recognitionEdges.map((edge) => ({
+      fromPolityId: edge.fromPolityId,
+      toPolityId: edge.toPolityId,
+      agreementId: edge.agreementId,
+      reasonCode: edge.reasonCode
+    })),
+    legitimacySources: m6.legitimacySources.map((source) => ({
+      sourceId: source.sourceId,
+      polityId: source.polityId,
+      audience: source.audience,
+      sourceKind: source.sourceKind,
+      magnitudeBps: source.magnitudeBps,
+      sourceRef: source.sourceRef,
+      reasonCode: source.reasonCode,
+      createdDay: source.createdDay
+    })),
+    legitimacyProfiles: m6.legitimacyProfiles.map((profile) => ({
+      polityId: profile.polityId,
+      audience: profile.audience,
+      scoreBps: profile.scoreBps,
+      pressureBps: profile.pressureBps,
+      sourceIds: [...profile.sourceIds],
+      reasonCodes: [...profile.reasonCodes]
+    }))
   };
 }
 
@@ -6172,6 +6623,15 @@ function readNullableString(
   return null;
 }
 
+function readString(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): string {
+  return readNonEmptyString(record, key, path, errors) ?? "";
+}
+
 function readBoolean(
   record: Record<string, unknown>,
   key: string,
@@ -6212,6 +6672,15 @@ function readPositiveSafeInteger(
   }
   errors.push(reason("invalid-schema", path, `${path} must be a positive safe integer.`));
   return undefined;
+}
+
+function readBps(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): number {
+  return readIntegerInRange(record, key, path, 0, 10_000, errors) ?? 0;
 }
 
 function readNullablePositiveSafeInteger(

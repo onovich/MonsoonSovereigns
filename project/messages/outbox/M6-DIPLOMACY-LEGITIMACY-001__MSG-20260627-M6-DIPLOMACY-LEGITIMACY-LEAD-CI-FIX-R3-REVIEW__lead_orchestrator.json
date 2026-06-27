@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-CI-FIX-R3-REVIEW",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Lead CI fix after systems R2 ACCEPT: pnpm check exposed that adding M6 diplomacy commands directly to exported GameCommandV1 forced forbidden client-core M5 helpers to handle M6 command kinds. The fix keeps client-facing GameCommandV1 as the pre-M6 command union and introduces AuthoritativeGameCommandV1/M6GameCommandV1 for simulation submit/preview, parseGameCommandV1, sim-core, save-format, M6 AI, and M6 tests. No forbidden client-core files were modified.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-ai/src/m6-diplomacy-ai.ts",
+    "tests/sim-core-m6-diplomacy-legitimacy.test.ts",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-LEAD-CI-FIX-R3-REVIEW__lead_orchestrator.json",
+    "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-CI-FIX-R3-TO-SYSTEMS-REVIEW.json"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "a379d188c10fc93f19405a533e03b2e52f61a1fc",
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/client-core typecheck",
+      "exit_code": 0,
+      "result": "PASS; forbidden client-core no longer needs code changes for M6 command kinds."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "PASS with local AuthoritativeGameCommandV1 alias."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "PASS with authoritative command-tail/save command typing."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai typecheck",
+      "exit_code": 0,
+      "result": "PASS with M6 AI authoritative command type."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS: format:check, lint, recursive typecheck, and architecture boundaries all passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "PASS: 24 files / 179 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "PASS: 2 files / 3 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "PASS: 1 file / 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "PASS: 2 files / 16 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "PASS: Node and worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS: architecture, determinism, root Vitest 37 files / 259 tests, web Vitest 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-DIPLOMACY-LEGITIMACY-001",
+      "exit_code": 0,
+      "result": "VALID before R3 route update; final validation is run after routing files are written."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "REQUEST R3 REVIEW: AuthoritativeGameCommandV1 is the simulation submit/preview/parser command union and includes M6 diplomacy/legitimacy commands.",
+    "Client-facing legacy GameCommandV1 intentionally remains pre-M6 so existing M5 client helpers are not forced to handle M6 commands before M6 client surfaces are authorized.",
+    "SimulationMessageV1 preview-command and submit-command payloads use AuthoritativeGameCommandV1, preserving the same command path for player and AI M6 actions.",
+    "sim-core, save-format, M6 AI, and M6 tests use AuthoritativeGameCommandV1 through local aliases; no forbidden client-core changes were made.",
+    "This is an architecture-sensitive boundary fix and must receive systems_architect ACCEPT before PR integration proceeds."
+  ],
+  "risks": [
+    "The public protocol now exposes both GameCommandV1 and AuthoritativeGameCommandV1; reviewers must confirm this does not create confusing API drift for M6 downstream tasks.",
+    "Future M6 client surfaces should either consume authoritative commands explicitly or introduce narrower client command/read-model types under their own task scope.",
+    "Untracked ui-samples/ remains unrelated and untouched."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 CI/API-boundary fix at commit a379d188c10fc93f19405a533e03b2e52f61a1fc. Accept only if the type boundary preserves M6 command parity without hidden privileges and without requiring forbidden client-core changes for this task.",
+  "created_at": "2026-06-27T14:02:18+08:00"
+}

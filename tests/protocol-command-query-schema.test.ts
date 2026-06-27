@@ -939,6 +939,103 @@ describe("SIM-003 protocol command/query schemas", () => {
     });
   });
 
+  test("accepts M6 diplomacy and legitimacy command/query schemas", () => {
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.propose-diplomatic-agreement",
+        commandId: "cmd.m6.propose",
+        actor: { kind: "ai", id: "polity:2" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          agreementId: 1,
+          relationId: 1,
+          proposerPolityId: 2,
+          targetPolityId: 1,
+          agreementKind: "non-aggression",
+          durationDays: 360,
+          recognitionDirection: "target-recognizes-proposer",
+          reasonCode: "diplomacy.offer.non-aggression"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.answer-diplomatic-agreement",
+        commandId: "cmd.m6.answer",
+        actor: { kind: "player", id: "polity:1" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          agreementId: 1,
+          accepted: true,
+          reasonCode: "diplomacy.answer.accepted"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.record-legitimacy-source",
+        commandId: "cmd.m6.legitimacy",
+        actor: { kind: "system", id: "m6-legitimacy" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          sourceId: 1,
+          polityId: 2,
+          audience: "vassal-rulers",
+          sourceKind: "postwar-settlement",
+          magnitudeBps: 1_200,
+          sourceRef: "m6.postwar.validation",
+          reasonCode: "legitimacy.postwar.settlement"
+        }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m6-diplomacy",
+        payload: { queryId: "m6.diplomacy", observerPolityId: 2 }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-m6-recognized-order",
+        payload: { queryId: "m6.order", polityId: 2 }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
+        kind: "sim.record-legitimacy-source",
+        commandId: "cmd.m6.legitimacy.bad",
+        actor: { kind: "system", id: "m6-legitimacy" },
+        expectedDay: 10,
+        expectedRevision: 4,
+        payload: {
+          sourceId: 1,
+          polityId: 2,
+          audience: "vassal-rulers",
+          sourceKind: "divine-right",
+          magnitudeBps: 1_200,
+          sourceRef: "m6.postwar.validation",
+          reasonCode: "legitimacy.postwar.settlement"
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.sourceKind",
+        message: "payload.sourceKind must be a valid M6 legitimacy source kind."
+      }
+    });
+  });
+
   test("rejects malformed query payloads without leaking nonserializable details", () => {
     expect(
       parseGameQueryV1({

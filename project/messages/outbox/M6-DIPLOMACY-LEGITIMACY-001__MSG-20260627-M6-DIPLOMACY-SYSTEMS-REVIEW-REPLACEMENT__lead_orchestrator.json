@@ -1,0 +1,49 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-SYSTEMS-REVIEW-REPLACEMENT",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead replaced the systems_architect reviewer for M6-DIPLOMACY-LEGITIMACY-001 after the previous reviewer stream disconnected before completion and produced no handoff. Replacement systems_architect will perform a fresh read-only review of the same writer REVIEW commit and handoff.",
+  "artifacts": [
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-SYSTEMS-REVIEW-REPLACEMENT__lead_orchestrator.json",
+    "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REPLACEMENT-REVIEW.json"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "2e5c0786898641be98ca4c93237a6db6b7a5f752",
+  "tests_run": [
+    {
+      "command": "multi_agent_v1.close_agent 019f0643-ccb1-7991-8157-a03251c94e8c",
+      "exit_code": 0,
+      "result": "Previous systems reviewer had no completed handoff after stream disconnect."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent systems_architect",
+      "exit_code": 0,
+      "result": "Spawned replacement systems_architect thread 019f077e-dcc1-7de3-b254-2bf9b1e2442e, nickname Keystone."
+    },
+    {
+      "command": "Test-Path systems review handoff",
+      "exit_code": 0,
+      "result": "No valid systems review handoff existed before replacement."
+    }
+  ],
+  "decisions": [
+    "Do not fabricate reviewer acceptance after stream disconnect.",
+    "Route the same writer REVIEW commit to a replacement systems_architect for fresh read-only review.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE and Human Gate boundaries."
+  ],
+  "risks": [
+    "R4 shared sim/protocol/save surface requires real systems review before lead acceptance.",
+    "Untracked ui-samples/ remains unrelated, unstaged, and untouched."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Replacement systems_architect should review actual diff, tests, determinism, package boundaries, protocol/save compatibility, and task scope, then return ACCEPT or REQUEST_CHANGES handoff.",
+  "created_at": "2026-06-27T13:14:06+08:00"
+}

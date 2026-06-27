@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead started M6-DIPLOMACY-LEGITIMACY-001 after M6 Alpha system contract closure entered main. simulation_engineer writer thread 019f0616-e69a-7be1-a688-ed29590a37f1 is assigned to implement the deterministic diplomacy and legitimacy substrate within the task allowed paths.",
+  "artifacts": [
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
+    "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-LEAD-TO-SIM-START.json"
+  ],
+  "branch_or_worktree": "feat/m6-diplomacy-legitimacy / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-DIPLOMACY-LEGITIMACY-001 and M6-SCENARIO-DATA-PIPELINE-001 were dependency-ready on main before start."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent simulation_engineer",
+      "exit_code": 0,
+      "result": "Spawned simulation_engineer writer thread 019f0616-e69a-7be1-a688-ed29590a37f1, nickname Delta the 2nd."
+    }
+  ],
+  "decisions": [
+    "Start M6-DIPLOMACY-LEGITIMACY-001 as the highest-priority dependency-ready M6 task after M6 Alpha contract closure entered main.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE and do not implement manual node battle, server/multiplayer, telemetry, arbitrary-code scripting, full peace treaty UI, or hidden grand-strategy manager.",
+    "Do not modify PROJECT_STATUS.md because this task lists it as a forbidden path."
+  ],
+  "risks": [
+    "This R4 task touches shared simulation/protocol/save surfaces; systems_architect review is required before acceptance.",
+    "Protocol or save-format changes beyond additive schemas may require ADR if they change a frozen contract.",
+    "Untracked ui-samples/ exists and is unrelated, unstaged, and untouched."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Implement the deterministic diplomacy and legitimacy substrate within allowed paths, run required tests, and return a simulation_engineer REVIEW handoff for systems_architect review.",
+  "created_at": "2026-06-27T06:41:07+08:00",
+  "start_confirmed": {
+    "to_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1",
+    "to_thread_nickname": "Delta the 2nd",
+    "allowed_paths": [
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/protocol/**",
+      "packages/save-format/**",
+      "apps/sim-runner/**",
+      "tests/**",
+      "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/content-tools/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ],
+    "acceptance_criteria": [
+      "Diplomacy and legitimacy are represented in authoritative sim-core state with stable branded IDs, explicit schema versioning, reason-coded events, and deterministic tie-breakers.",
+      "Player and AI diplomacy actions use the same GameCommand paths and produce serializable rejection reasons without UI-only mutation or hidden AI privileges.",
+      "Legitimacy affects start-to-victory decisions, obligations, succession pressure, war/postwar consequences, and AI reasoning without becoming a generic global manager.",
+      "Save/load and replay preserve diplomacy and legitimacy state and reject malformed, missing, or future-version payloads safely."
+    ],
+    "required_tests": [
+      "git status --short",
+      "pnpm --filter @monsoon/sim-core test",
+      "pnpm --filter @monsoon/sim-ai test",
+      "pnpm --filter @monsoon/protocol test",
+      "pnpm --filter @monsoon/save-format test",
+      "pnpm sim:determinism",
+      "pnpm test",
+      "Property/invariant tests cover command parity, stable ordering, no diplomacy graph cycles, legitimacy conservation/reason codes, and save rejection paths.",
+      "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-DIPLOMACY-LEGITIMACY-001",
+      "git diff --check"
+    ],
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+  }
+}
