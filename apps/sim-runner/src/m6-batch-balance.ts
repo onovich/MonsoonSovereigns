@@ -258,7 +258,7 @@ export function validateM6BatchBalanceArtifactV1(
   if (reasons.length > 0) {
     return { ok: false, reasons };
   }
-  return { ok: true, value: input as unknown as M6BatchBalanceArtifactV1 };
+  return { ok: true, value: input as M6BatchBalanceArtifactV1 };
 }
 
 function runM6BatchBalanceScenarioV1({
