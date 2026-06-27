@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T15:56:05+08:00",
+  "updated_at": "2026-06-27T16:03:01+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1768,45 +1768,17 @@
   ],
   "active_threads": [
     {
-      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+      "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "active_orchestrating",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead integration for accepted M6 map candidate pipeline",
-      "branch_or_worktree": "feat/m6-map-candidate-pipeline",
-      "updated_at": "2026-06-27T15:56:05+08:00"
-    },
-    {
-      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
-      "role": "client_engineer",
-      "thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
-      "status": "accepted_pending_integration",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Window",
-      "responsibility": "writer accepted pending integration",
-      "branch_or_worktree": "feat/m6-map-candidate-pipeline",
-      "updated_at": "2026-06-27T15:56:05+08:00"
-    },
-    {
-      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
-      "role": "systems_architect",
-      "thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
-      "status": "accepted",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "nickname": "Lintel",
-      "responsibility": "systems review accepted",
-      "branch_or_worktree": "feat/m6-map-candidate-pipeline",
-      "updated_at": "2026-06-27T15:56:05+08:00"
+      "responsibility": "lead orchestration selecting next M6 task after map candidate closure",
+      "branch_or_worktree": "main",
+      "updated_at": "2026-06-27T16:03:01+08:00"
     }
   ],
   "task_effects": {
@@ -2295,7 +2267,7 @@
     }
   ],
   "m6_map_candidate_pipeline": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
     "branch_or_worktree": "feat/m6-map-candidate-pipeline",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -2304,25 +2276,22 @@
     "systems_architect_thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
     "systems_architect_nickname": "Lintel",
     "start_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-START__lead_orchestrator.json",
-    "route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-LEAD-TO-CLIENT-START.json",
     "review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW__client_engineer.json",
-    "review_route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-WRITER-TO-SYSTEMS-REVIEW.json",
     "systems_review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
-    "systems_status": "ACCEPT",
     "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+    "lead_close_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-CLOSED__lead_orchestrator.json",
     "started_at": "2026-06-27T15:25:45+08:00",
-    "review_ready_at": "2026-06-27T15:46:30+08:00",
-    "routed_to_systems_at": "2026-06-27T15:49:16+08:00",
     "accepted_at": "2026-06-27T15:56:05+08:00",
-    "base_main_commit": "1ecd9ee80f130a96317d86a8099ea000725af024",
+    "closed_at": "2026-06-27T16:03:01+08:00",
+    "integrated_pr": 137,
+    "integrated_main_commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/137",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "previous_closed_task": "M6-SCENARIO-DATA-PIPELINE-001",
-    "next_action": "Lead opens PR, waits for CI, merges, syncs main, then closes task.",
-    "start_submission_id": "019f07f8-e8a4-71c2-8978-a75da0fa39ed",
-    "route_sent_at": "2026-06-27T15:26:54+08:00",
-    "review_submission_id": "019f080e-2be8-75d3-831a-65095732652f",
-    "systems_route_sent_at": "2026-06-27T15:49:16+08:00",
-    "systems_rereview_submission_id": "019f0812-4098-7952-be7d-967f1978bc45"
-  }
+    "next_ready_tasks": [
+      "M6-SUCCESSION-COMPLETION-001"
+    ],
+    "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
+  },
+  "next_action": "Start M6-SUCCESSION-COMPLETION-001."
 }
