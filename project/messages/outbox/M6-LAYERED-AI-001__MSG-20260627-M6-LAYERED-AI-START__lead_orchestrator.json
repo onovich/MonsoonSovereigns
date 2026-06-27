@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260627-M6-LAYERED-AI-START",
+  "task_id": "M6-LAYERED-AI-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M6-LAYERED-AI-001 after M6-CLIENT-ALPHA-SURFACES-001 closed on origin/main. The simulation_engineer must implement bounded deterministic layered AI for full Alpha runs across strategic, diplomatic, succession, policy, campaign, and recovery decisions, using only player-available GameCommand payloads and reason-coded traces.",
+  "artifacts": [
+    "project/tasks/active/M6-LAYERED-AI-001.json",
+    "PROJECT_STATUS.md",
+    "docs/04-software-architecture.md",
+    "docs/05-coding-standards.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "packages/sim-ai/src",
+    "packages/sim-core/src",
+    "packages/protocol/src",
+    "apps/sim-runner/src",
+    "tests"
+  ],
+  "branch_or_worktree": "feat/m6-layered-ai / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "33a9d4fb1ee799157ccd27983040143bd1c0833a",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-LAYERED-AI-001 and M6-ACCESSIBILITY-CORE-FLOWS-001 are dependency-ready after M6 client alpha surfaces closure; layered AI selected by M6 priority."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-CLIENT-ALPHA-SURFACES-001",
+      "exit_code": 0,
+      "result": "Previous task is valid and CLOSED on main."
+    }
+  ],
+  "decisions": [
+    "Start M6-LAYERED-AI-001 as the next high-priority M6 implementation task.",
+    "Layered AI must be bounded decision strata, not a future-proof general manager abstraction or hidden scoring singleton.",
+    "AI must submit the same GameCommand payloads available to player paths and must expose bounded reason traces for action and no-action decisions.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and must not be introduced as an assumption or UI/system dependency."
+  ],
+  "risks": [
+    "R4 simulation/AI work touches authority and determinism boundaries; systems_architect review is required before lead acceptance.",
+    "The implementation must avoid Math.random, Date.now, object-order dependence, privileged AI mutation, runtime script engines, telemetry, server services, and hidden rescue hooks."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Simulation writer must implement layered AI within allowed paths, run required tests, and emit REVIEW handoff routed to systems_architect.",
+  "created_at": "2026-06-27T22:24:44.466+08:00"
+}

@@ -1,0 +1,135 @@
+{
+  "message_id": "MSG-20260627-M6-LAYERED-AI-SYSTEMS-REVIEW",
+  "task_id": "M6-LAYERED-AI-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "只读审查了 M6 layered AI 指定实现提交 cf22aefa 与 handoff 提交 65e6f660。实现范围基本保持在 sim-ai/test/project handoff 允许路径内，未发现 sim-core 直接写入、客户端/存档禁区修改、新依赖、telemetry、server、runtime script engine 或 manual node battle 引入；AI 规划通过 submitCommandV1 提交 GameCommand，非 system gameplay 命令被转为 ai actor，system-only scheduler/legitimacy 支持命令仍按现有 sim-core authority 保留并单独计数。但 reviewer 复跑门禁发现 lint 与 @monsoon/sim-ai typecheck 失败，当前不能接受。",
+  "artifacts": [
+    "packages/sim-ai/src/m6-layered-ai.ts",
+    "packages/sim-ai/src/index.ts",
+    "packages/sim-ai/package.json",
+    "tests/sim-ai-m6-layered-ai.test.ts",
+    "project/tasks/active/M6-LAYERED-AI-001.json",
+    "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m6-layered-ai / D:\\WebProjects\\MonsoonSovereigns; user 指定审查点 65e6f660，实际本地 HEAD 观测为后续路由提交 df83aead",
+  "commit": "65e6f660",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## feat/m6-layered-ai；命令输出未显示未提交文件。"
+    },
+    {
+      "command": "git show --name-status --oneline --decorate --no-renames cf22aefa",
+      "exit_code": 0,
+      "result": "实现提交修改 packages/sim-ai/package.json、packages/sim-ai/src/index.ts，新增 packages/sim-ai/src/m6-layered-ai.ts 与 tests/sim-ai-m6-layered-ai.test.ts。"
+    },
+    {
+      "command": "git show --name-status --oneline --decorate --no-renames 65e6f660",
+      "exit_code": 0,
+      "result": "handoff 提交新增 writer handoff，修改 project/tasks/active/M6-LAYERED-AI-001.json。"
+    },
+    {
+      "command": "git show --name-status --oneline --decorate --no-renames df83aead",
+      "exit_code": 0,
+      "result": "额外观测到当前 HEAD 是路由元数据提交，修改 goal-mode/model-routing/thread-registry/route/outbox/task 文件；未作为实现 diff 接受依据。"
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|new Date\\(|Object\\.keys|eval\\(|Function\\(|telemetry|server|manual node|node battle|manager|Manager|singleton|script engine\" packages/sim-ai/src/m6-layered-ai.ts tests/sim-ai-m6-layered-ai.test.ts packages/sim-ai/package.json packages/sim-ai/src/index.ts",
+      "exit_code": 0,
+      "result": "未命中新实现中的随机、真实时间、telemetry/server/manual battle/runtime script engine/general manager 模式；仅测试中 Object.keys 用于 reasonCoverage key 断言，非模拟结果路径。"
+    },
+    {
+      "command": "git diff --name-status cf22aefa^..65e6f660",
+      "exit_code": 0,
+      "result": "指定实现与 handoff diff confined to packages/sim-ai/**, tests/**, project/tasks/active/M6-LAYERED-AI-001.json, project/messages/outbox/**；未触及任务 forbidden paths。"
+    },
+    {
+      "command": "git diff --check cf22aefa^..65e6f660",
+      "exit_code": 0,
+      "result": "指定 diff 无 whitespace error。"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "3 test files / 6 tests passed。"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "25 test files / 191 tests passed；仅出现既有 MODULE_TYPELESS_PACKAGE_JSON warning。"
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file / 10 tests passed。"
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker-compatible deterministic canaries passed；M6 Alpha hash 260f46c3 matched，terminal outcome victory。"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check、sim:determinism、root Vitest 40 files / 304 tests、apps/web Vitest 1 file / 4 tests passed；仅出现既有 MODULE_TYPELESS_PACKAGE_JSON warning。"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-LAYERED-AI-001",
+      "exit_code": 0,
+      "result": "Task JSON valid。"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "format:check passed；lint failed at tests/sim-ai-m6-layered-ai.test.ts:124:6 because _CommandParityCompileCheck is defined but never used。"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai typecheck",
+      "exit_code": 1,
+      "result": "tsc failed at packages/sim-ai/src/m6-layered-ai.ts:236:49 and :615:9 because exactOptionalPropertyTypes rejects explicit maxTraceCandidates: undefined for optional property M6LayeredAiTurnInputV1.maxTraceCandidates。"
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES because repository lint/typecheck gates fail on newly added files. Per AGENTS.md and docs/05 completion definition, tests passing alone is insufficient.",
+    "当前 AI 权威边界方向可接受：规划函数不直接 mutate runtime.world，状态变化经 submitCommandV1；sim-core 仍是唯一权威写者。",
+    "system-only sim.advance-day 与 sim.record-legitimacy-source 在现有 sim-core authority 下可作为 scheduler/domain support command 保留，不应计入 AI/player parity；当前实现单独统计 systemSupportCommands 是正确方向。",
+    "当前 sim-ai-local trace 类型对本任务 JSON 的 bounded reason trace 要求可接受；不要求本轮新增 protocol-visible trace schema 或 sim-runner 集成。但后续 batch auto-run/dashboard 若需要跨包消费 trace，应再由对应任务显式提升为 protocol DTO。",
+    "实现采用显式 Alpha agenda 和固定候选集，符合最小抽象原则；未发现 future-proof manager、hidden singleton scorer、runtime script engine、server/telemetry 或 manual node battle 假设。"
+  ],
+  "risks": [
+    "当前 branch 实际 HEAD 为 df83aead，用户指定审查点为 65e6f660；lead 集成时需确认是否包含额外 route metadata 提交，以及是否仍以 65e6f660 作为 review target。",
+    "command parity 测试目前主要比较 command kind 序列与 actor kind，不能充分区分 payload-level parity drift。修复门禁时建议补强为非 system AI 命令与玩家模板在 payload/kind 上相等，仅允许 actor、commandId、expectedDay、expectedRevision 按运行时改写。",
+    "noRescueHooks 当前是 validation result 中的常量 true，主要证据来自 full run 命令序列和 systemSupportCommands 白名单。建议补一个断言：system support commands 只能是已审查的 scheduler/legitimacy support set，且所有非 system 命令均为 ai actor。"
+  ],
+  "blockers": [
+    {
+      "severity": "blocking",
+      "path": "tests/sim-ai-m6-layered-ai.test.ts:124",
+      "issue": "新增测试文件触发 ESLint no-unused-vars，导致 pnpm check 失败。",
+      "suggested_fix": "删除未使用的 _CommandParityCompileCheck 类型别名，或改成真实断言/类型约束而不触发 lint。"
+    },
+    {
+      "severity": "blocking",
+      "path": "packages/sim-ai/src/m6-layered-ai.ts:236",
+      "issue": "exactOptionalPropertyTypes 下显式传入 maxTraceCandidates: input.maxTraceCandidates，其中值可能为 undefined，导致 @monsoon/sim-ai typecheck 失败。",
+      "suggested_fix": "构造 M6LayeredAiTurnInputV1 时只在 input.maxTraceCandidates !== undefined 时包含该属性，或将接口属性类型显式改为 number | undefined 并确认调用语义。推荐条件性展开，保持 optional field 语义清晰。"
+    },
+    {
+      "severity": "blocking",
+      "path": "packages/sim-ai/src/m6-layered-ai.ts:615",
+      "issue": "buildReasonCoverage 创建 input 时同样显式传入 maxTraceCandidates: undefined，导致 typecheck 失败。",
+      "suggested_fix": "同上，条件性加入 maxTraceCandidates 字段，或调整类型后补测试。"
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "请 lead_orchestrator 将 REQUEST_CHANGES 路由回原 simulation_engineer。最小修复：解决新增文件 lint/typecheck 失败，补强 payload-level command parity 断言后复跑 pnpm check、pnpm --filter @monsoon/sim-ai typecheck、pnpm --filter @monsoon/sim-ai test、pnpm --filter @monsoon/sim-core test、pnpm --filter @monsoon/protocol test、pnpm sim:determinism、pnpm test、taskctl validate M6-LAYERED-AI-001、git diff --check，并重新提交 writer handoff。",
+  "created_at": "2026-06-27T22:50:00+08:00",
+  "reviewed_commits": {
+    "implementation": "cf22aefa",
+    "writer_handoff": "65e6f660",
+    "observed_head": "df83aead"
+  }
+}
