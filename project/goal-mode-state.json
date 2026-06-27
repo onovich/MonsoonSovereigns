@@ -2,17 +2,19 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-TASK-GRAPH-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_planning_next_milestone",
+      "task_id": "M7-TASK-GRAPH-001",
+      "status": "active",
       "role": "lead_orchestrator"
     }
   },
   "last_integrated_task": "M6-EXIT-VALIDATION-001",
-  "last_main_commit": "5e68a74374a37fa2f3698ee846462c0525d7341a",
+  "last_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -37,10 +39,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-EXIT-VALIDATION-001 CLOSED after PR #157 entered origin/main; no M7 Human Gate is active yet.",
+    "approval_source": "M7-TASK-GRAPH-001 is planning-only; no M7 Human Gate is active before task graph review.",
     "recommended_result": null,
-    "note": "Current milestone is M7. Next machine action is to create or recover M7-TASK-GRAPH-001; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T03:36:23.0435839+08:00"
+    "note": "Current task is M7-TASK-GRAPH-001. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T03:43:49.1264386+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -827,7 +829,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T03:36:23.0435839+08:00",
+  "last_updated_at": "2026-06-28T03:43:49.1264386+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1476,5 +1478,19 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "note": "M7 content lock, culture review, manual playthrough, platform/localization matrix, balance migration, and save migration must be decomposed by the M7 task graph."
+  },
+  "m7_task_graph": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-TASK-GRAPH-001",
+    "branch_or_worktree": "chore/m7-task-graph",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "owner_role": "systems_architect",
+    "reviewer_role": "qa_reviewer",
+    "base_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
+    "previous_closed_task": "M6-EXIT-VALIDATION-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "started_at": "2026-06-28T03:43:49.1264386+08:00",
+    "next_action": "Spawn systems_architect and route M7 task graph creation."
   }
 }

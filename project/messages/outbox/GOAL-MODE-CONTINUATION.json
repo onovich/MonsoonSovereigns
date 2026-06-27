@@ -2,23 +2,25 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_EXIT_CLOSED_M7_TASK_GRAPH_PENDING",
+  "status": "M7_TASK_GRAPH_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
   "origin_main": "5e68a74374a37fa2f3698ee846462c0525d7341a",
   "current_milestone": "M7",
-  "current_task": null,
-  "current_tasks": [],
-  "current_task_status": null,
+  "current_task": "M7-TASK-GRAPH-001",
+  "current_tasks": [
+    "M7-TASK-GRAPH-001"
+  ],
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M6-EXIT-VALIDATION-001",
   "last_integrated_task": "M6-EXIT-VALIDATION-001",
-  "last_main_commit": "5e68a74374a37fa2f3698ee846462c0525d7341a",
+  "last_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
   "ready_tasks": [],
   "next_ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_planning_next_milestone",
+      "task_id": "M7-TASK-GRAPH-001",
+      "status": "active",
       "role": "lead_orchestrator"
     }
   },
@@ -45,14 +47,14 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-EXIT-VALIDATION-001 CLOSED after PR #157 entered origin/main; no M7 Human Gate is active yet.",
+    "approval_source": "M7-TASK-GRAPH-001 is planning-only; no M7 Human Gate is active before task graph review.",
     "recommended_result": null,
-    "note": "Current milestone is M7. Next machine action is to create or recover M7-TASK-GRAPH-001; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T03:36:23.0435839+08:00"
+    "note": "Current task is M7-TASK-GRAPH-001. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T03:43:49.1264386+08:00"
   },
-  "next_machine_action": "Create or recover M7-TASK-GRAPH-001, review it independently, merge it, then start the first dependency-ready M7 task.",
+  "next_machine_action": "Route M7-TASK-GRAPH-001 to systems_architect for planning-only task DAG creation.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T03:36:23.0435839+08:00"
+  "last_updated_at": "2026-06-28T03:43:49.1264386+08:00"
 }

@@ -1,0 +1,98 @@
+{
+  "id": "M7-TASK-GRAPH-001",
+  "summary": "Create minimal M7 Beta content and quality task graph",
+  "milestone": "M7",
+  "status": "IN_PROGRESS",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M6-EXIT-VALIDATION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M7-TASK-GRAPH-001.json",
+      "project/tasks/active/M7-*.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json",
+      "PROJECT_STATUS.md"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Create a minimal, dependency-ordered M7 task DAG under project/tasks/active with explicit owner_role, reviewer_role, risk_level, dependencies, allowed_paths, forbidden_paths, acceptance_criteria, required_tests, route_to, and notes for every M7 task.",
+    "The M7 DAG covers Roadmap and acceptance-matrix M7 goals without implementing them: content lock planning, historical/cultural/language review, full scenario/person/event fill path, large-scale balance and anti-snowball validation, performance/memory/loading validation, Chrome/Edge/Firefox/Windows and resolution/localization matrix, save migration and cloud-save candidate decision boundaries, tutorial/hints/encyclopedia completion, audio/art/localization completion planning, Beta culture review, and manual playthrough evidence.",
+    "The M7 DAG explicitly preserves M6_GATE = PASS_WITH_LIMITS and M5 manual node battle decision DEFER_MANUAL_NODE_BATTLE: no manual node battle implementation task, no M7/M8 blocking manual node battle spike, and no manual node battle research dependency may be created.",
+    "The M7 DAG preserves Human Gates for major cultural-risk decisions, formal content lock acceptance, manual playthrough acceptance where human judgment is required, frozen product/platform/core architecture changes, paid services, accounts/secrets, telemetry, server/multiplayer, arbitrary-code mods, release/commercial decisions, branding, irreversible migrations, and any formal 1.0 scope reversal.",
+    "Tasks are small enough for independent writer/reviewer routing, with no overlapping writer ownership for the same package, content, platform, or document region.",
+    "No product code, package code, content-source data, roadmap edits, acceptance-matrix edits, accepted ADR changes, implementation work, production dependency changes, release artifacts, telemetry, networking, or mod support is performed by this planning task.",
+    "systems_architect writer and independent qa_reviewer reviewer produce validated handoffs before lead acceptance."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-GRAPH-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON validation for all new M7 task files and DAG acyclicity/dependency existence/status shape",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m7-task-graph",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh"
+    }
+  },
+  "route_to": "systems_architect",
+  "notes": [
+    "M7 starts only after M6-EXIT-VALIDATION-001 is CLOSED on origin/main.",
+    "This task creates or restores the M7 task graph only; it must not implement content, balance changes, UI, platform matrix behavior, save migration, release artifacts, telemetry, server/multiplayer, arbitrary-code mods, or manual node battle.",
+    "M6 Gate PASS_WITH_LIMITS carries forward bounded Alpha/local evidence limits and must not be re-described as unconditional release readiness.",
+    "Manual node battle remains deferred from M5 and the 1.0 mainline; do not create an implementation task or blocking spike/research task for M7 or M8.",
+    "Major cultural-risk decisions and formal content lock acceptance remain Human Gates; task graph may route research/review tasks but must not silently approve them.",
+    "M7 task graph should leave only the first dependency-ready downstream task READY after review; other downstream M7 tasks should remain DRAFT until dependencies are satisfied."
+  ],
+  "created_at": "2026-06-28T03:43:49.1264386+08:00",
+  "updated_at": "2026-06-28T03:43:49.1264386+08:00",
+  "started_at": "2026-06-28T03:43:49.1264386+08:00",
+  "base_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
+  "previous_closed_task": "M6-EXIT-VALIDATION-001",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "gate_context": {
+    "m6_gate": "PASS_WITH_LIMITS",
+    "m6_gate_pr": 157,
+    "m6_closure_pr": 158,
+    "m6_closure_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4"
+  },
+  "next_action": "Spawn systems_architect to create the M7 task DAG, then route the REVIEW handoff to independent qa_reviewer."
+}
