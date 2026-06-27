@@ -2,23 +2,29 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_LAYERED_AI_CLOSED_READY_FOR_ACCESSIBILITY",
+  "status": "M6_ACCESSIBILITY_CORE_FLOWS_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "f37f289fc9e29ce7f6b91dd56e19b5e4034bac62",
+  "origin_main": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
   "current_milestone": "M6",
-  "current_task": null,
-  "current_task_status": "NONE_READY_TO_START_NEXT",
+  "current_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "current_task_status": "IN_PROGRESS_PENDING_ROUTE",
   "last_closed_task": "M6-LAYERED-AI-001",
   "ready_tasks": [
-    "M6-ACCESSIBILITY-CORE-FLOWS-001",
     "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_ready_to_start_next_task",
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "status": "active_integrating",
       "role": "lead_orchestrator"
+    },
+    "client_engineer": {
+      "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "status": "active_in_progress_pending_route",
+      "role": "client_engineer",
+      "nickname": "Window the 2nd"
     }
   },
   "unresolved_risks": [
@@ -37,12 +43,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 layered AI closed after PR #147 merged; no Human Gate is active.",
+    "approval_source": "M6 accessibility core flows started from dependency-ready task graph; no Human Gate is active.",
     "recommended_result": null,
-    "note": "Start M6-ACCESSIBILITY-CORE-FLOWS-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
-    "recorded_at": "2026-06-27T23:17:59.059+08:00"
+    "note": "Client accessibility hardening is active; manual node battle remains deferred and no telemetry/account/Electron IPC change is authorized.",
+    "recorded_at": "2026-06-27T23:26:39.775+08:00"
   },
-  "next_machine_action": "Start M6-ACCESSIBILITY-CORE-FLOWS-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
+  "next_machine_action": "Send formal route to client_engineer writer, then monitor for REVIEW handoff.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -50,7 +56,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T23:17:59.059+08:00",
+  "last_updated_at": "2026-06-27T23:26:39.775+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -77,15 +83,16 @@
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
-  "updated_at": "2026-06-27T23:17:59.059+08:00",
-  "current_tasks": [],
+  "updated_at": "2026-06-27T23:26:39.775+08:00",
+  "current_tasks": [
+    "M6-ACCESSIBILITY-CORE-FLOWS-001"
+  ],
   "last_integrated_task": "M6-LAYERED-AI-001",
-  "last_main_commit": "f37f289fc9e29ce7f6b91dd56e19b5e4034bac62",
+  "last_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
   "next_ready_tasks": [
-    "M6-ACCESSIBILITY-CORE-FLOWS-001",
     "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
   ],
-  "next_action": "Start M6-ACCESSIBILITY-CORE-FLOWS-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
+  "next_action": "Send formal route to client_engineer writer, then monitor for REVIEW handoff.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -1018,5 +1025,23 @@
     "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/147",
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
+  },
+  "m6_accessibility_core_flows": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "owner_role": "client_engineer",
+    "reviewer_role": "qa_reviewer",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+    "writer_nickname": "Window the 2nd",
+    "branch_or_worktree": "feat/m6-accessibility-core-flows",
+    "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
+    "previous_closed_task": "M6-LAYERED-AI-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
+    "started_at": "2026-06-27T23:26:39.775+08:00",
+    "next_action": "Route task to client_engineer writer via send_input."
   }
 }

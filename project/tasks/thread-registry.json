@@ -4251,6 +4251,45 @@
         "M6-ACCESSIBILITY-CORE-FLOWS-001",
         "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
       ]
+    },
+    "M6-ACCESSIBILITY-CORE-FLOWS-001:lead_orchestrator": {
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_integrating",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "feat/m6-accessibility-core-flows",
+      "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
+      "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "created_at": "2026-06-27T23:26:39.775+08:00",
+      "updated_at": "2026-06-27T23:26:39.775+08:00",
+      "next_action": "Route task to client_engineer writer via send_input."
+    },
+    "M6-ACCESSIBILITY-CORE-FLOWS-001:client_engineer": {
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "role": "client_engineer",
+      "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+      "nickname": "Window the 2nd",
+      "status": "active_in_progress_pending_route",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m6-accessibility-core-flows",
+      "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
+      "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "created_at": "2026-06-27T23:26:39.775+08:00",
+      "updated_at": "2026-06-27T23:26:39.775+08:00",
+      "next_action": "Await lead send_input route, then implement and emit REVIEW handoff to qa_reviewer."
     }
   },
   "replaced_threads": [
@@ -4309,5 +4348,5 @@
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T23:17:59.059+08:00"
+  "updated_at": "2026-06-27T23:26:39.775+08:00"
 }

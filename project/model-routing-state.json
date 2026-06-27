@@ -2292,8 +2292,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M6-ACCESSIBILITY-CORE-FLOWS-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
-  "current_task": null,
+  "next_action": "Route M6-ACCESSIBILITY-CORE-FLOWS-001 to client_engineer writer.",
+  "current_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2343,7 +2343,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-27T23:17:59.059+08:00",
+  "updated_at": "2026-06-27T23:26:39.775+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2556,5 +2556,28 @@
     "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/147",
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
+  },
+  "m6_accessibility_core_flows": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "branch_or_worktree": "feat/m6-accessibility-core-flows",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+    "writer_nickname": "Window the 2nd",
+    "owner_role": "client_engineer",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "configured_reviewer_model": "gpt-5.5",
+    "configured_reviewer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
+    "started_at": "2026-06-27T23:26:39.775+08:00",
+    "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
+    "next_action": "Route task to client_engineer writer via send_input."
   }
 }

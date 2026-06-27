@@ -2,19 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [],
+  "current_tasks": [
+    "M6-ACCESSIBILITY-CORE-FLOWS-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_ready_to_start_next_task",
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "status": "active_integrating",
       "role": "lead_orchestrator"
+    },
+    "client_engineer": {
+      "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "status": "active_in_progress_pending_route",
+      "role": "client_engineer",
+      "nickname": "Window the 2nd"
     }
   },
   "last_integrated_task": "M6-LAYERED-AI-001",
-  "last_main_commit": "f37f289fc9e29ce7f6b91dd56e19b5e4034bac62",
+  "last_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
   "next_ready_tasks": [
-    "M6-ACCESSIBILITY-CORE-FLOWS-001",
     "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
   ],
   "unresolved_risks": [
@@ -40,10 +48,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 layered AI closed after PR #147 merged; no Human Gate is active.",
+    "approval_source": "M6 accessibility core flows started from dependency-ready task graph; no Human Gate is active.",
     "recommended_result": null,
-    "note": "Start M6-ACCESSIBILITY-CORE-FLOWS-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
-    "recorded_at": "2026-06-27T23:17:59.059+08:00"
+    "note": "Client accessibility hardening is active; manual node battle remains deferred and no telemetry/account/Electron IPC change is authorized.",
+    "recorded_at": "2026-06-27T23:26:39.775+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -799,8 +807,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T23:17:59.059+08:00",
-  "updated_at": "2026-06-27T23:17:59.059+08:00",
+  "last_updated_at": "2026-06-27T23:26:39.775+08:00",
+  "updated_at": "2026-06-27T23:26:39.775+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -911,7 +919,6 @@
     ]
   },
   "ready_tasks": [
-    "M6-ACCESSIBILITY-CORE-FLOWS-001",
     "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
   ],
   "m6_client_alpha_surfaces": {
@@ -1015,5 +1022,24 @@
     "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/147",
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
+  },
+  "current_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "m6_accessibility_core_flows": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "owner_role": "client_engineer",
+    "reviewer_role": "qa_reviewer",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+    "writer_nickname": "Window the 2nd",
+    "branch_or_worktree": "feat/m6-accessibility-core-flows",
+    "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
+    "previous_closed_task": "M6-LAYERED-AI-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
+    "started_at": "2026-06-27T23:26:39.775+08:00",
+    "next_action": "Route task to client_engineer writer via send_input."
   }
 }
