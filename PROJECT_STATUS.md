@@ -211,3 +211,17 @@ The next dependency-ready M6 tasks are `M6-DIPLOMACY-LEGITIMACY-001` and `M6-SCE
 The evidence records useful, ignored, harmful-risk, and missing adviser interventions across Alpha goals, risk, diplomacy, legitimacy, succession, policy/event choices, campaign consequences, and victory progress while preserving player command control. No blocker defects were accepted. Bounded follow-ups remain separate future work: player-facing adviser labels, direct campaign/postwar consequence advice, optional consented local sessions, and historical/cultural routing. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`; this task does not decide M6 exit.
 
 The next dependency-ready M6 task is `M6-ALPHA-NO-P0P1-VALIDATION-001`, which must validate Alpha no accepted P0/P1 blockers before M6 exit validation.
+
+## 19. M6 Exit Gate Start Snapshot
+
+`M6-ALPHA-NO-P0P1-VALIDATION-001` is CLOSED after PR #156 entered `origin/main` at `cd5cebebfe6ac7b0dd07a7468abcba9da55fd765`. Current task is `M6-EXIT-VALIDATION-001` on branch `gate/m6-exit-validation`; it is the formal M6 Alpha system-complete validation gate.
+
+This gate may create `docs/GATE-M6.md` and update process/status files only. It must not modify product code, packages, content-source data, roadmap, acceptance matrix, prior gates, release artifacts, telemetry, server/multiplayer, arbitrary-code mods, branding/commercial decisions, or frozen architecture choices. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`; no Human Gate is active.
+
+## 20. M6 Exit Gate Review Snapshot
+
+`M6-EXIT-VALIDATION-001` is ACCEPTED on branch `gate/m6-exit-validation`, pending PR CI and main integration. `docs/GATE-M6.md` records `M6_GATE = PASS_WITH_LIMITS`; the systems_architect writer recommendation was accepted by independent `qa_reviewer` in `project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json`, and lead integration may proceed.
+
+The recommendation is based on closed upstream M6 evidence through `M6-ALPHA-NO-P0P1-VALIDATION-001`, plus this gate's local rerun of the required validation commands: frozen install, `pnpm check`, full tests, content validation, determinism, performance baseline, Web build, Storybook build, Electron security and package smoke, Chromium E2E, focused M6 start-to-victory and layered-AI regressions, M6 batch balance artifact validation, adviser evidence review, task registry checks, and diff checks.
+
+The gate remains `PASS_WITH_LIMITS` because M6 Alpha exit criteria are met but bounded: scenario data is Alpha validation scaffolding and not M7 content lock; adviser evidence is local/privacy-safe; batch balance records tuning risks but no P0/P1 candidates; M4/M5 `PASS_WITH_LIMITS` process context remains historical evidence; desktop packaging is smoke evidence rather than a signed release artifact. This accepted gate does not start M7, does not change product code, packages, content-source data, product scope, roadmap, acceptance matrix, prior gates, ADRs, dependencies, telemetry, server/multiplayer, arbitrary-code mods, branding/commercial decisions, release artifacts, or frozen architecture choices.
