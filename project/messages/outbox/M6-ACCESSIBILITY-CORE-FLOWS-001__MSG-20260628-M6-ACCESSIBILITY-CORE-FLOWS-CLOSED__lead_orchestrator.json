@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-CLOSED",
+  "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M6-ACCESSIBILITY-CORE-FLOWS-001 is CLOSED after PR #149 merged into origin/main at 4fa574fddda51943ec7f47ce80c8434375d32756. The integrated implementation hardens M6 Alpha accessibility core flows across scenario start, command preview/confirm, map navigation, diplomacy/succession/policy/event/encyclopedia/status/checkpoint/victory surfaces, with keyboard, focus, screen-reader label, live status, non-color state, reduced-motion, and viewport evidence while preserving read-model/command DTO authority boundaries.",
+  "artifacts": [
+    "https://github.com/onovich/MonsoonSovereigns/pull/149",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "main / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "4fa574fddda51943ec7f47ce80c8434375d32756",
+  "integrated_pr": 149,
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/149",
+  "tests_run": [
+    {
+      "command": "PR #149 Quality, Web, and Browser Smoke",
+      "exit_code": 0,
+      "result": "Passed in GitHub Actions in 2m1s."
+    },
+    {
+      "command": "PR #149 Windows Desktop Smoke Artifact",
+      "exit_code": 0,
+      "result": "Passed in GitHub Actions in 1m10s."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Passed before PR creation: 1 file / 8 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Passed before PR creation: 1 file / 17 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed before PR creation; existing Vite chunk-size warning remains."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed before PR creation; existing Storybook/Vite chunk-size and plugin timing warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed before PR creation: 11 Chromium tests."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed before PR creation: architecture, determinism canaries including M6 Alpha hash 260f46c3, root Vitest 40 files / 305 tests, and web 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed before PR creation: format, lint, workspace typecheck, and architecture boundaries."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "exit_code": 0,
+      "result": "Task JSON valid before closure."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before PR creation and closure update."
+    }
+  ],
+  "decisions": [
+    "Close M6-ACCESSIBILITY-CORE-FLOWS-001 only after PR #149 entered origin/main and both PR checks passed.",
+    "Do not claim final M7/M8 accessibility completion; this task closes Alpha core-flow accessibility hardening only.",
+    "Continue M6 autonomous execution by starting M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 unless taskctl ready changes."
+  ],
+  "risks": [
+    "No P0/P1 risk remains open for this task after QA ACCEPT, lead gates, PR CI pass, and main integration.",
+    "Existing Vite/Storybook chunk-size warnings remain accepted non-blocking warnings."
+  ],
+  "blockers": [],
+  "child_threads_closed": [
+    "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+    "019f09d1-b057-79a2-a472-f09bf2a67014"
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Start M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
+  "created_at": "2026-06-28T00:26:36.730+08:00",
+  "next_ready_tasks": [
+    "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
+  ]
+}
