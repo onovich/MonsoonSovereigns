@@ -9,14 +9,14 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
-      "status": "active",
+      "status": "active_waiting_writer_handoff",
       "role": "lead_orchestrator"
     },
     "gameplay_designer": {
       "thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
       "nickname": "Ledger the 3rd",
       "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
-      "status": "spawned_pending_route",
+      "status": "in_progress",
       "role": "gameplay_designer"
     }
   },
@@ -836,7 +836,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T04:31:17.9147991+08:00",
+  "last_updated_at": "2026-06-28T04:34:14.0465143+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1572,7 +1572,9 @@
     "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
     "started_at": "2026-06-28T04:31:17.9147991+08:00",
-    "updated_at": "2026-06-28T04:31:17.9147991+08:00",
-    "next_action": "Route formal start message to gameplay_designer writer."
+    "updated_at": "2026-06-28T04:34:14.0465143+08:00",
+    "next_action": "Await gameplay_designer REVIEW handoff, validate it, then route to systems_architect.",
+    "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
+    "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101"
   }
 }

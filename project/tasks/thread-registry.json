@@ -11,7 +11,7 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-28T04:31:17.9147991+08:00",
+        "updated_at": "2026-06-28T04:34:14.0465143+08:00",
         "task_id": "M7-CONTENT-LOCK-CONTRACT-001"
       }
     ],
@@ -5070,7 +5070,7 @@
       "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started",
+      "status": "routed_to_writer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -5083,15 +5083,17 @@
       "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
       "created_at": "2026-06-28T04:31:17.9147991+08:00",
-      "updated_at": "2026-06-28T04:31:17.9147991+08:00",
-      "next_action": "Route formal start message to gameplay_designer writer."
+      "updated_at": "2026-06-28T04:34:14.0465143+08:00",
+      "next_action": "Await gameplay_designer REVIEW handoff, validate it, then route to systems_architect.",
+      "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
+      "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101"
     },
     "M7-CONTENT-LOCK-CONTRACT-001:gameplay_designer": {
       "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
       "role": "gameplay_designer",
       "thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
       "nickname": "Ledger the 3rd",
-      "status": "spawned_pending_route",
+      "status": "in_progress",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -5102,8 +5104,10 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T04:31:17.9147991+08:00",
-      "updated_at": "2026-06-28T04:31:17.9147991+08:00",
-      "next_action": "Await formal route message."
+      "updated_at": "2026-06-28T04:34:14.0465143+08:00",
+      "next_action": "Define planning-only content lock contract and emit REVIEW handoff to systems_architect.",
+      "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
+      "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101"
     }
   },
   "replaced_threads": [
@@ -5193,5 +5197,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T04:31:17.9147991+08:00"
+  "updated_at": "2026-06-28T04:34:14.0465143+08:00"
 }
