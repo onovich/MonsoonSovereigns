@@ -3413,7 +3413,7 @@
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "simulation_engineer",
       "thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
-      "status": "review_handoff_submitted",
+      "status": "replaced_unavailable_after_restart",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -3470,15 +3470,21 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
-      "updated_at": "2026-06-27T18:10:49.0650327+08:00",
+      "updated_at": "2026-06-27T18:23:57.2270701+08:00",
       "route_sent_at": "2026-06-27T16:15:41.6114560+08:00",
-      "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json"
+      "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
+      "systems_status": "REQUEST_CHANGES",
+      "systems_review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
+      "replaced_by": "019f089b-0acd-7f03-a6df-8af3092d8309",
+      "replaced_by_nickname": "Engine"
     },
     "M6-SUCCESSION-COMPLETION-001:lead_orchestrator": {
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_routed",
+      "status": "request_changes_routed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -3495,12 +3501,16 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "start_submission_id": "019f0825-1a19-7a22-b373-48ece1e4d2c5",
-      "updated_at": "2026-06-27T18:10:49.0650327+08:00",
+      "updated_at": "2026-06-27T18:22:54.6238286+08:00",
       "route_sent_at": "2026-06-27T16:15:41.6114560+08:00",
       "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
       "review_route_file": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-TO-SYSTEMS-REVIEW.json",
       "systems_architect_thread_id": "019f0834-bb3c-7651-ba7d-a95ae31e8f03",
-      "systems_architect_nickname": "Meridian"
+      "systems_architect_nickname": "Meridian",
+      "systems_status": "REQUEST_CHANGES",
+      "systems_review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-SYSTEMS-REQUEST-CHANGES-TO-SIM.json"
     },
     "M6-SUCCESSION-COMPLETION-001:systems_architect": {
       "task_id": "M6-SUCCESSION-COMPLETION-001",
@@ -3571,7 +3581,7 @@
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "systems_architect",
       "thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
-      "status": "active_reviewing",
+      "status": "request_changes_submitted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -3588,11 +3598,39 @@
       "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
       "read_only": true,
       "created_at": "2026-06-27T18:13:14.3823061+08:00",
-      "updated_at": "2026-06-27T18:13:47.6872590+08:00",
+      "updated_at": "2026-06-27T18:22:54.6238286+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "systems_review_submission_id": "019f0891-e025-7990-8612-ac234503462d",
-      "systems_route_sent_at": "2026-06-27T18:13:47.6872590+08:00"
+      "systems_route_sent_at": "2026-06-27T18:13:47.6872590+08:00",
+      "result": "REQUEST_CHANGES",
+      "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json"
+    },
+    "M6-SUCCESSION-COMPLETION-001:simulation_engineer:replacement": {
+      "task_id": "M6-SUCCESSION-COMPLETION-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f089b-0acd-7f03-a6df-8af3092d8309",
+      "status": "active_request_changes_fix",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "nickname": "Engine",
+      "responsibility": "replacement simulation_engineer fixes systems_architect REQUEST_CHANGES for M6 succession completion",
+      "branch_or_worktree": "feat/m6-succession-completion",
+      "start_state": "REQUEST_CHANGES_FIX_CONFIRMED",
+      "spawn_result": "spawn_agent",
+      "replaces_thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+      "replacement_reason": "original writer unavailable after restart",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
+      "systems_review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
+      "created_at": "2026-06-27T18:23:57.2270701+08:00",
+      "updated_at": "2026-06-27T18:24:29.3000772+08:00",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "request_changes_submission_id": "019f089b-b150-7453-81a6-e2b684640256",
+      "request_changes_sent_at": "2026-06-27T18:24:29.3000772+08:00"
     }
   },
   "replaced_threads": [
@@ -3638,7 +3676,18 @@
       "replaced_by_nickname": "Lintel",
       "reason": "prior paused reviewer thread not found on send_input after restart",
       "replaced_at": "2026-06-27T18:13:14.3823061+08:00"
+    },
+    {
+      "task_id": "M6-SUCCESSION-COMPLETION-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f0823-18c3-73d1-9314-09f78d7ab0cc",
+      "nickname": "Engine",
+      "status": "unavailable_after_restart",
+      "replaced_by": "019f089b-0acd-7f03-a6df-8af3092d8309",
+      "replaced_by_nickname": "Engine",
+      "reason": "original writer thread not found on send_input after systems REQUEST_CHANGES",
+      "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T18:13:47.6872590+08:00"
+  "updated_at": "2026-06-27T18:24:29.3000772+08:00"
 }

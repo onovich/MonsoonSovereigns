@@ -1,0 +1,104 @@
+{
+  "message_id": "MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW",
+  "task_id": "M6-SUCCESSION-COMPLETION-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Replacement systems_architect read-only review of the current feat/m6-succession-completion worktree requests changes. The diff preserves the sim-core/protocol/save-format boundary, has no React/Pixi/Electron/Node IO coupling, uses no Math.random/Date.now, and the claimed broad checks pass when rerun. However, two succession completion edge cases remain below the M6 malformed-save/invariant and deterministic-resolution bar: regency outcomes can reference a missing or unavailable regent without semantic rejection, and a valid one-candidate low-support crisis can be resolved into an outcome that the new invariant itself rejects.",
+  "artifacts": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "docs/02-program-design-document.md",
+    "docs/03-technology-stack.md",
+    "docs/04-software-architecture.md",
+    "docs/05-coding-standards.md",
+    "docs/systems/03-characters-court-succession.md",
+    "docs/systems/07-diplomacy-legitimacy.md",
+    "docs/systems/10-save-content-mods.md",
+    "docs/decisions/ADR-003-worker-authoritative-simulation.md",
+    "docs/decisions/ADR-004-deterministic-command-model.md",
+    "docs/decisions/ADR-006-polity-control-model.md",
+    "docs/decisions/ADR-009-deterministic-rng-domains.md",
+    "project/tasks/active/M6-SUCCESSION-COMPLETION-001.json",
+    "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts"
+  ],
+  "branch_or_worktree": "feat/m6-succession-completion / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m6-succession-completion with exactly the six listed modified files: packages/protocol/src/index.ts; packages/save-format/src/index.ts; packages/sim-core/src/command-query-v1.ts; packages/sim-core/src/world-state-v0.ts; tests/protocol-command-query-schema.test.ts; tests/sim-core-m3-succession-state-machine.test.ts."
+    },
+    {
+      "command": "pnpm exec vitest run --root ../.. tests/protocol-command-query-schema.test.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 1,
+      "result": "Reviewer rerun from repository root mis-set Vitest root to D:/ and failed importing Vitest from an invalid D:/@id path. This was a reviewer invocation issue; the equivalent repository-root command below passed."
+    },
+    {
+      "command": "pnpm exec vitest run tests/protocol-command-query-schema.test.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 0,
+      "result": "2 test files passed, 25 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "24 test files passed, 184 tests passed. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 test files passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, M4 232f62ab, M5 bf042e42."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; sim determinism passed; root Vitest 37 files / 285 tests passed; web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SUCCESSION-COMPLETION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M6-SUCCESSION-COMPLETION-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: packages/sim-core/src/world-state-v0.ts:9352 validates regency successor candidate membership and regent != successor, but it never validates that outcome.regentCharacterId references an existing, alive, non-incapacitated M3 character. packages/save-format/src/index.ts:4716 accepts any positive regentCharacterId, so a malformed save can load semantically with a missing regent reference. Add semantic validation and a negative save/invariant regression.",
+    "REQUEST_CHANGES: packages/sim-core/src/command-query-v1.ts:7815 can resolve a valid pending crisis with exactly one eligible low-support candidate into disputed outcome fields where rivalCharacterId equals leadingCharacterId at line 7845. The new invariant in packages/sim-core/src/world-state-v0.ts:9380 rejects that same shape, so evaluateResolveSuccession can generate an outcome that only fails at commit validation instead of producing a deterministic valid outcome or structured pre-commit rejection. Cover the one-candidate low-support path.",
+    "ACCEPTED AREAS: The diff stays within allowed package/test paths, introduces no new production dependency, does not touch UI/client/Electron/content, and keeps sim-core decoupled from React, Pixi, Electron, Node IO, DOM, real time, and random sources.",
+    "ACCEPTED AREAS: M6 legitimacy integration reuses the accepted M6 legitimacy source/profile substrate instead of creating a parallel legitimacy manager; disputed succession is kept as a recognized-order blocker through reason-coded read-model output.",
+    "ACCEPTED AREAS: Player and AI still use the same authoritative GameCommand path for record-character-status and resolve-succession; no AI-only hidden command or implicit RPC path was introduced."
+  ],
+  "risks": [
+    "Existing automated tests pass but do not cover the malformed regency regent reference path or the one-candidate low-support succession resolution path.",
+    "The protocol/save enum additions remain additive within current M6 task scope; no ADR is requested by this review, but repaired tests should keep malformed/future payload rejection evidence explicit."
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Fix the two listed succession semantic gaps, add focused regressions for malformed regent save/invariant rejection and one-candidate low-support resolution behavior, rerun the affected protocol/save/sim-core/determinism/check/test commands, then return a new REVIEW handoff.",
+  "created_at": "2026-06-27T18:22:30+08:00"
+}
