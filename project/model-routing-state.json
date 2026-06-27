@@ -2367,7 +2367,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T00:26:36.730+08:00",
+  "updated_at": "2026-06-28T00:33:12.367+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2660,5 +2660,28 @@
     "next_ready_tasks": [
       "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
     ]
+  },
+  "m6_batch_autorun_balance_dashboard": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+    "branch_or_worktree": "feat/m6-batch-autorun-balance-dashboard",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+    "writer_nickname": "Abacus the 2nd",
+    "owner_role": "balance_analyst",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.4-mini",
+    "configured_writer_effort": "high",
+    "configured_reviewer_model": "gpt-5.5",
+    "configured_reviewer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-START.json",
+    "started_at": "2026-06-28T00:33:12.367+08:00",
+    "next_action": "Send formal route to balance_analyst writer and await REVIEW handoff.",
+    "updated_at": "2026-06-28T00:33:12.367+08:00"
   }
 }

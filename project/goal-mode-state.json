@@ -2,20 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [],
+  "current_tasks": [
+    "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
-      "status": "active_ready_to_start_next_task",
+      "status": "active_routing_writer",
       "role": "lead_orchestrator"
+    },
+    "balance_analyst": {
+      "thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+      "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+      "status": "active_standby_pending_route",
+      "role": "balance_analyst",
+      "nickname": "Abacus the 2nd"
     }
   },
   "last_integrated_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
-  "last_main_commit": "4fa574fddda51943ec7f47ce80c8434375d32756",
-  "next_ready_tasks": [
-    "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
-  ],
+  "last_main_commit": "3d725f8979ccaf26e552d0248d0cbe982587e232",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -39,10 +46,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 accessibility closed after PR #149 CI pass and main integration; no Human Gate is active.",
+    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 start checkpoint; no Human Gate is active.",
     "recommended_result": null,
-    "note": "Proceed to start M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.",
-    "recorded_at": "2026-06-28T00:26:36.730+08:00"
+    "note": "Proceed with formal writer route.",
+    "recorded_at": "2026-06-28T00:33:12.367+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -809,8 +816,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T00:26:36.730+08:00",
-  "updated_at": "2026-06-28T00:26:36.730+08:00",
+  "last_updated_at": "2026-06-28T00:33:12.367+08:00",
+  "updated_at": "2026-06-28T00:33:12.367+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -920,9 +927,7 @@
       "M6-LAYERED-AI-001"
     ]
   },
-  "ready_tasks": [
-    "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
-  ],
+  "ready_tasks": [],
   "m6_client_alpha_surfaces": {
     "status": "CLOSED",
     "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
@@ -1025,7 +1030,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": null,
+  "current_task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -1101,5 +1106,24 @@
       "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
     ]
   },
-  "last_closed_task": "M6-ACCESSIBILITY-CORE-FLOWS-001"
+  "last_closed_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "m6_batch_autorun_balance_dashboard": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+    "owner_role": "balance_analyst",
+    "reviewer_role": "qa_reviewer",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+    "writer_nickname": "Abacus the 2nd",
+    "branch_or_worktree": "feat/m6-batch-autorun-balance-dashboard",
+    "base_main_commit": "3d725f8979ccaf26e552d0248d0cbe982587e232",
+    "previous_closed_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-START.json",
+    "started_at": "2026-06-28T00:33:12.367+08:00",
+    "next_action": "Send formal route to balance_analyst writer and await REVIEW handoff.",
+    "updated_at": "2026-06-28T00:33:12.367+08:00"
+  }
 }
