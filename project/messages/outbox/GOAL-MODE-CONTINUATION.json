@@ -7,22 +7,15 @@
   "origin_main": "06628e092f1a958c7fc48395f68537097fffb8c8",
   "current_milestone": "M6",
   "current_task": "M6-SCENARIO-DATA-PIPELINE-001",
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M6-DIPLOMACY-LEGITIMACY-001",
   "ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
-      "status": "active_orchestrating_review",
+      "status": "active_integrating_accepted_task",
       "role": "lead_orchestrator"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
-      "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
-      "status": "review_active",
-      "role": "qa_reviewer",
-      "nickname": "Witness"
     }
   },
   "unresolved_risks": [
@@ -46,7 +39,7 @@
     "note": "No active Human Gate. M6-SCENARIO-DATA-PIPELINE-001 is IN_PROGRESS with historical_researcher writer.",
     "recorded_at": "2026-06-27T14:27:24+08:00"
   },
-  "next_machine_action": "qa_reviewer performs independent read-only review of R2 diff and returns ACCEPT / REQUEST_CHANGES / BLOCK.",
+  "next_machine_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -54,7 +47,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T15:04:01+08:00",
+  "last_updated_at": "2026-06-27T15:12:35+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -81,14 +74,14 @@
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
-  "updated_at": "2026-06-27T15:04:01+08:00",
+  "updated_at": "2026-06-27T15:12:35+08:00",
   "current_tasks": [
     "M6-SCENARIO-DATA-PIPELINE-001"
   ],
   "last_integrated_task": "M6-DIPLOMACY-LEGITIMACY-001",
   "last_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
   "next_ready_tasks": [],
-  "next_action": "qa_reviewer performs independent read-only review of R2 diff and returns ACCEPT / REQUEST_CHANGES / BLOCK.",
+  "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -657,7 +650,7 @@
     ]
   },
   "m6_scenario_data_pipeline": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
     "branch_or_worktree": "feat/m6-scenario-data-pipeline",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -669,7 +662,7 @@
     "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "qa_reviewer performs independent read-only review of R2 diff and returns ACCEPT / REQUEST_CHANGES / BLOCK.",
+    "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
     "route_sent_at": "2026-06-27T14:28:31+08:00",
     "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
     "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -703,13 +696,19 @@
     "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
     "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
     "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
-    "updated_at": "2026-06-27T15:03:04+08:00",
+    "updated_at": "2026-06-27T15:12:35+08:00",
     "review_commit": "23bb150e",
     "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
     "qa_thread_nickname": "Witness",
     "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
     "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
     "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
-    "qa_route_sent_at": "2026-06-27T15:04:01+08:00"
+    "qa_route_sent_at": "2026-06-27T15:04:01+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T15:12:35+08:00",
+    "child_threads_closed": true,
+    "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb"
   }
 }

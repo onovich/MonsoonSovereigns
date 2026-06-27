@@ -1,0 +1,126 @@
+{
+  "message_id": "M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer",
+  "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts M6-SCENARIO-DATA-PIPELINE-001. The branch is scoped to allowed content pipeline, schema/runtime, content-source, test, task, and process-route paths; unrelated untracked ui-samples/ remains untouched. The three Alpha scenarios compile through explicit source schema, compiler semantics, runtime parser, and content:validate output with stable sorted IDs, dependency order, source/claim labels, deterministic manifestHash 6d1f6d64, and reference validation for diplomacy, legitimacy, succession, mapCandidates, policies, events, encyclopediaEntries, and startToVictoryFixtures. R2 fixes are verified: claim text and competingInterpretations affect the manifest hash, source/runtime validators reject empty string array entries, compiler semantics reject empty formal source/sourcePassage evidence, and FICTIONAL empty source arrays remain valid.",
+  "artifacts": [
+    "apps/content-tools/src/m6-alpha-scenario.ts",
+    "packages/content-schema/src/m6-alpha-scenario.ts",
+    "packages/content-runtime/src/m6-alpha-scenario.ts",
+    "content-source/m6-alpha-scenarios/alpha-scenario-set.json",
+    "tests/content-tools-compiler.test.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m6-scenario-data-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "4d81a84519e5a489515e14743e463ea257f579fb",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only unrelated untracked ui-samples/ is present; no tracked worktree drift before QA handoff."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff is limited to allowed content-source, apps/content-tools, packages/content-schema, packages/content-runtime, tests, task, thread registry, goal/model routing state, and project/messages paths."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD | allowed-path filter",
+      "exit_code": 0,
+      "result": "No changed path outside the task allowed_paths list."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD | forbidden-path filter",
+      "exit_code": 1,
+      "result": "No forbidden path matched."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD | rg -n \"^ui-samples/\"",
+      "exit_code": 1,
+      "result": "ui-samples/ is not part of the reviewed diff."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "M1/M2/M3 fixtures and M6 Alpha scenario set validated; M6 output scenarios=3, claims=6, sources=5, referenceTargets=8, manifestHash=6d1f6d64."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 28 tests passed, including bad references, missing labels, empty formal source/passage entries, unstable IDs, duplicate scenario keys, deterministic manifest output, and R2 manifest-hash regression coverage."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check passed; Node/Worker determinism matched through M5; root Vitest 37 files / 270 tests passed; web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "ESLint completed without errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-R2-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "Writer R2 handoff JSON validates against the project handoff schema."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SCENARIO-DATA-PIPELINE-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "rg -n \"\\bany\\b|as unknown as|Date\\.now|Math\\.random|TODO|FIXME|skip\\(|\\.only\\(|telemetry|server behavior|arbitrary-code|mod support|production art|audio|branding|logo|manual node battle\" apps/content-tools/src/m6-alpha-scenario.ts packages/content-schema/src/m6-alpha-scenario.ts packages/content-runtime/src/m6-alpha-scenario.ts content-source/m6-alpha-scenarios/alpha-scenario-set.json tests/content-tools-compiler.test.ts tests/content-schema-graph-source.test.ts tests/content-runtime-pack.test.ts",
+      "exit_code": 0,
+      "result": "Only the content-source access note 'defers manual node battle' matched; no implementation, asset, telemetry, server, arbitrary-code mod, production art/audio/branding, skipped-test, any, double-assertion, clock, or RNG issue was found in reviewed task files."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M6 scenario data pipeline acceptance criteria are satisfied for three Alpha scenario datasets, explicit source schema/runtime pipeline, stable IDs, deterministic manifest output, claim/source labeling, dependency ordering, and downstream-reference validation scaffolding.",
+    "ACCEPT: R2 lead-requested fixes are meaningful and covered by tests; bad implementations that omit claim text/competingInterpretations from the manifest hash or allow empty string source entries would fail the current tests.",
+    "ACCEPT: The task does not implement diplomacy, legitimacy, succession, map candidate, policy, event, encyclopedia, or start-to-victory systems; it only records and validates reference IDs.",
+    "ACCEPT: No forbidden production art/audio/branding, telemetry, server behavior, arbitrary-code mod support, downstream system implementation, or M7 content lock was added."
+  ],
+  "risks": [
+    "Non-blocking process metadata drift: the writer R2 handoff's commit field still names d5bfd1f4, while the route file and task state correctly identify review_commit 23bb150e and HEAD includes the QA-route process commit 4d81a845.",
+    "The scenario content remains Alpha validation scaffolding with RESEARCH_REQUIRED/SUMMARY_ONLY source status; M7 content lock still requires later historical/cultural review and page-verified formal sourcing.",
+    "Unrelated untracked ui-samples/ remains present and must not be staged with this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate the accepted M6 scenario data pipeline and keep ui-samples/ untouched; do not treat this Alpha scaffold as M7 content lock.",
+  "created_at": "2026-06-27T15:09:06.8954717+08:00"
+}

@@ -2,7 +2,7 @@
   "id": "M6-SCENARIO-DATA-PIPELINE-001",
   "summary": "Implement three-scenario data pipeline",
   "milestone": "M6",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "historical_researcher",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -88,14 +88,20 @@
     "historical_researcher:replacement": {
       "thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
       "nickname": "Estuary",
-      "status": "review_ready",
-      "role": "historical_researcher"
+      "status": "closed",
+      "role": "historical_researcher",
+      "closed_at": "2026-06-27T15:12:35+08:00",
+      "close_reason": "closed_after_r2_review_ready_and_qa_accept"
     },
     "qa_reviewer": {
       "thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
       "nickname": "Witness",
-      "status": "review_active",
-      "role": "qa_reviewer"
+      "status": "closed",
+      "role": "qa_reviewer",
+      "closed_at": "2026-06-27T15:12:35+08:00",
+      "close_reason": "closed_after_accept_review",
+      "result": "ACCEPT",
+      "review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json"
     }
   },
   "route_to": "qa_reviewer",
@@ -105,7 +111,7 @@
     "Stop and route to systems_architect if content schemas require cross-boundary runtime object graphs or implicit RPC."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T15:04:01+08:00",
+  "updated_at": "2026-06-27T15:12:35+08:00",
   "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
   "writer_nickname": "Chronicle",
@@ -115,7 +121,7 @@
   "started_at": "2026-06-27T14:27:24+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "qa_reviewer performs independent read-only review of R2 diff and returns ACCEPT / REQUEST_CHANGES / BLOCK.",
+  "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
   "route_sent_at": "2026-06-27T14:28:31+08:00",
   "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
   "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -161,5 +167,12 @@
   "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
   "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
   "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
-  "qa_route_sent_at": "2026-06-27T15:04:01+08:00"
+  "qa_route_sent_at": "2026-06-27T15:04:01+08:00",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+  "qa_accepted_at": "2026-06-27T15:12:35+08:00",
+  "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-27T15:12:35+08:00",
+  "child_threads_closed": true,
+  "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb"
 }

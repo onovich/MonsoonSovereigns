@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T15:04:01+08:00",
+  "updated_at": "2026-06-27T15:12:35+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -2969,7 +2969,7 @@
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_orchestrating_review",
+      "status": "active_integrating_accepted_task",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -2978,7 +2978,7 @@
       "branch_or_worktree": "feat/m6-scenario-data-pipeline",
       "start_state": "IN_PROGRESS_ROUTED_TO_HISTORICAL_RESEARCHER",
       "created_at": "2026-06-27T14:27:24+08:00",
-      "updated_at": "2026-06-27T15:03:04+08:00",
+      "updated_at": "2026-06-27T15:12:35+08:00",
       "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
       "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
@@ -3002,7 +3002,13 @@
       "review_commit": "23bb150e",
       "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
       "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
-      "routed_to_qa_at": "2026-06-27T15:03:04+08:00"
+      "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T15:12:35+08:00",
+      "child_threads_closed": true,
+      "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task."
     },
     "M6-SCENARIO-DATA-PIPELINE-001:historical_researcher": {
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
@@ -3077,7 +3083,7 @@
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
       "role": "historical_researcher",
       "thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
-      "status": "review_ready",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -3151,7 +3157,7 @@
         "VALIDATION_REPORT.md"
       ],
       "created_at": "2026-06-27T14:45:02+08:00",
-      "updated_at": "2026-06-27T15:03:04+08:00",
+      "updated_at": "2026-06-27T15:12:35+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "replacement_submission_id": "019f07d3-f477-7da1-9dd7-5cb626e97364",
@@ -3165,13 +3171,18 @@
       "review_commit_r2": "23bb150e",
       "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
       "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
-      "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json"
+      "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
+      "closed_at": "2026-06-27T15:12:35+08:00",
+      "close_reason": "closed_after_r2_review_ready_and_qa_accept",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "M6-SCENARIO-DATA-PIPELINE-001:qa_reviewer": {
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
       "role": "qa_reviewer",
       "thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
-      "status": "review_active",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -3185,10 +3196,15 @@
       "review_source_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-R2-REVIEW__historical_researcher.json",
       "review_commit": "23bb150e",
       "created_at": "2026-06-27T15:03:04+08:00",
-      "updated_at": "2026-06-27T15:04:01+08:00",
+      "updated_at": "2026-06-27T15:12:35+08:00",
       "read_only": true,
       "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
-      "qa_route_sent_at": "2026-06-27T15:04:01+08:00"
+      "qa_route_sent_at": "2026-06-27T15:04:01+08:00",
+      "result": "ACCEPT",
+      "review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+      "closed_at": "2026-06-27T15:12:35+08:00",
+      "close_reason": "closed_after_accept_review",
+      "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json"
     }
   },
   "replaced_threads": [
