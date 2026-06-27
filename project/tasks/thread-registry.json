@@ -3964,7 +3964,7 @@
       "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_orchestrating",
+      "status": "active_integrating",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -3976,8 +3976,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T21:21:24.628+08:00",
-      "updated_at": "2026-06-27T21:54:43.868+08:00",
-      "next_action": "client_engineer implements M6 Alpha client surfaces and returns REVIEW handoff routed to qa_reviewer.",
+      "updated_at": "2026-06-27T22:09:22.301+08:00",
+      "next_action": "Open PR, wait for CI, merge to main, then close M6-CLIENT-ALPHA-SURFACES-001 and continue to the next READY M6 task.",
       "start_submission_id": "019f093f-a3b2-79d3-8662-17837d27188f",
       "route_sent_at": "2026-06-27T21:23:30.417+08:00",
       "qa_thread_id": "019f095b-78e3-7d13-a813-d8b443ee6e5a",
@@ -3985,14 +3985,23 @@
       "review_commit": "88ce12d75f911a7d1ba7e83013076d59013b9bc4",
       "routed_to_qa_at": "2026-06-27T21:54:43.868+08:00",
       "qa_submission_id": "019f095c-5421-78d3-858c-ac481f85f936",
-      "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00"
+      "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T22:09:22.301+08:00",
+      "accepted_head_commit": "686324b5f38773cd0c5f2438fb7fef3aac7ed49d",
+      "child_threads_closed": [
+        "019f093d-76c5-7503-9017-424e7eb72af4",
+        "019f095b-78e3-7d13-a813-d8b443ee6e5a"
+      ]
     },
     "M6-CLIENT-ALPHA-SURFACES-001:client_engineer": {
       "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
       "role": "client_engineer",
       "thread_id": "019f093d-76c5-7503-9017-424e7eb72af4",
       "nickname": "Lantern",
-      "status": "in_progress",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -4004,8 +4013,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T21:21:24.628+08:00",
-      "updated_at": "2026-06-27T21:54:43.868+08:00",
-      "next_action": "client_engineer implements M6 Alpha client surfaces and returns REVIEW handoff routed to qa_reviewer.",
+      "updated_at": "2026-06-27T22:09:22.301+08:00",
+      "next_action": "Open PR, wait for CI, merge to main, then close M6-CLIENT-ALPHA-SURFACES-001 and continue to the next READY M6 task.",
       "start_submission_id": "019f093f-a3b2-79d3-8662-17837d27188f",
       "route_sent_at": "2026-06-27T21:23:30.417+08:00",
       "qa_thread_id": "019f095b-78e3-7d13-a813-d8b443ee6e5a",
@@ -4013,14 +4022,25 @@
       "review_commit": "88ce12d75f911a7d1ba7e83013076d59013b9bc4",
       "routed_to_qa_at": "2026-06-27T21:54:43.868+08:00",
       "qa_submission_id": "019f095c-5421-78d3-858c-ac481f85f936",
-      "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00"
+      "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T22:09:22.301+08:00",
+      "accepted_head_commit": "686324b5f38773cd0c5f2438fb7fef3aac7ed49d",
+      "child_threads_closed": [
+        "019f093d-76c5-7503-9017-424e7eb72af4",
+        "019f095b-78e3-7d13-a813-d8b443ee6e5a"
+      ],
+      "closed_at": "2026-06-27T22:09:22.301+08:00",
+      "close_reason": "LEAD_ACCEPTED_AFTER_QA_ACCEPT"
     },
     "M6-CLIENT-ALPHA-SURFACES-001:qa_reviewer": {
       "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
       "role": "qa_reviewer",
       "thread_id": "019f095b-78e3-7d13-a813-d8b443ee6e5a",
       "nickname": "Gate",
-      "status": "review_in_progress",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -4033,10 +4053,21 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T21:54:43.868+08:00",
-      "updated_at": "2026-06-27T21:54:43.868+08:00",
+      "updated_at": "2026-06-27T22:09:22.301+08:00",
       "qa_submission_id": "019f095c-5421-78d3-858c-ac481f85f936",
       "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00",
-      "next_action": "qa_reviewer reviews M6 client Alpha surfaces and returns ACCEPT, REQUEST_CHANGES, or BLOCK."
+      "next_action": "Open PR, wait for CI, merge to main, then close M6-CLIENT-ALPHA-SURFACES-001 and continue to the next READY M6 task.",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T22:09:22.301+08:00",
+      "accepted_head_commit": "686324b5f38773cd0c5f2438fb7fef3aac7ed49d",
+      "child_threads_closed": [
+        "019f093d-76c5-7503-9017-424e7eb72af4",
+        "019f095b-78e3-7d13-a813-d8b443ee6e5a"
+      ],
+      "closed_at": "2026-06-27T22:09:22.301+08:00",
+      "close_reason": "QA_ACCEPTED_AND_LEAD_ACCEPTED"
     }
   },
   "replaced_threads": [
@@ -4095,5 +4126,5 @@
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T21:54:43.868+08:00"
+  "updated_at": "2026-06-27T22:09:22.301+08:00"
 }

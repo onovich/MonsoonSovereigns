@@ -1,0 +1,210 @@
+{
+  "message_id": "MSG-20260627-M6-CLIENT-ALPHA-SURFACES-QA-REVIEW",
+  "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "route_to": "lead_orchestrator",
+  "reviewed_branch_or_worktree": "feat/m6-client-alpha-surfaces / D:\\WebProjects\\MonsoonSovereigns",
+  "review_commit": "88ce12d75f911a7d1ba7e83013076d59013b9bc4",
+  "current_head_during_review": "686324b5",
+  "base_main_commit_from_task": "550264469fad5144f8b8f2471eb56cb9419a97b2",
+  "source_route": "project/messages/routes/M6-CLIENT-ALPHA-SURFACES-001__ROUTE-20260627-M6-CLIENT-SURFACES-WRITER-TO-QA-REVIEW.json",
+  "source_writer_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-REVIEW__client_engineer.json",
+  "commit_note": "Writer handoff commit field is a start checkpoint; QA reviewed the route-provided review commit 88ce12d75f911a7d1ba7e83013076d59013b9bc4 plus current allowed route/process diff.",
+  "summary": "Independent QA accepts M6 client Alpha surfaces. The Web client exposes scenario selection through a command-driven Alpha victory path, non-placeholder major-system panels, checkpoint save/load state, failure preview, AI/adviser reasons, and map candidate display through client read models and protocol command DTOs. No direct WorldState mutation, React-owned per-entity Pixi object management, manual node battle implementation, telemetry, server/account, desktop bridge, arbitrary-code mod UI, release, or commercial decision was found.",
+  "acceptance_review": [
+    {
+      "criterion": "Alpha scenario selection to victory and major surfaces are non-placeholder.",
+      "status": "PASS",
+      "evidence": "packages/client-core/src/index.ts projects a three-scenario M6 Alpha read-model, 22 protocol command steps, diplomacy/legitimacy/succession/policy/event/encyclopedia/adviser/map/terminal slices, checkpoint labels, victory and failure evidence. packages/ui/src/index.tsx renders the M6 Alpha workspace and panels. Playwright covers selection, checkpoint load, victory, failure preview, and no placeholder panel text."
+    },
+    {
+      "criterion": "React/client store does not hold full WorldState and uses read models plus protocol command DTOs.",
+      "status": "PASS",
+      "evidence": "Changed client code imports protocol command/read-model types, not sim-core WorldState. UI local state is limited to selected scenario id, phase, current step index, preview id, confirmed command ids, and checkpoint text. Submitted commands are AuthoritativeGameCommandV1 DTOs."
+    },
+    {
+      "criterion": "Map candidate keeps map-renderer boundary; React does not own per-entity Pixi DisplayObjects.",
+      "status": "PASS",
+      "evidence": "React renders map-candidate metadata and continues to mount map rendering through @monsoon/map-renderer with replace-read-model deltas. Boundary scan found Pixi ownership only in map-renderer and no DisplayObject management in React/client-core."
+    },
+    {
+      "criterion": "Forbidden surfaces remain absent.",
+      "status": "PASS",
+      "evidence": "No implementation for manual node battle, telemetry, server/account, desktop bridge, arbitrary-code mod UI, release, or commercial decisions was added. UI only displays exclusions as non-actionable status text."
+    },
+    {
+      "criterion": "Actual diff is limited to allowed paths.",
+      "status": "PASS",
+      "evidence": "Diff from 550264469fad5144f8b8f2471eb56cb9419a97b2 to current HEAD touches only apps/web, packages/client-core, packages/ui, tests, project/task state, and project/messages/state files allowed by the task. No forbidden paths changed."
+    }
+  ],
+  "findings": [],
+  "residual_risks": [
+    "M6 Alpha client surfaces are projections over accepted protocol/read-model scripts and fixtures; live worker query-stream integration remains future work and is not required by this task.",
+    "Storybook build passes, but new M6 surface state coverage is primarily through Playwright and fixture URL modes rather than new .storybook stories because the task allowed paths did not include .storybook/**.",
+    "Web and Storybook builds retain existing large chunk warnings; no new dependency or bundle-splitting decision was introduced."
+  ],
+  "commands_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before writing this QA handoff; branch feat/m6-client-alpha-surfaces."
+    },
+    {
+      "command": "git diff --name-status --no-renames 550264469fad5144f8b8f2471eb56cb9419a97b2...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are within allowed task paths; no forbidden path observed."
+    },
+    {
+      "command": "git diff --check 550264469fad5144f8b8f2471eb56cb9419a97b2...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors in reviewed diff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 4 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing chunk-size warning was emitted."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully; existing chunk-size warning was emitted and .tmp/storybook-static was removed by the script."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "10 Chromium Playwright tests passed, including M6 Alpha flow, forbidden UI entry checks, and viewport overflow checks."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries, determinism, M6 Alpha Node/Worker hash parity, root Vitest 39 files/301 tests, and web Vitest 1 file/4 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-CLIENT-ALPHA-SURFACES-001",
+      "exit_code": 0,
+      "result": "Task JSON is VALID."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in current working tree diff."
+    }
+  ],
+  "next_action": "Lead orchestrator may integrate/close according to project process. QA did not mark the task CLOSED, did not commit, and did not merge.",
+  "created_at": "2026-06-27T22:03:17.863+08:00",
+  "branch_or_worktree": "feat/m6-client-alpha-surfaces / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "88ce12d75f911a7d1ba7e83013076d59013b9bc4",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M6-CLIENT-ALPHA-SURFACES-001.json",
+    "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-REVIEW__client_engineer.json"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before writing this QA handoff; branch feat/m6-client-alpha-surfaces."
+    },
+    {
+      "command": "git diff --name-status --no-renames 550264469fad5144f8b8f2471eb56cb9419a97b2...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are within allowed task paths; no forbidden path observed."
+    },
+    {
+      "command": "git diff --check 550264469fad5144f8b8f2471eb56cb9419a97b2...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors in reviewed diff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 7 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 4 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing chunk-size warning was emitted."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully; existing chunk-size warning was emitted and .tmp/storybook-static was removed by the script."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "10 Chromium Playwright tests passed, including M6 Alpha flow, forbidden UI entry checks, and viewport overflow checks."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries, determinism, M6 Alpha Node/Worker hash parity, root Vitest 39 files/301 tests, and web Vitest 1 file/4 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-CLIENT-ALPHA-SURFACES-001",
+      "exit_code": 0,
+      "result": "Task JSON is VALID."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in current working tree diff."
+    }
+  ],
+  "decisions": [
+    "ACCEPT M6-CLIENT-ALPHA-SURFACES-001 for QA because acceptance criteria, architecture boundaries, forbidden-surface exclusions, and required tests passed.",
+    "Route to lead_orchestrator for integration; QA did not mark task CLOSED."
+  ],
+  "risks": [
+    "M6 Alpha client surfaces are projections over accepted protocol/read-model scripts and fixtures; live worker query-stream integration remains future work and is not required by this task.",
+    "Storybook build passes, but new M6 surface state coverage is primarily through Playwright and fixture URL modes rather than new .storybook stories because the task allowed paths did not include .storybook/**.",
+    "Web and Storybook builds retain existing large chunk warnings; no new dependency or bundle-splitting decision was introduced."
+  ],
+  "blockers": [],
+  "requested_action": "Lead orchestrator may integrate after final gates; do not mark CLOSED until PR enters origin/main."
+}
