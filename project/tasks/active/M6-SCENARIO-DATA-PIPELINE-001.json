@@ -2,7 +2,7 @@
   "id": "M6-SCENARIO-DATA-PIPELINE-001",
   "summary": "Implement three-scenario data pipeline",
   "milestone": "M6",
-  "status": "DRAFT",
+  "status": "IN_PROGRESS",
   "owner_role": "historical_researcher",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -69,7 +69,19 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m6-scenario-data-pipeline",
-  "threads": {},
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_orchestrating",
+      "role": "lead_orchestrator"
+    },
+    "historical_researcher": {
+      "thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "nickname": "Chronicle",
+      "status": "active",
+      "role": "historical_researcher"
+    }
+  },
   "route_to": "lead_orchestrator",
   "notes": [
     "This task may create data-pipeline scaffolding and minimal Alpha scenario data, but it is not M7 content lock.",
@@ -77,5 +89,17 @@
     "Stop and route to systems_architect if content schemas require cross-boundary runtime object graphs or implicit RPC."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T05:17:00+08:00"
+  "updated_at": "2026-06-27T14:28:31+08:00",
+  "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+  "writer_nickname": "Chronicle",
+  "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
+  "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+  "started_at": "2026-06-27T14:27:24+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "next_action": "historical_researcher writer implements allowed-path scenario pipeline and returns REVIEW handoff for qa_reviewer.",
+  "route_sent_at": "2026-06-27T14:28:31+08:00",
+  "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6"
 }

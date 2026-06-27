@@ -2,36 +2,27 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_DIPLOMACY_LEGITIMACY_CLOSED",
+  "status": "M6_SCENARIO_DATA_PIPELINE_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "141e5fc9f4dd149b1701ca102bfafef61189e8b3",
+  "origin_main": "06628e092f1a958c7fc48395f68537097fffb8c8",
   "current_milestone": "M6",
-  "current_task": null,
-  "current_task_status": null,
-  "last_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
-  "ready_tasks": [
-    "M6-SCENARIO-DATA-PIPELINE-001"
-  ],
+  "current_task": "M6-SCENARIO-DATA-PIPELINE-001",
+  "current_task_status": "IN_PROGRESS",
+  "last_closed_task": "M6-DIPLOMACY-LEGITIMACY-001",
+  "ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active_orchestrating_request_changes",
+      "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+      "status": "active_orchestrating",
       "role": "lead_orchestrator"
     },
-    "simulation_engineer": {
-      "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "active_request_changes",
-      "role": "simulation_engineer",
-      "nickname": "Engine the 2nd"
-    },
-    "systems_architect": {
-      "thread_id": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "status": "request_changes_complete",
-      "role": "systems_architect",
-      "nickname": "Keystone"
+    "historical_researcher": {
+      "thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+      "status": "active",
+      "role": "historical_researcher",
+      "nickname": "Chronicle"
     }
   },
   "unresolved_risks": [
@@ -50,12 +41,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 Alpha system contract closure PR #132 entered main; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
+    "approval_source": "M5 manual node battle decision remains DEFER_MANUAL_NODE_BATTLE; no active Human Gate for M6 scenario data pipeline.",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-DIPLOMACY-LEGITIMACY-001 is IN_PROGRESS with simulation_engineer writer.",
-    "recorded_at": "2026-06-27T06:41:07+08:00"
+    "note": "No active Human Gate. M6-SCENARIO-DATA-PIPELINE-001 is IN_PROGRESS with historical_researcher writer.",
+    "recorded_at": "2026-06-27T14:27:24+08:00"
   },
-  "next_machine_action": "Start M6-SCENARIO-DATA-PIPELINE-001 as the highest-priority dependency-ready M6 task.",
+  "next_machine_action": "Wait for historical_researcher REVIEW handoff for M6-SCENARIO-DATA-PIPELINE-001, then route to independent qa_reviewer.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -63,7 +54,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T14:19:37+08:00",
+  "last_updated_at": "2026-06-27T14:28:31+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -119,14 +110,14 @@
       "replaced_at": "2026-06-27T13:14:06+08:00"
     }
   ],
-  "updated_at": "2026-06-27T14:19:37+08:00",
-  "current_tasks": [],
-  "last_integrated_task": "M6-DIPLOMACY-LEGITIMACY-001",
-  "last_main_commit": "96dd735d463d400a9e30b2112e4377cca7783d1e",
-  "next_ready_tasks": [
+  "updated_at": "2026-06-27T14:28:31+08:00",
+  "current_tasks": [
     "M6-SCENARIO-DATA-PIPELINE-001"
   ],
-  "next_action": "Start M6-SCENARIO-DATA-PIPELINE-001 as the highest-priority dependency-ready M6 task.",
+  "last_integrated_task": "M6-DIPLOMACY-LEGITIMACY-001",
+  "last_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+  "next_ready_tasks": [],
+  "next_action": "Wait for historical_researcher REVIEW handoff for M6-SCENARIO-DATA-PIPELINE-001, then route to independent qa_reviewer.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -693,5 +684,22 @@
     "next_ready_tasks": [
       "M6-SCENARIO-DATA-PIPELINE-001"
     ]
+  },
+  "m6_scenario_data_pipeline": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+    "branch_or_worktree": "feat/m6-scenario-data-pipeline",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+    "writer_nickname": "Chronicle",
+    "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
+    "started_at": "2026-06-27T14:27:24+08:00",
+    "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "historical_researcher writer implements allowed-path scenario pipeline and returns REVIEW handoff for qa_reviewer.",
+    "route_sent_at": "2026-06-27T14:28:31+08:00",
+    "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6"
   }
 }

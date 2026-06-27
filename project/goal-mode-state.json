@@ -2,20 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [],
+  "current_tasks": [
+    "M6-SCENARIO-DATA-PIPELINE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_between_tasks",
+      "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+      "status": "active_orchestrating",
       "role": "lead_orchestrator"
+    },
+    "historical_researcher": {
+      "thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+      "status": "active",
+      "role": "historical_researcher",
+      "nickname": "Chronicle"
     }
   },
   "last_integrated_task": "M6-DIPLOMACY-LEGITIMACY-001",
-  "last_main_commit": "96dd735d463d400a9e30b2112e4377cca7783d1e",
-  "next_ready_tasks": [
-    "M6-SCENARIO-DATA-PIPELINE-001"
-  ],
+  "last_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -39,10 +46,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 Alpha system contract closure PR #132 entered main; manual node battle decision remains DEFER_MANUAL_NODE_BATTLE",
+    "approval_source": "M5 manual node battle decision remains DEFER_MANUAL_NODE_BATTLE; no active Human Gate for M6 scenario data pipeline.",
     "recommended_result": null,
-    "note": "No active Human Gate. M6-DIPLOMACY-LEGITIMACY-001 is CLOSED; next READY task is M6-SCENARIO-DATA-PIPELINE-001.",
-    "recorded_at": "2026-06-27T14:19:37+08:00"
+    "note": "No active Human Gate. M6-SCENARIO-DATA-PIPELINE-001 is IN_PROGRESS with historical_researcher writer.",
+    "recorded_at": "2026-06-27T14:27:24+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -56,7 +63,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T14:19:37+08:00",
+  "last_updated_at": "2026-06-27T14:28:31+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -68,7 +75,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T14:19:37+08:00",
+  "updated_at": "2026-06-27T14:28:31+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -426,7 +433,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M6-SCENARIO-DATA-PIPELINE-001 as the highest-priority dependency-ready M6 task.",
+  "next_action": "Wait for historical_researcher REVIEW handoff for M6-SCENARIO-DATA-PIPELINE-001, then route to independent qa_reviewer.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -633,5 +640,22 @@
     "next_ready_tasks": [
       "M6-SCENARIO-DATA-PIPELINE-001"
     ]
+  },
+  "m6_scenario_data_pipeline": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+    "branch_or_worktree": "feat/m6-scenario-data-pipeline",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+    "writer_nickname": "Chronicle",
+    "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
+    "started_at": "2026-06-27T14:27:24+08:00",
+    "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "historical_researcher writer implements allowed-path scenario pipeline and returns REVIEW handoff for qa_reviewer.",
+    "route_sent_at": "2026-06-27T14:28:31+08:00",
+    "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6"
   }
 }
