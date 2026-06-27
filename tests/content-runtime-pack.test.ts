@@ -3,10 +3,12 @@ import { describe, expect, test } from "vitest";
 import {
   createRuntimeContentPackIndexV0,
   createRuntimeM3CharacterOfficeContentPackIndexV0,
+  createRuntimeM6AlphaMapCandidateContentPackIndexV0,
   createRuntimeM6AlphaScenarioContentPackIndexV0,
   createRuntimeM3PolityVassalageContentPackIndexV0,
   createRuntimeM2WorldContentPackIndexV0,
   parseRuntimeM3CharacterOfficeContentPackV0,
+  parseRuntimeM6AlphaMapCandidateContentPackV0,
   parseRuntimeM6AlphaScenarioContentPackV0,
   parseRuntimeM3PolityVassalageContentPackV0,
   parseRuntimeM2WorldContentPackV0,
@@ -629,6 +631,45 @@ describe("M6 runtime alpha scenario content pack", () => {
   });
 });
 
+describe("M6 runtime alpha map candidate content pack", () => {
+  test("parses map candidate payloads without exposing simulation authority", () => {
+    const pack = parseRuntimeM6AlphaMapCandidateContentPackV0(makeRuntimeMapCandidatePack());
+    const index = createRuntimeM6AlphaMapCandidateContentPackIndexV0(pack);
+
+    expect(index.getCandidate("map.alpha.runtime")?.districts).toHaveLength(2);
+    expect(index.getCandidate("map.alpha.runtime")?.routes[0]).toMatchObject({
+      routeReferenceId: "route.alpha.runtime-river",
+      waterClass: "mixed"
+    });
+    expect(index).not.toHaveProperty("getWorldState");
+    expect(index).not.toHaveProperty("applyMapToSimulation");
+  });
+
+  test("rejects map candidate runtime packs with mismatched counts or bad references", () => {
+    const pack = makeRuntimeMapCandidatePack();
+    expect(() =>
+      parseRuntimeM6AlphaMapCandidateContentPackV0({
+        ...pack,
+        manifest: {
+          ...pack.manifest,
+          routeCount: 2
+        },
+        candidates: [
+          {
+            ...pack.candidates[0],
+            routes: [
+              {
+                ...pack.candidates[0]?.routes[0],
+                toDistrictId: 99
+              }
+            ]
+          }
+        ]
+      })
+    ).toThrow("RuntimeM6AlphaMapCandidateContentPackV0");
+  });
+});
+
 function makeRuntimeReferenceTargets() {
   return {
     diplomacy: [makeRuntimeReferenceTarget("diplomacy.alpha.runtime")],
@@ -660,5 +701,96 @@ function makeRuntimeReferenceSets() {
     events: ["event.alpha.runtime"],
     encyclopediaEntries: ["encyclopedia.alpha.runtime"],
     startToVictoryFixtures: ["fixture.alpha.runtime"]
+  };
+}
+
+function makeRuntimeMapCandidatePack() {
+  return {
+    schemaVersion: 1,
+    kind: "runtime-m6-alpha-map-candidate-content-pack-v0",
+    fixtureId: "m6.alpha.map.runtime",
+    manifest: {
+      schemaVersion: 1,
+      fixtureId: "m6.alpha.map.runtime",
+      fixtureKind: "alpha-map-candidate-set",
+      syntheticScope: "m6-alpha-map-candidate-validation",
+      manifestHash: "1234abcd",
+      candidateCount: 1,
+      districtCount: 2,
+      settlementCount: 1,
+      routeCount: 1
+    },
+    candidates: [
+      {
+        id: 1,
+        sourceId: "map.alpha.runtime",
+        displayNameKey: "content.m6.alpha.map.runtime",
+        historicity: "COMPOSITE",
+        confidence: "LOW",
+        sourceLabel: "COMPOSITE",
+        reviewNotes: ["Alpha runtime map candidate review note."],
+        bounds: { widthInMapUnits: 120, heightInMapUnits: 90 },
+        districts: [
+          {
+            id: 1,
+            sourceId: "district.alpha.land",
+            districtReferenceId: "district.alpha.land",
+            displayNameKey: "content.m6.alpha.map.district.land",
+            landWaterClass: "land",
+            renderOrder: 10,
+            anchor: { x: 20, y: 20 },
+            polygon: [
+              { x: 0, y: 0 },
+              { x: 40, y: 0 },
+              { x: 40, y: 40 }
+            ]
+          },
+          {
+            id: 2,
+            sourceId: "district.alpha.water",
+            districtReferenceId: "district.alpha.water",
+            displayNameKey: "content.m6.alpha.map.district.water",
+            landWaterClass: "water",
+            renderOrder: 20,
+            anchor: { x: 80, y: 60 },
+            polygon: [
+              { x: 60, y: 40 },
+              { x: 120, y: 40 },
+              { x: 120, y: 90 }
+            ]
+          }
+        ],
+        settlements: [
+          {
+            id: 1,
+            sourceId: "settlement.alpha.land",
+            settlementReferenceId: "settlement.alpha.land",
+            districtReferenceId: "district.alpha.land",
+            districtId: 1,
+            displayNameKey: "content.m6.alpha.map.settlement.land",
+            renderOrder: 10,
+            anchor: { x: 22, y: 20 }
+          }
+        ],
+        routes: [
+          {
+            id: 1,
+            sourceId: "route.alpha.runtime-river",
+            routeReferenceId: "route.alpha.runtime-river",
+            fromDistrictReferenceId: "district.alpha.land",
+            toDistrictReferenceId: "district.alpha.water",
+            fromDistrictId: 1,
+            toDistrictId: 2,
+            routeKind: "river",
+            waterClass: "mixed",
+            renderOrder: 10,
+            points: [
+              { x: 20, y: 20 },
+              { x: 80, y: 60 }
+            ]
+          }
+        ]
+      }
+    ]
   };
 }

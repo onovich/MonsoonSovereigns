@@ -2,11 +2,13 @@ import { describe, expect, test } from "vitest";
 
 import {
   parseM3PolityVassalageFixtureSourceV0,
+  parseM6AlphaMapCandidateSetSourceV0,
   parseM6AlphaScenarioSetSourceV0,
   parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   validateM2WorldFixtureSourceV0,
   validateM3CharacterOfficeFixtureSourceV0,
+  validateM6AlphaMapCandidateSetSourceV0,
   validateM6AlphaScenarioSetSourceV0,
   validateM3PolityVassalageFixtureSourceV0,
   parseM1GraphFixtureSourceV0,
@@ -593,6 +595,51 @@ describe("M6 alpha scenario source schema", () => {
   });
 });
 
+describe("M6 alpha map candidate source schema", () => {
+  test("parses candidate IDs, references, water classes, and review notes", () => {
+    const source = parseM6AlphaMapCandidateSetSourceV0(makeMapCandidateSource());
+
+    expect(source.candidates[0]?.sourceId).toBe("map.alpha.test-candidate");
+    expect(source.candidates[0]?.districts.map((district) => district.landWaterClass)).toEqual([
+      "land",
+      "water"
+    ]);
+    expect(source.candidates[0]?.routes[0]?.waterClass).toBe("mixed");
+    expect(source.candidates[0]?.reviewNotes[0]).toContain("Alpha");
+  });
+
+  test("returns path-specific errors for invalid map candidate classifications", () => {
+    const source = makeMapCandidateSource();
+    expect(
+      validateM6AlphaMapCandidateSetSourceV0({
+        ...source,
+        candidates: [
+          {
+            ...source.candidates[0],
+            districts: source.candidates[0]?.districts.map((district, index) =>
+              index === 0 ? { ...district, landWaterClass: "forest" } : district
+            ),
+            routes: source.candidates[0]?.routes.map((route, index) =>
+              index === 0 ? { ...route, waterClass: "deep-sea" } : route
+            )
+          }
+        ]
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "invalid-schema",
+          path: "candidates[0].districts[0].landWaterClass"
+        }),
+        expect.objectContaining({
+          code: "invalid-schema",
+          path: "candidates[0].routes[0].waterClass"
+        })
+      ])
+    );
+  });
+});
+
 function makeReferenceTargets(claimId: string) {
   return {
     diplomacy: [makeReferenceTarget("diplomacy.alpha.test", claimId)],
@@ -624,5 +671,79 @@ function makeReferenceSets() {
     events: ["event.alpha.test"],
     encyclopediaEntries: ["encyclopedia.alpha.test"],
     startToVictoryFixtures: ["fixture.alpha.test"]
+  };
+}
+
+function makeMapCandidateSource() {
+  return {
+    schemaVersion: 1,
+    kind: "m6.alpha-map-candidate-set",
+    fixtureId: "m6.alpha.map.test",
+    fixtureKind: "alpha-map-candidate-set",
+    syntheticScope: "m6-alpha-map-candidate-validation",
+    candidates: [
+      {
+        sourceId: "map.alpha.test-candidate",
+        displayNameKey: "content.m6.alpha.map.test_candidate",
+        historicity: "COMPOSITE",
+        confidence: "LOW",
+        sourceLabel: "COMPOSITE",
+        reviewNotes: ["Alpha validation candidate; exact borders remain unlocked."],
+        bounds: { widthInMapUnits: 100, heightInMapUnits: 100 },
+        districts: [
+          {
+            sourceId: "district.alpha.land",
+            districtReferenceId: "district.alpha.land",
+            displayNameKey: "content.m6.alpha.map.district.land",
+            landWaterClass: "land",
+            renderOrder: 10,
+            anchor: { x: 25, y: 25 },
+            polygon: [
+              { x: 0, y: 0 },
+              { x: 50, y: 0 },
+              { x: 50, y: 50 }
+            ]
+          },
+          {
+            sourceId: "district.alpha.water",
+            districtReferenceId: "district.alpha.water",
+            displayNameKey: "content.m6.alpha.map.district.water",
+            landWaterClass: "water",
+            renderOrder: 20,
+            anchor: { x: 75, y: 75 },
+            polygon: [
+              { x: 50, y: 50 },
+              { x: 100, y: 50 },
+              { x: 100, y: 100 }
+            ]
+          }
+        ],
+        settlements: [
+          {
+            sourceId: "settlement.alpha.land-court",
+            settlementReferenceId: "settlement.alpha.land-court",
+            districtReferenceId: "district.alpha.land",
+            displayNameKey: "content.m6.alpha.map.settlement.land_court",
+            renderOrder: 10,
+            anchor: { x: 25, y: 25 }
+          }
+        ],
+        routes: [
+          {
+            sourceId: "route.alpha.river",
+            routeReferenceId: "route.alpha.river",
+            fromDistrictReferenceId: "district.alpha.land",
+            toDistrictReferenceId: "district.alpha.water",
+            routeKind: "river",
+            waterClass: "mixed",
+            renderOrder: 10,
+            points: [
+              { x: 25, y: 25 },
+              { x: 75, y: 75 }
+            ]
+          }
+        ]
+      }
+    ]
   };
 }

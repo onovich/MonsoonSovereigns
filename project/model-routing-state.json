@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T15:19:54+08:00",
+  "updated_at": "2026-06-27T15:56:05+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1768,45 +1768,45 @@
   ],
   "active_threads": [
     {
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_orchestrating_request_changes",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration for M6 diplomacy REQUEST_CHANGES loop",
-      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
-      "updated_at": "2026-06-27T13:28:38+08:00"
+      "responsibility": "lead integration for accepted M6 map candidate pipeline",
+      "branch_or_worktree": "feat/m6-map-candidate-pipeline",
+      "updated_at": "2026-06-27T15:56:05+08:00"
     },
     {
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
-      "role": "simulation_engineer",
-      "thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
-      "status": "active_request_changes",
+      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+      "role": "client_engineer",
+      "thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "nickname": "Engine the 2nd",
-      "responsibility": "replacement writer fixing systems REQUEST_CHANGES",
-      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
-      "updated_at": "2026-06-27T13:28:38+08:00"
+      "nickname": "Window",
+      "responsibility": "writer accepted pending integration",
+      "branch_or_worktree": "feat/m6-map-candidate-pipeline",
+      "updated_at": "2026-06-27T15:56:05+08:00"
     },
     {
-      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
       "role": "systems_architect",
-      "thread_id": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
-      "status": "request_changes_complete",
+      "thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "nickname": "Keystone",
-      "responsibility": "systems review completed with REQUEST_CHANGES",
-      "branch_or_worktree": "feat/m6-diplomacy-legitimacy",
-      "updated_at": "2026-06-27T13:28:38+08:00"
+      "nickname": "Lintel",
+      "responsibility": "systems review accepted",
+      "branch_or_worktree": "feat/m6-map-candidate-pipeline",
+      "updated_at": "2026-06-27T15:56:05+08:00"
     }
   ],
   "task_effects": {
@@ -1884,7 +1884,8 @@
     "M5-EXIT-HUMAN-GATE-001": "CLOSED after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011. M5_GATE = PASS_WITH_LIMITS; M6-TASK-GRAPH-001 is READY.",
     "M6-TASK-GRAPH-001": "CLOSED after PR #129 entered main at 4aef9108da1e659354a4a726b07b4b6dad56f966. Planning-only M6 Alpha task DAG accepted; next READY M6 task is M6-ALPHA-SYSTEM-CONTRACT-001.",
     "M6-ALPHA-SYSTEM-CONTRACT-001": "REVIEW after gameplay_designer defined the bounded M6 Alpha system-complete contract; route writer handoff to systems_architect reviewer.",
-    "M6-SCENARIO-DATA-PIPELINE-001": "CLOSED after PR #135 entered main at 7f83cd4da1dcd7fdc77be922225bef43c9127c74. Next READY M6 tasks are M6-MAP-CANDIDATE-PIPELINE-001 and M6-SUCCESSION-COMPLETION-001."
+    "M6-SCENARIO-DATA-PIPELINE-001": "CLOSED after PR #135 entered main at 7f83cd4da1dcd7fdc77be922225bef43c9127c74. Next READY M6 tasks are M6-MAP-CANDIDATE-PIPELINE-001 and M6-SUCCESSION-COMPLETION-001.",
+    "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -2190,6 +2191,23 @@
         "M6-MAP-CANDIDATE-PIPELINE-001",
         "M6-SUCCESSION-COMPLETION-001"
       ]
+    },
+    "M6-MAP-CANDIDATE-PIPELINE-001": {
+      "status": "IN_PROGRESS",
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "writer_thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
+      "writer_nickname": "Window",
+      "branch_or_worktree": "feat/m6-map-candidate-pipeline",
+      "updated_at": "2026-06-27T15:26:54+08:00",
+      "human_gate_required": false,
+      "start_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-LEAD-TO-CLIENT-START.json",
+      "base_main_commit": "1ecd9ee80f130a96317d86a8099ea000725af024",
+      "next_action": "client_engineer writer returns REVIEW handoff for systems_architect.",
+      "start_submission_id": "019f07f8-e8a4-71c2-8978-a75da0fa39ed",
+      "route_sent_at": "2026-06-27T15:26:54+08:00"
     }
   },
   "m6_scenario_data_pipeline": {
@@ -2275,5 +2293,36 @@
       "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response",
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
-  ]
+  ],
+  "m6_map_candidate_pipeline": {
+    "status": "ACCEPTED",
+    "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+    "branch_or_worktree": "feat/m6-map-candidate-pipeline",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
+    "writer_nickname": "Window",
+    "systems_architect_thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
+    "systems_architect_nickname": "Lintel",
+    "start_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-LEAD-TO-CLIENT-START.json",
+    "review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW__client_engineer.json",
+    "review_route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-WRITER-TO-SYSTEMS-REVIEW.json",
+    "systems_review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+    "started_at": "2026-06-27T15:25:45+08:00",
+    "review_ready_at": "2026-06-27T15:46:30+08:00",
+    "routed_to_systems_at": "2026-06-27T15:49:16+08:00",
+    "accepted_at": "2026-06-27T15:56:05+08:00",
+    "base_main_commit": "1ecd9ee80f130a96317d86a8099ea000725af024",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "previous_closed_task": "M6-SCENARIO-DATA-PIPELINE-001",
+    "next_action": "Lead opens PR, waits for CI, merges, syncs main, then closes task.",
+    "start_submission_id": "019f07f8-e8a4-71c2-8978-a75da0fa39ed",
+    "route_sent_at": "2026-06-27T15:26:54+08:00",
+    "review_submission_id": "019f080e-2be8-75d3-831a-65095732652f",
+    "systems_route_sent_at": "2026-06-27T15:49:16+08:00",
+    "systems_rereview_submission_id": "019f0812-4098-7952-be7d-967f1978bc45"
+  }
 }

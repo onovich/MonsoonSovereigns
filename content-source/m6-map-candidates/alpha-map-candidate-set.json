@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "kind": "m6.alpha-map-candidate-set",
+  "fixtureId": "m6.alpha.map.candidate-set",
+  "fixtureKind": "alpha-map-candidate-set",
+  "syntheticScope": "m6-alpha-map-candidate-validation",
+  "candidates": [
+    {
+      "sourceId": "map.alpha.western-mainland-candidate",
+      "displayNameKey": "content.m6.alpha.map.western_mainland_candidate",
+      "historicity": "COMPOSITE",
+      "confidence": "LOW",
+      "sourceLabel": "COMPOSITE",
+      "reviewNotes": [
+        "Alpha validation-only candidate; exact borders, final coastlines, and production art style remain unlocked for M7.",
+        "District and route references are stable compiler IDs, not simulation authority or formal historical territorial claims.",
+        "Water and coastal-interface regions are presentational read-model inputs for renderer validation, not complex naval warfare authorization."
+      ],
+      "bounds": {
+        "widthInMapUnits": 640,
+        "heightInMapUnits": 420
+      },
+      "districts": [
+        {
+          "sourceId": "district.alpha.coastal-interface",
+          "districtReferenceId": "district.alpha.coastal-interface",
+          "displayNameKey": "content.m6.alpha.map.district.coastal_interface",
+          "landWaterClass": "coastal-interface",
+          "renderOrder": 10,
+          "anchor": {
+            "x": 470,
+            "y": 275
+          },
+          "polygon": [
+            {
+              "x": 390,
+              "y": 215
+            },
+            {
+              "x": 570,
+              "y": 225
+            },
+            {
+              "x": 585,
+              "y": 360
+            },
+            {
+              "x": 410,
+              "y": 380
+            }
+          ]
+        },
+        {
+          "sourceId": "district.alpha.delta-water",
+          "districtReferenceId": "district.alpha.delta-water",
+          "displayNameKey": "content.m6.alpha.map.district.delta_water",
+          "landWaterClass": "water",
+          "renderOrder": 20,
+          "anchor": {
+            "x": 350,
+            "y": 300
+          },
+          "polygon": [
+            {
+              "x": 275,
+              "y": 220
+            },
+            {
+              "x": 390,
+              "y": 215
+            },
+            {
+              "x": 410,
+              "y": 380
+            },
+            {
+              "x": 290,
+              "y": 390
+            }
+          ]
+        },
+        {
+          "sourceId": "district.alpha.irrawaddy-core",
+          "districtReferenceId": "district.alpha.irrawaddy-core",
+          "displayNameKey": "content.m6.alpha.map.district.irrawaddy_core",
+          "landWaterClass": "land",
+          "renderOrder": 30,
+          "anchor": {
+            "x": 225,
+            "y": 250
+          },
+          "polygon": [
+            {
+              "x": 150,
+              "y": 165
+            },
+            {
+              "x": 275,
+              "y": 145
+            },
+            {
+              "x": 275,
+              "y": 220
+            },
+            {
+              "x": 290,
+              "y": 390
+            },
+            {
+              "x": 130,
+              "y": 340
+            }
+          ]
+        },
+        {
+          "sourceId": "district.alpha.sittaung-corridor",
+          "districtReferenceId": "district.alpha.sittaung-corridor",
+          "displayNameKey": "content.m6.alpha.map.district.sittaung_corridor",
+          "landWaterClass": "land",
+          "renderOrder": 40,
+          "anchor": {
+            "x": 340,
+            "y": 155
+          },
+          "polygon": [
+            {
+              "x": 275,
+              "y": 145
+            },
+            {
+              "x": 415,
+              "y": 80
+            },
+            {
+              "x": 530,
+              "y": 135
+            },
+            {
+              "x": 570,
+              "y": 225
+            },
+            {
+              "x": 390,
+              "y": 215
+            },
+            {
+              "x": 275,
+              "y": 220
+            }
+          ]
+        }
+      ],
+      "settlements": [
+        {
+          "sourceId": "settlement.alpha.coastal-mart",
+          "settlementReferenceId": "settlement.alpha.coastal-mart",
+          "districtReferenceId": "district.alpha.coastal-interface",
+          "displayNameKey": "content.m6.alpha.map.settlement.coastal_mart",
+          "renderOrder": 10,
+          "anchor": {
+            "x": 500,
+            "y": 292
+          }
+        },
+        {
+          "sourceId": "settlement.alpha.core-court",
+          "settlementReferenceId": "settlement.alpha.core-court",
+          "districtReferenceId": "district.alpha.irrawaddy-core",
+          "displayNameKey": "content.m6.alpha.map.settlement.core_court",
+          "renderOrder": 20,
+          "anchor": {
+            "x": 215,
+            "y": 245
+          }
+        }
+      ],
+      "routes": [
+        {
+          "sourceId": "route.alpha.coastal-sea-lane",
+          "routeReferenceId": "route.alpha.coastal-sea-lane",
+          "fromDistrictReferenceId": "district.alpha.coastal-interface",
+          "toDistrictReferenceId": "district.alpha.delta-water",
+          "routeKind": "coast",
+          "waterClass": "water",
+          "renderOrder": 10,
+          "points": [
+            {
+              "x": 470,
+              "y": 275
+            },
+            {
+              "x": 410,
+              "y": 305
+            },
+            {
+              "x": 350,
+              "y": 300
+            }
+          ]
+        },
+        {
+          "sourceId": "route.alpha.delta-river-link",
+          "routeReferenceId": "route.alpha.delta-river-link",
+          "fromDistrictReferenceId": "district.alpha.delta-water",
+          "toDistrictReferenceId": "district.alpha.irrawaddy-core",
+          "routeKind": "river",
+          "waterClass": "mixed",
+          "renderOrder": 20,
+          "points": [
+            {
+              "x": 350,
+              "y": 300
+            },
+            {
+              "x": 280,
+              "y": 280
+            },
+            {
+              "x": 225,
+              "y": 250
+            }
+          ]
+        },
+        {
+          "sourceId": "route.alpha.upland-road",
+          "routeReferenceId": "route.alpha.upland-road",
+          "fromDistrictReferenceId": "district.alpha.irrawaddy-core",
+          "toDistrictReferenceId": "district.alpha.sittaung-corridor",
+          "routeKind": "road",
+          "waterClass": "land",
+          "renderOrder": 30,
+          "points": [
+            {
+              "x": 225,
+              "y": 250
+            },
+            {
+              "x": 280,
+              "y": 185
+            },
+            {
+              "x": 340,
+              "y": 155
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

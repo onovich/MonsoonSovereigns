@@ -2,7 +2,7 @@
   "id": "M6-MAP-CANDIDATE-PIPELINE-001",
   "summary": "Implement complete map candidate pipeline path",
   "milestone": "M6",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -67,7 +67,26 @@
     "git diff --check"
   ],
   "branch_or_worktree": "feat/m6-map-candidate-pipeline",
-  "threads": {},
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_orchestrating",
+      "role": "lead_orchestrator"
+    },
+    "client_engineer": {
+      "thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
+      "nickname": "Window",
+      "status": "accepted_pending_integration",
+      "role": "client_engineer"
+    },
+    "systems_architect": {
+      "thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
+      "nickname": "Lintel",
+      "status": "accepted",
+      "role": "systems_architect",
+      "read_only": true
+    }
+  },
   "route_to": "lead_orchestrator",
   "notes": [
     "This is a candidate pipeline path, not final M7 map/content lock.",
@@ -75,5 +94,29 @@
     "Do not add map-derived simulation authority outside explicit content/runtime boundaries."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T05:17:00+08:00"
+  "updated_at": "2026-06-27T15:56:05+08:00",
+  "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "writer_thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
+  "writer_nickname": "Window",
+  "start_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-LEAD-TO-CLIENT-START.json",
+  "base_main_commit": "1ecd9ee80f130a96317d86a8099ea000725af024",
+  "previous_closed_task": "M6-SCENARIO-DATA-PIPELINE-001",
+  "started_at": "2026-06-27T15:25:45+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "next_action": "Lead stages allowed task files, commits, opens PR, waits for CI, merges, syncs main, then marks CLOSED.",
+  "start_submission_id": "019f07f8-e8a4-71c2-8978-a75da0fa39ed",
+  "route_sent_at": "2026-06-27T15:26:54+08:00",
+  "systems_architect_thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
+  "systems_architect_nickname": "Lintel",
+  "review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW__client_engineer.json",
+  "review_route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-WRITER-TO-SYSTEMS-REVIEW.json",
+  "review_submission_id": "019f080e-2be8-75d3-831a-65095732652f",
+  "routed_to_systems_at": "2026-06-27T15:49:16+08:00",
+  "systems_route_sent_at": "2026-06-27T15:49:16+08:00",
+  "systems_review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
+  "systems_status": "ACCEPT",
+  "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-27T15:56:05+08:00"
 }
