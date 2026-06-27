@@ -1,0 +1,44 @@
+{
+  "message_id": "MSG-20260627-M6-CLIENT-ALPHA-SURFACES-START",
+  "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M6-CLIENT-ALPHA-SURFACES-001 after M6-START-TO-VICTORY-SIM-LOOP-001 closed on origin/main. The client_engineer must implement complete Alpha playability, policy, event, encyclopedia, map candidate, AI/adviser reason, save/checkpoint, and victory/failure surfaces through read models and command submission without directly mutating authoritative WorldState.",
+  "artifacts": [
+    "project/tasks/active/M6-CLIENT-ALPHA-SURFACES-001.json",
+    "PROJECT_STATUS.md",
+    "docs/04-software-architecture.md",
+    "docs/05-coding-standards.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md"
+  ],
+  "branch_or_worktree": "feat/m6-client-alpha-surfaces / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "550264469fad5144f8b8f2471eb56cb9419a97b2",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-CLIENT-ALPHA-SURFACES-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid before start."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-CLIENT-ALPHA-SURFACES-001 and M6-LAYERED-AI-001 are dependency-ready; client surfaces selected first by ready order."
+    }
+  ],
+  "decisions": [
+    "Start the client surfaces task first from the dependency-ready M6 set.",
+    "Keep client surfaces read-model/command driven; no direct WorldState mutation or duplicated sim-core authority.",
+    "Manual node battle, telemetry, server accounts, desktop file bridge, arbitrary-code mod UI, release, and commercial decisions remain excluded."
+  ],
+  "risks": [
+    "R3 client work crosses app and shared client packages, so QA review and browser/storybook/playwright gates are required before acceptance.",
+    "The task must avoid storing full WorldState in Redux/client stores and must keep Pixi ownership inside map-renderer boundaries."
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement M6 client Alpha surfaces within allowed paths, run required tests where available, and emit REVIEW handoff routed to qa_reviewer.",
+  "created_at": "2026-06-27T21:21:24.628+08:00"
+}
