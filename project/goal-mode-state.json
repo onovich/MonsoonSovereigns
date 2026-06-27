@@ -9,15 +9,15 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
-      "status": "active_orchestrating",
+      "status": "active_orchestrating_replacement",
       "role": "lead_orchestrator"
     },
     "historical_researcher": {
-      "thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
       "status": "active",
       "role": "historical_researcher",
-      "nickname": "Chronicle"
+      "nickname": "Estuary"
     }
   },
   "last_integrated_task": "M6-DIPLOMACY-LEGITIMACY-001",
@@ -63,7 +63,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T14:28:31+08:00",
+  "last_updated_at": "2026-06-27T14:46:34+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -75,7 +75,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T14:28:31+08:00",
+  "updated_at": "2026-06-27T14:46:34+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -266,6 +266,17 @@
       "status": "closed_stale_running_no_handoff",
       "replaced_by": "019f04aa-f0c6-7523-8ac4-2c42a1db5709",
       "replaced_at": "2026-06-27T00:01:55+08:00"
+    },
+    {
+      "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+      "role": "historical_researcher",
+      "thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "nickname": "Chronicle",
+      "status": "closed_stalled_no_handoff",
+      "replaced_by": "019f07d2-14c6-7542-a409-5bf97fdcf352",
+      "replaced_by_nickname": "Estuary",
+      "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response",
+      "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
   "m5_performance_gate": {
@@ -433,7 +444,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Wait for historical_researcher REVIEW handoff for M6-SCENARIO-DATA-PIPELINE-001, then route to independent qa_reviewer.",
+  "next_action": "Wait for replacement historical_researcher REVIEW handoff for M6-SCENARIO-DATA-PIPELINE-001, then route to independent qa_reviewer.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -654,8 +665,34 @@
     "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "historical_researcher writer implements allowed-path scenario pipeline and returns REVIEW handoff for qa_reviewer.",
+    "next_action": "replacement historical_researcher audits existing partial work, completes tests, and returns REVIEW handoff for qa_reviewer.",
     "route_sent_at": "2026-06-27T14:28:31+08:00",
-    "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6"
+    "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
+    "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
+    "replacement_writer_nickname": "Estuary",
+    "replaces_writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+    "replacement_start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-REPLACEMENT-START.json",
+    "replacement_at": "2026-06-27T14:45:02+08:00",
+    "preserved_uncommitted_tracked_files": [
+      "apps/content-tools/package.json",
+      "apps/content-tools/src/cli.ts",
+      "apps/content-tools/src/index.ts",
+      "packages/content-runtime/src/index.ts",
+      "packages/content-runtime/tsconfig.json",
+      "packages/content-schema/src/index.ts",
+      "packages/content-schema/tsconfig.json",
+      "tests/content-runtime-pack.test.ts",
+      "tests/content-schema-graph-source.test.ts",
+      "tests/content-tools-compiler.test.ts"
+    ],
+    "preserved_uncommitted_untracked_files": [
+      "apps/content-tools/src/m6-alpha-scenario.ts",
+      "content-source/m6-alpha-scenarios/alpha-scenario-set.json",
+      "packages/content-runtime/src/m6-alpha-scenario.ts",
+      "packages/content-schema/src/m6-alpha-scenario.ts"
+    ],
+    "replacement_submission_id": "019f07d3-f477-7da1-9dd7-5cb626e97364",
+    "replacement_route_sent_at": "2026-06-27T14:46:34+08:00"
   }
 }
