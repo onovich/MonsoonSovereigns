@@ -4401,7 +4401,7 @@
       "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_routing_writer",
+      "status": "active_awaiting_writer_review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -4413,15 +4413,17 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T00:33:12.367+08:00",
-      "updated_at": "2026-06-28T00:33:12.367+08:00",
-      "next_action": "Send formal route to balance_analyst writer and await REVIEW handoff."
+      "updated_at": "2026-06-28T00:35:13.413+08:00",
+      "next_action": "Await balance_analyst REVIEW handoff, then route to qa_reviewer.",
+      "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c",
+      "route_sent_at": "2026-06-28T00:35:13.413+08:00"
     },
     "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001:balance_analyst": {
       "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
       "role": "balance_analyst",
       "thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
       "nickname": "Abacus the 2nd",
-      "status": "active_standby_pending_route",
+      "status": "active_in_progress",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -4433,8 +4435,10 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T00:33:12.367+08:00",
-      "updated_at": "2026-06-28T00:33:12.367+08:00",
-      "next_action": "Implement after formal route is sent."
+      "updated_at": "2026-06-28T00:35:13.413+08:00",
+      "next_action": "Implement and emit REVIEW handoff to qa_reviewer.",
+      "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c",
+      "route_sent_at": "2026-06-28T00:35:13.413+08:00"
     }
   },
   "replaced_threads": [
@@ -4504,5 +4508,5 @@
       "replaced_at": "2026-06-27T23:48:50.046+08:00"
     }
   ],
-  "updated_at": "2026-06-28T00:33:12.367+08:00"
+  "updated_at": "2026-06-28T00:35:13.413+08:00"
 }
