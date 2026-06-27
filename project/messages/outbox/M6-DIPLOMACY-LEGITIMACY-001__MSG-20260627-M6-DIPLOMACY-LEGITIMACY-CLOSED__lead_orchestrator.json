@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260627-M6-DIPLOMACY-LEGITIMACY-CLOSED",
+  "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "M6-DIPLOMACY-LEGITIMACY-001 is CLOSED after PR #133 merged into origin/main at 96dd735d463d400a9e30b2112e4377cca7783d1e. The accepted deterministic diplomacy and legitimacy substrate, R3 protocol boundary fix, handoffs, and CI evidence are integrated. Next dependency-ready M6 task is M6-SCENARIO-DATA-PIPELINE-001.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-ai/src/m6-diplomacy-ai.ts",
+    "tests/sim-core-m6-diplomacy-legitimacy.test.ts",
+    "tests/sim-ai-m6-diplomacy-ai.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/save-format-v1.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "main / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "96dd735d463d400a9e30b2112e4377cca7783d1e",
+  "tests_run": [
+    {
+      "command": "gh pr checks 133 --watch --interval 10",
+      "exit_code": 0,
+      "result": "PASS: Quality, Web, and Browser Smoke; Windows Desktop Smoke Artifact."
+    },
+    {
+      "command": "gh pr merge 133 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "Merged PR #133 into main at 96dd735d463d400a9e30b2112e4377cca7783d1e."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS before PR: format:check, lint, recursive typecheck including client-core, architecture boundaries."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "PASS before PR: 24 files / 179 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "PASS before PR: 2 files / 3 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "PASS before PR: 1 file / 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "PASS before PR: 2 files / 16 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "PASS before PR: Node and worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable loop."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS before PR: architecture, determinism, root Vitest 37 files / 259 tests, web Vitest 1 file / 4 tests."
+    },
+    {
+      "command": "taskctl list/ready",
+      "exit_code": 0,
+      "result": "M6-DIPLOMACY-LEGITIMACY-001 integrated; next READY is M6-SCENARIO-DATA-PIPELINE-001."
+    }
+  ],
+  "decisions": [
+    "CLOSED: task entered origin/main via PR #133 at 96dd735d463d400a9e30b2112e4377cca7783d1e.",
+    "Child writer/reviewer threads are closed or retired/replaced with recorded evidence.",
+    "M6-SCENARIO-DATA-PIPELINE-001 is the next dependency-ready M6 task.",
+    "No Human Gate is active; DEFER_MANUAL_NODE_BATTLE remains in force."
+  ],
+  "risks": [
+    "Untracked ui-samples/ remains local and unrelated, intentionally unstaged.",
+    "AuthoritativeGameCommandV1 historical parser naming risk is accepted by systems R3 and should be explicit in future M6 downstream tasks."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge closure checkpoint, sync main, then start M6-SCENARIO-DATA-PIPELINE-001.",
+  "created_at": "2026-06-27T14:19:37+08:00"
+}
