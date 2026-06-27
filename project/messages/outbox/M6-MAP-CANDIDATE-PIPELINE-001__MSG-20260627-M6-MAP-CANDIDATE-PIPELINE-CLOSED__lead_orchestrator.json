@@ -1,0 +1,65 @@
+{
+  "message_id": "MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-CLOSED",
+  "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
+  "from_role": "lead_orchestrator",
+  "from_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "status": "INFO",
+  "summary": "Closed M6-MAP-CANDIDATE-PIPELINE-001 after PR #137 passed CI and merged into origin/main at 396d3897d32882a9b117a8758d21ce0829fd8d60.",
+  "artifacts": [
+    "content-source/m6-map-candidates/alpha-map-candidate-set.json",
+    "packages/content-schema/src/m6-alpha-map-candidate.ts",
+    "packages/content-runtime/src/m6-alpha-map-candidate.ts",
+    "apps/content-tools/src/m6-alpha-map-candidate.ts",
+    "packages/map-renderer/src/index.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-REVIEW__client_engineer.json",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/close-m6-map-candidate-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
+  "tests_run": [
+    {
+      "command": "PR #137 CI: Quality, Web, and Browser Smoke",
+      "exit_code": 0,
+      "result": "pass, 1m51s"
+    },
+    {
+      "command": "PR #137 CI: Windows Desktop Smoke Artifact",
+      "exit_code": 0,
+      "result": "pass, 50s"
+    },
+    {
+      "command": "gh pr view 137 --json state,mergeCommit,url,headRefName,baseRefName",
+      "exit_code": 0,
+      "result": "MERGED to main, mergeCommit 396d3897d32882a9b117a8758d21ce0829fd8d60."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Next READY task is M6-SUCCESSION-COMPLETION-001."
+    }
+  ],
+  "decisions": [
+    "M6-MAP-CANDIDATE-PIPELINE-001 is CLOSED only after the accepted implementation entered origin/main.",
+    "Next M6 task selected from task graph is M6-SUCCESSION-COMPLETION-001.",
+    "No Human Gate is active; M5 manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+  ],
+  "risks": [
+    "Map candidate remains COMPOSITE/LOW validation data and is not final release map content."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge closure PR, sync main, close child threads, then start M6-SUCCESSION-COMPLETION-001.",
+  "created_at": "2026-06-27T16:03:01+08:00",
+  "integrated_pr": 137,
+  "integrated_main_commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/137",
+  "next_ready_tasks": [
+    "M6-SUCCESSION-COMPLETION-001"
+  ]
+}

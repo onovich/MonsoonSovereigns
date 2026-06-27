@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-06-27T15:56:05+08:00",
+  "updated_at": "2026-06-27T16:03:01+08:00",
   "leadership": {
     "active_leads": [
       {
@@ -3219,7 +3219,7 @@
       "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed_after_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -3228,7 +3228,7 @@
       "branch_or_worktree": "feat/m6-map-candidate-pipeline",
       "start_state": "IN_PROGRESS_ROUTED_TO_CLIENT_ENGINEER",
       "created_at": "2026-06-27T15:25:45+08:00",
-      "updated_at": "2026-06-27T15:56:05+08:00",
+      "updated_at": "2026-06-27T16:03:01+08:00",
       "base_main_commit": "1ecd9ee80f130a96317d86a8099ea000725af024",
       "start_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-MAP-CANDIDATE-PIPELINE-001__ROUTE-20260627-M6-MAP-LEAD-TO-CLIENT-START.json",
@@ -3248,13 +3248,22 @@
       "systems_review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
       "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T15:56:05+08:00",
-      "next_action": "Open PR, wait for CI, merge to main, then close task."
+      "next_action": "Open PR, wait for CI, merge to main, then close task.",
+      "lead_close_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 137,
+      "integrated_main_commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/137",
+      "closed_at": "2026-06-27T16:03:01+08:00",
+      "close_reason": "task_closed_after_pr_137_entered_main",
+      "next_ready_tasks": [
+        "M6-SUCCESSION-COMPLETION-001"
+      ]
     },
     "M6-MAP-CANDIDATE-PIPELINE-001:client_engineer": {
       "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
       "role": "client_engineer",
       "thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
-      "status": "accepted_pending_integration",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -3308,7 +3317,7 @@
         "VALIDATION_REPORT.md"
       ],
       "created_at": "2026-06-27T15:25:45+08:00",
-      "updated_at": "2026-06-27T15:56:05+08:00",
+      "updated_at": "2026-06-27T16:03:01+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "start_submission_id": "019f07f8-e8a4-71c2-8978-a75da0fa39ed",
@@ -3319,13 +3328,19 @@
       "routed_to_systems_at": "2026-06-27T15:49:16+08:00",
       "systems_status": "ACCEPT",
       "systems_review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
-      "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_close_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 137,
+      "integrated_main_commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/137",
+      "closed_at": "2026-06-27T16:03:01+08:00",
+      "close_reason": "task_closed_after_main_integration"
     },
     "M6-MAP-CANDIDATE-PIPELINE-001:systems_architect": {
       "task_id": "M6-MAP-CANDIDATE-PIPELINE-001",
       "role": "systems_architect",
       "thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
-      "status": "accepted",
+      "status": "closed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -3379,7 +3394,7 @@
         "VALIDATION_REPORT.md"
       ],
       "created_at": "2026-06-27T15:49:16+08:00",
-      "updated_at": "2026-06-27T15:56:05+08:00",
+      "updated_at": "2026-06-27T16:03:01+08:00",
       "read_only": true,
       "systems_review_submission_id": "019f080e-2be8-75d3-831a-65095732652f",
       "systems_route_sent_at": "2026-06-27T15:49:16+08:00",
@@ -3387,7 +3402,13 @@
       "review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
       "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-27T15:56:05+08:00",
-      "resolved_request_changes": "ui-samples/ local ignore via .git/info/exclude"
+      "resolved_request_changes": "ui-samples/ local ignore via .git/info/exclude",
+      "lead_close_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 137,
+      "integrated_main_commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/137",
+      "closed_at": "2026-06-27T16:03:01+08:00",
+      "close_reason": "closed_after_accept_review_and_main_integration"
     }
   },
   "replaced_threads": [

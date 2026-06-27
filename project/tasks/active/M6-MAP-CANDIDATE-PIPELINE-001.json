@@ -2,7 +2,7 @@
   "id": "M6-MAP-CANDIDATE-PIPELINE-001",
   "summary": "Implement complete map candidate pipeline path",
   "milestone": "M6",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -76,15 +76,17 @@
     "client_engineer": {
       "thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
       "nickname": "Window",
-      "status": "accepted_pending_integration",
-      "role": "client_engineer"
+      "status": "closed",
+      "role": "client_engineer",
+      "close_reason": "task_closed_after_main_integration"
     },
     "systems_architect": {
       "thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
       "nickname": "Lintel",
-      "status": "accepted",
+      "status": "closed",
       "role": "systems_architect",
-      "read_only": true
+      "read_only": true,
+      "close_reason": "task_closed_after_accept_review_and_main_integration"
     }
   },
   "route_to": "lead_orchestrator",
@@ -94,7 +96,7 @@
     "Do not add map-derived simulation authority outside explicit content/runtime boundaries."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T15:56:05+08:00",
+  "updated_at": "2026-06-27T16:03:01+08:00",
   "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "writer_thread_id": "019f07f7-2cfb-7753-b583-283d8542501b",
   "writer_nickname": "Window",
@@ -105,7 +107,7 @@
   "started_at": "2026-06-27T15:25:45+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "Lead stages allowed task files, commits, opens PR, waits for CI, merges, syncs main, then marks CLOSED.",
+  "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task.",
   "start_submission_id": "019f07f8-e8a4-71c2-8978-a75da0fa39ed",
   "route_sent_at": "2026-06-27T15:26:54+08:00",
   "systems_architect_thread_id": "019f080c-fa76-70a0-a65e-b04c33ec9a3c",
@@ -118,5 +120,14 @@
   "systems_review_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-SYSTEMS-REVIEW__systems_architect.json",
   "systems_status": "ACCEPT",
   "lead_accept_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
-  "accepted_at": "2026-06-27T15:56:05+08:00"
+  "accepted_at": "2026-06-27T15:56:05+08:00",
+  "closed_at": "2026-06-27T16:03:01+08:00",
+  "close_reason": "task_closed_after_pr_137_entered_main",
+  "integrated_pr": 137,
+  "integrated_main_commit": "396d3897d32882a9b117a8758d21ce0829fd8d60",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/137",
+  "lead_close_handoff": "project/messages/outbox/M6-MAP-CANDIDATE-PIPELINE-001__MSG-20260627-M6-MAP-CANDIDATE-PIPELINE-CLOSED__lead_orchestrator.json",
+  "next_ready_tasks": [
+    "M6-SUCCESSION-COMPLETION-001"
+  ]
 }
