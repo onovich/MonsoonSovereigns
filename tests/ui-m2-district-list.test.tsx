@@ -118,6 +118,37 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("postwar.candidate.ready");
     expect(markup).not.toContain("WorldState");
   });
+
+  test("renders M6 Alpha surfaces without placeholder major-system panels", () => {
+    const snapshot = createM2PrototypeClientReadModelSnapshot();
+    const markup = renderToStaticMarkup(createShell(snapshot));
+    const m6Markup = markup.slice(markup.indexOf("M6 Alpha surfaces"));
+
+    expect(markup).toContain("M6 Alpha surfaces");
+    expect(markup).toContain('aria-label="M6 Alpha start to victory workspace"');
+    expect(markup).toContain('data-scenario-id="m6.alpha.recognized-order.v0"');
+    expect(markup).toContain('data-terminal-outcome="victory"');
+    expect(markup).toContain("Start Alpha");
+    expect(markup).toContain("Preview Alpha command");
+    expect(markup).toContain("Confirm Alpha command");
+    expect(markup).toContain("Save Alpha checkpoint");
+    expect(markup).toContain("Load Alpha checkpoint");
+    expect(markup).toContain("Diplomacy / legitimacy / succession");
+    expect(markup).toContain("tribute-recognition");
+    expect(markup).toContain("legitimacy.source.postwar-settlement");
+    expect(markup).toContain("m6.alpha.succession.peaceful");
+    expect(markup).toContain("Policies / events / encyclopedia");
+    expect(markup).toContain("Harbor charter petition");
+    expect(markup).toContain("encyclopedia.m6.policy_event.harbor");
+    expect(markup).toContain("AI / adviser reasons");
+    expect(markup).toContain("m6.adviser.recognized-order-ready");
+    expect(markup).toContain("Map candidate");
+    expect(markup).toContain("map.alpha.western-mainland-candidate");
+    expect(markup).toContain("Victory / failure status");
+    expect(markup).toContain("Manual node battle UI is not present in Alpha.");
+    expect(m6Markup).not.toContain("placeholder");
+    expect(markup).not.toContain("WorldState");
+  });
 });
 
 function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]) {
@@ -138,6 +169,8 @@ function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]
       m4CommandStatus={null}
       onM5CommandSubmit={() => undefined}
       m5CommandStatus={null}
+      onM6CommandSubmit={() => undefined}
+      m6CommandStatus={null}
       mapSurface={<div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />}
     />
   );

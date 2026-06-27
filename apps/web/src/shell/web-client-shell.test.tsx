@@ -32,6 +32,9 @@ describe("web client shell", () => {
     expect(snapshot.m5Playable.steps.length).toBeGreaterThan(10);
     expect(snapshot.m5Playable.ai.primaryReasonCode).toBe("m4.ai.withdraw.supply-collapse");
     expect(snapshot.m5Playable.postwar.methods).toContain("restore-vassal-ruler");
+    expect(snapshot.m6Alpha.scenarioId).toBe("m6.alpha.recognized-order.v0");
+    expect(snapshot.m6Alpha.terminal.outcome).toBe("victory");
+    expect(snapshot.m6Alpha.diplomacy.recognitionEdges).toHaveLength(1);
     expect(snapshot.districtList.provenance.kind).toBe("simulation-read-model");
     expect(snapshot.revision).toBe(snapshot.simulation.finalRevision);
     expect(JSON.stringify(snapshot)).not.toContain("WorldState");
@@ -55,6 +58,7 @@ describe("web client shell", () => {
     );
     expect(snapshot.m5Playable.steps).toHaveLength(15);
     expect(snapshot.m5Playable.supply.expectedDaysOfSupply).toBe(11);
+    expect(snapshot.m6Alpha.mapCandidate.districtCount).toBeGreaterThanOrEqual(4);
   });
 
   it("renders React from read model snapshots without authority-bearing state", () => {
@@ -74,6 +78,8 @@ describe("web client shell", () => {
         m4CommandStatus={null}
         onM5CommandSubmit={() => undefined}
         m5CommandStatus={null}
+        onM6CommandSubmit={() => undefined}
+        m6CommandStatus={null}
         mapSurface={
           <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
         }
@@ -96,6 +102,9 @@ describe("web client shell", () => {
     expect(markup).toContain('aria-label="M5 playable slice workspace"');
     expect(markup).toContain("m5.composite.river-gate.v0");
     expect(markup).toContain("Manual node battle UI is unavailable in M5.");
+    expect(markup).toContain('aria-label="M6 Alpha start to victory workspace"');
+    expect(markup).toContain("m6.alpha.recognized-order.v0");
+    expect(markup).toContain("m6.adviser.recognized-order-ready");
   });
 
   it("rebuilds the Pixi scene shell from the read model", () => {

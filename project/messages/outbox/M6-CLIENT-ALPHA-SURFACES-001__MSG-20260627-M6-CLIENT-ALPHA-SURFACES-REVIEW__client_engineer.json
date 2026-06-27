@@ -1,0 +1,94 @@
+{
+  "message_id": "MSG-20260627-M6-CLIENT-ALPHA-SURFACES-REVIEW",
+  "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented M6 Alpha client surfaces through client read-model slices and protocol command submission: scenario selection, start-to-victory command flow, diplomacy, legitimacy, succession, policy/event, encyclopedia, AI/adviser reasons, map candidate display, local checkpoint save/load, and victory/failure status. React owns only DOM/session progress; map rendering remains inside map-renderer; no sim-core, desktop, telemetry, server/account, arbitrary-code mod, or manual node battle implementation was added.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M6-CLIENT-ALPHA-SURFACES-001.json"
+  ],
+  "branch_or_worktree": "feat/m6-client-alpha-surfaces / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "e270fffedc1624e8268077dd7a2f1a78eab21f10",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified paths are limited to allowed client/test/task/message paths for M6-CLIENT-ALPHA-SURFACES-001."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 17 tests passed, including M6 Alpha read-model and checkpoint parser coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 7 tests passed, including M6 Alpha non-placeholder major-system SSR coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 test file passed; 4 tests passed, including existing M6 map candidate renderer read-model coverage."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing chunk-size warning reported for large bundles."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully; existing chunk-size warning reported."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "10 Chromium Playwright tests passed, including M6 Alpha scenario-to-victory flow, checkpoint save/load, diplomacy/legitimacy/succession, policy/event, encyclopedia, map candidate display, no forbidden UI entry buttons, and required viewport overflow checks."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries, sim determinism, full Vitest suite, and web package tests passed; 39 root test files / 301 tests passed plus web 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive package typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-CLIENT-ALPHA-SURFACES-001",
+      "exit_code": 0,
+      "result": "Task JSON validated after status transition to REVIEW."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Added M6 Alpha as a client read-model slice in client-core instead of storing full WorldState or reimplementing sim-core authority in React.",
+    "Used protocol M6 Alpha script and authoritative command DTOs for UI command submission; UI only tracks local session phase, preview, confirmed command ids, and checkpoint text.",
+    "Kept map candidate display as read-model metadata plus existing map-renderer-owned rendering path; React does not own per-entity Pixi DisplayObjects.",
+    "Used Playwright rather than editing .storybook because the task allowed paths did not include .storybook/**.",
+    "Fixed duplicate reason-chip React keys with index-qualified keys, resolving the previously observed client warning without changing reason-code semantics."
+  ],
+  "risks": [
+    "M6 surfaces are still fixture/read-model projections over accepted protocol scripts and existing read models; wiring to a live worker query stream remains future integration work.",
+    "Storybook build passes, but M6 normal/empty/error/extreme state coverage is represented by Playwright and web fixture modes rather than new .storybook stories due allowed-path limits.",
+    "Web build and Storybook build still emit existing large chunk warnings; no new dependency or bundle split decision was introduced."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently review M6-CLIENT-ALPHA-SURFACES-001 for acceptance criteria, architecture boundaries, read-model/command discipline, viewport coverage, forbidden-surface exclusions, and test sufficiency. Return ACCEPT, REQUEST_CHANGES, or BLOCK; do not mark ACCEPTED/CLOSED.",
+  "created_at": "2026-06-27T21:43:11.869+08:00"
+}

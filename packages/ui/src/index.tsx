@@ -8,12 +8,15 @@ import {
   createM4StartMarchCommand,
   createM4WithdrawalCommand,
   createM5SessionSave,
+  createM6SessionSave,
   findClientDistrictRow,
   findM3Character,
   findM3Office,
   findM4CampaignPlan,
   getM5CurrentStep,
+  getM6CurrentStep,
   parseM5SessionSave,
+  parseM6SessionSave,
   selectClientDistrictRows,
   type ClientCampaignPlanId,
   type ClientDistrictRowReadModel,
@@ -43,6 +46,19 @@ import {
   type ClientM5PlayableReadModelSnapshot,
   type ClientM5PlayableStepReadModel,
   type ClientM5SubmittedCommand,
+  type ClientM6AdviserReadModel,
+  type ClientM6AlphaPhase,
+  type ClientM6AlphaReadModelSnapshot,
+  type ClientM6AlphaStepReadModel,
+  type ClientM6DiplomacyReadModel,
+  type ClientM6EncyclopediaReadModel,
+  type ClientM6LegitimacyReadModel,
+  type ClientM6MapCandidateReadModel,
+  type ClientM6PolicyEventReadModel,
+  type ClientM6ReasonSummaryReadModel,
+  type ClientM6SubmittedCommand,
+  type ClientM6SuccessionReadModel,
+  type ClientM6TerminalReadModel,
   type ClientOfficeId,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
@@ -63,6 +79,8 @@ export interface ClientShellViewProps {
   readonly m4CommandStatus: string | null;
   readonly onM5CommandSubmit: (command: ClientM5SubmittedCommand) => void;
   readonly m5CommandStatus: string | null;
+  readonly onM6CommandSubmit: (command: ClientM6SubmittedCommand) => void;
+  readonly m6CommandStatus: string | null;
 }
 
 const DISTRICT_ROW_HEIGHT_PX = 44;
@@ -83,7 +101,9 @@ export function ClientShellView({
   onM4CommandSubmit,
   m4CommandStatus,
   onM5CommandSubmit,
-  m5CommandStatus
+  m5CommandStatus,
+  onM6CommandSubmit,
+  m6CommandStatus
 }: ClientShellViewProps): ReactElement {
   const selectedDistrictId =
     selectedEntity?.kind === "settlement"
@@ -111,6 +131,15 @@ export function ClientShellView({
   const [m5ConfirmedCommandIds, setM5ConfirmedCommandIds] = useState<readonly string[]>([]);
   const [m5SavedSession, setM5SavedSession] = useState("");
   const [m5SaveStatus, setM5SaveStatus] = useState<string | null>(null);
+  const [selectedM6ScenarioId, setSelectedM6ScenarioId] = useState(
+    snapshot.m6Alpha.selectedScenarioId
+  );
+  const [m6Phase, setM6Phase] = useState<ClientM6AlphaPhase>("scenario-selection");
+  const [m6CurrentStepIndex, setM6CurrentStepIndex] = useState(0);
+  const [m6PreviewStepId, setM6PreviewStepId] = useState<string | null>(null);
+  const [m6ConfirmedCommandIds, setM6ConfirmedCommandIds] = useState<readonly string[]>([]);
+  const [m6SavedSession, setM6SavedSession] = useState("");
+  const [m6SaveStatus, setM6SaveStatus] = useState<string | null>(null);
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -391,6 +420,87 @@ export function ClientShellView({
     setM5SaveStatus(`m5.load.client-session-restored:${parsed.value.checkpointLabel}`);
   }
 
+  function handleM6ScenarioChange(event: ChangeEvent<HTMLSelectElement>): void {
+    setSelectedM6ScenarioId(event.currentTarget.value);
+    setM6Phase("scenario-selection");
+    setM6CurrentStepIndex(0);
+    setM6PreviewStepId(null);
+    setM6ConfirmedCommandIds([]);
+    setM6SaveStatus(null);
+  }
+
+  function handleStartM6Alpha(): void {
+    setM6Phase("running");
+    if (
+      m6Phase === "scenario-selection" ||
+      m6Phase === "victory" ||
+      m6Phase === "failure" ||
+      m6Phase === "continued-play"
+    ) {
+      setM6CurrentStepIndex(0);
+      setM6ConfirmedCommandIds([]);
+    }
+    setM6PreviewStepId(null);
+    setM6SaveStatus(null);
+  }
+
+  function handlePreviewM6Command(): void {
+    const step = getM6CurrentStep(snapshot.m6Alpha, m6CurrentStepIndex);
+    if (step === null) {
+      return;
+    }
+    setM6PreviewStepId(step.stepId);
+  }
+
+  function handleConfirmM6Command(): void {
+    const step = getM6CurrentStep(snapshot.m6Alpha, m6CurrentStepIndex);
+    if (step === null || m6Phase !== "running") {
+      return;
+    }
+    onM6CommandSubmit(step.command);
+    const nextConfirmedCommandIds = [...m6ConfirmedCommandIds, step.command.commandId];
+    const nextStepIndex = m6CurrentStepIndex + 1;
+    setM6ConfirmedCommandIds(nextConfirmedCommandIds);
+    setM6CurrentStepIndex(nextStepIndex);
+    setM6PreviewStepId(null);
+    if (nextStepIndex >= snapshot.m6Alpha.steps.length) {
+      setM6Phase(
+        snapshot.m6Alpha.terminal.outcome === "defeat"
+          ? "failure"
+          : snapshot.m6Alpha.terminal.outcome
+      );
+    }
+  }
+
+  function handleSaveM6Session(): void {
+    const saveText = createM6SessionSave({
+      snapshot: snapshot.m6Alpha,
+      phase: m6Phase,
+      currentStepIndex: m6CurrentStepIndex,
+      confirmedCommandIds: m6ConfirmedCommandIds
+    });
+    setM6SavedSession(saveText);
+    setM6SaveStatus("m6.save.client-session-written");
+  }
+
+  function handleLoadM6Session(): void {
+    const parsed = parseM6SessionSave(m6SavedSession);
+    if (!parsed.ok) {
+      setM6SaveStatus(parsed.reasonCode);
+      return;
+    }
+    setM6Phase(parsed.value.phase === "running" ? "checkpoint-loaded" : parsed.value.phase);
+    setM6CurrentStepIndex(parsed.value.currentStepIndex);
+    setM6ConfirmedCommandIds(parsed.value.confirmedCommandIds);
+    setM6PreviewStepId(null);
+    setM6SaveStatus(`m6.load.client-session-restored:${parsed.value.checkpointLabel}`);
+  }
+
+  function handlePreviewM6Failure(): void {
+    setM6Phase("failure");
+    setM6PreviewStepId(snapshot.m6Alpha.failureStep.stepId);
+  }
+
   function handleZoomIn(): void {
     onZoomLevelChange(clampZoomLevel(zoomLevel + 0.25));
   }
@@ -618,6 +728,25 @@ export function ClientShellView({
           onFailurePreview={handlePreviewM5Failure}
           onSave={handleSaveM5Session}
           onLoad={handleLoadM5Session}
+        />
+
+        <M6AlphaWorkspace
+          snapshot={snapshot.m6Alpha}
+          phase={m6Phase}
+          selectedScenarioId={selectedM6ScenarioId}
+          currentStepIndex={m6CurrentStepIndex}
+          previewStepId={m6PreviewStepId}
+          confirmedCommandIds={m6ConfirmedCommandIds}
+          savedSession={m6SavedSession}
+          saveStatus={m6SaveStatus}
+          commandStatus={m6CommandStatus}
+          onScenarioChange={handleM6ScenarioChange}
+          onStart={handleStartM6Alpha}
+          onPreview={handlePreviewM6Command}
+          onConfirm={handleConfirmM6Command}
+          onSave={handleSaveM6Session}
+          onLoad={handleLoadM6Session}
+          onFailurePreview={handlePreviewM6Failure}
         />
       </section>
     </main>
@@ -1633,6 +1762,405 @@ function M5ReasonSummaryPanel({
   );
 }
 
+interface M6AlphaWorkspaceProps {
+  readonly snapshot: ClientM6AlphaReadModelSnapshot;
+  readonly phase: ClientM6AlphaPhase;
+  readonly selectedScenarioId: string;
+  readonly currentStepIndex: number;
+  readonly previewStepId: string | null;
+  readonly confirmedCommandIds: readonly string[];
+  readonly savedSession: string;
+  readonly saveStatus: string | null;
+  readonly commandStatus: string | null;
+  readonly onScenarioChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onStart: () => void;
+  readonly onPreview: () => void;
+  readonly onConfirm: () => void;
+  readonly onSave: () => void;
+  readonly onLoad: () => void;
+  readonly onFailurePreview: () => void;
+}
+
+function M6AlphaWorkspace({
+  snapshot,
+  phase,
+  selectedScenarioId,
+  currentStepIndex,
+  previewStepId,
+  confirmedCommandIds,
+  savedSession,
+  saveStatus,
+  commandStatus,
+  onScenarioChange,
+  onStart,
+  onPreview,
+  onConfirm,
+  onSave,
+  onLoad,
+  onFailurePreview
+}: M6AlphaWorkspaceProps): ReactElement {
+  const currentStep = getM6CurrentStep(snapshot, currentStepIndex);
+  const previewStep =
+    previewStepId === snapshot.failureStep.stepId
+      ? snapshot.failureStep
+      : (snapshot.steps.find((step) => step.stepId === previewStepId) ?? currentStep);
+  const isConfirmDisabled = phase !== "running" || currentStep === null;
+
+  return (
+    <section
+      className="m6-alpha"
+      aria-label="M6 Alpha start to victory workspace"
+      data-scenario-id={snapshot.scenarioId}
+      data-selected-scenario-id={selectedScenarioId}
+      data-phase={phase}
+      data-command-count={snapshot.steps.length}
+      data-current-step-index={currentStepIndex}
+      data-confirmed-count={confirmedCommandIds.length}
+      data-terminal-outcome={snapshot.terminal.outcome}
+      data-can-pursue-victory={snapshot.terminal.canPursueVictory ? "true" : "false"}
+      data-save-present={savedSession.length > 0 ? "true" : "false"}
+    >
+      <div className="m6-alpha__header">
+        <div>
+          <h2>M6 Alpha surfaces</h2>
+          <p>{snapshot.provenance.note}</p>
+        </div>
+        <dl className="m6-alpha__summary">
+          <Metric label="Phase" value={phase} />
+          <Metric label="Scenario" value={snapshot.scenarioId} />
+          <Metric label="Terminal" value={snapshot.terminal.outcome} />
+          <Metric label="Commands" value={snapshot.replay.commandCount.toString()} />
+        </dl>
+      </div>
+
+      <div className="m6-alpha__grid">
+        <section className="m6-alpha__panel" aria-label="M6 scenario and command flow">
+          <h3>Scenario and commands</h3>
+          <label className="m6-alpha__field">
+            <span>Scenario</span>
+            <select
+              aria-label="Select M6 Alpha scenario"
+              value={selectedScenarioId}
+              onChange={onScenarioChange}
+            >
+              {snapshot.scenarios.map((scenario) => (
+                <option key={scenario.scenarioId} value={scenario.scenarioId}>
+                  {scenario.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="m6-alpha__actions">
+            <button type="button" onClick={onStart} disabled={snapshot.steps.length === 0}>
+              Start Alpha
+            </button>
+            <button type="button" onClick={onPreview} disabled={currentStep === null}>
+              Preview Alpha command
+            </button>
+            <button type="button" onClick={onConfirm} disabled={isConfirmDisabled}>
+              Confirm Alpha command
+            </button>
+            <button type="button" onClick={onFailurePreview}>
+              Preview Alpha failure
+            </button>
+          </div>
+          {commandStatus === null ? null : (
+            <output className="m6-alpha__status" aria-label="M6 command status">
+              {commandStatus}
+            </output>
+          )}
+          <M6StepPreview step={previewStep} />
+        </section>
+
+        <section className="m6-alpha__panel" aria-label="M6 save load checkpoint state">
+          <h3>Save / load checkpoint</h3>
+          <div className="m6-alpha__actions">
+            <button type="button" onClick={onSave}>
+              Save Alpha checkpoint
+            </button>
+            <button type="button" onClick={onLoad} disabled={savedSession.length === 0}>
+              Load Alpha checkpoint
+            </button>
+          </div>
+          <output
+            className="m6-alpha__status"
+            aria-label="M6 save status"
+            data-save-length={savedSession.length}
+          >
+            {saveStatus ?? "m6.save.no-client-checkpoint"}
+          </output>
+          <code className="m6-alpha__save-preview">
+            {savedSession.length === 0 ? "no Alpha client checkpoint" : savedSession}
+          </code>
+        </section>
+
+        <M6DiplomacyLegitimacyPanel
+          diplomacy={snapshot.diplomacy}
+          legitimacy={snapshot.legitimacy}
+          succession={snapshot.succession}
+        />
+        <M6PolicyEventPanel policies={snapshot.policies} encyclopedia={snapshot.encyclopedia} />
+        <M6AdviserPanel adviser={snapshot.adviser} />
+        <M6MapCandidatePanel mapCandidate={snapshot.mapCandidate} />
+        <M6TerminalPanel
+          terminal={snapshot.terminal}
+          goal={snapshot.goal}
+          replay={snapshot.replay}
+        />
+        <M6ReasonSummaryPanel summaries={snapshot.reasonSummaries} />
+      </div>
+    </section>
+  );
+}
+
+function M6StepPreview({
+  step
+}: {
+  readonly step: ClientM6AlphaStepReadModel | null;
+}): ReactElement {
+  if (step === null) {
+    return (
+      <div className="m6-alpha__fact" aria-label="M6 command preview">
+        <strong>No Alpha command selected</strong>
+        <span>Select a scenario and start the Alpha flow.</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="m6-alpha__fact"
+      aria-label="M6 command preview"
+      data-command-kind={step.command.kind}
+      data-step-stage={step.stage}
+    >
+      <strong>{step.label}</strong>
+      <span>
+        {step.preview.commandKind}; {step.preview.commandId}; {step.actorLabel}
+      </span>
+      <span>{step.result.summary}</span>
+      <ReasonChips reasonCodes={[...step.reasonCodes, ...step.encyclopediaRefs]} />
+    </div>
+  );
+}
+
+function M6DiplomacyLegitimacyPanel({
+  diplomacy,
+  legitimacy,
+  succession
+}: {
+  readonly diplomacy: ClientM6DiplomacyReadModel;
+  readonly legitimacy: ClientM6LegitimacyReadModel;
+  readonly succession: ClientM6SuccessionReadModel;
+}): ReactElement {
+  return (
+    <section className="m6-alpha__panel" aria-label="M6 diplomacy legitimacy succession surfaces">
+      <h3>Diplomacy / legitimacy / succession</h3>
+      <dl className="m6-alpha__metrics">
+        <Metric label="Relations" value={diplomacy.relations.length.toString()} />
+        <Metric label="Recognition" value={diplomacy.recognitionEdges.length.toString()} />
+        <Metric label="Legitimacy" value={formatBps(legitimacy.scoreBps)} />
+        <Metric label="Succession" value={succession.status} />
+      </dl>
+      <div className="m6-alpha__stack">
+        {diplomacy.agreements.map((agreement) => (
+          <div className="m6-alpha__fact" key={agreement.agreementId}>
+            <strong>{agreement.agreementKind}</strong>
+            <span>
+              {agreement.status}; relation {agreement.relationId}; {agreement.recognitionDirection}
+            </span>
+            <ReasonChips reasonCodes={agreement.reasonCodes} />
+          </div>
+        ))}
+        {legitimacy.sources.map((source) => (
+          <div className="m6-alpha__fact" key={source.sourceId}>
+            <strong>{source.sourceKind}</strong>
+            <span>
+              {formatBps(source.magnitudeBps)}; {source.sourceRef}
+            </span>
+            <ReasonChips reasonCodes={[source.reasonCode]} />
+          </div>
+        ))}
+        <div className="m6-alpha__fact">
+          <strong>Succession continuity</strong>
+          <span>
+            crises {succession.crisisCount}; resolved {succession.resolvedCount}; candidates{" "}
+            {succession.candidateCount}
+          </span>
+          <ReasonChips reasonCodes={succession.continuityReasonCodes} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function M6PolicyEventPanel({
+  policies,
+  encyclopedia
+}: {
+  readonly policies: ClientM6PolicyEventReadModel;
+  readonly encyclopedia: ClientM6EncyclopediaReadModel;
+}): ReactElement {
+  return (
+    <section className="m6-alpha__panel" aria-label="M6 policy event encyclopedia surfaces">
+      <h3>Policies / events / encyclopedia</h3>
+      <div className="m6-alpha__stack">
+        {policies.activeEvents.map((event) => (
+          <div className="m6-alpha__fact" key={event.eventInstanceId}>
+            <strong>{event.title}</strong>
+            <span>{event.options.length} options</span>
+            <ReasonChips
+              reasonCodes={[
+                ...event.causeReasonCodes,
+                ...event.options.flatMap((option) => [
+                  ...option.reasonCodes,
+                  ...option.consequenceReasonCodes
+                ]),
+                ...event.encyclopediaRefs
+              ]}
+            />
+          </div>
+        ))}
+        {policies.modifiers.map((modifier) => (
+          <div className="m6-alpha__fact" key={modifier.modifierId}>
+            <strong>Policy {modifier.policyId}</strong>
+            <span>
+              {formatBps(modifier.magnitudeBps)} day {modifier.startDay}-{modifier.endDay}
+            </span>
+            <ReasonChips reasonCodes={[modifier.reasonCode]} />
+          </div>
+        ))}
+        {encyclopedia.entries.map((entry) => (
+          <div
+            className="m6-alpha__fact"
+            key={entry.entryId}
+            data-entry-id={entry.entryId}
+            data-content-tag={entry.contentTag}
+          >
+            <strong>{entry.title}</strong>
+            <span>{entry.summary}</span>
+            <ReasonChips reasonCodes={entry.linkedReasonCodes} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M6AdviserPanel({ adviser }: { readonly adviser: ClientM6AdviserReadModel }): ReactElement {
+  return (
+    <section className="m6-alpha__panel" aria-label="M6 AI adviser reasons">
+      <h3>AI / adviser reasons</h3>
+      <div className="m6-alpha__fact">
+        <strong>{adviser.primaryReasonCode}</strong>
+        <span>{adviser.commandKind ?? "no command"}</span>
+        <ReasonChips reasonCodes={adviser.reasonCodes} />
+      </div>
+      <div className="m6-alpha__stack">
+        {adviser.candidates.map((candidate) => (
+          <div className="m6-alpha__fact" key={candidate.candidateId}>
+            <strong>{candidate.candidateId}</strong>
+            <span>
+              {candidate.decisionKind}; score {candidate.score};{" "}
+              {candidate.commandKind ?? "no command"}
+            </span>
+            <ReasonChips reasonCodes={candidate.reasonCodes} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M6MapCandidatePanel({
+  mapCandidate
+}: {
+  readonly mapCandidate: ClientM6MapCandidateReadModel;
+}): ReactElement {
+  return (
+    <section className="m6-alpha__panel" aria-label="M6 map candidate display">
+      <h3>Map candidate</h3>
+      <dl className="m6-alpha__metrics">
+        <Metric label="Districts" value={mapCandidate.districtCount.toString()} />
+        <Metric label="Settlements" value={mapCandidate.settlementCount.toString()} />
+        <Metric label="Routes" value={mapCandidate.routeCount.toString()} />
+        <Metric label="Source" value={mapCandidate.sourceLabel} />
+      </dl>
+      <div className="m6-alpha__fact" data-map-candidate-id={mapCandidate.candidateSourceId}>
+        <strong>{mapCandidate.displayName}</strong>
+        <span>{mapCandidate.candidateSourceId}</span>
+        <span>Selected districts {mapCandidate.selectedDistrictIds.join(", ")}</span>
+        <ReasonChips reasonCodes={mapCandidate.reasonCodes} />
+      </div>
+    </section>
+  );
+}
+
+function M6TerminalPanel({
+  terminal,
+  goal,
+  replay
+}: {
+  readonly terminal: ClientM6TerminalReadModel;
+  readonly goal: ClientM6AlphaReadModelSnapshot["goal"];
+  readonly replay: ClientM6AlphaReadModelSnapshot["replay"];
+}): ReactElement {
+  return (
+    <section className="m6-alpha__panel" aria-label="M6 victory failure status">
+      <h3>Victory / failure status</h3>
+      <dl className="m6-alpha__metrics">
+        <Metric label="Outcome" value={terminal.outcome} />
+        <Metric label="Recognized by" value={terminal.evidence.recognizedByCount.toString()} />
+        <Metric label="Legitimacy" value={formatBps(terminal.evidence.legitimacyScoreBps)} />
+        <Metric label="Checkpoint" value={replay.midRunCheckpointLabel} />
+      </dl>
+      <ReasonChips reasonCodes={terminal.reasonCodes} />
+      <div className="m6-alpha__stack">
+        {goal.victoryRequirements.map((condition) => (
+          <div className="m6-alpha__fact" key={condition}>
+            <strong>Victory</strong>
+            <span>{condition}</span>
+          </div>
+        ))}
+        {goal.failureConditions.map((condition) => (
+          <div className="m6-alpha__fact" key={condition}>
+            <strong>Failure</strong>
+            <span>{condition}</span>
+          </div>
+        ))}
+        {goal.excludedSurfaces.map((item) => (
+          <div className="m6-alpha__fact" key={item}>
+            <strong>Excluded</strong>
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M6ReasonSummaryPanel({
+  summaries
+}: {
+  readonly summaries: readonly ClientM6ReasonSummaryReadModel[];
+}): ReactElement {
+  return (
+    <section className="m6-alpha__panel" aria-label="M6 reason summaries">
+      <h3>Reason summaries</h3>
+      <div className="m6-alpha__stack">
+        {summaries.slice(0, 14).map((summary) => (
+          <div className="m6-alpha__fact" key={summary.reasonCode}>
+            <strong>{summary.reasonCode}</strong>
+            <span>
+              {summary.count} / {summary.sourceKinds.join(", ")}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 interface OfficeDetailProps {
   readonly office: ClientM3OfficeReadModel | null;
   readonly selectedCharacter: ClientM3CharacterReadModel | null;
@@ -1720,8 +2248,8 @@ interface ReasonChipsProps {
 function ReasonChips({ reasonCodes }: ReasonChipsProps): ReactElement {
   return (
     <span className="m3-appointment__reasons">
-      {reasonCodes.map((reasonCode) => (
-        <span className="m3-appointment__reason" key={reasonCode}>
+      {reasonCodes.map((reasonCode, index) => (
+        <span className="m3-appointment__reason" key={`${reasonCode}:${index}`}>
           {reasonCode}
         </span>
       ))}
