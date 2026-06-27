@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T14:19:37+08:00",
+  "updated_at": "2026-06-27T15:12:35+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -1883,7 +1883,8 @@
     "M5-MANUAL-NODE-BATTLE-DECISION-001": "CLOSED after decision PR #125 and closure/start PR #126; current main is 4919f8bc48fa3b7e13ea69ebd8483b1e70a0f313. Decision remains DEFER_MANUAL_NODE_BATTLE.",
     "M5-EXIT-HUMAN-GATE-001": "CLOSED after PR #127 entered main at b09675c115b81ee05b7894071afb6f10000af011. M5_GATE = PASS_WITH_LIMITS; M6-TASK-GRAPH-001 is READY.",
     "M6-TASK-GRAPH-001": "CLOSED after PR #129 entered main at 4aef9108da1e659354a4a726b07b4b6dad56f966. Planning-only M6 Alpha task DAG accepted; next READY M6 task is M6-ALPHA-SYSTEM-CONTRACT-001.",
-    "M6-ALPHA-SYSTEM-CONTRACT-001": "REVIEW after gameplay_designer defined the bounded M6 Alpha system-complete contract; route writer handoff to systems_architect reviewer."
+    "M6-ALPHA-SYSTEM-CONTRACT-001": "REVIEW after gameplay_designer defined the bounded M6 Alpha system-complete contract; route writer handoff to systems_architect reviewer.",
+    "M6-SCENARIO-DATA-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to historical_researcher thread 019f07c1-17ed-7300-a467-cb7062d5064f on feat/m6-scenario-data-pipeline."
   },
   "current_tasks": {
     "M5-PERFORMANCE-GATE-001": {
@@ -2138,6 +2139,123 @@
       "next_ready_tasks": [
         "M6-SCENARIO-DATA-PIPELINE-001"
       ]
+    },
+    "M6-SCENARIO-DATA-PIPELINE-001": {
+      "status": "ACCEPTED",
+      "owner_role": "historical_researcher",
+      "reviewer_role": "qa_reviewer",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "writer_nickname": "Chronicle",
+      "branch_or_worktree": "feat/m6-scenario-data-pipeline",
+      "updated_at": "2026-06-27T15:12:35+08:00",
+      "human_gate_required": false,
+      "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
+      "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+      "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
+      "route_sent_at": "2026-06-27T14:28:31+08:00",
+      "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
+      "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
+      "replacement_writer_nickname": "Estuary",
+      "replaces_writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "replacement_start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-REPLACEMENT-START__lead_orchestrator.json",
+      "replacement_route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-REPLACEMENT-START.json",
+      "replacement_at": "2026-06-27T14:45:02+08:00",
+      "replacement_submission_id": "019f07d3-f477-7da1-9dd7-5cb626e97364",
+      "replacement_route_sent_at": "2026-06-27T14:46:34+08:00",
+      "request_changes_round": 1,
+      "request_changes_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
+      "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
+      "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
+      "review_commit": "23bb150e",
+      "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
+      "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
+      "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
+      "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
+      "qa_route_sent_at": "2026-06-27T15:04:01+08:00",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T15:12:35+08:00",
+      "child_threads_closed": true,
+      "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb"
     }
-  }
+  },
+  "m6_scenario_data_pipeline": {
+    "status": "ACCEPTED",
+    "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+    "branch_or_worktree": "feat/m6-scenario-data-pipeline",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+    "writer_nickname": "Chronicle",
+    "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
+    "started_at": "2026-06-27T14:27:24+08:00",
+    "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "Run final lead integration gates, open PR, wait for CI, merge to main, then close task.",
+    "route_sent_at": "2026-06-27T14:28:31+08:00",
+    "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
+    "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
+    "replacement_writer_nickname": "Estuary",
+    "replaces_writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+    "replacement_start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-REPLACEMENT-START.json",
+    "replacement_at": "2026-06-27T14:45:02+08:00",
+    "preserved_uncommitted_tracked_files": [
+      "apps/content-tools/package.json",
+      "apps/content-tools/src/cli.ts",
+      "apps/content-tools/src/index.ts",
+      "packages/content-runtime/src/index.ts",
+      "packages/content-runtime/tsconfig.json",
+      "packages/content-schema/src/index.ts",
+      "packages/content-schema/tsconfig.json",
+      "tests/content-runtime-pack.test.ts",
+      "tests/content-schema-graph-source.test.ts",
+      "tests/content-tools-compiler.test.ts"
+    ],
+    "preserved_uncommitted_untracked_files": [
+      "apps/content-tools/src/m6-alpha-scenario.ts",
+      "content-source/m6-alpha-scenarios/alpha-scenario-set.json",
+      "packages/content-runtime/src/m6-alpha-scenario.ts",
+      "packages/content-schema/src/m6-alpha-scenario.ts"
+    ],
+    "replacement_submission_id": "019f07d3-f477-7da1-9dd7-5cb626e97364",
+    "replacement_route_sent_at": "2026-06-27T14:46:34+08:00",
+    "request_changes_round": 1,
+    "request_changes_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
+    "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
+    "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
+    "updated_at": "2026-06-27T15:12:35+08:00",
+    "review_commit": "23bb150e",
+    "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-WRITER-R2-TO-QA-REVIEW.json",
+    "routed_to_qa_at": "2026-06-27T15:03:04+08:00",
+    "qa_submission_id": "019f07e4-1ec4-7b11-a28a-4357bc40041c",
+    "qa_route_sent_at": "2026-06-27T15:04:01+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T15:12:35+08:00",
+    "child_threads_closed": true,
+    "integration_head_commit": "4d81a84519e5a489515e14743e463ea257f579fb"
+  },
+  "replaced_threads": [
+    {
+      "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+      "role": "historical_researcher",
+      "thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+      "nickname": "Chronicle",
+      "status": "closed_stalled_no_handoff",
+      "replaced_by": "019f07d2-14c6-7542-a409-5bf97fdcf352",
+      "replaced_by_nickname": "Estuary",
+      "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response",
+      "replaced_at": "2026-06-27T14:45:02+08:00"
+    }
+  ]
 }

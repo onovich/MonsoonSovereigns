@@ -1,0 +1,62 @@
+{
+  "message_id": "MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES",
+  "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+  "from_role": "lead_orchestrator",
+  "status": "REQUEST_CHANGES",
+  "summary": "Lead review found two pre-QA issues in the M6 scenario data pipeline: manifest hash omitted claim text and competing interpretations, and empty sourcePassages entries could satisfy formal-claim source presence. Changes were routed back to the replacement historical_researcher before independent QA.",
+  "artifacts": [
+    "apps/content-tools/src/m6-alpha-scenario.ts",
+    "packages/content-schema/src/m6-alpha-scenario.ts",
+    "packages/content-runtime/src/m6-alpha-scenario.ts",
+    "tests/content-tools-compiler.test.ts",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json"
+  ],
+  "branch_or_worktree": "feat/m6-scenario-data-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "d5bfd1f4fce0d1c0175a415362ba34457be8011a",
+  "tests_run": [
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "PASS before lead request changes; M6 manifestHash=15f4c10c."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "PASS 11 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "PASS 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "PASS 26 tests."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS 37 root files / 268 tests plus web 4 tests."
+    }
+  ],
+  "decisions": [
+    "Do not route to QA until deterministic manifest hash covers all compiled claim-record content.",
+    "Do not accept sourcePassages containing empty strings as satisfying formal non-fictional claim source evidence.",
+    "Return fixes to the replacement historical_researcher writer rather than lead-patching silently."
+  ],
+  "risks": [
+    "If not fixed, content text could drift without manifest evidence and empty passage strings could weaken historical-source safeguards."
+  ],
+  "blockers": [],
+  "route_to": "historical_researcher",
+  "requested_action": "Fix manifest hash coverage and non-empty source passage validation, add negative/hash tests, rerun required tests, and return an R2 REVIEW handoff.",
+  "created_at": "2026-06-27T14:56:19+08:00"
+}

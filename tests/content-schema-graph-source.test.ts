@@ -2,10 +2,12 @@ import { describe, expect, test } from "vitest";
 
 import {
   parseM3PolityVassalageFixtureSourceV0,
+  parseM6AlphaScenarioSetSourceV0,
   parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   validateM2WorldFixtureSourceV0,
   validateM3CharacterOfficeFixtureSourceV0,
+  validateM6AlphaScenarioSetSourceV0,
   validateM3PolityVassalageFixtureSourceV0,
   parseM1GraphFixtureSourceV0,
   validateM1GraphFixtureSourceV0
@@ -479,3 +481,148 @@ describe("M3 character office fixture source schema", () => {
     );
   });
 });
+
+describe("M6 alpha scenario source schema", () => {
+  test("parses source, claim, downstream-reference, and scenario records", () => {
+    const source = parseM6AlphaScenarioSetSourceV0({
+      schemaVersion: 1,
+      kind: "m6.alpha-scenario-set",
+      fixtureId: "m6.alpha.test",
+      fixtureKind: "alpha-scenario-set",
+      syntheticScope: "m6-alpha-validation",
+      sources: [
+        {
+          sourceId: "source.docs.09",
+          sourceType: "project-research-baseline",
+          citationKey: "docs/09-world-history-culture.md",
+          accessNote: "Section-level project source."
+        }
+      ],
+      claims: [
+        {
+          claimId: "HIST-M6-TEST-HISTORICAL",
+          claim: "A test historical claim.",
+          historicity: "HISTORICAL",
+          confidence: "LOW",
+          sourceIds: ["source.docs.09"],
+          sourcePassages: ["section 11"],
+          competingInterpretations: ["Pending page verification."],
+          gameAbstraction: "Validation-only anchor.",
+          researchStatus: "RESEARCH_REQUIRED"
+        },
+        {
+          claimId: "HIST-M6-TEST-FICTIONAL",
+          claim: "A test fictional claim.",
+          historicity: "FICTIONAL",
+          confidence: "HIGH",
+          sourceIds: [],
+          sourcePassages: [],
+          competingInterpretations: [],
+          gameAbstraction: "Validation-only IDs.",
+          researchStatus: "PAGE_VERIFIED"
+        }
+      ],
+      referenceTargets: makeReferenceTargets("HIST-M6-TEST-HISTORICAL"),
+      scenarios: [
+        {
+          sourceId: "scenario.alpha.test",
+          scenarioKey: "alpha-test",
+          displayNameKey: "content.m6.alpha.scenario.test",
+          startYear: 1531,
+          dependencyOrder: 1,
+          historicity: "COMPOSITE",
+          materialClaimIds: ["HIST-M6-TEST-HISTORICAL", "HIST-M6-TEST-FICTIONAL"],
+          references: makeReferenceSets()
+        }
+      ]
+    });
+
+    expect(source.claims.map((claim) => claim.historicity)).toEqual(["HISTORICAL", "FICTIONAL"]);
+    expect(source.scenarios[0]?.references.diplomacy).toEqual(["diplomacy.alpha.test"]);
+  });
+
+  test("requires M6 labels, source arrays, and reference sets with path-specific errors", () => {
+    expect(
+      validateM6AlphaScenarioSetSourceV0({
+        schemaVersion: 1,
+        kind: "m6.alpha-scenario-set",
+        fixtureId: "m6.alpha.bad",
+        fixtureKind: "alpha-scenario-set",
+        syntheticScope: "m6-alpha-validation",
+        sources: [],
+        claims: [
+          {
+            claimId: "bad-claim",
+            claim: "",
+            historicity: "FORMAL",
+            confidence: "HIGH",
+            sourceIds: "source.docs.09",
+            sourcePassages: [],
+            competingInterpretations: [],
+            gameAbstraction: "",
+            researchStatus: "UNKNOWN"
+          }
+        ],
+        referenceTargets: {},
+        scenarios: [
+          {
+            sourceId: "scenario.alpha.bad",
+            scenarioKey: "Alpha Bad",
+            displayNameKey: "content.m6.alpha.scenario.bad",
+            startYear: 1520,
+            dependencyOrder: 1,
+            historicity: "COMPOSITE",
+            materialClaimIds: [],
+            references: {}
+          }
+        ]
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-schema", path: "claims[0].claimId" }),
+        expect.objectContaining({ code: "invalid-schema", path: "claims[0].historicity" }),
+        expect.objectContaining({ code: "invalid-schema", path: "claims[0].sourceIds" }),
+        expect.objectContaining({ code: "invalid-schema", path: "scenarios[0].scenarioKey" }),
+        expect.objectContaining({ code: "invalid-schema", path: "scenarios[0].startYear" }),
+        expect.objectContaining({
+          code: "invalid-schema",
+          path: "scenarios[0].references.diplomacy"
+        })
+      ])
+    );
+  });
+});
+
+function makeReferenceTargets(claimId: string) {
+  return {
+    diplomacy: [makeReferenceTarget("diplomacy.alpha.test", claimId)],
+    legitimacy: [makeReferenceTarget("legitimacy.alpha.test", claimId)],
+    succession: [makeReferenceTarget("succession.alpha.test", claimId)],
+    mapCandidates: [makeReferenceTarget("map.alpha.test", claimId)],
+    policies: [makeReferenceTarget("policy.alpha.test", claimId)],
+    events: [makeReferenceTarget("event.alpha.test", claimId)],
+    encyclopediaEntries: [makeReferenceTarget("encyclopedia.alpha.test", claimId)],
+    startToVictoryFixtures: [makeReferenceTarget("fixture.alpha.test", claimId)]
+  };
+}
+
+function makeReferenceTarget(sourceId: string, claimId: string) {
+  return {
+    sourceId,
+    displayNameKey: "content.m6.alpha.reference.test",
+    claimId
+  };
+}
+
+function makeReferenceSets() {
+  return {
+    diplomacy: ["diplomacy.alpha.test"],
+    legitimacy: ["legitimacy.alpha.test"],
+    succession: ["succession.alpha.test"],
+    mapCandidates: ["map.alpha.test"],
+    policies: ["policy.alpha.test"],
+    events: ["event.alpha.test"],
+    encyclopediaEntries: ["encyclopedia.alpha.test"],
+    startToVictoryFixtures: ["fixture.alpha.test"]
+  };
+}

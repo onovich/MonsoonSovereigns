@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START",
+  "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead started M6-SCENARIO-DATA-PIPELINE-001 after M6 diplomacy legitimacy closure entered origin/main. historical_researcher writer thread 019f07c1-17ed-7300-a467-cb7062d5064f is assigned to implement the three-scenario data pipeline within task allowed paths.",
+  "artifacts": [
+    "project/tasks/active/M6-SCENARIO-DATA-PIPELINE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
+    "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json"
+  ],
+  "branch_or_worktree": "feat/m6-scenario-data-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
+  "tests_run": [
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "06628e092f1a958c7fc48395f68537097fffb8c8"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-SCENARIO-DATA-PIPELINE-001 was dependency-ready before start."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SCENARIO-DATA-PIPELINE-001",
+      "exit_code": 0,
+      "result": "VALID before status transition."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent historical_researcher",
+      "exit_code": 0,
+      "result": "Spawned historical_researcher writer thread 019f07c1-17ed-7300-a467-cb7062d5064f, nickname Chronicle."
+    }
+  ],
+  "decisions": [
+    "Start M6-SCENARIO-DATA-PIPELINE-001 as the next dependency-ready M6 task after M6-DIPLOMACY-LEGITIMACY-001 closure entered origin/main.",
+    "Use explicit scenario schemas and deterministic manifest output; do not implement downstream diplomacy, legitimacy, succession, policy, event, map, encyclopedia, or victory systems in this task.",
+    "Formal cultural symbols, production art/audio/branding, telemetry, server behavior, and arbitrary-code mod support remain out of scope.",
+    "Do not modify PROJECT_STATUS.md or milestone/Gate docs because this task lists them as forbidden paths.",
+    "Leave unrelated untracked ui-samples/ untouched."
+  ],
+  "risks": [
+    "R4 content pipeline task can accidentally encode unsupported formal historical claims; writer must label HISTORICAL, INFERRED, COMPOSITE, and FICTIONAL material and reject unlabeled or unsourced formal claims.",
+    "Pipeline references several not-yet-implemented Alpha surfaces; this task may validate references but must not implement those systems.",
+    "Content schema changes must remain explicit, deterministic, and compatible with content-runtime boundaries."
+  ],
+  "blockers": [],
+  "route_to": "historical_researcher",
+  "requested_action": "Implement the three-scenario data pipeline within allowed paths, run required tests, and return a historical_researcher REVIEW handoff for independent qa_reviewer review.",
+  "created_at": "2026-06-27T14:27:24+08:00",
+  "start_confirmed": {
+    "to_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
+    "to_thread_nickname": "Chronicle",
+    "allowed_paths": [
+      "content-source/**",
+      "apps/content-tools/**",
+      "packages/content-schema/**",
+      "packages/content-runtime/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/tasks/active/M6-SCENARIO-DATA-PIPELINE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "apps/sim-runner/**",
+      "packages/sim-core/**",
+      "packages/sim-ai/**",
+      "packages/save-format/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/ui/**",
+      "packages/platform/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ],
+    "acceptance_criteria": [
+      "Three Alpha scenario data sets compile through explicit schemas with stable IDs, source or claim labels, dependency ordering, and deterministic manifest output.",
+      "Scenario records distinguish HISTORICAL, INFERRED, COMPOSITE, and FICTIONAL material and reject unlabeled or unsourced formal claims.",
+      "The pipeline validates references needed by diplomacy, legitimacy, succession, map candidates, policy, events, encyclopedia entries, and start-to-victory fixtures without implementing those systems.",
+      "No production art, audio, branding, cultural symbol lock, commercial release artifact, telemetry, server behavior, or arbitrary-code mod support is added."
+    ],
+    "required_tests": [
+      "git status --short",
+      "pnpm content:validate",
+      "pnpm --filter @monsoon/content-schema test",
+      "pnpm --filter @monsoon/content-runtime test",
+      "pnpm test",
+      "Content compatibility tests cover bad references, missing labels, unstable IDs, duplicate scenario keys, and deterministic manifest output.",
+      "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SCENARIO-DATA-PIPELINE-001",
+      "git diff --check"
+    ],
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "route_sent_at": "2026-06-27T14:28:31+08:00",
+    "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6"
+  }
+}

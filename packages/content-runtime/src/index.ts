@@ -25,6 +25,8 @@ import type {
   M3PolityVassalageSyntheticScope
 } from "@monsoon/content-schema";
 
+export * from "./m6-alpha-scenario.ts";
+
 export type Brand<TValue, TBrand extends string> = TValue & { readonly __brand: TBrand };
 
 export type ContentNodeId = Brand<number, "ContentNodeId">;

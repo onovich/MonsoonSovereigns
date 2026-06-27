@@ -1,0 +1,109 @@
+{
+  "message_id": "MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT",
+  "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M6-SCENARIO-DATA-PIPELINE-001 after replacement historical_researcher R2 review and independent qa_reviewer ACCEPT. The task remains scoped to deterministic Alpha scenario data pipeline, explicit source/runtime schemas, source and claim labels, downstream reference-ID validation, and deterministic manifest output; it does not lock M7 content or implement downstream systems.",
+  "artifacts": [
+    "apps/content-tools/src/m6-alpha-scenario.ts",
+    "packages/content-schema/src/m6-alpha-scenario.ts",
+    "packages/content-runtime/src/m6-alpha-scenario.ts",
+    "content-source/m6-alpha-scenarios/alpha-scenario-set.json",
+    "tests/content-tools-compiler.test.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-WRITER-R2-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/m6-scenario-data-pipeline / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "4d81a84519e5a489515e14743e463ea257f579fb",
+  "tests_run": [
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "PASS; M6 alpha scenario set scenarios=3 claims=6 sources=5 referenceTargets=8 manifestHash=6d1f6d64."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "PASS 11 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "PASS 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "PASS 28 tests, including bad references, missing labels, empty formal source/passage entries, unstable IDs, duplicate scenario keys, deterministic manifest output, and R2 hash regression coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm lint",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS; architecture boundaries passed, Node/Worker determinism matched through M5, root Vitest 37 files / 270 tests passed, web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "QA ACCEPT handoff valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SCENARIO-DATA-PIPELINE-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Accept independent QA result for M6-SCENARIO-DATA-PIPELINE-001.",
+    "Keep M6 scenario records as Alpha validation scaffolding with RESEARCH_REQUIRED/SUMMARY_ONLY where full page verification is absent; this is not M7 content lock.",
+    "Keep downstream surfaces as stable reference IDs only; no diplomacy, legitimacy, succession, map, policy, event, encyclopedia, or start-to-victory runtime systems are implemented in this task.",
+    "Do not stage unrelated untracked ui-samples/."
+  ],
+  "risks": [
+    "Writer R2 handoff commit field still names d5bfd1f4, while task state and QA route correctly identify review_commit 23bb150e and QA-route commit 4d81a845; accepted as non-blocking metadata drift and recorded by QA.",
+    "Historical/cultural formal content still needs later page-verified sourcing and review before any M7 or production content lock.",
+    "ui-samples/ remains unrelated and untracked."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Run final lead integration gates, create PR, wait for CI, merge on pass, then close M6-SCENARIO-DATA-PIPELINE-001 after main integration.",
+  "created_at": "2026-06-27T15:12:35+08:00",
+  "qa_accept": {
+    "qa_thread_id": "019f07e2-f720-7043-950c-d627f6a37b77",
+    "qa_thread_nickname": "Witness",
+    "qa_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-QA-ACCEPT__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_closed": true
+  },
+  "child_threads_closed": [
+    "019f07d2-14c6-7542-a409-5bf97fdcf352",
+    "019f07e2-f720-7043-950c-d627f6a37b77"
+  ]
+}

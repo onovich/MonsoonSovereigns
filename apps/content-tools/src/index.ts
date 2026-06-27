@@ -25,6 +25,7 @@ import {
   type M2WorldFixtureSourceV0
 } from "@monsoon/content-schema";
 import {
+  type RuntimeM6AlphaScenarioContentPackV0,
   parseContentEdgeId,
   parseContentCharacterId,
   parseContentDistrictId,
@@ -60,6 +61,8 @@ import {
   type RuntimeM2WorldContentPackV0
 } from "@monsoon/content-runtime";
 
+import { compileM6AlphaScenarioContentPackV0 } from "./m6-alpha-scenario.ts";
+
 export type ContentCompileErrorCode =
   | ContentSchemaError["code"]
   | "bad-reference"
@@ -71,6 +74,9 @@ export type ContentCompileErrorCode =
   | "invalid-geometry"
   | "invalid-route"
   | "invalid-seasonal-curve"
+  | "missing-label"
+  | "unsourced-claim"
+  | "duplicate-scenario-key"
   | "isolated-district"
   | "isolated-node"
   | "unstable-order";
@@ -87,7 +93,8 @@ export type ContentCompileResultV0 =
       readonly pack:
         | RuntimeContentPackV0
         | RuntimeM2WorldContentPackV0
-        | RuntimeM3CharacterOfficeContentPackV0;
+        | RuntimeM3CharacterOfficeContentPackV0
+        | RuntimeM6AlphaScenarioContentPackV0;
       readonly errors: readonly [];
     }
   | {
@@ -164,6 +171,10 @@ const INITIAL_HASH_OFFSET = 2_166_136_261;
 const HASH_PRIME = 16_777_619;
 
 export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
+  if (isRecord(input) && input["kind"] === "m6.alpha-scenario-set") {
+    return compileM6AlphaScenarioContentPackV0(input);
+  }
+
   if (isRecord(input) && input["kind"] === "m3.character-office-fixture") {
     return compileM3CharacterOfficeContentPackV0(input);
   }
@@ -203,7 +214,11 @@ export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
 
 export function compileContentPackV0OrThrow(
   input: unknown
-): RuntimeContentPackV0 | RuntimeM2WorldContentPackV0 | RuntimeM3CharacterOfficeContentPackV0 {
+):
+  | RuntimeContentPackV0
+  | RuntimeM2WorldContentPackV0
+  | RuntimeM3CharacterOfficeContentPackV0
+  | RuntimeM6AlphaScenarioContentPackV0 {
   const result = compileContentPackV0(input);
   if (result.status === "ok") {
     return result.pack;
