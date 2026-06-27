@@ -22,9 +22,14 @@ import {
   type WorldDefinitionsV0,
   type WorldStateV0
 } from "../packages/sim-core/src/index";
-import { encodeSaveEnvelopeV1, type SaveWorldSnapshotV0Dto } from "../packages/save-format/src/index";
+import {
+  encodeSaveEnvelopeV1,
+  type SaveWorldSnapshotV0Dto
+} from "../packages/save-format/src/index";
 
-import type { GameCommandV1 } from "../packages/protocol/src/index";
+import type { AuthoritativeGameCommandV1 } from "../packages/protocol/src/index";
+
+type GameCommandV1 = AuthoritativeGameCommandV1;
 
 describe("M6-DIPLOMACY-LEGITIMACY-001 deterministic substrate", () => {
   test("player and AI use the same diplomacy command path with stable ordering", () => {
@@ -241,7 +246,10 @@ describe("M6-DIPLOMACY-LEGITIMACY-001 deterministic substrate", () => {
             runtime = submitted.runtime;
             const expectedScore = Math.max(
               0,
-              Math.min(10_000, magnitudes.slice(0, index + 1).reduce((total, value) => total + value, 0))
+              Math.min(
+                10_000,
+                magnitudes.slice(0, index + 1).reduce((total, value) => total + value, 0)
+              )
             );
             const profile = runtime.world.state.m6?.legitimacyProfiles.find(
               (entry) => entry.polityId === parsePolityId(1) && entry.audience === "vassal-rulers"
@@ -283,13 +291,17 @@ describe("M6-DIPLOMACY-LEGITIMACY-001 deterministic substrate", () => {
     expect(loaded.runtime.world.state.m6).toEqual(runtime.world.state.m6);
 
     const missingM6 = withoutSavedM6State(saved.envelope.body.authoritativeSnapshot);
-    const missing = loadSaveV1(bootM6Runtime(), encodeSaveEnvelopeV1({
-      ...saved.envelope,
-      body: { ...saved.envelope.body, authoritativeSnapshot: missingM6 }
-    }), {
-      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
-      expectedScenarioId: saved.envelope.header.scenarioId
-    });
+    const missing = loadSaveV1(
+      bootM6Runtime(),
+      encodeSaveEnvelopeV1({
+        ...saved.envelope,
+        body: { ...saved.envelope.body, authoritativeSnapshot: missingM6 }
+      }),
+      {
+        expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+        expectedScenarioId: saved.envelope.header.scenarioId
+      }
+    );
     expect(missing.status).toBe("rejected");
 
     const malformed = loadSaveV1(
@@ -333,12 +345,16 @@ describe("M6-DIPLOMACY-LEGITIMACY-001 deterministic substrate", () => {
   });
 });
 
-function bootM6Runtime(input: { readonly obligationMode?: "clear" | "risk" | "blocked" } = {}): SimulationRuntimeV1 {
+function bootM6Runtime(
+  input: { readonly obligationMode?: "clear" | "risk" | "blocked" } = {}
+): SimulationRuntimeV1 {
   const world = createM6World(input);
   return { world, acceptedCommandIds: [], commandTail: [], eventTail: [] };
 }
 
-function createM6World(input: { readonly obligationMode?: "clear" | "risk" | "blocked" } = {}): WorldStateV0 {
+function createM6World(
+  input: { readonly obligationMode?: "clear" | "risk" | "blocked" } = {}
+): WorldStateV0 {
   const definitions = m6Definitions();
   const m3 =
     input.obligationMode === undefined
@@ -390,7 +406,10 @@ function createRecognizedOrder(runtime: SimulationRuntimeV1): SimulationRuntimeV
     runtime,
     proposeAgreementCommand("m6.order.offer", "player", runtime, 1, 2, 1)
   );
-  nextRuntime = accepted(nextRuntime, answerAgreementCommand("m6.order.accept", "ai", nextRuntime, 1));
+  nextRuntime = accepted(
+    nextRuntime,
+    answerAgreementCommand("m6.order.accept", "ai", nextRuntime, 1)
+  );
   nextRuntime = accepted(
     nextRuntime,
     recordLegitimacyCommand("m6.order.legitimacy", "system", nextRuntime, 10, 1, 1_100)
@@ -500,7 +519,9 @@ function recordLegitimacyCommand(
 }
 
 function respondingPolityIdForAgreement(runtime: SimulationRuntimeV1, agreementId: number): number {
-  const agreement = runtime.world.state.m6?.agreements.find((entry) => entry.agreementId === agreementId);
+  const agreement = runtime.world.state.m6?.agreements.find(
+    (entry) => entry.agreementId === agreementId
+  );
   if (agreement === undefined) {
     return 1;
   }
@@ -581,7 +602,10 @@ function withoutSavedM6State(snapshot: SaveWorldSnapshotV0Dto): SaveWorldSnapsho
   };
 }
 
-function rewriteSaveM6WithValidChecksum(bytes: Uint8Array, m6: Record<string, unknown>): Uint8Array {
+function rewriteSaveM6WithValidChecksum(
+  bytes: Uint8Array,
+  m6: Record<string, unknown>
+): Uint8Array {
   const decoded = JSON.parse(new TextDecoder().decode(bytes)) as unknown;
   if (!isRecord(decoded)) {
     throw new Error("Expected save envelope object.");

@@ -704,9 +704,6 @@ export type GameCommandV1 =
   | ResolveSuccessionCommandV1
   | CreateCharacterRelationshipCommandV1
   | ApplyM3PostwarGovernanceCommandV1
-  | ProposeDiplomaticAgreementCommandV1
-  | AnswerDiplomaticAgreementCommandV1
-  | RecordLegitimacySourceCommandV1
   | CreateCampaignObjectiveCommandV1
   | UpdateCampaignObjectiveCommandV1
   | CancelCampaignObjectiveCommandV1
@@ -720,6 +717,13 @@ export type GameCommandV1 =
   | ApplyM4SiegeChoiceCommandV1
   | ResolveM4CampaignWithdrawalCommandV1
   | VerifyStateHashCommandV1;
+
+export type M6GameCommandV1 =
+  | ProposeDiplomaticAgreementCommandV1
+  | AnswerDiplomaticAgreementCommandV1
+  | RecordLegitimacySourceCommandV1;
+
+export type AuthoritativeGameCommandV1 = GameCommandV1 | M6GameCommandV1;
 
 const GAME_COMMAND_KINDS: readonly GameCommandV1["kind"][] = [
   "sim.advance-day",
@@ -737,9 +741,6 @@ const GAME_COMMAND_KINDS: readonly GameCommandV1["kind"][] = [
   "sim.resolve-succession",
   "sim.create-character-relationship",
   "sim.apply-m3-postwar-governance",
-  "sim.propose-diplomatic-agreement",
-  "sim.answer-diplomatic-agreement",
-  "sim.record-legitimacy-source",
   "sim.create-campaign-objective",
   "sim.update-campaign-objective",
   "sim.cancel-campaign-objective",
@@ -1254,13 +1255,13 @@ export type SimulationMessageV1 =
       readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
       readonly requestId: string;
       readonly type: "simulation.preview-command";
-      readonly payload: GameCommandV1;
+      readonly payload: AuthoritativeGameCommandV1;
     }
   | {
       readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
       readonly requestId: string;
       readonly type: "simulation.submit-command";
-      readonly payload: GameCommandV1;
+      readonly payload: AuthoritativeGameCommandV1;
     }
   | {
       readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
@@ -1643,7 +1644,9 @@ export function createM5PlayableLoopScriptV1(): M5PlayableLoopScriptV1 {
   };
 }
 
-export function parseGameCommandV1(input: unknown): ProtocolParseResult<GameCommandV1> {
+export function parseGameCommandV1(
+  input: unknown
+): ProtocolParseResult<AuthoritativeGameCommandV1> {
   if (!isRecord(input)) {
     return protocolError("invalid-payload", "$", "GameCommand v1 must be an object.");
   }
@@ -4269,7 +4272,11 @@ function parseM6DiplomaticAgreementKind(
   value: unknown,
   path: string
 ): ProtocolParseResult<M6DiplomaticAgreementKindV1> {
-  if (value === "non-aggression" || value === "military-access" || value === "tribute-recognition") {
+  if (
+    value === "non-aggression" ||
+    value === "military-access" ||
+    value === "tribute-recognition"
+  ) {
     return { ok: true, value };
   }
   return protocolError(
@@ -4312,11 +4319,7 @@ function parseM6LegitimacyAudience(
   ) {
     return { ok: true, value };
   }
-  return protocolError(
-    "invalid-payload",
-    path,
-    `${path} must be a valid M6 legitimacy audience.`
-  );
+  return protocolError("invalid-payload", path, `${path} must be a valid M6 legitimacy audience.`);
 }
 
 function parseM6LegitimacySourceKind(

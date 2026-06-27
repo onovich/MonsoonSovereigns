@@ -1,4 +1,6 @@
-import type { GameCommandV1 } from "@monsoon/protocol";
+import type { AuthoritativeGameCommandV1 } from "@monsoon/protocol";
+
+type GameCommandV1 = AuthoritativeGameCommandV1;
 import {
   querySimulationV1,
   type M6DiplomaticAgreementReadModelV1,

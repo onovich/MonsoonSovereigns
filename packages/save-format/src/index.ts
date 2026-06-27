@@ -1,4 +1,6 @@
-import { parseGameCommandV1, type GameCommandV1 } from "@monsoon/protocol";
+import { parseGameCommandV1, type AuthoritativeGameCommandV1 } from "@monsoon/protocol";
+
+type GameCommandV1 = AuthoritativeGameCommandV1;
 
 export const SAVE_ENVELOPE_V1_MAGIC = "MONSOON_SOVEREIGNS_SAVE";
 export const SAVE_ENVELOPE_V1_SCHEMA_VERSION = 1;
@@ -1688,11 +1690,7 @@ function parseWorldRuntimeState(
   const m6 =
     input["m6"] === undefined
       ? undefined
-      : parseM6DiplomacyLegitimacyState(
-          input["m6"],
-          "body.authoritativeSnapshot.state.m6",
-          errors
-        );
+      : parseM6DiplomacyLegitimacyState(input["m6"], "body.authoritativeSnapshot.state.m6", errors);
   if (
     polities === undefined ||
     persons === undefined ||
@@ -2381,7 +2379,13 @@ function parseM6DiplomacyLegitimacyState(
       )
     );
   }
-  const relations = parseM6Array(input["relations"], `${path}.relations`, "M6 relations", errors, parseM6Relation);
+  const relations = parseM6Array(
+    input["relations"],
+    `${path}.relations`,
+    "M6 relations",
+    errors,
+    parseM6Relation
+  );
   const agreements = parseM6Array(
     input["agreements"],
     `${path}.agreements`,
@@ -2471,7 +2475,12 @@ function parseM6Relation(
     affinityBps: readBps(record, "affinityBps", `${path}.affinityBps`, errors),
     fearBps: readBps(record, "fearBps", `${path}.fearBps`, errors),
     threatBps: readBps(record, "threatBps", `${path}.threatBps`, errors),
-    interestAlignmentBps: readBps(record, "interestAlignmentBps", `${path}.interestAlignmentBps`, errors),
+    interestAlignmentBps: readBps(
+      record,
+      "interestAlignmentBps",
+      `${path}.interestAlignmentBps`,
+      errors
+    ),
     historicalDebt:
       readNonnegativeSafeInteger(record, "historicalDebt", `${path}.historicalDebt`, errors) ?? 0,
     borderConflictBps: readBps(record, "borderConflictBps", `${path}.borderConflictBps`, errors),
@@ -3640,7 +3649,11 @@ function parseM6AgreementKind(
   path: string,
   errors: SaveLoadRejectionReasonV1[]
 ): SaveM6DiplomaticAgreementKindDto {
-  if (input === "non-aggression" || input === "military-access" || input === "tribute-recognition") {
+  if (
+    input === "non-aggression" ||
+    input === "military-access" ||
+    input === "tribute-recognition"
+  ) {
     return input;
   }
   errors.push(reason("invalid-schema", path, "M6 agreementKind is invalid."));

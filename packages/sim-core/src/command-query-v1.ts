@@ -3,9 +3,9 @@ import {
   parseBootSimulationInputV1,
   parseGameCommandV1,
   parseGameQueryV1,
+  type AuthoritativeGameCommandV1,
   type BootSimulationInputV1,
   type CommandActorV1,
-  type GameCommandV1,
   type GameQueryV1,
   type M3PostwarGovernanceMethodV1,
   type M4DeterminismReplayScriptV1,
@@ -144,6 +144,8 @@ import {
   type WorldRevision,
   type WorldStateV0
 } from "./world-state-v0.ts";
+
+type GameCommandV1 = AuthoritativeGameCommandV1;
 
 export type DomainErrorCodeV1 =
   | "acyclicity-violation"
@@ -3326,7 +3328,8 @@ function evaluateProposeDiplomaticAgreement(
   }
 
   const relation = findM6Relation(m6, proposerPolityId, targetPolityId);
-  const nextRelation = relation ?? createM6Relation(command, relationId, proposerPolityId, targetPolityId);
+  const nextRelation =
+    relation ?? createM6Relation(command, relationId, proposerPolityId, targetPolityId);
   const agreement: M6DiplomaticAgreementStateV0 = {
     agreementId,
     relationId: nextRelation.relationId,
@@ -3434,9 +3437,7 @@ function evaluateAnswerDiplomaticAgreement(
   const nextStatus: M6DiplomaticAgreementStateV0["status"] = command.payload.accepted
     ? "active"
     : "rejected";
-  const recognition = command.payload.accepted
-    ? recognitionEdgeFromAgreement(agreement)
-    : null;
+  const recognition = command.payload.accepted ? recognitionEdgeFromAgreement(agreement) : null;
   if (recognition !== null && wouldCreateM6RecognitionCycle(m6.recognitionEdges, recognition)) {
     return {
       ok: false,
@@ -3541,7 +3542,11 @@ function evaluateRecordLegitimacySource(
     reasonCode: command.payload.reasonCode,
     createdDay: parseGameDay(world.meta.currentDay)
   };
-  const profile = recalculateM6LegitimacyProfile([...m6.legitimacySources, source], polityId, source.audience);
+  const profile = recalculateM6LegitimacyProfile(
+    [...m6.legitimacySources, source],
+    polityId,
+    source.audience
+  );
   const nextM6: M6DiplomacyLegitimacyStateV0 = {
     ...m6,
     legitimacySources: [...m6.legitimacySources, source],
@@ -3595,14 +3600,16 @@ function evaluateRecordLegitimacySource(
 }
 
 function ensureM6State(world: WorldStateV0): M6DiplomacyLegitimacyStateV0 {
-  return world.state.m6 ?? {
-    schemaVersion: 1,
-    relations: [],
-    agreements: [],
-    recognitionEdges: [],
-    legitimacySources: [],
-    legitimacyProfiles: []
-  };
+  return (
+    world.state.m6 ?? {
+      schemaVersion: 1,
+      relations: [],
+      agreements: [],
+      recognitionEdges: [],
+      legitimacySources: [],
+      legitimacyProfiles: []
+    }
+  );
 }
 
 function m6MissingError(commandKind: string): EvaluationResult {
@@ -3652,9 +3659,7 @@ function findM6Relation(
 ): M6DiplomaticRelationStateV0 | undefined {
   const low = Math.min(leftPolityId, rightPolityId);
   const high = Math.max(leftPolityId, rightPolityId);
-  return m6.relations.find(
-    (relation) => relation.polityAId === low && relation.polityBId === high
-  );
+  return m6.relations.find((relation) => relation.polityAId === low && relation.polityBId === high);
 }
 
 function createM6Relation(
@@ -3727,7 +3732,9 @@ function hasM6RecognitionPath(
     visited.add(current);
     const next = edges
       .filter((edge) => edge.fromPolityId === current)
-      .sort((left, right) => left.toPolityId - right.toPolityId || left.agreementId - right.agreementId)
+      .sort(
+        (left, right) => left.toPolityId - right.toPolityId || left.agreementId - right.agreementId
+      )
       .map((edge) => edge.toPolityId);
     pending.push(...next);
   }
@@ -9486,7 +9493,9 @@ function executeM6DiplomacyQuery(
             (relation) =>
               relation.polityAId === observerPolityId || relation.polityBId === observerPolityId
           )
-          .sort((left, right) => left.polityAId - right.polityAId || left.polityBId - right.polityBId)
+          .sort(
+            (left, right) => left.polityAId - right.polityAId || left.polityBId - right.polityBId
+          )
           .map(copyM6RelationReadModel) ?? [],
       agreements:
         m6?.agreements
@@ -9495,14 +9504,20 @@ function executeM6DiplomacyQuery(
               agreement.proposerPolityId === observerPolityId ||
               agreement.targetPolityId === observerPolityId
           )
-          .sort((left, right) => left.relationId - right.relationId || left.agreementId - right.agreementId)
+          .sort(
+            (left, right) =>
+              left.relationId - right.relationId || left.agreementId - right.agreementId
+          )
           .map(copyM6AgreementReadModel) ?? [],
       recognitionEdges:
         m6?.recognitionEdges
           .filter(
             (edge) => edge.fromPolityId === observerPolityId || edge.toPolityId === observerPolityId
           )
-          .sort((left, right) => left.fromPolityId - right.fromPolityId || left.toPolityId - right.toPolityId)
+          .sort(
+            (left, right) =>
+              left.fromPolityId - right.fromPolityId || left.toPolityId - right.toPolityId
+          )
           .map(copyM6RecognitionEdgeReadModel) ?? [],
       reasonCodes: ["m6.diplomacy.query.observer-visible"]
     }
@@ -9571,7 +9586,9 @@ function copyM6AgreementReadModel(
   };
 }
 
-function copyM6RecognitionEdgeReadModel(edge: M6RecognitionEdgeStateV0): M6RecognitionEdgeReadModelV1 {
+function copyM6RecognitionEdgeReadModel(
+  edge: M6RecognitionEdgeStateV0
+): M6RecognitionEdgeReadModelV1 {
   return {
     fromPolityId: edge.fromPolityId,
     toPolityId: edge.toPolityId,
@@ -11735,7 +11752,12 @@ function parseSavedDomainEvent(
     case "sim.m6-diplomatic-agreement-proposed": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
-      const relationId = readPositiveIdRecordField(record, "relationId", `${path}.relationId`, reasons);
+      const relationId = readPositiveIdRecordField(
+        record,
+        "relationId",
+        `${path}.relationId`,
+        reasons
+      );
       const agreementId = readPositiveIdRecordField(
         record,
         "agreementId",
@@ -12261,7 +12283,11 @@ function readM6AgreementKindRecordField(
   reasons: SaveLoadRejectionReasonV1[]
 ): M6DiplomaticAgreementStateV0["agreementKind"] | undefined {
   const value = record[key];
-  if (value === "non-aggression" || value === "military-access" || value === "tribute-recognition") {
+  if (
+    value === "non-aggression" ||
+    value === "military-access" ||
+    value === "tribute-recognition"
+  ) {
     return value;
   }
   reasons.push({
