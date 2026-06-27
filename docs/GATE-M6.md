@@ -10,13 +10,13 @@ Base main commit: `cd5cebebfe6ac7b0dd07a7468abcba9da55fd765`
 
 Review head before gate edits: `3096b241818f4ed55a53eb7f016ab1dbdd0cdd7a`
 
-Status: `REVIEW`, pending independent `qa_reviewer`
+Status: `ACCEPTED`, pending PR integration
 
 ## Gate Result
 
 `M6_GATE = PASS_WITH_LIMITS`
 
-This is a systems_architect REVIEW recommendation, not reviewer acceptance. It may become accepted only after the routed `qa_reviewer` review and lead integration.
+This began as a systems_architect REVIEW recommendation. Independent `qa_reviewer` accepted it in `project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json`; lead integration may now proceed through PR and CI.
 
 M6 Alpha system-complete exit criteria are satisfied:
 
@@ -114,6 +114,4 @@ These are not blockers for M6 exit, but they must not be hidden:
 
 ## Next Route
 
-Route the systems_architect REVIEW handoff to `qa_reviewer`.
-
-If QA accepts, lead may integrate the M6 gate and decide the next process step. If QA finds a real accepted P0/P1 blocker, the gate must become `BLOCKED` or route `REQUEST_CHANGES` to the responsible writer; it must not downgrade the blocker.
+Lead may integrate the accepted M6 gate after PR CI. This gate itself does not start M7 content lock; the next process step must follow repository task graph state after the gate is merged and closed on `main`.

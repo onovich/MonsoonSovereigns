@@ -11,7 +11,8 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-27T17:55:19.454Z"
+        "updated_at": "2026-06-28T03:27:03.1315987+08:00",
+        "task_id": "M6-EXIT-VALIDATION-001"
       }
     ],
     "retired_leads": [
@@ -4832,7 +4833,7 @@
       "task_id": "M6-EXIT-VALIDATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -4844,8 +4845,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T19:01:08.850Z",
-      "updated_at": "2026-06-27T19:19:27.664Z",
-      "next_action": "Await independent qa_reviewer verdict; integrate after ACCEPT.",
+      "updated_at": "2026-06-28T03:27:03.1315987+08:00",
+      "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
       "route_file": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-LEAD-TO-SYSTEMS-START.json",
       "start_submission_id": "019f0a75-d474-7e80-b6c8-2dc0e4a264cc",
       "route_sent_at": "2026-06-27T19:02:24.492Z",
@@ -4855,14 +4856,19 @@
       "qa_thread_nickname": "Witness the 3rd",
       "qa_route": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-SYSTEMS-TO-QA-REVIEW.json",
       "qa_submission_id": "019f0a85-4a58-7ec2-8260-c5ae939a9f0d",
-      "routed_to_qa_at": "2026-06-27T19:19:27.664Z"
+      "routed_to_qa_at": "2026-06-27T19:19:27.664Z",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-28T03:27:03.1315987+08:00",
+      "accepted_head_commit": "144cce0e1992da3782f9bc7e919416693a7608a3"
     },
     "M6-EXIT-VALIDATION-001:systems_architect": {
       "task_id": "M6-EXIT-VALIDATION-001",
       "role": "systems_architect",
       "thread_id": "019f0a73-d825-79b1-91de-1259bdb6393f",
       "nickname": "Meridian the 3rd",
-      "status": "completed_review_ready",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -4903,7 +4909,7 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T19:01:08.850Z",
-      "updated_at": "2026-06-27T19:19:27.664Z",
+      "updated_at": "2026-06-28T03:27:03.1315987+08:00",
       "gate_result": "PASS_WITH_LIMITS",
       "gate_document": "docs/GATE-M6.md",
       "review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
@@ -4914,14 +4920,20 @@
       "review_commit": "3210cddc",
       "qa_route": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-SYSTEMS-TO-QA-REVIEW.json",
       "qa_submission_id": "019f0a85-4a58-7ec2-8260-c5ae939a9f0d",
-      "routed_to_qa_at": "2026-06-27T19:19:27.664Z"
+      "routed_to_qa_at": "2026-06-27T19:19:27.664Z",
+      "closed_at": "2026-06-28T03:27:03.1315987+08:00",
+      "close_reason": "closed_after_systems_review_and_independent_qa_accept",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-28T03:27:03.1315987+08:00"
     },
     "M6-EXIT-VALIDATION-001:qa_reviewer": {
       "task_id": "M6-EXIT-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f0a84-ee41-7203-ba9d-017893666e8c",
       "nickname": "Witness the 3rd",
-      "status": "active_reviewing",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -4934,10 +4946,16 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T19:19:27.664Z",
-      "updated_at": "2026-06-27T19:19:27.664Z",
+      "updated_at": "2026-06-28T03:27:03.1315987+08:00",
       "qa_submission_id": "019f0a85-4a58-7ec2-8260-c5ae939a9f0d",
       "qa_route_sent_at": "2026-06-27T19:19:27.664Z",
-      "next_action": "Review gate evidence and emit ACCEPT, REQUEST_CHANGES, or BLOCK handoff to lead_orchestrator."
+      "next_action": "Closed after ACCEPT handoff to lead_orchestrator.",
+      "closed_at": "2026-06-28T03:27:03.1315987+08:00",
+      "close_reason": "closed_after_accept_handoff_to_lead",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-28T03:27:03.1315987+08:00"
     }
   },
   "replaced_threads": [
@@ -5027,5 +5045,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-27T19:19:27.664Z"
+  "updated_at": "2026-06-28T03:27:03.1315987+08:00"
 }

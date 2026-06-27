@@ -2,7 +2,7 @@
   "id": "M6-EXIT-VALIDATION-001",
   "summary": "Validate M6 Alpha system-complete exit gate",
   "milestone": "M6",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -88,36 +88,52 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
-      "actual_effort": "xhigh"
+      "actual_effort": "xhigh",
+      "updated_at": "2026-06-28T03:27:03.1315987+08:00",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-28T03:27:03.1315987+08:00"
     },
     "systems_architect": {
       "thread_id": "019f0a73-d825-79b1-91de-1259bdb6393f",
       "nickname": "Meridian the 3rd",
-      "status": "completed_review_ready",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "3210cddc",
-      "updated_at": "2026-06-27T19:19:27.664Z"
+      "updated_at": "2026-06-28T03:27:03.1315987+08:00",
+      "closed_at": "2026-06-28T03:27:03.1315987+08:00",
+      "close_reason": "closed_after_systems_review_and_independent_qa_accept",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "qa_reviewer": {
       "thread_id": "019f0a84-ee41-7203-ba9d-017893666e8c",
       "nickname": "Witness the 3rd",
-      "status": "active_reviewing",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "read_only": true
+      "read_only": true,
+      "updated_at": "2026-06-28T03:27:03.1315987+08:00",
+      "closed_at": "2026-06-28T03:27:03.1315987+08:00",
+      "close_reason": "closed_after_accept_handoff_to_lead",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "M6 exit is a validation gate only; it must not start M7 content lock or M8 release work.",
     "If any P0/P1 data corruption, determinism, save/load, command parity, security, or package-boundary blocker remains, record BLOCKED.",
@@ -125,7 +141,7 @@
     "Manual node battle remains deferred from the 1.0 mainline; reversing that decision is a separate Human Gate not authorized by M6."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T19:19:27.664Z",
+  "updated_at": "2026-06-28T03:27:03.1315987+08:00",
   "started_at": "2026-06-27T19:01:08.850Z",
   "base_main_commit": "cd5cebebfe6ac7b0dd07a7468abcba9da55fd765",
   "previous_closed_task": "M6-ALPHA-NO-P0P1-VALIDATION-001",
@@ -135,7 +151,7 @@
   "gate_document": "docs/GATE-M6.md",
   "review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
   "start_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-START__lead_orchestrator.json",
-  "next_action": "Await independent qa_reviewer verdict; route REQUEST_CHANGES back to systems_architect or ACCEPT to lead integration.",
+  "next_action": "Push branch, open PR, wait for CI, merge to main, then close M6-EXIT-VALIDATION-001 before any M7 task graph or content work starts.",
   "route_file": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-LEAD-TO-SYSTEMS-START.json",
   "start_submission_id": "019f0a75-d474-7e80-b6c8-2dc0e4a264cc",
   "route_sent_at": "2026-06-27T19:02:24.492Z",
@@ -147,5 +163,15 @@
   "qa_route": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-SYSTEMS-TO-QA-REVIEW.json",
   "qa_submission_id": "019f0a85-4a58-7ec2-8260-c5ae939a9f0d",
   "routed_to_qa_at": "2026-06-27T19:19:27.664Z",
-  "review_commit": "3210cddc"
+  "review_commit": "3210cddc",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+  "qa_reviewed_at": "2026-06-28T03:24:18+08:00",
+  "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-28T03:27:03.1315987+08:00",
+  "accepted_head_commit": "144cce0e1992da3782f9bc7e919416693a7608a3",
+  "child_threads_closed": [
+    "019f0a73-d825-79b1-91de-1259bdb6393f",
+    "019f0a84-ee41-7203-ba9d-017893666e8c"
+  ]
 }

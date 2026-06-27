@@ -1787,6 +1787,30 @@
       "migration_status": "closed_after_accept_review_and_lead_acceptance",
       "accepted_task_reopened": false,
       "closed_at": "2026-06-28T00:20:54.339+08:00"
+    },
+    {
+      "thread_id": "019f0a73-d825-79b1-91de-1259bdb6393f",
+      "role": "systems_architect",
+      "task_id": "M6-EXIT-VALIDATION-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_systems_review_and_independent_qa_accept",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T03:27:03.1315987+08:00"
+    },
+    {
+      "thread_id": "019f0a84-ee41-7203-ba9d-017893666e8c",
+      "role": "qa_reviewer",
+      "task_id": "M6-EXIT-VALIDATION-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_accept_review",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T03:27:03.1315987+08:00"
     }
   ],
   "active_threads": [
@@ -2387,7 +2411,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-27T19:19:27.664Z",
+  "updated_at": "2026-06-28T03:27:03.1315987+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2838,7 +2862,7 @@
     "closure_main_commit": "cd5cebebfe6ac7b0dd07a7468abcba9da55fd765"
   },
   "m6_exit_validation": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-EXIT-VALIDATION-001",
     "branch_or_worktree": "gate/m6-exit-validation",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -2857,7 +2881,7 @@
     "start_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-START__lead_orchestrator.json",
     "started_at": "2026-06-27T19:01:08.850Z",
     "base_main_commit": "cd5cebebfe6ac7b0dd07a7468abcba9da55fd765",
-    "next_action": "Await independent qa_reviewer verdict; integrate after ACCEPT.",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
     "updated_at": "2026-06-27T19:19:27.664Z",
     "gate_result": "PASS_WITH_LIMITS",
     "gate_document": "docs/GATE-M6.md",
@@ -2870,6 +2894,15 @@
     "qa_thread_nickname": "Witness the 3rd",
     "qa_route": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-SYSTEMS-TO-QA-REVIEW.json",
     "qa_submission_id": "019f0a85-4a58-7ec2-8260-c5ae939a9f0d",
-    "routed_to_qa_at": "2026-06-27T19:19:27.664Z"
+    "routed_to_qa_at": "2026-06-27T19:19:27.664Z",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T03:27:03.1315987+08:00",
+    "accepted_head_commit": "144cce0e1992da3782f9bc7e919416693a7608a3",
+    "child_threads_closed": [
+      "019f0a73-d825-79b1-91de-1259bdb6393f",
+      "019f0a84-ee41-7203-ba9d-017893666e8c"
+    ]
   }
 }
