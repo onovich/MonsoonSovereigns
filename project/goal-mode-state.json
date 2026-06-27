@@ -16,7 +16,7 @@
       "thread_id": "019f0a73-d825-79b1-91de-1259bdb6393f",
       "nickname": "Meridian the 3rd",
       "task_id": "M6-EXIT-VALIDATION-001",
-      "status": "active",
+      "status": "review",
       "role": "systems_architect"
     }
   },
@@ -1434,7 +1434,7 @@
     "closure_main_commit": "cd5cebebfe6ac7b0dd07a7468abcba9da55fd765"
   },
   "m6_exit_validation": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M6-EXIT-VALIDATION-001",
     "owner_role": "systems_architect",
     "reviewer_role": "qa_reviewer",
@@ -1448,8 +1448,11 @@
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "start_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-START__lead_orchestrator.json",
     "started_at": "2026-06-27T19:01:08.850Z",
-    "updated_at": "2026-06-27T19:02:24.492Z",
-    "next_action": "Await systems_architect REVIEW handoff, validate it, then route to independent qa_reviewer.",
+    "updated_at": "2026-06-28T03:30:00+08:00",
+    "gate_result": "PASS_WITH_LIMITS",
+    "gate_document": "docs/GATE-M6.md",
+    "review_handoff": "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "next_action": "Await independent qa_reviewer review of docs/GATE-M6.md and systems_architect REVIEW handoff.",
     "route_file": "project/messages/routes/M6-EXIT-VALIDATION-001__ROUTE-20260628-M6-EXIT-LEAD-TO-SYSTEMS-START.json",
     "start_submission_id": "019f0a75-d474-7e80-b6c8-2dc0e4a264cc",
     "route_sent_at": "2026-06-27T19:02:24.492Z"

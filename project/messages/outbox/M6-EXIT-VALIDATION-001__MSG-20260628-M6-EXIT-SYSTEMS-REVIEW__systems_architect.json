@@ -1,0 +1,163 @@
+{
+  "message_id": "MSG-20260628-M6-EXIT-SYSTEMS-REVIEW",
+  "task_id": "M6-EXIT-VALIDATION-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Created docs/GATE-M6.md and recommend M6_GATE = PASS_WITH_LIMITS for M6 Alpha system-complete exit. The gate satisfies Roadmap and acceptance-matrix evidence for start-to-victory playability, no accepted P0/P1 blockers, AI no-rescue completion, non-placeholder major-system UI, diplomacy, legitimacy, succession, layered AI, policy/event/encyclopedia surfaces, three-scenario pipeline, map candidate path, batch balance dashboard, accessibility, and adviser evidence. Limits are explicit: Alpha/local evidence only, no M7 content lock, no reviewer acceptance fabricated, manual node battle remains DEFER_MANUAL_NODE_BATTLE, and no product-code or frozen-architecture scope was changed.",
+  "artifacts": [
+    "docs/GATE-M6.md",
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M6-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-START__lead_orchestrator.json",
+    "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-QA-R2-ACCEPT__qa_reviewer.json",
+    "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "gate/m6-exit-validation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean before gate edits."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-EXIT-VALIDATION-001.json before REVIEW update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All M6 evidence dependencies were listed as CLOSED; M6-EXIT-VALIDATION-001 was IN_PROGRESS before REVIEW update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready task output while M6 exit validation is active."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Already up to date; pnpm v11.7.0."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, workspace typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check, sim:determinism, root Vitest 41 files / 307 tests, and web Vitest 1 file / 4 tests passed; M6 Alpha hash 260f46c3 and terminal outcome victory."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "M1/M2/M3 and M6 content validated; M6 map candidate manifestHash 4485a353; M6 scenario manifestHash 6d1f6d64."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker parity passed for hello, command/query, save/load, M4, M5, and M6 Alpha; M6 Alpha Node/Worker hash 260f46c3; loaded hash 260f46c3; terminal outcome victory."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "3650-day baseline passed; throughput 12106 days/s; p50 62900 ns, p95 160900 ns, p99 238300 ns; save byte length 9980."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite Web build passed with existing chunk-size warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed with existing chunk-size warning; .tmp/storybook-static removed by script."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences, named preload bridge, renderer root restriction, and IPC allowlist passed."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke passed; output .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium 11/11 tests passed, including M6 Alpha flow, accessibility status, and viewport overflow checks."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 0,
+      "result": "1 file / 5 tests passed for Alpha victory, continued-play, defeat, save/load, malformed terminal command rejection, and Node/Worker parity."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-ai-m6-layered-ai.test.ts",
+      "exit_code": 0,
+      "result": "1 file / 3 tests passed for full Alpha no-rescue AI victory, bounded reasons, deterministic planning, and command submission."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m6-batch-balance",
+      "exit_code": 0,
+      "result": "Artifact hash 99d64950; 3 scenarios, 2 seeds, 6 runs, noRescueCompletionCount 2, p0p1CandidateCount 0."
+    },
+    {
+      "command": "node -e adviser evidence review",
+      "exit_code": 0,
+      "result": "M6 adviser intervention evidence accepted: task CLOSED, QA ACCEPT, lead ACCEPT, no blockers, local/privacy-safe, DEFER_MANUAL_NODE_BATTLE preserved."
+    },
+    {
+      "command": "node -e JSON validation for all M6 evidence tasks, dependency statuses, handoffs, and gate document shape",
+      "exit_code": 0,
+      "result": "Dependencies CLOSED, reviewer evidence present, docs/GATE-M6.md shape ok, systems handoff shape ok, and current diff paths restricted to allowed gate/status/message/process-state files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems REVIEW handoff validated successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Only allowed M6 gate/status/message/process-state paths are modified or untracked: PROJECT_STATUS.md, docs/GATE-M6.md, project/tasks/active/M6-EXIT-VALIDATION-001.json, project/tasks/thread-registry.json, project/goal-mode-state.json, project/model-routing-state.json, and this systems handoff."
+    }
+  ],
+  "decisions": [
+    "Recommend M6_GATE = PASS_WITH_LIMITS rather than PASS because evidence is Alpha-bounded/local and M7 content lock, external research breadth, signed release packaging, and future content/balance hardening remain outside this gate.",
+    "Do not mark M6 accepted from this handoff; independent qa_reviewer review and lead integration are still required.",
+    "Treat M4/M5 PASS_WITH_LIMITS context as historical process/product limits to preserve, not as hidden blockers for M6 Alpha exit.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE exactly; this gate creates no manual node battle implementation task and no blocking M6/M7/M8 spike or research task.",
+    "No ADR is required because this gate records validation evidence only and changes no architecture, command/save/content schema, package boundary, product scope, dependency, or frozen decision.",
+    "No P0/P1 blocker was found. If QA identifies a real accepted P0/P1 issue, this gate must become BLOCKED or route REQUEST_CHANGES rather than downgrading the issue."
+  ],
+  "risks": [
+    "PASS_WITH_LIMITS: three-scenario data is Alpha validation scaffolding and not M7 content lock.",
+    "PASS_WITH_LIMITS: adviser intervention evidence is local/privacy-safe and records no new external participant sessions.",
+    "PASS_WITH_LIMITS: batch artifact records tuning risks but no P0/P1 candidates.",
+    "Build health: Web and Storybook still emit chunk-size warnings; current evidence treats them as non-blocking P2 debt.",
+    "Test warning: MODULE_TYPELESS_PACKAGE_JSON warning appears in root Vitest for deterministic worker fixtures; tests pass.",
+    "Desktop packaging is local smoke packaging, not signed release evidence.",
+    "No M7 content lock or M8 release work is authorized by this handoff."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently review docs/GATE-M6.md, the systems_architect REVIEW handoff, the M6 evidence chain, required command results, limits, and scope guard. ACCEPT if the M6 Alpha gate evidence is sufficient; otherwise REQUEST_CHANGES or BLOCKED with concrete P0/P1 or scope findings.",
+  "created_at": "2026-06-28T03:32:00+08:00"
+}
