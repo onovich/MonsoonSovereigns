@@ -5,7 +5,8 @@ import {
   type ClientMapReadModelSnapshot,
   type ClientM3SubmittedCommand,
   type ClientM4SubmittedCommand,
-  type ClientM5SubmittedCommand
+  type ClientM5SubmittedCommand,
+  type ClientM6SubmittedCommand
 } from "@monsoon/client-core";
 import {
   mountPixiMapRenderer,
@@ -19,13 +20,20 @@ import { createWebClientShellSnapshot } from "./create-shell-snapshot";
 
 const MAP_RENDERER_MOUNT_TIMEOUT_MS = 2400;
 
-export function WebClientShell(): ReactElement {
-  const [snapshot] = useState(() => createWebClientShellSnapshot(getWindowSearch()));
+export interface WebClientShellProps {
+  readonly initialSearch?: string;
+}
+
+export function WebClientShell({ initialSearch }: WebClientShellProps = {}): ReactElement {
+  const [snapshot] = useState(() =>
+    createWebClientShellSnapshot(initialSearch ?? getWindowSearch())
+  );
   const [mapMode, setMapMode] = useState<ClientMapMode>("seasonal");
   const [zoomLevel, setZoomLevel] = useState(1);
   const [m3CommandStatus, setM3CommandStatus] = useState<string | null>(null);
   const [m4CommandStatus, setM4CommandStatus] = useState<string | null>(null);
   const [m5CommandStatus, setM5CommandStatus] = useState<string | null>(null);
+  const [m6CommandStatus, setM6CommandStatus] = useState<string | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<ClientMapEntitySelection>({
     kind: "district",
     districtId: createClientDistrictId(1)
@@ -51,6 +59,10 @@ export function WebClientShell(): ReactElement {
     setM5CommandStatus(`${command.kind} confirmed for ${command.actor.id}`);
   }
 
+  function handleM6CommandSubmit(command: ClientM6SubmittedCommand): void {
+    setM6CommandStatus(`${command.kind} submitted for ${command.actor.id}`);
+  }
+
   return (
     <ClientShellView
       snapshot={snapshot}
@@ -66,6 +78,8 @@ export function WebClientShell(): ReactElement {
       m4CommandStatus={m4CommandStatus}
       onM5CommandSubmit={handleM5CommandSubmit}
       m5CommandStatus={m5CommandStatus}
+      onM6CommandSubmit={handleM6CommandSubmit}
+      m6CommandStatus={m6CommandStatus}
       mapSurface={
         <PixiMapSurface
           snapshot={snapshot.map}

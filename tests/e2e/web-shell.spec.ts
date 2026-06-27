@@ -254,6 +254,86 @@ test("M5 playable flow previews confirms saves loads and reaches result", async 
   );
 });
 
+test("M6 Alpha flow covers scenario, diplomacy, policy, encyclopedia, map candidate, checkpoint, and victory", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const workspace = page.getByLabel("M6 Alpha start to victory workspace");
+  await expect(workspace).toHaveAttribute("data-scenario-id", "m6.alpha.recognized-order.v0");
+  await expect(workspace).toHaveAttribute("data-phase", "scenario-selection");
+  await expect(workspace).toHaveAttribute("data-terminal-outcome", "victory");
+  await expect(page.getByLabel("M6 diplomacy legitimacy succession surfaces")).toContainText(
+    "tribute-recognition"
+  );
+  await expect(page.getByLabel("M6 diplomacy legitimacy succession surfaces")).toContainText(
+    "legitimacy.source.postwar-settlement"
+  );
+  await expect(page.getByLabel("M6 policy event encyclopedia surfaces")).toContainText(
+    "Harbor charter petition"
+  );
+  await expect(page.getByLabel("M6 policy event encyclopedia surfaces")).toContainText(
+    "encyclopedia.m6.policy_event.harbor"
+  );
+  await expect(page.getByLabel("M6 AI adviser reasons")).toContainText(
+    "m6.adviser.recognized-order-ready"
+  );
+  await expect(page.getByLabel("M6 map candidate display")).toContainText(
+    "map.alpha.western-mainland-candidate"
+  );
+  await expect(page.getByLabel("M6 victory failure status")).toContainText(
+    "Manual node battle UI is not present in Alpha."
+  );
+
+  await page.getByLabel("Select M6 Alpha scenario").selectOption("m6.alpha.pressure-monsoon.v0");
+  await expect(workspace).toHaveAttribute(
+    "data-selected-scenario-id",
+    "m6.alpha.pressure-monsoon.v0"
+  );
+  await page.getByRole("button", { name: "Start Alpha" }).click();
+  await expect(workspace).toHaveAttribute("data-phase", "running");
+  await page.getByRole("button", { name: "Preview Alpha command" }).click();
+  await expect(page.getByLabel("M6 command preview")).toHaveAttribute(
+    "data-command-kind",
+    "sim.create-campaign-objective"
+  );
+
+  await page.getByRole("button", { name: "Confirm Alpha command" }).click();
+  await expect(page.getByLabel("M6 command status")).toContainText(
+    "sim.create-campaign-objective submitted for polity:1"
+  );
+  await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
+
+  await page.getByRole("button", { name: "Save Alpha checkpoint" }).click();
+  await expect(page.getByLabel("M6 save status")).toContainText("m6.save.client-session-written");
+  await expect(workspace).toHaveAttribute("data-save-present", "true");
+
+  await page.getByRole("button", { name: "Load Alpha checkpoint" }).click();
+  await expect(workspace).toHaveAttribute("data-phase", "checkpoint-loaded");
+  await expect(page.getByLabel("M6 save status")).toContainText("m6.load.client-session-restored");
+
+  await page.getByRole("button", { name: "Start Alpha" }).click();
+  for (let index = 1; index < 22; index += 1) {
+    await page.getByRole("button", { name: "Preview Alpha command" }).click();
+    await page.getByRole("button", { name: "Confirm Alpha command" }).click();
+  }
+  await expect(workspace).toHaveAttribute("data-phase", "victory");
+  await expect(workspace).toHaveAttribute("data-confirmed-count", "22");
+
+  await page.getByRole("button", { name: "Preview Alpha failure" }).click();
+  await expect(workspace).toHaveAttribute("data-phase", "failure");
+  await expect(page.getByLabel("M6 command preview")).toHaveAttribute(
+    "data-command-kind",
+    "sim.evaluate-m6-alpha-outcome"
+  );
+
+  const majorPanelText = await workspace.textContent();
+  expect(majorPanelText ?? "").not.toContain("placeholder");
+  await expect(
+    page.getByRole("button", { name: /\b(telemetry|account|server|mod)\b/i })
+  ).toHaveCount(0);
+});
+
 test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
@@ -293,6 +373,38 @@ test("M5 workspace has no horizontal overflow across required desktop viewports"
       const workspace = document.querySelector(".m5-playable");
       if (workspace === null) {
         throw new Error("Expected M5 playable workspace.");
+      }
+      const workspaceBox = workspace.getBoundingClientRect();
+      return {
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        workspaceRight: workspaceBox.right
+      };
+    });
+
+    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+    expect(overflow.workspaceRight).toBeLessThanOrEqual(overflow.clientWidth);
+  }
+});
+
+test("M6 Alpha workspace has no horizontal overflow across required desktop viewports", async ({
+  page
+}) => {
+  const viewports = [
+    { width: 1280, height: 720 },
+    { width: 1280, height: 800 },
+    { width: 1920, height: 1080 },
+    { width: 2560, height: 1080 }
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await expect(page.getByLabel("M6 Alpha start to victory workspace")).toBeVisible();
+    const overflow = await page.evaluate(() => {
+      const workspace = document.querySelector(".m6-alpha");
+      if (workspace === null) {
+        throw new Error("Expected M6 Alpha workspace.");
       }
       const workspaceBox = workspace.getBoundingClientRect();
       return {

@@ -18,12 +18,16 @@ import {
   createM4WithdrawalCommand,
   createM5PlayableReadModelFixture,
   createM5SessionSave,
+  createM6AlphaReadModelFixture,
+  createM6SessionSave,
   createSyntheticDistrictPressureFixture,
   findM3Office,
   findM4CampaignPlan,
   findClientDistrictRow,
   getM5CurrentStep,
+  getM6CurrentStep,
   parseM5SessionSave,
+  parseM6SessionSave,
   projectM2DistrictRowsFromProtocolReadModels,
   selectClientDistrictRows,
   withDistrictListReadModel
@@ -395,6 +399,71 @@ describe("M5 playable client read model", () => {
     expect(parseM5SessionSave(JSON.stringify({ schemaVersion: 99 }))).toMatchObject({
       ok: false,
       reasonCode: "m5.save.unsupported-version"
+    });
+  });
+});
+
+describe("M6 Alpha client read model", () => {
+  test("projects Alpha start-to-victory surfaces without storing WorldState", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const fixture = createM6AlphaReadModelFixture(baseSnapshot);
+
+    expect(fixture.scenarioId).toBe("m6.alpha.recognized-order.v0");
+    expect(fixture.contentTag).toBe("COMPOSITE_FICTIONAL_ALPHA");
+    expect(fixture.scenarios).toHaveLength(3);
+    expect(fixture.steps.length).toBeGreaterThan(20);
+    expect(fixture.diplomacy.agreements[0]?.agreementKind).toBe("tribute-recognition");
+    expect(fixture.diplomacy.recognitionEdges).toHaveLength(1);
+    expect(fixture.legitimacy.scoreBps).toBeGreaterThanOrEqual(1_000);
+    expect(fixture.succession.status).toBe("resolved");
+    expect(fixture.policies.activeEvents).toHaveLength(1);
+    expect(fixture.policies.resolvedEvents[0]?.encyclopediaRefs).toContain(
+      "encyclopedia.m6.policy_event.harbor.accept"
+    );
+    expect(fixture.encyclopedia.entries.length).toBeGreaterThanOrEqual(3);
+    expect(fixture.adviser.primaryReasonCode).toBe("m6.adviser.recognized-order-ready");
+    expect(fixture.mapCandidate.candidateSourceId).toBe("map.alpha.western-mainland-candidate");
+    expect(fixture.terminal.outcome).toBe("victory");
+    expect(fixture.terminal.canPursueVictory).toBe(true);
+    expect(JSON.stringify(fixture)).not.toContain("WorldState");
+  });
+
+  test("exposes Alpha command preview and client checkpoint save/load evidence", () => {
+    const fixture = createM6AlphaReadModelFixture(createM2PrototypeClientReadModelSnapshot());
+    const diplomacyStep = fixture.steps.find((step) => step.stage === "diplomacy");
+    if (diplomacyStep === undefined) {
+      throw new Error("Expected an M6 diplomacy step.");
+    }
+
+    expect(diplomacyStep.command.kind).toBe("sim.propose-diplomatic-agreement");
+    expect(diplomacyStep.reasonCodes).toContain("m6.alpha.diplomacy.recognized-order");
+    expect(getM6CurrentStep(fixture, 0)?.command.kind).toBe("sim.create-campaign-objective");
+
+    const save = createM6SessionSave({
+      snapshot: fixture,
+      phase: "running",
+      currentStepIndex: 2,
+      confirmedCommandIds: [fixture.steps[0]?.command.commandId ?? "missing"]
+    });
+    const parsed = parseM6SessionSave(save);
+
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) {
+      throw new Error("Expected M6 save parse success.");
+    }
+    expect(parsed.value.phase).toBe("running");
+    expect(parsed.value.terminalOutcome).toBe("victory");
+    expect(parsed.value.checkpointLabel).toContain("m6.step");
+  });
+
+  test("rejects malformed M6 client session saves with reason codes", () => {
+    expect(parseM6SessionSave("{")).toMatchObject({
+      ok: false,
+      reasonCode: "m6.save.invalid-json"
+    });
+    expect(parseM6SessionSave(JSON.stringify({ schemaVersion: 99 }))).toMatchObject({
+      ok: false,
+      reasonCode: "m6.save.unsupported-version"
     });
   });
 });

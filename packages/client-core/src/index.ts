@@ -1,8 +1,10 @@
 import {
   GAME_COMMAND_SCHEMA_VERSION,
   HELLO_SIMULATION_PROTOCOL_VERSION,
+  createM6AlphaStartToVictoryScriptV1,
   createM5PlayableLoopScriptV1,
   type ApplyM4SiegeChoiceCommandV1,
+  type AuthoritativeGameCommandV1,
   type BulkAppointOfficesCommandV1,
   type CancelCampaignObjectiveCommandV1,
   type CreateCampaignObjectiveCommandV1,
@@ -20,7 +22,9 @@ import {
   type M4CampaignTargetV1,
   type M4SiegeChoiceV1,
   type M4WithdrawalTriggerV1,
+  type M6AlphaTerminalOutcomeV1,
   type M5PlayableLoopScriptV1,
+  type M6AlphaStartToVictoryScriptV1,
   type PreviewM2TransportRouteResultV1,
   type PreviewM3PostwarGovernanceResultV1,
   type ResolveM4CampaignWithdrawalCommandV1,
@@ -58,6 +62,7 @@ export interface ClientReadModelSnapshot {
   readonly m3Appointment: ClientM3AppointmentReadModelSnapshot;
   readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
   readonly m5Playable: ClientM5PlayableReadModelSnapshot;
+  readonly m6Alpha: ClientM6AlphaReadModelSnapshot;
 }
 
 export interface HelloSimulationSummaryReadModel {
@@ -1091,6 +1096,328 @@ export type ClientM5ReasonSourceKind =
   | "season"
   | "supply";
 
+export type ClientM6SubmittedCommand = AuthoritativeGameCommandV1;
+
+export type ClientM6AlphaPhase =
+  | "scenario-selection"
+  | "running"
+  | "victory"
+  | "failure"
+  | "continued-play"
+  | "checkpoint-loaded";
+
+export type ClientM6AlphaStepStage =
+  | "scenario"
+  | "appointment"
+  | "obligation"
+  | "logistics"
+  | "campaign"
+  | "battle-siege"
+  | "postwar"
+  | "succession"
+  | "diplomacy"
+  | "legitimacy"
+  | "policy-event"
+  | "terminal"
+  | "stabilization"
+  | "failure";
+
+export interface ClientM6AlphaReadModelSnapshot {
+  readonly revision: ClientReadModelRevision;
+  readonly scenarioId: "m6.alpha.recognized-order.v0";
+  readonly contentTag: "COMPOSITE_FICTIONAL_ALPHA";
+  readonly day: number;
+  readonly stateHash: string;
+  readonly commandActor: ClientM3CommandActorReadModel;
+  readonly provenance: ClientM6AlphaProvenanceReadModel;
+  readonly scenarios: readonly ClientM6ScenarioReadModel[];
+  readonly selectedScenarioId: string;
+  readonly goal: ClientM6GoalReadModel;
+  readonly replay: ClientM6ReplayEvidenceReadModel;
+  readonly session: ClientM6SessionReadModel;
+  readonly steps: readonly ClientM6AlphaStepReadModel[];
+  readonly failureStep: ClientM6AlphaStepReadModel;
+  readonly diplomacy: ClientM6DiplomacyReadModel;
+  readonly legitimacy: ClientM6LegitimacyReadModel;
+  readonly succession: ClientM6SuccessionReadModel;
+  readonly policies: ClientM6PolicyEventReadModel;
+  readonly encyclopedia: ClientM6EncyclopediaReadModel;
+  readonly adviser: ClientM6AdviserReadModel;
+  readonly mapCandidate: ClientM6MapCandidateReadModel;
+  readonly terminal: ClientM6TerminalReadModel;
+  readonly reasonSummaries: readonly ClientM6ReasonSummaryReadModel[];
+}
+
+export interface ClientM6AlphaProvenanceReadModel {
+  readonly kind: "m6-protocol-script-and-query-projection";
+  readonly note: string;
+}
+
+export interface ClientM6ScenarioReadModel {
+  readonly scenarioId: string;
+  readonly label: string;
+  readonly scenarioKind: "primary-victory" | "pressure-variant" | "recovery-or-failure";
+  readonly startDay: number;
+  readonly seed: number;
+  readonly startHash: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6GoalReadModel {
+  readonly primaryGoal: string;
+  readonly victoryRequirements: readonly string[];
+  readonly failureConditions: readonly string[];
+  readonly excludedSurfaces: readonly string[];
+}
+
+export interface ClientM6ReplayEvidenceReadModel {
+  readonly bootFixture: M6AlphaStartToVictoryScriptV1["boot"]["fixture"];
+  readonly startHash: string;
+  readonly currentHash: string;
+  readonly commandCount: number;
+  readonly midRunCheckpointLabel: string;
+  readonly terminalCheckpointLabel: string;
+}
+
+export interface ClientM6SessionReadModel {
+  readonly phase: ClientM6AlphaPhase;
+  readonly currentStepIndex: number;
+  readonly confirmedCommandIds: readonly string[];
+}
+
+export interface ClientM6AlphaStepReadModel {
+  readonly stepId: string;
+  readonly stage: ClientM6AlphaStepStage;
+  readonly label: string;
+  readonly command: AuthoritativeGameCommandV1;
+  readonly actorLabel: string;
+  readonly preview: ClientM6CommandPreviewReadModel;
+  readonly result: ClientM6CommandResultReadModel;
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface ClientM6CommandPreviewReadModel {
+  readonly commandKind: AuthoritativeGameCommandV1["kind"];
+  readonly commandId: string;
+  readonly summary: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6CommandResultReadModel {
+  readonly status: "pending" | "confirmed" | "rejected";
+  readonly summary: string;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6DiplomacyReadModel {
+  readonly day: number;
+  readonly observerPolityId: ClientPolityId;
+  readonly relations: readonly ClientM6DiplomaticRelationReadModel[];
+  readonly agreements: readonly ClientM6DiplomaticAgreementReadModel[];
+  readonly recognitionEdges: readonly ClientM6RecognitionEdgeReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6DiplomaticRelationReadModel {
+  readonly relationId: number;
+  readonly polityAId: ClientPolityId;
+  readonly polityBId: ClientPolityId;
+  readonly trustBps: number;
+  readonly affinityBps: number;
+  readonly fearBps: number;
+  readonly threatBps: number;
+  readonly interestAlignmentBps: number;
+  readonly historicalDebt: number;
+  readonly borderConflictBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6DiplomaticAgreementReadModel {
+  readonly agreementId: number;
+  readonly relationId: number;
+  readonly proposerPolityId: ClientPolityId;
+  readonly targetPolityId: ClientPolityId;
+  readonly agreementKind: "non-aggression" | "military-access" | "tribute-recognition";
+  readonly status: "offered" | "accepted" | "rejected" | "expired";
+  readonly startDay: number;
+  readonly endDay: number;
+  readonly recognitionDirection:
+    | "none"
+    | "proposer-recognizes-target"
+    | "target-recognizes-proposer";
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6RecognitionEdgeReadModel {
+  readonly fromPolityId: ClientPolityId;
+  readonly toPolityId: ClientPolityId;
+  readonly agreementId: number;
+  readonly reasonCode: string;
+}
+
+export interface ClientM6LegitimacyReadModel {
+  readonly polityId: ClientPolityId;
+  readonly audience: string;
+  readonly scoreBps: number;
+  readonly pressureBps: number;
+  readonly sources: readonly ClientM6LegitimacySourceReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6LegitimacySourceReadModel {
+  readonly sourceId: number;
+  readonly sourceKind:
+    | "diplomatic-recognition"
+    | "obligation-fulfilled"
+    | "obligation-breached"
+    | "succession-continuity"
+    | "postwar-settlement"
+    | "campaign-consequence";
+  readonly magnitudeBps: number;
+  readonly sourceRef: string;
+  readonly reasonCode: string;
+}
+
+export interface ClientM6SuccessionReadModel {
+  readonly status: "pending" | "resolved";
+  readonly crisisCount: number;
+  readonly resolvedCount: number;
+  readonly candidateCount: number;
+  readonly continuityReasonCodes: readonly string[];
+}
+
+export interface ClientM6PolicyEventReadModel {
+  readonly activeEvents: readonly ClientM6PolicyEventActiveReadModel[];
+  readonly resolvedEvents: readonly ClientM6PolicyEventResolvedReadModel[];
+  readonly modifiers: readonly ClientM6PolicyModifierReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6PolicyEventActiveReadModel {
+  readonly eventInstanceId: number;
+  readonly title: string;
+  readonly causeReasonCodes: readonly string[];
+  readonly options: readonly ClientM6PolicyEventOptionReadModel[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface ClientM6PolicyEventOptionReadModel {
+  readonly optionId: number;
+  readonly label: string;
+  readonly reasonCodes: readonly string[];
+  readonly consequenceReasonCodes: readonly string[];
+}
+
+export interface ClientM6PolicyEventResolvedReadModel {
+  readonly eventInstanceId: number;
+  readonly selectedOptionId: number;
+  readonly resolvedDay: number;
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface ClientM6PolicyModifierReadModel {
+  readonly modifierId: number;
+  readonly policyId: number;
+  readonly magnitudeBps: number;
+  readonly startDay: number;
+  readonly endDay: number;
+  readonly reasonCode: string;
+}
+
+export interface ClientM6EncyclopediaReadModel {
+  readonly entries: readonly ClientM6EncyclopediaEntryReadModel[];
+  readonly selectedEntryId: string;
+}
+
+export interface ClientM6EncyclopediaEntryReadModel {
+  readonly entryId: string;
+  readonly title: string;
+  readonly contentTag: "FICTIONAL" | "COMPOSITE" | "INFERRED" | "HISTORICAL";
+  readonly summary: string;
+  readonly linkedReasonCodes: readonly string[];
+}
+
+export interface ClientM6AdviserReadModel {
+  readonly decisionKind: ClientM4AiReasonReadModel["decisionKind"] | "diplomacy" | "policy";
+  readonly commandKind: AuthoritativeGameCommandV1["kind"] | null;
+  readonly primaryReasonCode: string;
+  readonly candidates: readonly ClientM6AdviserCandidateReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6AdviserCandidateReadModel {
+  readonly candidateId: string;
+  readonly decisionKind: string;
+  readonly commandKind: AuthoritativeGameCommandV1["kind"] | null;
+  readonly score: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6MapCandidateReadModel {
+  readonly candidateSourceId: string;
+  readonly displayName: string;
+  readonly sourceLabel: "FICTIONAL" | "COMPOSITE" | "INFERRED" | "HISTORICAL";
+  readonly districtCount: number;
+  readonly settlementCount: number;
+  readonly routeCount: number;
+  readonly selectedDistrictIds: readonly ClientDistrictId[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6TerminalReadModel {
+  readonly outcome: M6AlphaTerminalOutcomeV1;
+  readonly evaluatedDay: number;
+  readonly evaluatedRevision: number;
+  readonly maxDay: number;
+  readonly canPursueVictory: boolean;
+  readonly evidence: ClientM6TerminalEvidenceReadModel;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientM6TerminalEvidenceReadModel {
+  readonly recognizedByCount: number;
+  readonly legitimacyScoreBps: number;
+  readonly postwarArrangementCount: number;
+  readonly resolvedPolicyEventCount: number;
+  readonly successionResolvedCount: number;
+  readonly routeCount: number;
+  readonly populationGroupCount: number;
+}
+
+export interface ClientM6ReasonSummaryReadModel {
+  readonly reasonCode: string;
+  readonly count: number;
+  readonly sourceKinds: readonly ClientM6ReasonSourceKind[];
+}
+
+export type ClientM6ReasonSourceKind =
+  | "adviser"
+  | "diplomacy"
+  | "encyclopedia"
+  | "legitimacy"
+  | "map"
+  | "policy-event"
+  | "step"
+  | "succession"
+  | "terminal";
+
+export interface ClientM6SessionSaveV1 {
+  readonly schemaVersion: 1;
+  readonly scenarioId: ClientM6AlphaReadModelSnapshot["scenarioId"];
+  readonly phase: ClientM6AlphaPhase;
+  readonly currentStepIndex: number;
+  readonly confirmedCommandIds: readonly string[];
+  readonly checkpointLabel: string;
+  readonly stateHash: string;
+  readonly terminalOutcome: M6AlphaTerminalOutcomeV1;
+}
+
+export type ClientM6SessionSaveParseResult =
+  | { readonly ok: true; readonly value: ClientM6SessionSaveV1 }
+  | { readonly ok: false; readonly reasonCode: string; readonly message: string };
+
 export interface ClientM5SessionSaveV1 {
   readonly schemaVersion: 1;
   readonly scenarioId: ClientM5PlayableReadModelSnapshot["scenarioId"];
@@ -1212,7 +1539,8 @@ export function createInitialClientReadModelSnapshot(): ClientReadModelSnapshot 
     districtList: createEmptyDistrictListReadModel(revision),
     m3Appointment: createEmptyM3AppointmentReadModel(revision),
     m4Campaign: createEmptyM4CampaignReadModel(revision),
-    m5Playable: createEmptyM5PlayableReadModel(revision)
+    m5Playable: createEmptyM5PlayableReadModel(revision),
+    m6Alpha: createEmptyM6AlphaReadModel(revision)
   };
 }
 
@@ -1265,6 +1593,13 @@ export function createM2PrototypeClientReadModelSnapshot(
     ...baseSnapshot,
     m4Campaign
   };
+  const m3Appointment = createM3AppointmentReadModelFixture(baseSnapshot.revision);
+  const m5Playable = createM5PlayableReadModelFixture(snapshotWithM4);
+  const snapshotWithM5 = {
+    ...snapshotWithM4,
+    m3Appointment,
+    m5Playable
+  };
 
   return {
     ...baseSnapshot,
@@ -1291,9 +1626,10 @@ export function createM2PrototypeClientReadModelSnapshot(
       ]
     },
     districtList: fixture.districtList,
-    m3Appointment: createM3AppointmentReadModelFixture(baseSnapshot.revision),
+    m3Appointment,
     m4Campaign,
-    m5Playable: createM5PlayableReadModelFixture(snapshotWithM4)
+    m5Playable,
+    m6Alpha: createM6AlphaReadModelFixture(snapshotWithM5)
   };
 }
 
@@ -1416,7 +1752,8 @@ export function applyClientReadModelDelta(
         districtList: snapshot.districtList,
         m3Appointment: snapshot.m3Appointment,
         m4Campaign: snapshot.m4Campaign,
-        m5Playable: snapshot.m5Playable
+        m5Playable: snapshot.m5Playable,
+        m6Alpha: snapshot.m6Alpha
       };
     case "replace":
       return delta.snapshot;
@@ -1495,7 +1832,8 @@ export function projectHelloSimulationResult(
     districtList: createEmptyDistrictListReadModel(revision),
     m3Appointment: createEmptyM3AppointmentReadModel(revision),
     m4Campaign: createEmptyM4CampaignReadModel(revision),
-    m5Playable: createEmptyM5PlayableReadModel(revision)
+    m5Playable: createEmptyM5PlayableReadModel(revision),
+    m6Alpha: createEmptyM6AlphaReadModel(revision)
   };
 }
 
@@ -2673,6 +3011,360 @@ export function parseM5SessionSave(input: string): ClientM5SessionSaveParseResul
   };
 }
 
+export function createM6AlphaReadModelFixture(
+  baseSnapshot: Pick<
+    ClientReadModelSnapshot,
+    | "districtList"
+    | "m3Appointment"
+    | "m4Campaign"
+    | "m5Playable"
+    | "map"
+    | "revision"
+    | "simulation"
+  >
+): ClientM6AlphaReadModelSnapshot {
+  const script = createM6AlphaStartToVictoryScriptV1();
+  const commands = [
+    ...script.commandsBeforeMidRunSave,
+    ...script.commandsAfterMidRunSave,
+    script.victoryTerminalCommand
+  ];
+  const steps = commands.map((command, index) => createM6AlphaStep(command, index, "pending"));
+  const firstPolicyStep = steps.find((step) => step.stage === "policy-event");
+  const firstDiplomacyStep = steps.find((step) => step.stage === "diplomacy");
+  const firstTerminalStep = steps.find((step) => step.stage === "terminal");
+  const m4 = baseSnapshot.m4Campaign;
+  const m3 = baseSnapshot.m3Appointment;
+  const terminalEvidence: ClientM6TerminalEvidenceReadModel = {
+    recognizedByCount: 1,
+    legitimacyScoreBps: 1_150,
+    postwarArrangementCount: m4.warReports.filter((report) => report.postwarCandidate !== null)
+      .length,
+    resolvedPolicyEventCount: 1,
+    successionResolvedCount: m3.successionCrises.filter((crisis) => crisis.status === "resolved")
+      .length,
+    routeCount: Math.max(2, baseSnapshot.map.routes.length),
+    populationGroupCount: Math.max(3, baseSnapshot.districtList.rows.length)
+  };
+  const diplomacy = createM6DiplomacyFixture(script);
+  const legitimacy = createM6LegitimacyFixture();
+  const succession = createM6SuccessionFixture(m3);
+  const policies = createM6PolicyEventFixture(firstPolicyStep);
+  const encyclopedia = createM6EncyclopediaFixture();
+  const adviser = createM6AdviserFixture(m4, firstDiplomacyStep);
+  const mapCandidate = createM6MapCandidateFixture(baseSnapshot);
+  const terminal: ClientM6TerminalReadModel = {
+    outcome: "victory",
+    evaluatedDay: 25,
+    evaluatedRevision: 22,
+    maxDay: 60,
+    canPursueVictory: true,
+    evidence: terminalEvidence,
+    reasonCodes: [
+      "m6.alpha.terminal.assess",
+      "m6.recognized-order.diplomatic-recognition",
+      "m6.recognized-order.legitimacy-sufficient",
+      "m6.recognized-order.postwar-evidence-present"
+    ]
+  };
+
+  return {
+    revision: baseSnapshot.revision,
+    scenarioId: "m6.alpha.recognized-order.v0",
+    contentTag: "COMPOSITE_FICTIONAL_ALPHA",
+    day: 25,
+    stateHash: baseSnapshot.simulation.stateHash,
+    commandActor: { kind: "player", id: "polity:1" },
+    provenance: {
+      kind: "m6-protocol-script-and-query-projection",
+      note: "M6 Alpha client slice projected from protocol command/query DTOs, M3-M5 read models, and map candidate read models; the client owns only session progress."
+    },
+    scenarios: createM6ScenarioFixtures(baseSnapshot.simulation.stateHash),
+    selectedScenarioId: "m6.alpha.recognized-order.v0",
+    goal: {
+      primaryGoal:
+        "Start an Alpha scenario, secure a recognized order, resolve succession pressure, answer one policy event, and evaluate victory through the protocol terminal command.",
+      victoryRequirements: [
+        "Diplomacy creates recognition rather than only changing map control.",
+        "Legitimacy has source-coded support from succession or postwar evidence.",
+        "Postwar or vassal governance terms remain visible through the stabilization checkpoint.",
+        "Policy/event and encyclopedia references are selected through command/query surfaces."
+      ],
+      failureConditions: [
+        "Recognition is missing or legitimacy remains insufficient.",
+        "Succession is unresolved when the terminal command is evaluated.",
+        "Policy/event choice removes the legal route to recognized settlement.",
+        "Save/load checkpoint or deterministic command sequence evidence is missing."
+      ],
+      excludedSurfaces: [
+        "Manual node battle UI is not present in Alpha.",
+        "Telemetry, accounts, server, multiplayer, desktop file bridge, and arbitrary-code mod UI are absent."
+      ]
+    },
+    replay: {
+      bootFixture: script.boot.fixture,
+      startHash: baseSnapshot.simulation.stateHash,
+      currentHash: baseSnapshot.simulation.stateHash,
+      commandCount: steps.length,
+      midRunCheckpointLabel:
+        steps[script.commandsBeforeMidRunSave.length]?.stepId ?? "m6.alpha.mid-run-checkpoint",
+      terminalCheckpointLabel: firstTerminalStep?.stepId ?? "m6.alpha.terminal"
+    },
+    session: {
+      phase: "scenario-selection",
+      currentStepIndex: 0,
+      confirmedCommandIds: []
+    },
+    steps,
+    failureStep: createM6AlphaStep(script.defeatTerminalCommand, steps.length, "rejected"),
+    diplomacy,
+    legitimacy,
+    succession,
+    policies,
+    encyclopedia,
+    adviser,
+    mapCandidate,
+    terminal,
+    reasonSummaries: summarizeM6ReasonCodes({
+      steps,
+      failureStep: createM6AlphaStep(script.defeatTerminalCommand, steps.length, "rejected"),
+      diplomacyReasonCodes: [
+        ...diplomacy.reasonCodes,
+        ...diplomacy.relations.flatMap((relation) => relation.reasonCodes),
+        ...diplomacy.agreements.flatMap((agreement) => agreement.reasonCodes),
+        ...diplomacy.recognitionEdges.map((edge) => edge.reasonCode)
+      ],
+      legitimacyReasonCodes: [
+        ...legitimacy.reasonCodes,
+        ...legitimacy.sources.map((source) => source.reasonCode)
+      ],
+      successionReasonCodes: succession.continuityReasonCodes,
+      policyReasonCodes: [
+        ...policies.reasonCodes,
+        ...policies.activeEvents.flatMap((event) => [
+          ...event.causeReasonCodes,
+          ...event.options.flatMap((option) => [
+            ...option.reasonCodes,
+            ...option.consequenceReasonCodes
+          ])
+        ]),
+        ...policies.resolvedEvents.flatMap((event) => event.reasonCodes),
+        ...policies.modifiers.map((modifier) => modifier.reasonCode)
+      ],
+      encyclopediaReasonCodes: encyclopedia.entries.flatMap((entry) => entry.linkedReasonCodes),
+      adviserReasonCodes: [
+        adviser.primaryReasonCode,
+        ...adviser.reasonCodes,
+        ...adviser.candidates.flatMap((candidate) => candidate.reasonCodes)
+      ],
+      mapReasonCodes: mapCandidate.reasonCodes,
+      terminalReasonCodes: terminal.reasonCodes
+    })
+  };
+}
+
+export function createM6AlphaEmptyReadModelFixture(
+  baseSnapshot: ClientReadModelSnapshot
+): ClientM6AlphaReadModelSnapshot {
+  return {
+    ...createEmptyM6AlphaReadModel(baseSnapshot.revision),
+    stateHash: baseSnapshot.simulation.stateHash,
+    replay: {
+      bootFixture: "m6.alpha-start-to-victory-001",
+      startHash: baseSnapshot.simulation.stateHash,
+      currentHash: baseSnapshot.simulation.stateHash,
+      commandCount: 0,
+      midRunCheckpointLabel: "m6.alpha.empty",
+      terminalCheckpointLabel: "m6.alpha.empty"
+    },
+    provenance: {
+      kind: "m6-protocol-script-and-query-projection",
+      note: "Empty M6 Alpha read-model state for Storybook and UI regression coverage."
+    }
+  };
+}
+
+export function createM6AlphaErrorReadModelFixture(
+  baseSnapshot: ClientReadModelSnapshot
+): ClientM6AlphaReadModelSnapshot {
+  const fixture = createM6AlphaReadModelFixture(baseSnapshot);
+  return {
+    ...fixture,
+    session: {
+      ...fixture.session,
+      phase: "failure"
+    },
+    terminal: {
+      ...fixture.terminal,
+      outcome: "defeat",
+      canPursueVictory: false,
+      evidence: {
+        ...fixture.terminal.evidence,
+        recognizedByCount: 0,
+        legitimacyScoreBps: 250,
+        postwarArrangementCount: 0
+      },
+      reasonCodes: [
+        "m6.alpha.terminal.assess",
+        "m6.recognized-order.recognition-missing",
+        "m6.recognized-order.legitimacy-insufficient"
+      ]
+    },
+    goal: {
+      ...fixture.goal,
+      primaryGoal: "Recover from a failed Alpha recognized-order attempt."
+    }
+  };
+}
+
+export function createM6AlphaExtremeReadModelFixture(
+  baseSnapshot: ClientReadModelSnapshot
+): ClientM6AlphaReadModelSnapshot {
+  const fixture = createM6AlphaReadModelFixture(baseSnapshot);
+  const extraScenarios: ClientM6ScenarioReadModel[] = [];
+  for (let index = 0; index < 12; index += 1) {
+    extraScenarios.push({
+      scenarioId: `m6.alpha.pressure.${index + 1}`,
+      label: `Alpha pressure route ${index + 1}`,
+      scenarioKind: index % 2 === 0 ? "pressure-variant" : "recovery-or-failure",
+      startDay: index * 15,
+      seed: 1531 + index,
+      startHash: fixture.replay.startHash,
+      reasonCodes: ["m6.scenario.pressure", `m6.scenario.seed.${1531 + index}`]
+    });
+  }
+
+  return {
+    ...fixture,
+    scenarios: [...fixture.scenarios, ...extraScenarios],
+    policies: {
+      ...fixture.policies,
+      activeEvents: [
+        ...fixture.policies.activeEvents,
+        ...extraScenarios.slice(0, 4).map((scenario, index) => ({
+          eventInstanceId: index + 10,
+          title: scenario.label,
+          causeReasonCodes: ["policy.event.cause.alpha-pressure"],
+          options: [
+            {
+              optionId: index + 10,
+              label: "Defer settlement review",
+              reasonCodes: ["policy.event.option.defer"],
+              consequenceReasonCodes: ["policy.event.consequence.obligation-risk"]
+            }
+          ],
+          encyclopediaRefs: ["encyclopedia.m6.policy_event.harbor"]
+        }))
+      ]
+    }
+  };
+}
+
+export function withM6AlphaReadModel(
+  snapshot: ClientReadModelSnapshot,
+  m6Alpha: ClientM6AlphaReadModelSnapshot
+): ClientReadModelSnapshot {
+  return {
+    ...snapshot,
+    m6Alpha
+  };
+}
+
+export function createM6SessionSave(input: {
+  readonly snapshot: ClientM6AlphaReadModelSnapshot;
+  readonly phase: ClientM6AlphaPhase;
+  readonly currentStepIndex: number;
+  readonly confirmedCommandIds: readonly string[];
+}): string {
+  const save: ClientM6SessionSaveV1 = {
+    schemaVersion: 1,
+    scenarioId: input.snapshot.scenarioId,
+    phase: input.phase,
+    currentStepIndex: input.currentStepIndex,
+    confirmedCommandIds: input.confirmedCommandIds,
+    checkpointLabel:
+      input.snapshot.steps[input.currentStepIndex]?.stepId ??
+      input.snapshot.replay.terminalCheckpointLabel,
+    stateHash: input.snapshot.replay.currentHash,
+    terminalOutcome: input.snapshot.terminal.outcome
+  };
+
+  return JSON.stringify(save);
+}
+
+export function parseM6SessionSave(input: string): ClientM6SessionSaveParseResult {
+  let value: unknown;
+  try {
+    value = JSON.parse(input);
+  } catch {
+    return {
+      ok: false,
+      reasonCode: "m6.save.invalid-json",
+      message: "M6 client session save must be valid JSON."
+    };
+  }
+
+  if (!isRecord(value)) {
+    return {
+      ok: false,
+      reasonCode: "m6.save.invalid-shape",
+      message: "M6 client session save must be an object."
+    };
+  }
+  if (value["schemaVersion"] !== 1 || value["scenarioId"] !== "m6.alpha.recognized-order.v0") {
+    return {
+      ok: false,
+      reasonCode: "m6.save.unsupported-version",
+      message: "M6 client session save has an unsupported schema or scenario."
+    };
+  }
+
+  const phase = parseM6AlphaPhase(value["phase"]);
+  const currentStepIndex = value["currentStepIndex"];
+  const confirmedCommandIds = value["confirmedCommandIds"];
+  const checkpointLabel = value["checkpointLabel"];
+  const stateHash = value["stateHash"];
+  const terminalOutcome = parseM6TerminalOutcome(value["terminalOutcome"]);
+  if (
+    phase === null ||
+    typeof currentStepIndex !== "number" ||
+    !Number.isSafeInteger(currentStepIndex) ||
+    currentStepIndex < 0 ||
+    !Array.isArray(confirmedCommandIds) ||
+    !confirmedCommandIds.every((entry) => typeof entry === "string") ||
+    typeof checkpointLabel !== "string" ||
+    typeof stateHash !== "string" ||
+    terminalOutcome === null
+  ) {
+    return {
+      ok: false,
+      reasonCode: "m6.save.invalid-fields",
+      message: "M6 client session save fields are invalid."
+    };
+  }
+
+  return {
+    ok: true,
+    value: {
+      schemaVersion: 1,
+      scenarioId: "m6.alpha.recognized-order.v0",
+      phase,
+      currentStepIndex,
+      confirmedCommandIds: confirmedCommandIds.filter((entry) => typeof entry === "string"),
+      checkpointLabel,
+      stateHash,
+      terminalOutcome
+    }
+  };
+}
+
+export function getM6CurrentStep(
+  snapshot: ClientM6AlphaReadModelSnapshot,
+  currentStepIndex: number
+): ClientM6AlphaStepReadModel | null {
+  return snapshot.steps[currentStepIndex] ?? null;
+}
+
 export function getM5CurrentStep(
   snapshot: ClientM5PlayableReadModelSnapshot,
   currentStepIndex: number
@@ -2696,6 +3388,688 @@ export function findM3Character(
   }
 
   return characters.find((character) => character.characterId === characterId) ?? null;
+}
+
+function createEmptyM6AlphaReadModel(
+  revision: ClientReadModelRevision
+): ClientM6AlphaReadModelSnapshot {
+  const emptyCommand: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.evaluate-m6-alpha-outcome",
+    commandId: "m6.empty.terminal",
+    actor: { kind: "player", id: "polity:1" },
+    expectedDay: 0,
+    expectedRevision: Number(revision),
+    payload: {
+      terminalStateId: 1,
+      polityId: 1,
+      maxDay: 0,
+      reasonCode: "m6.alpha.not-started"
+    }
+  };
+  const failureStep = createM6AlphaStep(emptyCommand, 0, "rejected");
+
+  return {
+    revision,
+    scenarioId: "m6.alpha.recognized-order.v0",
+    contentTag: "COMPOSITE_FICTIONAL_ALPHA",
+    day: 0,
+    stateHash: "not-started",
+    commandActor: { kind: "player", id: "polity:1" },
+    provenance: {
+      kind: "m6-protocol-script-and-query-projection",
+      note: "No M6 Alpha read-model slice has been projected yet."
+    },
+    scenarios: [],
+    selectedScenarioId: "m6.alpha.recognized-order.v0",
+    goal: {
+      primaryGoal: "Select an Alpha scenario.",
+      victoryRequirements: [],
+      failureConditions: [],
+      excludedSurfaces: [
+        "Manual node battle UI is not present in Alpha.",
+        "Telemetry, accounts, server, multiplayer, and arbitrary-code mod UI are absent."
+      ]
+    },
+    replay: {
+      bootFixture: "m6.alpha-start-to-victory-001",
+      startHash: "not-started",
+      currentHash: "not-started",
+      commandCount: 0,
+      midRunCheckpointLabel: "m6.not-started",
+      terminalCheckpointLabel: "m6.not-started"
+    },
+    session: {
+      phase: "scenario-selection",
+      currentStepIndex: 0,
+      confirmedCommandIds: []
+    },
+    steps: [],
+    failureStep,
+    diplomacy: {
+      day: 0,
+      observerPolityId: createClientPolityId(1),
+      relations: [],
+      agreements: [],
+      recognitionEdges: [],
+      reasonCodes: ["m6.diplomacy.not-started"]
+    },
+    legitimacy: {
+      polityId: createClientPolityId(1),
+      audience: "vassal-rulers",
+      scoreBps: 0,
+      pressureBps: 0,
+      sources: [],
+      reasonCodes: ["m6.legitimacy.not-started"]
+    },
+    succession: {
+      status: "pending",
+      crisisCount: 0,
+      resolvedCount: 0,
+      candidateCount: 0,
+      continuityReasonCodes: ["m6.succession.not-started"]
+    },
+    policies: {
+      activeEvents: [],
+      resolvedEvents: [],
+      modifiers: [],
+      reasonCodes: ["m6.policy.not-started"]
+    },
+    encyclopedia: {
+      entries: [],
+      selectedEntryId: "encyclopedia.m6.none"
+    },
+    adviser: {
+      decisionKind: "no-action",
+      commandKind: null,
+      primaryReasonCode: "m6.adviser.not-started",
+      candidates: [],
+      reasonCodes: []
+    },
+    mapCandidate: {
+      candidateSourceId: "map.alpha.none",
+      displayName: "No Alpha map candidate selected",
+      sourceLabel: "FICTIONAL",
+      districtCount: 0,
+      settlementCount: 0,
+      routeCount: 0,
+      selectedDistrictIds: [],
+      reasonCodes: ["m6.map.not-started"]
+    },
+    terminal: {
+      outcome: "continued-play",
+      evaluatedDay: 0,
+      evaluatedRevision: Number(revision),
+      maxDay: 0,
+      canPursueVictory: false,
+      evidence: {
+        recognizedByCount: 0,
+        legitimacyScoreBps: 0,
+        postwarArrangementCount: 0,
+        resolvedPolicyEventCount: 0,
+        successionResolvedCount: 0,
+        routeCount: 0,
+        populationGroupCount: 0
+      },
+      reasonCodes: ["m6.alpha.not-started"]
+    },
+    reasonSummaries: []
+  };
+}
+
+function createM6ScenarioFixtures(startHash: string): readonly ClientM6ScenarioReadModel[] {
+  return [
+    {
+      scenarioId: "m6.alpha.recognized-order.v0",
+      label: "Recognized order path",
+      scenarioKind: "primary-victory",
+      startDay: 0,
+      seed: 1531,
+      startHash,
+      reasonCodes: ["m6.scenario.primary-victory", "m6.scenario.composite-fictional"]
+    },
+    {
+      scenarioId: "m6.alpha.pressure-monsoon.v0",
+      label: "Monsoon pressure variant",
+      scenarioKind: "pressure-variant",
+      startDay: 30,
+      seed: 1532,
+      startHash,
+      reasonCodes: ["m6.scenario.pressure", "route.season.monsoon-risk"]
+    },
+    {
+      scenarioId: "m6.alpha.recovery-failure.v0",
+      label: "Recovery or failure route",
+      scenarioKind: "recovery-or-failure",
+      startDay: 45,
+      seed: 1533,
+      startHash,
+      reasonCodes: ["m6.scenario.failure-recovery", "m6.recognized-order.recognition-missing"]
+    }
+  ];
+}
+
+function createM6DiplomacyFixture(
+  script: M6AlphaStartToVictoryScriptV1
+): ClientM6DiplomacyReadModel {
+  const propose = script.commandsAfterMidRunSave.find(
+    (command) => command.kind === "sim.propose-diplomatic-agreement"
+  );
+  const answer = script.commandsAfterMidRunSave.find(
+    (command) => command.kind === "sim.answer-diplomatic-agreement"
+  );
+  const relationId =
+    propose?.kind === "sim.propose-diplomatic-agreement" ? propose.payload.relationId : 1;
+  const agreementId =
+    propose?.kind === "sim.propose-diplomatic-agreement" ? propose.payload.agreementId : 1;
+  const proposerPolityId =
+    propose?.kind === "sim.propose-diplomatic-agreement"
+      ? createClientPolityId(propose.payload.proposerPolityId)
+      : createClientPolityId(1);
+  const targetPolityId =
+    propose?.kind === "sim.propose-diplomatic-agreement"
+      ? createClientPolityId(propose.payload.targetPolityId)
+      : createClientPolityId(2);
+  const agreementKind =
+    propose?.kind === "sim.propose-diplomatic-agreement"
+      ? propose.payload.agreementKind
+      : "tribute-recognition";
+  const recognitionDirection =
+    propose?.kind === "sim.propose-diplomatic-agreement"
+      ? propose.payload.recognitionDirection
+      : "target-recognizes-proposer";
+  const reasonCodes = [
+    propose?.kind === "sim.propose-diplomatic-agreement"
+      ? propose.payload.reasonCode
+      : "m6.alpha.diplomacy.recognized-order",
+    answer?.kind === "sim.answer-diplomatic-agreement"
+      ? answer.payload.reasonCode
+      : "m6.alpha.diplomacy.accepted"
+  ];
+
+  return {
+    day: 24,
+    observerPolityId: createClientPolityId(1),
+    relations: [
+      {
+        relationId,
+        polityAId: proposerPolityId,
+        polityBId: targetPolityId,
+        trustBps: 6_400,
+        affinityBps: 5_200,
+        fearBps: 2_300,
+        threatBps: 1_900,
+        interestAlignmentBps: 7_100,
+        historicalDebt: 0,
+        borderConflictBps: 1_200,
+        reasonCodes: ["diplomacy.offer.non-aggression", "m6.diplomacy.query.observer-visible"]
+      }
+    ],
+    agreements: [
+      {
+        agreementId,
+        relationId,
+        proposerPolityId,
+        targetPolityId,
+        agreementKind,
+        status: "accepted",
+        startDay: 24,
+        endDay: 744,
+        recognitionDirection,
+        reasonCodes
+      }
+    ],
+    recognitionEdges: [
+      {
+        fromPolityId: targetPolityId,
+        toPolityId: proposerPolityId,
+        agreementId,
+        reasonCode: "diplomacy.recognition.accepted"
+      }
+    ],
+    reasonCodes: ["m6.diplomacy.query.observer-visible", ...reasonCodes]
+  };
+}
+
+function createM6LegitimacyFixture(): ClientM6LegitimacyReadModel {
+  return {
+    polityId: createClientPolityId(1),
+    audience: "vassal-rulers",
+    scoreBps: 1_150,
+    pressureBps: 8_850,
+    sources: [
+      {
+        sourceId: 1,
+        sourceKind: "succession-continuity",
+        magnitudeBps: 700,
+        sourceRef: "m3.succession.1",
+        reasonCode: "legitimacy.source.succession-continuity"
+      },
+      {
+        sourceId: 2,
+        sourceKind: "postwar-settlement",
+        magnitudeBps: 450,
+        sourceRef: "m4.postwar.m6-alpha",
+        reasonCode: "legitimacy.source.postwar-settlement"
+      }
+    ],
+    reasonCodes: [
+      "m6.recognized-order.legitimacy-sufficient",
+      "legitimacy.source.succession-continuity",
+      "legitimacy.source.postwar-settlement"
+    ]
+  };
+}
+
+function createM6SuccessionFixture(
+  m3: ClientM3AppointmentReadModelSnapshot
+): ClientM6SuccessionReadModel {
+  const candidateCount = m3.successionCrises.reduce(
+    (total, crisis) => total + crisis.candidates.length,
+    0
+  );
+  return {
+    status: "resolved",
+    crisisCount: Math.max(1, m3.successionCrises.length),
+    resolvedCount: Math.max(
+      1,
+      m3.successionCrises.filter((crisis) => crisis.status === "resolved").length
+    ),
+    candidateCount: Math.max(2, candidateCount),
+    continuityReasonCodes: [
+      "m6.alpha.succession.peaceful",
+      "m6.recognized-order.succession-clear",
+      "succession.designation"
+    ]
+  };
+}
+
+function createM6PolicyEventFixture(
+  policyStep: ClientM6AlphaStepReadModel | undefined
+): ClientM6PolicyEventReadModel {
+  const reasonCodes = policyStep?.reasonCodes ?? ["m6.alpha.policy.harbor-charter"];
+  return {
+    activeEvents: [
+      {
+        eventInstanceId: 1,
+        title: "Harbor charter petition",
+        causeReasonCodes: ["policy.event.cause.day-one"],
+        options: [
+          {
+            optionId: 1,
+            label: "Grant bounded harbor duties",
+            reasonCodes: ["policy.event.choice.accept", "policy.event.option.accept"],
+            consequenceReasonCodes: ["policy.event.consequence.harbor-duty"]
+          },
+          {
+            optionId: 2,
+            label: "Reject until obligations clear",
+            reasonCodes: ["policy.event.choice.reject", "policy.event.option.reject"],
+            consequenceReasonCodes: ["policy.event.consequence.local-friction"]
+          }
+        ],
+        encyclopediaRefs: [
+          "encyclopedia.m6.policy_event.harbor",
+          "encyclopedia.m6.policy_event.harbor.accept"
+        ]
+      }
+    ],
+    resolvedEvents: [
+      {
+        eventInstanceId: 1,
+        selectedOptionId: 1,
+        resolvedDay: 25,
+        reasonCodes: [
+          "policy.event.command.choose",
+          "policy.event.consequence.harbor-duty",
+          ...reasonCodes
+        ],
+        encyclopediaRefs: ["encyclopedia.m6.policy_event.harbor.accept"]
+      }
+    ],
+    modifiers: [
+      {
+        modifierId: 1,
+        policyId: 1,
+        magnitudeBps: 250,
+        startDay: 25,
+        endDay: 55,
+        reasonCode: "policy.event.consequence.harbor-duty"
+      }
+    ],
+    reasonCodes: ["policy.event.definition.harbor", ...reasonCodes]
+  };
+}
+
+function createM6EncyclopediaFixture(): ClientM6EncyclopediaReadModel {
+  return {
+    selectedEntryId: "encyclopedia.m6.policy_event.harbor",
+    entries: [
+      {
+        entryId: "encyclopedia.m6.policy_event.harbor",
+        title: "Harbor charter pressure",
+        contentTag: "COMPOSITE",
+        summary:
+          "Alpha encyclopedia entry linking a policy event to obligations, routes, and recognized settlement evidence.",
+        linkedReasonCodes: ["policy.event.definition.harbor", "route.season.monsoon-risk"]
+      },
+      {
+        entryId: "encyclopedia.m6.recognized_order",
+        title: "Recognized order",
+        contentTag: "FICTIONAL",
+        summary:
+          "Victory requires recognition, legitimacy, succession continuity, terms, and checkpoint evidence.",
+        linkedReasonCodes: [
+          "m6.recognized-order.diplomatic-recognition",
+          "m6.recognized-order.legitimacy-sufficient"
+        ]
+      },
+      {
+        entryId: "encyclopedia.m6.map_candidate",
+        title: "Alpha map candidate",
+        contentTag: "COMPOSITE",
+        summary:
+          "Candidate map geometry remains reviewable source data and is not authoritative simulation state.",
+        linkedReasonCodes: ["m6.map.candidate.reviewable", "m6.map.candidate.rendered"]
+      }
+    ]
+  };
+}
+
+function createM6AdviserFixture(
+  m4: ClientM4CampaignReadModelSnapshot,
+  diplomacyStep: ClientM6AlphaStepReadModel | undefined
+): ClientM6AdviserReadModel {
+  return {
+    decisionKind: "diplomacy",
+    commandKind: diplomacyStep?.command.kind ?? m4.aiReason.commandKind,
+    primaryReasonCode: "m6.adviser.recognized-order-ready",
+    candidates: [
+      {
+        candidateId: "m6.adviser.propose-recognition",
+        decisionKind: "diplomacy",
+        commandKind: diplomacyStep?.command.kind ?? "sim.propose-diplomatic-agreement",
+        score: 82,
+        reasonCodes: [
+          "m6.ai.diplomacy.recognition-needed",
+          "m6.recognized-order.legitimacy-sufficient"
+        ]
+      },
+      {
+        candidateId: "m6.adviser.wait-for-succession",
+        decisionKind: "wait",
+        commandKind: null,
+        score: 41,
+        reasonCodes: ["m6.recognized-order.succession-clear", "m4.ai.wait.no-safe-march"]
+      },
+      {
+        candidateId: "m6.adviser.policy-harbor-charter",
+        decisionKind: "policy",
+        commandKind: "sim.choose-policy-event-option",
+        score: 63,
+        reasonCodes: ["m6.alpha.policy.harbor-charter", "policy.event.consequence.harbor-duty"]
+      }
+    ],
+    reasonCodes: [m4.aiReason.primaryReasonCode, "m6.adviser.no-hidden-rescue"]
+  };
+}
+
+function createM6MapCandidateFixture(
+  baseSnapshot: Pick<ClientReadModelSnapshot, "map">
+): ClientM6MapCandidateReadModel {
+  return {
+    candidateSourceId: "map.alpha.western-mainland-candidate",
+    displayName: "Western mainland Alpha candidate",
+    sourceLabel: "FICTIONAL",
+    districtCount: Math.max(4, baseSnapshot.map.districts.length),
+    settlementCount: Math.max(2, baseSnapshot.map.settlements.length),
+    routeCount: Math.max(3, baseSnapshot.map.routes.length),
+    selectedDistrictIds: baseSnapshot.map.districts
+      .slice(0, 4)
+      .map((district) => district.districtId),
+    reasonCodes: ["m6.map.candidate.reviewable", "m6.map.candidate.rendered"]
+  };
+}
+
+function createM6AlphaStep(
+  command: AuthoritativeGameCommandV1,
+  index: number,
+  resultStatus: ClientM6CommandResultReadModel["status"]
+): ClientM6AlphaStepReadModel {
+  const reasonCodes = extractM6CommandReasonCodes(command);
+  const stage = classifyM6CommandStage(command);
+  const label = formatM6CommandLabel(command);
+  return {
+    stepId: `m6.step.${(index + 1).toString().padStart(2, "0")}.${command.kind}`,
+    stage,
+    label,
+    command,
+    actorLabel: `${command.actor.kind}:${command.actor.id}`,
+    preview: {
+      commandKind: command.kind,
+      commandId: command.commandId,
+      summary: `Preview ${label}`,
+      reasonCodes
+    },
+    result: {
+      status: resultStatus,
+      summary:
+        resultStatus === "rejected"
+          ? "Rejected by the authoritative command path and shown as Alpha failure evidence."
+          : `Result will be reported by the authoritative simulation after ${command.kind}.`,
+      reasonCodes
+    },
+    reasonCodes,
+    encyclopediaRefs: encyclopediaRefsForM6Step(stage)
+  };
+}
+
+function extractM6CommandReasonCodes(command: AuthoritativeGameCommandV1): readonly string[] {
+  switch (command.kind) {
+    case "sim.propose-diplomatic-agreement":
+    case "sim.answer-diplomatic-agreement":
+    case "sim.record-legitimacy-source":
+    case "sim.choose-policy-event-option":
+    case "sim.evaluate-m6-alpha-outcome":
+      return [command.payload.reasonCode];
+    case "sim.advance-day":
+    case "debug.set-district-control":
+    case "sim.verify-state-hash":
+      return [];
+    case "sim.commit-labor":
+      return ["m6.labor.mobilized-households"];
+    case "sim.set-polity-suzerain":
+    case "sim.record-obligation-fulfillment":
+    case "sim.appoint-office":
+    case "sim.update-office-policy":
+    case "sim.update-jurisdiction-policy":
+    case "sim.record-character-status":
+    case "sim.resolve-succession":
+    case "sim.apply-m3-postwar-governance":
+    case "sim.cancel-campaign-objective":
+    case "sim.release-campaign-grain-supply":
+      return [command.payload.reasonCode];
+    case "sim.create-obligation":
+      return ["m6.obligation.source-ledger-visible"];
+    case "sim.appoint-offices-bulk":
+      return command.payload.items.flatMap((item) => [item.reasonCode]);
+    case "sim.enfeoff-district":
+    case "sim.create-character-relationship":
+      return [command.payload.reasonCode];
+    case "sim.create-campaign-objective":
+    case "sim.update-campaign-objective":
+    case "sim.create-muster-commitment":
+    case "sim.record-muster-response":
+    case "sim.reserve-campaign-grain-supply":
+    case "sim.consume-campaign-grain-supply":
+    case "sim.start-campaign-march":
+    case "sim.resolve-m4-field-engagement":
+    case "sim.apply-m4-siege-choice":
+    case "sim.resolve-m4-campaign-withdrawal":
+      return command.payload.reasonCodes;
+  }
+}
+
+function classifyM6CommandStage(command: AuthoritativeGameCommandV1): ClientM6AlphaStepStage {
+  switch (command.kind) {
+    case "sim.resolve-succession":
+      return "succession";
+    case "sim.propose-diplomatic-agreement":
+    case "sim.answer-diplomatic-agreement":
+      return "diplomacy";
+    case "sim.record-legitimacy-source":
+      return "legitimacy";
+    case "sim.choose-policy-event-option":
+      return "policy-event";
+    case "sim.evaluate-m6-alpha-outcome":
+      return command.commandId.includes("defeat") || command.commandId.includes("malformed")
+        ? "failure"
+        : "terminal";
+    case "sim.appoint-office":
+    case "sim.appoint-offices-bulk":
+    case "sim.update-office-policy":
+    case "sim.update-jurisdiction-policy":
+    case "sim.enfeoff-district":
+    case "sim.record-character-status":
+    case "sim.create-character-relationship":
+      return "appointment";
+    case "sim.set-polity-suzerain":
+    case "sim.create-obligation":
+    case "sim.record-obligation-fulfillment":
+      return "obligation";
+    case "sim.commit-labor":
+    case "sim.reserve-campaign-grain-supply":
+    case "sim.consume-campaign-grain-supply":
+    case "sim.release-campaign-grain-supply":
+      return "logistics";
+    case "sim.create-campaign-objective":
+    case "sim.update-campaign-objective":
+    case "sim.cancel-campaign-objective":
+    case "sim.create-muster-commitment":
+    case "sim.record-muster-response":
+    case "sim.start-campaign-march":
+      return "campaign";
+    case "sim.resolve-m4-field-engagement":
+    case "sim.apply-m4-siege-choice":
+    case "sim.resolve-m4-campaign-withdrawal":
+      return "battle-siege";
+    case "sim.apply-m3-postwar-governance":
+      return command.commandId.includes("duplicate") ? "failure" : "postwar";
+    case "sim.advance-day":
+    case "sim.verify-state-hash":
+    case "debug.set-district-control":
+      return "stabilization";
+  }
+}
+
+function formatM6CommandLabel(command: AuthoritativeGameCommandV1): string {
+  switch (command.kind) {
+    case "sim.propose-diplomatic-agreement":
+      return "Propose recognized-order diplomacy";
+    case "sim.answer-diplomatic-agreement":
+      return "Answer recognition agreement";
+    case "sim.record-legitimacy-source":
+      return "Record legitimacy source";
+    case "sim.choose-policy-event-option":
+      return "Choose policy event option";
+    case "sim.evaluate-m6-alpha-outcome":
+      return "Evaluate Alpha terminal status";
+    default:
+      return formatM5CommandLabel(command);
+  }
+}
+
+function encyclopediaRefsForM6Step(stage: ClientM6AlphaStepStage): readonly string[] {
+  switch (stage) {
+    case "diplomacy":
+    case "legitimacy":
+    case "terminal":
+      return ["encyclopedia.m6.recognized_order"];
+    case "policy-event":
+      return ["encyclopedia.m6.policy_event.harbor"];
+    case "scenario":
+      return ["encyclopedia.m6.map_candidate"];
+    default:
+      return [];
+  }
+}
+
+function summarizeM6ReasonCodes(input: {
+  readonly steps: readonly ClientM6AlphaStepReadModel[];
+  readonly failureStep: ClientM6AlphaStepReadModel;
+  readonly diplomacyReasonCodes: readonly string[];
+  readonly legitimacyReasonCodes: readonly string[];
+  readonly successionReasonCodes: readonly string[];
+  readonly policyReasonCodes: readonly string[];
+  readonly encyclopediaReasonCodes: readonly string[];
+  readonly adviserReasonCodes: readonly string[];
+  readonly mapReasonCodes: readonly string[];
+  readonly terminalReasonCodes: readonly string[];
+}): readonly ClientM6ReasonSummaryReadModel[] {
+  const accumulator = new Map<
+    string,
+    { count: number; sourceKinds: Set<ClientM6ReasonSourceKind> }
+  >();
+  const add = (reasonCodes: readonly string[], sourceKind: ClientM6ReasonSourceKind): void => {
+    for (const reasonCode of reasonCodes) {
+      const existing = accumulator.get(reasonCode);
+      if (existing === undefined) {
+        accumulator.set(reasonCode, { count: 1, sourceKinds: new Set([sourceKind]) });
+      } else {
+        existing.count += 1;
+        existing.sourceKinds.add(sourceKind);
+      }
+    }
+  };
+
+  for (const step of input.steps) {
+    add(step.reasonCodes, "step");
+    add(step.encyclopediaRefs, "encyclopedia");
+  }
+  add(input.failureStep.reasonCodes, "terminal");
+  add(input.diplomacyReasonCodes, "diplomacy");
+  add(input.legitimacyReasonCodes, "legitimacy");
+  add(input.successionReasonCodes, "succession");
+  add(input.policyReasonCodes, "policy-event");
+  add(input.encyclopediaReasonCodes, "encyclopedia");
+  add(input.adviserReasonCodes, "adviser");
+  add(input.mapReasonCodes, "map");
+  add(input.terminalReasonCodes, "terminal");
+
+  return [...accumulator.entries()]
+    .map(([reasonCode, summary]) => ({
+      reasonCode,
+      count: summary.count,
+      sourceKinds: [...summary.sourceKinds].sort()
+    }))
+    .sort(
+      (left, right) => right.count - left.count || left.reasonCode.localeCompare(right.reasonCode)
+    );
+}
+
+function parseM6AlphaPhase(value: unknown): ClientM6AlphaPhase | null {
+  switch (value) {
+    case "scenario-selection":
+    case "running":
+    case "victory":
+    case "failure":
+    case "continued-play":
+    case "checkpoint-loaded":
+      return value;
+    default:
+      return null;
+  }
+}
+
+function parseM6TerminalOutcome(value: unknown): M6AlphaTerminalOutcomeV1 | null {
+  switch (value) {
+    case "victory":
+    case "defeat":
+    case "continued-play":
+      return value;
+    default:
+      return null;
+  }
 }
 
 function createEmptyM5PlayableReadModel(
