@@ -1811,6 +1811,13 @@ function M6AlphaWorkspace({
   const saveStatusKind =
     saveStatus === null ? "empty" : saveStatus.startsWith("m6.load.") ? "restored" : "written";
   const currentCommandLabel = currentStep?.label ?? "No Alpha command available";
+  const currentScenario = snapshot.scenarios.find(
+    (scenario) => scenario.scenarioId === selectedScenarioId
+  );
+  const scenarioHelpText =
+    currentScenario === undefined
+      ? "No Alpha scenario is available in this read-model state."
+      : `${currentScenario.label}; ${currentScenario.scenarioKind}; day ${currentScenario.startDay}.`;
 
   return (
     <section
@@ -1830,6 +1837,16 @@ function M6AlphaWorkspace({
       <span id="m6-alpha-accessibility-status" className="sr-only">
         M6 Alpha phase {phase}. Current command: {currentCommandLabel}. Confirmed commands:{" "}
         {confirmedCommandIds.length}. Save status: {saveLiveStatus}.
+      </span>
+      <span id="m6-alpha-scenario-description" className="sr-only">
+        Selected scenario: {scenarioHelpText}
+      </span>
+      <span id="m6-alpha-command-description" className="sr-only">
+        Command preview and confirmation submit protocol command DTOs only; the client does not
+        mutate authoritative world state.
+      </span>
+      <span id="m6-alpha-save-description" className="sr-only">
+        Alpha checkpoint is a local client-session checkpoint used for this core-flow smoke.
       </span>
       <div className="m6-alpha__header">
         <div>
@@ -1852,6 +1869,7 @@ function M6AlphaWorkspace({
             <span>Scenario</span>
             <select
               aria-label="Select M6 Alpha scenario"
+              aria-describedby="m6-alpha-scenario-description"
               value={selectedScenarioId}
               onChange={onScenarioChange}
             >
@@ -1863,22 +1881,42 @@ function M6AlphaWorkspace({
             </select>
           </label>
           <div className="m6-alpha__actions">
-            <button type="button" onClick={onStart} disabled={snapshot.steps.length === 0}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onStart}
+              disabled={snapshot.steps.length === 0}
+            >
               Start Alpha
             </button>
-            <button type="button" onClick={onPreview} disabled={currentStep === null}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onPreview}
+              disabled={currentStep === null}
+            >
               Preview Alpha command
             </button>
-            <button type="button" onClick={onConfirm} disabled={isConfirmDisabled}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onConfirm}
+              disabled={isConfirmDisabled}
+            >
               Confirm Alpha command
             </button>
-            <button type="button" onClick={onFailurePreview}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onFailurePreview}
+            >
               Preview Alpha failure
             </button>
           </div>
           <output
             className="m6-alpha__status"
             aria-atomic="true"
+            aria-describedby="m6-alpha-command-description"
             aria-label="M6 command status"
             aria-live="polite"
             data-status-kind={commandStatusKind}
@@ -1892,16 +1930,22 @@ function M6AlphaWorkspace({
         <section className="m6-alpha__panel" aria-label="M6 save load checkpoint state">
           <h3>Save / load checkpoint</h3>
           <div className="m6-alpha__actions">
-            <button type="button" onClick={onSave}>
+            <button type="button" aria-describedby="m6-alpha-save-description" onClick={onSave}>
               Save Alpha checkpoint
             </button>
-            <button type="button" onClick={onLoad} disabled={savedSession.length === 0}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-save-description"
+              onClick={onLoad}
+              disabled={savedSession.length === 0}
+            >
               Load Alpha checkpoint
             </button>
           </div>
           <output
             className="m6-alpha__status"
             aria-label="M6 save status"
+            aria-describedby="m6-alpha-save-description"
             aria-live="polite"
             aria-atomic="true"
             data-save-length={savedSession.length}

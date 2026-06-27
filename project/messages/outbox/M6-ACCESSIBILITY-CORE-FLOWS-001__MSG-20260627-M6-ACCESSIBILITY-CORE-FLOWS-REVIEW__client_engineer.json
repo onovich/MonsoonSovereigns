@@ -3,10 +3,9 @@
   "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "from_role": "client_engineer",
   "status": "REVIEW",
-  "summary": "Hardened M6 Alpha core-flow accessibility within client/web/test surfaces: M6 command and checkpoint statuses are polite live regions, policy/event choices and terminal/adviser/reason surfaces expose text/list semantics, the map read-model viewport is keyboard focusable with arrow/Home/End district navigation, focus-visible and reduced-motion CSS are explicit, and Playwright/Vitest now cover keyboard, focus order, non-color status, screen-reader label spot checks, reduced-motion, and viewport overflow. React still consumes read-model slices and command DTOs only; no full WorldState, sim-core rule change, telemetry, account, network, Electron IPC, or manual node battle UI was introduced.",
+  "summary": "Replacement client_engineer hardened M6 Alpha core-flow accessibility within allowed web/UI/test/process paths. The map read-model viewport now has keyboard navigation help, aria-keyshortcuts, aria-roledescription, visible focus, and a polite selected-district status. M6 scenario, command preview/confirm, command status, save/load checkpoint, policy/event choices, encyclopedia, diplomacy, succession, adviser, and terminal review surfaces expose screen-reader descriptions, text/list semantics, live status, and non-color data-status-kind evidence. React still consumes read-model slices and protocol command DTOs only; no full WorldState, sim-core rule change, telemetry, account, hidden network call, Electron IPC, production dependency, or manual node battle UI was introduced.",
   "artifacts": [
     "apps/web/src/shell/web-client-shell.tsx",
-    "apps/web/src/styles/shell.css",
     "packages/ui/src/index.tsx",
     "tests/e2e/web-shell.spec.ts",
     "tests/ui-m2-district-list.test.tsx",
@@ -17,14 +16,14 @@
   "commit": null,
   "tests_run": [
     {
-      "command": "git status --short --branch",
+      "command": "git status --short",
       "exit_code": 0,
-      "result": "Initial status on feat/m6-accessibility-core-flows showed only route/state metadata changes from lead/orchestration; no unexpected package-code changes were present before implementation."
+      "result": "After implementation, only allowed paths were modified: apps/web/src/shell/web-client-shell.tsx, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, tests/ui-m2-district-list.test.tsx, task JSON, and this REVIEW handoff."
     },
     {
       "command": "pnpm --filter @monsoon/ui test",
-      "exit_code": 1,
-      "result": "Initial run exposed that the M6 error-state primary goal was not rendered; fixed by displaying snapshot.goal.primaryGoal in the M6 scenario panel."
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed, including M6 Alpha SSR checks for live status, screen-reader descriptions, policy choices, empty/error/extreme states, list semantics, and no WorldState text leakage."
     },
     {
       "command": "pnpm --filter @monsoon/client-core test",
@@ -32,14 +31,9 @@
       "result": "1 test file passed; 17 tests passed."
     },
     {
-      "command": "pnpm --filter @monsoon/ui test",
-      "exit_code": 0,
-      "result": "1 test file passed; 8 tests passed, including M6 Alpha live-region, policy choice, empty/error/extreme, list semantics, and no-WorldState SSR coverage."
-    },
-    {
       "command": "pnpm build:web",
       "exit_code": 0,
-      "result": "Vite web build passed. Existing chunk-size warning was reported; no new dependency or bundle-split decision was introduced."
+      "result": "Vite web build passed. Existing chunk-size warning was reported; no dependency or bundle-split change was made."
     },
     {
       "command": "pnpm storybook:build",
@@ -48,18 +42,8 @@
     },
     {
       "command": "pnpm test:e2e",
-      "exit_code": 1,
-      "result": "First run showed the new reduced-motion assertion depended on Chromium CSS duration string units; fixed by parsing ms/s values numerically."
-    },
-    {
-      "command": "pnpm test:e2e",
-      "exit_code": 1,
-      "result": "Second run showed initial browser/document focus did not consistently enter the page on the first Tab in this environment; adjusted the smoke to set the first map control as the focus-order starting point, then verify Tab/Enter/Arrow keyboard behavior."
-    },
-    {
-      "command": "pnpm test:e2e",
       "exit_code": 0,
-      "result": "11 Chromium Playwright tests passed. New M6 accessibility smoke covers map control focus order, map viewport keyboard navigation, M6 scenario start, command preview/confirm, save/load checkpoint, live status, non-color data-status-kind states, reduced-motion, policy option text, and existing required viewport overflow checks at 1280x720, 1280x800, 1920x1080, and 2560x1080."
+      "result": "11 Chromium Playwright tests passed. M6 accessibility smoke covers keyboard focus order from map controls through map viewport, arrow-key district navigation, M6 scenario start, command preview/confirm, save/load checkpoint, live command/save status, non-color data-status-kind states, screen-reader label/description spot checks, reduced-motion transition clamp, and viewport overflow at 1280x720, 1280x800, 1920x1080, and 2560x1080."
     },
     {
       "command": "pnpm test",
@@ -67,27 +51,32 @@
       "result": "Architecture boundaries, sim determinism, full root Vitest suite, and web package tests passed: 40 root test files / 305 tests plus web 1 file / 4 tests."
     },
     {
-      "command": "pnpm check",
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
       "exit_code": 0,
-      "result": "Prettier format check, ESLint, recursive package typecheck, and architecture boundary check passed on the final diff."
+      "result": "Task JSON validated successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
     }
   ],
   "decisions": [
-    "Kept the work in existing React DOM, CSS, client-core read-model fixtures, and Playwright/Vitest patterns; no new production dependency was added.",
-    "Made M6 command and save statuses persistent polite live regions with explicit data-status-kind values so state is not conveyed only by color.",
-    "Exposed M6 policy/event choices, resolved event state, encyclopedia content tags, terminal conditions, adviser candidates, and reason codes through textual/list semantics while still only consuming read-model values and reason codes.",
-    "Added keyboard navigation to the map renderer host as a focusable read-model region that cycles district selection through existing client selection callbacks; it does not mutate authoritative WorldState or make React own Pixi DisplayObjects.",
-    "Did not add .storybook stories because .storybook/** is outside the allowed path list for this route. Existing Storybook build passes; normal/empty/error/extreme M6 state coverage is provided by tests/ui-m2-district-list.test.tsx and core-flow behavior by tests/e2e/web-shell.spec.ts.",
-    "Preserved DEFER_MANUAL_NODE_BATTLE: the UI continues to state manual node battle is absent and no manual battle implementation or spike surface was added."
+    "Kept all implementation in existing React DOM, CSS, read-model, and Playwright/Vitest patterns; no production dependency was added.",
+    "Exposed map keyboard navigation and selected district state through DOM semantics around the Pixi host while leaving Pixi command-style rendering and read-model authority boundaries intact.",
+    "Added M6 scenario, command, and save/load descriptions via aria-describedby so screen-reader spot checks can verify what each core-flow control does without duplicating domain rules in UI logic.",
+    "Kept M6 status evidence textual and attribute-based through role=status, aria-live=polite, aria-atomic, and data-status-kind values rather than relying on color alone.",
+    "Preserved DEFER_MANUAL_NODE_BATTLE: the UI continues to state manual node battle is absent and no manual battle implementation, spike, or task-blocking surface was added.",
+    "Did not add .storybook stories because .storybook/** is outside this task's allowed paths. Existing Storybook build passes; normal/empty/error/extreme M6 state coverage is in Vitest and core-flow behavior is in Playwright."
   ],
   "risks": [
     "This is Alpha core-flow accessibility hardening only, not final M7/M8 accessibility completion, localization coverage, or platform accessibility certification.",
-    "Manual assistive-technology review was not performed in this implementation thread; evidence is automated role/name/live-region/focus/status spot checks plus recorded limitations.",
-    "The Playwright focus-order smoke starts from the first map mode control because Chromium in this environment did not reliably focus the page from the first Tab after navigation.",
-    "Storybook state matrix remains limited by the allowed path list for this route; QA should treat the passing Storybook build and Vitest/E2E state coverage as the evidence for this task, not as final complex-UI Storybook completeness."
+    "Manual assistive-technology review was not performed in this implementation thread; evidence is automated role/name/description/live-region/focus/status spot checks plus recorded limits.",
+    "The Playwright focus-order smoke starts from the first map mode control because Chromium in this environment has not consistently focused the document from the first Tab after navigation.",
+    "Storybook state matrix remains limited by the allowed path list for this route; QA should treat the passing Storybook build and Vitest/E2E state coverage as this task's bounded evidence, not final complex-UI Storybook completeness."
   ],
   "blockers": [],
   "route_to": "qa_reviewer",
-  "requested_action": "Independently review M6-ACCESSIBILITY-CORE-FLOWS-001 for Alpha core-flow accessibility evidence, keyboard/focus/live-region/non-color/viewport coverage, read-model and command/query boundaries, forbidden path compliance, and the recorded limits. Return ACCEPT, REQUEST_CHANGES, or BLOCK; do not mark ACCEPTED/CLOSED.",
-  "created_at": "2026-06-27T23:40:32+08:00"
+  "requested_action": "Independently review M6-ACCESSIBILITY-CORE-FLOWS-001 for Alpha core-flow accessibility evidence, keyboard/focus/live-region/non-color/viewport coverage, read-model and command/query boundary compliance, forbidden path compliance, DEFER_MANUAL_NODE_BATTLE preservation, and recorded limits. Return ACCEPT, REQUEST_CHANGES, or BLOCK; do not mark ACCEPTED/CLOSED.",
+  "created_at": "2026-06-27T23:57:43+08:00"
 }

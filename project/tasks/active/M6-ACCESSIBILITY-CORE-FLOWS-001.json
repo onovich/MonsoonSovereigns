@@ -6,9 +6,7 @@
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
-  "dependencies": [
-    "M6-CLIENT-ALPHA-SURFACES-001"
-  ],
+  "dependencies": ["M6-CLIENT-ALPHA-SURFACES-001"],
   "scope": {
     "allowed_paths": [
       "apps/web/**",
@@ -78,7 +76,7 @@
     "If a new accessibility dependency is necessary, route dependency justification before implementation."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T23:51:56.177+08:00",
+  "updated_at": "2026-06-27T23:57:43+08:00",
   "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "writer_thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
   "writer_nickname": "Canvas the 2nd",
@@ -89,24 +87,25 @@
   "previous_closed_task": "M6-LAYERED-AI-001",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "Await replacement client_engineer REVIEW handoff, then route to qa_reviewer.",
+  "next_action": "Route replacement client_engineer REVIEW handoff to qa_reviewer.",
   "route_sent_at": "2026-06-27T23:28:32.873+08:00",
   "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
   "review_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
-  "review_ready_at": "2026-06-27T23:40:32.466+08:00",
+  "review_ready_at": "2026-06-27T23:57:43+08:00",
   "review_status": "REVIEW",
   "modified_paths": [
     "apps/web/src/shell/web-client-shell.tsx",
-    "apps/web/src/styles/shell.css",
     "packages/ui/src/index.tsx",
     "tests/e2e/web-shell.spec.ts",
-    "tests/ui-m2-district-list.test.tsx"
+    "tests/ui-m2-district-list.test.tsx",
+    "project/tasks/active/M6-ACCESSIBILITY-CORE-FLOWS-001.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json"
   ],
   "accessibility_evidence": [
     "Keyboard focus order smoke covers map mode controls, zoom controls, map viewport focus, scenario start, preview, confirm, save, and load.",
-    "Map viewport exposes a focusable read-model region with arrow/Home/End district navigation and visible focus; it does not write authoritative WorldState.",
-    "M6 Alpha command and save statuses are persistent polite live regions with data-status-kind text/state attributes, not color-only indicators.",
-    "M6 policy/event choices, resolved events, encyclopedia content tags, terminal conditions, adviser candidates, and reason codes expose text and list semantics.",
+    "Map viewport exposes a focusable read-model region with arrow/Home/End district navigation, visible focus, aria-keyshortcuts, aria-roledescription, and a polite selected-district status; it only routes through the existing client selection callback and does not write authoritative WorldState.",
+    "M6 Alpha command and save statuses are persistent polite live regions with data-status-kind text/state attributes and aria-describedby descriptions, not color-only indicators.",
+    "M6 scenario selection, command preview/confirm, save/load checkpoint, policy/event choices, resolved events, encyclopedia content tags, terminal conditions, adviser candidates, and reason codes expose text/list semantics and screen-reader descriptions.",
     "Viewport checks cover 1280x720, 1280x800, 1920x1080, and 2560x1080 with a 20px root font-size spot check on the M6 overflow test.",
     "Reduced-motion smoke emulates prefers-reduced-motion: reduce and checks the CSS transition duration clamp."
   ],
@@ -123,7 +122,9 @@
     "pnpm build:web",
     "pnpm storybook:build",
     "pnpm test:e2e",
-    "pnpm test"
+    "pnpm test",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "git diff --check"
   ],
   "replaced_writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
   "replaced_writer_nickname": "Window the 2nd",

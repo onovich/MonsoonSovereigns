@@ -356,17 +356,40 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   await page.keyboard.press("Tab");
   await expect(map).toBeFocused();
   await expect(map).toHaveAttribute("data-keyboard-navigation", "district-cycle");
+  await expect(map).toHaveAttribute(
+    "aria-describedby",
+    "map-keyboard-help map-selected-district-status"
+  );
+  await expect(map).toHaveAttribute("aria-roledescription", "keyboard navigable map read model");
+  await expect(page.locator("#map-selected-district-status")).toContainText(
+    "Selected map district: Prototype District 001."
+  );
   await page.keyboard.press("ArrowRight");
   await expect(mapSurface).toHaveAttribute("data-selected-district-id", "2");
+  await expect(map).toHaveAttribute("data-selected-district-label", "Prototype District 002");
+  await expect(page.locator("#map-selected-district-status")).toContainText(
+    "Selected map district: Prototype District 002."
+  );
   await expectFocusOutline(map);
 
   const workspace = page.getByLabel("M6 Alpha start to victory workspace");
   const commandStatus = page.getByRole("status", { name: "M6 command status" });
   const saveStatus = page.getByRole("status", { name: "M6 save status" });
   const scenario = page.getByLabel("Select M6 Alpha scenario");
+  await expect(workspace).toHaveAttribute("aria-describedby", "m6-alpha-accessibility-status");
+  await expect(scenario).toHaveAttribute("aria-describedby", "m6-alpha-scenario-description");
+  await expect(page.locator("#m6-alpha-scenario-description")).toContainText(
+    "Recognized order path; primary-victory; day 0."
+  );
+  await expect(page.getByRole("button", { name: "Start Alpha" })).toHaveAttribute(
+    "aria-describedby",
+    "m6-alpha-command-description"
+  );
   await expect(commandStatus).toHaveAttribute("data-status-kind", "idle");
+  await expect(commandStatus).toHaveAttribute("aria-describedby", "m6-alpha-command-description");
   await expect(commandStatus).toContainText("m6.command.no-alpha-command-submitted");
   await expect(saveStatus).toHaveAttribute("data-status-kind", "empty");
+  await expect(saveStatus).toHaveAttribute("aria-describedby", "m6-alpha-save-description");
   await expect(saveStatus).toContainText("m6.save.no-client-checkpoint");
 
   await scenario.focus();

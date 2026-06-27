@@ -216,21 +216,33 @@ function PixiMapSurface({
     onSelectedEntityChange({ kind: "district", districtId: nextDistrict.districtId });
   }
 
+  const selectedDistrictId =
+    viewport.selectedEntity?.districtId ?? snapshot.districts[0]?.districtId;
+  const selectedDistrict = snapshot.districts.find(
+    (district) => district.districtId === selectedDistrictId
+  );
+  const selectedDistrictLabel = selectedDistrict?.displayName ?? "No district selected";
+
   return (
     <>
       <span id="map-keyboard-help" className="sr-only">
         Use arrow keys, Home, and End to move the selected district through the map read model.
       </span>
+      <span id="map-selected-district-status" className="sr-only" aria-live="polite">
+        Selected map district: {selectedDistrictLabel}.
+      </span>
       <div
         ref={hostRef}
         className="map-viewport"
         aria-label="M2 prototype map viewport"
-        aria-describedby="map-keyboard-help"
+        aria-describedby="map-keyboard-help map-selected-district-status"
         aria-keyshortcuts="ArrowRight ArrowDown ArrowLeft ArrowUp Home End"
+        aria-roledescription="keyboard navigable map read model"
         data-renderer-owner="map-renderer"
         data-renderer-status={rendererStatus}
         data-renderer-error={mountError ?? undefined}
         data-keyboard-navigation="district-cycle"
+        data-selected-district-label={selectedDistrictLabel}
         onKeyDown={handleMapKeyDown}
         role="region"
         tabIndex={0}

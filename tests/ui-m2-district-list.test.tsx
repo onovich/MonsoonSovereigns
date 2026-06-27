@@ -135,12 +135,18 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Start Alpha");
     expect(markup).toContain("Preview Alpha command");
     expect(markup).toContain("Confirm Alpha command");
+    expect(markup).toContain('aria-describedby="m6-alpha-scenario-description"');
+    expect(markup).toContain("Selected scenario: Recognized order path; primary-victory; day 0.");
+    expect(markup).toContain('aria-describedby="m6-alpha-command-description"');
+    expect(markup).toContain("protocol command DTOs only");
     expect(markup).toContain('aria-live="polite"');
     expect(markup).toContain('role="status"');
     expect(markup).toContain('data-status-kind="idle"');
     expect(markup).toContain("m6.command.no-alpha-command-submitted");
     expect(markup).toContain("Save Alpha checkpoint");
     expect(markup).toContain("Load Alpha checkpoint");
+    expect(markup).toContain('aria-describedby="m6-alpha-save-description"');
+    expect(markup).toContain("local client-session checkpoint");
     expect(markup).toContain("Diplomacy / legitimacy / succession");
     expect(markup).toContain("tribute-recognition");
     expect(markup).toContain("legitimacy.source.postwar-settlement");
