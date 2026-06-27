@@ -4631,7 +4631,7 @@ function buildM6AlphaTerminalEvidence(
   return {
     recognizedByCount: recognized.recognizedByCount,
     legitimacyScoreBps: recognized.legitimacyScoreBps,
-    postwarArrangementCount: world.state.m4?.postwarCandidates.length ?? 0,
+    postwarArrangementCount: countM6AlphaPostwarArrangementEvidence(world, polityId),
     resolvedPolicyEventCount: world.state.m6PolicyEvents?.resolvedEvents.length ?? 0,
     successionResolvedCount:
       world.state.m3?.successionCrises.filter(
@@ -4640,6 +4640,47 @@ function buildM6AlphaTerminalEvidence(
     routeCount: world.definitions.routes.length,
     populationGroupCount: world.state.m2?.populationGroups.length ?? 0
   };
+}
+
+function countM6AlphaPostwarArrangementEvidence(world: WorldStateV0, polityId: PolityId): number {
+  const settlementIds: string[] = [];
+  for (const candidate of world.state.m4?.postwarCandidates ?? []) {
+    if (candidate.victorPolityId === polityId) {
+      settlementIds.push(candidate.settlementId);
+    }
+  }
+  for (const obligation of world.state.m3?.obligations ?? []) {
+    if (obligation.creditorPolityId !== polityId) {
+      continue;
+    }
+    const settlementId = m3PostwarSettlementIdFromSourceId(obligation.obligationSource.sourceId);
+    if (settlementId !== null) {
+      settlementIds.push(settlementId);
+    }
+  }
+  return sortedUniqueText(settlementIds).length;
+}
+
+function m3PostwarSettlementIdFromSourceId(sourceId: string): string | null {
+  const directMarker = ".direct-control.";
+  const directMarkerIndex = sourceId.indexOf(directMarker);
+  if (sourceId.startsWith("m3.postwar.district.") && directMarkerIndex >= 0) {
+    const settlementId = sourceId.slice(directMarkerIndex + directMarker.length);
+    return settlementId.length > 0 ? settlementId : null;
+  }
+  const prefix = "m3.postwar.";
+  if (!sourceId.startsWith(prefix)) {
+    return null;
+  }
+  const suffixes = [".tribute", ".troops"];
+  const remainder = sourceId.slice(prefix.length);
+  for (const suffix of suffixes) {
+    if (remainder.endsWith(suffix)) {
+      const settlementId = remainder.slice(0, -suffix.length);
+      return settlementId.length > 0 ? settlementId : null;
+    }
+  }
+  return remainder.length > 0 ? remainder : null;
 }
 
 function m6AlphaEvidenceReasonCodes(

@@ -1,0 +1,86 @@
+{
+  "message_id": "MSG-20260627-M6-START-TO-VICTORY-R2-REVIEW",
+  "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Addressed systems_architect REQUEST_CHANGES for M6 Alpha terminal postwar evidence. buildM6AlphaTerminalEvidence now computes postwarArrangementCount from the evaluated polity's own M4 postwar candidates and M3 postwar governance obligations, deduplicated by settlement id, instead of using global postwarCandidates.length. Added regression coverage proving an unrelated polity's postwar candidate cannot satisfy the evaluated polity's victory condition, while save/load and state hash determinism remain covered.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m6-start-to-victory-loop.test.ts",
+    "project/tasks/active/M6-START-TO-VICTORY-SIM-LOOP-001.json",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-R2-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m6-start-to-victory-sim-loop / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 1,
+      "result": "Pre-fix regression failed as expected: unrelated polity postwar evidence incorrectly produced terminal outcome victory instead of continued-play."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 0,
+      "result": "Post-fix focused M6 Alpha test passed 1 file / 5 tests, including unrelated-polity postwar regression, save/load, state hash determinism, malformed command rejection, and Node/Worker parity."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format:check, lint, full workspace typecheck, and architecture:check."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed 25 test files / 191 tests for existing sim-core package suite."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "Passed 2 test files / 16 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "Passed 2 test files / 3 tests."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed; M6 Alpha Node hash 260f46c3 matched Worker-compatible hash 260f46c3, loaded hash 260f46c3, terminal outcome victory."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture:check, sim:determinism, root vitest 39 files / 297 tests, and apps/web vitest 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-START-TO-VICTORY-SIM-LOOP-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Kept the terminal command path unchanged: terminal states are still recorded only through sim.evaluate-m6-alpha-outcome.",
+    "Scoped postwarArrangementCount to the evaluated polity by counting candidate.victorPolityId === polityId and M3 postwar governance obligations where creditorPolityId === polityId.",
+    "Deduplicated M4 candidate and M3 governance evidence by settlement id so the accepted Alpha path still reports one postwar arrangement while allowing future governance-only evidence to be polity-scoped.",
+    "Did not change protocol, save-format, runner behavior, UI, content, manual battle, full diplomacy, server/multiplayer, telemetry, M7 content, or M8 stability scope."
+  ],
+  "risks": [
+    "R4 terminal-state correctness still warrants systems review because the fix touches terminal victory evidence semantics in sim-core.",
+    "The regression uses a test-only WorldState variant to isolate the evidence bug; all terminal recording remains through the normal GameCommand path."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R2 polity-scoped postwar/governance evidence fix and regression test. If accepted, route onward according to the M6 review flow; do not mark ACCEPTED/CLOSED from this writer handoff alone.",
+  "created_at": "2026-06-27T20:57:17.467+08:00"
+}
