@@ -3976,10 +3976,16 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T21:21:24.628+08:00",
-      "updated_at": "2026-06-27T21:23:30.417+08:00",
+      "updated_at": "2026-06-27T21:54:43.868+08:00",
       "next_action": "client_engineer implements M6 Alpha client surfaces and returns REVIEW handoff routed to qa_reviewer.",
       "start_submission_id": "019f093f-a3b2-79d3-8662-17837d27188f",
-      "route_sent_at": "2026-06-27T21:23:30.417+08:00"
+      "route_sent_at": "2026-06-27T21:23:30.417+08:00",
+      "qa_thread_id": "019f095b-78e3-7d13-a813-d8b443ee6e5a",
+      "qa_route": "project/messages/routes/M6-CLIENT-ALPHA-SURFACES-001__ROUTE-20260627-M6-CLIENT-SURFACES-WRITER-TO-QA-REVIEW.json",
+      "review_commit": "88ce12d75f911a7d1ba7e83013076d59013b9bc4",
+      "routed_to_qa_at": "2026-06-27T21:54:43.868+08:00",
+      "qa_submission_id": "019f095c-5421-78d3-858c-ac481f85f936",
+      "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00"
     },
     "M6-CLIENT-ALPHA-SURFACES-001:client_engineer": {
       "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
@@ -3998,10 +4004,39 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T21:21:24.628+08:00",
-      "updated_at": "2026-06-27T21:23:30.417+08:00",
+      "updated_at": "2026-06-27T21:54:43.868+08:00",
       "next_action": "client_engineer implements M6 Alpha client surfaces and returns REVIEW handoff routed to qa_reviewer.",
       "start_submission_id": "019f093f-a3b2-79d3-8662-17837d27188f",
-      "route_sent_at": "2026-06-27T21:23:30.417+08:00"
+      "route_sent_at": "2026-06-27T21:23:30.417+08:00",
+      "qa_thread_id": "019f095b-78e3-7d13-a813-d8b443ee6e5a",
+      "qa_route": "project/messages/routes/M6-CLIENT-ALPHA-SURFACES-001__ROUTE-20260627-M6-CLIENT-SURFACES-WRITER-TO-QA-REVIEW.json",
+      "review_commit": "88ce12d75f911a7d1ba7e83013076d59013b9bc4",
+      "routed_to_qa_at": "2026-06-27T21:54:43.868+08:00",
+      "qa_submission_id": "019f095c-5421-78d3-858c-ac481f85f936",
+      "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00"
+    },
+    "M6-CLIENT-ALPHA-SURFACES-001:qa_reviewer": {
+      "task_id": "M6-CLIENT-ALPHA-SURFACES-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f095b-78e3-7d13-a813-d8b443ee6e5a",
+      "nickname": "Gate",
+      "status": "review_in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "read_only": true,
+      "branch_or_worktree": "feat/m6-client-alpha-surfaces",
+      "review_commit": "88ce12d75f911a7d1ba7e83013076d59013b9bc4",
+      "review_handoff": "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-REVIEW__client_engineer.json",
+      "review_route_file": "project/messages/routes/M6-CLIENT-ALPHA-SURFACES-001__ROUTE-20260627-M6-CLIENT-SURFACES-WRITER-TO-QA-REVIEW.json",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "created_at": "2026-06-27T21:54:43.868+08:00",
+      "updated_at": "2026-06-27T21:54:43.868+08:00",
+      "qa_submission_id": "019f095c-5421-78d3-858c-ac481f85f936",
+      "qa_route_sent_at": "2026-06-27T21:54:43.868+08:00",
+      "next_action": "qa_reviewer reviews M6 client Alpha surfaces and returns ACCEPT, REQUEST_CHANGES, or BLOCK."
     }
   },
   "replaced_threads": [
@@ -4060,5 +4095,5 @@
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T21:23:30.417+08:00"
+  "updated_at": "2026-06-27T21:54:43.868+08:00"
 }
