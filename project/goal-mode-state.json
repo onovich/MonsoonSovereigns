@@ -9,15 +9,16 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
-      "status": "active_awaiting_writer_handoff",
+      "status": "active_routing_replacement_writer",
       "role": "lead_orchestrator"
     },
     "client_engineer": {
-      "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+      "thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
       "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
-      "status": "active_in_progress",
+      "status": "active_in_progress_pending_route",
       "role": "client_engineer",
-      "nickname": "Window the 2nd"
+      "nickname": "Canvas the 2nd",
+      "replaces_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1"
     }
   },
   "last_integrated_task": "M6-LAYERED-AI-001",
@@ -48,10 +49,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 accessibility core flows route sent to client_engineer; no Human Gate is active.",
+    "approval_source": "Replacement writer started after original writer timeout; no Human Gate is active.",
     "recommended_result": null,
-    "note": "Await writer REVIEW handoff. Manual node battle remains deferred; no telemetry/account/Electron IPC change is authorized.",
-    "recorded_at": "2026-06-27T23:28:32.873+08:00"
+    "note": "Original writer left no auditable implementation; replacement starts from current branch checkpoint. No Human Gate is active.",
+    "recorded_at": "2026-06-27T23:50:05.837+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -277,6 +278,17 @@
       "replaced_by_nickname": "Estuary",
       "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response",
       "replaced_at": "2026-06-27T14:45:02+08:00"
+    },
+    {
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "role": "client_engineer",
+      "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+      "nickname": "Window the 2nd",
+      "status": "closed_running_no_handoff_transient_diff_not_committed",
+      "replaced_by": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "replaced_by_nickname": "Canvas the 2nd",
+      "reason": "closed_after_repeated_wait_timeouts_status_request_and_interrupt_no_handoff_transient_diff_not_committed",
+      "replaced_at": "2026-06-27T23:48:50.046+08:00"
     }
   ],
   "m5_performance_gate": {
@@ -807,8 +819,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T23:28:32.873+08:00",
-  "updated_at": "2026-06-27T23:28:32.873+08:00",
+  "last_updated_at": "2026-06-27T23:50:05.837+08:00",
+  "updated_at": "2026-06-27T23:50:05.837+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1030,8 +1042,8 @@
     "owner_role": "client_engineer",
     "reviewer_role": "qa_reviewer",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
-    "writer_nickname": "Window the 2nd",
+    "writer_thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+    "writer_nickname": "Canvas the 2nd",
     "branch_or_worktree": "feat/m6-accessibility-core-flows",
     "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
     "previous_closed_task": "M6-LAYERED-AI-001",
@@ -1040,9 +1052,15 @@
     "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
     "started_at": "2026-06-27T23:26:39.775+08:00",
-    "next_action": "Await client_engineer REVIEW handoff, then route to qa_reviewer.",
+    "next_action": "Route replacement client_engineer to create fresh accessibility diff, handoff, tests, and commit.",
     "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
     "route_sent_at": "2026-06-27T23:28:32.873+08:00",
-    "updated_at": "2026-06-27T23:28:32.873+08:00"
+    "updated_at": "2026-06-27T23:50:05.837+08:00",
+    "replaced_writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+    "replaced_writer_nickname": "Window the 2nd",
+    "replacement_start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-REPLACEMENT.json",
+    "replaced_at": "2026-06-27T23:48:50.046+08:00",
+    "writer_replacement_reason": "original writer closed after repeated wait timeouts and interrupt收口指令 produced no handoff; transient allowed-path diff observed before close was not committed and is not treated as authoritative"
   }
 }

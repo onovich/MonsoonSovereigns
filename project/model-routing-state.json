@@ -2292,7 +2292,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Await M6-ACCESSIBILITY-CORE-FLOWS-001 writer REVIEW handoff.",
+  "next_action": "Route replacement writer for M6-ACCESSIBILITY-CORE-FLOWS-001 fresh implementation.",
   "current_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2343,7 +2343,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-27T23:28:32.873+08:00",
+  "updated_at": "2026-06-27T23:50:05.837+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2562,8 +2562,8 @@
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
     "branch_or_worktree": "feat/m6-accessibility-core-flows",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
-    "writer_nickname": "Window the 2nd",
+    "writer_thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+    "writer_nickname": "Canvas the 2nd",
     "owner_role": "client_engineer",
     "reviewer_role": "qa_reviewer",
     "configured_writer_model": "gpt-5.5",
@@ -2578,9 +2578,13 @@
     "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
     "started_at": "2026-06-27T23:26:39.775+08:00",
     "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
-    "next_action": "Await client_engineer REVIEW handoff, then route to qa_reviewer.",
+    "next_action": "Route replacement client_engineer to create fresh accessibility diff, handoff, tests, and commit.",
     "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
     "route_sent_at": "2026-06-27T23:28:32.873+08:00",
-    "updated_at": "2026-06-27T23:28:32.873+08:00"
+    "updated_at": "2026-06-27T23:50:05.837+08:00",
+    "replaced_writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+    "replacement_start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-REPLACEMENT.json",
+    "writer_replacement_reason": "original writer closed after repeated wait timeouts and interrupt收口指令 produced no handoff; transient allowed-path diff observed before close was not committed and is not treated as authoritative"
   }
 }

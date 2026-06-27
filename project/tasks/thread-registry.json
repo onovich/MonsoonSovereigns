@@ -4278,7 +4278,7 @@
       "role": "client_engineer",
       "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
       "nickname": "Window the 2nd",
-      "status": "active_in_progress",
+      "status": "closed_running_no_handoff_transient_diff_not_committed",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -4290,10 +4290,35 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T23:26:39.775+08:00",
-      "updated_at": "2026-06-27T23:28:32.873+08:00",
+      "updated_at": "2026-06-27T23:50:05.837+08:00",
       "next_action": "Implement accessibility hardening and emit REVIEW handoff to qa_reviewer.",
       "route_sent_at": "2026-06-27T23:28:32.873+08:00",
-      "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee"
+      "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
+      "close_reason": "replaced_after_repeated_wait_timeouts_and_interrupt_no_handoff_transient_diff_not_committed",
+      "closed_at": "2026-06-27T23:48:50.046+08:00",
+      "replaced_by": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "replacement_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REPLACEMENT-START__lead_orchestrator.json"
+    },
+    "M6-ACCESSIBILITY-CORE-FLOWS-001:client_engineer:replacement": {
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "role": "client_engineer",
+      "thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "nickname": "Canvas the 2nd",
+      "status": "active_in_progress_pending_route",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m6-accessibility-core-flows",
+      "replaces_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+      "replacement_reason": "original writer closed after repeated wait timeouts and no handoff; transient allowed-path diff was not committed or treated as authoritative",
+      "replacement_start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REPLACEMENT-START__lead_orchestrator.json",
+      "replacement_route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-REPLACEMENT.json",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "created_at": "2026-06-27T23:48:50.046+08:00",
+      "updated_at": "2026-06-27T23:50:05.837+08:00",
+      "next_action": "Await replacement route send_input, then implement fresh diff and emit REVIEW handoff."
     }
   },
   "replaced_threads": [
@@ -4350,7 +4375,18 @@
       "replaced_by_nickname": "Engine",
       "reason": "original writer thread not found on send_input after systems REQUEST_CHANGES",
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
+    },
+    {
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "role": "client_engineer",
+      "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+      "nickname": "Window the 2nd",
+      "status": "closed_running_no_handoff_transient_diff_not_committed",
+      "replaced_by": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "replaced_by_nickname": "Canvas the 2nd",
+      "reason": "closed_after_repeated_wait_timeouts_status_request_and_interrupt_no_handoff_transient_diff_not_committed",
+      "replaced_at": "2026-06-27T23:48:50.046+08:00"
     }
   ],
-  "updated_at": "2026-06-27T23:28:32.873+08:00"
+  "updated_at": "2026-06-27T23:50:05.837+08:00"
 }
