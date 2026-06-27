@@ -4544,7 +4544,7 @@
       "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed_integrated",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -4556,8 +4556,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T17:55:19.454Z",
-      "updated_at": "2026-06-27T18:13:29.663Z",
-      "next_action": "Push branch, open PR, wait for CI, merge to main, sync main, then close task.",
+      "updated_at": "2026-06-27T18:18:51.074Z",
+      "next_action": "Start M6-ALPHA-NO-P0P1-VALIDATION-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
       "route_file": "project/messages/routes/M6-ADVISER-INTERVENTION-EVIDENCE-001__ROUTE-20260628-M6-ADVISER-EVIDENCE-LEAD-TO-GAMEPLAY-START.json",
       "start_submission_id": "019f0a39-bcc2-7950-b10b-24f4ca43e05a",
       "route_sent_at": "2026-06-27T17:56:53.865Z",
@@ -4576,6 +4576,15 @@
       "child_threads_closed": [
         "019f0a35-8f47-7b11-8a15-9e11477e73c7",
         "019f0a41-0933-7f30-9c74-88daf0844f9b"
+      ],
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 153,
+      "integrated_main_commit": "072ae2f5cfade1b0bc85ec3bab1c577395e279d4",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/153",
+      "lead_close_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T18:18:51.074Z",
+      "next_ready_tasks": [
+        "M6-ALPHA-NO-P0P1-VALIDATION-001"
       ]
     },
     "M6-ADVISER-INTERVENTION-EVIDENCE-001:gameplay_designer": {
@@ -4757,5 +4766,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-27T18:13:29.663Z"
+  "updated_at": "2026-06-27T18:18:51.074Z"
 }
