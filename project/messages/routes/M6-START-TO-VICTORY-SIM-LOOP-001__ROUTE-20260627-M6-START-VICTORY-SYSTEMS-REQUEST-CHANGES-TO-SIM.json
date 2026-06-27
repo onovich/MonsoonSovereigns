@@ -1,0 +1,22 @@
+{
+  "route_id": "ROUTE-20260627-M6-START-VICTORY-SYSTEMS-REQUEST-CHANGES-TO-SIM",
+  "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+  "from_role": "lead_orchestrator",
+  "from_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "source_role": "systems_architect",
+  "source_thread_id": "019f0914-1645-7003-b1a3-d389719b8d7f",
+  "to_role": "simulation_engineer",
+  "to_thread_id": "019f08f4-6702-7fa3-adfb-316af1270ca1",
+  "message_file": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-REVIEW__systems_architect.json",
+  "status": "SENT",
+  "branch_or_worktree": "feat/m6-start-to-victory-sim-loop",
+  "reviewed_commit": "2d7ac749e939b08ee23376ed4ce94cafc7388277",
+  "request_changes_round": 1,
+  "required_changes": [
+    "packages/sim-core/src/command-query-v1.ts: buildM6AlphaTerminalEvidence must compute postwar/governance evidence for the evaluated polity only, not global postwarCandidates.length.",
+    "tests/sim-core-m6-start-to-victory-loop.test.ts: add regression where unrelated polity postwar candidate does not satisfy evaluated polity victory evidence; keep save/load and hash determinism covered."
+  ],
+  "created_at": "2026-06-27T20:51:33.066+08:00",
+  "submission_id": "019f0922-e09c-7f03-bd48-feb41ad1cf54",
+  "sent_at": "2026-06-27T20:52:09.263+08:00"
+}

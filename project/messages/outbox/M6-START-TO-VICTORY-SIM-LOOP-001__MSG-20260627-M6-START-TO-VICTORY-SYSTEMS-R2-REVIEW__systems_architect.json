@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-R2-REVIEW",
+  "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 systems review accepted. The previous REQUEST_CHANGES item is fixed: M6 Alpha terminal postwarArrangementCount no longer uses global M4 postwar candidate count, and now scopes postwar/governance evidence to the evaluated polity through that polity's own M4 postwar candidates and M3 postwar governance obligations, deduplicated by settlement id. The new regression proves an unrelated polity's postwar candidate does not satisfy the evaluated polity's victory condition and preserves save/load plus state hash determinism.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "tests/sim-core-m6-start-to-victory-loop.test.ts",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-R2-REVIEW__simulation_engineer.json",
+    "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-WRITER-R2-TO-SYSTEMS-REVIEW.json"
+  ],
+  "branch_or_worktree": "feat/m6-start-to-victory-sim-loop / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "7e41cd79d29d26755e9aab71a34dc897d8f792c0",
+  "reviewed_commit": "7e41cd79d29d26755e9aab71a34dc897d8f792c0",
+  "previous_reviewed_commit": "2d7ac749e939b08ee23376ed4ce94cafc7388277",
+  "reviewed_diff": "2d7ac749e939b08ee23376ed4ce94cafc7388277..7e41cd79d29d26755e9aab71a34dc897d8f792c0",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before R2 review commands, HEAD was 7e41cd79d29d26755e9aab71a34dc897d8f792c0 on feat/m6-start-to-victory-sim-loop. Worktree already contained process-state changes and the untracked R2 route file from lead routing; these were not modified by the review except for this handoff write."
+    },
+    {
+      "command": "git diff --name-status 2d7ac749e939b08ee23376ed4ce94cafc7388277..7e41cd79d29d",
+      "exit_code": 0,
+      "result": "R2 diff touched allowed paths only: packages/sim-core/src/command-query-v1.ts, tests/sim-core-m6-start-to-victory-loop.test.ts, project/messages, project task/process state files."
+    },
+    {
+      "command": "git diff --check 2d7ac749e939b08ee23376ed4ce94cafc7388277..7e41cd79d29d",
+      "exit_code": 0,
+      "result": "No whitespace errors in the R2 reviewed diff."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 5 tests. New regression covers unrelated polity postwar evidence, continued-play result, save/load round-trip, state hash determinism, and invariant validation."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed. M6 Alpha Node hash 260f46c3 matched Worker-compatible hash 260f46c3; loaded hash 260f46c3; terminal outcome victory."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed 25 test files / 191 tests for the sim-core package suite."
+    },
+    {
+      "command": "git diff --unified=0 2d7ac749e939b08ee23376ed4ce94cafc7388277..7e41cd79d29d -- packages/sim-core tests apps/sim-runner packages/protocol packages/save-format | rg -n \"^\\+.*(Math\\.random|Date\\.now|performance\\.now|new Date|Object\\.keys|telemetry|multiplayer|manual node|manual-node|eval\\(|Function\\()\"",
+      "exit_code": 1,
+      "result": "No added authority-randomness, real-time, implicit object-order, telemetry, multiplayer/server, manual-node-battle, arbitrary-code, or eval patterns were found."
+    },
+    {
+      "command": "git grep -n -E \"react|pixi|electron|node:fs|node:path|node:process|node:worker_threads|window|document\" 7e41cd79d29d -- packages/sim-core/src packages/protocol/src packages/save-format/src",
+      "exit_code": 0,
+      "result": "Only benign identifier matches for campaign window fields were found in package source; no React/Pixi/Electron/Node IO dependency was introduced into sim-core/protocol/save-format."
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "ACCEPT R2",
+      "reason": "The R2 fix satisfies both required changes from the previous systems review and does not weaken the R4 architecture boundaries."
+    },
+    {
+      "decision": "Route to lead_orchestrator",
+      "reason": "Systems review passes; lead should continue the review flow without marking the task CLOSED from this handoff alone."
+    }
+  ],
+  "required_changes": [],
+  "risks": [
+    {
+      "risk": "The R2 regression uses a test-only WorldState variant to isolate unrelated postwar evidence.",
+      "assessment": "Acceptable for this bug class because terminal recording still goes through sim.evaluate-m6-alpha-outcome, save/load, query, hash, and invariant paths."
+    }
+  ],
+  "blockers": [],
+  "accepted_findings": [
+    {
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "4634-4664",
+      "finding": "buildM6AlphaTerminalEvidence now delegates postwarArrangementCount to countM6AlphaPostwarArrangementEvidence(world, polityId), which filters M4 postwar candidates by candidate.victorPolityId === polityId and counts M3 postwar governance obligation source ids only when obligation.creditorPolityId === polityId."
+    },
+    {
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "lines": "4664-4683",
+      "finding": "M3 postwar source parsing matches existing governance source ids for direct control markers and tribute/troop obligations, and deduplicates by settlement id."
+    },
+    {
+      "file": "tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "lines": "115-180",
+      "finding": "Regression proves an unrelated polity postwar candidate yields continued-play with postwarArrangementCount 0 for the evaluated polity, while save/load and state hash determinism remain covered."
+    }
+  ],
+  "non_blocking_observations": [
+    "R2 changed no protocol, save-format, runner behavior, UI, content-source data, manual node battle, full diplomacy, server/multiplayer, telemetry, M7 content, or M8 release-stability scope.",
+    "The terminal outcome remains computed inside sim-core from authoritative state and recorded through the same sim.evaluate-m6-alpha-outcome GameCommand path.",
+    "Victory, defeat, and continued-play terminal states remain explicit, deterministic, queryable, save/load covered, and hash-covered.",
+    "Node runner and Worker-compatible execution still produce matching M6 Alpha hashes.",
+    "No hidden UI mutation, AI-only rescue hook, object-graph save, all-purpose manager, or implicit RPC pattern was observed in the R2 fix.",
+    "Current worktree contains lead/process routing modifications outside the R2 reviewed commit; they were not used as code evidence except for reading the route/handoff requested by the user."
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may route this accepted systems_architect R2 review onward according to the M6 review flow. Do not mark M6-START-TO-VICTORY-SIM-LOOP-001 CLOSED from this handoff alone.",
+  "created_at": "2026-06-27T21:03:29.234+08:00"
+}

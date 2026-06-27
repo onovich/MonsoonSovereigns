@@ -4,6 +4,7 @@ import {
   createCommandQueryCanaryScript,
   createHelloThirtyDayRequest,
   createM4DeterminismReplayScriptV1,
+  createM6AlphaStartToVictoryScriptV1,
   createM5PlayableLoopScriptV1,
   createSaveLoadCanaryScriptV1
 } from "@monsoon/protocol";
@@ -11,6 +12,7 @@ import {
   runCommandQueryCanaryV1,
   runHelloSimulation,
   runM4DeterminismReplayV1,
+  runM6AlphaStartToVictoryLoopV1,
   runM5PlayableLoopV1,
   runSaveLoadCanaryV1
 } from "@monsoon/sim-core";
@@ -139,6 +141,39 @@ if (
 
 stdout.write("Deterministic M5 playable loop simulation matched.\n");
 
+const m6AlphaScript = createM6AlphaStartToVictoryScriptV1();
+const nodeM6Result = runM6AlphaStartToVictoryLoopV1(m6AlphaScript);
+const workerM6Result = await runM6AlphaLoopInWorkerCompatibleAdapter(m6AlphaScript);
+
+stdout.write(`Node M6 Alpha hash: ${nodeM6Result.finalHash}\n`);
+stdout.write(`Worker-compatible M6 Alpha hash: ${workerM6Result.finalHash}\n`);
+stdout.write(`M6 Alpha loaded hash: ${nodeM6Result.loadedHash}\n`);
+stdout.write(`M6 Alpha terminal outcome: ${nodeM6Result.terminalOutcome}\n`);
+
+if (
+  nodeM6Result.finalHash !== workerM6Result.finalHash ||
+  nodeM6Result.loadedHash !== workerM6Result.loadedHash ||
+  nodeM6Result.verifiedHash !== workerM6Result.verifiedHash ||
+  nodeM6Result.terminalOutcome !== workerM6Result.terminalOutcome ||
+  nodeM6Result.malformedCommandStateHashUnchanged !==
+    workerM6Result.malformedCommandStateHashUnchanged
+) {
+  stdout.write("Deterministic M6 Alpha loop hash mismatch.\n");
+  exit(1);
+}
+
+if (
+  nodeM6Result.terminalOutcome !== "victory" ||
+  !nodeM6Result.midRunLoadedHashMatches ||
+  !nodeM6Result.malformedCommandRejected ||
+  !nodeM6Result.noP0P1DataCorruption
+) {
+  stdout.write("Deterministic M6 Alpha loop did not reach the accepted victory outcome.\n");
+  exit(1);
+}
+
+stdout.write("Deterministic M6 Alpha loop simulation matched.\n");
+
 function runM5PlayableLoopInWorkerCompatibleAdapter(script) {
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL("./m5-playable-loop-worker.mjs", import.meta.url), {
@@ -169,5 +204,38 @@ function runM5PlayableLoopInWorkerCompatibleAdapter(script) {
       reject(error);
     });
     worker.postMessage(JSON.stringify({ kind: "run-m5-playable-loop-v1", script }));
+  });
+}
+
+function runM6AlphaLoopInWorkerCompatibleAdapter(script) {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(new URL("./m6-alpha-loop-worker.mjs", import.meta.url), {
+      execArgv: ["--experimental-strip-types"]
+    });
+    const finish = () => {
+      worker.removeAllListeners();
+      void worker.terminate();
+    };
+
+    worker.once("message", (message) => {
+      finish();
+      try {
+        if (typeof message !== "string") {
+          throw new Error("M6 worker response must be a JSON string.");
+        }
+        const response = JSON.parse(message);
+        if (response?.status !== "ok") {
+          throw new Error(response?.message ?? "M6 worker returned an error.");
+        }
+        resolve(response.result);
+      } catch (error) {
+        reject(error);
+      }
+    });
+    worker.once("error", (error) => {
+      finish();
+      reject(error);
+    });
+    worker.postMessage(JSON.stringify({ kind: "run-m6-alpha-loop-v1", script }));
   });
 }

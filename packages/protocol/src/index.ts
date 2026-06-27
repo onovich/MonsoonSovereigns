@@ -115,6 +115,7 @@ export type M6LegitimacySourceKindV1 =
   | "succession-continuity"
   | "postwar-settlement"
   | "campaign-consequence";
+export type M6AlphaTerminalOutcomeV1 = "victory" | "defeat" | "continued-play";
 export const M4_CAMPAIGN_AI_TRACE_SCHEMA_VERSION = 1;
 export const M4_CAMPAIGN_AI_TRACE_MAX_CANDIDATES = 16;
 export type M4CampaignAiDecisionKindV1 =
@@ -482,6 +483,21 @@ export interface ChoosePolicyEventOptionCommandV1 {
   };
 }
 
+export interface EvaluateM6AlphaOutcomeCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.evaluate-m6-alpha-outcome";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly terminalStateId: number;
+    readonly polityId: number;
+    readonly maxDay: number;
+    readonly reasonCode: string;
+  };
+}
+
 export type M4CampaignOwnerV1 =
   | { readonly kind: "commander"; readonly characterId: number }
   | { readonly kind: "polity"; readonly polityId: number };
@@ -736,7 +752,8 @@ export type M6GameCommandV1 =
   | ProposeDiplomaticAgreementCommandV1
   | AnswerDiplomaticAgreementCommandV1
   | RecordLegitimacySourceCommandV1
-  | ChoosePolicyEventOptionCommandV1;
+  | ChoosePolicyEventOptionCommandV1
+  | EvaluateM6AlphaOutcomeCommandV1;
 
 export type AuthoritativeGameCommandV1 = GameCommandV1 | M6GameCommandV1;
 
@@ -939,6 +956,15 @@ export interface ListM6RecognizedOrderQueryV1 {
   };
 }
 
+export interface GetM6AlphaTerminalStateQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.get-m6-alpha-terminal-state";
+  readonly payload: {
+    readonly queryId: string;
+    readonly polityId: number;
+  };
+}
+
 export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
@@ -960,7 +986,8 @@ export type GameQueryV1 =
   | ListM4WithdrawalStateQueryV1
   | ListM4WarOutcomesQueryV1
   | ListM6DiplomacyQueryV1
-  | ListM6RecognizedOrderQueryV1;
+  | ListM6RecognizedOrderQueryV1
+  | GetM6AlphaTerminalStateQueryV1;
 
 export type DistrictControlKindV1 = "controlled" | "uncontrolled";
 
@@ -1189,7 +1216,8 @@ export interface CompareM3PostwarGovernanceOutcomesResultV1 {
 export type SimulationFixtureIdV1 =
   | "m1.abstract-graph-30"
   | "minimal-m1"
-  | "m4.determinism-replay-001";
+  | "m4.determinism-replay-001"
+  | "m6.alpha-start-to-victory-001";
 
 export interface FixtureBootSimulationInputV1 {
   readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
@@ -1238,6 +1266,20 @@ export interface M5PlayableLoopScriptV1 {
   };
   readonly successCommands: readonly GameCommandV1[];
   readonly duplicatePostwarCommand: GameCommandV1;
+}
+
+export interface M6AlphaStartToVictoryScriptV1 {
+  readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  readonly boot: {
+    readonly protocolVersion: typeof SIMULATION_MESSAGE_PROTOCOL_VERSION;
+    readonly fixture: "m6.alpha-start-to-victory-001";
+  };
+  readonly commandsBeforeMidRunSave: readonly AuthoritativeGameCommandV1[];
+  readonly commandsAfterMidRunSave: readonly AuthoritativeGameCommandV1[];
+  readonly victoryTerminalCommand: AuthoritativeGameCommandV1;
+  readonly continuedPlayTerminalCommand: AuthoritativeGameCommandV1;
+  readonly defeatTerminalCommand: AuthoritativeGameCommandV1;
+  readonly malformedTerminalCommand: AuthoritativeGameCommandV1;
 }
 
 export type ProtocolErrorCodeV1 =
@@ -1659,6 +1701,158 @@ export function createM5PlayableLoopScriptV1(): M5PlayableLoopScriptV1 {
   };
 }
 
+export function createM6AlphaStartToVictoryScriptV1(): M6AlphaStartToVictoryScriptV1 {
+  const protocolVersion = SIMULATION_MESSAGE_PROTOCOL_VERSION;
+  const base = createM5PlayableLoopScriptV1();
+  const resolveSuccession: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.resolve-succession",
+    commandId: "m6.alpha.resolve-succession",
+    actor: { kind: "player", id: "polity:1" },
+    expectedDay: 24,
+    expectedRevision: 15,
+    payload: {
+      successionId: 1,
+      reasonCode: "m6.alpha.succession.peaceful"
+    }
+  };
+  const proposeRecognition: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.propose-diplomatic-agreement",
+    commandId: "m6.alpha.diplomacy.propose-recognition",
+    actor: { kind: "player", id: "polity:1" },
+    expectedDay: 24,
+    expectedRevision: 16,
+    payload: {
+      agreementId: 1,
+      relationId: 1,
+      proposerPolityId: 1,
+      targetPolityId: 2,
+      agreementKind: "tribute-recognition",
+      durationDays: 720,
+      recognitionDirection: "target-recognizes-proposer",
+      reasonCode: "m6.alpha.diplomacy.recognized-order"
+    }
+  };
+  const acceptRecognition: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.answer-diplomatic-agreement",
+    commandId: "m6.alpha.diplomacy.accept-recognition",
+    actor: { kind: "ai", id: "polity:2" },
+    expectedDay: 24,
+    expectedRevision: 17,
+    payload: {
+      agreementId: 1,
+      accepted: true,
+      reasonCode: "m6.alpha.diplomacy.accepted"
+    }
+  };
+  const recordPostwarLegitimacy: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.record-legitimacy-source",
+    commandId: "m6.alpha.legitimacy.postwar",
+    actor: { kind: "system", id: "m6-legitimacy" },
+    expectedDay: 24,
+    expectedRevision: 18,
+    payload: {
+      sourceId: 2,
+      polityId: 1,
+      audience: "vassal-rulers",
+      sourceKind: "postwar-settlement",
+      magnitudeBps: 450,
+      sourceRef: "m4.postwar.m6-alpha",
+      reasonCode: "legitimacy.source.postwar-settlement"
+    }
+  };
+  const advancePolicyDay: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.advance-day",
+    commandId: "m6.alpha.advance-policy-day",
+    actor: { kind: "system", id: "scheduler" },
+    expectedDay: 24,
+    expectedRevision: 19
+  };
+  const choosePolicyEvent: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.choose-policy-event-option",
+    commandId: "m6.alpha.policy.choose",
+    actor: { kind: "ai", id: "polity:1" },
+    expectedDay: 25,
+    expectedRevision: 20,
+    payload: {
+      eventInstanceId: 1,
+      optionId: 1,
+      reasonCode: "m6.alpha.policy.harbor-charter"
+    }
+  };
+  const victoryTerminalCommand: AuthoritativeGameCommandV1 = {
+    schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+    kind: "sim.evaluate-m6-alpha-outcome",
+    commandId: "m6.alpha.terminal.victory",
+    actor: { kind: "player", id: "polity:1" },
+    expectedDay: 25,
+    expectedRevision: 21,
+    payload: {
+      terminalStateId: 1,
+      polityId: 1,
+      maxDay: 60,
+      reasonCode: "m6.alpha.terminal.assess"
+    }
+  };
+  return {
+    protocolVersion,
+    boot: {
+      protocolVersion,
+      fixture: "m6.alpha-start-to-victory-001"
+    },
+    commandsBeforeMidRunSave: [...base.successCommands, resolveSuccession],
+    commandsAfterMidRunSave: [
+      proposeRecognition,
+      acceptRecognition,
+      recordPostwarLegitimacy,
+      advancePolicyDay,
+      choosePolicyEvent
+    ],
+    victoryTerminalCommand,
+    continuedPlayTerminalCommand: {
+      ...victoryTerminalCommand,
+      commandId: "m6.alpha.terminal.continued",
+      expectedDay: 20,
+      expectedRevision: 0,
+      payload: {
+        terminalStateId: 2,
+        polityId: 1,
+        maxDay: 60,
+        reasonCode: "m6.alpha.terminal.assess"
+      }
+    },
+    defeatTerminalCommand: {
+      ...victoryTerminalCommand,
+      commandId: "m6.alpha.terminal.defeat",
+      expectedDay: 20,
+      expectedRevision: 0,
+      payload: {
+        terminalStateId: 3,
+        polityId: 1,
+        maxDay: 10,
+        reasonCode: "m6.alpha.terminal.assess"
+      }
+    },
+    malformedTerminalCommand: {
+      ...victoryTerminalCommand,
+      commandId: "m6.alpha.terminal.malformed",
+      expectedDay: 24,
+      expectedRevision: 16,
+      payload: {
+        terminalStateId: 0,
+        polityId: 1,
+        maxDay: 60,
+        reasonCode: "m6.alpha.terminal.assess"
+      }
+    }
+  };
+}
+
 export function parseGameCommandV1(
   input: unknown
 ): ProtocolParseResult<AuthoritativeGameCommandV1> {
@@ -1974,6 +2168,22 @@ export function parseGameCommandV1(
     }
     case "sim.choose-policy-event-option": {
       const payload = parseChoosePolicyEventOptionPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.evaluate-m6-alpha-outcome": {
+      const payload = parseEvaluateM6AlphaOutcomePayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -2530,6 +2740,27 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
         }
       };
     }
+    case "sim.get-m6-alpha-terminal-state": {
+      const payload = parseM6PolityScopedQueryPayload(
+        input["payload"],
+        "sim.get-m6-alpha-terminal-state"
+      );
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: {
+            queryId: payload.value.queryId,
+            polityId: payload.value.polityId
+          }
+        }
+      };
+    }
     default:
       if (typeof kind !== "string") {
         return protocolError("invalid-payload", "kind", "GameQuery kind must be a string.");
@@ -2701,7 +2932,8 @@ export function parseBootSimulationInputV1(
   if (
     input["fixture"] === "minimal-m1" ||
     input["fixture"] === "m1.abstract-graph-30" ||
-    input["fixture"] === "m4.determinism-replay-001"
+    input["fixture"] === "m4.determinism-replay-001" ||
+    input["fixture"] === "m6.alpha-start-to-victory-001"
   ) {
     return {
       ok: true,
@@ -2749,7 +2981,7 @@ export function parseBootSimulationInputV1(
   return protocolError(
     "invalid-payload",
     "fixture",
-    "BootSimulationInput fixture must be minimal-m1, m1.abstract-graph-30, or m4.determinism-replay-001."
+    "BootSimulationInput fixture must be minimal-m1, m1.abstract-graph-30, m4.determinism-replay-001, or m6.alpha-start-to-victory-001."
   );
 }
 
@@ -3623,6 +3855,46 @@ function parseChoosePolicyEventOptionPayload(
     value: {
       eventInstanceId: eventInstanceId.value,
       optionId: optionId.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseEvaluateM6AlphaOutcomePayload(
+  input: unknown
+): ProtocolParseResult<EvaluateM6AlphaOutcomeCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.evaluate-m6-alpha-outcome payload must be an object."
+    );
+  }
+  const terminalStateId = parsePositiveSafeInteger(
+    input["terminalStateId"],
+    "payload.terminalStateId"
+  );
+  if (!terminalStateId.ok) {
+    return terminalStateId;
+  }
+  const polityId = parsePositiveSafeInteger(input["polityId"], "payload.polityId");
+  if (!polityId.ok) {
+    return polityId;
+  }
+  const maxDay = parseNonnegativeSafeInteger(input["maxDay"], "payload.maxDay");
+  if (!maxDay.ok) {
+    return maxDay;
+  }
+  const reasonCode = parseReasonCode(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+  return {
+    ok: true,
+    value: {
+      terminalStateId: terminalStateId.value,
+      polityId: polityId.value,
+      maxDay: maxDay.value,
       reasonCode: reasonCode.value
     }
   };

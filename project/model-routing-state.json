@@ -2292,7 +2292,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M6-START-TO-VICTORY-SIM-LOOP-001 as the next dependency-ready M6 task.",
+  "next_action": "Open PR, wait for CI, merge to main, then close M6-START-TO-VICTORY-SIM-LOOP-001 and continue to the next READY M6 task.",
   "current_task": "M6-START-TO-VICTORY-SIM-LOOP-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2343,7 +2343,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-27T19:56:16.169+08:00",
+  "updated_at": "2026-06-27T21:08:31.864+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2394,6 +2394,54 @@
     ],
     "next_ready_tasks": [
       "M6-START-TO-VICTORY-SIM-LOOP-001"
+    ]
+  },
+  "m6_start_to_victory_sim_loop": {
+    "status": "ACCEPTED",
+    "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+    "branch_or_worktree": "feat/m6-start-to-victory-sim-loop",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f08f4-6702-7fa3-adfb-316af1270ca1",
+    "writer_nickname": "Delta",
+    "start_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-LEAD-TO-SIM-START.json",
+    "started_at": "2026-06-27T20:02:10.863+08:00",
+    "base_main_commit": "043a75a3dc678c32cfd7fa8e5ca31bbb91a6fbeb",
+    "previous_closed_task": "M6-POLICY-EVENT-RUNTIME-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "Open PR, wait for CI, merge to main, then close M6-START-TO-VICTORY-SIM-LOOP-001 and continue to the next READY M6 task.",
+    "start_submission_id": "019f08f5-cbc2-70b3-a362-5bb7ce108ced",
+    "route_sent_at": "2026-06-27T20:02:55.011+08:00",
+    "updated_at": "2026-06-27T21:08:31.864+08:00",
+    "systems_architect_thread_id": "019f0914-1645-7003-b1a3-d389719b8d7f",
+    "systems_architect_nickname": "Meridian",
+    "review_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-REVIEW__simulation_engineer.json",
+    "review_route_file": "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-WRITER-TO-SYSTEMS-REVIEW.json",
+    "review_commit": "2d7ac749e939b08ee23376ed4ce94cafc7388277",
+    "routed_to_systems_at": "2026-06-27T20:36:26.083+08:00",
+    "systems_review_submission_id": "019f0915-0f33-7013-adbf-60404884eb3d",
+    "systems_route_sent_at": "2026-06-27T20:37:02.773+08:00",
+    "systems_status": "REQUEST_CHANGES",
+    "systems_review_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-REVIEW__systems_architect.json",
+    "request_changes_round": 1,
+    "request_changes_route": "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
+    "request_changes_submission_id": "019f0922-e09c-7f03-bd48-feb41ad1cf54",
+    "request_changes_sent_at": "2026-06-27T20:52:09.263+08:00",
+    "r2_review_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-R2-REVIEW__simulation_engineer.json",
+    "review_commit_r2": "7e41cd79d29d",
+    "review_route_file_r2": "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+    "routed_to_systems_r2_at": "2026-06-27T20:59:47.098+08:00",
+    "systems_review_submission_id_r2": "019f092b-4717-7df3-9c6f-1186c86bf5c0",
+    "systems_route_sent_r2_at": "2026-06-27T21:01:07.524+08:00",
+    "systems_status_r2": "ACCEPT",
+    "systems_review_handoff_r2": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T21:08:31.864+08:00",
+    "accepted_head_commit": "a0e79c3c84e157318afefd6b0f2bc9196f522e87",
+    "child_threads_closed": [
+      "019f08f4-6702-7fa3-adfb-316af1270ca1",
+      "019f0914-1645-7003-b1a3-d389719b8d7f"
     ]
   }
 }

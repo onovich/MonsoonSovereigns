@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-REVIEW",
+  "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Reviewed M6-START-TO-VICTORY-SIM-LOOP-001 at commit 2d7ac749e939b08ee23376ed4ce94cafc7388277. The main start-to-victory path, explicit terminal command/query/save DTOs, hash coverage, save/load round-trip, malformed command rejection, and Node/Worker-compatible parity evidence are mostly sound. However, M6 Alpha terminal victory evidence currently counts all M4 postwar candidates globally instead of filtering to the evaluated polity, so unrelated postwar evidence can satisfy a victory requirement. This is an R4 terminal-state correctness issue and requires writer changes before QA routing.",
+  "artifacts": [
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "apps/sim-runner/src/m6-alpha-loop-worker.mjs",
+    "tests/sim-core-m6-start-to-victory-loop.test.ts",
+    "tests/protocol-command-query-schema.test.ts"
+  ],
+  "branch_or_worktree": "feat/m6-start-to-victory-sim-loop / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "2d7ac749e939b08ee23376ed4ce94cafc7388277",
+  "reviewed_commit": "2d7ac749e939b08ee23376ed4ce94cafc7388277",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before writing this handoff, branch was feat/m6-start-to-victory-sim-loop and the worktree was clean."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 4 tests covering accepted Alpha victory path, Node/Worker-compatible parity, continued-play and defeat terminal assessments, mid-run save/load, and malformed terminal command rejection."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/protocol-command-query-schema.test.ts",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 10 tests, including M6 Alpha terminal command/query schema parsing and malformed terminal id rejection."
+    },
+    {
+      "command": "git diff --check 043a75a3dc678c32cfd7fa8e5ca31bbb91a6fbeb..2d7ac749e939b08ee23376ed4ce94cafc7388277",
+      "exit_code": 0,
+      "result": "No whitespace errors in the reviewed diff."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed. M6 Alpha Node hash 260f46c3 matched Worker-compatible hash 260f46c3; loaded hash 260f46c3; terminal outcome victory."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "After review commands and before this handoff write, branch was feat/m6-start-to-victory-sim-loop and the worktree remained clean."
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "REQUEST_CHANGES",
+      "reason": "Terminal victory evidence must be polity-scoped and semantically tied to the evaluated player's recognized order. The current global postwar candidate count can admit unrelated evidence."
+    },
+    {
+      "decision": "Do not route to qa_reviewer yet.",
+      "reason": "The R4 terminal-state evidence issue affects start-to-victory correctness and must return to the writer first."
+    }
+  ],
+  "required_changes": [
+    {
+      "file": "packages/sim-core/src/command-query-v1.ts",
+      "line": 4634,
+      "behavior": "buildM6AlphaTerminalEvidence currently sets postwarArrangementCount from world.state.m4?.postwarCandidates.length, which is global and not scoped to the evaluated polityId.",
+      "expected_fix": "Compute postwar/governance evidence for the evaluated polity only. Reuse or align with the existing recognized-order read model filtering at command-query-v1.ts:10623-10625, and ensure the evidence represents a valid postwar/governance arrangement for that polity rather than an unrelated global candidate."
+    },
+    {
+      "file": "tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "behavior": "Current tests cover the happy path and terminal outcome variants but do not prove that unrelated postwar candidates cannot satisfy the evaluated polity's victory evidence.",
+      "expected_fix": "Add a regression where an unrelated polity has a postwar candidate while the evaluated polity lacks its own postwar/governance evidence. The terminal assessment must not be victory solely because another polity has a postwar candidate; save/load and state hash determinism should remain covered."
+    }
+  ],
+  "risks": [
+    {
+      "risk": "If left unchanged, an Alpha terminal victory can be recorded for a polity whose own recognized order lacks the required postwar/governance evidence.",
+      "severity": "R4 acceptance blocker"
+    }
+  ],
+  "blockers": [
+    {
+      "code": "m6-alpha-terminal-postwar-evidence-not-polity-scoped",
+      "path": "packages/sim-core/src/command-query-v1.ts:4634",
+      "message": "Global M4 postwar candidate count is used as terminal victory evidence for a specific polity."
+    }
+  ],
+  "non_blocking_observations": [
+    "Reviewed diff files are within the task allowed_paths; no forbidden path hit was found.",
+    "New M6 terminal command, query, and save DTOs are explicit and versioned under existing v1/v0 optional-slice patterns.",
+    "m6Alpha terminal state is included in canonical world hash text and save/load round-trip.",
+    "The terminal outcome is computed inside sim-core from authoritative state rather than trusting a client-supplied outcome payload.",
+    "Malformed terminal command rejection keeps the state hash unchanged in the focused test.",
+    "No added Math.random, Date.now, performance.now, Object.keys authority dependency, telemetry, server/multiplayer, manual node battle, arbitrary-code script, or object-graph save pattern was found in added lines.",
+    "Node runner and Worker-compatible execution produced the same M6 Alpha hash in both focused tests and pnpm sim:determinism."
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route REQUEST_CHANGES to the simulation_engineer writer. After the writer fixes polity-scoped terminal postwar/governance evidence and adds the requested regression test, reroute to systems_architect for review before QA.",
+  "created_at": "2026-06-27T20:49:13.104+08:00"
+}
