@@ -16,9 +16,15 @@
       "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
       "nickname": "Keystone the 3rd",
       "task_id": "M7-TASK-GRAPH-001",
-      "status": "review",
-      "role": "systems_architect",
-      "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+      "status": "completed_review_ready",
+      "role": "systems_architect"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
+      "nickname": "Auditor the 3rd",
+      "task_id": "M7-TASK-GRAPH-001",
+      "status": "active_reviewing",
+      "role": "qa_reviewer"
     }
   },
   "last_integrated_task": "M6-EXIT-VALIDATION-001",
@@ -837,7 +843,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T03:55:00+08:00",
+  "last_updated_at": "2026-06-28T04:03:00.0000000+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1499,14 +1505,14 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "started_at": "2026-06-28T03:43:49.1264386+08:00",
-    "next_action": "Await independent qa_reviewer review of the M7 task graph.",
+    "next_action": "Await independent qa_reviewer verdict for M7 task graph.",
     "systems_architect_thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
     "systems_architect_nickname": "Keystone the 3rd",
     "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
     "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
     "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
-    "updated_at": "2026-06-28T03:55:00+08:00",
+    "updated_at": "2026-06-28T04:03:00.0000000+08:00",
     "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
     "downstream_tasks": [
       "M7-CONTENT-LOCK-CONTRACT-001",
@@ -1523,6 +1529,13 @@
       "M7-CONTENT-LOCK-ACCEPTANCE-001",
       "M7-EXIT-VALIDATION-001"
     ],
-    "first_downstream_ready_after_acceptance": "M7-CONTENT-LOCK-CONTRACT-001"
+    "first_downstream_ready_after_acceptance": "M7-CONTENT-LOCK-CONTRACT-001",
+    "review_commit": "2613c6c9d214cdab6f6e62bf47c1c1e3a0dfc16a",
+    "review_metadata_fix_commit": "5179fda6",
+    "qa_thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
+    "qa_thread_nickname": "Auditor the 3rd",
+    "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+    "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
+    "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00"
   }
 }

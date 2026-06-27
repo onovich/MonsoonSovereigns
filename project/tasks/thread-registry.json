@@ -4967,7 +4967,7 @@
       "task_id": "M7-TASK-GRAPH-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active",
+      "status": "active_awaiting_qa",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -4978,19 +4978,24 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T03:43:49.1264386+08:00",
-      "updated_at": "2026-06-28T03:55:00+08:00",
-      "next_action": "Route systems_architect REVIEW handoff to qa_reviewer.",
+      "updated_at": "2026-06-28T04:03:00.0000000+08:00",
+      "next_action": "Await independent qa_reviewer verdict for M7 task graph.",
       "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
       "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
-      "route_sent_at": "2026-06-28T03:45:30.0000000+08:00"
+      "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
+      "qa_thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
+      "qa_thread_nickname": "Auditor the 3rd",
+      "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+      "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
+      "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00"
     },
     "M7-TASK-GRAPH-001:systems_architect": {
       "task_id": "M7-TASK-GRAPH-001",
       "role": "systems_architect",
       "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
       "nickname": "Keystone the 3rd",
-      "status": "review",
+      "status": "completed_review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -5003,10 +5008,38 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T03:45:30.0000000+08:00",
-      "updated_at": "2026-06-28T03:55:00+08:00",
-      "next_action": "Await independent qa_reviewer review of the M7 task graph.",
+      "updated_at": "2026-06-28T04:03:00.0000000+08:00",
+      "next_action": "Await independent qa_reviewer verdict.",
       "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
-      "review_route_to": "qa_reviewer"
+      "review_route_to": "qa_reviewer",
+      "review_commit": "2613c6c9d214cdab6f6e62bf47c1c1e3a0dfc16a",
+      "review_metadata_fix_commit": "5179fda6",
+      "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+      "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
+      "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00"
+    },
+    "M7-TASK-GRAPH-001:qa_reviewer": {
+      "task_id": "M7-TASK-GRAPH-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
+      "nickname": "Auditor the 3rd",
+      "status": "active_reviewing",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "read_only": true,
+      "branch_or_worktree": "chore/m7-task-graph",
+      "review_commit": "5179fda6",
+      "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "review_route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+      "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
+      "qa_route_sent_at": "2026-06-28T04:03:00.0000000+08:00",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "created_at": "2026-06-28T04:03:00.0000000+08:00",
+      "updated_at": "2026-06-28T04:03:00.0000000+08:00",
+      "next_action": "Review M7 task graph and emit ACCEPT, REQUEST_CHANGES, or BLOCK handoff to lead_orchestrator."
     }
   },
   "replaced_threads": [
@@ -5096,5 +5129,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T03:55:00+08:00"
+  "updated_at": "2026-06-28T04:03:00.0000000+08:00"
 }
