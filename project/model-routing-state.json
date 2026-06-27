@@ -42,8 +42,8 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": null,
-    "updated_at": "2026-06-28T03:36:23.0435839+08:00"
+    "task_id": "M7-TASK-GRAPH-001",
+    "updated_at": "2026-06-28T03:55:00+08:00"
   },
   "retired_lead_threads": [
     {
@@ -1813,6 +1813,30 @@
       "migration_status": "closed_after_accept_review",
       "accepted_task_reopened": false,
       "closed_at": "2026-06-28T03:27:03.1315987+08:00"
+    },
+    {
+      "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
+      "role": "systems_architect",
+      "task_id": "M7-TASK-GRAPH-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_systems_review_and_independent_qa_accept",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T04:14:55.1642622+08:00"
+    },
+    {
+      "thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
+      "role": "qa_reviewer",
+      "task_id": "M7-TASK-GRAPH-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_accept_review",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T04:14:55.1642622+08:00"
     }
   ],
   "active_threads": [
@@ -2413,7 +2437,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T03:36:23.0435839+08:00",
+  "updated_at": "2026-06-28T04:14:55.1642622+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2919,5 +2943,144 @@
     "next_action": "Create or recover M7-TASK-GRAPH-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+  },
+  "m7_task_graph": {
+    "status": "ACCEPTED",
+    "task_id": "M7-TASK-GRAPH-001",
+    "branch_or_worktree": "chore/m7-task-graph",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "owner_role": "systems_architect",
+    "reviewer_role": "qa_reviewer",
+    "base_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "started_at": "2026-06-28T03:43:49.1264386+08:00",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
+    "systems_architect_thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
+    "systems_architect_nickname": "Keystone the 3rd",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
+    "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
+    "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
+    "updated_at": "2026-06-28T04:03:00.0000000+08:00",
+    "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "downstream_tasks": [
+      {
+        "id": "M7-CONTENT-LOCK-CONTRACT-001",
+        "owner_role": "gameplay_designer",
+        "reviewer_role": "systems_architect",
+        "risk_level": "R4",
+        "status": "READY"
+      },
+      {
+        "id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+        "owner_role": "historical_researcher",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+        "owner_role": "historical_researcher",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+        "owner_role": "client_engineer",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R3",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+        "owner_role": "client_engineer",
+        "reviewer_role": "historical_researcher",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-BETA-CULTURE-REVIEW-001",
+        "owner_role": "historical_researcher",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+        "owner_role": "systems_architect",
+        "reviewer_role": "security_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+        "owner_role": "balance_analyst",
+        "reviewer_role": "gameplay_designer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+        "owner_role": "test_engineer",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+        "owner_role": "test_engineer",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+        "owner_role": "test_engineer",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+        "owner_role": "lead_orchestrator",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      },
+      {
+        "id": "M7-EXIT-VALIDATION-001",
+        "owner_role": "systems_architect",
+        "reviewer_role": "qa_reviewer",
+        "risk_level": "R4",
+        "status": "DRAFT"
+      }
+    ],
+    "review_commit": "2613c6c9d214cdab6f6e62bf47c1c1e3a0dfc16a",
+    "review_metadata_fix_commit": "5179fda6",
+    "qa_thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
+    "qa_thread_nickname": "Auditor the 3rd",
+    "configured_reviewer_model": "gpt-5.5",
+    "configured_reviewer_effort": "xhigh",
+    "actual_reviewer_model": "unknown",
+    "actual_reviewer_effort": "unknown",
+    "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+    "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
+    "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+    "qa_reviewed_at": "2026-06-28T04:12:00.0817003+08:00",
+    "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T04:14:55.1642622+08:00",
+    "accepted_head_commit": "b3ae5ed0b9ab5b1d8961dfb411221770a3c8290a",
+    "child_threads_closed": [
+      "019f0a9d-fc35-7953-b109-aa06340de057",
+      "019f0aaf-d094-7c30-a525-fb612fe5dccb"
+    ]
   }
 }

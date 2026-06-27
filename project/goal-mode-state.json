@@ -2,17 +2,19 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-TASK-GRAPH-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_planning_next_milestone",
+      "task_id": "M7-TASK-GRAPH-001",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator"
     }
   },
   "last_integrated_task": "M6-EXIT-VALIDATION-001",
-  "last_main_commit": "5e68a74374a37fa2f3698ee846462c0525d7341a",
+  "last_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -37,10 +39,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-EXIT-VALIDATION-001 CLOSED after PR #157 entered origin/main; no M7 Human Gate is active yet.",
+    "approval_source": "M7-TASK-GRAPH-001 independent qa_reviewer ACCEPT; pending PR CI and main integration.",
     "recommended_result": null,
-    "note": "Current milestone is M7. Next machine action is to create or recover M7-TASK-GRAPH-001; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T03:36:23.0435839+08:00"
+    "note": "M7 task graph accepted pending integration. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T04:14:55.1642622+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -827,7 +829,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T03:36:23.0435839+08:00",
+  "last_updated_at": "2026-06-28T04:14:55.1642622+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1470,11 +1472,66 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION"
   },
   "m7_start": {
-    "status": "PENDING_TASK_GRAPH",
+    "status": "TASK_GRAPH_REVIEW",
     "current_milestone": "M7",
-    "next_action": "Create or recover M7-TASK-GRAPH-001",
+    "next_action": "Route M7-TASK-GRAPH-001 systems_architect REVIEW handoff to qa_reviewer.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "note": "M7 content lock, culture review, manual playthrough, platform/localization matrix, balance migration, and save migration must be decomposed by the M7 task graph."
+    "note": "M7 task graph exists and awaits independent QA review before any downstream M7 work starts."
+  },
+  "m7_task_graph": {
+    "status": "ACCEPTED",
+    "task_id": "M7-TASK-GRAPH-001",
+    "branch_or_worktree": "chore/m7-task-graph",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "owner_role": "systems_architect",
+    "reviewer_role": "qa_reviewer",
+    "base_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
+    "previous_closed_task": "M6-EXIT-VALIDATION-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "started_at": "2026-06-28T03:43:49.1264386+08:00",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
+    "systems_architect_thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
+    "systems_architect_nickname": "Keystone the 3rd",
+    "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
+    "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
+    "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
+    "updated_at": "2026-06-28T04:03:00.0000000+08:00",
+    "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "downstream_tasks": [
+      "M7-CONTENT-LOCK-CONTRACT-001",
+      "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "M7-BETA-CULTURE-REVIEW-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+      "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "M7-EXIT-VALIDATION-001"
+    ],
+    "first_downstream_ready_after_acceptance": "M7-CONTENT-LOCK-CONTRACT-001",
+    "review_commit": "2613c6c9d214cdab6f6e62bf47c1c1e3a0dfc16a",
+    "review_metadata_fix_commit": "5179fda6",
+    "qa_thread_id": "019f0aaf-d094-7c30-a525-fb612fe5dccb",
+    "qa_thread_nickname": "Auditor the 3rd",
+    "qa_route": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-SYSTEMS-TO-QA-REVIEW.json",
+    "qa_submission_id": "019f0ab0-3707-74f2-bc92-b10e9f8e01ae",
+    "routed_to_qa_at": "2026-06-28T04:03:00.0000000+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-QA-REVIEW__qa_reviewer.json",
+    "qa_reviewed_at": "2026-06-28T04:12:00.0817003+08:00",
+    "lead_accept_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T04:14:55.1642622+08:00",
+    "accepted_head_commit": "b3ae5ed0b9ab5b1d8961dfb411221770a3c8290a",
+    "child_threads_closed": [
+      "019f0a9d-fc35-7953-b109-aa06340de057",
+      "019f0aaf-d094-7c30-a525-fb612fe5dccb"
+    ]
   }
 }

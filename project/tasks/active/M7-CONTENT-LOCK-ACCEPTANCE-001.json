@@ -1,0 +1,91 @@
+{
+  "id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "summary": "Route formal M7 content lock acceptance Human Gate",
+  "milestone": "M7",
+  "status": "DRAFT",
+  "owner_role": "lead_orchestrator",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-BETA-CULTURE-REVIEW-001",
+    "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+    "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "PROJECT_STATUS.md",
+      "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Synthesize reviewed M7 content, culture, balance, performance, platform, localization, save-boundary, and manual playthrough evidence into a formal content lock recommendation.",
+    "Formal content lock acceptance is a Human Gate. Without explicit product-owner approval, this task must remain BLOCKED or PARTIAL and must not mark content locked.",
+    "After lock, permitted autonomous work is limited to defect fixes, compatibility fixes, and explicit balance tuning; no new large system, content expansion, release/commercial/branding, telemetry, server, cloud, or mod decision is allowed.",
+    "M6_GATE remains PASS_WITH_LIMITS, and M7 lock must not erase Alpha/local evidence limits or desktop unsigned-smoke limitations.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE; content lock cannot reverse it or make manual node battle a M7/M8 blocker."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
+    "Player and AI behavior must continue through the same GameCommand/query/save surfaces where implementation work is later authorized.",
+    "sim-core must remain decoupled from React, Pixi, Electron, DOM, Node IO, real time APIs, hidden RPC, and object-graph serialization.",
+    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
+  ],
+  "created_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T03:55:00+08:00",
+  "human_gate_required": true,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "human_gates": [
+    "major cultural-risk decisions",
+    "formal content lock acceptance",
+    "manual playthrough acceptance where human judgment is required",
+    "commercial, release, store, branding, logo, or trademark decisions",
+    "telemetry, analytics, remote collection, accounts, paid services, or secrets",
+    "server or multiplayer behavior",
+    "arbitrary-code mods, runtime scripting extensions, or Workshop support",
+    "cloud-save implementation, network persistence, or any account-backed save service",
+    "irreversible save/content migration",
+    "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
+    "manual node battle reversal or any formal 1.0 scope reversal"
+  ],
+  "human_gate_type": "FORMAL_CONTENT_LOCK_ACCEPTANCE"
+}

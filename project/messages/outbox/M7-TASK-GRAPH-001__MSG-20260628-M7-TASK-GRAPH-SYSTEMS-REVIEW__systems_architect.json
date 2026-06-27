@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW",
+  "task_id": "M7-TASK-GRAPH-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Created a planning-only, dependency-ordered M7 Beta content and quality task DAG. The graph covers content lock planning, historical/cultural/language review, full scenario/person/event fill path, large-scale balance and anti-snowball validation, performance/memory/loading validation, Chrome/Edge/Firefox/Windows and resolution/localization matrix, save migration and cloud-save candidate decision boundaries, tutorial/hints/encyclopedia completion, audio/art/localization completion planning, Beta culture review, manual playthrough evidence, formal content lock acceptance, and M7 exit validation without implementing M7 content or product code.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/tasks/active/M7-TASK-GRAPH-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json",
+    "project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json",
+    "project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json",
+    "project/tasks/active/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001.json",
+    "project/tasks/active/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.json",
+    "project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json",
+    "project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json",
+    "project/tasks/active/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001.json",
+    "project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m7-task-graph / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "2613c6c9d214cdab6f6e62bf47c1c1e3a0dfc16a",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified allowed coordination/status files are present; new untracked M7 task files are present under project/tasks/active. No product code, packages, content-source, tools, CI, roadmap, acceptance matrix, prior gate, ADR, manifest, checksum, or validation artifact paths are modified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-TASK-GRAPH-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-TASK-GRAPH-001 is REVIEW; M7-CONTENT-LOCK-CONTRACT-001 is READY but dependency-gated by the REVIEW graph; the other 12 downstream M7 tasks are DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready output while M7-TASK-GRAPH-001 remains REVIEW."
+    },
+    {
+      "command": "node -e JSON validation for all new M7 task files and DAG acyclicity/dependency existence/status shape",
+      "exit_code": 0,
+      "result": "M7 JSON DAG check ok files=14 edges=27 graphStatus=REVIEW firstReady=M7-CONTENT-LOCK-CONTRACT-001 downstreamDraft=12."
+    },
+    {
+      "command": "node -e authored changed-path scope guard for M7-TASK-GRAPH-001",
+      "exit_code": 0,
+      "result": "scope guard ok changedPaths=18; changed paths are limited to allowed task/status/message paths and do not include forbidden apps/packages/content-source/tools/CI/docs/gate/roadmap/acceptance-matrix paths."
+    },
+    {
+      "command": "node -e UTF-8 BOM check for M7 task files",
+      "exit_code": 0,
+      "result": "M7 task UTF-8 BOM check ok files=14."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported before systems handoff creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported after systems handoff creation."
+    }
+  ],
+  "decisions": [
+    "Created 13 downstream M7 tasks with dependency order: content lock contract; historical/cultural/language review; scenario/person/event fill; tutorial/hints/encyclopedia; audio/art/localization; Beta culture review; save migration/cloud boundaries; large-scale balance; performance/memory/loading; platform/resolution/localization matrix; manual playthrough evidence; formal content lock acceptance; M7 exit validation.",
+    "Set M7-CONTENT-LOCK-CONTRACT-001 as the first executable downstream task with status READY; it remains dependency-gated until M7-TASK-GRAPH-001 is accepted/closed. All other downstream M7 tasks remain DRAFT.",
+    "Preserved M6_GATE = PASS_WITH_LIMITS. The graph does not re-describe M6 as unconditional PASS or release readiness.",
+    "Preserved DEFER_MANUAL_NODE_BATTLE exactly. No manual node battle implementation task, M7/M8 blocking spike, research task, validation dependency, or exit-gate dependency was created.",
+    "Preserved Human Gates for major cultural-risk decisions, formal content lock acceptance, manual playthrough acceptance where human judgment is required, commercial/release/branding, telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mods, irreversible migration, and frozen product/platform/core changes.",
+    "Kept this task planning-only. No apps, packages, content-source, tools, CI, roadmap, acceptance matrix, prior gate docs, accepted ADRs, release artifacts, telemetry, server/multiplayer behavior, arbitrary-code mod support, cloud-save implementation, or manual node battle behavior were modified."
+  ],
+  "risks": [
+    "Several downstream M7 tasks are R4 because they later touch content lock, historical/cultural review, save compatibility, platform matrix, large-scale balance, performance, and milestone exit evidence.",
+    "Content fill and asset/localization completion can create cultural risk; the DAG routes baseline review and final Beta culture review through historical_researcher and preserves Human Gates for major unresolved risk.",
+    "Cloud save is intentionally bounded to candidate decision boundaries; implementation of accounts, network persistence, secrets, telemetry, or provider integration remains outside autonomous M7 work.",
+    "Manual playthrough evidence can surface blockers, but human acceptance remains a Human Gate and is not granted by this systems handoff."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Perform independent QA review of the M7 task graph for roadmap/acceptance-matrix coverage, dependency ordering, first-ready/downstream-DRAFT status, M6 PASS_WITH_LIMITS preservation, DEFER_MANUAL_NODE_BATTLE preservation, Human Gate preservation, allowed/forbidden path discipline, architecture-boundary safety, and handoff validity. Accept or request changes.",
+  "created_at": "2026-06-28T04:00:42.9469449+08:00"
+}

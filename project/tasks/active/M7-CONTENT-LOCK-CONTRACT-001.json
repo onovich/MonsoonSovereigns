@@ -1,0 +1,88 @@
+{
+  "id": "M7-CONTENT-LOCK-CONTRACT-001",
+  "summary": "Define bounded M7 Beta content lock contract",
+  "milestone": "M7",
+  "status": "READY",
+  "owner_role": "gameplay_designer",
+  "reviewer_role": "systems_architect",
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-TASK-GRAPH-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "PROJECT_STATUS.md",
+      "project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Define the minimum Beta content-lock contract: scenario/person/event scope, required review states, defect-only post-lock policy, and allowed explicit balance-tuning window.",
+    "Map every M7 Roadmap and acceptance-matrix item to downstream tasks and evidence without implementing content, code, platform behavior, release artifacts, or product scope changes.",
+    "Define formal content lock acceptance as a Human Gate; this task may prepare the gate but must not approve it.",
+    "Carry forward M6_GATE = PASS_WITH_LIMITS, including Alpha scaffolding, local adviser evidence, batch tuning risk, and unsigned desktop smoke limits.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE exactly and state that manual node battle is only a post-1.0 non-blocking candidate unless a later Human Gate reverses it."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-CONTRACT-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M7-CONTENT-LOCK-CONTRACT-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "First executable downstream M7 task after the task graph is accepted; planning-only contract work.",
+    "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
+    "Player and AI behavior must continue through the same GameCommand/query/save surfaces where implementation work is later authorized.",
+    "sim-core must remain decoupled from React, Pixi, Electron, DOM, Node IO, real time APIs, hidden RPC, and object-graph serialization.",
+    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
+  ],
+  "created_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T03:55:00+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "human_gates": [
+    "major cultural-risk decisions",
+    "formal content lock acceptance",
+    "manual playthrough acceptance where human judgment is required",
+    "commercial, release, store, branding, logo, or trademark decisions",
+    "telemetry, analytics, remote collection, accounts, paid services, or secrets",
+    "server or multiplayer behavior",
+    "arbitrary-code mods, runtime scripting extensions, or Workshop support",
+    "cloud-save implementation, network persistence, or any account-backed save service",
+    "irreversible save/content migration",
+    "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
+    "manual node battle reversal or any formal 1.0 scope reversal"
+  ]
+}
