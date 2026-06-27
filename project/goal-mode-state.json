@@ -9,13 +9,13 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
-      "status": "active_integrating",
+      "status": "active_awaiting_writer_handoff",
       "role": "lead_orchestrator"
     },
     "client_engineer": {
       "thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
       "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
-      "status": "active_in_progress_pending_route",
+      "status": "active_in_progress",
       "role": "client_engineer",
       "nickname": "Window the 2nd"
     }
@@ -48,10 +48,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 accessibility core flows started from dependency-ready task graph; no Human Gate is active.",
+    "approval_source": "M6 accessibility core flows route sent to client_engineer; no Human Gate is active.",
     "recommended_result": null,
-    "note": "Client accessibility hardening is active; manual node battle remains deferred and no telemetry/account/Electron IPC change is authorized.",
-    "recorded_at": "2026-06-27T23:26:39.775+08:00"
+    "note": "Await writer REVIEW handoff. Manual node battle remains deferred; no telemetry/account/Electron IPC change is authorized.",
+    "recorded_at": "2026-06-27T23:28:32.873+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -807,8 +807,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T23:26:39.775+08:00",
-  "updated_at": "2026-06-27T23:26:39.775+08:00",
+  "last_updated_at": "2026-06-27T23:28:32.873+08:00",
+  "updated_at": "2026-06-27T23:28:32.873+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1040,6 +1040,9 @@
     "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
     "started_at": "2026-06-27T23:26:39.775+08:00",
-    "next_action": "Route task to client_engineer writer via send_input."
+    "next_action": "Await client_engineer REVIEW handoff, then route to qa_reviewer.",
+    "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
+    "route_sent_at": "2026-06-27T23:28:32.873+08:00",
+    "updated_at": "2026-06-27T23:28:32.873+08:00"
   }
 }
