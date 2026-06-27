@@ -2,32 +2,32 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M6_POLICY_EVENT_RUNTIME_REVIEW",
+  "status": "M6_POLICY_EVENT_RUNTIME_ACCEPTED_PENDING_PR",
   "project": "Monsoon Sovereigns",
   "origin_main": "b171e82b571c9b5e03176abc723509fcef5b1b94",
   "current_milestone": "M6",
   "current_task": "M6-POLICY-EVENT-RUNTIME-001",
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M6-SUCCESSION-COMPLETION-001",
   "ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-POLICY-EVENT-RUNTIME-001",
-      "status": "active_orchestrating",
+      "status": "accepted_pending_pr",
       "role": "lead_orchestrator"
     },
     "simulation_engineer": {
       "thread_id": "019f08b6-1a00-7dd3-8ccf-2571c0c71990",
       "task_id": "M6-POLICY-EVENT-RUNTIME-001",
-      "status": "in_progress",
+      "status": "accepted_pending_main_integration",
       "role": "simulation_engineer",
       "nickname": "Clockwork"
     },
     "systems_architect": {
       "thread_id": "019f08d5-9b0c-7a60-9429-738d414fa435",
       "task_id": "M6-POLICY-EVENT-RUNTIME-001",
-      "status": "review_in_progress",
+      "status": "accepted_pending_main_integration",
       "role": "systems_architect",
       "nickname": "Keystone",
       "read_only": true
@@ -49,12 +49,12 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 policy/event runtime start; no Human Gate is active.",
+    "approval_source": "M6 policy/event runtime systems R2 ACCEPT and lead gates passed; no Human Gate.",
     "recommended_result": null,
-    "note": "M6-POLICY-EVENT-RUNTIME-001 is IN_PROGRESS with simulation_engineer writer.",
-    "recorded_at": "2026-06-27T18:54:50.841+08:00"
+    "note": "M6-POLICY-EVENT-RUNTIME-001 accepted pending PR/CI/main integration.",
+    "recorded_at": "2026-06-27T19:51:14.914+08:00"
   },
-  "next_machine_action": "Wait for systems_architect R2 review of M6-POLICY-EVENT-RUNTIME-001.",
+  "next_machine_action": "Open PR for accepted M6 policy/event runtime implementation.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -62,7 +62,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T19:42:44.103+08:00",
+  "last_updated_at": "2026-06-27T19:51:14.914+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -89,14 +89,14 @@
       "replaced_at": "2026-06-27T14:45:02+08:00"
     }
   ],
-  "updated_at": "2026-06-27T19:42:44.103+08:00",
+  "updated_at": "2026-06-27T19:51:14.914+08:00",
   "current_tasks": [
     "M6-POLICY-EVENT-RUNTIME-001"
   ],
   "last_integrated_task": "M6-SUCCESSION-COMPLETION-001",
   "last_main_commit": "b171e82b571c9b5e03176abc723509fcef5b1b94",
   "next_ready_tasks": [],
-  "next_action": "Wait for systems_architect R2 review of M6-POLICY-EVENT-RUNTIME-001.",
+  "next_action": "Open PR for accepted M6 policy/event runtime implementation.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -820,7 +820,7 @@
     ]
   },
   "m6_policy_event_runtime": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
     "branch_or_worktree": "feat/m6-policy-event-runtime",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -833,10 +833,10 @@
     "previous_closed_task": "M6-SUCCESSION-COMPLETION-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Wait for systems_architect R2 ACCEPT or REQUEST_CHANGES after lead format/lint fix.",
+    "next_action": "Open PR, wait for CI, merge to main, then close task.",
     "start_submission_id": "019f08b8-1297-7b62-81d3-3c11b32d91db",
     "route_sent_at": "2026-06-27T18:55:35.502+08:00",
-    "updated_at": "2026-06-27T19:42:44.103+08:00",
+    "updated_at": "2026-06-27T19:51:14.914+08:00",
     "systems_architect_thread_id": "019f08d5-9b0c-7a60-9429-738d414fa435",
     "systems_architect_nickname": "Keystone",
     "review_handoff": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-REVIEW__simulation_engineer.json",
@@ -850,6 +850,13 @@
     "review_route_file_r2": "project/messages/routes/M6-POLICY-EVENT-RUNTIME-001__ROUTE-20260627-M6-POLICY-LEAD-FORMAT-FIX-TO-SYSTEMS-R2.json",
     "routed_to_systems_r2_at": "2026-06-27T19:42:13.111+08:00",
     "systems_review_submission_id_r2": "019f08e3-5db5-7e60-b6c6-88e44d426098",
-    "systems_route_sent_r2_at": "2026-06-27T19:42:44.103+08:00"
+    "systems_route_sent_r2_at": "2026-06-27T19:42:44.103+08:00",
+    "systems_status": "ACCEPT",
+    "systems_review_handoff": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-ACCEPT__systems_architect.json",
+    "systems_status_r2": "ACCEPT",
+    "systems_review_handoff_r2": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-R2-ACCEPT__systems_architect.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T19:51:14.914+08:00",
+    "lead_accept_commit": "52b690dff93520fe3e1bef3cff67b9dba17dcb9e"
   }
 }
