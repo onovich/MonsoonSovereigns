@@ -2292,8 +2292,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M6-LAYERED-AI-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
-  "current_task": null,
+  "next_action": "Simulation writer must implement layered AI within allowed paths, run required tests, and emit REVIEW handoff routed to systems_architect.",
+  "current_task": "M6-LAYERED-AI-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2343,7 +2343,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-27T22:18:39.557+08:00",
+  "updated_at": "2026-06-27T22:24:44.466+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2498,5 +2498,22 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-27T21:23:30.417+08:00"
+  "last_updated_at": "2026-06-27T21:23:30.417+08:00",
+  "m6_layered_ai": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-LAYERED-AI-001",
+    "owner_role": "simulation_engineer",
+    "reviewer_role": "systems_architect",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0976-c120-7a50-a3ab-08fced11c52c",
+    "writer_nickname": "Delta the 2nd",
+    "branch_or_worktree": "feat/m6-layered-ai",
+    "base_main_commit": "33a9d4fb1ee799157ccd27983040143bd1c0833a",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-LEAD-TO-SIM-START.json",
+    "started_at": "2026-06-27T22:24:44.466+08:00",
+    "next_action": "Simulation writer must implement layered AI within allowed paths, run required tests, and emit REVIEW handoff routed to systems_architect."
+  }
 }
