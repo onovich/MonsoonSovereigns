@@ -328,6 +328,17 @@ describe("SIM-003 protocol command/query schemas", () => {
     expect(
       parseGameCommandV1({
         schemaVersion: 1,
+        kind: "sim.record-character-status",
+        commandId: "cmd.m3.succession.abdication",
+        actor: { kind: "system", id: "succession-system" },
+        expectedDay: 0,
+        expectedRevision: 0,
+        payload: { characterId: 1, status: "abdicated", reasonCode: "scenario.abdication" }
+      }).ok
+    ).toBe(true);
+    expect(
+      parseGameCommandV1({
+        schemaVersion: 1,
         kind: "sim.resolve-succession",
         commandId: "cmd.m3.succession.resolve",
         actor: { kind: "player", id: "polity:1" },

@@ -1,0 +1,94 @@
+{
+  "message_id": "MSG-20260627-M6-SUCCESSION-COMPLETION-LEAD-ACCEPT",
+  "task_id": "M6-SUCCESSION-COMPLETION-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M6-SUCCESSION-COMPLETION-001 after systems_architect R2 ACCEPT and lead integration gates. The implementation completes deterministic Alpha succession resolution, abdication-like triggers, peaceful/regency/disputed outcomes, M6 legitimacy integration, malformed save/invariant rejection, one-candidate low-support structured rejection, and event-tail save/load preservation within allowed paths.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts",
+    "project/tasks/active/M6-SUCCESSION-COMPLETION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/m6-succession-completion / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/protocol-command-query-schema.test.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 0,
+      "result": "2 files passed; 27 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "24 files passed; 186 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning only."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed; 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 files passed; 16 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker-compatible hashes matched for hello, command/query, save/load, M4, and M5 canaries."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; sim determinism passed; root Vitest 37 files / 287 tests passed; web 1 file / 4 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SUCCESSION-COMPLETION-001",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems R2 ACCEPT handoff."
+    }
+  ],
+  "decisions": [
+    "ACCEPT systems_architect R2 review for M6 succession completion.",
+    "Regency is accepted as an M3/M6 Alpha temporary stewardship outcome using existing M3 succession state; no separate office/social system is introduced.",
+    "Low-support single-candidate disputed succession is a structured command rejection, preserving existing support-threshold semantics and avoiding invalid authoritative state.",
+    "Succession legitimacy effects reuse existing M6 legitimacy source/profile state and reason codes; no duplicate diplomacy/legitimacy system is introduced.",
+    "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE and untouched."
+  ],
+  "risks": [
+    "Succession legitimacy magnitudes are deterministic Alpha constants and may be tuned by later balance tasks.",
+    "Downstream M6 start-to-victory validation must still prove recognized-order victory flow using these surfaces."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit accepted implementation, open PR, wait for CI, merge to main, then close task.",
+  "created_at": "2026-06-27T18:41:10.9555961+08:00"
+}

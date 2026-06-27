@@ -4,16 +4,27 @@ import { describe, expect, test } from "vitest";
 import {
   createM2EconomyPopulationStateV0,
   createM3PolityVassalageStateV0,
+  createM6DiplomacyLegitimacyStateV0,
   createWorldStateV0,
   defineDistrict,
   definePerson,
   definePolity,
+  hashWorldStateV0,
+  loadSaveV1,
+  parsePolityId,
   querySimulationV1,
+  requestSaveV1,
   submitCommandV1,
   validateWorldStateV0,
   type SimulationRuntimeV1,
   type WorldStateV0
 } from "../packages/sim-core/src/index";
+import {
+  createSaveEnvelopeV1,
+  encodeSaveEnvelopeV1,
+  saveWorldStateV0DtoToCandidate,
+  type SaveWorldSnapshotV0Dto
+} from "../packages/save-format/src/index";
 
 import type { GameCommandV1 } from "../packages/protocol/src/index";
 
@@ -212,6 +223,261 @@ describe("M3-SUCCESSION-STATE-MACHINE-001 minimal succession state machine", () 
     });
   });
 
+  test("abdication-like scenario trigger keeps the former holder available and creates continuity", () => {
+    let runtime = bootSuccessionRuntime();
+    runtime = accepted(
+      runtime,
+      recordCharacterStatusCommand(
+        "m6.succession.abdication.trigger",
+        "system",
+        runtime,
+        1,
+        "abdicated"
+      )
+    );
+    runtime = accepted(
+      runtime,
+      resolveSuccessionCommand("m6.succession.abdication.resolve", "system", runtime, 1)
+    );
+
+    const m3 = requireM3(runtime.world);
+    expect(m3.characters.find((character) => character.characterId === 1)).toMatchObject({
+      alive: true,
+      incapacitated: false
+    });
+    expect(m3.relationships).toEqual([
+      { sourceCharacterId: 1, targetCharacterId: 2, affinityBps: 2_000 },
+      { sourceCharacterId: 2, targetCharacterId: 1, affinityBps: 2_000 },
+      { sourceCharacterId: 2, targetCharacterId: 3, affinityBps: 500 }
+    ]);
+    expect(m3.successionCrises[0]).toMatchObject({
+      trigger: { kind: "abdication", characterId: 1, officeId: 1 },
+      outcome: { kind: "peaceful", successorCharacterId: 2, supportTotalBps: 9_200 }
+    });
+    expect(runtime.world.state.m6?.legitimacySources).toContainEqual(
+      expect.objectContaining({
+        polityId: parsePolityId(1),
+        audience: "vassal-rulers",
+        sourceKind: "succession-continuity",
+        magnitudeBps: 700,
+        sourceRef: "m3.succession.1",
+        reasonCode: "legitimacy.source.succession-continuity"
+      })
+    );
+    expect(validateWorldStateV0(runtime.world)).toEqual([]);
+  });
+
+  test("regency resolution assigns the successor and records a lower succession legitimacy source", () => {
+    let runtime = bootSuccessionRuntime({
+      candidateProfiles: [
+        {
+          polityId: 1,
+          characterId: 2,
+          requiresRegency: true,
+          supportSources: [
+            { kind: "kinship", strengthBps: 4_000, sourceId: "kin.regency" },
+            { kind: "designation", strengthBps: 3_000, sourceId: "designation.regency" }
+          ]
+        },
+        disputedProfile(3, [{ kind: "court", strengthBps: 1_000, sourceId: "court.rival" }])
+      ]
+    });
+    runtime = accepted(
+      runtime,
+      recordCharacterStatusCommand("m6.succession.regency.death", "system", runtime, 1, "dead")
+    );
+    runtime = accepted(
+      runtime,
+      resolveSuccessionCommand("m6.succession.regency.resolve", "system", runtime, 1)
+    );
+
+    expect(requireM3(runtime.world).successionCrises[0]?.outcome).toMatchObject({
+      kind: "regency",
+      successorCharacterId: 2,
+      regentCharacterId: 3,
+      supportTotalBps: 7_000,
+      reasonCode: "validation"
+    });
+    expect(runtime.world.state.m6?.legitimacyProfiles).toContainEqual(
+      expect.objectContaining({
+        polityId: parsePolityId(1),
+        audience: "vassal-rulers",
+        scoreBps: 300,
+        pressureBps: 9_700
+      })
+    );
+  });
+
+  test("regency outcome rejects missing or unavailable regent references", () => {
+    const world = cloneWorldRecord(createSuccessionWorld());
+    const characters = requireArrayField(requireRecordPath(world, ["state", "m3"]), "characters");
+    characters[2] = { ...characters[2], incapacitated: true };
+    const m3 = requireRecordPath(world, ["state", "m3"]);
+    const crises = requireArrayField(m3, "successionCrises");
+    crises.push({
+      id: 1,
+      polityId: 1,
+      trigger: { kind: "death", characterId: 1, officeId: 1 },
+      status: "resolved",
+      startedDay: 0,
+      resolvedDay: 0,
+      candidates: [
+        {
+          characterId: 2,
+          requiresRegency: true,
+          supportSources: [{ kind: "kinship", strengthBps: 7_000, sourceId: "kin.regency" }],
+          supportTotalBps: 7_000
+        }
+      ],
+      outcome: {
+        kind: "regency",
+        successorCharacterId: 2,
+        regentCharacterId: 3,
+        supportTotalBps: 7_000,
+        reasonCode: "validation"
+      },
+      reasonCode: "validation"
+    });
+    restampWorldHash(world);
+
+    expect(validateWorldStateV0(world)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "invalid-schema",
+          path: "state.m3.successionCrises[0].outcome.regentCharacterId"
+        })
+      ])
+    );
+
+    let runtime = bootSuccessionRuntime({
+      candidateProfiles: [
+        {
+          polityId: 1,
+          characterId: 2,
+          requiresRegency: true,
+          supportSources: [
+            { kind: "kinship", strengthBps: 4_000, sourceId: "kin.regency" },
+            { kind: "designation", strengthBps: 3_000, sourceId: "designation.regency" }
+          ]
+        },
+        disputedProfile(3, [{ kind: "court", strengthBps: 1_000, sourceId: "court.rival" }])
+      ]
+    });
+    runtime = accepted(
+      runtime,
+      recordCharacterStatusCommand("m6.succession.regent-save.death", "system", runtime, 1, "dead")
+    );
+    runtime = accepted(
+      runtime,
+      resolveSuccessionCommand("m6.succession.regent-save.resolve", "system", runtime, 1)
+    );
+    const saved = requestSaveV1(runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+    const malformedRegent = loadSaveV1(
+      bootSuccessionRuntime(),
+      encodeSaveEnvelopeV1(
+        createSaveEnvelopeV1({
+          build: saved.envelope.header.build,
+          scenarioId: saved.envelope.header.scenarioId,
+          authoritativeSnapshot: restampSaveSnapshot(
+            rewriteFirstSuccessionRegent(saved.envelope.body.authoritativeSnapshot, 999),
+            saved.envelope.body.scheduler
+          ),
+          scheduler: saved.envelope.body.scheduler,
+          rng: saved.envelope.body.rng,
+          commandTail: saved.envelope.body.commandTail,
+          eventTail: saved.envelope.body.eventTail
+        })
+      ),
+      {
+        expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+        expectedScenarioId: saved.envelope.header.scenarioId
+      }
+    );
+
+    expect(malformedRegent.status).toBe("rejected");
+    if (malformedRegent.status !== "rejected") {
+      throw new Error("Expected missing succession regent to reject.");
+    }
+    expect(malformedRegent.reasons).toContainEqual({
+      code: "semantic-invariant",
+      path: "state.m3.successionCrises[0].outcome.regentCharacterId",
+      message: "M3 succession regent references missing character."
+    });
+  });
+
+  test("disputed succession remains a recognized-order blocker with auditable reason codes", () => {
+    let runtime = bootSuccessionRuntime({
+      candidateProfiles: [
+        disputedProfile(2, [{ kind: "kinship", strengthBps: 2_500, sourceId: "kin.elder" }]),
+        disputedProfile(3, [{ kind: "kinship", strengthBps: 2_500, sourceId: "kin.younger" }])
+      ]
+    });
+    runtime = accepted(
+      runtime,
+      recordCharacterStatusCommand("m6.succession.disputed.death", "system", runtime, 1, "dead")
+    );
+    runtime = accepted(
+      runtime,
+      resolveSuccessionCommand("m6.succession.disputed.resolve", "system", runtime, 1)
+    );
+
+    const recognized = recognizedOrderDecision(runtime, 1);
+    expect(recognized).toMatchObject({
+      polityId: 1,
+      pendingSuccessionCount: 1,
+      canPursueVictory: false
+    });
+    expect(recognized.reasonCodes).toContain("m6.recognized-order.succession-disputed");
+    expect(runtime.world.state.m6?.legitimacySources).toContainEqual(
+      expect.objectContaining({
+        magnitudeBps: -700,
+        reasonCode: "legitimacy.source.succession-disputed"
+      })
+    );
+  });
+
+  test("one-candidate low-support succession rejects before commit instead of self-dispute", () => {
+    let runtime = bootSuccessionRuntime({
+      candidateProfiles: [
+        disputedProfile(2, [{ kind: "kinship", strengthBps: 2_500, sourceId: "kin.only" }])
+      ]
+    });
+    runtime = accepted(
+      runtime,
+      recordCharacterStatusCommand(
+        "m6.succession.one-candidate.death",
+        "system",
+        runtime,
+        1,
+        "dead"
+      )
+    );
+    const stateHashBeforeResolve = runtime.world.meta.stateHash;
+
+    const submitted = submitCommandV1(
+      runtime,
+      resolveSuccessionCommand("m6.succession.one-candidate.resolve", "system", runtime, 1)
+    );
+
+    expect(submitted.result).toMatchObject({
+      status: "rejected",
+      error: {
+        code: "succession-state-invalid",
+        path: "state.m3.successionCrises.candidates",
+        message: "sim.resolve-succession requires a rival candidate for disputed succession."
+      }
+    });
+    expect(submitted.runtime.world.meta.stateHash).toBe(stateHashBeforeResolve);
+    expect(requireM3(submitted.runtime.world).successionCrises[0]).toMatchObject({
+      status: "pending",
+      outcome: null
+    });
+  });
+
   test("property invariants canonicalize candidate profile order with stable tie-breakers", () => {
     fc.assert(
       fc.property(fc.boolean(), (reverseOrder) => {
@@ -312,6 +578,145 @@ describe("M3-SUCCESSION-STATE-MACHINE-001 minimal succession state machine", () 
         })
       ])
     );
+  });
+
+  test("validateWorldStateV0 rejects cyclic succession claim references", () => {
+    const world = cloneWorldRecord(createSuccessionWorld());
+    const m3 = requireRecordPath(world, ["state", "m3"]);
+    const crises = requireArrayField(m3, "successionCrises");
+    crises.push({
+      id: 1,
+      polityId: 1,
+      trigger: { kind: "death", characterId: 1, officeId: 1 },
+      status: "resolved",
+      startedDay: 0,
+      resolvedDay: 0,
+      candidates: [
+        {
+          characterId: 1,
+          requiresRegency: false,
+          supportSources: [{ kind: "kinship", strengthBps: 1_000, sourceId: "kin.self" }],
+          supportTotalBps: 1_000
+        },
+        {
+          characterId: 2,
+          requiresRegency: true,
+          supportSources: [{ kind: "court", strengthBps: 1_000, sourceId: "court.regency" }],
+          supportTotalBps: 1_000
+        }
+      ],
+      outcome: {
+        kind: "regency",
+        successorCharacterId: 2,
+        regentCharacterId: 2,
+        supportTotalBps: 1_000,
+        reasonCode: "validation"
+      },
+      reasonCode: "validation"
+    });
+
+    expect(validateWorldStateV0(world)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "invalid-schema",
+          path: "state.m3.successionCrises[0].candidates[0].characterId"
+        }),
+        expect.objectContaining({
+          code: "invalid-schema",
+          path: "state.m3.successionCrises[0].outcome.regentCharacterId"
+        })
+      ])
+    );
+  });
+
+  test("save round-trip preserves M6 succession completion and rejects malformed or future triggers", () => {
+    let runtime = bootSuccessionRuntime();
+    runtime = accepted(
+      runtime,
+      recordCharacterStatusCommand("m6.succession.save.death", "system", runtime, 1, "dead")
+    );
+    runtime = accepted(
+      runtime,
+      resolveSuccessionCommand("m6.succession.save.resolve", "system", runtime, 1)
+    );
+
+    const saved = requestSaveV1(runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+    const loaded = loadSaveV1(bootSuccessionRuntime(), saved.bytes, {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+    if (loaded.status !== "loaded") {
+      throw new Error(`Expected succession save to load: ${JSON.stringify(loaded.reasons)}`);
+    }
+    expect(loaded.status).toBe("loaded");
+    expect(loaded.runtime.world.state.m3?.successionCrises).toEqual(
+      runtime.world.state.m3?.successionCrises
+    );
+    expect(loaded.runtime.world.state.m6?.legitimacySources).toEqual(
+      runtime.world.state.m6?.legitimacySources
+    );
+
+    const futureTrigger = loadSaveV1(
+      bootSuccessionRuntime(),
+      encodeSaveEnvelopeV1({
+        ...saved.envelope,
+        body: {
+          ...saved.envelope.body,
+          authoritativeSnapshot: rewriteFirstSuccessionTrigger(
+            saved.envelope.body.authoritativeSnapshot,
+            {
+              kind: "future-ceremony",
+              characterId: 1,
+              officeId: 1
+            }
+          )
+        }
+      }),
+      {
+        expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+        expectedScenarioId: saved.envelope.header.scenarioId
+      }
+    );
+    expect(futureTrigger.status).toBe("rejected");
+    if (futureTrigger.status !== "rejected") {
+      throw new Error("Expected future succession trigger to reject.");
+    }
+    expect(futureTrigger.reasons).toContainEqual({
+      code: "invalid-schema",
+      path: "body.authoritativeSnapshot.state.m3.successionCrises[0].trigger.kind",
+      message: "M3 succession trigger kind must be death, incapacity, or abdication."
+    });
+
+    const malformedCandidate = loadSaveV1(
+      bootSuccessionRuntime(),
+      encodeSaveEnvelopeV1({
+        ...saved.envelope,
+        body: {
+          ...saved.envelope.body,
+          authoritativeSnapshot: rewriteFirstSuccessionCandidate(
+            saved.envelope.body.authoritativeSnapshot
+          )
+        }
+      }),
+      {
+        expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+        expectedScenarioId: saved.envelope.header.scenarioId
+      }
+    );
+    expect(malformedCandidate.status).toBe("rejected");
+    if (malformedCandidate.status !== "rejected") {
+      throw new Error("Expected malformed succession candidate to reject.");
+    }
+    expect(malformedCandidate.reasons).toContainEqual({
+      code: "invalid-schema",
+      path: "body.authoritativeSnapshot.state.m3.successionCrises[0].candidates[0].supportTotalBps",
+      message:
+        "body.authoritativeSnapshot.state.m3.successionCrises[0].candidates[0].supportTotalBps must be a safe integer from 0 to 10000."
+    });
   });
 
   test("missing M3 character incapacitated returns a structured invalid-schema error", () => {
@@ -559,7 +964,8 @@ function createSuccessionWorld(
           ]
         }
       ]
-    })
+    }),
+    m6: createM6DiplomacyLegitimacyStateV0(definitions)
   });
 }
 
@@ -606,7 +1012,7 @@ function recordCharacterStatusCommand(
   actorKind: "ai" | "player" | "system",
   runtime: SimulationRuntimeV1,
   characterId: number,
-  status: "dead" | "incapacitated",
+  status: "dead" | "incapacitated" | "abdicated",
   actorId = "polity:1"
 ): GameCommandV1 {
   return {
@@ -620,6 +1026,133 @@ function recordCharacterStatusCommand(
       characterId,
       status,
       reasonCode: "validation"
+    }
+  };
+}
+
+function recognizedOrderDecision(runtime: SimulationRuntimeV1, polityId: number) {
+  const query = querySimulationV1(runtime, {
+    schemaVersion: 1,
+    kind: "sim.list-m6-recognized-order",
+    payload: { queryId: `m6.succession.recognized.${polityId}`, polityId }
+  });
+  expect(query.status).toBe("ok");
+  if (query.status !== "ok" || query.result.kind !== "sim.list-m6-recognized-order") {
+    throw new Error("Expected recognized order query.");
+  }
+  const decision = query.result.decisions[0];
+  if (decision === undefined) {
+    throw new Error("Expected recognized order decision.");
+  }
+  return decision;
+}
+
+function rewriteFirstSuccessionTrigger(
+  snapshot: SaveWorldSnapshotV0Dto,
+  trigger: Record<string, unknown>
+): SaveWorldSnapshotV0Dto {
+  const m3 = snapshot.state.m3;
+  if (m3 === undefined) {
+    throw new Error("Expected saved M3 state.");
+  }
+  const firstCrisis = m3.successionCrises[0];
+  if (firstCrisis === undefined) {
+    throw new Error("Expected saved succession crisis.");
+  }
+  return {
+    ...snapshot,
+    state: {
+      ...snapshot.state,
+      m3: {
+        ...m3,
+        successionCrises: [{ ...firstCrisis, trigger }, ...m3.successionCrises.slice(1)]
+      }
+    }
+  };
+}
+
+function rewriteFirstSuccessionCandidate(snapshot: SaveWorldSnapshotV0Dto): SaveWorldSnapshotV0Dto {
+  const m3 = snapshot.state.m3;
+  if (m3 === undefined) {
+    throw new Error("Expected saved M3 state.");
+  }
+  const firstCrisis = m3.successionCrises[0];
+  const firstCandidate = firstCrisis?.candidates[0];
+  if (firstCrisis === undefined || firstCandidate === undefined) {
+    throw new Error("Expected saved succession candidate.");
+  }
+  return {
+    ...snapshot,
+    state: {
+      ...snapshot.state,
+      m3: {
+        ...m3,
+        successionCrises: [
+          {
+            ...firstCrisis,
+            candidates: [
+              { ...firstCandidate, supportTotalBps: 10_001 },
+              ...firstCrisis.candidates.slice(1)
+            ]
+          },
+          ...m3.successionCrises.slice(1)
+        ]
+      }
+    }
+  };
+}
+
+function rewriteFirstSuccessionRegent(
+  snapshot: SaveWorldSnapshotV0Dto,
+  regentCharacterId: number
+): SaveWorldSnapshotV0Dto {
+  const m3 = snapshot.state.m3;
+  if (m3 === undefined) {
+    throw new Error("Expected saved M3 state.");
+  }
+  const firstCrisis = m3.successionCrises[0];
+  if (firstCrisis === undefined || firstCrisis.outcome?.kind !== "regency") {
+    throw new Error("Expected saved regency outcome.");
+  }
+  return {
+    ...snapshot,
+    state: {
+      ...snapshot.state,
+      m3: {
+        ...m3,
+        successionCrises: [
+          {
+            ...firstCrisis,
+            outcome: { ...firstCrisis.outcome, regentCharacterId }
+          },
+          ...m3.successionCrises.slice(1)
+        ]
+      }
+    }
+  };
+}
+
+function restampWorldHash(world: Record<string, unknown>): void {
+  const meta = requireRecordPath(world, ["meta"]);
+  meta["stateHash"] = "";
+  meta["stateHash"] = hashWorldStateV0(world as WorldStateV0);
+}
+
+function restampSaveSnapshot(
+  snapshot: SaveWorldSnapshotV0Dto,
+  scheduler: unknown
+): SaveWorldSnapshotV0Dto {
+  const candidate = saveWorldStateV0DtoToCandidate(snapshot, scheduler);
+  if (!isRecord(candidate)) {
+    throw new Error("Expected candidate world from save snapshot.");
+  }
+  const meta = requireRecordPath(candidate, ["meta"]);
+  meta["stateHash"] = "";
+  return {
+    ...snapshot,
+    meta: {
+      ...snapshot.meta,
+      stateHash: hashWorldStateV0(candidate as WorldStateV0)
     }
   };
 }
