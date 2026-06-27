@@ -334,6 +334,108 @@ test("M6 Alpha flow covers scenario, diplomacy, policy, encyclopedia, map candid
   ).toHaveCount(0);
 });
 
+test("M6 Alpha core flow exposes keyboard focus, live status, and non-color states", async ({
+  page
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+
+  const map = page.getByLabel("M2 prototype map viewport");
+  const mapSurface = page.locator(".client-shell__map-surface");
+
+  await page.getByRole("button", { name: "Seasonal map mode" }).focus();
+  await expect(page.getByRole("button", { name: "Seasonal map mode" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Economy map mode" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Routes map mode" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Zoom out" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Zoom in" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(map).toBeFocused();
+  await expect(map).toHaveAttribute("data-keyboard-navigation", "district-cycle");
+  await expect(map).toHaveAttribute(
+    "aria-describedby",
+    "map-keyboard-help map-selected-district-status"
+  );
+  await expect(map).toHaveAttribute("aria-roledescription", "keyboard navigable map read model");
+  await expect(page.locator("#map-selected-district-status")).toContainText(
+    "Selected map district: Prototype District 001."
+  );
+  await page.keyboard.press("ArrowRight");
+  await expect(mapSurface).toHaveAttribute("data-selected-district-id", "2");
+  await expect(map).toHaveAttribute("data-selected-district-label", "Prototype District 002");
+  await expect(page.locator("#map-selected-district-status")).toContainText(
+    "Selected map district: Prototype District 002."
+  );
+  await expectFocusOutline(map);
+
+  const workspace = page.getByLabel("M6 Alpha start to victory workspace");
+  const commandStatus = page.getByRole("status", { name: "M6 command status" });
+  const saveStatus = page.getByRole("status", { name: "M6 save status" });
+  const scenario = page.getByLabel("Select M6 Alpha scenario");
+  await expect(workspace).toHaveAttribute("aria-describedby", "m6-alpha-accessibility-status");
+  await expect(scenario).toHaveAttribute("aria-describedby", "m6-alpha-scenario-description");
+  await expect(page.locator("#m6-alpha-scenario-description")).toContainText(
+    "Recognized order path; primary-victory; day 0."
+  );
+  await expect(page.getByRole("button", { name: "Start Alpha" })).toHaveAttribute(
+    "aria-describedby",
+    "m6-alpha-command-description"
+  );
+  await expect(commandStatus).toHaveAttribute("data-status-kind", "idle");
+  await expect(commandStatus).toHaveAttribute("aria-describedby", "m6-alpha-command-description");
+  await expect(commandStatus).toContainText("m6.command.no-alpha-command-submitted");
+  await expect(saveStatus).toHaveAttribute("data-status-kind", "empty");
+  await expect(saveStatus).toHaveAttribute("aria-describedby", "m6-alpha-save-description");
+  await expect(saveStatus).toContainText("m6.save.no-client-checkpoint");
+
+  await scenario.focus();
+  await expectFocusOutline(scenario);
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Start Alpha" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(workspace).toHaveAttribute("data-phase", "running");
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Preview Alpha command" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByLabel("M6 command preview")).toHaveAttribute(
+    "data-result-status",
+    "pending"
+  );
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Confirm Alpha command" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(commandStatus).toHaveAttribute("data-status-kind", "submitted");
+  await expect(commandStatus).toContainText("sim.create-campaign-objective submitted");
+  await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
+
+  await page.getByRole("button", { name: "Save Alpha checkpoint" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(saveStatus).toHaveAttribute("data-status-kind", "written");
+  await page.getByRole("button", { name: "Load Alpha checkpoint" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(saveStatus).toHaveAttribute("data-status-kind", "restored");
+  await expect(workspace).toHaveAttribute("data-phase", "checkpoint-loaded");
+  await expect(page.getByLabel("M6 policy event encyclopedia surfaces")).toContainText(
+    "Grant bounded harbor duties"
+  );
+  await expect(page.getByLabel("M6 policy event encyclopedia surfaces")).toContainText(
+    "Reject until obligations clear"
+  );
+
+  const reducedMotion = await page.evaluate(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+  expect(reducedMotion).toBe(true);
+  const transitionDuration = await workspace.evaluate(
+    (element) => window.getComputedStyle(element).transitionDuration
+  );
+  expect(parseCssDurationMs(transitionDuration)).toBeLessThanOrEqual(0.01);
+});
+
 test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
@@ -400,6 +502,9 @@ test("M6 Alpha workspace has no horizontal overflow across required desktop view
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
     await page.goto("/");
+    await page.evaluate(() => {
+      document.documentElement.style.fontSize = "20px";
+    });
     await expect(page.getByLabel("M6 Alpha start to victory workspace")).toBeVisible();
     const overflow = await page.evaluate(() => {
       const workspace = document.querySelector(".m6-alpha");
@@ -457,4 +562,22 @@ async function clickMapPoint(
       y: offsetY + yInMapUnits * scale
     }
   });
+}
+
+async function expectFocusOutline(locator: Locator): Promise<void> {
+  const outlineStyle = await locator.evaluate(
+    (element) => window.getComputedStyle(element).outlineStyle
+  );
+  expect(outlineStyle).not.toBe("none");
+}
+
+function parseCssDurationMs(value: string): number {
+  if (value.endsWith("ms")) {
+    return Number(value.slice(0, -2));
+  }
+  if (value.endsWith("s")) {
+    return Number(value.slice(0, -1)) * 1000;
+  }
+
+  return Number.NaN;
 }

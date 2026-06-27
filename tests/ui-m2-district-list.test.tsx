@@ -5,8 +5,12 @@ import {
   createClientDistrictId,
   createInitialClientReadModelSnapshot,
   createM2PrototypeClientReadModelSnapshot,
+  createM6AlphaEmptyReadModelFixture,
+  createM6AlphaErrorReadModelFixture,
+  createM6AlphaExtremeReadModelFixture,
   createSyntheticDistrictPressureFixture,
   type ClientMapMode,
+  withM6AlphaReadModel,
   withDistrictListReadModel
 } from "../packages/client-core/src/index";
 import { ClientShellView } from "../packages/ui/src/index";
@@ -131,14 +135,27 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Start Alpha");
     expect(markup).toContain("Preview Alpha command");
     expect(markup).toContain("Confirm Alpha command");
+    expect(markup).toContain('aria-describedby="m6-alpha-scenario-description"');
+    expect(markup).toContain("Selected scenario: Recognized order path; primary-victory; day 0.");
+    expect(markup).toContain('aria-describedby="m6-alpha-command-description"');
+    expect(markup).toContain("protocol command DTOs only");
+    expect(markup).toContain('aria-live="polite"');
+    expect(markup).toContain('role="status"');
+    expect(markup).toContain('data-status-kind="idle"');
+    expect(markup).toContain("m6.command.no-alpha-command-submitted");
     expect(markup).toContain("Save Alpha checkpoint");
     expect(markup).toContain("Load Alpha checkpoint");
+    expect(markup).toContain('aria-describedby="m6-alpha-save-description"');
+    expect(markup).toContain("local client-session checkpoint");
     expect(markup).toContain("Diplomacy / legitimacy / succession");
     expect(markup).toContain("tribute-recognition");
     expect(markup).toContain("legitimacy.source.postwar-settlement");
     expect(markup).toContain("m6.alpha.succession.peaceful");
     expect(markup).toContain("Policies / events / encyclopedia");
     expect(markup).toContain("Harbor charter petition");
+    expect(markup).toContain("Grant bounded harbor duties");
+    expect(markup).toContain("Reject until obligations clear");
+    expect(markup).toContain("Content tag COMPOSITE");
     expect(markup).toContain("encyclopedia.m6.policy_event.harbor");
     expect(markup).toContain("AI / adviser reasons");
     expect(markup).toContain("m6.adviser.recognized-order-ready");
@@ -148,6 +165,38 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Manual node battle UI is not present in Alpha.");
     expect(m6Markup).not.toContain("placeholder");
     expect(markup).not.toContain("WorldState");
+  });
+
+  test("renders M6 Alpha empty, error, and extreme accessibility states", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const emptyMarkup = renderToStaticMarkup(
+      createShell(
+        withM6AlphaReadModel(baseSnapshot, createM6AlphaEmptyReadModelFixture(baseSnapshot))
+      )
+    );
+    const errorMarkup = renderToStaticMarkup(
+      createShell(
+        withM6AlphaReadModel(baseSnapshot, createM6AlphaErrorReadModelFixture(baseSnapshot))
+      )
+    );
+    const extremeMarkup = renderToStaticMarkup(
+      createShell(
+        withM6AlphaReadModel(baseSnapshot, createM6AlphaExtremeReadModelFixture(baseSnapshot))
+      )
+    );
+
+    expect(emptyMarkup).toContain("Empty M6 Alpha read-model state");
+    expect(emptyMarkup).toContain('data-command-count="0"');
+    expect(emptyMarkup).toContain("No Alpha command selected");
+    expect(emptyMarkup).toContain("m6.save.no-client-checkpoint");
+    expect(errorMarkup).toContain('data-terminal-outcome="defeat"');
+    expect(errorMarkup).toContain("m6.recognized-order.recognition-missing");
+    expect(errorMarkup).toContain("Recover from a failed Alpha recognized-order attempt.");
+    expect(extremeMarkup).toContain("Alpha pressure route 12");
+    expect(extremeMarkup).toContain("Defer settlement review");
+    expect(extremeMarkup).toContain('role="list"');
+    expect(extremeMarkup).toContain('role="listitem"');
+    expect(extremeMarkup).not.toContain("WorldState");
   });
 });
 

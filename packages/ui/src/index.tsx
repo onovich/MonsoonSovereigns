@@ -1805,11 +1805,25 @@ function M6AlphaWorkspace({
       ? snapshot.failureStep
       : (snapshot.steps.find((step) => step.stepId === previewStepId) ?? currentStep);
   const isConfirmDisabled = phase !== "running" || currentStep === null;
+  const commandLiveStatus = commandStatus ?? "m6.command.no-alpha-command-submitted";
+  const commandStatusKind = commandStatus === null ? "idle" : "submitted";
+  const saveLiveStatus = saveStatus ?? "m6.save.no-client-checkpoint";
+  const saveStatusKind =
+    saveStatus === null ? "empty" : saveStatus.startsWith("m6.load.") ? "restored" : "written";
+  const currentCommandLabel = currentStep?.label ?? "No Alpha command available";
+  const currentScenario = snapshot.scenarios.find(
+    (scenario) => scenario.scenarioId === selectedScenarioId
+  );
+  const scenarioHelpText =
+    currentScenario === undefined
+      ? "No Alpha scenario is available in this read-model state."
+      : `${currentScenario.label}; ${currentScenario.scenarioKind}; day ${currentScenario.startDay}.`;
 
   return (
     <section
       className="m6-alpha"
       aria-label="M6 Alpha start to victory workspace"
+      aria-describedby="m6-alpha-accessibility-status"
       data-scenario-id={snapshot.scenarioId}
       data-selected-scenario-id={selectedScenarioId}
       data-phase={phase}
@@ -1820,6 +1834,20 @@ function M6AlphaWorkspace({
       data-can-pursue-victory={snapshot.terminal.canPursueVictory ? "true" : "false"}
       data-save-present={savedSession.length > 0 ? "true" : "false"}
     >
+      <span id="m6-alpha-accessibility-status" className="sr-only">
+        M6 Alpha phase {phase}. Current command: {currentCommandLabel}. Confirmed commands:{" "}
+        {confirmedCommandIds.length}. Save status: {saveLiveStatus}.
+      </span>
+      <span id="m6-alpha-scenario-description" className="sr-only">
+        Selected scenario: {scenarioHelpText}
+      </span>
+      <span id="m6-alpha-command-description" className="sr-only">
+        Command preview and confirmation submit protocol command DTOs only; the client does not
+        mutate authoritative world state.
+      </span>
+      <span id="m6-alpha-save-description" className="sr-only">
+        Alpha checkpoint is a local client-session checkpoint used for this core-flow smoke.
+      </span>
       <div className="m6-alpha__header">
         <div>
           <h2>M6 Alpha surfaces</h2>
@@ -1836,10 +1864,12 @@ function M6AlphaWorkspace({
       <div className="m6-alpha__grid">
         <section className="m6-alpha__panel" aria-label="M6 scenario and command flow">
           <h3>Scenario and commands</h3>
+          <p>{snapshot.goal.primaryGoal}</p>
           <label className="m6-alpha__field">
             <span>Scenario</span>
             <select
               aria-label="Select M6 Alpha scenario"
+              aria-describedby="m6-alpha-scenario-description"
               value={selectedScenarioId}
               onChange={onScenarioChange}
             >
@@ -1851,43 +1881,78 @@ function M6AlphaWorkspace({
             </select>
           </label>
           <div className="m6-alpha__actions">
-            <button type="button" onClick={onStart} disabled={snapshot.steps.length === 0}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onStart}
+              disabled={snapshot.steps.length === 0}
+            >
               Start Alpha
             </button>
-            <button type="button" onClick={onPreview} disabled={currentStep === null}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onPreview}
+              disabled={currentStep === null}
+            >
               Preview Alpha command
             </button>
-            <button type="button" onClick={onConfirm} disabled={isConfirmDisabled}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onConfirm}
+              disabled={isConfirmDisabled}
+            >
               Confirm Alpha command
             </button>
-            <button type="button" onClick={onFailurePreview}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-command-description"
+              onClick={onFailurePreview}
+            >
               Preview Alpha failure
             </button>
           </div>
-          {commandStatus === null ? null : (
-            <output className="m6-alpha__status" aria-label="M6 command status">
-              {commandStatus}
-            </output>
-          )}
+          <output
+            className="m6-alpha__status"
+            aria-atomic="true"
+            aria-describedby="m6-alpha-command-description"
+            aria-label="M6 command status"
+            aria-live="polite"
+            data-status-kind={commandStatusKind}
+            role="status"
+          >
+            {commandLiveStatus}
+          </output>
           <M6StepPreview step={previewStep} />
         </section>
 
         <section className="m6-alpha__panel" aria-label="M6 save load checkpoint state">
           <h3>Save / load checkpoint</h3>
           <div className="m6-alpha__actions">
-            <button type="button" onClick={onSave}>
+            <button type="button" aria-describedby="m6-alpha-save-description" onClick={onSave}>
               Save Alpha checkpoint
             </button>
-            <button type="button" onClick={onLoad} disabled={savedSession.length === 0}>
+            <button
+              type="button"
+              aria-describedby="m6-alpha-save-description"
+              onClick={onLoad}
+              disabled={savedSession.length === 0}
+            >
               Load Alpha checkpoint
             </button>
           </div>
           <output
             className="m6-alpha__status"
             aria-label="M6 save status"
+            aria-describedby="m6-alpha-save-description"
+            aria-live="polite"
+            aria-atomic="true"
             data-save-length={savedSession.length}
+            data-status-kind={saveStatusKind}
+            role="status"
           >
-            {saveStatus ?? "m6.save.no-client-checkpoint"}
+            {saveLiveStatus}
           </output>
           <code className="m6-alpha__save-preview">
             {savedSession.length === 0 ? "no Alpha client checkpoint" : savedSession}
@@ -1920,7 +1985,12 @@ function M6StepPreview({
 }): ReactElement {
   if (step === null) {
     return (
-      <div className="m6-alpha__fact" aria-label="M6 command preview">
+      <div
+        className="m6-alpha__fact"
+        aria-label="M6 command preview"
+        data-result-status="unavailable"
+        data-step-stage="none"
+      >
         <strong>No Alpha command selected</strong>
         <span>Select a scenario and start the Alpha flow.</span>
       </div>
@@ -1932,9 +2002,13 @@ function M6StepPreview({
       className="m6-alpha__fact"
       aria-label="M6 command preview"
       data-command-kind={step.command.kind}
+      data-result-status={step.result.status}
       data-step-stage={step.stage}
     >
       <strong>{step.label}</strong>
+      <span>
+        Stage {step.stage}; result {step.result.status}
+      </span>
       <span>
         {step.preview.commandKind}; {step.preview.commandId}; {step.actorLabel}
       </span>
@@ -1962,9 +2036,9 @@ function M6DiplomacyLegitimacyPanel({
         <Metric label="Legitimacy" value={formatBps(legitimacy.scoreBps)} />
         <Metric label="Succession" value={succession.status} />
       </dl>
-      <div className="m6-alpha__stack">
+      <div className="m6-alpha__stack" role="list">
         {diplomacy.agreements.map((agreement) => (
-          <div className="m6-alpha__fact" key={agreement.agreementId}>
+          <div className="m6-alpha__fact" key={agreement.agreementId} role="listitem">
             <strong>{agreement.agreementKind}</strong>
             <span>
               {agreement.status}; relation {agreement.relationId}; {agreement.recognitionDirection}
@@ -1973,7 +2047,7 @@ function M6DiplomacyLegitimacyPanel({
           </div>
         ))}
         {legitimacy.sources.map((source) => (
-          <div className="m6-alpha__fact" key={source.sourceId}>
+          <div className="m6-alpha__fact" key={source.sourceId} role="listitem">
             <strong>{source.sourceKind}</strong>
             <span>
               {formatBps(source.magnitudeBps)}; {source.sourceRef}
@@ -1981,7 +2055,7 @@ function M6DiplomacyLegitimacyPanel({
             <ReasonChips reasonCodes={[source.reasonCode]} />
           </div>
         ))}
-        <div className="m6-alpha__fact">
+        <div className="m6-alpha__fact" role="listitem">
           <strong>Succession continuity</strong>
           <span>
             crises {succession.crisisCount}; resolved {succession.resolvedCount}; candidates{" "}
@@ -2004,11 +2078,22 @@ function M6PolicyEventPanel({
   return (
     <section className="m6-alpha__panel" aria-label="M6 policy event encyclopedia surfaces">
       <h3>Policies / events / encyclopedia</h3>
-      <div className="m6-alpha__stack">
+      <div className="m6-alpha__stack" role="list">
         {policies.activeEvents.map((event) => (
-          <div className="m6-alpha__fact" key={event.eventInstanceId}>
+          <div className="m6-alpha__fact" key={event.eventInstanceId} role="listitem">
             <strong>{event.title}</strong>
             <span>{event.options.length} options</span>
+            <ul className="m6-alpha__option-list" aria-label={`${event.title} choices`}>
+              {event.options.map((option) => (
+                <li key={option.optionId}>
+                  <strong>{option.label}</strong>
+                  <span>Option {option.optionId}</span>
+                  <ReasonChips
+                    reasonCodes={[...option.reasonCodes, ...option.consequenceReasonCodes]}
+                  />
+                </li>
+              ))}
+            </ul>
             <ReasonChips
               reasonCodes={[
                 ...event.causeReasonCodes,
@@ -2021,8 +2106,17 @@ function M6PolicyEventPanel({
             />
           </div>
         ))}
+        {policies.resolvedEvents.map((event) => (
+          <div className="m6-alpha__fact" key={`resolved:${event.eventInstanceId}`} role="listitem">
+            <strong>Resolved policy event {event.eventInstanceId}</strong>
+            <span>
+              selected option {event.selectedOptionId}; resolved day {event.resolvedDay}
+            </span>
+            <ReasonChips reasonCodes={[...event.reasonCodes, ...event.encyclopediaRefs]} />
+          </div>
+        ))}
         {policies.modifiers.map((modifier) => (
-          <div className="m6-alpha__fact" key={modifier.modifierId}>
+          <div className="m6-alpha__fact" key={modifier.modifierId} role="listitem">
             <strong>Policy {modifier.policyId}</strong>
             <span>
               {formatBps(modifier.magnitudeBps)} day {modifier.startDay}-{modifier.endDay}
@@ -2036,8 +2130,10 @@ function M6PolicyEventPanel({
             key={entry.entryId}
             data-entry-id={entry.entryId}
             data-content-tag={entry.contentTag}
+            role="listitem"
           >
             <strong>{entry.title}</strong>
+            <span>Content tag {entry.contentTag}</span>
             <span>{entry.summary}</span>
             <ReasonChips reasonCodes={entry.linkedReasonCodes} />
           </div>
@@ -2056,9 +2152,9 @@ function M6AdviserPanel({ adviser }: { readonly adviser: ClientM6AdviserReadMode
         <span>{adviser.commandKind ?? "no command"}</span>
         <ReasonChips reasonCodes={adviser.reasonCodes} />
       </div>
-      <div className="m6-alpha__stack">
+      <div className="m6-alpha__stack" role="list">
         {adviser.candidates.map((candidate) => (
-          <div className="m6-alpha__fact" key={candidate.candidateId}>
+          <div className="m6-alpha__fact" key={candidate.candidateId} role="listitem">
             <strong>{candidate.candidateId}</strong>
             <span>
               {candidate.decisionKind}; score {candidate.score};{" "}
@@ -2115,21 +2211,21 @@ function M6TerminalPanel({
         <Metric label="Checkpoint" value={replay.midRunCheckpointLabel} />
       </dl>
       <ReasonChips reasonCodes={terminal.reasonCodes} />
-      <div className="m6-alpha__stack">
+      <div className="m6-alpha__stack" role="list">
         {goal.victoryRequirements.map((condition) => (
-          <div className="m6-alpha__fact" key={condition}>
+          <div className="m6-alpha__fact" key={condition} role="listitem">
             <strong>Victory</strong>
             <span>{condition}</span>
           </div>
         ))}
         {goal.failureConditions.map((condition) => (
-          <div className="m6-alpha__fact" key={condition}>
+          <div className="m6-alpha__fact" key={condition} role="listitem">
             <strong>Failure</strong>
             <span>{condition}</span>
           </div>
         ))}
         {goal.excludedSurfaces.map((item) => (
-          <div className="m6-alpha__fact" key={item}>
+          <div className="m6-alpha__fact" key={item} role="listitem">
             <strong>Excluded</strong>
             <span>{item}</span>
           </div>
@@ -2147,9 +2243,9 @@ function M6ReasonSummaryPanel({
   return (
     <section className="m6-alpha__panel" aria-label="M6 reason summaries">
       <h3>Reason summaries</h3>
-      <div className="m6-alpha__stack">
+      <div className="m6-alpha__stack" role="list">
         {summaries.slice(0, 14).map((summary) => (
-          <div className="m6-alpha__fact" key={summary.reasonCode}>
+          <div className="m6-alpha__fact" key={summary.reasonCode} role="listitem">
             <strong>{summary.reasonCode}</strong>
             <span>
               {summary.count} / {summary.sourceKinds.join(", ")}
@@ -2247,9 +2343,9 @@ interface ReasonChipsProps {
 
 function ReasonChips({ reasonCodes }: ReasonChipsProps): ReactElement {
   return (
-    <span className="m3-appointment__reasons">
+    <span className="m3-appointment__reasons" role="list" aria-label="Reason codes">
       {reasonCodes.map((reasonCode, index) => (
-        <span className="m3-appointment__reason" key={`${reasonCode}:${index}`}>
+        <span className="m3-appointment__reason" key={`${reasonCode}:${index}`} role="listitem">
           {reasonCode}
         </span>
       ))}

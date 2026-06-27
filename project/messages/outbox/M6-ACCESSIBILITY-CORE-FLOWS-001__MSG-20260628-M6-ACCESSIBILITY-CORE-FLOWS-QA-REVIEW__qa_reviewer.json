@@ -1,0 +1,201 @@
+{
+  "message_id": "MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-QA-REVIEW",
+  "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "from_role": "qa_reviewer",
+  "from_thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
+  "from_nickname": "Gate the 2nd",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA review accepts the M6 Alpha core-flow accessibility hardening. The diff satisfies the task acceptance criteria for keyboard reachability, focus-visible behavior, screen-reader labels/descriptions, non-color status evidence, reduced-motion/status update handling, viewport overflow checks, command/query/read-model boundaries, forbidden-path scope, dependency scope, and DEFER_MANUAL_NODE_BATTLE preservation.",
+  "artifacts": [
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260628-M6-ACCESSIBILITY-WRITER-TO-QA-REVIEW.json",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "branch_or_worktree": "feat/m6-accessibility-core-flows / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "reviewed_branch_or_worktree": "feat/m6-accessibility-core-flows / D:\\WebProjects\\MonsoonSovereigns",
+  "review_commit": "9d757bebcc093aa4ad2ba8eb97ce387c4c3c10d2",
+  "head_at_review": "d93c20a6",
+  "source_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+  "qa_route_evidence": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260628-M6-ACCESSIBILITY-WRITER-TO-QA-REVIEW.json",
+  "artifacts_reviewed": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M6-ACCESSIBILITY-CORE-FLOWS-001.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260628-M6-ACCESSIBILITY-WRITER-TO-QA-REVIEW.json",
+    "docs/04-software-architecture.md",
+    "docs/05-coding-standards.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REPLACEMENT-START__lead_orchestrator.json",
+    "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
+    "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-REPLACEMENT.json"
+  ],
+  "acceptance_checks": [
+    {
+      "criterion": "Core Alpha flows keyboard/focus/screen-reader/non-color coverage",
+      "result": "PASS",
+      "evidence": "M6 scenario start, command preview/confirm, save/load checkpoint, policy/event choices, diplomacy, succession, encyclopedia, map candidate, and victory/failure review surfaces expose labels/descriptions, role/list semantics, live statuses, data-status-kind states, and keyboard activation checks in Vitest and Playwright."
+    },
+    {
+      "criterion": "Map keyboard navigation boundary",
+      "result": "PASS",
+      "evidence": "Pixi map host is focusable and uses Arrow/Home/End navigation over the map read model through onSelectedEntityChange only; no authoritative WorldState write path or sim-core change is present."
+    },
+    {
+      "criterion": "Command/query/read-model boundary",
+      "result": "PASS",
+      "evidence": "React state stores UI phase, selected read-model ids, command status, and client-session checkpoint text; command confirmation calls onM6CommandSubmit with existing protocol DTOs and does not store full WorldState."
+    },
+    {
+      "criterion": "Automated evidence has discrimination",
+      "result": "PASS",
+      "evidence": "E2E asserts focus order, map keyboard selection, focus outline, live status roles, aria-describedby links, non-color data-status-kind states, reduced-motion CSS clamp, and viewport overflow at 1280x720, 1280x800, 1920x1080, and 2560x1080 with 20px root font."
+    },
+    {
+      "criterion": "Scope, dependency, and forbidden path compliance",
+      "result": "PASS",
+      "evidence": "git diff origin/main...HEAD modifies only allowed app/ui/test/process paths; forbidden path scan and package/lockfile diff checks returned no matches."
+    },
+    {
+      "criterion": "DEFER_MANUAL_NODE_BATTLE preservation",
+      "result": "PASS",
+      "evidence": "No manual node battle implementation, spike, telemetry, account, server, Electron IPC, or new dependency was introduced; only absence/unavailable text and tests remain."
+    },
+    {
+      "criterion": "Replacement process auditability",
+      "result": "PASS_WITH_NOTE",
+      "evidence": "Replacement start handoff, replacement route, task JSON, thread registry, writer handoff, review commit, and QA route are present. The prior writer's transient diff is explicitly treated as non-authoritative and not claimed as an artifact."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean branch at feat/m6-accessibility-core-flows...origin/feat/m6-accessibility-core-flows before and after QA tests/builds, except this QA handoff added after review."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "16 changed files, all within allowed app/ui/test/project-message/project-state paths."
+    },
+    {
+      "command": "git show --stat --oneline 9d757bebcc093aa4ad2ba8eb97ce387c4c3c10d2",
+      "exit_code": 0,
+      "result": "Review implementation commit is fix(ui): harden M6 accessibility core flows; 6 files changed, 130 insertions, 55 deletions."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 17 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "11 Chromium Playwright tests passed, including the M6 accessibility core-flow smoke."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries, determinism, 40 root Vitest files / 305 tests, and web package tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed with existing chunk-size warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully with existing chunk-size/plugin timing warnings and cleaned .tmp/storybook-static."
+    },
+    {
+      "command": "forbidden path and dependency scans via git diff --name-only origin/main...HEAD | rg ...",
+      "exit_code": 1,
+      "result": "No forbidden-path or package/lockfile matches."
+    },
+    {
+      "command": "focused rg scan over changed code/test files for WorldState, telemetry/account/server/IPC/network/storage, any, double assertions, TODO/FIXME, and manual node battle",
+      "exit_code": 0,
+      "result": "Only expected manual-node-battle absence text/tests and WorldState negative assertions were found."
+    }
+  ],
+  "commands_run": [
+    "git status --short --branch",
+    "git diff --name-status origin/main...HEAD",
+    "git show --stat --oneline 9d757bebcc093aa4ad2ba8eb97ce387c4c3c10d2",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "git diff --check origin/main...HEAD",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm test:e2e",
+    "pnpm test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "forbidden path and dependency scans via git diff --name-only origin/main...HEAD | rg ...",
+    "focused rg scan over changed code/test files for WorldState, telemetry/account/server/IPC/network/storage, any, double assertions, TODO/FIXME, and manual node battle"
+  ],
+  "decisions": [
+    "Accept the task because the implemented accessibility coverage and verification meet the M6 Alpha core-flow acceptance criteria.",
+    "Treat the route/thread-registry 20260628 source-handoff path mismatch as a non-blocking lead metadata reconciliation issue because the actual 20260627 source handoff exists and validates.",
+    "Do not mark the task ACCEPTED/CLOSED or integrate from the QA reviewer thread."
+  ],
+  "blocking_findings": [],
+  "risks": [
+    "QA route evidence and thread-registry point at a nonexistent 20260628 writer handoff path, while the task JSON, user review route, and actual validated writer handoff point at the existing 20260627 writer handoff. This did not block review because the actual handoff and commit were independently verified, but lead_orchestrator should reconcile the metadata if strict route-file path consistency is required before integration.",
+    "No manual assistive-technology certification was performed; this task provides automated role/name/description/live-region/focus/status spot checks and bounded Alpha evidence only.",
+    "No new .storybook stories were added because .storybook/** is outside the task allowed paths; Storybook build passes and state coverage is supplied by Vitest/E2E for this Alpha accessibility task.",
+    "Vite and Storybook builds still emit pre-existing chunk-size warnings; no dependency or bundle-splitting change is part of this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate after validating this QA handoff and performing normal lead/CI gates. Do not mark ACCEPTED/CLOSED from the reviewer thread.",
+  "created_at": "2026-06-28T00:10:00+08:00",
+  "metadata_reconciliation_by_lead": {
+    "reconciled_at": "2026-06-28T00:13:04.124+08:00",
+    "corrected_paths": [
+      "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260628-M6-ACCESSIBILITY-WRITER-TO-QA-REVIEW.json",
+      "project/tasks/thread-registry.json"
+    ],
+    "from": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "to": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "reason": "QA identified non-blocking route/thread-registry metadata mismatch; lead corrected references before integration."
+  }
+}

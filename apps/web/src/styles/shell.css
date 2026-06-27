@@ -27,6 +27,24 @@ select {
   font: inherit;
 }
 
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #1f5c61;
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .client-shell {
   display: grid;
   grid-template-columns: minmax(360px, 44vw) minmax(640px, 1fr);
@@ -103,6 +121,10 @@ select {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+}
+
+.map-viewport:focus-visible {
+  outline-offset: -6px;
 }
 
 .map-renderer-error {
@@ -925,7 +947,8 @@ select {
   font-size: 1.12rem;
 }
 
-.m6-alpha__header p {
+.m6-alpha__header p,
+.m6-alpha__panel p {
   margin: 0;
   color: #53636b;
   font-size: 0.82rem;
@@ -1026,6 +1049,19 @@ select {
   overflow-wrap: anywhere;
 }
 
+.m6-alpha__status[data-status-kind="idle"],
+.m6-alpha__status[data-status-kind="empty"] {
+  border-style: dashed;
+  background: #ffffff;
+  color: #53636b;
+}
+
+.m6-alpha__status[data-status-kind="restored"] {
+  border-color: #9fb2bf;
+  background: #f4f8fa;
+  color: #314f5e;
+}
+
 .m6-alpha__save-preview {
   display: block;
   max-height: 112px;
@@ -1056,6 +1092,33 @@ select {
 .m6-alpha__fact code {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.m6-alpha__option-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.m6-alpha__option-list li {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  border-inline-start: 3px solid #9fb2bf;
+  padding-inline-start: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media (max-width: 1320px) {

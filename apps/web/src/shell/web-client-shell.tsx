@@ -14,7 +14,7 @@ import {
   type MountedPixiMapRenderer
 } from "@monsoon/map-renderer";
 import { ClientShellView } from "@monsoon/ui";
-import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactElement } from "react";
 
 import { createWebClientShellSnapshot } from "./create-shell-snapshot";
 
@@ -183,15 +183,69 @@ function PixiMapSurface({
     };
   }, [onSelectedEntityChange]);
 
+  function handleMapKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    const districtCount = snapshot.districts.length;
+    if (districtCount === 0) {
+      return;
+    }
+
+    const firstDistrict = snapshot.districts[0];
+    if (firstDistrict === undefined) {
+      return;
+    }
+    const selectedDistrictId = viewport.selectedEntity?.districtId ?? firstDistrict.districtId;
+    const currentIndex = snapshot.districts.findIndex(
+      (district) => district.districtId === selectedDistrictId
+    );
+    const fallbackIndex = currentIndex < 0 ? 0 : currentIndex;
+    const nextIndex = getNextMapKeyboardIndex({
+      key: event.key,
+      fallbackIndex,
+      districtCount
+    });
+    if (nextIndex === null) {
+      return;
+    }
+
+    const nextDistrict = snapshot.districts[nextIndex];
+    if (nextDistrict === undefined) {
+      return;
+    }
+
+    event.preventDefault();
+    onSelectedEntityChange({ kind: "district", districtId: nextDistrict.districtId });
+  }
+
+  const selectedDistrictId =
+    viewport.selectedEntity?.districtId ?? snapshot.districts[0]?.districtId;
+  const selectedDistrict = snapshot.districts.find(
+    (district) => district.districtId === selectedDistrictId
+  );
+  const selectedDistrictLabel = selectedDistrict?.displayName ?? "No district selected";
+
   return (
     <>
+      <span id="map-keyboard-help" className="sr-only">
+        Use arrow keys, Home, and End to move the selected district through the map read model.
+      </span>
+      <span id="map-selected-district-status" className="sr-only" aria-live="polite">
+        Selected map district: {selectedDistrictLabel}.
+      </span>
       <div
         ref={hostRef}
         className="map-viewport"
         aria-label="M2 prototype map viewport"
+        aria-describedby="map-keyboard-help map-selected-district-status"
+        aria-keyshortcuts="ArrowRight ArrowDown ArrowLeft ArrowUp Home End"
+        aria-roledescription="keyboard navigable map read model"
         data-renderer-owner="map-renderer"
         data-renderer-status={rendererStatus}
         data-renderer-error={mountError ?? undefined}
+        data-keyboard-navigation="district-cycle"
+        data-selected-district-label={selectedDistrictLabel}
+        onKeyDown={handleMapKeyDown}
+        role="region"
+        tabIndex={0}
       />
       {rendererStatus === "error" ? (
         <p className="map-renderer-error" role="alert">
@@ -200,6 +254,27 @@ function PixiMapSurface({
       ) : null}
     </>
   );
+}
+
+function getNextMapKeyboardIndex(input: {
+  readonly key: string;
+  readonly fallbackIndex: number;
+  readonly districtCount: number;
+}): number | null {
+  switch (input.key) {
+    case "ArrowRight":
+    case "ArrowDown":
+      return (input.fallbackIndex + 1) % input.districtCount;
+    case "ArrowLeft":
+    case "ArrowUp":
+      return (input.fallbackIndex - 1 + input.districtCount) % input.districtCount;
+    case "Home":
+      return 0;
+    case "End":
+      return input.districtCount - 1;
+    default:
+      return null;
+  }
 }
 
 function toRendererMountErrorMessage(error: unknown): string {

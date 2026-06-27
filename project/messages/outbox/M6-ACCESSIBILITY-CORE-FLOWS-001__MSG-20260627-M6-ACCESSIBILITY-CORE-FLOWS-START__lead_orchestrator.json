@@ -1,0 +1,49 @@
+{
+  "message_id": "MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START",
+  "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M6-ACCESSIBILITY-CORE-FLOWS-001 after M6-LAYERED-AI-001 closed on origin/main. The client_engineer must harden keyboard reachability, focus-visible states, screen-reader labels, non-color status, reduced-motion/status update handling, and viewport overflow behavior for the core M6 Alpha flows without adding telemetry, accounts, Electron IPC, hidden network calls, or client-side authoritative state.",
+  "artifacts": [
+    "project/tasks/active/M6-ACCESSIBILITY-CORE-FLOWS-001.json",
+    "PROJECT_STATUS.md",
+    "docs/04-software-architecture.md",
+    "docs/05-coding-standards.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx"
+  ],
+  "branch_or_worktree": "feat/m6-accessibility-core-flows / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "exit_code": 0,
+      "result": "Task JSON was valid before start."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-ACCESSIBILITY-CORE-FLOWS-001 and M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 were dependency-ready; accessibility selected first by ready order."
+    }
+  ],
+  "decisions": [
+    "Start M6-ACCESSIBILITY-CORE-FLOWS-001 as the highest-priority READY M6 task after M6-LAYERED-AI-001 closure PR entered origin/main.",
+    "Scope remains core-flow Alpha accessibility, not final M7/M8 accessibility completion or localization/platform matrix completion.",
+    "No new production dependency is authorized by default; any proposed accessibility dependency must include purpose, maintenance, license, alternatives, and bundle impact before acceptance.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; telemetry, accounts, server/multiplayer, Electron IPC changes, hidden network calls, and client-side authoritative state are excluded."
+  ],
+  "risks": [
+    "R3 client work crosses apps/web and shared UI/client packages, so independent qa_reviewer acceptance and Playwright/Storybook/Web gates are required.",
+    "Accessibility evidence must be bounded and honest: viewport, keyboard, focus order, non-color state, reduced-motion/status updates, and screen-reader label spot checks without claiming final accessibility completion."
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement accessibility core-flow hardening within allowed paths, run required tests where available, produce evidence, and emit REVIEW handoff routed to qa_reviewer.",
+  "created_at": "2026-06-27T23:26:39.775+08:00"
+}

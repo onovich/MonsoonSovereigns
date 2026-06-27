@@ -1763,6 +1763,30 @@
       "integrated_pr": 116,
       "integrated_main_commit": "809209369a9ca21f32f6e0887758c5f0e670dd41",
       "lead_close_handoff": "project/messages/outbox/M5-MULTIYEAR-AI-RUN-001__MSG-20260627-M5-MULTIYEAR-AI-RUN-CLOSED__lead_orchestrator.json"
+    },
+    {
+      "thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "role": "client_engineer",
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_qa_accept_and_lead_acceptance",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T00:20:54.339+08:00"
+    },
+    {
+      "thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
+      "role": "qa_reviewer",
+      "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "xhigh",
+      "migration_status": "closed_after_accept_review_and_lead_acceptance",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T00:20:54.339+08:00"
     }
   ],
   "active_threads": [
@@ -2292,8 +2316,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M6-ACCESSIBILITY-CORE-FLOWS-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
-  "current_task": null,
+  "next_action": "Lead accept M6 accessibility after QA ACCEPT and metadata reconciliation, then run integration gates.",
+  "current_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2343,7 +2367,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-27T23:17:59.059+08:00",
+  "updated_at": "2026-06-28T00:20:54.339+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2556,5 +2580,76 @@
     "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/147",
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
+  },
+  "m6_accessibility_core_flows": {
+    "status": "ACCEPTED",
+    "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+    "branch_or_worktree": "feat/m6-accessibility-core-flows",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+    "writer_nickname": "Canvas the 2nd",
+    "owner_role": "client_engineer",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "configured_reviewer_model": "gpt-5.5",
+    "configured_reviewer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
+    "started_at": "2026-06-27T23:26:39.775+08:00",
+    "base_main_commit": "8ec20ad399424d355fbcf58b404ea8202fcf5da9",
+    "next_action": "Open PR, wait for CI, merge on pass, sync main, write CLOSED checkpoint, and continue to the next READY M6 task.",
+    "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
+    "route_sent_at": "2026-06-27T23:28:32.873+08:00",
+    "updated_at": "2026-06-28T00:20:54.339+08:00",
+    "replaced_writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
+    "replacement_start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-REPLACEMENT.json",
+    "writer_replacement_reason": "original writer closed after repeated wait timeouts and interrupt收口指令 produced no handoff; transient allowed-path diff observed before close was not committed and is not treated as authoritative",
+    "replacement_submission_id": "019f09c7-47aa-7960-9fd2-1509e8eb4f73",
+    "replacement_route_sent_at": "2026-06-27T23:51:56.177+08:00",
+    "review_commit": "9d757bebcc093aa4ad2ba8eb97ce387c4c3c10d2",
+    "qa_thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
+    "qa_thread_nickname": "Gate the 2nd",
+    "qa_route": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260628-M6-ACCESSIBILITY-WRITER-TO-QA-REVIEW.json",
+    "routed_to_qa_at": "2026-06-28T00:03:30.164+08:00",
+    "qa_submission_id": "019f09d2-f6aa-7243-8eb9-0dab8a5ac546",
+    "qa_route_sent_at": "2026-06-28T00:04:39.081+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-QA-REVIEW__qa_reviewer.json",
+    "qa_metadata_reconciliation": {
+      "reconciled_at": "2026-06-28T00:13:04.124+08:00",
+      "corrected_route_source_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+      "corrected_registry_review_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json"
+    },
+    "actual_reviewer_model": "unknown",
+    "actual_reviewer_effort": "unknown",
+    "lead_accept_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T00:20:54.339+08:00",
+    "accepted_head_commit": "d13616db0e182b3ae4fede290eb43de718134d21",
+    "child_threads_closed": [
+      "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "019f09d1-b057-79a2-a472-f09bf2a67014"
+    ],
+    "child_thread_close_summary": [
+      {
+        "thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+        "role": "client_engineer",
+        "nickname": "Canvas the 2nd",
+        "previous_status": "completed",
+        "closed_at": "2026-06-28T00:20:54.339+08:00"
+      },
+      {
+        "thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
+        "role": "qa_reviewer",
+        "nickname": "Gate the 2nd",
+        "previous_status": "completed",
+        "closed_at": "2026-06-28T00:20:54.339+08:00"
+      }
+    ]
   }
 }

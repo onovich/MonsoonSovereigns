@@ -1,0 +1,118 @@
+{
+  "message_id": "MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-LEAD-ACCEPT",
+  "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M6-ACCESSIBILITY-CORE-FLOWS-001 after independent qa_reviewer ACCEPT, metadata reconciliation, real child-thread closure, and lead integration gates. The implementation hardens Alpha core flows for keyboard reachability, focus visibility, screen-reader labels/descriptions, non-color state evidence, reduced-motion handling, map keyboard navigation, command/save live statuses, scenario/policy/event/encyclopedia/victory surfaces, and viewport overflow checks while preserving read-model/command DTO boundaries.",
+  "artifacts": [
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+    "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m6-accessibility-core-flows / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "d13616db0e182b3ae4fede290eb43de718134d21",
+  "implementation_commit": "9d757bebcc093aa4ad2ba8eb97ce387c4c3c10d2",
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Passed 1 file / 8 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Passed 1 file / 17 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed; existing Vite chunk-size warning remains."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed; existing Storybook/Vite chunk-size and plugin timing warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed 11 Chromium tests including M6 Alpha accessibility core flow and viewport overflow checks."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture check, determinism canaries including M6 Alpha hash 260f46c3, root Vitest 40 files / 305 tests, and web Vitest 1 file / 4 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed Prettier format check, ESLint, workspace typecheck, and architecture boundary check."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Writer REVIEW handoff is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260628-M6-ACCESSIBILITY-CORE-FLOWS-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "QA ACCEPT handoff is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ACCESSIBILITY-CORE-FLOWS-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Reviewed changed paths against task allowed_paths/forbidden_paths; no forbidden paths, package manifests, lockfile, Electron, sim-core, sim-ai, content-source, CI, roadmap, gate, or release artifact changes."
+    }
+  ],
+  "decisions": [
+    "Accept QA ACCEPT and proceed to PR/CI integration.",
+    "Treat the corrected 20260627 writer REVIEW handoff path as the authoritative writer handoff; the stale 20260628 writer-handoff reference was metadata-only and has been reconciled.",
+    "Keep accessibility work Alpha-bounded; do not claim final M7/M8 accessibility completion or assistive-technology certification.",
+    "No new production dependency is introduced.",
+    "Preserve read-model / command DTO boundaries; UI does not store full WorldState or directly mutate authoritative simulation state.",
+    "Do not add telemetry, accounts, hidden network calls, Electron IPC, server/multiplayer behavior, release/commercial choices, or manual node battle work."
+  ],
+  "risks": [
+    "PR CI must pass before the task can be CLOSED.",
+    "Manual screen-reader certification remains outside this Alpha core-flow task; automated role/name/live-region checks and recorded evidence are accepted for M6 scope.",
+    "Existing Vite/Storybook chunk-size warnings remain pre-existing non-blocking warnings."
+  ],
+  "blockers": [],
+  "child_threads_closed": [
+    "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+    "019f09d1-b057-79a2-a472-f09bf2a67014"
+  ],
+  "child_thread_close_summary": [
+    {
+      "thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+      "role": "client_engineer",
+      "nickname": "Canvas the 2nd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-28T00:20:54.339+08:00"
+    },
+    {
+      "thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
+      "role": "qa_reviewer",
+      "nickname": "Gate the 2nd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-28T00:20:54.339+08:00"
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge on pass, sync main, write CLOSED checkpoint, and continue to the next READY M6 task.",
+  "created_at": "2026-06-28T00:20:54.339+08:00"
+}
