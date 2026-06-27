@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-TASK-GRAPH-001",
-    "updated_at": "2026-06-28T03:55:00+08:00"
+    "updated_at": "2026-06-28T04:24:04.3200000+08:00"
   },
   "retired_lead_threads": [
     {
@@ -2437,7 +2437,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T04:14:55.1642622+08:00",
+  "updated_at": "2026-06-28T04:24:04.3200000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2938,14 +2938,14 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION"
   },
   "m7_start": {
-    "status": "PENDING_TASK_GRAPH",
+    "status": "TASK_GRAPH_CLOSED",
     "current_milestone": "M7",
-    "next_action": "Create or recover M7-TASK-GRAPH-001",
+    "next_action": "Start M7-CONTENT-LOCK-CONTRACT-001.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   },
   "m7_task_graph": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-TASK-GRAPH-001",
     "branch_or_worktree": "chore/m7-task-graph",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -2955,7 +2955,7 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "started_at": "2026-06-28T03:43:49.1264386+08:00",
-    "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
+    "next_action": "Start M7-CONTENT-LOCK-CONTRACT-001 as the first dependency-ready M7 task.",
     "systems_architect_thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
     "systems_architect_nickname": "Keystone the 3rd",
     "configured_writer_model": "gpt-5.5",
@@ -3081,6 +3081,15 @@
     "child_threads_closed": [
       "019f0a9d-fc35-7953-b109-aa06340de057",
       "019f0aaf-d094-7c30-a525-fb612fe5dccb"
+    ],
+    "integrated_pr": 159,
+    "integrated_main_commit": "bde9037d83b20f0fe6ea19e5d67b926d6ca161f7",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/159",
+    "lead_close_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-28T04:24:04.3200000+08:00",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "next_ready_tasks": [
+      "M7-CONTENT-LOCK-CONTRACT-001"
     ]
   }
 }
