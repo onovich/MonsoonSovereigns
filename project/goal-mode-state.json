@@ -9,13 +9,13 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
-      "status": "active_orchestrating_replacement",
+      "status": "active_orchestrating_request_changes",
       "role": "lead_orchestrator"
     },
     "historical_researcher": {
       "thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
       "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
-      "status": "active",
+      "status": "active_request_changes",
       "role": "historical_researcher",
       "nickname": "Estuary"
     }
@@ -63,7 +63,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS"
   },
-  "last_updated_at": "2026-06-27T14:46:34+08:00",
+  "last_updated_at": "2026-06-27T14:56:19+08:00",
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
     "integrated_pr": 106,
@@ -75,7 +75,7 @@
     "process_limit": "No systems_architect REVIEW handoff exists after three real stalled systems writer threads; independent QA accepted explicit lead reconciliation.",
     "closed_at": "2026-06-26T11:32:55.179Z"
   },
-  "updated_at": "2026-06-27T14:46:34+08:00",
+  "updated_at": "2026-06-27T14:56:19+08:00",
   "m5_task_graph": {
     "status": "CLOSED",
     "integrated_pr": 108,
@@ -444,7 +444,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Wait for replacement historical_researcher REVIEW handoff for M6-SCENARIO-DATA-PIPELINE-001, then route to independent qa_reviewer.",
+  "next_action": "replacement historical_researcher addresses lead REQUEST_CHANGES and returns R2 REVIEW handoff.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -665,7 +665,7 @@
     "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "replacement historical_researcher audits existing partial work, completes tests, and returns REVIEW handoff for qa_reviewer.",
+    "next_action": "replacement historical_researcher addresses lead REQUEST_CHANGES and returns R2 REVIEW handoff.",
     "route_sent_at": "2026-06-27T14:28:31+08:00",
     "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
     "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -693,6 +693,12 @@
       "packages/content-schema/src/m6-alpha-scenario.ts"
     ],
     "replacement_submission_id": "019f07d3-f477-7da1-9dd7-5cb626e97364",
-    "replacement_route_sent_at": "2026-06-27T14:46:34+08:00"
+    "replacement_route_sent_at": "2026-06-27T14:46:34+08:00",
+    "request_changes_round": 1,
+    "request_changes_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
+    "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
+    "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
+    "updated_at": "2026-06-27T14:56:19+08:00"
   }
 }

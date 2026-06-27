@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision_id": "MODEL-ROUTING-AMENDMENT-001",
-  "updated_at": "2026-06-27T14:46:34+08:00",
+  "updated_at": "2026-06-27T14:56:19+08:00",
   "default_configured": {
     "model": "gpt-5.5",
     "model_reasoning_effort": "xhigh",
@@ -2148,12 +2148,12 @@
       "writer_thread_id": "019f07c1-17ed-7300-a467-cb7062d5064f",
       "writer_nickname": "Chronicle",
       "branch_or_worktree": "feat/m6-scenario-data-pipeline",
-      "updated_at": "2026-06-27T14:46:34+08:00",
+      "updated_at": "2026-06-27T14:56:19+08:00",
       "human_gate_required": false,
       "start_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-START.json",
       "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
-      "next_action": "replacement historical_researcher audits existing partial work, completes tests, and returns REVIEW handoff for qa_reviewer.",
+      "next_action": "replacement historical_researcher addresses lead REQUEST_CHANGES and returns R2 REVIEW handoff.",
       "route_sent_at": "2026-06-27T14:28:31+08:00",
       "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
       "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -2163,7 +2163,12 @@
       "replacement_route_file": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-TO-HISTORICAL-REPLACEMENT-START.json",
       "replacement_at": "2026-06-27T14:45:02+08:00",
       "replacement_submission_id": "019f07d3-f477-7da1-9dd7-5cb626e97364",
-      "replacement_route_sent_at": "2026-06-27T14:46:34+08:00"
+      "replacement_route_sent_at": "2026-06-27T14:46:34+08:00",
+      "request_changes_round": 1,
+      "request_changes_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
+      "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
+      "request_changes_sent_at": "2026-06-27T14:56:19+08:00"
     }
   },
   "m6_scenario_data_pipeline": {
@@ -2179,7 +2184,7 @@
     "base_main_commit": "06628e092f1a958c7fc48395f68537097fffb8c8",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "replacement historical_researcher audits existing partial work, completes tests, and returns REVIEW handoff for qa_reviewer.",
+    "next_action": "replacement historical_researcher addresses lead REQUEST_CHANGES and returns R2 REVIEW handoff.",
     "route_sent_at": "2026-06-27T14:28:31+08:00",
     "start_submission_id": "019f07c3-8cd1-7ff2-9946-7b1f9d8defd6",
     "replacement_writer_thread_id": "019f07d2-14c6-7542-a409-5bf97fdcf352",
@@ -2207,7 +2212,13 @@
       "packages/content-schema/src/m6-alpha-scenario.ts"
     ],
     "replacement_submission_id": "019f07d3-f477-7da1-9dd7-5cb626e97364",
-    "replacement_route_sent_at": "2026-06-27T14:46:34+08:00"
+    "replacement_route_sent_at": "2026-06-27T14:46:34+08:00",
+    "request_changes_round": 1,
+    "request_changes_handoff": "project/messages/outbox/M6-SCENARIO-DATA-PIPELINE-001__MSG-20260627-M6-SCENARIO-DATA-PIPELINE-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "request_changes_route": "project/messages/routes/M6-SCENARIO-DATA-PIPELINE-001__ROUTE-20260627-M6-SCENARIO-LEAD-REQUEST-CHANGES-TO-HISTORICAL.json",
+    "request_changes_submission_id": "019f07dc-b295-7b60-8138-f2df192b4747",
+    "request_changes_sent_at": "2026-06-27T14:56:19+08:00",
+    "updated_at": "2026-06-27T14:56:19+08:00"
   },
   "replaced_threads": [
     {
