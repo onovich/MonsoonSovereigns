@@ -4099,7 +4099,7 @@
       "task_id": "M6-LAYERED-AI-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_routing_r2_review",
+      "status": "accepted_pending_pr",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -4111,8 +4111,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T22:24:44.466+08:00",
-      "updated_at": "2026-06-27T23:02:50.378+08:00",
-      "next_action": "systems_architect must review the M6 layered AI R2 fixes and emit ACCEPT or REQUEST_CHANGES handoff routed to lead_orchestrator.",
+      "updated_at": "2026-06-27T23:11:34.523+08:00",
+      "next_action": "Open PR, wait for CI, merge to main, then close M6-LAYERED-AI-001 and continue to the next READY M6 task.",
       "start_submission_id": "019f0979-3301-7040-9cb2-f43e04a440f7",
       "route_sent_at": "2026-06-27T22:26:33.497+08:00",
       "review_route_file": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-TO-SYSTEMS-REVIEW.json",
@@ -4131,14 +4131,25 @@
       "review_commit_r2": "558d412e",
       "review_route_file_r2": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-R2-TO-SYSTEMS-REVIEW.json",
       "systems_review_submission_id_r2": "019f099a-692f-7351-8d48-a4fe6357b13b",
-      "systems_route_sent_r2_at": "2026-06-27T23:02:50.378+08:00"
+      "systems_route_sent_r2_at": "2026-06-27T23:02:50.378+08:00",
+      "systems_status_r2": "ACCEPT",
+      "lead_accept_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-27T23:11:34.523+08:00",
+      "accepted_head_commit": "051274ab",
+      "child_threads_closed": [
+        "019f0976-c120-7a50-a3ab-08fced11c52c",
+        "019f0986-396c-7010-a975-b12388543a64"
+      ],
+      "next_ready_tasks": [
+        "M6-ACCESSIBILITY-CORE-FLOWS-001"
+      ]
     },
     "M6-LAYERED-AI-001:simulation_engineer": {
       "task_id": "M6-LAYERED-AI-001",
       "role": "simulation_engineer",
       "thread_id": "019f0976-c120-7a50-a3ab-08fced11c52c",
       "nickname": "Delta the 2nd",
-      "status": "r2_review_handoff_sent",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -4150,8 +4161,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T22:24:44.466+08:00",
-      "updated_at": "2026-06-27T23:02:50.378+08:00",
-      "next_action": "systems_architect must review the M6 layered AI R2 fixes and emit ACCEPT or REQUEST_CHANGES handoff routed to lead_orchestrator.",
+      "updated_at": "2026-06-27T23:11:34.523+08:00",
+      "next_action": "Open PR, wait for CI, merge to main, then close M6-LAYERED-AI-001 and continue to the next READY M6 task.",
       "start_submission_id": "019f0979-3301-7040-9cb2-f43e04a440f7",
       "route_sent_at": "2026-06-27T22:26:33.497+08:00",
       "review_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-REVIEW__simulation_engineer.json",
@@ -4169,14 +4180,20 @@
       "review_commit_r2": "558d412e",
       "review_route_file_r2": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-R2-TO-SYSTEMS-REVIEW.json",
       "systems_review_submission_id_r2": "019f099a-692f-7351-8d48-a4fe6357b13b",
-      "systems_route_sent_r2_at": "2026-06-27T23:02:50.378+08:00"
+      "systems_route_sent_r2_at": "2026-06-27T23:02:50.378+08:00",
+      "close_reason": "SYSTEMS_R2_ACCEPTED_AND_LEAD_ACCEPTED",
+      "systems_status_r2": "ACCEPT",
+      "lead_accept_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-LEAD-ACCEPT__lead_orchestrator.json",
+      "closed_at": "2026-06-27T23:11:34.523+08:00",
+      "accepted_at": "2026-06-27T23:11:34.523+08:00",
+      "accepted_head_commit": "051274ab"
     },
     "M6-LAYERED-AI-001:systems_architect": {
       "task_id": "M6-LAYERED-AI-001",
       "role": "systems_architect",
       "thread_id": "019f0986-396c-7010-a975-b12388543a64",
       "nickname": "Meridian the 2nd",
-      "status": "active_reviewing_r2",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -4189,8 +4206,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T22:41:03.350+08:00",
-      "updated_at": "2026-06-27T23:02:50.378+08:00",
-      "next_action": "systems_architect must review the M6 layered AI R2 fixes and emit ACCEPT or REQUEST_CHANGES handoff routed to lead_orchestrator.",
+      "updated_at": "2026-06-27T23:11:34.523+08:00",
+      "next_action": "Open PR, wait for CI, merge to main, then close M6-LAYERED-AI-001 and continue to the next READY M6 task.",
       "systems_review_submission_id": "019f0987-822b-7d61-95cf-e904749f6790",
       "systems_route_sent_at": "2026-06-27T22:42:06.546+08:00",
       "systems_status": "REQUEST_CHANGES",
@@ -4204,7 +4221,13 @@
       "review_commit_r2": "558d412e",
       "review_route_file_r2": "project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-R2-TO-SYSTEMS-REVIEW.json",
       "systems_review_submission_id_r2": "019f099a-692f-7351-8d48-a4fe6357b13b",
-      "systems_route_sent_r2_at": "2026-06-27T23:02:50.378+08:00"
+      "systems_route_sent_r2_at": "2026-06-27T23:02:50.378+08:00",
+      "close_reason": "SYSTEMS_R2_ACCEPTED_AND_LEAD_ACCEPTED",
+      "systems_status_r2": "ACCEPT",
+      "lead_accept_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-LEAD-ACCEPT__lead_orchestrator.json",
+      "closed_at": "2026-06-27T23:11:34.523+08:00",
+      "accepted_at": "2026-06-27T23:11:34.523+08:00",
+      "accepted_head_commit": "051274ab"
     }
   },
   "replaced_threads": [
@@ -4263,5 +4286,5 @@
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T23:02:50.378+08:00"
+  "updated_at": "2026-06-27T23:11:34.523+08:00"
 }
