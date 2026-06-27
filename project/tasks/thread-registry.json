@@ -3581,7 +3581,7 @@
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "systems_architect",
       "thread_id": "019f0891-0ef3-7ef3-a367-08310be462fe",
-      "status": "request_changes_submitted",
+      "status": "active_r2_reviewing",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -3598,19 +3598,23 @@
       "base_main_commit": "81e7984ff9a09b889a7cfcf10ac837f54409b21e",
       "read_only": true,
       "created_at": "2026-06-27T18:13:14.3823061+08:00",
-      "updated_at": "2026-06-27T18:22:54.6238286+08:00",
+      "updated_at": "2026-06-27T18:35:23.4775298+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "systems_review_submission_id": "019f0891-e025-7990-8612-ac234503462d",
       "systems_route_sent_at": "2026-06-27T18:13:47.6872590+08:00",
       "result": "REQUEST_CHANGES",
-      "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json"
+      "review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
+      "review_source_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-R2-REVIEW__simulation_engineer.json",
+      "review_route_file_r2": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+      "review_submission_id_r2": "019f08a5-b087-79c0-a334-02d9ab91c3f8",
+      "routed_to_systems_r2_at": "2026-06-27T18:35:23.4775298+08:00"
     },
     "M6-SUCCESSION-COMPLETION-001:simulation_engineer:replacement": {
       "task_id": "M6-SUCCESSION-COMPLETION-001",
       "role": "simulation_engineer",
       "thread_id": "019f089b-0acd-7f03-a6df-8af3092d8309",
-      "status": "active_request_changes_fix",
+      "status": "r2_review_handoff_submitted",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -3626,11 +3630,13 @@
       "request_changes_route": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-SYSTEMS-REQUEST-CHANGES-TO-SIM.json",
       "systems_review_handoff": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-SYSTEMS-REVIEW__systems_architect.json",
       "created_at": "2026-06-27T18:23:57.2270701+08:00",
-      "updated_at": "2026-06-27T18:24:29.3000772+08:00",
+      "updated_at": "2026-06-27T18:34:53.9345800+08:00",
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "request_changes_submission_id": "019f089b-b150-7453-81a6-e2b684640256",
-      "request_changes_sent_at": "2026-06-27T18:24:29.3000772+08:00"
+      "request_changes_sent_at": "2026-06-27T18:24:29.3000772+08:00",
+      "review_ready_handoff_r2": "project/messages/outbox/M6-SUCCESSION-COMPLETION-001__MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-R2-REVIEW__simulation_engineer.json",
+      "review_route_file_r2": "project/messages/routes/M6-SUCCESSION-COMPLETION-001__ROUTE-20260627-M6-SUCCESSION-WRITER-R2-TO-SYSTEMS-REVIEW.json"
     }
   },
   "replaced_threads": [
@@ -3689,5 +3695,5 @@
       "replaced_at": "2026-06-27T18:23:57.2270701+08:00"
     }
   ],
-  "updated_at": "2026-06-27T18:24:29.3000772+08:00"
+  "updated_at": "2026-06-27T18:35:23.4775298+08:00"
 }

@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260627-M6-SUCCESSION-COMPLETION-WRITER-R2-REVIEW",
+  "task_id": "M6-SUCCESSION-COMPLETION-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed systems_architect REQUEST_CHANGES round 1 for M6 succession completion. Regency outcomes now semantically validate that regentCharacterId references an existing, alive, non-incapacitated M3 character, including malformed save rejection. One-candidate low-support pending crises now reject deterministically before commit instead of generating a disputed outcome with the same leading and rival character.",
+  "artifacts": [
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m3-succession-state-machine.test.ts"
+  ],
+  "branch_or_worktree": "feat/m6-succession-completion / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-succession-state-machine.test.ts -t \"regency outcome|one-candidate\"",
+      "exit_code": 1,
+      "result": "Red regression run before implementation failed as intended: regency regent semantic invariant was absent after restamping hash, and one-candidate low-support resolve returned invariant-violation from commit instead of structured pre-commit rejection."
+    },
+    {
+      "command": "pnpm exec vitest run tests/sim-core-m3-succession-state-machine.test.ts -t \"regency outcome|one-candidate\"",
+      "exit_code": 0,
+      "result": "Focused R2 regressions passed: 1 file passed; 2 tests passed, 15 skipped."
+    },
+    {
+      "command": "pnpm exec vitest run tests/protocol-command-query-schema.test.ts tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 0,
+      "result": "Focused protocol/succession tests passed after final formatting: 2 files passed, 27 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "24 files passed, 186 tests passed. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 files passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched: hello 61e0ba1c, command/query d275faa4, save/load 28074edd, M4 232f62ab, M5 bf042e42."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; sim determinism passed; root Vitest 37 files / 287 tests passed; web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "Initial post-fix run failed only on Prettier formatting for tests/sim-core-m3-succession-state-machine.test.ts."
+    },
+    {
+      "command": "pnpm exec prettier --write tests/sim-core-m3-succession-state-machine.test.ts",
+      "exit_code": 0,
+      "result": "Formatted the touched succession test file."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-SUCCESSION-COMPLETION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M6-SUCCESSION-COMPLETION-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m6-succession-completion with six modified allowed-path files: packages/protocol/src/index.ts; packages/save-format/src/index.ts; packages/sim-core/src/command-query-v1.ts; packages/sim-core/src/world-state-v0.ts; tests/protocol-command-query-schema.test.ts; tests/sim-core-m3-succession-state-machine.test.ts."
+    }
+  ],
+  "decisions": [
+    "Regency semantic validation uses the existing M3 available-character definition: a regent must exist in M3 characters and be alive and not incapacitated. Missing regents report bad-reference; unavailable regents report invalid-schema.",
+    "Malformed save coverage rebuilds the save envelope checksum and restamps the mutated world hash so the regression reaches semantic-invariant validation instead of being stopped by checksum or hash mismatch.",
+    "Low-support one-candidate succession now returns succession-state-invalid at resolve time when no rival exists for a disputed succession, leaving the pending crisis and world hash unchanged.",
+    "No UI, content, sim-ai, docs gate, scheduler, RNG, or dependency changes were made in R2."
+  ],
+  "risks": [
+    "R4 task with R3-adjacent protocol/save/authoritative-state surface from the existing implementation diff; systems_architect should re-review schema compatibility, save semantic validation, and deterministic command behavior.",
+    "The one-candidate low-support path is intentionally a structured rejection rather than an automatic peaceful/regency fallback, preserving the existing support threshold semantics."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R2 fixes for the two requested succession semantic gaps, then accept or provide further change requests.",
+  "created_at": "2026-06-27T18:33:00+08:00"
+}
