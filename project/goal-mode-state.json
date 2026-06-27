@@ -9,8 +9,14 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
-      "status": "active_lead_implementation_takeover",
+      "status": "accepted_pending_pr",
       "role": "lead_orchestrator"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0a15-a9f5-7031-b714-498963ab75fe",
+      "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+      "status": "accepted_pending_close",
+      "role": "qa_reviewer"
     }
   },
   "last_integrated_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -39,10 +45,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 lead implementation takeover after two stalled writers; no product Human Gate is active.",
+    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 accepted by independent QA; PR integration pending.",
     "recommended_result": null,
-    "note": "Proceed with implementation and independent QA review.",
-    "recorded_at": "2026-06-28T00:54:17.462+08:00"
+    "note": "Proceed with PR/CI/merge.",
+    "recorded_at": "2026-06-27T17:38:48.991Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -829,7 +835,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T00:54:17.462+08:00",
+  "last_updated_at": "2026-06-27T17:38:48.991Z",
   "updated_at": "2026-06-28T00:54:17.462+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1121,7 +1127,7 @@
   },
   "last_closed_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "m6_batch_autorun_balance_dashboard": {
-    "status": "IN_PROGRESS",
+    "status": "ACCEPTED",
     "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
     "owner_role": "balance_analyst",
     "reviewer_role": "qa_reviewer",
@@ -1136,8 +1142,8 @@
     "start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-START.json",
     "started_at": "2026-06-28T00:33:12.367+08:00",
-    "next_action": "Lead implements minimal task scope, emits REVIEW handoff, and routes to independent qa_reviewer.",
-    "updated_at": "2026-06-28T00:54:17.462+08:00",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
+    "updated_at": "2026-06-27T17:38:48.991Z",
     "route_sent_at": "2026-06-28T00:35:13.413+08:00",
     "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c",
     "replaced_writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
@@ -1157,6 +1163,143 @@
       "review_requirement": "independent qa_reviewer must review real diff and process exception before acceptance"
     },
     "second_replaced_writer_thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
-    "second_writer_replacement_reason": "replacement balance_analyst closed after wait and status request produced no response, no handoff, and no file diff"
+    "second_writer_replacement_reason": "replacement balance_analyst closed after wait and status request produced no response, no handoff, and no file diff",
+    "review_commit": "6c5f1795",
+    "lead_review_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-LEAD-REVIEW__lead_orchestrator.json",
+    "artifact_hash": "99d64950",
+    "scenario_count": 3,
+    "seed_count": 2,
+    "run_count": 6,
+    "tests_run": [
+      {
+        "command": "git status --short",
+        "exit_code": 0,
+        "result": "clean after implementation commit 6c5f1795"
+      },
+      {
+        "command": "pnpm --filter @monsoon/sim-ai test",
+        "exit_code": 0,
+        "result": "3 test files passed; 6 tests passed"
+      },
+      {
+        "command": "pnpm --filter @monsoon/sim-core test",
+        "exit_code": 0,
+        "result": "25 test files passed; 191 tests passed"
+      },
+      {
+        "command": "pnpm --filter @monsoon/ui test",
+        "exit_code": 0,
+        "result": "1 test file passed; 8 tests passed"
+      },
+      {
+        "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-runner-m6-batch-balance.test.tsx",
+        "exit_code": 0,
+        "result": "1 test file passed; 2 tests passed; artifact generation/schema/dashboard smoke covered"
+      },
+      {
+        "command": "pnpm --filter @monsoon/sim-runner sim:m6-batch-balance",
+        "exit_code": 0,
+        "result": "artifact hash 99d64950; 3 scenarios; 2 seeds; 6 runs; validation passed"
+      },
+      {
+        "command": "pnpm build:web",
+        "exit_code": 0,
+        "result": "Vite build passed; existing >500 kB chunk warning only"
+      },
+      {
+        "command": "pnpm test",
+        "exit_code": 0,
+        "result": "architecture/determinism/vitest/web tests passed; M6 Alpha hash 260f46c3; 41 root test files/307 tests; web 1 file/4 tests"
+      },
+      {
+        "command": "pnpm check",
+        "exit_code": 0,
+        "result": "format, lint, typecheck, architecture checks passed"
+      },
+      {
+        "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+        "exit_code": 0,
+        "result": "VALID project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json"
+      },
+      {
+        "command": "git diff --check",
+        "exit_code": 0,
+        "result": "no whitespace errors"
+      }
+    ],
+    "qa_thread_id": "019f0a15-a9f5-7031-b714-498963ab75fe",
+    "qa_thread_nickname": "Witness the 2nd",
+    "qa_route": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-QA-REVIEW.json",
+    "qa_submission_id": "019f0a16-1f62-7712-807b-3b71e5d548e8",
+    "routed_to_qa_at": "2026-06-27T17:18:13.082Z",
+    "review_round": 2,
+    "qa_request_changes_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-QA-REQUEST-CHANGES__qa_reviewer.json",
+    "review_commit_r2": "1e932fa7cbd38f578550df9538789af479de184f",
+    "lead_review_handoff_r2": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-LEAD-R2-REVIEW__lead_orchestrator.json",
+    "tests_run_r2": [
+      {
+        "command": "if (rg -n \"as unknown as\" apps/sim-runner/src/m6-batch-balance.ts) { exit 1 } else { Write-Output \"no unsafe double assertions\" }",
+        "exit_code": 0,
+        "result": "no unsafe double assertions"
+      },
+      {
+        "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-runner-m6-batch-balance.test.tsx",
+        "exit_code": 0,
+        "result": "1 test file passed; 2 tests passed; artifact generation/schema/dashboard smoke covered"
+      },
+      {
+        "command": "pnpm --filter @monsoon/sim-runner sim:m6-batch-balance",
+        "exit_code": 0,
+        "result": "artifact hash 99d64950; 3 scenarios; 2 seeds; 6 runs; validation passed"
+      },
+      {
+        "command": "git diff --check",
+        "exit_code": 0,
+        "result": "no whitespace errors"
+      },
+      {
+        "command": "pnpm --filter @monsoon/sim-ai test",
+        "exit_code": 0,
+        "result": "3 test files passed; 6 tests passed"
+      },
+      {
+        "command": "pnpm --filter @monsoon/sim-core test",
+        "exit_code": 0,
+        "result": "25 test files passed; 191 tests passed"
+      },
+      {
+        "command": "pnpm --filter @monsoon/ui test",
+        "exit_code": 0,
+        "result": "1 test file passed; 8 tests passed"
+      },
+      {
+        "command": "pnpm build:web",
+        "exit_code": 0,
+        "result": "Vite build passed; existing >500 kB chunk warning only"
+      },
+      {
+        "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+        "exit_code": 0,
+        "result": "VALID project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json"
+      },
+      {
+        "command": "pnpm test",
+        "exit_code": 0,
+        "result": "architecture/determinism/vitest/web tests passed; M6 Alpha hash 260f46c3; 41 root test files/307 tests; web 1 file/4 tests"
+      },
+      {
+        "command": "pnpm check",
+        "exit_code": 0,
+        "result": "format, lint, typecheck, architecture checks passed"
+      }
+    ],
+    "review_route_file_r2": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-R2-TO-QA-REVIEW.json",
+    "qa_submission_id_r2": "019f0a22-0409-74a3-85f0-dd76fa790191",
+    "routed_to_qa_r2_at": "2026-06-27T17:30:57.351Z",
+    "qa_status_r2": "ACCEPT",
+    "qa_accept_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-QA-R2-ACCEPT__qa_reviewer.json",
+    "accepted_at": "2026-06-27T17:38:48.991Z",
+    "accepted_head_commit": "1e932fa7cbd38f578550df9538789af479de184f",
+    "lead_accept_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-LEAD-ACCEPT__lead_orchestrator.json"
   }
 }
