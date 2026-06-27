@@ -1,0 +1,127 @@
+{
+  "message_id": "MSG-20260628-M6-EXIT-QA-REVIEW",
+  "task_id": "M6-EXIT-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts the M6 exit validation recommendation at review commit 3210cddc. docs/GATE-M6.md records the Roadmap and acceptance-matrix evidence chain for M6 Alpha system-complete exit, distinguishes PASS_WITH_LIMITS from plain PASS and BLOCKED, preserves DEFER_MANUAL_NODE_BATTLE, does not fabricate reviewer acceptance, does not hide M4/M5 or process limits, and does not start M7 content lock or any forbidden telemetry/server/multiplayer/arbitrary-code mod/release/commercial/branding/frozen-architecture scope. No accepted P0/P1 blocker or forbidden diff path was found.",
+  "artifacts": [
+    "docs/GATE-M6.md",
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M6-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "gate/m6-exit-validation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "3210cddc",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean before QA handoff creation."
+    },
+    {
+      "command": "git branch --show-current",
+      "exit_code": 0,
+      "result": "gate/m6-exit-validation."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "Current HEAD was 3e4314135f5bf65f67ef78c1c2482ca5caea0635, a later route/process commit after the review target."
+    },
+    {
+      "command": "git log --oneline --decorate -8",
+      "exit_code": 0,
+      "result": "Confirmed review target 3210cddc follows cd5cebeb base; current HEAD 3e431413 is route-only process metadata after 3210cddc."
+    },
+    {
+      "command": "git diff --name-status cd5cebebfe6ac7b0dd07a7468abcba9da55fd765..3210cddc",
+      "exit_code": 0,
+      "result": "Changed paths were PROJECT_STATUS.md, docs/GATE-M6.md, task registry/state/model-routing/goal-mode files, and project/messages route/outbox files only; no forbidden product, package, content-source, tools, CI, roadmap, acceptance matrix, prior gate, ADR, manifest, or release-artifact path changed."
+    },
+    {
+      "command": "git diff --name-status 3210cddc..HEAD",
+      "exit_code": 0,
+      "result": "Later delta contains only QA routing/process state paths: goal-mode-state, model-routing-state, M6 exit task, thread registry, and the systems-to-QA route file."
+    },
+    {
+      "command": "git diff --check cd5cebebfe6ac7b0dd07a7468abcba9da55fd765..3210cddc",
+      "exit_code": 0,
+      "result": "No whitespace errors in the reviewed target diff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before QA handoff creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-EXIT-VALIDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect REVIEW handoff."
+    },
+    {
+      "command": "rg -n -C 8 \"## M6|batch auto-run|P0/P1|adviser|three-scenario|start-to-victory|full-system AI\" docs/11-roadmap.md",
+      "exit_code": 0,
+      "result": "Roadmap M6 section requires diplomacy/legitimacy/succession, layered AI, policy/event/encyclopedia, three-scenario pipeline, map candidate, batch balance, accessibility, start-to-victory playability, no P0/P1 data damage, AI full-game run, and no placeholder major-system UI."
+    },
+    {
+      "command": "rg -n \"M6|Alpha|start-to-victory|victory|P0|P1|diplomacy|legitimacy|succession|adviser|accessibility|scenario|balance|manual node|manual_node|DEFER_MANUAL_NODE_BATTLE\" docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md",
+      "exit_code": 0,
+      "result": "Acceptance matrix M6 row and Roadmap M6 section were found and matched the gate evidence categories."
+    },
+    {
+      "command": "node -e JSON validation for M6 exit dependency status, gate phrases, required-test coverage, and diff scope",
+      "exit_code": 0,
+      "result": "All M6 exit dependencies were CLOSED and preserved DEFER_MANUAL_NODE_BATTLE; docs/GATE-M6.md contained M6_GATE, reviewer-pending language, start-to-victory, no-rescue AI, non-placeholder UI, no accepted P0/P1, limits, manual battle deferral, M7-content-lock exclusion, M4/M5 PASS_WITH_LIMITS context, and forbidden-scope exclusions; target diff paths were all allowed; required tests were recorded in the systems handoff."
+    },
+    {
+      "command": "rg -n \"manual node battle|manual_node_battle|DEFER_MANUAL_NODE_BATTLE|M6-.*MANUAL|manual.*M6|battle\" project/tasks/active project/messages docs/GATE-M6.md PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "Manual battle mentions were exclusions, preserved DEFER_MANUAL_NODE_BATTLE records, or the prior M5 human-gate decision; no M6/M7/M8 implementation, blocking spike, or blocking research task file was found."
+    },
+    {
+      "command": "rg -n \"telemetry|server|multiplayer|arbitrary-code|mods|release|commercial|branding|content lock|M7|M8|Human Gate|frozen architecture\" docs/GATE-M6.md project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-SYSTEMS-REVIEW__systems_architect.json project/tasks/active/M6-EXIT-VALIDATION-001.json PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "Matches are prohibitions, explicit limits, or historical gate notes; no authorization for telemetry, server/multiplayer, arbitrary-code mods, release/commercial/branding, M7 content lock, or frozen architecture changes was found."
+    },
+    {
+      "command": "rg -n \"systems_status|systems_.*ACCEPT|R2|R3|lead_accept|qa_status|close_reason|closed_at|review_handoff|systems_review\" project/tasks/active/M6-DIPLOMACY-LEGITIMACY-001.json project/tasks/active/M6-SUCCESSION-COMPLETION-001.json project/tasks/active/M6-START-TO-VICTORY-SIM-LOOP-001.json project/tasks/active/M6-LAYERED-AI-001.json",
+      "exit_code": 0,
+      "result": "Early REQUEST_CHANGES fields are preserved, but each affected task has later systems_status_r2/r3 ACCEPT and lead ACCEPT/closure evidence; the gate did not rely on a fabricated acceptance."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-EXIT-VALIDATION-001__MSG-20260628-M6-EXIT-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID after QA handoff creation."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: docs/GATE-M6.md records the required Roadmap and acceptance-matrix evidence chain for start-to-victory, diplomacy, legitimacy, succession, layered AI, policy/event/encyclopedia, three-scenario pipeline, map candidate, batch balance, accessibility, adviser evidence, and no accepted P0/P1.",
+    "ACCEPT: M6 exit evidence supports at least one deterministic Alpha start-to-victory path, AI full-game completion without rescue hooks, and non-placeholder major-system client surfaces.",
+    "ACCEPT: M6_GATE = PASS_WITH_LIMITS is appropriate because evidence is Alpha/local-bounded and the document explicitly distinguishes it from PASS and BLOCKED without claiming reviewer acceptance before this QA review.",
+    "ACCEPT: DEFER_MANUAL_NODE_BATTLE remains intact; no manual node battle implementation task or M6/M7/M8 blocking spike/research was created.",
+    "ACCEPT: target diff is limited to allowed gate/process/message/state paths and does not touch apps/packages/content-source/tools/.github/roadmap/acceptance matrix/prior gates/ADR/manifests/release artifacts.",
+    "ACCEPT: required command evidence is recorded and cross-checked; no P0/P1 blocker, severity downgrade, or hidden blocker was found.",
+    "ACCEPT: gate grants no authority for telemetry, server/multiplayer, arbitrary-code mods, release/commercial/branding decisions, M7 content lock, or frozen architecture changes."
+  ],
+  "risks": [
+    "PASS_WITH_LIMITS remains necessary: three-scenario data is Alpha validation scaffolding, not M7 content lock.",
+    "PASS_WITH_LIMITS remains necessary: adviser evidence is local/privacy-safe and not broad external player research.",
+    "PASS_WITH_LIMITS remains necessary: batch balance exposes tuning risks but records p0p1CandidateCount = 0.",
+    "Prior M4/M5 PASS_WITH_LIMITS and process-limit context remain historical limits and are not erased by this gate.",
+    "Desktop package evidence is local smoke packaging, not a signed release candidate.",
+    "Current HEAD 3e431413 includes route-only metadata after the requested review commit 3210cddc; QA reviewed the requested commit and confirmed the later delta is allowed process routing."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate the accepted M6 exit gate, validate this QA handoff, and decide the next process step without starting M7 content lock from this QA verdict alone.",
+  "created_at": "2026-06-28T03:24:18+08:00"
+}
