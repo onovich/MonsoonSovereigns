@@ -28,11 +28,12 @@
       "replaces_thread_id": "019f0616-e69a-7be1-a688-ed29590a37f1"
     },
     "systems_architect": {
-      "thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+      "thread_id": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "status": "active",
       "role": "systems_architect",
-      "nickname": "Meridian the 2nd"
+      "nickname": "Keystone",
+      "replaces_thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c"
     }
   },
   "unresolved_risks": [
@@ -56,7 +57,7 @@
     "note": "No active Human Gate. M6-DIPLOMACY-LEGITIMACY-001 is IN_PROGRESS with simulation_engineer writer.",
     "recorded_at": "2026-06-27T06:41:07+08:00"
   },
-  "next_machine_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001.",
+  "next_machine_action": "Await replacement systems_architect ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001.",
   "leader_transition_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
   "acceptance_file": "project/messages/outbox/LEAD-TRANSITION-ACCEPT-001.json",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -64,7 +65,7 @@
   "unique_active_lead_check": "PASS",
   "created_at": "2026-06-25T14:33:11.616Z",
   "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-  "last_updated_at": "2026-06-27T07:30:21+08:00",
+  "last_updated_at": "2026-06-27T13:15:01+08:00",
   "m3_gate": {
     "result": "PASS",
     "integrated_pr": 80,
@@ -110,9 +111,17 @@
       "status": "closed_stalled_no_handoff",
       "replaced_by": "019f0637-1627-75c1-9805-0a63c78f3b9e",
       "replaced_at": "2026-06-27T07:16:51+08:00"
+    },
+    {
+      "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
+      "role": "systems_architect",
+      "thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+      "status": "closed_errored_no_handoff",
+      "replaced_by": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
+      "replaced_at": "2026-06-27T13:14:06+08:00"
     }
   ],
-  "updated_at": "2026-06-27T07:30:21+08:00",
+  "updated_at": "2026-06-27T13:15:01+08:00",
   "current_tasks": [
     "M6-DIPLOMACY-LEGITIMACY-001"
   ],
@@ -121,7 +130,7 @@
   "next_ready_tasks": [
     "M6-SCENARIO-DATA-PIPELINE-001"
   ],
-  "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001.",
+  "next_action": "Await replacement systems_architect ACCEPT or REQUEST_CHANGES for M6-DIPLOMACY-LEGITIMACY-001.",
   "m4_exit_replacement": {
     "replaced_thread_id": "019f0396-8e7d-73b0-9384-52f7deed12fd",
     "replacement_thread_id": "019f03a0-2734-7250-a9fd-080899d5fde1",
@@ -613,7 +622,7 @@
     "previous_closed_task": "M6-ALPHA-SYSTEM-CONTRACT-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await systems_architect ACCEPT or REQUEST_CHANGES.",
+    "next_action": "Await replacement systems_architect ACCEPT or REQUEST_CHANGES.",
     "start_submission_id": "019f0618-a88c-79e0-9833-0788ba13d7bb",
     "route_sent_at": "2026-06-27T06:42:07+08:00",
     "replacement_writer_thread_id": "019f0637-1627-75c1-9805-0a63c78f3b9e",
@@ -639,12 +648,17 @@
     ],
     "replacement_submission_id": "019f0639-a8c7-7760-814b-0b8518db84a1",
     "replacement_route_sent_at": "2026-06-27T07:18:10+08:00",
-    "systems_architect_thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
-    "systems_architect_nickname": "Meridian the 2nd",
-    "review_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REVIEW.json",
-    "review_commit": "15a337f3b70e947adc4fbe7c592d49f7702207be",
+    "systems_architect_thread_id": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
+    "systems_architect_nickname": "Keystone",
+    "review_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REPLACEMENT-REVIEW.json",
+    "review_commit": "2e5c0786898641be98ca4c93237a6db6b7a5f752",
     "routed_to_systems_at": "2026-06-27T07:29:40+08:00",
     "systems_review_submission_id": "019f0644-caee-71f2-950b-e23cdd110ec8",
-    "systems_route_sent_at": "2026-06-27T07:30:21+08:00"
+    "systems_route_sent_at": "2026-06-27T07:30:21+08:00",
+    "replaced_systems_architect_thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+    "systems_replacement_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-SYSTEMS-REVIEW-REPLACEMENT__lead_orchestrator.json",
+    "routed_to_replacement_systems_at": "2026-06-27T13:14:06+08:00",
+    "replacement_systems_review_submission_id": "019f0780-60ad-76c3-8d2a-520efbf8b432",
+    "replacement_systems_route_sent_at": "2026-06-27T13:15:01+08:00"
   }
 }

@@ -74,7 +74,8 @@
     "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
     "simulation_engineer": "019f0637-1627-75c1-9805-0a63c78f3b9e",
     "replaced_simulation_engineer": "019f0616-e69a-7be1-a688-ed29590a37f1",
-    "systems_architect": "019f0643-ccb1-7991-8157-a03251c94e8c"
+    "systems_architect": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
+    "replaced_systems_architect": "019f0643-ccb1-7991-8157-a03251c94e8c"
   },
   "route_to": "systems_architect",
   "notes": [
@@ -83,7 +84,7 @@
     "Protocol or save-format changes beyond explicit additive schemas require systems_architect review and ADR if they change a frozen contract."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T07:29:40+08:00",
+  "updated_at": "2026-06-27T13:14:06+08:00",
   "review_ready_at": "2026-06-27T07:24:00+08:00",
   "started_at": "2026-06-27T06:41:07+08:00",
   "start_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-LEGITIMACY-START__lead_orchestrator.json",
@@ -105,8 +106,18 @@
       "replaced_by_nickname": "Engine the 2nd",
       "reason": "closed_after_repeated_wait_timeouts_and_heartbeat_no_response",
       "replaced_at": "2026-06-27T07:16:51+08:00"
+    },
+    {
+      "role": "systems_architect",
+      "thread_id": "019f0643-ccb1-7991-8157-a03251c94e8c",
+      "status": "closed_errored_no_handoff",
+      "replaced_by": "019f077e-dcc1-7de3-b254-2bf9b1e2442e",
+      "replaced_by_nickname": "Keystone",
+      "reason": "stream_disconnected_before_completion",
+      "replaced_at": "2026-06-27T13:14:06+08:00"
     }
   ],
-  "review_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REVIEW.json",
-  "review_commit": "15a337f3b70e947adc4fbe7c592d49f7702207be"
+  "review_route_file": "project/messages/routes/M6-DIPLOMACY-LEGITIMACY-001__ROUTE-20260627-M6-DIPLOMACY-WRITER-TO-SYSTEMS-REPLACEMENT-REVIEW.json",
+  "review_commit": "2e5c0786898641be98ca4c93237a6db6b7a5f752",
+  "systems_replacement_handoff": "project/messages/outbox/M6-DIPLOMACY-LEGITIMACY-001__MSG-20260627-M6-DIPLOMACY-SYSTEMS-REVIEW-REPLACEMENT__lead_orchestrator.json"
 }
