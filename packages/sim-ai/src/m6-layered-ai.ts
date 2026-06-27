@@ -109,6 +109,8 @@ export interface M6LayeredAlphaAiValidationResultV1 {
     readonly aiCommandKinds: readonly AuthoritativeGameCommandV1["kind"][];
     readonly playerEquivalentKinds: readonly AuthoritativeGameCommandV1["kind"][];
     readonly nonSystemCommandsUseAiActor: boolean;
+    readonly payloadsMatchPlayerTemplates: boolean;
+    readonly systemSupportCommandsReviewed: boolean;
     readonly systemSupportCommands: readonly AuthoritativeGameCommandV1["kind"][];
   };
   readonly reasonCoverage: {
@@ -233,14 +235,17 @@ export function runM6LayeredAlphaAiValidationV1(
         malformed.runtime.world.meta.stateHash === malformedHashBefore;
     }
 
-    const plan = planM6LayeredAiTurnV1(runtime, {
+    const turnInput: M6LayeredAiTurnInputV1 = {
       actorId: "polity:1",
       actorPolityId: 1,
       targetPolityId: 2,
       commandIdPrefix: `m6.layered.${input.seed}`,
       stepIndex,
-      maxTraceCandidates: input.maxTraceCandidates
-    });
+      ...(input.maxTraceCandidates === undefined
+        ? {}
+        : { maxTraceCandidates: input.maxTraceCandidates })
+    };
+    const plan = planM6LayeredAiTurnV1(runtime, turnInput);
     traces.push(plan.trace);
     maxTraceCandidateCount = Math.max(maxTraceCandidateCount, plan.trace.candidates.length);
     traceHash = hashRecords([
@@ -604,6 +609,11 @@ function buildCommandParity(
       .filter((command) => command.actor.kind !== "system")
       .map((command) => command.kind),
     nonSystemCommandsUseAiActor: aiCommands.every((command) => command.actor.kind === "ai"),
+    payloadsMatchPlayerTemplates: aiCommands.every((command, index) => {
+      const template = agenda.map((entry) => entry.template).filter(isNonSystemCommand)[index];
+      return template !== undefined && commandsMatchExceptRuntimeFields(command, template);
+    }),
+    systemSupportCommandsReviewed: systemSupportCommands.every(isReviewedSystemSupportCommand),
     systemSupportCommands
   };
 }
@@ -618,7 +628,7 @@ function buildReasonCoverage(
     targetPolityId: 2,
     commandIdPrefix: "m6.layered.reason",
     stepIndex: 0,
-    maxTraceCandidates
+    ...(maxTraceCandidates === undefined ? {} : { maxTraceCandidates })
   };
   return {
     noAction: traceOnlyPlan(runtime, input, {
@@ -650,6 +660,28 @@ function buildReasonCoverage(
     policy: planM6LayeredAiTurnV1(runtime, { ...input, stepIndex: 20 }).trace,
     diplomacy: planM6LayeredAiTurnV1(runtime, { ...input, stepIndex: 16 }).trace
   };
+}
+
+function isNonSystemCommand(command: AuthoritativeGameCommandV1): boolean {
+  return command.actor.kind !== "system";
+}
+
+function commandsMatchExceptRuntimeFields(
+  command: AuthoritativeGameCommandV1,
+  template: AuthoritativeGameCommandV1
+): boolean {
+  return (
+    command.kind === template.kind &&
+    JSON.stringify(readCommandPayload(command)) === JSON.stringify(readCommandPayload(template))
+  );
+}
+
+function readCommandPayload(command: AuthoritativeGameCommandV1): unknown {
+  return "payload" in command ? command.payload : null;
+}
+
+function isReviewedSystemSupportCommand(kind: AuthoritativeGameCommandV1["kind"]): boolean {
+  return kind === "sim.advance-day" || kind === "sim.record-legitimacy-source";
 }
 
 function queryM6AlphaTerminalOutcome(

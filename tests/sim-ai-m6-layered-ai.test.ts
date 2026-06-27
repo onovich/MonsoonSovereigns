@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 
-import type { AuthoritativeGameCommandV1 } from "../packages/protocol/src/index";
 import {
   planM6LayeredAiTurnV1,
   runM6LayeredAlphaAiValidationV1
@@ -41,6 +40,8 @@ describe("M6-LAYERED-AI-001 bounded deterministic layered AI", () => {
     expect(first.layerEvidence.every((entry) => entry.commandCount > 0)).toBe(true);
     expect(first.commandParity.aiCommandKinds).toEqual(first.commandParity.playerEquivalentKinds);
     expect(first.commandParity.nonSystemCommandsUseAiActor).toBe(true);
+    expect(first.commandParity.payloadsMatchPlayerTemplates).toBe(true);
+    expect(first.commandParity.systemSupportCommandsReviewed).toBe(true);
     expect(first.commandParity.systemSupportCommands).toEqual([
       "sim.advance-day",
       "sim.advance-day",
@@ -120,5 +121,3 @@ describe("M6-LAYERED-AI-001 bounded deterministic layered AI", () => {
     expect(submitted.runtime.world.meta.stateHash).not.toBe(beforeHash);
   });
 });
-
-type _CommandParityCompileCheck = AuthoritativeGameCommandV1;
