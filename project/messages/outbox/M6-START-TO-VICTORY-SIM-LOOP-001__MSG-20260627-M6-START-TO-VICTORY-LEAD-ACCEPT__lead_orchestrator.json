@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260627-M6-START-TO-VICTORY-LEAD-ACCEPT",
+  "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M6-START-TO-VICTORY-SIM-LOOP-001 after systems_architect R2 ACCEPT and lead integration gates. The task now has a deterministic M6 Alpha start-to-victory loop through authoritative sim-core state, scheduler/GameCommand, query, save/load, replay, and Node/Worker-compatible hash paths; R2 fixed the polity-scoped postwar/governance evidence bug and added an unrelated-polity regression. Task is ACCEPTED pending PR, CI, merge to main, sync, and CLOSED checkpoint.",
+  "artifacts": [
+    "apps/sim-runner/src/m6-alpha-loop-worker.mjs",
+    "apps/sim-runner/src/run-determinism.mjs",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/sim-core-m6-start-to-victory-loop.test.ts",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m6-start-to-victory-sim-loop / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "a0e79c3c84e157318afefd6b0f2bc9196f522e87",
+  "tests_run": [
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format:check, lint, workspace typecheck, and architecture boundary check."
+    },
+    {
+      "command": "pnpm vitest run --config vitest.config.ts tests/sim-core-m6-start-to-victory-loop.test.ts",
+      "exit_code": 0,
+      "result": "Passed 1 file / 5 tests covering victory, defeat, continued-play, save/load mid-run, malformed command rejection, Node/Worker parity, and unrelated-polity postwar regression."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed; M6 Alpha Node hash 260f46c3 matched Worker-compatible hash 260f46c3, loaded hash 260f46c3, terminal outcome victory."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Passed 25 test files / 191 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Passed 1 test file / 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "Passed 2 test files / 16 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "Passed 2 test files / 3 tests."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed architecture:check, sim:determinism, root vitest 39 files / 297 tests, and apps/web vitest 1 file / 4 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-START-TO-VICTORY-SIM-LOOP-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems R2 ACCEPT handoff is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Accept systems_architect R2 ACCEPT as sufficient architecture review for this task.",
+    "Keep M6 Alpha terminal recording on the same sim.evaluate-m6-alpha-outcome GameCommand path; no UI or AI-only mutation path is introduced.",
+    "Proceed to PR/CI integration before marking the task CLOSED."
+  ],
+  "risks": [
+    "R4 scope touched sim-core/protocol/save-format/runner surfaces, so PR CI must pass before closing the task.",
+    "The unrelated-polity regression uses a test-only WorldState variant; accepted because terminal recording still uses the authoritative command, save/load, query, hash, and invariant paths."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge on pass, sync main, write CLOSED checkpoint, and continue to the next READY M6 task.",
+  "created_at": "2026-06-27T21:07:32.965+08:00"
+}

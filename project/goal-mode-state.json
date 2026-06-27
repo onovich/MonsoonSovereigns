@@ -9,23 +9,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
-      "status": "active_orchestrating",
+      "status": "active_integrating",
       "role": "lead_orchestrator"
-    },
-    "simulation_engineer": {
-      "thread_id": "019f08f4-6702-7fa3-adfb-316af1270ca1",
-      "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
-      "status": "review_ready",
-      "role": "simulation_engineer",
-      "nickname": "Delta"
-    },
-    "systems_architect": {
-      "thread_id": "019f0914-1645-7003-b1a3-d389719b8d7f",
-      "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
-      "status": "review_in_progress",
-      "role": "systems_architect",
-      "nickname": "Meridian",
-      "read_only": true
     }
   },
   "last_integrated_task": "M6-POLICY-EVENT-RUNTIME-001",
@@ -54,10 +39,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 start-to-victory sim loop start; no Human Gate is active.",
+    "approval_source": "M6 start-to-victory accepted pending PR; no Human Gate is active.",
     "recommended_result": null,
-    "note": "M6-START-TO-VICTORY-SIM-LOOP-001 is REVIEW with systems_architect R2 review in progress.",
-    "recorded_at": "2026-06-27T21:01:07.524+08:00"
+    "note": "M6-START-TO-VICTORY-SIM-LOOP-001 is ACCEPTED pending PR, CI, merge, sync, and CLOSED checkpoint.",
+    "recorded_at": "2026-06-27T21:08:31.864+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -450,7 +435,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Wait for systems_architect R2 review of M6 start-to-victory fix.",
+  "next_action": "Open PR, wait for CI, merge to main, then close M6-START-TO-VICTORY-SIM-LOOP-001 and continue to the next READY M6 task.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -813,8 +798,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T21:01:07.524+08:00",
-  "updated_at": "2026-06-27T21:01:07.524+08:00",
+  "last_updated_at": "2026-06-27T21:08:31.864+08:00",
+  "updated_at": "2026-06-27T21:08:31.864+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -868,7 +853,7 @@
     ]
   },
   "m6_start_to_victory_sim_loop": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
     "branch_or_worktree": "feat/m6-start-to-victory-sim-loop",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -881,10 +866,10 @@
     "previous_closed_task": "M6-POLICY-EVENT-RUNTIME-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Wait for systems_architect R2 review of polity-scoped terminal postwar/governance evidence fix.",
+    "next_action": "Open PR, wait for CI, merge to main, then close M6-START-TO-VICTORY-SIM-LOOP-001 and continue to the next READY M6 task.",
     "start_submission_id": "019f08f5-cbc2-70b3-a362-5bb7ce108ced",
     "route_sent_at": "2026-06-27T20:02:55.011+08:00",
-    "updated_at": "2026-06-27T21:01:07.524+08:00",
+    "updated_at": "2026-06-27T21:08:31.864+08:00",
     "systems_architect_thread_id": "019f0914-1645-7003-b1a3-d389719b8d7f",
     "systems_architect_nickname": "Meridian",
     "review_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-REVIEW__simulation_engineer.json",
@@ -904,6 +889,15 @@
     "review_route_file_r2": "project/messages/routes/M6-START-TO-VICTORY-SIM-LOOP-001__ROUTE-20260627-M6-START-VICTORY-WRITER-R2-TO-SYSTEMS-REVIEW.json",
     "routed_to_systems_r2_at": "2026-06-27T20:59:47.098+08:00",
     "systems_review_submission_id_r2": "019f092b-4717-7df3-9c6f-1186c86bf5c0",
-    "systems_route_sent_r2_at": "2026-06-27T21:01:07.524+08:00"
+    "systems_route_sent_r2_at": "2026-06-27T21:01:07.524+08:00",
+    "systems_status_r2": "ACCEPT",
+    "systems_review_handoff_r2": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-START-TO-VICTORY-SIM-LOOP-001__MSG-20260627-M6-START-TO-VICTORY-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T21:08:31.864+08:00",
+    "accepted_head_commit": "a0e79c3c84e157318afefd6b0f2bc9196f522e87",
+    "child_threads_closed": [
+      "019f08f4-6702-7fa3-adfb-316af1270ca1",
+      "019f0914-1645-7003-b1a3-d389719b8d7f"
+    ]
   }
 }
