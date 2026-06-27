@@ -2287,6 +2287,26 @@
       "replaced_by_nickname": "Estuary",
       "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response",
       "replaced_at": "2026-06-27T14:45:02+08:00"
+    },
+    {
+      "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+      "role": "balance_analyst",
+      "thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+      "nickname": "Abacus the 2nd",
+      "status": "closed_running_no_handoff_clean_worktree",
+      "replaced_by": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+      "replaced_by_nickname": "Tide the 2nd",
+      "reason": "closed_after_repeated_wait_timeouts_and_status_request_no_response_no_handoff_clean_worktree",
+      "replaced_at": "2026-06-28T00:45:04.397+08:00"
+    },
+    {
+      "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+      "role": "balance_analyst",
+      "thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+      "nickname": "Tide the 2nd",
+      "status": "closed_running_no_handoff_clean_worktree",
+      "reason": "closed_after_wait_timeout_status_request_no_response_no_handoff_clean_worktree",
+      "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
   "m6_map_candidate_pipeline": {
@@ -2367,7 +2387,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T00:26:36.730+08:00",
+  "updated_at": "2026-06-28T00:54:17.462+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2660,5 +2680,48 @@
     "next_ready_tasks": [
       "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
     ]
+  },
+  "m6_batch_autorun_balance_dashboard": {
+    "status": "IN_PROGRESS_LEAD_IMPLEMENTATION_TAKEOVER",
+    "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+    "branch_or_worktree": "feat/m6-batch-autorun-balance-dashboard",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+    "writer_nickname": "Tide the 2nd",
+    "owner_role": "balance_analyst",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.4-mini",
+    "configured_writer_effort": "high",
+    "configured_reviewer_model": "gpt-5.5",
+    "configured_reviewer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-START.json",
+    "started_at": "2026-06-28T00:33:12.367+08:00",
+    "next_action": "Lead implements minimal task scope, emits REVIEW handoff, and routes to independent qa_reviewer.",
+    "updated_at": "2026-06-28T00:54:17.462+08:00",
+    "route_sent_at": "2026-06-28T00:35:13.413+08:00",
+    "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c",
+    "replaced_writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+    "replaced_writer_nickname": "Abacus the 2nd",
+    "replacement_start_handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-REPLACEMENT.json",
+    "replaced_at": "2026-06-28T00:45:04.397+08:00",
+    "writer_replacement_reason": "original balance_analyst closed after repeated waits and status request produced no handoff; worktree remained clean and no implementation diff is treated as authoritative",
+    "replacement_submission_id": "019f09f9-64a8-7843-a8bd-52ea6420661e",
+    "replacement_route_sent_at": "2026-06-28T00:46:57.849+08:00",
+    "lead_implementation_takeover": {
+      "takeover_at": "2026-06-28T00:54:17.462+08:00",
+      "reason": "two routed balance_analyst writer threads stalled without REVIEW handoff or local file diff",
+      "first_writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
+      "replacement_writer_thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+      "handoff": "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-LEAD-IMPLEMENTATION-START__lead_orchestrator.json",
+      "review_requirement": "independent qa_reviewer must review real diff and process exception before acceptance"
+    },
+    "second_replaced_writer_thread_id": "019f09f7-335c-7971-8e77-9476eda3a0eb",
+    "second_writer_replacement_reason": "replacement balance_analyst closed after wait and status request produced no response, no handoff, and no file diff"
   }
 }

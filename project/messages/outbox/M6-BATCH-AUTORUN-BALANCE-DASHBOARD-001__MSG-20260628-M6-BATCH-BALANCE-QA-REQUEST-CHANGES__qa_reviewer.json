@@ -1,0 +1,129 @@
+{
+  "message_id": "MSG-20260628-M6-BATCH-BALANCE-QA-REQUEST-CHANGES",
+  "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Read-only QA reviewed branch feat/m6-batch-autorun-balance-dashboard at 6c5f17951425bbab148ebf7b6fe9ddae6d007812 plus current REVIEW metadata. The local deterministic batch artifact, dashboard rendering, no-telemetry/service/save-payload boundaries, M6 Alpha hash, test coverage, and lead takeover process exception are substantively auditable, but acceptance is blocked by a root coding-standard violation: the new artifact validator returns a value through an unsafe double assertion.",
+  "artifacts": [
+    "apps/sim-runner/src/m6-batch-balance.ts",
+    "apps/sim-runner/src/run-m6-batch-balance.mjs",
+    "apps/sim-runner/package.json",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/styles/shell.css",
+    "tests/sim-runner-m6-batch-balance.test.tsx",
+    "project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-LEAD-REVIEW__lead_orchestrator.json",
+    "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-QA-REVIEW.json",
+    "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-QA-REQUEST-CHANGES__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m6-batch-autorun-balance-dashboard",
+  "commit": "6c5f17951425bbab148ebf7b6fe9ddae6d007812",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m6-batch-autorun-balance-dashboard at 6c5f1795; current worktree has expected REVIEW metadata changes in project/goal-mode-state.json, project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json, project/tasks/thread-registry.json plus untracked lead REVIEW handoff/route files."
+    },
+    {
+      "command": "git show --name-status --format=%H 6c5f1795",
+      "exit_code": 0,
+      "result": "Implementation commit changes only apps/sim-runner/package.json, apps/sim-runner/src/m6-batch-balance.ts, apps/sim-runner/src/run-m6-batch-balance.mjs, apps/web/src/styles/shell.css, packages/ui/src/index.tsx, and tests/sim-runner-m6-batch-balance.test.tsx."
+    },
+    {
+      "command": "git diff --name-status",
+      "exit_code": 0,
+      "result": "Current uncommitted tracked diff is limited to REVIEW/status metadata: project/goal-mode-state.json, project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json, and project/tasks/thread-registry.json."
+    },
+    {
+      "command": "rg -n \"as unknown as|\\bany\\b|Math\\.random|Date\\.now|fetch\\(|XMLHttpRequest|localStorage|sessionStorage|navigator\\.sendBeacon|analytics|telemetry|http://|https://|saveBytes|commandTail|eventTail|authoritativeSnapshot|WorldState\" apps/sim-runner/src/m6-batch-balance.ts apps/sim-runner/src/run-m6-batch-balance.mjs packages/ui/src/index.tsx tests/sim-runner-m6-batch-balance.test.tsx apps/web/src/styles/shell.css",
+      "exit_code": 0,
+      "result": "No runtime telemetry/network/storage/service channel found. Expected payload guard/test strings found. Blocking match found at apps/sim-runner/src/m6-batch-balance.ts:261 for `as unknown as`."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-runner-m6-batch-balance.test.tsx",
+      "exit_code": 0,
+      "result": "1 test file passed; 2 tests passed; artifact generation/schema/dashboard smoke covered."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e \"import { runM6BatchBalanceV1, validateM6BatchBalanceArtifactV1 } from './apps/sim-runner/src/m6-batch-balance.ts'; const artifact = runM6BatchBalanceV1(); const validation = validateM6BatchBalanceArtifactV1(artifact); console.log(JSON.stringify({ok: validation.ok, hash: artifact.artifactHash, scenarios: artifact.aggregate.scenarioCount, seeds: artifact.aggregate.seedCount, runs: artifact.aggregate.runCount, victory: artifact.aggregate.victoryCount, continued: artifact.aggregate.continuedPlayCount, defeat: artifact.aggregate.defeatCount, rejected: artifact.aggregate.commandRejectedCount, p0p1: artifact.aggregate.p0p1CandidateCount, risks: artifact.aggregate.tuningRiskCount, bytes: JSON.stringify(artifact).length}, null, 2));\"",
+      "exit_code": 0,
+      "result": "validation ok=true; artifactHash=99d64950; scenarios=3; seeds=2; runs=6; victory=1; continued=1; defeat=2; commandRejected=2; p0p1=0; risks=6; serialized bytes=6433."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m6-batch-balance",
+      "exit_code": 0,
+      "result": "CLI emitted schemaVersion 1 local artifact with artifactHash 99d64950, 3 scenarios, 2 seeds, 6 runs, and no WorldState/save bytes/commandTail/eventTail payload."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "3 test files passed; 6 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "25 test files passed; 191 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 8 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite build passed; existing lib chunk >500 kB warning only."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture/determinism/vitest/web tests passed; M6 Alpha hash 260f46c3; 41 root test files/307 tests plus web 1 file/4 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const schema=JSON.parse(fs.readFileSync('project/schemas/handoff.schema.json','utf8')); const data=JSON.parse(fs.readFileSync('project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-QA-REQUEST-CHANGES__qa_reviewer.json','utf8')); /* local structural validation of required/additionalProperties/status/tests_run/date-time constraints */\"",
+      "exit_code": 0,
+      "result": "QA handoff JSON was parsed and checked against the handoff schema's required fields, no additional top-level properties, status enum, tests_run object shape, and date-time parseability."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES is based on a frozen root coding-standard violation, not on artifact/dashboard behavior.",
+    "Lead takeover process exception is auditable: two balance_analyst writers are recorded as stalled/no handoff/clean worktree, and the lead REVIEW metadata explicitly requires independent QA before acceptance.",
+    "The implementation does not add telemetry, accounts, paid APIs, remote analytics, servers, Electron IPC, runtime SQL, secrets, automatic tuning, save-format changes, protocol changes, or authoritative WorldState/save payload output.",
+    "Seed 2401 is used only by rebuilding the accepted M6 Alpha fixture with createWorldStateV0 inside apps/sim-runner local evidence; no protocol/save/content-source authoritative schema was changed."
+  ],
+  "risks": [
+    {
+      "severity": "R2",
+      "file": "apps/sim-runner/src/m6-batch-balance.ts",
+      "symbol": "validateM6BatchBalanceArtifactV1",
+      "line": 261,
+      "repro": "rg -n \"as unknown as\" apps/sim-runner/src/m6-batch-balance.ts",
+      "impact": "Root AGENTS.md explicitly forbids unsafe double assertions. This validator returns unknown input as M6BatchBalanceArtifactV1 through `input as unknown as M6BatchBalanceArtifactV1`, so the task cannot be owner-accepted while the strict coding rule is violated.",
+      "necessary_fix": "Remove the double assertion. Return a typed value through explicit construction from validated fields, or use a single local assertion only after the validation proof is made concrete enough for this boundary."
+    },
+    "Current worktree is metadata-dirty because the lead REVIEW handoff/status route is present after 6c5f1795; this was reviewed as current REVIEW metadata, not as product implementation scope."
+  ],
+  "blockers": [
+    "apps/sim-runner/src/m6-batch-balance.ts:261 uses `input as unknown as M6BatchBalanceArtifactV1`; fix before acceptance."
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route a minimal repair for apps/sim-runner/src/m6-batch-balance.ts:261 to remove the unsafe double assertion, rerun the focused batch smoke plus pnpm check/test as appropriate, then return a new REVIEW handoff for independent QA.",
+  "created_at": "2026-06-28T01:24:12.7305022+08:00"
+}
