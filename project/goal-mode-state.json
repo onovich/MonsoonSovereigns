@@ -2,35 +2,20 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [
-    "M6-POLICY-EVENT-RUNTIME-001"
-  ],
+  "current_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M6-POLICY-EVENT-RUNTIME-001",
-      "status": "accepted_pending_pr",
+      "task_id": "M6-START-TO-VICTORY-SIM-LOOP-001",
+      "status": "active_orchestrating",
       "role": "lead_orchestrator"
-    },
-    "simulation_engineer": {
-      "thread_id": "019f08b6-1a00-7dd3-8ccf-2571c0c71990",
-      "task_id": "M6-POLICY-EVENT-RUNTIME-001",
-      "status": "accepted_pending_main_integration",
-      "role": "simulation_engineer",
-      "nickname": "Clockwork"
-    },
-    "systems_architect": {
-      "thread_id": "019f08d5-9b0c-7a60-9429-738d414fa435",
-      "task_id": "M6-POLICY-EVENT-RUNTIME-001",
-      "status": "accepted_pending_main_integration",
-      "role": "systems_architect",
-      "nickname": "Keystone",
-      "read_only": true
     }
   },
-  "last_integrated_task": "M6-SUCCESSION-COMPLETION-001",
-  "last_main_commit": "b171e82b571c9b5e03176abc723509fcef5b1b94",
-  "next_ready_tasks": [],
+  "last_integrated_task": "M6-POLICY-EVENT-RUNTIME-001",
+  "last_main_commit": "b34f3b440929d08dd39b445a9ae92a0e16a93323",
+  "next_ready_tasks": [
+    "M6-START-TO-VICTORY-SIM-LOOP-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -54,10 +39,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6 policy/event runtime systems R2 ACCEPT and lead gates passed; no Human Gate.",
+    "approval_source": "M6 policy/event runtime closed; next task is dependency-ready and no Human Gate is active.",
     "recommended_result": null,
-    "note": "M6-POLICY-EVENT-RUNTIME-001 accepted pending PR/CI/main integration.",
-    "recorded_at": "2026-06-27T19:51:14.914+08:00"
+    "note": "Next READY task is M6-START-TO-VICTORY-SIM-LOOP-001.",
+    "recorded_at": "2026-06-27T19:56:16.169+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -450,7 +435,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Open PR for accepted M6 policy/event runtime implementation.",
+  "next_action": "Start M6-START-TO-VICTORY-SIM-LOOP-001 as the next dependency-ready M6 task.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -813,10 +798,10 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T19:51:14.914+08:00",
-  "updated_at": "2026-06-27T19:51:14.914+08:00",
+  "last_updated_at": "2026-06-27T19:56:16.169+08:00",
+  "updated_at": "2026-06-27T19:56:16.169+08:00",
   "m6_policy_event_runtime": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
     "branch_or_worktree": "feat/m6-policy-event-runtime",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -829,10 +814,10 @@
     "previous_closed_task": "M6-SUCCESSION-COMPLETION-001",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Open PR, wait for CI, merge to main, then close task.",
+    "next_action": "Start M6-START-TO-VICTORY-SIM-LOOP-001 as the next dependency-ready M6 task.",
     "start_submission_id": "019f08b8-1297-7b62-81d3-3c11b32d91db",
     "route_sent_at": "2026-06-27T18:55:35.502+08:00",
-    "updated_at": "2026-06-27T19:51:14.914+08:00",
+    "updated_at": "2026-06-27T19:56:16.169+08:00",
     "systems_architect_thread_id": "019f08d5-9b0c-7a60-9429-738d414fa435",
     "systems_architect_nickname": "Keystone",
     "review_handoff": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-REVIEW__simulation_engineer.json",
@@ -853,6 +838,18 @@
     "systems_review_handoff_r2": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-R2-ACCEPT__systems_architect.json",
     "lead_accept_handoff": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-27T19:51:14.914+08:00",
-    "lead_accept_commit": "52b690dff93520fe3e1bef3cff67b9dba17dcb9e"
+    "lead_accept_commit": "52b690dff93520fe3e1bef3cff67b9dba17dcb9e",
+    "integrated_pr": 141,
+    "integrated_main_commit": "b34f3b440929d08dd39b445a9ae92a0e16a93323",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/141",
+    "lead_close_handoff": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-27T19:56:16.169+08:00",
+    "child_threads_closed": [
+      "019f08b6-1a00-7dd3-8ccf-2571c0c71990",
+      "019f08d5-9b0c-7a60-9429-738d414fa435"
+    ],
+    "next_ready_tasks": [
+      "M6-START-TO-VICTORY-SIM-LOOP-001"
+    ]
   }
 }

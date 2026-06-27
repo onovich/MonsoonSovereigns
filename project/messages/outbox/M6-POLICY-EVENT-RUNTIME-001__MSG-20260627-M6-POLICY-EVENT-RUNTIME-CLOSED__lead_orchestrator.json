@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260627-M6-POLICY-EVENT-RUNTIME-CLOSED",
+  "task_id": "M6-POLICY-EVENT-RUNTIME-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M6-POLICY-EVENT-RUNTIME-001 is CLOSED after PR #141 entered origin/main at b34f3b440929d08dd39b445a9ae92a0e16a93323. Systems R2 review ACCEPTed, lead gates passed, PR CI passed, and writer/reviewer threads were closed. Next READY M6 task is M6-START-TO-VICTORY-SIM-LOOP-001.",
+  "artifacts": [
+    "packages/content-schema/src/m6-policy-event.ts",
+    "packages/content-runtime/src/m6-policy-event.ts",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/scheduler-v0.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "project/tasks/active/M6-POLICY-EVENT-RUNTIME-001.json",
+    "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/close-m6-policy-event-runtime / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "b34f3b440929d08dd39b445a9ae92a0e16a93323",
+  "integrated_pr": 141,
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/141",
+  "tests_run": [
+    {
+      "command": "gh pr checks 141 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality/Web/Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "gh pr merge 141 --merge --delete-branch",
+      "exit_code": 0,
+      "result": "PR #141 merged; origin/main and local main fast-forwarded to b34f3b440929d08dd39b445a9ae92a0e16a93323."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-START-TO-VICTORY-SIM-LOOP-001 DRAFT simulation_engineer Implement deterministic start-to-victory Alpha simulation loop."
+    }
+  ],
+  "decisions": [
+    "Close only after accepted implementation entered origin/main through PR #141.",
+    "Next dependency-ready M6 task is M6-START-TO-VICTORY-SIM-LOOP-001.",
+    "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+  ],
+  "risks": [
+    "Start-to-victory loop must consume policy/event substrate without adding M7 content lock or manual node battle.",
+    "Formal content quality remains out of scope until M7."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit closure checkpoint, merge it to main, then start M6-START-TO-VICTORY-SIM-LOOP-001.",
+  "created_at": "2026-06-27T19:56:16.169+08:00"
+}
