@@ -1,0 +1,100 @@
+{
+  "id": "M7-EXIT-VALIDATION-001",
+  "summary": "Validate M7 Beta content and quality exit gate",
+  "milestone": "M7",
+  "status": "DRAFT",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "M7-PERFORMANCE-MEMORY-LOADING-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/GATE-M7.md",
+      "PROJECT_STATUS.md",
+      "project/tasks/active/M7-EXIT-VALIDATION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Create the M7 exit validation gate evidence document and status updates only after all M7 prerequisite tasks and Human Gates are satisfied or explicitly BLOCKED.",
+    "Validate Roadmap and acceptance-matrix M7 goals: content lock, large-scale balance/migration, platform/resolution/localization matrix, Beta culture review, and manual playthrough evidence.",
+    "Record actual commands, artifact hashes, defects, accepted limits, and reviewer handoffs; do not claim release readiness or M8 security/SBOM/install/update/rollback completion.",
+    "Preserve M6_GATE = PASS_WITH_LIMITS, M4/M5 process limits, DEFER_MANUAL_NODE_BATTLE, and all Human Gates for release/commercial/branding/telemetry/server/cloud/mod/irreversible migration decisions.",
+    "No product code, package code, content-source data, roadmap, acceptance matrix, accepted ADR, prior gate doc, release artifact, telemetry, server/multiplayer, arbitrary-code mod, or manual node battle work is performed."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm install --frozen-lockfile",
+    "pnpm check",
+    "pnpm test",
+    "pnpm content:validate",
+    "pnpm sim:determinism",
+    "pnpm sim:perf-baseline",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm desktop:security-check",
+    "pnpm desktop:package",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-EXIT-VALIDATION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
+    "Player and AI behavior must continue through the same GameCommand/query/save surfaces where implementation work is later authorized.",
+    "sim-core must remain decoupled from React, Pixi, Electron, DOM, Node IO, real time APIs, hidden RPC, and object-graph serialization.",
+    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
+  ],
+  "created_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T03:55:00+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "human_gates": [
+    "major cultural-risk decisions",
+    "formal content lock acceptance",
+    "manual playthrough acceptance where human judgment is required",
+    "commercial, release, store, branding, logo, or trademark decisions",
+    "telemetry, analytics, remote collection, accounts, paid services, or secrets",
+    "server or multiplayer behavior",
+    "arbitrary-code mods, runtime scripting extensions, or Workshop support",
+    "cloud-save implementation, network persistence, or any account-backed save service",
+    "irreversible save/content migration",
+    "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
+    "manual node battle reversal or any formal 1.0 scope reversal"
+  ]
+}

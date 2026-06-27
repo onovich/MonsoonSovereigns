@@ -2,7 +2,7 @@
   "id": "M7-TASK-GRAPH-001",
   "summary": "Create minimal M7 Beta content and quality task graph",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -74,7 +74,7 @@
     "systems_architect": {
       "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
       "nickname": "Keystone the 3rd",
-      "status": "active",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -82,20 +82,27 @@
       "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
       "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
-      "route_sent_at": "2026-06-28T03:45:30.0000000+08:00"
+      "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
+      "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-06-28T03:55:00+08:00"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "qa_reviewer",
   "notes": [
     "M7 starts only after M6-EXIT-VALIDATION-001 is CLOSED on origin/main.",
     "This task creates or restores the M7 task graph only; it must not implement content, balance changes, UI, platform matrix behavior, save migration, release artifacts, telemetry, server/multiplayer, arbitrary-code mods, or manual node battle.",
     "M6 Gate PASS_WITH_LIMITS carries forward bounded Alpha/local evidence limits and must not be re-described as unconditional release readiness.",
     "Manual node battle remains deferred from M5 and the 1.0 mainline; do not create an implementation task or blocking spike/research task for M7 or M8.",
     "Major cultural-risk decisions and formal content lock acceptance remain Human Gates; task graph may route research/review tasks but must not silently approve them.",
-    "M7 task graph should leave only the first dependency-ready downstream task READY after review; other downstream M7 tasks should remain DRAFT until dependencies are satisfied."
+    "M7 task graph should leave only the first dependency-ready downstream task READY after review; other downstream M7 tasks should remain DRAFT until dependencies are satisfied.",
+    "Created a dependency-ordered M7 Beta content and quality DAG with M7-CONTENT-LOCK-CONTRACT-001 as the only first downstream READY task after graph acceptance; all other downstream tasks are DRAFT.",
+    "The DAG preserves M6_GATE = PASS_WITH_LIMITS and does not describe M6 as unconditional release readiness.",
+    "The DAG preserves DEFER_MANUAL_NODE_BATTLE exactly and contains no manual node battle implementation task or M7/M8 blocking spike/research/validation dependency.",
+    "Formal content lock acceptance, manual playthrough acceptance, major cultural risk, commercial/release/branding, telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mods, irreversible migration, and frozen product/platform/core changes remain Human Gates.",
+    "No product code, package code, content-source data, roadmap, acceptance matrix, prior gate, accepted ADR, CI, tool, release artifact, telemetry, server/multiplayer, mod, cloud, or manual battle work was performed."
   ],
   "created_at": "2026-06-28T03:43:49.1264386+08:00",
-  "updated_at": "2026-06-28T03:45:30.0000000+08:00",
+  "updated_at": "2026-06-28T03:55:00+08:00",
   "started_at": "2026-06-28T03:43:49.1264386+08:00",
   "base_main_commit": "97ec517ca96727fe7fe66e27977c3d8b0d39d9f4",
   "previous_closed_task": "M6-EXIT-VALIDATION-001",
@@ -111,5 +118,188 @@
   "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
   "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
-  "route_sent_at": "2026-06-28T03:45:30.0000000+08:00"
+  "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
+  "review_ready_at": "2026-06-28T03:55:00+08:00",
+  "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+  "downstream_tasks": [
+    {
+      "id": "M7-CONTENT-LOCK-CONTRACT-001",
+      "status": "READY",
+      "owner_role": "gameplay_designer",
+      "reviewer_role": "systems_architect",
+      "dependencies": [
+        "M7-TASK-GRAPH-001"
+      ]
+    },
+    {
+      "id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "status": "DRAFT",
+      "owner_role": "historical_researcher",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-CONTENT-LOCK-CONTRACT-001"
+      ]
+    },
+    {
+      "id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "status": "DRAFT",
+      "owner_role": "historical_researcher",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001"
+      ]
+    },
+    {
+      "id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "status": "DRAFT",
+      "owner_role": "client_engineer",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-SCENARIO-PERSON-EVENT-FILL-001"
+      ]
+    },
+    {
+      "id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "status": "DRAFT",
+      "owner_role": "client_engineer",
+      "reviewer_role": "historical_researcher",
+      "dependencies": [
+        "M7-SCENARIO-PERSON-EVENT-FILL-001"
+      ]
+    },
+    {
+      "id": "M7-BETA-CULTURE-REVIEW-001",
+      "status": "DRAFT",
+      "owner_role": "historical_researcher",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-SCENARIO-PERSON-EVENT-FILL-001",
+        "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+        "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001"
+      ]
+    },
+    {
+      "id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "status": "DRAFT",
+      "owner_role": "systems_architect",
+      "reviewer_role": "security_reviewer",
+      "dependencies": [
+        "M7-CONTENT-LOCK-CONTRACT-001"
+      ]
+    },
+    {
+      "id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "status": "DRAFT",
+      "owner_role": "balance_analyst",
+      "reviewer_role": "gameplay_designer",
+      "dependencies": [
+        "M7-SCENARIO-PERSON-EVENT-FILL-001",
+        "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+      ]
+    },
+    {
+      "id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "status": "DRAFT",
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-SCENARIO-PERSON-EVENT-FILL-001",
+        "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+        "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+        "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+      ]
+    },
+    {
+      "id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+      "status": "DRAFT",
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-PERFORMANCE-MEMORY-LOADING-001"
+      ]
+    },
+    {
+      "id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "status": "DRAFT",
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-BETA-CULTURE-REVIEW-001",
+        "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+        "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+      ]
+    },
+    {
+      "id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "status": "DRAFT",
+      "owner_role": "lead_orchestrator",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-BETA-CULTURE-REVIEW-001",
+        "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+        "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+        "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001"
+      ]
+    },
+    {
+      "id": "M7-EXIT-VALIDATION-001",
+      "status": "DRAFT",
+      "owner_role": "systems_architect",
+      "reviewer_role": "qa_reviewer",
+      "dependencies": [
+        "M7-CONTENT-LOCK-ACCEPTANCE-001",
+        "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+        "M7-PERFORMANCE-MEMORY-LOADING-001"
+      ]
+    }
+  ],
+  "acceptance_evidence": {
+    "graph_type": "planning_only_m7_beta_content_quality_dag",
+    "first_downstream_ready": "M7-CONTENT-LOCK-CONTRACT-001",
+    "downstream_draft_count": 12,
+    "coverage": [
+      "content lock planning",
+      "historical/cultural/language review",
+      "full scenario/person/event fill path",
+      "large-scale balance and anti-snowball validation",
+      "performance/memory/loading validation",
+      "Chrome/Edge/Firefox/Windows and resolution/localization matrix",
+      "save migration and cloud-save candidate decision boundaries",
+      "tutorial/hints/encyclopedia completion",
+      "audio/art/localization completion planning",
+      "Beta culture review",
+      "manual playthrough evidence",
+      "formal content lock acceptance Human Gate",
+      "M7 exit validation"
+    ],
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "no_manual_node_battle_tasks": true,
+    "m6_gate_carry_forward": "PASS_WITH_LIMITS",
+    "human_gates_preserved": [
+      "major cultural-risk decisions",
+      "formal content lock acceptance",
+      "manual playthrough acceptance where human judgment is required",
+      "commercial, release, store, branding, logo, or trademark decisions",
+      "telemetry, analytics, remote collection, accounts, paid services, or secrets",
+      "server or multiplayer behavior",
+      "arbitrary-code mods, runtime scripting extensions, or Workshop support",
+      "cloud-save implementation, network persistence, or any account-backed save service",
+      "irreversible save/content migration",
+      "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
+      "manual node battle reversal or any formal 1.0 scope reversal"
+    ],
+    "forbidden_outputs_not_created": [
+      "apps/** product code",
+      "packages/** package code",
+      "content-source/** content data",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "prior gate docs",
+      "roadmap edits",
+      "acceptance matrix edits",
+      "release artifacts",
+      "telemetry/server/multiplayer/mod/cloud/manual battle implementation"
+    ]
+  }
 }

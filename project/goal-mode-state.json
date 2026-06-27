@@ -16,8 +16,9 @@
       "thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
       "nickname": "Keystone the 3rd",
       "task_id": "M7-TASK-GRAPH-001",
-      "status": "active",
-      "role": "systems_architect"
+      "status": "review",
+      "role": "systems_architect",
+      "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json"
     }
   },
   "last_integrated_task": "M6-EXIT-VALIDATION-001",
@@ -46,10 +47,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-TASK-GRAPH-001 is planning-only; no M7 Human Gate is active before task graph review.",
+    "approval_source": "M7-TASK-GRAPH-001 systems_architect REVIEW is planning-only; downstream formal content lock and manual playthrough acceptance remain future Human Gates.",
     "recommended_result": null,
-    "note": "Current task is M7-TASK-GRAPH-001. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T03:43:49.1264386+08:00"
+    "note": "Route M7 task graph REVIEW handoff to qa_reviewer. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T03:55:00+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -836,7 +837,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T03:45:30.0000000+08:00",
+  "last_updated_at": "2026-06-28T03:55:00+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1479,15 +1480,15 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION"
   },
   "m7_start": {
-    "status": "PENDING_TASK_GRAPH",
+    "status": "TASK_GRAPH_REVIEW",
     "current_milestone": "M7",
-    "next_action": "Create or recover M7-TASK-GRAPH-001",
+    "next_action": "Route M7-TASK-GRAPH-001 systems_architect REVIEW handoff to qa_reviewer.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "note": "M7 content lock, culture review, manual playthrough, platform/localization matrix, balance migration, and save migration must be decomposed by the M7 task graph."
+    "note": "M7 task graph exists and awaits independent QA review before any downstream M7 work starts."
   },
   "m7_task_graph": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-TASK-GRAPH-001",
     "branch_or_worktree": "chore/m7-task-graph",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -1498,13 +1499,30 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "started_at": "2026-06-28T03:43:49.1264386+08:00",
-    "next_action": "Await systems_architect REVIEW handoff for M7 task graph.",
+    "next_action": "Await independent qa_reviewer review of the M7 task graph.",
     "systems_architect_thread_id": "019f0a9d-fc35-7953-b109-aa06340de057",
     "systems_architect_nickname": "Keystone the 3rd",
     "start_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-TASK-GRAPH-001__ROUTE-20260628-M7-GRAPH-LEAD-TO-SYSTEMS-START.json",
     "start_submission_id": "019f0a9e-4997-75a0-8e1e-0e9d3cfdf06b",
     "route_sent_at": "2026-06-28T03:45:30.0000000+08:00",
-    "updated_at": "2026-06-28T03:45:30.0000000+08:00"
+    "updated_at": "2026-06-28T03:55:00+08:00",
+    "review_handoff": "project/messages/outbox/M7-TASK-GRAPH-001__MSG-20260628-M7-TASK-GRAPH-SYSTEMS-REVIEW__systems_architect.json",
+    "downstream_tasks": [
+      "M7-CONTENT-LOCK-CONTRACT-001",
+      "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "M7-BETA-CULTURE-REVIEW-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+      "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "M7-EXIT-VALIDATION-001"
+    ],
+    "first_downstream_ready_after_acceptance": "M7-CONTENT-LOCK-CONTRACT-001"
   }
 }
