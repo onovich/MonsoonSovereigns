@@ -2292,7 +2292,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M6-POLICY-EVENT-RUNTIME-001 as the next dependency-ready M6 task.",
+  "next_action": "Wait for M6-POLICY-EVENT-RUNTIME-001 simulation_engineer REVIEW handoff, then route to systems_architect.",
   "current_task": "M6-POLICY-EVENT-RUNTIME-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2343,5 +2343,26 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-27T18:46:35.0133959+08:00"
+  "updated_at": "2026-06-27T18:55:35.502+08:00",
+  "m6_policy_event_runtime": {
+    "status": "IN_PROGRESS",
+    "owner_role": "simulation_engineer",
+    "reviewer_role": "systems_architect",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f08b6-1a00-7dd3-8ccf-2571c0c71990",
+    "writer_nickname": "Clockwork",
+    "configured_model": "gpt-5.5",
+    "configured_effort": "high",
+    "branch_or_worktree": "feat/m6-policy-event-runtime",
+    "base_main_commit": "b171e82b571c9b5e03176abc723509fcef5b1b94",
+    "start_handoff": "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M6-POLICY-EVENT-RUNTIME-001__ROUTE-20260627-M6-POLICY-LEAD-TO-SIM-START.json",
+    "started_at": "2026-06-27T18:54:50.841+08:00",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "Simulation engineer implements policy/event runtime substrate and returns REVIEW handoff.",
+    "start_submission_id": "019f08b8-1297-7b62-81d3-3c11b32d91db",
+    "route_sent_at": "2026-06-27T18:55:35.502+08:00",
+    "updated_at": "2026-06-27T18:55:35.502+08:00"
+  }
 }
