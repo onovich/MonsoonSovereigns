@@ -2,20 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M6",
-  "current_tasks": [],
+  "current_tasks": [
+    "M6-ADVISER-INTERVENTION-EVIDENCE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_between_tasks",
+      "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+      "status": "active",
       "role": "lead_orchestrator"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f0a35-8f47-7b11-8a15-9e11477e73c7",
+      "nickname": "Monsoon the 2nd",
+      "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+      "status": "active",
+      "role": "gameplay_designer"
     }
   },
   "last_integrated_task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
-  "last_main_commit": "4fbec6f0dc8408df785a7492f2b463ab2efdbb03",
-  "next_ready_tasks": [
-    "M6-ADVISER-INTERVENTION-EVIDENCE-001"
-  ],
+  "last_main_commit": "c8dc04c93dae60265d665b198150fb255b4ae76f",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -39,10 +46,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 closed after PR #151 integration; no Human Gate active.",
+    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 closure checkpoint entered origin/main through PR #152 at c8dc04c93dae60265d665b198150fb255b4ae76f; no Human Gate active.",
     "recommended_result": null,
-    "note": "Continue to M6-ADVISER-INTERVENTION-EVIDENCE-001 after closure checkpoint enters main.",
-    "recorded_at": "2026-06-27T17:45:12.151Z"
+    "note": "M6-ADVISER-INTERVENTION-EVIDENCE-001 started for bounded local/privacy-safe adviser evidence; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-27T17:55:19.454Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -829,8 +836,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T17:45:12.151Z",
-  "updated_at": "2026-06-28T00:54:17.462+08:00",
+  "last_updated_at": "2026-06-27T17:55:19.454Z",
+  "updated_at": "2026-06-27T17:55:19.454Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1043,7 +1050,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": null,
+  "current_task": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -1137,7 +1144,7 @@
     "route_file": "project/messages/routes/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__ROUTE-20260628-M6-BATCH-BALANCE-LEAD-TO-BALANCE-START.json",
     "started_at": "2026-06-28T00:33:12.367+08:00",
     "next_action": "Push branch, open PR, wait for CI, merge to main, then close task.",
-    "updated_at": "2026-06-27T17:45:12.151Z",
+    "updated_at": "2026-06-27T17:55:19.454Z",
     "route_sent_at": "2026-06-28T00:35:13.413+08:00",
     "start_submission_id": "019f09ee-9288-7721-a62b-2b3a66f6941c",
     "replaced_writer_thread_id": "019f09eb-7150-7462-85a7-91352ba1069c",
@@ -1303,6 +1310,27 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
     "next_ready_tasks": [
       "M6-ADVISER-INTERVENTION-EVIDENCE-001"
-    ]
+    ],
+    "implementation_main_commit": "4fbec6f0dc8408df785a7492f2b463ab2efdbb03",
+    "closure_pr": 152,
+    "closure_main_commit": "c8dc04c93dae60265d665b198150fb255b4ae76f"
+  },
+  "m6_adviser_intervention_evidence": {
+    "status": "IN_PROGRESS",
+    "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+    "owner_role": "gameplay_designer",
+    "reviewer_role": "qa_reviewer",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0a35-8f47-7b11-8a15-9e11477e73c7",
+    "writer_nickname": "Monsoon the 2nd",
+    "branch_or_worktree": "research/m6-adviser-intervention-evidence",
+    "base_main_commit": "c8dc04c93dae60265d665b198150fb255b4ae76f",
+    "previous_closed_task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-START__lead_orchestrator.json",
+    "started_at": "2026-06-27T17:55:19.454Z",
+    "updated_at": "2026-06-27T17:55:19.454Z",
+    "next_action": "Await gameplay_designer REVIEW handoff with adviser intervention evidence; then route to independent qa_reviewer."
   }
 }

@@ -1,0 +1,57 @@
+{
+  "message_id": "MSG-20260628-M6-ADVISER-EVIDENCE-START",
+  "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M6-ADVISER-INTERVENTION-EVIDENCE-001 after M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 is CLOSED on origin/main. The gameplay_designer must collect bounded, local/privacy-safe adviser intervention evidence for Alpha flows without modifying product code, adding telemetry, collecting personal data, deciding M6 exit, or reopening manual node battle.",
+  "artifacts": [
+    "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "PROJECT_STATUS.md",
+    "docs/04-software-architecture.md",
+    "docs/05-coding-standards.md",
+    "docs/06-delivery-workflow.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "research/m6-adviser-intervention-evidence / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "c8dc04c93dae60265d665b198150fb255b4ae76f",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean on research/m6-adviser-intervention-evidence before start checkpoint."
+    },
+    {
+      "command": "git fetch origin --prune",
+      "exit_code": 0,
+      "result": "origin/main synchronized at c8dc04c93dae60265d665b198150fb255b4ae76f."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-ADVISER-INTERVENTION-EVIDENCE-001 was dependency-ready before start."
+    }
+  ],
+  "decisions": [
+    "Start M6-ADVISER-INTERVENTION-EVIDENCE-001 as the highest-priority dependency-ready M6 task after M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 closure PR entered origin/main.",
+    "Evidence task is process/research-only inside allowed files; apps, packages, content-source, tools, CI, roadmap, acceptance matrix, prior gate docs, manifests, and release artifacts are forbidden.",
+    "Evidence must distinguish useful, ignored, harmful, and missing adviser interventions using anonymized/local observation or deterministic run review only.",
+    "Blockers and bounded follow-ups must be recorded without adding telemetry, personal data, external research, product scope, or M6 exit decision.",
+    "Cultural or historical concerns must be tagged and routed to historical_researcher or Human Gate before formal content acceptance.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and is not reopened by this task."
+  ],
+  "risks": [
+    "R3 evidence task may overclaim from limited observation; record session/run count and explicit limits.",
+    "Adviser text can touch cultural/historical interpretation; tag concerns instead of accepting formal content inside this task.",
+    "No product code changes are allowed; any required adviser behavior change must become a separate allowed implementation task."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Collect bounded adviser intervention evidence within allowed paths, update task/status evidence, run required process checks, and emit a REVIEW handoff routed to qa_reviewer.",
+  "created_at": "2026-06-27T17:55:19.454Z"
+}
