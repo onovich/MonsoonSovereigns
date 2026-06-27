@@ -1,0 +1,81 @@
+{
+  "message_id": "MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-R2-ACCEPT",
+  "task_id": "M6-POLICY-EVENT-RUNTIME-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 只读复审通过。针对最新 review commit 3a7778f23e004d3951d48cfa4ea411d8561086d3 的增量检查显示，R1 ACCEPT 后的代码变更仅限 7 个已允许的 code/test 文件，内容为 Prettier 格式化和 packages/content-runtime/src/m6-policy-event.ts 中一个未使用 type import 删除。未发现行为变化、schema/存档语义变化、依赖方向变化、forbidden_paths 触碰、sim-core 边界破坏、真实时间/随机/Node IO/DOM/React/Pixi/Electron 引入，R1 ACCEPT 结论继续成立。当前 HEAD 52b690dff93520fe3e1bef3cff67b9dba17dcb9e 是后续 R2 route/process commit，只改 project 流程文件，未改包代码或 tests。",
+  "artifacts": [
+    "packages/content-runtime/src/m6-policy-event.ts",
+    "packages/content-schema/src/m6-policy-event.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "project/messages/routes/M6-POLICY-EVENT-RUNTIME-001__ROUTE-20260627-M6-POLICY-LEAD-FORMAT-FIX-TO-SYSTEMS-R2.json",
+    "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-R2-ACCEPT__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m6-policy-event-runtime / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "3a7778f23e004d3951d48cfa4ea411d8561086d3",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "输出为 ## feat/m6-policy-event-runtime；工作区无脏改动。"
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "当前 HEAD 为 52b690dff93520fe3e1bef3cff67b9dba17dcb9e；代码复审目标按 route 指定为 3a7778f23e004d3951d48cfa4ea411d8561086d3。"
+    },
+    {
+      "command": "git diff --name-status 3a7778f23e004d3951d48cfa4ea411d8561086d3^ 3a7778f23e004d3951d48cfa4ea411d8561086d3",
+      "exit_code": 0,
+      "result": "仅 7 个 allowed code/test 文件变更：content-runtime m6-policy-event、content-schema m6-policy-event、save-format index、sim-core boot/command/world、M6 policy-event runtime test。"
+    },
+    {
+      "command": "git diff --word-diff=plain --word-diff-regex=\"[A-Za-z0-9_.$-]+\" 738bc1637d94d22bfdf22879c3a538421ad37087 3a7778f23e004d3951d48cfa4ea411d8561086d3 -- packages/content-runtime/src/m6-policy-event.ts packages/content-schema/src/m6-policy-event.ts packages/save-format/src/index.ts packages/sim-core/src/boot-content-runtime-v1.ts packages/sim-core/src/command-query-v1.ts packages/sim-core/src/world-state-v0.ts tests/sim-core-m6-policy-event-runtime.test.ts",
+      "exit_code": 0,
+      "result": "token-level review shows only unused type import removal plus formatting/line-wrap changes; no runtime logic, command path, scheduler order, schema parser, save parser/copy, or test assertion behavior changed."
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|fs\\b|node:|react|pixi|electron|document\\.|window\\.|eval\\(|Function\\(|import\\(\" packages/sim-core/src/boot-content-runtime-v1.ts packages/sim-core/src/command-query-v1.ts packages/sim-core/src/world-state-v0.ts packages/content-runtime/src/m6-policy-event.ts packages/content-schema/src/m6-policy-event.ts packages/save-format/src/index.ts tests/sim-core-m6-policy-event-runtime.test.ts",
+      "exit_code": 0,
+      "result": "匹配项仅为 encyclopediaRefs 字段/测试内容和恶意 callback 测试字符串；未发现 sim-core 新增 Node IO、DOM、React、Pixi、Electron、真实时间、真实随机或 eval/Function 依赖。"
+    },
+    {
+      "command": "rg -n \"as unknown as|\\bany\\b|enum |namespace |TODO|FIXME|skip\\(|\\.skip|only\\(\" packages/content-runtime/src/m6-policy-event.ts packages/content-schema/src/m6-policy-event.ts packages/save-format/src/index.ts packages/sim-core/src/boot-content-runtime-v1.ts packages/sim-core/src/command-query-v1.ts packages/sim-core/src/world-state-v0.ts tests/sim-core-m6-policy-event-runtime.test.ts",
+      "exit_code": 1,
+      "result": "ripgrep 无匹配；exit 1 为 no-match 语义。未见新增 any、unsafe double assertion、enum/namespace、TODO/FIXME 或跳测。"
+    },
+    {
+      "command": "git diff --name-only 3a7778f23e004d3951d48cfa4ea411d8561086d3^ 3a7778f23e004d3951d48cfa4ea411d8561086d3 | rg \"^(apps/web|apps/desktop|apps/content-tools|packages/sim-ai|packages/client-core|packages/map-renderer|packages/ui|content-source|tools|\\.github|docs/decisions|docs/GATE-M[0-5]\\.md|docs/11-roadmap\\.md|docs/23-milestone-acceptance-matrix\\.md|docs/27-autonomous-goal-mode\\.md|PROJECT_STATUS\\.md|MANIFEST\\.md|SHA256SUMS\\.txt|VALIDATION_REPORT\\.md)(/|$)\"",
+      "exit_code": 1,
+      "result": "ripgrep 无匹配；R2 code commit 未触碰 forbidden_paths。"
+    },
+    {
+      "command": "git diff --check 3a7778f23e004d3951d48cfa4ea411d8561086d3^ 3a7778f23e004d3951d48cfa4ea411d8561086d3",
+      "exit_code": 0,
+      "result": "R2 code commit 无 whitespace errors。"
+    },
+    {
+      "command": "git diff --name-status 3a7778f23e004d3951d48cfa4ea411d8561086d3 52b690dff93520fe3e1bef3cff67b9dba17dcb9e",
+      "exit_code": 0,
+      "result": "当前 HEAD 相对 R2 review commit 只包含 project/goal-mode-state.json、GOAL-MODE-CONTINUATION、R2 route、model-routing-state、task、thread-registry 等流程文件；无包代码、tests、docs 或 forbidden area。"
+    }
+  ],
+  "decisions": [
+    "ACCEPT：R2 formatting/lint fix 未改变 R1 已接受的 policy/event runtime 行为。",
+    "继续沿用 R1 ACCEPT：sim-core 解耦、单写权威状态、玩家/AI 同一 GameCommand、deterministic ordering、显式 schema/runtime data、save/load DTO/parser/copy/rejection 和 event-tail 兼容性结论不变。",
+    "不要求 ADR：R2 没有架构、存档格式、协议语义或内容边界变更。",
+    "未发现 M7 content lock、UI、sim-ai、manual node battle、full diplomacy、telemetry/server/multiplayer 或 content-source 范围漂移。"
+  ],
+  "risks": [
+    "systems_architect R2 未复跑 pnpm check 或 vitest，以保持本 route 的只读复审性质；lead route 声明已复跑 pnpm check、focused vitest、git diff --check 和 taskctl validate 通过。",
+    "当前 HEAD 高于 review commit 一个 route/process commit；该提交不含行为代码，lead_orchestrator 集成时应继续以 3a7778f23e004d3951d48cfa4ea411d8561086d3 作为 R2 code review commit。"
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "lead_orchestrator 接收 systems_architect R2 ACCEPT，并继续按 M6 review flow 路由 QA 或集成；无需回退给 writer。",
+  "created_at": "2026-06-27T19:46:09.590+08:00"
+}

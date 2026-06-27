@@ -598,6 +598,78 @@ export interface SaveM6DiplomacyLegitimacyStateDto {
   readonly legitimacyProfiles: readonly SaveM6LegitimacyProfileStateDto[];
 }
 
+export interface SaveM6PolicyDefinitionStateDto {
+  readonly policyId: number;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface SaveM6PolicyEventCauseStateDto {
+  readonly kind: "day-at-least";
+  readonly day: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface SaveM6PolicyEventConsequenceStateDto {
+  readonly kind: "policy-modifier";
+  readonly policyId: number;
+  readonly magnitudeBps: number;
+  readonly durationDays: number;
+  readonly reasonCode: string;
+}
+
+export interface SaveM6PolicyEventOptionStateDto {
+  readonly optionId: number;
+  readonly displayNameKey: string;
+  readonly consequences: readonly SaveM6PolicyEventConsequenceStateDto[];
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface SaveM6PolicyEventDefinitionStateDto {
+  readonly eventDefinitionId: number;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly cause: SaveM6PolicyEventCauseStateDto;
+  readonly options: readonly SaveM6PolicyEventOptionStateDto[];
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface SaveM6PolicyEventRuntimeStateDto {
+  readonly schemaVersion: 1;
+  readonly definitions: {
+    readonly policies: readonly SaveM6PolicyDefinitionStateDto[];
+    readonly events: readonly SaveM6PolicyEventDefinitionStateDto[];
+  };
+  readonly activeEvents: readonly {
+    readonly eventInstanceId: number;
+    readonly eventDefinitionId: number;
+    readonly activatedDay: number;
+    readonly causeReasonCodes: readonly string[];
+  }[];
+  readonly resolvedEvents: readonly {
+    readonly eventInstanceId: number;
+    readonly eventDefinitionId: number;
+    readonly selectedOptionId: number;
+    readonly resolvedDay: number;
+    readonly reasonCodes: readonly string[];
+  }[];
+  readonly policyModifiers: readonly {
+    readonly modifierId: number;
+    readonly policyId: number;
+    readonly eventInstanceId: number;
+    readonly magnitudeBps: number;
+    readonly startDay: number;
+    readonly endDay: number;
+    readonly reasonCode: string;
+  }[];
+  readonly nextEventInstanceId: number;
+  readonly nextModifierId: number;
+}
+
 export type SaveM4CampaignObjectiveKindDto =
   | "prepare"
   | "march"
@@ -965,6 +1037,7 @@ export interface SaveWorldRuntimeStateV0Dto {
   readonly m3?: SaveM3PolityVassalageStateDto;
   readonly m4?: SaveM4CampaignStateDto;
   readonly m6?: SaveM6DiplomacyLegitimacyStateDto;
+  readonly m6PolicyEvents?: SaveM6PolicyEventRuntimeStateDto;
 }
 
 export interface SaveWorldSnapshotV0Dto {
@@ -1080,6 +1153,7 @@ export interface WorldStateV0ForSave {
     readonly m3?: SaveM3PolityVassalageStateDto;
     readonly m4?: SaveM4CampaignStateDto;
     readonly m6?: SaveM6DiplomacyLegitimacyStateDto;
+    readonly m6PolicyEvents?: SaveM6PolicyEventRuntimeStateDto;
   };
 }
 
@@ -1229,7 +1303,8 @@ export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnap
     world.state.m2,
     world.state.m3,
     world.state.m4,
-    world.state.m6
+    world.state.m6,
+    world.state.m6PolicyEvents
   );
 
   return {
@@ -1297,7 +1372,8 @@ export function saveWorldStateV0DtoToCandidate(snapshot: unknown, scheduler?: un
     parsedSnapshot.value.state.m2,
     parsedSnapshot.value.state.m3,
     parsedSnapshot.value.state.m4,
-    parsedSnapshot.value.state.m6
+    parsedSnapshot.value.state.m6,
+    parsedSnapshot.value.state.m6PolicyEvents
   );
 
   return {
@@ -1696,6 +1772,14 @@ function parseWorldRuntimeState(
     input["m6"] === undefined
       ? undefined
       : parseM6DiplomacyLegitimacyState(input["m6"], "body.authoritativeSnapshot.state.m6", errors);
+  const m6PolicyEvents =
+    input["m6PolicyEvents"] === undefined
+      ? undefined
+      : parseM6PolicyEventRuntimeState(
+          input["m6PolicyEvents"],
+          "body.authoritativeSnapshot.state.m6PolicyEvents",
+          errors
+        );
   if (
     polities === undefined ||
     persons === undefined ||
@@ -1705,13 +1789,14 @@ function parseWorldRuntimeState(
     (input["m2"] !== undefined && m2 === undefined) ||
     (input["m3"] !== undefined && m3 === undefined) ||
     (input["m4"] !== undefined && m4 === undefined) ||
-    (input["m6"] !== undefined && m6 === undefined)
+    (input["m6"] !== undefined && m6 === undefined) ||
+    (input["m6PolicyEvents"] !== undefined && m6PolicyEvents === undefined)
   ) {
     return undefined;
   }
 
   const state = { polities, persons, districts, settlements, routes };
-  return copyOptionalRuntimeSlices(state, m2, m3, m4, m6);
+  return copyOptionalRuntimeSlices(state, m2, m3, m4, m6, m6PolicyEvents);
 }
 
 function parseSaveSchedulerV1Dto(
@@ -2568,6 +2653,263 @@ function parseM6LegitimacyProfile(
     pressureBps: readBps(record, "pressureBps", `${path}.pressureBps`, errors),
     sourceIds: parsePositiveIntegerArray(record["sourceIds"], `${path}.sourceIds`, errors) ?? [],
     reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors)
+  };
+}
+
+function parseM6PolicyEventRuntimeState(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventRuntimeStateDto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "M6 policy/event runtime state must be an object."));
+    return undefined;
+  }
+  if (input["schemaVersion"] !== 1) {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.schemaVersion`,
+        "M6 policy/event runtime schemaVersion must be 1."
+      )
+    );
+  }
+  const definitions = input["definitions"];
+  if (!isRecord(definitions)) {
+    errors.push(reason("invalid-schema", `${path}.definitions`, "M6 definitions must be object."));
+    return undefined;
+  }
+  const policies = parseM6Array(
+    definitions["policies"],
+    `${path}.definitions.policies`,
+    "M6 policy definitions",
+    errors,
+    parseM6PolicyDefinition
+  );
+  const events = parseM6Array(
+    definitions["events"],
+    `${path}.definitions.events`,
+    "M6 event definitions",
+    errors,
+    parseM6PolicyEventDefinition
+  );
+  const activeEvents = parseM6Array(
+    input["activeEvents"],
+    `${path}.activeEvents`,
+    "M6 active events",
+    errors,
+    parseM6PolicyEventActive
+  );
+  const resolvedEvents = parseM6Array(
+    input["resolvedEvents"],
+    `${path}.resolvedEvents`,
+    "M6 resolved events",
+    errors,
+    parseM6PolicyEventResolved
+  );
+  const policyModifiers = parseM6Array(
+    input["policyModifiers"],
+    `${path}.policyModifiers`,
+    "M6 policy modifiers",
+    errors,
+    parseM6PolicyModifier
+  );
+  const nextEventInstanceId =
+    readPositiveSafeInteger(input, "nextEventInstanceId", `${path}.nextEventInstanceId`, errors) ??
+    0;
+  const nextModifierId =
+    readPositiveSafeInteger(input, "nextModifierId", `${path}.nextModifierId`, errors) ?? 0;
+  if (
+    policies === undefined ||
+    events === undefined ||
+    activeEvents === undefined ||
+    resolvedEvents === undefined ||
+    policyModifiers === undefined
+  ) {
+    return undefined;
+  }
+  return {
+    schemaVersion: 1,
+    definitions: { policies, events },
+    activeEvents,
+    resolvedEvents,
+    policyModifiers,
+    nextEventInstanceId,
+    nextModifierId
+  };
+}
+
+function parseM6PolicyDefinition(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyDefinitionStateDto {
+  const record = readM6Record(input, path, "M6 policy definition", errors);
+  return {
+    policyId: readPositiveSafeInteger(record, "policyId", `${path}.policyId`, errors) ?? 0,
+    sourceId: readString(record, "sourceId", `${path}.sourceId`, errors),
+    displayNameKey: readString(record, "displayNameKey", `${path}.displayNameKey`, errors),
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors),
+    encyclopediaRefs: parseStringArray(
+      record["encyclopediaRefs"],
+      `${path}.encyclopediaRefs`,
+      errors
+    )
+  };
+}
+
+function parseM6PolicyEventDefinition(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventDefinitionStateDto {
+  const record = readM6Record(input, path, "M6 event definition", errors);
+  return {
+    eventDefinitionId:
+      readPositiveSafeInteger(record, "eventDefinitionId", `${path}.eventDefinitionId`, errors) ??
+      0,
+    sourceId: readString(record, "sourceId", `${path}.sourceId`, errors),
+    displayNameKey: readString(record, "displayNameKey", `${path}.displayNameKey`, errors),
+    cause: parseM6PolicyEventCause(record["cause"], `${path}.cause`, errors),
+    options:
+      parseM6Array(
+        record["options"],
+        `${path}.options`,
+        "M6 event options",
+        errors,
+        parseM6PolicyEventOption
+      ) ?? [],
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors),
+    encyclopediaRefs: parseStringArray(
+      record["encyclopediaRefs"],
+      `${path}.encyclopediaRefs`,
+      errors
+    )
+  };
+}
+
+function parseM6PolicyEventCause(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventCauseStateDto {
+  const record = readM6Record(input, path, "M6 event cause", errors);
+  if (record["kind"] !== "day-at-least") {
+    errors.push(reason("invalid-schema", `${path}.kind`, "M6 event cause kind is invalid."));
+  }
+  return {
+    kind: "day-at-least",
+    day: readNonnegativeSafeInteger(record, "day", `${path}.day`, errors) ?? 0,
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors)
+  };
+}
+
+function parseM6PolicyEventOption(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventOptionStateDto {
+  const record = readM6Record(input, path, "M6 event option", errors);
+  return {
+    optionId: readPositiveSafeInteger(record, "optionId", `${path}.optionId`, errors) ?? 0,
+    displayNameKey: readString(record, "displayNameKey", `${path}.displayNameKey`, errors),
+    consequences:
+      parseM6Array(
+        record["consequences"],
+        `${path}.consequences`,
+        "M6 event consequences",
+        errors,
+        parseM6PolicyEventConsequence
+      ) ?? [],
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors),
+    encyclopediaRefs: parseStringArray(
+      record["encyclopediaRefs"],
+      `${path}.encyclopediaRefs`,
+      errors
+    )
+  };
+}
+
+function parseM6PolicyEventConsequence(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventConsequenceStateDto {
+  const record = readM6Record(input, path, "M6 event consequence", errors);
+  if (record["kind"] !== "policy-modifier") {
+    errors.push(reason("invalid-schema", `${path}.kind`, "M6 consequence kind is invalid."));
+  }
+  return {
+    kind: "policy-modifier",
+    policyId: readPositiveSafeInteger(record, "policyId", `${path}.policyId`, errors) ?? 0,
+    magnitudeBps:
+      readIntegerInRange(record, "magnitudeBps", `${path}.magnitudeBps`, -10_000, 10_000, errors) ??
+      0,
+    durationDays:
+      readPositiveSafeInteger(record, "durationDays", `${path}.durationDays`, errors) ?? 0,
+    reasonCode: readString(record, "reasonCode", `${path}.reasonCode`, errors)
+  };
+}
+
+function parseM6PolicyEventActive(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventRuntimeStateDto["activeEvents"][number] {
+  const record = readM6Record(input, path, "M6 active event", errors);
+  return {
+    eventInstanceId:
+      readPositiveSafeInteger(record, "eventInstanceId", `${path}.eventInstanceId`, errors) ?? 0,
+    eventDefinitionId:
+      readPositiveSafeInteger(record, "eventDefinitionId", `${path}.eventDefinitionId`, errors) ??
+      0,
+    activatedDay:
+      readNonnegativeSafeInteger(record, "activatedDay", `${path}.activatedDay`, errors) ?? 0,
+    causeReasonCodes: parseStringArray(
+      record["causeReasonCodes"],
+      `${path}.causeReasonCodes`,
+      errors
+    )
+  };
+}
+
+function parseM6PolicyEventResolved(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventRuntimeStateDto["resolvedEvents"][number] {
+  const record = readM6Record(input, path, "M6 resolved event", errors);
+  return {
+    eventInstanceId:
+      readPositiveSafeInteger(record, "eventInstanceId", `${path}.eventInstanceId`, errors) ?? 0,
+    eventDefinitionId:
+      readPositiveSafeInteger(record, "eventDefinitionId", `${path}.eventDefinitionId`, errors) ??
+      0,
+    selectedOptionId:
+      readPositiveSafeInteger(record, "selectedOptionId", `${path}.selectedOptionId`, errors) ?? 0,
+    resolvedDay:
+      readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0,
+    reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors)
+  };
+}
+
+function parseM6PolicyModifier(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveM6PolicyEventRuntimeStateDto["policyModifiers"][number] {
+  const record = readM6Record(input, path, "M6 policy modifier", errors);
+  return {
+    modifierId: readPositiveSafeInteger(record, "modifierId", `${path}.modifierId`, errors) ?? 0,
+    policyId: readPositiveSafeInteger(record, "policyId", `${path}.policyId`, errors) ?? 0,
+    eventInstanceId:
+      readPositiveSafeInteger(record, "eventInstanceId", `${path}.eventInstanceId`, errors) ?? 0,
+    magnitudeBps:
+      readIntegerInRange(record, "magnitudeBps", `${path}.magnitudeBps`, -10_000, 10_000, errors) ??
+      0,
+    startDay: readNonnegativeSafeInteger(record, "startDay", `${path}.startDay`, errors) ?? 0,
+    endDay: readNonnegativeSafeInteger(record, "endDay", `${path}.endDay`, errors) ?? 0,
+    reasonCode: readString(record, "reasonCode", `${path}.reasonCode`, errors)
   };
 }
 
@@ -5661,7 +6003,8 @@ function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
     body.authoritativeSnapshot.state.m2,
     body.authoritativeSnapshot.state.m3,
     body.authoritativeSnapshot.state.m4,
-    body.authoritativeSnapshot.state.m6
+    body.authoritativeSnapshot.state.m6,
+    body.authoritativeSnapshot.state.m6PolicyEvents
   );
 
   return {
@@ -5731,34 +6074,94 @@ function copyDistrictControl(control: SaveDistrictControlDto): SaveDistrictContr
 }
 
 function copyOptionalRuntimeSlices(
-  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3" | "m4" | "m6">,
+  base: Omit<SaveWorldRuntimeStateV0Dto, "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
   m3: SaveM3PolityVassalageStateDto | undefined,
   m4: SaveM4CampaignStateDto | undefined,
-  m6: SaveM6DiplomacyLegitimacyStateDto | undefined
+  m6: SaveM6DiplomacyLegitimacyStateDto | undefined,
+  m6PolicyEvents: SaveM6PolicyEventRuntimeStateDto | undefined
 ): SaveWorldRuntimeStateV0Dto {
   return {
     ...base,
     ...(m2 === undefined ? {} : { m2: copyM2EconomyPopulationState(m2) }),
     ...(m3 === undefined ? {} : { m3: copyM3PolityVassalageState(m3) }),
     ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) }),
-    ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) })
+    ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) }),
+    ...(m6PolicyEvents === undefined
+      ? {}
+      : { m6PolicyEvents: copyM6PolicyEventRuntimeState(m6PolicyEvents) })
   };
 }
 
 function copyOptionalCandidateRuntimeSlices(
-  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3" | "m4" | "m6">,
+  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
   m3: SaveM3PolityVassalageStateDto | undefined,
   m4: SaveM4CampaignStateDto | undefined,
-  m6: SaveM6DiplomacyLegitimacyStateDto | undefined
+  m6: SaveM6DiplomacyLegitimacyStateDto | undefined,
+  m6PolicyEvents: SaveM6PolicyEventRuntimeStateDto | undefined
 ): WorldStateV0ForSave["state"] {
   return {
     ...base,
     ...(m2 === undefined ? {} : { m2: copyM2EconomyPopulationState(m2) }),
     ...(m3 === undefined ? {} : { m3: copyM3PolityVassalageState(m3) }),
     ...(m4 === undefined ? {} : { m4: copyM4CampaignState(m4) }),
-    ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) })
+    ...(m6 === undefined ? {} : { m6: copyM6DiplomacyLegitimacyState(m6) }),
+    ...(m6PolicyEvents === undefined
+      ? {}
+      : { m6PolicyEvents: copyM6PolicyEventRuntimeState(m6PolicyEvents) })
+  };
+}
+
+function copyM6PolicyEventRuntimeState(
+  runtime: SaveM6PolicyEventRuntimeStateDto
+): SaveM6PolicyEventRuntimeStateDto {
+  return {
+    schemaVersion: 1,
+    definitions: {
+      policies: runtime.definitions.policies.map((policy) => ({
+        policyId: policy.policyId,
+        sourceId: policy.sourceId,
+        displayNameKey: policy.displayNameKey,
+        reasonCodes: [...policy.reasonCodes],
+        encyclopediaRefs: [...policy.encyclopediaRefs]
+      })),
+      events: runtime.definitions.events.map((event) => ({
+        eventDefinitionId: event.eventDefinitionId,
+        sourceId: event.sourceId,
+        displayNameKey: event.displayNameKey,
+        cause: {
+          kind: "day-at-least",
+          day: event.cause.day,
+          reasonCodes: [...event.cause.reasonCodes]
+        },
+        options: event.options.map((option) => ({
+          optionId: option.optionId,
+          displayNameKey: option.displayNameKey,
+          consequences: option.consequences.map((consequence) => ({ ...consequence })),
+          reasonCodes: [...option.reasonCodes],
+          encyclopediaRefs: [...option.encyclopediaRefs]
+        })),
+        reasonCodes: [...event.reasonCodes],
+        encyclopediaRefs: [...event.encyclopediaRefs]
+      }))
+    },
+    activeEvents: runtime.activeEvents.map((event) => ({
+      eventInstanceId: event.eventInstanceId,
+      eventDefinitionId: event.eventDefinitionId,
+      activatedDay: event.activatedDay,
+      causeReasonCodes: [...event.causeReasonCodes]
+    })),
+    resolvedEvents: runtime.resolvedEvents.map((event) => ({
+      eventInstanceId: event.eventInstanceId,
+      eventDefinitionId: event.eventDefinitionId,
+      selectedOptionId: event.selectedOptionId,
+      resolvedDay: event.resolvedDay,
+      reasonCodes: [...event.reasonCodes]
+    })),
+    policyModifiers: runtime.policyModifiers.map((modifier) => ({ ...modifier })),
+    nextEventInstanceId: runtime.nextEventInstanceId,
+    nextModifierId: runtime.nextModifierId
   };
 }
 

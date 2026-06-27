@@ -1,0 +1,76 @@
+{
+  "message_id": "MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-ACCEPT",
+  "task_id": "M6-POLICY-EVENT-RUNTIME-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "只读审查 review commit 738bc1637d94d22bfdf22879c3a538421ad37087 后，M6 policy/event runtime substrate 可接受。实际 diff 严格落在 allowed_paths 内，未触碰 UI、desktop、sim-ai、content-source、tools、ADR/gate/status 等 forbidden_paths。sim-core 仍未导入 Node IO、DOM、React、Pixi、Electron、真实时间或权威随机；policy/event definitions 是显式 schema/runtime data，boot 边界拒绝隐藏字段；事件激活走 scheduler，选项结算走玩家/AI 共用 GameCommand，权威状态修改仍集中在 sim-core commit 路径。save/load DTO、parser、copy、semantic validation 和 event-tail parser 覆盖新增 M6 policy/event slice，测试证据覆盖 malformed injection、deterministic ordering、player/AI command parity、round-trip 和 malformed slice rejection。未发现 M7 content lock、manual node battle、full diplomacy、telemetry/server/multiplayer 或 UI 范围漂移。",
+  "artifacts": [
+    "packages/content-schema/src/m6-policy-event.ts",
+    "packages/content-runtime/src/m6-policy-event.ts",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/scheduler-v0.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-ACCEPT__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m6-policy-event-runtime / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "738bc1637d94d22bfdf22879c3a538421ad37087",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "审查开始时输出仅为 ## feat/m6-policy-event-runtime；未见脏改动。"
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "当前 HEAD 为 15bde0108b34bd71f3c3a05102c028005c93b391；审查按 route 指定的 review commit 738bc1637d94d22bfdf22879c3a538421ad37087 及其父提交 diff 进行，未混入后续 route/process commit。"
+    },
+    {
+      "command": "git diff --name-status 738bc1637d94d22bfdf22879c3a538421ad37087^ 738bc1637d94d22bfdf22879c3a538421ad37087",
+      "exit_code": 0,
+      "result": "改动文件均在 allowed_paths：packages/content-runtime, packages/content-schema, packages/protocol, packages/save-format, packages/sim-core, tests, project/messages/outbox, project/tasks/active。未触碰 forbidden_paths。"
+    },
+    {
+      "command": "git diff --check 738bc1637d94d22bfdf22879c3a538421ad37087^ 738bc1637d94d22bfdf22879c3a538421ad37087",
+      "exit_code": 0,
+      "result": "无 whitespace errors。"
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|fs\\b|node:|react|pixi|electron|document\\.|window\\.|eval\\(|Function\\(|import\\(\" packages/sim-core packages/protocol packages/save-format packages/content-schema packages/content-runtime tests/sim-core-m6-policy-event-runtime.test.ts",
+      "exit_code": 0,
+      "result": "未发现新增 sim-core 权威源码导入 Node IO、DOM、React、Pixi、Electron、真实时间或权威随机；匹配项仅包括测试中的恶意 callback 字符串、content refs 和既有 sim-core performance script 的 Node import。"
+    },
+    {
+      "command": "rg -n \"as unknown as|\\bany\\b|enum |namespace |TODO|FIXME|skip\\(|\\.skip|only\\(\" packages/content-schema/src/m6-policy-event.ts packages/content-runtime/src/m6-policy-event.ts packages/sim-core/src/boot-content-runtime-v1.ts packages/sim-core/src/command-query-v1.ts packages/sim-core/src/scheduler-v0.ts packages/sim-core/src/world-state-v0.ts packages/protocol/src/index.ts packages/save-format/src/index.ts tests/sim-core-m6-policy-event-runtime.test.ts",
+      "exit_code": 1,
+      "result": "ripgrep 无匹配；exit 1 为无结果语义。未见 any、unsafe double assertion、enum/namespace、永久 TODO/FIXME 或跳测标记。"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/emit-handoff.mjs \"project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-SYSTEMS-ACCEPT__systems_architect.json\"",
+      "exit_code": 0,
+      "result": "handoff JSON 通过 project/schemas/handoff.schema.json 校验并写入 outbox 目标路径。"
+    }
+  ],
+  "decisions": [
+    "ACCEPT：无需回退给 simulation_engineer；未发现阻塞性架构或确定性问题。",
+    "不要求新增 ADR：实现保持在既有 content/schema/runtime、GameCommand、scheduler、save-format 和 protocol 边界内，未改变冻结架构决策。",
+    "确认 sim-core 与 React/Pixi/Electron/Node IO/DOM 解耦；新增权威行为只由 scheduler daily advance 和 sim.choose-policy-event-option command commit 修改 WorldState。",
+    "确认 policy/event definition 不是 arbitrary-code scripting、hidden callback、reflection 或 object graph serialization；content schema 和 sim-core boot parser 均使用数据字段白名单，测试覆盖 hiddenCallback/callback 注入拒绝。",
+    "确认 player/AI command parity：玩家与 AI 使用同一 sim.choose-policy-event-option，system actor 被拒绝；actor 只进入 DomainEvent，不进入 WorldState，等价选择保持相同 state hash。",
+    "确认 deterministic ordering：due events 按 cause.day、eventDefinitionId 激活，active/resolved/modifier canonical sort 提供稳定 tie-breaker。",
+    "确认 save/load 新增 M6 policy/event DTO、parser、copy、semantic invariant validation 和 saved DomainEvent parser；malformed activeEvents slice、缺失引用、重复实例和 active/resolved 冲突会被拒绝。"
+  ],
+  "risks": [
+    "Reviewer 未复跑 writer 的完整 pnpm 测试矩阵，以避免在只读 review route 中产生测试缓存或其他写入；结论基于静态 diff、writer handoff 的测试记录和只读扫描。lead_orchestrator/qa_reviewer 可按流程复跑验证矩阵。",
+    "本任务是 runtime substrate；M7 formal content quality/content lock、正式百科文本、历史内容审查和三场景内容生产仍保持 out of scope。",
+    "sim-core 为保持解耦没有导入 content-runtime；未来若 policy/event DSL 扩展，必须同步维护 content-schema 与 sim-core boot/load 最小白名单校验，避免边界校验漂移。"
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "lead_orchestrator 接收 systems_architect ACCEPT，并按 M6 route 将包转给 qa_reviewer 或执行后续集成；本审查不请求 writer changes。",
+  "created_at": "2026-06-27T19:35:43.399+08:00"
+}

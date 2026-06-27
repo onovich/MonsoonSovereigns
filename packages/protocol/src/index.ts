@@ -468,6 +468,20 @@ export interface RecordLegitimacySourceCommandV1 {
   };
 }
 
+export interface ChoosePolicyEventOptionCommandV1 {
+  readonly schemaVersion: typeof GAME_COMMAND_SCHEMA_VERSION;
+  readonly kind: "sim.choose-policy-event-option";
+  readonly commandId: string;
+  readonly actor: CommandActorV1;
+  readonly expectedDay: number;
+  readonly expectedRevision: number;
+  readonly payload: {
+    readonly eventInstanceId: number;
+    readonly optionId: number;
+    readonly reasonCode: string;
+  };
+}
+
 export type M4CampaignOwnerV1 =
   | { readonly kind: "commander"; readonly characterId: number }
   | { readonly kind: "polity"; readonly polityId: number };
@@ -721,7 +735,8 @@ export type GameCommandV1 =
 export type M6GameCommandV1 =
   | ProposeDiplomaticAgreementCommandV1
   | AnswerDiplomaticAgreementCommandV1
-  | RecordLegitimacySourceCommandV1;
+  | RecordLegitimacySourceCommandV1
+  | ChoosePolicyEventOptionCommandV1;
 
 export type AuthoritativeGameCommandV1 = GameCommandV1 | M6GameCommandV1;
 
@@ -1943,6 +1958,22 @@ export function parseGameCommandV1(
     }
     case "sim.record-legitimacy-source": {
       const payload = parseRecordLegitimacySourcePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_COMMAND_SCHEMA_VERSION,
+          kind,
+          ...base.value,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.choose-policy-event-option": {
+      const payload = parseChoosePolicyEventOptionPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -3557,6 +3588,41 @@ function parseRecordLegitimacySourcePayload(
       sourceKind: sourceKind.value,
       magnitudeBps: magnitudeBps.value,
       sourceRef: sourceRef.value,
+      reasonCode: reasonCode.value
+    }
+  };
+}
+
+function parseChoosePolicyEventOptionPayload(
+  input: unknown
+): ProtocolParseResult<ChoosePolicyEventOptionCommandV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.choose-policy-event-option payload must be an object."
+    );
+  }
+  const eventInstanceId = parsePositiveSafeInteger(
+    input["eventInstanceId"],
+    "payload.eventInstanceId"
+  );
+  if (!eventInstanceId.ok) {
+    return eventInstanceId;
+  }
+  const optionId = parsePositiveSafeInteger(input["optionId"], "payload.optionId");
+  if (!optionId.ok) {
+    return optionId;
+  }
+  const reasonCode = parseReasonCode(input["reasonCode"], "payload.reasonCode");
+  if (!reasonCode.ok) {
+    return reasonCode;
+  }
+  return {
+    ok: true,
+    value: {
+      eventInstanceId: eventInstanceId.value,
+      optionId: optionId.value,
       reasonCode: reasonCode.value
     }
   };
