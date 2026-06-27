@@ -1,0 +1,119 @@
+{
+  "message_id": "MSG-20260627-M6-LAYERED-AI-SYSTEMS-R2-REVIEW",
+  "task_id": "M6-LAYERED-AI-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "只读复核 R2 修复提交 9db67e04 与 R2 handoff 提交 558d412e。R1 阻断项已修复：pnpm check 与 @monsoon/sim-ai typecheck 均通过，maxTraceCandidates 不再显式传入 undefined，未使用 type alias 已移除。R2 增加了 payload-level command parity evidence：非 system AI 命令与非 system player template 的 kind/payload 相等，actor、commandId、expectedDay、expectedRevision 保持运行时重写；system support commands 独立白名单为 sim.advance-day 与 sim.record-legitimacy-source，不混入 AI/player parity。未发现 forbidden path、新依赖、telemetry/server/manual node battle/runtime script engine、直接 WorldState mutation 或新增非确定性。",
+  "artifacts": [
+    "packages/sim-ai/src/m6-layered-ai.ts",
+    "tests/sim-ai-m6-layered-ai.test.ts",
+    "project/tasks/active/M6-LAYERED-AI-001.json",
+    "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m6-layered-ai / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "558d412e",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## feat/m6-layered-ai at HEAD 558d412e; observed uncommitted route/goal-mode metadata changes in project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M6-LAYERED-AI-001.json, project/tasks/thread-registry.json, and untracked project/messages/routes/M6-LAYERED-AI-001__ROUTE-20260627-M6-LAYERED-AI-WRITER-R2-TO-SYSTEMS-REVIEW.json. Treated as lead routing state, not part of R2 implementation acceptance."
+    },
+    {
+      "command": "git log --oneline --decorate -8",
+      "exit_code": 0,
+      "result": "Confirmed HEAD 558d412e chore(project): handoff M6 layered AI R2 review; R2 fix commit 9db67e04; prior REQUEST_CHANGES process commit fff7183f."
+    },
+    {
+      "command": "git show --name-status --oneline --decorate --no-renames 9db67e04",
+      "exit_code": 0,
+      "result": "R2 fix modifies only packages/sim-ai/src/m6-layered-ai.ts and tests/sim-ai-m6-layered-ai.test.ts."
+    },
+    {
+      "command": "git show --name-status --oneline --decorate --no-renames 558d412e",
+      "exit_code": 0,
+      "result": "R2 handoff commit adds project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-R2-REVIEW__simulation_engineer.json and updates project/tasks/active/M6-LAYERED-AI-001.json."
+    },
+    {
+      "command": "git diff --name-status 65e6f660..558d412e",
+      "exit_code": 0,
+      "result": "Committed R2 range touches packages/sim-ai/**, tests/**, project/messages/**, project/tasks/active/M6-LAYERED-AI-001.json, project/goal-mode-state.json, project/model-routing-state.json, and project/tasks/thread-registry.json; no task forbidden paths observed."
+    },
+    {
+      "command": "git diff --check 65e6f660..558d412e",
+      "exit_code": 0,
+      "result": "No whitespace errors in committed R2 review range."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed; exactOptionalPropertyTypes blocker is fixed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "3 test files / 6 tests passed; M6 layered AI tests include payload parity and reviewed system support assertions."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, workspace typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "25 test files / 191 tests passed; existing MODULE_TYPELESS_PACKAGE_JSON warning observed for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file / 10 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/Worker-compatible deterministic canaries passed; M6 Alpha Node hash 260f46c3 matched Worker-compatible hash 260f46c3; terminal outcome victory."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture:check, sim:determinism, root Vitest 40 files / 304 tests, and apps/web Vitest 1 file / 4 tests passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-LAYERED-AI-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "rg -n \"Math\\.random|Date\\.now|performance\\.now|new Date\\(|eval\\(|Function\\(|telemetry|server|manual node|node battle|runtime script|script engine|Manager|manager|singleton\" packages/sim-ai/src/m6-layered-ai.ts tests/sim-ai-m6-layered-ai.test.ts packages/sim-ai/package.json packages/sim-ai/src/index.ts",
+      "exit_code": 0,
+      "result": "No prohibited nondeterminism, telemetry/server/manual battle/runtime script engine/general manager pattern found in the reviewed files."
+    },
+    {
+      "command": "rg -n \"_CommandParityCompileCheck|maxTraceCandidates:\\s*(input\\.maxTraceCandidates|maxTraceCandidates)(\\s|,|})\" packages/sim-ai/src/m6-layered-ai.ts tests/sim-ai-m6-layered-ai.test.ts",
+      "exit_code": 0,
+      "result": "Unused _CommandParityCompileCheck no longer exists; remaining maxTraceCandidates match is inside a conditional spread that only includes the property when defined."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "After writing this systems R2 handoff, the only uncommitted path reported was project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-SYSTEMS-R2-REVIEW__systems_architect.json."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: R1 lint/typecheck blockers are resolved and reviewer reran the relevant gates successfully.",
+    "ACCEPT: optional maxTraceCandidates construction now preserves exactOptionalPropertyTypes semantics by omitting the property when undefined.",
+    "ACCEPT: payload-level command parity evidence is sufficient for this task because non-system AI commands are compared against non-system player templates by kind and payload, while runtime-only fields remain intentionally rewritten.",
+    "ACCEPT: system support commands are separated from AI/player parity and constrained to the reviewed scheduler/legitimacy support command kinds.",
+    "ACCEPT: implementation still stays in sim-ai/tests plus allowed project handoff metadata, with no save-format/client/content/tools/docs forbidden path changes and no new dependency."
+  ],
+  "risks": [
+    "An initial pre-review git status observed transient uncommitted route/goal-mode metadata, but final status after this handoff only reported the new systems R2 review handoff file. Lead should still run normal integration status checks before acceptance.",
+    "The trace type remains sim-ai-local rather than protocol DTO. This is acceptable for M6-LAYERED-AI-001 because the task requires bounded reason traces, not cross-package trace transport; later batch/dashboard tasks should promote trace shape only if they need protocol-visible consumption.",
+    "Payload comparison uses JSON.stringify on command payloads for validation evidence only, not for authoritative simulation decisions. This is acceptable here because payloads are explicit DTOs and the comparison does not determine WorldState mutation."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may proceed with M6-LAYERED-AI-001 acceptance/integration gates for HEAD 558d412e after normal status/diff checks. Do not mark CLOSED solely from this handoff; perform normal lead integration and task state transitions.",
+  "created_at": "2026-06-27T23:05:28.756+08:00"
+}
