@@ -2,7 +2,7 @@
   "id": "M6-ALPHA-NO-P0P1-VALIDATION-001",
   "summary": "Validate Alpha has no accepted P0 or P1 blockers",
   "milestone": "M6",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -97,21 +97,23 @@
       "actual_effort": "unknown"
     }
   },
-  "route_to": "test_engineer",
+  "route_to": "qa_reviewer",
   "notes": [
     "This is the M6 Alpha no-P0/P1 evidence task, not the formal M6 exit gate.",
     "Do not hide failures behind PASS_WITH_LIMITS if a P0/P1 blocker remains accepted.",
     "Preserve M5 PASS_WITH_LIMITS context and re-check its carried limits explicitly."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T18:26:27.838Z",
+  "updated_at": "2026-06-27T18:33:01.7727267Z",
+  "review_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-REVIEW__test_engineer.json",
+  "review_commit": "64d7ff09064df7e4c3b259a1e65b5c05f74dbe5e",
   "started_at": "2026-06-27T18:24:52.572Z",
   "base_main_commit": "3bf69c58f4143242b47b3f0db93bcc03b28b1aa7",
   "previous_closed_task": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "start_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-START__lead_orchestrator.json",
-  "next_action": "Await test_engineer REVIEW handoff, validate it, then route to independent qa_reviewer.",
+  "next_action": "Await qa_reviewer review of the submitted REVIEW handoff.",
   "route_file": "project/messages/routes/M6-ALPHA-NO-P0P1-VALIDATION-001__ROUTE-20260628-M6-NO-P0P1-LEAD-TO-TEST-START.json",
   "start_submission_id": "019f0a54-e008-7e93-b6ac-6c48a57e22e2",
   "route_sent_at": "2026-06-27T18:26:27.838Z"
