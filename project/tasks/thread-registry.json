@@ -4682,7 +4682,7 @@
       "task_id": "M6-ALPHA-NO-P0P1-VALIDATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed_integrated",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -4694,8 +4694,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-27T18:24:52.572Z",
-      "updated_at": "2026-06-27T18:49:38.902Z",
-      "next_action": "Push branch, open PR, wait for CI, merge to main, sync main, then close task.",
+      "updated_at": "2026-06-27T18:54:54.708Z",
+      "next_action": "Start M6-EXIT-VALIDATION-001 as the highest-priority dependency-ready M6 task unless taskctl ready changes after closure merge.",
       "route_file": "project/messages/routes/M6-ALPHA-NO-P0P1-VALIDATION-001__ROUTE-20260628-M6-NO-P0P1-LEAD-TO-TEST-START.json",
       "start_submission_id": "019f0a54-e008-7e93-b6ac-6c48a57e22e2",
       "route_sent_at": "2026-06-27T18:26:27.838Z",
@@ -4714,6 +4714,15 @@
       "child_threads_closed": [
         "019f0a52-c6b9-7c83-ba80-8a4b65292be8",
         "019f0a62-c563-7873-bce6-f37b8eef2cc9"
+      ],
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 155,
+      "integrated_main_commit": "286ca503cf5e4d58ee4a44265c00843ee401115a",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/155",
+      "lead_close_handoff": "project/messages/outbox/M6-ALPHA-NO-P0P1-VALIDATION-001__MSG-20260628-M6-NO-P0P1-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-27T18:54:54.708Z",
+      "next_ready_tasks": [
+        "M6-EXIT-VALIDATION-001"
       ]
     },
     "M6-ALPHA-NO-P0P1-VALIDATION-001:test_engineer": {
@@ -4907,5 +4916,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-27T18:49:38.902Z"
+  "updated_at": "2026-06-27T18:54:54.708Z"
 }
