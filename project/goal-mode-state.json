@@ -9,16 +9,15 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
-      "status": "active_awaiting_replacement_writer_handoff",
+      "status": "active_awaiting_qa_review",
       "role": "lead_orchestrator"
     },
-    "client_engineer": {
-      "thread_id": "019f09c3-ceef-71a0-b8c4-f4918e69c842",
+    "qa_reviewer": {
+      "thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
       "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
-      "status": "active_in_progress",
-      "role": "client_engineer",
-      "nickname": "Canvas the 2nd",
-      "replaces_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1"
+      "status": "active_review",
+      "role": "qa_reviewer",
+      "nickname": "Gate the 2nd"
     }
   },
   "last_integrated_task": "M6-LAYERED-AI-001",
@@ -49,10 +48,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "Replacement M6 accessibility route sent to client_engineer; no Human Gate is active.",
+    "approval_source": "M6 accessibility QA review route sent; no Human Gate is active.",
     "recommended_result": null,
-    "note": "Await replacement writer REVIEW handoff. No telemetry/account/Electron IPC/manual battle work is authorized.",
-    "recorded_at": "2026-06-27T23:51:56.177+08:00"
+    "note": "Await independent QA review result.",
+    "recorded_at": "2026-06-28T00:04:39.081+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -819,8 +818,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T23:51:56.177+08:00",
-  "updated_at": "2026-06-27T23:51:56.177+08:00",
+  "last_updated_at": "2026-06-28T00:04:39.081+08:00",
+  "updated_at": "2026-06-28T00:04:39.081+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1037,7 +1036,7 @@
   },
   "current_task": "M6-ACCESSIBILITY-CORE-FLOWS-001",
   "m6_accessibility_core_flows": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
     "owner_role": "client_engineer",
     "reviewer_role": "qa_reviewer",
@@ -1052,10 +1051,10 @@
     "start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260627-M6-ACCESSIBILITY-LEAD-TO-CLIENT-START.json",
     "started_at": "2026-06-27T23:26:39.775+08:00",
-    "next_action": "Await replacement client_engineer REVIEW handoff, then route to qa_reviewer.",
+    "next_action": "Await qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCK.",
     "start_submission_id": "019f09b1-d7a8-7163-9d90-de1be8a49eee",
     "route_sent_at": "2026-06-27T23:28:32.873+08:00",
-    "updated_at": "2026-06-27T23:51:56.177+08:00",
+    "updated_at": "2026-06-28T00:04:39.081+08:00",
     "replaced_writer_thread_id": "019f09ae-b8cb-7632-9e24-fcedbe963ee1",
     "replaced_writer_nickname": "Window the 2nd",
     "replacement_start_handoff": "project/messages/outbox/M6-ACCESSIBILITY-CORE-FLOWS-001__MSG-20260627-M6-ACCESSIBILITY-CORE-FLOWS-REPLACEMENT-START__lead_orchestrator.json",
@@ -1063,6 +1062,13 @@
     "replaced_at": "2026-06-27T23:48:50.046+08:00",
     "writer_replacement_reason": "original writer closed after repeated wait timeouts and interrupt收口指令 produced no handoff; transient allowed-path diff observed before close was not committed and is not treated as authoritative",
     "replacement_submission_id": "019f09c7-47aa-7960-9fd2-1509e8eb4f73",
-    "replacement_route_sent_at": "2026-06-27T23:51:56.177+08:00"
+    "replacement_route_sent_at": "2026-06-27T23:51:56.177+08:00",
+    "review_commit": "9d757bebcc093aa4ad2ba8eb97ce387c4c3c10d2",
+    "qa_thread_id": "019f09d1-b057-79a2-a472-f09bf2a67014",
+    "qa_thread_nickname": "Gate the 2nd",
+    "qa_route": "project/messages/routes/M6-ACCESSIBILITY-CORE-FLOWS-001__ROUTE-20260628-M6-ACCESSIBILITY-WRITER-TO-QA-REVIEW.json",
+    "routed_to_qa_at": "2026-06-28T00:03:30.164+08:00",
+    "qa_submission_id": "019f09d2-f6aa-7243-8eb9-0dab8a5ac546",
+    "qa_route_sent_at": "2026-06-28T00:04:39.081+08:00"
   }
 }
