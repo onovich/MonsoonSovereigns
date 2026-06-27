@@ -1,10 +1,15 @@
 import {
   createM2EconomyPopulationStateV0,
+  createM6PolicyEventRuntimeStateV0,
   createWorldStateV0,
   defineDistrict,
   defineRoute,
   defineSettlement,
+  parseGameDay,
+  parseM6PolicyDefinitionId,
+  parseM6PolicyEventDefinitionId,
   validateWorldStateV0,
+  type M6PolicyEventRuntimeStateV0,
   type WorldStateV0
 } from "./world-state-v0.ts";
 
@@ -34,6 +39,7 @@ interface RuntimeM2WorldBootPackV0 {
   readonly settlements: readonly RuntimeM2SettlementBootDefinitionV0[];
   readonly regionalSeasonalCurves: readonly RuntimeM2CurveBootDefinitionV0[];
   readonly routes: readonly RuntimeM2RouteBootDefinitionV0[];
+  readonly m6PolicyEvents?: M6PolicyEventRuntimeStateV0;
 }
 
 interface RuntimeM2DistrictBootDefinitionV0 {
@@ -81,6 +87,9 @@ type BootPackParseResult =
   | { readonly ok: true; readonly value: RuntimeM2WorldBootPackV0 }
   | { readonly ok: false; readonly error: ContentBootErrorV1 };
 type BootPackErrorResult = { readonly ok: false; readonly error: ContentBootErrorV1 };
+type PolicyEventParseResult =
+  | { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0 }
+  | { readonly ok: false; readonly error: ContentBootErrorV1 };
 
 export function bootWorldStateFromRuntimeContentPackV1(input: {
   readonly seed: unknown;
@@ -144,7 +153,10 @@ export function bootWorldStateFromRuntimeContentPackV1(input: {
         id: curve.id,
         monthlyValues: curve.monthlyValues
       }))
-    })
+    }),
+    ...(parsedPack.value.m6PolicyEvents === undefined
+      ? {}
+      : { m6PolicyEvents: parsedPack.value.m6PolicyEvents })
   });
 
   const invariantErrors = validateWorldStateV0(world);
@@ -227,6 +239,13 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
   if (semanticError !== null) {
     return semanticError;
   }
+  const policyEvents =
+    input["m6PolicyEvents"] === undefined
+      ? undefined
+      : parseM6PolicyEvents(input["m6PolicyEvents"]);
+  if (policyEvents !== undefined && !policyEvents.ok) {
+    return policyEvents;
+  }
 
   return {
     ok: true,
@@ -237,7 +256,10 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
       districts: districts.value,
       settlements: settlements.value,
       regionalSeasonalCurves: curves.value,
-      routes: routes.value
+      routes: routes.value,
+      ...(policyEvents === undefined
+        ? {}
+        : { m6PolicyEvents: policyEvents.value })
     }
   };
 }
@@ -282,6 +304,318 @@ function validateRuntimeM2WorldRoot(input: Record<string, unknown>): BootPackErr
   }
 
   return null;
+}
+
+function parseM6PolicyEvents(input: unknown): PolicyEventParseResult {
+  if (!isRecord(input)) {
+    return contentPackError("runtimeContentPack.m6PolicyEvents", "m6PolicyEvents must be an object.");
+  }
+  const keyError = validateM6ExactKeys(
+    input,
+    ["schemaVersion", "kind", "fixtureId", "manifest", "policies", "events"],
+    "runtimeContentPack.m6PolicyEvents"
+  );
+  if (keyError !== null) {
+    return keyError;
+  }
+  if (input["schemaVersion"] !== 1) {
+    return contentPackError(
+      "runtimeContentPack.m6PolicyEvents.schemaVersion",
+      "m6PolicyEvents schemaVersion must be 1."
+    );
+  }
+  if (input["kind"] !== "runtime-m6-policy-event-content-pack-v0") {
+    return contentPackError(
+      "runtimeContentPack.m6PolicyEvents.kind",
+      "m6PolicyEvents kind must be runtime-m6-policy-event-content-pack-v0."
+    );
+  }
+  const policies = parseM6Policies(
+    readArray(input, "policies"),
+    "runtimeContentPack.m6PolicyEvents.policies"
+  );
+  if (!policies.ok) {
+    return policies;
+  }
+  const events = parseM6Events(
+    readArray(input, "events"),
+    "runtimeContentPack.m6PolicyEvents.events"
+  );
+  if (!events.ok) {
+    return events;
+  }
+  const policyIds = new Set(policies.value.map((policy) => policy.policyId));
+  for (let eventIndex = 0; eventIndex < events.value.length; eventIndex += 1) {
+    const event = events.value[eventIndex];
+    if (event === undefined) {
+      return contentPackError(
+        `runtimeContentPack.m6PolicyEvents.events[${eventIndex}]`,
+        "M6 event is missing."
+      );
+    }
+    for (let optionIndex = 0; optionIndex < event.options.length; optionIndex += 1) {
+      const option = event.options[optionIndex];
+      if (option === undefined) {
+        return contentPackError(
+          `runtimeContentPack.m6PolicyEvents.events[${eventIndex}].options[${optionIndex}]`,
+          "M6 event option is missing."
+        );
+      }
+      for (
+        let consequenceIndex = 0;
+        consequenceIndex < option.consequences.length;
+        consequenceIndex += 1
+      ) {
+        const consequence = option.consequences[consequenceIndex];
+        if (consequence === undefined || !policyIds.has(consequence.policyId)) {
+          return contentPackError(
+            `runtimeContentPack.m6PolicyEvents.events[${eventIndex}].options[${optionIndex}].consequences[${consequenceIndex}].policyId`,
+            "M6 policy event consequence references a missing policy."
+          );
+        }
+      }
+    }
+  }
+  return {
+    ok: true,
+    value: createM6PolicyEventRuntimeStateV0({
+      definitions: {
+        policies: policies.value,
+        events: events.value
+      }
+    })
+  };
+}
+
+function parseM6Policies(
+  values: readonly unknown[],
+  path: string
+): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["policies"] } | BootPackErrorResult {
+  const policies: M6PolicyEventRuntimeStateV0["definitions"]["policies"][number][] = [];
+  let previousId = 0;
+  const seen = new Set<number>();
+  for (let index = 0; index < values.length; index += 1) {
+    const entryPath = `${path}[${index}]`;
+    const value = values[index];
+    if (!isRecord(value)) {
+      return contentPackError(entryPath, "M6 policy definition must be an object.");
+    }
+    const keyError = validateM6ExactKeys(
+      value,
+      ["policyId", "sourceId", "displayNameKey", "reasonCodes", "encyclopediaRefs"],
+      entryPath
+    );
+    if (keyError !== null) {
+      return keyError;
+    }
+    const policyId = parseOrderedUniqueId(value["policyId"], previousId, seen, `${entryPath}.policyId`);
+    if (!policyId.ok) {
+      return policyId;
+    }
+    previousId = policyId.value;
+    const sourceId = parseNonEmptyString(value["sourceId"], `${entryPath}.sourceId`);
+    if (!sourceId.ok) {
+      return sourceId;
+    }
+    const displayNameKey = parseNonEmptyString(value["displayNameKey"], `${entryPath}.displayNameKey`);
+    if (!displayNameKey.ok) {
+      return displayNameKey;
+    }
+    const reasonCodes = parseStringArray(value["reasonCodes"], `${entryPath}.reasonCodes`);
+    if (!reasonCodes.ok) {
+      return reasonCodes;
+    }
+    const encyclopediaRefs = parseStringArray(value["encyclopediaRefs"], `${entryPath}.encyclopediaRefs`);
+    if (!encyclopediaRefs.ok) {
+      return encyclopediaRefs;
+    }
+    policies.push({
+      policyId: parseM6PolicyDefinitionId(policyId.value),
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      reasonCodes: reasonCodes.value,
+      encyclopediaRefs: encyclopediaRefs.value
+    });
+  }
+  return { ok: true, value: policies };
+}
+
+function parseM6Events(
+  values: readonly unknown[],
+  path: string
+): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"] } | BootPackErrorResult {
+  const events: M6PolicyEventRuntimeStateV0["definitions"]["events"][number][] = [];
+  let previousId = 0;
+  const seen = new Set<number>();
+  for (let index = 0; index < values.length; index += 1) {
+    const entryPath = `${path}[${index}]`;
+    const value = values[index];
+    if (!isRecord(value)) {
+      return contentPackError(entryPath, "M6 event definition must be an object.");
+    }
+    const keyError = validateM6ExactKeys(
+      value,
+      [
+        "eventDefinitionId",
+        "sourceId",
+        "displayNameKey",
+        "cause",
+        "options",
+        "reasonCodes",
+        "encyclopediaRefs"
+      ],
+      entryPath
+    );
+    if (keyError !== null) {
+      return keyError;
+    }
+    const eventDefinitionId = parseOrderedUniqueId(
+      value["eventDefinitionId"],
+      previousId,
+      seen,
+      `${entryPath}.eventDefinitionId`
+    );
+    if (!eventDefinitionId.ok) {
+      return eventDefinitionId;
+    }
+    previousId = eventDefinitionId.value;
+    const sourceId = parseNonEmptyString(value["sourceId"], `${entryPath}.sourceId`);
+    const displayNameKey = parseNonEmptyString(value["displayNameKey"], `${entryPath}.displayNameKey`);
+    const cause = parseM6Cause(value["cause"], `${entryPath}.cause`);
+    const options = parseM6Options(readArray(value, "options"), `${entryPath}.options`);
+    const reasonCodes = parseStringArray(value["reasonCodes"], `${entryPath}.reasonCodes`);
+    const encyclopediaRefs = parseStringArray(value["encyclopediaRefs"], `${entryPath}.encyclopediaRefs`);
+    if (!sourceId.ok) return sourceId;
+    if (!displayNameKey.ok) return displayNameKey;
+    if (!cause.ok) return cause;
+    if (!options.ok) return options;
+    if (!reasonCodes.ok) return reasonCodes;
+    if (!encyclopediaRefs.ok) return encyclopediaRefs;
+    events.push({
+      eventDefinitionId: parseM6PolicyEventDefinitionId(eventDefinitionId.value),
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      cause: cause.value,
+      options: options.value,
+      reasonCodes: reasonCodes.value,
+      encyclopediaRefs: encyclopediaRefs.value
+    });
+  }
+  return { ok: true, value: events };
+}
+
+function parseM6Cause(input: unknown, path: string): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["cause"] } | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "M6 event cause must be an object.");
+  }
+  const keyError = validateM6ExactKeys(input, ["kind", "day", "reasonCodes"], path);
+  if (keyError !== null) {
+    return keyError;
+  }
+  if (input["kind"] !== "day-at-least") {
+    return contentPackError(`${path}.kind`, "M6 event cause kind must be day-at-least.");
+  }
+  const day = parseNonnegativeSafeInteger(input["day"], `${path}.day`);
+  if (!day.ok) return day;
+  const reasonCodes = parseStringArray(input["reasonCodes"], `${path}.reasonCodes`);
+  if (!reasonCodes.ok) return reasonCodes;
+  return {
+    ok: true,
+    value: { kind: "day-at-least", day: parseGameDay(day.value), reasonCodes: reasonCodes.value }
+  };
+}
+
+function parseM6Options(values: readonly unknown[], path: string): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"] } | BootPackErrorResult {
+  const options: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number][] = [];
+  let previousId = 0;
+  const seen = new Set<number>();
+  for (let index = 0; index < values.length; index += 1) {
+    const entryPath = `${path}[${index}]`;
+    const value = values[index];
+    if (!isRecord(value)) return contentPackError(entryPath, "M6 option must be an object.");
+    const keyError = validateM6ExactKeys(
+      value,
+      ["optionId", "displayNameKey", "consequences", "reasonCodes", "encyclopediaRefs"],
+      entryPath
+    );
+    if (keyError !== null) {
+      return keyError;
+    }
+    const optionId = parseOrderedUniqueId(value["optionId"], previousId, seen, `${entryPath}.optionId`);
+    if (!optionId.ok) return optionId;
+    previousId = optionId.value;
+    const displayNameKey = parseNonEmptyString(value["displayNameKey"], `${entryPath}.displayNameKey`);
+    const consequences = parseM6Consequences(readArray(value, "consequences"), `${entryPath}.consequences`);
+    const reasonCodes = parseStringArray(value["reasonCodes"], `${entryPath}.reasonCodes`);
+    const encyclopediaRefs = parseStringArray(value["encyclopediaRefs"], `${entryPath}.encyclopediaRefs`);
+    if (!displayNameKey.ok) return displayNameKey;
+    if (!consequences.ok) return consequences;
+    if (!reasonCodes.ok) return reasonCodes;
+    if (!encyclopediaRefs.ok) return encyclopediaRefs;
+    options.push({
+      optionId: optionId.value,
+      displayNameKey: displayNameKey.value,
+      consequences: consequences.value,
+      reasonCodes: reasonCodes.value,
+      encyclopediaRefs: encyclopediaRefs.value
+    });
+  }
+  return { ok: true, value: options };
+}
+
+function parseM6Consequences(values: readonly unknown[], path: string): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number]["consequences"] } | BootPackErrorResult {
+  const consequences: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number]["consequences"][number][] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const entryPath = `${path}[${index}]`;
+    const value = values[index];
+    if (!isRecord(value)) return contentPackError(entryPath, "M6 consequence must be an object.");
+    const keyError = validateM6ExactKeys(
+      value,
+      ["kind", "policyId", "magnitudeBps", "durationDays", "reasonCode"],
+      entryPath
+    );
+    if (keyError !== null) {
+      return keyError;
+    }
+    if (value["kind"] !== "policy-modifier") {
+      return contentPackError(`${entryPath}.kind`, "M6 consequence kind must be policy-modifier.");
+    }
+    const policyId = parsePositiveSafeInteger(value["policyId"], `${entryPath}.policyId`);
+    const magnitudeBps = parseIntegerInRange(value["magnitudeBps"], `${entryPath}.magnitudeBps`, -10_000, 10_000);
+    const durationDays = parsePositiveSafeInteger(value["durationDays"], `${entryPath}.durationDays`);
+    const reasonCode = parseNonEmptyString(value["reasonCode"], `${entryPath}.reasonCode`);
+    if (!policyId.ok) return policyId;
+    if (!magnitudeBps.ok) return magnitudeBps;
+    if (!durationDays.ok) return durationDays;
+    if (!reasonCode.ok) return reasonCode;
+    consequences.push({
+      kind: "policy-modifier",
+      policyId: parseM6PolicyDefinitionId(policyId.value),
+      magnitudeBps: magnitudeBps.value,
+      durationDays: durationDays.value,
+      reasonCode: reasonCode.value
+    });
+  }
+  return { ok: true, value: consequences };
+}
+
+function validateM6ExactKeys(
+  record: Record<string, unknown>,
+  allowedKeys: readonly string[],
+  path: string
+): BootPackErrorResult | null {
+  const allowed = new Set(allowedKeys);
+  const unexpected = Object.keys(record)
+    .filter((key) => !allowed.has(key))
+    .sort();
+  if (unexpected.length === 0) {
+    return null;
+  }
+  const first = unexpected[0];
+  if (first === undefined) {
+    return null;
+  }
+  return contentPackError(`${path}.${first}`, "M6 policy/event runtime field is not allowed.");
 }
 
 function validateManifest(manifest: Record<string, unknown>): BootPackErrorResult | null {
@@ -935,6 +1269,29 @@ function parseNonEmptyString(
   }
 
   return contentPackError(path, `${path} must be a non-empty string.`);
+}
+
+function parseStringArray(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly string[] }
+  | {
+      readonly ok: false;
+      readonly error: ContentBootErrorV1;
+    } {
+  if (!Array.isArray(value) || value.length === 0) {
+    return contentPackError(path, `${path} must be a non-empty string array.`);
+  }
+  const result: string[] = [];
+  for (let index = 0; index < value.length; index += 1) {
+    const entry = value[index];
+    if (typeof entry !== "string" || entry.length === 0) {
+      return contentPackError(`${path}[${index}]`, `${path}[${index}] must be a non-empty string.`);
+    }
+    result.push(entry);
+  }
+  return { ok: true, value: result };
 }
 
 function readArray(record: Record<string, unknown>, key: string): readonly unknown[] {

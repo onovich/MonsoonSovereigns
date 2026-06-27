@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260627-M6-POLICY-EVENT-RUNTIME-REVIEW",
+  "task_id": "M6-POLICY-EVENT-RUNTIME-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented deterministic, versioned, authoritative M6 policy/event runtime substrate. Policy/event definitions now pass explicit content schema/runtime parsing and controlled sim-core boot consumption; scheduler activates due events deterministically; option resolution uses the shared GameCommand path for player and AI; save/load preserves and rejects malformed policy/event slices.",
+  "artifacts": [
+    "packages/content-schema/src/m6-policy-event.ts",
+    "packages/content-runtime/src/m6-policy-event.ts",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/scheduler-v0.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/package.json",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "project/tasks/active/M6-POLICY-EVENT-RUNTIME-001.json",
+    "project/messages/outbox/M6-POLICY-EVENT-RUNTIME-001__MSG-20260627-M6-POLICY-EVENT-RUNTIME-REVIEW__simulation_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m6-policy-event-runtime / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit passed."
+    },
+    {
+      "command": "pnpm vitest run tests/sim-core-m6-policy-event-runtime.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed, 5 tests passed; covers malformed definition injection rejection, controlled boot, deterministic event ordering, player/AI command parity, and save/load malformed-slice rejection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "25 files passed, 191 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "2 files passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 file passed, 13 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 file passed, 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file passed, 10 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello, command/query, save/load, M4 replay, and M5 playable-loop canaries."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; determinism canaries passed; root vitest 38 files/292 tests passed; web vitest 1 file/4 tests passed."
+    }
+  ],
+  "decisions": [
+    "Added explicit M6 policy/event schema/runtime data instead of scripting, callbacks, reflection, or object-graph serialization.",
+    "Kept authoritative mutation inside sim-core commit paths: daily scheduler activation and sim.choose-policy-event-option command resolution.",
+    "Kept player and AI parity by adding one shared GameCommand; actor is emitted in DomainEvent but not embedded into WorldState, preserving equal state hashes for equivalent choices.",
+    "Versioned M6 policy/event runtime save slice with reason-coded schema rejection for malformed save payloads.",
+    "Marked task REVIEW only; did not mark ACCEPTED/CLOSED and did not merge."
+  ],
+  "risks": [
+    "R3: WorldState, scheduler, protocol, and save-format were changed and need systems_architect review before QA.",
+    "This is runtime substrate only; M7 formal content quality/content lock remains out of scope.",
+    "No production scenario content was added; tests use synthetic fixtures under tests."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R3 policy/event runtime substrate for architecture, save/protocol compatibility, deterministic scheduler behavior, and controlled boot-boundary constraints; then route onward per reviewer decision.",
+  "created_at": "2026-06-27T19:23:43.409+08:00"
+}

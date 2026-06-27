@@ -52,6 +52,8 @@ import {
   parseM6DiplomaticAgreementId,
   parseM6DiplomaticRelationId,
   parseM6LegitimacySourceId,
+  parseM6PolicyEventInstanceId,
+  parseM6PolicyModifierId,
   parsePersonId,
   parsePopulationGroupId,
   parsePolityId,
@@ -64,6 +66,7 @@ import {
   canonicalizeM2EconomyPopulationState,
   canonicalizeM3PolityVassalageState,
   canonicalizeM4CampaignStateV0,
+  canonicalizeM6PolicyEventRuntimeStateV0,
   copyM4CampaignOwner,
   copyM4CampaignTarget,
   copyM4GrainSupplySource,
@@ -130,6 +133,7 @@ import {
   type M6LegitimacyAudienceV0,
   type M6LegitimacyProfileStateV0,
   type M6LegitimacySourceStateV0,
+  type M6PolicyEventRuntimeStateV0,
   type M6RecognitionEdgeStateV0,
   type M2EconomyPopulationStateV0,
   type GameDay,
@@ -178,6 +182,7 @@ export type DomainErrorCodeV1 =
   | "obligation-state-invalid"
   | "office-eligibility-failed"
   | "office-primary-conflict"
+  | "policy-event-state-invalid"
   | "succession-state-invalid"
   | "duplicate-obligation-settlement"
   | "stale-day"
@@ -453,6 +458,21 @@ export type DomainEventV1 =
       readonly magnitudeBps: number;
       readonly scoreAfterBps: number;
       readonly reasonCodes: readonly string[];
+      readonly revisionBefore: number;
+      readonly revisionAfter: number;
+    }
+  | {
+      readonly schemaVersion: 1;
+      readonly kind: "sim.m6-policy-event-option-chosen";
+      readonly commandId: string;
+      readonly actor: CommandActorV1;
+      readonly eventInstanceId: number;
+      readonly eventDefinitionId: number;
+      readonly selectedOptionId: number;
+      readonly causeReasonCodes: readonly string[];
+      readonly optionReasonCodes: readonly string[];
+      readonly consequenceReasonCodes: readonly string[];
+      readonly encyclopediaRefs: readonly string[];
       readonly revisionBefore: number;
       readonly revisionAfter: number;
     };
@@ -1417,6 +1437,18 @@ export function loadSaveV1(
           }
         ];
       }
+      if (
+        runtime.world.state.m6PolicyEvents !== undefined &&
+        !hasM6PolicyEventRuntimeState(candidate)
+      ) {
+        return [
+          {
+            path: "state.m6PolicyEvents",
+            message:
+              "Save snapshot is missing required M6 policy/event runtime state for this runtime."
+          }
+        ];
+      }
 
       return validateWorldStateV0(candidate);
     }
@@ -1751,6 +1783,8 @@ function validateAndEvaluateCommand(
       return evaluateAnswerDiplomaticAgreement(runtime.world, command);
     case "sim.record-legitimacy-source":
       return evaluateRecordLegitimacySource(runtime.world, command);
+    case "sim.choose-policy-event-option":
+      return evaluateChoosePolicyEventOption(runtime.world, command);
     case "sim.create-campaign-objective":
       return evaluateCreateCampaignObjective(runtime.world, command);
     case "sim.update-campaign-objective":
@@ -3940,6 +3974,134 @@ function clampM6Bps(value: number): number {
 
 function sortedUniqueText(values: readonly string[]): readonly string[] {
   return [...new Set(values)].sort(compareText);
+}
+
+function evaluateChoosePolicyEventOption(
+  world: WorldStateV0,
+  command: Extract<GameCommandV1, { readonly kind: "sim.choose-policy-event-option" }>
+): EvaluationResult {
+  const runtime = world.state.m6PolicyEvents;
+  if (runtime === undefined) {
+    return policyEventError("state.m6PolicyEvents", "M6 policy/event runtime state is missing.");
+  }
+  if (command.actor.kind === "system") {
+    return {
+      ok: false,
+      error: {
+        code: "authority-denied",
+        path: "actor.kind",
+        message: "sim.choose-policy-event-option requires player or AI command authority."
+      }
+    };
+  }
+
+  const eventInstanceId = parseM6PolicyEventInstanceId(command.payload.eventInstanceId);
+  const activeEvent = runtime.activeEvents.find(
+    (event) => event.eventInstanceId === eventInstanceId
+  );
+  if (activeEvent === undefined) {
+    return policyEventError(
+      "payload.eventInstanceId",
+      "sim.choose-policy-event-option references a missing active event."
+    );
+  }
+  const definition = runtime.definitions.events.find(
+    (event) => event.eventDefinitionId === activeEvent.eventDefinitionId
+  );
+  if (definition === undefined) {
+    return policyEventError(
+      "state.m6PolicyEvents.definitions.events",
+      "Active policy event references a missing definition."
+    );
+  }
+  const option = definition.options.find((entry) => entry.optionId === command.payload.optionId);
+  if (option === undefined) {
+    return policyEventError(
+      "payload.optionId",
+      "sim.choose-policy-event-option references an option not offered by the active event."
+    );
+  }
+
+  let nextModifierId = runtime.nextModifierId;
+  const modifiers: M6PolicyEventRuntimeStateV0["policyModifiers"][number][] =
+    option.consequences.map((consequence) => {
+      const modifier = {
+        modifierId: parseM6PolicyModifierId(nextModifierId),
+        policyId: consequence.policyId,
+        eventInstanceId,
+        magnitudeBps: consequence.magnitudeBps,
+        startDay: world.meta.currentDay,
+        endDay: parseGameDay(world.meta.currentDay + consequence.durationDays),
+        reasonCode: consequence.reasonCode
+      };
+      nextModifierId += 1;
+      return modifier;
+    });
+  const resolvedEvent: M6PolicyEventRuntimeStateV0["resolvedEvents"][number] = {
+    eventInstanceId,
+    eventDefinitionId: activeEvent.eventDefinitionId,
+    selectedOptionId: command.payload.optionId,
+    resolvedDay: world.meta.currentDay,
+    reasonCodes: sortedUniqueText([
+      command.payload.reasonCode,
+      ...definition.reasonCodes,
+      ...option.reasonCodes,
+      ...option.consequences.map((consequence) => consequence.reasonCode)
+    ])
+  };
+  const nextRuntime = canonicalizeM6PolicyEventRuntimeStateV0({
+    ...runtime,
+    activeEvents: runtime.activeEvents.filter((event) => event.eventInstanceId !== eventInstanceId),
+    resolvedEvents: [...runtime.resolvedEvents, resolvedEvent],
+    policyModifiers: [...runtime.policyModifiers, ...modifiers],
+    nextModifierId
+  });
+  const nextWorld = commitRuntimeState(world, {
+    ...world.state,
+    m6PolicyEvents: nextRuntime
+  });
+  const invariantError = validateCommittedWorld(nextWorld);
+  if (invariantError !== null) {
+    return { ok: false, error: invariantError };
+  }
+
+  const event: DomainEventV1 = {
+    schemaVersion: 1,
+    kind: "sim.m6-policy-event-option-chosen",
+    commandId: command.commandId,
+    actor: command.actor,
+    eventInstanceId,
+    eventDefinitionId: activeEvent.eventDefinitionId,
+    selectedOptionId: command.payload.optionId,
+    causeReasonCodes: activeEvent.causeReasonCodes,
+    optionReasonCodes: option.reasonCodes,
+    consequenceReasonCodes: option.consequences.map((consequence) => consequence.reasonCode),
+    encyclopediaRefs: sortedUniqueText([...definition.encyclopediaRefs, ...option.encyclopediaRefs]),
+    revisionBefore: world.meta.revision,
+    revisionAfter: nextWorld.meta.revision
+  };
+
+  return {
+    ok: true,
+    value: {
+      command,
+      nextWorld,
+      events: [event],
+      deltas: [],
+      wouldChangeState: true
+    }
+  };
+}
+
+function policyEventError(path: string, message: string): EvaluationResult {
+  return {
+    ok: false,
+    error: {
+      code: "policy-event-state-invalid",
+      path,
+      message
+    }
+  };
 }
 
 function evaluateCreateCampaignObjective(
@@ -11137,6 +11299,8 @@ function domainEventToRecord(event: DomainEventV1): Record<string, unknown> {
       return { ...event };
     case "sim.m6-legitimacy-source-recorded":
       return { ...event };
+    case "sim.m6-policy-event-option-chosen":
+      return { ...event };
     case "sim.state-hash-verified":
       return { ...event };
   }
@@ -12232,6 +12396,98 @@ function parseSavedDomainEvent(
         }
       };
     }
+    case "sim.m6-policy-event-option-chosen": {
+      const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
+      const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
+      const eventInstanceId = readPositiveIdRecordField(
+        record,
+        "eventInstanceId",
+        `${path}.eventInstanceId`,
+        reasons
+      );
+      const eventDefinitionId = readPositiveIdRecordField(
+        record,
+        "eventDefinitionId",
+        `${path}.eventDefinitionId`,
+        reasons
+      );
+      const selectedOptionId = readPositiveIdRecordField(
+        record,
+        "selectedOptionId",
+        `${path}.selectedOptionId`,
+        reasons
+      );
+      const causeReasonCodes = readStringArrayRecordField(
+        record,
+        "causeReasonCodes",
+        `${path}.causeReasonCodes`,
+        reasons
+      );
+      const optionReasonCodes = readStringArrayRecordField(
+        record,
+        "optionReasonCodes",
+        `${path}.optionReasonCodes`,
+        reasons
+      );
+      const consequenceReasonCodes = readStringArrayRecordField(
+        record,
+        "consequenceReasonCodes",
+        `${path}.consequenceReasonCodes`,
+        reasons
+      );
+      const encyclopediaRefs = readStringArrayRecordField(
+        record,
+        "encyclopediaRefs",
+        `${path}.encyclopediaRefs`,
+        reasons
+      );
+      const revisionBefore = readNumberRecordField(
+        record,
+        "revisionBefore",
+        `${path}.revisionBefore`,
+        reasons
+      );
+      const revisionAfter = readNumberRecordField(
+        record,
+        "revisionAfter",
+        `${path}.revisionAfter`,
+        reasons
+      );
+      if (
+        commandId === undefined ||
+        actor === undefined ||
+        eventInstanceId === undefined ||
+        eventDefinitionId === undefined ||
+        selectedOptionId === undefined ||
+        causeReasonCodes === undefined ||
+        optionReasonCodes === undefined ||
+        consequenceReasonCodes === undefined ||
+        encyclopediaRefs === undefined ||
+        revisionBefore === undefined ||
+        revisionAfter === undefined
+      ) {
+        return { ok: false };
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: 1,
+          kind,
+          commandId,
+          actor,
+          eventInstanceId,
+          eventDefinitionId,
+          selectedOptionId,
+          causeReasonCodes,
+          optionReasonCodes,
+          consequenceReasonCodes,
+          encyclopediaRefs,
+          revisionBefore,
+          revisionAfter
+        }
+      };
+    }
     case "sim.state-hash-verified": {
       const commandId = readStringRecordField(record, "commandId", `${path}.commandId`, reasons);
       const actor = readActorRecordField(record, "actor", `${path}.actor`, reasons);
@@ -12830,6 +13086,15 @@ function hasM6RuntimeState(candidate: unknown): boolean {
 
   const state = candidate["state"];
   return isRecord(state) && state["m6"] !== undefined;
+}
+
+function hasM6PolicyEventRuntimeState(candidate: unknown): boolean {
+  if (!isRecord(candidate)) {
+    return false;
+  }
+
+  const state = candidate["state"];
+  return isRecord(state) && state["m6PolicyEvents"] !== undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

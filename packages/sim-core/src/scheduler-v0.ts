@@ -6,10 +6,13 @@ import {
   type M2DistrictAgricultureStateV0,
   type M2DistrictMarketStateV0,
   type M2PopulationGroupStateV0,
+  type M6PolicyEventRuntimeStateV0,
   type WorldStateV0,
+  canonicalizeM6PolicyEventRuntimeStateV0,
   canonicalizeM2EconomyPopulationState,
   hashWorldStateV0,
   parseGameDay,
+  parseM6PolicyEventInstanceId,
   parseWorldRevision,
   validateWorldStateV0
 } from "./world-state-v0.ts";
@@ -116,7 +119,10 @@ export function advanceWorldByGameDay(world: WorldStateV0): WorldStateV0 {
   assertValidWorldStateForScheduler(world, "before");
 
   const nextDay = parseGameDay(world.meta.currentDay + 1);
-  const nextState = advanceM2EconomyPopulationByGameDay(world, nextDay);
+  const nextState = advanceM6PolicyEventsByGameDay(
+    { ...world, state: advanceM2EconomyPopulationByGameDay(world, nextDay) },
+    nextDay
+  );
   const nextWorldWithoutHash: WorldStateV0 = {
     ...world,
     meta: {
@@ -155,6 +161,58 @@ export function advanceWorldByGameDays(world: WorldStateV0, dayCount: unknown): 
   }
 
   return currentWorld;
+}
+
+function advanceM6PolicyEventsByGameDay(
+  world: WorldStateV0,
+  nextDay: GameDay
+): WorldStateV0["state"] {
+  const runtime = world.state.m6PolicyEvents;
+  if (runtime === undefined) {
+    return world.state;
+  }
+
+  const activatedDefinitionIds = new Set<number>([
+    ...runtime.activeEvents.map((event) => event.eventDefinitionId),
+    ...runtime.resolvedEvents.map((event) => event.eventDefinitionId)
+  ]);
+  let nextEventInstanceId = runtime.nextEventInstanceId;
+  const newActiveEvents: M6PolicyEventRuntimeStateV0["activeEvents"][number][] = [];
+
+  const dueEvents = [...runtime.definitions.events]
+    .filter(
+      (event) =>
+        event.cause.kind === "day-at-least" &&
+        event.cause.day <= nextDay &&
+        !activatedDefinitionIds.has(event.eventDefinitionId)
+    )
+    .sort(
+      (left, right) =>
+        left.cause.day - right.cause.day || left.eventDefinitionId - right.eventDefinitionId
+    );
+
+  for (const event of dueEvents) {
+    newActiveEvents.push({
+      eventInstanceId: parseM6PolicyEventInstanceId(nextEventInstanceId),
+      eventDefinitionId: event.eventDefinitionId,
+      activatedDay: nextDay,
+      causeReasonCodes: event.cause.reasonCodes
+    });
+    nextEventInstanceId += 1;
+  }
+
+  if (newActiveEvents.length === 0) {
+    return world.state;
+  }
+
+  return {
+    ...world.state,
+    m6PolicyEvents: canonicalizeM6PolicyEventRuntimeStateV0({
+      ...runtime,
+      activeEvents: [...runtime.activeEvents, ...newActiveEvents],
+      nextEventInstanceId
+    })
+  };
 }
 
 function advanceM2EconomyPopulationByGameDay(

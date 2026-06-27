@@ -24,6 +24,10 @@ export type GrainSupplyReservationId = Brand<number, "GrainSupplyReservationId">
 export type M6DiplomaticRelationId = Brand<number, "M6DiplomaticRelationId">;
 export type M6DiplomaticAgreementId = Brand<number, "M6DiplomaticAgreementId">;
 export type M6LegitimacySourceId = Brand<number, "M6LegitimacySourceId">;
+export type M6PolicyDefinitionId = Brand<number, "M6PolicyDefinitionId">;
+export type M6PolicyEventDefinitionId = Brand<number, "M6PolicyEventDefinitionId">;
+export type M6PolicyEventInstanceId = Brand<number, "M6PolicyEventInstanceId">;
+export type M6PolicyModifierId = Brand<number, "M6PolicyModifierId">;
 export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
@@ -969,6 +973,86 @@ export interface M6DiplomacyLegitimacyStateV0 {
   readonly legitimacyProfiles: readonly M6LegitimacyProfileStateV0[];
 }
 
+export interface M6PolicyDefinitionStateV0 {
+  readonly policyId: M6PolicyDefinitionId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface M6PolicyEventCauseStateV0 {
+  readonly kind: "day-at-least";
+  readonly day: GameDay;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6PolicyEventConsequenceStateV0 {
+  readonly kind: "policy-modifier";
+  readonly policyId: M6PolicyDefinitionId;
+  readonly magnitudeBps: number;
+  readonly durationDays: number;
+  readonly reasonCode: string;
+}
+
+export interface M6PolicyEventOptionStateV0 {
+  readonly optionId: number;
+  readonly displayNameKey: string;
+  readonly consequences: readonly M6PolicyEventConsequenceStateV0[];
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface M6PolicyEventDefinitionStateV0 {
+  readonly eventDefinitionId: M6PolicyEventDefinitionId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly cause: M6PolicyEventCauseStateV0;
+  readonly options: readonly M6PolicyEventOptionStateV0[];
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+}
+
+export interface M6PolicyEventDefinitionsStateV0 {
+  readonly policies: readonly M6PolicyDefinitionStateV0[];
+  readonly events: readonly M6PolicyEventDefinitionStateV0[];
+}
+
+export interface M6PolicyEventActiveStateV0 {
+  readonly eventInstanceId: M6PolicyEventInstanceId;
+  readonly eventDefinitionId: M6PolicyEventDefinitionId;
+  readonly activatedDay: GameDay;
+  readonly causeReasonCodes: readonly string[];
+}
+
+export interface M6PolicyEventResolvedStateV0 {
+  readonly eventInstanceId: M6PolicyEventInstanceId;
+  readonly eventDefinitionId: M6PolicyEventDefinitionId;
+  readonly selectedOptionId: number;
+  readonly resolvedDay: GameDay;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M6PolicyModifierStateV0 {
+  readonly modifierId: M6PolicyModifierId;
+  readonly policyId: M6PolicyDefinitionId;
+  readonly eventInstanceId: M6PolicyEventInstanceId;
+  readonly magnitudeBps: number;
+  readonly startDay: GameDay;
+  readonly endDay: GameDay;
+  readonly reasonCode: string;
+}
+
+export interface M6PolicyEventRuntimeStateV0 {
+  readonly schemaVersion: 1;
+  readonly definitions: M6PolicyEventDefinitionsStateV0;
+  readonly activeEvents: readonly M6PolicyEventActiveStateV0[];
+  readonly resolvedEvents: readonly M6PolicyEventResolvedStateV0[];
+  readonly policyModifiers: readonly M6PolicyModifierStateV0[];
+  readonly nextEventInstanceId: number;
+  readonly nextModifierId: number;
+}
+
 export interface M3AdministrativeBurdenProfileInputV0 {
   readonly polityId: unknown;
   readonly districtId: unknown;
@@ -1008,6 +1092,7 @@ export interface WorldRuntimeStateV0 {
   readonly m3?: M3PolityVassalageStateV0;
   readonly m4?: M4CampaignStateV0;
   readonly m6?: M6DiplomacyLegitimacyStateV0;
+  readonly m6PolicyEvents?: M6PolicyEventRuntimeStateV0;
 }
 
 export interface SchedulerStateV0 {
@@ -1122,6 +1207,7 @@ export interface CreateWorldStateV0Input {
   readonly m3?: M3PolityVassalageStateV0;
   readonly m4?: M4CampaignStateV0;
   readonly m6?: M6DiplomacyLegitimacyStateV0;
+  readonly m6PolicyEvents?: M6PolicyEventRuntimeStateV0;
 }
 
 const INITIAL_HASH_OFFSET = 2_166_136_261;
@@ -1221,6 +1307,22 @@ export function parseM6DiplomaticAgreementId(value: unknown): M6DiplomaticAgreem
 
 export function parseM6LegitimacySourceId(value: unknown): M6LegitimacySourceId {
   return parsePositiveInteger(value, "M6LegitimacySourceId") as M6LegitimacySourceId;
+}
+
+export function parseM6PolicyDefinitionId(value: unknown): M6PolicyDefinitionId {
+  return parsePositiveInteger(value, "M6PolicyDefinitionId") as M6PolicyDefinitionId;
+}
+
+export function parseM6PolicyEventDefinitionId(value: unknown): M6PolicyEventDefinitionId {
+  return parsePositiveInteger(value, "M6PolicyEventDefinitionId") as M6PolicyEventDefinitionId;
+}
+
+export function parseM6PolicyEventInstanceId(value: unknown): M6PolicyEventInstanceId {
+  return parsePositiveInteger(value, "M6PolicyEventInstanceId") as M6PolicyEventInstanceId;
+}
+
+export function parseM6PolicyModifierId(value: unknown): M6PolicyModifierId {
+  return parsePositiveInteger(value, "M6PolicyModifierId") as M6PolicyModifierId;
 }
 
 export function parseGameDay(value: unknown): GameDay {
@@ -1430,7 +1532,14 @@ export function createM2RouteTransportStateV0(
 
 export function createWorldStateV0(input: CreateWorldStateV0Input): WorldStateV0 {
   const definitions = canonicalizeDefinitions(input.definitions);
-  const state = createRuntimeState(definitions, input.m2, input.m3, input.m4, input.m6);
+  const state = createRuntimeState(
+    definitions,
+    input.m2,
+    input.m3,
+    input.m4,
+    input.m6,
+    input.m6PolicyEvents
+  );
   const stateWithoutHash: WorldStateV0 = {
     meta: {
       schemaVersion: WORLD_STATE_V0_SCHEMA_VERSION,
@@ -1497,6 +1606,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     ...formatM3CanonicalLines(world.state.m3),
     ...formatM4CanonicalLines(world.state.m4),
     ...formatM6CanonicalLines(world.state.m6),
+    ...formatM6PolicyEventCanonicalLines(world.state.m6PolicyEvents),
     `scheduler.schedulerVersion=${formatUnknown(
       getRecordPath(world, ["scheduler", "schedulerVersion"])
     )}`,
@@ -1540,6 +1650,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateM3EntryShapes(getRecordPath(world, ["state", "m3"]), errors);
   validateM4EntryShapes(getRecordPath(world, ["state", "m4"]), errors);
   validateM6EntryShapes(getRecordPath(world, ["state", "m6"]), errors);
+  validateM6PolicyEventEntryShapes(getRecordPath(world, ["state", "m6PolicyEvents"]), errors);
   if (errors.some((error) => error.code === "invalid-schema")) {
     return errors;
   }
@@ -1551,6 +1662,7 @@ export function validateWorldStateV0(input: unknown): readonly WorldInvariantErr
   validateM3RuntimeState(world, errors);
   validateM4RuntimeState(world, errors);
   validateM6RuntimeState(world, errors);
+  validateM6PolicyEventRuntimeState(world, errors);
   validateRuntimeTableCoverage(world, errors);
   validateStateHash(world, errors);
   return errors;
@@ -2277,6 +2389,212 @@ function validateM6EntryShapes(input: unknown, errors: WorldInvariantError[]): v
     errors,
     validateM6LegitimacyProfileEntry
   );
+}
+
+function validateM6PolicyEventEntryShapes(input: unknown, errors: WorldInvariantError[]): void {
+  if (input === undefined) {
+    return;
+  }
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m6PolicyEvents",
+      message: "M6 policy/event runtime state must be an object."
+    });
+    return;
+  }
+  if (input["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m6PolicyEvents.schemaVersion",
+      message: "M6 policy/event runtime schemaVersion must be 1."
+    });
+  }
+  const definitions = input["definitions"];
+  if (!isRecord(definitions)) {
+    errors.push({
+      code: "invalid-schema",
+      path: "state.m6PolicyEvents.definitions",
+      message: "M6 policy/event definitions must be an object."
+    });
+  } else {
+    validateM6Array(
+      definitions["policies"],
+      "state.m6PolicyEvents.definitions.policies",
+      "M6 policy definitions",
+      errors,
+      validateM6PolicyDefinitionEntry
+    );
+    validateM6Array(
+      definitions["events"],
+      "state.m6PolicyEvents.definitions.events",
+      "M6 event definitions",
+      errors,
+      validateM6PolicyEventDefinitionEntry
+    );
+  }
+  validateM6Array(
+    input["activeEvents"],
+    "state.m6PolicyEvents.activeEvents",
+    "M6 active policy events",
+    errors,
+    validateM6PolicyEventActiveEntry
+  );
+  validateM6Array(
+    input["resolvedEvents"],
+    "state.m6PolicyEvents.resolvedEvents",
+    "M6 resolved policy events",
+    errors,
+    validateM6PolicyEventResolvedEntry
+  );
+  validateM6Array(
+    input["policyModifiers"],
+    "state.m6PolicyEvents.policyModifiers",
+    "M6 policy modifiers",
+    errors,
+    validateM6PolicyModifierEntry
+  );
+  validatePositiveIntegerField(
+    input,
+    "nextEventInstanceId",
+    "state.m6PolicyEvents.nextEventInstanceId",
+    "M6PolicyEventInstanceId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "nextModifierId",
+    "state.m6PolicyEvents.nextModifierId",
+    "M6PolicyModifierId",
+    errors
+  );
+}
+
+function validateM6PolicyDefinitionEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6PolicyDefinitionState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M6PolicyId", errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateNonEmptyStringField(input, "displayNameKey", `${path}.displayNameKey`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateStringArrayField(input["encyclopediaRefs"], `${path}.encyclopediaRefs`, errors);
+}
+
+function validateM6PolicyEventDefinitionEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6PolicyEventDefinitionState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(
+    input,
+    "eventDefinitionId",
+    `${path}.eventDefinitionId`,
+    "M6PolicyEventDefinitionId",
+    errors
+  );
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateNonEmptyStringField(input, "displayNameKey", `${path}.displayNameKey`, errors);
+  const cause = input["cause"];
+  if (!isRecord(cause)) {
+    errors.push({ code: "invalid-schema", path: `${path}.cause`, message: "Cause must be object." });
+  } else {
+    validateStringUnionField(cause, "kind", `${path}.cause.kind`, ["day-at-least"], errors);
+    validateNonnegativeIntegerField(cause, "day", `${path}.cause.day`, errors);
+    validateStringArrayField(cause["reasonCodes"], `${path}.cause.reasonCodes`, errors);
+  }
+  validateM6Array(input["options"], `${path}.options`, "M6 event options", errors, validateM6PolicyEventOptionEntry);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateStringArrayField(input["encyclopediaRefs"], `${path}.encyclopediaRefs`, errors);
+}
+
+function validateM6PolicyEventOptionEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6PolicyEventOptionState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "optionId", `${path}.optionId`, "M6OptionId", errors);
+  validateNonEmptyStringField(input, "displayNameKey", `${path}.displayNameKey`, errors);
+  validateM6Array(
+    input["consequences"],
+    `${path}.consequences`,
+    "M6 event consequences",
+    errors,
+    validateM6PolicyEventConsequenceEntry
+  );
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  validateStringArrayField(input["encyclopediaRefs"], `${path}.encyclopediaRefs`, errors);
+}
+
+function validateM6PolicyEventConsequenceEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6PolicyEventConsequenceState", errors)) {
+    return;
+  }
+  validateStringUnionField(input, "kind", `${path}.kind`, ["policy-modifier"], errors);
+  validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M6PolicyId", errors);
+  validateIntegerFieldInRange(input, "magnitudeBps", `${path}.magnitudeBps`, -10_000, 10_000, errors);
+  validatePositiveIntegerField(input, "durationDays", `${path}.durationDays`, "durationDays", errors);
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
+function validateM6PolicyEventActiveEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6PolicyEventActiveState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "eventInstanceId", `${path}.eventInstanceId`, "M6PolicyEventInstanceId", errors);
+  validatePositiveIntegerField(input, "eventDefinitionId", `${path}.eventDefinitionId`, "M6PolicyEventDefinitionId", errors);
+  validateNonnegativeIntegerField(input, "activatedDay", `${path}.activatedDay`, errors);
+  validateStringArrayField(input["causeReasonCodes"], `${path}.causeReasonCodes`, errors);
+}
+
+function validateM6PolicyEventResolvedEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6PolicyEventResolvedState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "eventInstanceId", `${path}.eventInstanceId`, "M6PolicyEventInstanceId", errors);
+  validatePositiveIntegerField(input, "eventDefinitionId", `${path}.eventDefinitionId`, "M6PolicyEventDefinitionId", errors);
+  validatePositiveIntegerField(input, "selectedOptionId", `${path}.selectedOptionId`, "M6OptionId", errors);
+  validateNonnegativeIntegerField(input, "resolvedDay", `${path}.resolvedDay`, errors);
+  validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateM6PolicyModifierEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "M6PolicyModifierState", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "modifierId", `${path}.modifierId`, "M6PolicyModifierId", errors);
+  validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M6PolicyId", errors);
+  validatePositiveIntegerField(input, "eventInstanceId", `${path}.eventInstanceId`, "M6PolicyEventInstanceId", errors);
+  validateIntegerFieldInRange(input, "magnitudeBps", `${path}.magnitudeBps`, -10_000, 10_000, errors);
+  validateNonnegativeIntegerField(input, "startDay", `${path}.startDay`, errors);
+  validateNonnegativeIntegerField(input, "endDay", `${path}.endDay`, errors);
+  validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
 }
 
 function validateM6Array(
@@ -5137,7 +5455,8 @@ function createRuntimeState(
   m2: M2EconomyPopulationStateV0 | undefined,
   m3: M3PolityVassalageStateV0 | undefined,
   m4: M4CampaignStateV0 | undefined,
-  m6: M6DiplomacyLegitimacyStateV0 | undefined
+  m6: M6DiplomacyLegitimacyStateV0 | undefined,
+  m6PolicyEvents: M6PolicyEventRuntimeStateV0 | undefined
 ): WorldRuntimeStateV0 {
   const state: WorldRuntimeStateV0 = {
     polities: sortByNumericId(definitions.polities).map((definition) => ({
@@ -5160,7 +5479,13 @@ function createRuntimeState(
     }))
   };
 
-  if (m2 === undefined && m3 === undefined && m4 === undefined && m6 === undefined) {
+  if (
+    m2 === undefined &&
+    m3 === undefined &&
+    m4 === undefined &&
+    m6 === undefined &&
+    m6PolicyEvents === undefined
+  ) {
     return state;
   }
 
@@ -5179,6 +5504,13 @@ function createRuntimeState(
 
   if (m6 !== undefined) {
     nextState = { ...nextState, m6: canonicalizeM6DiplomacyLegitimacyStateV0(m6) };
+  }
+
+  if (m6PolicyEvents !== undefined) {
+    nextState = {
+      ...nextState,
+      m6PolicyEvents: canonicalizeM6PolicyEventRuntimeStateV0(m6PolicyEvents)
+    };
   }
 
   return nextState;
@@ -5346,6 +5678,117 @@ export function canonicalizeM6DiplomacyLegitimacyStateV0(
         parseDisplayNameKey(code, "M6 profile reasonCode")
       )
     }))
+  };
+}
+
+export function createM6PolicyEventRuntimeStateV0(
+  input: Pick<M6PolicyEventRuntimeStateV0, "definitions"> &
+    Partial<Omit<M6PolicyEventRuntimeStateV0, "definitions" | "schemaVersion">>
+): M6PolicyEventRuntimeStateV0 {
+  return canonicalizeM6PolicyEventRuntimeStateV0({
+    schemaVersion: 1,
+    definitions: input.definitions,
+    activeEvents: input.activeEvents ?? [],
+    resolvedEvents: input.resolvedEvents ?? [],
+    policyModifiers: input.policyModifiers ?? [],
+    nextEventInstanceId: input.nextEventInstanceId ?? 1,
+    nextModifierId: input.nextModifierId ?? 1
+  });
+}
+
+export function canonicalizeM6PolicyEventRuntimeStateV0(
+  runtime: M6PolicyEventRuntimeStateV0
+): M6PolicyEventRuntimeStateV0 {
+  return {
+    schemaVersion: 1,
+    definitions: {
+      policies: sortM6PolicyDefinitions(runtime.definitions.policies).map((policy) => ({
+        policyId: parseM6PolicyDefinitionId(policy.policyId),
+        sourceId: parseDisplayNameKey(policy.sourceId, "M6 policy sourceId"),
+        displayNameKey: parseDisplayNameKey(policy.displayNameKey, "M6 policy displayNameKey"),
+        reasonCodes: sortText(policy.reasonCodes).map((code) =>
+          parseDisplayNameKey(code, "M6 policy reasonCode")
+        ),
+        encyclopediaRefs: sortText(policy.encyclopediaRefs).map((ref) =>
+          parseDisplayNameKey(ref, "M6 policy encyclopediaRef")
+        )
+      })),
+      events: sortM6PolicyEventDefinitions(runtime.definitions.events).map((event) => ({
+        eventDefinitionId: parseM6PolicyEventDefinitionId(event.eventDefinitionId),
+        sourceId: parseDisplayNameKey(event.sourceId, "M6 event sourceId"),
+        displayNameKey: parseDisplayNameKey(event.displayNameKey, "M6 event displayNameKey"),
+        cause: {
+          kind: "day-at-least",
+          day: parseGameDay(event.cause.day),
+          reasonCodes: sortText(event.cause.reasonCodes).map((code) =>
+            parseDisplayNameKey(code, "M6 event cause reasonCode")
+          )
+        },
+        options: sortM6PolicyEventOptions(event.options).map((option) => ({
+          optionId: parsePositiveInteger(option.optionId, "M6 optionId"),
+          displayNameKey: parseDisplayNameKey(
+            option.displayNameKey,
+            "M6 option displayNameKey"
+          ),
+          consequences: option.consequences.map((consequence) => ({
+            kind: "policy-modifier",
+            policyId: parseM6PolicyDefinitionId(consequence.policyId),
+            magnitudeBps: parseSignedBps(consequence.magnitudeBps, "M6 consequence magnitudeBps"),
+            durationDays: parsePositiveInteger(
+              consequence.durationDays,
+              "M6 consequence durationDays"
+            ),
+            reasonCode: parseDisplayNameKey(
+              consequence.reasonCode,
+              "M6 consequence reasonCode"
+            )
+          })),
+          reasonCodes: sortText(option.reasonCodes).map((code) =>
+            parseDisplayNameKey(code, "M6 option reasonCode")
+          ),
+          encyclopediaRefs: sortText(option.encyclopediaRefs).map((ref) =>
+            parseDisplayNameKey(ref, "M6 option encyclopediaRef")
+          )
+        })),
+        reasonCodes: sortText(event.reasonCodes).map((code) =>
+          parseDisplayNameKey(code, "M6 event reasonCode")
+        ),
+        encyclopediaRefs: sortText(event.encyclopediaRefs).map((ref) =>
+          parseDisplayNameKey(ref, "M6 event encyclopediaRef")
+        )
+      }))
+    },
+    activeEvents: sortM6PolicyEventActive(runtime.activeEvents).map((event) => ({
+      eventInstanceId: parseM6PolicyEventInstanceId(event.eventInstanceId),
+      eventDefinitionId: parseM6PolicyEventDefinitionId(event.eventDefinitionId),
+      activatedDay: parseGameDay(event.activatedDay),
+      causeReasonCodes: sortText(event.causeReasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M6 active event reasonCode")
+      )
+    })),
+    resolvedEvents: sortM6PolicyEventResolved(runtime.resolvedEvents).map((event) => ({
+      eventInstanceId: parseM6PolicyEventInstanceId(event.eventInstanceId),
+      eventDefinitionId: parseM6PolicyEventDefinitionId(event.eventDefinitionId),
+      selectedOptionId: parsePositiveInteger(event.selectedOptionId, "M6 selectedOptionId"),
+      resolvedDay: parseGameDay(event.resolvedDay),
+      reasonCodes: sortText(event.reasonCodes).map((code) =>
+        parseDisplayNameKey(code, "M6 resolved event reasonCode")
+      )
+    })),
+    policyModifiers: sortM6PolicyModifiers(runtime.policyModifiers).map((modifier) => ({
+      modifierId: parseM6PolicyModifierId(modifier.modifierId),
+      policyId: parseM6PolicyDefinitionId(modifier.policyId),
+      eventInstanceId: parseM6PolicyEventInstanceId(modifier.eventInstanceId),
+      magnitudeBps: parseSignedBps(modifier.magnitudeBps, "M6 policy modifier magnitudeBps"),
+      startDay: parseGameDay(modifier.startDay),
+      endDay: parseGameDay(modifier.endDay),
+      reasonCode: parseDisplayNameKey(modifier.reasonCode, "M6 policy modifier reasonCode")
+    })),
+    nextEventInstanceId: parsePositiveInteger(
+      runtime.nextEventInstanceId,
+      "M6 nextEventInstanceId"
+    ),
+    nextModifierId: parsePositiveInteger(runtime.nextModifierId, "M6 nextModifierId")
   };
 }
 
@@ -6890,6 +7333,61 @@ function sortM6LegitimacyProfiles(
   );
 }
 
+function sortM6PolicyDefinitions(
+  values: readonly M6PolicyDefinitionStateV0[]
+): readonly M6PolicyDefinitionStateV0[] {
+  return [...values].sort((left, right) => left.policyId - right.policyId);
+}
+
+function sortM6PolicyEventDefinitions(
+  values: readonly M6PolicyEventDefinitionStateV0[]
+): readonly M6PolicyEventDefinitionStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.cause.day - right.cause.day || left.eventDefinitionId - right.eventDefinitionId
+  );
+}
+
+function sortM6PolicyEventOptions(
+  values: readonly M6PolicyEventOptionStateV0[]
+): readonly M6PolicyEventOptionStateV0[] {
+  return [...values].sort((left, right) => left.optionId - right.optionId);
+}
+
+function sortM6PolicyEventActive(
+  values: readonly M6PolicyEventActiveStateV0[]
+): readonly M6PolicyEventActiveStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.activatedDay - right.activatedDay ||
+      left.eventDefinitionId - right.eventDefinitionId ||
+      left.eventInstanceId - right.eventInstanceId
+  );
+}
+
+function sortM6PolicyEventResolved(
+  values: readonly M6PolicyEventResolvedStateV0[]
+): readonly M6PolicyEventResolvedStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.resolvedDay - right.resolvedDay ||
+      left.eventDefinitionId - right.eventDefinitionId ||
+      left.eventInstanceId - right.eventInstanceId
+  );
+}
+
+function sortM6PolicyModifiers(
+  values: readonly M6PolicyModifierStateV0[]
+): readonly M6PolicyModifierStateV0[] {
+  return [...values].sort(
+    (left, right) =>
+      left.policyId - right.policyId ||
+      left.startDay - right.startDay ||
+      left.eventInstanceId - right.eventInstanceId ||
+      left.modifierId - right.modifierId
+  );
+}
+
 function canonicalizeM4PostwarCandidate(
   candidate: M4PostwarCandidateStateV0
 ): M4PostwarCandidateStateV0 {
@@ -7391,6 +7889,29 @@ function formatM6CanonicalLines(m6: M6DiplomacyLegitimacyStateV0 | undefined): r
   ];
 }
 
+function formatM6PolicyEventCanonicalLines(
+  runtime: M6PolicyEventRuntimeStateV0 | undefined
+): readonly string[] {
+  if (runtime === undefined) {
+    return [];
+  }
+
+  return [
+    `state.m6PolicyEvents.schemaVersion=${runtime.schemaVersion}`,
+    `state.m6PolicyEvents.definitions.policies=${formatM6PolicyDefinitions(
+      runtime.definitions.policies
+    )}`,
+    `state.m6PolicyEvents.definitions.events=${formatM6PolicyEventDefinitions(
+      runtime.definitions.events
+    )}`,
+    `state.m6PolicyEvents.activeEvents=${formatM6PolicyEventActive(runtime.activeEvents)}`,
+    `state.m6PolicyEvents.resolvedEvents=${formatM6PolicyEventResolved(runtime.resolvedEvents)}`,
+    `state.m6PolicyEvents.policyModifiers=${formatM6PolicyModifiers(runtime.policyModifiers)}`,
+    `state.m6PolicyEvents.nextEventInstanceId=${runtime.nextEventInstanceId}`,
+    `state.m6PolicyEvents.nextModifierId=${runtime.nextModifierId}`
+  ];
+}
+
 function formatM6Relations(values: readonly M6DiplomaticRelationStateV0[]): string {
   return sortM6Relations(values)
     .map((value) =>
@@ -7466,6 +7987,107 @@ function formatM6LegitimacyProfiles(values: readonly M6LegitimacyProfileStateV0[
         value.pressureBps,
         sortNumericIds(value.sourceIds).join("/"),
         sortText(value.reasonCodes).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6PolicyDefinitions(values: readonly M6PolicyDefinitionStateV0[]): string {
+  return sortM6PolicyDefinitions(values)
+    .map((value) =>
+      [
+        value.policyId,
+        value.sourceId,
+        value.displayNameKey,
+        sortText(value.reasonCodes).join("/"),
+        sortText(value.encyclopediaRefs).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6PolicyEventDefinitions(
+  values: readonly M6PolicyEventDefinitionStateV0[]
+): string {
+  return sortM6PolicyEventDefinitions(values)
+    .map((value) =>
+      [
+        value.eventDefinitionId,
+        value.sourceId,
+        value.displayNameKey,
+        value.cause.kind,
+        value.cause.day,
+        sortText(value.cause.reasonCodes).join("/"),
+        formatM6PolicyEventOptions(value.options),
+        sortText(value.reasonCodes).join("/"),
+        sortText(value.encyclopediaRefs).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6PolicyEventOptions(values: readonly M6PolicyEventOptionStateV0[]): string {
+  return sortM6PolicyEventOptions(values)
+    .map((value) =>
+      [
+        value.optionId,
+        value.displayNameKey,
+        value.consequences
+          .map((consequence) =>
+            [
+              consequence.kind,
+              consequence.policyId,
+              consequence.magnitudeBps,
+              consequence.durationDays,
+              consequence.reasonCode
+            ].join("/")
+          )
+          .join("+"),
+        sortText(value.reasonCodes).join("/"),
+        sortText(value.encyclopediaRefs).join("/")
+      ].join("#")
+    )
+    .join("|");
+}
+
+function formatM6PolicyEventActive(values: readonly M6PolicyEventActiveStateV0[]): string {
+  return sortM6PolicyEventActive(values)
+    .map((value) =>
+      [
+        value.eventInstanceId,
+        value.eventDefinitionId,
+        value.activatedDay,
+        sortText(value.causeReasonCodes).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6PolicyEventResolved(values: readonly M6PolicyEventResolvedStateV0[]): string {
+  return sortM6PolicyEventResolved(values)
+    .map((value) =>
+      [
+        value.eventInstanceId,
+        value.eventDefinitionId,
+        value.selectedOptionId,
+        value.resolvedDay,
+        sortText(value.reasonCodes).join("/")
+      ].join(":")
+    )
+    .join(",");
+}
+
+function formatM6PolicyModifiers(values: readonly M6PolicyModifierStateV0[]): string {
+  return sortM6PolicyModifiers(values)
+    .map((value) =>
+      [
+        value.modifierId,
+        value.policyId,
+        value.eventInstanceId,
+        value.magnitudeBps,
+        value.startDay,
+        value.endDay,
+        value.reasonCode
       ].join(":")
     )
     .join(",");
@@ -10575,6 +11197,180 @@ function validateM6RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
   });
 }
 
+function validateM6PolicyEventRuntimeState(
+  world: WorldStateV0Candidate,
+  errors: WorldInvariantError[]
+): void {
+  const runtime = world.state.m6PolicyEvents;
+  if (runtime === undefined || !isM6PolicyEventRuntimeLike(runtime)) {
+    return;
+  }
+
+  const policyIds = new Set<number>();
+  runtime.definitions.policies.forEach((policy, index) => {
+    if (policyIds.has(policy.policyId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6PolicyEvents.definitions.policies",
+        message: `Duplicate M6 policy definition row for M6PolicyDefinitionId ${policy.policyId}.`
+      });
+    }
+    policyIds.add(policy.policyId);
+    if (policy.reasonCodes.length === 0) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6PolicyEvents.definitions.policies[${index}].reasonCodes`,
+        message: "M6 policy definition requires at least one reason code."
+      });
+    }
+    if (policy.encyclopediaRefs.length === 0) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6PolicyEvents.definitions.policies[${index}].encyclopediaRefs`,
+        message: "M6 policy definition requires at least one encyclopedia reference."
+      });
+    }
+  });
+
+  const eventDefinitionIds = new Set<number>();
+  runtime.definitions.events.forEach((event, eventIndex) => {
+    if (eventDefinitionIds.has(event.eventDefinitionId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6PolicyEvents.definitions.events",
+        message: `Duplicate M6 event definition row for M6PolicyEventDefinitionId ${event.eventDefinitionId}.`
+      });
+    }
+    eventDefinitionIds.add(event.eventDefinitionId);
+    if (event.options.length === 0) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6PolicyEvents.definitions.events[${eventIndex}].options`,
+        message: "M6 event definition requires at least one option."
+      });
+    }
+    if (event.reasonCodes.length === 0 || event.cause.reasonCodes.length === 0) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6PolicyEvents.definitions.events[${eventIndex}].reasonCodes`,
+        message: "M6 event definition and cause require reason codes."
+      });
+    }
+    if (event.encyclopediaRefs.length === 0) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6PolicyEvents.definitions.events[${eventIndex}].encyclopediaRefs`,
+        message: "M6 event definition requires at least one encyclopedia reference."
+      });
+    }
+    const optionIds = new Set<number>();
+    event.options.forEach((option, optionIndex) => {
+      if (optionIds.has(option.optionId)) {
+        errors.push({
+          code: "duplicate-runtime-state-row",
+          path: `state.m6PolicyEvents.definitions.events[${eventIndex}].options`,
+          message: `Duplicate M6 event option row for optionId ${option.optionId}.`
+        });
+      }
+      optionIds.add(option.optionId);
+      if (option.reasonCodes.length === 0 || option.encyclopediaRefs.length === 0) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m6PolicyEvents.definitions.events[${eventIndex}].options[${optionIndex}]`,
+          message: "M6 event option requires reason codes and encyclopedia references."
+        });
+      }
+      option.consequences.forEach((consequence, consequenceIndex) => {
+        if (!policyIds.has(consequence.policyId)) {
+          errors.push({
+            code: "bad-reference",
+            path: `state.m6PolicyEvents.definitions.events[${eventIndex}].options[${optionIndex}].consequences[${consequenceIndex}].policyId`,
+            message: "M6 event consequence references missing policy definition."
+          });
+        }
+      });
+    });
+  });
+
+  const activeInstanceIds = new Set<number>();
+  runtime.activeEvents.forEach((event, index) => {
+    if (activeInstanceIds.has(event.eventInstanceId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6PolicyEvents.activeEvents",
+        message: `Duplicate active M6 event instance ${event.eventInstanceId}.`
+      });
+    }
+    activeInstanceIds.add(event.eventInstanceId);
+    if (!eventDefinitionIds.has(event.eventDefinitionId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m6PolicyEvents.activeEvents[${index}].eventDefinitionId`,
+        message: "M6 active event references missing event definition."
+      });
+    }
+  });
+
+  const resolvedInstanceIds = new Set<number>();
+  runtime.resolvedEvents.forEach((event, index) => {
+    if (resolvedInstanceIds.has(event.eventInstanceId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6PolicyEvents.resolvedEvents",
+        message: `Duplicate resolved M6 event instance ${event.eventInstanceId}.`
+      });
+    }
+    resolvedInstanceIds.add(event.eventInstanceId);
+    if (!eventDefinitionIds.has(event.eventDefinitionId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m6PolicyEvents.resolvedEvents[${index}].eventDefinitionId`,
+        message: "M6 resolved event references missing event definition."
+      });
+    }
+    if (activeInstanceIds.has(event.eventInstanceId)) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6PolicyEvents.resolvedEvents[${index}].eventInstanceId`,
+        message: "M6 event instance cannot be both active and resolved."
+      });
+    }
+  });
+
+  const modifierIds = new Set<number>();
+  runtime.policyModifiers.forEach((modifier, index) => {
+    if (modifierIds.has(modifier.modifierId)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: "state.m6PolicyEvents.policyModifiers",
+        message: `Duplicate M6 policy modifier ${modifier.modifierId}.`
+      });
+    }
+    modifierIds.add(modifier.modifierId);
+    if (!policyIds.has(modifier.policyId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m6PolicyEvents.policyModifiers[${index}].policyId`,
+        message: "M6 policy modifier references missing policy definition."
+      });
+    }
+    if (!resolvedInstanceIds.has(modifier.eventInstanceId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `state.m6PolicyEvents.policyModifiers[${index}].eventInstanceId`,
+        message: "M6 policy modifier references missing resolved event."
+      });
+    }
+    if (modifier.endDay < modifier.startDay) {
+      errors.push({
+        code: "invalid-schema",
+        path: `state.m6PolicyEvents.policyModifiers[${index}].endDay`,
+        message: "M6 policy modifier endDay must be >= startDay."
+      });
+    }
+  });
+}
+
 function validatePolityReference(
   polityIds: ReadonlySet<number>,
   polityId: number,
@@ -10849,6 +11645,24 @@ function isM6StateLike(value: unknown): value is M6DiplomacyLegitimacyStateV0 {
     Array.isArray(value["recognitionEdges"]) &&
     Array.isArray(value["legitimacySources"]) &&
     Array.isArray(value["legitimacyProfiles"])
+  );
+}
+
+function isM6PolicyEventRuntimeLike(value: unknown): value is M6PolicyEventRuntimeStateV0 {
+  if (!isRecord(value)) {
+    return false;
+  }
+  const definitions = value["definitions"];
+  return (
+    value["schemaVersion"] === 1 &&
+    isRecord(definitions) &&
+    Array.isArray(definitions["policies"]) &&
+    Array.isArray(definitions["events"]) &&
+    Array.isArray(value["activeEvents"]) &&
+    Array.isArray(value["resolvedEvents"]) &&
+    Array.isArray(value["policyModifiers"]) &&
+    isPositiveInteger(value["nextEventInstanceId"]) &&
+    isPositiveInteger(value["nextModifierId"])
   );
 }
 
