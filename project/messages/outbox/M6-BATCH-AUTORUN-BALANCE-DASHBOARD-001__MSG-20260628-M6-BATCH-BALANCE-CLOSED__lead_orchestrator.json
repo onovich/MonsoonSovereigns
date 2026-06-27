@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260628-M6-BATCH-BALANCE-CLOSED",
+  "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 is CLOSED after PR #151 passed CI, merged to origin/main at 4fbec6f0dc8408df785a7492f2b463ab2efdbb03, and local main was synchronized. The accepted implementation provides deterministic local batch balance evidence, CLI artifact output hash 99d64950, read-only dashboard rendering, QA R2 ACCEPT, and no Human Gate. Next dependency-ready M6 task is M6-ADVISER-INTERVENTION-EVIDENCE-001.",
+  "artifacts": [
+    "project/tasks/active/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-CLOSED__lead_orchestrator.json",
+    "apps/sim-runner/src/m6-batch-balance.ts",
+    "apps/sim-runner/src/run-m6-batch-balance.mjs",
+    "tests/sim-runner-m6-batch-balance.test.tsx"
+  ],
+  "branch_or_worktree": "chore/close-m6-batch-balance-dashboard",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "gh pr checks 151 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 2m12s; Windows Desktop Smoke Artifact passed in 50s"
+    },
+    {
+      "command": "gh pr view 151 --json number,state,mergedAt,mergeCommit,url,headRefName,baseRefName",
+      "exit_code": 0,
+      "result": "PR #151 MERGED to main at 2026-06-27T17:43:17Z; merge commit 4fbec6f0dc8408df785a7492f2b463ab2efdbb03"
+    },
+    {
+      "command": "git pull --ff-only origin main",
+      "exit_code": 0,
+      "result": "main fast-forwarded to 4fbec6f0dc8408df785a7492f2b463ab2efdbb03 and includes M6 batch balance implementation plus ACCEPT metadata"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M6-ADVISER-INTERVENTION-EVIDENCE-001 DRAFT gameplay_designer Collect adviser intervention evidence for Alpha flows"
+    }
+  ],
+  "decisions": [
+    "Task moves from ACCEPTED to CLOSED only after PR #151 CI passed, merged, and main was synchronized.",
+    "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "Next ready task is M6-ADVISER-INTERVENTION-EVIDENCE-001, but it starts only after this closure checkpoint enters main."
+  ],
+  "risks": [],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Commit closure checkpoint, push closure branch, open and merge closure PR, sync main, then start M6-ADVISER-INTERVENTION-EVIDENCE-001.",
+  "created_at": "2026-06-27T17:45:12.151Z"
+}
