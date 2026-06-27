@@ -2,7 +2,7 @@
   "id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
   "summary": "Collect adviser intervention evidence for Alpha flows",
   "milestone": "M6",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "gameplay_designer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -77,22 +77,278 @@
       "actual_effort": "unknown"
     }
   },
-  "route_to": "gameplay_designer",
+  "route_to": "qa_reviewer",
   "notes": [
     "This is Alpha evidence only; it does not authorize telemetry or external research without a separate gate.",
     "Do not modify product code in this evidence task.",
     "If evidence needs new adviser behavior, route a separate allowed implementation task instead of expanding this one."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T17:56:53.865Z",
+  "updated_at": "2026-06-28T02:05:00+08:00",
   "started_at": "2026-06-27T17:55:19.454Z",
   "base_main_commit": "c8dc04c93dae60265d665b198150fb255b4ae76f",
   "previous_closed_task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "start_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-START__lead_orchestrator.json",
-  "next_action": "Await gameplay_designer REVIEW handoff, validate it, then route to independent qa_reviewer.",
+  "next_action": "Route gameplay_designer REVIEW handoff to independent qa_reviewer.",
   "route_file": "project/messages/routes/M6-ADVISER-INTERVENTION-EVIDENCE-001__ROUTE-20260628-M6-ADVISER-EVIDENCE-LEAD-TO-GAMEPLAY-START.json",
   "start_submission_id": "019f0a39-bcc2-7950-b10b-24f4ca43e05a",
-  "route_sent_at": "2026-06-27T17:56:53.865Z"
+  "route_sent_at": "2026-06-27T17:56:53.865Z",
+  "review_ready_at": "2026-06-28T02:05:00+08:00",
+  "review_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+  "evidence_summary": {
+    "method": "Local privacy-safe design review of accepted M6 client/adviser surfaces plus deterministic batch-run evidence. No new external participant session was conducted and no telemetry or network collection was added.",
+    "session_and_run_count": {
+      "new_human_or_external_observation_sessions": 0,
+      "local_designer_review_passes": 2,
+      "deterministic_batch_runs_reviewed": 6,
+      "batch_basis": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 accepted artifact hash 99d64950, 3 scenarios x 2 seeds.",
+      "client_coverage_basis": "Accepted M6 client QA records 10 Chromium Playwright tests covering Alpha flow, forbidden UI entry checks, and viewport overflow checks."
+    },
+    "privacy_handling": {
+      "local_only": true,
+      "anonymous": true,
+      "personal_data_collected": false,
+      "telemetry_or_network_collection": false,
+      "accounts_or_paid_services": false,
+      "notes": "Evidence is based on local repository files, accepted handoffs, deterministic run summaries, and code/test read-through. No player identity, input transcript, screen recording, remote analytics, or authoritative save/world payload is stored by this task."
+    },
+    "target": {
+      "goal": "Record whether the current Alpha adviser intervention layer helps understanding without taking player control.",
+      "covered_topics": [
+        "Alpha goal",
+        "risk",
+        "diplomacy",
+        "legitimacy",
+        "succession",
+        "policy/event choices",
+        "campaign consequences",
+        "victory progress"
+      ],
+      "non_goal": "This evidence does not approve M6 exit, change product scope, add telemetry, tune AI, implement adviser behavior, or accept formal historical/cultural content."
+    },
+    "player_decisions": [
+      {
+        "decision": "Use the adviser primary recommendation or choose another command path.",
+        "observed_advantage": "The primary reason m6.adviser.recognized-order-ready ties the Alpha win path to recognized order instead of map coloring.",
+        "cost": "Raw reason codes and scores add cognitive load and can look like debug output rather than player-facing advice.",
+        "dependency": "Requires M6 client read models, terminal evidence, diplomacy/legitimacy/succession reason codes, and command preview/confirm surfaces.",
+        "counter": "The player can ignore the candidate; rival refusal, succession timing, policy consequences, and campaign/postwar costs can still make a different command correct."
+      },
+      {
+        "decision": "Compare recognition, wait-for-succession, and policy-event candidates.",
+        "observed_advantage": "Multiple candidates preserve agency and show that a no-command wait can be a legitimate option.",
+        "cost": "The lower-scored wait candidate can be ignored because it lacks a clear trigger for when waiting is better.",
+        "dependency": "Depends on visible candidate ids, decision kinds, command kind or no-command state, score, and reason chips.",
+        "counter": "A future intervention should explain the tradeoff condition rather than raising a hidden global penalty for ignoring advice."
+      },
+      {
+        "decision": "Choose policy/event options while checking encyclopedia links.",
+        "observed_advantage": "The policy/event panel ties options to consequences, encyclopedia references, and content tags.",
+        "cost": "The adviser only surfaces a policy candidate and reason codes; it does not yet summarize consequence horizon or obligation risk in plain language.",
+        "dependency": "Depends on policy/event runtime, encyclopedia read model, option reason codes, and M6 client surface coverage.",
+        "counter": "Players can reject or delay policy choices; follow-up should add clearer consequence framing without making the adviser auto-select."
+      },
+      {
+        "decision": "Judge whether campaign/postwar consequences support victory progress.",
+        "observed_advantage": "Terminal and batch evidence expose recognized-by count, legitimacy, succession, postwar arrangement, route, population, and policy-event evidence.",
+        "cost": "The adviser panel itself does not yet give a direct campaign consequence intervention when supply, casualties, or postwar loss should change the plan.",
+        "dependency": "Depends on M4 campaign/postwar results, M6 terminal evidence, batch aggregate metrics, and M6 client terminal status.",
+        "counter": "The opponent can wait out supply or exploit postwar weakness; missing intervention is bounded as follow-up, not a hidden punishment."
+      }
+    ],
+    "state": {
+      "reviewed_surfaces": [
+        "M6 adviser read model: primaryReasonCode, commandKind, candidate ids, decisionKind, score, reasonCodes.",
+        "M6 terminal read model: victory/failure status, recognizedByCount, legitimacyScoreBps, checkpoint, victory requirements, failure conditions, excluded surfaces.",
+        "M6 diplomacy/legitimacy/succession panel: relations, recognition, legitimacy, succession continuity, agreement/source reason codes.",
+        "M6 policy/event/encyclopedia panel: active options, resolved event, modifiers, content tags, linked reason codes.",
+        "M6 batch artifact summary: 3 scenarios, 2 seeds, 6 runs, victory/continued-play/defeat/command-rejected outcomes."
+      ],
+      "control_boundary": "Adviser state is read-model evidence. It displays candidates and reason codes, but player commands still go through preview/confirm and authoritative GameCommand submission."
+    },
+    "update_frequency": {
+      "ui_starting_assumption": "Adviser interventions should update after a new Alpha read-model revision or player command step, not on real time or frame time.",
+      "metric": "Intervention reason changes should be traceable to command/revision/day/terminal evidence, not hidden timers.",
+      "validation_way": "Future live-worker integration can compare read-model revision changes with reason summary changes. Current evidence is fixture/read-model and deterministic-run review only."
+    },
+    "formula_intent": {
+      "candidate_scores": {
+        "starting_hypothesis": "Fixture scores 82, 63, and 41 are ordering evidence only, not final balance values.",
+        "metric": "A candidate is useful when its visible advantage, cost, dependency, and counterplay are understandable and it does not become an auto-play instruction.",
+        "validation_way": "Future consented observation can track whether players can explain why they accepted, ignored, or rejected an intervention. No telemetry is authorized."
+      }
+    },
+    "invariants": [
+      "No telemetry, analytics, network collection, accounts, paid services, or personal data collection.",
+      "No product code, package code, content-source data, tools, docs/gate files, manifests, checksums, or release artifacts are modified by this task.",
+      "Adviser intervention evidence cannot decide M6 exit; M6-ALPHA-NO-P0P1-VALIDATION-001 and M6-EXIT-VALIDATION-001 remain separate.",
+      "Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+      "Adviser candidates must not auto-submit commands or bypass player confirmation.",
+      "AI and player actions must continue to use the same GameCommand payload class.",
+      "Historical/cultural content tags remain review markers, not formal production acceptance."
+    ],
+    "ai_behavior": {
+      "observed": [
+        "Layered AI evidence records payload-level parity for non-system AI commands against player templates.",
+        "Adviser panel displays AI/adviser reasons and includes m6.adviser.no-hidden-rescue.",
+        "Deterministic batch evidence records no-rescue completion across local Alpha runs without remote collection."
+      ],
+      "limit": "The current adviser read model is still a projection over accepted protocol/read-model scripts and deterministic runs. It is not yet a measured live-player intervention loop."
+    },
+    "ui_explanation": {
+      "helps": [
+        "Shows AI/adviser primary reason, command kind, candidate list, decision kind, score, and reason chips.",
+        "Shows diplomacy, legitimacy, succession, policy/event, encyclopedia, map candidate, and terminal status in adjacent non-placeholder panels.",
+        "Shows victory/failure requirements and excluded manual node battle surface."
+      ],
+      "risks": [
+        "Reason codes are precise but not yet fully player-facing prose.",
+        "Candidate scores can imply false precision if not paired with visible costs and dependencies.",
+        "Campaign/postwar consequence advice is visible in surrounding panels but not yet a direct adviser intervention."
+      ]
+    },
+    "classification_table": [
+      {
+        "classification": "useful_intervention",
+        "intervention": "m6.adviser.recognized-order-ready primary recommendation",
+        "evidence": "Client and QA handoffs show M6 adviser reasons plus terminal/victory panels; tests assert the reason is present in M6 Alpha UI.",
+        "helps_with": [
+          "Alpha goal",
+          "diplomacy",
+          "legitimacy",
+          "succession",
+          "victory progress"
+        ],
+        "control_risk": "Low in current evidence because it is displayed as a candidate and commands still require player preview/confirm.",
+        "bounded_follow_up": "Translate reason code to concise player-facing explanation before broader player sessions."
+      },
+      {
+        "classification": "useful_intervention",
+        "intervention": "m6.adviser.policy-harbor-charter candidate",
+        "evidence": "Policy/event panel exposes Harbor charter petition options, consequences, encyclopedia references, and content tag COMPOSITE.",
+        "helps_with": [
+          "policy/event choices",
+          "risk",
+          "encyclopedia context"
+        ],
+        "control_risk": "Low because the command kind is visible and the UI remains command-driven.",
+        "bounded_follow_up": "Add clearer consequence horizon and obligation/campaign linkage in a later allowed client/design task."
+      },
+      {
+        "classification": "ignored_intervention",
+        "intervention": "m6.adviser.wait-for-succession candidate",
+        "evidence": "Candidate is visible with no command and lower score, but this task has 0 new human sessions, so actual ignore rate is unknown.",
+        "helps_with": [
+          "succession",
+          "risk"
+        ],
+        "control_risk": "No auto-control risk, but the advice may be ignored because it lacks a plain condition for waiting.",
+        "bounded_follow_up": "Future consented observation or deterministic scripted review should ask whether players know when waiting is better."
+      },
+      {
+        "classification": "harmful_intervention",
+        "intervention": "Raw reason-code and numeric-score presentation if treated as final player-facing copy",
+        "evidence": "The UI shows exact reason codes and fixture scores. These are useful audit evidence but can push players toward formula hunting.",
+        "helps_with": [
+          "auditability",
+          "AI explainability"
+        ],
+        "control_risk": "Medium as a comprehension risk, not an authority risk; it does not take control but can obscure the actual tradeoff.",
+        "bounded_follow_up": "Keep reason codes available for audit, but add short explanatory labels before external/non-author player sessions."
+      },
+      {
+        "classification": "missing_intervention",
+        "intervention": "Direct campaign/postwar consequence intervention",
+        "evidence": "M4/M6 surrounding panels and batch metrics expose route, supply, war/postwar loss, recognized order, and terminal evidence, but the adviser candidate list does not directly call out supply/casualty/postwar-risk tradeoffs.",
+        "helps_with": [
+          "campaign consequences",
+          "risk",
+          "victory progress"
+        ],
+        "control_risk": "No current auto-control risk. Missing guidance can make campaign consequences feel disconnected from adviser advice.",
+        "bounded_follow_up": "Add a future adviser candidate or explanation that cites supply, casualty, withdrawal, and postwar arrangement evidence without adding telemetry."
+      },
+      {
+        "classification": "missing_intervention",
+        "intervention": "Measured useful/ignored/harmful rates from real players",
+        "evidence": "This task used local deterministic review only. It did not run new consented participant sessions.",
+        "helps_with": [
+          "player comprehension validation"
+        ],
+        "control_risk": "None in product behavior; evidence confidence is the limitation.",
+        "bounded_follow_up": "If stronger evidence is required, run separate consented anonymous local sessions under a new task, with no telemetry by default."
+      }
+    ],
+    "blocker_defects": [],
+    "bounded_follow_ups": [
+      {
+        "id": "M6-ADVISER-FOLLOWUP-PLAIN-REASONS",
+        "summary": "Convert reason-code-heavy adviser output into concise player-facing labels while keeping audit codes available.",
+        "scope_guard": "Future client/design task only; no telemetry, no auto-play, no content lock."
+      },
+      {
+        "id": "M6-ADVISER-FOLLOWUP-CAMPAIGN-CONSEQUENCES",
+        "summary": "Add or test a direct adviser intervention for supply, casualty, withdrawal, and postwar consequence tradeoffs.",
+        "scope_guard": "Use existing M4/M6 read models and command previews; do not add manual node battle or hidden global penalties."
+      },
+      {
+        "id": "M6-ADVISER-FOLLOWUP-CONSENTED-SESSIONS",
+        "summary": "Optional separate consented anonymous local sessions to measure accepted/ignored/harmful interventions if lead wants stronger player evidence.",
+        "scope_guard": "Separate Human/lead-approved research task; no telemetry, remote analytics, accounts, or personal data."
+      },
+      {
+        "id": "M6-ADVISER-FOLLOWUP-HISTORY-ROUTING",
+        "summary": "Route any future formal names, symbols, language, cultural framing, or production encyclopedia copy to historical_researcher before content acceptance.",
+        "scope_guard": "Current content tags COMPOSITE/FICTIONAL are not formal historical acceptance."
+      }
+    ],
+    "cultural_historical_concerns": [
+      {
+        "tag": "COMPOSITE_REVIEW_REQUIRED",
+        "concern": "Current policy/event and map/encyclopedia labels include COMPOSITE/FICTIONAL framing. They are acceptable as Alpha review markers but not formal historical content acceptance.",
+        "route_to": "historical_researcher",
+        "human_gate": "Required only if a later task tries to lock major cultural-risk content, symbols, formal names, or disputed interpretation."
+      }
+    ],
+    "boundaries": [
+      "Evidence task only; no product implementation.",
+      "No M6 exit decision.",
+      "No telemetry/network/personal data.",
+      "No manual node battle reopening.",
+      "No hidden global punishment is proposed as an adviser consequence.",
+      "No formal historical or cultural content is accepted by this writer."
+    ],
+    "exploits": [
+      {
+        "risk": "Players treat adviser score as a solved optimal move.",
+        "counter": "Show costs, dependencies, and counterplay; keep alternative candidates and no-command wait visible."
+      },
+      {
+        "risk": "Reason-code spam makes advice unreadable.",
+        "counter": "Keep audit codes but add plain labels in a future bounded task."
+      },
+      {
+        "risk": "Adviser becomes hidden autopilot.",
+        "counter": "Maintain preview/confirm command path and never auto-submit adviser commands."
+      },
+      {
+        "risk": "Dashboard or observation evidence becomes telemetry by creep.",
+        "counter": "Keep artifacts local, schema-versioned, and manually reviewed; no remote collection."
+      },
+      {
+        "risk": "Scenario or encyclopedia text locks unreviewed historical interpretation.",
+        "counter": "Keep COMPOSITE/FICTIONAL tags and route formal content to historical_researcher or Human Gate."
+      }
+    ],
+    "vertical_slice_acceptance": [
+      "Gameplay_designer emits REVIEW evidence only and does not approve its own output.",
+      "Evidence covers useful, ignored, harmful-risk, and missing intervention categories.",
+      "Evidence records 0 new human/external observation sessions and 6 reviewed deterministic runs.",
+      "Evidence preserves local privacy boundaries and excludes telemetry/network collection.",
+      "Evidence records no blocker defects and bounded follow-ups for plain-language reasons, campaign consequence advice, optional consented sessions, and historical routing.",
+      "Independent qa_reviewer must accept or request changes before lead integration."
+    ]
+  }
 }

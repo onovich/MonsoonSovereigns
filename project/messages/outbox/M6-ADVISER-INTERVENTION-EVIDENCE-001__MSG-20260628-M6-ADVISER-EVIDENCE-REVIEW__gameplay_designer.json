@@ -1,0 +1,76 @@
+{
+  "message_id": "MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW",
+  "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+  "from_role": "gameplay_designer",
+  "status": "REVIEW",
+  "summary": "Recorded bounded local adviser-intervention evidence for M6 Alpha. Evidence uses 0 new human/external observation sessions, 2 local design review passes, and 6 reviewed deterministic batch runs from accepted local artifact hash 99d64950. It classifies useful, ignored, harmful-risk, and missing interventions; records no blocker defects; preserves no telemetry/network/personal-data collection; and routes historical/cultural concerns to historical_researcher or Human Gate before formal content acceptance.",
+  "artifacts": [
+    "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-START__lead_orchestrator.json",
+    "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-REVIEW__client_engineer.json",
+    "project/messages/outbox/M6-CLIENT-ALPHA-SURFACES-001__MSG-20260627-M6-CLIENT-ALPHA-SURFACES-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-LEAD-R2-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001__MSG-20260628-M6-BATCH-BALANCE-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "research/m6-adviser-intervention-evidence / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "9a0d5970255cc535f5121cfcca51b87cf568202d",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree contains the expected REVIEW evidence diff in project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json; after handoff creation it also contains this new outbox handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ADVISER-INTERVENTION-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M6-ADVISER-INTERVENTION-EVIDENCE-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list completed; M6-ADVISER-INTERVENTION-EVIDENCE-001 is REVIEW, owner gameplay_designer, summary Collect adviser intervention evidence for Alpha flows."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready tasks printed while M6-ADVISER-INTERVENTION-EVIDENCE-001 is in REVIEW."
+    },
+    {
+      "command": "Adviser evidence lists session/run count, local privacy handling, intervention classifications, blocker/follow-up split, and no telemetry/network collection.",
+      "exit_code": 0,
+      "result": "Task evidence_summary records 0 new human/external sessions, 2 local review passes, 6 deterministic runs reviewed, local-only anonymous handling, useful/ignored/harmful/missing classifications, empty blocker_defects, bounded follow-ups, and telemetry/network/personal-data exclusion."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json"
+    }
+  ],
+  "decisions": [
+    "Classified current adviser evidence as useful for recognized-order goal framing, diplomacy/legitimacy/succession comprehension, policy/event context, and victory progress because the UI exposes candidate reasons next to terminal and system panels without auto-submitting commands.",
+    "Recorded ignored intervention risk for the wait-for-succession candidate because it is visible but has no-command state, lower score, and no new human sessions to measure actual ignore rate.",
+    "Recorded harmful-risk, not blocker, for raw reason-code and score-heavy presentation because it can obscure player-facing meaning while remaining useful for auditability.",
+    "Recorded missing intervention for direct campaign/postwar consequence guidance because surrounding M4/M6 panels and batch metrics expose the evidence, but the adviser candidate list does not directly cite supply, casualty, withdrawal, or postwar-risk tradeoffs.",
+    "Recorded no blocker defects and bounded follow-ups only; this task does not expand product scope, implement adviser behavior, add telemetry, collect personal data, or decide M6 exit.",
+    "Tagged COMPOSITE/FICTIONAL encyclopedia and map/policy framing as review markers only; any later formal names, symbols, language, cultural framing, or production encyclopedia copy routes to historical_researcher or Human Gate.",
+    "Preserved DEFER_MANUAL_NODE_BATTLE and did not reopen manual node battle."
+  ],
+  "risks": [
+    "Evidence confidence is limited: this task ran no new external or non-author participant sessions and therefore cannot measure actual acceptance, ignored rate, or harm rate.",
+    "Reason-code-heavy adviser output may be too opaque for first-time players unless future UI/design work adds plain-language labels.",
+    "Candidate scores are fixture ordering evidence, not final balance values; treating them as final could encourage formula hunting.",
+    "Direct campaign/postwar consequence advice is currently a missing intervention and should remain bounded follow-up, not a hidden global punishment.",
+    "Cultural/historical material remains tagged as COMPOSITE/FICTIONAL review context only; formal content acceptance requires historical_researcher or Human Gate routing."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently review the M6 adviser intervention evidence for acceptance criteria, privacy boundary, local/deterministic evidence limits, blocker/follow-up split, cultural/historical routing, and no telemetry/network/personal-data collection. Return ACCEPT, REQUEST_CHANGES, or BLOCK; do not mark the task CLOSED from this writer handoff.",
+  "created_at": "2026-06-28T02:05:00+08:00"
+}
