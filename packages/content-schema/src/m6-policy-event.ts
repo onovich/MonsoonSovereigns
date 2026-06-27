@@ -120,11 +120,7 @@ export function parseM6PolicyEventDefinitionSetSourceV0(
   });
 }
 
-function validatePolicy(
-  input: unknown,
-  path: string,
-  errors: M6PolicyEventSchemaError[]
-): void {
+function validatePolicy(input: unknown, path: string, errors: M6PolicyEventSchemaError[]): void {
   if (!isRecord(input)) {
     errors.push({ path, message: "M6 policy definition must be an object." });
     return;
@@ -153,11 +149,7 @@ function validatePolicy(
   );
 }
 
-function validateEvent(
-  input: unknown,
-  path: string,
-  errors: M6PolicyEventSchemaError[]
-): void {
+function validateEvent(input: unknown, path: string, errors: M6PolicyEventSchemaError[]): void {
   if (!isRecord(input)) {
     errors.push({ path, message: "M6 event definition must be an object." });
     return;
@@ -201,11 +193,7 @@ function validateEvent(
   }
 }
 
-function validateCause(
-  input: unknown,
-  path: string,
-  errors: M6PolicyEventSchemaError[]
-): void {
+function validateCause(input: unknown, path: string, errors: M6PolicyEventSchemaError[]): void {
   if (!isRecord(input)) {
     errors.push({ path, message: "M6 event cause must be an object." });
     return;
@@ -216,11 +204,7 @@ function validateCause(
   validatePatternArray(input["reasonCodes"], `${path}.reasonCodes`, REASON_CODE_PATTERN, errors);
 }
 
-function validateOption(
-  input: unknown,
-  path: string,
-  errors: M6PolicyEventSchemaError[]
-): void {
+function validateOption(input: unknown, path: string, errors: M6PolicyEventSchemaError[]): void {
   if (!isRecord(input)) {
     errors.push({ path, message: "M6 event option must be an object." });
     return;

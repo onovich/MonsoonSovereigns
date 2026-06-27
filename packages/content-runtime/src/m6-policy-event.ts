@@ -1,7 +1,6 @@
 import {
   parseM6PolicyEventDefinitionSetSourceV0,
   type M6PolicyDefinitionSourceV0,
-  type M6PolicyEventDefinitionSetSourceV0,
   type M6PolicyEventDefinitionSourceV0
 } from "@monsoon/content-schema";
 

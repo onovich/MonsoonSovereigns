@@ -2750,7 +2750,11 @@ function parseM6PolicyDefinition(
     sourceId: readString(record, "sourceId", `${path}.sourceId`, errors),
     displayNameKey: readString(record, "displayNameKey", `${path}.displayNameKey`, errors),
     reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors),
-    encyclopediaRefs: parseStringArray(record["encyclopediaRefs"], `${path}.encyclopediaRefs`, errors)
+    encyclopediaRefs: parseStringArray(
+      record["encyclopediaRefs"],
+      `${path}.encyclopediaRefs`,
+      errors
+    )
   };
 }
 
@@ -2767,15 +2771,20 @@ function parseM6PolicyEventDefinition(
     sourceId: readString(record, "sourceId", `${path}.sourceId`, errors),
     displayNameKey: readString(record, "displayNameKey", `${path}.displayNameKey`, errors),
     cause: parseM6PolicyEventCause(record["cause"], `${path}.cause`, errors),
-    options: parseM6Array(
-      record["options"],
-      `${path}.options`,
-      "M6 event options",
-      errors,
-      parseM6PolicyEventOption
-    ) ?? [],
+    options:
+      parseM6Array(
+        record["options"],
+        `${path}.options`,
+        "M6 event options",
+        errors,
+        parseM6PolicyEventOption
+      ) ?? [],
     reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors),
-    encyclopediaRefs: parseStringArray(record["encyclopediaRefs"], `${path}.encyclopediaRefs`, errors)
+    encyclopediaRefs: parseStringArray(
+      record["encyclopediaRefs"],
+      `${path}.encyclopediaRefs`,
+      errors
+    )
   };
 }
 
@@ -2813,7 +2822,11 @@ function parseM6PolicyEventOption(
         parseM6PolicyEventConsequence
       ) ?? [],
     reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors),
-    encyclopediaRefs: parseStringArray(record["encyclopediaRefs"], `${path}.encyclopediaRefs`, errors)
+    encyclopediaRefs: parseStringArray(
+      record["encyclopediaRefs"],
+      `${path}.encyclopediaRefs`,
+      errors
+    )
   };
 }
 
@@ -2850,8 +2863,13 @@ function parseM6PolicyEventActive(
     eventDefinitionId:
       readPositiveSafeInteger(record, "eventDefinitionId", `${path}.eventDefinitionId`, errors) ??
       0,
-    activatedDay: readNonnegativeSafeInteger(record, "activatedDay", `${path}.activatedDay`, errors) ?? 0,
-    causeReasonCodes: parseStringArray(record["causeReasonCodes"], `${path}.causeReasonCodes`, errors)
+    activatedDay:
+      readNonnegativeSafeInteger(record, "activatedDay", `${path}.activatedDay`, errors) ?? 0,
+    causeReasonCodes: parseStringArray(
+      record["causeReasonCodes"],
+      `${path}.causeReasonCodes`,
+      errors
+    )
   };
 }
 
@@ -2869,7 +2887,8 @@ function parseM6PolicyEventResolved(
       0,
     selectedOptionId:
       readPositiveSafeInteger(record, "selectedOptionId", `${path}.selectedOptionId`, errors) ?? 0,
-    resolvedDay: readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0,
+    resolvedDay:
+      readNonnegativeSafeInteger(record, "resolvedDay", `${path}.resolvedDay`, errors) ?? 0,
     reasonCodes: parseStringArray(record["reasonCodes"], `${path}.reasonCodes`, errors)
   };
 }
@@ -6075,10 +6094,7 @@ function copyOptionalRuntimeSlices(
 }
 
 function copyOptionalCandidateRuntimeSlices(
-  base: Omit<
-    WorldStateV0ForSave["state"],
-    "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents"
-  >,
+  base: Omit<WorldStateV0ForSave["state"], "m2" | "m3" | "m4" | "m6" | "m6PolicyEvents">,
   m2: SaveM2EconomyPopulationStateDto | undefined,
   m3: SaveM3PolityVassalageStateDto | undefined,
   m4: SaveM4CampaignStateDto | undefined,

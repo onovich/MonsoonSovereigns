@@ -176,7 +176,10 @@ describe("M6-POLICY-EVENT-RUNTIME-001 policy/event runtime substrate", () => {
   test("save/load round-trip preserves policy/event state and rejects malformed slices", () => {
     let runtime = bootPolicyRuntime();
     runtime = accepted(runtime, advanceDayCommand("m6.policy.save.advance", 0, 0));
-    runtime = accepted(runtime, choosePolicyOptionCommand("m6.policy.save.choose", "player", 1, 1, 1, 1));
+    runtime = accepted(
+      runtime,
+      choosePolicyOptionCommand("m6.policy.save.choose", "player", 1, 1, 1, 1)
+    );
 
     const saved = requestSaveV1(runtime, {
       appVersion: "0.0.0",
@@ -247,7 +250,11 @@ function accepted(runtime: SimulationRuntimeV1, command: GameCommandV1): Simulat
   return submitted.runtime;
 }
 
-function advanceDayCommand(commandId: string, expectedDay: number, expectedRevision: number): GameCommandV1 {
+function advanceDayCommand(
+  commandId: string,
+  expectedDay: number,
+  expectedRevision: number
+): GameCommandV1 {
   return {
     schemaVersion: 1,
     kind: "sim.advance-day",

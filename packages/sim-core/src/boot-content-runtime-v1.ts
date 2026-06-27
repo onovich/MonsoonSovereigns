@@ -257,9 +257,7 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
       settlements: settlements.value,
       regionalSeasonalCurves: curves.value,
       routes: routes.value,
-      ...(policyEvents === undefined
-        ? {}
-        : { m6PolicyEvents: policyEvents.value })
+      ...(policyEvents === undefined ? {} : { m6PolicyEvents: policyEvents.value })
     }
   };
 }
@@ -308,7 +306,10 @@ function validateRuntimeM2WorldRoot(input: Record<string, unknown>): BootPackErr
 
 function parseM6PolicyEvents(input: unknown): PolicyEventParseResult {
   if (!isRecord(input)) {
-    return contentPackError("runtimeContentPack.m6PolicyEvents", "m6PolicyEvents must be an object.");
+    return contentPackError(
+      "runtimeContentPack.m6PolicyEvents",
+      "m6PolicyEvents must be an object."
+    );
   }
   const keyError = validateM6ExactKeys(
     input,
@@ -390,7 +391,9 @@ function parseM6PolicyEvents(input: unknown): PolicyEventParseResult {
 function parseM6Policies(
   values: readonly unknown[],
   path: string
-): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["policies"] } | BootPackErrorResult {
+):
+  | { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["policies"] }
+  | BootPackErrorResult {
   const policies: M6PolicyEventRuntimeStateV0["definitions"]["policies"][number][] = [];
   let previousId = 0;
   const seen = new Set<number>();
@@ -408,7 +411,12 @@ function parseM6Policies(
     if (keyError !== null) {
       return keyError;
     }
-    const policyId = parseOrderedUniqueId(value["policyId"], previousId, seen, `${entryPath}.policyId`);
+    const policyId = parseOrderedUniqueId(
+      value["policyId"],
+      previousId,
+      seen,
+      `${entryPath}.policyId`
+    );
     if (!policyId.ok) {
       return policyId;
     }
@@ -417,7 +425,10 @@ function parseM6Policies(
     if (!sourceId.ok) {
       return sourceId;
     }
-    const displayNameKey = parseNonEmptyString(value["displayNameKey"], `${entryPath}.displayNameKey`);
+    const displayNameKey = parseNonEmptyString(
+      value["displayNameKey"],
+      `${entryPath}.displayNameKey`
+    );
     if (!displayNameKey.ok) {
       return displayNameKey;
     }
@@ -425,7 +436,10 @@ function parseM6Policies(
     if (!reasonCodes.ok) {
       return reasonCodes;
     }
-    const encyclopediaRefs = parseStringArray(value["encyclopediaRefs"], `${entryPath}.encyclopediaRefs`);
+    const encyclopediaRefs = parseStringArray(
+      value["encyclopediaRefs"],
+      `${entryPath}.encyclopediaRefs`
+    );
     if (!encyclopediaRefs.ok) {
       return encyclopediaRefs;
     }
@@ -443,7 +457,9 @@ function parseM6Policies(
 function parseM6Events(
   values: readonly unknown[],
   path: string
-): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"] } | BootPackErrorResult {
+):
+  | { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"] }
+  | BootPackErrorResult {
   const events: M6PolicyEventRuntimeStateV0["definitions"]["events"][number][] = [];
   let previousId = 0;
   const seen = new Set<number>();
@@ -480,11 +496,17 @@ function parseM6Events(
     }
     previousId = eventDefinitionId.value;
     const sourceId = parseNonEmptyString(value["sourceId"], `${entryPath}.sourceId`);
-    const displayNameKey = parseNonEmptyString(value["displayNameKey"], `${entryPath}.displayNameKey`);
+    const displayNameKey = parseNonEmptyString(
+      value["displayNameKey"],
+      `${entryPath}.displayNameKey`
+    );
     const cause = parseM6Cause(value["cause"], `${entryPath}.cause`);
     const options = parseM6Options(readArray(value, "options"), `${entryPath}.options`);
     const reasonCodes = parseStringArray(value["reasonCodes"], `${entryPath}.reasonCodes`);
-    const encyclopediaRefs = parseStringArray(value["encyclopediaRefs"], `${entryPath}.encyclopediaRefs`);
+    const encyclopediaRefs = parseStringArray(
+      value["encyclopediaRefs"],
+      `${entryPath}.encyclopediaRefs`
+    );
     if (!sourceId.ok) return sourceId;
     if (!displayNameKey.ok) return displayNameKey;
     if (!cause.ok) return cause;
@@ -504,7 +526,15 @@ function parseM6Events(
   return { ok: true, value: events };
 }
 
-function parseM6Cause(input: unknown, path: string): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["cause"] } | BootPackErrorResult {
+function parseM6Cause(
+  input: unknown,
+  path: string
+):
+  | {
+      readonly ok: true;
+      readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["cause"];
+    }
+  | BootPackErrorResult {
   if (!isRecord(input)) {
     return contentPackError(path, "M6 event cause must be an object.");
   }
@@ -525,8 +555,17 @@ function parseM6Cause(input: unknown, path: string): { readonly ok: true; readon
   };
 }
 
-function parseM6Options(values: readonly unknown[], path: string): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"] } | BootPackErrorResult {
-  const options: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number][] = [];
+function parseM6Options(
+  values: readonly unknown[],
+  path: string
+):
+  | {
+      readonly ok: true;
+      readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"];
+    }
+  | BootPackErrorResult {
+  const options: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number][] =
+    [];
   let previousId = 0;
   const seen = new Set<number>();
   for (let index = 0; index < values.length; index += 1) {
@@ -541,13 +580,27 @@ function parseM6Options(values: readonly unknown[], path: string): { readonly ok
     if (keyError !== null) {
       return keyError;
     }
-    const optionId = parseOrderedUniqueId(value["optionId"], previousId, seen, `${entryPath}.optionId`);
+    const optionId = parseOrderedUniqueId(
+      value["optionId"],
+      previousId,
+      seen,
+      `${entryPath}.optionId`
+    );
     if (!optionId.ok) return optionId;
     previousId = optionId.value;
-    const displayNameKey = parseNonEmptyString(value["displayNameKey"], `${entryPath}.displayNameKey`);
-    const consequences = parseM6Consequences(readArray(value, "consequences"), `${entryPath}.consequences`);
+    const displayNameKey = parseNonEmptyString(
+      value["displayNameKey"],
+      `${entryPath}.displayNameKey`
+    );
+    const consequences = parseM6Consequences(
+      readArray(value, "consequences"),
+      `${entryPath}.consequences`
+    );
     const reasonCodes = parseStringArray(value["reasonCodes"], `${entryPath}.reasonCodes`);
-    const encyclopediaRefs = parseStringArray(value["encyclopediaRefs"], `${entryPath}.encyclopediaRefs`);
+    const encyclopediaRefs = parseStringArray(
+      value["encyclopediaRefs"],
+      `${entryPath}.encyclopediaRefs`
+    );
     if (!displayNameKey.ok) return displayNameKey;
     if (!consequences.ok) return consequences;
     if (!reasonCodes.ok) return reasonCodes;
@@ -563,8 +616,17 @@ function parseM6Options(values: readonly unknown[], path: string): { readonly ok
   return { ok: true, value: options };
 }
 
-function parseM6Consequences(values: readonly unknown[], path: string): { readonly ok: true; readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number]["consequences"] } | BootPackErrorResult {
-  const consequences: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number]["consequences"][number][] = [];
+function parseM6Consequences(
+  values: readonly unknown[],
+  path: string
+):
+  | {
+      readonly ok: true;
+      readonly value: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number]["consequences"];
+    }
+  | BootPackErrorResult {
+  const consequences: M6PolicyEventRuntimeStateV0["definitions"]["events"][number]["options"][number]["consequences"][number][] =
+    [];
   for (let index = 0; index < values.length; index += 1) {
     const entryPath = `${path}[${index}]`;
     const value = values[index];
@@ -581,8 +643,16 @@ function parseM6Consequences(values: readonly unknown[], path: string): { readon
       return contentPackError(`${entryPath}.kind`, "M6 consequence kind must be policy-modifier.");
     }
     const policyId = parsePositiveSafeInteger(value["policyId"], `${entryPath}.policyId`);
-    const magnitudeBps = parseIntegerInRange(value["magnitudeBps"], `${entryPath}.magnitudeBps`, -10_000, 10_000);
-    const durationDays = parsePositiveSafeInteger(value["durationDays"], `${entryPath}.durationDays`);
+    const magnitudeBps = parseIntegerInRange(
+      value["magnitudeBps"],
+      `${entryPath}.magnitudeBps`,
+      -10_000,
+      10_000
+    );
+    const durationDays = parsePositiveSafeInteger(
+      value["durationDays"],
+      `${entryPath}.durationDays`
+    );
     const reasonCode = parseNonEmptyString(value["reasonCode"], `${entryPath}.reasonCode`);
     if (!policyId.ok) return policyId;
     if (!magnitudeBps.ok) return magnitudeBps;

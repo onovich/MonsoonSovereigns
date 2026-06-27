@@ -4076,7 +4076,10 @@ function evaluateChoosePolicyEventOption(
     causeReasonCodes: activeEvent.causeReasonCodes,
     optionReasonCodes: option.reasonCodes,
     consequenceReasonCodes: option.consequences.map((consequence) => consequence.reasonCode),
-    encyclopediaRefs: sortedUniqueText([...definition.encyclopediaRefs, ...option.encyclopediaRefs]),
+    encyclopediaRefs: sortedUniqueText([
+      ...definition.encyclopediaRefs,
+      ...option.encyclopediaRefs
+    ]),
     revisionBefore: world.meta.revision,
     revisionAfter: nextWorld.meta.revision
   };

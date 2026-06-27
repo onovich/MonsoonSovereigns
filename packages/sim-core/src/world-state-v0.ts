@@ -2504,13 +2504,23 @@ function validateM6PolicyEventDefinitionEntry(
   validateNonEmptyStringField(input, "displayNameKey", `${path}.displayNameKey`, errors);
   const cause = input["cause"];
   if (!isRecord(cause)) {
-    errors.push({ code: "invalid-schema", path: `${path}.cause`, message: "Cause must be object." });
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.cause`,
+      message: "Cause must be object."
+    });
   } else {
     validateStringUnionField(cause, "kind", `${path}.cause.kind`, ["day-at-least"], errors);
     validateNonnegativeIntegerField(cause, "day", `${path}.cause.day`, errors);
     validateStringArrayField(cause["reasonCodes"], `${path}.cause.reasonCodes`, errors);
   }
-  validateM6Array(input["options"], `${path}.options`, "M6 event options", errors, validateM6PolicyEventOptionEntry);
+  validateM6Array(
+    input["options"],
+    `${path}.options`,
+    "M6 event options",
+    errors,
+    validateM6PolicyEventOptionEntry
+  );
   validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
   validateStringArrayField(input["encyclopediaRefs"], `${path}.encyclopediaRefs`, errors);
 }
@@ -2546,8 +2556,21 @@ function validateM6PolicyEventConsequenceEntry(
   }
   validateStringUnionField(input, "kind", `${path}.kind`, ["policy-modifier"], errors);
   validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M6PolicyId", errors);
-  validateIntegerFieldInRange(input, "magnitudeBps", `${path}.magnitudeBps`, -10_000, 10_000, errors);
-  validatePositiveIntegerField(input, "durationDays", `${path}.durationDays`, "durationDays", errors);
+  validateIntegerFieldInRange(
+    input,
+    "magnitudeBps",
+    `${path}.magnitudeBps`,
+    -10_000,
+    10_000,
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "durationDays",
+    `${path}.durationDays`,
+    "durationDays",
+    errors
+  );
   validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
 }
 
@@ -2559,8 +2582,20 @@ function validateM6PolicyEventActiveEntry(
   if (!validateRecordEntry(input, path, "M6PolicyEventActiveState", errors)) {
     return;
   }
-  validatePositiveIntegerField(input, "eventInstanceId", `${path}.eventInstanceId`, "M6PolicyEventInstanceId", errors);
-  validatePositiveIntegerField(input, "eventDefinitionId", `${path}.eventDefinitionId`, "M6PolicyEventDefinitionId", errors);
+  validatePositiveIntegerField(
+    input,
+    "eventInstanceId",
+    `${path}.eventInstanceId`,
+    "M6PolicyEventInstanceId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "eventDefinitionId",
+    `${path}.eventDefinitionId`,
+    "M6PolicyEventDefinitionId",
+    errors
+  );
   validateNonnegativeIntegerField(input, "activatedDay", `${path}.activatedDay`, errors);
   validateStringArrayField(input["causeReasonCodes"], `${path}.causeReasonCodes`, errors);
 }
@@ -2573,9 +2608,27 @@ function validateM6PolicyEventResolvedEntry(
   if (!validateRecordEntry(input, path, "M6PolicyEventResolvedState", errors)) {
     return;
   }
-  validatePositiveIntegerField(input, "eventInstanceId", `${path}.eventInstanceId`, "M6PolicyEventInstanceId", errors);
-  validatePositiveIntegerField(input, "eventDefinitionId", `${path}.eventDefinitionId`, "M6PolicyEventDefinitionId", errors);
-  validatePositiveIntegerField(input, "selectedOptionId", `${path}.selectedOptionId`, "M6OptionId", errors);
+  validatePositiveIntegerField(
+    input,
+    "eventInstanceId",
+    `${path}.eventInstanceId`,
+    "M6PolicyEventInstanceId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "eventDefinitionId",
+    `${path}.eventDefinitionId`,
+    "M6PolicyEventDefinitionId",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "selectedOptionId",
+    `${path}.selectedOptionId`,
+    "M6OptionId",
+    errors
+  );
   validateNonnegativeIntegerField(input, "resolvedDay", `${path}.resolvedDay`, errors);
   validateStringArrayField(input["reasonCodes"], `${path}.reasonCodes`, errors);
 }
@@ -2588,10 +2641,29 @@ function validateM6PolicyModifierEntry(
   if (!validateRecordEntry(input, path, "M6PolicyModifierState", errors)) {
     return;
   }
-  validatePositiveIntegerField(input, "modifierId", `${path}.modifierId`, "M6PolicyModifierId", errors);
+  validatePositiveIntegerField(
+    input,
+    "modifierId",
+    `${path}.modifierId`,
+    "M6PolicyModifierId",
+    errors
+  );
   validatePositiveIntegerField(input, "policyId", `${path}.policyId`, "M6PolicyId", errors);
-  validatePositiveIntegerField(input, "eventInstanceId", `${path}.eventInstanceId`, "M6PolicyEventInstanceId", errors);
-  validateIntegerFieldInRange(input, "magnitudeBps", `${path}.magnitudeBps`, -10_000, 10_000, errors);
+  validatePositiveIntegerField(
+    input,
+    "eventInstanceId",
+    `${path}.eventInstanceId`,
+    "M6PolicyEventInstanceId",
+    errors
+  );
+  validateIntegerFieldInRange(
+    input,
+    "magnitudeBps",
+    `${path}.magnitudeBps`,
+    -10_000,
+    10_000,
+    errors
+  );
   validateNonnegativeIntegerField(input, "startDay", `${path}.startDay`, errors);
   validateNonnegativeIntegerField(input, "endDay", `${path}.endDay`, errors);
   validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
@@ -5726,10 +5798,7 @@ export function canonicalizeM6PolicyEventRuntimeStateV0(
         },
         options: sortM6PolicyEventOptions(event.options).map((option) => ({
           optionId: parsePositiveInteger(option.optionId, "M6 optionId"),
-          displayNameKey: parseDisplayNameKey(
-            option.displayNameKey,
-            "M6 option displayNameKey"
-          ),
+          displayNameKey: parseDisplayNameKey(option.displayNameKey, "M6 option displayNameKey"),
           consequences: option.consequences.map((consequence) => ({
             kind: "policy-modifier",
             policyId: parseM6PolicyDefinitionId(consequence.policyId),
@@ -5738,10 +5807,7 @@ export function canonicalizeM6PolicyEventRuntimeStateV0(
               consequence.durationDays,
               "M6 consequence durationDays"
             ),
-            reasonCode: parseDisplayNameKey(
-              consequence.reasonCode,
-              "M6 consequence reasonCode"
-            )
+            reasonCode: parseDisplayNameKey(consequence.reasonCode, "M6 consequence reasonCode")
           })),
           reasonCodes: sortText(option.reasonCodes).map((code) =>
             parseDisplayNameKey(code, "M6 option reasonCode")
@@ -8006,9 +8072,7 @@ function formatM6PolicyDefinitions(values: readonly M6PolicyDefinitionStateV0[])
     .join(",");
 }
 
-function formatM6PolicyEventDefinitions(
-  values: readonly M6PolicyEventDefinitionStateV0[]
-): string {
+function formatM6PolicyEventDefinitions(values: readonly M6PolicyEventDefinitionStateV0[]): string {
   return sortM6PolicyEventDefinitions(values)
     .map((value) =>
       [
