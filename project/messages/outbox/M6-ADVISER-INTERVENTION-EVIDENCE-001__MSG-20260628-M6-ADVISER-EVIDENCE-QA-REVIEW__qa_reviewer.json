@@ -1,0 +1,75 @@
+{
+  "message_id": "MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW",
+  "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts M6 adviser intervention evidence for review commit c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288. The reviewed diff is confined to allowed task/message paths, records local anonymous deterministic evidence only, covers Alpha goals, risks, diplomacy, legitimacy, succession, policy/event choices, campaign consequences, and victory progress, preserves player control and DEFER_MANUAL_NODE_BATTLE, separates blockers from bounded follow-ups, and routes cultural/historical concerns without formal content acceptance or M6 exit decision.",
+  "artifacts": [
+    "project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-START__lead_orchestrator.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "research/m6-adviser-intervention-evidence / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output before QA handoff creation; worktree was clean at HEAD d5811e6c36a999f5a4c3cd93e031ad6174763674."
+    },
+    {
+      "command": "git diff --name-status c1edb91f^..c1edb91f",
+      "exit_code": 0,
+      "result": "A project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json; M project/tasks/active/M6-ADVISER-INTERVENTION-EVIDENCE-001.json. Both are allowed task/message paths; no apps, packages, content-source, tools, CI, docs gates, roadmap, acceptance matrix, manifests, or release artifacts were modified by the reviewed commit."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ADVISER-INTERVENTION-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M6-ADVISER-INTERVENTION-EVIDENCE-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before QA handoff creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list completed; M6-ADVISER-INTERVENTION-EVIDENCE-001 is REVIEW and owned by gameplay_designer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready tasks printed while M6-ADVISER-INTERVENTION-EVIDENCE-001 is in REVIEW."
+    },
+    {
+      "command": "Read-only cross-reference of cited M6 handoffs",
+      "exit_code": 0,
+      "result": "Verified M6 client Alpha surfaces QA ACCEPT includes 10 Chromium Playwright tests and adviser/AI reason surfaces; M6 layered AI is CLOSED after systems R2 ACCEPT and lead ACCEPT with command parity evidence; M6 batch balance is CLOSED with local artifact hash 99d64950, 3 scenarios, 2 seeds, 6 runs, and no Human Gate."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: The reviewed commit only touches allowed task/message files and does not modify forbidden apps, packages, content-source, tools, CI, docs gates, roadmap, acceptance matrix, manifests, or release artifacts.",
+    "ACCEPT: Evidence explicitly covers Alpha goal, risk, diplomacy, legitimacy, succession, policy/event choices, campaign consequences, and victory progress while stating that adviser candidates do not auto-submit commands or bypass preview/confirm.",
+    "ACCEPT: Evidence distinguishes useful_intervention, ignored_intervention, harmful_intervention, and missing_intervention with concrete examples and bounded follow-ups.",
+    "ACCEPT: Privacy boundary is local anonymous deterministic evidence only: 0 new human/external observation sessions, 2 local designer review passes, 6 deterministic batch runs reviewed, no telemetry, no network collection, no personal data, no accounts, and no paid services.",
+    "ACCEPT: blocker_defects is empty and bounded_follow_ups are separated; the task does not decide M6 exit, product scope, tuning, AI behavior, or adviser implementation.",
+    "ACCEPT: Cultural/historical concerns are tagged COMPOSITE_REVIEW_REQUIRED and routed to historical_researcher or Human Gate before formal content acceptance.",
+    "ACCEPT: manual_node_battle_decision remains DEFER_MANUAL_NODE_BATTLE and the task does not reopen manual node battle.",
+    "ACCEPT: Required task schema, writer handoff validation, task list/ready checks, and git diff whitespace checks are reproducible."
+  ],
+  "risks": [
+    "Evidence confidence remains bounded because this task used local deterministic review and no new consented participant sessions; measured accept/ignore/harm rates remain a future separate research task if needed.",
+    "Writer handoff field commit points to 9a0d5970255cc535f5121cfcca51b87cf568202d while the routed review target and task review_commit identify c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288; QA reviewed c1edb91f as instructed. This is a non-blocking process metadata inconsistency because the formal route and task metadata pin the correct review commit."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate ACCEPT for M6-ADVISER-INTERVENTION-EVIDENCE-001. Do not mark M6 exit from this review; continue normal lead closure/integration routing.",
+  "created_at": "2026-06-28T02:10:13.1639053+08:00"
+}

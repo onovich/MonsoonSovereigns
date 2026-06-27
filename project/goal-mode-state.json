@@ -11,20 +11,6 @@
       "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
       "status": "active",
       "role": "lead_orchestrator"
-    },
-    "gameplay_designer": {
-      "thread_id": "019f0a35-8f47-7b11-8a15-9e11477e73c7",
-      "nickname": "Monsoon the 2nd",
-      "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
-      "status": "completed_review_ready",
-      "role": "gameplay_designer"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f0a41-0933-7f30-9c74-88daf0844f9b",
-      "nickname": "Auditor the 2nd",
-      "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
-      "status": "active_reviewing",
-      "role": "qa_reviewer"
     }
   },
   "last_integrated_task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
@@ -53,10 +39,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001 closure checkpoint entered origin/main through PR #152 at c8dc04c93dae60265d665b198150fb255b4ae76f; no Human Gate active.",
+    "approval_source": "M6-ADVISER-INTERVENTION-EVIDENCE-001 accepted by independent QA; no Human Gate active and M6 exit not decided by this task.",
     "recommended_result": null,
-    "note": "M6-ADVISER-INTERVENTION-EVIDENCE-001 started for bounded local/privacy-safe adviser evidence; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-27T17:55:19.454Z"
+    "note": "Continue with PR/CI/main integration and closure; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-27T18:13:29.663Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -843,8 +829,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-27T18:05:22.389Z",
-  "updated_at": "2026-06-27T18:05:22.389Z",
+  "last_updated_at": "2026-06-27T18:13:29.663Z",
+  "updated_at": "2026-06-27T18:13:29.663Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1323,7 +1309,7 @@
     "closure_main_commit": "c8dc04c93dae60265d665b198150fb255b4ae76f"
   },
   "m6_adviser_intervention_evidence": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
     "owner_role": "gameplay_designer",
     "reviewer_role": "qa_reviewer",
@@ -1337,8 +1323,8 @@
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "start_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-START__lead_orchestrator.json",
     "started_at": "2026-06-27T17:55:19.454Z",
-    "updated_at": "2026-06-27T18:05:22.389Z",
-    "next_action": "Await independent qa_reviewer verdict; integrate after ACCEPT.",
+    "updated_at": "2026-06-27T18:13:29.663Z",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, sync main, then mark task CLOSED.",
     "route_file": "project/messages/routes/M6-ADVISER-INTERVENTION-EVIDENCE-001__ROUTE-20260628-M6-ADVISER-EVIDENCE-LEAD-TO-GAMEPLAY-START.json",
     "start_submission_id": "019f0a39-bcc2-7950-b10b-24f4ca43e05a",
     "route_sent_at": "2026-06-27T17:56:53.865Z",
@@ -1348,6 +1334,23 @@
     "qa_thread_nickname": "Auditor the 2nd",
     "qa_route": "project/messages/routes/M6-ADVISER-INTERVENTION-EVIDENCE-001__ROUTE-20260628-M6-ADVISER-EVIDENCE-WRITER-TO-QA-REVIEW.json",
     "qa_submission_id": "019f0a41-53f3-79e2-a462-ee9580e2291b",
-    "routed_to_qa_at": "2026-06-27T18:05:22.389Z"
+    "routed_to_qa_at": "2026-06-27T18:05:22.389Z",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-27T18:13:29.663Z",
+    "accepted_head_commit": "c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288",
+    "child_threads_closed": [
+      "019f0a35-8f47-7b11-8a15-9e11477e73c7",
+      "019f0a41-0933-7f30-9c74-88daf0844f9b"
+    ],
+    "non_blocking_risks": [
+      {
+        "id": "M6-ADVISER-METADATA-RISK-001",
+        "severity": "P3",
+        "status": "accepted_non_blocking",
+        "summary": "Writer handoff commit field differs from authoritative route/task/QA review commit; c1edb91f is authoritative."
+      }
+    ]
   }
 }

@@ -2,7 +2,7 @@
   "id": "M6-ADVISER-INTERVENTION-EVIDENCE-001",
   "summary": "Collect adviser intervention evidence for Alpha flows",
   "milestone": "M6",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -70,41 +70,45 @@
     "gameplay_designer": {
       "thread_id": "019f0a35-8f47-7b11-8a15-9e11477e73c7",
       "nickname": "Monsoon the 2nd",
-      "status": "completed_review_ready",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "review_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
       "review_commit": "c1edb91f",
-      "updated_at": "2026-06-27T18:05:22.389Z"
+      "updated_at": "2026-06-27T18:05:22.389Z",
+      "closed_at": "2026-06-27T18:13:29.663Z"
     },
     "qa_reviewer": {
       "thread_id": "019f0a41-0933-7f30-9c74-88daf0844f9b",
       "nickname": "Auditor the 2nd",
-      "status": "active_reviewing",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "read_only": true
+      "read_only": true,
+      "closed_at": "2026-06-27T18:13:29.663Z",
+      "qa_review_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+      "qa_status": "ACCEPT"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is Alpha evidence only; it does not authorize telemetry or external research without a separate gate.",
     "Do not modify product code in this evidence task.",
     "If evidence needs new adviser behavior, route a separate allowed implementation task instead of expanding this one."
   ],
   "created_at": "2026-06-27T05:17:00+08:00",
-  "updated_at": "2026-06-27T18:05:22.389Z",
+  "updated_at": "2026-06-27T18:13:29.663Z",
   "started_at": "2026-06-27T17:55:19.454Z",
   "base_main_commit": "c8dc04c93dae60265d665b198150fb255b4ae76f",
   "previous_closed_task": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "start_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-START__lead_orchestrator.json",
-  "next_action": "Await independent qa_reviewer verdict; route REQUEST_CHANGES back to gameplay_designer or ACCEPT to lead integration.",
+  "next_action": "Push branch, open PR, wait for CI, merge to main, sync main, then mark task CLOSED.",
   "route_file": "project/messages/routes/M6-ADVISER-INTERVENTION-EVIDENCE-001__ROUTE-20260628-M6-ADVISER-EVIDENCE-LEAD-TO-GAMEPLAY-START.json",
   "start_submission_id": "019f0a39-bcc2-7950-b10b-24f4ca43e05a",
   "route_sent_at": "2026-06-27T17:56:53.865Z",
@@ -369,5 +373,76 @@
   "qa_route": "project/messages/routes/M6-ADVISER-INTERVENTION-EVIDENCE-001__ROUTE-20260628-M6-ADVISER-EVIDENCE-WRITER-TO-QA-REVIEW.json",
   "qa_submission_id": "019f0a41-53f3-79e2-a462-ee9580e2291b",
   "routed_to_qa_at": "2026-06-27T18:05:22.389Z",
-  "review_commit": "c1edb91f"
+  "review_commit": "c1edb91f",
+  "accepted_at": "2026-06-27T18:13:29.663Z",
+  "accepted_head_commit": "c1edb91f1a79f5c5e9875dc4dfc9de74bae3b288",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-LEAD-ACCEPT__lead_orchestrator.json",
+  "child_threads_closed": [
+    "019f0a35-8f47-7b11-8a15-9e11477e73c7",
+    "019f0a41-0933-7f30-9c74-88daf0844f9b"
+  ],
+  "child_thread_close_summary": [
+    {
+      "thread_id": "019f0a35-8f47-7b11-8a15-9e11477e73c7",
+      "role": "gameplay_designer",
+      "nickname": "Monsoon the 2nd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-27T18:13:29.663Z"
+    },
+    {
+      "thread_id": "019f0a41-0933-7f30-9c74-88daf0844f9b",
+      "role": "qa_reviewer",
+      "nickname": "Auditor the 2nd",
+      "previous_status": "completed",
+      "closed_at": "2026-06-27T18:13:29.663Z"
+    }
+  ],
+  "accepted_tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only QA handoff was untracked before lead ACCEPT; no forbidden path changes."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M6-ADVISER-INTERVENTION-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list completed; M6-ADVISER-INTERVENTION-EVIDENCE-001 was REVIEW before lead ACCEPT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready tasks printed while current task remained REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M6-ADVISER-INTERVENTION-EVIDENCE-001__MSG-20260628-M6-ADVISER-EVIDENCE-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID independent QA ACCEPT handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "non_blocking_risks": [
+    {
+      "id": "M6-ADVISER-METADATA-RISK-001",
+      "severity": "P3",
+      "status": "accepted_non_blocking",
+      "summary": "Writer REVIEW handoff internal commit field points to 9a0d597, while task metadata, route evidence, and QA review target pin c1edb91f as the accepted review commit.",
+      "disposition": "Do not rewrite the already-reviewed writer handoff; lead ACCEPT records c1edb91f as authoritative."
+    }
+  ]
 }
