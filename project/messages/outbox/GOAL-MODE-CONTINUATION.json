@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M7_AUDIO_ART_LOCALIZATION_REVIEW",
+  "status": "M7_AUDIO_ART_LOCALIZATION_ACCEPTED_PENDING_INTEGRATION",
   "project": "Monsoon Sovereigns",
   "origin_main": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
   "current_milestone": "M7",
@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
   "last_integrated_task": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
   "last_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
@@ -24,23 +24,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator"
-    },
-    "client_engineer": {
-      "thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
-      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
-      "status": "review_ready",
-      "role": "client_engineer",
-      "nickname": "Canvas"
-    },
-    "historical_researcher": {
-      "thread_id": "019f0d70-2c65-7143-baf5-5be398e38b0a",
-      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
-      "status": "active_reviewer",
-      "role": "historical_researcher",
-      "nickname": "Estuary",
-      "read_only": true
     }
   },
   "unresolved_risks": [
@@ -66,14 +51,14 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 start checkpoint",
+    "approval_source": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 lead accept checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Major culture-specific asset/language/music/symbol decisions must route to historical_researcher and Human Gate if unresolved. Formal content lock remains future Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T08:23:56.063Z"
+    "note": "No Human Gate is active. Historical reviewer ACCEPT is limited to task evidence; formal content lock remains a future Human Gate and manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T09:05:05.993Z"
   },
-  "next_machine_action": "Await historical_researcher review handoff for M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.",
+  "next_machine_action": "Open PR for M7-AUDIO-ART-LOCALIZATION-COMPLETE-001, wait for CI, merge to main, then mark CLOSED and continue to the next dependency-ready M7 task.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T08:57:20.955Z"
+  "last_updated_at": "2026-06-28T09:05:05.993Z"
 }
