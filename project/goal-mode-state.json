@@ -2,24 +2,40 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-APPOINTMENT-FLOW-QUALITY-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "chore/close-m7-app-shell-quality"
+      "branch_or_worktree": "feat/m7-appointment-flow-quality"
+    },
+    "client_engineer": {
+      "thread_id": "019f0fd6-7bd7-7433-9800-56edd46bb836",
+      "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
+      "status": "active_writer",
+      "role": "client_engineer",
+      "nickname": "Canvas",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-appointment-flow-quality",
+      "route_file": "project/messages/routes/M7-APPOINTMENT-FLOW-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
+      "routed_at": "2026-06-28T20:06:43.812Z"
     }
   },
   "last_integrated_task": "M7-APP-SHELL-QUALITY-001",
-  "last_main_commit": "6814706e34b9aed54a0aceb25a62dadcd319da65",
+  "last_main_commit": "cecc0246f13539d9b3e5bf59410fe27d0b8afdc5",
   "next_ready_tasks": [
-    "M7-APPOINTMENT-FLOW-QUALITY-001",
     "M7-DISTRICT-INSPECTOR-QUALITY-001",
     "M7-MAP-PRESENTATION-QUALITY-001",
     "M7-PLAYER-GUIDANCE-LITE-001",
@@ -48,10 +64,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-APP-SHELL-QUALITY-001 closure checkpoint",
+    "approval_source": "M7-APPOINTMENT-FLOW-QUALITY-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. M7 app shell quality task closed after PR #179 main integration.",
-    "recorded_at": "2026-06-28T20:00:34.367Z"
+    "note": "No Human Gate is active. Started M7 appointment flow quality task.",
+    "recorded_at": "2026-06-28T20:06:43.812Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -838,7 +854,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T20:01:26.568Z",
+  "last_updated_at": "2026-06-28T20:06:43.812Z",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1908,8 +1924,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "CLOSED",
-  "next_machine_action": "Merge closure checkpoint, sync main, then start M7-APPOINTMENT-FLOW-QUALITY-001.",
+  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Await client_engineer writer handoff for M7-APPOINTMENT-FLOW-QUALITY-001.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -2033,5 +2049,22 @@
       "M7-PLAYER-GUIDANCE-LITE-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_appointment_flow_quality": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
+    "branch_or_worktree": "feat/m7-appointment-flow-quality",
+    "base_main_commit": "cecc0246f13539d9b3e5bf59410fe27d0b8afdc5",
+    "previous_closed_task": "M7-APP-SHELL-QUALITY-001",
+    "start_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-APPOINTMENT-FLOW-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+    "writer_thread_id": "019f0fd6-7bd7-7433-9800-56edd46bb836",
+    "writer_thread_nickname": "Canvas",
+    "expected_writer_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-28T20:06:43.812Z",
+    "updated_at": "2026-06-28T20:06:43.812Z",
+    "next_action": "Await client_engineer writer handoff.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }
