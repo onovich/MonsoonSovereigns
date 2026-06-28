@@ -1,0 +1,132 @@
+{
+  "id": "M7-UI-LOCALIZATION-PLAN-001",
+  "summary": "Plan the M7 UI, localization, and visual quality track",
+  "milestone": "M7",
+  "status": "IN_PROGRESS",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-BETA-CULTURE-REVIEW-001",
+    "M7-VISUAL-UX-HANDOFF-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M7-*.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Convert M7-UI-LOCALIZATION-ART-COORDINATION-001 and the accepted M7-VISUAL-UX-HANDOFF-001 evidence into an explicit M7 UI/localization/visual quality-track task plan.",
+    "Create or update downstream M7 task JSON for UI/localization planning, i18n foundation, design tokens and asset slots, app shell quality, map presentation, district inspector, appointment flow, player guidance, UI regression matrix, and UI/localization exit validation as appropriate.",
+    "Downstream task dependencies must ensure planning and handoff review precede implementation, and all UI/localization/visual tasks must close before M7 exit or be explicitly deferred with rationale.",
+    "Every downstream task must inherit systems/QA conditions: i18n outside sim-core, React/client state outside authoritative WorldState, Pixi render-cache-only, GameCommand/query boundaries, player/debug separation, full Human Gate list, DEFER_MANUAL_NODE_BATTLE, and locale-code risk handling.",
+    "The plan must not implement UI, i18n, tokens, assets, app shell, package code, content-source facts, save migration, release artifacts, telemetry, server/multiplayer, cloud-save, production art, or manual node battle behavior.",
+    "The plan must not mark formal content lock accepted or alter M5/M6/M7 gate outcomes."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-PLAN-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for created or updated M7 UI/localization task files",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "chore/m7-ui-localization-plan",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "chore/m7-ui-localization-plan",
+      "base_main_commit": "650e6faecbeb327ed7129a897e921dfb67c73214",
+      "created_at": "2026-06-28T20:39:18.2016568+08:00",
+      "updated_at": "2026-06-28T20:39:18.2016568+08:00",
+      "next_action": "Spawn systems_architect to produce the M7 UI/localization quality-track plan."
+    },
+    "systems_architect": {
+      "thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
+      "task_id": "M7-UI-LOCALIZATION-PLAN-001",
+      "status": "active_writer",
+      "role": "systems_architect",
+      "nickname": "Meridian",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "chore/m7-ui-localization-plan",
+      "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
+      "routed_at": "2026-06-28T20:42:00.0000000+08:00"
+    }
+  },
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This task exists because the product-owner M7-UI-LOCALIZATION-ART-COORDINATION-001 directive was received after the original M7 task graph had already advanced.",
+    "The source directive is stored at project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md.",
+    "The accepted visual handoff is stored at project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md.",
+    "The accepted culture review is stored at content-source/m7-beta-culture-review/beta-culture-review-evidence.json.",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 remains dependency-ready, but this planning task is selected first to incorporate the product-owner UI/localization/visual directive before downstream UI implementation.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and outside 1.0 mainline unless a later Human Gate reverses it.",
+    "Formal content lock remains a future Human Gate."
+  ],
+  "created_at": "2026-06-28T20:39:18.2016568+08:00",
+  "updated_at": "2026-06-28T20:42:00.0000000+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "human_gates": [
+    "major cultural-risk decisions",
+    "formal content lock acceptance",
+    "manual playthrough acceptance where human judgment is required",
+    "commercial, release, store, branding, logo, or trademark decisions",
+    "telemetry, analytics, remote collection, accounts, paid services, or secrets",
+    "server or multiplayer behavior",
+    "arbitrary-code mods, runtime scripting extensions, or Workshop support",
+    "cloud-save implementation, network persistence, or any account-backed save service",
+    "irreversible save/content migration",
+    "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
+    "manual node battle reversal or any formal 1.0 scope reversal"
+  ],
+  "started_at": "2026-06-28T20:39:18.2016568+08:00",
+  "base_main_commit": "650e6faecbeb327ed7129a897e921dfb67c73214",
+  "previous_closed_tasks": [
+    "M7-BETA-CULTURE-REVIEW-001",
+    "M7-VISUAL-UX-HANDOFF-001"
+  ],
+  "scheduling_reason": "Selected before M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 so the mid-stage product-owner UI/localization/art directive is represented in the M7 task graph before any UI/localization implementation tasks proceed.",
+  "next_action": "systems_architect writer returns REVIEW handoff for qa_reviewer.",
+  "systems_thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
+  "systems_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
+  "expected_systems_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json"
+}
