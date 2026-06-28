@@ -42,10 +42,10 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-    "updated_at": "2026-06-29T06:10:00.000Z",
+    "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+    "updated_at": "2026-06-28T23:05:44.646Z",
     "concurrent_task_ids": [
-      "M7-DISTRICT-INSPECTOR-QUALITY-001"
+      "M7-MAP-PRESENTATION-QUALITY-001"
     ]
   },
   "retired_lead_threads": [
@@ -4232,5 +4232,50 @@
       "M7-PLAYER-GUIDANCE-LITE-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_map_presentation_quality": {
+    "status": "ACCEPTED",
+    "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+    "branch_or_worktree": "feat/m7-map-presentation-quality",
+    "owner_role": "client_engineer",
+    "reviewer_role": "systems_architect",
+    "qa_reviewer_role": "qa_reviewer",
+    "writer_configured_model": "gpt-5.5",
+    "writer_configured_effort": "high",
+    "reviewer_configured_model": "gpt-5.5",
+    "reviewer_configured_effort": "xhigh",
+    "started_at": "2026-06-28T22:18:34.157Z",
+    "updated_at": "2026-06-28T23:05:44.646Z",
+    "next_action": "Run integration gates and open PR for M7-MAP-PRESENTATION-QUALITY-001.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "writer_thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
+    "writer_thread_nickname": "Lantern",
+    "route_sent_at": "2026-06-28T22:20:22.061Z",
+    "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a",
+    "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+    "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+    "systems_review_route": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-WRITER-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_thread_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+    "systems_thread_nickname": "Meridian",
+    "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
+    "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+    "qa_configured_model": "gpt-5.5",
+    "qa_configured_effort": "xhigh",
+    "systems_status": "ACCEPT",
+    "systems_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_thread_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
+    "qa_thread_nickname": "Gate the 2nd",
+    "qa_route": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json",
+    "expected_qa_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+    "qa_route_sent_at": "2026-06-28T22:54:43.533Z",
+    "qa_route_submission_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T23:05:44.646Z",
+    "accepted_implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+    "accepted_branch_head": "20bc71524ccdc9dab3520d5a1d23cee3429033ff"
   }
 }

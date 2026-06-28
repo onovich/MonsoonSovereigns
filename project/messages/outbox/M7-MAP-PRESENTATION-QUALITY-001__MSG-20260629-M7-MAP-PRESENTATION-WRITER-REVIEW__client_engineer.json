@@ -1,0 +1,111 @@
+{
+  "message_id": "M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer",
+  "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Productized M7 map presentation on existing read models without changing sim/protocol/save authority. The map renderer now derives hover, selected, reachable, blocked/overloaded, label LOD, pan, and rebuild metadata as disposable render-plan state; Web/UI localize map labels, legend, hover details, pan controls, and list-map synchronization through the accepted i18n foundation. Storybook and focused tests cover normal/empty/error/extreme/narrow/bilingual map presentation, GPU/context rebuild expectations, player-mode debug hiding, no console errors, and viewport/keyboard flow.",
+  "artifacts": [
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-map-presentation-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial status was clean. Final status listed only allowed-path modifications in .storybook, apps/web, packages/map-renderer, packages/ui, tests, the active task JSON, and this handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-PRESENTATION-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed M7-MAP-PRESENTATION-QUALITY-001 as REVIEW/client_engineer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Current task no longer appears as READY after REVIEW status; next listed candidates were M7-PLAYER-GUIDANCE-LITE-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-MAP-PRESENTATION-QUALITY-001",
+      "exit_code": 0,
+      "result": "JSON parse/shape OK: id M7-MAP-PRESENTATION-QUALITY-001, status REVIEW, route_to systems_architect,test_engineer,qa_reviewer, human_gate_required false."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest map-renderer suite passed: 1 file, 5 tests. Coverage includes render-plan hover/selected/reachable/blocked/overloaded/pan states, label LOD, rebuild from replace-read-model delta, and no sim-core/WorldState import."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 file, 16 tests. Coverage includes map legend, pan controls, hover details, player-mode debug hiding, localized English/zh-CN shell and no raw route/reason/debug labels."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web suite passed: 1 file, 9 tests. Coverage includes localized map presentation labels, player shell debug separation, and rebuildable Pixi scene shell."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed. Existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook static build passed and cleaned .tmp/storybook-static. Existing large chunk/plugin timing warnings remained."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 19 tests. The map flow covers mode switching, zoom, pan, hover tooltip/list sync, selected district/settlement sync, no debug labels in player mode, no console/page errors, keyboard focus including pan controls, and required desktop/narrow viewport overflow checks."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    "Kept Pixi and canvas as rebuildable render caches. Map hover, pan, selected/reachable/blocked/overloaded presentation fields are derived from ClientMapReadModelSnapshot plus local viewport UI state and are not authoritative domain state.",
+    "Localized map label presentation by creating a Web-shell presentation snapshot with localized district/settlement displayName fields before mounting Pixi; ids, geometry, routes, read-model revision, and simulation snapshot are not mutated.",
+    "Added DOM legend and hover detail text through i18n keys instead of duplicating domain/pathfinding rules. Route summaries reuse existing route read-model fields and formatting helpers.",
+    "Used existing M7 design token colors and neutral placeholder CSS/Pixi tokens for map strokes, route states, settlement markers, tooltip frame, and legend swatches; no culture-specific final art or geography facts were added.",
+    "Added pan controls as local viewport offsets with bounded clamping. Pan affects only renderer placement metadata and does not change selection, route authority, command state, or save state.",
+    "Routed REVIEW to systems_architect,test_engineer,qa_reviewer because this task has map authority boundary risk and explicit completion routing to test/QA. No Electron files or preload/IPC surfaces changed, so security_reviewer routing is not requested."
+  ],
+  "risks": [
+    "The Web build and Storybook build still emit existing large chunk warnings; builds pass and this task did not add a new production dependency.",
+    "Map labels are localized through presentation displayName copies. This is intentionally not a content-name localization system and should be reviewed as UI presentation only.",
+    "Pixi hover is covered through renderer callback wiring and e2e list-hover synchronization; deeper visual pixel inspection of hover strokes remains a possible test_engineer follow-up if desired.",
+    "No Electron renderer/main/preload files changed, so Electron security posture was not re-reviewed here."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Please perform systems_architect review for map authority boundaries, read-model/Pixi cache separation, i18n boundary, and allowed-path scope. QA/test validation follows after systems acceptance.",
+  "created_at": "2026-06-29T06:39:00+08:00",
+  "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+  "updated_at": "2026-06-28T22:42:44.604Z"
+}

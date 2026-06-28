@@ -199,6 +199,9 @@ describe("web client shell", () => {
     expect(markup).toContain("Monsoon Sovereigns");
     expect(markup).toContain("Realm Map");
     expect(markup).toContain("Developer diagnostics are hidden in player mode.");
+    expect(markup).toContain('aria-label="Map pan"');
+    expect(markup).toContain('aria-label="Map hover details"');
+    expect(markup).toContain("Reachable route");
     expect(markup).not.toContain("Prototype District 001");
     expect(markup).not.toContain(snapshot.simulation.stateHash);
     expect(markup).not.toContain("M2 prototype map ready");

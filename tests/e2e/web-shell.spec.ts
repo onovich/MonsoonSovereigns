@@ -83,6 +83,16 @@ test("web shell resolves system language, switches language, and persists prefer
 });
 
 test("M2 map zoom, selection, and mode switching updates read-model UI", async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      consoleErrors.push(message.text());
+    }
+  });
+  page.on("pageerror", (error) => {
+    consoleErrors.push(error.message);
+  });
+
   await page.goto("/");
 
   const rows = page.getByLabel("Virtualized district rows");
@@ -95,6 +105,8 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await expect(mapCanvas).toHaveAttribute("data-district-count", "30");
   await expect(mapCanvas).toHaveAttribute("data-settlement-count", "10");
   await expect(mapCanvas).toHaveAttribute("data-route-count", "42");
+  await expect(mapCanvas).toHaveAttribute("data-pan-x", "0.00");
+  await expect(mapCanvas).toHaveAttribute("data-hovered-entity", "none");
   await expect(rows).toHaveAttribute("data-row-count", "30");
   await expect(rows).toHaveAttribute("data-rendered-row-count", "16");
   await expect(panel).toHaveAttribute("data-selected-district-id", "1");
@@ -114,6 +126,24 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await page.getByRole("button", { name: "Zoom in" }).click();
   await expect(map).toHaveAttribute("data-zoom-level", "1.25");
   await expect(mapCanvas).toHaveAttribute("data-zoom-level", "1.25");
+
+  await page.getByRole("button", { name: "Pan right" }).click();
+  await expect(map).toHaveAttribute("data-pan-x", "24.00");
+  await expect(mapCanvas).toHaveAttribute("data-pan-x", "24.00");
+  await page.getByRole("button", { name: "Reset pan" }).click();
+  await expect(map).toHaveAttribute("data-pan-x", "0.00");
+  await expect(mapCanvas).toHaveAttribute("data-pan-x", "0.00");
+  await expect(page.getByLabel("Map legend")).toContainText("Reachable route");
+  await expect(page.getByLabel("Map legend")).toContainText("Blocked route");
+  await expect(page.getByLabel("Map hover details")).toContainText(
+    "Hover a district or settlement for route details."
+  );
+  await page.getByRole("button", { name: "Review selected district District 3" }).hover();
+  await expect(map).toHaveAttribute("data-hovered-district-id", "3");
+  await expect(page.getByLabel("Map hover details")).toContainText("District 3");
+  await expect(
+    page.getByRole("button", { name: "Review selected district District 3" })
+  ).toHaveAttribute("data-hovered", "true");
 
   await clickMapPoint(mapCanvas, 150, 50);
   await expect(panel).toHaveAttribute("data-selected-district-id", "2");
@@ -140,6 +170,7 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   const selectionMs = await readNumberAttribute(performanceOutput, "data-selection-ms");
   expect(derivationMs).toBeLessThan(50);
   expect(selectionMs).toBeLessThan(10);
+  expect(consoleErrors).toEqual([]);
 });
 
 test("M7 district inspector is localized secondary browser with bounded rendering", async ({
@@ -536,6 +567,16 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   await expect(page.getByRole("button", { name: "Zoom out" })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(page.getByRole("button", { name: "Zoom in" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Pan up" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Pan left" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Reset pan" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Pan right" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Pan down" })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(map).toBeFocused();
   await expect(map).toHaveAttribute("data-keyboard-navigation", "district-cycle");

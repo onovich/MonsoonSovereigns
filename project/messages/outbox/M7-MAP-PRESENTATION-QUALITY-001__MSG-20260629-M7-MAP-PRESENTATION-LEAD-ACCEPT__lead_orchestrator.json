@@ -1,0 +1,100 @@
+{
+  "message_id": "M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-LEAD-ACCEPT__lead_orchestrator",
+  "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-MAP-PRESENTATION-QUALITY-001 after systems_architect ACCEPT and independent qa_reviewer ACCEPT. Fixed implementation commit 762059e65b05ed02db6a298aaa4a31089a64d5a9 productizes M7 map presentation while preserving map authority boundaries. Task may proceed to PR integration gate, but must not be CLOSED until PR CI passes and the accepted branch enters origin/main.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+    "project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json",
+    "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json"
+  ],
+  "branch_or_worktree": "feat/m7-map-presentation-quality",
+  "base_main_commit": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
+  "implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+  "accepted_branch_head": "20bc71524ccdc9dab3520d5a1d23cee3429033ff",
+  "systems_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+  "systems_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+  "qa_status": "ACCEPT",
+  "acceptance_basis": [
+    "Writer handoff validates and documents fixed implementation scope.",
+    "systems_architect ACCEPT validates map authority, Pixi render-cache boundary, UI/Web i18n boundary, allowed paths, and no manual-node-battle/geography/server/telemetry drift.",
+    "Independent qa_reviewer ACCEPT reran task/handoff/diff/test gates and found no blockers.",
+    "Post-implementation commits before acceptance are process/handoff/route/state only."
+  ],
+  "required_integration_gates_before_closed": [
+    "git diff --check",
+    "taskctl validate/list/ready",
+    "handoff validator for writer/systems/QA/lead acceptance",
+    "required package tests and builds",
+    "PR CI Quality/Web/Browser Smoke",
+    "PR CI Windows Desktop Smoke Artifact",
+    "origin/main contains accepted branch",
+    "closure handoff and task state update after main integration"
+  ],
+  "risks": [
+    {
+      "id": "EXISTING_LARGE_CHUNK_WARNINGS",
+      "severity": "P3",
+      "summary": "Web and Storybook builds retain existing large chunk warnings.",
+      "mitigation": "Track under performance/loading work; not introduced by this task."
+    },
+    {
+      "id": "CANVAS_HELPER_NOT_PRIMARY_WEB_SURFACE",
+      "severity": "P3",
+      "summary": "Canvas helper is not the primary Web map surface; BrowserPixiMapRenderer is the active surface covered by E2E behavior.",
+      "mitigation": "If canvas fallback becomes supported later, require explicit pan/zoom/hover visual coverage."
+    }
+  ],
+  "blockers": [],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "route_to": "lead_orchestrator",
+  "requested_action": "Run integration gates, open PR, wait for CI, merge to main, then close the task only after origin/main contains the accepted branch.",
+  "created_at": "2026-06-28T23:05:44.646Z",
+  "commit": "20bc71524ccdc9dab3520d5a1d23cee3429033ff",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff, previously verified by lead/systems/QA."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems handoff with status ACCEPT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA handoff with status ACCEPT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-PRESENTATION-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID task file after ACCEPTED state update."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in current branch diff."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_AFTER_SYSTEMS_AND_QA",
+      "decision": "Lead accepts the task after systems_architect ACCEPT and independent qa_reviewer ACCEPT."
+    },
+    {
+      "id": "CLOSED_REQUIRES_MAIN_INTEGRATION",
+      "decision": "Task remains ACCEPTED and must not become CLOSED until PR CI passes and origin/main contains the accepted branch."
+    },
+    {
+      "id": "NO_HUMAN_GATE_ACTIVE",
+      "decision": "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    }
+  ]
+}
