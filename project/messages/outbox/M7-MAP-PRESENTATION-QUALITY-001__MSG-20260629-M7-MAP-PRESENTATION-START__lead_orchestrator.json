@@ -1,0 +1,69 @@
+{
+  "message_id": "MSG-20260629-M7-MAP-PRESENTATION-START",
+  "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-MAP-PRESENTATION-QUALITY-001 after M7-DISTRICT-INSPECTOR-QUALITY-001 closed on origin/main. This task productizes map presentation using existing read models without changing map authority.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-START__lead_orchestrator.json",
+    "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+    "project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md"
+  ],
+  "branch_or_worktree": "feat/m7-map-presentation-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main at 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131 before branch creation."
+    },
+    {
+      "command": "taskctl ready",
+      "exit_code": 0,
+      "result": "M7-MAP-PRESENTATION-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 were READY candidates; selected map presentation as the highest-priority UI quality task."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "NEXT_READY_SELECTION",
+      "decision": "Start M7-MAP-PRESENTATION-QUALITY-001 before player guidance and save/cloud boundaries because the accepted UI/localization plan orders map presentation before downstream guidance/regression exit work."
+    },
+    {
+      "id": "SCOPE_BOUNDARY",
+      "decision": "Writer may modify apps/web, packages/client-core, packages/ui, packages/map-renderer, tests, .storybook, and process paths only; sim/protocol/save/platform/content/docs gate/roadmap/release scope remains forbidden."
+    },
+    {
+      "id": "NO_HUMAN_GATE",
+      "decision": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    }
+  ],
+  "risks": [
+    {
+      "id": "MAP_AUTHORITY_DRIFT",
+      "severity": "P1",
+      "summary": "Map polish can accidentally make Pixi authoritative or duplicate pathfinding/control state.",
+      "mitigation": "Require render-cache-only behavior, read-model rebuildability, and systems_architect review."
+    },
+    {
+      "id": "VISUAL_CULTURAL_SYMBOL_RISK",
+      "severity": "P2",
+      "summary": "New map symbols could imply unsupported historical/cultural claims.",
+      "mitigation": "Use neutral placeholders and existing design-token/asset slots; no production culture-specific art."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Spawn client_engineer writer and implement M7 map presentation quality within task constraints, then return REVIEW handoff.",
+  "created_at": "2026-06-28T22:18:34.157Z",
+  "base_main_commit": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
+  "next_ready_tasks": [
+    "M7-MAP-PRESENTATION-QUALITY-001",
+    "M7-PLAYER-GUIDANCE-LITE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ]
+}
