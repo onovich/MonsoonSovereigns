@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260628-M7-VISUAL-UX-HANDOFF",
+  "task_id": "M7-VISUAL-UX-HANDOFF-001",
+  "from_role": "visual_design_reviewer",
+  "status": "REVIEW",
+  "summary": "Provided a structured M7 visual, UX, localization, design-token, asset-slot, and debug/player-mode handoff for review before M7 UI implementation tasks.",
+  "artifacts": [
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md"
+  ],
+  "branch_or_worktree": "external_or_existing_art_thread",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "multi_agent_v1.wait_agent target=019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "exit_code": 0,
+      "result": "Art/visual thread returned the structured M7-VISUAL-UX-HANDOFF-001 Markdown content."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEFER_MANUAL_NODE_BATTLE",
+      "decision": "Manual node battle UI remains rejected for 1.0 mainline unless a later Human Gate changes it."
+    },
+    {
+      "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
+      "decision": "Visual, localization, and player-mode UI quality work should be converted into M7 UI/localization tasks after systems and QA review."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-VISUAL-POLISH-OBSCURES-REASONS-001",
+      "severity": "P1",
+      "summary": "Visual polish may hide required reason/cost data unless UI tasks preserve player-facing explanations and dev overlay separation."
+    },
+    {
+      "id": "M7-I18N-REASON-DRIFT-001",
+      "severity": "P1",
+      "summary": "Reason-code translation can drift from simulation semantics unless sim-core only emits stable reason codes/context and UI owns translation."
+    },
+    {
+      "id": "M7-CULTURAL-SYMBOL-RISK-001",
+      "severity": "P1",
+      "summary": "Portrait and icon choices may trigger cultural review or Human Gate if they imply unsupported historical, religious, or cultural claims."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the handoff for architecture, scope, M7 content-lock compatibility, UI/read-model boundaries, i18n/sim-core separation, and whether it can safely drive downstream M7 UI/localization task graph updates before qa_reviewer review.",
+  "created_at": "2026-06-28T20:07:00.0000000+08:00"
+}

@@ -2,7 +2,7 @@
   "id": "M7-BETA-CULTURE-REVIEW-001",
   "summary": "Perform final Beta culture, history, and language review",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "historical_researcher",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -83,22 +83,38 @@
     "historical_researcher": {
       "thread_id": "019f0d82-dd8b-73c1-a715-045abacda8c0",
       "nickname": "Chronicle the 2nd",
-      "status": "active_writer",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "high",
       "branch_or_worktree": "research/m7-beta-culture-review",
       "base_main_commit": "bf2feede9a32e906e2526ad6137ea18f7e9efba1",
       "created_at": "2026-06-28T09:16:20.781Z",
-      "updated_at": "2026-06-28T20:00:07.0222898+08:00",
+      "updated_at": "2026-06-28T20:10:30.0000000+08:00",
       "start_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-BETA-CULTURE-REVIEW-LEAD-TO-HISTORICAL-START.json",
-      "next_action": "Produce Beta culture/history/language review evidence and writer REVIEW handoff, incorporating M7-UI-LOCALIZATION-ART-COORDINATION-001 as a current M7 Beta quality-track directive without implementing UI work.",
+      "next_action": "Await qa_reviewer review of the Beta culture/history/language review evidence and writer REVIEW handoff.",
       "start_submission_id": "019f0d84-5f55-74e0-8e67-5e5739eacb5b",
       "route_sent_at": "2026-06-28T09:17:10.572Z",
       "product_owner_decision_update": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-UI-LOCALIZATION-ART-COORDINATION-TO-HISTORICAL.json",
-      "product_owner_decision_updated_at": "2026-06-28T20:00:07.0222898+08:00"
+      "product_owner_decision_updated_at": "2026-06-28T20:00:07.0222898+08:00",
+      "review_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+      "review_evidence": "content-source/m7-beta-culture-review/beta-culture-review-evidence.json"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0e25-5cda-7a52-8e6a-b62a4460e947",
+      "task_id": "M7-BETA-CULTURE-REVIEW-001",
+      "status": "active_reviewer",
+      "role": "qa_reviewer",
+      "nickname": "Witness",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-WRITER-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+      "routed_at": "2026-06-28T20:10:30.0000000+08:00"
     }
   },
   "route_to": "qa_reviewer",
@@ -112,7 +128,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T20:00:07.0222898+08:00",
+  "updated_at": "2026-06-28T20:10:30.0000000+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -136,7 +152,7 @@
   "writer_thread_id": "019f0d82-dd8b-73c1-a715-045abacda8c0",
   "writer_thread_nickname": "Chronicle the 2nd",
   "scheduling_reason": "Selected after M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 because it is the next content-lock-chain task; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is also dependency-ready and remains unstarted.",
-  "next_action": "historical_researcher writer returns REVIEW handoff for qa_reviewer, incorporating M7-UI-LOCALIZATION-ART-COORDINATION-001 as current M7 Beta guidance where it affects culture, language, visual-direction risk, and Human Gate findings.",
+  "next_action": "Await qa_reviewer review of Beta culture/history/language evidence, preserving Human Gate and product-owner UI/localization/art boundaries.",
   "start_submission_id": "019f0d84-5f55-74e0-8e67-5e5739eacb5b",
   "route_sent_at": "2026-06-28T09:17:10.572Z",
   "product_owner_directive": {
@@ -152,5 +168,9 @@
     "decision": "Add a M7 UI / Localization / Visual Direction quality track and request a structured art/UX handoff before UI beautification implementation.",
     "progress_statement_policy": "Treat progress descriptions in the inbound document as possibly stale; current Git, taskctl, PROJECT_STATUS, and goal-mode-state remain authoritative.",
     "writer_instruction": "Incorporate this directive into culture/history/language review findings, especially player-facing language, concept-art mapping, debug-versus-player-mode separation, cultural visual risks, and Human Gate triggers; do not implement UI changes."
-  }
+  },
+  "review_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+  "review_evidence": "content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+  "qa_route": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-WRITER-TO-QA-REVIEW.json",
+  "expected_qa_review_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json"
 }

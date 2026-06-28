@@ -1,0 +1,695 @@
+{
+  "schemaVersion": 1,
+  "kind": "m7.beta-culture-review-evidence",
+  "reviewId": "m7.beta-culture-review.evidence.v0",
+  "taskId": "M7-BETA-CULTURE-REVIEW-001",
+  "status": "REVIEW_EVIDENCE",
+  "createdAt": "2026-06-28T20:45:00+08:00",
+  "reviewerRole": "historical_researcher",
+  "routeTo": "qa_reviewer",
+  "contentScope": "m7-beta-content-lock-evidence",
+  "notContentLockAcceptance": true,
+  "m6GateCarryForward": "PASS_WITH_LIMITS",
+  "manualNodeBattleDecision": "DEFER_MANUAL_NODE_BATTLE",
+  "methodology": {
+    "sourcePolicy": "Applied docs/10 source hierarchy: project baselines and metadata-only academic entries can route review, but cannot alone convert claims into accepted production facts.",
+    "biasChecks": [
+      "modern national border projection",
+      "modern ethnic essentialism",
+      "winner chronicle certainty",
+      "colonial-era category back-projection",
+      "religion-as-war-cause shortcut",
+      "cost-free coercion reward",
+      "generic tropical temple visual language",
+      "unsupported certainty in dates, names, titles, clothing, symbols, and institutions"
+    ],
+    "sourceStatementBoundary": "This review distinguishes what the project baseline/source records state, what scholarly interpretation still requires page verification, and what this reviewer infers for game abstraction.",
+    "fullTextLimit": "Academic candidate sources in the reviewed content remain BIBLIOGRAPHIC_METADATA_ONLY or SOURCE_DISCOVERY_ONLY where pageOrSection is RESEARCH REQUIRED; this review does not claim full-text verification for those sources."
+  },
+  "inputsReviewed": [
+    {
+      "path": "docs/09-world-history-culture.md",
+      "locator": "sections 1-13",
+      "use": "project historical/cultural baseline"
+    },
+    {
+      "path": "docs/10-historical-research-policy.md",
+      "locator": "sections 2-10",
+      "use": "source, claim-record, uncertainty, bias, and violence-cost policy"
+    },
+    {
+      "path": "docs/16-research-bibliography.md",
+      "locator": "sections 1-8",
+      "use": "source discovery and candidate bibliography limits"
+    },
+    {
+      "path": "docs/19-data-schema-guide.md",
+      "locator": "sections 2-10",
+      "use": "stable IDs, source fields, localization, event-data, and validation expectations"
+    },
+    {
+      "path": "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+      "locator": "$",
+      "use": "accepted M7 historical/cultural/language review baseline"
+    },
+    {
+      "path": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "locator": "$",
+      "use": "M7 Beta scenario, person, title, event, localization, source, and claim records"
+    },
+    {
+      "path": "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      "locator": "$",
+      "use": "M7 Beta audio, art, localization, viewport, static-resource, and unresolved-risk coverage"
+    },
+    {
+      "path": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-CLOSED__lead_orchestrator.json",
+      "locator": "$.summary, $.artifacts, $.decisions, $.risks",
+      "use": "closed tutorial/hint/encyclopedia evidence tied to accepted content-source records"
+    },
+    {
+      "path": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json",
+      "locator": "$.summary, $.decisions, $.risks, $.tests_run",
+      "use": "independent QA evidence that guidance fixtures match the accepted content-source set"
+    },
+    {
+      "path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+      "locator": "Prompt A and Prompt B sections on UI/localization/visual direction",
+      "use": "product-owner directive for future UI/localization/visual quality-track constraints"
+    },
+    {
+      "path": "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+      "locator": "$.acceptance_criteria, $.notes, $.product_owner_directive",
+      "use": "related art/UX handoff dependency and boundary record"
+    },
+    {
+      "path": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+      "locator": "$.summary, $.decisions, $.risks, $.requested_action",
+      "use": "returned art/visual thread handoff envelope; schema-valid but still pending systems/QA review"
+    },
+    {
+      "path": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+      "locator": "sections 0-12",
+      "use": "structured visual/UX/localization guidance, including debug/player separation, asset slots, and cultural-symbol risks"
+    }
+  ],
+  "summaryCounts": {
+    "reviewBaselineClaimRecords": 8,
+    "reviewBaselineAcceptedBetaRealWorldClaims": 0,
+    "scenarioClaimRecords": 6,
+    "scenarioLocalizationRecords": 36,
+    "scenarioTitleRecords": 3,
+    "scenarioPersonRecords": 6,
+    "scenarioEventRecords": 5,
+    "scenarioRecords": 3,
+    "audioArtLocalizationAssetReferences": 8,
+    "audioArtLocalizationChecks": 5,
+    "audioArtLocalizationViewportSmokes": 4,
+    "acceptedFindings": 6,
+    "requestChangeBeforeLockFindings": 5,
+    "blockedForProductionFindings": 4,
+    "humanGateRequiredFindings": 5
+  },
+  "reviewClaimRecords": [
+    {
+      "claim_id": "HIST-M7-BETA-CULTURE-REVIEW-001-NOT-LOCK",
+      "claim": "The reviewed M7 Beta content set is suitable as culture-review evidence, but it is not formal content lock acceptance and does not accept page-unverified real-world facts.",
+      "entity_ids": [
+        "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+        "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+        "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json"
+      ],
+      "time_span": "M7 Beta, 2026-06-28",
+      "source_ids": [
+        "source.project.docs.10",
+        "source.review.m7.baseline",
+        "source.m7.beta.scenario-person-event-set",
+        "source.m7.beta.audio-art-localization-coverage"
+      ],
+      "source_passages": [
+        {
+          "source_id": "source.project.docs.10",
+          "locator": "sections 3 and 10",
+          "summary": "Formal claims need claim records and AI research must preserve uncertainty rather than invent evidence."
+        },
+        {
+          "source_id": "source.review.m7.baseline",
+          "locator": "$.acceptedBetaRealWorldClaims, $.scope.notContentLockAcceptance",
+          "summary": "The baseline has zero accepted Beta real-world claims and marks itself as not content lock acceptance."
+        },
+        {
+          "source_id": "source.m7.beta.scenario-person-event-set",
+          "locator": "$.notContentLockAcceptance, $.knownGaps",
+          "summary": "The scenario fill set marks formal content lock as a future Human Gate and keeps names, titles, chronology, and participants research-required."
+        }
+      ],
+      "confidence": "HIGH",
+      "status": "INFERRED",
+      "competing_interpretations": [
+        "A future content-lock task may accept a subset after page-level source review and Human Gate approval.",
+        "This review only accepts the evidence chain and risk routing."
+      ],
+      "game_abstraction": "Permit use as Beta validation and review evidence; do not present it as final historical truth.",
+      "reviewer": "historical_researcher",
+      "last_reviewed": "2026-06-28"
+    },
+    {
+      "claim_id": "HIST-M7-BETA-CULTURE-REVIEW-002-UI-VISUAL-DEPENDENCY",
+      "claim": "The M7 art/UX handoff is a dependency for later UI beautification tasks, not a substitute for culture review or historical source review.",
+      "entity_ids": [
+        "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+        "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json"
+      ],
+      "time_span": "M7 Beta, 2026-06-28",
+      "source_ids": [
+        "source.product-owner.m7-ui-localization-art-coordination-001",
+        "source.task.m7-visual-ux-handoff-001"
+      ],
+      "source_passages": [
+        {
+          "source_id": "source.product-owner.m7-ui-localization-art-coordination-001",
+          "locator": "Prompt A goals and visual/localization sections",
+          "summary": "The directive adds a UI/localization/visual quality track and requests structured handoff before UI beautification implementation."
+        },
+        {
+      "source_id": "source.task.m7-visual-ux-handoff-001",
+      "locator": "$.acceptance_criteria[2..5]",
+      "summary": "The related task requires concept-art mapping, 1.0 versus post-1.0 decisions, reviewer acceptance, and no implementation work."
+        },
+        {
+          "source_id": "source.visual-design.m7-visual-ux-handoff-001",
+          "locator": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md sections 2, 3, 8, 9, and 11",
+          "summary": "The returned handoff separates current mappings from target expression, flags cultural-symbol risk, requires i18n, hides debug labels from player mode, and keeps manual node battle out of 1.0."
+        }
+      ],
+      "confidence": "HIGH",
+      "status": "INFERRED",
+      "competing_interpretations": [
+        "Visual direction can guide implementation after review.",
+        "It cannot authorize unreviewed names, symbols, sacred imagery, cultural costumes, UI metaphors, or new systems."
+      ],
+      "game_abstraction": "Future UI tasks must consume reviewed read models, stable localization keys, neutral placeholders, and explicit asset slots.",
+      "reviewer": "historical_researcher",
+      "last_reviewed": "2026-06-28"
+    }
+  ],
+  "acceptedFindings": [
+    {
+      "findingId": "ACCEPT-BETA-EVIDENCE-001",
+      "verdict": "ACCEPT_AS_REVIEW_EVIDENCE_ONLY",
+      "contentPath": "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+      "jsonPaths": [
+        "$.sourcePolicy",
+        "$.claimRecords[*]",
+        "$.reviewGates[*]",
+        "$.acceptedBetaRealWorldClaims"
+      ],
+      "sourceRecords": [
+        "source.project.docs.09",
+        "source.project.docs.10",
+        "source.project.docs.16"
+      ],
+      "claimRecords": [
+        "HIST-M7-BASELINE-001-SCOPE",
+        "HIST-M7-BASELINE-002-NO-MODERN-IDENTITY-SHORTCUT",
+        "HIST-M7-BASELINE-005-VIOLENCE-COSTS",
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"
+      ],
+      "uncertaintyLabels": [
+        "INFERRED",
+        "COMPOSITE",
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "The baseline correctly creates gates and uncertainty records, records zero accepted Beta real-world claims, and blocks metadata-only sources from becoming production facts."
+    },
+    {
+      "findingId": "ACCEPT-BETA-EVIDENCE-002",
+      "verdict": "ACCEPT_AS_BETA_COMPOSITE_CONTENT_PATH",
+      "contentPath": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "jsonPaths": [
+        "$.sourceRecords",
+        "$.claimRecords",
+        "$.scenarios",
+        "$.persons",
+        "$.events",
+        "$.knownGaps"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.project.docs.10",
+        "source.project.docs.16"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-001-SCOPE",
+        "HIST-M7-FILL-002-SCENARIO-ANCHORS",
+        "HIST-M7-FILL-003-PERSON-PLACEHOLDER-LIMIT",
+        "HIST-M7-FILL-006-NO-CULTURE-BUFF"
+      ],
+      "uncertaintyLabels": [
+        "COMPOSITE",
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "The scenario/person/event set keeps scenario anchors, persons, and titles as composite or research-required records and does not assert page-verified chronology, biography, or identity mechanics."
+    },
+    {
+      "findingId": "ACCEPT-BETA-EVIDENCE-003",
+      "verdict": "ACCEPT_HIGH_RISK_ROUTING",
+      "contentPath": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "jsonPaths": [
+        "$.events[?eventId=='event.beta.coercion-cost-review']",
+        "$.localization[?key=='content.m7.beta.choice.defer_coercion.name']",
+        "$.localization[?key=='content.m7.beta.cost.defer_coercion.name']"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.project.docs.10"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-005-EVENT-COSTS",
+        "HIST-M7-BASELINE-005-VIOLENCE-COSTS"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "reviewState": "CULTURE_HUMAN_GATE_REQUIRED",
+      "reviewerRationale": "The coercion/population-loss hook records victim groups and source regions as RESEARCH REQUIRED, lists immediate and long-term consequences, and blocks reward framing behind Human Gate rather than minimizing harm."
+    },
+    {
+      "findingId": "ACCEPT-BETA-EVIDENCE-004",
+      "verdict": "ACCEPT_DERIVED_GUIDANCE_EVIDENCE",
+      "contentPath": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "supportingMessagePaths": [
+        "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-CLOSED__lead_orchestrator.json",
+        "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-001-SCOPE",
+        "HIST-M7-FILL-004-TITLES-LANGUAGE-BLOCK",
+        "HIST-M7-FILL-005-EVENT-COSTS"
+      ],
+      "uncertaintyLabels": [
+        "COMPOSITE",
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "Tutorial, hint, and encyclopedia surfaces are accepted only as generated evidence tied to the accepted content-source graph and QA drift tests; they must continue exposing review labels instead of flattening uncertainty."
+    },
+    {
+      "findingId": "ACCEPT-BETA-EVIDENCE-005",
+      "verdict": "ACCEPT_NEUTRAL_STATIC_SLOT_COVERAGE",
+      "contentPath": "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      "jsonPaths": [
+        "$.staticResourceBoundary",
+        "$.assetReferences[*]",
+        "$.unresolvedRisks"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline"
+      ],
+      "claimRecords": [
+        "HIST-M7-BASELINE-006-LANGUAGE-NAMES-TITLES",
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "Neutral static audio/art slots are acceptable as coverage evidence because their notes disclaim period instruments, melodies, sacred sound, flags, scripts, temple/manuscript/court-symbol claims, and culture-specific production assertions."
+    },
+    {
+      "findingId": "ACCEPT-BETA-EVIDENCE-006",
+      "verdict": "ACCEPT_UI_DIRECTIVE_AS_FUTURE_CONSTRAINT",
+      "contentPath": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+      "supportingMessagePaths": [
+        "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-UI-LOCALIZATION-ART-COORDINATION-TO-HISTORICAL.json",
+        "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+        "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+        "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md"
+      ],
+      "sourceRecords": [
+        "source.product-owner.m7-ui-localization-art-coordination-001"
+      ],
+      "claimRecords": [
+        "HIST-M7-BETA-CULTURE-REVIEW-002-UI-VISUAL-DEPENDENCY"
+      ],
+      "uncertaintyLabels": [
+        "INFERRED"
+      ],
+      "reviewerRationale": "The directive and returned art/UX handoff are accepted as future M7 UI/localization/visual quality-track constraints. They do not replace this culture review and do not authorize UI implementation, new systems, or unreviewed cultural assets before systems/QA review."
+    }
+  ],
+  "requestChangeBeforeLockFindings": [
+    {
+      "findingId": "REQUEST-CHANGE-BEFORE-LOCK-001",
+      "severity": "R3",
+      "contentPath": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "jsonPaths": [
+        "$.scenarios[*]",
+        "$.events[?eventId=='event.beta.campaign-window-warning']",
+        "$.localization[?reviewState=='RESEARCH REQUIRED']"
+      ],
+      "sourceRecords": [
+        "source.project.docs.16",
+        "source.baker-pasuk.2017.ayutthaya",
+        "source.charney.2004.warfare"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-002-SCENARIO-ANCHORS"
+      ],
+      "uncertaintyLabels": [
+        "COMPOSITE",
+        "RESEARCH REQUIRED"
+      ],
+      "requiredChange": "Before formal content lock, page- or section-verified source records must be added for exact scenario chronology, participants, monsoon campaign claims, and scenario display hooks, or those records must remain explicitly RESEARCH REQUIRED.",
+      "reviewerRationale": "The current file handles this correctly for Beta evidence, but formal lock cannot accept these anchors as historical facts from project bibliography metadata alone."
+    },
+    {
+      "findingId": "REQUEST-CHANGE-BEFORE-LOCK-002",
+      "severity": "R3",
+      "contentPath": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "jsonPaths": [
+        "$.titles[*]",
+        "$.persons[*]",
+        "$.localization[?reviewState=='LANGUAGE_REVIEW_REQUIRED']"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.project.docs.10"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-003-PERSON-PLACEHOLDER-LIMIT",
+        "HIST-M7-FILL-004-TITLES-LANGUAGE-BLOCK"
+      ],
+      "uncertaintyLabels": [
+        "COMPOSITE",
+        "RESEARCH REQUIRED"
+      ],
+      "requiredChange": "Before public-facing lock, names, titles, aliases, transliterations, and title glosses need language/style-guide records with source forms or must stay generic and visibly review-blocked.",
+      "reviewerRationale": "The current generic strings avoid fabricating local titles, but they are not a final language solution."
+    },
+    {
+      "findingId": "REQUEST-CHANGE-BEFORE-LOCK-003",
+      "severity": "R3",
+      "contentPath": "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      "jsonPaths": [
+        "$.supportedLocales[?locale=='zh-Hans']",
+        "$.localizationChecks[?reviewState=='LANGUAGE_REVIEW_REQUIRED']",
+        "$.unresolvedRisks[?riskId=='risk.language-quality-review']"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline"
+      ],
+      "claimRecords": [
+        "HIST-M7-BASELINE-006-LANGUAGE-NAMES-TITLES"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "requiredChange": "Run final zh-Hans language-quality review for player-facing wording, names, titles, tooltips, and long English/Chinese layout effects before content lock.",
+      "reviewerRationale": "Coverage exists, but quality review and sensitive terminology remain explicitly pending."
+    },
+    {
+      "findingId": "REQUEST-CHANGE-BEFORE-LOCK-004",
+      "severity": "R4",
+      "contentPath": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+      "supportingMessagePaths": [
+        "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+        "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md"
+      ],
+      "sourceRecords": [
+        "source.product-owner.m7-ui-localization-art-coordination-001"
+      ],
+      "claimRecords": [
+        "HIST-M7-BETA-CULTURE-REVIEW-002-UI-VISUAL-DEPENDENCY"
+      ],
+      "uncertaintyLabels": [
+        "INFERRED"
+      ],
+      "requiredChange": "Future UI beautification must treat the returned structured art/UX handoff as pending systems/QA review, and must map concept art to current systems without adding unimplemented 1.0 systems.",
+      "reviewerRationale": "Concept-art mapping is necessary for visual quality, but even the returned handoff cannot bypass historical/cultural review or turn target expression into product fact."
+    },
+    {
+      "findingId": "REQUEST-CHANGE-BEFORE-LOCK-005",
+      "severity": "R4",
+      "contentPath": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+      "jsonPaths": [
+        "Prompt B sections 8 and 9"
+      ],
+      "sourceRecords": [
+        "source.product-owner.m7-ui-localization-art-coordination-001",
+        "source.review.m7.baseline"
+      ],
+      "claimRecords": [
+        "HIST-M7-BASELINE-006-LANGUAGE-NAMES-TITLES",
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "requiredChange": "Future player-mode UI must hide debug/prototype labels, raw IDs, raw reason codes, state hashes, M2/M3 internal labels, and test-only names; player-facing strings must route through i18n and reviewed terminology.",
+      "reviewerRationale": "Debug vocabulary can leak unsupported modern/technical framing and undermine cultural review if exposed as player-facing language."
+    }
+  ],
+  "blockedForProductionFindings": [
+    {
+      "findingId": "BLOCKED-FOR-PRODUCTION-001",
+      "blockedUse": "Formal acceptance of scenario years, chronology, participants, or named historical persons as verified facts.",
+      "contentPath": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "jsonPaths": [
+        "$.scenarios[*]",
+        "$.persons[*]",
+        "$.knownGaps[1]",
+        "$.knownGaps[2]"
+      ],
+      "sourceRecords": [
+        "source.project.docs.16",
+        "source.review.m7.baseline"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-002-SCENARIO-ANCHORS",
+        "HIST-M7-FILL-003-PERSON-PLACEHOLDER-LIMIT"
+      ],
+      "uncertaintyLabels": [
+        "COMPOSITE",
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "The current records are intentionally composite, low-confidence, and review-blocked; production factual acceptance would need new claim records with page/section evidence."
+    },
+    {
+      "findingId": "BLOCKED-FOR-PRODUCTION-002",
+      "blockedUse": "Culture-specific clothing, architecture, weapons, flags, scripts, religious imagery, music, instruments, court ritual sound, or sacred UI symbols.",
+      "contentPath": "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      "jsonPaths": [
+        "$.postOneGaps",
+        "$.unresolvedRisks[?riskId=='risk.culture-specific-assets-blocked']"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline"
+      ],
+      "claimRecords": [
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC",
+        "HIST-M7-BASELINE-008-RELIGION-NOT-SIMPLE-CONFLICT"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "Neutral placeholders are allowed; culture-specific production assets require period, region, and usage evidence plus cultural review."
+    },
+    {
+      "findingId": "BLOCKED-FOR-PRODUCTION-003",
+      "blockedUse": "Any mechanic, UI copy, or event option that frames coercive population movement, slavery, famine, massacre, religious conflict, or wartime loss as cost-free reward.",
+      "contentPath": "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+      "jsonPaths": [
+        "$.events[?eventId=='event.beta.coercion-cost-review'].violenceCostRecord",
+        "$.knownGaps[3]"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.project.docs.10"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-005-EVENT-COSTS",
+        "HIST-M7-BASELINE-005-VIOLENCE-COSTS"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "The record correctly lists victim/source-region research requirements and long-term consequences; production reward framing is blocked unless those costs remain explicit and reviewed."
+    },
+    {
+      "findingId": "BLOCKED-FOR-PRODUCTION-004",
+      "blockedUse": "Manual node battle UI, battle implementation, or 1.0 scope reversal through visual design or concept-art interpretation.",
+      "contentPath": "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+      "jsonPaths": [
+        "$.manual_node_battle_decision",
+        "$.notes[4]",
+        "$.human_gates"
+      ],
+      "sourceRecords": [
+        "source.task.m7-visual-ux-handoff-001",
+        "source.product-owner.m7-ui-localization-art-coordination-001"
+      ],
+      "claimRecords": [
+        "HIST-M7-BETA-CULTURE-REVIEW-002-UI-VISUAL-DEPENDENCY"
+      ],
+      "uncertaintyLabels": [
+        "INFERRED"
+      ],
+      "reviewerRationale": "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and outside 1.0 mainline; visual handoff cannot reverse a product-owner Human Gate decision."
+    }
+  ],
+  "humanGateRequiredFindings": [
+    {
+      "findingId": "HUMAN-GATE-001",
+      "gate": "formal content lock acceptance",
+      "contentPaths": [
+        "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+        "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+        "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.project.docs.10"
+      ],
+      "claimRecords": [
+        "HIST-M7-BETA-CULTURE-REVIEW-001-NOT-LOCK"
+      ],
+      "uncertaintyLabels": [
+        "INFERRED",
+        "COMPOSITE",
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "This writer review supplies evidence for QA and later lock review only; it cannot mark ACCEPTED/CLOSED or approve formal content lock."
+    },
+    {
+      "findingId": "HUMAN-GATE-002",
+      "gate": "major cultural-risk decision for coercion, forced movement, slavery, famine, massacre, religious conflict, or wartime population loss",
+      "contentPaths": [
+        "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json"
+      ],
+      "jsonPaths": [
+        "$.events[?eventId=='event.beta.coercion-cost-review']",
+        "$.localization[?reviewState=='CULTURE_HUMAN_GATE_REQUIRED']"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.project.docs.10"
+      ],
+      "claimRecords": [
+        "HIST-M7-FILL-005-EVENT-COSTS"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "High-risk violence-cost content is present as a blocking review hook, not an accepted gameplay reward."
+    },
+    {
+      "findingId": "HUMAN-GATE-003",
+      "gate": "culture-specific art, music, symbol, sacred image, ritual, clothing, architecture, weapon, flag, script, name, or title production choice",
+      "contentPaths": [
+        "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+        "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.product-owner.m7-ui-localization-art-coordination-001"
+      ],
+      "claimRecords": [
+        "HIST-M7-BASELINE-006-LANGUAGE-NAMES-TITLES",
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC",
+        "HIST-M7-BASELINE-008-RELIGION-NOT-SIMPLE-CONFLICT"
+      ],
+      "uncertaintyLabels": [
+        "RESEARCH REQUIRED"
+      ],
+      "reviewerRationale": "Neutral placeholders do not license production cultural assets. Major unresolved visual/language/symbol choices need Human Gate after source and culture review."
+    },
+    {
+      "findingId": "HUMAN-GATE-004",
+      "gate": "identity shortcut or fixed culture/religion/polity buff exception",
+      "contentPaths": [
+        "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+        "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json"
+      ],
+      "sourceRecords": [
+        "source.review.m7.baseline",
+        "source.project.docs.10"
+      ],
+      "claimRecords": [
+        "HIST-M7-BASELINE-002-NO-MODERN-IDENTITY-SHORTCUT",
+        "HIST-M7-FILL-006-NO-CULTURE-BUFF"
+      ],
+      "uncertaintyLabels": [
+        "INFERRED"
+      ],
+      "reviewerRationale": "The current content avoids identity mechanics; any exception would be a major cultural-risk decision."
+    },
+    {
+      "findingId": "HUMAN-GATE-005",
+      "gate": "manual node battle reversal or formal 1.0 scope reversal",
+      "contentPaths": [
+        "project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json",
+        "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json"
+      ],
+      "sourceRecords": [
+        "source.task.m7-beta-culture-review-001",
+        "source.task.m7-visual-ux-handoff-001"
+      ],
+      "claimRecords": [
+        "HIST-M7-BETA-CULTURE-REVIEW-002-UI-VISUAL-DEPENDENCY"
+      ],
+      "uncertaintyLabels": [
+        "INFERRED"
+      ],
+      "reviewerRationale": "Visual/UX mapping must explicitly label manual node battle UI as not in the 1.0 mainline unless a later Human Gate changes the decision."
+    }
+  ],
+  "uiLocalizationVisualConstraintsForFutureTasks": [
+    {
+      "constraintId": "UI-CULTURE-001",
+      "topic": "concept-art mapping",
+      "sourcePath": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+      "constraint": "Map every concept-art element to implemented capability, prototype UI, designed-but-unsurfaced capability, target expression only, post-1.0, or rejected-for-1.0; do not infer new systems."
+    },
+    {
+      "constraintId": "UI-CULTURE-002",
+      "topic": "visual symbols",
+      "sourcePath": "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      "constraint": "Keep neutral placeholder symbols until source-specific cultural review approves any culture-specific script, sacred image, flag, icon, clothing, architecture, weapon, or ritual motif."
+    },
+    {
+      "constraintId": "UI-CULTURE-003",
+      "topic": "localization",
+      "sourcePath": "docs/19-data-schema-guide.md",
+      "constraint": "All player-facing text must route through stable localization keys with source notes, context, character limits, and reviewed terminology; no hard-coded historical names or titles."
+    },
+    {
+      "constraintId": "UI-CULTURE-004",
+      "topic": "debug versus player mode",
+      "sourcePath": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+      "constraint": "Hide state hashes, internal IDs, raw reason codes, milestone labels, prototype labels, test names, and debug timing from player mode; debug overlay may remain developer-only."
+    },
+    {
+      "constraintId": "UI-CULTURE-005",
+      "topic": "manual node battle",
+      "sourcePath": "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+      "constraint": "Do not create manual node battle UI or imply 1.0 inclusion through art/UX; label it not in 1.0 mainline unless later Human Gate reverses DEFER_MANUAL_NODE_BATTLE."
+    },
+    {
+      "constraintId": "UI-CULTURE-006",
+      "topic": "read-model boundary",
+      "sourcePath": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+      "constraint": "Player-facing UI may present reviewed read-model data and localized reason text; it must not treat Pixi, React, concept art, or asset slots as authoritative historical or simulation state."
+    }
+  ],
+  "overallVerdict": {
+    "status": "REVIEW_READY_FOR_QA",
+    "acceptedForBetaEvidence": true,
+    "acceptedForFormalContentLock": false,
+    "requiresImmediateProductOwnerDecision": false,
+    "humanGateBeforeContentLock": true,
+    "routeTo": "qa_reviewer",
+    "rationale": "The reviewed set is coherent Beta culture/history/language evidence with explicit uncertainty, source limits, violence-cost handling, and Human Gate routing. It should proceed to QA review, while formal content lock and major cultural-risk decisions remain outside writer authority."
+  }
+}

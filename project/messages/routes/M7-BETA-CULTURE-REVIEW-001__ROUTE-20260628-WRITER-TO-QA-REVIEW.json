@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-BETA-CULTURE-WRITER-TO-QA-REVIEW",
+  "task_id": "M7-BETA-CULTURE-REVIEW-001",
+  "source_role": "lead_orchestrator",
+  "source_handoff_role": "historical_researcher",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f0e25-5cda-7a52-8e6a-b62a4460e947",
+  "target_thread_nickname": "Witness",
+  "source_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+  "source_evidence": "content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+  "delivery": {
+    "method": "multi_agent_v1.spawn_agent",
+    "agent_type": "qa_reviewer",
+    "agent_id": "019f0e25-5cda-7a52-8e6a-b62a4460e947",
+    "nickname": "Witness",
+    "sent_at": "2026-06-28T20:10:30.0000000+08:00",
+    "result": "SPAWNED_AND_ROUTED_IN_INITIAL_PROMPT"
+  },
+  "message_summary": "Lead routed the historical_researcher REVIEW handoff and Beta culture review evidence to independent QA for scope, evidence, Human Gate, product-owner UI directive, and forbidden-path checks.",
+  "required_target_output": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+  "route_to_after_accept": "lead_orchestrator",
+  "created_at": "2026-06-28T20:10:30.0000000+08:00"
+}

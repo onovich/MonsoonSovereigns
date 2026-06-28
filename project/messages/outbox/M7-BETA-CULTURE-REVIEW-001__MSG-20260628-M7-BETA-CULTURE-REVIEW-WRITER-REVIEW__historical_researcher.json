@@ -1,0 +1,143 @@
+{
+  "message_id": "MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW",
+  "task_id": "M7-BETA-CULTURE-REVIEW-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "Final Beta culture/history/language writer review is ready for qa_reviewer. I added an independent culture-review evidence file that accepts the current M7 scenario/person/event/tutorial/hint/encyclopedia/audio/art/localization set only as Beta review evidence, not formal content lock. The evidence records accepted, request-change-before-lock, blocked-for-production, and Human Gate-required findings with exact paths, source records, claim records, uncertainty labels, and rationale. It incorporates product-owner directive M7-UI-LOCALIZATION-ART-COORDINATION-001 and the newly returned visual handoff as future UI/localization/visual quality-track constraints. The art/UX handoff is now present and schema-valid, but remains a dependency pending systems/QA review, not a substitute for culture review.",
+  "artifacts": [
+    "content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+    "project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-ART-HANDOFF-TO-SYSTEMS-REVIEW.json",
+    "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+    "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json"
+  ],
+  "branch_or_worktree": "research/m7-beta-culture-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "bf2feede9a32e906e2526ad6137ea18f7e9efba1",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Final observed status includes my modified project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json, untracked content-source/m7-beta-culture-review/, and this writer handoff. Concurrent allowed-path orchestration/visual-thread changes are also present: project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json, project/tasks/thread-registry.json, the returned M7-VISUAL-UX-HANDOFF visual files, and the route to systems review. docs/M7_UI_Localization_Art_Handoff_Prompts.md was not touched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-BETA-CULTURE-REVIEW-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json after moving task status to REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list shows M7-BETA-CULTURE-REVIEW-001 in REVIEW. At the time of taskctl list it showed M7-VISUAL-UX-HANDOFF-001 in IN_PROGRESS; a concurrent route later advanced that task file to REVIEW for systems_architect review. Upstream M7 historical/cultural/language, scenario/person/event, tutorial/hints/encyclopedia, and audio/art/localization tasks are CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is the only ready task while Beta culture review is in REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-BETA-CULTURE-REVIEW-001 and content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+      "exit_code": 0,
+      "result": "JSON shape ok: task REVIEW; evidence has accepted/request-change/blocked/Human Gate findings; route qa_reviewer; notContentLockAcceptance true; DEFER_MANUAL_NODE_BATTLE preserved; product-owner directive path cited."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID visual_design_reviewer handoff envelope. This confirms the art/UX handoff arrived, but it remains pending systems_architect and qa_reviewer review."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for m1, m2, m3, m6 map, m6 scenario, and m7 beta scenario/person/event set; M7 manifest hash remains 92aed91e."
+    }
+  ],
+  "decisions": [
+    {
+      "verdict": "ACCEPT_AS_REVIEW_EVIDENCE_ONLY",
+      "reason": "The M7 historical/cultural/language baseline has source policy, 8 claim records, review gates, bias checks, zero accepted Beta real-world claims, and explicit Human Gate routing."
+    },
+    {
+      "verdict": "ACCEPT_AS_BETA_COMPOSITE_CONTENT_PATH",
+      "reason": "The scenario/person/event set has 6 claim records, 3 scenarios, 6 persons, 3 titles, 5 events, 36 localization records, explicit RESEARCH REQUIRED/LANGUAGE_REVIEW_REQUIRED/CULTURE_HUMAN_GATE_REQUIRED states, and no fixed culture buff or formal lock acceptance."
+    },
+    {
+      "verdict": "ACCEPT_DERIVED_GUIDANCE_EVIDENCE",
+      "reason": "Tutorial, hint, and encyclopedia surfaces are accepted as generated/QA-checked projections from accepted content-source records; they must keep uncertainty labels and Human Gate language visible."
+    },
+    {
+      "verdict": "ACCEPT_NEUTRAL_STATIC_SLOT_COVERAGE",
+      "reason": "Audio/art/localization coverage uses static neutral slots and explicitly disclaims period instrument, sacred sound, flag, script, temple, manuscript, court-symbol, place, and culture-specific production claims."
+    },
+    {
+      "verdict": "REQUEST_CHANGES_BEFORE_FORMAL_LOCK",
+      "reason": "Scenario chronology, participants, campaign-window claims, public-facing names/titles/transliterations, zh-Hans wording quality, and UI player-mode terminology need source/language review or must remain visibly review-blocked before lock."
+    },
+    {
+      "verdict": "HUMAN_GATE_REQUIRED_FOR_MAJOR_CULTURE_RISK",
+      "reason": "Formal content lock, coercion/forced-movement reward framing, culture-specific production assets, identity shortcut exceptions, sacred/religious UI use, and manual node battle reversal remain Human Gates."
+    },
+    {
+      "verdict": "UI_VISUAL_DIRECTIVE_INCORPORATED",
+      "reason": "M7-UI-LOCALIZATION-ART-COORDINATION-001 and the returned M7-VISUAL-UX-HANDOFF visual thread output are cited as future quality-track constraints. The handoff is present but still requires systems/QA review; it is not a substitute for culture review and not authorization to implement UI/design tokens/i18n/app shell."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "R4",
+      "summary": "Formal content lock remains a future Human Gate; this REVIEW must not be read as ACCEPTED/CLOSED or production historical certainty.",
+      "evidence": "content-source/m7-beta-culture-review/beta-culture-review-evidence.json overallVerdict and HUMAN-GATE-001."
+    },
+    {
+      "severity": "R4",
+      "summary": "Culture-specific art, music, scripts, symbols, sacred imagery, clothing, architecture, weapons, names, titles, and transliterations remain blocked from production acceptance without source-specific cultural review and Human Gate when major risk remains.",
+      "evidence": "BLOCKED-FOR-PRODUCTION-002 and HUMAN-GATE-003."
+    },
+    {
+      "severity": "R4",
+      "summary": "Forced movement / population-loss content is correctly a Human Gate review hook, but any future reward framing must keep victim groups, source regions, immediate costs, and long-term consequences explicit.",
+      "evidence": "event.beta.coercion-cost-review and HUMAN-GATE-002."
+    },
+    {
+      "severity": "R3",
+      "summary": "Academic candidate sources in current records are metadata-only or source-discovery-only where pageOrSection is RESEARCH REQUIRED.",
+      "evidence": "review evidence methodology fullTextLimit and REQUEST-CHANGE-BEFORE-LOCK-001."
+    },
+    {
+      "severity": "R3",
+      "summary": "M7-VISUAL-UX-HANDOFF-001 returned visual thread files during this review; later UI beautification must still wait for systems/QA review and must hide debug/prototype text from player mode.",
+      "evidence": "UI-CULTURE-001 through UI-CULTURE-006."
+    }
+  ],
+  "blockers": [
+    {
+      "scope": "blocked_for_production_not_for_qa_review",
+      "summary": "Formal acceptance of scenario years, chronology, participants, and named historical persons as verified facts is blocked until page/section evidence exists or records remain RESEARCH REQUIRED."
+    },
+    {
+      "scope": "blocked_for_production_not_for_qa_review",
+      "summary": "Culture-specific production visuals/audio/symbols and public-facing names/titles are blocked until historical/cultural/language review clears them."
+    },
+    {
+      "scope": "human_gate_before_content_lock",
+      "summary": "Formal content lock acceptance and major cultural-risk decisions require Human Gate; writer did not decide them."
+    }
+  ],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review content-source/m7-beta-culture-review/beta-culture-review-evidence.json and this writer REVIEW handoff. Verify that accepted items are only Beta evidence, request-change/blocked/Human Gate findings are precise enough for content lock, M7-UI-LOCALIZATION-ART-COORDINATION-001 is correctly treated as a future UI/localization/visual dependency, and no product code or forbidden scope was changed.",
+  "created_at": "2026-06-28T20:50:00+08:00"
+}
