@@ -1,0 +1,57 @@
+{
+  "message_id": "MSG-20260628-M7-AUDIO-ART-LOCALIZATION-REPLACEMENT-START",
+  "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "client_engineer",
+  "status": "INFO",
+  "summary": "Replacement start for M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 after the original writer stalled without handoff while leaving partial allowed-scope diff. The replacement writer must review and continue that diff rather than blindly reverting it.",
+  "branch_or_worktree": "feat/m7-audio-art-localization / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "c7dfefe513e020eb0de68d776ec66829ad246154",
+  "artifacts": [
+    "project/tasks/active/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.json",
+    "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-REPLACEMENT-START__lead_orchestrator.json",
+    "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-REPLACEMENT-START.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Partial allowed-scope diff present from replaced writer; unrelated docs/M7_UI_Localization_Art_Handoff_Prompts.md remains untracked and out of scope."
+    },
+    {
+      "command": "git diff --stat",
+      "exit_code": 0,
+      "result": "Partial client/content/UI/test diff present for replacement review."
+    }
+  ],
+  "decisions": [
+    "Original writer Lantern was closed after three wait windows plus status request produced no handoff/status.",
+    "Partial diff is not reverted; replacement writer must review, continue, and correct it within task scope.",
+    "Formal content lock remains future Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "Major culture-specific asset/language/music/symbol choices remain historical_researcher/Human Gate material if unresolved."
+  ],
+  "risks": [
+    "Partial diff may be incomplete or untested because no writer handoff was produced.",
+    "Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains outside task scope."
+  ],
+  "blockers": [],
+  "partial_diff_files": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/client-core/src/m7-beta-audio-art-localization-content.ts",
+    "packages/ui/src/index.tsx",
+    "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "route_to": "client_engineer",
+  "requested_action": "Review and continue partial diff, complete required tests, and return writer REVIEW handoff to historical_researcher.",
+  "created_at": "2026-06-28T08:46:06.641Z"
+}
