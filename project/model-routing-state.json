@@ -1901,31 +1901,17 @@
   ],
   "active_threads": [
     {
-      "task_id": "M7-BETA-CULTURE-REVIEW-001",
+      "task_id": "M7-UI-LOCALIZATION-PLAN-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration for M7 beta culture review",
-      "branch_or_worktree": "research/m7-beta-culture-review",
-      "updated_at": "2026-06-28T09:16:20.781Z"
-    },
-    {
-      "task_id": "M7-BETA-CULTURE-REVIEW-001",
-      "role": "historical_researcher",
-      "thread_id": "019f0d82-dd8b-73c1-a715-045abacda8c0",
-      "nickname": "Chronicle the 2nd",
-      "status": "active_writer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "responsibility": "Write final Beta culture/history/language review evidence",
-      "branch_or_worktree": "research/m7-beta-culture-review",
-      "updated_at": "2026-06-28T09:16:20.781Z"
+      "responsibility": "lead orchestration for accepted M7 UI/localization planning integration",
+      "branch_or_worktree": "chore/m7-ui-localization-plan",
+      "updated_at": "2026-06-28T21:10:14.6163624+08:00"
     }
   ],
   "task_effects": {
@@ -2483,8 +2469,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Await M7-BETA-CULTURE-REVIEW-001 writer REVIEW handoff, then route to qa_reviewer.",
-  "current_task": "M7-BETA-CULTURE-REVIEW-001",
+  "next_action": "Open PR for accepted M7-UI-LOCALIZATION-PLAN-001, wait for CI, merge to main, then close the task and continue dependency-ready M7 work.",
+  "current_task": "M7-UI-LOCALIZATION-PLAN-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -3650,7 +3636,7 @@
       "task_id": "M7-UI-LOCALIZATION-PLAN-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -3659,7 +3645,8 @@
       "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
       "created_at": "2026-06-28T20:39:18.2016568+08:00",
-      "updated_at": "2026-06-28T20:39:18.2016568+08:00"
+      "updated_at": "2026-06-28T21:10:14.6163624+08:00",
+      "lead_accept_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "M7-UI-LOCALIZATION-PLAN-001:systems_architect": {
       "thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
@@ -3683,7 +3670,7 @@
     "M7-UI-LOCALIZATION-PLAN-001:qa_reviewer": {
       "thread_id": "019f0e50-3648-7442-8926-af52a2e34bc3",
       "task_id": "M7-UI-LOCALIZATION-PLAN-001",
-      "status": "active_reviewer",
+      "status": "closed_accepted",
       "role": "qa_reviewer",
       "nickname": "Gate",
       "configured_model": "gpt-5.5",
@@ -3693,7 +3680,10 @@
       "branch_or_worktree": "chore/m7-ui-localization-plan",
       "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
-      "routed_at": "2026-06-28T21:00:00.0000000+08:00"
+      "routed_at": "2026-06-28T21:00:00.0000000+08:00",
+      "qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-28T21:10:14.6163624+08:00",
+      "updated_at": "2026-06-28T21:10:14.6163624+08:00"
     }
   },
   "m7_ui_localization_art_coordination": {
@@ -3748,14 +3738,14 @@
     "closed_at": "2026-06-28T20:36:00.0000000+08:00"
   },
   "m7_ui_localization_plan": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-UI-LOCALIZATION-PLAN-001",
     "branch_or_worktree": "chore/m7-ui-localization-plan",
     "base_main_commit": "650e6faecbeb327ed7129a897e921dfb67c73214",
     "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
     "started_at": "2026-06-28T20:39:18.2016568+08:00",
-    "next_action": "Await independent qa_reviewer review of M7 UI/localization task graph plan.",
+    "next_action": "Open PR, wait for CI, merge to main, then close M7-UI-LOCALIZATION-PLAN-001 and continue dependency-ready M7 work.",
     "human_gate_required": false,
     "systems_thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
     "systems_thread_nickname": "Meridian",
@@ -3769,6 +3759,11 @@
     "qa_thread_id": "019f0e50-3648-7442-8926-af52a2e34bc3",
     "qa_thread_nickname": "Gate",
     "qa_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
-    "expected_qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json"
+    "expected_qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+    "qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "lead_accept_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T21:10:14.6163624+08:00",
+    "accepted_head_commit": "2b095927322306913cea7705b6a11f038996cd9e"
   }
 }

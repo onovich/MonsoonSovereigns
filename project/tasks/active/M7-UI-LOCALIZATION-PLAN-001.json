@@ -2,7 +2,7 @@
   "id": "M7-UI-LOCALIZATION-PLAN-001",
   "summary": "Plan the M7 UI, localization, and visual quality track",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -75,7 +75,7 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -83,8 +83,8 @@
       "branch_or_worktree": "chore/m7-ui-localization-plan",
       "base_main_commit": "650e6faecbeb327ed7129a897e921dfb67c73214",
       "created_at": "2026-06-28T20:39:18.2016568+08:00",
-      "updated_at": "2026-06-28T20:39:18.2016568+08:00",
-      "next_action": "Spawn systems_architect to produce the M7 UI/localization quality-track plan."
+      "updated_at": "2026-06-28T21:10:14.6163624+08:00",
+      "next_action": "Open PR, wait for CI, merge to main, then close M7-UI-LOCALIZATION-PLAN-001."
     },
     "systems_architect": {
       "thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
@@ -108,7 +108,7 @@
     "qa_reviewer": {
       "thread_id": "019f0e50-3648-7442-8926-af52a2e34bc3",
       "task_id": "M7-UI-LOCALIZATION-PLAN-001",
-      "status": "active_reviewer",
+      "status": "closed_accepted",
       "role": "qa_reviewer",
       "nickname": "Gate",
       "configured_model": "gpt-5.5",
@@ -118,10 +118,12 @@
       "branch_or_worktree": "chore/m7-ui-localization-plan",
       "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
-      "routed_at": "2026-06-28T21:00:00.0000000+08:00"
+      "routed_at": "2026-06-28T21:00:00.0000000+08:00",
+      "qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-28T21:10:14.6163624+08:00"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task exists because the product-owner M7-UI-LOCALIZATION-ART-COORDINATION-001 directive was received after the original M7 task graph had already advanced.",
     "The source directive is stored at project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md.",
@@ -132,7 +134,7 @@
     "Formal content lock remains a future Human Gate."
   ],
   "created_at": "2026-06-28T20:39:18.2016568+08:00",
-  "updated_at": "2026-06-28T21:00:00.0000000+08:00",
+  "updated_at": "2026-06-28T21:10:14.6163624+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -155,7 +157,7 @@
     "M7-VISUAL-UX-HANDOFF-001"
   ],
   "scheduling_reason": "Selected before M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 so the mid-stage product-owner UI/localization/art directive is represented in the M7 task graph before any UI/localization implementation tasks proceed.",
-  "next_action": "qa_reviewer reviews the M7 UI/localization quality-track task graph before downstream implementation can proceed.",
+  "next_action": "Open PR, wait for CI, merge to main, then close M7-UI-LOCALIZATION-PLAN-001 and continue dependency-ready M7 work.",
   "systems_thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
   "systems_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
   "expected_systems_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
@@ -184,5 +186,10 @@
   "status_check_submission_id": "019f0e4c-3dba-7321-a133-950040cbe90e",
   "status_check_sent_at": "2026-06-28T20:52:00.0000000+08:00",
   "qa_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
-  "expected_qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json"
+  "expected_qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+  "qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+  "qa_status": "ACCEPT",
+  "lead_accept_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-28T21:10:14.6163624+08:00",
+  "accepted_head_commit": "2b095927322306913cea7705b6a11f038996cd9e"
 }

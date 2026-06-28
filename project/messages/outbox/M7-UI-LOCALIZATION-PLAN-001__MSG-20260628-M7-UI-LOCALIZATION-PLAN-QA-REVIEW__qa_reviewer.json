@@ -1,0 +1,143 @@
+{
+  "message_id": "MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW",
+  "task_id": "M7-UI-LOCALIZATION-PLAN-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the M7 UI/localization/visual quality-track plan. The task graph validates, implementation tasks remain blocked behind M7-UI-LOCALIZATION-PLAN-001 closure, M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 remains the only dependency-ready task, and M7 content lock plus M7 exit are blocked by M7-UI-LOCALIZATION-EXIT-001.",
+  "artifacts": [
+    "project/tasks/active/M7-UI-LOCALIZATION-PLAN-001.json",
+    "project/tasks/active/M7-I18N-FOUNDATION-001.json",
+    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json",
+    "project/tasks/active/M7-APP-SHELL-QUALITY-001.json",
+    "project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "project/tasks/active/M7-APPOINTMENT-FLOW-QUALITY-001.json",
+    "project/tasks/active/M7-PLAYER-GUIDANCE-LITE-001.json",
+    "project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json",
+    "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-EXIT-VALIDATION-001.json",
+    "project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+    "content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "chore/m7-ui-localization-plan / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "2b095927",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial QA status showed only allowed planning/process files modified or added. After branch sync, the worktree was clean at commit 2b095927 before this QA handoff was written."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-PLAN-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-UI-LOCALIZATION-PLAN-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate each created/updated downstream task",
+      "exit_code": 0,
+      "result": "VALID for M7-I18N-FOUNDATION-001, M7-DESIGN-TOKENS-ASSET-SLOTS-001, M7-APP-SHELL-QUALITY-001, M7-MAP-PRESENTATION-QUALITY-001, M7-DISTRICT-INSPECTOR-QUALITY-001, M7-APPOINTMENT-FLOW-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, M7-UI-REGRESSION-MATRIX-001, M7-UI-LOCALIZATION-EXIT-001, M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001, M7-CONTENT-LOCK-ACCEPTANCE-001, and M7-EXIT-VALIDATION-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect handoff JSON."
+    },
+    {
+      "command": "node -e JSON parse/shape checks for created/updated tasks",
+      "exit_code": 0,
+      "result": "JSON_PARSE_SHAPE_PASS 13 task files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed M7-UI-LOCALIZATION-PLAN-001 as REVIEW; new UI/localization implementation and exit tasks as DRAFT; M7 content lock and M7 exit as DRAFT; prior visual/culture prerequisites as CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Only M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 was listed as ready."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node -e dependency graph reachability check",
+      "exit_code": 0,
+      "result": "DEPENDENCY_GRAPH_PASS: all implementation/matrix/exit tasks transitively depend on M7-UI-LOCALIZATION-PLAN-001; M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 depend on M7-UI-LOCALIZATION-EXIT-001; save migration does not depend on the UI plan or UI exit."
+    },
+    {
+      "command": "node -e Human Gate inheritance check",
+      "exit_code": 0,
+      "result": "HUMAN_GATE_INHERITANCE_PASS: all 12 downstream/gate tasks share the full Human Gate list and DEFER_MANUAL_NODE_BATTLE."
+    },
+    {
+      "command": "git diff --name-status HEAD",
+      "exit_code": 0,
+      "result": "No product, package, content-source, tool, docs, gate, PROJECT_STATUS, manifest, checksum, or validation-report modifications remained outside the committed planning change at 2b095927 before this QA handoff was written."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA handoff JSON."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA-ACCEPT-TASK-GRAPH",
+      "decision": "Accept the planning/task-graph change as review-complete. It is planning-only and does not implement UI, i18n, package, app, or content changes."
+    },
+    {
+      "id": "QA-DEPENDENCY-GATE",
+      "decision": "Implementation tasks are not taskctl-ready and are blocked directly or transitively by M7-UI-LOCALIZATION-PLAN-001. M7 content lock and M7 exit cannot pass until M7-UI-LOCALIZATION-EXIT-001 is closed or explicitly handled with accepted rationale."
+    },
+    {
+      "id": "QA-SAVE-MIGRATION-PRESERVED",
+      "decision": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 remains unmodified, VALID, and the only taskctl-ready M7 task."
+    },
+    {
+      "id": "QA-HUMAN-GATES-PRESERVED",
+      "decision": "Formal content lock remains a Human Gate, the full Human Gate list is present on downstream/gate tasks, and manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    },
+    {
+      "id": "QA-CONDITION-INHERITANCE",
+      "decision": "New UI/localization tasks directly record the visual-handoff systems/QA constraints. Existing platform/content/exit gate tasks inherit the UI-quality constraints through M7-UI-REGRESSION-MATRIX-001 and M7-UI-LOCALIZATION-EXIT-001 prerequisites rather than becoming new implementation entry points."
+    },
+    {
+      "id": "QA-LOCALE-RISK",
+      "decision": "The zh-CN versus zh-Hans locale-code risk is explicitly owned by M7-I18N-FOUNDATION-001 before downstream localized UI polish depends on locale identifiers."
+    }
+  ],
+  "risks": [
+    {
+      "id": "TASKCTL-NOT-GLOBAL",
+      "severity": "P3",
+      "summary": "No global taskctl command is installed in this shell.",
+      "mitigation": "QA used the repository-authoritative node script path, matching existing handoff evidence."
+    },
+    {
+      "id": "GATE-TASK-EQUIVALENT-INHERITANCE",
+      "severity": "P3",
+      "summary": "The existing platform/content/exit tasks do not restate every detailed visual-handoff condition in the same wording as the new implementation tasks.",
+      "mitigation": "They are accepted because they depend on UI regression or UI localization exit, preserve Human Gates, and do not open an implementation bypass. Lead should keep M7-UI-LOCALIZATION-EXIT-001 as the single evidence gate for those detailed UI/localization constraints."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead accept/integrate the task graph plan, then continue dependency-ready M7 work.",
+  "created_at": "2026-06-28T21:06:22.8075443+08:00"
+}
