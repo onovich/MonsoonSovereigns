@@ -2,30 +2,37 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M7_HISTORICAL_CULTURAL_LANGUAGE_REVIEW_CLOSED_NEXT_READY",
+  "status": "M7_SCENARIO_PERSON_EVENT_FILL_IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "67efde9bcca9796bca813298c7125dca29625faf",
+  "origin_main": "3b64847785d58f6bb660be31c693622874aab48d",
   "current_milestone": "M7",
-  "current_task": null,
-  "current_tasks": [],
-  "current_task_status": "CLOSED",
-  "last_closed_task": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
-  "last_integrated_task": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
-  "last_main_commit": "67efde9bcca9796bca813298c7125dca29625faf",
-  "ready_tasks": [
-    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "current_task": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+  "current_tasks": [
     "M7-SCENARIO-PERSON-EVENT-FILL-001"
   ],
+  "current_task_status": "IN_PROGRESS",
+  "last_closed_task": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "last_integrated_task": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "last_main_commit": "3b64847785d58f6bb660be31c693622874aab48d",
+  "ready_tasks": [
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ],
   "next_ready_tasks": [
-    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
-    "M7-SCENARIO-PERSON-EVENT-FILL-001"
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
-      "status": "closed_integrated",
+      "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "status": "active_router",
       "role": "lead_orchestrator"
+    },
+    "historical_researcher": {
+      "thread_id": "019f0cbc-49e0-7751-97a3-24ce9c4682d0",
+      "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "status": "in_progress",
+      "role": "historical_researcher",
+      "nickname": "Archive"
     }
   },
   "unresolved_risks": [
@@ -51,14 +58,14 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 is CLOSED after PR #163 entered origin/main.",
+    "approval_source": "M7-SCENARIO-PERSON-EVENT-FILL-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Formal content lock remains a future Human Gate; major cultural-risk findings must route to Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T05:33:41.573Z"
+    "note": "No Human Gate is active. Major cultural-risk findings must route to Human Gate; formal content lock remains a future Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T05:39:16.616Z"
   },
-  "next_machine_action": "Start M7-SCENARIO-PERSON-EVENT-FILL-001 as the next content-lane task; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 remains dependency-ready but unstarted.",
+  "next_machine_action": "Await historical_researcher REVIEW handoff for M7-SCENARIO-PERSON-EVENT-FILL-001; do not start parallel R4 work while this task is active.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T05:33:41.573Z"
+  "last_updated_at": "2026-06-28T05:39:16.616Z"
 }

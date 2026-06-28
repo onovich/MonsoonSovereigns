@@ -42,8 +42,8 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
-    "updated_at": "2026-06-28T05:33:41.573Z"
+    "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+    "updated_at": "2026-06-28T05:39:16.616Z"
   },
   "retired_lead_threads": [
     {
@@ -2437,7 +2437,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T05:33:41.573Z",
+  "updated_at": "2026-06-28T05:39:16.616Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -3199,5 +3199,30 @@
       "M7-SCENARIO-PERSON-EVENT-FILL-001"
     ],
     "selected_next_task": "M7-SCENARIO-PERSON-EVENT-FILL-001"
+  },
+  "m7_scenario_person_event_fill": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+    "branch_or_worktree": "content/m7-scenario-person-event-fill",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0cbc-49e0-7751-97a3-24ce9c4682d0",
+    "writer_nickname": "Archive",
+    "owner_role": "historical_researcher",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "configured_reviewer_model": "gpt-5.5",
+    "configured_reviewer_effort": "xhigh",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-SCENARIO-PERSON-EVENT-FILL-001__ROUTE-20260628-M7-SCENARIO-FILL-LEAD-TO-HISTORICAL-START.json",
+    "started_at": "2026-06-28T05:39:16.616Z",
+    "base_main_commit": "3b64847785d58f6bb660be31c693622874aab48d",
+    "next_action": "Await historical_researcher REVIEW handoff routed to qa_reviewer.",
+    "scheduling_reason": "Selected after M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 because it is the direct content-lane consumer of the accepted review baseline; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is also dependency-ready and remains unstarted.",
+    "updated_at": "2026-06-28T05:39:16.616Z"
   }
 }
