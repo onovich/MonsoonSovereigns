@@ -87,6 +87,31 @@ import {
 } from "./i18n";
 
 export {
+  CLIENT_ASSET_REPLACEMENT_SLOTS,
+  CLIENT_ASSET_SLOT_PLACEHOLDER_NOTE,
+  CLIENT_ASSET_SLOT_REVIEW_GATES,
+  CLIENT_ASSET_SLOT_TOKEN_REFERENCE,
+  createAssetSlotStressFixture,
+  hasOnlyNeutralPlaceholderAssets,
+  listClientAssetReplacementSlots,
+  type ClientAssetReplacementSlot,
+  type ClientAssetSlotCategory,
+  type ClientAssetSlotReviewGate,
+  type ClientAssetSlotRole,
+  type ClientAssetSlotStatus
+} from "./asset-slots";
+export {
+  CLIENT_DESIGN_TOKENS,
+  CLIENT_SEMANTIC_STATES,
+  type ClientDesignTokens,
+  type ClientSemanticState
+} from "./design-tokens";
+export {
+  DesignTokenAssetSlotsView,
+  type DesignTokenAssetSlotsEvidenceState,
+  type DesignTokenAssetSlotsViewProps
+} from "./design-token-asset-slots-view";
+export {
   CLIENT_LOCALE_PREFERENCES,
   CLIENT_RESOLVED_LOCALES,
   DEFAULT_CLIENT_I18N,

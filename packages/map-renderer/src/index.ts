@@ -15,7 +15,10 @@ import type {
   ClientMapSettlementReadModel,
   ClientReadModelRevision
 } from "@monsoon/client-core";
+import { MAP_RENDER_TOKENS } from "./map-render-tokens";
 import { loadPixiRuntimeModule } from "./pixi-runtime.mjs";
+
+export { MAP_RENDER_TOKENS, type MapRenderTokens } from "./map-render-tokens";
 
 export interface MapRenderViewport {
   readonly mode: ClientMapMode;
@@ -309,9 +312,9 @@ const defaultViewport: MapRenderViewport = {
 };
 
 const toneFillColor: Readonly<Record<ClientMapAnchorTone, number>> = {
-  primary: 0x2f6f73,
-  secondary: 0xb88746,
-  muted: 0x6d7280
+  primary: MAP_RENDER_TOKENS.anchors.primary,
+  secondary: MAP_RENDER_TOKENS.anchors.secondary,
+  muted: MAP_RENDER_TOKENS.anchors.muted
 };
 
 export function buildMapRenderPlan(
@@ -402,7 +405,7 @@ export function paintMapRenderPlanToCanvas(canvas: HTMLCanvasElement, plan: MapR
 
   context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
   context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-  context.fillStyle = "#f7f4ea";
+  context.fillStyle = MAP_RENDER_TOKENS.surface.canvasBackground;
   context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
   const scaleX = canvas.clientWidth / plan.bounds.widthInMapUnits;
@@ -720,7 +723,7 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
       .fill({ color: instruction.fillColor })
       .stroke({
         color: instruction.strokeColor,
-        width: instruction.isSelected ? 4 : 1.5
+        width: instruction.isSelected ? MAP_RENDER_TOKENS.routes.widthProminentInMapUnits : 1.5
       });
     graphics.eventMode = "static";
     graphics.cursor = "pointer";
@@ -744,7 +747,9 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     }
     graphics.stroke({
       color: instruction.strokeColor,
-      alpha: instruction.isSelected ? 0.95 : 0.58,
+      alpha: instruction.isSelected
+        ? MAP_RENDER_TOKENS.routes.alphaSelected
+        : MAP_RENDER_TOKENS.routes.alphaDefault,
       width: instruction.widthInMapUnits
     });
     graphics.eventMode = "none";
@@ -758,7 +763,10 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     const graphics = new this.pixi.Graphics()
       .circle(instruction.xInMapUnits, instruction.yInMapUnits, instruction.radiusInMapUnits)
       .fill({ color: instruction.fillColor })
-      .stroke({ color: 0x4b5b63, width: instruction.isSelected ? 3 : 2 });
+      .stroke({
+        color: MAP_RENDER_TOKENS.settlements.strokeDefault,
+        width: instruction.isSelected ? 3 : MAP_RENDER_TOKENS.routes.widthDefaultInMapUnits
+      });
     graphics.eventMode = "static";
     graphics.cursor = "pointer";
     graphics.on("pointerdown", () => {
@@ -775,10 +783,16 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     const text = new this.pixi.Text({
       text: instruction.label.replace("Prototype ", ""),
       style: {
-        fill: instruction.tone === "district" ? 0x172126 : 0x4c5b63,
-        fontFamily: "Arial, sans-serif",
-        fontSize: instruction.tone === "district" ? 11 : 10,
-        fontWeight: "700"
+        fill:
+          instruction.tone === "district"
+            ? MAP_RENDER_TOKENS.labels.districtFill
+            : MAP_RENDER_TOKENS.labels.settlementFill,
+        fontFamily: MAP_RENDER_TOKENS.labels.fontFamily,
+        fontSize:
+          instruction.tone === "district"
+            ? MAP_RENDER_TOKENS.labels.districtFontSizePx
+            : MAP_RENDER_TOKENS.labels.settlementFontSizePx,
+        fontWeight: MAP_RENDER_TOKENS.labels.fontWeight
       }
     });
     text.anchor.set(0.5);
@@ -909,7 +923,9 @@ function buildDistrictInstruction(
     label: district.displayName,
     polygon: district.polygon,
     fillColor: districtFillColor(district, viewport.mode),
-    strokeColor: isSelected ? 0x172126 : 0x91a0a6,
+    strokeColor: isSelected
+      ? MAP_RENDER_TOKENS.districts.strokeSelected
+      : MAP_RENDER_TOKENS.districts.strokeDefault,
     isSelected
   };
 }
@@ -929,7 +945,9 @@ function buildSettlementInstruction(
     xInMapUnits: settlement.anchor.xInMapUnits,
     yInMapUnits: settlement.anchor.yInMapUnits,
     radiusInMapUnits: SETTLEMENT_RADIUS_IN_MAP_UNITS,
-    fillColor: isSelected ? 0x172126 : 0xf7f4ea,
+    fillColor: isSelected
+      ? MAP_RENDER_TOKENS.settlements.fillSelected
+      : MAP_RENDER_TOKENS.settlements.fillDefault,
     isSelected
   };
 }
@@ -947,7 +965,10 @@ function buildRouteInstruction(
     id: `route-${route.originDistrictId}-${route.destinationDistrictId}`,
     points: route.points,
     strokeColor: routeStrokeColor(route.status),
-    widthInMapUnits: isSelected || viewport.mode === "routes" ? 4 : 2,
+    widthInMapUnits:
+      isSelected || viewport.mode === "routes"
+        ? MAP_RENDER_TOKENS.routes.widthProminentInMapUnits
+        : MAP_RENDER_TOKENS.routes.widthDefaultInMapUnits,
     isSelected
   };
 }
@@ -1115,39 +1136,43 @@ function districtFillColor(district: ClientMapDistrictReadModel, mode: ClientMap
     case "seasonal":
       return seasonalFillColor(district.seasonal.agriculturePhase);
     case "economy":
-      return district.cashStock >= district.grainStock ? 0xb88746 : 0x8aa05a;
+      return district.cashStock >= district.grainStock
+        ? MAP_RENDER_TOKENS.districts.economy.cashDominant
+        : MAP_RENDER_TOKENS.districts.economy.grainDominant;
     case "routes":
-      return district.route.status === "reachable" ? 0xd7e6df : 0xe6d1c6;
+      return district.route.status === "reachable"
+        ? MAP_RENDER_TOKENS.districts.routesMode.reachable
+        : MAP_RENDER_TOKENS.districts.routesMode.blocked;
   }
 }
 
 function seasonalFillColor(phase: string): number {
   switch (phase) {
     case "fallow":
-      return 0xd9d1be;
+      return MAP_RENDER_TOKENS.districts.seasonal.fallow;
     case "planting":
-      return 0x9ab57a;
+      return MAP_RENDER_TOKENS.districts.seasonal.planting;
     case "growing":
-      return 0x5f9f72;
+      return MAP_RENDER_TOKENS.districts.seasonal.growing;
     case "harvest":
-      return 0xd6aa4a;
+      return MAP_RENDER_TOKENS.districts.seasonal.harvest;
     case "water":
-      return 0x9fc9d3;
+      return MAP_RENDER_TOKENS.districts.seasonal.water;
     case "coastal-interface":
-      return 0xc6d4ba;
+      return MAP_RENDER_TOKENS.districts.seasonal.coastalInterface;
     default:
-      return 0xd9d1be;
+      return MAP_RENDER_TOKENS.districts.seasonal.default;
   }
 }
 
 function routeStrokeColor(status: ClientMapRouteReadModel["status"]): number {
   switch (status) {
     case "reachable":
-      return 0x2f6f73;
+      return MAP_RENDER_TOKENS.routes.reachable;
     case "capacity-exceeded":
-      return 0xb88746;
+      return MAP_RENDER_TOKENS.routes.overloaded;
     case "unreachable":
-      return 0xa65b4b;
+      return MAP_RENDER_TOKENS.routes.blocked;
   }
 }
 
@@ -1235,8 +1260,10 @@ function drawSettlement(
     Math.PI * 2
   );
   context.fillStyle = toCssColor(settlement.fillColor);
-  context.strokeStyle = settlement.isSelected ? "#172126" : "#5b646a";
-  context.lineWidth = settlement.isSelected ? 3 : 2;
+  context.strokeStyle = settlement.isSelected
+    ? toCssColor(MAP_RENDER_TOKENS.settlements.fillSelected)
+    : toCssColor(MAP_RENDER_TOKENS.settlements.strokeDefault);
+  context.lineWidth = settlement.isSelected ? 3 : MAP_RENDER_TOKENS.routes.widthDefaultInMapUnits;
   context.fill();
   context.stroke();
 }
@@ -1247,8 +1274,14 @@ function drawLabel(
   scaleX: number,
   scaleY: number
 ): void {
-  context.fillStyle = label.tone === "district" ? "#172126" : "#4c5b63";
-  context.font = label.tone === "district" ? "700 11px sans-serif" : "700 10px sans-serif";
+  context.fillStyle =
+    label.tone === "district"
+      ? toCssColor(MAP_RENDER_TOKENS.labels.districtFill)
+      : toCssColor(MAP_RENDER_TOKENS.labels.settlementFill);
+  context.font =
+    label.tone === "district"
+      ? `${MAP_RENDER_TOKENS.labels.fontWeight} ${MAP_RENDER_TOKENS.labels.districtFontSizePx}px sans-serif`
+      : `${MAP_RENDER_TOKENS.labels.fontWeight} ${MAP_RENDER_TOKENS.labels.settlementFontSizePx}px sans-serif`;
   context.textAlign = "center";
   context.fillText(label.label, label.xInMapUnits * scaleX, label.yInMapUnits * scaleY);
 }

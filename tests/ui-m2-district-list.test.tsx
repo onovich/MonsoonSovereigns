@@ -18,9 +18,16 @@ import {
   withDistrictListReadModel
 } from "../packages/client-core/src/index";
 import {
+  CLIENT_ASSET_REPLACEMENT_SLOTS,
+  CLIENT_DESIGN_TOKENS,
+  CLIENT_SEMANTIC_STATES,
   ClientShellView,
+  DesignTokenAssetSlotsView,
+  createAssetSlotStressFixture,
   createClientI18n,
+  hasOnlyNeutralPlaceholderAssets,
   isBareReasonCodeLike,
+  listClientAssetReplacementSlots,
   parseClientLocalePreference,
   resolveClientLocale,
   type ClientI18n,
@@ -378,6 +385,78 @@ describe("M2 district client UI", () => {
     expect(isBareReasonCodeLike("route.season.monsoon-risk")).toBe(true);
     expect(JSON.stringify(snapshot)).toBe(before);
     expect(snapshot.simulation.stateHash).toBe(beforeHash);
+  });
+
+  test("exposes M7 design tokens and neutral asset replacement slots", () => {
+    const categories = new Set(CLIENT_ASSET_REPLACEMENT_SLOTS.map((slot) => slot.category));
+    const markup = renderToStaticMarkup(<DesignTokenAssetSlotsView locale="en-US" />);
+
+    expect(CLIENT_DESIGN_TOKENS.colors.semantic.danger).toBe("#a65b4b");
+    expect(CLIENT_DESIGN_TOKENS.colors.mapLayer.routeReachable).toBe("#2f6f73");
+    expect(CLIENT_SEMANTIC_STATES).toEqual([
+      "enabled",
+      "disabled",
+      "warning",
+      "success",
+      "danger",
+      "debug"
+    ]);
+    expect(hasOnlyNeutralPlaceholderAssets(CLIENT_ASSET_REPLACEMENT_SLOTS)).toBe(true);
+    expect(categories).toEqual(
+      new Set([
+        "frame",
+        "icon",
+        "map-fill",
+        "map-stroke",
+        "route-style",
+        "settlement-marker",
+        "portrait",
+        "alert",
+        "settings-language",
+        "tooltip"
+      ])
+    );
+    expect(listClientAssetReplacementSlots("portrait")[0]?.reviewGates).toContain("culture-review");
+    expect(markup).toContain("Design Tokens And Asset Slots");
+    expect(markup).toContain('data-placeholder-policy="neutral-placeholders-only"');
+    expect(markup).toContain('data-final-art-approved="false"');
+    expect(markup).toContain('data-semantic-state="enabled"');
+    expect(markup).toContain('data-semantic-state="disabled"');
+    expect(markup).toContain('data-semantic-state="warning"');
+    expect(markup).toContain('data-semantic-state="success"');
+    expect(markup).toContain('data-semantic-state="danger"');
+    expect(markup).toContain('data-slot-category="settings-language"');
+    expect(markup).not.toContain("approved-final-art");
+    expect(markup).not.toContain("WorldState");
+  });
+
+  test("renders M7 token stories for Chinese stress, debug, empty, error, and extreme states", () => {
+    const chineseMarkup = renderToStaticMarkup(<DesignTokenAssetSlotsView locale="zh-CN" />);
+    const debugMarkup = renderToStaticMarkup(
+      <DesignTokenAssetSlotsView debugMode={true} locale="en-US" />
+    );
+    const emptyMarkup = renderToStaticMarkup(
+      <DesignTokenAssetSlotsView evidenceState="empty" locale="en-US" />
+    );
+    const errorMarkup = renderToStaticMarkup(
+      <DesignTokenAssetSlotsView evidenceState="error" locale="en-US" />
+    );
+    const extremeMarkup = renderToStaticMarkup(
+      <DesignTokenAssetSlotsView
+        assetSlots={createAssetSlotStressFixture()}
+        evidenceState="extreme"
+        locale="en-US"
+      />
+    );
+
+    expect(chineseMarkup).toContain("设计 token 与资产替换槽");
+    expect(chineseMarkup).toContain("在确认命令前");
+    expect(debugMarkup).toContain('data-debug-mode="on"');
+    expect(debugMarkup).toContain("raw slot ids and review gates");
+    expect(emptyMarkup).toContain("No replacement slots are available.");
+    expect(errorMarkup).toContain("Registry Error State");
+    expect(extremeMarkup).toContain("localized expansion stress 11");
+    expect(extremeMarkup).not.toContain("WorldState");
   });
 });
 
