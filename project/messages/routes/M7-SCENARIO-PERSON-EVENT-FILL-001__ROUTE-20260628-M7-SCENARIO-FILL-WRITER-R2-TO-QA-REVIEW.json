@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-SCENARIO-FILL-WRITER-R2-TO-QA-REVIEW",
+  "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+  "from_role": "historical_researcher",
+  "from_thread_id": "019f0cbc-49e0-7751-97a3-24ce9c4682d0",
+  "from_thread_nickname": "Archive",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f0cd7-ed09-7f92-9bbb-48ff07429aaf",
+  "to_thread_nickname": "Witness",
+  "coordinated_by": "lead_orchestrator",
+  "coordinator_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "route_type": "REVIEW",
+  "route_status": "SENT",
+  "review_round": 2,
+  "branch_or_worktree": "content/m7-scenario-person-event-fill",
+  "base_main_commit": "3b64847785d58f6bb660be31c693622874aab48d",
+  "review_commit": "7c5005c9a700c06438a464742768334da26d0508",
+  "review_head_commit": "1e8edbae4f597d4c5cb6011430981f0cc5385e70",
+  "source_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW__historical_researcher.json",
+  "previous_qa_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-REVIEW__qa_reviewer.json",
+  "expected_review_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-R2-REVIEW__qa_reviewer.json",
+  "read_only": true,
+  "lead_verified_checks": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW__historical_researcher.json",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "16 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0
+    }
+  ],
+  "requested_review": [
+    "Verify QA REQUEST_CHANGES finding is fixed: mutated runtime pack with LOCK_CANDIDATE and missing/empty violenceCostRecord must be rejected.",
+    "Verify runtime parser now deep-validates M7 records sufficiently for source labels, review states, Human Gate gaps, high-risk violence cost records, ordering, and manifest counts.",
+    "Verify no scope drift into UI, sim-core, save migration, telemetry, server/multiplayer, release, formal content lock acceptance, or manual node battle.",
+    "Return ACCEPT, REQUEST_CHANGES, or BLOCKED and write expected QA R2 handoff."
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T06:34:20.490Z",
+  "updated_at": "2026-06-28T06:35:04.430Z",
+  "qa_submission_id_r2": "019f0cef-f79b-7883-b2fa-348bdb636ad1",
+  "sent_at": "2026-06-28T06:35:04.430Z"
+}
