@@ -126,7 +126,7 @@
     "qa_reviewer": {
       "thread_id": "019f1025-36fc-70d1-92bb-5858b2c7a74f",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "awaiting_r2_review",
+      "status": "active_reviewer",
       "role": "qa_reviewer",
       "nickname": "Auditor",
       "configured_model": "gpt-5.5",
@@ -139,13 +139,16 @@
       "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
       "implementation_commit": "eb179555d2324311e0966923a137cf81824c01ee",
       "routed_at": "2026-06-29T05:34:00.000Z",
-      "updated_at": "2026-06-28T21:58:12.089Z",
+      "updated_at": "2026-06-28T22:00:17.954Z",
       "route_sent_at": "2026-06-29T05:36:00.000Z",
       "route_submission_id": "019f1026-ac78-7bc1-9151-8091a5126a38",
       "qa_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
       "source_handoff_r2": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
       "expected_handoff_r2": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
-      "review_commit_r2": "db65ad7d24ffcb710c909500f53987ae567d45ae"
+      "review_commit_r2": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+      "route_file_r2": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
+      "route_sent_at_r2": "2026-06-28T22:00:17.954Z",
+      "route_submission_id_r2": "019f103f-0b4f-74e3-bd08-377ed971fcbf"
     }
   },
   "route_to": "qa_reviewer",
@@ -162,7 +165,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-28T21:58:12.089Z",
+  "updated_at": "2026-06-28T22:00:17.954Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -188,7 +191,7 @@
   "writer_thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
   "writer_thread_nickname": "Window",
   "expected_writer_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-  "next_action": "Route R2 QA review of the selected district inspector localization fix to qa_reviewer; do not mark ACCEPTED/CLOSED before QA passes.",
+  "next_action": "Await qa_reviewer R2 review for M7-DISTRICT-INSPECTOR-QUALITY-001; do not mark ACCEPTED/CLOSED before QA passes.",
   "route_sent_at": "2026-06-29T05:14:00.000Z",
   "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
   "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
@@ -211,5 +214,7 @@
   "review_commit_r2": "db65ad7d24ffcb710c909500f53987ae567d45ae",
   "fixed_commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
   "qa_r2_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
-  "expected_qa_r2_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json"
+  "expected_qa_r2_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
+  "qa_r2_route_sent_at": "2026-06-28T22:00:17.954Z",
+  "qa_r2_submission_id": "019f103f-0b4f-74e3-bd08-377ed971fcbf"
 }
