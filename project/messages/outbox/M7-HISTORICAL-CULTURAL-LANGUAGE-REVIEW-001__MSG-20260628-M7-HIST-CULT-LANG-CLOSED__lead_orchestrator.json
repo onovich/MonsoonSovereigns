@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260628-M7-HIST-CULT-LANG-CLOSED",
+  "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 is CLOSED after PR #163 passed CI and entered origin/main at 67efde9bcca9796bca813298c7125dca29625faf. The accepted output is an M7 historical/cultural/language review baseline, not formal content lock acceptance.",
+  "artifacts": [
+    "project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json",
+    "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+    "tests/content-schema-graph-source.test.ts",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-CLOSED__lead_orchestrator.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "chore/close-m7-historical-cultural-language-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "67efde9bcca9796bca813298c7125dca29625faf",
+  "tests_run": [
+    {
+      "command": "gh pr checks 163 --watch",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "gh pr merge 163 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #163 merged; origin/main advanced to 67efde9bcca9796bca813298c7125dca29625faf."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 and M7-SCENARIO-PERSON-EVENT-FILL-001 are dependency-ready after integration."
+    }
+  ],
+  "decisions": [
+    "Close M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 only after accepted PR #163 entered origin/main.",
+    "The baseline is review-gate evidence only; formal content lock acceptance remains a future Human Gate.",
+    "Preserve M6_GATE = PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE exactly.",
+    "Select M7-SCENARIO-PERSON-EVENT-FILL-001 as the next content-lane task while recording M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 as also dependency-ready and unstarted."
+  ],
+  "risks": [
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 remains dependency-ready but unstarted.",
+    "M7-SCENARIO-PERSON-EVENT-FILL-001 can trigger major cultural-risk Human Gate if unresolved high-risk material appears.",
+    "Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains outside this task scope."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge closure checkpoint, sync main, then start M7-SCENARIO-PERSON-EVENT-FILL-001 with historical_researcher writer and qa_reviewer reviewer routing.",
+  "created_at": "2026-06-28T05:33:41.573Z"
+}
