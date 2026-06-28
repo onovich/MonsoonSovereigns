@@ -1,0 +1,60 @@
+{
+  "message_id": "MSG-20260628-M7-VISUAL-UX-CLOSED",
+  "task_id": "M7-VISUAL-UX-HANDOFF-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "M7-VISUAL-UX-HANDOFF-001 is CLOSED after PR #171 entered origin/main. The accepted handoff may drive downstream M7 UI/localization planning tasks, with systems and QA conditions inherited, but does not authorize UI implementation by itself.",
+  "artifacts": [
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json"
+  ],
+  "branch_or_worktree": "main",
+  "commit": "c5750d18ebac2bfec9cab42a1b7a20a10a526691",
+  "tests_run": [
+    {
+      "command": "gh pr checks 171 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "gh pr merge 171 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #171 merged and local main fast-forwarded to c5750d18ebac2bfec9cab42a1b7a20a10a526691."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Next READY task after integration is M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "M7-VISUAL-UX-HANDOFF-CLOSED",
+      "decision": "Close M7-VISUAL-UX-HANDOFF-001 after accepted visual, systems, QA, and lead handoffs entered main through PR #171."
+    },
+    {
+      "id": "DOWNSTREAM-UI-TRACK-CONDITIONS",
+      "decision": "Downstream M7 UI/localization tasks must preserve i18n outside sim-core, read-model/GameCommand authority, Pixi render-cache-only, player/debug separation, full Human Gate inheritance, DEFER_MANUAL_NODE_BATTLE, and the zh-CN/zh-Hans locale-code risk as an explicit i18n task concern."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-I18N-LOCALE-CODE-DRIFT",
+      "severity": "P2",
+      "summary": "Product directive uses zh-CN while existing coverage may use zh-Hans; downstream i18n task must select or alias locale identifiers through systems review and tests."
+    },
+    {
+      "id": "M7-TARGET-EXPRESSION-OVERREAD",
+      "severity": "P1",
+      "summary": "Visual target-expression guidance must not be read as new domain-system authorization."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Create or update downstream M7 UI/localization quality-track tasks in a planning task before implementation, then continue M7 READY work.",
+  "created_at": "2026-06-28T20:36:00.0000000+08:00"
+}
