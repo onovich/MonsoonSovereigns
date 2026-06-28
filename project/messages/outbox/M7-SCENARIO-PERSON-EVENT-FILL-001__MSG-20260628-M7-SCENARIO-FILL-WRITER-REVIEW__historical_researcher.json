@@ -1,0 +1,103 @@
+{
+  "message_id": "MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW",
+  "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "Filled the contracted M7 Beta scenario/person/event content path through explicit source schema, compiler, runtime pack, tests, and a reviewable content-source JSON. The fill records 3 composite scenario candidates, 6 composite person role records, 3 language-review-blocked title records, 5 event hooks, 36 localization records, 6 claim records, source labels, owners, review states, deterministic ordering, and explicit known gaps. It does not create formal content lock acceptance, formal page-verified real-world claims, sim rules, UI behavior, save migration, release artifacts, telemetry, networking, server behavior, arbitrary-code mods, or manual node battle work.",
+  "artifacts": [
+    "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    "packages/content-schema/src/m7-beta-scenario.ts",
+    "packages/content-runtime/src/m7-beta-scenario.ts",
+    "apps/content-tools/src/m7-beta-scenario.ts",
+    "apps/content-tools/src/index.ts",
+    "apps/content-tools/src/cli.ts",
+    "apps/content-tools/package.json",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "content/m7-scenario-person-event-fill / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "de23c9cb4d772819be5bd04795d6a1f94e08e800",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before review commit: allowed task changes present plus unrelated forbidden untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md left untouched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-SCENARIO-PERSON-EVENT-FILL-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list shows M7-SCENARIO-PERSON-EVENT-FILL-001 in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is the only ready output while this task is in REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-SCENARIO-PERSON-EVENT-FILL-001 and changed JSON files",
+      "exit_code": 0,
+      "result": "shape ok: task REVIEW; M7 beta set counts scenarios=3 persons=6 titles=3 events=5 localization=36 claims=6; content lock not accepted; DEFER_MANUAL_NODE_BATTLE and PASS_WITH_LIMITS preserved."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW__historical_researcher.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for M1 hash 4a438525, M2 hash 9ab72b0b, M3 hash 76b75849, M6 map hash 4485a353, M6 scenario hash 6d1f6d64, and M7 beta scenario/person/event set hash 92aed91e."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 test file passed; 18 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 13 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 36 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    "Added an M7-specific scenario/person/event source schema instead of serializing runtime object graphs or extending sim-core.",
+    "Kept all scenario anchors as COMPOSITE/RESEARCH REQUIRED candidates; no Beta real-world scenario, person, title, or chronology claim is marked as formal historical acceptance.",
+    "Used composite role records for persons and language-review-blocked generic title records rather than inventing real names, titles, transliterations, or genealogies.",
+    "Included a high-risk coercion/forced-movement event hook only with explicit victim groups, source-region RESEARCH REQUIRED text, immediate costs, long-term consequences, and CULTURE_HUMAN_GATE_REQUIRED state.",
+    "Connected M7 content validation to pnpm content:validate so the new JSON is compiled with the existing content path.",
+    "Preserved M6_GATE = PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE exactly."
+  ],
+  "risks": [
+    "docs/09-* was requested by standing historical instructions but no docs/09 file exists in this checkout; I read docs/10-historical-research-policy.md, docs/16-research-bibliography.md, docs/19-data-schema-guide.md, the accepted M7 review baseline, and recorded the missing docs/09 as a reading discrepancy rather than inventing it.",
+    "Academic sources in the M7 fill are candidate/bibliographic source records only; I did not claim full-text page verification for Baker/Pasuk 2017 or Charney 2004.",
+    "Formal names, titles, aliases, transliterations, exact historical participants, chronology, symbols, art, music, clothing, architecture, and religious imagery remain RESEARCH REQUIRED or Human Gate material.",
+    "Formal content lock acceptance remains M7-CONTENT-LOCK-ACCEPTANCE-001 and is not created here."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M7 scenario/person/event fill path for schema discipline, source labels, owner/review-state coverage, deterministic ordering, explicit known gaps, violence-cost handling, no modern identity shortcut, no unsupported historical certainty, no formal content lock acceptance, no manual node battle work, and compatibility with accepted M1-M6 content/runtime boundaries.",
+  "created_at": "2026-06-28T14:05:00+08:00"
+}

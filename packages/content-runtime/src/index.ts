@@ -28,6 +28,7 @@ import type {
 export * from "./m6-alpha-scenario.ts";
 export * from "./m6-alpha-map-candidate.ts";
 export * from "./m6-policy-event.ts";
+export * from "./m7-beta-scenario.ts";
 
 export type Brand<TValue, TBrand extends string> = TValue & { readonly __brand: TBrand };
 

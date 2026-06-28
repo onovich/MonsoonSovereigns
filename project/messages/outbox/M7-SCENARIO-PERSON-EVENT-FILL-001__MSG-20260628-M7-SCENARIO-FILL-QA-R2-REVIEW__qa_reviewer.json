@@ -1,0 +1,124 @@
+{
+  "message_id": "MSG-20260628-M7-SCENARIO-FILL-QA-R2-REVIEW",
+  "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts the R2 repair for M7-SCENARIO-PERSON-EVENT-FILL-001. The prior runtime-boundary finding is fixed: mutated M7 runtime packs with LOCK_CANDIDATE review state, missing violenceCostRecord, empty high-risk violence-cost arrays, or unblocked high-risk review states are rejected by runtime parsing. The R2 parser now deep-validates and parses runtime M7 source, claim, localization, title, person, event, scenario, hook, choice, known-gap, reference, ordering, and manifest-count fields instead of accepting cast arrays. The repair stays inside content-runtime/tests plus process handoff metadata and does not create formal content lock acceptance, UI, sim-core, save migration, telemetry, server/multiplayer, release, or manual node battle scope.",
+  "branch_or_worktree": "content/m7-scenario-person-event-fill / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "1e8edbae4f597d4c5cb6011430981f0cc5385e70",
+  "review_commit": "7c5005c9a700c06438a464742768334da26d0508",
+  "base_main_commit": "3b64847785d58f6bb660be31c693622874aab48d",
+  "artifacts": [
+    "packages/content-runtime/src/m7-beta-scenario.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW__historical_researcher.json",
+    "project/messages/routes/M7-SCENARIO-PERSON-EVENT-FILL-001__ROUTE-20260628-M7-SCENARIO-FILL-WRITER-R2-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "tests_run": [
+    {
+      "command": "Get-Content -Raw PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "Read required project status. It preserves M6_GATE = PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE for M7."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before QA R2 handoff creation: on content/m7-scenario-person-event-fill; dirty tracked files were allowed lead route/process metadata; untracked route evidence was present; known unrelated docs/M7_UI_Localization_Art_Handoff_Prompts.md remained untouched."
+    },
+    {
+      "command": "git rev-parse --abbrev-ref HEAD; git rev-parse HEAD; git merge-base origin/main HEAD",
+      "exit_code": 0,
+      "result": "Branch content/m7-scenario-person-event-fill; HEAD 1e8edbae4f597d4c5cb6011430981f0cc5385e70; merge-base 3b64847785d58f6bb660be31c693622874aab48d."
+    },
+    {
+      "command": "git log --oneline --decorate --name-status origin/main..HEAD",
+      "exit_code": 0,
+      "result": "R2 fix commit 7c5005c9 modifies packages/content-runtime/src/m7-beta-scenario.ts and tests/content-runtime-pack.test.ts; R2 handoff commit 1e8edbae adds the writer R2 review handoff."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed files are within allowed content-source, apps/content-tools, packages/content-schema, packages/content-runtime, tests, task, message, route, goal-mode, model-routing, and thread-registry paths."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- forbidden path set",
+      "exit_code": 0,
+      "result": "No forbidden path output for apps/web, apps/desktop, apps/sim-runner, packages/sim-core, packages/sim-ai, packages/save-format, packages/client-core, packages/map-renderer, packages/ui, packages/platform, tools, .github, prior gate docs, roadmap/risk/acceptance docs, PROJECT_STATUS.md, MANIFEST.md, SHA256SUMS.txt, or VALIDATION_REPORT.md."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID writer R2 REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e R2 route/task shape check",
+      "exit_code": 0,
+      "result": "R2 route/task shape ok; task REVIEW; DEFER_MANUAL_NODE_BATTLE preserved; R2 review_commit and review_head_commit match route evidence."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e mutated runtime parser probe for LOCK_CANDIDATE/null violenceCostRecord/empty arrays/unblocked high-risk states",
+      "exit_code": 0,
+      "result": "All eight mutated runtime cases were rejected: LOCK_CANDIDATE, null violenceCostRecord, empty victimGroups/sourceRegions/immediateCosts/longTermConsequences, unblocked high-risk event reviewState, and unblocked violenceCostRecord reviewState."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e runtime parser deep-validation probe for bad source class, label, research status, review state, references, ordering, and manifest count",
+      "exit_code": 0,
+      "result": "All nine mutated runtime cases were rejected: bad sourceClass, bad claim label, bad researchStatus, bad localization reviewState, bad title reference, bad choice localization reference, bad scenario event reference, unstable event order, and manifest eventCount mismatch."
+    },
+    {
+      "command": "rg runtime/scope boundary scan over R2 changed surfaces and route/task text",
+      "exit_code": 0,
+      "result": "Matches were expected constraint or guard text: LOCK_CANDIDATE rejection, PASS_WITH_LIMITS, DEFER_MANUAL_NODE_BATTLE, no WorldState index exposure, and task/route forbidden-scope wording. No product-code drift into UI, sim-core, save, telemetry, server/multiplayer, release, or manual node battle was found."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for M1 hash 4a438525, M2 hash 9ab72b0b, M3 hash 76b75849, M6 map hash 4485a353, M6 scenario hash 6d1f6d64, and M7 beta scenario/person/event set hash 92aed91e."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 test file passed; 18 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 16 tests passed, including the R2 runtime negative tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 36 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: the previous QA REQUEST_CHANGES finding is fixed. Runtime parsing now rejects the reproduced LOCK_CANDIDATE and missing/empty high-risk violence-cost mutations.",
+    "ACCEPT: runtime parser now deep-validates enough of the M7 record graph to preserve source labels, source classes, research status, review states, blocked high-risk Human Gate states, reference closure, deterministic order, and manifest counts.",
+    "ACCEPT: R2 changed only packages/content-runtime/src/m7-beta-scenario.ts, tests/content-runtime-pack.test.ts, and R2 handoff metadata; no UI, sim-core, save migration, telemetry, server/multiplayer, release, formal content lock acceptance, or manual node battle scope was added.",
+    "ACCEPT: M6 PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE remain preserved in task, route, runtime pack root, tests, and handoff evidence."
+  ],
+  "risks": [
+    "The high-risk event classifier remains intentionally term-based over eventId/triggerKey. It covers the current coercion/forced/famine/violence R2 scope and should be extended if future content introduces additional high-risk taxonomy terms.",
+    "Formal content lock acceptance remains a separate future Human Gate; this ACCEPT only covers the M7 scenario/person/event fill path and R2 runtime parser repair."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may validate this QA R2 handoff, integrate/close M7-SCENARIO-PERSON-EVENT-FILL-001 if gates remain clean, and preserve formal content lock as a future Human Gate.",
+  "created_at": "2026-06-28T14:39:00+08:00"
+}

@@ -1,0 +1,170 @@
+{
+  "message_id": "MSG-20260628-M7-SCENARIO-FILL-QA-REVIEW",
+  "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent read-only QA does not accept M7-SCENARIO-PERSON-EVENT-FILL-001 because the new M7 runtime pack parser accepts Human-Gate-breaking runtime records. A compiled runtime pack can be mutated to set a high-risk coercion event to reviewState LOCK_CANDIDATE and remove its violenceCostRecord, and parseRuntimeM7BetaScenarioPersonEventContentPackV0 still accepts it. The source compiler catches this class of issue, but the exported runtime parser and current runtime tests do not, so the runtime boundary is not meaningfully discriminating for formal content lock and violence-cost invariants.",
+  "branch_or_worktree": "content/m7-scenario-person-event-fill / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "b668dff39d2a8ace2427d19ac81184c98e8655c9",
+  "review_commit": "de23c9cb4d772819be5bd04795d6a1f94e08e800",
+  "route_review_head_commit": "525a66c711c5272857f784bfc8171e50e18d221e",
+  "actual_reviewed_head_commit": "b668dff39d2a8ace2427d19ac81184c98e8655c9",
+  "base_main_commit": "3b64847785d58f6bb660be31c693622874aab48d",
+  "artifacts": [
+    "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    "packages/content-schema/src/m7-beta-scenario.ts",
+    "packages/content-runtime/src/m7-beta-scenario.ts",
+    "apps/content-tools/src/m7-beta-scenario.ts",
+    "apps/content-tools/src/index.ts",
+    "apps/content-tools/src/cli.ts",
+    "apps/content-tools/package.json",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW__historical_researcher.json",
+    "project/messages/routes/M7-SCENARIO-PERSON-EVENT-FILL-001__ROUTE-20260628-M7-SCENARIO-FILL-WRITER-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-REVIEW__qa_reviewer.json"
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "file": "packages/content-runtime/src/m7-beta-scenario.ts",
+      "symbols": [
+        "validateRuntimeM7BetaScenarioPersonEventContentPackV0",
+        "parseRuntimeM7BetaScenarioPersonEventContentPackV0",
+        "validateSemantics"
+      ],
+      "lines": "71-84, 123-129, 232-258",
+      "reproduction": "node --experimental-strip-types --input-type=module -e \"import { readFileSync } from 'node:fs'; import { compileContentPackV0OrThrow } from './apps/content-tools/src/index.ts'; import { parseRuntimeM7BetaScenarioPersonEventContentPackV0 } from './packages/content-runtime/src/index.ts'; const source=JSON.parse(readFileSync('content-source/m7-beta-scenarios/beta-scenario-person-event-set.json','utf8')); const pack=compileContentPackV0OrThrow(source); if (pack.kind !== 'runtime-m7-beta-scenario-person-event-content-pack-v0') throw new Error('wrong pack'); const bad=structuredClone(pack); bad.events[2].reviewState='LOCK_CANDIDATE'; bad.events[2].violenceCostRecord=null; const parsed=parseRuntimeM7BetaScenarioPersonEventContentPackV0(bad); console.log(JSON.stringify({accepted:true, reviewState: parsed.events[2].reviewState, violenceCostRecord: parsed.events[2].violenceCostRecord}, null, 2));\"",
+      "observed": "Command exited 0 and printed accepted=true, reviewState=LOCK_CANDIDATE, violenceCostRecord=null.",
+      "impact": "This violates the task's runtime-boundary acceptance criteria for explicit review states, known Human Gate gaps, and high-risk coercion/violence-cost handling. A runtime M7 pack can bypass the source compiler's no-content-lock and violence-cost checks, so tests would still pass for an implementation that loses the required Human Gate and victim/consequence guardrails after compile.",
+      "necessary_fix": "Make the M7 runtime parser deep-validate and parse sourceRecords, claimRecords, localization, titles, persons, events, scenarios, knownGaps, and their nested arrays instead of casting arrays. Mirror the critical runtime invariants: allowed labels/review states/research status/source class, no LOCK_CANDIDATE in this fill, high-risk coercion/forced/famine events must retain a non-empty violenceCostRecord with CULTURE_HUMAN_GATE_REQUIRED or equivalent blocked review state, manifest counts and ordering still match, and malformed entries return structured runtime validation errors or throw through parseRuntime. Add focused runtime negative tests that mutate a compiled M7 pack to LOCK_CANDIDATE and null/empty violenceCostRecord and prove parsing rejects it."
+    }
+  ],
+  "scope_assessment": {
+    "allowed_forbidden_paths": "PASS",
+    "changed_path_count": 21,
+    "forbidden_path_matches": [],
+    "scope_note": "origin/main...HEAD changed only allowed content-source, apps/content-tools, packages/content-schema, packages/content-runtime, tests, task, route, message, goal-mode, model-routing, and thread-registry paths. The known untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md was not in the writer diff and was left untouched.",
+    "product_boundary_note": "No apps/web, apps/desktop, packages/sim-core, packages/client-core, packages/save-format, packages/map-renderer, packages/ui, packages/platform, tools, CI, gate, roadmap, manifest, checksum, telemetry, server, save migration, or manual node battle implementation drift was found in the diff."
+  },
+  "content_assessment": {
+    "source_records": 5,
+    "claim_records": 6,
+    "localization_records": 36,
+    "title_records": 3,
+    "person_records": 6,
+    "event_records": 5,
+    "scenario_records": 3,
+    "known_gaps": 4,
+    "reference_check": "all references resolved",
+    "ordering_check": "sourceRecords, claimRecords, localization, titles, persons, events, and scenarios are ID-sorted; deterministicOrder is contiguous where present",
+    "human_gate_check": "Source content preserves notContentLockAcceptance=true, m6GateCarryForward=PASS_WITH_LIMITS, manualNodeBattleDecision=DEFER_MANUAL_NODE_BATTLE, RESEARCH REQUIRED gaps, and CULTURE_HUMAN_GATE_REQUIRED coercion review state. The rejection is specifically the runtime parser accepting invalid mutated runtime records."
+  },
+  "tests_run": [
+    {
+      "command": "Get-Content -Raw PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "Read required project status. It records M6_GATE = PASS_WITH_LIMITS, M7 current milestone, M7 task graph/content-lock snapshots, and DEFER_MANUAL_NODE_BATTLE preservation."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before QA handoff creation: branch content/m7-scenario-person-event-fill; only known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md was present."
+    },
+    {
+      "command": "git rev-parse --abbrev-ref HEAD; git rev-parse HEAD; git merge-base origin/main HEAD",
+      "exit_code": 0,
+      "result": "Branch content/m7-scenario-person-event-fill; actual reviewed HEAD b668dff39d2a8ace2427d19ac81184c98e8655c9; merge-base 3b64847785d58f6bb660be31c693622874aab48d."
+    },
+    {
+      "command": "git log --oneline --decorate --name-status origin/main..HEAD",
+      "exit_code": 0,
+      "result": "Reviewed five commits from start/route through writer content de23c9cb, writer handoff 525a66c7, and final QA route/process commit b668dff3. The final route commit is allowed process metadata."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "21 changed files, all under allowed paths. No forbidden changed path was present."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e task/content JSON shape check",
+      "exit_code": 0,
+      "result": "shape ok: task REVIEW; counts scenarios=3 persons=6 titles=3 events=5 localization=36 claims=6; content lock not accepted; DEFER_MANUAL_NODE_BATTLE and PASS_WITH_LIMITS preserved."
+    },
+    {
+      "command": "node -e content reference closure check",
+      "exit_code": 0,
+      "result": "all references resolved across sourceIds, claimIds, localization keys, titleIds, personIds, eventIds, scenarioIds, event choices, and scenario hooks."
+    },
+    {
+      "command": "node -e content ordering and deterministicOrder check",
+      "exit_code": 0,
+      "result": "sourceRecords, claimRecords, localization, titles, persons, events, and scenarios are ID-sorted; deterministicOrder is contiguous where present."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module -e mutated runtime parser negative probe",
+      "exit_code": 0,
+      "result": "REPRODUCED FAILURE: parseRuntimeM7BetaScenarioPersonEventContentPackV0 accepted reviewState=LOCK_CANDIDATE and violenceCostRecord=null for event.beta.coercion-cost-review."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for M1 hash 4a438525, M2 hash 9ab72b0b, M3 hash 76b75849, M6 map hash 4485a353, M6 scenario hash 6d1f6d64, and M7 beta scenario/person/event set hash 92aed91e."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 test file passed; 18 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 13 tests passed, but existing tests do not reject the mutated M7 runtime Human Gate violation reproduced above."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 36 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: scope discipline, explicit source content, owner/review-state coverage, deterministic ordering, M6 PASS_WITH_LIMITS, and DEFER_MANUAL_NODE_BATTLE preservation are acceptable, but the exported M7 runtime parser does not enforce the same critical content-lock and violence-cost invariants.",
+    "REQUEST_CHANGES: runtime test coverage is not meaningfully discriminating for the Human Gate boundary because it passes while parseRuntime accepts LOCK_CANDIDATE plus missing violenceCostRecord on the high-risk coercion event.",
+    "Reviewed actual origin/main...HEAD at b668dff39d2a8ace2427d19ac81184c98e8655c9. The route file records review_head_commit 525a66c711c5272857f784bfc8171e50e18d221e, but the extra actual HEAD delta is the allowed QA route/process metadata commit and is not itself a blocker."
+  ],
+  "risks": [
+    "If runtime packs are ever loaded or cached after compilation, a malformed or stale pack can erase Human Gate blocking state while still passing runtime parse and index creation.",
+    "The source compiler's validation is strong enough for the checked JSON, but acceptance requires runtime compatibility and tests that fail on wrong runtime implementations too."
+  ],
+  "blockers": [
+    "Add deep runtime member validation/parsing for M7 content records instead of type-casting arrays in parseRuntimeM7BetaScenarioPersonEventContentPackV0.",
+    "Reject LOCK_CANDIDATE and missing/empty high-risk violenceCostRecord at the runtime parser boundary, with focused negative tests that fail against the current implementation.",
+    "Rerun pnpm content:validate, pnpm --filter @monsoon/content-runtime test, pnpm --filter @monsoon/content-tools test, and pnpm check after the fix."
+  ],
+  "route_to": "historical_researcher",
+  "coordination_route_to": "lead_orchestrator",
+  "requested_action": "Repair the M7 runtime parser and runtime tests for the Human Gate/content-lock/violence-cost negative cases, then return a new writer REVIEW handoff for qa_reviewer. Lead orchestrator should coordinate routing if the repair needs a code-lane owner beyond the original historical_researcher writer.",
+  "created_at": "2026-06-28T14:20:00+08:00"
+}

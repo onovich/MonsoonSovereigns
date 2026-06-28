@@ -1,15 +1,20 @@
+import { readFile } from "node:fs/promises";
+
 import { describe, expect, test } from "vitest";
 
+import { compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
 import {
   createRuntimeContentPackIndexV0,
   createRuntimeM3CharacterOfficeContentPackIndexV0,
   createRuntimeM6AlphaMapCandidateContentPackIndexV0,
   createRuntimeM6AlphaScenarioContentPackIndexV0,
+  createRuntimeM7BetaScenarioPersonEventContentPackIndexV0,
   createRuntimeM3PolityVassalageContentPackIndexV0,
   createRuntimeM2WorldContentPackIndexV0,
   parseRuntimeM3CharacterOfficeContentPackV0,
   parseRuntimeM6AlphaMapCandidateContentPackV0,
   parseRuntimeM6AlphaScenarioContentPackV0,
+  parseRuntimeM7BetaScenarioPersonEventContentPackV0,
   parseRuntimeM3PolityVassalageContentPackV0,
   parseRuntimeM2WorldContentPackV0,
   parseRuntimeContentPackV0
@@ -670,6 +675,122 @@ describe("M6 runtime alpha map candidate content pack", () => {
   });
 });
 
+describe("M7 runtime beta scenario/person/event content pack", () => {
+  test("parses review-labeled records and exposes only stable lookup indexes", () => {
+    const pack = parseRuntimeM7BetaScenarioPersonEventContentPackV0(makeRuntimeM7BetaPack());
+    const index = createRuntimeM7BetaScenarioPersonEventContentPackIndexV0(pack);
+
+    expect(pack.notContentLockAcceptance).toBe(true);
+    expect(pack.m6GateCarryForward).toBe("PASS_WITH_LIMITS");
+    expect(pack.manualNodeBattleDecision).toBe("DEFER_MANUAL_NODE_BATTLE");
+    expect(index.getScenario("scenario.beta.runtime")?.reviewState).toBe("RESEARCH REQUIRED");
+    expect(index.getPerson("person.beta.runtime")?.label).toBe("COMPOSITE");
+    expect(index.getEvent("event.beta.coercion-runtime")?.violenceCostRecord).toMatchObject({
+      reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
+    });
+    expect(index.getClaim("HIST-M7-FILL-RUNTIME")?.researchStatus).toBe("SUMMARY_ONLY");
+    expect(index).not.toHaveProperty("applyEvent");
+    expect(index).not.toHaveProperty("getWorldState");
+  });
+
+  test("rejects runtime M7 packs with mismatched counts or unstable order", () => {
+    const pack = makeRuntimeM7BetaPack();
+    expect(() =>
+      parseRuntimeM7BetaScenarioPersonEventContentPackV0({
+        ...pack,
+        manifest: {
+          ...pack.manifest,
+          personCount: 2
+        },
+        persons: [
+          {
+            ...pack.persons[0],
+            personId: "person.beta.z-runtime"
+          },
+          {
+            ...pack.persons[0],
+            personId: "person.beta.a-runtime"
+          }
+        ]
+      })
+    ).toThrow("RuntimeM7BetaScenarioPersonEventContentPackV0");
+  });
+
+  test("rejects compiled M7 runtime events that try to enter LOCK_CANDIDATE", async () => {
+    const pack = await readCompiledM7BetaScenarioRuntimePack();
+    const badPack = cloneAsMutableRecord(pack);
+    const events = requireMutableRecordArray(badPack, "events");
+    events[2]["reviewState"] = "LOCK_CANDIDATE";
+
+    expect(() => parseRuntimeM7BetaScenarioPersonEventContentPackV0(badPack)).toThrow(
+      "LOCK_CANDIDATE"
+    );
+  });
+
+  test("rejects compiled M7 high-risk runtime events without violence cost records", async () => {
+    const pack = await readCompiledM7BetaScenarioRuntimePack();
+    const badPack = cloneAsMutableRecord(pack);
+    const events = requireMutableRecordArray(badPack, "events");
+    events[2]["violenceCostRecord"] = null;
+
+    expect(() => parseRuntimeM7BetaScenarioPersonEventContentPackV0(badPack)).toThrow(
+      "violenceCostRecord"
+    );
+  });
+
+  test("rejects compiled M7 high-risk runtime events with empty violence cost arrays", async () => {
+    const pack = await readCompiledM7BetaScenarioRuntimePack();
+    const badPack = cloneAsMutableRecord(pack);
+    const events = requireMutableRecordArray(badPack, "events");
+    const violenceCostRecord = requireMutableRecord(events[2]["violenceCostRecord"]);
+    violenceCostRecord["victimGroups"] = [];
+
+    expect(() => parseRuntimeM7BetaScenarioPersonEventContentPackV0(badPack)).toThrow(
+      "victimGroups"
+    );
+  });
+});
+
+async function readCompiledM7BetaScenarioRuntimePack() {
+  const fixtureUrl = new URL(
+    "../content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    import.meta.url
+  );
+  const source = JSON.parse(await readFile(fixtureUrl, "utf8")) as unknown;
+  const pack = compileContentPackV0OrThrow(source);
+  if (pack.kind !== "runtime-m7-beta-scenario-person-event-content-pack-v0") {
+    throw new Error(`Expected compiled M7 beta runtime pack, got ${pack.kind}.`);
+  }
+  return pack;
+}
+
+function cloneAsMutableRecord(input: unknown): Record<string, unknown> {
+  const parsed = JSON.parse(JSON.stringify(input)) as unknown;
+  return requireMutableRecord(parsed);
+}
+
+function requireMutableRecord(input: unknown): Record<string, unknown> {
+  if (!isMutableRecord(input)) {
+    throw new Error("Expected mutable record.");
+  }
+  return input;
+}
+
+function requireMutableRecordArray(
+  record: Record<string, unknown>,
+  key: string
+): Record<string, unknown>[] {
+  const value = record[key];
+  if (!Array.isArray(value) || !value.every(isMutableRecord)) {
+    throw new Error(`Expected ${key} to be a mutable record array.`);
+  }
+  return value;
+}
+
+function isMutableRecord(input: unknown): input is Record<string, unknown> {
+  return typeof input === "object" && input !== null && !Array.isArray(input);
+}
+
 function makeRuntimeReferenceTargets() {
   return {
     diplomacy: [makeRuntimeReferenceTarget("diplomacy.alpha.runtime")],
@@ -680,6 +801,163 @@ function makeRuntimeReferenceTargets() {
     events: [makeRuntimeReferenceTarget("event.alpha.runtime")],
     encyclopediaEntries: [makeRuntimeReferenceTarget("encyclopedia.alpha.runtime")],
     startToVictoryFixtures: [makeRuntimeReferenceTarget("fixture.alpha.runtime")]
+  };
+}
+
+function makeRuntimeM7BetaPack() {
+  return {
+    schemaVersion: 1,
+    kind: "runtime-m7-beta-scenario-person-event-content-pack-v0",
+    fixtureId: "m7.beta.runtime",
+    notContentLockAcceptance: true,
+    m6GateCarryForward: "PASS_WITH_LIMITS",
+    manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE",
+    manifest: {
+      schemaVersion: 1,
+      fixtureId: "m7.beta.runtime",
+      fixtureKind: "beta-scenario-person-event-set",
+      contentScope: "m7-beta-content-fill",
+      manifestHash: "abcdef12",
+      sourceCount: 1,
+      claimCount: 1,
+      localizationCount: 1,
+      titleCount: 1,
+      personCount: 1,
+      eventCount: 1,
+      scenarioCount: 1,
+      knownGapCount: 1
+    },
+    sourceRecords: [
+      {
+        sourceId: "source.review.runtime",
+        sourceClass: "REVIEW_BASELINE",
+        citation: "runtime",
+        accessStatus: "FULL_PROJECT_TEXT",
+        pageOrSection: "section",
+        formalUse: "REVIEW_BASELINE_ONLY"
+      }
+    ],
+    claimRecords: [
+      {
+        claimId: "HIST-M7-FILL-RUNTIME",
+        claim: "Runtime M7 claim.",
+        label: "COMPOSITE",
+        confidence: "MEDIUM",
+        sourceIds: ["source.review.runtime"],
+        sourcePassages: ["section"],
+        sourceStatements: ["Runtime statement."],
+        scholarlyInterpretations: ["Runtime interpretation."],
+        researcherInference: "Runtime inference.",
+        competingInterpretations: [],
+        gameAbstraction: "Runtime validation only.",
+        researchStatus: "SUMMARY_ONLY",
+        humanGate: false
+      }
+    ],
+    localization: [
+      {
+        key: "content.m7.beta.runtime.name",
+        zhHans: "运行时",
+        english: "Runtime",
+        sourceNote: "Runtime note.",
+        context: "Runtime context.",
+        characterLimit: 24,
+        sourceIds: ["source.review.runtime"],
+        claimIds: ["HIST-M7-FILL-RUNTIME"],
+        reviewState: "SCHEMA_VALIDATED",
+        owner: "historical_researcher",
+        deterministicOrder: 1
+      }
+    ],
+    titles: [
+      {
+        titleId: "title.beta.runtime",
+        localizationKey: "content.m7.beta.runtime.name",
+        label: "RESEARCH REQUIRED",
+        confidence: "LOW",
+        sourceIds: ["source.review.runtime"],
+        claimIds: ["HIST-M7-FILL-RUNTIME"],
+        reviewState: "LANGUAGE_REVIEW_REQUIRED",
+        owner: "historical_researcher",
+        deterministicOrder: 1
+      }
+    ],
+    persons: [
+      {
+        personId: "person.beta.runtime",
+        displayNameKey: "content.m7.beta.runtime.name",
+        titleIds: ["title.beta.runtime"],
+        label: "COMPOSITE",
+        confidence: "LOW",
+        sourceIds: ["source.review.runtime"],
+        claimIds: ["HIST-M7-FILL-RUNTIME"],
+        reviewState: "LANGUAGE_REVIEW_REQUIRED",
+        owner: "historical_researcher",
+        scenarioIds: ["scenario.beta.runtime"],
+        roleTag: "runtime",
+        deterministicOrder: 1
+      }
+    ],
+    events: [
+      {
+        eventId: "event.beta.coercion-runtime",
+        localizationKey: "content.m7.beta.runtime.name",
+        label: "RESEARCH REQUIRED",
+        confidence: "LOW",
+        sourceIds: ["source.review.runtime"],
+        claimIds: ["HIST-M7-FILL-RUNTIME"],
+        reviewState: "CULTURE_HUMAN_GATE_REQUIRED",
+        owner: "historical_researcher",
+        triggerKey: "runtime",
+        scenarioIds: ["scenario.beta.runtime"],
+        personIds: ["person.beta.runtime"],
+        titleIds: ["title.beta.runtime"],
+        choices: [
+          {
+            choiceId: "choice.beta.runtime",
+            localizationKey: "content.m7.beta.runtime.name",
+            aiReasonKey: "content.m7.beta.runtime.name",
+            costSummaryKey: "content.m7.beta.runtime.name"
+          }
+        ],
+        violenceCostRecord: {
+          victimGroups: ["runtime victim group"],
+          sourceRegions: ["runtime source region"],
+          immediateCosts: ["runtime immediate cost"],
+          longTermConsequences: ["runtime long-term consequence"],
+          reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
+        },
+        deterministicOrder: 1
+      }
+    ],
+    scenarios: [
+      {
+        scenarioId: "scenario.beta.runtime",
+        scenarioKey: "beta-runtime",
+        displayNameKey: "content.m7.beta.runtime.name",
+        startYear: 1531,
+        label: "COMPOSITE",
+        confidence: "LOW",
+        sourceIds: ["source.review.runtime"],
+        claimIds: ["HIST-M7-FILL-RUNTIME"],
+        reviewState: "RESEARCH REQUIRED",
+        owner: "historical_researcher",
+        personIds: ["person.beta.runtime"],
+        titleIds: ["title.beta.runtime"],
+        eventIds: ["event.beta.coercion-runtime"],
+        localizationKeys: ["content.m7.beta.runtime.name"],
+        hooks: [
+          {
+            hookId: "hook.beta.runtime",
+            hookKind: "start",
+            localizationKey: "content.m7.beta.runtime.name",
+            targetIds: ["person.beta.runtime"]
+          }
+        ],
+        deterministicOrder: 1
+      }
+    ],
+    knownGaps: ["RESEARCH REQUIRED runtime gap."]
   };
 }
 

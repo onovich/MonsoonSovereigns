@@ -1,0 +1,82 @@
+{
+  "message_id": "MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW",
+  "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "Repaired the QA-requested M7 runtime boundary gap. parseRuntimeM7BetaScenarioPersonEventContentPackV0 now deep-validates and parses M7 runtime source, claim, localization, title, person, event, scenario, hook, choice, and violence-cost records instead of casting record arrays. Runtime validation rejects LOCK_CANDIDATE for this fill path and rejects high-risk coercion/forced/famine/violence events unless they retain a non-empty violenceCostRecord with a blocked review state. Focused tests mutate the compiled M7 fixture to the QA reproduction cases and prove runtime parsing rejects them. This remains a REVIEW handoff only; formal content lock acceptance is not created.",
+  "artifacts": [
+    "packages/content-runtime/src/m7-beta-scenario.ts",
+    "tests/content-runtime-pack.test.ts",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "content/m7-scenario-person-event-fill / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "7c5005c9a700c06438a464742768334da26d0508",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before R2 fix commit: modified packages/content-runtime/src/m7-beta-scenario.ts and tests/content-runtime-pack.test.ts; unrelated untracked forbidden docs/M7_UI_Localization_Art_Handoff_Prompts.md was left untouched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-SCENARIO-PERSON-EVENT-FILL-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-REVIEW__qa_reviewer.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for M1 hash 4a438525, M2 hash 9ab72b0b, M3 hash 76b75849, M6 map hash 4485a353, M6 scenario hash 6d1f6d64, and M7 beta scenario/person/event set hash 92aed91e."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 16 tests passed, including compiled M7 fixture negative tests for LOCK_CANDIDATE, null violenceCostRecord, and empty victimGroups."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 36 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-R2-REVIEW__historical_researcher.json."
+    },
+    {
+      "command": "node -e R2 handoff JSON shape check",
+      "exit_code": 0,
+      "result": "R2 handoff JSON shape ok; status REVIEW and route_to qa_reviewer."
+    }
+  ],
+  "decisions": [
+    "Kept the repair inside packages/content-runtime and tests; no source content, content compiler, schema package, UI, sim, save, server, telemetry, release, or manual node battle scope was added.",
+    "Runtime parsing now constructs frozen typed M7 records from validated field reads instead of accepting unparsed array entries as schema types.",
+    "LOCK_CANDIDATE remains a schema review-state value for future gates, but this M7 fill runtime boundary rejects it before Human Gate/content lock acceptance.",
+    "High-risk coercion/forced/famine/violence runtime events must keep non-empty victim groups, source regions, immediate costs, and long-term consequences, with blocked review states.",
+    "M6_GATE remains PASS_WITH_LIMITS and manualNodeBattleDecision remains DEFER_MANUAL_NODE_BATTLE."
+  ],
+  "risks": [
+    "The high-risk runtime classifier is intentionally conservative and string-based over eventId/triggerKey terms: coercion, coercive, forced, famine, violence. Future high-risk taxonomy changes should extend this allowlist or move it into a shared schema constant.",
+    "Formal content lock acceptance remains outside this task and still requires the future Human Gate path.",
+    "Historical names, titles, transliterations, exact chronology, art, music, clothing, architecture, and religious imagery remain governed by the existing RESEARCH REQUIRED/Human Gate risks from the original writer handoff."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the R2 runtime parser repair and focused negative tests for the QA-requested Human Gate/content-lock/violence-cost runtime boundary. Confirm that the M7 fill can return to REVIEW without accepting formal content lock.",
+  "created_at": "2026-06-28T14:35:00+08:00"
+}

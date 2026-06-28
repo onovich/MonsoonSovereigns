@@ -6,6 +6,7 @@ export const M3_CHARACTER_OFFICE_FIXTURE_SOURCE_V0_SCHEMA_VERSION = 1;
 export * from "./m6-alpha-map-candidate.ts";
 export * from "./m6-alpha-scenario.ts";
 export * from "./m6-policy-event.ts";
+export * from "./m7-beta-scenario.ts";
 
 export type M1GraphFixtureSourceKind = "m1.synthetic-abstract-graph";
 export type M1GraphFixtureKind = "synthetic-kernel-graph";
