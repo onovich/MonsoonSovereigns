@@ -11,7 +11,7 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-28T19:03:23.528Z",
+        "updated_at": "2026-06-28T19:20:37.348Z",
         "task_id": "M7-APP-SHELL-QUALITY-001",
         "task_ids": [
           "M7-APP-SHELL-QUALITY-001"
@@ -5910,12 +5910,12 @@
       "actual_effort": "xhigh",
       "branch_or_worktree": "feat/m7-app-shell-quality",
       "created_at": "2026-06-28T16:17:06.608Z",
-      "updated_at": "2026-06-28T19:03:23.528Z"
+      "updated_at": "2026-06-28T19:20:37.348Z"
     },
     "M7-APP-SHELL-QUALITY-001:client_engineer": {
       "thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
       "task_id": "M7-APP-SHELL-QUALITY-001",
-      "status": "review_ready",
+      "status": "active_writer_request_changes",
       "role": "client_engineer",
       "nickname": "Window the 2nd",
       "configured_model": "gpt-5.5",
@@ -5924,16 +5924,17 @@
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-app-shell-quality",
       "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
-      "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R2-REVIEW__client_engineer.json",
       "routed_at": "2026-06-28T16:17:06.608Z",
       "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
       "review_commit": "47d413198897466420afff587a7ef903479e94cb",
-      "updated_at": "2026-06-28T19:03:23.528Z"
+      "updated_at": "2026-06-28T19:20:37.348Z",
+      "request_changes_route": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-WRITER.json"
     },
     "M7-APP-SHELL-QUALITY-001:qa_reviewer": {
       "thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
       "task_id": "M7-APP-SHELL-QUALITY-001",
-      "status": "active_reviewer",
+      "status": "request_changes_waiting_writer_r2",
       "role": "qa_reviewer",
       "nickname": "Gate",
       "configured_model": "gpt-5.5",
@@ -5946,9 +5947,10 @@
       "source_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
       "review_commit": "47d413198897466420afff587a7ef903479e94cb",
       "routed_at": "2026-06-28T19:03:23.528Z",
-      "updated_at": "2026-06-28T19:07:02.320Z",
+      "updated_at": "2026-06-28T19:20:37.348Z",
       "route_sent_at": "2026-06-28T19:07:02.320Z",
-      "route_submission_id": "019f0f9f-bb59-7c43-b7ac-b9c27ea0a850"
+      "route_submission_id": "019f0f9f-bb59-7c43-b7ac-b9c27ea0a850",
+      "qa_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json"
     }
   },
   "replaced_threads": [
@@ -6061,5 +6063,5 @@
       "replaced_at": "2026-06-28T08:46:06.641Z"
     }
   ],
-  "updated_at": "2026-06-28T19:07:02.320Z"
+  "updated_at": "2026-06-28T19:20:37.348Z"
 }
