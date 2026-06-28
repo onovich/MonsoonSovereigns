@@ -1,0 +1,88 @@
+{
+  "route_id": "ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "lead_orchestrator",
+  "source_role": "client_engineer",
+  "target_role": "systems_architect",
+  "target_thread_id": "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
+  "target_thread_nickname": "Lintel the 2nd",
+  "branch_or_worktree": "feat/m7-design-tokens-asset-slots",
+  "review_commit": "7d7952bb169cc776384b78ee3897843ce3313edd",
+  "source_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+  "expected_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+  "requested_action": "Review the committed M7 design-token and asset-slot foundation for architecture compliance: no sim-core/protocol/save/Electron/dependency changes, no final art or culture-specific asset approval, no authoritative state shift into React/Pixi/store, map tokens remain presentation-only and rebuildable from read models, and downstream M7 UI tasks can safely consume centralized token/slot APIs. Emit ACCEPT, REQUEST_CHANGES, or BLOCKED handoff.",
+  "required_docs": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "docs/11-roadmap.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/27-autonomous-goal-mode.md",
+    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json"
+  ],
+  "artifacts": [
+    "packages/ui/src/design-tokens.ts",
+    "packages/ui/src/asset-slots.ts",
+    "packages/ui/src/design-token-asset-slots-view.tsx",
+    "packages/ui/src/index.tsx",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/map-renderer/src/index.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/M7DesignTokensAssetSlots.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "lead_verified_tests": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "exit_code": 0
+    },
+    {
+      "command": "node -e JSON parse/shape check for task and handoff",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 file, 15 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 file, 5 tests passed"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "passed with existing large chunk warning"
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "passed with existing large chunk/plugin timing warnings"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "15/15 passed"
+    }
+  ],
+  "route_to": "systems_architect",
+  "next_route_on_accept": "qa_reviewer",
+  "created_at": "2026-06-28T15:44:21.923Z"
+}
