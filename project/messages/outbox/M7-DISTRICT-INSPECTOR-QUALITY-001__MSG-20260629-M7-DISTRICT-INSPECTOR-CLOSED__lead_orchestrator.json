@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260629-M7-DISTRICT-INSPECTOR-CLOSED",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "M7-DISTRICT-INSPECTOR-QUALITY-001 is CLOSED after PR #183 merged into origin/main at 556ab00fc37fa0b44060f83c9eec3f96af1bc20c. The accepted district inspector productization, R2 localization fix, independent QA R2 ACCEPT handoff, lead acceptance, and PR CI evidence are integrated in main.",
+  "artifacts": [
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/close-m7-district-inspector-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "556ab00fc37fa0b44060f83c9eec3f96af1bc20c",
+  "tests_run": [
+    {
+      "command": "PR #183 Quality, Web, and Browser Smoke",
+      "exit_code": 0,
+      "result": "GitHub check passed in 2m25s."
+    },
+    {
+      "command": "PR #183 Windows Desktop Smoke Artifact",
+      "exit_code": 0,
+      "result": "GitHub check passed in 57s."
+    },
+    {
+      "command": "gh pr view 183 --json state,mergedAt,mergeCommit,url",
+      "exit_code": 0,
+      "result": "state=MERGED; mergeCommit=556ab00fc37fa0b44060f83c9eec3f96af1bc20c; url=https://github.com/onovich/MonsoonSovereigns/pull/183."
+    },
+    {
+      "command": "git rev-parse HEAD && git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "HEAD and origin/main both resolved to 556ab00fc37fa0b44060f83c9eec3f96af1bc20c before the closure branch was created."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Next READY tasks before closure update: M7-MAP-PRESENTATION-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Task is closed only after accepted branch entered origin/main through PR #183 and both PR Gate jobs passed."
+    },
+    {
+      "id": "CHILD_THREADS_CLOSED",
+      "decision": "client_engineer and qa_reviewer task threads are marked closed after integration."
+    },
+    {
+      "id": "NEXT_READY_TASK",
+      "decision": "After this closure checkpoint enters main, start M7-MAP-PRESENTATION-QUALITY-001 as the highest-priority dependency-ready M7 UI quality task unless taskctl ready changes."
+    },
+    {
+      "id": "NO_HUMAN_GATE",
+      "decision": "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    }
+  ],
+  "risks": [
+    {
+      "id": "EXISTING_BUILD_WARNINGS",
+      "severity": "P3",
+      "summary": "Existing Vite and Storybook chunk/plugin timing warnings remain non-blocking."
+    },
+    {
+      "id": "FUTURE_DUE_LABEL_FALLBACK",
+      "severity": "P3",
+      "summary": "Unknown future due-label strings still fall back through formatReasonCode; accepted for current read model and not a blocker."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge closure checkpoint, sync main, then start M7-MAP-PRESENTATION-QUALITY-001.",
+  "created_at": "2026-06-28T22:11:49.677Z",
+  "integrated_pr": 183,
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/183",
+  "integrated_main_commit": "556ab00fc37fa0b44060f83c9eec3f96af1bc20c",
+  "closed_child_threads": [
+    "019f100e-9a22-7793-a953-a41b9a948703",
+    "019f1025-36fc-70d1-92bb-5858b2c7a74f"
+  ],
+  "next_ready_tasks": [
+    "M7-MAP-PRESENTATION-QUALITY-001",
+    "M7-PLAYER-GUIDANCE-LITE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ]
+}
