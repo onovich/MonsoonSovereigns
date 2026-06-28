@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M7_UI_LOCALIZATION_PLAN_ACCEPTED_PENDING_INTEGRATION",
+  "status": "M7_UI_LOCALIZATION_PLAN_CLOSED_PENDING_CLOSURE_PR",
   "project": "Monsoon Sovereigns",
   "origin_main": "c5750d18ebac2bfec9cab42a1b7a20a10a526691",
   "current_milestone": "M7",
@@ -10,21 +10,25 @@
   "current_tasks": [
     "M7-UI-LOCALIZATION-PLAN-001"
   ],
-  "current_task_status": "ACCEPTED",
-  "last_closed_task": "M7-VISUAL-UX-HANDOFF-001",
-  "last_integrated_task": "M7-VISUAL-UX-HANDOFF-001",
-  "last_main_commit": "c5750d18ebac2bfec9cab42a1b7a20a10a526691",
+  "current_task_status": "CLOSED",
+  "last_closed_task": "M7-UI-LOCALIZATION-PLAN-001",
+  "last_integrated_task": "M7-UI-LOCALIZATION-PLAN-001",
+  "last_main_commit": "43edb04439eb243a5c19d1c22bc59095bab36867",
   "ready_tasks": [
+    "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+    "M7-I18N-FOUNDATION-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "next_ready_tasks": [
+    "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+    "M7-I18N-FOUNDATION-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-UI-LOCALIZATION-PLAN-001",
-      "status": "accepted_pending_integration",
+      "status": "closed_integrated",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -94,11 +98,11 @@
     "note": "No Human Gate is active. Formal content lock and major cultural-risk decisions remain future Human Gates; M7 UI/localization planning must not implement UI or reverse DEFER_MANUAL_NODE_BATTLE.",
     "recorded_at": "2026-06-28T20:39:18.2016568+08:00"
   },
-  "next_machine_action": "Open PR for accepted M7-UI-LOCALIZATION-PLAN-001, wait for CI, merge to main, then close the task and continue dependency-ready M7 work.",
+  "next_machine_action": "Open closure PR for M7-UI-LOCALIZATION-PLAN-001, wait for CI, merge to main, then start the next dependency-ready M7 task.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T21:10:14.6163624+08:00",
+  "last_updated_at": "2026-06-28T21:18:53.3762254+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -196,14 +200,14 @@
     "M7-VISUAL-UX-HANDOFF-001"
   ],
   "m7_ui_localization_plan": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-UI-LOCALIZATION-PLAN-001",
     "branch_or_worktree": "chore/m7-ui-localization-plan",
     "base_main_commit": "650e6faecbeb327ed7129a897e921dfb67c73214",
     "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
     "started_at": "2026-06-28T20:39:18.2016568+08:00",
-    "next_action": "Open PR, wait for CI, merge to main, then close M7-UI-LOCALIZATION-PLAN-001 and continue dependency-ready M7 work.",
+    "next_action": "Run taskctl ready and start the next dependency-ready M7 task.",
     "human_gate_required": false,
     "systems_thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
     "systems_thread_nickname": "Meridian",
@@ -222,6 +226,17 @@
     "qa_status": "ACCEPT",
     "lead_accept_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-28T21:10:14.6163624+08:00",
-    "accepted_head_commit": "2b095927322306913cea7705b6a11f038996cd9e"
+    "accepted_head_commit": "2b095927322306913cea7705b6a11f038996cd9e",
+    "integrated_pr": 173,
+    "integrated_main_commit": "43edb04439eb243a5c19d1c22bc59095bab36867",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/173",
+    "lead_close_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-28T21:18:53.3762254+08:00",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "next_ready_tasks": [
+      "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "M7-I18N-FOUNDATION-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    ]
   }
 }
