@@ -1,0 +1,108 @@
+{
+  "message_id": "MSG-20260628-M7-CONTENT-LOCK-CONTRACT-SYSTEMS-REVIEW",
+  "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Accepted the planning-only M7 Beta content-lock contract review. The contract defines minimum scenario/person/event lock scope, required review states, defect-only post-lock policy, explicit balance-tuning window, M7 downstream evidence mapping, future Human Gate handling, M6 PASS_WITH_LIMITS carry-forward, and exact DEFER_MANUAL_NODE_BATTLE preservation without approving formal content lock, M7 Gate passage, M8 release readiness, or any product/content/code/platform/release change.",
+  "artifacts": [
+    "project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+    "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-WRITER-TO-SYSTEMS-REVIEW.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "design/m7-content-lock-contract / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "e8e2f3a3c10625d9d1e4bf30fef6a907579c7be3",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "no output; working tree was clean before writing this reviewer handoff"
+    },
+    {
+      "command": "git rev-parse --abbrev-ref HEAD",
+      "exit_code": 0,
+      "result": "design/m7-content-lock-contract"
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "e8e2f3a3c10625d9d1e4bf30fef6a907579c7be3"
+    },
+    {
+      "command": "git diff --name-only cf25e7e47f25ab96b9a152f3a14bec3e8444d43b..HEAD",
+      "exit_code": 0,
+      "result": "project/goal-mode-state.json\nproject/messages/outbox/GOAL-MODE-CONTINUATION.json\nproject/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json\nproject/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json\nproject/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json\nproject/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-WRITER-TO-SYSTEMS-REVIEW.json\nproject/model-routing-state.json\nproject/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json\nproject/tasks/thread-registry.json"
+    },
+    {
+      "command": "git diff --name-only cf25e7e47f25ab96b9a152f3a14bec3e8444d43b..7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
+      "exit_code": 0,
+      "result": "project/goal-mode-state.json\nproject/messages/outbox/GOAL-MODE-CONTINUATION.json\nproject/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json\nproject/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json\nproject/model-routing-state.json\nproject/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json\nproject/tasks/thread-registry.json"
+    },
+    {
+      "command": "git show --name-only --format=%H 7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
+      "exit_code": 0,
+      "result": "7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e\n\nproject/goal-mode-state.json\nproject/model-routing-state.json\nproject/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json\nproject/tasks/thread-registry.json"
+    },
+    {
+      "command": "git log --oneline --decorate -5",
+      "exit_code": 0,
+      "result": "e8e2f3a3 (HEAD -> design/m7-content-lock-contract) chore(process): send M7 content lock review\n44d4c418 chore(process): route M7 content lock review\n3955e8d1 chore(process): record M7 content lock handoff\n7acdad1b chore(process): define M7 content lock contract\n92a590a2 chore(process): route M7 content lock contract"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "no output; no whitespace errors"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-CONTRACT-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-CONTENT-LOCK-CONTRACT-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-TASK-GRAPH-001 CLOSED; M7-CONTENT-LOCK-CONTRACT-001 REVIEW; downstream M7 tasks remain DRAFT"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "no output; no dependency-ready task while M7-CONTENT-LOCK-CONTRACT-001 is in REVIEW"
+    },
+    {
+      "command": "git merge-base --is-ancestor 7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e HEAD",
+      "exit_code": 0,
+      "result": "no output; writer review commit is an ancestor of HEAD"
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const t=JSON.parse(fs.readFileSync('project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json','utf8')); const c=t.contract||{}; const r='target,scenario_person_event_scope,required_review_states,post_lock_policy,balance_tuning_window,roadmap_acceptance_mapping,evidence_requirements,boundaries,vertical_slice_acceptance'.split(','); const text=JSON.stringify(c)+' '+JSON.stringify(t.acceptance_evidence||{}); const ok=r.every(k=>c[k]) && /Human Gate/.test(text) && /PASS_WITH_LIMITS/.test(text) && /DEFER_MANUAL_NODE_BATTLE/.test(text) && /post-1\\.0 non-blocking candidate/.test(text) && Array.isArray(c.roadmap_acceptance_mapping) && c.roadmap_acceptance_mapping.length>=11; if(!ok) process.exit(1); console.log('shape ok: required contract sections, M7 evidence mapping, future Human Gate, M6 PASS_WITH_LIMITS, and DEFER_MANUAL_NODE_BATTLE present');\"",
+      "exit_code": 0,
+      "result": "shape ok: required contract sections, M7 evidence mapping, future Human Gate, M6 PASS_WITH_LIMITS, and DEFER_MANUAL_NODE_BATTLE present"
+    },
+    {
+      "command": "node -e \"const cp=require('child_process'); const files=cp.execSync('git diff --name-only cf25e7e47f25ab96b9a152f3a14bec3e8444d43b..HEAD',{encoding:'utf8'}).trim().split(/\\r?\\n/).filter(Boolean); const allowed=[/^PROJECT_STATUS\\.md$/, /^project\\/tasks\\/active\\/M7-CONTENT-LOCK-CONTRACT-001\\.json$/, /^project\\/tasks\\/thread-registry\\.json$/, /^project\\/messages\\//, /^project\\/goal-mode-state\\.json$/, /^project\\/model-routing-state\\.json$/]; const forbidden=[/^apps\\//,/^packages\\//,/^content-source\\//,/^tools\\//,/^\\.github\\//,/^docs\\/decisions\\//,/^docs\\/GATE-M[0-6]\\.md$/,/^docs\\/11-roadmap\\.md$/,/^docs\\/13-risk-register-and-test-strategy\\.md$/,/^docs\\/23-milestone-acceptance-matrix\\.md$/,/^docs\\/27-autonomous-goal-mode\\.md$/,/^MANIFEST\\.md$/,/^SHA256SUMS\\.txt$/,/^VALIDATION_REPORT\\.md$/]; const outside=files.filter((f)=>!allowed.some((r)=>r.test(f))); const blocked=files.filter((f)=>forbidden.some((r)=>r.test(f))); if(outside.length||blocked.length){ console.error(JSON.stringify({outside,blocked,files},null,2)); process.exit(1); } console.log('path scope ok: '+files.length+' changed files, all allowed, no forbidden paths');\"",
+      "exit_code": 0,
+      "result": "path scope ok: 9 changed files, all allowed, no forbidden paths"
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M7-CONTENT-LOCK-CONTRACT-001 satisfies the requested planning-only content-lock contract review scope.",
+    "Formal content lock acceptance remains a future Human Gate in M7-CONTENT-LOCK-ACCEPTANCE-001; this review does not approve content lock.",
+    "M6_GATE remains PASS_WITH_LIMITS and is carried forward with Alpha scaffolding, local adviser evidence, batch tuning risk, and unsigned desktop smoke limits.",
+    "DEFER_MANUAL_NODE_BATTLE is preserved exactly as a post-1.0 non-blocking candidate unless a later Human Gate reverses it.",
+    "No product code, package code, content-source data, platform behavior, release artifact, roadmap, acceptance matrix, prior gate, ADR, telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mod support, or manual node battle work is approved by this review."
+  ],
+  "risks": [
+    "Actual reviewed HEAD is e8e2f3a3c10625d9d1e4bf30fef6a907579c7be3, ahead of the route message CURRENT_ROUTE_COMMIT 44d4c418 by process-only commits; base..HEAD path guard still passed.",
+    "Downstream M7 content, culture, balance, platform, save, and manual playthrough tasks remain R4-sensitive and require their assigned reviewers.",
+    "Post-lock tuning remains limited to explicit defect or evidence-backed tuning records; content expansion remains outside this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead integration review. Do not treat this ACCEPT as formal content lock approval, M7 Gate approval, M8 release readiness, or authorization for product/content/code/platform/release changes.",
+  "created_at": "2026-06-28T12:46:02.4509797+08:00"
+}
