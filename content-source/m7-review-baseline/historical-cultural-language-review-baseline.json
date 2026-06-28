@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "kind": "m7.historical-cultural-language-review-baseline",
+  "baselineId": "m7.historical-cultural-language.review-baseline.v0",
+  "taskId": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "status": "REVIEW_BASELINE",
+  "createdAt": "2026-06-28T13:20:00+08:00",
+  "scope": {
+    "milestone": "M7",
+    "purpose": "Set review gates for Beta historical, cultural, language, naming, title, symbol, and uncertainty records before formal content fill.",
+    "notContentLockAcceptance": true,
+    "formalContentLockHumanGate": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "m6GateCarryForward": "PASS_WITH_LIMITS",
+    "manualNodeBattleDecision": "DEFER_MANUAL_NODE_BATTLE",
+    "betaContentUse": "No formal Beta real-world claim is accepted by this baseline. Later fill tasks must attach source records and labels before use."
+  },
+  "allowedLabels": [
+    "HISTORICAL",
+    "INFERRED",
+    "COMPOSITE",
+    "FICTIONAL",
+    "RESEARCH REQUIRED"
+  ],
+  "reviewStates": [
+    "DRAFT_CONTENT",
+    "RESEARCH REQUIRED",
+    "SOURCE_RECORDED",
+    "HISTORICAL_REVIEW_READY",
+    "HISTORICAL_ACCEPTED",
+    "CULTURE_RISK_REQUEST_CHANGES",
+    "CULTURE_HUMAN_GATE_REQUIRED",
+    "LANGUAGE_REVIEW_REQUIRED",
+    "SCHEMA_VALIDATED",
+    "QA_REVIEW_READY",
+    "LOCK_CANDIDATE"
+  ],
+  "sourcePolicy": {
+    "priorityOrder": [
+      "edited contemporary or near-contemporary primary sources",
+      "peer-reviewed journal articles",
+      "university press or equivalent academic monographs",
+      "museum, archaeology, or university collection records",
+      "specialist reference works for synthesis only"
+    ],
+    "notFormalSoleSources": [
+      "media articles",
+      "modern games",
+      "blogs",
+      "Wikipedia",
+      "search snippets",
+      "unverified reconstruction art"
+    ],
+    "fullTextRule": "If only metadata, table of contents, or abstract is available, record accessStatus as ABSTRACT_OR_METADATA_ONLY and do not mark the claim HISTORICAL_ACCEPTED.",
+    "pageRule": "Formal content claims need page, chapter, inscription, catalogue number, section, or stable collection record. If not yet verified, set pageOrSection to RESEARCH REQUIRED."
+  },
+  "sourceRecords": [
+    {
+      "sourceId": "source.project.docs.09",
+      "sourceClass": "PROJECT_BASELINE",
+      "citation": "docs/09-world-history-culture.md",
+      "accessStatus": "FULL_PROJECT_TEXT",
+      "pageOrSection": "sections 1-13",
+      "formalUse": "PROJECT_BASELINE_ONLY",
+      "notes": "Project synthesis for shared context. It is not a page-verified formal source database."
+    },
+    {
+      "sourceId": "source.project.docs.10",
+      "sourceClass": "PROJECT_POLICY",
+      "citation": "docs/10-historical-research-policy.md",
+      "accessStatus": "FULL_PROJECT_TEXT",
+      "pageOrSection": "sections 2-10",
+      "formalUse": "REVIEW_POLICY",
+      "notes": "Defines source classes, claim records, uncertainty labels, violence-cost requirements, and scout limitations."
+    },
+    {
+      "sourceId": "source.project.docs.16",
+      "sourceClass": "PROJECT_BIBLIOGRAPHY",
+      "citation": "docs/16-research-bibliography.md",
+      "accessStatus": "FULL_PROJECT_TEXT",
+      "pageOrSection": "sections 1-8",
+      "formalUse": "SOURCE_DISCOVERY_ONLY",
+      "notes": "Bibliography metadata and research leads. Page-level verification remains required before formal content fill."
+    },
+    {
+      "sourceId": "source.lieberman.1984.admin-cycles",
+      "sourceClass": "ACADEMIC_MONOGRAPH",
+      "citation": "Victor B. Lieberman, Burmese Administrative Cycles: Anarchy and Conquest, c. 1580-1760, Princeton University Press, 1984",
+      "accessStatus": "BIBLIOGRAPHIC_METADATA_ONLY",
+      "pageOrSection": "RESEARCH REQUIRED",
+      "formalUse": "CANDIDATE_SOURCE_ONLY",
+      "notes": "Candidate for administrative cycles and post-1580 political analysis; not page-verified in this baseline."
+    },
+    {
+      "sourceId": "source.lieberman.2021.ethnicity-loyalty",
+      "sourceClass": "PEER_REVIEWED_ARTICLE",
+      "citation": "Victor Lieberman, Ethnic Hatred and Universal Benevolence: Ethnicity and Loyalty in Precolonial Myanmar, and Britain, Comparative Studies in Society and History 63(2), 2021",
+      "accessStatus": "BIBLIOGRAPHIC_METADATA_ONLY",
+      "pageOrSection": "RESEARCH REQUIRED",
+      "formalUse": "CANDIDATE_SOURCE_ONLY",
+      "notes": "Candidate source for avoiding modern ethnic-loyalty shortcuts; not page-verified in this baseline."
+    },
+    {
+      "sourceId": "source.aung-thwin.2011.ava-pegu",
+      "sourceClass": "PEER_REVIEWED_ARTICLE",
+      "citation": "Michael Aung-Thwin, A Tale of Two Kingdoms: Ava and Pegu in the Fifteenth Century, Journal of Southeast Asian Studies 42(1), 2011",
+      "accessStatus": "BIBLIOGRAPHIC_METADATA_ONLY",
+      "pageOrSection": "RESEARCH REQUIRED",
+      "formalUse": "CANDIDATE_SOURCE_ONLY",
+      "notes": "Candidate source for checking older ethnicized Ava/Pegu narratives; not page-verified in this baseline."
+    },
+    {
+      "sourceId": "source.tooker.1996.mandala",
+      "sourceClass": "PEER_REVIEWED_ARTICLE",
+      "citation": "Deborah E. Tooker, Putting the Mandala in its Place: A Practice-Based Approach, Journal of Asian Studies 55(2), 1996",
+      "accessStatus": "BIBLIOGRAPHIC_METADATA_ONLY",
+      "pageOrSection": "RESEARCH REQUIRED",
+      "formalUse": "CANDIDATE_SOURCE_ONLY",
+      "notes": "Candidate source for critique of universal mandala abstractions; not page-verified in this baseline."
+    },
+    {
+      "sourceId": "source.baker-pasuk.2017.ayutthaya",
+      "sourceClass": "ACADEMIC_MONOGRAPH",
+      "citation": "Chris Baker and Pasuk Phongpaichit, A History of Ayutthaya: Siam in the Early Modern World, Cambridge University Press, 2017",
+      "accessStatus": "BIBLIOGRAPHIC_METADATA_ONLY",
+      "pageOrSection": "RESEARCH REQUIRED",
+      "formalUse": "CANDIDATE_SOURCE_ONLY",
+      "notes": "Candidate source for Ayutthaya society, commerce, and politics; not page-verified in this baseline."
+    },
+    {
+      "sourceId": "source.leider.2004.arakan",
+      "sourceClass": "ACADEMIC_MONOGRAPH",
+      "citation": "Jacques P. Leider, Le Royaume d'Arakan (Birmanie): son histoire politique entre le debut du XVe et la fin du XVIIe siecle, EFEO, 2004",
+      "accessStatus": "BIBLIOGRAPHIC_METADATA_ONLY",
+      "pageOrSection": "RESEARCH REQUIRED",
+      "formalUse": "CANDIDATE_SOURCE_ONLY",
+      "notes": "Candidate source for Arakan/Mrauk U political history; not page-verified in this baseline."
+    },
+    {
+      "sourceId": "source.charney.2004.warfare",
+      "sourceClass": "ACADEMIC_MONOGRAPH",
+      "citation": "Michael W. Charney, Southeast Asian Warfare, 1300-1900, Brill, 2004",
+      "accessStatus": "BIBLIOGRAPHIC_METADATA_ONLY",
+      "pageOrSection": "RESEARCH REQUIRED",
+      "formalUse": "CANDIDATE_SOURCE_ONLY",
+      "notes": "Candidate source for military organization, firearms, and campaign practice; not page-verified in this baseline."
+    }
+  ],
+  "claimRecords": [
+    {
+      "claimId": "HIST-M7-BASELINE-001-SCOPE",
+      "claim": "M7 historical review covers the working 1531-1600 western and central mainland Southeast Asian frame, but this frame is not a formal border, polity roster, or content lock.",
+      "label": "INFERRED",
+      "confidence": "MEDIUM",
+      "sourceIds": ["source.project.docs.09", "source.project.docs.10"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 1",
+        "docs/10-historical-research-policy.md sections 3 and 6"
+      ],
+      "sourceStatements": [
+        "The project baseline defines the working time and space frame and warns against treating modern borders as historical facts."
+      ],
+      "scholarlyInterpretations": [
+        "Later formal content must verify each polity, place, date, and title from source-specific evidence rather than inheriting the project overview."
+      ],
+      "researcherInference": "Use the working frame only as a review envelope for later claim records.",
+      "competingInterpretations": [
+        "A narrower 1531 opening or a broader regional map may be justified later, but either requires task approval and source records."
+      ],
+      "contested": true,
+      "gameAbstraction": "Permit scenario and map candidates to reference the frame as COMPOSITE or RESEARCH REQUIRED until page-level evidence exists.",
+      "betaUse": "REVIEW_GATE_ONLY",
+      "humanGate": false
+    },
+    {
+      "claimId": "HIST-M7-BASELINE-002-NO-MODERN-IDENTITY-SHORTCUT",
+      "claim": "The content pipeline must not describe the 16th-century conflict space as fixed modern nations or ethnic blocs.",
+      "label": "INFERRED",
+      "confidence": "MEDIUM",
+      "sourceIds": [
+        "source.project.docs.09",
+        "source.project.docs.10",
+        "source.lieberman.2021.ethnicity-loyalty",
+        "source.aung-thwin.2011.ava-pegu"
+      ],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md sections 1, 2, 5.2, and 12",
+        "docs/10-historical-research-policy.md section 6",
+        "source.lieberman.2021.ethnicity-loyalty pageOrSection RESEARCH REQUIRED",
+        "source.aung-thwin.2011.ava-pegu pageOrSection RESEARCH REQUIRED"
+      ],
+      "sourceStatements": [
+        "Project policy rejects modern border back-projection and static ethnic job or battle templates."
+      ],
+      "scholarlyInterpretations": [
+        "Candidate scholarship listed by the project bibliography is flagged for later verification against older nationalist, victor-chronicle, and colonial historiography frames."
+      ],
+      "researcherInference": "Until verified, UI and content should prefer polity, court, office, locality, kinship, religious, language, and patronage links over modern-national labels.",
+      "competingInterpretations": [
+        "Some sources may use broad ethnonyms as period terms.",
+        "Modern nationalist or colonial historiography may turn those terms into fixed political identities."
+      ],
+      "contested": true,
+      "gameAbstraction": "Culture, language, religion, and polity labels may inform reviewed context only; they must not create fixed buffs, penalties, or faction templates.",
+      "betaUse": "MUST_GATE_BEFORE_ACCEPTANCE",
+      "humanGate": true
+    },
+    {
+      "claimId": "HIST-M7-BASELINE-003-MANDALA-AS-TOOL",
+      "claim": "Mandalic or galactic polity language is an analytical aid, not a universal production rule for every region and date.",
+      "label": "INFERRED",
+      "confidence": "MEDIUM",
+      "sourceIds": ["source.project.docs.09", "source.tooker.1996.mandala"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 4",
+        "source.tooker.1996.mandala pageOrSection RESEARCH REQUIRED"
+      ],
+      "sourceStatements": [
+        "The project baseline warns not to turn mandala into a universal formula."
+      ],
+      "scholarlyInterpretations": [
+        "Candidate scholarship in the bibliography critiques over-spatialized mandala models and requires verification before formal use."
+      ],
+      "researcherInference": "Model concrete suzerain links, obligations, distance, routes, offices, and local agency instead of a single center-periphery template.",
+      "competingInterpretations": [
+        "A court-centered model may explain some ceremonial or tributary relationships.",
+        "Practice-based local evidence may show more negotiated or fragmented authority."
+      ],
+      "contested": true,
+      "gameAbstraction": "Use explicit vassal, obligation, route, and legitimacy records; do not use a hidden mandala aura mechanic.",
+      "betaUse": "MUST_GATE_BEFORE_ACCEPTANCE",
+      "humanGate": false
+    },
+    {
+      "claimId": "HIST-M7-BASELINE-004-ALPHA-SCENARIOS-NOT-LOCKED",
+      "claim": "The existing 1531, 1569, and 1581 scenario anchors are M6 Alpha scaffolding and must not be treated as formal M7 content lock records.",
+      "label": "COMPOSITE",
+      "confidence": "HIGH",
+      "sourceIds": ["source.project.docs.09", "source.project.docs.10"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md sections 3 and 11",
+        "docs/10-historical-research-policy.md sections 3, 7, and 10"
+      ],
+      "sourceStatements": [
+        "Project baseline lists suggested scenario years and marks the timeline as a working skeleton requiring later verification."
+      ],
+      "scholarlyInterpretations": [
+        "Formal scenario content needs triangulated page-level claim records for persons, dates, titles, places, and causal claims."
+      ],
+      "researcherInference": "Keep all current Alpha scenario IDs and display keys as validation scaffolding until M7 fill replaces or accepts them through review.",
+      "competingInterpretations": [
+        "M7 may retain the anchors with verified sources.",
+        "M7 may narrow, fictionalize, or replace them if evidence or cultural review requires it."
+      ],
+      "contested": false,
+      "gameAbstraction": "The anchors may validate systems and workflows, not final historical truth.",
+      "betaUse": "REVIEW_GATE_ONLY",
+      "humanGate": false
+    },
+    {
+      "claimId": "HIST-M7-BASELINE-005-VIOLENCE-COSTS",
+      "claim": "Forced migration, slavery, massacre, famine, religious conflict, and wartime population loss must record victims and long-term consequences when represented.",
+      "label": "INFERRED",
+      "confidence": "HIGH",
+      "sourceIds": ["source.project.docs.09", "source.project.docs.10"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 7",
+        "docs/10-historical-research-policy.md section 8"
+      ],
+      "sourceStatements": [
+        "Project policy requires victim, source-region, household, production, integration, resistance, and long-term political-cost handling."
+      ],
+      "scholarlyInterpretations": [
+        "Population movement may be historically significant to state resources, but the game must not convert it into a painless reward."
+      ],
+      "researcherInference": "Any later mechanic or event involving coercive population movement needs explicit cost ledgers and cultural review.",
+      "competingInterpretations": [
+        "Some primary chronicles may present coercion from a victor perspective.",
+        "Later scholarship may emphasize source-community loss, resistance, and state fragility."
+      ],
+      "contested": true,
+      "gameAbstraction": "Short-term labor, cash, military, or control gains must be paired with population, legitimacy, relationship, resistance, and memory consequences.",
+      "betaUse": "MUST_GATE_BEFORE_ACCEPTANCE",
+      "humanGate": true
+    },
+    {
+      "claimId": "HIST-M7-BASELINE-006-LANGUAGE-NAMES-TITLES",
+      "claim": "Names, titles, language strings, transliterations, aliases, and display names require a style guide and source record before formal content use.",
+      "label": "RESEARCH REQUIRED",
+      "confidence": "LOW",
+      "sourceIds": ["source.project.docs.09", "source.project.docs.10"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md section 9",
+        "docs/10-historical-research-policy.md sections 3 and 9"
+      ],
+      "sourceStatements": [
+        "Project baseline requires stable IDs, original text or scholarly transliteration, player display names, aliases, and consistent style guidance."
+      ],
+      "scholarlyInterpretations": [
+        "Language and title choices need specialist review because common English spellings may mix traditions and periods."
+      ],
+      "researcherInference": "Do not invent local-style spellings, honorifics, office names, or title hierarchies in M7 fill.",
+      "competingInterpretations": [
+        "Display names may prioritize accessibility.",
+        "Research records may preserve multiple original or scholarly transliteration forms."
+      ],
+      "contested": true,
+      "gameAbstraction": "Use stable ASCII IDs and localization keys; keep display names review-blocked until language review passes.",
+      "betaUse": "MUST_GATE_BEFORE_ACCEPTANCE",
+      "humanGate": false
+    },
+    {
+      "claimId": "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC",
+      "claim": "Clothing, architecture, weapons, music, religious imagery, court ritual, flags, and symbols cannot be produced from generic regional style assumptions.",
+      "label": "RESEARCH REQUIRED",
+      "confidence": "LOW",
+      "sourceIds": ["source.project.docs.09", "source.project.docs.10"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md sections 10 and 13",
+        "docs/10-historical-research-policy.md sections 4 and 9"
+      ],
+      "sourceStatements": [
+        "Project baseline prioritizes contemporary imagery, archaeology, museum objects, and specialist research over modern reconstructions."
+      ],
+      "scholarlyInterpretations": [
+        "Material culture must be dated and regionalized; modern national tradition cannot be directly projected into the 16th century."
+      ],
+      "researcherInference": "Audio/art/localization completion must carry asset-reference manifests and culture-specific review before acceptance.",
+      "competingInterpretations": [
+        "A historically inspired original asset can be acceptable if labeled as such.",
+        "A reconstruction claim needs period-specific evidence."
+      ],
+      "contested": true,
+      "gameAbstraction": "Permit placeholder-neutral icons only when explicitly marked FICTIONAL or COMPOSITE and not sacred or culture-specific.",
+      "betaUse": "MUST_GATE_BEFORE_ACCEPTANCE",
+      "humanGate": true
+    },
+    {
+      "claimId": "HIST-M7-BASELINE-008-RELIGION-NOT-SIMPLE-CONFLICT",
+      "claim": "Religion and ritual should not be reduced to simple hostility, static buffs, or UI decoration.",
+      "label": "INFERRED",
+      "confidence": "MEDIUM",
+      "sourceIds": ["source.project.docs.09", "source.project.docs.10"],
+      "sourcePassages": [
+        "docs/09-world-history-culture.md sections 6 and 12",
+        "docs/10-historical-research-policy.md sections 6 and 8"
+      ],
+      "sourceStatements": [
+        "Project baseline notes Theravada Buddhist institutions, Brahmanical court elements, local spirit or ancestor traditions, and Muslim commercial or court connections may coexist."
+      ],
+      "scholarlyInterpretations": [
+        "Specific ritual, monastic, title, and iconographic claims require specialized research and cultural review."
+      ],
+      "researcherInference": "Religious content should enter as reviewed institutions, legitimacy relationships, patronage, education, mediation, or audience interpretation, not a conflict toggle.",
+      "competingInterpretations": [
+        "Court rituals may be described through dynastic legitimacy sources.",
+        "Local religious practice may require different evidence and cultural readers."
+      ],
+      "contested": true,
+      "gameAbstraction": "Use explicit reviewed consequences and no consumable sacred-symbol UI unless approved.",
+      "betaUse": "MUST_GATE_BEFORE_ACCEPTANCE",
+      "humanGate": true
+    }
+  ],
+  "acceptedBetaRealWorldClaims": [],
+  "reviewGates": [
+    {
+      "gateId": "M7-HIST-GATE-SOURCE-RECORD",
+      "appliesTo": ["scenario", "person", "event", "encyclopedia", "tutorial", "localization", "art", "audio"],
+      "minimumEvidence": "Every real-world claim must point to a sourceRecord and pageOrSection, or be explicitly tagged RESEARCH REQUIRED.",
+      "failureRoute": "historical_researcher",
+      "humanGateWhen": "A major unresolved cultural-risk decision would otherwise be accepted."
+    },
+    {
+      "gateId": "M7-HIST-GATE-CONTESTED-MATERIAL",
+      "appliesTo": ["identity", "polity", "war", "religion", "migration", "slavery", "famine", "symbols"],
+      "minimumEvidence": "At least two interpretations or an explicit RESEARCH REQUIRED block for contested or high-risk material.",
+      "failureRoute": "qa_reviewer",
+      "humanGateWhen": "The project must choose among major live interpretations or override a culture-risk request."
+    },
+    {
+      "gateId": "M7-HIST-GATE-LANGUAGE",
+      "appliesTo": ["names", "titles", "aliases", "transliteration", "language strings"],
+      "minimumEvidence": "Stable ID, localization key, source form or scholarly transliteration, display form, language/context note, character limit, and review state.",
+      "failureRoute": "historical_researcher",
+      "humanGateWhen": "A public-facing name or title carries major cultural or political risk."
+    },
+    {
+      "gateId": "M7-HIST-GATE-VIOLENCE-COST",
+      "appliesTo": ["forced migration", "slavery", "massacre", "famine", "religious conflict", "wartime population loss"],
+      "minimumEvidence": "Victim group, source region, immediate loss, integration or resistance, long-term legitimacy/relationship/economic effects, and content warning route when needed.",
+      "failureRoute": "qa_reviewer",
+      "humanGateWhen": "The content would make coercion a cost-free optimal reward or minimize victim consequences."
+    },
+    {
+      "gateId": "M7-HIST-GATE-NO-FIXED-CULTURE-BUFF",
+      "appliesTo": ["culture", "language", "religion", "polity", "ethnicity"],
+      "minimumEvidence": "Mechanics must cite explicit reviewed relationships, institutions, offices, logistics, or costs rather than fixed group traits.",
+      "failureRoute": "gameplay_designer",
+      "humanGateWhen": "A proposed exception would encode a high-risk identity shortcut."
+    }
+  ],
+  "languageBaseline": {
+    "stableIdRule": "Use lowercase ASCII dotted IDs. Never use display names as references.",
+    "displayNameRule": "Display names, title strings, aliases, and glosses must be review records, not hard-coded facts.",
+    "requiredFieldsForLaterFill": [
+      "key",
+      "zh-Hans",
+      "english",
+      "source_note",
+      "context",
+      "character_limit",
+      "sourceIds",
+      "claimIds",
+      "reviewState"
+    ],
+    "blockedUntilReviewed": [
+      "royal titles",
+      "court offices",
+      "religious titles",
+      "ethnonyms",
+      "place names",
+      "personal names",
+      "ritual terms"
+    ]
+  },
+  "biasReview": {
+    "mustScanFor": [
+      "modern national border projection",
+      "modern ethnic essentialism",
+      "victor chronicle causality treated as neutral fact",
+      "colonial-era ethnic categories treated as timeless",
+      "religion-as-war-cause shortcut",
+      "coercion framed as clean efficiency",
+      "generic tropical temple visual language",
+      "unsupported certainty in dates, titles, clothing, and institutions"
+    ],
+    "humanGateRequiredFor": [
+      "major cultural-risk decision",
+      "turning disputed high-risk material into accepted certainty",
+      "using sacred or religious imagery as UI decoration or consumable resource",
+      "approving a coercive policy as a dominant reward path without victim and long-term consequences",
+      "formal content lock acceptance"
+    ]
+  },
+  "downstreamTasks": {
+    "M7-SCENARIO-PERSON-EVENT-FILL-001": "Must fill formal scenario, person, and event records only with labels, claimIds, sourceIds, localization keys, and review states.",
+    "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001": "Must produce asset/reference manifests and route culture-specific symbols, sounds, clothing, architecture, and names through review.",
+    "M7-BETA-CULTURE-REVIEW-001": "Must independently review high-risk records and route unresolved major cultural decisions to Human Gate.",
+    "M7-CONTENT-LOCK-ACCEPTANCE-001": "Must synthesize evidence and request explicit Human Gate approval; this baseline cannot approve lock."
+  }
+}

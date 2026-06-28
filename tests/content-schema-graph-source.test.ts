@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+
 import { describe, expect, test } from "vitest";
 
 import {
@@ -14,6 +16,11 @@ import {
   parseM1GraphFixtureSourceV0,
   validateM1GraphFixtureSourceV0
 } from "../packages/content-schema/src/index";
+
+const m7HistoricalReviewBaselineUrl = new URL(
+  "../content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+  import.meta.url
+);
 
 describe("SIM-006 source content schema", () => {
   test("parses a minimal explicitly synthetic graph source DTO", () => {
@@ -640,6 +647,82 @@ describe("M6 alpha map candidate source schema", () => {
   });
 });
 
+describe("M7 historical, cultural, and language review baseline", () => {
+  test("records review scope without approving formal content lock", async () => {
+    const baseline = await readM7HistoricalReviewBaseline();
+
+    expect(baseline.kind).toBe("m7.historical-cultural-language-review-baseline");
+    expect(baseline.taskId).toBe("M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001");
+    expect(baseline.scope.notContentLockAcceptance).toBe(true);
+    expect(baseline.scope.formalContentLockHumanGate).toBe("M7-CONTENT-LOCK-ACCEPTANCE-001");
+    expect(baseline.scope.m6GateCarryForward).toBe("PASS_WITH_LIMITS");
+    expect(baseline.scope.manualNodeBattleDecision).toBe("DEFER_MANUAL_NODE_BATTLE");
+    expect(baseline.acceptedBetaRealWorldClaims).toHaveLength(0);
+    expect(new Set(baseline.allowedLabels)).toEqual(
+      new Set(["HISTORICAL", "INFERRED", "COMPOSITE", "FICTIONAL", "RESEARCH REQUIRED"])
+    );
+  });
+
+  test("keeps every baseline claim tagged, sourced, and split by evidence layer", async () => {
+    const baseline = await readM7HistoricalReviewBaseline();
+    const sourceIds = new Set(baseline.sourceRecords.map((source) => source.sourceId));
+
+    for (const claim of baseline.claimRecords) {
+      expect(baseline.allowedLabels).toContain(claim.label);
+      expect(claim.claimId).toMatch(/^HIST-M7-/u);
+      expect(claim.sourceStatements.length).toBeGreaterThan(0);
+      expect(claim.scholarlyInterpretations.length).toBeGreaterThan(0);
+      expect(claim.researcherInference.length).toBeGreaterThan(0);
+      expect(claim.gameAbstraction.length).toBeGreaterThan(0);
+      expect(claim.sourcePassages.length).toBeGreaterThan(0);
+      expect(claim.sourceIds.every((sourceId) => sourceIds.has(sourceId))).toBe(true);
+    }
+
+    expect(
+      baseline.sourceRecords
+        .filter((source) => source.formalUse === "CANDIDATE_SOURCE_ONLY")
+        .every(
+          (source) =>
+            source.accessStatus === "BIBLIOGRAPHIC_METADATA_ONLY" &&
+            source.pageOrSection === "RESEARCH REQUIRED"
+        )
+    ).toBe(true);
+  });
+
+  test("routes high-risk cultural material and violence-cost failures to Human Gate", async () => {
+    const baseline = await readM7HistoricalReviewBaseline();
+    const humanGateClaimIds = new Set(
+      baseline.claimRecords.filter((claim) => claim.humanGate).map((claim) => claim.claimId)
+    );
+
+    expect(humanGateClaimIds).toEqual(
+      new Set([
+        "HIST-M7-BASELINE-002-NO-MODERN-IDENTITY-SHORTCUT",
+        "HIST-M7-BASELINE-005-VIOLENCE-COSTS",
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC",
+        "HIST-M7-BASELINE-008-RELIGION-NOT-SIMPLE-CONFLICT"
+      ])
+    );
+    expect(
+      baseline.reviewGates.some(
+        (gate) =>
+          gate.gateId === "M7-HIST-GATE-VIOLENCE-COST" &&
+          gate.minimumEvidence.includes("Victim group") &&
+          gate.humanGateWhen.includes("cost-free optimal reward")
+      )
+    ).toBe(true);
+    expect(baseline.biasReview.mustScanFor).toEqual(
+      expect.arrayContaining([
+        "modern national border projection",
+        "modern ethnic essentialism",
+        "victor chronicle causality treated as neutral fact",
+        "colonial-era ethnic categories treated as timeless",
+        "coercion framed as clean efficiency"
+      ])
+    );
+  });
+});
+
 function makeReferenceTargets(claimId: string) {
   return {
     diplomacy: [makeReferenceTarget("diplomacy.alpha.test", claimId)],
@@ -746,4 +829,155 @@ function makeMapCandidateSource() {
       }
     ]
   };
+}
+
+async function readM7HistoricalReviewBaseline(): Promise<M7HistoricalReviewBaseline> {
+  const text = await readFile(m7HistoricalReviewBaselineUrl, "utf8");
+  const parsed = JSON.parse(text) as unknown;
+  if (!isM7HistoricalReviewBaseline(parsed)) {
+    throw new Error("M7 historical review baseline shape mismatch.");
+  }
+  return parsed;
+}
+
+type M7ClaimLabel = "HISTORICAL" | "INFERRED" | "COMPOSITE" | "FICTIONAL" | "RESEARCH REQUIRED";
+
+interface M7HistoricalReviewBaseline {
+  readonly schemaVersion: 1;
+  readonly kind: "m7.historical-cultural-language-review-baseline";
+  readonly taskId: "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001";
+  readonly scope: {
+    readonly notContentLockAcceptance: true;
+    readonly formalContentLockHumanGate: string;
+    readonly m6GateCarryForward: "PASS_WITH_LIMITS";
+    readonly manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE";
+  };
+  readonly allowedLabels: readonly M7ClaimLabel[];
+  readonly sourceRecords: readonly M7SourceRecord[];
+  readonly claimRecords: readonly M7ClaimRecord[];
+  readonly acceptedBetaRealWorldClaims: readonly string[];
+  readonly reviewGates: readonly M7ReviewGate[];
+  readonly biasReview: {
+    readonly mustScanFor: readonly string[];
+    readonly humanGateRequiredFor: readonly string[];
+  };
+}
+
+interface M7SourceRecord {
+  readonly sourceId: string;
+  readonly accessStatus: string;
+  readonly pageOrSection: string;
+  readonly formalUse: string;
+}
+
+interface M7ClaimRecord {
+  readonly claimId: string;
+  readonly claim: string;
+  readonly label: M7ClaimLabel;
+  readonly confidence: string;
+  readonly sourceIds: readonly string[];
+  readonly sourcePassages: readonly string[];
+  readonly sourceStatements: readonly string[];
+  readonly scholarlyInterpretations: readonly string[];
+  readonly researcherInference: string;
+  readonly competingInterpretations: readonly string[];
+  readonly contested: boolean;
+  readonly gameAbstraction: string;
+  readonly betaUse: string;
+  readonly humanGate: boolean;
+}
+
+interface M7ReviewGate {
+  readonly gateId: string;
+  readonly minimumEvidence: string;
+  readonly humanGateWhen: string;
+}
+
+function isM7HistoricalReviewBaseline(input: unknown): input is M7HistoricalReviewBaseline {
+  if (!isRecord(input)) {
+    return false;
+  }
+
+  const scope = input["scope"];
+  const biasReview = input["biasReview"];
+
+  return (
+    input["schemaVersion"] === 1 &&
+    input["kind"] === "m7.historical-cultural-language-review-baseline" &&
+    input["taskId"] === "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001" &&
+    isRecord(scope) &&
+    scope["notContentLockAcceptance"] === true &&
+    scope["m6GateCarryForward"] === "PASS_WITH_LIMITS" &&
+    scope["manualNodeBattleDecision"] === "DEFER_MANUAL_NODE_BATTLE" &&
+    isStringArray(input["allowedLabels"]) &&
+    input["allowedLabels"].every(isM7ClaimLabel) &&
+    Array.isArray(input["sourceRecords"]) &&
+    input["sourceRecords"].every(isM7SourceRecord) &&
+    Array.isArray(input["claimRecords"]) &&
+    input["claimRecords"].every(isM7ClaimRecord) &&
+    isStringArray(input["acceptedBetaRealWorldClaims"]) &&
+    Array.isArray(input["reviewGates"]) &&
+    input["reviewGates"].every(isM7ReviewGate) &&
+    isRecord(biasReview) &&
+    isStringArray(biasReview["mustScanFor"]) &&
+    isStringArray(biasReview["humanGateRequiredFor"])
+  );
+}
+
+function isM7ClaimLabel(input: string): input is M7ClaimLabel {
+  return (
+    input === "HISTORICAL" ||
+    input === "INFERRED" ||
+    input === "COMPOSITE" ||
+    input === "FICTIONAL" ||
+    input === "RESEARCH REQUIRED"
+  );
+}
+
+function isM7SourceRecord(input: unknown): input is M7SourceRecord {
+  return (
+    isRecord(input) &&
+    typeof input["sourceId"] === "string" &&
+    typeof input["accessStatus"] === "string" &&
+    typeof input["pageOrSection"] === "string" &&
+    typeof input["formalUse"] === "string"
+  );
+}
+
+function isM7ClaimRecord(input: unknown): input is M7ClaimRecord {
+  return (
+    isRecord(input) &&
+    typeof input["claimId"] === "string" &&
+    typeof input["claim"] === "string" &&
+    typeof input["label"] === "string" &&
+    isM7ClaimLabel(input["label"]) &&
+    typeof input["confidence"] === "string" &&
+    isStringArray(input["sourceIds"]) &&
+    isStringArray(input["sourcePassages"]) &&
+    isStringArray(input["sourceStatements"]) &&
+    isStringArray(input["scholarlyInterpretations"]) &&
+    typeof input["researcherInference"] === "string" &&
+    isStringArray(input["competingInterpretations"]) &&
+    typeof input["contested"] === "boolean" &&
+    typeof input["gameAbstraction"] === "string" &&
+    typeof input["betaUse"] === "string" &&
+    typeof input["humanGate"] === "boolean"
+  );
+}
+
+function isM7ReviewGate(input: unknown): input is M7ReviewGate {
+  return (
+    isRecord(input) &&
+    typeof input["gateId"] === "string" &&
+    typeof input["minimumEvidence"] === "string" &&
+    typeof input["humanGateWhen"] === "string"
+  );
+}
+
+function isRecord(input: unknown): input is Record<string, unknown> {
+  return typeof input === "object" && input !== null && !Array.isArray(input);
+}
+
+function isStringArray(input: unknown): input is readonly string[] {
+  return Array.isArray(input) && input.every((entry) => typeof entry === "string");
 }
