@@ -2938,9 +2938,9 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION"
   },
   "m7_start": {
-    "status": "CONTENT_LOCK_CONTRACT_IN_PROGRESS",
+    "status": "CONTENT_LOCK_CONTRACT_REVIEW_READY",
     "current_milestone": "M7",
-    "next_action": "Route M7-CONTENT-LOCK-CONTRACT-001 to gameplay_designer writer.",
+    "next_action": "Validate gameplay_designer REVIEW handoff, then route M7-CONTENT-LOCK-CONTRACT-001 to systems_architect.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   },
@@ -3096,7 +3096,7 @@
     "closure_recorded_at": "2026-06-28T04:31:17.9147991+08:00"
   },
   "m7_content_lock_contract": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
     "branch_or_worktree": "design/m7-content-lock-contract",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -3113,8 +3113,10 @@
     "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
     "started_at": "2026-06-28T04:31:17.9147991+08:00",
-    "updated_at": "2026-06-28T04:34:14.0465143+08:00",
-    "next_action": "Await gameplay_designer REVIEW handoff, validate it, then route to systems_architect.",
+    "updated_at": "2026-06-28T04:38:12.1103688+08:00",
+    "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+    "review_ready_at": "2026-06-28T04:38:12.1103688+08:00",
+    "next_action": "Validate gameplay_designer REVIEW handoff, then route to systems_architect.",
     "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
     "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101"
   }
