@@ -2,24 +2,40 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-DESIGN-TOKENS-ASSET-SLOTS-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-I18N-FOUNDATION-001",
+      "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "updated_at": "2026-06-28T23:09:56.462+08:00"
+      "branch_or_worktree": "feat/m7-design-tokens-asset-slots"
+    },
+    "client_engineer": {
+      "thread_id": "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
+      "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "status": "active_writer",
+      "role": "client_engineer",
+      "nickname": "Lantern the 2nd",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-design-tokens-asset-slots",
+      "route_file": "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+      "routed_at": "2026-06-28T23:17:17.272+08:00"
     }
   },
   "last_integrated_task": "M7-I18N-FOUNDATION-001",
-  "last_main_commit": "d1d5b4485c947ff63d307b0c2210894ab05a42a9",
+  "last_main_commit": "e9f1a4b43d34460b23908f31a8146723004cf5cf",
   "next_ready_tasks": [
-    "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "unresolved_risks": [
@@ -47,7 +63,7 @@
     "approval_scope": "NONE",
     "approval_source": "M7-BETA-CULTURE-REVIEW-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. M7-I18N-FOUNDATION-001 is closed after PR #175 entered origin/main.",
+    "note": "No Human Gate is active. M7-DESIGN-TOKENS-ASSET-SLOTS-001 is in progress with client_engineer writer.",
     "recorded_at": "2026-06-28T20:39:18.2016568+08:00"
   },
   "leadership": {
@@ -835,7 +851,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T23:09:56.462+08:00",
+  "last_updated_at": "2026-06-28T23:17:17.272+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -947,7 +963,6 @@
     ]
   },
   "ready_tasks": [
-    "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "m6_client_alpha_surfaces": {
@@ -1052,7 +1067,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": null,
+  "current_task": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -1906,11 +1921,28 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "NONE",
-  "next_machine_action": "Run taskctl ready and start the next dependency-ready M7 task; prefer M7-DESIGN-TOKENS-ASSET-SLOTS-001 because the M7 i18n foundation dependency is now closed.",
+  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Await client_engineer writer handoff for M7-DESIGN-TOKENS-ASSET-SLOTS-001.",
   "closed_child_threads": [
     "019f0e69-a54b-7fc0-8649-d58805c838f9",
     "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
     "019f0e8f-1907-72c2-beb1-9522d515307c"
-  ]
+  ],
+  "m7_design_tokens_asset_slots": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+    "branch_or_worktree": "feat/m7-design-tokens-asset-slots",
+    "base_main_commit": "e9f1a4b43d34460b23908f31a8146723004cf5cf",
+    "previous_closed_task": "M7-I18N-FOUNDATION-001",
+    "start_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
+    "writer_thread_id": "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
+    "writer_thread_nickname": "Lantern the 2nd",
+    "expected_writer_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-28T23:17:17.272+08:00",
+    "updated_at": "2026-06-28T23:17:17.272+08:00",
+    "next_action": "Await client_engineer writer handoff for M7-DESIGN-TOKENS-ASSET-SLOTS-001.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+  }
 }
