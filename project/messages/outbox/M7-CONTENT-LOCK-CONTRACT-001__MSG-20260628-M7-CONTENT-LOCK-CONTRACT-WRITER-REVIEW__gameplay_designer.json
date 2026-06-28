@@ -1,0 +1,69 @@
+{
+  "message_id": "MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW",
+  "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
+  "from_role": "gameplay_designer",
+  "status": "REVIEW",
+  "summary": "Defined the planning-only M7 Beta content-lock contract. The contract bounds scenario/person/event scope, review states, defect-only post-lock policy, explicit balance-tuning window, downstream M7 evidence mapping, Human Gate preservation, M6 PASS_WITH_LIMITS carry-forward, and DEFER_MANUAL_NODE_BATTLE preservation without approving formal content lock or changing product/content/code scope.",
+  "artifacts": [
+    "project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "design/m7-content-lock-contract / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified allowed coordination/status files were present: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json, and project/tasks/thread-registry.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-CONTRACT-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-CONTENT-LOCK-CONTRACT-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list shows M7-CONTENT-LOCK-CONTRACT-001 in REVIEW; downstream M7 tasks remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready task output while M7-CONTENT-LOCK-CONTRACT-001 is in REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-CONTENT-LOCK-CONTRACT-001",
+      "exit_code": 0,
+      "result": "JSON shape ok: required 18 contract sections present; 5 decisions include advantage/cost/dependencies/counterplay; 11 M7 roadmap/matrix mappings present; status REVIEW; route_to systems_architect; Human Gate prepared only; DEFER_MANUAL_NODE_BATTLE preserved."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json."
+    }
+  ],
+  "decisions": [
+    "Defined M7 content lock as a future Human Gate prepared by this contract, not approved by gameplay_designer.",
+    "Defined minimum scenario/person/event lock scope, required review states, post-lock defect-only policy, and an explicit balance-tuning window.",
+    "Mapped M7 Roadmap and acceptance-matrix items to downstream tasks and evidence without implementing content, code, platform behavior, release artifacts, or product scope changes.",
+    "Carried forward M6_GATE = PASS_WITH_LIMITS, including Alpha scaffolding, local adviser evidence, batch tuning risk, and unsigned desktop smoke limits.",
+    "Preserved DEFER_MANUAL_NODE_BATTLE exactly: manual node battle is only a post-1.0 non-blocking candidate unless a later Human Gate reverses it."
+  ],
+  "risks": [
+    "Formal content lock remains unapproved until M7-CONTENT-LOCK-ACCEPTANCE-001 receives explicit Human Gate approval.",
+    "Downstream M7 content, culture, balance, platform, save, and manual playthrough tasks remain R4-sensitive and require their assigned reviewers.",
+    "Post-lock tuning must stay limited to explicit evidence-backed tuning or defect fixes; content expansion requires new review and any applicable Human Gate."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the planning-only M7 Beta content-lock contract for scope, architecture/process boundaries, downstream evidence mapping, Human Gate preservation, M6 PASS_WITH_LIMITS carry-forward, DEFER_MANUAL_NODE_BATTLE preservation, and no forbidden product/content/code/platform/release changes.",
+  "created_at": "2026-06-28T12:35:44.0502843+08:00"
+}
