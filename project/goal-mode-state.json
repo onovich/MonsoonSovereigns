@@ -2,34 +2,17 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [
-    "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001"
-  ],
+  "current_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
-      "status": "accepted_pending_integration",
+      "task_id": null,
+      "status": "active_router",
       "role": "lead_orchestrator"
-    },
-    "client_engineer": {
-      "thread_id": "019f0cff-f5d7-7942-9d9b-15b9449590d7",
-      "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
-      "status": "accepted",
-      "role": "client_engineer",
-      "nickname": "Window"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
-      "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
-      "status": "accepted",
-      "role": "qa_reviewer",
-      "nickname": "Gate",
-      "read_only": true
     }
   },
-  "last_integrated_task": "M7-SCENARIO-PERSON-EVENT-FILL-001",
-  "last_main_commit": "71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7",
+  "last_integrated_task": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "last_main_commit": "aa0ef66af8f8de398eeec1f51de58eab5bcdde99",
   "next_ready_tasks": [
     "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
@@ -57,10 +40,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 lead accept checkpoint",
+    "approval_source": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 closure checkpoint",
     "recommended_result": null,
     "note": "No Human Gate is active. Formal content lock remains a future Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T08:03:53.885Z"
+    "recorded_at": "2026-06-28T08:15:23.664Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -847,7 +830,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T08:03:53.885Z",
+  "last_updated_at": "2026-06-28T08:15:23.664Z",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1614,5 +1597,25 @@
       "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_tutorial_hints_encyclopedia_complete": {
+    "status": "CLOSED",
+    "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+    "owner_role": "client_engineer",
+    "reviewer_role": "qa_reviewer",
+    "writer_thread_id": "019f0cff-f5d7-7942-9d9b-15b9449590d7",
+    "qa_thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
+    "integrated_pr": 167,
+    "integrated_main_commit": "aa0ef66af8f8de398eeec1f51de58eab5bcdde99",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/167",
+    "lead_close_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-28T08:15:23.664Z",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "next_ready_tasks": [
+      "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    ],
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }

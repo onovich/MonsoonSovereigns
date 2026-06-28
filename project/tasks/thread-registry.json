@@ -11,8 +11,8 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-28T05:39:16.616Z",
-        "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001"
+        "updated_at": "2026-06-28T08:15:23.664Z",
+        "task_id": null
       }
     ],
     "retired_leads": [
@@ -5334,17 +5334,17 @@
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed_integrated",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia",
+      "branch_or_worktree": "chore/close-m7-tutorial-encyclopedia",
       "base_main_commit": "71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7",
       "start_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T06:53:11.961Z",
-      "updated_at": "2026-06-28T08:03:53.885Z",
+      "updated_at": "2026-06-28T08:15:23.664Z",
       "start_submission_id": "019f0d01-9272-7bd1-97c2-f3fc907c2d8f",
       "route_sent_at": "2026-06-28T06:54:19.165Z",
       "review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
@@ -5364,14 +5364,19 @@
       "routed_to_qa_r2_at": "2026-06-28T07:55:31.425Z",
       "lead_accept_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-28T08:03:53.885Z",
-      "accepted_head_commit": "318e68225051e0bf4ca786405bcd62303cb8aeac"
+      "accepted_head_commit": "318e68225051e0bf4ca786405bcd62303cb8aeac",
+      "integrated_pr": 167,
+      "integrated_main_commit": "aa0ef66af8f8de398eeec1f51de58eab5bcdde99",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/167",
+      "lead_close_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-28T08:15:23.664Z"
     },
     "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001:client_engineer": {
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
       "role": "client_engineer",
       "thread_id": "019f0cff-f5d7-7942-9d9b-15b9449590d7",
       "nickname": "Window",
-      "status": "accepted",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -5381,7 +5386,7 @@
       "start_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T06:53:11.961Z",
-      "updated_at": "2026-06-28T08:03:53.885Z",
+      "updated_at": "2026-06-28T08:15:23.664Z",
       "next_action": "Await PR integration and closure.",
       "start_submission_id": "019f0d01-9272-7bd1-97c2-f3fc907c2d8f",
       "route_sent_at": "2026-06-28T06:54:19.165Z",
@@ -5392,14 +5397,16 @@
       "request_changes_submission_id": "019f0d26-abb8-7033-9c6e-4bbdb40b496e",
       "request_changes_sent_at": "2026-06-28T07:34:47.509Z",
       "review_handoff_r2": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
-      "review_commit_r2": "963bf5580a64304f8ab852dfacbc6fa638350af5"
+      "review_commit_r2": "963bf5580a64304f8ab852dfacbc6fa638350af5",
+      "close_reason": "closed_after_r2_accept_and_main_integration",
+      "closed_at": "2026-06-28T08:15:23.664Z"
     },
     "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001:qa_reviewer": {
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
       "role": "qa_reviewer",
       "thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
       "nickname": "Gate",
-      "status": "accepted",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -5413,7 +5420,7 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T07:23:25.030Z",
-      "updated_at": "2026-06-28T08:03:53.885Z",
+      "updated_at": "2026-06-28T08:15:23.664Z",
       "next_action": "Await PR integration and closure.",
       "qa_submission_id": "019f0d1c-f0ed-7470-8d3e-f44858b782b4",
       "qa_route_sent_at": "2026-06-28T07:24:12.378Z",
@@ -5425,7 +5432,9 @@
       "qa_submission_id_r2": "019f0d39-86fb-7f73-8883-406cd987f0c0",
       "qa_route_sent_at_r2": "2026-06-28T07:55:31.425Z",
       "qa_status_r2": "ACCEPT",
-      "qa_review_handoff_r2": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json"
+      "qa_review_handoff_r2": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json",
+      "close_reason": "closed_after_r2_accept_and_main_integration",
+      "closed_at": "2026-06-28T08:15:23.664Z"
     }
   },
   "replaced_threads": [
@@ -5515,5 +5524,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T08:03:53.885Z"
+  "updated_at": "2026-06-28T08:15:23.664Z"
 }
