@@ -2,18 +2,16 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M7_I18N_FOUNDATION_ACCEPTED_AWAITING_PR",
+  "status": "M7_I18N_FOUNDATION_CLOSED_READY_FOR_NEXT_TASK",
   "project": "Monsoon Sovereigns",
   "origin_main": "382439d0ab40b4ef6f7172473155c686d81c7ef7",
   "current_milestone": "M7",
-  "current_task": "M7-I18N-FOUNDATION-001",
-  "current_tasks": [
-    "M7-I18N-FOUNDATION-001"
-  ],
-  "current_task_status": "ACCEPTED",
+  "current_task": null,
+  "current_tasks": [],
+  "current_task_status": "NONE",
   "last_closed_task": "M7-UI-LOCALIZATION-PLAN-001",
-  "last_integrated_task": "M7-UI-LOCALIZATION-PLAN-001",
-  "last_main_commit": "43edb04439eb243a5c19d1c22bc59095bab36867",
+  "last_integrated_task": "M7-I18N-FOUNDATION-001",
+  "last_main_commit": "d1d5b4485c947ff63d307b0c2210894ab05a42a9",
   "ready_tasks": [
     "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
@@ -26,14 +24,13 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "active_integration",
+      "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "feat/m7-i18n-foundation",
-      "updated_at": "2026-06-28T23:03:43.102+08:00"
+      "updated_at": "2026-06-28T23:09:56.462+08:00"
     }
   },
   "unresolved_risks": [
@@ -61,14 +58,14 @@
     "approval_scope": "NONE",
     "approval_source": "M7-BETA-CULTURE-REVIEW-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. M7-I18N-FOUNDATION-001 is accepted and awaiting PR integration.",
+    "note": "No Human Gate is active. M7-I18N-FOUNDATION-001 is closed after PR #175 entered origin/main.",
     "recorded_at": "2026-06-28T20:39:18.2016568+08:00"
   },
-  "next_machine_action": "Open PR for M7-I18N-FOUNDATION-001, wait for CI, merge to main, then mark CLOSED after origin/main contains the accepted commits.",
+  "next_machine_action": "Run taskctl ready and start the next dependency-ready M7 task; prefer M7-DESIGN-TOKENS-ASSET-SLOTS-001 because the M7 i18n foundation dependency is now closed.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T23:03:43.102+08:00",
+  "last_updated_at": "2026-06-28T23:09:56.462+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -162,6 +159,7 @@
     "closed_at": "2026-06-28T20:36:00.0000000+08:00"
   },
   "last_closed_tasks": [
+    "M7-I18N-FOUNDATION-001",
     "M7-BETA-CULTURE-REVIEW-001",
     "M7-VISUAL-UX-HANDOFF-001",
     "M7-UI-LOCALIZATION-PLAN-001"
@@ -207,7 +205,7 @@
     ]
   },
   "m7_i18n_foundation": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-I18N-FOUNDATION-001",
     "branch_or_worktree": "feat/m7-i18n-foundation",
     "base_main_commit": "382439d0ab40b4ef6f7172473155c686d81c7ef7",
@@ -231,7 +229,7 @@
     "systems_review_route": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
     "expected_systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
     "started_at": "2026-06-28T21:27:25.1239661+08:00",
-    "updated_at": "2026-06-28T23:03:43.102+08:00",
+    "updated_at": "2026-06-28T23:09:56.462+08:00",
     "next_action": "Open PR for M7-I18N-FOUNDATION-001, wait for CI, merge to main, then mark CLOSED after origin/main contains the accepted commits.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
@@ -262,6 +260,16 @@
       "019f0e69-a54b-7fc0-8649-d58805c838f9",
       "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
       "019f0e8f-1907-72c2-beb1-9522d515307c"
+    ],
+    "integrated_pr": 175,
+    "integrated_main_commit": "d1d5b4485c947ff63d307b0c2210894ab05a42a9",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/175",
+    "lead_close_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-28T23:09:56.462+08:00",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "next_ready_tasks": [
+      "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
   "closed_child_threads": [
