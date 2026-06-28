@@ -1,0 +1,50 @@
+{
+  "message_id": "MSG-20260628-M7-DESIGN-TOKENS-START",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-DESIGN-TOKENS-ASSET-SLOTS-001 after M7-I18N-FOUNDATION-001 closed on origin/main. The task must create or consolidate client design tokens and asset replacement slots using the accepted M7 UI/localization plan and visual UX handoff, while preserving simulation authority and avoiding final art or culture-specific assets.",
+  "branch_or_worktree": "feat/m7-design-tokens-asset-slots / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "e9f1a4b43d34460b23908f31a8146723004cf5cf",
+  "artifacts": [
+    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-START__lead_orchestrator.json",
+    "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Started from clean main at e9f1a4b43d34460b23908f31a8146723004cf5cf, then created feat/m7-design-tokens-asset-slots."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 are ready candidates; design tokens selected first because M7 i18n is now closed and downstream UI tasks depend on the token/asset-slot foundation."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "SELECT_DESIGN_TOKENS_AFTER_I18N",
+      "decision": "Start M7-DESIGN-TOKENS-ASSET-SLOTS-001 before downstream app shell/map/inspector/appointment UI polish because it provides the shared visual token and asset-slot foundation."
+    },
+    {
+      "id": "NO_FINAL_ART_OR_CULTURE_SPECIFIC_ASSETS",
+      "decision": "This task may create neutral placeholders and replacement slots, but not final production art, culture-specific imagery, religious symbols, portraits, scripts, flags, clothing, architecture, music, or ritual motifs."
+    }
+  ],
+  "risks": [
+    {
+      "id": "TOKEN_SCOPE_DRIFT",
+      "severity": "P2",
+      "summary": "A visual-token task can drift into full UI redesign or final art production.",
+      "mitigation": "Keep implementation limited to centralized tokens, slot registry, placeholder/final distinction, Storybook states, and tests in allowed paths."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement the M7 design tokens and asset replacement slots within allowed paths, run required tests, and return a writer REVIEW handoff.",
+  "created_at": "2026-06-28T23:15:48.8771858+08:00"
+}

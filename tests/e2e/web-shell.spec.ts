@@ -560,6 +560,40 @@ test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without s
   ).toHaveCount(0);
 });
 
+test("M7 design tokens are available to the web shell map flow without final art authority", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const tokens = await page.evaluate(() => {
+    const styles = window.getComputedStyle(document.documentElement);
+    return {
+      surfaceInk: styles.getPropertyValue("--ms-color-surface-ink").trim(),
+      accentRiver: styles.getPropertyValue("--ms-color-accent-river").trim(),
+      accentCopper: styles.getPropertyValue("--ms-color-accent-copper").trim(),
+      radiusControl: styles.getPropertyValue("--ms-radius-control").trim()
+    };
+  });
+  const mapCanvas = await expectMountedPixiMapRenderer(page);
+
+  expect(tokens).toEqual({
+    surfaceInk: "#172126",
+    accentRiver: "#2f6f73",
+    accentCopper: "#b88746",
+    radiusControl: "4px"
+  });
+  await page.getByRole("button", { name: "Routes map mode" }).click();
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-map-mode",
+    "routes"
+  );
+  await expect(mapCanvas).toHaveAttribute("data-map-mode", "routes");
+  await page.getByRole("button", { name: "Zoom in" }).click();
+  await expect(mapCanvas).toHaveAttribute("data-zoom-level", "1.25");
+  await expect(page.locator('[data-final-art-approved="true"]')).toHaveCount(0);
+  await expect(mapCanvas).toBeVisible();
+});
+
 test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");

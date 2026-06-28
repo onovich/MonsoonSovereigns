@@ -6,6 +6,7 @@ import { createM2PrototypeReadModelFixture } from "../packages/client-core/src/i
 import { compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
 import { parseM6AlphaMapCandidateSetSourceV0 } from "../packages/content-schema/src/index";
 import {
+  MAP_RENDER_TOKENS,
   buildMapRenderPlan,
   createMemoryPixiMapNodeFactory,
   createMemoryPixiSceneLayer,
@@ -48,6 +49,27 @@ describe("M2 map renderer read-model deltas", () => {
     expect(routes.labels.length).toBeGreaterThanOrEqual(40);
     expect(seasonal.districts[0]?.fillColor).not.toBe(economy.districts[0]?.fillColor);
     expect(routes.routes.some((route) => route.widthInMapUnits === 4)).toBe(true);
+  });
+
+  test("uses centralized map render tokens for layer states", () => {
+    const fixture = createM2PrototypeReadModelFixture();
+    const plan = buildMapRenderPlan(fixture.map, {
+      mode: "routes",
+      zoomLevel: 1.8,
+      selectedEntity: { kind: "district", districtId: fixture.districtList.selectedDistrictId }
+    });
+    const selectedDistrict = plan.districts.find((district) => district.isSelected);
+    const reachableDistrict = plan.districts.find(
+      (district) => district.fillColor === MAP_RENDER_TOKENS.districts.routesMode.reachable
+    );
+    const reachableRoute = plan.routes.find(
+      (route) => route.strokeColor === MAP_RENDER_TOKENS.routes.reachable
+    );
+
+    expect(MAP_RENDER_TOKENS.surface.canvasBackground).toBe("#f7f4ea");
+    expect(selectedDistrict?.strokeColor).toBe(MAP_RENDER_TOKENS.districts.strokeSelected);
+    expect(reachableDistrict).toBeDefined();
+    expect(reachableRoute?.widthInMapUnits).toBe(MAP_RENDER_TOKENS.routes.widthProminentInMapUnits);
   });
 
   test("rebuilds presentation cache from replace-read-model delta", () => {

@@ -1,0 +1,131 @@
+{
+  "message_id": "MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M7 client design-token and asset-slot foundation without changing simulation authority, protocol, save data, Electron, dependencies, or final art. The UI package now exposes centralized color, spacing, typography, radius, border, elevation, semantic-state, and map-layer tokens; a neutral placeholder-only asset replacement slot registry covers frames, icons, map fills/strokes, route styles, settlement markers, portraits, alerts, settings/language, and tooltips; Storybook has a dedicated M7 token/slot evidence surface for normal, empty, error, extreme, narrow, English, Simplified Chinese layout stress, enabled/disabled/warning/success/danger, and debug on/off states. The map renderer now consumes centralized map render tokens for map layer fills/strokes, route styles, settlement markers, labels, and canvas fallback rendering while remaining rebuildable from read models.",
+  "artifacts": [
+    "packages/ui/src/design-tokens.ts",
+    "packages/ui/src/asset-slots.ts",
+    "packages/ui/src/design-token-asset-slots-view.tsx",
+    "packages/ui/src/index.tsx",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/map-renderer/src/index.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/M7DesignTokensAssetSlots.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-design-tokens-asset-slots / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "uncommitted on c7177488dc04b144103ba41d2636223452a121c1",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified/new files are limited to allowed UI, map-renderer, Storybook, tests, and message paths."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry lists M7-DESIGN-TOKENS-ASSET-SLOTS-001 as IN_PROGRESS; downstream UI quality tasks remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready candidate remains M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "exit_code": 0,
+      "result": "{\"id\":\"M7-DESIGN-TOKENS-ASSET-SLOTS-001\",\"status\":\"IN_PROGRESS\",\"allowed_paths\":12,\"forbidden_paths\":29,\"required_tests\":12}"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 15 tests. Added coverage for design tokens, semantic states, placeholder-only asset slots, Chinese layout stress, debug on/off, empty/error/extreme evidence states, and no WorldState leakage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 5 tests. Added coverage that map render plans consume centralized map render tokens for layer states."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web build passed. Vite reported existing large chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed and emitted M7DesignTokensAssetSlots story assets. Existing plugin timing and large chunk warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "Playwright passed: 15/15. Added M7 design-token flow coverage for Web shell CSS token availability, map renderer routes/zoom state transitions, no approved-final-art authority marker, and Pixi map ownership."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TOKEN_FOUNDATION_AS_PUBLIC_UI_API",
+      "decision": "Added @monsoon/ui exports for CLIENT_DESIGN_TOKENS, CLIENT_SEMANTIC_STATES, CLIENT_ASSET_REPLACEMENT_SLOTS, slot query helpers, and DesignTokenAssetSlotsView so downstream M7 UI tasks can consume a single token/slot foundation instead of scattering visual constants."
+    },
+    {
+      "id": "PLACEHOLDER_ONLY_ASSET_POLICY",
+      "decision": "Every asset slot in this task is marked neutral-placeholder. The registry has a typed approved-final-art variant for future reviewed assets, but no final art asset is added or referenced by components."
+    },
+    {
+      "id": "MAP_RENDERER_TOKENIZATION_WITHOUT_AUTHORITY_SHIFT",
+      "decision": "Map-renderer visual values were moved into MAP_RENDER_TOKENS and consumed by Pixi and canvas fallback rendering. The renderer still receives read-model snapshots and viewport intent only; tokens do not become simulation, protocol, save, or command state."
+    },
+    {
+      "id": "STORYBOOK_EVIDENCE_VIEW_NOT_APP_SHELL_REWRITE",
+      "decision": "Added a dedicated Storybook evidence component instead of rewriting the existing app shell. Downstream app shell, map presentation, inspector, appointment, guidance, and regression tasks retain their productization scope."
+    }
+  ],
+  "risks": [
+    {
+      "id": "CSS_MIGRATION_REMAINS_INCREMENTAL",
+      "severity": "P3",
+      "summary": "The existing app shell still contains many pre-existing literal CSS values. This task establishes tokens and CSS variables plus a token evidence surface, but it does not attempt a full shell restyle.",
+      "mitigation": "Downstream M7 app shell, map, inspector, appointment, and guidance quality tasks should migrate component styling to the exported token names as they touch each surface."
+    },
+    {
+      "id": "FINAL_ART_REVIEW_REQUIRED",
+      "severity": "P2",
+      "summary": "No culture-specific symbols, portraits, scripts, flags, religious imagery, clothing, architecture, music, or ritual motifs are approved by this task.",
+      "mitigation": "The slot registry keeps those as neutral placeholders and records art/culture/historical/localization review gates for future replacement."
+    },
+    {
+      "id": "FULL_VISUAL_REGRESSION_MATRIX_REMAINS_DOWNSTREAM",
+      "severity": "P3",
+      "summary": "This task adds focused Playwright coverage for Web shell token availability and map state transitions, plus Storybook evidence for token/slot states. Full screenshot/visual regression across every downstream productized UI surface remains outside this foundation task.",
+      "mitigation": "M7-UI-REGRESSION-MATRIX-001 and productization tasks should extend token/slot visual checks alongside language switching, no-debug-text assertions, and viewport screenshots."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the token and asset-slot foundation for architecture compliance: no sim-core/protocol/save/Electron/dependency changes, no final art or culture-specific asset approval, no authoritative state shift into React/Pixi/store, map tokens remain presentation-only and rebuildable from read models, and downstream M7 UI tasks can safely consume the centralized token/slot APIs. After systems review, route to qa_reviewer/test_engineer as required by the M7 review flow.",
+  "created_at": "2026-06-28T23:34:00+08:00"
+}
