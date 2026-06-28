@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-TUTORIAL-WRITER-R2-TO-QA-REVIEW",
+  "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "from_role": "client_engineer",
+  "from_thread_id": "019f0cff-f5d7-7942-9d9b-15b9449590d7",
+  "from_thread_nickname": "Window",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
+  "to_thread_nickname": "Gate",
+  "coordinated_by": "lead_orchestrator",
+  "coordinator_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "route_type": "REVIEW",
+  "route_status": "SENT",
+  "review_round": 2,
+  "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia",
+  "base_main_commit": "71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7",
+  "review_commit": "963bf558ff9136bdc69e115232929f4b5e7493c8",
+  "review_head_commit": "edc31aeecfa71a3efe6f5e86c1e8cc58421d94b6",
+  "source_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+  "previous_qa_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-REVIEW__qa_reviewer.json",
+  "expected_review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json",
+  "read_only": true,
+  "lead_verified_checks": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "20 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "10 tests passed"
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "4 tests passed"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "13 Chromium tests passed"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0
+    }
+  ],
+  "requested_review": [
+    "Verify previous P1 drift is fixed: guidance data must mechanically align with accepted content-source/m7-beta-scenarios/beta-scenario-person-event-set.json.",
+    "Verify tests fail on label/confidence/reviewState/localization/known-gap/contracted-count drift.",
+    "Verify no pnpm-lock/package dependency drift and no scope expansion into formal content lock, manual node battle, telemetry/accounts/cloud/server/multiplayer/release/branding/save migration.",
+    "Verify UI still consumes read model and does not hold WorldState or duplicate authoritative sim rules.",
+    "Return ACCEPT, REQUEST_CHANGES, or BLOCKED and write expected QA R2 handoff."
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T07:54:39.850Z",
+  "updated_at": "2026-06-28T07:55:31.425Z",
+  "qa_submission_id_r2": "019f0d39-86fb-7f73-8883-406cd987f0c0",
+  "sent_at": "2026-06-28T07:55:31.425Z"
+}
