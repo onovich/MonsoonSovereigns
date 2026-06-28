@@ -114,8 +114,29 @@
       "routed_at": "2026-06-28T22:18:34.157Z",
       "route_sent_at": "2026-06-28T22:20:22.061Z",
       "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a",
-      "updated_at": "2026-06-28T22:41:15.403Z",
-      "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json"
+      "updated_at": "2026-06-28T22:42:44.604Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9"
+    },
+    "systems_architect": {
+      "thread_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+      "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+      "status": "active_reviewer",
+      "role": "systems_architect",
+      "nickname": "Meridian",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-map-presentation-quality",
+      "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-WRITER-TO-SYSTEMS-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+      "implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+      "routed_at": "2026-06-28T22:43:36.568Z",
+      "route_sent_at": "2026-06-28T22:43:36.568Z",
+      "route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+      "updated_at": "2026-06-28T22:43:36.568Z"
     }
   },
   "route_to": "systems_architect",
@@ -132,7 +153,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-28T22:41:15.403Z",
+  "updated_at": "2026-06-28T22:43:36.568Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -156,9 +177,17 @@
   "start_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
   "expected_writer_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
-  "next_action": "Route to systems_architect for map authority boundary review; QA/test validation follows after systems acceptance.",
+  "next_action": "Route to systems_architect for map authority boundary review; do not mark ACCEPTED/CLOSED before reviewer acceptance.",
   "writer_thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
   "writer_thread_nickname": "Lantern",
   "route_sent_at": "2026-06-28T22:20:22.061Z",
-  "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a"
+  "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a",
+  "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+  "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+  "systems_review_route": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-WRITER-TO-SYSTEMS-REVIEW.json",
+  "expected_systems_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+  "systems_thread_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+  "systems_thread_nickname": "Meridian",
+  "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
+  "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
 }

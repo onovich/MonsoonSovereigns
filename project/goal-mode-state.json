@@ -24,7 +24,7 @@
     "client_engineer": {
       "thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
       "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
-      "status": "active_writer",
+      "status": "review_ready",
       "role": "client_engineer",
       "nickname": "Lantern",
       "configured_model": "gpt-5.5",
@@ -37,7 +37,29 @@
       "routed_at": "2026-06-28T22:18:34.157Z",
       "route_sent_at": "2026-06-28T22:20:22.061Z",
       "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a",
-      "updated_at": "2026-06-28T22:20:22.061Z"
+      "updated_at": "2026-06-28T22:42:44.604Z",
+      "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+      "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json"
+    },
+    "systems_architect": {
+      "thread_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+      "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+      "status": "active_reviewer",
+      "role": "systems_architect",
+      "nickname": "Meridian",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-map-presentation-quality",
+      "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-WRITER-TO-SYSTEMS-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+      "implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+      "routed_at": "2026-06-28T22:43:36.568Z",
+      "route_sent_at": "2026-06-28T22:43:36.568Z",
+      "route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+      "updated_at": "2026-06-28T22:43:36.568Z"
     }
   },
   "last_integrated_task": "M7-DISTRICT-INSPECTOR-QUALITY-001",
@@ -859,7 +881,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T22:20:22.061Z",
+  "last_updated_at": "2026-06-28T22:43:36.568Z",
   "updated_at": "2026-06-29T05:51:00.000Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1930,7 +1952,7 @@
     ]
   },
   "current_task_status": "IN_PROGRESS",
-  "next_machine_action": "Await client_engineer writer REVIEW handoff for M7-MAP-PRESENTATION-QUALITY-001.",
+  "next_machine_action": "Await systems_architect review for M7-MAP-PRESENTATION-QUALITY-001.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -2182,7 +2204,7 @@
     ]
   },
   "m7_map_presentation_quality": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
     "branch_or_worktree": "feat/m7-map-presentation-quality",
     "base_main_commit": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
@@ -2191,13 +2213,21 @@
     "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T22:18:34.157Z",
-    "updated_at": "2026-06-28T22:20:22.061Z",
-    "next_action": "Await client_engineer writer REVIEW handoff for M7-MAP-PRESENTATION-QUALITY-001.",
+    "updated_at": "2026-06-28T22:43:36.568Z",
+    "next_action": "Await systems_architect review for M7-MAP-PRESENTATION-QUALITY-001.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "writer_thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
     "writer_thread_nickname": "Lantern",
     "route_sent_at": "2026-06-28T22:20:22.061Z",
-    "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a"
+    "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a",
+    "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+    "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+    "systems_review_route": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-WRITER-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_thread_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+    "systems_thread_nickname": "Meridian",
+    "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
+    "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   }
 }

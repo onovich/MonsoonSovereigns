@@ -1,0 +1,104 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-TO-SYSTEMS-REVIEW",
+  "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+  "source_role": "lead_orchestrator",
+  "source_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "source_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+  "source_status": "REVIEW",
+  "target_role": "systems_architect",
+  "target_thread_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+  "target_thread_nickname": "Meridian",
+  "requested_action": "Perform independent systems_architect review of M7-MAP-PRESENTATION-QUALITY-001 at fixed implementation commit 762059e65b05ed02db6a298aaa4a31089a64d5a9. Focus on map authority boundaries, Pixi render-cache-only behavior, read-model/query boundaries, i18n outside sim-core, allowed-path scope, and no manual-node-battle/geography/sim authority drift.",
+  "branch_or_worktree": "feat/m7-map-presentation-quality",
+  "base_main_commit": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
+  "implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+  "expected_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+  "review_scope": [
+    "Verify actual diff against allowed_paths and forbidden_paths.",
+    "Verify Pixi/map-renderer state is disposable render-plan/cache state only and rebuildable from ClientMapReadModelSnapshot plus local viewport UI state.",
+    "Verify pan/hover/selection/reachable/blocked/overloaded states do not become authoritative map, route, command, save, or domain state.",
+    "Verify localized map labels/legends/tooltips are UI/Web presentation only and sim-core/protocol/save/content are untouched.",
+    "Verify use of design tokens/neutral placeholders and no production art/cultural/geography claims.",
+    "Verify tests meaningfully cover render-plan rebuild, overlay states, player/debug separation, Storybook/Playwright paths, no console errors, and no scope drift."
+  ],
+  "required_tests": [
+    "git status --short --branch",
+    "git diff --name-status 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-PRESENTATION-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+    "git diff --check 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9",
+    "pnpm --filter @monsoon/map-renderer test",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter web test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm check"
+  ],
+  "lead_side_tests": [
+    {
+      "command": "validate-handoff writer handoff",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "taskctl validate/list/ready",
+      "exit_code": 0,
+      "result": "Task valid; M7-MAP-PRESENTATION-QUALITY-001 is REVIEW; next ready tasks are M7-PLAYER-GUIDANCE-LITE-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "5 passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "16 passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "9 passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed with existing chunk/plugin timing warnings."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "19 passed."
+    }
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T22:42:44.604Z",
+  "delivery": {
+    "method": "spawn_agent",
+    "status": "sent",
+    "agent_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+    "nickname": "Meridian",
+    "sent_at": "2026-06-28T22:43:36.568Z",
+    "note": "Lead spawned real systems_architect reviewer with the route content in the initial prompt."
+  },
+  "route_sent_at": "2026-06-28T22:43:36.568Z"
+}
