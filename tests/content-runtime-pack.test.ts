@@ -1,5 +1,8 @@
+import { readFile } from "node:fs/promises";
+
 import { describe, expect, test } from "vitest";
 
+import { compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
 import {
   createRuntimeContentPackIndexV0,
   createRuntimeM3CharacterOfficeContentPackIndexV0,
@@ -712,7 +715,81 @@ describe("M7 runtime beta scenario/person/event content pack", () => {
       })
     ).toThrow("RuntimeM7BetaScenarioPersonEventContentPackV0");
   });
+
+  test("rejects compiled M7 runtime events that try to enter LOCK_CANDIDATE", async () => {
+    const pack = await readCompiledM7BetaScenarioRuntimePack();
+    const badPack = cloneAsMutableRecord(pack);
+    const events = requireMutableRecordArray(badPack, "events");
+    events[2]["reviewState"] = "LOCK_CANDIDATE";
+
+    expect(() => parseRuntimeM7BetaScenarioPersonEventContentPackV0(badPack)).toThrow(
+      "LOCK_CANDIDATE"
+    );
+  });
+
+  test("rejects compiled M7 high-risk runtime events without violence cost records", async () => {
+    const pack = await readCompiledM7BetaScenarioRuntimePack();
+    const badPack = cloneAsMutableRecord(pack);
+    const events = requireMutableRecordArray(badPack, "events");
+    events[2]["violenceCostRecord"] = null;
+
+    expect(() => parseRuntimeM7BetaScenarioPersonEventContentPackV0(badPack)).toThrow(
+      "violenceCostRecord"
+    );
+  });
+
+  test("rejects compiled M7 high-risk runtime events with empty violence cost arrays", async () => {
+    const pack = await readCompiledM7BetaScenarioRuntimePack();
+    const badPack = cloneAsMutableRecord(pack);
+    const events = requireMutableRecordArray(badPack, "events");
+    const violenceCostRecord = requireMutableRecord(events[2]["violenceCostRecord"]);
+    violenceCostRecord["victimGroups"] = [];
+
+    expect(() => parseRuntimeM7BetaScenarioPersonEventContentPackV0(badPack)).toThrow(
+      "victimGroups"
+    );
+  });
 });
+
+async function readCompiledM7BetaScenarioRuntimePack() {
+  const fixtureUrl = new URL(
+    "../content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    import.meta.url
+  );
+  const source = JSON.parse(await readFile(fixtureUrl, "utf8")) as unknown;
+  const pack = compileContentPackV0OrThrow(source);
+  if (pack.kind !== "runtime-m7-beta-scenario-person-event-content-pack-v0") {
+    throw new Error(`Expected compiled M7 beta runtime pack, got ${pack.kind}.`);
+  }
+  return pack;
+}
+
+function cloneAsMutableRecord(input: unknown): Record<string, unknown> {
+  const parsed = JSON.parse(JSON.stringify(input)) as unknown;
+  return requireMutableRecord(parsed);
+}
+
+function requireMutableRecord(input: unknown): Record<string, unknown> {
+  if (!isMutableRecord(input)) {
+    throw new Error("Expected mutable record.");
+  }
+  return input;
+}
+
+function requireMutableRecordArray(
+  record: Record<string, unknown>,
+  key: string
+): Record<string, unknown>[] {
+  const value = record[key];
+  if (!Array.isArray(value) || !value.every(isMutableRecord)) {
+    throw new Error(`Expected ${key} to be a mutable record array.`);
+  }
+  return value;
+}
+
+function isMutableRecord(input: unknown): input is Record<string, unknown> {
+  return typeof input === "object" && input !== null && !Array.isArray(input);
+}
 
 function makeRuntimeReferenceTargets() {
   return {
