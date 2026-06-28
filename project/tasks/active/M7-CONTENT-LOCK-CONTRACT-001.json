@@ -2,7 +2,7 @@
   "id": "M7-CONTENT-LOCK-CONTRACT-001",
   "summary": "Define bounded M7 Beta content lock contract",
   "milestone": "M7",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -57,8 +57,498 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
     "git diff --check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "contract": {
+    "target": {
+      "name": "M7 Beta content-lock contract v0",
+      "goal": "Prepare a bounded Beta content-lock candidate for scenarios, persons, events, tutorial/hints/encyclopedia, audio/art/localization, balance evidence, platform evidence, save compatibility, and manual playthrough evidence without approving the formal lock.",
+      "content_lock_meaning": "Content is lockable only after M7-CONTENT-LOCK-ACCEPTANCE-001 receives explicit Human Gate approval. Until then this task defines reviewable requirements, evidence, and stop conditions only.",
+      "non_map_painting_victory": "Locked content must keep victory and progress centered on recognized order, vassal networks, agent politics, population/labor consequences, monsoon campaign timing, supply, succession continuity, and explainable AI, not total territorial coloring.",
+      "planning_only_policy": "This task adds no product code, package code, content-source data, platform behavior, release artifact, roadmap edit, acceptance-matrix edit, accepted ADR edit, telemetry, server/multiplayer behavior, cloud-save implementation, arbitrary-code mod support, or manual node battle work.",
+      "m6_gate_carry_forward": "M6_GATE = PASS_WITH_LIMITS remains in force: M6 scenario data was Alpha scaffolding, adviser evidence was local/privacy-safe, batch balance evidence records tuning risk, and Windows desktop evidence was unsigned smoke rather than release readiness.",
+      "manual_node_battle_policy": "DEFER_MANUAL_NODE_BATTLE remains exact. Manual node battle is only a post-1.0 non-blocking candidate unless a later Human Gate reverses it.",
+      "historical_routing_policy": "Specific historical claims, names, titles, languages, symbols, music, clothing, architecture, maps, or cultural-risk decisions must route to historical_researcher before production acceptance."
+    },
+    "scenario_person_event_scope": {
+      "scenario_scope": "The lock candidate covers every Beta/1.0 mainline scenario included by the accepted M7 content manifest, starting from the accepted M6 three-scenario pipeline as Alpha scaffolding rather than final content. Each scenario needs a stable ID, source/review label, starting situation, playable and non-playable polity roster, start-to-victory/failure hooks, map/content manifest reference, tutorial and encyclopedia hooks, localization keys, save/load compatibility evidence, and explicit unresolved-risk status.",
+      "person_scope": "The lock candidate covers every person referenced by scenarios, offices, vassal obligations, succession, diplomacy/legitimacy, adviser surfaces, events, tutorials, encyclopedia entries, art/audio/localization manifests, or save fixtures. Each person needs a stable ID, source label, review state, role-specific competencies or constraints, relationships/obligations where used, localization keys, and deterministic ordering. Persons must not become total attribute cards.",
+      "event_scope": "The lock candidate covers every event, policy prompt, tutorial trigger, hint, encyclopedia hook, campaign/postwar/succession/diplomacy consequence, audio/art/localization cue, and manual-playthrough evidence hook reachable from the M7 scenarios. Each event needs stable ID, trigger, choices, costs, dependencies, counterplay, source/review label, localization keys, deterministic tie-breaker, and save compatibility status.",
+      "placeholder_policy": "Unknown or incomplete records must be marked RESEARCH_REQUIRED, BLOCKED, DEFECT_CANDIDATE, or POST_1_0_CANDIDATE. They must not be hidden as accepted placeholders.",
+      "no_fixed_culture_buff_policy": "Culture, language, religion, polity, or ethnic labels may drive historically reviewed context and UI text, but they must not grant fixed mechanical buffs or penalties."
+    },
+    "required_review_states": {
+      "states": [
+        "DRAFT_CONTENT",
+        "RESEARCH_REQUIRED",
+        "SOURCE_RECORDED",
+        "HISTORICAL_REVIEW_READY",
+        "HISTORICAL_ACCEPTED",
+        "CULTURE_RISK_REQUEST_CHANGES",
+        "CULTURE_HUMAN_GATE_REQUIRED",
+        "SCHEMA_VALIDATED",
+        "RUNTIME_VALIDATED",
+        "BALANCE_REVIEW_READY",
+        "BALANCE_TUNING_CANDIDATE",
+        "QA_REVIEW_READY",
+        "QA_ACCEPTED",
+        "LOCK_CANDIDATE",
+        "LOCKED_BY_HUMAN_GATE",
+        "POST_LOCK_DEFECT_ONLY"
+      ],
+      "minimum_lock_entry": "A scenario, person, or event may enter LOCK_CANDIDATE only after historical/cultural/language review where applicable, schema/content validation, runtime validation, localization coverage, save compatibility checks, balance review, platform/localization evidence, and QA review are complete or the gap is explicitly accepted as nonblocking by the correct reviewer.",
+      "human_gate_state": "LOCKED_BY_HUMAN_GATE can be set only by M7-CONTENT-LOCK-ACCEPTANCE-001 after explicit product-owner approval. This writer task cannot set it.",
+      "blocked_state": "CULTURE_HUMAN_GATE_REQUIRED, irreversible migration need, cloud-save implementation need, release/commercial/branding question, manual node battle reversal, or frozen architecture/platform/core change blocks autonomous acceptance."
+    },
+    "post_lock_policy": {
+      "defect_only_rule": "After LOCKED_BY_HUMAN_GATE, autonomous changes are limited to blocker defect fixes, compatibility fixes, source-correction fixes, localization text corrections, accessibility/readability fixes, and the explicit balance-tuning window below.",
+      "forbidden_after_lock": [
+        "new scenarios",
+        "new major persons or factions",
+        "new event chains",
+        "new major systems",
+        "new platform commitments",
+        "new release/commercial/branding decisions",
+        "telemetry or remote collection",
+        "server or multiplayer behavior",
+        "cloud-save implementation",
+        "arbitrary-code mods or runtime scripting extensions",
+        "manual node battle implementation or blocking research"
+      ],
+      "defect_record_requirements": "Every post-lock change needs a defect ID, affected content IDs, severity, reproduction or evidence, reviewer route, before/after result, save compatibility statement, and explicit statement that it is not a content expansion.",
+      "source_correction_rule": "A historical or cultural correction after lock may replace an unsupported claim with a sourced, composite, fictional, or removed record, but may not expand scope without historical_researcher review and the applicable Human Gate."
+    },
+    "balance_tuning_window": {
+      "allowed_window": "Explicit balance tuning may continue after formal lock and before M7 exit only through M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001 follow-ups or lead-created defect/tuning tasks that cite this contract.",
+      "allowed_changes": [
+        "numeric parameter tuning inside existing accepted systems",
+        "AI threshold tuning using the same GameCommand surfaces as the player",
+        "scenario starting-resource corrections that preserve the accepted scenario/person/event roster",
+        "event consequence magnitude tuning without adding new event branches",
+        "localization wording needed to explain an accepted tuning change"
+      ],
+      "disallowed_changes": [
+        "hidden global penalties",
+        "AI-only privileges",
+        "random nondeterministic correction",
+        "new content records",
+        "new mechanics",
+        "save-format changes beyond approved compatibility fixes",
+        "remote telemetry-driven tuning"
+      ],
+      "evidence_required": "Each tuning proposal needs batch artifact hash, scenario/seed sample, replay pointers, before/after metrics, affected IDs, risk assessment, and gameplay_designer review before lead integration.",
+      "window_exit": "The tuning window closes at M7-EXIT-VALIDATION-001 unless a later Human Gate or explicit task extends it."
+    },
+    "player_decisions": [
+      {
+        "decision": "Use vassal settlement, direct control, or restored local rule after campaign success.",
+        "advantage": "Lets the player pursue non-map-painting victory through institutions and delegated authority.",
+        "cost": "Creates obligations, legitimacy exposure, administrative load, or hostage/reward commitments instead of free control.",
+        "dependencies": "Requires reviewed persons, titles, obligations, postwar hooks, and save-compatible governance state.",
+        "counterplay": "Rivals can exploit succession disputes, unpaid obligations, weak legitimacy, supply exhaustion, or local resistance."
+      },
+      {
+        "decision": "Mobilize labor, levies, boats, grain, or professional retainers for a campaign window.",
+        "advantage": "Allows decisive seasonal action when routes, warehouses, and monsoon timing align.",
+        "cost": "Consumes labor, food, cash, transport capacity, loyalty, and future harvest resilience.",
+        "dependencies": "Requires M2 population/economy/route state and M4 campaign/supply evidence in the locked scenarios.",
+        "counterplay": "Bad timing, river/road constraints, enemy waiting, and postwar obligations can turn the mobilization into debt or collapse."
+      },
+      {
+        "decision": "Trust, override, or delay adviser and agent recommendations.",
+        "advantage": "Makes agent politics useful without forcing an optimal script.",
+        "cost": "Delays can miss monsoon windows; blind trust can entrench a faction or spend scarce resources.",
+        "dependencies": "Requires reviewed adviser/person records, reason codes, and local adviser evidence carried forward from M6 limits.",
+        "counterplay": "Competing agents, visible reasons, and replayable outcomes let players identify bad advice without hidden global punishment."
+      },
+      {
+        "decision": "Pursue legitimacy, succession stability, or short-term extraction.",
+        "advantage": "Creates alternate paths to recognized order victory and recovery from crisis.",
+        "cost": "Legitimacy work consumes time, gifts, offices, concessions, and opportunity during campaign seasons.",
+        "dependencies": "Requires M6 diplomacy/legitimacy/succession surfaces and reviewed event/person hooks.",
+        "counterplay": "Opponents can attack heirs, contest claims, exploit overtaxed subjects, or force campaign commitments before stabilization."
+      },
+      {
+        "decision": "Accept an event option involving coercion, forced movement, famine risk, enslavement, religious pressure, or wartime population loss only when the content model records human cost.",
+        "advantage": "May produce short-term labor, cash, control, or military pressure.",
+        "cost": "Must create explicit population, loyalty, legitimacy, relationship, and cultural-risk consequences; it cannot be a cost-free reward.",
+        "dependencies": "Requires historical_researcher review, source labels, content warnings where appropriate, and QA evidence.",
+        "counterplay": "Subjects, rivals, vassals, heirs, and future logistics can respond through revolt risk, obligation failure, legitimacy loss, and diplomatic isolation."
+      }
+    ],
+    "state": {
+      "content_lock_state": [
+        "content_manifest_id",
+        "scenario_lock_records",
+        "person_lock_records",
+        "event_lock_records",
+        "review_state_ledger",
+        "source_record_ledger",
+        "cultural_risk_register",
+        "defect_register",
+        "balance_tuning_ledger",
+        "platform_matrix_evidence",
+        "manual_playthrough_evidence",
+        "human_gate_status"
+      ],
+      "runtime_state_dependencies": [
+        "M1 deterministic command/query/save/replay authority",
+        "M2 population, labor, grain, cash, routes, season, and transport constraints",
+        "M3 offices, obligations, vassalage, postwar governance, and succession pressure",
+        "M4 campaign preparation, march, supply, automatic engagement, siege, withdrawal, and postwar handoff",
+        "M5 playable slice UI/save/play evidence",
+        "M6 diplomacy, legitimacy, succession completion, policy/event/encyclopedia, layered AI, accessibility, batch balance, and adviser evidence"
+      ],
+      "authority_rule": "The lock records are content/process evidence. Authoritative world mutation remains only through the accepted simulation Worker and versioned GameCommand paths."
+    },
+    "update_frequency": {
+      "content_review": "Per content record transition and per M7 review handoff; no silent bulk acceptance.",
+      "runtime_simulation": "Existing simulation cadence remains authoritative: daily campaign/supply/march updates, scheduled economy/population updates, and event/command updates as accepted by M1-M6 systems.",
+      "balance_batches": "Per deterministic batch artifact and replay set; no single-run final tuning.",
+      "manual_playthrough": "Per playthrough session with build commit, seed, scenario, save checkpoints, duration, platform, locale, resolution, defects, and reviewer-visible notes.",
+      "gate_status": "Only lead_orchestrator/Human Gate tasks may update formal gate state."
+    },
+    "formula_intent": {
+      "institutional_consequences": "Advantages must be paid for through explicit ledgers such as obligations, labor, grain, cash, legitimacy, succession stability, administrative load, relationships, and campaign exposure.",
+      "no_hidden_global_penalty": "Balance must not use invisible empire-wide tax, loyalty, weather, or AI penalties to fake institutional consequences.",
+      "person_model": "Persons are evaluated through role fit, relationship, office, obligation, local knowledge, legitimacy, and situational constraints, not one total quality score.",
+      "culture_model": "Culture, language, religion, polity, and lineage may change interpretation, access, risk, or reviewed content context only through explicit records. They are not fixed buffs.",
+      "victory_model": "Victory pressure should reward durable recognized order, stable succession, credible vassal networks, and sustainable campaign logistics rather than raw territory count.",
+      "ai_model": "AI evaluates the same explicit costs, dependencies, windows, and risks exposed to players and emits reason codes for no action, waiting, withdrawal, target changes, or settlement choices."
+    },
+    "invariants": [
+      "No content record can enter LOCK_CANDIDATE without a stable ID, deterministic ordering rule, schema validation status, review state, localization status, and source/fictionality label.",
+      "No real-world historical claim can be accepted without source registration or an explicit HISTORICAL, INFERRED, COMPOSITE, FICTIONAL, or RESEARCH_REQUIRED label.",
+      "Contested or high-risk cultural material cannot be downgraded to accepted certainty without historical_researcher review and any required Human Gate.",
+      "Forced migration, slavery, massacre, famine, religious conflict, or wartime population loss cannot be modeled as a cost-free bonus.",
+      "No content-lock or balance mechanism may grant AI-only commands or hidden player-only punishment.",
+      "Player and AI state changes remain on the same GameCommand/query/save surfaces.",
+      "Content lock acceptance remains a future Human Gate and cannot be self-approved by gameplay_designer.",
+      "DEFER_MANUAL_NODE_BATTLE remains exact and cannot become an M7/M8 dependency.",
+      "M6_GATE remains PASS_WITH_LIMITS and cannot be rewritten as release readiness.",
+      "Post-lock changes must be traceable to defect IDs or explicit balance-tuning records."
+    ],
+    "ai_behavior": {
+      "content_use": "AI may consume locked scenario/person/event facts only through accepted read models and planning knowledge; it must not receive hidden historical certainty, free resources, or privileged action lists.",
+      "required_reasons": [
+        "no-action",
+        "wait-for-season",
+        "wait-for-supply",
+        "withdraw",
+        "change-target",
+        "accept-vassal-arrangement",
+        "reject-vassal-arrangement",
+        "prioritize-succession",
+        "avoid-cultural-risk-event"
+      ],
+      "balance_expectation": "Large-scale batches must identify no-action-heavy AI, runaway expansion, unavoidable collapse, and direct-control dominance with replay pointers before any tuning is recommended.",
+      "counterplay_visibility": "Players need enough surfaced reason/evidence to understand how to counter AI timing, logistics, settlement, and legitimacy choices without exposing hidden global formulas."
+    },
+    "ui_explanation": {
+      "player_facing": "UI and encyclopedia surfaces should explain concrete costs, dependencies, review-safe names, command previews, rejection reasons, AI reasons, and postwar/succession consequences through accepted read models.",
+      "review_facing": "Review and gate artifacts must show review states, unresolved risks, defect/tuning candidates, content manifest IDs, evidence hashes, and Human Gate blockers.",
+      "no_placeholder_surface": "Contract-required scenario, person, event, tutorial, hint, encyclopedia, localization, and platform surfaces must not be placeholder-only at lock candidate time.",
+      "no_rule_duplication": "Client UI must not duplicate authoritative sim rules; it reads accepted query/read-model surfaces."
+    },
+    "roadmap_acceptance_mapping": [
+      {
+        "m7_item": "Historical, cultural, and language review",
+        "downstream_tasks": [
+          "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+          "M7-BETA-CULTURE-REVIEW-001"
+        ],
+        "evidence_required": "Source records, uncertainty labels, accepted/request-change/block findings, major-risk Human Gate routing, content validation, and QA review."
+      },
+      {
+        "m7_item": "Full scenario, person, and event fill",
+        "downstream_tasks": [
+          "M7-SCENARIO-PERSON-EVENT-FILL-001"
+        ],
+        "evidence_required": "Stable IDs, owner/review state, deterministic ordering, source labels, localization keys, schema/runtime validation, and explicit gap handling."
+      },
+      {
+        "m7_item": "Balance and anti-snowball",
+        "downstream_tasks": [
+          "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001"
+        ],
+        "evidence_required": "Local deterministic batch artifacts, hashes, sample sizes, replay pointers, snowball/collapse/no-action/direct-control metrics, and tuning recommendations."
+      },
+      {
+        "m7_item": "Performance, memory, and loading",
+        "downstream_tasks": [
+          "M7-PERFORMANCE-MEMORY-LOADING-001"
+        ],
+        "evidence_required": "Measured Beta-scale thresholds, host details, artifact hashes, before/after evidence for fixes, Web/loading/save/map/UI/desktop smoke coverage."
+      },
+      {
+        "m7_item": "Chrome, Edge, Firefox, Windows, resolution, and localization matrix",
+        "downstream_tasks": [
+          "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+        ],
+        "evidence_required": "Browser/platform/resolution/locale pass-fail matrix, viewport/localization overlap checks, Electron security/package smoke, and unsupported-platform risk records."
+      },
+      {
+        "m7_item": "Save migration and cloud-save candidate",
+        "downstream_tasks": [
+          "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+        ],
+        "evidence_required": "M1-M6 save compatibility, M7 manifest compatibility, malformed/future/cross-manifest rejection, explicit cloud-save non-implementation boundary, and security review."
+      },
+      {
+        "m7_item": "Tutorial, hints, and encyclopedia",
+        "downstream_tasks": [
+          "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001"
+        ],
+        "evidence_required": "Coverage matrix for accepted systems, reviewed terminology, Storybook or Playwright evidence, viewport checks, and no placeholder-only panels."
+      },
+      {
+        "m7_item": "Audio, art, and localization complete",
+        "downstream_tasks": [
+          "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001"
+        ],
+        "evidence_required": "Asset/reference manifests, localization coverage, culture-specific review records, static-resource integration checks, viewport smoke, and unresolved-risk list."
+      },
+      {
+        "m7_item": "Content lock",
+        "downstream_tasks": [
+          "M7-CONTENT-LOCK-ACCEPTANCE-001"
+        ],
+        "evidence_required": "Lead synthesis of reviewed content, culture, balance, performance, platform, localization, save-boundary, and manual playthrough evidence plus explicit Human Gate approval."
+      },
+      {
+        "m7_item": "Beta culture review and manual playthrough",
+        "downstream_tasks": [
+          "M7-BETA-CULTURE-REVIEW-001",
+          "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001"
+        ],
+        "evidence_required": "Final culture review findings, manual playthrough build/seed/scenario/save/platform/locale/resolution logs, defect list, and Human Gate routing where judgment is required."
+      },
+      {
+        "m7_item": "M7 exit validation",
+        "downstream_tasks": [
+          "M7-EXIT-VALIDATION-001"
+        ],
+        "evidence_required": "Gate evidence document/status updates only after prerequisites and Human Gates are satisfied or explicitly blocked; no M8 release-readiness claim."
+      }
+    ],
+    "evidence_requirements": {
+      "formal_lock_gate": "M7-CONTENT-LOCK-ACCEPTANCE-001 must synthesize all downstream evidence and request Human Gate approval. Without approval it remains BLOCKED or PARTIAL.",
+      "required_evidence_classes": [
+        "content manifest and review ledger",
+        "source/culture/language review records",
+        "schema/runtime/content validation",
+        "save migration and rejection evidence",
+        "large-scale balance batch artifacts",
+        "performance/memory/loading measurements",
+        "platform/resolution/localization matrix",
+        "tutorial/hints/encyclopedia coverage",
+        "audio/art/localization manifests",
+        "manual playthrough evidence",
+        "defect and post-lock tuning register"
+      ],
+      "handoff_rule": "Each downstream task must produce a validated writer handoff and required reviewer handoff before lead integration."
+    },
+    "parameters": [
+      {
+        "name": "scenario_batch_seed_count",
+        "starting_hypothesis": "At least 30 deterministic seeds per locked scenario candidate are enough to detect obvious snowball/collapse/no-action patterns.",
+        "metric": "runaway expansion rate, unavoidable collapse rate, no-action streak rate, direct-control dominance rate, median victory/failure year, save/hash reproducibility",
+        "validation": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001 batch artifact with replay pointers and reviewer-visible hashes."
+      },
+      {
+        "name": "runaway_expansion_alert_rate",
+        "starting_hypothesis": "A single polity becoming irreversible dominant in more than 15 percent of comparable runs before the intended midgame is an alert, not an automatic failure.",
+        "metric": "dominance share by polity, vassal network size, direct-control share, legitimacy/succession stability, campaign supply status",
+        "validation": "Batch summary plus sampled replays reviewed by balance_analyst and gameplay_designer."
+      },
+      {
+        "name": "no_action_ai_alert_rate",
+        "starting_hypothesis": "AI no-action streaks above three consecutive strategic opportunities in more than 20 percent of sampled runs require reason-code review.",
+        "metric": "no-action reason distribution, wait-for-season/wait-for-supply frequencies, failed target selection, blocked command reasons",
+        "validation": "AI trace artifacts from large-scale balance batches and manual playthrough evidence."
+      },
+      {
+        "name": "post_lock_tuning_delta",
+        "starting_hypothesis": "Post-lock tuning should prefer small numeric deltas with before/after batch evidence; any broad system or content change is a defect or Human Gate issue.",
+        "metric": "affected IDs, parameter delta, before/after metric movement, regression count, save compatibility result",
+        "validation": "Defect/tuning register entry, deterministic tests, and reviewer handoff."
+      },
+      {
+        "name": "manual_playthrough_minimum",
+        "starting_hypothesis": "One complete manual Beta playthrough per locked scenario candidate plus targeted regression passes can supply evidence for content lock recommendation, but human acceptance remains a gate.",
+        "metric": "completion status, blocker defects, confusion points, save checkpoints, platform/locale/resolution coverage, post-lock tuning candidates",
+        "validation": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 evidence handoff and QA review."
+      }
+    ],
+    "boundaries": [
+      "This contract prepares content lock only; it does not approve content lock.",
+      "No formal historical content is created by this task.",
+      "No product code, package code, content-source data, tooling, CI, roadmap, acceptance matrix, ADR, prior gate, release artifact, telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mod support, or manual node battle work is authorized here.",
+      "Formal content lock acceptance, major cultural-risk decisions, manual playthrough acceptance where judgment is required, cloud-save implementation, irreversible migration, release/commercial/branding decisions, telemetry, server/multiplayer, arbitrary-code mods, frozen architecture/platform/core changes, manual node battle reversal, and formal 1.0 scope reversal remain Human Gates.",
+      "M7 content lock must not claim M8 release security/SBOM/install/update/rollback readiness."
+    ],
+    "exploits": [
+      {
+        "exploit": "Post-lock content creep disguised as a defect fix.",
+        "countermeasure": "Require defect ID, affected IDs, before/after evidence, reviewer route, and explicit no-expansion statement."
+      },
+      {
+        "exploit": "Balance by hidden global punishment instead of institutional consequence.",
+        "countermeasure": "Require explicit ledgers and visible causes for obligations, labor, grain, legitimacy, succession, route, and supply consequences."
+      },
+      {
+        "exploit": "Culture or ethnicity min-maxing through fixed buffs.",
+        "countermeasure": "Reject fixed culture/ethnicity buffs; use reviewed context-specific records and costs only."
+      },
+      {
+        "exploit": "Total-character-score sorting makes persons generic stat cards.",
+        "countermeasure": "Require role fit, relationships, obligations, legitimacy, office, and situational constraints instead of one aggregate score."
+      },
+      {
+        "exploit": "AI-only escape routes hide content or balance failures.",
+        "countermeasure": "Require same GameCommand surface, reason traces, and replayable evidence for AI decisions."
+      },
+      {
+        "exploit": "Manual node battle returns as an M7 blocker through playthrough feedback.",
+        "countermeasure": "Preserve DEFER_MANUAL_NODE_BATTLE exactly; record only as post-1.0 non-blocking candidate unless later Human Gate reverses it."
+      },
+      {
+        "exploit": "Unsupported historical certainty slips through localization or art/audio assets.",
+        "countermeasure": "Route real-world details to historical_researcher, require source labels, and block major cultural risk for Human Gate."
+      },
+      {
+        "exploit": "Cloud-save or telemetry is added as quality evidence infrastructure.",
+        "countermeasure": "Keep evidence local and reviewable; cloud-save implementation, accounts, secrets, telemetry, and remote collection remain Human Gates."
+      }
+    ],
+    "vertical_slice_acceptance": [
+      "The contract reaches REVIEW with gameplay_designer as writer and systems_architect as reviewer; gameplay_designer does not approve its own design implementation.",
+      "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 receives this contract before formal content fill and routes real historical/cultural details through historical_researcher.",
+      "M7-SCENARIO-PERSON-EVENT-FILL-001 fills only the contracted scenario/person/event scope through explicit schemas, source labels, stable IDs, and deterministic ordering.",
+      "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001 produces local deterministic evidence before any post-lock tuning recommendation.",
+      "M7-CONTENT-LOCK-ACCEPTANCE-001 treats formal content lock as a Human Gate and remains BLOCKED/PARTIAL without explicit product-owner approval.",
+      "M7-EXIT-VALIDATION-001 validates M7 content and quality evidence without claiming M8 release readiness."
+    ]
+  },
+  "acceptance_evidence": {
+    "contract_contains_required_sections": [
+      "target",
+      "scenario_person_event_scope",
+      "required_review_states",
+      "post_lock_policy",
+      "balance_tuning_window",
+      "player_decisions",
+      "state",
+      "update_frequency",
+      "formula_intent",
+      "invariants",
+      "ai_behavior",
+      "ui_explanation",
+      "roadmap_acceptance_mapping",
+      "evidence_requirements",
+      "parameters",
+      "boundaries",
+      "exploits",
+      "vertical_slice_acceptance"
+    ],
+    "roadmap_and_matrix_items_mapped": [
+      "historical/cultural/language review",
+      "full scenario/person/event fill",
+      "balance and anti-snowball",
+      "performance/memory/loading",
+      "Chrome/Edge/Firefox/Windows and resolution/localization matrix",
+      "save migration and cloud-save candidate boundaries",
+      "tutorial/hints/encyclopedia",
+      "audio/art/localization",
+      "content lock",
+      "Beta culture review",
+      "manual playthrough evidence",
+      "M7 exit validation"
+    ],
+    "advantage_cost_dependency_counterplay_check": "Every player_decisions entry includes advantage, cost, dependencies, and counterplay.",
+    "formal_content_lock_human_gate": "Prepared only; not approved by this task.",
+    "m6_gate_carry_forward": "M6_GATE = PASS_WITH_LIMITS with Alpha scaffolding, local adviser evidence, batch tuning risk, and unsigned desktop smoke limits preserved.",
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "manual_node_battle_allowed_mention": "post-1.0 non-blocking candidate only unless a later Human Gate reverses it",
+    "forbidden_outputs_not_created": [
+      "product code",
+      "package code",
+      "content-source data",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "prior gate docs",
+      "accepted ADRs",
+      "CI",
+      "release artifacts",
+      "telemetry",
+      "server/multiplayer",
+      "cloud-save implementation",
+      "arbitrary-code mod support",
+      "manual node battle work"
+    ],
+    "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+    "route_to": "systems_architect"
+  },
+  "branch_or_worktree": "design/m7-content-lock-contract",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "accepted_pending_integration",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "updated_at": "2026-06-28T12:48:34.4918832+08:00",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+      "base_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+      "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
+      "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101",
+      "lead_accept_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-28T12:48:34.4918832+08:00"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+      "nickname": "Ledger the 3rd",
+      "status": "closed_accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "design/m7-content-lock-contract",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+      "created_at": "2026-06-28T04:31:17.9147991+08:00",
+      "updated_at": "2026-06-28T12:48:34.4918832+08:00",
+      "next_action": "Await systems_architect review of the planning-only content lock contract.",
+      "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
+      "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101",
+      "review_commit": "7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
+      "closed_at": "2026-06-28T12:48:34.4918832+08:00",
+      "close_reason": "closed_after_writer_review_and_systems_accept"
+    },
+    "systems_architect": {
+      "thread_id": "019f0c87-0fbf-7830-90e5-08484fab11c1",
+      "nickname": "Lintel",
+      "status": "closed_accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "read_only": true,
+      "branch_or_worktree": "design/m7-content-lock-contract",
+      "review_commit": "7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
+      "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+      "review_route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-WRITER-TO-SYSTEMS-REVIEW.json",
+      "created_at": "2026-06-28T12:40:17.4966409+08:00",
+      "updated_at": "2026-06-28T12:48:34.4918832+08:00",
+      "next_action": "Await formal review route message.",
+      "systems_review_submission_id": "019f0c88-f5f4-7e33-b737-3cc2e69ea517",
+      "routed_to_systems_at": "2026-06-28T12:42:17.9564797+08:00",
+      "closed_at": "2026-06-28T12:48:34.4918832+08:00",
+      "close_reason": "closed_after_accept_review",
+      "systems_status": "ACCEPT",
+      "systems_review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-SYSTEMS-REVIEW__systems_architect.json"
+    }
+  },
   "route_to": "systems_architect",
   "notes": [
     "First executable downstream M7 task after the task graph is accepted; planning-only contract work.",
@@ -69,7 +559,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T12:48:34.4918832+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -84,5 +574,28 @@
     "irreversible save/content migration",
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
-  ]
+  ],
+  "started_at": "2026-06-28T04:31:17.9147991+08:00",
+  "base_main_commit": "cf25e7e47f25ab96b9a152f3a14bec3e8444d43b",
+  "previous_closed_task": "M7-TASK-GRAPH-001",
+  "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
+  "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
+  "review_ready_at": "2026-06-28T04:38:12.1103688+08:00",
+  "writer_thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+  "writer_thread_nickname": "Ledger the 3rd",
+  "next_action": "Push branch, open PR, wait for CI, merge to main, then close M7-CONTENT-LOCK-CONTRACT-001.",
+  "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
+  "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101",
+  "review_commit": "7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
+  "systems_thread_id": "019f0c87-0fbf-7830-90e5-08484fab11c1",
+  "systems_thread_nickname": "Lintel",
+  "systems_review_route": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-WRITER-TO-SYSTEMS-REVIEW.json",
+  "systems_review_submission_id": "019f0c88-f5f4-7e33-b737-3cc2e69ea517",
+  "routed_to_systems_at": "2026-06-28T12:42:17.9564797+08:00",
+  "accepted_at": "2026-06-28T12:48:34.4918832+08:00",
+  "accepted_head_commit": "4b6736becbb41ea9f8f93ddce828a4de3239f7ca",
+  "systems_status": "ACCEPT",
+  "systems_review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-SYSTEMS-REVIEW__systems_architect.json",
+  "lead_accept_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json"
 }
