@@ -79,6 +79,15 @@ describe("M2 district client UI", () => {
     expect(chineseMarkup).toContain("地貌 / 经济");
     expect(chineseMarkup).toContain("任命状态");
     expect(chineseMarkup).toContain("地区行动");
+    expect(chineseMarkup).toContain("沿海");
+    expect(chineseMarkup).toContain("驻军");
+    expect(chineseMarkup).toContain("持续");
+    expect(chineseMarkup).toContain("12 日行程");
+    expect(chineseMarkup).not.toContain("Road");
+    expect(chineseMarkup).not.toContain("road");
+    expect(chineseMarkup).not.toContain("Garrison");
+    expect(chineseMarkup).not.toContain("continuous");
+    expect(chineseMarkup).not.toContain("days");
     expect(chineseMarkup).not.toContain("appointment.holder.skill-strong");
     expect(chineseMarkup).not.toContain("route.season.monsoon-risk");
   });

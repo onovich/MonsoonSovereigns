@@ -30,6 +30,7 @@ import {
   type ClientM3BulkAppointmentPreviewItemReadModel,
   type ClientM3CharacterReadModel,
   type ClientM3OfficeReadModel,
+  type ClientM3ObligationReadModel,
   type ClientM3SubmittedCommand,
   type ClientM4CampaignPlanReadModel,
   type ClientM4CampaignReadModelSnapshot,
@@ -1296,7 +1297,7 @@ function DistrictTraitList({ row }: { readonly row: ClientDistrictRowReadModel }
     row.route.routeKinds.length === 0
       ? i18n.t("shell.inspector.routeBlockedTrait")
       : i18n.t("shell.inspector.routeTrait", {
-          kinds: row.route.routeKinds.map((kind) => formatReasonStatus(kind, i18n)).join("/")
+          kinds: formatDistrictRouteKinds(row.route.routeKinds, i18n)
         });
   return (
     <section className="district-panel__section" aria-label={i18n.t("shell.inspector.traits")}>
@@ -1399,9 +1400,9 @@ function DistrictEffectList({
             <div className="district-panel__fact" key={obligation.obligationId} role="listitem">
               <strong>
                 {i18n.t("shell.inspector.effectObligation", {
-                  kind: formatReasonStatus(obligation.obligationKind, i18n),
+                  kind: formatDistrictObligationKind(obligation.obligationKind, i18n),
                   amount: i18n.formatNumber(obligation.amount),
-                  due: obligation.dueLabel
+                  due: formatDistrictObligationDueLabel(obligation.dueLabel, i18n)
                 })}
               </strong>
               <ReasonChips reasonCodes={obligation.reasonCodes} />
@@ -1419,9 +1420,10 @@ function DistrictEffectList({
             <div className="district-panel__fact" role="listitem">
               <strong>
                 {i18n.t("shell.inspector.effectRoute", {
-                  summary: `${formatRouteStatusLabel(routeForecast.status, i18n)}; ${i18n.formatNumber(
-                    routeForecast.travelDays
-                  )} days`
+                  summary: `${formatRouteStatusLabel(routeForecast.status, i18n)}; ${formatDistrictTravelDays(
+                    routeForecast.travelDays,
+                    i18n
+                  )}`
                 })}
               </strong>
               <ReasonChips
@@ -4217,6 +4219,61 @@ function formatRouteStatusLabel(
   }
 }
 
+function formatDistrictRouteKind(
+  kind: ClientDistrictRowReadModel["route"]["routeKinds"][number],
+  i18n: ClientI18n
+): string {
+  switch (kind) {
+    case "road":
+      return i18n.t("shell.routeKind.road");
+    case "river":
+      return i18n.t("shell.routeKind.river");
+    case "coast":
+      return i18n.t("shell.routeKind.coast");
+  }
+}
+
+function formatDistrictRouteKinds(
+  kinds: readonly ClientDistrictRowReadModel["route"]["routeKinds"][number][],
+  i18n: ClientI18n
+): string {
+  return kinds.map((kind) => formatDistrictRouteKind(kind, i18n)).join("/");
+}
+
+function formatDistrictObligationKind(
+  kind: ClientM3ObligationReadModel["obligationKind"],
+  i18n: ClientI18n
+): string {
+  switch (kind) {
+    case "tribute":
+      return i18n.t("shell.obligationKind.tribute");
+    case "troop":
+      return i18n.t("shell.obligationKind.troop");
+    case "garrison":
+      return i18n.t("shell.obligationKind.garrison");
+  }
+}
+
+function formatDistrictObligationDueLabel(dueLabel: string, i18n: ClientI18n): string {
+  if (dueLabel === "continuous") {
+    return i18n.t("shell.inspector.dueContinuous");
+  }
+  if (dueLabel === "war trigger") {
+    return i18n.t("shell.inspector.dueWarTrigger");
+  }
+  const dayCadence = /^([0-9]+) day cadence$/u.exec(dueLabel);
+  if (dayCadence !== null) {
+    return i18n.t("shell.inspector.dueDayCadence", {
+      days: i18n.formatNumber(Number(dayCadence[1]))
+    });
+  }
+  return i18n.formatReasonCode(dueLabel);
+}
+
+function formatDistrictTravelDays(days: number, i18n: ClientI18n): string {
+  return i18n.t("shell.inspector.travelDays", { days: i18n.formatNumber(days) });
+}
+
 function formatPlayerRouteSummary(row: ClientDistrictRowReadModel, i18n: ClientI18n): string {
   const status = formatRouteStatusLabel(row.route.status, i18n);
   if (row.route.totalCost === null || row.route.bottleneckCapacity === null) {
@@ -4224,7 +4281,7 @@ function formatPlayerRouteSummary(row: ClientDistrictRowReadModel, i18n: ClientI
   }
   return i18n.t("shell.route.summaryReachable", {
     status,
-    kinds: row.route.routeKinds.join("/"),
+    kinds: formatDistrictRouteKinds(row.route.routeKinds, i18n),
     cost: i18n.formatNumber(row.route.totalCost),
     capacity: i18n.formatNumber(row.route.bottleneckCapacity)
   });

@@ -201,6 +201,16 @@ test("M7 district inspector is localized secondary browser with bounded renderin
   await expect(panel).toContainText("地貌 / 经济");
   await expect(panel).toContainText("任命状态");
   await expect(panel).toContainText("地区行动");
+  await expect(panel).toContainText("沿海");
+  await expect(panel).toContainText("驻军");
+  await expect(panel).toContainText("持续");
+  await expect(panel).toContainText("12 日行程");
+  const localizedInspectorText = await panel.innerText();
+  expect(localizedInspectorText).not.toContain("Road");
+  expect(localizedInspectorText).not.toContain("road");
+  expect(localizedInspectorText).not.toContain("Garrison");
+  expect(localizedInspectorText).not.toContain("continuous");
+  expect(localizedInspectorText).not.toMatch(/\bdays\b/u);
   await expect(page.getByLabel("路线队列")).toHaveAttribute("data-render-bound", "virtualized");
   const overflow = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,

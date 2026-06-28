@@ -20,7 +20,7 @@
     "client_engineer": {
       "thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "active_writer",
+      "status": "review_ready",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -34,16 +34,18 @@
       "route_sent_at": "2026-06-29T05:14:00.000Z",
       "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
       "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-29T05:24:00.000Z",
+      "updated_at": "2026-06-29T06:10:00.000Z",
       "review_commit": "eb179555d2324311e0966923a137cf81824c01ee",
       "request_changes_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-WRITER.json",
       "request_changes_submission_id": "019f1032-585e-7ab2-90b2-43d7541f818f",
-      "request_changes_sent_at": "2026-06-29T05:51:00.000Z"
+      "request_changes_sent_at": "2026-06-29T05:51:00.000Z",
+      "review_handoff_r2": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "fixed_commit": null
     },
     "qa_reviewer": {
       "thread_id": "019f1025-36fc-70d1-92bb-5858b2c7a74f",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "request_changes",
+      "status": "awaiting_r2_review",
       "role": "qa_reviewer",
       "nickname": "Auditor",
       "configured_model": "gpt-5.5",
@@ -57,7 +59,8 @@
       "routed_at": "2026-06-29T05:34:00.000Z",
       "route_sent_at": "2026-06-29T05:36:00.000Z",
       "route_submission_id": "019f1026-ac78-7bc1-9151-8091a5126a38",
-      "qa_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json"
+      "qa_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+      "source_handoff_r2": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json"
     }
   },
   "last_integrated_task": "M7-APPOINTMENT-FLOW-QUALITY-001",
@@ -1950,8 +1953,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "IN_PROGRESS",
-  "next_machine_action": "Await client_engineer R2 fix for M7-DISTRICT-INSPECTOR-QUALITY-001 after QA REQUEST_CHANGES.",
+  "current_task_status": "REVIEW",
+  "next_machine_action": "Await qa_reviewer R2 review for M7-DISTRICT-INSPECTOR-QUALITY-001; do not mark ACCEPTED/CLOSED before QA passes.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -2138,7 +2141,7 @@
     ]
   },
   "m7_district_inspector_quality": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
     "branch_or_worktree": "feat/m7-district-inspector-quality",
     "base_main_commit": "e8a854f672a49f2a5271111224b17830b6721de8",
@@ -2149,8 +2152,8 @@
     "writer_thread_nickname": "Window",
     "expected_writer_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T05:12:00.000Z",
-    "updated_at": "2026-06-29T05:51:00.000Z",
-    "next_action": "Await client_engineer R2 fix after QA REQUEST_CHANGES.",
+    "updated_at": "2026-06-29T06:10:00.000Z",
+    "next_action": "Await qa_reviewer R2 review of the selected district inspector localization fix.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_sent_at": "2026-06-29T05:14:00.000Z",
@@ -2170,6 +2173,8 @@
     "request_changes_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-WRITER.json",
     "expected_writer_r2_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
     "request_changes_submission_id": "019f1032-585e-7ab2-90b2-43d7541f818f",
-    "request_changes_sent_at": "2026-06-29T05:51:00.000Z"
+    "request_changes_sent_at": "2026-06-29T05:51:00.000Z",
+    "review_handoff_r2": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "fixed_commit": null
   }
 }
