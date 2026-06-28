@@ -1,0 +1,89 @@
+{
+  "message_id": "MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW",
+  "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "from_role": "historical_researcher",
+  "status": "REVIEW",
+  "summary": "Produced the M7 historical, cultural, and language review baseline before formal content fill. The baseline records source policy, claim records, uncertainty labels, language/name/title gates, cultural-risk gates, victim and long-term consequence requirements for coercive material, Human Gate routes for major unresolved cultural risk, M6 PASS_WITH_LIMITS carry-forward, and exact DEFER_MANUAL_NODE_BATTLE preservation. It does not create formal content lock acceptance or accept any Beta real-world claim as locked content.",
+  "artifacts": [
+    "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+    "tests/content-schema-graph-source.test.ts",
+    "project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "research/m7-historical-cultural-language-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Allowed task changes present plus unrelated forbidden untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md left untouched: M project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json; M tests/content-schema-graph-source.test.ts; ?? content-source/m7-review-baseline/; ?? docs/M7_UI_Localization_Art_Handoff_Prompts.md."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list shows M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is the only ready output while this task is in REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 and changed JSON files",
+      "exit_code": 0,
+      "result": "shape ok: task REVIEW, M7 baseline present, no formal content lock acceptance, no accepted Beta real-world claims, DEFER_MANUAL_NODE_BATTLE and PASS_WITH_LIMITS preserved."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Existing content packs validated: m1 abstract graph hash 4a438525; m2 prototype world hash 9ab72b0b; m3 character office hash 76b75849; m6 map candidate hash 4485a353; m6 alpha scenario hash 6d1f6d64."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "Final rerun passed: 1 test file, 16 tests. Earlier development runs failed before local isRecord/isStringArray helpers were added, then were fixed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 32 tests passed."
+    }
+  ],
+  "decisions": [
+    "Created a review baseline as content-source/process evidence, not as final historical content lock acceptance.",
+    "Recorded zero accepted Beta real-world claims in this baseline; later M7 fill must attach source records and labels before content use.",
+    "Used project docs as project baseline/policy evidence and recorded external academic works only as candidate sources where page-level verification is still RESEARCH REQUIRED.",
+    "Required source statements, scholarly interpretation, researcher inference, confidence, dispute status, competing interpretations, and game abstraction in baseline claim records.",
+    "Routed major unresolved cultural risk, coercive-content reward risk, sacred/religious imagery risk, and fixed identity shortcut risk to Human Gate rather than accepting them.",
+    "Preserved M6_GATE = PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE exactly."
+  ],
+  "risks": [
+    "Academic source entries in this baseline are candidate source records only; I did not claim full-text page verification for those sources.",
+    "Formal names, titles, transliterations, symbols, art, audio, clothing, architecture, and religious imagery remain RESEARCH REQUIRED until later specialist review.",
+    "M7 formal content lock acceptance remains a future Human Gate; this handoff must not be treated as content lock approval."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M7 historical/cultural/language baseline for source discipline, claim-record coverage, uncertainty labels, cultural-risk Human Gate routing, violence-cost handling, language/name/title gates, no modern-nationalist shortcuts, no unsupported certainty, no formal content lock acceptance, M6 PASS_WITH_LIMITS carry-forward, and exact DEFER_MANUAL_NODE_BATTLE preservation.",
+  "created_at": "2026-06-28T13:30:00+08:00"
+}
