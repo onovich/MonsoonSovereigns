@@ -5344,11 +5344,15 @@
       "start_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T06:53:11.961Z",
-      "updated_at": "2026-06-28T07:21:39.988Z",
+      "updated_at": "2026-06-28T07:24:12.378Z",
       "start_submission_id": "019f0d01-9272-7bd1-97c2-f3fc907c2d8f",
       "route_sent_at": "2026-06-28T06:54:19.165Z",
       "review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "2abd654d8f2cd29d30f2288b3137f26161683037"
+      "review_commit": "2abd654d8f2cd29d30f2288b3137f26161683037",
+      "qa_thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
+      "qa_route": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-WRITER-TO-QA-REVIEW.json",
+      "qa_submission_id": "019f0d1c-f0ed-7470-8d3e-f44858b782b4",
+      "routed_to_qa_at": "2026-06-28T07:24:12.378Z"
     },
     "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001:client_engineer": {
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
@@ -5365,12 +5369,36 @@
       "start_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T06:53:11.961Z",
-      "updated_at": "2026-06-28T07:21:39.988Z",
-      "next_action": "Await qa_reviewer review.",
+      "updated_at": "2026-06-28T07:23:25.030Z",
+      "next_action": "Await qa_reviewer verdict.",
       "start_submission_id": "019f0d01-9272-7bd1-97c2-f3fc907c2d8f",
       "route_sent_at": "2026-06-28T06:54:19.165Z",
       "review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
       "review_commit": "2abd654d8f2cd29d30f2288b3137f26161683037"
+    },
+    "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001:qa_reviewer": {
+      "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
+      "nickname": "Gate",
+      "status": "review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "read_only": true,
+      "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia",
+      "review_commit": "2abd654d1d9c924fdc12798778f77af7e7941a0e",
+      "review_head_commit": "e5b61a95eb54e76a88c9051c9123294268ec92fe",
+      "review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
+      "review_route_file": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-WRITER-TO-QA-REVIEW.json",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "created_at": "2026-06-28T07:23:25.030Z",
+      "updated_at": "2026-06-28T07:24:12.378Z",
+      "next_action": "Review actual diff and produce QA handoff.",
+      "qa_submission_id": "019f0d1c-f0ed-7470-8d3e-f44858b782b4",
+      "qa_route_sent_at": "2026-06-28T07:24:12.378Z"
     }
   },
   "replaced_threads": [
@@ -5460,5 +5488,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T07:21:39.988Z"
+  "updated_at": "2026-06-28T07:24:12.378Z"
 }
