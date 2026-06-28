@@ -1,0 +1,132 @@
+{
+  "message_id": "MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW",
+  "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Productized the appointment/governance UI into a default player flow for office selection, candidate comparison, eligibility/rejection explanation, administrative impact preview, preview-confirm-result submission, and localized result feedback. Bulk preview remains informational behind a collapsed player section and the bulk submit path remains only in the explicit developer overlay. Raw reason codes were removed from default reason chip DOM attributes and remain visible only through a debug-only raw reason details affordance.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    ".storybook/WebClientShell.stories.tsx",
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-appointment-flow-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial status before edits was clean; final status shows 8 modified implementation/test/story files plus this new handoff file."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APPOINTMENT-FLOW-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-APPOINTMENT-FLOW-QUALITY-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list rendered; M7-APPOINTMENT-FLOW-QUALITY-001 remains IN_PROGRESS/client_engineer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready tasks listed: M7-DISTRICT-INSPECTOR-QUALITY-001, M7-MAP-PRESENTATION-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M7-APPOINTMENT-FLOW-QUALITY-001.json",
+      "exit_code": 0,
+      "result": "task-json-shape-ok M7-APPOINTMENT-FLOW-QUALITY-001 IN_PROGRESS 10 allowed paths 32 forbidden paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 1,
+      "result": "First run failed because older UI tests still asserted raw reason code DOM attributes/text after player-mode raw-code removal."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 1,
+      "result": "First run failed because older web shell tests still asserted raw M4/M6 reason codes in rendered UI."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "21 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "15 tests passed after updating UI expectations to localized reason displays and debug-only raw reason visibility."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "9 tests passed after updating web shell expectations to localized reason displays."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully; existing large chunk warnings reported."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully; existing large chunk warnings reported and temporary output removed by script."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 1,
+      "result": "First run failed because new player-flow controls made several appointment locators ambiguous."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "18 Playwright tests passed after scoping appointment locators by player/debug regions."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "First run failed at format check for apps/web/src/shell/create-shell-snapshot.ts and packages/ui/src/index.tsx."
+    },
+    {
+      "command": "pnpm exec prettier --write apps/web/src/shell/create-shell-snapshot.ts packages/ui/src/index.tsx tests/e2e/web-shell.spec.ts tests/ui-m2-district-list.test.tsx apps/web/src/shell/web-client-shell.test.tsx apps/web/src/styles/shell.css packages/ui/src/i18n.ts .storybook/WebClientShell.stories.tsx",
+      "exit_code": 0,
+      "result": "Prettier formatted create-shell-snapshot.ts and packages/ui/src/index.tsx; other listed files unchanged."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed. Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json."
+    }
+  ],
+  "decisions": [
+    "Default player mode now uses a guided appointment flow; the previous M3 appointment workspace remains only inside the explicit developer overlay.",
+    "The player flow uses existing appointment read models, eligibility/rejection reason arrays, administrative preview fields, and createM3AppointmentCommand. It does not compute eligibility, administrative formulas, or write domain state.",
+    "Bulk preview is retained as collapsed informational context in player mode and retains its submit button only in the debug workspace, so it cannot bypass preview-confirm-result.",
+    "Reason chips no longer expose raw reason codes through default DOM data attributes; raw appointment reason codes are visible only through a debug-only details element in the developer overlay.",
+    "Appointment-specific Storybook variants were added through web shell fixture query modes for normal, empty, rejected/error, extreme, and narrow states."
+  ],
+  "risks": [
+    "Debug overlay still contains legacy M4/M5/M6 workspaces with some technical labels outside this task's appointment-specific surface; tests were updated only where reason-code display policy intersected the shared ReasonChips renderer.",
+    "The web shell submit handlers still record local UI status only; real simulation submission remains outside this shell fixture and should be reviewed for command-surface parity rather than runtime mutation."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Please review architecture boundaries for read-model/command parity, i18n/debug separation, and absence of duplicated appointment/governance domain formulas or UI-owned authoritative state.",
+  "created_at": "2026-06-29T04:21:53.6641142+08:00"
+}

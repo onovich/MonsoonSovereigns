@@ -280,14 +280,14 @@ describe("web client shell", () => {
     expect(markup).toContain('data-bulk-eligible-count="2"');
     expect(markup).toContain('aria-label="M4 campaign planning workspace"');
     expect(markup).toContain('data-muster-readiness="partial"');
-    expect(markup).toContain("m4.ai.withdraw.supply-collapse");
-    expect(markup).toContain("postwar.candidate.ready");
+    expect(markup).toContain("AI withdraws because supply collapsed");
+    expect(markup).toContain("Postwar candidate ready");
     expect(markup).toContain('aria-label="M5 playable slice workspace"');
     expect(markup).toContain("m5.composite.river-gate.v0");
     expect(markup).toContain("Manual node battle UI is unavailable in M5.");
     expect(markup).toContain('aria-label="M6 Alpha start to victory workspace"');
     expect(markup).toContain("m6.alpha.recognized-order.v0");
-    expect(markup).toContain("m6.adviser.recognized-order-ready");
+    expect(markup).toContain("Adviser sees recognized order path ready");
   });
 
   it("rebuilds the Pixi scene shell from the read model", () => {

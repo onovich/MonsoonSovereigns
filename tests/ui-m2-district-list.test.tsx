@@ -94,6 +94,7 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Submit bulk eligible appointments");
     expect(markup).toContain("character-unavailable");
     expect(markup).toContain("office-primary-conflict");
+    expect(markup).toContain("Raw appointment reason codes");
     expect(markup).toContain("Administrative impact preview");
     expect(markup).toContain("Vacancies, succession, obligations");
     expect(markup).toContain("Appointment and enfeoffment results");
@@ -115,12 +116,12 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Cancel plan");
     expect(markup).toContain("Submit siege choice");
     expect(markup).toContain("Withdraw");
-    expect(markup).toContain("route.season.monsoon-risk");
-    expect(markup).toContain("withdrawal.reason.supply-collapse");
-    expect(markup).toContain("m4.ai.withdraw.supply-collapse");
+    expect(markup).toContain("Monsoon route risk");
+    expect(markup).toContain("Withdrawal from supply collapse");
+    expect(markup).toContain("AI withdraws because supply collapsed");
     expect(markup).toContain("War report");
-    expect(markup).toContain("postwar.candidate.ready");
-    expect(markup).toContain("restore-vassal-ruler");
+    expect(markup).toContain("Postwar candidate ready");
+    expect(markup).toContain("Restore vassal ruler option");
     expect(markup).not.toContain("WorldState");
   });
 
@@ -138,9 +139,9 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Save checkpoint");
     expect(markup).toContain("Load checkpoint");
     expect(markup).toContain("Manual node battle UI is unavailable in M5.");
-    expect(markup).toContain("m4.ai.withdraw.supply-collapse");
-    expect(markup).toContain("route.season.monsoon-risk");
-    expect(markup).toContain("postwar.candidate.ready");
+    expect(markup).toContain("AI withdraws because supply collapsed");
+    expect(markup).toContain("Monsoon route risk");
+    expect(markup).toContain("Postwar candidate ready");
     expect(markup).not.toContain("WorldState");
   });
 
@@ -163,15 +164,15 @@ describe("M2 district client UI", () => {
     expect(markup).toContain('aria-live="polite"');
     expect(markup).toContain('role="status"');
     expect(markup).toContain('data-status-kind="idle"');
-    expect(markup).toContain("m6.command.no-alpha-command-submitted");
+    expect(markup).toContain("No Alpha command submitted");
     expect(markup).toContain("Save Alpha checkpoint");
     expect(markup).toContain("Load Alpha checkpoint");
     expect(markup).toContain('aria-describedby="m6-alpha-save-description"');
     expect(markup).toContain("local client-session checkpoint");
     expect(markup).toContain("Diplomacy / legitimacy / succession");
     expect(markup).toContain("tribute-recognition");
-    expect(markup).toContain("legitimacy.source.postwar-settlement");
-    expect(markup).toContain("m6.alpha.succession.peaceful");
+    expect(markup).toContain("Legitimacy Source Postwar Settlement");
+    expect(markup).toContain("M6 Alpha Succession Peaceful");
     expect(markup).toContain("Policies / events / encyclopedia");
     expect(markup).toContain("Harbor charter petition");
     expect(markup).toContain("Grant bounded harbor duties");
@@ -179,7 +180,7 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Content tag COMPOSITE");
     expect(markup).toContain("encyclopedia.m6.policy_event.harbor");
     expect(markup).toContain("AI / adviser reasons");
-    expect(markup).toContain("m6.adviser.recognized-order-ready");
+    expect(markup).toContain("Adviser sees recognized order path ready");
     expect(markup).toContain("Map candidate");
     expect(markup).toContain("map.alpha.western-mainland-candidate");
     expect(markup).toContain("Victory / failure status");
@@ -209,9 +210,9 @@ describe("M2 district client UI", () => {
     expect(emptyMarkup).toContain("Empty M6 Alpha read-model state");
     expect(emptyMarkup).toContain('data-command-count="0"');
     expect(emptyMarkup).toContain("No Alpha command selected");
-    expect(emptyMarkup).toContain("m6.save.no-client-checkpoint");
+    expect(emptyMarkup).toContain("No client checkpoint");
     expect(errorMarkup).toContain('data-terminal-outcome="defeat"');
-    expect(errorMarkup).toContain("m6.recognized-order.recognition-missing");
+    expect(errorMarkup).toContain("M6 Recognized Order Recognition Missing");
     expect(errorMarkup).toContain("Recover from a failed Alpha recognized-order attempt.");
     expect(extremeMarkup).toContain("Alpha pressure route 12");
     expect(extremeMarkup).toContain("Defer settlement review");
@@ -379,7 +380,7 @@ describe("M2 district client UI", () => {
 
     expect(englishMarkup).toContain("Language");
     expect(englishMarkup).toContain("Monsoon route risk");
-    expect(englishMarkup).toContain('data-reason-code="route.season.monsoon-risk"');
+    expect(englishMarkup).not.toContain('data-reason-code="route.season.monsoon-risk"');
     expect(englishMarkup).not.toContain(">route.season.monsoon-risk<");
     expect(chineseMarkup).toContain("语言");
     expect(chineseMarkup).toContain("季风路线风险");
