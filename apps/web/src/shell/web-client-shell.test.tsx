@@ -13,6 +13,14 @@ import {
   createBootstrappedShellSnapshot,
   createWebClientShellSnapshot
 } from "./create-shell-snapshot";
+import {
+  CLIENT_LOCALE_STORAGE_KEY,
+  persistLocalePreference,
+  readBrowserSystemLocales,
+  readStoredLocalePreference,
+  resolveBrowserClientLocale,
+  type LocaleStorageLike
+} from "./i18n-platform";
 
 describe("web client shell", () => {
   it("projects a simulation result into a disposable client read model", () => {
@@ -91,6 +99,78 @@ describe("web client shell", () => {
     expect(markup).toContain('aria-label="M7 audio art localization coverage"');
     expect(markup).toContain("m7.beta.audio-art-localization.coverage.v0");
     expect(markup).toContain("risk.culture-specific-assets-blocked");
+  });
+
+  it("canonicalizes system fallback and persisted locale families without changing snapshots", () => {
+    const writes = new Map<string, string>([[CLIENT_LOCALE_STORAGE_KEY, "zh-Hans"]]);
+    const storage: LocaleStorageLike = {
+      getItem: (key) => writes.get(key) ?? null,
+      setItem: (key, value) => {
+        writes.set(key, value);
+      }
+    };
+    const snapshot = createWebClientShellSnapshot();
+    const before = JSON.stringify(snapshot);
+
+    expect(readStoredLocalePreference(storage)).toBe("zh-CN");
+    expect(writes.get(CLIENT_LOCALE_STORAGE_KEY)).toBe("zh-CN");
+    writes.set(CLIENT_LOCALE_STORAGE_KEY, "en-GB");
+    expect(readStoredLocalePreference(storage)).toBe("en-US");
+    expect(writes.get(CLIENT_LOCALE_STORAGE_KEY)).toBe("en-US");
+    writes.set(CLIENT_LOCALE_STORAGE_KEY, "zh-TW");
+    expect(readStoredLocalePreference(storage)).toBe("zh-CN");
+    expect(writes.get(CLIENT_LOCALE_STORAGE_KEY)).toBe("zh-CN");
+    expect(
+      readBrowserSystemLocales({ languages: ["zh-Hans", "en-US"], language: "en-US" })
+    ).toEqual(["zh-Hans", "en-US"]);
+    expect(
+      resolveBrowserClientLocale({
+        preference: "system",
+        browserLocales: ["en-GB", "zh-Hans"],
+        desktopLocale: null
+      })
+    ).toBe("en-US");
+    expect(
+      resolveBrowserClientLocale({
+        preference: "system",
+        browserLocales: ["zh-HK"],
+        desktopLocale: null
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveBrowserClientLocale({
+        preference: "system",
+        browserLocales: ["zh-Hans-HK"],
+        desktopLocale: null
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveBrowserClientLocale({
+        preference: "system",
+        browserLocales: ["en-US"],
+        desktopLocale: "zh-Hans"
+      })
+    ).toBe("zh-CN");
+    expect(JSON.stringify(snapshot)).toBe(before);
+  });
+
+  it("falls back safely when locale storage getItem or setItem throws", () => {
+    const getThrowingStorage: LocaleStorageLike = {
+      getItem: () => {
+        throw new Error("blocked getItem");
+      },
+      setItem: () => undefined
+    };
+    const setThrowingStorage: LocaleStorageLike = {
+      getItem: () => "zh-HK",
+      setItem: () => {
+        throw new Error("blocked setItem");
+      }
+    };
+
+    expect(readStoredLocalePreference(getThrowingStorage)).toBe("system");
+    expect(readStoredLocalePreference(setThrowingStorage)).toBe("zh-CN");
+    expect(() => persistLocalePreference(setThrowingStorage, "en-US")).not.toThrow();
   });
 
   it("renders React from read model snapshots without authority-bearing state", () => {

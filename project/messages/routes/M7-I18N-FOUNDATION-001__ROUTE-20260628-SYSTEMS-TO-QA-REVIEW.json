@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-I18N-SYSTEMS-TO-QA-REVIEW",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
+  "to_thread_nickname": "Gate the 2nd",
+  "status": "ROUTED",
+  "created_at": "2026-06-28T22:08:50.6709774+08:00",
+  "branch_or_worktree": "feat/m7-i18n-foundation",
+  "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+  "systems_status": "ACCEPT",
+  "source_handoffs": [
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "task_file": "project/tasks/active/M7-I18N-FOUNDATION-001.json",
+  "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+  "requested_action": "Perform independent read-only QA acceptance for M7-I18N-FOUNDATION-001. Verify the actual diff, task scope, writer handoff, systems ACCEPT handoff, locale canonicalization and persistence, browser and Electron-safe locale paths, Storybook/Playwright evidence, no bare player-visible keys in covered paths, and no simulation/protocol/save/map authority changes.",
+  "constraints": [
+    "Read-only review: do not modify business code, task files, state files, or tests.",
+    "Return ACCEPT, REQUEST_CHANGES, or BLOCKED.",
+    "If ACCEPT, write the expected QA handoff JSON under project/messages/outbox.",
+    "If REQUEST_CHANGES, identify exact file paths, failing criteria, and required reroute to the original client_engineer writer.",
+    "If BLOCKED, identify the exact Human Gate or repository contradiction."
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+}

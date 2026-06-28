@@ -1,0 +1,116 @@
+{
+  "message_id": "MSG-20260628-M7-I18N-FOUNDATION-LEAD-ACCEPT",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-I18N-FOUNDATION-001 after writer R2 repaired the QA-blocking locale-family canonicalization defect, systems_architect accepted the R2 client-only boundary, and independent qa_reviewer accepted R2 verification. The accepted implementation adds the client-side i18n foundation for system, en-US, and zh-CN; en/en-* canonicalize to en-US, zh/zh-* canonicalize to zh-CN for the current supported surface; persisted regional values migrate to canonical supported preferences; localStorage getItem/setItem failures do not block Web shell boot; and language switching remains a UI/session concern that does not change authoritative simulation state, command history, save data, AI behavior, protocol DTOs, map authority, Electron IPC/preload, or dependency manifests.",
+  "branch_or_worktree": "feat/m7-i18n-foundation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "3fcdb724f630f6cf498df26cc3f65729fe029306",
+  "branch_head_at_accept": "88a3c73b988b05dd226347caf50b742fe292a69a",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/i18n-platform.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "tests_run": [
+    {
+      "command": "node --experimental-strip-types -e locale family probe",
+      "exit_code": 0,
+      "result": "{\"en\":\"en-US\",\"enGbThenZh\":\"en-US\",\"zhTw\":\"zh-CN\",\"zhHk\":\"zh-CN\",\"zhHansHk\":\"zh-CN\",\"fr\":\"en-US\"}"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 13 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 7 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 14/14."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web build passed with existing large chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed with existing plugin timing and large chunk warnings."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-I18N-FOUNDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-I18N-FOUNDATION-001 remains REVIEW before lead acceptance state update; downstream UI/localization tasks remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready candidates remain M7-DESIGN-TOKENS-ASSET-SLOTS-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "validate-handoff.mjs writer/systems/QA R1/R2 handoffs",
+      "exit_code": 0,
+      "result": "Writer R1, systems R1, QA R1, writer R2, systems R2, and QA R2 handoffs validated."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_R2_I18N_FOUNDATION",
+      "decision": "Accept M7-I18N-FOUNDATION-001 and proceed to PR integration after all required independent review and validation evidence passed."
+    },
+    {
+      "id": "PRESERVE_DOWNSTREAM_UI_QUALITY_SCOPE",
+      "decision": "Full player-mode string cleanup, no-debug-string coverage, and broad no-bare-key UI regression remain assigned to downstream M7 UI quality tasks and do not block this foundation task."
+    }
+  ],
+  "risks": [
+    {
+      "id": "ZH_FAMILY_TO_ZH_CN_SCOPE",
+      "severity": "P2",
+      "summary": "All zh-* tags intentionally map to zh-CN for the current supported locale surface. This is not completed Traditional Chinese or region-specific Chinese support.",
+      "mitigation": "Future zh-Hant, zh-TW, zh-HK, or additional locale support requires a separate approved task or Human Gate."
+    },
+    {
+      "id": "FULL_PLAYER_STRING_COVERAGE_DOWNSTREAM",
+      "severity": "P3",
+      "summary": "The i18n foundation is accepted before full UI text cleanup.",
+      "mitigation": "Downstream M7 app shell, map, inspector, appointment, guidance, regression matrix, and UI-localization exit tasks retain final coverage responsibility."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then close M7-I18N-FOUNDATION-001 only after the accepted commits enter origin/main.",
+  "created_at": "2026-06-28T23:02:12.2674670+08:00"
+}

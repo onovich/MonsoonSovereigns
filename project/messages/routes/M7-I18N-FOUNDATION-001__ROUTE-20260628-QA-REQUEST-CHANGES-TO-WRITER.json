@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-I18N-QA-REQUEST-CHANGES-TO-WRITER",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "client_engineer",
+  "to_thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
+  "to_thread_nickname": "Window",
+  "status": "ROUTED",
+  "created_at": "2026-06-28T22:26:53.4266129+08:00",
+  "branch_or_worktree": "feat/m7-i18n-foundation",
+  "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+  "qa_status": "REQUEST_CHANGES",
+  "source_handoffs": [
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json"
+  ],
+  "task_file": "project/tasks/active/M7-I18N-FOUNDATION-001.json",
+  "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
+  "requested_action": "Fix the QA-blocking locale canonicalization defect. In packages/ui/src/i18n.ts, canonicalize supported locale families so en and en-* resolve to en-US, and zh and zh-* resolve to zh-CN unless a future Human Gate adds another Chinese locale. Add tests for zh-TW, zh-HK, zh-Hans-HK or equivalent zh-* tags, and for en-GB before zh-Hans resolving to en-US. Sync Web persistence/system fallback coverage in apps/web/src/shell/web-client-shell.test.tsx and/or Playwright if needed. Preserve existing boundaries: no sim-core, sim-ai, protocol, save-format, map-renderer, Electron IPC/preload, dependency, docs/gate, or product-scope changes.",
+  "reproduction": "node --experimental-strip-types -e \"const m=await import('./packages/ui/src/i18n.ts'); console.log(JSON.stringify({enGbThenZh:m.resolveClientLocale({preference:'system',systemLocales:['en-GB','zh-Hans']}), zhTw:m.resolveClientLocale({preference:'system',systemLocales:['zh-TW']}), zhHk:m.resolveClientLocale({preference:'system',systemLocales:['zh-HK']}), zhHansHk:m.resolveClientLocale({preference:'system',systemLocales:['zh-Hans-HK']})}));\"",
+  "expected_after_fix": {
+    "enGbThenZh": "en-US",
+    "zhTw": "zh-CN",
+    "zhHk": "zh-CN",
+    "zhHansHk": "zh-CN"
+  },
+  "required_tests": [
+    "git diff --check",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter web test",
+    "pnpm test:e2e",
+    "pnpm check",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+}

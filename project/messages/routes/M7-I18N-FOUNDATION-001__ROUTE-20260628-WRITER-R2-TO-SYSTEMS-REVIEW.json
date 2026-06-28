@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-I18N-WRITER-R2-TO-SYSTEMS-REVIEW",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "to_thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
+  "to_thread_nickname": "Keystone",
+  "status": "ROUTED",
+  "created_at": "2026-06-28T22:38:19.7627665+08:00",
+  "branch_or_worktree": "feat/m7-i18n-foundation",
+  "review_commit": "3fcdb724f630f6cf498df26cc3f65729fe029306",
+  "source_handoffs": [
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json"
+  ],
+  "task_file": "project/tasks/active/M7-I18N-FOUNDATION-001.json",
+  "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-R2-REVIEW__systems_architect.json",
+  "requested_action": "Review the R2 locale-family canonicalization repair. Confirm that en/en-* -> en-US and zh/zh-* -> zh-CN satisfies the accepted M7 i18n foundation boundary, that this remains a client-only locale preference/display concern, and that no sim-core, sim-ai, protocol, save-format, map-renderer, Electron IPC/preload, dependency, save schema, or product-scope boundary changed. If ACCEPT, route to qa_reviewer for R2 verification; if REQUEST_CHANGES, route back to the original client_engineer writer with exact fixes.",
+  "r2_fix_commit": "3fcdb724f630f6cf498df26cc3f65729fe029306",
+  "qa_request_changes_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+  "r2_writer_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+}

@@ -17,7 +17,15 @@ import {
   withM7GuidanceReadModel,
   withDistrictListReadModel
 } from "../packages/client-core/src/index";
-import { ClientShellView } from "../packages/ui/src/index";
+import {
+  ClientShellView,
+  createClientI18n,
+  isBareReasonCodeLike,
+  parseClientLocalePreference,
+  resolveClientLocale,
+  type ClientI18n,
+  type ClientLocalePreference
+} from "../packages/ui/src/index";
 
 describe("M2 district client UI", () => {
   test("renders the district panel fields from the read-model slice", () => {
@@ -302,11 +310,82 @@ describe("M2 district client UI", () => {
     expect(emptyCoverageMarkup).toContain('data-locale-count="0"');
     expect(extremeCoverageMarkup).toContain('data-asset-reference-count="8"');
   });
+
+  test("canonicalizes supported en-* and zh-* locale families", () => {
+    expect(parseClientLocalePreference("en")).toBe("en-US");
+    expect(parseClientLocalePreference("en-GB")).toBe("en-US");
+    expect(parseClientLocalePreference("zh-Hans")).toBe("zh-CN");
+    expect(parseClientLocalePreference("zh-TW")).toBe("zh-CN");
+    expect(parseClientLocalePreference("zh-HK")).toBe("zh-CN");
+    expect(parseClientLocalePreference("zh-Hans-HK")).toBe("zh-CN");
+    expect(parseClientLocalePreference("zh-CN")).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["en-GB", "zh-Hans"]
+      })
+    ).toBe("en-US");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["zh-Hans", "en-US"]
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["zh-TW"]
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["zh-HK"]
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["zh-Hans-HK"]
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["fr-FR"]
+      })
+    ).toBe("en-US");
+  });
+
+  test("renders localized language controls and reason display without mutating read models", () => {
+    const snapshot = createM2PrototypeClientReadModelSnapshot();
+    const beforeHash = snapshot.simulation.stateHash;
+    const before = JSON.stringify(snapshot);
+    const englishMarkup = renderToStaticMarkup(
+      createShell(snapshot, "tutorial", createClientI18n("en-US"), "en-US")
+    );
+    const chineseMarkup = renderToStaticMarkup(
+      createShell(snapshot, "tutorial", createClientI18n("zh-CN"), "zh-CN")
+    );
+
+    expect(englishMarkup).toContain("Language");
+    expect(englishMarkup).toContain("Monsoon route risk");
+    expect(englishMarkup).toContain('data-reason-code="route.season.monsoon-risk"');
+    expect(englishMarkup).not.toContain(">route.season.monsoon-risk<");
+    expect(chineseMarkup).toContain("语言");
+    expect(chineseMarkup).toContain("季风路线风险");
+    expect(chineseMarkup).toContain("季风诸王");
+    expect(isBareReasonCodeLike("route.season.monsoon-risk")).toBe(true);
+    expect(JSON.stringify(snapshot)).toBe(before);
+    expect(snapshot.simulation.stateHash).toBe(beforeHash);
+  });
 });
 
 function createShell(
   snapshot: Parameters<typeof ClientShellView>[0]["snapshot"],
-  initialM7Surface: Parameters<typeof ClientShellView>[0]["initialM7Surface"] = "tutorial"
+  initialM7Surface: Parameters<typeof ClientShellView>[0]["initialM7Surface"] = "tutorial",
+  i18n: ClientI18n = createClientI18n("en-US"),
+  localePreference: ClientLocalePreference = "system"
 ) {
   const selectedEntity = { kind: "district" as const, districtId: createClientDistrictId(1) };
   const mapMode: ClientMapMode = "seasonal";
@@ -327,6 +406,9 @@ function createShell(
       m5CommandStatus={null}
       onM6CommandSubmit={() => undefined}
       m6CommandStatus={null}
+      i18n={i18n}
+      localePreference={localePreference}
+      onLocalePreferenceChange={() => undefined}
       initialM7Surface={initialM7Surface}
       mapSurface={<div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />}
     />

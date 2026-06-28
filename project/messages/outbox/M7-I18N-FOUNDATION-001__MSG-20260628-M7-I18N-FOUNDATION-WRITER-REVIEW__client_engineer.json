@@ -1,0 +1,143 @@
+{
+  "message_id": "MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M7 client-side i18n foundation for Web shell/UI surfaces: typed message keys, system/en-US/zh-CN preference model, zh-Hans-to-zh-CN alias migration, localStorage persistence, safe Electron/browser system-locale detection, localized reason-code display strings, Storybook locale states, and Playwright coverage for system fallback, manual switch, persistence, and no visible raw reason key in the tested core path. The implementation stays outside sim-core and does not change simulation state, hash, command DTOs, save payloads, AI behavior, or map-renderer authority.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/i18n-platform.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-i18n-foundation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified only allowed UI/Web/Storybook/test files plus this new handoff; existing task/thread route files from task startup remain in the worktree. No forbidden sim-core, protocol, save-format, map-renderer, docs/gates/status, tools, or .github files were modified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-I18N-FOUNDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed M7-I18N-FOUNDATION-001 as IN_PROGRESS and preserved DEFER_MANUAL_NODE_BATTLE context; no next task was started."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Reported M7-DESIGN-TOKENS-ASSET-SLOTS-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 as ready/draft candidates. This writer did not start either task."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "M7 task JSON shape OK; manual_node_battle_decision remains DEFER_MANUAL_NODE_BATTLE."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 6 tests. Added Web locale persistence/system fallback coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 13 tests. Added locale alias, localized reason display, and snapshot immutability/hash-preservation assertions."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite Web build passed. Existing chunk-size warnings remain for large bundles; no new build error."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed. Existing Vite chunk-size/plugin timing warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 14/14. First attempt failed because port 4173 reused an unrelated Wuming Town local server; stopped that listener and reran successfully against this repository."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary check all passed. A prior attempt was interrupted by the user; this rerun completed successfully."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLIENT-I18N-FOUNDATION-IN-UI",
+      "decision": "Implemented i18n in @monsoon/ui and apps/web only. sim-core, protocol, save-format, sim-ai, and map-renderer remain unchanged."
+    },
+    {
+      "id": "LOCALE-PREFERENCE-MODEL",
+      "decision": "Supported preferences are system, en-US, and zh-CN. First launch defaults to system; manual choices persist to localStorage under monsoon.client.localePreference.v1."
+    },
+    {
+      "id": "ZH-HANS-ALIAS-TO-ZH-CN",
+      "decision": "Resolved the zh-CN versus zh-Hans risk by treating zh, zh-CN, zh-Hans, zh-Hans-CN, and zh-SG as Simplified Chinese aliases that canonicalize to zh-CN for client UI state and persisted preference."
+    },
+    {
+      "id": "SAFE-PLATFORM-LOCALE-DETECTION",
+      "decision": "Web uses navigator.languages/navigator.language. Electron Web shell may use the existing minimal monsoonDesktop.getRuntimeInfo().locale preload bridge; no new IPC channel, Node integration, or renderer capability was added."
+    },
+    {
+      "id": "REASON-CODE-DISPLAY-LOCALIZATION",
+      "decision": "Reason chips and selected reason/status surfaces now display localized player text while preserving raw reason code only in data-reason-code/data-status-reason attributes for tests and diagnostics."
+    },
+    {
+      "id": "NO-SIMULATION-AUTHORITY-CHANGE",
+      "decision": "Language preference and i18n live in React/UI session state and localStorage only; they do not enter read-model authority, command payloads, save payloads, AI planning, or state hashes."
+    },
+    {
+      "id": "STORYBOOK-LOCALE-STATES",
+      "decision": "Added Storybook locale coverage for English, Simplified Chinese, system->zh-Hans fallback, and system->English fallback in addition to existing normal/empty/error/extreme/narrow M7 states."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FULL-UI-STRING-COVERAGE-NOT-FINAL",
+      "severity": "P2",
+      "summary": "This foundation localizes the shell controls, language settings, reason-code displays, and tested M4/M5/M6/M7 reason surfaces, but the app still contains many historical/prototype labels and read-model text that are expected to be productized by downstream app-shell/map/inspector/appointment tasks.",
+      "mitigation": "Keep downstream M7-APP-SHELL-QUALITY-001, M7-MAP-PRESENTATION-QUALITY-001, M7-DISTRICT-INSPECTOR-QUALITY-001, M7-APPOINTMENT-FLOW-QUALITY-001, and M7-UI-REGRESSION-MATRIX-001 responsible for full player-mode string cleanup and no-debug-text assertions."
+    },
+    {
+      "id": "LOCALE-COVERAGE-IS-FOUNDATION-NOT-LANGUAGE-LOCK",
+      "severity": "P2",
+      "summary": "Simplified Chinese strings added here are UI foundation strings, not final cultural/language content lock wording.",
+      "mitigation": "Route final naming/title/cultural text through existing historical/cultural/language review and formal content lock acceptance."
+    },
+    {
+      "id": "BUNDLE-WARNING-UNCHANGED",
+      "severity": "P3",
+      "summary": "Web and Storybook builds still report existing >500 kB chunk warnings.",
+      "mitigation": "No new dependency was added; defer bundle splitting to performance/loading validation if required."
+    },
+    {
+      "id": "LOCAL-E2E-PORT-REUSE",
+      "severity": "P3",
+      "summary": "Initial Playwright run reused an unrelated local server on 127.0.0.1:4173, causing false failures against a different app.",
+      "mitigation": "Stopped the stale listener and reran pnpm test:e2e successfully. Future runs should ensure 4173 is not occupied by another workspace when reuseExistingServer is true."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Systems architecture review of the client-side i18n foundation, especially locale canonicalization, platform boundary, reason-code display localization, and confirmation that no simulation authority/protocol/save/map-renderer boundary was changed. After systems review, route to qa_reviewer/test_engineer for independent UI/i18n regression review; no Electron IPC expansion was made, so security review is only needed if systems_architect wants an additional Electron boundary check.",
+  "created_at": "2026-06-28T21:51:00.2179250+08:00"
+}
