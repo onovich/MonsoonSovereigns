@@ -1871,7 +1871,7 @@
   ],
   "active_threads": [
     {
-      "task_id": null,
+      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "status": "active_router",
@@ -1879,9 +1879,23 @@
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration selecting next M7 task after tutorial encyclopedia closure",
-      "branch_or_worktree": "main",
-      "updated_at": "2026-06-28T08:15:23.664Z"
+      "responsibility": "lead orchestration for M7 audio, art, and localization coverage task",
+      "branch_or_worktree": "feat/m7-audio-art-localization",
+      "updated_at": "2026-06-28T08:23:56.063Z"
+    },
+    {
+      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "role": "client_engineer",
+      "thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
+      "nickname": "Lantern",
+      "status": "active_writer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "responsibility": "Implement allowed-scope Beta audio/art/localization coverage and writer handoff",
+      "branch_or_worktree": "feat/m7-audio-art-localization",
+      "updated_at": "2026-06-28T08:23:56.063Z"
     }
   ],
   "task_effects": {
@@ -2416,8 +2430,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start highest-priority dependency-ready M7 task after closure merge.",
-  "current_task": null,
+  "next_action": "Await M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 writer REVIEW handoff, then route to historical_researcher.",
+  "current_task": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2467,7 +2481,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T08:15:23.664Z",
+  "updated_at": "2026-06-28T08:25:40.796Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2622,7 +2636,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-28T08:15:23.664Z",
+  "last_updated_at": "2026-06-28T08:25:40.796Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -3366,5 +3380,30 @@
       "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_audio_art_localization_complete": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+    "branch_or_worktree": "feat/m7-audio-art-localization",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
+    "writer_nickname": "Lantern",
+    "owner_role": "client_engineer",
+    "reviewer_role": "historical_researcher",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "base_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
+    "previous_closed_task": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-START.json",
+    "started_at": "2026-06-28T08:23:56.063Z",
+    "updated_at": "2026-06-28T08:25:40.796Z",
+    "next_action": "client_engineer writer returns REVIEW handoff for historical_researcher.",
+    "start_submission_id": "019f0d55-37a5-7102-b158-7614639eb423",
+    "route_sent_at": "2026-06-28T08:25:40.796Z"
   }
 }

@@ -2,7 +2,7 @@
   "id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
   "summary": "Plan and complete Beta audio, art, and localization coverage",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "IN_PROGRESS",
   "owner_role": "client_engineer",
   "reviewer_role": "historical_researcher",
   "risk_level": "R4",
@@ -76,8 +76,42 @@
     "pnpm storybook:build",
     "pnpm check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "feat/m7-audio-art-localization",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "feat/m7-audio-art-localization",
+      "base_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
+      "updated_at": "2026-06-28T08:25:40.796Z",
+      "start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-START.json",
+      "start_submission_id": "019f0d55-37a5-7102-b158-7614639eb423",
+      "route_sent_at": "2026-06-28T08:25:40.796Z"
+    },
+    "client_engineer": {
+      "thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
+      "nickname": "Lantern",
+      "status": "active_writer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-audio-art-localization",
+      "base_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
+      "created_at": "2026-06-28T08:23:56.063Z",
+      "updated_at": "2026-06-28T08:25:40.796Z",
+      "start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-START.json",
+      "next_action": "Implement allowed-scope audio/art/localization coverage and return writer REVIEW handoff.",
+      "start_submission_id": "019f0d55-37a5-7102-b158-7614639eb423",
+      "route_sent_at": "2026-06-28T08:25:40.796Z"
+    }
+  },
   "route_to": "historical_researcher",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -87,7 +121,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T08:25:40.796Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -102,5 +136,16 @@
     "irreversible save/content migration",
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
-  ]
+  ],
+  "started_at": "2026-06-28T08:23:56.063Z",
+  "base_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
+  "previous_closed_task": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-START.json",
+  "writer_thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
+  "writer_thread_nickname": "Lantern",
+  "scheduling_reason": "Selected before M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 because it is the next content-lock-chain task after scenario fill and tutorial/encyclopedia completion; save/cloud remains dependency-ready but unstarted.",
+  "next_action": "client_engineer writer returns REVIEW handoff for historical_researcher.",
+  "start_submission_id": "019f0d55-37a5-7102-b158-7614639eb423",
+  "route_sent_at": "2026-06-28T08:25:40.796Z"
 }
