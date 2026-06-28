@@ -61,6 +61,38 @@ describe("web client shell", () => {
     expect(snapshot.m6Alpha.mapCandidate.districtCount).toBeGreaterThanOrEqual(4);
   });
 
+  it("renders the M7 coverage tab from the initial search parameter", () => {
+    const snapshot = createWebClientShellSnapshot();
+    const markup = renderToStaticMarkup(
+      <ClientShellView
+        snapshot={snapshot}
+        mapMode="seasonal"
+        zoomLevel={1}
+        selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
+        onMapModeChange={() => undefined}
+        onZoomLevelChange={() => undefined}
+        onSelectedEntityChange={() => undefined}
+        onM3CommandSubmit={() => undefined}
+        m3CommandStatus={null}
+        onM4CommandSubmit={() => undefined}
+        m4CommandStatus={null}
+        onM5CommandSubmit={() => undefined}
+        m5CommandStatus={null}
+        onM6CommandSubmit={() => undefined}
+        m6CommandStatus={null}
+        initialM7Surface="coverage"
+        mapSurface={
+          <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
+        }
+      />
+    );
+
+    expect(markup).toContain('data-active-surface="coverage"');
+    expect(markup).toContain('aria-label="M7 audio art localization coverage"');
+    expect(markup).toContain("m7.beta.audio-art-localization.coverage.v0");
+    expect(markup).toContain("risk.culture-specific-assets-blocked");
+  });
+
   it("renders React from read model snapshots without authority-bearing state", () => {
     const snapshot = createBootstrappedShellSnapshot();
     const markup = renderToStaticMarkup(

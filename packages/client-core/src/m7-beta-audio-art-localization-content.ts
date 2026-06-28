@@ -1,0 +1,287 @@
+// Generated from content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json.
+// Keep this fixture in sync with the accepted content-source manifest.
+export const M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE = {
+  schemaVersion: 1,
+  kind: "m7.beta-audio-art-localization-coverage",
+  taskId: "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+  manifestId: "m7.beta.audio-art-localization.coverage.v0",
+  contentScope: "m7-beta-content-lock-prep",
+  notContentLockAcceptance: true,
+  m6GateCarryForward: "PASS_WITH_LIMITS",
+  manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE",
+  staticResourceBoundary: {
+    noPaidService: true,
+    noRemotePipeline: true,
+    noSecrets: true,
+    noTelemetry: true,
+    noCdnOrReleaseCommitment: true,
+    noNewProductionDependency: true,
+    resourceMode: "static-manifest-and-local-client-read-model-only"
+  },
+  supportedLocales: [
+    {
+      locale: "en-US",
+      displayName: "English",
+      status: "BETA_COVERED",
+      uiChromeCovered: true,
+      tutorialCovered: true,
+      hintsCovered: true,
+      encyclopediaCovered: true,
+      contentRecordCovered: true,
+      reviewState: "SCHEMA_VALIDATED",
+      note: "English strings are the source locale for M7 UI chrome and accepted guidance/content records."
+    },
+    {
+      locale: "zh-Hans",
+      displayName: "Simplified Chinese",
+      status: "BETA_COVERED",
+      uiChromeCovered: true,
+      tutorialCovered: true,
+      hintsCovered: true,
+      encyclopediaCovered: true,
+      contentRecordCovered: true,
+      reviewState: "LANGUAGE_REVIEW_REQUIRED",
+      note: "Coverage exists through stable zhHans fields and review-state records; wording quality remains routed to language review before formal lock."
+    }
+  ],
+  assetReferences: [
+    {
+      assetId: "audio.ui.command-confirm",
+      kind: "audio",
+      surface: "command-confirmation",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/audio/ui/command-confirm-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: ["HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-ui-no-music-no-instrument-claim",
+      routeTo: "historical_researcher",
+      note: "Reference slot only; no period instrument, melody, ritual, or place claim is introduced."
+    },
+    {
+      assetId: "audio.ui.risk-warning",
+      kind: "audio",
+      surface: "culture-risk-warning",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/audio/ui/risk-warning-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: ["HIST-M7-BASELINE-005-VIOLENCE-COSTS", "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-ui-no-music-no-sacred-sound",
+      routeTo: "historical_researcher",
+      note: "Warning cue slot is UI-only and cannot become sacred, ritual, or culture-specific audio without review."
+    },
+    {
+      assetId: "audio.ui.panel-tab",
+      kind: "audio",
+      surface: "panel-navigation",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/audio/ui/panel-tab-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: ["HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-ui",
+      routeTo: "historical_researcher",
+      note: "Navigation cue slot is not music and does not encode a regional instrument."
+    },
+    {
+      assetId: "audio.map.selection",
+      kind: "audio",
+      surface: "map-selection",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/audio/map/selection-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: ["HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-ui",
+      routeTo: "historical_researcher",
+      note: "Map selection cue slot stays separate from Pixi map authority and can be rebuilt with the UI context."
+    },
+    {
+      assetId: "art.ui.review-state-badges",
+      kind: "art",
+      surface: "review-state-badges",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/art/ui/review-state-badges-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: [
+        "HIST-M7-BASELINE-006-LANGUAGE-NAMES-TITLES",
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"
+      ],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-shape-and-text-no-sacred-symbol",
+      routeTo: "historical_researcher",
+      note: "Badges use plain text and neutral geometry; no flags, scripts, ritual marks, or sacred iconography."
+    },
+    {
+      assetId: "art.map.lod-label-style",
+      kind: "art",
+      surface: "map-label-lod",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/art/map/lod-label-style-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: [
+        "HIST-M7-BASELINE-006-LANGUAGE-NAMES-TITLES",
+        "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"
+      ],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-label-style",
+      routeTo: "historical_researcher",
+      note: "Label style is UI typography/LOD only; place names and scripts remain localization records."
+    },
+    {
+      assetId: "art.encyclopedia.source-cards",
+      kind: "art",
+      surface: "encyclopedia-source-cards",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/art/encyclopedia/source-card-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: ["HIST-M7-BASELINE-001-SCOPE", "HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-document-card",
+      routeTo: "historical_researcher",
+      note: "Cards frame source IDs and review states without manuscript, temple, flag, or court-symbol claims."
+    },
+    {
+      assetId: "art.coverage.viewport-layout",
+      kind: "art",
+      surface: "viewport-and-high-dpi-layout",
+      status: "BETA_COVERED",
+      staticResourceRef: "static://m7/art/ui/responsive-layout-neutral.v0",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: ["HIST-M7-BASELINE-007-SYMBOLS-ART-MUSIC"],
+      reviewState: "SCHEMA_VALIDATED",
+      cultureRisk: "neutral-layout",
+      routeTo: "historical_researcher",
+      note: "Layout coverage is static CSS/read-model evidence for 1280x720, 16:10, ultrawide, high-DPI, keyboard, and text scaling."
+    }
+  ],
+  localizationChecks: [
+    {
+      checkId: "loc.ui.chrome.keys",
+      surface: "M7 UI chrome",
+      requiredKeyPattern: "ui.m7.*",
+      requiredLocaleCount: 2,
+      status: "BETA_COVERED",
+      reviewState: "SCHEMA_VALIDATED",
+      note: "M7 workspace labels, tabs, metric names, empty states, and coverage panel labels have stable key records."
+    },
+    {
+      checkId: "loc.tutorial.keys",
+      surface: "M7 tutorial",
+      requiredKeyPattern: "tutorial.m7.*",
+      requiredLocaleCount: 2,
+      status: "BETA_COVERED",
+      reviewState: "SCHEMA_VALIDATED",
+      note: "Tutorial rows are tied to command/query/reason-code read models and content-review records."
+    },
+    {
+      checkId: "loc.hints.keys",
+      surface: "M7 contextual hints",
+      requiredKeyPattern: "hint.m7.*",
+      requiredLocaleCount: 2,
+      status: "BETA_COVERED",
+      reviewState: "SCHEMA_VALIDATED",
+      note: "Hint text uses explicit stable IDs and reason-code triggers; the UI does not infer domain rules."
+    },
+    {
+      checkId: "loc.encyclopedia.keys",
+      surface: "M7 encyclopedia",
+      requiredKeyPattern: "encyclopedia.m7.*",
+      requiredLocaleCount: 2,
+      status: "BETA_COVERED",
+      reviewState: "SCHEMA_VALIDATED",
+      note: "Encyclopedia entries expose claim/source/review references and keep historical certainty labels visible."
+    },
+    {
+      checkId: "loc.content-record.keys",
+      surface: "M7 scenario/person/event content records",
+      requiredKeyPattern: "content.m7.beta.*",
+      requiredLocaleCount: 2,
+      status: "BETA_COVERED",
+      reviewState: "LANGUAGE_REVIEW_REQUIRED",
+      note: "Language-sensitive names and titles remain review-blocked while still carrying stable keys."
+    }
+  ],
+  viewportSmoke: [
+    {
+      smokeId: "viewport.1280x720",
+      width: 1280,
+      height: 720,
+      textScalePercent: 100,
+      deviceScaleFactor: 1,
+      status: "BETA_COVERED",
+      note: "Coverage panel participates in Playwright no-horizontal-overflow checks."
+    },
+    {
+      smokeId: "viewport.16x10-text-scale",
+      width: 1280,
+      height: 800,
+      textScalePercent: 125,
+      deviceScaleFactor: 1,
+      status: "BETA_COVERED",
+      note: "Text scaling is covered by wrapping grid metrics and reason chips."
+    },
+    {
+      smokeId: "viewport.ultrawide",
+      width: 2560,
+      height: 1080,
+      textScalePercent: 100,
+      deviceScaleFactor: 1,
+      status: "BETA_COVERED",
+      note: "Wide layout keeps coverage lists inside grid tracks."
+    },
+    {
+      smokeId: "viewport.high-dpi",
+      width: 1920,
+      height: 1080,
+      textScalePercent: 100,
+      deviceScaleFactor: 2,
+      status: "BETA_COVERED",
+      note: "High-DPI smoke is static UI/read-model evidence only; Pixi context rebuild remains map-renderer responsibility."
+    }
+  ],
+  postOneGaps: [
+    {
+      gapId: "post1.audio.period-music",
+      status: "POST_1_0_NONBLOCKING",
+      routeTo: "historical_researcher",
+      note: "Period music, instruments, court ritual sound, and sacred audio are not Beta-blocking and require source-specific cultural review before production."
+    },
+    {
+      gapId: "post1.art.clothing-architecture-symbols",
+      status: "POST_1_0_NONBLOCKING",
+      routeTo: "historical_researcher",
+      note: "Culture-specific clothing, architecture, weapons, flags, scripts, and religious imagery remain post-1.0 candidates unless Human Gate approves reviewed production."
+    },
+    {
+      gapId: "post1.voiceover-and-locale-expansion",
+      status: "POST_1_0_NONBLOCKING",
+      routeTo: "historical_researcher",
+      note: "Voiceover and additional locales are not included in Beta coverage and require separate linguistic review and production scope."
+    }
+  ],
+  unresolvedRisks: [
+    {
+      riskId: "risk.culture-specific-assets-blocked",
+      severity: "major-cultural-risk",
+      routeTo: "historical_researcher",
+      humanGate: true,
+      note: "No culture-specific visual, language, music, naming, or symbol choice should be accepted from this task without reviewer evidence and Human Gate when major risk remains."
+    },
+    {
+      riskId: "risk.language-quality-review",
+      severity: "review-required",
+      routeTo: "historical_researcher",
+      humanGate: false,
+      note: "Stable zh-Hans coverage exists for Beta records, but final public wording quality and title/name choices remain language-review material."
+    },
+    {
+      riskId: "risk.formal-content-lock-not-accepted",
+      severity: "scope-boundary",
+      routeTo: "lead_orchestrator",
+      humanGate: true,
+      note: "This manifest prepares content-lock evidence only; it does not approve formal content lock."
+    }
+  ]
+} as const;

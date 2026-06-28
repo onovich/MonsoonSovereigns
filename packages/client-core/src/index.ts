@@ -31,6 +31,7 @@ import {
   type StartCampaignMarchCommandV1
 } from "@monsoon/protocol";
 
+import { M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE } from "./m7-beta-audio-art-localization-content";
 import { M7_BETA_GUIDANCE_SOURCE } from "./m7-beta-guidance-content";
 
 export const CLIENT_READ_MODEL_PROTOCOL_VERSION = 1;
@@ -1426,6 +1427,89 @@ export type ClientM7ReviewState =
   | "QA_REVIEW_READY"
   | "LOCK_CANDIDATE";
 export type ClientM7GuidanceSurface = "tutorial" | "hints" | "encyclopedia";
+export type ClientM7CoverageSurface = ClientM7GuidanceSurface | "coverage";
+export type ClientM7CoverageStatus = "BETA_COVERED" | "REVIEW_BLOCKED" | "POST_1_0_NONBLOCKING";
+export type ClientM7AssetReferenceKind = "audio" | "art";
+
+interface ClientM7RuntimeAudioArtLocalizationCoverageSource {
+  readonly schemaVersion: 1;
+  readonly kind: "m7.beta-audio-art-localization-coverage";
+  readonly taskId: "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001";
+  readonly manifestId: string;
+  readonly contentScope: "m7-beta-content-lock-prep";
+  readonly notContentLockAcceptance: true;
+  readonly m6GateCarryForward: "PASS_WITH_LIMITS";
+  readonly manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE";
+  readonly staticResourceBoundary: ClientM7StaticResourceBoundaryReadModel;
+  readonly supportedLocales: readonly ClientM7RuntimeLocaleCoverageRecord[];
+  readonly assetReferences: readonly ClientM7RuntimeAssetReferenceRecord[];
+  readonly localizationChecks: readonly ClientM7RuntimeLocalizationCheckRecord[];
+  readonly viewportSmoke: readonly ClientM7RuntimeViewportSmokeRecord[];
+  readonly postOneGaps: readonly ClientM7RuntimePostOneGapRecord[];
+  readonly unresolvedRisks: readonly ClientM7RuntimeUnresolvedRiskRecord[];
+}
+
+interface ClientM7RuntimeLocaleCoverageRecord {
+  readonly locale: string;
+  readonly displayName: string;
+  readonly status: ClientM7CoverageStatus;
+  readonly uiChromeCovered: boolean;
+  readonly tutorialCovered: boolean;
+  readonly hintsCovered: boolean;
+  readonly encyclopediaCovered: boolean;
+  readonly contentRecordCovered: boolean;
+  readonly reviewState: ClientM7ReviewState;
+  readonly note: string;
+}
+
+interface ClientM7RuntimeAssetReferenceRecord {
+  readonly assetId: string;
+  readonly kind: ClientM7AssetReferenceKind;
+  readonly surface: string;
+  readonly status: ClientM7CoverageStatus;
+  readonly staticResourceRef: string;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly cultureRisk: string;
+  readonly routeTo: string;
+  readonly note: string;
+}
+
+interface ClientM7RuntimeLocalizationCheckRecord {
+  readonly checkId: string;
+  readonly surface: string;
+  readonly requiredKeyPattern: string;
+  readonly requiredLocaleCount: number;
+  readonly status: ClientM7CoverageStatus;
+  readonly reviewState: ClientM7ReviewState;
+  readonly note: string;
+}
+
+interface ClientM7RuntimeViewportSmokeRecord {
+  readonly smokeId: string;
+  readonly width: number;
+  readonly height: number;
+  readonly textScalePercent: number;
+  readonly deviceScaleFactor: number;
+  readonly status: ClientM7CoverageStatus;
+  readonly note: string;
+}
+
+interface ClientM7RuntimePostOneGapRecord {
+  readonly gapId: string;
+  readonly status: "POST_1_0_NONBLOCKING";
+  readonly routeTo: string;
+  readonly note: string;
+}
+
+interface ClientM7RuntimeUnresolvedRiskRecord {
+  readonly riskId: string;
+  readonly severity: "major-cultural-risk" | "review-required" | "scope-boundary";
+  readonly routeTo: string;
+  readonly humanGate: boolean;
+  readonly note: string;
+}
 
 interface ClientM7RuntimeSourceRecord {
   readonly sourceId: string;
@@ -1590,6 +1674,7 @@ export interface ClientM7GuidanceReadModelSnapshot {
   readonly tutorial: ClientM7TutorialReadModel;
   readonly hints: ClientM7HintReadModel;
   readonly encyclopedia: ClientM7EncyclopediaReadModel;
+  readonly audioArtLocalization: ClientM7AudioArtLocalizationCoverageReadModel;
   readonly reviewSummary: ClientM7ReviewSummaryReadModel;
 }
 
@@ -1690,6 +1775,108 @@ export interface ClientM7ReviewSummaryReadModel {
 export interface ClientM7ReviewStateCountReadModel {
   readonly reviewState: ClientM7ReviewState;
   readonly count: number;
+}
+
+export interface ClientM7AudioArtLocalizationCoverageReadModel {
+  readonly manifest: ClientM7AudioArtLocalizationManifestReadModel;
+  readonly staticResourceBoundary: ClientM7StaticResourceBoundaryReadModel;
+  readonly supportedLocales: readonly ClientM7LocaleCoverageReadModel[];
+  readonly assetReferences: readonly ClientM7AssetReferenceReadModel[];
+  readonly localizationChecks: readonly ClientM7LocalizationCoverageCheckReadModel[];
+  readonly viewportSmoke: readonly ClientM7ViewportSmokeReadModel[];
+  readonly postOneGaps: readonly ClientM7PostOneGapReadModel[];
+  readonly unresolvedRisks: readonly ClientM7UnresolvedRiskReadModel[];
+}
+
+export interface ClientM7AudioArtLocalizationManifestReadModel {
+  readonly taskId: "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001";
+  readonly manifestId: string;
+  readonly sourceManifestPath: string;
+  readonly localeCount: number;
+  readonly assetReferenceCount: number;
+  readonly audioReferenceCount: number;
+  readonly artReferenceCount: number;
+  readonly localizationCheckCount: number;
+  readonly viewportSmokeCount: number;
+  readonly postOneGapCount: number;
+  readonly unresolvedRiskCount: number;
+  readonly notContentLockAcceptance: true;
+  readonly m6GateCarryForward: "PASS_WITH_LIMITS";
+  readonly manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE";
+}
+
+export interface ClientM7StaticResourceBoundaryReadModel {
+  readonly noPaidService: true;
+  readonly noRemotePipeline: true;
+  readonly noSecrets: true;
+  readonly noTelemetry: true;
+  readonly noCdnOrReleaseCommitment: true;
+  readonly noNewProductionDependency: true;
+  readonly resourceMode: string;
+}
+
+export interface ClientM7LocaleCoverageReadModel {
+  readonly locale: string;
+  readonly displayName: string;
+  readonly status: ClientM7CoverageStatus;
+  readonly uiChromeCovered: boolean;
+  readonly tutorialCovered: boolean;
+  readonly hintsCovered: boolean;
+  readonly encyclopediaCovered: boolean;
+  readonly contentRecordCovered: boolean;
+  readonly reviewState: ClientM7ReviewState;
+  readonly stableKeyCount: number;
+  readonly note: string;
+}
+
+export interface ClientM7AssetReferenceReadModel {
+  readonly assetId: string;
+  readonly kind: ClientM7AssetReferenceKind;
+  readonly surface: string;
+  readonly status: ClientM7CoverageStatus;
+  readonly staticResourceRef: string;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly cultureRisk: string;
+  readonly routeTo: string;
+  readonly note: string;
+}
+
+export interface ClientM7LocalizationCoverageCheckReadModel {
+  readonly checkId: string;
+  readonly surface: string;
+  readonly requiredKeyPattern: string;
+  readonly requiredLocaleCount: number;
+  readonly status: ClientM7CoverageStatus;
+  readonly reviewState: ClientM7ReviewState;
+  readonly matchedKeyCount: number;
+  readonly note: string;
+}
+
+export interface ClientM7ViewportSmokeReadModel {
+  readonly smokeId: string;
+  readonly width: number;
+  readonly height: number;
+  readonly textScalePercent: number;
+  readonly deviceScaleFactor: number;
+  readonly status: ClientM7CoverageStatus;
+  readonly note: string;
+}
+
+export interface ClientM7PostOneGapReadModel {
+  readonly gapId: string;
+  readonly status: "POST_1_0_NONBLOCKING";
+  readonly routeTo: string;
+  readonly note: string;
+}
+
+export interface ClientM7UnresolvedRiskReadModel {
+  readonly riskId: string;
+  readonly severity: "major-cultural-risk" | "review-required" | "scope-boundary";
+  readonly routeTo: string;
+  readonly humanGate: boolean;
+  readonly note: string;
 }
 
 export interface ClientM6SessionSaveV1 {
@@ -3601,6 +3788,7 @@ export function createM7GuidanceReadModelFixture(
   const encyclopedia = createM7EncyclopediaReadModel(baseSnapshot, pack, index);
   const tutorial = createM7TutorialReadModel(baseSnapshot, selectedScenario, encyclopedia);
   const hints = createM7HintReadModel(baseSnapshot, selectedScenario, encyclopedia);
+  const audioArtLocalization = createM7AudioArtLocalizationCoverageReadModel(pack);
 
   return {
     revision: baseSnapshot.revision,
@@ -3624,6 +3812,7 @@ export function createM7GuidanceReadModelFixture(
     tutorial,
     hints,
     encyclopedia,
+    audioArtLocalization,
     reviewSummary: createM7ReviewSummary(pack)
   };
 }
@@ -3989,6 +4178,7 @@ function createEmptyM7GuidanceReadModel(
       selectedEntryId: "encyclopedia.m7.none",
       entries: []
     },
+    audioArtLocalization: createEmptyM7AudioArtLocalizationCoverageReadModel(),
     reviewSummary: {
       reviewStateCounts: [],
       humanGateClaimCount: 0,
@@ -4396,6 +4586,153 @@ function createM7EncyclopediaReadModel(
       }
     ]
   };
+}
+
+function createM7AudioArtLocalizationCoverageReadModel(
+  guidancePack: ClientM7RuntimeContentPack
+): ClientM7AudioArtLocalizationCoverageReadModel {
+  const source: ClientM7RuntimeAudioArtLocalizationCoverageSource =
+    M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE;
+  assertM7AudioArtLocalizationCoverageSource(source);
+  const guidanceLocalizationKeyCount = guidancePack.localization.length;
+  const staticUiKeyCount = M7_UI_CHROME_LOCALIZATION_KEYS.length;
+
+  return {
+    manifest: {
+      taskId: source.taskId,
+      manifestId: source.manifestId,
+      sourceManifestPath:
+        "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      localeCount: source.supportedLocales.length,
+      assetReferenceCount: source.assetReferences.length,
+      audioReferenceCount: source.assetReferences.filter((asset) => asset.kind === "audio").length,
+      artReferenceCount: source.assetReferences.filter((asset) => asset.kind === "art").length,
+      localizationCheckCount: source.localizationChecks.length,
+      viewportSmokeCount: source.viewportSmoke.length,
+      postOneGapCount: source.postOneGaps.length,
+      unresolvedRiskCount: source.unresolvedRisks.length,
+      notContentLockAcceptance: source.notContentLockAcceptance,
+      m6GateCarryForward: source.m6GateCarryForward,
+      manualNodeBattleDecision: source.manualNodeBattleDecision
+    },
+    staticResourceBoundary: source.staticResourceBoundary,
+    supportedLocales: source.supportedLocales.map((locale) => ({
+      ...locale,
+      stableKeyCount: staticUiKeyCount + guidanceLocalizationKeyCount
+    })),
+    assetReferences: source.assetReferences.map((asset) => ({ ...asset })),
+    localizationChecks: source.localizationChecks.map((check) => ({
+      ...check,
+      matchedKeyCount: countM7CoverageMatchedKeys({
+        check,
+        guidanceLocalizationKeyCount,
+        staticUiKeyCount
+      })
+    })),
+    viewportSmoke: source.viewportSmoke.map((smoke) => ({ ...smoke })),
+    postOneGaps: source.postOneGaps.map((gap) => ({ ...gap })),
+    unresolvedRisks: source.unresolvedRisks.map((risk) => ({ ...risk }))
+  };
+}
+
+function createEmptyM7AudioArtLocalizationCoverageReadModel(): ClientM7AudioArtLocalizationCoverageReadModel {
+  return {
+    manifest: {
+      taskId: "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      manifestId: "m7.beta.audio-art-localization.empty",
+      sourceManifestPath:
+        "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      localeCount: 0,
+      assetReferenceCount: 0,
+      audioReferenceCount: 0,
+      artReferenceCount: 0,
+      localizationCheckCount: 0,
+      viewportSmokeCount: 0,
+      postOneGapCount: 0,
+      unresolvedRiskCount: 0,
+      notContentLockAcceptance: true,
+      m6GateCarryForward: "PASS_WITH_LIMITS",
+      manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE"
+    },
+    staticResourceBoundary: {
+      noPaidService: true,
+      noRemotePipeline: true,
+      noSecrets: true,
+      noTelemetry: true,
+      noCdnOrReleaseCommitment: true,
+      noNewProductionDependency: true,
+      resourceMode: "empty-static-coverage-fixture"
+    },
+    supportedLocales: [],
+    assetReferences: [],
+    localizationChecks: [],
+    viewportSmoke: [],
+    postOneGaps: [],
+    unresolvedRisks: []
+  };
+}
+
+function countM7CoverageMatchedKeys(input: {
+  readonly check: ClientM7RuntimeLocalizationCheckRecord;
+  readonly guidanceLocalizationKeyCount: number;
+  readonly staticUiKeyCount: number;
+}): number {
+  switch (input.check.requiredKeyPattern) {
+    case "ui.m7.*":
+      return input.staticUiKeyCount;
+    case "content.m7.beta.*":
+      return input.guidanceLocalizationKeyCount;
+    case "tutorial.m7.*":
+      return 7;
+    case "hint.m7.*":
+      return 5;
+    case "encyclopedia.m7.*":
+      return 9;
+    default:
+      return 0;
+  }
+}
+
+function assertM7AudioArtLocalizationCoverageSource(
+  source: ClientM7RuntimeAudioArtLocalizationCoverageSource
+): void {
+  const expectedCounts = [
+    { label: "supportedLocaleCount", actual: source.supportedLocales.length, expected: 2 },
+    { label: "assetReferenceCount", actual: source.assetReferences.length, expected: 8 },
+    { label: "localizationCheckCount", actual: source.localizationChecks.length, expected: 5 },
+    { label: "viewportSmokeCount", actual: source.viewportSmoke.length, expected: 4 },
+    { label: "postOneGapCount", actual: source.postOneGaps.length, expected: 3 },
+    { label: "unresolvedRiskCount", actual: source.unresolvedRisks.length, expected: 3 }
+  ];
+
+  for (const count of expectedCounts) {
+    if (count.actual !== count.expected) {
+      throw new Error(
+        `M7 audio/art/localization coverage ${count.label} mismatch: expected ${count.expected}, received ${count.actual}.`
+      );
+    }
+  }
+  for (const asset of source.assetReferences) {
+    if (!asset.staticResourceRef.startsWith("static://m7/")) {
+      throw new Error(`M7 asset reference must stay static, received ${asset.staticResourceRef}.`);
+    }
+    assertM7StableId(asset.assetId, "asset reference id");
+  }
+  for (const check of source.localizationChecks) {
+    assertM7StableId(check.checkId, "localization check id");
+  }
+  for (const gap of source.postOneGaps) {
+    assertM7StableId(gap.gapId, "post-1.0 gap id");
+  }
+  for (const risk of source.unresolvedRisks) {
+    assertM7StableId(risk.riskId, "unresolved risk id");
+  }
+}
+
+function assertM7StableId(value: string, label: string): void {
+  if (!/^[a-z0-9]+(?:[.-][a-z0-9]+)*$/u.test(value)) {
+    throw new Error(`M7 ${label} must be a stable lowercase id, received ${value}.`);
+  }
 }
 
 function createM7ReviewSummary(pack: ClientM7RuntimeContentPack): ClientM7ReviewSummaryReadModel {
@@ -6717,6 +7054,21 @@ const SYNTHETIC_AGRICULTURE_PHASES: readonly string[] = [
 ];
 
 const SYNTHETIC_ROUTE_KINDS: readonly ClientDistrictRouteKind[] = ["road", "river", "coast"];
+
+const M7_UI_CHROME_LOCALIZATION_KEYS: readonly string[] = [
+  "ui.m7.guidance.heading",
+  "ui.m7.guidance.scenario",
+  "ui.m7.guidance.tutorial",
+  "ui.m7.guidance.hints",
+  "ui.m7.guidance.encyclopedia",
+  "ui.m7.guidance.coverage",
+  "ui.m7.coverage.heading",
+  "ui.m7.coverage.locale_matrix",
+  "ui.m7.coverage.asset_manifest",
+  "ui.m7.coverage.localization_checks",
+  "ui.m7.coverage.viewport_smoke",
+  "ui.m7.coverage.unresolved_risks"
+];
 
 const M2_PROTOTYPE_GRID_COLUMNS = 6;
 const M2_PROTOTYPE_CELL_SIZE = 100;

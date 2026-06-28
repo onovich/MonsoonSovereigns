@@ -1,5 +1,6 @@
 import {
   createClientDistrictId,
+  type ClientM7CoverageSurface,
   type ClientMapEntitySelection,
   type ClientMapMode,
   type ClientMapReadModelSnapshot,
@@ -80,6 +81,7 @@ export function WebClientShell({ initialSearch }: WebClientShellProps = {}): Rea
       m5CommandStatus={m5CommandStatus}
       onM6CommandSubmit={handleM6CommandSubmit}
       m6CommandStatus={m6CommandStatus}
+      initialM7Surface={readInitialM7Surface(initialSearch ?? getWindowSearch())}
       mapSurface={
         <PixiMapSurface
           snapshot={snapshot.map}
@@ -291,4 +293,17 @@ function getWindowSearch(): string {
   }
 
   return window.location.search;
+}
+
+function readInitialM7Surface(search: string): ClientM7CoverageSurface {
+  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  const surface = params.get("surface")?.trim().toLowerCase() ?? "";
+  switch (surface) {
+    case "hints":
+    case "encyclopedia":
+    case "coverage":
+      return surface;
+    default:
+      return "tutorial";
+  }
 }

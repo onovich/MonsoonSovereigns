@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
+import { M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE } from "../packages/client-core/src/m7-beta-audio-art-localization-content";
 import { M7_BETA_GUIDANCE_SOURCE } from "../packages/client-core/src/m7-beta-guidance-content";
 import {
   SYNTHETIC_DISTRICT_PRESSURE_ROW_COUNT,
@@ -43,6 +44,10 @@ import {
 
 const M7_ACCEPTED_SOURCE_PATH = new URL(
   "../content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+  import.meta.url
+);
+const M7_AUDIO_ART_LOCALIZATION_SOURCE_PATH = new URL(
+  "../content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
   import.meta.url
 );
 
@@ -482,6 +487,32 @@ describe("M6 Alpha client read model", () => {
 });
 
 describe("M7 tutorial hints encyclopedia client read model", () => {
+  test("keeps the M7 audio art localization coverage fixture aligned with content source", () => {
+    const acceptedCoverage: unknown = JSON.parse(
+      readFileSync(M7_AUDIO_ART_LOCALIZATION_SOURCE_PATH, "utf8")
+    );
+    expect(acceptedCoverage).toEqual(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE);
+
+    expect(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE.supportedLocales).toHaveLength(2);
+    expect(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE.assetReferences).toHaveLength(8);
+    expect(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE.localizationChecks).toHaveLength(5);
+    expect(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE.viewportSmoke).toHaveLength(4);
+    expect(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE.postOneGaps).toHaveLength(3);
+    expect(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE.unresolvedRisks).toContainEqual(
+      expect.objectContaining({
+        riskId: "risk.culture-specific-assets-blocked",
+        routeTo: "historical_researcher",
+        humanGate: true
+      })
+    );
+    expect(JSON.stringify(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE)).not.toContain(
+      "https://"
+    );
+    expect(JSON.stringify(M7_BETA_AUDIO_ART_LOCALIZATION_COVERAGE_SOURCE)).not.toContain(
+      "telemetry-enabled"
+    );
+  });
+
   test("keeps the generated M7 guidance fixture mechanically aligned with accepted content source", () => {
     const acceptedSource: unknown = JSON.parse(readFileSync(M7_ACCEPTED_SOURCE_PATH, "utf8"));
     expect(acceptedSource).toEqual(M7_BETA_GUIDANCE_SOURCE);
@@ -571,6 +602,33 @@ describe("M7 tutorial hints encyclopedia client read model", () => {
     expect(JSON.stringify(fixture)).toContain("Composite court broker 1531");
     expect(JSON.stringify(fixture)).toContain("LANGUAGE_REVIEW_REQUIRED");
     expect(fixture.reviewSummary.humanGateClaimCount).toBe(2);
+    expect(fixture.audioArtLocalization.manifest.localeCount).toBe(2);
+    expect(fixture.audioArtLocalization.manifest.assetReferenceCount).toBe(8);
+    expect(fixture.audioArtLocalization.manifest.audioReferenceCount).toBe(4);
+    expect(fixture.audioArtLocalization.manifest.artReferenceCount).toBe(4);
+    expect(fixture.audioArtLocalization.staticResourceBoundary.noPaidService).toBe(true);
+    expect(fixture.audioArtLocalization.staticResourceBoundary.noRemotePipeline).toBe(true);
+    expect(fixture.audioArtLocalization.staticResourceBoundary.noSecrets).toBe(true);
+    expect(fixture.audioArtLocalization.staticResourceBoundary.noTelemetry).toBe(true);
+    expect(fixture.audioArtLocalization.supportedLocales.map((locale) => locale.locale)).toEqual([
+      "en-US",
+      "zh-Hans"
+    ]);
+    expect(
+      fixture.audioArtLocalization.localizationChecks.find(
+        (check) => check.checkId === "loc.content-record.keys"
+      )
+    ).toMatchObject({
+      requiredKeyPattern: "content.m7.beta.*",
+      matchedKeyCount: 36,
+      reviewState: "LANGUAGE_REVIEW_REQUIRED"
+    });
+    expect(fixture.audioArtLocalization.postOneGaps.map((gap) => gap.gapId)).toContain(
+      "post1.audio.period-music"
+    );
+    expect(fixture.audioArtLocalization.unresolvedRisks.map((risk) => risk.routeTo)).toContain(
+      "historical_researcher"
+    );
     expect(JSON.stringify(fixture)).not.toContain("WorldState");
     expect(JSON.stringify(fixture)).not.toContain("telemetry");
   });

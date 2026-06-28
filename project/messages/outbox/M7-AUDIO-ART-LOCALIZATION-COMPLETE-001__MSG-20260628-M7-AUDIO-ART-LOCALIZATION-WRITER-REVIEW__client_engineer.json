@@ -1,0 +1,119 @@
+{
+  "message_id": "MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW",
+  "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Replacement writer reviewed and continued Lantern's partial allowed-scope diff after the original client_engineer thread closed without handoff. The completed diff adds a static Beta audio/art/localization coverage manifest, a generated client-core fixture/read-model projection, a Coverage surface in the existing M7 guidance workspace, Storybook normal/empty/error/extreme/narrow states, SSR tests, JSON/source drift guards, Playwright flow coverage, and viewport overflow smoke evidence. This is evidence for content-lock preparation only; it does not accept formal content lock, culture-specific production assets, release commitments, manual node battle, telemetry, accounts, cloud, server, multiplayer, or new production dependencies.",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+    "packages/client-core/src/index.ts",
+    "packages/client-core/src/m7-beta-audio-art-localization-content.ts",
+    "packages/ui/src/index.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-audio-art-localization / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified allowed files: .storybook/WebClientShell.stories.tsx, apps/web/src/shell/web-client-shell.test.tsx, apps/web/src/shell/web-client-shell.tsx, packages/client-core/src/index.ts, packages/ui/src/index.tsx, tests/client-core-m2-district-list.test.ts, tests/e2e/web-shell.spec.ts, tests/ui-m2-district-list.test.tsx. Added allowed files: content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json, packages/client-core/src/m7-beta-audio-art-localization-content.ts, and this handoff. Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains untouched."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed successfully; M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 remains IN_PROGRESS/client_engineer while this REVIEW handoff is pending reviewer action."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready list returned M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 only; audio/art/localization remains in progress until review."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task and new content files",
+      "exit_code": 0,
+      "result": "JSON_SHAPE_OK m7.beta.audio-art-localization.coverage.v0; verified task id, manifest kind, static-resource boundary, two supported locales, eight static://m7 asset references, and historical_researcher/Human Gate routing for risk.culture-specific-assets-blocked."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID handoff JSON after writing this REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for M1 hash 4a438525, M2 hash 9ab72b0b, M3 hash 76b75849, M6 map hash 4485a353, M6 scenario hash 6d1f6d64, and M7 beta scenario/person/event set hash 92aed91e."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 21 tests. Added drift guard comparing the generated M7 audio/art/localization fixture to content-source JSON and assertions for 2 locales, 8 assets, 5 localization checks, 4 viewport smoke rows, 3 post-1.0 gaps, static resource refs, and historical_researcher/Human Gate risk routing."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest SSR passed: 1 file, 11 tests. Coverage panel renders static manifest id, locale matrix, asset references, localization checks, viewport smoke, post-1.0 gaps, unresolved risks, and no WorldState/remote pipeline text."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "apps/web Vitest passed: 1 file, 5 tests. Initial ?surface=coverage route renders the Coverage tab from read-model data."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build succeeded; existing >500 kB chunk warning remains."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build succeeded and cleaned .tmp/storybook-static; existing chunk-size and Storybook plugin timing warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium passed: 13 tests. Added Coverage tab assertions for locale count, asset count, zh-Hans, audio.ui.risk-warning, localization checks, viewport smoke, and risk.culture-specific-assets-blocked; M7 required viewport overflow coverage runs at 1280x720, 1280x800 text scale, 2560x1080, and 1920x1080 high-DPI."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    "Reviewed Lantern's partial diff and continued its static-manifest/read-model/UI approach instead of reverting it.",
+    "Kept the implementation inside client/core/UI/web/test/content-source allowed paths; no sim-core, sim-ai, protocol, save-format, map-renderer, tools, docs, CI, roadmap, gate, PROJECT_STATUS, package.json, or pnpm-lock.yaml changes were made.",
+    "Added content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json as a Beta coverage manifest, not as formal content lock acceptance.",
+    "Projected coverage into client-core as an incremental M7 guidance read-model slice; Redux/store and React/Pixi remain non-authoritative and no WorldState is stored.",
+    "The UI consumes stable manifest, reason/source/claim IDs, review states, and route codes; it does not decide historical/cultural rules or culture-specific production choices.",
+    "Audio/art coverage remains static-reference-only with static://m7 slots and explicit no paid service, no remote pipeline, no secrets, no telemetry, no CDN/release commitment, and no new production dependency boundary.",
+    "Localization coverage records stable keys for UI chrome, tutorial, hints, encyclopedia, and content records across en-US and zh-Hans while routing final language quality and sensitive names/titles to historical_researcher."
+  ],
+  "risks": [
+    "Culture-specific music, instruments, clothing, architecture, weapons, flags, scripts, religious imagery, symbols, names, titles, and transliterations remain unresolved review/Human Gate material and are not accepted by this task.",
+    "post1.audio.period-music, post1.art.clothing-architecture-symbols, and post1.voiceover-and-locale-expansion are explicitly POST_1_0_NONBLOCKING gaps before formal lock acceptance.",
+    "The new coverage manifest is static client evidence and is not currently one of the content-tools content:validate target files; this handoff includes a separate JSON shape check and client-core source/fixture drift guard.",
+    "Existing build warnings for large chunks and Storybook plugin timings remain; no new production dependency or bundle-splitting decision was introduced.",
+    "Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains in the worktree and was not touched."
+  ],
+  "blockers": [],
+  "route_to": "historical_researcher",
+  "requested_action": "Review the Beta audio/art/localization coverage manifest, static-resource boundary, localization matrix evidence, culture-risk routing, UI/Storybook/Playwright coverage, and unresolved post-1.0 gaps. Do not treat this REVIEW handoff as formal content lock acceptance.",
+  "created_at": "2026-06-28T16:51:09+08:00"
+}

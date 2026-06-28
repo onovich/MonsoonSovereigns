@@ -228,6 +228,36 @@ describe("M2 district client UI", () => {
     expect(markup).not.toContain("telemetry");
   });
 
+  test("renders M7 audio art localization coverage from static resource manifests", () => {
+    const snapshot = createM2PrototypeClientReadModelSnapshot();
+    const markup = renderToStaticMarkup(createShell(snapshot, "coverage"));
+
+    expect(markup).toContain("Audio / art / localization coverage");
+    expect(markup).toContain('aria-label="M7 audio art localization coverage"');
+    expect(markup).toContain('data-locale-count="2"');
+    expect(markup).toContain('data-asset-reference-count="8"');
+    expect(markup).toContain('data-audio-reference-count="4"');
+    expect(markup).toContain('data-art-reference-count="4"');
+    expect(markup).toContain('data-localization-check-count="5"');
+    expect(markup).toContain('data-viewport-smoke-count="4"');
+    expect(markup).toContain('data-unresolved-risk-count="3"');
+    expect(markup).toContain("m7.beta.audio-art-localization.coverage.v0");
+    expect(markup).toContain("static-manifest-and-local-client-read-model-only");
+    expect(markup).toContain("en-US / English");
+    expect(markup).toContain("zh-Hans / Simplified Chinese");
+    expect(markup).toContain("audio.ui.risk-warning");
+    expect(markup).toContain("art.ui.review-state-badges");
+    expect(markup).toContain("loc.content-record.keys");
+    expect(markup).toContain("matched keys 36");
+    expect(markup).toContain("viewport.1280x720");
+    expect(markup).toContain("post1.audio.period-music");
+    expect(markup).toContain("risk.culture-specific-assets-blocked");
+    expect(markup).toContain("historical_researcher");
+    expect(markup).toContain("Human Gate yes");
+    expect(markup).not.toContain("WorldState");
+    expect(markup).not.toContain("remote asset pipeline enabled");
+  });
+
   test("renders M7 empty, error, and extreme Storybook states", () => {
     const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
     const emptyMarkup = renderToStaticMarkup(
@@ -252,11 +282,32 @@ describe("M2 district client UI", () => {
     expect(errorMarkup).toContain("scenario.beta.1581.succession-fracture");
     expect(extremeMarkup).toContain("Extreme review pass 12");
     expect(extremeMarkup).toContain('data-encyclopedia-entry-count="21"');
+    const emptyCoverageMarkup = renderToStaticMarkup(
+      createShell(
+        withM7GuidanceReadModel(baseSnapshot, createM7GuidanceEmptyReadModelFixture(baseSnapshot)),
+        "coverage"
+      )
+    );
+    const extremeCoverageMarkup = renderToStaticMarkup(
+      createShell(
+        withM7GuidanceReadModel(
+          baseSnapshot,
+          createM7GuidanceExtremeReadModelFixture(baseSnapshot)
+        ),
+        "coverage"
+      )
+    );
+
     expect(extremeMarkup).not.toContain("WorldState");
+    expect(emptyCoverageMarkup).toContain('data-locale-count="0"');
+    expect(extremeCoverageMarkup).toContain('data-asset-reference-count="8"');
   });
 });
 
-function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]) {
+function createShell(
+  snapshot: Parameters<typeof ClientShellView>[0]["snapshot"],
+  initialM7Surface: Parameters<typeof ClientShellView>[0]["initialM7Surface"] = "tutorial"
+) {
   const selectedEntity = { kind: "district" as const, districtId: createClientDistrictId(1) };
   const mapMode: ClientMapMode = "seasonal";
   return (
@@ -276,6 +327,7 @@ function createShell(snapshot: Parameters<typeof ClientShellView>[0]["snapshot"]
       m5CommandStatus={null}
       onM6CommandSubmit={() => undefined}
       m6CommandStatus={null}
+      initialM7Surface={initialM7Surface}
       mapSurface={<div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />}
     />
   );

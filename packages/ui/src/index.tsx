@@ -60,8 +60,9 @@ import {
   type ClientM6SuccessionReadModel,
   type ClientM6TerminalReadModel,
   type ClientM7EncyclopediaEntryReadModel,
+  type ClientM7AudioArtLocalizationCoverageReadModel,
+  type ClientM7CoverageSurface,
   type ClientM7GuidanceReadModelSnapshot,
-  type ClientM7GuidanceSurface,
   type ClientM7HintGroupReadModel,
   type ClientM7ScenarioGuidanceReadModel,
   type ClientM7TutorialStepReadModel,
@@ -77,6 +78,7 @@ export interface ClientShellViewProps {
   readonly zoomLevel: number;
   readonly selectedEntity: ClientMapEntitySelection | null;
   readonly m6BatchBalanceArtifact?: M6BatchBalanceDashboardArtifact | null;
+  readonly initialM7Surface?: ClientM7CoverageSurface;
   readonly onMapModeChange: (mode: ClientMapMode) => void;
   readonly onZoomLevelChange: (zoomLevel: number) => void;
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
@@ -101,6 +103,7 @@ export function ClientShellView({
   zoomLevel,
   selectedEntity,
   m6BatchBalanceArtifact = null,
+  initialM7Surface = "tutorial",
   onMapModeChange,
   onZoomLevelChange,
   onSelectedEntityChange,
@@ -151,7 +154,7 @@ export function ClientShellView({
   const [selectedM7ScenarioId, setSelectedM7ScenarioId] = useState(
     snapshot.m7Guidance.selectedScenarioId
   );
-  const [m7Surface, setM7Surface] = useState<ClientM7GuidanceSurface>("tutorial");
+  const [m7Surface, setM7Surface] = useState<ClientM7CoverageSurface>(initialM7Surface);
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -517,7 +520,7 @@ export function ClientShellView({
     setSelectedM7ScenarioId(event.currentTarget.value);
   }
 
-  function handleM7SurfaceSelect(surface: ClientM7GuidanceSurface): void {
+  function handleM7SurfaceSelect(surface: ClientM7CoverageSurface): void {
     setM7Surface(surface);
   }
 
@@ -2011,9 +2014,9 @@ function M6AlphaWorkspace({
 interface M7GuidanceWorkspaceProps {
   readonly snapshot: ClientM7GuidanceReadModelSnapshot;
   readonly selectedScenarioId: string;
-  readonly activeSurface: ClientM7GuidanceSurface;
+  readonly activeSurface: ClientM7CoverageSurface;
   readonly onScenarioChange: (event: ChangeEvent<HTMLSelectElement>) => void;
-  readonly onSurfaceSelect: (surface: ClientM7GuidanceSurface) => void;
+  readonly onSurfaceSelect: (surface: ClientM7CoverageSurface) => void;
 }
 
 function M7GuidanceWorkspace({
@@ -2113,6 +2116,12 @@ function M7GuidanceWorkspace({
             activeSurface={activeSurface}
             onSelect={onSurfaceSelect}
           />
+          <M7SurfaceTab
+            label="Coverage"
+            surface="coverage"
+            activeSurface={activeSurface}
+            onSelect={onSurfaceSelect}
+          />
         </div>
       </div>
 
@@ -2128,6 +2137,9 @@ function M7GuidanceWorkspace({
         {activeSurface === "encyclopedia" ? (
           <M7EncyclopediaPanel entries={snapshot.encyclopedia.entries} />
         ) : null}
+        {activeSurface === "coverage" ? (
+          <M7AudioArtLocalizationCoveragePanel coverage={snapshot.audioArtLocalization} />
+        ) : null}
       </div>
     </section>
   );
@@ -2140,9 +2152,9 @@ function M7SurfaceTab({
   onSelect
 }: {
   readonly label: string;
-  readonly surface: ClientM7GuidanceSurface;
-  readonly activeSurface: ClientM7GuidanceSurface;
-  readonly onSelect: (surface: ClientM7GuidanceSurface) => void;
+  readonly surface: ClientM7CoverageSurface;
+  readonly activeSurface: ClientM7CoverageSurface;
+  readonly onSelect: (surface: ClientM7CoverageSurface) => void;
 }): ReactElement {
   function handleClick(): void {
     onSelect(surface);
@@ -2387,6 +2399,140 @@ function M7EncyclopediaPanel({
           ))}
         </div>
       )}
+    </section>
+  );
+}
+
+function M7AudioArtLocalizationCoveragePanel({
+  coverage
+}: {
+  readonly coverage: ClientM7AudioArtLocalizationCoverageReadModel;
+}): ReactElement {
+  return (
+    <section
+      className="m7-guidance__panel m7-guidance__panel--wide"
+      aria-label="M7 audio art localization coverage"
+      data-locale-count={coverage.manifest.localeCount}
+      data-asset-reference-count={coverage.manifest.assetReferenceCount}
+      data-audio-reference-count={coverage.manifest.audioReferenceCount}
+      data-art-reference-count={coverage.manifest.artReferenceCount}
+      data-localization-check-count={coverage.manifest.localizationCheckCount}
+      data-viewport-smoke-count={coverage.manifest.viewportSmokeCount}
+      data-unresolved-risk-count={coverage.manifest.unresolvedRiskCount}
+      id="m7-coverage-panel"
+      role="tabpanel"
+    >
+      <h3>Audio / art / localization coverage</h3>
+      <dl className="m7-guidance__metrics">
+        <Metric label="Locales" value={coverage.manifest.localeCount.toString()} />
+        <Metric label="Assets" value={coverage.manifest.assetReferenceCount.toString()} />
+        <Metric label="Checks" value={coverage.manifest.localizationCheckCount.toString()} />
+        <Metric label="Risks" value={coverage.manifest.unresolvedRiskCount.toString()} />
+      </dl>
+
+      <div className="m7-guidance__fact" data-manifest-id={coverage.manifest.manifestId}>
+        <strong>{coverage.manifest.manifestId}</strong>
+        <span>{coverage.manifest.sourceManifestPath}</span>
+        <span>
+          Static resources only; no paid service, remote pipeline, secrets, telemetry, CDN/release
+          commitment, or new production dependency.
+        </span>
+        <span>{coverage.staticResourceBoundary.resourceMode}</span>
+      </div>
+
+      <div className="m7-guidance__stack" role="list" aria-label="M7 supported locale matrix">
+        {coverage.supportedLocales.map((locale) => (
+          <div className="m7-guidance__fact" key={locale.locale} role="listitem">
+            <strong>
+              {locale.locale} / {locale.displayName}
+            </strong>
+            <span>
+              {locale.status}; {locale.reviewState}; stable keys {locale.stableKeyCount}
+            </span>
+            <span>
+              UI {formatBoolean(locale.uiChromeCovered)}; tutorial{" "}
+              {formatBoolean(locale.tutorialCovered)}; hints {formatBoolean(locale.hintsCovered)};
+              encyclopedia {formatBoolean(locale.encyclopediaCovered)}; content records{" "}
+              {formatBoolean(locale.contentRecordCovered)}
+            </span>
+            <span>{locale.note}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="m7-guidance__stack" role="list" aria-label="M7 asset reference manifest">
+        {coverage.assetReferences.map((asset) => (
+          <div
+            className="m7-guidance__fact"
+            key={asset.assetId}
+            role="listitem"
+            data-asset-kind={asset.kind}
+            data-review-state={asset.reviewState}
+          >
+            <strong>
+              {asset.assetId} / {asset.kind}
+            </strong>
+            <span>
+              {asset.surface}; {asset.status}; {asset.staticResourceRef}
+            </span>
+            <span>
+              risk {asset.cultureRisk}; route {asset.routeTo}
+            </span>
+            <span>{asset.note}</span>
+            <ReasonChips reasonCodes={[...asset.claimIds, ...asset.sourceIds]} />
+          </div>
+        ))}
+      </div>
+
+      <div className="m7-guidance__stack" role="list" aria-label="M7 localization checks">
+        {coverage.localizationChecks.map((check) => (
+          <div className="m7-guidance__fact" key={check.checkId} role="listitem">
+            <strong>{check.checkId}</strong>
+            <span>
+              {check.surface}; {check.requiredKeyPattern}; locales {check.requiredLocaleCount};
+              matched keys {check.matchedKeyCount}
+            </span>
+            <span>
+              {check.status}; {check.reviewState}
+            </span>
+            <span>{check.note}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="m7-guidance__stack" role="list" aria-label="M7 viewport smoke coverage">
+        {coverage.viewportSmoke.map((smoke) => (
+          <div className="m7-guidance__fact" key={smoke.smokeId} role="listitem">
+            <strong>{smoke.smokeId}</strong>
+            <span>
+              {smoke.width}x{smoke.height}; text {smoke.textScalePercent}%; dpr{" "}
+              {smoke.deviceScaleFactor}; {smoke.status}
+            </span>
+            <span>{smoke.note}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="m7-guidance__stack" role="list" aria-label="M7 post-1.0 gaps and risks">
+        {coverage.postOneGaps.map((gap) => (
+          <div className="m7-guidance__fact" key={gap.gapId} role="listitem">
+            <strong>{gap.gapId}</strong>
+            <span>
+              {gap.status}; route {gap.routeTo}
+            </span>
+            <span>{gap.note}</span>
+          </div>
+        ))}
+        {coverage.unresolvedRisks.map((risk) => (
+          <div className="m7-guidance__fact" key={risk.riskId} role="listitem">
+            <strong>{risk.riskId}</strong>
+            <span>
+              {risk.severity}; route {risk.routeTo}; Human Gate {formatBoolean(risk.humanGate)}
+            </span>
+            <span>{risk.note}</span>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -2959,6 +3105,10 @@ function formatInteger(value: number): string {
 
 function formatBps(value: number): string {
   return `${Math.round(value / 100)}%`;
+}
+
+function formatBoolean(value: boolean): string {
+  return value ? "yes" : "no";
 }
 
 function formatNullableCharacter(characterId: number | null): string {
