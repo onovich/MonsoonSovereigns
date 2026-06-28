@@ -1,0 +1,103 @@
+{
+  "id": "M7-UI-LOCALIZATION-EXIT-001",
+  "summary": "Validate completion of the M7 UI and localization quality track",
+  "milestone": "M7",
+  "status": "DRAFT",
+  "owner_role": "lead_orchestrator",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-UI-REGRESSION-MATRIX-001",
+    "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "PROJECT_STATUS.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Confirm every M7 UI/localization/visual quality-track task is CLOSED or explicitly BLOCKED/PARTIAL with lead-approved rationale before formal content lock acceptance or M7 exit can pass.",
+    "Synthesize evidence from i18n foundation, design tokens/asset slots, app shell, map, district inspector, appointment flow, player guidance, UI regression matrix, and platform/resolution/localization matrix.",
+    "Record Web build, Windows desktop/package smoke if available, Storybook build, Playwright/e2e, language switching, missing-key, no-debug-text, viewport, and console-error evidence.",
+    "Confirm content lock remains intact and no UI task introduced unreviewed content facts, production art, release/commercial decisions, telemetry, server/multiplayer, cloud-save implementation, or manual node battle scope.",
+    "Confirm architecture boundaries: sim-core no i18n/React/Pixi/Electron/Node IO, UI no authoritative WorldState ownership, Pixi render-cache-only, and player/AI command parity through GameCommand/query/read-model surfaces.",
+    "Route systems_architect and independent qa_reviewer evidence before lead uses this task as a prerequisite for M7-CONTENT-LOCK-ACCEPTANCE-001 or M7-EXIT-VALIDATION-001."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-EXIT-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M7-UI-LOCALIZATION-EXIT-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm desktop:security-check",
+    "pnpm desktop:package",
+    "pnpm check"
+  ],
+  "branch_or_worktree": null,
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
+    "i18n must remain outside sim-core; sim-core emits stable reason codes and context, and the UI translates them.",
+    "UI, React state, Redux/client store, and Electron renderer must not own authoritative WorldState; only the simulation Worker writes domain state.",
+    "Pixi is render-cache-only and must be rebuildable from read models; React must not manage per-entity Pixi DisplayObjects.",
+    "Players and AI continue through the same GameCommand, query, and read-model boundaries; no duplicated domain rules, hidden RPC, or object-graph serialization.",
+    "Player/debug separation is required: state hash, revision, raw IDs, raw reason codes, prototype labels, and milestone labels stay hidden outside explicit dev/debug mode.",
+    "The zh-CN versus zh-Hans locale-code risk must have been resolved by M7-I18N-FOUNDATION-001 and verified before this exit task can pass.",
+    "No server, multiplayer, telemetry, account, cloud-save implementation, release, commercial, branding, production-art, or paid-service scope is authorized.",
+    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
+  ],
+  "created_at": "2026-06-28T20:48:00+08:00",
+  "updated_at": "2026-06-28T20:48:00+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "human_gates": [
+    "major cultural-risk decisions",
+    "formal content lock acceptance",
+    "manual playthrough acceptance where human judgment is required",
+    "commercial, release, store, branding, logo, or trademark decisions",
+    "telemetry, analytics, remote collection, accounts, paid services, or secrets",
+    "server or multiplayer behavior",
+    "arbitrary-code mods, runtime scripting extensions, or Workshop support",
+    "cloud-save implementation, network persistence, or any account-backed save service",
+    "irreversible save/content migration",
+    "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
+    "manual node battle reversal or any formal 1.0 scope reversal"
+  ],
+  "source_directive": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+  "visual_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md"
+}

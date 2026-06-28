@@ -1,0 +1,122 @@
+{
+  "message_id": "MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW",
+  "task_id": "M7-UI-LOCALIZATION-PLAN-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Created the downstream M7 UI/localization/visual quality-track task graph from the product-owner directive, accepted visual/UX handoff, systems review, QA review, and Beta culture-review evidence. The plan keeps implementation blocked behind this REVIEW task, preserves the save-migration ready path, and makes UI/localization exit a prerequisite for formal content lock acceptance and M7 exit validation.",
+  "artifacts": [
+    "project/tasks/active/M7-UI-LOCALIZATION-PLAN-001.json",
+    "project/tasks/active/M7-I18N-FOUNDATION-001.json",
+    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json",
+    "project/tasks/active/M7-APP-SHELL-QUALITY-001.json",
+    "project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "project/tasks/active/M7-APPOINTMENT-FLOW-QUALITY-001.json",
+    "project/tasks/active/M7-PLAYER-GUIDANCE-LITE-001.json",
+    "project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json",
+    "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "chore/m7-ui-localization-plan / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed modified allowed process/task files, nine new M7 UI/localization task JSON files, and lead/status-check route evidence. No apps, packages, content-source, docs, PROJECT_STATUS, tools, .github, or forbidden gate/status artifacts were modified by this writer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-PLAN-001; validate M7-I18N-FOUNDATION-001; validate M7-DESIGN-TOKENS-ASSET-SLOTS-001; validate M7-APP-SHELL-QUALITY-001; validate M7-MAP-PRESENTATION-QUALITY-001; validate M7-DISTRICT-INSPECTOR-QUALITY-001; validate M7-APPOINTMENT-FLOW-QUALITY-001; validate M7-PLAYER-GUIDANCE-LITE-001; validate M7-UI-REGRESSION-MATRIX-001; validate M7-UI-LOCALIZATION-EXIT-001; validate M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001; validate M7-CONTENT-LOCK-ACCEPTANCE-001; validate M7-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "All 13 created or updated task files returned VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed M7-UI-LOCALIZATION-PLAN-001 as REVIEW; newly created UI/localization downstream tasks are DRAFT; previously closed M7 prerequisite evidence remains CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Only M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is ready, preserving the existing save-migration ready state and preventing new UI tasks from bypassing planning review."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-UI-LOCALIZATION-PLAN-001 plus created/updated downstream and gate task files",
+      "exit_code": 0,
+      "result": "JSON_PARSE_SHAPE_PASS 13 task files."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect handoff JSON."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "M7-UI-TRACK-EXPLICIT-DAG",
+      "decision": "Created explicit downstream task JSON for i18n foundation, design tokens/asset slots, app shell quality, map presentation quality, district inspector quality, appointment flow quality, player guidance lite, UI regression matrix, and UI/localization exit validation."
+    },
+    {
+      "id": "PLANNING-GATE-BEFORE-IMPLEMENTATION",
+      "decision": "All new implementation tasks depend directly or indirectly on M7-UI-LOCALIZATION-PLAN-001, so they cannot become dependency-ready until this planning task passes review and is closed by lead integration."
+    },
+    {
+      "id": "FOUNDATION-BEFORE-SURFACES",
+      "decision": "M7-I18N-FOUNDATION-001 and M7-DESIGN-TOKENS-ASSET-SLOTS-001 precede M7-APP-SHELL-QUALITY-001; app shell precedes map, inspector, appointment, and guidance surfaces; UI regression follows those surfaces."
+    },
+    {
+      "id": "M7-GATE-BLOCKED-BY-UI-EXIT",
+      "decision": "M7-UI-LOCALIZATION-EXIT-001 is now a prerequisite of M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001, preventing M7 content lock or exit from passing while this quality track is unfinished."
+    },
+    {
+      "id": "SAVE-MIGRATION-PRESERVED",
+      "decision": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 was not modified and remains the only taskctl-ready M7 task; the UI/localization track does not block save migration without an explicit dependency reason."
+    },
+    {
+      "id": "ARCHITECTURE-CONDITIONS-INHERITED",
+      "decision": "Each new downstream task inherits i18n outside sim-core, no UI ownership of authoritative WorldState, Pixi render-cache-only, GameCommand/query/read-model boundaries, player/debug separation, full Human Gate list, DEFER_MANUAL_NODE_BATTLE, and no server/multiplayer/telemetry/cloud-save implementation/release/commercial/production-art scope."
+    },
+    {
+      "id": "LOCALE-RISK-ROUTED",
+      "decision": "The zh-CN versus zh-Hans locale-code drift is explicitly assigned to M7-I18N-FOUNDATION-001 for systems-reviewed resolution before downstream localized UI polish depends on locale identifiers."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-UI-TARGET-EXPRESSION-OVERREAD",
+      "severity": "P1",
+      "summary": "Downstream implementers could over-read visual target expressions as authorization for new simulation, protocol, or product systems.",
+      "mitigation": "Each task states that work must use existing read models, command previews, tokens, slots, layout, and localization; new domain capability requires separate approved task and systems review."
+    },
+    {
+      "id": "M7-CULTURAL-ASSET-SYMBOL-RISK",
+      "severity": "P1",
+      "summary": "UI icons, portraits, map symbols, naming, scripts, flags, religious imagery, and cultural motifs can imply unsupported historical claims.",
+      "mitigation": "Tasks require neutral placeholders and route culture-specific production choices to historical/cultural review or Human Gate."
+    },
+    {
+      "id": "M7-LOCALE-CODE-DRIFT",
+      "severity": "P2",
+      "summary": "Product-owner directive names zh-CN while prior M7 coverage uses zh-Hans for Simplified Chinese.",
+      "mitigation": "M7-I18N-FOUNDATION-001 must resolve or alias locale identifiers with tests before other UI tasks rely on them."
+    },
+    {
+      "id": "M7-PARALLEL-PROCESS-STATUS-FILES",
+      "severity": "P2",
+      "summary": "git status shows lead/status-check route and state file updates while this writer was completing the handoff.",
+      "mitigation": "Those files are allowed process evidence and are not required for the task graph decisions; lead/QA should include or reconcile them during integration without reverting unrelated process updates."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independent QA review of the M7 UI/localization/visual quality-track plan, dependency graph, Human Gate inheritance, save-migration readiness preservation, and handoff evidence.",
+  "created_at": "2026-06-28T20:56:00+08:00"
+}
