@@ -6,35 +6,54 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
   "current_milestone": "M7",
-  "current_task": null,
-  "current_tasks": [],
-  "current_task_status": "CLOSED",
+  "current_task": "M7-PLAYER-GUIDANCE-LITE-001",
+  "current_tasks": [
+    "M7-PLAYER-GUIDANCE-LITE-001"
+  ],
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M7-DISTRICT-INSPECTOR-QUALITY-001",
   "last_integrated_task": "M7-MAP-PRESENTATION-QUALITY-001",
-  "last_main_commit": "5ff2985b7e3490621544bc11fedf24a26fb9c9ce",
+  "last_main_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
   "ready_tasks": [
     "M7-PLAYER-GUIDANCE-LITE-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "next_ready_tasks": [
-    "M7-PLAYER-GUIDANCE-LITE-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "chore/close-m7-map-presentation-quality",
-      "created_at": "2026-06-28T22:18:34.157Z",
-      "updated_at": "2026-06-28T23:14:02.491Z",
-      "start_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
+      "branch_or_worktree": "feat/m7-player-guidance-lite",
+      "created_at": "2026-06-28T23:21:24.687Z",
+      "updated_at": "2026-06-28T23:21:24.687Z",
+      "start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
+    },
+    "client_engineer": {
+      "thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "status": "active_writer",
+      "role": "client_engineer",
+      "nickname": "Window the 2nd",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-player-guidance-lite",
+      "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "routed_at": "2026-06-28T23:21:24.687Z",
+      "route_sent_at": "2026-06-28T23:21:24.687Z",
+      "route_submission_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "updated_at": "2026-06-28T23:21:24.687Z"
     }
   },
   "unresolved_risks": [
@@ -63,13 +82,13 @@
     "approval_source": "M7-MAP-PRESENTATION-QUALITY-001 start checkpoint",
     "recommended_result": null,
     "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T22:18:34.157Z"
+    "recorded_at": "2026-06-28T23:21:24.687Z"
   },
   "next_machine_action": "Await systems_architect review for M7-MAP-PRESENTATION-QUALITY-001.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T23:14:02.491Z",
+  "last_updated_at": "2026-06-28T23:21:24.687Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -308,7 +327,7 @@
     "project/goal-mode-state.json",
     "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json"
   ],
-  "branch_or_worktree": "chore/close-m7-map-presentation-quality",
+  "branch_or_worktree": "feat/m7-player-guidance-lite",
   "commit": "08127380716c1ef93d5849e92080e85400bc0fd4",
   "tests_run": [
     {
@@ -455,6 +474,6 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Start M7-PLAYER-GUIDANCE-LITE-001 as the highest-priority dependency-ready M7 task unless taskctl ready changes.",
-  "updated_at": "2026-06-28T23:14:02.491Z"
+  "next_action": "Await client_engineer writer handoff for M7-PLAYER-GUIDANCE-LITE-001.",
+  "updated_at": "2026-06-28T23:21:24.687Z"
 }
