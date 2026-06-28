@@ -2199,7 +2199,7 @@ function M7ScenarioPanel({
         <div className="m7-guidance__fact" data-entry-id={selectedEntry.entryId}>
           <strong>{selectedEntry.title}</strong>
           <span>
-            {selectedEntry.contentLabel}; {selectedEntry.reviewState}
+            {selectedEntry.contentLabel}; {selectedEntry.confidence}; {selectedEntry.reviewState}
           </span>
           <span>{selectedEntry.summary}</span>
         </div>

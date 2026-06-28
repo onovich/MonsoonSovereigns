@@ -1,5 +1,8 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, test } from "vitest";
 
+import { M7_BETA_GUIDANCE_SOURCE } from "../packages/client-core/src/m7-beta-guidance-content";
 import {
   SYNTHETIC_DISTRICT_PRESSURE_ROW_COUNT,
   calculateClientVirtualWindow,
@@ -37,6 +40,11 @@ import {
   withDistrictListReadModel,
   withM7GuidanceReadModel
 } from "../packages/client-core/src/index";
+
+const M7_ACCEPTED_SOURCE_PATH = new URL(
+  "../content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+  import.meta.url
+);
 
 describe("M2 district list client read model", () => {
   test("creates a 4000-row synthetic pressure fixture without WorldState authority", () => {
@@ -474,6 +482,44 @@ describe("M6 Alpha client read model", () => {
 });
 
 describe("M7 tutorial hints encyclopedia client read model", () => {
+  test("keeps the generated M7 guidance fixture mechanically aligned with accepted content source", () => {
+    const acceptedSource: unknown = JSON.parse(readFileSync(M7_ACCEPTED_SOURCE_PATH, "utf8"));
+    expect(acceptedSource).toEqual(M7_BETA_GUIDANCE_SOURCE);
+
+    expect(M7_BETA_GUIDANCE_SOURCE.scenarios).toHaveLength(3);
+    expect(M7_BETA_GUIDANCE_SOURCE.persons).toHaveLength(6);
+    expect(M7_BETA_GUIDANCE_SOURCE.titles).toHaveLength(3);
+    expect(M7_BETA_GUIDANCE_SOURCE.events).toHaveLength(5);
+    expect(M7_BETA_GUIDANCE_SOURCE.localization).toHaveLength(36);
+    expect(M7_BETA_GUIDANCE_SOURCE.claimRecords).toHaveLength(6);
+    expect(M7_BETA_GUIDANCE_SOURCE.knownGaps).toHaveLength(4);
+
+    expect(
+      M7_BETA_GUIDANCE_SOURCE.claimRecords.find(
+        (claim) => claim.claimId === "HIST-M7-FILL-001-SCOPE"
+      )
+    ).toMatchObject({
+      label: "INFERRED",
+      confidence: "HIGH"
+    });
+    expect(
+      M7_BETA_GUIDANCE_SOURCE.localization.find(
+        (localization) => localization.key === "content.m7.beta.event.coercion_cost_review.name"
+      )
+    ).toMatchObject({
+      english: "Forced movement and population-loss review",
+      reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
+    });
+    expect(
+      M7_BETA_GUIDANCE_SOURCE.localization.find(
+        (localization) => localization.key === "content.m7.beta.person.court_broker_1531.name"
+      )
+    ).toMatchObject({
+      english: "Composite court broker 1531",
+      reviewState: "LANGUAGE_REVIEW_REQUIRED"
+    });
+  });
+
   test("projects Beta guidance from content runtime records and accepted read-model slices", () => {
     const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
     const fixture = createM7GuidanceReadModelFixture(baseSnapshot);
@@ -482,6 +528,10 @@ describe("M7 tutorial hints encyclopedia client read model", () => {
     expect(fixture.contentPack.m6GateCarryForward).toBe("PASS_WITH_LIMITS");
     expect(fixture.contentPack.manualNodeBattleDecision).toBe("DEFER_MANUAL_NODE_BATTLE");
     expect(fixture.scenarios).toHaveLength(3);
+    expect(fixture.contentPack.scenarioCount).toBe(3);
+    expect(fixture.contentPack.personCount).toBe(6);
+    expect(fixture.contentPack.eventCount).toBe(5);
+    expect(fixture.contentPack.knownGapCount).toBe(4);
     expect(fixture.tutorial.steps.map((step) => step.milestone)).toEqual([
       "M1",
       "M2",
@@ -506,16 +556,20 @@ describe("M7 tutorial hints encyclopedia client read model", () => {
     expect(fixture.encyclopedia.entries).toContainEqual(
       expect.objectContaining({
         entryId: "encyclopedia.m7.review-labels",
-        contentLabel: "FICTIONAL",
+        contentLabel: "INFERRED",
+        confidence: "HIGH",
         reviewState: "SCHEMA_VALIDATED"
       })
     );
     expect(fixture.encyclopedia.entries).toContainEqual(
       expect.objectContaining({
         entryId: "encyclopedia.m7.culture-risk-costs",
+        title: "Forced movement and population-loss review",
         reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
       })
     );
+    expect(JSON.stringify(fixture)).toContain("Composite court broker 1531");
+    expect(JSON.stringify(fixture)).toContain("LANGUAGE_REVIEW_REQUIRED");
     expect(fixture.reviewSummary.humanGateClaimCount).toBe(2);
     expect(JSON.stringify(fixture)).not.toContain("WorldState");
     expect(JSON.stringify(fixture)).not.toContain("telemetry");

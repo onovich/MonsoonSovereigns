@@ -31,6 +31,8 @@ import {
   type StartCampaignMarchCommandV1
 } from "@monsoon/protocol";
 
+import { M7_BETA_GUIDANCE_SOURCE } from "./m7-beta-guidance-content";
+
 export const CLIENT_READ_MODEL_PROTOCOL_VERSION = 1;
 
 export type Brand<T, B extends string> = T & { readonly __brand: B };
@@ -1557,26 +1559,13 @@ interface ClientM7RuntimeScenarioRecord {
 
 interface ClientM7RuntimeContentPack {
   readonly schemaVersion: 1;
-  readonly kind: "runtime-m7-beta-scenario-person-event-content-pack-v0";
+  readonly kind: "m7.beta-scenario-person-event-set";
   readonly fixtureId: string;
+  readonly fixtureKind: "beta-scenario-person-event-set";
+  readonly contentScope: "m7-beta-content-fill";
   readonly notContentLockAcceptance: true;
   readonly m6GateCarryForward: "PASS_WITH_LIMITS";
   readonly manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE";
-  readonly manifest: {
-    readonly schemaVersion: 1;
-    readonly fixtureId: string;
-    readonly fixtureKind: "beta-scenario-person-event-set";
-    readonly contentScope: "m7-beta-content-fill";
-    readonly manifestHash: string;
-    readonly sourceCount: number;
-    readonly claimCount: number;
-    readonly localizationCount: number;
-    readonly titleCount: number;
-    readonly personCount: number;
-    readonly eventCount: number;
-    readonly scenarioCount: number;
-    readonly knownGapCount: number;
-  };
   readonly sourceRecords: readonly ClientM7RuntimeSourceRecord[];
   readonly claimRecords: readonly ClientM7RuntimeClaimRecord[];
   readonly localization: readonly ClientM7RuntimeLocalizationRecord[];
@@ -1589,6 +1578,7 @@ interface ClientM7RuntimeContentPack {
 
 interface ClientM7RuntimeContentPackIndex {
   getClaim(claimId: string): ClientM7RuntimeClaimRecord | undefined;
+  getLocalization(key: string): ClientM7RuntimeLocalizationRecord | undefined;
 }
 
 export interface ClientM7GuidanceReadModelSnapshot {
@@ -1772,522 +1762,6 @@ export interface ClientVirtualWindowReadModel {
 export const SYNTHETIC_DISTRICT_PRESSURE_ROW_COUNT = 4_000;
 export const M2_PROTOTYPE_DISTRICT_COUNT = 30;
 export const M2_PROTOTYPE_SETTLEMENT_COUNT = 10;
-
-const M7_BETA_GUIDANCE_RUNTIME_PACK = {
-  schemaVersion: 1,
-  kind: "runtime-m7-beta-scenario-person-event-content-pack-v0",
-  fixtureId: "m7.beta.guidance.runtime",
-  notContentLockAcceptance: true,
-  m6GateCarryForward: "PASS_WITH_LIMITS",
-  manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE",
-  manifest: {
-    schemaVersion: 1,
-    fixtureId: "m7.beta.guidance.runtime",
-    fixtureKind: "beta-scenario-person-event-set",
-    contentScope: "m7-beta-content-fill",
-    manifestHash: "b7a15310",
-    sourceCount: 2,
-    claimCount: 6,
-    localizationCount: 12,
-    titleCount: 1,
-    personCount: 1,
-    eventCount: 1,
-    scenarioCount: 3,
-    knownGapCount: 2
-  },
-  sourceRecords: [
-    {
-      sourceId: "source.project.docs.10",
-      sourceClass: "PROJECT_POLICY",
-      citation: "docs/10-game-design.md accepted system contract references.",
-      accessStatus: "project-local",
-      pageOrSection: "M1-M7 accepted systems summary",
-      formalUse: "UI guidance only; not formal content lock acceptance."
-    },
-    {
-      sourceId: "source.review.m7.baseline",
-      sourceClass: "REVIEW_BASELINE",
-      citation:
-        "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
-      accessStatus: "project-local",
-      pageOrSection: "M7 baseline claims and review gates",
-      formalUse: "Review label and risk-state source for tutorial and encyclopedia surfaces."
-    }
-  ],
-  claimRecords: [
-    {
-      claimId: "HIST-M7-FILL-001-SCOPE",
-      claim:
-        "M7 Beta guidance surfaces are reviewable UI support and not formal content lock acceptance.",
-      label: "FICTIONAL",
-      confidence: "HIGH",
-      sourceIds: ["source.project.docs.10", "source.review.m7.baseline"],
-      sourcePassages: ["Formal content lock remains a separate Human Gate."],
-      sourceStatements: ["Tutorial and encyclopedia text must show review status."],
-      scholarlyInterpretations: ["Not applicable to this UI-only scope record."],
-      researcherInference: "UI may show labels and gaps without accepting final content.",
-      competingInterpretations: ["Formal content lock may later change wording."],
-      gameAbstraction: "Guidance panels display labels, reasons, and review state only.",
-      researchStatus: "PAGE_VERIFIED",
-      humanGate: false
-    },
-    {
-      claimId: "HIST-M7-FILL-002-SCENARIO-ANCHORS",
-      claim: "Composite scenario anchors remain review-required Beta content.",
-      label: "COMPOSITE",
-      confidence: "LOW",
-      sourceIds: ["source.review.m7.baseline"],
-      sourcePassages: ["Alpha anchors must not be treated as formal M7 lock records."],
-      sourceStatements: ["Scenario anchors can be retained, narrowed, fictionalized, or replaced."],
-      scholarlyInterpretations: ["Multiple later research interpretations remain possible."],
-      researcherInference: "UI should show COMPOSITE and RESEARCH REQUIRED together.",
-      competingInterpretations: ["Later research may replace the composite anchor."],
-      gameAbstraction: "Scenario cards show start year, label, confidence, and review state.",
-      researchStatus: "RESEARCH_REQUIRED",
-      humanGate: false
-    },
-    {
-      claimId: "HIST-M7-FILL-003-PERSON-PLACEHOLDER-LIMIT",
-      claim: "Placeholder persons and titles must stay visibly reviewed before formal use.",
-      label: "FICTIONAL",
-      confidence: "MEDIUM",
-      sourceIds: ["source.review.m7.baseline"],
-      sourcePassages: ["Names and titles require language review before formal content use."],
-      sourceStatements: ["Composite placeholders are allowed only as reviewed UI scaffolding."],
-      scholarlyInterpretations: ["Not applicable to placeholder UI scaffolding."],
-      researcherInference:
-        "Guidance should not present placeholder titles as final historical terms.",
-      competingInterpretations: ["Later localization may replace the placeholder."],
-      gameAbstraction: "Tutorial labels expose review state near title/person references.",
-      researchStatus: "SUMMARY_ONLY",
-      humanGate: false
-    },
-    {
-      claimId: "HIST-M7-FILL-004-TITLES-LANGUAGE-BLOCK",
-      claim: "Title and language strings remain schema validated rather than formally locked.",
-      label: "INFERRED",
-      confidence: "LOW",
-      sourceIds: ["source.review.m7.baseline"],
-      sourcePassages: ["Language review is required before formal M7 content lock."],
-      sourceStatements: ["UI must show review state for title and language terms."],
-      scholarlyInterpretations: ["Language form may differ after review."],
-      researcherInference: "Tutorial hooks can warn that terms are review-state bound.",
-      competingInterpretations: ["Later language review may approve or replace the term."],
-      gameAbstraction: "Hints mark unresolved language and culture-review risk.",
-      researchStatus: "RESEARCH_REQUIRED",
-      humanGate: false
-    },
-    {
-      claimId: "HIST-M7-FILL-005-EVENT-COSTS",
-      claim: "High-risk event terms must retain visible violence and culture cost review state.",
-      label: "INFERRED",
-      confidence: "MEDIUM",
-      sourceIds: ["source.review.m7.baseline"],
-      sourcePassages: ["Violence and coercion costs require explicit review gates."],
-      sourceStatements: ["Do not turn forced movement or coercion into a free reward."],
-      scholarlyInterpretations: ["Cost framing may change after cultural review."],
-      researcherInference: "UI can surface the risk state but cannot resolve it.",
-      competingInterpretations: ["Later review may remove the event from Beta content."],
-      gameAbstraction: "Encyclopedia entries show cost records and blocked review state.",
-      researchStatus: "RESEARCH_REQUIRED",
-      humanGate: true
-    },
-    {
-      claimId: "HIST-M7-FILL-006-NO-CULTURE-BUFF",
-      claim: "Culture review risks must not become fixed culture buffs or simple conflict rewards.",
-      label: "INFERRED",
-      confidence: "MEDIUM",
-      sourceIds: ["source.review.m7.baseline"],
-      sourcePassages: ["No fixed culture buff and no simple religious conflict shortcut."],
-      sourceStatements: ["Player-facing explanations must keep human costs visible."],
-      scholarlyInterpretations: ["Cultural interpretation remains review-dependent."],
-      researcherInference: "Hints should frame culture-risk records as constraints.",
-      competingInterpretations: ["Later review may rewrite the abstraction."],
-      gameAbstraction: "Culture-risk hints point to review status and cost records.",
-      researchStatus: "RESEARCH_REQUIRED",
-      humanGate: true
-    }
-  ],
-  localization: [
-    {
-      key: "content.m7.beta.event.coercion_cost_review.name",
-      zhHans: "Coercion cost review",
-      english: "Coercion cost review",
-      sourceNote: "Review-facing event title.",
-      context: "Event title.",
-      characterLimit: 72,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-005-EVENT-COSTS"],
-      reviewState: "CULTURE_HUMAN_GATE_REQUIRED",
-      owner: "historical_researcher",
-      deterministicOrder: 1
-    },
-    {
-      key: "content.m7.beta.hook.1531.start",
-      zhHans: "1531 composite opening",
-      english: "1531 composite opening: edge polity and agent network.",
-      sourceNote: "Scenario hook, not formal chronology.",
-      context: "Scenario start hook.",
-      characterLimit: 96,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      deterministicOrder: 2
-    },
-    {
-      key: "content.m7.beta.hook.1569.start",
-      zhHans: "1569 composite opening",
-      english: "1569 composite opening: overextended suzerainty.",
-      sourceNote: "Scenario hook, not formal chronology.",
-      context: "Scenario start hook.",
-      characterLimit: 96,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      deterministicOrder: 3
-    },
-    {
-      key: "content.m7.beta.hook.1581.start",
-      zhHans: "1581 composite opening",
-      english: "1581 composite opening: succession and network fracture.",
-      sourceNote: "Scenario hook, not formal chronology.",
-      context: "Scenario start hook.",
-      characterLimit: 96,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      deterministicOrder: 4
-    },
-    {
-      key: "content.m7.beta.hook.encyclopedia.review_labels",
-      zhHans: "Review labels shown",
-      english:
-        "Encyclopedia entries expose historical, inferred, composite, fictional, and research-required labels.",
-      sourceNote: "Review-facing hook.",
-      context: "Encyclopedia hook.",
-      characterLimit: 140,
-      sourceIds: ["source.project.docs.10", "source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-001-SCOPE"],
-      reviewState: "SCHEMA_VALIDATED",
-      owner: "historical_researcher",
-      deterministicOrder: 5
-    },
-    {
-      key: "content.m7.beta.hook.failure.unstable_order",
-      zhHans: "Unstable order failure",
-      english:
-        "Order goals can fail when obligations, legitimacy, or succession pressure destabilize.",
-      sourceNote: "Gameplay hook over accepted systems.",
-      context: "Failure hook.",
-      characterLimit: 128,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-006-NO-CULTURE-BUFF"],
-      reviewState: "SCHEMA_VALIDATED",
-      owner: "historical_researcher",
-      deterministicOrder: 6
-    },
-    {
-      key: "content.m7.beta.hook.tutorial.review_gaps",
-      zhHans: "Tutorial review gaps",
-      english: "Tutorial hints mark unresolved research and culture-review risks.",
-      sourceNote: "Review-facing hook.",
-      context: "Tutorial hook.",
-      characterLimit: 128,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-001-SCOPE"],
-      reviewState: "SCHEMA_VALIDATED",
-      owner: "historical_researcher",
-      deterministicOrder: 7
-    },
-    {
-      key: "content.m7.beta.hook.victory.recognized_order",
-      zhHans: "Recognized order victory",
-      english: "Victory focuses on recognized order, not total map coloring.",
-      sourceNote: "Contracted gameplay abstraction.",
-      context: "Victory hook.",
-      characterLimit: 128,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-001-SCOPE"],
-      reviewState: "SCHEMA_VALIDATED",
-      owner: "historical_researcher",
-      deterministicOrder: 8
-    },
-    {
-      key: "content.m7.beta.person.court_broker_1531.name",
-      zhHans: "Composite court broker",
-      english: "Composite court broker",
-      sourceNote: "Placeholder person label for UI guidance.",
-      context: "Person display name.",
-      characterLimit: 64,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-003-PERSON-PLACEHOLDER-LIMIT"],
-      reviewState: "SCHEMA_VALIDATED",
-      owner: "historical_researcher",
-      deterministicOrder: 9
-    },
-    {
-      key: "content.m7.beta.scenario.1531_edge_polity.name",
-      zhHans: "1531 edge polity",
-      english: "1531 edge polity",
-      sourceNote: "Composite scenario label.",
-      context: "Scenario display name.",
-      characterLimit: 72,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      deterministicOrder: 10
-    },
-    {
-      key: "content.m7.beta.scenario.1569_overextended_suzerainty.name",
-      zhHans: "1569 overextended suzerainty",
-      english: "1569 overextended suzerainty",
-      sourceNote: "Composite scenario label.",
-      context: "Scenario display name.",
-      characterLimit: 72,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      deterministicOrder: 11
-    },
-    {
-      key: "content.m7.beta.scenario.1581_succession_fracture.name",
-      zhHans: "1581 succession fracture",
-      english: "1581 succession fracture",
-      sourceNote: "Composite scenario label.",
-      context: "Scenario display name.",
-      characterLimit: 72,
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      deterministicOrder: 12
-    }
-  ],
-  titles: [
-    {
-      titleId: "title.beta.court-agent",
-      localizationKey: "content.m7.beta.person.court_broker_1531.name",
-      label: "FICTIONAL",
-      confidence: "MEDIUM",
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-004-TITLES-LANGUAGE-BLOCK"],
-      reviewState: "SCHEMA_VALIDATED",
-      owner: "historical_researcher",
-      deterministicOrder: 1
-    }
-  ],
-  persons: [
-    {
-      personId: "person.beta.court-broker-1531",
-      displayNameKey: "content.m7.beta.person.court_broker_1531.name",
-      titleIds: ["title.beta.court-agent"],
-      label: "FICTIONAL",
-      confidence: "MEDIUM",
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-003-PERSON-PLACEHOLDER-LIMIT"],
-      reviewState: "SCHEMA_VALIDATED",
-      owner: "historical_researcher",
-      scenarioIds: [
-        "scenario.beta.1531.edge-polity",
-        "scenario.beta.1569.overextended-suzerainty",
-        "scenario.beta.1581.succession-fracture"
-      ],
-      roleTag: "review-placeholder-broker",
-      deterministicOrder: 1
-    }
-  ],
-  events: [
-    {
-      eventId: "event.beta.coercion-cost-review",
-      localizationKey: "content.m7.beta.event.coercion_cost_review.name",
-      label: "INFERRED",
-      confidence: "LOW",
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-005-EVENT-COSTS", "HIST-M7-FILL-006-NO-CULTURE-BUFF"],
-      reviewState: "CULTURE_HUMAN_GATE_REQUIRED",
-      owner: "historical_researcher",
-      triggerKey: "coercion-cost-review",
-      scenarioIds: [
-        "scenario.beta.1531.edge-polity",
-        "scenario.beta.1569.overextended-suzerainty",
-        "scenario.beta.1581.succession-fracture"
-      ],
-      personIds: ["person.beta.court-broker-1531"],
-      titleIds: ["title.beta.court-agent"],
-      choices: [
-        {
-          choiceId: "choice.beta.cost-visible",
-          localizationKey: "content.m7.beta.event.coercion_cost_review.name",
-          aiReasonKey: "content.m7.beta.hook.failure.unstable_order",
-          costSummaryKey: "content.m7.beta.hook.tutorial.review_gaps"
-        }
-      ],
-      violenceCostRecord: {
-        victimGroups: ["reviewed affected households"],
-        sourceRegions: ["composite beta region"],
-        immediateCosts: ["visible legitimacy and obligation pressure"],
-        longTermConsequences: ["review gate remains unresolved"],
-        reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
-      },
-      deterministicOrder: 1
-    }
-  ],
-  scenarios: [
-    {
-      scenarioId: "scenario.beta.1531.edge-polity",
-      scenarioKey: "beta-1531-edge-polity",
-      displayNameKey: "content.m7.beta.scenario.1531_edge_polity.name",
-      startYear: 1531,
-      label: "COMPOSITE",
-      confidence: "LOW",
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      personIds: ["person.beta.court-broker-1531"],
-      titleIds: ["title.beta.court-agent"],
-      eventIds: ["event.beta.coercion-cost-review"],
-      localizationKeys: [
-        "content.m7.beta.scenario.1531_edge_polity.name",
-        "content.m7.beta.hook.1531.start",
-        "content.m7.beta.hook.victory.recognized_order",
-        "content.m7.beta.hook.failure.unstable_order",
-        "content.m7.beta.hook.tutorial.review_gaps",
-        "content.m7.beta.hook.encyclopedia.review_labels"
-      ],
-      hooks: [
-        {
-          hookId: "hook.beta.1531.encyclopedia",
-          hookKind: "encyclopedia",
-          localizationKey: "content.m7.beta.hook.encyclopedia.review_labels",
-          targetIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"]
-        },
-        {
-          hookId: "hook.beta.1531.failure",
-          hookKind: "failure",
-          localizationKey: "content.m7.beta.hook.failure.unstable_order",
-          targetIds: ["event.beta.coercion-cost-review"]
-        },
-        {
-          hookId: "hook.beta.1531.start",
-          hookKind: "start",
-          localizationKey: "content.m7.beta.hook.1531.start",
-          targetIds: ["person.beta.court-broker-1531"]
-        },
-        {
-          hookId: "hook.beta.1531.tutorial",
-          hookKind: "tutorial",
-          localizationKey: "content.m7.beta.hook.tutorial.review_gaps",
-          targetIds: ["HIST-M7-FILL-004-TITLES-LANGUAGE-BLOCK"]
-        },
-        {
-          hookId: "hook.beta.1531.victory",
-          hookKind: "victory",
-          localizationKey: "content.m7.beta.hook.victory.recognized_order",
-          targetIds: ["event.beta.coercion-cost-review"]
-        }
-      ],
-      deterministicOrder: 1
-    },
-    {
-      scenarioId: "scenario.beta.1569.overextended-suzerainty",
-      scenarioKey: "beta-1569-overextended-suzerainty",
-      displayNameKey: "content.m7.beta.scenario.1569_overextended_suzerainty.name",
-      startYear: 1569,
-      label: "COMPOSITE",
-      confidence: "LOW",
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      personIds: ["person.beta.court-broker-1531"],
-      titleIds: ["title.beta.court-agent"],
-      eventIds: ["event.beta.coercion-cost-review"],
-      localizationKeys: [
-        "content.m7.beta.scenario.1569_overextended_suzerainty.name",
-        "content.m7.beta.hook.1569.start",
-        "content.m7.beta.hook.victory.recognized_order",
-        "content.m7.beta.hook.failure.unstable_order",
-        "content.m7.beta.hook.tutorial.review_gaps",
-        "content.m7.beta.hook.encyclopedia.review_labels"
-      ],
-      hooks: [
-        {
-          hookId: "hook.beta.1569.encyclopedia",
-          hookKind: "encyclopedia",
-          localizationKey: "content.m7.beta.hook.encyclopedia.review_labels",
-          targetIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"]
-        },
-        {
-          hookId: "hook.beta.1569.start",
-          hookKind: "start",
-          localizationKey: "content.m7.beta.hook.1569.start",
-          targetIds: ["person.beta.court-broker-1531"]
-        },
-        {
-          hookId: "hook.beta.1569.tutorial",
-          hookKind: "tutorial",
-          localizationKey: "content.m7.beta.hook.tutorial.review_gaps",
-          targetIds: ["HIST-M7-FILL-004-TITLES-LANGUAGE-BLOCK"]
-        }
-      ],
-      deterministicOrder: 2
-    },
-    {
-      scenarioId: "scenario.beta.1581.succession-fracture",
-      scenarioKey: "beta-1581-succession-fracture",
-      displayNameKey: "content.m7.beta.scenario.1581_succession_fracture.name",
-      startYear: 1581,
-      label: "COMPOSITE",
-      confidence: "LOW",
-      sourceIds: ["source.review.m7.baseline"],
-      claimIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"],
-      reviewState: "RESEARCH REQUIRED",
-      owner: "historical_researcher",
-      personIds: ["person.beta.court-broker-1531"],
-      titleIds: ["title.beta.court-agent"],
-      eventIds: ["event.beta.coercion-cost-review"],
-      localizationKeys: [
-        "content.m7.beta.scenario.1581_succession_fracture.name",
-        "content.m7.beta.hook.1581.start",
-        "content.m7.beta.hook.victory.recognized_order",
-        "content.m7.beta.hook.failure.unstable_order",
-        "content.m7.beta.hook.tutorial.review_gaps",
-        "content.m7.beta.hook.encyclopedia.review_labels"
-      ],
-      hooks: [
-        {
-          hookId: "hook.beta.1581.encyclopedia",
-          hookKind: "encyclopedia",
-          localizationKey: "content.m7.beta.hook.encyclopedia.review_labels",
-          targetIds: ["HIST-M7-FILL-002-SCENARIO-ANCHORS"]
-        },
-        {
-          hookId: "hook.beta.1581.start",
-          hookKind: "start",
-          localizationKey: "content.m7.beta.hook.1581.start",
-          targetIds: ["person.beta.court-broker-1531"]
-        },
-        {
-          hookId: "hook.beta.1581.tutorial",
-          hookKind: "tutorial",
-          localizationKey: "content.m7.beta.hook.tutorial.review_gaps",
-          targetIds: ["HIST-M7-FILL-004-TITLES-LANGUAGE-BLOCK"]
-        }
-      ],
-      deterministicOrder: 3
-    }
-  ],
-  knownGaps: [
-    "Formal content lock remains a Human Gate.",
-    "Scenario anchors remain RESEARCH REQUIRED until later historical review."
-  ]
-} as const satisfies ClientM7RuntimeContentPack;
 
 export type ClientReadModelDelta =
   | {
@@ -4112,8 +3586,8 @@ export function createM7GuidanceReadModelFixture(
     "revision" | "districtList" | "m3Appointment" | "m4Campaign" | "m5Playable" | "m6Alpha"
   >
 ): ClientM7GuidanceReadModelSnapshot {
-  const pack = M7_BETA_GUIDANCE_RUNTIME_PACK;
-  assertM7GuidancePackCounts(pack);
+  const pack: ClientM7RuntimeContentPack = M7_BETA_GUIDANCE_SOURCE;
+  assertM7GuidanceSourceCounts(pack);
   const index = createClientM7RuntimeContentPackIndex(pack);
   const localizationByKey = new Map(pack.localization.map((entry) => [entry.key, entry.english]));
   const scenarios = pack.scenarios.map((scenario) =>
@@ -4137,11 +3611,11 @@ export function createM7GuidanceReadModelFixture(
     },
     contentPack: {
       fixtureId: pack.fixtureId,
-      manifestHash: pack.manifest.manifestHash,
-      scenarioCount: pack.manifest.scenarioCount,
-      personCount: pack.manifest.personCount,
-      eventCount: pack.manifest.eventCount,
-      knownGapCount: pack.manifest.knownGapCount,
+      manifestHash: pack.fixtureId,
+      scenarioCount: pack.scenarios.length,
+      personCount: pack.persons.length,
+      eventCount: pack.events.length,
+      knownGapCount: pack.knownGaps.length,
       notContentLockAcceptance: pack.notContentLockAcceptance,
       m6GateCarryForward: pack.m6GateCarryForward,
       manualNodeBattleDecision: pack.manualNodeBattleDecision
@@ -4766,6 +4240,21 @@ function createM7EncyclopediaReadModel(
   const scenarioClaim = index.getClaim("HIST-M7-FILL-002-SCENARIO-ANCHORS");
   const noBuffClaim = index.getClaim("HIST-M7-FILL-006-NO-CULTURE-BUFF");
   const highRiskEvent = pack.events.find((event) => event.violenceCostRecord !== null);
+  const highRiskEventTitle =
+    highRiskEvent === undefined
+      ? "M7 culture risk and violence costs"
+      : readM7IndexedEnglish(index, highRiskEvent.localizationKey);
+  const languageReviewPerson = pack.persons.find(
+    (person) => person.reviewState === "LANGUAGE_REVIEW_REQUIRED"
+  );
+  const languageReviewPersonName =
+    languageReviewPerson === undefined
+      ? "no accepted person localization"
+      : readM7IndexedEnglish(index, languageReviewPerson.displayNameKey);
+  const languageReviewNote =
+    languageReviewPerson === undefined
+      ? "Accepted person language review records are unavailable."
+      : `Accepted person display ${languageReviewPersonName} remains ${languageReviewPerson.reviewState}.`;
 
   return {
     selectedEntryId: "encyclopedia.m7.review-labels",
@@ -4882,9 +4371,7 @@ function createM7EncyclopediaReadModel(
         contentLabel: scenarioClaim?.label ?? "COMPOSITE",
         confidence: scenarioClaim?.confidence ?? "LOW",
         reviewState: firstScenario.reviewState,
-        summary:
-          scenarioClaim?.gameAbstraction ??
-          "Composite scenario anchors remain reviewable and may be changed by later research.",
+        summary: `${scenarioClaim?.gameAbstraction ?? "Composite scenario anchors remain reviewable and may be changed by later research."} ${languageReviewNote}`,
         sourceIds: firstScenario.sourceIds,
         claimIds: firstScenario.claimIds,
         linkedReasonCodes: ["m7.scenario.anchor.review-required"],
@@ -4892,7 +4379,7 @@ function createM7EncyclopediaReadModel(
       },
       {
         entryId: "encyclopedia.m7.culture-risk-costs",
-        title: "M7 culture risk and violence costs",
+        title: highRiskEventTitle,
         systemMilestone: "M7",
         contentLabel: noBuffClaim?.label ?? "INFERRED",
         confidence: noBuffClaim?.confidence ?? "MEDIUM",
@@ -4954,50 +4441,48 @@ function readM7LocalizedText(localizationByKey: ReadonlyMap<string, string>, key
   return text;
 }
 
+function readM7IndexedEnglish(index: ClientM7RuntimeContentPackIndex, key: string): string {
+  const localization = index.getLocalization(key);
+  if (localization === undefined) {
+    throw new Error(`Missing M7 localization key ${key}.`);
+  }
+  return localization.english;
+}
+
 function createClientM7RuntimeContentPackIndex(
   pack: ClientM7RuntimeContentPack
 ): ClientM7RuntimeContentPackIndex {
   const claimById = new Map(pack.claimRecords.map((claim) => [claim.claimId, claim]));
+  const localizationByKey = new Map(
+    pack.localization.map((localization) => [localization.key, localization])
+  );
   return {
     getClaim(claimId: string): ClientM7RuntimeClaimRecord | undefined {
       return claimById.get(claimId);
+    },
+    getLocalization(key: string): ClientM7RuntimeLocalizationRecord | undefined {
+      return localizationByKey.get(key);
     }
   };
 }
 
-function assertM7GuidancePackCounts(pack: ClientM7RuntimeContentPack): void {
+function assertM7GuidanceSourceCounts(pack: ClientM7RuntimeContentPack): void {
   const expectedCounts = [
-    {
-      label: "sourceCount",
-      actual: pack.sourceRecords.length,
-      expected: pack.manifest.sourceCount
-    },
-    { label: "claimCount", actual: pack.claimRecords.length, expected: pack.manifest.claimCount },
-    {
-      label: "localizationCount",
-      actual: pack.localization.length,
-      expected: pack.manifest.localizationCount
-    },
-    { label: "titleCount", actual: pack.titles.length, expected: pack.manifest.titleCount },
-    { label: "personCount", actual: pack.persons.length, expected: pack.manifest.personCount },
-    { label: "eventCount", actual: pack.events.length, expected: pack.manifest.eventCount },
-    {
-      label: "scenarioCount",
-      actual: pack.scenarios.length,
-      expected: pack.manifest.scenarioCount
-    },
-    { label: "knownGapCount", actual: pack.knownGaps.length, expected: pack.manifest.knownGapCount }
+    { label: "scenarioCount", actual: pack.scenarios.length, expected: 3 },
+    { label: "personCount", actual: pack.persons.length, expected: 6 },
+    { label: "titleCount", actual: pack.titles.length, expected: 3 },
+    { label: "eventCount", actual: pack.events.length, expected: 5 },
+    { label: "localizationCount", actual: pack.localization.length, expected: 36 },
+    { label: "claimCount", actual: pack.claimRecords.length, expected: 6 },
+    { label: "knownGapCount", actual: pack.knownGaps.length, expected: 4 }
   ];
 
   for (const count of expectedCounts) {
     if (count.actual !== count.expected) {
       throw new Error(
-        `M7 guidance pack ${count.label} mismatch: expected ${count.expected}, received ${count.actual}.`
+        `M7 accepted guidance source ${count.label} mismatch: expected ${count.expected}, received ${count.actual}.`
       );
     }
-  }
-  if (!/^[0-9a-f]{8}$/u.test(pack.manifest.manifestHash)) {
-    throw new Error("M7 guidance pack manifest hash must be 8 lowercase hexadecimal characters.");
   }
 }
 

@@ -217,6 +217,9 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("M1: Command, query, and checkpoint authority");
     expect(markup).toContain("M7: Beta content review labels");
     expect(markup).toContain("Encyclopedia entries expose historical");
+    expect(markup).toContain("INFERRED");
+    expect(markup).toContain("HIGH");
+    expect(markup).toContain("LANGUAGE_REVIEW_REQUIRED");
     expect(markup).toContain("RESEARCH REQUIRED");
     expect(markup).toContain("CULTURE_HUMAN_GATE_REQUIRED");
     expect(markup).toContain("Formal content lock acceptance remains outside this UI task.");

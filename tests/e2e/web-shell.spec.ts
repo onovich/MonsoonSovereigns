@@ -470,8 +470,18 @@ test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without s
   await expect(page.getByLabel("M7 encyclopedia entries")).toContainText(
     "M7: M7 Beta review labels"
   );
+  await expect(page.getByLabel("M7 encyclopedia entries")).toContainText("INFERRED");
+  await expect(page.getByLabel("M7 encyclopedia entries")).toContainText(
+    "Forced movement and population-loss review"
+  );
+  await expect(page.getByLabel("M7 encyclopedia entries")).toContainText(
+    "Composite court broker 1531"
+  );
   await expect(page.getByLabel("M7 encyclopedia entries")).toContainText(
     "CULTURE_HUMAN_GATE_REQUIRED"
+  );
+  await expect(page.getByLabel("M7 review summary and blockers")).toContainText(
+    "LANGUAGE_REVIEW_REQUIRED"
   );
   await expect(page.getByLabel("M7 review summary and blockers")).toContainText(
     "DEFER_MANUAL_NODE_BATTLE"
@@ -485,7 +495,7 @@ test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without s
     "scenario.beta.1581.succession-fracture"
   );
   await expect(page.getByLabel("M7 selected scenario guidance")).toContainText(
-    "1581 succession fracture"
+    "1581 Succession Fracture Composite Scenario"
   );
 
   const m7Text = await workspace.textContent();
