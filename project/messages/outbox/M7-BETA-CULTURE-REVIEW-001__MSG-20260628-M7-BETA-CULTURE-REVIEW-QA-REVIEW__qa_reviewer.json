@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW",
+  "task_id": "M7-BETA-CULTURE-REVIEW-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA review accepts M7-BETA-CULTURE-REVIEW-001 as Beta culture/history/language review evidence only. The evidence file and writer REVIEW handoff keep accepted items scoped to Beta evidence, preserve formal content lock as a future Human Gate, give precise request-change/blocked/Human Gate findings with paths, source records, claim records, uncertainty labels, and rationales, preserve M7-UI-LOCALIZATION-ART-COORDINATION-001 as a future UI/localization/visual dependency, and do not authorize UI implementation or product content lock. No product code, package code, app code, tools, Gate docs, roadmap, status, release, telemetry, server/multiplayer, arbitrary-code mod, or manual node battle scope was changed.",
+  "artifacts": [
+    "content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+    "project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+    "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json"
+  ],
+  "branch_or_worktree": "research/m7-beta-culture-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "c57f2899052998c647d1c0e67240c864c911346a",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial QA pre-handoff worktree was clean."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-BETA-CULTURE-REVIEW-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node -e JSON parse checks for project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json and content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+      "exit_code": 0,
+      "result": "Both JSON files parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before QA handoff creation."
+    },
+    {
+      "command": "git diff --name-only bf2feede9a32e906e2526ad6137ea18f7e9efba1..HEAD plus forbidden-path scan",
+      "exit_code": 0,
+      "result": "Changed paths are content-source evidence and project process/message/task state only; no forbidden apps/packages/tools/.github/docs Gate/roadmap/status/release paths were touched."
+    },
+    {
+      "command": "node -e evidence shape check for task/evidence contract",
+      "exit_code": 0,
+      "result": "SHAPE_OK: route qa_reviewer, notContentLockAcceptance true, acceptedForFormalContentLock false, accepted/request-change/blocked/Human Gate/UI-visual constraint findings present, and DEFER_MANUAL_NODE_BATTLE preserved."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-BETA-CULTURE-REVIEW-001 is REVIEW; M7-VISUAL-UX-HANDOFF-001 is REVIEW; upstream M7 historical/cultural/language, scenario/person/event, tutorial/hints/encyclopedia, and audio/art/localization tasks are CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is the only ready task while culture review and visual handoff reviews remain active."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID visual handoff envelope; it remains pending systems_architect review and is not implementation authorization."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for m1, m2, m3, m6 map, m6 scenario, and m7 beta scenario/person/event set; M7 manifest hash 92aed91e."
+    }
+  ],
+  "decisions": [
+    {
+      "verdict": "ACCEPT_AS_BETA_REVIEW_EVIDENCE_ONLY",
+      "reason": "Accepted findings in beta-culture-review-evidence.json are scoped to review evidence, composite Beta content path, high-risk routing, derived guidance evidence, neutral static slot coverage, and future UI directive constraints. The evidence sets acceptedForFormalContentLock to false."
+    },
+    {
+      "verdict": "REQUEST_CHANGE_AND_BLOCKER_FINDINGS_ARE_PRECISE_ENOUGH_FOR_LOCK_INPUT",
+      "reason": "Request-change, blocked-for-production, and Human Gate findings cite concrete content paths/jsonPaths or supporting message paths, source records, claim records, uncertainty labels, severity where applicable, required changes, and reviewer rationale."
+    },
+    {
+      "verdict": "FORMAL_CONTENT_LOCK_NOT_ACCEPTED",
+      "reason": "The evidence and writer handoff state notContentLockAcceptance true and preserve formal content lock acceptance as a future Human Gate."
+    },
+    {
+      "verdict": "UI_LOCALIZATION_VISUAL_DIRECTIVE_PRESERVED",
+      "reason": "M7-UI-LOCALIZATION-ART-COORDINATION-001 and M7-VISUAL-UX-HANDOFF-001 are treated as future UI/localization/visual quality-track constraints pending systems/QA review, not as substitutes for culture review and not as UI implementation authorization."
+    },
+    {
+      "verdict": "DEFER_MANUAL_NODE_BATTLE_PRESERVED",
+      "reason": "Task files, evidence, visual handoff, and searched references keep manual node battle deferred and do not create a M7/M8 blocking manual node battle implementation, spike, research, validation, or exit-gate dependency."
+    },
+    {
+      "verdict": "SCOPE_ACCEPTED",
+      "reason": "Base-to-HEAD diff contains only content-source evidence and project process/message/task state; forbidden product code, package, app, tool, Gate, roadmap, status, release, telemetry, server/multiplayer, arbitrary-code mod, and manual node battle paths are untouched."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "R4",
+      "summary": "Formal content lock and major cultural-risk decisions remain future Human Gates; this ACCEPT is not production historical certainty or content lock acceptance."
+    },
+    {
+      "severity": "R4",
+      "summary": "Culture-specific art, music, symbols, sacred imagery, scripts, clothing, architecture, weapons, names, titles, and transliterations remain blocked from production acceptance until source-specific cultural/language review and Human Gate where required."
+    },
+    {
+      "severity": "R4",
+      "summary": "M7-VISUAL-UX-HANDOFF-001 is still in REVIEW with systems_architect. Lead integration should reconcile that systems review state before converting visual guidance into UI/localization implementation tasks."
+    },
+    {
+      "severity": "R3",
+      "summary": "Some candidate sources remain metadata-only or source-discovery-only; future content lock must keep those claims RESEARCH REQUIRED unless page/section evidence is added."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "lead accept/integrate after systems review state is reconciled where needed.",
+  "created_at": "2026-06-28T20:20:03.6105610+08:00"
+}

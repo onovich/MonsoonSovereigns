@@ -2,7 +2,7 @@
   "id": "M7-VISUAL-UX-HANDOFF-001",
   "summary": "Route and review the M7 visual, UX, and localization handoff",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -116,7 +116,7 @@
     "qa_reviewer": {
       "thread_id": "019f0e2b-0cd8-7cb2-8a79-f41e08d82dc4",
       "task_id": "M7-VISUAL-UX-HANDOFF-001",
-      "status": "active_reviewer",
+      "status": "closed_accepted",
       "role": "qa_reviewer",
       "nickname": "Auditor",
       "configured_model": "gpt-5.5",
@@ -125,7 +125,10 @@
       "actual_effort": "unknown",
       "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
-      "routed_at": "2026-06-28T20:20:00.0000000+08:00"
+      "routed_at": "2026-06-28T20:20:00.0000000+08:00",
+      "qa_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-28T20:28:00.0000000+08:00",
+      "updated_at": "2026-06-28T20:28:00.0000000+08:00"
     }
   },
   "route_to": "systems_architect",
@@ -138,7 +141,7 @@
     "Stop and route to the named reviewer or Human Gate if the art handoff requests frozen product changes, new major systems, manual node battle reversal, server/multiplayer, telemetry, paid services, secrets, or unresolved major cultural-risk decisions."
   ],
   "created_at": "2026-06-28T20:00:07.0222898+08:00",
-  "updated_at": "2026-06-28T20:20:00.0000000+08:00",
+  "updated_at": "2026-06-28T20:28:00.0000000+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -166,9 +169,14 @@
   "review_markdown": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
   "systems_review_route": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-ART-HANDOFF-TO-SYSTEMS-REVIEW.json",
   "expected_systems_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
-  "next_action": "Await independent qa_reviewer review of M7 visual/UX handoff after systems ACCEPT.",
+  "next_action": "Open/merge PR, then close M7-VISUAL-UX-HANDOFF-001 only after accepted commit enters main; create or update downstream M7 UI/localization quality-track tasks in a follow-up planning task before implementation.",
   "systems_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
   "systems_status": "ACCEPT",
   "qa_route": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
-  "expected_qa_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json"
+  "expected_qa_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-28T20:28:00.0000000+08:00",
+  "accepted_head_commit": "b2b7c4260da993f380be9f2d9f888d5d6975da06"
 }
