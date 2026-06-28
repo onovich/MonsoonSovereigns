@@ -255,3 +255,9 @@ The task is planning-only. It creates no final content, product code, package co
 Independent `qa_reviewer` accepted the R2 fix in `project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json`; PR #183 passed both Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact.
 
 Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is active. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`. The next dependency-ready M7 tasks are `M7-MAP-PRESENTATION-QUALITY-001`, `M7-PLAYER-GUIDANCE-LITE-001`, and `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001`; the lead should start `M7-MAP-PRESENTATION-QUALITY-001` first unless `taskctl ready` changes.
+
+`M7-MAP-PRESENTATION-QUALITY-001` is CLOSED after PR #185 entered `origin/main` at `5ff2985b7e3490621544bc11fedf24a26fb9c9ce`. The task productized the M7 map presentation path with localized map labels, layer legend, hover details, pan controls, selected/reachable/blocked/overloaded presentation states, and list-map synchronization while preserving the accepted map authority boundary.
+
+`systems_architect` accepted the implementation in `project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json`, and independent `qa_reviewer` accepted it in `project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json`. PR #185 passed both Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact.
+
+Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is active. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`. The next dependency-ready M7 tasks are `M7-PLAYER-GUIDANCE-LITE-001` and `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001`; the lead should start `M7-PLAYER-GUIDANCE-LITE-001` first unless `taskctl ready` changes.

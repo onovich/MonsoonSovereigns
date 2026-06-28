@@ -1,0 +1,95 @@
+{
+  "message_id": "MSG-20260629-M7-MAP-PRESENTATION-CLOSED",
+  "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "M7-MAP-PRESENTATION-QUALITY-001 is CLOSED after PR #185 merged into origin/main at 5ff2985b7e3490621544bc11fedf24a26fb9c9ce. The accepted map presentation productization, systems_architect ACCEPT handoff, independent QA ACCEPT handoff, lead acceptance, local integration gates, and PR CI evidence are integrated in main.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "chore/close-m7-map-presentation-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "5ff2985b7e3490621544bc11fedf24a26fb9c9ce",
+  "tests_run": [
+    {
+      "command": "PR #185 Quality, Web, and Browser Smoke",
+      "exit_code": 0,
+      "result": "GitHub check passed in 2m39s."
+    },
+    {
+      "command": "PR #185 Windows Desktop Smoke Artifact",
+      "exit_code": 0,
+      "result": "GitHub check passed in 49s."
+    },
+    {
+      "command": "gh pr view 185 --json state,mergedAt,mergeCommit,url",
+      "exit_code": 0,
+      "result": "state=MERGED; mergeCommit=5ff2985b7e3490621544bc11fedf24a26fb9c9ce; url=https://github.com/onovich/MonsoonSovereigns/pull/185."
+    },
+    {
+      "command": "git rev-parse HEAD && git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "HEAD and origin/main both resolved to 5ff2985b7e3490621544bc11fedf24a26fb9c9ce before the closure branch was created."
+    },
+    {
+      "command": "local integration gates before PR",
+      "exit_code": 0,
+      "result": "git diff --check, taskctl validate/list/ready, writer/systems/QA/lead handoff validation, map-renderer/ui/web tests, build:web, storybook:build, test:e2e, and pnpm check all passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Task is closed only after accepted branch entered origin/main through PR #185 and both PR Gate jobs passed."
+    },
+    {
+      "id": "CHILD_THREADS_CLOSED",
+      "decision": "client_engineer, systems_architect, and qa_reviewer task threads are marked closed after integration."
+    },
+    {
+      "id": "NEXT_READY_TASKS",
+      "decision": "After this closure checkpoint enters main, continue with the highest-priority dependency-ready M7 task: M7-PLAYER-GUIDANCE-LITE-001 unless taskctl ready changes."
+    },
+    {
+      "id": "NO_HUMAN_GATE",
+      "decision": "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    }
+  ],
+  "risks": [
+    {
+      "id": "EXISTING_LARGE_CHUNK_WARNINGS",
+      "severity": "P3",
+      "summary": "Existing Vite and Storybook large chunk/plugin timing warnings remain non-blocking."
+    },
+    {
+      "id": "CANVAS_HELPER_NOT_PRIMARY_WEB_SURFACE",
+      "severity": "P3",
+      "summary": "Canvas helper is not the primary Web map surface; BrowserPixiMapRenderer is the active covered surface."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge closure checkpoint, sync main, then start M7-PLAYER-GUIDANCE-LITE-001 unless taskctl ready changes.",
+  "created_at": "2026-06-28T23:14:02.491Z",
+  "integrated_pr": 185,
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/185",
+  "integrated_main_commit": "5ff2985b7e3490621544bc11fedf24a26fb9c9ce",
+  "closed_child_threads": [
+    "019f1051-5288-72f3-b885-63f7816b500a",
+    "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+    "019f106f-c3b6-7132-b54c-fe845ff19f80"
+  ],
+  "next_ready_tasks": [
+    "M7-PLAYER-GUIDANCE-LITE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ]
+}

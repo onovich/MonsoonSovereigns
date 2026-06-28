@@ -42,11 +42,9 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
-    "updated_at": "2026-06-28T23:05:44.646Z",
-    "concurrent_task_ids": [
-      "M7-MAP-PRESENTATION-QUALITY-001"
-    ]
+    "task_id": null,
+    "updated_at": "2026-06-28T23:14:02.491Z",
+    "concurrent_task_ids": []
   },
   "retired_lead_threads": [
     {
@@ -4234,7 +4232,7 @@
     ]
   },
   "m7_map_presentation_quality": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
     "branch_or_worktree": "feat/m7-map-presentation-quality",
     "owner_role": "client_engineer",
@@ -4245,8 +4243,8 @@
     "reviewer_configured_model": "gpt-5.5",
     "reviewer_configured_effort": "xhigh",
     "started_at": "2026-06-28T22:18:34.157Z",
-    "updated_at": "2026-06-28T23:05:44.646Z",
-    "next_action": "Run integration gates and open PR for M7-MAP-PRESENTATION-QUALITY-001.",
+    "updated_at": "2026-06-28T23:14:02.491Z",
+    "next_action": "Start M7-PLAYER-GUIDANCE-LITE-001 after closure enters main.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "writer_thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
@@ -4276,6 +4274,21 @@
     "lead_accept_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-28T23:05:44.646Z",
     "accepted_implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
-    "accepted_branch_head": "20bc71524ccdc9dab3520d5a1d23cee3429033ff"
+    "accepted_branch_head": "20bc71524ccdc9dab3520d5a1d23cee3429033ff",
+    "closed_at": "2026-06-28T23:14:02.491Z",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 185,
+    "integrated_main_commit": "5ff2985b7e3490621544bc11fedf24a26fb9c9ce",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/185",
+    "lead_close_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-CLOSED__lead_orchestrator.json",
+    "child_threads_closed": [
+      "019f1051-5288-72f3-b885-63f7816b500a",
+      "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
+      "019f106f-c3b6-7132-b54c-fe845ff19f80"
+    ],
+    "next_ready_tasks": [
+      "M7-PLAYER-GUIDANCE-LITE-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    ]
   }
 }
