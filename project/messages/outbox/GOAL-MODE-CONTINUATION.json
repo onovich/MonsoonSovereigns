@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M7_HISTORICAL_CULTURAL_LANGUAGE_REVIEW_IN_PROGRESS",
+  "status": "M7_HISTORICAL_CULTURAL_LANGUAGE_REVIEW_ACCEPTED_PENDING_INTEGRATION",
   "project": "Monsoon Sovereigns",
   "origin_main": "4c434b3c07d250c72ae36796bed724f63390d566",
   "current_milestone": "M7",
@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M7-CONTENT-LOCK-CONTRACT-001",
   "last_integrated_task": "M7-CONTENT-LOCK-CONTRACT-001",
   "last_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
@@ -24,23 +24,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator"
-    },
-    "historical_researcher": {
-      "thread_id": "019f0c9d-bc2f-7f21-b05e-277a6dae8fb1",
-      "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
-      "status": "review_ready",
-      "role": "historical_researcher",
-      "nickname": "Chronicle"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f0cab-6434-7eb0-8e1b-565cd5c6618a",
-      "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
-      "status": "review_in_progress",
-      "role": "qa_reviewer",
-      "nickname": "Auditor",
-      "read_only": true
     }
   },
   "unresolved_risks": [
@@ -66,14 +51,14 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 start checkpoint",
+    "approval_source": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 accepted by independent QA; formal content lock remains future Human Gate.",
     "recommended_result": null,
-    "note": "No Human Gate is active. Major cultural-risk findings must route to Human Gate; formal content lock remains a future Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T05:07:21.810Z"
+    "note": "No Human Gate is active for integration. Major cultural-risk findings must route to Human Gate; formal content lock remains a future Human Gate; manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-28T05:27:40.948Z"
   },
-  "next_machine_action": "Await qa_reviewer verdict for M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.",
+  "next_machine_action": "Push branch, create PR, wait for CI, merge, sync main, close task, then continue to the next dependency-ready M7 task.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T05:21:25.888Z"
+  "last_updated_at": "2026-06-28T05:27:40.948Z"
 }

@@ -1,0 +1,72 @@
+{
+  "message_id": "MSG-20260628-M7-HIST-CULT-LANG-LEAD-ACCEPT",
+  "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 after independent qa_reviewer ACCEPT. The accepted artifact is a review-gate baseline for historical claims, cultural representations, language/name/title/symbol rules, uncertainty labels, violence-cost handling, and Human Gate routing. This is not formal content lock acceptance.",
+  "artifacts": [
+    "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+    "tests/content-schema-graph-source.test.ts",
+    "project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "research/m7-historical-cultural-language-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "e9d08b6edbeb612ec6ae2a5a7a8f6475a6b00f52",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "exit_code": 0,
+      "result": "VALID task in REVIEW before lead acceptance; task updated to ACCEPTED after QA accept."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Passed; M7 baseline remains review-gate-only and is not compiled as formal content."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 test file passed; 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 32 tests passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT independent QA verdict and move task to ACCEPTED pending PR integration.",
+    "Do not treat the baseline as formal content lock acceptance; M7-CONTENT-LOCK-ACCEPTANCE-001 remains a future Human Gate.",
+    "Preserve M6_GATE = PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE exactly.",
+    "Keep M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 unstarted until this accepted R4 task is integrated and closed."
+  ],
+  "risks": [
+    "This acceptance covers review gates only; later scenario/person/event, art/audio/localization, culture review, manual playthrough, and formal content lock still require their own tasks and gates.",
+    "Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains outside task scope and must not be staged."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Push branch, open PR, wait for CI, merge to main, sync, close the task, and continue to the next dependency-ready M7 task.",
+  "created_at": "2026-06-28T05:27:40.948Z"
+}

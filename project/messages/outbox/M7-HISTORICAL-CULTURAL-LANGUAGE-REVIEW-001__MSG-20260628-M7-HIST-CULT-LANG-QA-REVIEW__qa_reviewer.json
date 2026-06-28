@@ -1,0 +1,109 @@
+{
+  "message_id": "MSG-20260628-M7-HIST-CULT-LANG-QA-REVIEW",
+  "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the M7 historical, cultural, and language review baseline. The baseline is review-gate/process evidence only: it records source discipline, claim labels, candidate-source limits, cultural-risk and violence-cost Human Gate routing, language/name/title gates, no modern-nationalist shortcut checks, no unsupported formal certainty, zero accepted Beta real-world claims, M6 PASS_WITH_LIMITS carry-forward, and exact DEFER_MANUAL_NODE_BATTLE preservation. It does not approve formal content lock.",
+  "artifacts": [
+    "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+    "tests/content-schema-graph-source.test.ts",
+    "project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json",
+    "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-WRITER-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "research/m7-historical-cultural-language-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "e9d08b6edbeb612ec6ae2a5a7a8f6475a6b00f52",
+  "review_commit": "afbfad51d8b6783d9a6af5b9bb8afa5e6695e5e3",
+  "route_review_head_commit": "0a5d0eec",
+  "base_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before QA handoff creation, worktree showed only unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md; no staged changes."
+    },
+    {
+      "command": "git rev-parse HEAD; git merge-base origin/main HEAD; git log --oneline --decorate --max-count=8",
+      "exit_code": 0,
+      "result": "Actual reviewed HEAD was e9d08b6e on research/m7-historical-cultural-language-review, base was 4c434b3c, and the writer content commit afbfad51 plus route/process commits through e9d08b6e were present."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD; independent changed-path scope guard",
+      "exit_code": 0,
+      "result": "11 changed files, all within allowed paths. Forbidden path set was empty. docs/M7_UI_Localization_Art_Handoff_Prompts.md was untracked only, not staged and not in the diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is the only ready task while this task is in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Existing content packs validated; M7 baseline is not compiled as formal content, consistent with review-gate-only scope."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-schema test",
+      "exit_code": 0,
+      "result": "1 test file passed; 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 11 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed; 32 tests passed."
+    },
+    {
+      "command": "node -e JSON parse/shape and M7 baseline invariant check",
+      "exit_code": 0,
+      "result": "Parsed 7 JSON artifacts; baseline has 10 source records, 8 claim records, zero accepted Beta real-world claims, PASS_WITH_LIMITS carry-forward, and DEFER_MANUAL_NODE_BATTLE preservation. Candidate academic sources remain BIBLIOGRAPHIC_METADATA_ONLY with pageOrSection RESEARCH REQUIRED."
+    },
+    {
+      "command": "rg -n DEFER_MANUAL_NODE_BATTLE/PASS_WITH_LIMITS/formalContentLockHumanGate/acceptedBetaRealWorldClaims/modern national/cost-free/slavery/famine/religious conflict/Human Gate",
+      "exit_code": 0,
+      "result": "Matched required invariants in the baseline, task JSON, and tests: formal lock stays future Human Gate, accepted Beta claims are empty, modern-national shortcuts are rejected, violence-cost gates mention victim and long-term consequences, and Human Gate routing is explicit."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: the M7 review baseline exists before formal content fill and covers historical claims, cultural representation, language strings, names, titles, symbols, uncertainty labels, bias scans, and downstream gates.",
+    "ACCEPT: the baseline records zero accepted Beta real-world claims; later real-world claims must attach source records and labels or remain RESEARCH REQUIRED.",
+    "ACCEPT: external academic works are recorded only as candidate sources when page-level verification is absent; the baseline does not falsely mark metadata-only sources as formal evidence.",
+    "ACCEPT: contested/high-risk identity, mandala, violence-cost, language/name/title, symbol/art/music, and religion records include uncertainty labels, competing interpretations or RESEARCH REQUIRED handling, and Human Gate routing where major unresolved risk exists.",
+    "ACCEPT: no modern-nationalist identity shortcut, fixed culture buff, cost-free coercion reward, or unsupported certainty was introduced by the baseline.",
+    "ACCEPT: formal content lock acceptance remains a future Human Gate; acceptedBetaRealWorldClaims is empty and notContentLockAcceptance is true.",
+    "ACCEPT: M6_GATE remains PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE is preserved exactly."
+  ],
+  "risks": [
+    "This acceptance covers the review baseline only. It does not accept any later scenario/person/event record, name, title, symbol, art, audio, localization string, cultural-risk decision, or formal M7 content lock.",
+    "Actual HEAD e9d08b6e includes one additional QA route/process commit after the route file's recorded review_head_commit 0a5d0eec. QA reviewed origin/main...HEAD; the extra delta is limited to allowed route/process metadata and is not a blocker."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator should validate this QA handoff, run integration gates, and integrate/close M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 if gates remain clean. Do not treat this ACCEPT as formal content lock acceptance.",
+  "created_at": "2026-06-28T13:30:00+08:00"
+}

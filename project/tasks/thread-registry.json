@@ -5158,46 +5158,50 @@
       "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "research/m7-historical-cultural-language-review",
       "base_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
-      "updated_at": "2026-06-28T05:09:13.406Z",
+      "updated_at": "2026-06-28T05:27:40.948Z",
       "start_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json",
       "start_submission_id": "019f0ca1-69ad-7793-8881-390869d70768",
-      "route_sent_at": "2026-06-28T05:09:13.406Z"
+      "route_sent_at": "2026-06-28T05:09:13.406Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-28T05:27:40.948Z"
     },
     "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001:historical_researcher": {
       "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
       "role": "historical_researcher",
       "thread_id": "019f0c9d-bc2f-7f21-b05e-277a6dae8fb1",
       "nickname": "Chronicle",
-      "status": "review_ready",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "research/m7-historical-cultural-language-review",
       "base_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
-      "updated_at": "2026-06-28T05:20:35.170Z",
+      "updated_at": "2026-06-28T05:27:40.948Z",
       "start_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json",
       "start_submission_id": "019f0ca1-69ad-7793-8881-390869d70768",
       "route_sent_at": "2026-06-28T05:09:13.406Z",
       "review_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json",
       "review_commit": "afbfad51d8b6783d9a6af5b9bb8afa5e6695e5e3",
-      "review_head_commit": "0a5d0eec"
+      "review_head_commit": "0a5d0eec",
+      "closed_at": "2026-06-28T05:27:40.948Z",
+      "close_reason": "closed_after_review_handoff_and_independent_qa_accept"
     },
     "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001:qa_reviewer": {
       "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
       "role": "qa_reviewer",
       "thread_id": "019f0cab-6434-7eb0-8e1b-565cd5c6618a",
       "nickname": "Auditor",
-      "status": "review_in_progress",
+      "status": "closed_accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -5208,9 +5212,13 @@
       "review_head_commit": "0a5d0eec",
       "review_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-WRITER-REVIEW__historical_researcher.json",
       "review_route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-WRITER-TO-QA-REVIEW.json",
-      "updated_at": "2026-06-28T05:21:25.888Z",
+      "updated_at": "2026-06-28T05:27:40.948Z",
       "qa_submission_id": "019f0cac-96c5-7263-bcb5-b54f37869214",
-      "qa_route_sent_at": "2026-06-28T05:21:25.888Z"
+      "qa_route_sent_at": "2026-06-28T05:21:25.888Z",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-QA-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-28T05:27:40.948Z",
+      "close_reason": "closed_after_accept_handoff_to_lead"
     }
   },
   "replaced_threads": [
@@ -5300,5 +5308,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T05:21:25.888Z"
+  "updated_at": "2026-06-28T05:27:40.948Z"
 }
