@@ -7,7 +7,8 @@
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
   "dependencies": [
-    "M7-PERFORMANCE-MEMORY-LOADING-001"
+    "M7-PERFORMANCE-MEMORY-LOADING-001",
+    "M7-UI-REGRESSION-MATRIX-001"
   ],
   "scope": {
     "allowed_paths": [
@@ -57,10 +58,10 @@
     ]
   },
   "acceptance_criteria": [
-    "Validate the Beta matrix for Chrome, Edge, Firefox, Windows desktop smoke, supported resolutions, and supported localization states with explicit pass/fail evidence.",
+    "Validate the Beta matrix for Chrome, Edge, Firefox, Windows desktop smoke, supported resolutions, and supported localization states with explicit pass/fail evidence after the UI/localization regression matrix is available.",
     "Viewport and localization checks cover tutorial, hints, encyclopedia, map, major command flows, save/load surface, and terminal/evidence views without text overflow or incoherent overlap.",
     "Renderer and Electron boundaries remain secure: no Node integration, no arbitrary IPC, no hidden server, no telemetry, no accounts, and no cloud-save implementation.",
-    "Matrix failures are recorded as defects or scoped follow-ups; unsupported release/platform commitments remain Human Gates.",
+    "Matrix failures are recorded as defects or scoped follow-ups; unsupported release/platform commitments remain Human Gates, and unresolved UI/localization failures block M7-UI-LOCALIZATION-EXIT-001.",
     "No sim rule, content fact, save migration, manual node battle, release artifact, or commercial/branding decision is added."
   ],
   "required_tests": [
@@ -87,10 +88,11 @@
     "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
     "Player and AI behavior must continue through the same GameCommand/query/save surfaces where implementation work is later authorized.",
     "sim-core must remain decoupled from React, Pixi, Electron, DOM, Node IO, real time APIs, hidden RPC, and object-graph serialization.",
-    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
+    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed.",
+    "This task now depends on M7-UI-REGRESSION-MATRIX-001 so platform/resolution/localization validation cannot pass using stale pre-quality-track UI evidence."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T20:48:00+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [

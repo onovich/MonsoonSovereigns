@@ -10,7 +10,8 @@
     "M7-BETA-CULTURE-REVIEW-001",
     "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
     "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
-    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001"
+    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+    "M7-UI-LOCALIZATION-EXIT-001"
   ],
   "scope": {
     "allowed_paths": [
@@ -45,11 +46,12 @@
     ]
   },
   "acceptance_criteria": [
-    "Synthesize reviewed M7 content, culture, balance, performance, platform, localization, save-boundary, and manual playthrough evidence into a formal content lock recommendation.",
+    "Synthesize reviewed M7 content, culture, balance, performance, platform, UI/localization/visual quality, save-boundary, and manual playthrough evidence into a formal content lock recommendation.",
     "Formal content lock acceptance is a Human Gate. Without explicit product-owner approval, this task must remain BLOCKED or PARTIAL and must not mark content locked.",
     "After lock, permitted autonomous work is limited to defect fixes, compatibility fixes, and explicit balance tuning; no new large system, content expansion, release/commercial/branding, telemetry, server, cloud, or mod decision is allowed.",
     "M6_GATE remains PASS_WITH_LIMITS, and M7 lock must not erase Alpha/local evidence limits or desktop unsigned-smoke limitations.",
-    "Preserve DEFER_MANUAL_NODE_BATTLE; content lock cannot reverse it or make manual node battle a M7/M8 blocker."
+    "Preserve DEFER_MANUAL_NODE_BATTLE; content lock cannot reverse it or make manual node battle a M7/M8 blocker.",
+    "Do not recommend formal content lock while M7-UI-LOCALIZATION-EXIT-001 is incomplete, BLOCKED without accepted rationale, or missing systems/QA review evidence."
   ],
   "required_tests": [
     "git status --short",
@@ -68,10 +70,11 @@
     "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
     "Player and AI behavior must continue through the same GameCommand/query/save surfaces where implementation work is later authorized.",
     "sim-core must remain decoupled from React, Pixi, Electron, DOM, Node IO, real time APIs, hidden RPC, and object-graph serialization.",
-    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
+    "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed.",
+    "M7-UI-LOCALIZATION-EXIT-001 is a required prerequisite so formal content lock cannot pass while the UI/localization/visual quality track remains unfinished."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T20:48:00+08:00",
   "human_gate_required": true,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [

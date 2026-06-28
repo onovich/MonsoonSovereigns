@@ -2,7 +2,7 @@
   "id": "M7-UI-LOCALIZATION-PLAN-001",
   "summary": "Plan the M7 UI, localization, and visual quality track",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -54,6 +54,17 @@
   "required_tests": [
     "git status --short",
     "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-PLAN-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APP-SHELL-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-PRESENTATION-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APPOINTMENT-FLOW-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-GUIDANCE-LITE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-REGRESSION-MATRIX-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-EXIT-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-EXIT-VALIDATION-001",
     "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
     "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
     "node -e JSON parse/shape check for created or updated M7 UI/localization task files",
@@ -78,7 +89,7 @@
     "systems_architect": {
       "thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
       "task_id": "M7-UI-LOCALIZATION-PLAN-001",
-      "status": "active_writer",
+      "status": "closed_review_ready",
       "role": "systems_architect",
       "nickname": "Meridian",
       "configured_model": "gpt-5.5",
@@ -88,7 +99,26 @@
       "branch_or_worktree": "chore/m7-ui-localization-plan",
       "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
       "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
-      "routed_at": "2026-06-28T20:42:00.0000000+08:00"
+      "routed_at": "2026-06-28T20:42:00.0000000+08:00",
+      "status_check_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-STATUS-CHECK.json",
+      "status_check_submission_id": "019f0e4c-3dba-7321-a133-950040cbe90e",
+      "updated_at": "2026-06-28T21:00:00.0000000+08:00",
+      "closed_at": "2026-06-28T21:00:00.0000000+08:00"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0e50-3648-7442-8926-af52a2e34bc3",
+      "task_id": "M7-UI-LOCALIZATION-PLAN-001",
+      "status": "active_reviewer",
+      "role": "qa_reviewer",
+      "nickname": "Gate",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "chore/m7-ui-localization-plan",
+      "route_file": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
+      "routed_at": "2026-06-28T21:00:00.0000000+08:00"
     }
   },
   "route_to": "qa_reviewer",
@@ -102,7 +132,7 @@
     "Formal content lock remains a future Human Gate."
   ],
   "created_at": "2026-06-28T20:39:18.2016568+08:00",
-  "updated_at": "2026-06-28T20:42:00.0000000+08:00",
+  "updated_at": "2026-06-28T21:00:00.0000000+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -125,8 +155,34 @@
     "M7-VISUAL-UX-HANDOFF-001"
   ],
   "scheduling_reason": "Selected before M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 so the mid-stage product-owner UI/localization/art directive is represented in the M7 task graph before any UI/localization implementation tasks proceed.",
-  "next_action": "systems_architect writer returns REVIEW handoff for qa_reviewer.",
+  "next_action": "qa_reviewer reviews the M7 UI/localization quality-track task graph before downstream implementation can proceed.",
   "systems_thread_id": "019f0e40-b73f-7f51-bbce-46523aaab5ac",
   "systems_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-START.json",
-  "expected_systems_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json"
+  "expected_systems_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
+  "systems_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-SYSTEMS-REVIEW__systems_architect.json",
+  "downstream_task_ids": [
+    "M7-I18N-FOUNDATION-001",
+    "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+    "M7-APP-SHELL-QUALITY-001",
+    "M7-MAP-PRESENTATION-QUALITY-001",
+    "M7-DISTRICT-INSPECTOR-QUALITY-001",
+    "M7-APPOINTMENT-FLOW-QUALITY-001",
+    "M7-PLAYER-GUIDANCE-LITE-001",
+    "M7-UI-REGRESSION-MATRIX-001",
+    "M7-UI-LOCALIZATION-EXIT-001"
+  ],
+  "task_graph_decisions": [
+    "Implementation tasks depend on M7-UI-LOCALIZATION-PLAN-001 so they cannot bypass QA review of this planning task.",
+    "M7-I18N-FOUNDATION-001 and M7-DESIGN-TOKENS-ASSET-SLOTS-001 precede M7-APP-SHELL-QUALITY-001.",
+    "M7-APP-SHELL-QUALITY-001 precedes map, district inspector, appointment flow, and player guidance quality tasks.",
+    "M7-UI-REGRESSION-MATRIX-001 runs after all player-facing UI implementation surfaces.",
+    "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 now depends on M7-UI-REGRESSION-MATRIX-001 so the broader platform/localization matrix cannot validate stale UI.",
+    "M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 now depend on M7-UI-LOCALIZATION-EXIT-001 so the M7 Gate cannot pass while this track is unfinished.",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 remains unblocked by this UI/localization track and keeps its existing dependency boundary."
+  ],
+  "status_check_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-LEAD-TO-SYSTEMS-STATUS-CHECK.json",
+  "status_check_submission_id": "019f0e4c-3dba-7321-a133-950040cbe90e",
+  "status_check_sent_at": "2026-06-28T20:52:00.0000000+08:00",
+  "qa_route": "project/messages/routes/M7-UI-LOCALIZATION-PLAN-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+  "expected_qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json"
 }
