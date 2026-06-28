@@ -241,9 +241,13 @@ describe("web client shell", () => {
     expect(markup).toContain('aria-label="季节地图模式"');
     expect(markup).toContain('aria-label="经济地图模式"');
     expect(markup).toContain('aria-label="按人口排序"');
+    expect(markup).toContain('aria-label="按地区排序，当前升序"');
+    expect(markup).toContain('aria-hidden="true"> 升序</span>');
     expect(markup).not.toContain('aria-label="Virtualized district rows"');
     expect(markup).not.toContain('aria-label="Seasonal map mode"');
     expect(markup).not.toContain('aria-label="Sort by Population"');
+    expect(markup).not.toContain('aria-hidden="true"> up</span>');
+    expect(markup).not.toContain('aria-hidden="true"> down</span>');
   });
 
   it("renders legacy milestone workspaces only in developer overlay", () => {

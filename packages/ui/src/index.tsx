@@ -1036,13 +1036,21 @@ function SortButton({
 }: SortButtonProps): ReactElement {
   const i18n = useContext(ClientI18nContext);
   const isActive = activeSortKey === sortKey;
-  const suffix = isActive ? (direction === "ascending" ? " up" : " down") : "";
+  const directionLabel = i18n.t(
+    direction === "ascending"
+      ? "shell.table.sortDirection.ascending"
+      : "shell.table.sortDirection.descending"
+  );
+  const ariaLabel = isActive
+    ? i18n.t("shell.table.sortButtonActiveLabel", { label, direction: directionLabel })
+    : i18n.t("shell.table.sortButtonLabel", { label });
+  const suffix = isActive ? ` ${directionLabel}` : "";
 
   return (
     <button
       className="district-list__sort"
       type="button"
-      aria-label={i18n.t("shell.table.sortButtonLabel", { label })}
+      aria-label={ariaLabel}
       data-active={isActive}
       onClick={() => onSort(sortKey)}
     >

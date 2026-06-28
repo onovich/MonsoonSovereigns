@@ -46,6 +46,12 @@ test("web shell resolves system language, switches language, and persists prefer
   await expect(page.getByLabel("虚拟化地区行")).toHaveAttribute("data-row-count", "30");
   await expect(page.getByRole("button", { name: "经济地图模式" })).toBeVisible();
   await expect(page.getByRole("button", { name: "按人口排序" })).toBeVisible();
+  const activeDistrictSort = page.getByRole("button", {
+    name: "按地区排序，当前升序"
+  });
+  await expect(activeDistrictSort).toBeVisible();
+  await expect(activeDistrictSort).toContainText("地区 升序");
+  await expect(activeDistrictSort).not.toContainText(/\b(?:up|down)\b/iu);
   await expect(page.getByLabel("Virtualized district rows")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Economy map mode" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Sort by Population" })).toHaveCount(0);
