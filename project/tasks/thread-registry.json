@@ -6145,7 +6145,7 @@
     "M7-MAP-PRESENTATION-QUALITY-001:lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -6153,14 +6153,15 @@
       "actual_effort": "xhigh",
       "branch_or_worktree": "feat/m7-map-presentation-quality",
       "created_at": "2026-06-28T22:18:34.157Z",
-      "updated_at": "2026-06-28T22:54:43.533Z",
+      "updated_at": "2026-06-28T23:05:44.646Z",
       "start_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
+      "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "M7-MAP-PRESENTATION-QUALITY-001:client_engineer": {
       "thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
       "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
-      "status": "review_ready",
+      "status": "accepted_pending_integration",
       "role": "client_engineer",
       "nickname": "Lantern",
       "configured_model": "gpt-5.5",
@@ -6173,7 +6174,7 @@
       "routed_at": "2026-06-28T22:18:34.157Z",
       "route_sent_at": "2026-06-28T22:20:22.061Z",
       "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a",
-      "updated_at": "2026-06-28T22:42:44.604Z",
+      "updated_at": "2026-06-28T23:05:44.646Z",
       "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
       "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json"
     },
@@ -6201,7 +6202,7 @@
     "M7-MAP-PRESENTATION-QUALITY-001:qa_reviewer": {
       "thread_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
       "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
-      "status": "active_reviewer",
+      "status": "review_accepted",
       "role": "qa_reviewer",
       "nickname": "Gate the 2nd",
       "configured_model": "gpt-5.5",
@@ -6217,7 +6218,8 @@
       "routed_at": "2026-06-28T22:54:43.533Z",
       "route_sent_at": "2026-06-28T22:54:43.533Z",
       "route_submission_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
-      "updated_at": "2026-06-28T22:54:43.533Z"
+      "updated_at": "2026-06-28T23:05:44.646Z",
+      "qa_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json"
     }
   },
   "replaced_threads": [
@@ -6330,7 +6332,7 @@
       "replaced_at": "2026-06-28T08:46:06.641Z"
     }
   ],
-  "updated_at": "2026-06-28T22:54:43.533Z",
+  "updated_at": "2026-06-28T23:05:44.646Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f"

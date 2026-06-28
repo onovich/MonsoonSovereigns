@@ -2,7 +2,7 @@
   "id": "M7-MAP-PRESENTATION-QUALITY-001",
   "summary": "Productize M7 map presentation without changing map authority",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -101,7 +101,7 @@
     "client_engineer": {
       "thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
       "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
-      "status": "review_ready",
+      "status": "accepted_pending_integration",
       "role": "client_engineer",
       "nickname": "Lantern",
       "configured_model": "gpt-5.5",
@@ -114,7 +114,7 @@
       "routed_at": "2026-06-28T22:18:34.157Z",
       "route_sent_at": "2026-06-28T22:20:22.061Z",
       "route_submission_id": "019f1051-5288-72f3-b885-63f7816b500a",
-      "updated_at": "2026-06-28T22:42:44.604Z",
+      "updated_at": "2026-06-28T23:05:44.646Z",
       "review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
       "review_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9"
     },
@@ -136,13 +136,13 @@
       "routed_at": "2026-06-28T22:43:36.568Z",
       "route_sent_at": "2026-06-28T22:43:36.568Z",
       "route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
-      "updated_at": "2026-06-28T22:54:43.533Z",
+      "updated_at": "2026-06-28T23:05:44.646Z",
       "systems_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json"
     },
     "qa_reviewer": {
       "thread_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
       "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
-      "status": "active_reviewer",
+      "status": "review_accepted",
       "role": "qa_reviewer",
       "nickname": "Gate the 2nd",
       "configured_model": "gpt-5.5",
@@ -158,10 +158,11 @@
       "routed_at": "2026-06-28T22:54:43.533Z",
       "route_sent_at": "2026-06-28T22:54:43.533Z",
       "route_submission_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
-      "updated_at": "2026-06-28T22:54:43.533Z"
+      "updated_at": "2026-06-28T23:05:44.646Z",
+      "qa_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
     "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
@@ -175,7 +176,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-28T22:54:43.533Z",
+  "updated_at": "2026-06-28T23:05:44.646Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -199,7 +200,7 @@
   "start_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
   "expected_writer_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
-  "next_action": "Await independent qa_reviewer acceptance for M7-MAP-PRESENTATION-QUALITY-001; do not integrate or close before QA ACCEPT.",
+  "next_action": "Run integration gates, open PR, wait for CI, merge to main, then close after origin/main contains accepted branch.",
   "writer_thread_id": "019f1051-5288-72f3-b885-63f7816b500a",
   "writer_thread_nickname": "Lantern",
   "route_sent_at": "2026-06-28T22:20:22.061Z",
@@ -219,5 +220,11 @@
   "qa_route": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json",
   "expected_qa_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
   "qa_route_sent_at": "2026-06-28T22:54:43.533Z",
-  "qa_route_submission_id": "019f106f-c3b6-7132-b54c-fe845ff19f80"
+  "qa_route_submission_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-28T23:05:44.646Z",
+  "accepted_implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+  "accepted_branch_head": "20bc71524ccdc9dab3520d5a1d23cee3429033ff"
 }
