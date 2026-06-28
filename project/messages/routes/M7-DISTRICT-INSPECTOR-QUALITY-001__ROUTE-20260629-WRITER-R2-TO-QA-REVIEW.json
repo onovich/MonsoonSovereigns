@@ -1,0 +1,103 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-R2-TO-QA-REVIEW",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "source_role": "lead_orchestrator",
+  "source_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "source_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+  "source_status": "REVIEW",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f1025-36fc-70d1-92bb-5858b2c7a74f",
+  "target_thread_nickname": "Auditor",
+  "requested_action": "Perform independent read-only R2 QA review of M7-DISTRICT-INSPECTOR-QUALITY-001 at fixed R2 implementation commit db65ad7d24ffcb710c909500f53987ae567d45ae, focusing on the selected district inspector zh-CN localization blocker and prior QA P1 findings.",
+  "branch_or_worktree": "feat/m7-district-inspector-quality",
+  "base_main_commit": "e8a854f672a49f2a5271111224b17830b6721de8",
+  "implementation_commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+  "previous_qa_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+  "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
+  "review_scope": [
+    "Verify actual R2 diff against allowed_paths and forbidden_paths.",
+    "Verify selected district inspector zh-CN player text localizes route kinds, obligation kinds, due labels, and route travel-day summaries.",
+    "Verify player mode does not show QA-reported English/raw tokens Road, road, Garrison, continuous, or days in the selected district inspector.",
+    "Verify district inspector still uses read models and command previews only, with no WorldState ownership or domain mutation.",
+    "Verify focused UI, Playwright, build, Storybook, and pnpm check evidence are meaningful and passing.",
+    "Verify no sim-core, protocol, save, map-renderer, platform, content-source, docs gate/roadmap, release, telemetry, server, multiplayer, account, cloud-save, production-art, branding, M8, or manual-node-battle scope was introduced."
+  ],
+  "required_tests": [
+    "git status --short --branch",
+    "git diff --name-status eb179555d2324311e0966923a137cf81824c01ee..db65ad7d24ffcb710c909500f53987ae567d45ae",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "git diff --check eb179555d2324311e0966923a137cf81824c01ee..db65ad7d24ffcb710c909500f53987ae567d45ae",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm --filter web test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm check"
+  ],
+  "lead_side_tests": [
+    {
+      "command": "validate-handoff R2 writer handoff",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "taskctl validate/list/ready",
+      "exit_code": 0,
+      "result": "Task valid; M7-DISTRICT-INSPECTOR-QUALITY-001 is REVIEW; ready tasks unchanged."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "16 passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "22 passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "9 passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed with existing chunk/plugin timing warnings."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "19 passed."
+    }
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T21:59:04.554Z",
+  "delivery": {
+    "method": "send_input",
+    "status": "pending",
+    "submission_id": null,
+    "sent_at": null,
+    "note": "Route file prepared; lead will send to existing qa_reviewer thread."
+  }
+}
