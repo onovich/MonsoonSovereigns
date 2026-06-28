@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-I18N-FOUNDATION-001",
-    "updated_at": "2026-06-28T22:11:35.681+08:00",
+    "updated_at": "2026-06-28T22:28:14.489+08:00",
     "concurrent_task_ids": [
       "M7-I18N-FOUNDATION-001"
     ]
@@ -2555,7 +2555,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T22:11:35.681+08:00",
+  "updated_at": "2026-06-28T22:28:14.489+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -3730,12 +3730,12 @@
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "feat/m7-i18n-foundation",
-      "updated_at": "2026-06-28T22:11:35.681+08:00"
+      "updated_at": "2026-06-28T22:28:14.489+08:00"
     },
     "M7-I18N-FOUNDATION-001:client_engineer": {
       "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "closed_review_ready",
+      "status": "active_request_changes_r2",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -3743,12 +3743,11 @@
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-i18n-foundation",
-      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
-      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
-      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
-      "closed_at": "2026-06-28T21:56:18.9396215+08:00",
-      "updated_at": "2026-06-28T22:11:35.681+08:00"
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-QA-REQUEST-CHANGES-TO-WRITER.json",
+      "previous_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "request_changes_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
+      "routed_at": "2026-06-28T22:28:14.489+08:00"
     },
     "M7-I18N-FOUNDATION-001:systems_architect": {
       "thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
@@ -3764,14 +3763,13 @@
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
       "systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
-      "routed_at": "2026-06-28T21:58:09.3109039+08:00",
-      "closed_at": "2026-06-28T22:11:35.681+08:00",
-      "updated_at": "2026-06-28T22:11:35.681+08:00"
+      "status_result": "ACCEPT",
+      "updated_at": "2026-06-28T22:28:14.489+08:00"
     },
     "M7-I18N-FOUNDATION-001:qa_reviewer": {
       "thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "active_reviewer",
+      "status": "closed_request_changes",
       "role": "qa_reviewer",
       "nickname": "Gate the 2nd",
       "configured_model": "gpt-5.5",
@@ -3780,8 +3778,10 @@
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-i18n-foundation",
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
-      "routed_at": "2026-06-28T22:11:35.681+08:00"
+      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+      "review_status": "REQUEST_CHANGES",
+      "closed_at": "2026-06-28T22:28:14.489+08:00",
+      "updated_at": "2026-06-28T22:28:14.489+08:00"
     }
   },
   "m7_ui_localization_art_coordination": {

@@ -1,0 +1,189 @@
+{
+  "message_id": "MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA cannot accept commit 0ae7ab4ac983360b31c7592f82066c6320679669 because the locale negotiation does not satisfy the product directive that Chinese system languages resolve to zh-CN. The implementation only recognizes a narrow zh/zh-CN/zh-Hans/zh-Hans-CN/zh-SG set; common Chinese system tags such as zh-TW, zh-HK, and zh-Hans-HK fall back to en-US, and an English variant preference such as en-GB followed by zh-Hans resolves to zh-CN instead of the supported English locale. The rest of the reviewed source scope, handoff evidence, Electron boundary, sim/protocol/save/map authority boundary, Storybook build, Playwright run, and required pnpm validation passed.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/i18n-platform.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/tasks/active/M7-I18N-FOUNDATION-001.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json"
+  ],
+  "branch_or_worktree": "feat/m7-i18n-foundation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Worktree was clean at feat/m7-i18n-foundation before this QA handoff was written; build outputs were ignored under .tmp, apps/web/dist, and apps/desktop/dist."
+    },
+    {
+      "command": "git diff --name-status --no-renames 382439d0ab40b4ef6f7172473155c686d81c7ef7 0ae7ab4ac983360b31c7592f82066c6320679669",
+      "exit_code": 0,
+      "result": "Reviewed actual implementation diff. Source changes were limited to allowed Web/UI/Storybook/test paths plus allowed process handoff/state files. No forbidden sim-core, sim-ai, protocol, save-format, map-renderer, tools, .github, docs/gates, PROJECT_STATUS, manifest, checksum, or validation-report path changed."
+    },
+    {
+      "command": "git diff --name-status --no-renames 0ae7ab4ac983360b31c7592f82066c6320679669 HEAD",
+      "exit_code": 0,
+      "result": "Post-review-commit branch changes were process routing/handoff/task-state files only; no app, package, Storybook, or test source changed after 0ae7ab4a."
+    },
+    {
+      "command": "git diff --check 382439d0ab40b4ef6f7172473155c686d81c7ef7 0ae7ab4ac983360b31c7592f82066c6320679669",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-I18N-FOUNDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-I18N-FOUNDATION-001 is REVIEW. Downstream app shell, design tokens, map, inspector, appointment, guidance, regression, content lock, and exit tasks remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready candidates remain M7-DESIGN-TOKENS-ASSET-SLOTS-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001; no downstream UI implementation was started by this review."
+    },
+    {
+      "command": "node -e task JSON parse/shape check for M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "TASK_SHAPE_OK M7-I18N-FOUNDATION-001 REVIEW 0ae7ab4ac983360b31c7592f82066c6320679669."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems ACCEPT handoff JSON."
+    },
+    {
+      "command": "node -e route/scope check for M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "ROUTE_SCOPE_OK files=17; route targets qa_reviewer, systems_status is ACCEPT, and route review_commit matches the task review_commit."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 6 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 13 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite Web build passed. Existing large chunk warnings remain."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed. Existing plugin timing and large chunk warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 14/14, including the existing system zh-Hans fallback, manual switch, persistence, document.lang, and no visible raw route.season.monsoon-risk assertion in the covered M4 path."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security check passed; preload still exposes only monsoonDesktop and allowed IPC channels remain desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "node --experimental-strip-types -e locale edge probe",
+      "exit_code": 0,
+      "result": "Observed {\"enGbThenZh\":\"zh-CN\",\"zhTw\":\"en-US\",\"zhHk\":\"en-US\",\"zhHansHk\":\"en-US\"}; this is the blocking locale canonicalization defect."
+    },
+    {
+      "command": "node --experimental-strip-types -e i18n canonical happy-path probe",
+      "exit_code": 0,
+      "result": "Confirmed zh-Hans and persisted legacy zh-Hans canonicalize to zh-CN, unsupported fr-FR falls back to en-US, known route.season.monsoon-risk displays as Monsoon route risk, and the zh-CN app.title code points are 5b63 98ce 8bf8 738b."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "P1",
+      "file": "packages/ui/src/i18n.ts",
+      "symbols": [
+        "SIMPLIFIED_CHINESE_ALIASES",
+        "normalizeClientLocaleTag",
+        "resolveClientLocale",
+        "parseClientLocalePreference"
+      ],
+      "acceptance_criteria": [
+        "Resolve the zh-CN versus zh-Hans locale-code risk explicitly, with systems review, aliases or migration behavior if needed, and tests that prevent drift.",
+        "Default to system language on first launch, allow manual language selection, persist player preference, and keep Web and Windows Electron paths behind safe platform adapters."
+      ],
+      "reproduction": "node --experimental-strip-types -e \"const m=await import('./packages/ui/src/i18n.ts'); console.log(JSON.stringify({enGbThenZh:m.resolveClientLocale({preference:'system',systemLocales:['en-GB','zh-Hans']}), zhTw:m.resolveClientLocale({preference:'system',systemLocales:['zh-TW']}), zhHk:m.resolveClientLocale({preference:'system',systemLocales:['zh-HK']}), zhHansHk:m.resolveClientLocale({preference:'system',systemLocales:['zh-Hans-HK']})}));\"",
+      "observed": "{\"enGbThenZh\":\"zh-CN\",\"zhTw\":\"en-US\",\"zhHk\":\"en-US\",\"zhHansHk\":\"en-US\"}",
+      "expected": "Any Chinese system language tag must resolve to the supported zh-CN locale per the product directive. English regional tags such as en-GB should resolve to the supported en-US locale and should not be skipped in favor of a later zh-Hans entry.",
+      "impact": "First launch system-language behavior is wrong for common browser/Electron locale tags. Chinese users with zh-TW/zh-HK/zh-Hans-HK system locales get English instead of zh-CN, while users whose preferred locale is an English regional tag can be switched to Chinese if a later navigator language is zh-Hans. The existing tests do not fail for these drift cases, so downstream UI/localization work would rely on an unstable foundation.",
+      "necessary_fix": "Canonicalize BCP-47 locale tags by language family for the supported surface: en and en-* resolve to en-US; zh and zh-* resolve to zh-CN unless a future Human Gate adds another Chinese locale. Keep persisted/manual preferences canonicalized to system, en-US, or zh-CN. Add focused unit tests for zh-TW, zh-HK, zh-Hans-HK or equivalent zh-* tags, and en-GB before zh-Hans. Add Web platform or Playwright coverage proving system fallback and persisted migration follow the same canonicalization."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA-REQUEST-CHANGES-LOCALE-CANONICALIZATION",
+      "decision": "Request changes because locale negotiation is a foundation-level acceptance criterion and the current implementation fails common Chinese and English regional system locale tags."
+    },
+    {
+      "id": "QA-ACCEPT-SCOPE-BOUNDARY-EVIDENCE",
+      "decision": "The reviewed source diff stays within allowed Web/UI/Storybook/test/process paths and does not alter sim-core, sim-ai, protocol, save-format, map-renderer, desktop IPC/preload, dependencies, tools, CI, docs/gates, or status artifacts."
+    },
+    {
+      "id": "QA-DEFER-FULL-PLAYER-MODE-CLEANUP",
+      "decision": "Do not block this foundation task on remaining prototype UI strings because the accepted M7 task graph assigns complete player-mode shell, map, inspector, appointment, guidance, and regression cleanup to downstream tasks."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LOCALE_ALIAS_POLICY_DRIFT",
+      "severity": "P1",
+      "summary": "If the foundation accepts only a narrow hard-coded alias list, downstream localized UI work can pass tests while real browser or Electron locale tags still resolve to the wrong supported language.",
+      "mitigation": "Fix canonicalization by language family and add focused tests before rerouting for R2 QA."
+    },
+    {
+      "id": "FULL_UI_STRING_COVERAGE_REMAINS_DOWNSTREAM",
+      "severity": "P3",
+      "summary": "Full player-mode string localization and debug/prototype hiding remain incomplete in the current UI.",
+      "mitigation": "Keep M7-APP-SHELL-QUALITY-001, M7-MAP-PRESENTATION-QUALITY-001, M7-DISTRICT-INSPECTOR-QUALITY-001, M7-APPOINTMENT-FLOW-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, M7-UI-REGRESSION-MATRIX-001, and M7-UI-LOCALIZATION-EXIT-001 responsible for final coverage."
+    }
+  ],
+  "non_blocking_notes": [
+    {
+      "id": "FULL_PLAYER_MODE_STRING_CLEANUP_DOWNSTREAM",
+      "severity": "P3",
+      "summary": "This review did not reject the many remaining prototype/player-visible strings in the existing M2-M7 UI because the accepted task graph assigns full player-mode shell, map, inspector, appointment, guidance, and no-prototype/no-debug cleanup to downstream M7 tasks and M7-UI-REGRESSION-MATRIX-001. The current foundation still must fix locale negotiation before those tasks depend on it."
+    },
+    {
+      "id": "STORAGE_METHOD_EXCEPTIONS_NOT_COVERED",
+      "severity": "P3",
+      "summary": "The platform adapter catches localStorage object access but not getItem/setItem exceptions. This was not used as the blocking finding, but adding graceful try/catch coverage while fixing locale tests would better match the safe-adapter intent."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Return to the original client_engineer writer to fix locale canonicalization/persistence tests in packages/ui/src/i18n.ts and the related Web/UI/Playwright tests. After repair, rerun the task required validations and route back through systems_architect if the alias policy changes from the accepted systems review; otherwise route directly back to qa_reviewer with an R2 handoff.",
+  "created_at": "2026-06-28T22:22:35.9799055+08:00"
+}

@@ -19,7 +19,7 @@
     "client_engineer": {
       "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "closed_review_ready",
+      "status": "active_request_changes_r2",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -27,12 +27,11 @@
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-i18n-foundation",
-      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
-      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
-      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
-      "closed_at": "2026-06-28T21:56:18.9396215+08:00",
-      "updated_at": "2026-06-28T22:11:35.681+08:00"
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-QA-REQUEST-CHANGES-TO-WRITER.json",
+      "previous_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "request_changes_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
+      "routed_at": "2026-06-28T22:28:14.489+08:00"
     },
     "systems_architect": {
       "thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
@@ -48,14 +47,13 @@
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
       "systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
-      "routed_at": "2026-06-28T21:58:09.3109039+08:00",
-      "closed_at": "2026-06-28T22:11:35.681+08:00",
-      "updated_at": "2026-06-28T22:11:35.681+08:00"
+      "status_result": "ACCEPT",
+      "updated_at": "2026-06-28T22:28:14.489+08:00"
     },
     "qa_reviewer": {
       "thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "active_reviewer",
+      "status": "closed_request_changes",
       "role": "qa_reviewer",
       "nickname": "Gate the 2nd",
       "configured_model": "gpt-5.5",
@@ -64,8 +62,10 @@
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-i18n-foundation",
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
-      "routed_at": "2026-06-28T22:11:35.681+08:00"
+      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+      "review_status": "REQUEST_CHANGES",
+      "closed_at": "2026-06-28T22:28:14.489+08:00",
+      "updated_at": "2026-06-28T22:28:14.489+08:00"
     }
   },
   "last_integrated_task": "M7-UI-LOCALIZATION-PLAN-001",
@@ -99,7 +99,7 @@
     "approval_scope": "NONE",
     "approval_source": "M7-BETA-CULTURE-REVIEW-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. M7-I18N-FOUNDATION-001 is in independent QA review; formal content lock and major cultural-risk decisions remain future Human Gates.",
+    "note": "No Human Gate is active. M7-I18N-FOUNDATION-001 is back with the original client_engineer writer for QA-requested locale canonicalization fixes.",
     "recorded_at": "2026-06-28T20:39:18.2016568+08:00"
   },
   "leadership": {
@@ -887,7 +887,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T22:11:35.681+08:00",
+  "last_updated_at": "2026-06-28T22:28:14.489+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1890,7 +1890,7 @@
     ]
   },
   "m7_i18n_foundation": {
-    "status": "REVIEW",
+    "status": "IN_PROGRESS",
     "task_id": "M7-I18N-FOUNDATION-001",
     "branch_or_worktree": "feat/m7-i18n-foundation",
     "base_main_commit": "382439d0ab40b4ef6f7172473155c686d81c7ef7",
@@ -1914,8 +1914,8 @@
     "systems_review_route": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
     "expected_systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
     "started_at": "2026-06-28T21:27:25.1239661+08:00",
-    "updated_at": "2026-06-28T22:11:35.681+08:00",
-    "next_action": "Await independent qa_reviewer acceptance of M7-I18N-FOUNDATION-001.",
+    "updated_at": "2026-06-28T22:28:14.489+08:00",
+    "next_action": "Await client_engineer R2 fix for QA-requested locale canonicalization changes.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "systems_status": "ACCEPT",
@@ -1924,8 +1924,12 @@
     "qa_thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
     "qa_thread_nickname": "Gate the 2nd",
     "qa_route": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
-    "expected_qa_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json"
+    "expected_qa_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "REQUEST_CHANGES",
+    "qa_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+    "request_changes_route": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-QA-REQUEST-CHANGES-TO-WRITER.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json"
   },
-  "current_task_status": "REVIEW",
-  "next_machine_action": "Await independent qa_reviewer acceptance of M7-I18N-FOUNDATION-001."
+  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Await client_engineer R2 fix for QA-requested locale canonicalization changes."
 }
