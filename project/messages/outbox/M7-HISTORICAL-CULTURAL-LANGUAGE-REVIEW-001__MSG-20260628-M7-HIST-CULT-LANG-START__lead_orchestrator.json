@@ -1,0 +1,49 @@
+{
+  "message_id": "MSG-20260628-M7-HIST-CULT-LANG-START",
+  "task_id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 as the highest-priority dependency-ready M7 task after M7-CONTENT-LOCK-CONTRACT-001 closure entered origin/main at 4c434b3c07d250c72ae36796bed724f63390d566.",
+  "artifacts": [
+    "project/tasks/active/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json",
+    "project/tasks/active/M7-CONTENT-LOCK-CONTRACT-001.json"
+  ],
+  "branch_or_worktree": "research/m7-historical-cultural-language-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "main synced to origin/main with one unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md left unstaged."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "exit_code": 0,
+      "result": "VALID before start."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 were dependency-ready before start; lead selected the historical/cultural/language review first."
+    }
+  ],
+  "decisions": [
+    "Start only one R4 M7 task: M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.",
+    "Keep M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 unstarted while this R4 task is active.",
+    "Preserve M6_GATE = PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE exactly.",
+    "Formal content lock acceptance and major cultural-risk decisions remain Human Gates."
+  ],
+  "risks": [
+    "Historical/cultural/language review may identify major unresolved cultural risk requiring Human Gate.",
+    "Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains outside this task scope and must not be modified or staged by this task."
+  ],
+  "blockers": [],
+  "route_to": "historical_researcher",
+  "requested_action": "Produce the M7 review baseline, run required tests, update only allowed paths, write a REVIEW handoff under project/messages/outbox, and route to qa_reviewer.",
+  "created_at": "2026-06-28T05:07:21.810Z"
+}

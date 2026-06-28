@@ -2,7 +2,7 @@
   "id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
   "summary": "Establish M7 historical, cultural, and language review baseline",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "IN_PROGRESS",
   "owner_role": "historical_researcher",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -74,8 +74,38 @@
     "pnpm --filter @monsoon/content-runtime test",
     "pnpm --filter @monsoon/content-tools test"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "research/m7-historical-cultural-language-review",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "research/m7-historical-cultural-language-review",
+      "base_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
+      "updated_at": "2026-06-28T05:07:21.810Z",
+      "start_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json"
+    },
+    "historical_researcher": {
+      "thread_id": "019f0c9d-bc2f-7f21-b05e-277a6dae8fb1",
+      "nickname": "Chronicle",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "research/m7-historical-cultural-language-review",
+      "base_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
+      "created_at": "2026-06-28T05:07:21.810Z",
+      "updated_at": "2026-06-28T05:07:21.810Z",
+      "start_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json",
+      "next_action": "Produce REVIEW handoff to qa_reviewer."
+    }
+  },
   "route_to": "qa_reviewer",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -85,7 +115,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-28T05:07:21.810Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -100,5 +130,13 @@
     "irreversible save/content migration",
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
-  ]
+  ],
+  "started_at": "2026-06-28T05:07:21.810Z",
+  "base_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
+  "previous_closed_task": "M7-CONTENT-LOCK-CONTRACT-001",
+  "start_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json",
+  "writer_thread_id": "019f0c9d-bc2f-7f21-b05e-277a6dae8fb1",
+  "writer_thread_nickname": "Chronicle",
+  "next_action": "historical_researcher writer must produce a REVIEW handoff routed to qa_reviewer after completing the M7 historical/cultural/language review baseline and required tests."
 }
