@@ -42,10 +42,10 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-UI-LOCALIZATION-PLAN-001",
-    "updated_at": "2026-06-28T20:39:18.2016568+08:00",
+    "task_id": "M7-I18N-FOUNDATION-001",
+    "updated_at": "2026-06-28T21:27:25.1239661+08:00",
     "concurrent_task_ids": [
-      "M7-UI-LOCALIZATION-PLAN-001"
+      "M7-I18N-FOUNDATION-001"
     ]
   },
   "retired_lead_threads": [
@@ -1901,17 +1901,33 @@
   ],
   "active_threads": [
     {
-      "task_id": "M7-UI-LOCALIZATION-PLAN-001",
+      "task_id": "M7-I18N-FOUNDATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "closed_integrated",
+      "status": "active_router",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration for M7 UI/localization planning closure and next-task routing",
-      "branch_or_worktree": "chore/m7-ui-localization-plan",
-      "updated_at": "2026-06-28T21:18:53.3762254+08:00"
+      "responsibility": "lead orchestration for M7 i18n foundation",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "updated_at": "2026-06-28T21:27:25.1239661+08:00"
+    },
+    {
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "role": "client_engineer",
+      "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
+      "nickname": "Window",
+      "status": "active_writer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "responsibility": "Implement client-side i18n foundation for system, en-US, and Simplified Chinese",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-28T21:27:25.1239661+08:00"
     }
   ],
   "task_effects": {
@@ -2469,8 +2485,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Open closure PR for M7-UI-LOCALIZATION-PLAN-001, wait for CI, merge to main, then start the next dependency-ready M7 task.",
-  "current_task": "M7-UI-LOCALIZATION-PLAN-001",
+  "next_action": "Await client_engineer writer REVIEW handoff for M7-I18N-FOUNDATION-001, then route to systems_architect.",
+  "current_task": "M7-I18N-FOUNDATION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -3776,5 +3792,28 @@
       "M7-I18N-FOUNDATION-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_i18n_foundation": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-I18N-FOUNDATION-001",
+    "branch_or_worktree": "feat/m7-i18n-foundation",
+    "base_main_commit": "382439d0ab40b4ef6f7172473155c686d81c7ef7",
+    "previous_closed_task": "M7-UI-LOCALIZATION-PLAN-001",
+    "start_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
+    "writer_thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
+    "writer_thread_nickname": "Window",
+    "owner_role": "client_engineer",
+    "reviewer_role": "systems_architect",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "expected_writer_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-28T21:27:25.1239661+08:00",
+    "updated_at": "2026-06-28T21:27:25.1239661+08:00",
+    "next_action": "Await client_engineer writer REVIEW handoff, then route to systems_architect.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }
