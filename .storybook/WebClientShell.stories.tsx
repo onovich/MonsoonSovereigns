@@ -73,3 +73,28 @@ export const M7CoverageEmptyDebug = {
 export const M7CoverageErrorDebug = {
   render: () => <WebClientShell initialSearch="?fixture=m7-error&surface=coverage&debug=1" />
 };
+
+export const AppointmentFlowNormal = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const AppointmentFlowEmpty = {
+  render: () => <WebClientShell initialSearch="?fixture=appointment-empty" />
+};
+
+export const AppointmentFlowRejected = {
+  render: () => <WebClientShell initialSearch="?fixture=appointment-error" />
+};
+
+export const AppointmentFlowExtreme = {
+  render: () => <WebClientShell initialSearch="?fixture=appointment-extreme" />
+};
+
+export const AppointmentFlowNarrow = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1"
+    }
+  },
+  render: () => <WebClientShell initialSearch="?fixture=appointment-extreme" />
+};

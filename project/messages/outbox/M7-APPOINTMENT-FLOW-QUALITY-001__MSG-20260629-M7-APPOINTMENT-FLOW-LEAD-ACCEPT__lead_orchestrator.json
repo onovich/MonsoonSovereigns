@@ -1,0 +1,122 @@
+{
+  "message_id": "MSG-20260629-M7-APPOINTMENT-FLOW-LEAD-ACCEPT",
+  "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepted M7-APPOINTMENT-FLOW-QUALITY-001 after systems_architect ACCEPT and independent qa_reviewer ACCEPT at fixed implementation commit f69882f5387693f1aa10eca1d5adfdca7b206214. The default player appointment flow now covers office selection, candidate comparison, eligible/rejected explanation, administrative impact preview, confirmation, and result feedback while keeping bulk submit, raw reason details, state hash, raw IDs, and legacy diagnostics inside explicit debug affordances. The implementation stays within UI/web/client-core/test/story/process paths, uses existing read models and command builders, preserves sim.appoint-office GameCommand parity, and does not write authoritative WorldState or duplicate appointment/governance formulas.",
+  "artifacts": [
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "branch_or_worktree": "feat/m7-appointment-flow-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "2a1aabf40e7cdba217f927d573fa0622d03c908a",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "QA ACCEPT handoff valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APPOINTMENT-FLOW-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry rendered; M7-APPOINTMENT-FLOW-QUALITY-001 is REVIEW before lead acceptance checkpoint."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready list rendered for downstream M7 tasks."
+    },
+    {
+      "command": "git diff --check cecc0246f13539d9b3e5bf59410fe27d0b8afdc5..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors before lead acceptance checkpoint."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "QA rerun passed: 15 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "QA rerun passed: 21 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "QA rerun passed: 9 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "QA rerun passed: format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "QA rerun passed: 18 Playwright tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "QA rerun passed with existing large-chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "QA rerun passed with existing large-chunk warnings."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_QA",
+      "decision": "systems_architect ACCEPT plus independent qa_reviewer ACCEPT is sufficient to proceed to PR integration."
+    },
+    {
+      "id": "NO_HUMAN_GATE",
+      "decision": "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    },
+    {
+      "id": "NO_SCOPE_DRIFT",
+      "decision": "No release, commercial, branding, final-art, telemetry, server, multiplayer, account, cloud-save, production dependency, save schema, sim-core, protocol, or manual-node-battle scope is introduced."
+    }
+  ],
+  "risks": [
+    {
+      "id": "EXISTING_SHELL_FIXTURE_STATUS",
+      "severity": "P3",
+      "summary": "The web shell still records local UI status after command submission as pre-existing shell-fixture behavior; runtime integration must continue to preserve the same GameCommand boundary."
+    },
+    {
+      "id": "EXPLICIT_DEBUG_DETAILS",
+      "severity": "P3",
+      "summary": "The explicit developer overlay intentionally retains technical labels, raw IDs, and raw reason details; acceptance covers default player-mode separation plus explicit debug affordance."
+    },
+    {
+      "id": "EXISTING_BUILD_WARNINGS",
+      "severity": "P3",
+      "summary": "Vite and Storybook large-chunk warnings remain existing non-blocking warnings."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge, sync main, then close M7-APPOINTMENT-FLOW-QUALITY-001 only after origin/main contains the accepted commits.",
+  "created_at": "2026-06-29T04:52:00.000Z",
+  "accepted_implementation_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
+  "accepted_branch_head_before_lead_checkpoint": "2a1aabf40e7cdba217f927d573fa0622d03c908a"
+}

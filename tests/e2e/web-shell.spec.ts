@@ -152,7 +152,7 @@ test("M3 appointment workspace submits appointment and bulk command DTOs", async
   await expect(workspace).toHaveAttribute("data-bulk-rejected-count", "1");
 
   await page.getByLabel("Select M3 office").selectOption("2");
-  await page.getByLabel("Select appointment candidate").selectOption("2");
+  await workspace.getByLabel("Select appointment candidate").selectOption("2");
   await expect(page.getByLabel("Appointment validation reasons")).toContainText(
     "Local claimant advantage"
   );
@@ -173,6 +173,71 @@ test("M3 appointment workspace submits appointment and bulk command DTOs", async
 
   await page.getByRole("button", { name: "Submit bulk eligible appointments" }).click();
   await expect(page.getByLabel("M3 command status")).toContainText("Appointment request prepared.");
+});
+
+test("M3 appointment player flow previews confirms result and hides raw reason codes", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const flow = page.getByLabel("Appointment and governance flow");
+  await expect(flow).toHaveAttribute("data-flow-stage", "select-office");
+  await expect(flow).toHaveAttribute("data-debug-raw-reasons", "hidden");
+  await expect(page.getByLabel("M3 appointment workspace")).toHaveCount(0);
+  await expect(page.getByText("office-eligibility-failed")).toHaveCount(0);
+  await expect(page.getByText("appointment.local-claimant")).toHaveCount(0);
+
+  await page
+    .getByLabel("Player action queue")
+    .getByRole("button", { name: "Preview Appointment" })
+    .click();
+  await expect(flow).toHaveAttribute("data-flow-stage", "compare-candidates");
+  await page.getByLabel("Select office").selectOption("2");
+  await expect(flow).toHaveAttribute("data-selected-candidate-status", "eligible");
+  await expect(page.getByLabel("Candidate comparison")).toContainText("Eligible");
+  await expect(page.getByLabel("Candidate comparison")).toContainText("Rejected");
+  await expect(page.getByLabel("Candidate comparison")).toContainText("Local claimant advantage");
+  await expect(page.getByLabel("Candidate comparison")).toContainText("Office eligibility failed");
+
+  await flow.getByRole("button", { name: "Preview appointment" }).click();
+  await expect(flow).toHaveAttribute("data-flow-stage", "preview");
+  await expect(page.getByLabel("Appointment impact preview")).toContainText(
+    "Appointment can be confirmed"
+  );
+  await expect(page.getByLabel("Appointment impact preview")).toContainText("Admin load");
+  await flow.getByRole("button", { name: "Confirm appointment" }).click();
+  await expect(flow).toHaveAttribute("data-flow-stage", "result");
+  await expect(page.getByLabel("Appointment result feedback")).toContainText("Command submitted");
+  await expect(page.getByLabel("Appointment result feedback")).toContainText(
+    "Appointment request prepared."
+  );
+  await expect(page.getByLabel("Appointment result feedback")).toContainText(
+    "standard appointment GameCommand"
+  );
+
+  await flow.locator("summary", { hasText: "Bulk preview" }).click();
+  await expect(flow).toContainText("Bulk preview is informational here");
+  await expect(page.getByRole("button", { name: "Submit bulk eligible appointments" })).toHaveCount(
+    0
+  );
+});
+
+test("M3 appointment player flow localizes Chinese and keeps rejected confirmation blocked", async ({
+  page
+}) => {
+  await page.goto("/?fixture=appointment-error");
+  await page.getByLabel("Language").selectOption("zh-CN");
+
+  const flow = page.getByLabel("任命与治理流程");
+  await expect(flow).toHaveAttribute("data-selected-candidate-status", "rejected");
+  await expect(page.getByLabel("候选人比较")).toContainText("被拒绝");
+  await expect(page.getByLabel("候选人比较")).toContainText("不符合职位条件");
+  await flow.getByRole("button", { name: "预览任命" }).click();
+  await expect(flow).toHaveAttribute("data-flow-stage", "preview");
+  await expect(page.getByLabel("任命影响预览")).toContainText("只读模型拒绝此任命");
+  await expect(flow.getByRole("button", { name: "确认任命" })).toBeDisabled();
+  await expect(page.getByLabel("任命结果反馈")).toContainText("该候选人当前被拒绝");
+  await expect(page.getByText("office-eligibility-failed")).toHaveCount(0);
 });
 
 test("M4 campaign planning submits commands and renders risks, AI reasons, and war report", async ({
@@ -616,6 +681,41 @@ test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page })
 
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
   expect(overflow.gridRight).toBeLessThanOrEqual(overflow.clientWidth);
+});
+
+test("M3 appointment player flow has no horizontal overflow across required viewports", async ({
+  page
+}) => {
+  const viewports = [
+    { width: 1280, height: 720 },
+    { width: 1280, height: 800 },
+    { width: 1920, height: 1080 },
+    { width: 2560, height: 1080 }
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/?fixture=appointment-extreme");
+    await page.evaluate(() => {
+      document.documentElement.style.fontSize = "20px";
+    });
+    await expect(page.getByLabel("Appointment and governance flow")).toBeVisible();
+    const overflow = await page.evaluate(() => {
+      const flow = document.querySelector(".m3-flow");
+      if (flow === null) {
+        throw new Error("Expected M3 appointment player flow.");
+      }
+      const flowBox = flow.getBoundingClientRect();
+      return {
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        flowRight: flowBox.right
+      };
+    });
+
+    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+    expect(overflow.flowRight).toBeLessThanOrEqual(overflow.clientWidth);
+  }
 });
 
 test("M5 workspace has no horizontal overflow across required desktop viewports", async ({

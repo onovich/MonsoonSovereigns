@@ -158,6 +158,7 @@ const DISTRICT_ROW_HEIGHT_PX = 44;
 const DISTRICT_TABLE_VIEWPORT_HEIGHT_PX = 352;
 const DISTRICT_TABLE_OVERSCAN_ROWS = 8;
 const ClientI18nContext = createContext<ClientI18n>(DEFAULT_CLIENT_I18N);
+type M3AppointmentFlowStage = "select-office" | "compare-candidates" | "preview" | "result";
 
 export function ClientShellView({
   snapshot,
@@ -198,6 +199,7 @@ export function ClientShellView({
   const [selectedM3CandidateKey, setSelectedM3CandidateKey] = useState("");
   const [showRejectedM3Candidates, setShowRejectedM3Candidates] = useState(true);
   const [m3SubmitSequence, setM3SubmitSequence] = useState(0);
+  const [m3FlowStage, setM3FlowStage] = useState<M3AppointmentFlowStage>("select-office");
   const [selectedM4CampaignPlanId, setSelectedM4CampaignPlanId] =
     useState<ClientCampaignPlanId | null>(snapshot.m4Campaign.selectedCampaignPlanId);
   const [selectedM4SiegeChoice, setSelectedM4SiegeChoice] =
@@ -266,20 +268,21 @@ export function ClientShellView({
       : (findM3Office(snapshot.m3Appointment.offices, selectedM3OfficeId) ??
         snapshot.m3Appointment.offices[0] ??
         null);
-  const visibleM3CandidateEligibilities =
-    selectedM3Office === null
-      ? []
-      : selectedM3Office.candidateEligibilities.filter(
-          (eligibility) => showRejectedM3Candidates || eligibility.status === "eligible"
-        );
+  const selectedM3OfficeEligibilities = selectedM3Office?.candidateEligibilities ?? [];
+  const visibleM3CandidateEligibilities = selectedM3OfficeEligibilities.filter(
+    (eligibility) => showRejectedM3Candidates || eligibility.status === "eligible"
+  );
   const firstEligibleM3Candidate =
     selectedM3Office?.candidateEligibilities.find(
       (eligibility) => eligibility.status === "eligible"
     ) ?? null;
+  const firstM3Candidate = selectedM3OfficeEligibilities[0] ?? null;
   const selectedM3Eligibility =
-    visibleM3CandidateEligibilities.find(
+    selectedM3OfficeEligibilities.find(
       (eligibility) => Number(eligibility.characterId).toString() === selectedM3CandidateKey
-    ) ?? firstEligibleM3Candidate;
+    ) ??
+    firstEligibleM3Candidate ??
+    firstM3Candidate;
   const selectedM4Campaign =
     selectedM4CampaignPlanId === null
       ? (snapshot.m4Campaign.plans[0] ?? null)
@@ -320,10 +323,16 @@ export function ClientShellView({
     );
     setSelectedM3OfficeId(office?.officeId ?? null);
     setSelectedM3CandidateKey("");
+    setM3FlowStage("compare-candidates");
   }
 
   function handleM3CandidateChange(event: ChangeEvent<HTMLSelectElement>): void {
-    setSelectedM3CandidateKey(event.currentTarget.value);
+    handleM3CandidateKeyChange(event.currentTarget.value);
+  }
+
+  function handleM3CandidateKeyChange(characterKey: string): void {
+    setSelectedM3CandidateKey(characterKey);
+    setM3FlowStage("compare-candidates");
   }
 
   function handleM3RejectedToggle(event: ChangeEvent<HTMLInputElement>): void {
@@ -344,6 +353,19 @@ export function ClientShellView({
         characterId: selectedM3Eligibility.characterId
       })
     );
+  }
+
+  function handleOpenM3AppointmentFlow(): void {
+    setM3FlowStage(selectedM3Office === null ? "select-office" : "compare-candidates");
+  }
+
+  function handlePreviewM3Appointment(): void {
+    setM3FlowStage("preview");
+  }
+
+  function handleConfirmM3Appointment(): void {
+    handleSubmitM3Appointment();
+    setM3FlowStage("result");
   }
 
   function handleSubmitM3BulkAppointments(): void {
@@ -763,7 +785,7 @@ export function ClientShellView({
                 <button
                   type="button"
                   disabled={selectedM3Office === null || selectedM3Eligibility === null}
-                  onClick={handleSubmitM3Appointment}
+                  onClick={handleOpenM3AppointmentFlow}
                 >
                   {i18n.t("shell.actions.previewAppointment")}
                 </button>
@@ -799,6 +821,20 @@ export function ClientShellView({
             </section>
           </aside>
         </section>
+
+        <M3AppointmentFlow
+          snapshot={snapshot.m3Appointment}
+          selectedOffice={selectedM3Office}
+          candidateEligibilities={selectedM3OfficeEligibilities}
+          selectedEligibility={selectedM3Eligibility}
+          flowStage={m3FlowStage}
+          commandStatus={m3CommandStatus}
+          onOfficeChange={handleM3OfficeChange}
+          onCandidateChange={handleM3CandidateChange}
+          onCandidateKeyChange={handleM3CandidateKeyChange}
+          onPreview={handlePreviewM3Appointment}
+          onConfirm={handleConfirmM3Appointment}
+        />
 
         <section className="client-shell__route-queue" aria-label={i18n.t("shell.list.label")}>
           <div className="district-list__toolbar">
@@ -1226,6 +1262,203 @@ interface M3AppointmentWorkspaceProps {
   readonly onSubmitBulk: () => void;
 }
 
+interface M3AppointmentFlowProps {
+  readonly snapshot: ClientM3AppointmentReadModelSnapshot;
+  readonly selectedOffice: ClientM3OfficeReadModel | null;
+  readonly candidateEligibilities: readonly ClientM3AppointmentEligibilityReadModel[];
+  readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
+  readonly flowStage: M3AppointmentFlowStage;
+  readonly commandStatus: string | null;
+  readonly onOfficeChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onCandidateChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onCandidateKeyChange: (characterKey: string) => void;
+  readonly onPreview: () => void;
+  readonly onConfirm: () => void;
+}
+
+function M3AppointmentFlow({
+  snapshot,
+  selectedOffice,
+  candidateEligibilities,
+  selectedEligibility,
+  flowStage,
+  commandStatus,
+  onOfficeChange,
+  onCandidateChange,
+  onCandidateKeyChange,
+  onPreview,
+  onConfirm
+}: M3AppointmentFlowProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const selectedCharacter = findM3Character(
+    snapshot.characters,
+    selectedEligibility?.characterId ?? null
+  );
+  const canPreview = selectedOffice !== null && selectedEligibility !== null;
+  const canConfirm =
+    selectedOffice !== null &&
+    selectedEligibility !== null &&
+    selectedEligibility.status === "eligible" &&
+    (flowStage === "preview" || flowStage === "result");
+
+  if (snapshot.offices.length === 0) {
+    return (
+      <section
+        className="m3-flow"
+        aria-label={i18n.t("appointment.flow.label")}
+        data-flow-state="empty"
+      >
+        <header className="m3-flow__header">
+          <div>
+            <h2>{i18n.t("appointment.flow.title")}</h2>
+            <p>{i18n.t("appointment.flow.empty")}</p>
+          </div>
+        </header>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className="m3-flow"
+      aria-label={i18n.t("appointment.flow.label")}
+      data-flow-stage={flowStage}
+      data-office-count={snapshot.offices.length}
+      data-candidate-count={candidateEligibilities.length}
+      data-selected-candidate-status={selectedEligibility?.status ?? "none"}
+      data-debug-raw-reasons="hidden"
+    >
+      <header className="m3-flow__header">
+        <div>
+          <h2>{i18n.t("appointment.flow.title")}</h2>
+          <p>{i18n.t("appointment.flow.subtitle")}</p>
+        </div>
+        <ol className="m3-flow__steps" aria-label={i18n.t("appointment.flow.stepsLabel")}>
+          <li data-active={flowStage === "select-office"}>{i18n.t("appointment.step.office")}</li>
+          <li data-active={flowStage === "compare-candidates"}>
+            {i18n.t("appointment.step.compare")}
+          </li>
+          <li data-active={flowStage === "preview"}>{i18n.t("appointment.step.preview")}</li>
+          <li data-active={flowStage === "result"}>{i18n.t("appointment.step.result")}</li>
+        </ol>
+      </header>
+
+      <div className="m3-flow__grid">
+        <section className="m3-flow__panel" aria-label={i18n.t("appointment.office.label")}>
+          <h3>{i18n.t("appointment.office.title")}</h3>
+          <label className="m3-flow__field">
+            <span>{i18n.t("appointment.office.select")}</span>
+            <select
+              aria-label={i18n.t("appointment.office.select")}
+              value={selectedOffice === null ? "" : Number(selectedOffice.officeId).toString()}
+              onChange={onOfficeChange}
+            >
+              {snapshot.offices.map((office) => (
+                <option key={office.officeId} value={Number(office.officeId).toString()}>
+                  {office.displayName}
+                </option>
+              ))}
+            </select>
+          </label>
+          <OfficePlayerDetail office={selectedOffice} selectedCharacter={selectedCharacter} />
+        </section>
+
+        <section className="m3-flow__panel" aria-label={i18n.t("appointment.candidate.label")}>
+          <h3>{i18n.t("appointment.candidate.title")}</h3>
+          <label className="m3-flow__field">
+            <span>{i18n.t("appointment.candidate.select")}</span>
+            <select
+              aria-label={i18n.t("appointment.candidate.select")}
+              value={
+                selectedEligibility === null
+                  ? ""
+                  : Number(selectedEligibility.characterId).toString()
+              }
+              onChange={onCandidateChange}
+            >
+              {candidateEligibilities.map((eligibility) => {
+                const character = findM3Character(snapshot.characters, eligibility.characterId);
+                return (
+                  <option
+                    key={`${eligibility.officeId}-${eligibility.characterId}`}
+                    value={Number(eligibility.characterId).toString()}
+                  >
+                    {i18n.t("appointment.candidate.option", {
+                      name: character?.displayName ?? i18n.t("appointment.character.unknown"),
+                      status: formatM3EligibilityStatus(eligibility.status, i18n)
+                    })}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+          <div className="m3-flow__candidate-list" role="list">
+            {candidateEligibilities.map((eligibility) => {
+              const character = findM3Character(snapshot.characters, eligibility.characterId);
+              const isSelected =
+                selectedEligibility?.characterId === eligibility.characterId &&
+                selectedEligibility.officeId === eligibility.officeId;
+              return (
+                <button
+                  className="m3-flow__candidate-card"
+                  data-status={eligibility.status}
+                  data-selected={isSelected}
+                  key={`${eligibility.officeId}-${eligibility.characterId}`}
+                  onClick={() => onCandidateKeyChange(Number(eligibility.characterId).toString())}
+                  type="button"
+                >
+                  <strong>
+                    {character?.displayName ?? i18n.t("appointment.character.unknown")}
+                  </strong>
+                  <span>{character?.roleLabel ?? i18n.t("appointment.character.roleUnknown")}</span>
+                  <span>{formatM3EligibilityStatus(eligibility.status, i18n)}</span>
+                  <ReasonChips reasonCodes={eligibility.reasonCodes} />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="m3-flow__panel" aria-label={i18n.t("appointment.preview.label")}>
+          <h3>{i18n.t("appointment.preview.title")}</h3>
+          <AppointmentImpactPreview
+            office={selectedOffice}
+            selectedEligibility={selectedEligibility}
+          />
+          <div className="m3-flow__actions">
+            <button type="button" disabled={!canPreview} onClick={onPreview}>
+              {i18n.t("appointment.action.preview")}
+            </button>
+            <button
+              type="button"
+              disabled={!canConfirm}
+              onClick={onConfirm}
+              data-command-kind="sim.appoint-office"
+            >
+              {i18n.t("appointment.action.confirm")}
+            </button>
+          </div>
+          <AppointmentResultFeedback
+            commandStatus={commandStatus}
+            flowStage={flowStage}
+            selectedEligibility={selectedEligibility}
+          />
+        </section>
+      </div>
+
+      <details className="m3-flow__bulk">
+        <summary>{i18n.t("appointment.bulk.summary")}</summary>
+        <p>{i18n.t("appointment.bulk.description")}</p>
+        <div className="m3-flow__bulk-list" role="list">
+          {snapshot.bulkPreview.items.map((item) => (
+            <BulkPreviewRow key={item.itemId} item={item} snapshot={snapshot} />
+          ))}
+        </div>
+      </details>
+    </section>
+  );
+}
+
 function M3AppointmentWorkspace({
   snapshot,
   selectedOffice,
@@ -1430,6 +1663,10 @@ function M3AppointmentWorkspace({
               </div>
             ))}
           </div>
+          <RawReasonCodeList
+            label="Raw appointment reason codes"
+            reasonCodes={snapshot.reasonSummaries.map((summary) => summary.reasonCode)}
+          />
         </section>
       </div>
     </section>
@@ -3301,6 +3538,138 @@ interface OfficeDetailProps {
   readonly selectedCharacter: ClientM3CharacterReadModel | null;
 }
 
+function OfficePlayerDetail({ office, selectedCharacter }: OfficeDetailProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  if (office === null) {
+    return (
+      <div className="m3-flow__empty">
+        <p>{i18n.t("appointment.office.empty")}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="m3-flow__fact">
+      <strong>{office.displayName}</strong>
+      <dl className="m3-flow__metrics">
+        <Metric
+          label={i18n.t("appointment.office.kind")}
+          value={formatM3OfficeKind(office.officeKind, i18n)}
+        />
+        <Metric
+          label={i18n.t("appointment.office.holder")}
+          value={formatNullableCharacterPlayer(office.holderCharacterId, i18n)}
+        />
+        <Metric
+          label={i18n.t("appointment.office.policy")}
+          value={i18n.t("appointment.office.policyValue", {
+            stance: formatReasonStatus(office.policy.stance, i18n),
+            continuity: i18n.t("appointment.policy.continuity")
+          })}
+        />
+        <Metric
+          label={i18n.t("appointment.office.performance")}
+          value={formatBps(office.executionPerformanceBps)}
+        />
+        <Metric
+          label={i18n.t("appointment.office.selectedCandidate")}
+          value={selectedCharacter?.displayName ?? i18n.t("appointment.candidate.none")}
+        />
+      </dl>
+      <ReasonChips reasonCodes={[...office.reasonCodes, ...office.policy.reasonCodes]} />
+    </div>
+  );
+}
+
+function AppointmentImpactPreview({
+  office,
+  selectedEligibility
+}: {
+  readonly office: ClientM3OfficeReadModel | null;
+  readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  if (office === null || selectedEligibility === null) {
+    return (
+      <div className="m3-flow__empty">
+        <p>{i18n.t("appointment.preview.empty")}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="m3-flow__fact" data-status={selectedEligibility.status}>
+      <strong>
+        {selectedEligibility.status === "eligible"
+          ? i18n.t("appointment.preview.eligibleTitle")
+          : i18n.t("appointment.preview.rejectedTitle")}
+      </strong>
+      <span>{formatM3EligibilityStatus(selectedEligibility.status, i18n)}</span>
+      {office.administrativePreview === null ? (
+        <span>{i18n.t("appointment.preview.noAdministrativePreview")}</span>
+      ) : (
+        <dl className="m3-flow__metrics">
+          <Metric
+            label={i18n.t("appointment.preview.load")}
+            value={i18n.formatNumber(office.administrativePreview.administrativeLoad)}
+          />
+          <Metric
+            label={i18n.t("appointment.preview.efficiency")}
+            value={formatBps(office.administrativePreview.efficiencyBps)}
+          />
+          <Metric
+            label={i18n.t("appointment.preview.reliability")}
+            value={formatBps(office.administrativePreview.obligationReliabilityBps)}
+          />
+          <Metric
+            label={i18n.t("appointment.preview.readiness")}
+            value={formatBps(office.administrativePreview.readinessBps)}
+          />
+        </dl>
+      )}
+      <ReasonChips
+        reasonCodes={[
+          ...selectedEligibility.reasonCodes,
+          ...(office.administrativePreview?.reasonCodes ?? [])
+        ]}
+      />
+    </div>
+  );
+}
+
+function AppointmentResultFeedback({
+  commandStatus,
+  flowStage,
+  selectedEligibility
+}: {
+  readonly commandStatus: string | null;
+  readonly flowStage: M3AppointmentFlowStage;
+  readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const status =
+    commandStatus ??
+    (selectedEligibility?.status === "rejected"
+      ? i18n.t("appointment.result.rejected")
+      : i18n.t("appointment.result.waiting"));
+  return (
+    <output
+      className="m3-flow__result"
+      aria-label={i18n.t("appointment.result.label")}
+      data-result-stage={flowStage}
+      role="status"
+    >
+      <strong>
+        {flowStage === "result"
+          ? i18n.t("appointment.result.submitted")
+          : i18n.t("appointment.result.pending")}
+      </strong>
+      <span>{status}</span>
+      <span>{i18n.t("appointment.result.commandParity")}</span>
+    </output>
+  );
+}
+
 function OfficeDetail({ office, selectedCharacter }: OfficeDetailProps): ReactElement {
   if (office === null) {
     return (
@@ -3385,12 +3754,7 @@ function ReasonChips({ reasonCodes }: ReasonChipsProps): ReactElement {
   return (
     <span className="m3-appointment__reasons" role="list" aria-label={i18n.t("reason.listLabel")}>
       {reasonCodes.map((reasonCode, index) => (
-        <span
-          className="m3-appointment__reason"
-          data-reason-code={reasonCode}
-          key={`${reasonCode}:${index}`}
-          role="listitem"
-        >
+        <span className="m3-appointment__reason" key={`${reasonCode}:${index}`} role="listitem">
           {i18n.formatReasonCode(reasonCode)}
         </span>
       ))}
@@ -3400,7 +3764,22 @@ function ReasonChips({ reasonCodes }: ReasonChipsProps): ReactElement {
 
 function ReasonCodeText({ reasonCode }: { readonly reasonCode: string }): ReactElement {
   const i18n = useContext(ClientI18nContext);
-  return <strong data-reason-code={reasonCode}>{i18n.formatReasonCode(reasonCode)}</strong>;
+  return <strong>{i18n.formatReasonCode(reasonCode)}</strong>;
+}
+
+function RawReasonCodeList({
+  label,
+  reasonCodes
+}: {
+  readonly label: string;
+  readonly reasonCodes: readonly string[];
+}): ReactElement {
+  return (
+    <details className="m3-appointment__raw-reasons">
+      <summary>{label}</summary>
+      <code>{reasonCodes.join("\n")}</code>
+    </details>
+  );
 }
 
 function formatReasonStatus(status: string, i18n: ClientI18n): string {
@@ -3439,8 +3818,38 @@ function formatBoolean(value: boolean): string {
   return value ? "yes" : "no";
 }
 
+function formatM3EligibilityStatus(
+  status: ClientM3AppointmentEligibilityReadModel["status"],
+  i18n: ClientI18n
+): string {
+  switch (status) {
+    case "eligible":
+      return i18n.t("appointment.status.eligible");
+    case "rejected":
+      return i18n.t("appointment.status.rejected");
+  }
+}
+
+function formatM3OfficeKind(kind: ClientM3OfficeReadModel["officeKind"], i18n: ClientI18n): string {
+  switch (kind) {
+    case "minister":
+      return i18n.t("appointment.office.kind.minister");
+    case "governor":
+      return i18n.t("appointment.office.kind.governor");
+    case "commander":
+      return i18n.t("appointment.office.kind.commander");
+  }
+}
+
 function formatNullableCharacter(characterId: number | null): string {
   return characterId === null ? "Vacant" : `Character ${characterId}`;
+}
+
+function formatNullableCharacterPlayer(characterId: number | null, i18n: ClientI18n): string {
+  if (characterId === null) {
+    return i18n.t("appointment.office.vacant");
+  }
+  return i18n.t("appointment.office.held");
 }
 
 function formatM4Window(window: {

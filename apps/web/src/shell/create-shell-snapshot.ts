@@ -72,6 +72,24 @@ export function createWebClientShellSnapshot(search = ""): ClientReadModelSnapsh
       createM7GuidanceExtremeReadModelFixture(defaultSnapshot)
     );
   }
+  if (fixtureMode === "m3-empty") {
+    return withM3AppointmentReadModel(
+      defaultSnapshot,
+      createM3EmptyAppointmentFixture(defaultSnapshot)
+    );
+  }
+  if (fixtureMode === "m3-error") {
+    return withM3AppointmentReadModel(
+      defaultSnapshot,
+      createM3RejectedAppointmentFixture(defaultSnapshot)
+    );
+  }
+  if (fixtureMode === "m3-extreme") {
+    return withM3AppointmentReadModel(
+      defaultSnapshot,
+      createM3ExtremeAppointmentFixture(defaultSnapshot)
+    );
+  }
 
   return defaultSnapshot;
 }
@@ -92,7 +110,10 @@ function readFixtureMode(
   | "m6-extreme"
   | "m7-empty"
   | "m7-error"
-  | "m7-extreme" {
+  | "m7-extreme"
+  | "m3-empty"
+  | "m3-error"
+  | "m3-extreme" {
   const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
   const rawFixture = params.get("fixture")?.trim().toLowerCase() ?? "";
 
@@ -117,6 +138,93 @@ function readFixtureMode(
   if (rawFixture === "m7-extreme" || rawFixture === "beta-guidance-extreme") {
     return "m7-extreme";
   }
+  if (rawFixture === "m3-empty" || rawFixture === "appointment-empty") {
+    return "m3-empty";
+  }
+  if (rawFixture === "m3-error" || rawFixture === "appointment-error") {
+    return "m3-error";
+  }
+  if (rawFixture === "m3-extreme" || rawFixture === "appointment-extreme") {
+    return "m3-extreme";
+  }
 
   return "default";
+}
+
+function withM3AppointmentReadModel(
+  snapshot: ClientReadModelSnapshot,
+  m3Appointment: ClientReadModelSnapshot["m3Appointment"]
+): ClientReadModelSnapshot {
+  return {
+    ...snapshot,
+    m3Appointment
+  };
+}
+
+function createM3EmptyAppointmentFixture(
+  snapshot: ClientReadModelSnapshot
+): ClientReadModelSnapshot["m3Appointment"] {
+  return {
+    ...snapshot.m3Appointment,
+    offices: [],
+    characters: [],
+    obligations: [],
+    successionCrises: [],
+    appointmentResults: [],
+    enfeoffmentResults: [],
+    reasonSummaries: [],
+    bulkPreview: {
+      ...snapshot.m3Appointment.bulkPreview,
+      eligibleCount: 0,
+      rejectedCount: 0,
+      items: []
+    }
+  };
+}
+
+function createM3RejectedAppointmentFixture(
+  snapshot: ClientReadModelSnapshot
+): ClientReadModelSnapshot["m3Appointment"] {
+  return {
+    ...snapshot.m3Appointment,
+    offices: snapshot.m3Appointment.offices.map((office) => ({
+      ...office,
+      candidateEligibilities: office.candidateEligibilities.map((eligibility) => ({
+        ...eligibility,
+        status: "rejected" as const,
+        reasonCodes: ["office-eligibility-failed", ...eligibility.reasonCodes]
+      }))
+    })),
+    bulkPreview: {
+      ...snapshot.m3Appointment.bulkPreview,
+      eligibleCount: 0,
+      rejectedCount: snapshot.m3Appointment.bulkPreview.items.length,
+      items: snapshot.m3Appointment.bulkPreview.items.map((item) => ({
+        ...item,
+        status: "rejected" as const,
+        reasonCodes: ["office-eligibility-failed", ...item.reasonCodes]
+      }))
+    }
+  };
+}
+
+function createM3ExtremeAppointmentFixture(
+  snapshot: ClientReadModelSnapshot
+): ClientReadModelSnapshot["m3Appointment"] {
+  return {
+    ...snapshot.m3Appointment,
+    offices: snapshot.m3Appointment.offices.map((office, index) => ({
+      ...office,
+      displayName: `${office.displayName} / localized expansion stress ${index + 1} with long governance title`,
+      policy: {
+        ...office.policy,
+        stance: `${office.policy.stance}.localized-expansion-stress`
+      }
+    })),
+    characters: snapshot.m3Appointment.characters.map((character, index) => ({
+      ...character,
+      displayName: `${character.displayName} / candidate comparison stress ${index + 1}`,
+      roleLabel: `${character.roleLabel}; long localized court role label`
+    }))
+  };
 }
