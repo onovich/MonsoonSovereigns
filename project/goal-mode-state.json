@@ -2,24 +2,40 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-APP-SHELL-QUALITY-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-APP-SHELL-QUALITY-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "chore/close-m7-design-tokens-asset-slots"
+      "branch_or_worktree": "feat/m7-app-shell-quality"
+    },
+    "client_engineer": {
+      "thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
+      "task_id": "M7-APP-SHELL-QUALITY-001",
+      "status": "active_writer",
+      "role": "client_engineer",
+      "nickname": "Window the 2nd",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-app-shell-quality",
+      "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+      "routed_at": "2026-06-28T16:17:06.608Z"
     }
   },
   "last_integrated_task": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
-  "last_main_commit": "08127380716c1ef93d5849e92080e85400bc0fd4",
+  "last_main_commit": "9bd14c6d",
   "next_ready_tasks": [
-    "M7-APP-SHELL-QUALITY-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "unresolved_risks": [
@@ -45,10 +61,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 closure checkpoint",
+    "approval_source": "M7-APP-SHELL-QUALITY-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. M7-DESIGN-TOKENS-ASSET-SLOTS-001 is CLOSED after PR #177 entered origin/main.",
-    "recorded_at": "2026-06-28T16:11:45.503Z"
+    "note": "No Human Gate is active. M7-APP-SHELL-QUALITY-001 has started with client_engineer writer.",
+    "recorded_at": "2026-06-28T16:17:06.608Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -835,7 +851,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T16:11:45.503Z",
+  "last_updated_at": "2026-06-28T16:17:06.608Z",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1905,8 +1921,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "CLOSED",
-  "next_machine_action": "After closure enters main, start M7-APP-SHELL-QUALITY-001 as the highest-priority READY M7 UI/localization quality-track task unless taskctl ready changes.",
+  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Await client_engineer writer handoff for M7-APP-SHELL-QUALITY-001.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -1960,5 +1976,22 @@
       "M7-APP-SHELL-QUALITY-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_app_shell_quality": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-APP-SHELL-QUALITY-001",
+    "branch_or_worktree": "feat/m7-app-shell-quality",
+    "base_main_commit": "9bd14c6d",
+    "previous_closed_task": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+    "start_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+    "writer_thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
+    "writer_thread_nickname": "Window the 2nd",
+    "expected_writer_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-28T16:17:06.608Z",
+    "updated_at": "2026-06-28T16:17:06.608Z",
+    "next_action": "Await client_engineer writer handoff for M7-APP-SHELL-QUALITY-001.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }
