@@ -20,7 +20,7 @@
     "client_engineer": {
       "thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "review_ready",
+      "status": "accepted",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -34,7 +34,7 @@
       "route_sent_at": "2026-06-29T05:14:00.000Z",
       "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
       "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-28T21:58:12.089Z",
+      "updated_at": "2026-06-28T22:05:10.984Z",
       "review_commit": "eb179555d2324311e0966923a137cf81824c01ee",
       "request_changes_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-WRITER.json",
       "request_changes_submission_id": "019f1032-585e-7ab2-90b2-43d7541f818f",
@@ -46,7 +46,7 @@
     "qa_reviewer": {
       "thread_id": "019f1025-36fc-70d1-92bb-5858b2c7a74f",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "active_reviewer",
+      "status": "accepted",
       "role": "qa_reviewer",
       "nickname": "Auditor",
       "configured_model": "gpt-5.5",
@@ -64,10 +64,12 @@
       "source_handoff_r2": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
       "expected_handoff_r2": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
       "review_commit_r2": "db65ad7d24ffcb710c909500f53987ae567d45ae",
-      "updated_at": "2026-06-28T22:00:17.954Z",
+      "updated_at": "2026-06-28T22:05:10.984Z",
       "route_file_r2": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
       "route_sent_at_r2": "2026-06-28T22:00:17.954Z",
-      "route_submission_id_r2": "019f103f-0b4f-74e3-bd08-377ed971fcbf"
+      "route_submission_id_r2": "019f103f-0b4f-74e3-bd08-377ed971fcbf",
+      "qa_status_r2": "ACCEPT",
+      "qa_r2_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json"
     }
   },
   "last_integrated_task": "M7-APPOINTMENT-FLOW-QUALITY-001",
@@ -890,7 +892,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T22:00:17.954Z",
+  "last_updated_at": "2026-06-28T22:05:10.984Z",
   "updated_at": "2026-06-29T05:51:00.000Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1960,8 +1962,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "REVIEW",
-  "next_machine_action": "Await qa_reviewer R2 review for M7-DISTRICT-INSPECTOR-QUALITY-001; do not mark ACCEPTED/CLOSED before QA passes.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Open PR, wait for CI, merge to main, then mark CLOSED after origin/main contains the accepted commits.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -2148,7 +2150,7 @@
     ]
   },
   "m7_district_inspector_quality": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
     "branch_or_worktree": "feat/m7-district-inspector-quality",
     "base_main_commit": "e8a854f672a49f2a5271111224b17830b6721de8",
@@ -2159,8 +2161,8 @@
     "writer_thread_nickname": "Window",
     "expected_writer_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T05:12:00.000Z",
-    "updated_at": "2026-06-28T22:00:17.954Z",
-    "next_action": "Await qa_reviewer R2 review for M7-DISTRICT-INSPECTOR-QUALITY-001; do not mark ACCEPTED/CLOSED before QA passes.",
+    "updated_at": "2026-06-28T22:05:10.984Z",
+    "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED after origin/main contains the accepted commits.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_sent_at": "2026-06-29T05:14:00.000Z",
@@ -2187,6 +2189,12 @@
     "qa_r2_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
     "expected_qa_r2_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
     "qa_r2_route_sent_at": "2026-06-28T22:00:17.954Z",
-    "qa_r2_submission_id": "019f103f-0b4f-74e3-bd08-377ed971fcbf"
+    "qa_r2_submission_id": "019f103f-0b4f-74e3-bd08-377ed971fcbf",
+    "qa_status_r2": "ACCEPT",
+    "qa_r2_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T22:05:10.984Z",
+    "accepted_implementation_commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+    "accepted_branch_head": "4bda4800cd225449f9d3640765f12b8b44e68665"
   }
 }

@@ -1,0 +1,109 @@
+{
+  "message_id": "M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-LEAD-ACCEPT__lead_orchestrator",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-DISTRICT-INSPECTOR-QUALITY-001 after independent QA R2 ACCEPT. The prior selected district inspector zh-CN localization blocker is fixed, required UI/Web/E2E/build/check gates passed, and diff scope remains within the task allowed paths.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "packages/client-core/src/index.ts",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "feat/m7-district-inspector-quality",
+  "accepted_implementation_commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+  "accepted_process_head_before_lead_accept": "4bda4800cd225449f9d3640765f12b8b44e68665",
+  "qa_accept_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
+  "tests_run": [
+    {
+      "command": "validate-handoff writer R2 handoff",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "validate-handoff QA R2 handoff",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "taskctl validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "taskctl list/ready",
+      "exit_code": 0,
+      "result": "M7-DISTRICT-INSPECTOR-QUALITY-001 is REVIEW before lead acceptance; next ready tasks unchanged."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "16 passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "22 passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "9 passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing large chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed with existing chunk/plugin timing warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "19 passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: selected district inspector player-facing zh-CN localization now covers route kinds, obligation kinds, due labels, route summaries, and travel-day summaries through i18n.",
+    "ACCEPT: focused UI and Playwright tests reject the prior Road/road/Garrison/continuous/days leakage.",
+    "ACCEPT: implementation remains within client read-model/command-preview boundaries and does not mutate authoritative WorldState.",
+    "Do not mark CLOSED until the accepted branch enters origin/main and closure state is committed after sync."
+  ],
+  "risks": [
+    "Existing Vite/Storybook large chunk warnings remain accepted non-blocking warnings.",
+    "Unknown future due-label strings fall back through formatReasonCode; no current blocker."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR for feat/m7-district-inspector-quality, wait for CI, merge to main, synchronize main, then close M7-DISTRICT-INSPECTOR-QUALITY-001 and continue to the next READY M7 task.",
+  "created_at": "2026-06-28T22:05:10.984Z",
+  "commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+  "updated_at": "2026-06-28T22:05:35.247Z"
+}
