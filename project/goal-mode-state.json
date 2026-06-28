@@ -9,7 +9,7 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
-      "status": "active_router",
+      "status": "accepted_pending_pr",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -58,7 +58,7 @@
     "qa_reviewer": {
       "thread_id": "019f0ff4-c0af-77d1-94d8-760e6c3a2a29",
       "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
-      "status": "active_reviewer",
+      "status": "accepted",
       "role": "qa_reviewer",
       "nickname": "Witness",
       "configured_model": "gpt-5.5",
@@ -71,7 +71,8 @@
       "implementation_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
       "routed_at": "2026-06-28T20:39:43.063Z",
       "route_sent_at": "2026-06-28T20:40:40.173Z",
-      "route_submission_id": "019f0ff6-130b-7591-b4c7-d23d8b96b66f"
+      "route_submission_id": "019f0ff6-130b-7591-b4c7-d23d8b96b66f",
+      "qa_review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json"
     }
   },
   "last_integrated_task": "M7-APP-SHELL-QUALITY-001",
@@ -105,10 +106,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-APPOINTMENT-FLOW-QUALITY-001 start checkpoint",
+    "approval_source": "M7-APPOINTMENT-FLOW-QUALITY-001 lead acceptance",
     "recommended_result": null,
-    "note": "No Human Gate is active. Started M7 appointment flow quality task.",
-    "recorded_at": "2026-06-28T20:06:43.812Z"
+    "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-29T04:52:00.000Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -895,8 +896,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T20:40:40.173Z",
-  "updated_at": "2026-06-27T19:19:27.664Z",
+  "last_updated_at": "2026-06-29T04:52:00.000Z",
+  "updated_at": "2026-06-29T04:52:00.000Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1965,8 +1966,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "REVIEW",
-  "next_machine_action": "Await qa_reviewer handoff for M7-APPOINTMENT-FLOW-QUALITY-001.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Open PR for M7-APPOINTMENT-FLOW-QUALITY-001, wait for CI, merge to main, then close after origin/main contains the accepted commits.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -2092,7 +2093,7 @@
     ]
   },
   "m7_appointment_flow_quality": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
     "branch_or_worktree": "feat/m7-appointment-flow-quality",
     "base_main_commit": "cecc0246f13539d9b3e5bf59410fe27d0b8afdc5",
@@ -2103,8 +2104,8 @@
     "writer_thread_nickname": "Canvas",
     "expected_writer_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T20:06:43.812Z",
-    "updated_at": "2026-06-28T20:40:40.173Z",
-    "next_action": "Await independent qa_reviewer review.",
+    "updated_at": "2026-06-29T04:52:00.000Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close after origin/main contains accepted commits.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_sent_at": "2026-06-28T20:07:37.467Z",
@@ -2124,6 +2125,12 @@
     "qa_route": "project/messages/routes/M7-APPOINTMENT-FLOW-QUALITY-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json",
     "expected_qa_review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json",
     "qa_route_sent_at": "2026-06-28T20:40:40.173Z",
-    "qa_route_submission_id": "019f0ff6-130b-7591-b4c7-d23d8b96b66f"
+    "qa_route_submission_id": "019f0ff6-130b-7591-b4c7-d23d8b96b66f",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T04:52:00.000Z",
+    "accepted_implementation_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
+    "accepted_branch_head": "2a1aabf40e7cdba217f927d573fa0622d03c908a"
   }
 }

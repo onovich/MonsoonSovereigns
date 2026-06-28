@@ -1,0 +1,153 @@
+{
+  "message_id": "MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW",
+  "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "ACCEPT for fixed implementation commit f69882f5387693f1aa10eca1d5adfdca7b206214 after independent QA review. The implementation and current process branch diff stay inside allowed paths with no forbidden package, gate, roadmap, release, telemetry, server, multiplayer, account, cloud-save, branding, final-art, or manual-node-battle scope. Player-visible appointment flow covers office selection, candidate comparison, eligible/rejected explanation, impact preview, confirmation, and result feedback. Bulk preview is collapsed and informational in default player mode, while bulk submit and raw appointment reason details are only in the explicit debug overlay. Default player mode hides raw reason-code text, raw reason-code DOM attributes, state hash, prototype diagnostics, and the legacy M3 appointment workspace; localized reason strings are used through the UI i18n layer. Source inspection and tests support the systems_architect ACCEPT claims: the flow consumes existing read models and command builders, does not write authoritative WorldState, does not duplicate appointment/governance formulas, and preserves the standard sim.appoint-office GameCommand surface.",
+  "artifacts": [
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M7-APPOINTMENT-FLOW-QUALITY-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    ".storybook/WebClientShell.stories.tsx"
+  ],
+  "branch_or_worktree": "feat/m7-appointment-flow-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean worktree on feat/m7-appointment-flow-quality before writing QA handoff; final pre-handoff status also clean."
+    },
+    {
+      "command": "git rev-parse --verify HEAD; git rev-parse --verify 35cddd32654fffa0aaded739db45be4a5b52cc5c; git rev-parse --verify f69882f5387693f1aa10eca1d5adfdca7b206214",
+      "exit_code": 0,
+      "result": "Local HEAD was 2a1aabf40e7cdba217f927d573fa0622d03c908a, the user-supplied process checkpoint 35cddd32654fffa0aaded739db45be4a5b52cc5c exists, and the fixed implementation commit exists."
+    },
+    {
+      "command": "git log --oneline --decorate --graph -12; git diff --name-status 35cddd32654fffa0aaded739db45be4a5b52cc5c..HEAD",
+      "exit_code": 0,
+      "result": "HEAD is one process route-delivery commit after 35cddd32; the diff from 35cddd32 to HEAD modifies only project goal/model/task/thread registry and the QA route file."
+    },
+    {
+      "command": "git show --stat --oneline f69882f5387693f1aa10eca1d5adfdca7b206214",
+      "exit_code": 0,
+      "result": "f69882f5 feat(ui): productize M7 appointment flow; implementation commit modifies Web/UI/test/Storybook plus writer handoff surfaces, 1159 insertions and 37 deletions."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APPOINTMENT-FLOW-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-APPOINTMENT-FLOW-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry rendered; M7-APPOINTMENT-FLOW-QUALITY-001 is REVIEW/client_engineer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready list rendered: M7-DISTRICT-INSPECTOR-QUALITY-001, M7-MAP-PRESENTATION-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect ACCEPT handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task, writer handoff, systems handoff, and systems-to-QA route",
+      "exit_code": 0,
+      "result": "JSON_OK for task REVIEW, writer REVIEW, systems ACCEPT, and systems-to-QA route source_status ACCEPT."
+    },
+    {
+      "command": "git diff --check cecc0246f13539d9b3e5bf59410fe27d0b8afdc5..f69882f5387693f1aa10eca1d5adfdca7b206214",
+      "exit_code": 0,
+      "result": "No whitespace errors for base-to-implementation diff."
+    },
+    {
+      "command": "git diff --check cecc0246f13539d9b3e5bf59410fe27d0b8afdc5..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors for base-to-current-process HEAD diff."
+    },
+    {
+      "command": "PowerShell diff-scope guard over git diff --name-only cecc0246..f69882f and cecc0246..HEAD",
+      "exit_code": 0,
+      "result": "DIFF_SCOPE_OK for base-to-implementation changed=15 and base-to-current-head changed=18; all changed paths match allowed_paths and none match forbidden_paths."
+    },
+    {
+      "command": "Targeted source/test inspections with rg and line reads for appointment flow, debugMode, raw reasons, bulk submit, i18n, command builders, WorldState/prototype/debug leakage, Human Gate and forbidden scope terms",
+      "exit_code": 0,
+      "result": "Default M3AppointmentFlow renders player office/candidate/preview/confirm/result flow with localized ReasonChips and no bulk submit. M3AppointmentWorkspace, RawReasonCodeList, stateHash, fixture kind, and bulk submit are under debugMode overlay. Player confirm calls createM3AppointmentCommand; bulk submit uses createM3BulkAppointmentCommand only through debug overlay. No new forbidden product scope or authoritative WorldState mutation found."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 15 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 21 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 test file passed; 9 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed. Architecture boundaries passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "18 Playwright tests passed, including M3 appointment default player flow, Chinese rejected flow, debug-only bulk submit workspace, and no-horizontal-overflow coverage."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully; existing large chunk warnings reported."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully, including WebClientShell appointment stories; existing large chunk warnings reported and temporary output removed by script."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before writing QA handoff."
+    }
+  ],
+  "decisions": [
+    "QA accepts the systems_architect ACCEPT claims after independent source inspection and rerunning the required UI/client/web/E2E/check/build/storybook commands.",
+    "Scope decision: the implementation commit and current process branch diff are confined to allowed UI/web/client-core test/story/process paths and do not touch forbidden architecture, simulation, protocol, save, platform, content, CI, roadmap, gate, release, telemetry, server, account, cloud-save, branding, final-art, or manual-node-battle surfaces.",
+    "Player-flow decision: default appointment UI provides office selection, candidate comparison, eligible/rejected explanation, read-model impact preview, explicit confirm, and result feedback.",
+    "Bulk/debug decision: default bulk preview is collapsed informational context and cannot submit; bulk submit remains in the explicit debug overlay only.",
+    "Localization/debug decision: default player mode uses UI-layer formatted/localized reason strings and does not expose raw reason-code text or data-reason-code attributes; raw appointment reason details are limited to the debug workspace.",
+    "Command parity decision: player confirmation submits createM3AppointmentCommand for the standard sim.appoint-office GameCommand surface; no player-only hidden command path or domain mutation was found.",
+    "Human Gate decision: no Human Gate is required for this QA acceptance; DEFER_MANUAL_NODE_BATTLE remains preserved."
+  ],
+  "risks": [
+    "The apps/web shell still records local UI status after command submission rather than submitting to the live simulation worker. This is pre-existing shell-fixture behavior and remains acceptable only while runtime integration continues to preserve the same GameCommand boundary.",
+    "The explicit developer overlay intentionally retains legacy technical labels, raw IDs, and raw reason details. QA acceptance is for default player-mode separation plus explicit debug affordance.",
+    "Web and Storybook builds still report existing large chunk warnings; not introduced as a blocker for this scoped appointment-flow task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may proceed with integration/closure gates for M7-APPOINTMENT-FLOW-QUALITY-001 at fixed implementation commit f69882f5387693f1aa10eca1d5adfdca7b206214.",
+  "created_at": "2026-06-29T04:46:16.6211269+08:00"
+}
