@@ -1,0 +1,160 @@
+{
+  "message_id": "MSG-20260628-M7-TUTORIAL-QA-REVIEW",
+  "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent read-only QA does not accept M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001. Scope and focused test reproduction are clean, but the M7 tutorial/hints/encyclopedia read model embeds a local M7 content-record-shaped pack that drifts from the accepted M7 scenario/person/event content pack. Player-facing encyclopedia labels and review states can therefore disagree with accepted content review tasks, so the implementation fails the requirement that historical/cultural terms shown in tutorial, hints, and encyclopedia preserve accepted labels and review status.",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    "project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json",
+    "project/tasks/active/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001.json",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
+    "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-WRITER-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "489cabb3bb064baf37ae1d1723a2a0233c2d0c60",
+  "tests_run": [
+    {
+      "command": "Get-Content -Raw PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "Read required project status. It records current M7 context, M6_GATE = PASS_WITH_LIMITS, M7 content-lock boundaries, and DEFER_MANUAL_NODE_BATTLE preservation."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m7-tutorial-hints-encyclopedia. Before this QA handoff correction, the only untracked file was the known unrelated docs/M7_UI_Localization_Art_Handoff_Prompts.md."
+    },
+    {
+      "command": "git rev-parse --abbrev-ref HEAD; git rev-parse HEAD; git merge-base origin/main HEAD",
+      "exit_code": 0,
+      "result": "Branch feat/m7-tutorial-hints-encyclopedia; actual reviewed HEAD 489cabb3bb064baf37ae1d1723a2a0233c2d0c60; merge-base 71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are limited to allowed web, client-core, ui, tests, Storybook, task, message, route, goal-mode, model-routing, and thread-registry paths."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- forbidden path set",
+      "exit_code": 0,
+      "result": "No forbidden-path diff for pnpm-lock.yaml, package manifests, apps/desktop, apps/sim-runner, apps/content-tools, packages/sim-core, packages/sim-ai, packages/protocol, packages/save-format, packages/map-renderer, packages/platform, tools, CI, prior gates, roadmap, risk/acceptance docs, PROJECT_STATUS.md, MANIFEST.md, SHA256SUMS.txt, or VALIDATION_REPORT.md."
+    },
+    {
+      "command": "git diff origin/main...HEAD -- package.json pnpm-lock.yaml packages/client-core/package.json packages/ui/package.json apps/web/package.json",
+      "exit_code": 0,
+      "result": "No package manifest or lockfile dependency drift."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready tasks are M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001; this REVIEW task is not listed as ready."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "rg -n \"@monsoon/(sim-core|sim-ai|content-runtime|content-schema)\" packages/client-core/src/index.ts packages/ui/src/index.tsx apps/web/src/shell/create-shell-snapshot.ts",
+      "exit_code": 1,
+      "result": "No forbidden or unexpected sim/content-runtime imports were found in the reviewed client surfaces."
+    },
+    {
+      "command": "rg -n \"WorldState|Date\\.now\\(|Math\\.random\\(|from \\\"fs\\\"|from \\\"node:fs\\\"|from \\\"electron\\\"|document\\.\" packages/client-core/src/index.ts packages/ui/src/index.tsx apps/web/src/shell/create-shell-snapshot.ts",
+      "exit_code": 1,
+      "result": "No WorldState storage, real-time/random APIs, Node fs/electron imports, or DOM document access were found in the reviewed client read-model/UI surfaces."
+    },
+    {
+      "command": "node -e accepted M7 beta content pack summary and label comparison",
+      "exit_code": 0,
+      "result": "Accepted content-source/m7-beta-scenarios/beta-scenario-person-event-set.json has 3 scenarios, 6 persons, 3 titles, 5 events, 36 localization records, 6 claimRecords, and review labels such as HIST-M7-FILL-001-SCOPE label INFERRED and content.m7.beta.person.court_broker_1531.name reviewState LANGUAGE_REVIEW_REQUIRED."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "1 test file passed; 19 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 test file passed; 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 test file passed; 4 tests passed."
+    }
+  ],
+  "decisions": [
+    {
+      "verdict": "REQUEST_CHANGES",
+      "reason": "The M7 guidance UI/read-model path does not reliably preserve accepted M7 content labels and review states because it embeds a local compact content pack that has drifted from the accepted M7 content-source pack."
+    },
+    {
+      "scope": "PASS",
+      "reason": "No forbidden paths, package dependency drift, lockfile drift, desktop/sim/protocol/save/map/platform/tool/CI/PROJECT_STATUS/prior gate/roadmap drift were found in origin/main...HEAD."
+    },
+    {
+      "architecture_boundary": "PARTIAL_PASS",
+      "reason": "The UI consumes a ClientM7GuidanceReadModelSnapshot and does not import sim-core or hold WorldState, but the read model duplicates accepted M7 content records instead of using or checking against the accepted content pack."
+    },
+    {
+      "human_gate_boundary": "PASS",
+      "reason": "No telemetry, remote collection, account, cloud, server, multiplayer, arbitrary-code mod, release, branding, or manual node battle content was introduced; formal content lock remains not accepted."
+    },
+    {
+      "test_discrimination": "FAIL",
+      "reason": "The added tests assert the stale local fixture values and would not fail when labels/review states drift from content-source/m7-beta-scenarios/beta-scenario-person-event-set.json."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "P1",
+      "summary": "Player-facing M7 tutorial and encyclopedia labels can present stale or wrong review status compared with accepted M7 content review tasks.",
+      "impact": "Historical/cultural uncertainty and language-review gates can be weakened in the UI even though accepted content-source data still records them correctly."
+    },
+    {
+      "severity": "R2",
+      "summary": "The Storybook and Playwright state coverage is structurally useful, but currently proves rendering of the local pack rather than conformance with accepted content records."
+    }
+  ],
+  "blockers": [
+    {
+      "severity": "P1",
+      "file": "packages/client-core/src/index.ts",
+      "symbol": "M7_BETA_GUIDANCE_RUNTIME_PACK",
+      "lines": "1776-2290, 4863-4909",
+      "reproduction": "Compare project/tasks/active/M7-SCENARIO-PERSON-EVENT-FILL-001.json lines 197-203 and content-source/m7-beta-scenarios/beta-scenario-person-event-set.json lines 54-57, 149-152, 331-339, 461-469 against packages/client-core/src/index.ts lines 1789-1796, 1819-1823, 1913-1921, 2019-2028, and 4863-4909.",
+      "observed": "The accepted content pack records 3 scenarios, 6 persons, 3 titles, 5 events, and 36 localization records. The UI-local pack records only 3 scenarios, 1 person, 1 title, 1 event, and 12 localization records. Accepted claim HIST-M7-FILL-001-SCOPE is label INFERRED with confidence HIGH, but the UI-local pack redefines it as FICTIONAL. Accepted person key content.m7.beta.person.court_broker_1531.name is LANGUAGE_REVIEW_REQUIRED, but the UI-local pack marks the same key SCHEMA_VALIDATED. Accepted event key content.m7.beta.event.coercion_cost_review.name displays Forced movement and population-loss review, but the UI-local pack displays Coercion cost review.",
+      "impact": "This fails the acceptance criterion that historical/cultural terms shown in tutorial, hints, or encyclopedia use the accepted labels and review status from content review tasks. Because packages/ui/src/index.tsx renders entry.contentLabel, entry.confidence, and entry.reviewState directly, stale local data reaches player-facing encyclopedia surfaces.",
+      "necessary_fix": "Drive the M7 guidance read model from the accepted M7 content-source/runtime pack, or add a deterministic generated/client fixture that is mechanically checked against content-source/m7-beta-scenarios/beta-scenario-person-event-set.json. Update tests so mismatched labels, reviewState values, localization strings, known-gap counts, or contracted counts fail."
+    }
+  ],
+  "route_to": "client_engineer",
+  "requested_action": "Repair the M7 guidance read model so tutorial, hint, and encyclopedia surfaces preserve accepted M7 content labels/review states and add discriminating tests against the accepted content pack; then return a new writer REVIEW handoff for qa_reviewer. Lead orchestrator should coordinate the repair route.",
+  "created_at": "2026-06-28T15:35:00+08:00"
+}
