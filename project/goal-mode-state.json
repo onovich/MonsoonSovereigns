@@ -15,9 +15,17 @@
     "client_engineer": {
       "thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
       "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
-      "status": "active_writer",
+      "status": "review_ready",
       "role": "client_engineer",
       "nickname": "Canvas"
+    },
+    "historical_researcher": {
+      "thread_id": "019f0d70-2c65-7143-baf5-5be398e38b0a",
+      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "status": "active_reviewer",
+      "role": "historical_researcher",
+      "nickname": "Estuary",
+      "read_only": true
     }
   },
   "last_integrated_task": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
@@ -838,7 +846,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T08:46:51.715Z",
+  "last_updated_at": "2026-06-28T08:57:20.955Z",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1627,7 +1635,7 @@
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   },
   "m7_audio_art_localization_complete": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
     "branch_or_worktree": "feat/m7-audio-art-localization",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -1646,8 +1654,8 @@
     "start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-START.json",
     "started_at": "2026-06-28T08:23:56.063Z",
-    "updated_at": "2026-06-28T08:46:51.715Z",
-    "next_action": "replacement client_engineer writer returns REVIEW handoff for historical_researcher.",
+    "updated_at": "2026-06-28T08:57:20.955Z",
+    "next_action": "historical_researcher reviewer returns ACCEPT, REQUEST_CHANGES, or BLOCKED.",
     "start_submission_id": "019f0d55-37a5-7102-b158-7614639eb423",
     "route_sent_at": "2026-06-28T08:25:40.796Z",
     "replacement_writer_thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
@@ -1670,6 +1678,14 @@
       "tests/ui-m2-district-list.test.tsx"
     ],
     "replacement_submission_id": "019f0d68-a9f6-7df0-b8b6-68298d414f69",
-    "replacement_route_sent_at": "2026-06-28T08:46:51.715Z"
+    "replacement_route_sent_at": "2026-06-28T08:46:51.715Z",
+    "review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "e800a2c5",
+    "historical_reviewer_thread_id": "019f0d70-2c65-7143-baf5-5be398e38b0a",
+    "historical_reviewer_thread_nickname": "Estuary",
+    "review_route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-TO-HISTORICAL-REVIEW.json",
+    "expected_review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json",
+    "historical_review_submission_id": "019f0d72-4f57-7391-8b28-d0cdb670b30b",
+    "routed_to_historical_at": "2026-06-28T08:57:20.955Z"
   }
 }

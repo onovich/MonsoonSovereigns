@@ -2,7 +2,7 @@
   "id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
   "summary": "Plan and complete Beta audio, art, and localization coverage",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "client_engineer",
   "reviewer_role": "historical_researcher",
   "risk_level": "R4",
@@ -116,7 +116,7 @@
     "replacement_client_engineer": {
       "thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
       "nickname": "Canvas",
-      "status": "active_writer",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -124,13 +124,37 @@
       "branch_or_worktree": "feat/m7-audio-art-localization",
       "base_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
       "created_at": "2026-06-28T08:46:06.641Z",
-      "updated_at": "2026-06-28T08:46:51.715Z",
+      "updated_at": "2026-06-28T08:56:39.166Z",
       "replacement_start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-REPLACEMENT-START__lead_orchestrator.json",
       "replacement_route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-REPLACEMENT-START.json",
       "replaces_thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
-      "next_action": "Review/continue Lantern partial diff, complete task, and return writer REVIEW handoff.",
+      "next_action": "Await historical_researcher review.",
       "replacement_submission_id": "019f0d68-a9f6-7df0-b8b6-68298d414f69",
-      "replacement_route_sent_at": "2026-06-28T08:46:51.715Z"
+      "replacement_route_sent_at": "2026-06-28T08:46:51.715Z",
+      "review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "e800a2c5"
+    },
+    "historical_researcher": {
+      "thread_id": "019f0d70-2c65-7143-baf5-5be398e38b0a",
+      "nickname": "Estuary",
+      "status": "active_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "read_only": true,
+      "branch_or_worktree": "feat/m7-audio-art-localization",
+      "review_commit": "e800a2c5",
+      "review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+      "review_route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-TO-HISTORICAL-REVIEW.json",
+      "expected_review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json",
+      "created_at": "2026-06-28T08:56:39.166Z",
+      "updated_at": "2026-06-28T08:57:20.955Z",
+      "human_gate_required": false,
+      "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+      "next_action": "Review actual diff and return structured handoff.",
+      "historical_review_submission_id": "019f0d72-4f57-7391-8b28-d0cdb670b30b",
+      "route_sent_at": "2026-06-28T08:57:20.955Z"
     }
   },
   "route_to": "historical_researcher",
@@ -142,7 +166,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T08:46:51.715Z",
+  "updated_at": "2026-06-28T08:57:20.955Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -166,7 +190,7 @@
   "writer_thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
   "writer_thread_nickname": "Lantern",
   "scheduling_reason": "Selected before M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 because it is the next content-lock-chain task after scenario fill and tutorial/encyclopedia completion; save/cloud remains dependency-ready but unstarted.",
-  "next_action": "replacement client_engineer writer reviews partial diff and returns REVIEW handoff for historical_researcher.",
+  "next_action": "historical_researcher reviewer returns ACCEPT, REQUEST_CHANGES, or BLOCKED.",
   "start_submission_id": "019f0d55-37a5-7102-b158-7614639eb423",
   "route_sent_at": "2026-06-28T08:25:40.796Z",
   "replacement_writer_thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
@@ -188,5 +212,14 @@
     "tests/ui-m2-district-list.test.tsx"
   ],
   "replacement_submission_id": "019f0d68-a9f6-7df0-b8b6-68298d414f69",
-  "replacement_route_sent_at": "2026-06-28T08:46:51.715Z"
+  "replacement_route_sent_at": "2026-06-28T08:46:51.715Z",
+  "review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+  "review_commit": "e800a2c5",
+  "review_ready_at": "2026-06-28T08:56:39.166Z",
+  "historical_reviewer_thread_id": "019f0d70-2c65-7143-baf5-5be398e38b0a",
+  "historical_reviewer_thread_nickname": "Estuary",
+  "review_route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-TO-HISTORICAL-REVIEW.json",
+  "expected_review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json",
+  "historical_review_submission_id": "019f0d72-4f57-7391-8b28-d0cdb670b30b",
+  "routed_to_historical_at": "2026-06-28T08:57:20.955Z"
 }
