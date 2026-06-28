@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260629-M7-DESIGN-TOKENS-LEAD-ACCEPT",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-DESIGN-TOKENS-ASSET-SLOTS-001 after writer implementation, systems_architect ACCEPT, independent qa_reviewer ACCEPT, and lead integration gates. The accepted branch adds presentation-only design tokens, neutral placeholder asset slots, map render presentation tokens, Storybook evidence, and focused unit/E2E coverage without changing authoritative simulation, protocol, save, Electron, dependencies, content-source, final art, or Human Gate scope.",
+  "artifacts": [
+    "packages/ui/src/design-tokens.ts",
+    "packages/ui/src/asset-slots.ts",
+    "packages/ui/src/design-token-asset-slots-view.tsx",
+    "packages/ui/src/index.tsx",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/map-renderer/src/index.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/M7DesignTokensAssetSlots.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260629-M7-DESIGN-TOKENS-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/m7-design-tokens-asset-slots / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "7d7952bb169cc776384b78ee3897843ce3313edd",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+      "exit_code": 0,
+      "result": "VALID systems handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <qa-handoff>",
+      "exit_code": 0,
+      "result": "VALID QA handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "exit_code": 0,
+      "result": "VALID task file."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task, thread registry, goal-mode, model-routing, writer/systems/QA handoffs",
+      "exit_code": 0,
+      "result": "All parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 file, 15 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 file, 5 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed; existing Vite large chunk warning only."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed; existing Storybook plugin timing and large chunk warnings only."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format, lint, typecheck, and architecture boundaries passed."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "15/15 passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_PRESENTATION_ONLY_FOUNDATION",
+      "decision": "Accept this task as a presentation-only M7 UI foundation. Tokens, slots, map render constants, Storybook evidence, and tests do not become authoritative simulation, history, content, save, command, or protocol state."
+    },
+    {
+      "id": "NO_HUMAN_GATE_REQUIRED",
+      "decision": "No Human Gate is active or required because no final art, culture-specific production asset, dependency, save/protocol schema, Electron/security boundary, telemetry/server/cloud/mod behavior, manual-node-battle reversal, or frozen product/platform/core architecture change is introduced."
+    },
+    {
+      "id": "DOWNSTREAM_TASKS_CAN_CONSUME_FOUNDATION",
+      "decision": "Downstream M7 app shell, map presentation, district inspector, appointment flow, guidance, and UI regression matrix tasks may consume the exported token and slot APIs under their own task scopes."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_CSS_MIGRATION_REMAINS_INCREMENTAL",
+      "severity": "P3",
+      "summary": "Legacy shell literal CSS remains outside this foundation task.",
+      "mitigation": "Downstream M7 UI quality tasks should migrate touched surfaces to CLIENT_DESIGN_TOKENS, CSS variables, and asset slot APIs."
+    },
+    {
+      "id": "FINAL_ART_REMAINS_GATED",
+      "severity": "P2",
+      "summary": "This task defines replacement slots but approves no production art or culture-specific asset.",
+      "mitigation": "Future final art slot population must route through art, culture, historical, localization, systems, and QA review before integration."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then mark M7-DESIGN-TOKENS-ASSET-SLOTS-001 CLOSED only after origin/main contains the accepted commits.",
+  "created_at": "2026-06-28T16:05:56.161Z"
+}

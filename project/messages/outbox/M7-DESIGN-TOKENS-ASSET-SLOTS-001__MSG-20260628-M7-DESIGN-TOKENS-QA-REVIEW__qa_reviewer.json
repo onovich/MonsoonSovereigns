@@ -1,0 +1,207 @@
+{
+  "message_id": "MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the M7 design-token and asset-slot foundation. The implementation satisfies the task acceptance criteria for centralized UI tokens, map presentation tokens, neutral placeholder-only asset replacement slots, English and zh-CN Storybook evidence, semantic states, debug on/off distinction, and no final production art approval. The diff remains confined to allowed UI, map-renderer, Storybook, test, and process-message/state paths; no sim-core, sim-ai, protocol, save-format, Electron, dependency, content-source, docs gate/status, telemetry, server, cloud, mod, or authority-state scope drift was found. Downstream M7 app shell, map presentation, district inspector, appointment flow, guidance, and UI regression tasks can consume this foundation as presentation-only infrastructure.",
+  "artifacts": [
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m7-design-tokens-asset-slots / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "1da4502753d83e5e69f905e6e8860b8268c48091 reviewed; implementation commit 7d7952bb169cc776384b78ee3897843ce3313edd",
+  "base_main_commit": "e9f1a4b43d34460b23908f31a8146723004cf5cf",
+  "route_checkpoint_commit": "1da4502753d83e5e69f905e6e8860b8268c48091",
+  "artifacts_reviewed": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "docs/11-roadmap.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/27-autonomous-goal-mode.md",
+    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+    "packages/ui/src/design-tokens.ts",
+    "packages/ui/src/asset-slots.ts",
+    "packages/ui/src/design-token-asset-slots-view.tsx",
+    "packages/ui/src/index.tsx",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/map-renderer/src/index.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/M7DesignTokensAssetSlots.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "acceptance_review": [
+    {
+      "criterion": "Design tokens cover colors, spacing, typography, radius, borders, elevation, semantic states, and map-layer states.",
+      "status": "PASS",
+      "evidence": "CLIENT_DESIGN_TOKENS exports the required token groups; MAP_RENDER_TOKENS centralizes map renderer colors, route widths, labels, settlement, district, and canvas fallback values; shell CSS exposes matching M7 CSS variables for downstream web surfaces."
+    },
+    {
+      "criterion": "Centralized asset replacement slots cover required UI and map asset families.",
+      "status": "PASS",
+      "evidence": "CLIENT_ASSET_REPLACEMENT_SLOTS covers frame, icon, map-fill, map-stroke, route-style, settlement-marker, portrait, alert, settings-language, and tooltip categories with sizing, vector, locale, map-authority, and review-gate metadata."
+    },
+    {
+      "criterion": "Neutral placeholders are clearly distinct from final production art.",
+      "status": "PASS",
+      "evidence": "All current slots are created through createPlaceholderSlot with status.kind neutral-placeholder; tests assert hasOnlyNeutralPlaceholderAssets and no approved-final-art markup. The approved-final-art type exists only as a future explicit reviewed state and no current slot uses it."
+    },
+    {
+      "criterion": "No final production art, culture-specific symbols, religious imagery, flags, clothing, architecture, portraits, scripts, or text production assets are approved.",
+      "status": "PASS",
+      "evidence": "No asset files or final-art paths were added. Slot review gates explicitly keep art, culture, historical, and localization review required for future replacement, especially portrait and settlement-marker slots."
+    },
+    {
+      "criterion": "Storybook or equivalent evidence shows core token states, English and Simplified Chinese layout stress, semantic states, and debug on/off.",
+      "status": "PASS",
+      "evidence": ".storybook/M7DesignTokensAssetSlots.stories.tsx provides Normal, Empty, Error, Extreme, Narrow, SimplifiedChineseLayoutStress, DebugOn, DebugOff, and PlaceholderRegistryOnly stories. Unit tests render EN and zh-CN evidence states and debug on/off."
+    },
+    {
+      "criterion": "No token, map art, slot, or placeholder becomes authoritative simulation, historical, content, save, command, or state.",
+      "status": "PASS",
+      "evidence": "Diff scope excludes sim-core, sim-ai, protocol, save-format, content-source, Electron, and dependency manifests. Map renderer consumes read-model snapshots plus viewport intent and rebuilds render cache; tests assert no WorldState import/leakage and read-model rebuild behavior."
+    },
+    {
+      "criterion": "No scope drift into server, cloud save, telemetry, accounts, mods, release, branding, production dependencies, or manual node battle.",
+      "status": "PASS",
+      "evidence": "Forbidden-path scan found no matches; package and lock files are unchanged. E2E test additions assert no final-art approval marker and no telemetry/account/server/mod buttons on relevant surfaces."
+    },
+    {
+      "criterion": "Downstream M7 UI quality tasks can rely on this foundation.",
+      "status": "PASS",
+      "evidence": "Public @monsoon/ui exports expose token, semantic-state, slot registry, slot helper, stress fixture, and evidence component APIs. @monsoon/map-renderer exports MAP_RENDER_TOKENS without introducing a UI-package dependency."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean worktree on feat/m7-design-tokens-asset-slots tracking origin/feat/m7-design-tokens-asset-slots before QA review."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry command succeeded; M7-DESIGN-TOKENS-ASSET-SLOTS-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready command succeeded; current ready candidate is M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems handoff JSON."
+    },
+    {
+      "command": "git diff --check e9f1a4b43d34460b23908f31a8146723004cf5cf HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task, writer handoff, and systems handoff",
+      "exit_code": 0,
+      "result": "{\"taskStatus\":\"REVIEW\",\"writerStatus\":\"REVIEW\",\"systemsStatus\":\"ACCEPT\",\"writerTests\":13,\"systemsTests\":16,\"qaExpected\":\"project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW__qa_reviewer.json\"}"
+    },
+    {
+      "command": "git diff --name-only e9f1a4b43d34460b23908f31a8146723004cf5cf HEAD | rg \"forbidden paths and dependency manifests\"",
+      "exit_code": 1,
+      "result": "No forbidden package, app, content-source, tools, docs, .github, dependency manifest, lockfile, status, manifest, checksum, or validation-report path matched; rg exit 1 means no matches."
+    },
+    {
+      "command": "rg -n \"@monsoon/(sim-core|protocol|save-format)|node:fs|node:path|electron|@pixi|pixi\\\\.js\" -- packages/ui/src/design-tokens.ts packages/ui/src/asset-slots.ts packages/ui/src/design-token-asset-slots-view.tsx packages/map-renderer/src/map-render-tokens.ts packages/map-renderer/src/index.ts",
+      "exit_code": 1,
+      "result": "No forbidden sim-core/protocol/save-format, Node IO, Electron, or direct Pixi package imports matched in the task implementation files; rg exit 1 means no matches."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 15 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 5 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed; self-test fixture produced 15 expected violations."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before writing this QA handoff; after this message, only the QA handoff JSON is expected as a new file."
+    }
+  ],
+  "external_test_evidence_reviewed": [
+    "Writer handoff records pnpm build:web exit 0 with existing Vite large chunk warnings.",
+    "Writer handoff records pnpm storybook:build exit 0 with existing Storybook plugin timing and large chunk warnings.",
+    "Writer handoff records pnpm test:e2e --project=chromium exit 0, 15/15 passed.",
+    "QA route records lead-verified writer handoff validation, systems handoff validation, task validation, git diff --check, UI/map-renderer tests, web build, Storybook build, pnpm check, and Chromium E2E."
+  ],
+  "not_rerun_by_qa": [
+    {
+      "command": "pnpm build:web",
+      "reason": "Artifact-generating build was not rerun by QA to preserve the instruction that the only write in this lane is the QA handoff JSON; writer and lead route evidence record exit 0."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "reason": "Artifact-generating Storybook build was not rerun by QA to preserve the instruction that the only write in this lane is the QA handoff JSON; writer and lead route evidence record exit 0."
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "reason": "Chromium E2E was not rerun by QA because Playwright may emit test artifacts; writer and lead route evidence record exit 0 with 15/15 passed."
+    }
+  ],
+  "findings": [],
+  "decisions": [
+    {
+      "id": "QA_ACCEPT_PRESENTATION_FOUNDATION",
+      "decision": "Accept the token and slot layer as presentation-only foundation for downstream M7 UI tasks."
+    },
+    {
+      "id": "QA_NO_HUMAN_GATE",
+      "decision": "No Human Gate is required for this review because no final art, culture-specific production asset, dependency, protocol/save/schema, Electron/security, telemetry/server/cloud/mod, manual-node-battle, or frozen product/platform/core architecture change is introduced."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_CSS_MIGRATION_REMAINS_INCREMENTAL",
+      "severity": "P3",
+      "summary": "The existing player shell still has legacy literal CSS and prototype UI text outside this foundation task.",
+      "mitigation": "Downstream M7 app shell, map presentation, district inspector, appointment, guidance, and regression tasks should migrate touched surfaces to these token/slot APIs and enforce no-debug-text assertions."
+    },
+    {
+      "id": "FINAL_ART_REMAINS_GATED",
+      "severity": "P2",
+      "summary": "This task creates replacement slots but does not approve any production art or culture-specific visual asset.",
+      "mitigation": "Future approved-final-art slot population must route through art, culture, historical, localization, and QA review before integration."
+    },
+    {
+      "id": "QA_DID_NOT_RERUN_ARTIFACT_BUILDS",
+      "severity": "P3",
+      "summary": "QA did not rerun Web build, Storybook build, or Chromium E2E to avoid non-handoff writes in a read-only review lane.",
+      "mitigation": "Lead route and writer handoff already record those commands as passed; rerun them in a write-permitted integration lane if lead wants fresh artifact evidence before merge."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may proceed with integration/closure gates for M7-DESIGN-TOKENS-ASSET-SLOTS-001 and route downstream M7 UI quality tasks to consume this token and asset-slot foundation.",
+  "created_at": "2026-06-29T00:01:44.8823654+08:00"
+}
