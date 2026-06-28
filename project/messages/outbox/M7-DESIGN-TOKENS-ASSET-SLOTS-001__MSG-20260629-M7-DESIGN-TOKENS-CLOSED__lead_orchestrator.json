@@ -1,0 +1,80 @@
+{
+  "message_id": "MSG-20260629-M7-DESIGN-TOKENS-CLOSED",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 is CLOSED after PR #177 passed required CI, merged, and origin/main advanced to 08127380716c1ef93d5849e92080e85400bc0fd4. The integrated work provides M7 presentation-only design tokens, neutral placeholder asset slots, map-renderer presentation tokens, Storybook evidence, and focused tests without changing authoritative simulation, protocol, save, Electron, dependencies, content-source, final art, or Human Gate scope.",
+  "artifacts": [
+    "packages/ui/src/design-tokens.ts",
+    "packages/ui/src/asset-slots.ts",
+    "packages/ui/src/design-token-asset-slots-view.tsx",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    ".storybook/M7DesignTokensAssetSlots.stories.tsx",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260629-M7-DESIGN-TOKENS-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260629-M7-DESIGN-TOKENS-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "chore/close-m7-design-tokens-asset-slots / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "08127380716c1ef93d5849e92080e85400bc0fd4",
+  "tests_run": [
+    {
+      "command": "gh pr checks 177 --watch",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "gh pr merge 177 --squash --delete-branch=false",
+      "exit_code": 0,
+      "result": "PR #177 merged."
+    },
+    {
+      "command": "git fetch origin --prune; git checkout main; git pull --ff-only origin main; git log -1 --oneline --decorate",
+      "exit_code": 0,
+      "result": "origin/main synchronized at 08127380716c1ef93d5849e92080e85400bc0fd4."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list | rg M7-DESIGN|M7-SAVE|M7-APP|...",
+      "exit_code": 0,
+      "result": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 was ACCEPTED on main before closure checkpoint; M7-APP-SHELL-QUALITY-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 were READY."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-APP-SHELL-QUALITY-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 are READY candidates."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Mark M7-DESIGN-TOKENS-ASSET-SLOTS-001 CLOSED only after accepted commits entered origin/main through PR #177 and CI passed."
+    },
+    {
+      "id": "NEXT_READY_SELECTION",
+      "decision": "After closure, continue the M7 UI/localization quality track with M7-APP-SHELL-QUALITY-001 before the independent save/cloud boundary planning task, unless taskctl ready changes after closure merge."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_UI_MIGRATION_REMAINS",
+      "severity": "P3",
+      "summary": "The token/slot foundation is integrated but downstream app shell, map, inspector, appointment, guidance, and regression surfaces still need productization.",
+      "mitigation": "Start M7-APP-SHELL-QUALITY-001 after closure enters main and keep subsequent UI tasks scoped to their task files."
+    },
+    {
+      "id": "FINAL_ART_REMAINS_GATED",
+      "severity": "P2",
+      "summary": "No production art or culture-specific asset is approved by this closed task.",
+      "mitigation": "Future asset replacement must preserve visual/cultural/historical/localization review gates."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge this closure checkpoint, sync main, then start M7-APP-SHELL-QUALITY-001 as the highest-priority READY M7 UI/localization quality-track task unless taskctl ready changes.",
+  "created_at": "2026-06-28T16:11:45.503Z"
+}
