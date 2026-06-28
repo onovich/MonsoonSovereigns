@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START",
+  "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "client_engineer",
+  "status": "INFO",
+  "summary": "Start M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 as the next dependency-ready M7 content-lock-chain task after tutorial/encyclopedia closure. Save/cloud boundaries remain dependency-ready but unstarted.",
+  "branch_or_worktree": "feat/m7-audio-art-localization / D:\\WebProjects\\MonsoonSovereigns",
+  "base_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
+  "writer_thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
+  "writer_thread_nickname": "Lantern",
+  "owner_role": "client_engineer",
+  "reviewer_role": "historical_researcher",
+  "allowed_paths": [
+    "apps/web/**",
+    "apps/desktop/**",
+    "packages/client-core/**",
+    "packages/ui/**",
+    "packages/platform/**",
+    "packages/content-schema/**",
+    "packages/content-runtime/**",
+    "content-source/**",
+    "tests/**",
+    ".storybook/**",
+    "project/tasks/active/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/**",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "forbidden_paths": [
+    "apps/sim-runner/**",
+    "apps/content-tools/**",
+    "packages/sim-core/**",
+    "packages/sim-ai/**",
+    "packages/protocol/**",
+    "packages/save-format/**",
+    "packages/map-renderer/**",
+    "tools/**",
+    ".github/**",
+    "docs/decisions/**",
+    "docs/GATE-M0.md",
+    "docs/GATE-M1.md",
+    "docs/GATE-M2.md",
+    "docs/GATE-M3.md",
+    "docs/GATE-M4.md",
+    "docs/GATE-M5.md",
+    "docs/GATE-M6.md",
+    "docs/11-roadmap.md",
+    "docs/13-risk-register-and-test-strategy.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "MANIFEST.md",
+    "SHA256SUMS.txt",
+    "VALIDATION_REPORT.md",
+    "PROJECT_STATUS.md"
+  ],
+  "acceptance_criteria": [
+    "Define and complete the Beta audio, art, and localization coverage list required for content lock, or explicitly mark nonblocking post-1.0 gaps before formal lock acceptance.",
+    "All culture-specific visual, language, music, naming, and symbol choices are traceable to review records and route major cultural risk to historical_researcher and Human Gate instead of defaulting to certainty.",
+    "Localization coverage includes the contracted UI/tutorial/hints/encyclopedia strings and supported locale matrix, with stable keys and no hidden runtime string generation.",
+    "Audio and art integration remains static-resource based; no paid service, remote asset pipeline, secrets, telemetry, CDN/release commitment, or new production dependency is introduced without separate approval.",
+    "Completion evidence includes asset/reference manifests, localization checks, viewport smoke, and reviewer-visible unresolved risk list."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check",
+    "pnpm content:validate",
+    "pnpm --filter web test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm check"
+  ],
+  "decisions": [
+    "Formal content lock remains a future Human Gate; this task may prepare evidence but must not accept the lock.",
+    "Major culture-specific visual/language/music/naming/symbol decisions must route to historical_researcher and Human Gate if unresolved.",
+    "Static-resource boundary only: no paid service, remote asset pipeline, secrets, telemetry, CDN/release commitment, account/cloud/server/multiplayer, or new production dependency without approval.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+  ],
+  "risks": [
+    "Task is R4 because culture-facing assets/localization can create historical/cultural risk.",
+    "Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains outside this task scope."
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement within allowed paths and return writer REVIEW handoff to historical_researcher.",
+  "created_at": "2026-06-28T08:23:56.063Z",
+  "commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
+  "artifacts": [
+    "project/tasks/active/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.json",
+    "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START__lead_orchestrator.json",
+    "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-START.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID after start update."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task and route files",
+      "exit_code": 0,
+      "result": "JSON_OK."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors after start update."
+    }
+  ]
+}

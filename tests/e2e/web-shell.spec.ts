@@ -487,6 +487,26 @@ test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without s
     "DEFER_MANUAL_NODE_BATTLE"
   );
 
+  await page.getByRole("tab", { name: "Coverage" }).click();
+  await expect(workspace).toHaveAttribute("data-active-surface", "coverage");
+  await expect(page.getByLabel("M7 audio art localization coverage")).toHaveAttribute(
+    "data-locale-count",
+    "2"
+  );
+  await expect(page.getByLabel("M7 audio art localization coverage")).toHaveAttribute(
+    "data-asset-reference-count",
+    "8"
+  );
+  await expect(page.getByLabel("M7 supported locale matrix")).toContainText("zh-Hans");
+  await expect(page.getByLabel("M7 asset reference manifest")).toContainText(
+    "audio.ui.risk-warning"
+  );
+  await expect(page.getByLabel("M7 localization checks")).toContainText("loc.content-record.keys");
+  await expect(page.getByLabel("M7 viewport smoke coverage")).toContainText("viewport.1280x720");
+  await expect(page.getByLabel("M7 post-1.0 gaps and risks")).toContainText(
+    "risk.culture-specific-assets-blocked"
+  );
+
   await page
     .getByLabel("Select M7 Beta scenario")
     .selectOption("scenario.beta.1581.succession-fracture");
@@ -605,12 +625,12 @@ test("M7 guidance workspace has no horizontal overflow across required viewports
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto("/?fixture=m7-extreme");
+    await page.goto("/?fixture=m7-extreme&surface=coverage");
     await page.evaluate(() => {
       document.documentElement.style.fontSize = "20px";
     });
     await expect(page.getByLabel("M7 tutorial hints encyclopedia workspace")).toBeVisible();
-    await page.getByRole("tab", { name: "Encyclopedia" }).click();
+    await expect(page.getByLabel("M7 audio art localization coverage")).toBeVisible();
     const overflow = await page.evaluate(() => {
       const workspace = document.querySelector(".m7-guidance");
       if (workspace === null) {

@@ -1,0 +1,77 @@
+{
+  "message_id": "MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW",
+  "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+  "from_role": "historical_researcher",
+  "status": "ACCEPT",
+  "summary": "Independent historical/cultural/language review of writer commit e800a2c5 and the client_engineer REVIEW handoff accepts the task as content-lock preparation evidence only. The Beta audio/art/localization coverage manifest keeps notContentLockAcceptance true, preserves M6_GATE PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE, routes culture-specific visual/language/music/naming/symbol decisions to historical_researcher and Human Gate where required, and does not decide formal content lock, production culture assets, release/commercial scope, telemetry, accounts, cloud, server, multiplayer, or new dependencies.",
+  "artifacts": [
+    "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-TO-HISTORICAL-REVIEW.json",
+    "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+    "content-source/m7-review-baseline/historical-cultural-language-review-baseline.json"
+  ],
+  "branch_or_worktree": "feat/m7-audio-art-localization / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "e800a2c5",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree contains existing staged/modified lead/router/task state and writer handoff/route files plus untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md; reviewer did not revert or overwrite them."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git show --stat --oneline --decorate --no-renames e800a2c5",
+      "exit_code": 0,
+      "result": "Commit changes are limited to Storybook, apps/web shell tests/surface routing, content-source coverage manifest, client-core read-model projection/fixture, UI coverage panel, writer handoff, and focused tests."
+    },
+    {
+      "command": "node -e targeted JSON source/claim/reference/static-boundary checks",
+      "exit_code": 0,
+      "result": "Coverage manifest has notContentLockAcceptance true, manualNodeBattleDecision DEFER_MANUAL_NODE_BATTLE, all static boundary booleans true, static://m7 asset refs only, no http/cdn/cloud/multiplayer/telemetry-enabled markers, and all source/claim ids resolve through the M7 baseline or accepted M7 beta scenario source records."
+    },
+    {
+      "command": "git diff e800a2c5^ e800a2c5 -- forbidden package/dependency paths",
+      "exit_code": 0,
+      "result": "No changes under sim-core, sim-ai, protocol, save-format, map-renderer, tools, CI, docs gates/roadmap/matrix, package.json, or pnpm-lock.yaml."
+    },
+    {
+      "command": "git grep targeted boundary scans at e800a2c5",
+      "exit_code": 0,
+      "result": "No changed production path imports sim-core, fetches remote assets, adds telemetry/cloud/server/multiplayer behavior, or stores WorldState; WorldState hits are negative test assertions only."
+    }
+  ],
+  "decisions": [
+    "ACCEPT is limited to historical/cultural/language reviewer acceptance of the writer evidence for this task; it is not formal M7 content lock acceptance.",
+    "The coverage manifest is correctly framed as m7-beta-content-lock-prep with notContentLockAcceptance true and risk.formal-content-lock-not-accepted routed to lead_orchestrator/Human Gate.",
+    "Culture-specific music, instruments, clothing, architecture, weapons, flags, scripts, religious imagery, names, titles, transliterations, and language quality remain unresolved review material; writer did not convert them into accepted production choices.",
+    "Neutral static://m7 audio/art slots are acceptable as Beta coverage evidence because their notes explicitly disclaim period instrument, melody, ritual, sacred sound, flag, script, temple, manuscript, court-symbol, and place claims.",
+    "The localization matrix exposes en-US and zh-Hans coverage plus stable key patterns, matched key counts, source/claim-linked guidance records, and review states; zh-Hans quality and sensitive names/titles remain LANGUAGE_REVIEW_REQUIRED.",
+    "The UI/client read-model changes are explanatory surfaces only; they do not write simulation state, introduce WorldState into store, or touch forbidden simulation/protocol/save/map-renderer boundaries.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task does not reverse or reopen it."
+  ],
+  "risks": [
+    "Formal content lock remains a future Human Gate and must not infer acceptance from this ACCEPT handoff.",
+    "The coverage manifest uses source.review.m7.baseline by reference through the accepted M7 beta scenario source records rather than duplicating that source record locally; this is traceable today but should be watched if manifests are later split or validated standalone.",
+    "Static neutral slots are coverage evidence, not finished period audio/art assets. Any later culture-specific production asset still needs source-specific historical/cultural review.",
+    "Language quality, sensitive names, titles, transliterations, and public-facing terminology remain review boundaries before formal lock."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may proceed with integration/reconciliation for this task while preserving that formal M7 content lock acceptance remains a future Human Gate and manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+  "created_at": "2026-06-28T17:18:00+08:00"
+}

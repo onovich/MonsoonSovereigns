@@ -33,3 +33,28 @@ export const M7GuidanceNarrow = {
   },
   render: () => <WebClientShell />
 };
+
+export const M7CoverageNormal = {
+  render: () => <WebClientShell initialSearch="?surface=coverage" />
+};
+
+export const M7CoverageEmpty = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-empty&surface=coverage" />
+};
+
+export const M7CoverageError = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-error&surface=coverage" />
+};
+
+export const M7CoverageExtreme = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-extreme&surface=coverage" />
+};
+
+export const M7CoverageNarrow = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1"
+    }
+  },
+  render: () => <WebClientShell initialSearch="?surface=coverage" />
+};

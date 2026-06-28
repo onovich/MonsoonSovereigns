@@ -1867,21 +1867,48 @@
       "integrated_pr": 167,
       "integrated_main_commit": "aa0ef66af8f8de398eeec1f51de58eab5bcdde99",
       "lead_close_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-CLOSED__lead_orchestrator.json"
+    },
+    {
+      "thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
+      "role": "client_engineer",
+      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_writer_review_and_historical_accept",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T09:05:05.993Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-ACCEPT__lead_orchestrator.json"
+    },
+    {
+      "thread_id": "019f0d70-2c65-7143-baf5-5be398e38b0a",
+      "role": "historical_researcher",
+      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_after_accept_review",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-28T09:05:05.993Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "historical_review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json"
     }
   ],
   "active_threads": [
     {
-      "task_id": null,
+      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration selecting next M7 task after tutorial encyclopedia closure",
-      "branch_or_worktree": "main",
-      "updated_at": "2026-06-28T08:15:23.664Z"
+      "responsibility": "Lead integration for accepted M7 audio/art/localization task",
+      "branch_or_worktree": "feat/m7-audio-art-localization",
+      "updated_at": "2026-06-28T09:05:05.993Z"
     }
   ],
   "task_effects": {
@@ -2387,6 +2414,29 @@
       "status": "closed_running_no_handoff_clean_worktree",
       "reason": "closed_after_wait_timeout_status_request_no_response_no_handoff_clean_worktree",
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
+    },
+    {
+      "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+      "role": "client_engineer",
+      "thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
+      "nickname": "Lantern",
+      "status": "closed_stalled_no_handoff_partial_diff_present",
+      "replaced_by": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
+      "replaced_by_nickname": "Canvas",
+      "reason": "closed_after_three_wait_timeouts_and_status_request_no_handoff_partial_diff_present",
+      "partial_diff_files": [
+        ".storybook/WebClientShell.stories.tsx",
+        "apps/web/src/shell/web-client-shell.test.tsx",
+        "apps/web/src/shell/web-client-shell.tsx",
+        "packages/client-core/src/index.ts",
+        "packages/client-core/src/m7-beta-audio-art-localization-content.ts",
+        "packages/ui/src/index.tsx",
+        "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+        "tests/client-core-m2-district-list.test.ts",
+        "tests/e2e/web-shell.spec.ts",
+        "tests/ui-m2-district-list.test.tsx"
+      ],
+      "replaced_at": "2026-06-28T08:46:06.641Z"
     }
   ],
   "m6_map_candidate_pipeline": {
@@ -2416,8 +2466,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start highest-priority dependency-ready M7 task after closure merge.",
-  "current_task": null,
+  "next_action": "Open PR for accepted M7 audio/art/localization task, wait for CI, merge to main, then close task.",
+  "current_task": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2467,7 +2517,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T08:15:23.664Z",
+  "updated_at": "2026-06-28T09:05:05.993Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2622,7 +2672,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-28T08:15:23.664Z",
+  "last_updated_at": "2026-06-28T09:05:05.993Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -3365,6 +3415,70 @@
     "next_ready_tasks": [
       "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    ]
+  },
+  "m7_audio_art_localization_complete": {
+    "status": "ACCEPTED",
+    "task_id": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+    "branch_or_worktree": "feat/m7-audio-art-localization",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
+    "writer_nickname": "Canvas",
+    "owner_role": "client_engineer",
+    "reviewer_role": "historical_researcher",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "base_main_commit": "597a6600e8a6f25e58b631bdaecc9715edb0f399",
+    "previous_closed_task": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-START.json",
+    "started_at": "2026-06-28T08:23:56.063Z",
+    "updated_at": "2026-06-28T09:05:05.993Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task.",
+    "start_submission_id": "019f0d55-37a5-7102-b158-7614639eb423",
+    "route_sent_at": "2026-06-28T08:25:40.796Z",
+    "replacement_writer_thread_id": "019f0d67-4e88-7863-ac57-de4a5082f7e0",
+    "replacement_writer_nickname": "Canvas",
+    "replaces_writer_thread_id": "019f0d52-abc0-7c72-84d9-eae314490c97",
+    "replaced_writer_status": "closed_stalled_no_handoff_partial_diff_present",
+    "replacement_start_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-TO-CLIENT-REPLACEMENT-START.json",
+    "replacement_at": "2026-06-28T08:46:06.641Z",
+    "partial_diff_from_replaced_writer": [
+      ".storybook/WebClientShell.stories.tsx",
+      "apps/web/src/shell/web-client-shell.test.tsx",
+      "apps/web/src/shell/web-client-shell.tsx",
+      "packages/client-core/src/index.ts",
+      "packages/client-core/src/m7-beta-audio-art-localization-content.ts",
+      "packages/ui/src/index.tsx",
+      "content-source/m7-audio-art-localization/beta-audio-art-localization-coverage.json",
+      "tests/client-core-m2-district-list.test.ts",
+      "tests/e2e/web-shell.spec.ts",
+      "tests/ui-m2-district-list.test.tsx"
+    ],
+    "replacement_submission_id": "019f0d68-a9f6-7df0-b8b6-68298d414f69",
+    "replacement_route_sent_at": "2026-06-28T08:46:51.715Z",
+    "review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "e800a2c5",
+    "historical_reviewer_thread_id": "019f0d70-2c65-7143-baf5-5be398e38b0a",
+    "historical_reviewer_thread_nickname": "Estuary",
+    "review_route_file": "project/messages/routes/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__ROUTE-20260628-M7-AUDIO-ART-LOCALIZATION-WRITER-TO-HISTORICAL-REVIEW.json",
+    "expected_review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json",
+    "historical_review_submission_id": "019f0d72-4f57-7391-8b28-d0cdb670b30b",
+    "routed_to_historical_at": "2026-06-28T08:57:20.955Z",
+    "review_status": "ACCEPT",
+    "historical_review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T09:05:05.993Z",
+    "accepted_head_commit": "f85ae0d9882ef8b83d748a4c8b299492baa7ab7c",
+    "child_threads_closed": [
+      "019f0d52-abc0-7c72-84d9-eae314490c97",
+      "019f0d67-4e88-7863-ac57-de4a5082f7e0",
+      "019f0d70-2c65-7143-baf5-5be398e38b0a"
     ]
   }
 }
