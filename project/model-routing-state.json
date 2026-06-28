@@ -4173,7 +4173,7 @@
     ]
   },
   "m7_district_inspector_quality": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
     "branch_or_worktree": "feat/m7-district-inspector-quality",
     "writer_thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
@@ -4182,8 +4182,8 @@
     "route_file": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T05:12:00.000Z",
-    "updated_at": "2026-06-28T22:05:10.984Z",
-    "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED after origin/main contains the accepted commits.",
+    "updated_at": "2026-06-28T22:11:49.677Z",
+    "next_action": "Start M7-MAP-PRESENTATION-QUALITY-001 as the highest-priority dependency-ready M7 task after this closure checkpoint enters main.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_sent_at": "2026-06-29T05:14:00.000Z",
@@ -4216,6 +4216,21 @@
     "lead_accept_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-28T22:05:10.984Z",
     "accepted_implementation_commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
-    "accepted_branch_head": "4bda4800cd225449f9d3640765f12b8b44e68665"
+    "accepted_branch_head": "4bda4800cd225449f9d3640765f12b8b44e68665",
+    "closed_at": "2026-06-28T22:11:49.677Z",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 183,
+    "integrated_main_commit": "556ab00fc37fa0b44060f83c9eec3f96af1bc20c",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/183",
+    "lead_close_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-CLOSED__lead_orchestrator.json",
+    "child_threads_closed": [
+      "019f100e-9a22-7793-a953-a41b9a948703",
+      "019f1025-36fc-70d1-92bb-5858b2c7a74f"
+    ],
+    "next_ready_tasks": [
+      "M7-MAP-PRESENTATION-QUALITY-001",
+      "M7-PLAYER-GUIDANCE-LITE-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    ]
   }
 }

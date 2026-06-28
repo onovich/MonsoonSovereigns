@@ -247,3 +247,11 @@ The graph preserves `M6_GATE = PASS_WITH_LIMITS` and `DEFER_MANUAL_NODE_BATTLE` 
 The task is planning-only. It creates no final content, product code, package code, content-source data, platform behavior, release artifact, telemetry, server/multiplayer behavior, cloud-save implementation, arbitrary-code mod support, roadmap edit, acceptance-matrix edit, prior gate edit, or ADR change. Formal content lock acceptance remains a future Human Gate.
 
 `M6_GATE = PASS_WITH_LIMITS` and `DEFER_MANUAL_NODE_BATTLE` remain preserved exactly. Manual node battle remains only a post-1.0 non-blocking candidate unless a later Human Gate reverses it. The next dependency-ready M7 tasks are `M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001` and `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001`; the lead will start `M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001` first.
+
+## 23. M7 UI Quality Track Snapshot
+
+`M7-DISTRICT-INSPECTOR-QUALITY-001` is CLOSED after PR #183 entered `origin/main` at `556ab00fc37fa0b44060f83c9eec3f96af1bc20c`. The task productized the selected district inspector and secondary district browser, added localized route/obligation/due-label/travel-day player text, and added focused UI plus Playwright coverage for the prior zh-CN selected-inspector leaks.
+
+Independent `qa_reviewer` accepted the R2 fix in `project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json`; PR #183 passed both Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact.
+
+Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is active. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`. The next dependency-ready M7 tasks are `M7-MAP-PRESENTATION-QUALITY-001`, `M7-PLAYER-GUIDANCE-LITE-001`, and `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001`; the lead should start `M7-MAP-PRESENTATION-QUALITY-001` first unless `taskctl ready` changes.
