@@ -1,0 +1,171 @@
+{
+  "message_id": "M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect",
+  "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Independent systems_architect review accepts fixed implementation commit 762059e65b05ed02db6a298aaa4a31089a64d5a9 for M7 map presentation quality. The reviewed product diff 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9 is confined to allowed paths and touches no forbidden sim-core, sim-ai, protocol, save-format, content, Electron, desktop, tools, docs, CI, dependency, release, or gate paths. Pixi/map-renderer remains a disposable render-plan/cache layer rebuilt from ClientMapReadModelSnapshot plus local viewport state. Hover, selection, pan, reachable, blocked, and overloaded states are presentation instructions or React/Web local state only; they are not map, control, route, command, save, pathfinding, or domain authority. Web localized map displayName values are created as a Web-shell presentation snapshot copy for rendering and do not mutate the client-core snapshot or simulation hash inputs. i18n remains in UI/Web; no sim/protocol/save/content schema is polluted. Tokens and CSS use neutral M7 visual placeholders, with no production art, cultural symbol approval, new geography facts, server, telemetry, manual node battle, or pathfinding authority introduced.",
+  "artifacts": [
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m7-map-presentation-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9 reviewed from route checkpoint 72d6788b737677f6bc73e43130508960121f2a6c",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean tracked worktree on feat/m7-map-presentation-quality before writing this systems handoff; after build commands, ignored .tmp/ and apps/web/dist/ artifacts existed only as ignored generated outputs."
+    },
+    {
+      "command": "git rev-parse HEAD; git branch --show-current; git log -1 --oneline",
+      "exit_code": 0,
+      "result": "Current route checkpoint was 72d6788b737677f6bc73e43130508960121f2a6c on feat/m7-map-presentation-quality, one process-route checkpoint after fixed implementation commit 762059e65b05ed02db6a298aaa4a31089a64d5a9."
+    },
+    {
+      "command": "git diff --name-status 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9",
+      "exit_code": 0,
+      "result": "19 changed files: .storybook, apps/web shell/styles/tests, packages/map-renderer, packages/ui, tests, and allowed project task/message/state files only."
+    },
+    {
+      "command": "node -e <task allowed/forbidden path scanner for 9a3b0c40..762059e>",
+      "exit_code": 0,
+      "result": "Compared actual diff paths against M7-MAP-PRESENTATION-QUALITY-001 allowed_paths/forbidden_paths: fileCount 19, violations [], forbidden []."
+    },
+    {
+      "command": "git diff --check 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --name-only 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9 | rg \"(^|/)(package.json|pnpm-lock.yaml|package-lock.json|yarn.lock|Cargo.toml|Cargo.lock)$\"",
+      "exit_code": 1,
+      "result": "No dependency manifest or lockfile changes matched; rg exit 1 means no matches."
+    },
+    {
+      "command": "git diff --name-only 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9 | rg \"^(packages/(sim-core|sim-ai|protocol|save-format|platform-browser|platform-electron|content-schema|content-runtime)|apps/(desktop|sim-runner|content-tools)|content-source|tools|docs/|\\.github)/\"",
+      "exit_code": 1,
+      "result": "No forbidden package/app/content/tools/docs/.github paths matched; rg exit 1 means no matches."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-PRESENTATION-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-PRESENTATION-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed M7-MAP-PRESENTATION-QUALITY-001 as REVIEW/client_engineer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Next ready tasks were M7-PLAYER-GUIDANCE-LITE-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001; this task no longer appears as READY."
+    },
+    {
+      "command": "node -e <JSON parse/shape check for M7-MAP-PRESENTATION-QUALITY-001>",
+      "exit_code": 0,
+      "result": "Task shape OK: id M7-MAP-PRESENTATION-QUALITY-001, status REVIEW, route_to systems_architect, allowed path count 11, forbidden path count 31, human_gate_required false."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "rg -n <architecture keyword scan over changed implementation files>",
+      "exit_code": 0,
+      "result": "Matches were limited to tests asserting absence of WorldState/telemetry/server/mod surfaces, existing manual-node-battle decision display, static resource copy, and test-only node:fs usage. No new sim/protocol/save/content/platform/Electron imports, server, telemetry, pathfinding authority, Math.random, Date.now, or new Date authority source appeared in changed implementation files."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 5 tests. Coverage includes render-plan route/hover/selected/reachable/blocked/overloaded state, panOffset in plan, rebuild from replace-read-model delta, candidate read-model projection, and no sim-core/WorldState import."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 16 tests. Coverage includes localized player shell, map pan/hover details, legend states, player/debug separation, no raw reason-code leaks in covered player paths, and no WorldState leakage."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 9 tests. Coverage includes localized shell behavior, locale persistence/fallback, player-mode diagnostics hiding, and snapshot immutability for i18n behavior."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite Web build passed. Existing large chunk warning remained; no new dependency review was needed."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook static build passed and cleaned .tmp/storybook-static. Existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 19/19. Map flow covers mode switching, zoom, pan, legend, hover/list sync, selected district/settlement sync, no page console/page errors in the covered map flow, player-mode debug hiding, keyboard focus including pan controls, and viewport overflow checks. Output included only Node web-server NO_COLOR/FORCE_COLOR warnings."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary checks passed. Architecture checker reported boundaries passed and self-test fixture produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_RENDER_CACHE_BOUNDARY",
+      "decision": "Accept the map-renderer changes as render-cache-only. MapRenderViewport now carries hoveredEntity and panOffset, and MapRenderPlan carries presentation instructions; neither path writes authoritative map, route, command, save, pathfinding, or domain state."
+    },
+    {
+      "id": "ACCEPT_WEB_LOCALIZED_DISPLAY_SNAPSHOT",
+      "decision": "Accept createLocalizedMapSnapshot as a Web/UI presentation copy. It copies arrays and replaces only map displayName strings for rendering; it does not mutate client-core snapshot data, protocol payloads, content source, save format, or sim hash inputs."
+    },
+    {
+      "id": "I18N_REMAINS_UI_LAYER",
+      "decision": "Accept the added map labels, pan labels, legend labels, and hover text because all text lives in packages/ui i18n catalogs and Web shell presentation. No i18n code entered sim-core, protocol, save-format, content-schema, or content-runtime."
+    },
+    {
+      "id": "NO_ADR_REQUIRED",
+      "decision": "No ADR is required for this implementation because it does not change package dependency direction, Worker authority, save/protocol/content schemas, Electron security, deterministic simulation behavior, pathfinding authority, technology stack, or frozen product decisions."
+    },
+    {
+      "id": "NEUTRAL_VISUAL_PLACEHOLDERS_ONLY",
+      "decision": "Accept the token/CSS/Pixi visual grammar as neutral M7 placeholder presentation. No production art, specific cultural symbol, new geography fact, formal historical claim, branding, or asset approval is introduced."
+    }
+  ],
+  "risks": [
+    {
+      "id": "ARTIFACT_WARNINGS_REMAIN",
+      "severity": "P3",
+      "summary": "Web and Storybook builds still report existing large chunk warnings.",
+      "mitigation": "Track under future performance/loading work; this task introduced no new production dependency or manifest change."
+    },
+    {
+      "id": "CANVAS_HELPER_NOT_WEB_SURFACE",
+      "severity": "P3",
+      "summary": "The public canvas paint helper is not used by the Web shell; the actual Web surface is the Pixi renderer. Pan/hover acceptance is based on MapRenderPlan and BrowserPixiMapRenderer behavior.",
+      "mitigation": "If a future task makes the canvas helper a supported fallback renderer, it should add explicit zoom/pan/hover rendering coverage for that path."
+    },
+    {
+      "id": "PIXEL_VISUAL_BASELINE_REMAINS_QA_SCOPE",
+      "severity": "P3",
+      "summary": "Tests assert render-plan state, DOM attributes, Storybook build, and E2E behavior, but not a pixel baseline for hover strokes or route legend swatches.",
+      "mitigation": "QA/test reviewer may add pixel-level visual smoke later if needed; no architecture blocker found."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may integrate this systems_architect ACCEPT and route the task onward according to the task workflow. Do not mark CLOSED until required downstream reviewer gates are complete.",
+  "created_at": "2026-06-29T06:50:26.5911379+08:00"
+}

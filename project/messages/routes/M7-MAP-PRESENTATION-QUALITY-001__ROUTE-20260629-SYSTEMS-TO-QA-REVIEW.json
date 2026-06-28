@@ -1,0 +1,69 @@
+{
+  "route_id": "ROUTE-20260629-SYSTEMS-TO-QA-REVIEW",
+  "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
+  "source_role": "lead_orchestrator",
+  "source_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "source_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+  "source_status": "ACCEPT",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
+  "target_thread_nickname": "Gate the 2nd",
+  "requested_action": "Perform independent read-only QA acceptance review of M7-MAP-PRESENTATION-QUALITY-001 at fixed implementation commit 762059e65b05ed02db6a298aaa4a31089a64d5a9 after systems_architect ACCEPT. Focus on actual diff scope, required tests, UI/i18n behavior, player/debug separation, no forbidden authority drift, and handoff auditability.",
+  "branch_or_worktree": "feat/m7-map-presentation-quality",
+  "base_main_commit": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
+  "implementation_commit": "762059e65b05ed02db6a298aaa4a31089a64d5a9",
+  "route_checkpoint_commit": "72d6788b737677f6bc73e43130508960121f2a6c",
+  "source_writer_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+  "systems_review_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+  "expected_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json",
+  "review_scope": [
+    "Verify actual diff against allowed_paths and forbidden_paths.",
+    "Verify systems_architect handoff status=ACCEPT and evidence is auditable.",
+    "Verify Pixi/map-renderer remains render-cache-only and rebuildable from read models plus local viewport state.",
+    "Verify pan/hover/selected/reachable/blocked/overloaded states are presentation-only.",
+    "Verify localized Web map displayName values are presentation copies and do not pollute client-core, sim-core, protocol, save, content, or hash inputs.",
+    "Verify player-mode debug/prototype/internal labels are hidden and English/zh-CN coverage is meaningful.",
+    "Verify no server, telemetry, manual node battle, pathfinding authority, geography facts, production art, cultural symbol approval, or new dependency was introduced."
+  ],
+  "required_tests": [
+    "git status --short --branch",
+    "git diff --name-status 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9",
+    "git diff --check 9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131..762059e65b05ed02db6a298aaa4a31089a64d5a9",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-PRESENTATION-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-WRITER-REVIEW__client_engineer.json",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+    "pnpm --filter @monsoon/map-renderer test",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter web test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm check"
+  ],
+  "lead_side_validation": [
+    {
+      "command": "validate-handoff project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "taskctl validate M7-MAP-PRESENTATION-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID."
+    }
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T22:54:43.533Z",
+  "delivery": {
+    "method": "spawn_agent",
+    "status": "sent",
+    "agent_id": "019f106f-c3b6-7132-b54c-fe845ff19f80",
+    "nickname": "Gate the 2nd",
+    "sent_at": "2026-06-28T22:54:43.533Z",
+    "note": "Lead spawned a real qa_reviewer with the route content in the initial prompt."
+  },
+  "route_sent_at": "2026-06-28T22:54:43.533Z"
+}
