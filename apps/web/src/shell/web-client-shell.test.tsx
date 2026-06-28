@@ -69,7 +69,7 @@ describe("web client shell", () => {
     expect(snapshot.m6Alpha.mapCandidate.districtCount).toBeGreaterThanOrEqual(4);
   });
 
-  it("renders the M7 coverage tab from the initial search parameter", () => {
+  it("renders the M7 coverage tab inside the explicit debug overlay", () => {
     const snapshot = createWebClientShellSnapshot();
     const markup = renderToStaticMarkup(
       <ClientShellView
@@ -89,12 +89,12 @@ describe("web client shell", () => {
         onM6CommandSubmit={() => undefined}
         m6CommandStatus={null}
         initialM7Surface="coverage"
-        mapSurface={
-          <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
-        }
+        initialDebugMode
+        mapSurface={<div aria-label="Map region" data-renderer-owner="map-renderer" />}
       />
     );
 
+    expect(markup).toContain('data-debug-mode="on"');
     expect(markup).toContain('data-active-surface="coverage"');
     expect(markup).toContain('aria-label="M7 audio art localization coverage"');
     expect(markup).toContain("m7.beta.audio-art-localization.coverage.v0");
@@ -173,7 +173,7 @@ describe("web client shell", () => {
     expect(() => persistLocalePreference(setThrowingStorage, "en-US")).not.toThrow();
   });
 
-  it("renders React from read model snapshots without authority-bearing state", () => {
+  it("renders the player shell without prototype diagnostics by default", () => {
     const snapshot = createBootstrappedShellSnapshot();
     const markup = renderToStaticMarkup(
       <ClientShellView
@@ -192,19 +192,50 @@ describe("web client shell", () => {
         m5CommandStatus={null}
         onM6CommandSubmit={() => undefined}
         m6CommandStatus={null}
-        mapSurface={
-          <div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />
-        }
+        mapSurface={<div aria-label="Map region" data-renderer-owner="map-renderer" />}
       />
     );
 
     expect(markup).toContain("Monsoon Sovereigns");
-    expect(markup).toContain("Prototype District 001");
-    expect(markup).toContain(snapshot.simulation.stateHash);
+    expect(markup).toContain("Realm Map");
+    expect(markup).toContain("Developer diagnostics are hidden in player mode.");
+    expect(markup).not.toContain("Prototype District 001");
+    expect(markup).not.toContain(snapshot.simulation.stateHash);
+    expect(markup).not.toContain("M2 prototype map ready");
+    expect(markup).not.toContain('aria-label="M3 appointment workspace"');
     expect(markup).toContain('data-renderer-owner="map-renderer"');
     expect(markup).toContain('data-district-count="30"');
     expect(markup).toContain('data-settlement-count="10"');
     expect(markup).toContain('data-row-count="30"');
+    expect(markup).toContain("District 1");
+  });
+
+  it("renders legacy milestone workspaces only in developer overlay", () => {
+    const snapshot = createBootstrappedShellSnapshot();
+    const markup = renderToStaticMarkup(
+      <ClientShellView
+        snapshot={snapshot}
+        mapMode="seasonal"
+        zoomLevel={1}
+        selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
+        onMapModeChange={() => undefined}
+        onZoomLevelChange={() => undefined}
+        onSelectedEntityChange={() => undefined}
+        onM3CommandSubmit={() => undefined}
+        m3CommandStatus={null}
+        onM4CommandSubmit={() => undefined}
+        m4CommandStatus={null}
+        onM5CommandSubmit={() => undefined}
+        m5CommandStatus={null}
+        onM6CommandSubmit={() => undefined}
+        m6CommandStatus={null}
+        initialDebugMode
+        mapSurface={<div aria-label="Map region" data-renderer-owner="map-renderer" />}
+      />
+    );
+
+    expect(markup).toContain("Developer Overlay");
+    expect(markup).toContain(snapshot.simulation.stateHash);
     expect(markup).toContain('aria-label="M3 appointment workspace"');
     expect(markup).toContain('data-bulk-eligible-count="2"');
     expect(markup).toContain('aria-label="M4 campaign planning workspace"');

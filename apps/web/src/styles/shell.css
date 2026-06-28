@@ -1686,3 +1686,319 @@ select:focus-visible,
     grid-template-columns: 1fr;
   }
 }
+
+.client-shell--beta {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  min-height: 100vh;
+  background: var(--ms-color-surface-app);
+  color: var(--ms-color-text-primary);
+}
+
+.client-shell--beta .client-shell__topbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(420px, 1.25fr) minmax(220px, 0.6fr);
+  gap: 18px;
+  align-items: start;
+  border-block-end: 1px solid #c4ccd1;
+  background: var(--ms-color-surface-ink);
+  padding: 14px 18px;
+  color: var(--ms-color-text-inverse, #f5f7f8);
+}
+
+.client-shell--beta .client-shell__brand {
+  min-width: 0;
+}
+
+.client-shell--beta .client-shell__brand h1,
+.client-shell--beta .client-shell__map-heading h2,
+.client-shell--beta .client-shell__objectives h2,
+.client-shell--beta .client-shell__notices h2 {
+  margin: 0;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.client-shell--beta .client-shell__brand h1 {
+  color: #ffffff;
+  font-size: 1.35rem;
+}
+
+.client-shell--beta .client-shell__brand p,
+.client-shell--beta .client-shell__map-heading p {
+  margin: 5px 0 0;
+  line-height: 1.35;
+}
+
+.client-shell--beta .client-shell__brand p {
+  color: #d7e0e4;
+  font-size: 0.84rem;
+}
+
+.client-shell--beta .client-shell__status {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.client-shell--beta .client-shell__topbar .district-panel__metric {
+  border-block-start-color: #3b4a51;
+}
+
+.client-shell--beta .client-shell__topbar .district-panel__metric dt {
+  color: #b9c7cd;
+}
+
+.client-shell--beta .client-shell__topbar .district-panel__metric dd {
+  color: #ffffff;
+}
+
+.client-shell--beta .client-shell__settings {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.client-shell--beta .client-shell__language span,
+.client-shell--beta .client-shell__language output {
+  color: #d7e0e4;
+}
+
+.client-shell--beta .client-shell__language select,
+.client-shell--beta .client-shell__debug-toggle,
+.client-shell--beta .client-shell__action-grid button {
+  min-height: 34px;
+  border: 1px solid #8fa0a6;
+  border-radius: var(--ms-radius-control);
+  background: #ffffff;
+  color: var(--ms-color-text-primary);
+  font-weight: 800;
+}
+
+.client-shell--beta .client-shell__debug-toggle[aria-pressed="true"] {
+  border-color: #3b4450;
+  background: #101418;
+  color: #e7edf2;
+}
+
+.client-shell--beta .client-shell__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  gap: 16px;
+  min-height: 0;
+  padding: 16px;
+}
+
+.client-shell--beta .client-shell__map-region,
+.client-shell--beta .client-shell__side,
+.client-shell--beta .client-shell__route-queue,
+.client-shell--beta .client-shell__dev-overlay {
+  min-width: 0;
+}
+
+.client-shell--beta .client-shell__map-region {
+  display: grid;
+  grid-template-rows: auto minmax(360px, 1fr) auto;
+  gap: 10px;
+  min-height: calc(100vh - 238px);
+}
+
+.client-shell--beta .client-shell__map-heading {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  min-width: 0;
+}
+
+.client-shell--beta .client-shell__map-heading p {
+  color: var(--ms-color-text-secondary);
+  font-size: 0.84rem;
+}
+
+.client-shell--beta .client-shell__map-surface {
+  position: relative;
+  inset-block-start: auto;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  border: 1px solid #87939b;
+  border-radius: var(--ms-radius-panel, 4px);
+  background: linear-gradient(135deg, rgba(47, 111, 115, 0.2), rgba(184, 135, 70, 0.13)), #f6f3ea;
+}
+
+.client-shell--beta .client-shell__map-selection {
+  z-index: 1;
+  inset-inline: 14px;
+  inset-block-end: 12px;
+  max-width: calc(100% - 28px);
+  border: 1px solid rgba(23, 33, 38, 0.26);
+  border-radius: var(--ms-radius-control);
+  background: rgba(251, 252, 252, 0.9);
+  padding: 5px 8px;
+}
+
+.client-shell--beta .client-shell__map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--ms-color-text-secondary);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.client-shell--beta .client-shell__map-legend span {
+  border: var(--ms-border-hairline);
+  border-radius: var(--ms-radius-control);
+  background: var(--ms-color-surface-paper);
+  padding: 5px 8px;
+}
+
+.client-shell--beta .client-shell__side {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 12px;
+  align-self: start;
+}
+
+.client-shell--beta .district-panel,
+.client-shell--beta .client-shell__objectives,
+.client-shell--beta .client-shell__notices,
+.client-shell--beta .client-shell__route-queue {
+  border: var(--ms-border-hairline);
+  border-radius: var(--ms-radius-panel, 4px);
+  background: var(--ms-color-surface-paper);
+  padding: 12px;
+}
+
+.client-shell--beta .district-panel {
+  border-inline-start: 0;
+  padding-inline-start: 12px;
+}
+
+.client-shell--beta .district-panel__metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.client-shell--beta .client-shell__objectives,
+.client-shell--beta .client-shell__notices {
+  display: grid;
+  gap: 10px;
+}
+
+.client-shell--beta .client-shell__objective-copy,
+.client-shell--beta .client-shell__command-status {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  border: 1px solid #d8dee2;
+  border-radius: var(--ms-radius-control);
+  background: #ffffff;
+  padding: 10px;
+  line-height: 1.35;
+}
+
+.client-shell--beta .client-shell__objective-copy[data-objective-state="error"] {
+  border-color: var(--ms-color-semantic-danger);
+  background: #fff7f4;
+}
+
+.client-shell--beta .client-shell__action-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.client-shell--beta .client-shell__action-grid button:not(:disabled) {
+  border-color: var(--ms-color-accent-river);
+  background: #e7f2ef;
+  color: #1f5c61;
+}
+
+.client-shell--beta .client-shell__notices ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-inline-start: 18px;
+}
+
+.client-shell--beta .client-shell__route-queue {
+  display: grid;
+  gap: 10px;
+  margin: 0 16px 16px;
+}
+
+.client-shell--beta .client-shell__dev-overlay {
+  display: grid;
+  gap: 16px;
+  border-block-start: 4px solid #3b4450;
+  background: #101418;
+  padding: 16px;
+  color: #e7edf2;
+}
+
+.client-shell--beta .client-shell__dev-overlay > header {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(320px, 0.8fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.client-shell--beta .client-shell__dev-overlay h2,
+.client-shell--beta .client-shell__dev-overlay p {
+  margin: 0;
+}
+
+.client-shell--beta .client-shell__debug-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.client-shell--beta .client-shell__dev-overlay .district-panel__metric dt,
+.client-shell--beta .client-shell__dev-overlay .district-panel__metric dd {
+  color: #e7edf2;
+}
+
+.client-shell--beta .client-shell__debug-hidden {
+  margin: 0 16px 16px;
+  color: var(--ms-color-text-muted);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 1320px) {
+  .client-shell--beta .client-shell__topbar,
+  .client-shell--beta .client-shell__body,
+  .client-shell--beta .client-shell__map-heading,
+  .client-shell--beta .client-shell__dev-overlay > header {
+    grid-template-columns: 1fr;
+  }
+
+  .client-shell--beta .client-shell__map-region {
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 760px) {
+  .client-shell--beta .client-shell__topbar,
+  .client-shell--beta .client-shell__body,
+  .client-shell--beta .client-shell__route-queue,
+  .client-shell--beta .client-shell__dev-overlay {
+    padding: 12px;
+  }
+
+  .client-shell--beta .client-shell__status,
+  .client-shell--beta .district-panel__metrics,
+  .client-shell--beta .client-shell__debug-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .client-shell--beta .client-shell__route-queue {
+    margin: 0 12px 12px;
+    overflow-x: auto;
+  }
+
+  .client-shell--beta .client-shell__map-region {
+    min-height: 430px;
+  }
+}

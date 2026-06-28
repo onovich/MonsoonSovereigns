@@ -137,6 +137,7 @@ export interface ClientShellViewProps {
   readonly selectedEntity: ClientMapEntitySelection | null;
   readonly m6BatchBalanceArtifact?: M6BatchBalanceDashboardArtifact | null;
   readonly initialM7Surface?: ClientM7CoverageSurface;
+  readonly initialDebugMode?: boolean;
   readonly i18n?: ClientI18n;
   readonly localePreference?: ClientLocalePreference;
   readonly onLocalePreferenceChange?: (preference: ClientLocalePreference) => void;
@@ -166,6 +167,7 @@ export function ClientShellView({
   selectedEntity,
   m6BatchBalanceArtifact = null,
   initialM7Surface = "tutorial",
+  initialDebugMode = false,
   i18n = DEFAULT_CLIENT_I18N,
   localePreference = "system",
   onLocalePreferenceChange,
@@ -220,6 +222,7 @@ export function ClientShellView({
     snapshot.m7Guidance.selectedScenarioId
   );
   const [m7Surface, setM7Surface] = useState<ClientM7CoverageSurface>(initialM7Surface);
+  const [debugMode, setDebugMode] = useState(initialDebugMode);
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -608,68 +611,43 @@ export function ClientShellView({
 
   return (
     <ClientI18nContext.Provider value={i18n}>
-      <main className="client-shell" aria-label={i18n.t("app.shellLabel")}>
-        <section className="client-shell__map" aria-label={i18n.t("map.projectionLabel")}>
-          <div className="map-toolbar" aria-label={i18n.t("map.controlsLabel")}>
-            <div className="map-mode" role="group" aria-label={i18n.t("map.modeLabel")}>
-              <MapModeButton
-                label={i18n.t("map.mode.seasonal")}
-                mode="seasonal"
-                activeMode={mapMode}
-                onSelect={onMapModeChange}
-              />
-              <MapModeButton
-                label={i18n.t("map.mode.economy")}
-                mode="economy"
-                activeMode={mapMode}
-                onSelect={onMapModeChange}
-              />
-              <MapModeButton
-                label={i18n.t("map.mode.routes")}
-                mode="routes"
-                activeMode={mapMode}
-                onSelect={onMapModeChange}
-              />
-            </div>
-            <div className="map-zoom" role="group" aria-label={i18n.t("map.zoomLabel")}>
-              <button type="button" aria-label={i18n.t("map.zoomOut")} onClick={handleZoomOut}>
-                -
-              </button>
-              <output aria-label={i18n.t("map.zoomLevel")} data-zoom-level={zoomLevel.toFixed(2)}>
-                {Math.round(zoomLevel * 100)}%
-              </output>
-              <button type="button" aria-label={i18n.t("map.zoomIn")} onClick={handleZoomIn}>
-                +
-              </button>
-            </div>
+      <main
+        className="client-shell client-shell--beta"
+        aria-label={i18n.t("app.shellLabel")}
+        data-debug-mode={debugMode ? "on" : "off"}
+      >
+        <header className="client-shell__topbar" aria-label={i18n.t("shell.topStatus.label")}>
+          <div className="client-shell__brand">
+            <h1>{i18n.t("app.title")}</h1>
+            <p>{i18n.t("shell.objectives.defaultText")}</p>
           </div>
-
-          <div
-            className="client-shell__map-surface"
-            data-district-count={snapshot.map.districts.length}
-            data-settlement-count={snapshot.map.settlements.length}
-            data-route-count={snapshot.map.routes.length}
-            data-map-mode={mapMode}
-            data-zoom-level={zoomLevel.toFixed(2)}
-            data-selected-district-id={selectedDistrict?.districtId ?? "none"}
-            data-selected-entity-kind={selectedEntity?.kind ?? "none"}
-          >
-            <span className="client-shell__map-revision">
-              {i18n.t("map.revision", { revision: snapshot.revision.toString() })}
-            </span>
-            {mapSurface}
-            <span className="client-shell__map-selection">
-              {formatMapSelection(selectedDistrict, selectedSettlement)}
-            </span>
-          </div>
-        </section>
-
-        <section className="client-shell__operations" aria-label="M2 district operations">
-          <header className="client-shell__header">
-            <div>
-              <h1>{i18n.t("app.title")}</h1>
-              <p>{snapshot.panels.headline}</p>
-            </div>
+          <dl className="client-shell__status">
+            <Metric
+              label={i18n.t("shell.currentSeason.label")}
+              value={i18n.t("shell.currentSeason.value")}
+            />
+            <Metric
+              label={i18n.t("shell.currentDay.label")}
+              value={i18n.t("shell.currentDay.value", {
+                day: i18n.formatNumber(snapshot.m4Campaign.day)
+              })}
+            />
+            <Metric
+              label={i18n.t("shell.resources.label")}
+              value={i18n.t("shell.resources.value", {
+                grain: i18n.formatNumber(selectedDistrict?.grain.stock ?? 0),
+                cash: i18n.formatNumber(selectedDistrict?.cash.stock ?? 0)
+              })}
+            />
+            <Metric
+              label={i18n.t("shell.muster.label")}
+              value={i18n.t("shell.muster.value", {
+                assembled: i18n.formatNumber(snapshot.m4Campaign.muster.assembledTroops),
+                promised: i18n.formatNumber(snapshot.m4Campaign.muster.promisedTroops)
+              })}
+            />
+          </dl>
+          <section className="client-shell__settings" aria-label={i18n.t("shell.settings.label")}>
             <label className="client-shell__language">
               <span>{i18n.t("settings.language.label")}</span>
               <select
@@ -685,195 +663,339 @@ export function ClientShellView({
                 {i18n.t("settings.language.active", { locale: i18n.locale })}
               </output>
             </label>
-            <dl className="client-shell__status">
-              {snapshot.panels.metrics.map((metric) => (
-                <div className="client-shell__metric" key={metric.label}>
-                  <dt>{metric.label}</dt>
-                  <dd>{metric.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </header>
+            <button
+              className="client-shell__debug-toggle"
+              type="button"
+              aria-label={i18n.t("shell.debug.toggle")}
+              aria-pressed={debugMode}
+              onClick={() => setDebugMode(!debugMode)}
+            >
+              {debugMode ? i18n.t("shell.debug.hide") : i18n.t("shell.debug.show")}
+            </button>
+          </section>
+        </header>
 
-          <div className="district-workspace">
-            <section className="district-list" aria-label="M2 district list">
-              <div className="district-list__toolbar">
-                <label className="district-list__filter">
-                  <span>Filter</span>
-                  <input
-                    aria-label="Filter districts"
-                    value={filter}
-                    onChange={handleFilterChange}
-                    placeholder="District, phase, route"
+        <section className="client-shell__body">
+          <section
+            className="client-shell__map-region"
+            aria-label={i18n.t("shell.mapRegion.label")}
+          >
+            <div className="client-shell__map-heading">
+              <div>
+                <h2>{i18n.t("shell.mapTitle")}</h2>
+                <p>{i18n.t("shell.mapSummary")}</p>
+              </div>
+              <div className="map-toolbar" aria-label={i18n.t("map.controlsLabel")}>
+                <div className="map-mode" role="group" aria-label={i18n.t("map.modeLabel")}>
+                  <MapModeButton
+                    label={i18n.t("map.mode.seasonal")}
+                    mode="seasonal"
+                    activeMode={mapMode}
+                    onSelect={onMapModeChange}
                   />
-                </label>
-                <output
-                  aria-label="District list performance"
-                  data-testid="district-list-performance"
-                  data-derivation-ms={districtProjection.derivationMs.toFixed(3)}
-                  data-selection-ms={lastSelectionMs.toFixed(3)}
-                >
-                  {districtProjection.derivationMs.toFixed(2)} ms
-                </output>
-              </div>
-
-              <div className="district-list__head">
-                <SortButton
-                  label="District"
-                  sortKey="district"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label="Population"
-                  sortKey="population"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label="Labor"
-                  sortKey="labor"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label="Grain"
-                  sortKey="grain"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label="Cash"
-                  sortKey="cash"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label="Route"
-                  sortKey="route"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-              </div>
-
-              <div
-                className="district-list__viewport"
-                aria-label="Virtualized district rows"
-                data-row-count={snapshot.districtList.rows.length}
-                data-filtered-row-count={districtProjection.rows.length}
-                data-rendered-row-count={visibleRows.length}
-                onScroll={handleScroll}
-              >
-                <div
-                  className="district-list__spacer"
-                  style={{ height: `${virtualWindow.totalHeightPx}px` }}
-                >
-                  <div
-                    className="district-list__rows"
-                    style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
+                  <MapModeButton
+                    label={i18n.t("map.mode.economy")}
+                    mode="economy"
+                    activeMode={mapMode}
+                    onSelect={onMapModeChange}
+                  />
+                  <MapModeButton
+                    label={i18n.t("map.mode.routes")}
+                    mode="routes"
+                    activeMode={mapMode}
+                    onSelect={onMapModeChange}
+                  />
+                </div>
+                <div className="map-zoom" role="group" aria-label={i18n.t("map.zoomLabel")}>
+                  <button type="button" aria-label={i18n.t("map.zoomOut")} onClick={handleZoomOut}>
+                    -
+                  </button>
+                  <output
+                    aria-label={i18n.t("map.zoomLevel")}
+                    data-zoom-level={zoomLevel.toFixed(2)}
                   >
-                    {visibleRows.map((row) => (
-                      <DistrictRowButton
-                        key={row.districtId}
-                        row={row}
-                        isSelected={selectedDistrictId === row.districtId}
-                        onSelect={handleSelect}
-                      />
-                    ))}
-                  </div>
+                    {Math.round(zoomLevel * 100)}%
+                  </output>
+                  <button type="button" aria-label={i18n.t("map.zoomIn")} onClick={handleZoomIn}>
+                    +
+                  </button>
                 </div>
               </div>
-            </section>
+            </div>
 
+            <div
+              className="client-shell__map-surface"
+              data-district-count={snapshot.map.districts.length}
+              data-settlement-count={snapshot.map.settlements.length}
+              data-route-count={snapshot.map.routes.length}
+              data-map-mode={mapMode}
+              data-zoom-level={zoomLevel.toFixed(2)}
+              data-selected-district-id={selectedDistrict?.districtId ?? "none"}
+              data-selected-entity-kind={selectedEntity?.kind ?? "none"}
+            >
+              {mapSurface}
+              <span className="client-shell__map-selection">
+                {formatPlayerMapSelection(selectedDistrict, selectedSettlement, i18n)}
+              </span>
+            </div>
+
+            <div className="client-shell__map-legend" aria-label={i18n.t("shell.mapLegend.label")}>
+              <span>{i18n.t("shell.mapLegend.selected")}</span>
+              <span>{i18n.t("shell.mapLegend.routes")}</span>
+              <span>{i18n.t("shell.mapLegend.season")}</span>
+            </div>
+          </section>
+
+          <aside className="client-shell__side" aria-label={i18n.t("shell.inspector.label")}>
             <DistrictPanel
               row={selectedDistrict}
               selectedSettlement={selectedSettlement}
-              provenanceNote={snapshot.districtList.provenance.note}
+              provenanceNote={debugMode ? snapshot.districtList.provenance.note : ""}
+            />
+
+            <section
+              className="client-shell__objectives"
+              aria-label={i18n.t("shell.objectives.label")}
+            >
+              <h2>{i18n.t("shell.objectives.title")}</h2>
+              <ObjectiveText snapshot={snapshot} />
+              <div className="client-shell__action-grid" aria-label={i18n.t("shell.actions.label")}>
+                <button
+                  type="button"
+                  disabled={selectedM3Office === null || selectedM3Eligibility === null}
+                  onClick={handleSubmitM3Appointment}
+                >
+                  {i18n.t("shell.actions.previewAppointment")}
+                </button>
+                <button
+                  type="button"
+                  disabled={selectedM4Campaign === null}
+                  onClick={handleSubmitM4Plan}
+                >
+                  {i18n.t("shell.actions.previewCampaign")}
+                </button>
+                <button type="button" onClick={handleSubmitM4StartMarch}>
+                  {i18n.t("shell.actions.reviewObligations")}
+                </button>
+              </div>
+              <CommandStatus
+                m3CommandStatus={m3CommandStatus}
+                m4CommandStatus={m4CommandStatus}
+                m5CommandStatus={m5CommandStatus}
+                m6CommandStatus={m6CommandStatus}
+              />
+            </section>
+
+            <section
+              className="client-shell__notices"
+              aria-label={i18n.t("shell.notifications.label")}
+            >
+              <h2>{i18n.t("shell.notifications.label")}</h2>
+              <ul>
+                <li>{i18n.t("shell.notifications.obligation")}</li>
+                <li>{i18n.t("shell.notifications.supply")}</li>
+                <li>{i18n.t("shell.notifications.contentReview")}</li>
+              </ul>
+            </section>
+          </aside>
+        </section>
+
+        <section className="client-shell__route-queue" aria-label={i18n.t("shell.list.label")}>
+          <div className="district-list__toolbar">
+            <label className="district-list__filter">
+              <span>{i18n.t("shell.list.filter")}</span>
+              <input
+                aria-label={i18n.t("shell.list.filter")}
+                value={filter}
+                onChange={handleFilterChange}
+                placeholder={i18n.t("shell.list.placeholder")}
+              />
+            </label>
+            <output
+              aria-label={i18n.t("shell.list.performance")}
+              data-testid="district-list-performance"
+              data-derivation-ms={districtProjection.derivationMs.toFixed(3)}
+              data-selection-ms={lastSelectionMs.toFixed(3)}
+            >
+              {districtProjection.derivationMs.toFixed(2)} ms
+            </output>
+          </div>
+
+          <div className="district-list__head">
+            <SortButton
+              label={i18n.t("shell.table.district")}
+              sortKey="district"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={handleSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.population")}
+              sortKey="population"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={handleSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.labor")}
+              sortKey="labor"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={handleSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.grain")}
+              sortKey="grain"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={handleSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.cash")}
+              sortKey="cash"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={handleSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.route")}
+              sortKey="route"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={handleSort}
             />
           </div>
 
-          <M3AppointmentWorkspace
-            snapshot={snapshot.m3Appointment}
-            selectedOffice={selectedM3Office}
-            candidateEligibilities={visibleM3CandidateEligibilities}
-            selectedEligibility={selectedM3Eligibility}
-            showRejectedCandidates={showRejectedM3Candidates}
-            commandStatus={m3CommandStatus}
-            onOfficeChange={handleM3OfficeChange}
-            onCandidateChange={handleM3CandidateChange}
-            onRejectedToggle={handleM3RejectedToggle}
-            onSubmitAppointment={handleSubmitM3Appointment}
-            onSubmitBulk={handleSubmitM3BulkAppointments}
-          />
-
-          <M4CampaignWorkspace
-            snapshot={snapshot.m4Campaign}
-            selectedCampaign={selectedM4Campaign}
-            selectedSiege={selectedM4Siege}
-            selectedSiegeChoice={selectedM4SiegeChoice}
-            commandStatus={m4CommandStatus}
-            onCampaignChange={handleM4CampaignChange}
-            onSiegeChoiceChange={handleM4SiegeChoiceChange}
-            onSubmitPlan={handleSubmitM4Plan}
-            onSubmitStartMarch={handleSubmitM4StartMarch}
-            onSubmitCancel={handleSubmitM4Cancel}
-            onSubmitSiegeChoice={handleSubmitM4SiegeChoice}
-            onSubmitWithdrawal={handleSubmitM4Withdrawal}
-          />
-
-          <M5PlayableWorkspace
-            snapshot={snapshot.m5Playable}
-            phase={m5Phase}
-            currentStepIndex={m5CurrentStepIndex}
-            previewStepId={m5PreviewStepId}
-            confirmedCommandIds={m5ConfirmedCommandIds}
-            savedSession={m5SavedSession}
-            saveStatus={m5SaveStatus}
-            commandStatus={m5CommandStatus}
-            onStart={handleStartM5Slice}
-            onPreview={handlePreviewM5Command}
-            onConfirm={handleConfirmM5Command}
-            onCancel={handleCancelM5Slice}
-            onFailurePreview={handlePreviewM5Failure}
-            onSave={handleSaveM5Session}
-            onLoad={handleLoadM5Session}
-          />
-
-          <M6AlphaWorkspace
-            snapshot={snapshot.m6Alpha}
-            phase={m6Phase}
-            selectedScenarioId={selectedM6ScenarioId}
-            currentStepIndex={m6CurrentStepIndex}
-            previewStepId={m6PreviewStepId}
-            confirmedCommandIds={m6ConfirmedCommandIds}
-            savedSession={m6SavedSession}
-            saveStatus={m6SaveStatus}
-            commandStatus={m6CommandStatus}
-            onScenarioChange={handleM6ScenarioChange}
-            onStart={handleStartM6Alpha}
-            onPreview={handlePreviewM6Command}
-            onConfirm={handleConfirmM6Command}
-            onSave={handleSaveM6Session}
-            onLoad={handleLoadM6Session}
-            onFailurePreview={handlePreviewM6Failure}
-          />
-          <M7GuidanceWorkspace
-            snapshot={snapshot.m7Guidance}
-            selectedScenarioId={selectedM7ScenarioId}
-            activeSurface={m7Surface}
-            onScenarioChange={handleM7ScenarioChange}
-            onSurfaceSelect={handleM7SurfaceSelect}
-          />
-          {m6BatchBalanceArtifact === null ? null : (
-            <M6BatchBalanceDashboard artifact={m6BatchBalanceArtifact} />
-          )}
+          <div
+            className="district-list__viewport"
+            aria-label="Virtualized district rows"
+            data-row-count={snapshot.districtList.rows.length}
+            data-filtered-row-count={districtProjection.rows.length}
+            data-rendered-row-count={visibleRows.length}
+            onScroll={handleScroll}
+          >
+            <div
+              className="district-list__spacer"
+              style={{ height: `${virtualWindow.totalHeightPx}px` }}
+            >
+              <div
+                className="district-list__rows"
+                style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
+              >
+                {visibleRows.map((row) => (
+                  <DistrictRowButton
+                    key={row.districtId}
+                    row={row}
+                    isSelected={selectedDistrictId === row.districtId}
+                    onSelect={handleSelect}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
+
+        {debugMode ? (
+          <section className="client-shell__dev-overlay" aria-label={i18n.t("shell.debug.label")}>
+            <header>
+              <h2>{i18n.t("shell.debug.title")}</h2>
+              <p>{i18n.t("shell.debug.description")}</p>
+              <dl className="client-shell__debug-facts">
+                <Metric
+                  label={i18n.t("shell.debug.revision")}
+                  value={snapshot.revision.toString()}
+                />
+                <Metric label={i18n.t("shell.debug.hash")} value={snapshot.simulation.stateHash} />
+                <Metric
+                  label={i18n.t("shell.debug.fixture")}
+                  value={snapshot.districtList.provenance.kind}
+                />
+              </dl>
+            </header>
+            <section
+              className="client-shell__operations"
+              aria-label="Developer milestone workspaces"
+            >
+              <M3AppointmentWorkspace
+                snapshot={snapshot.m3Appointment}
+                selectedOffice={selectedM3Office}
+                candidateEligibilities={visibleM3CandidateEligibilities}
+                selectedEligibility={selectedM3Eligibility}
+                showRejectedCandidates={showRejectedM3Candidates}
+                commandStatus={m3CommandStatus}
+                onOfficeChange={handleM3OfficeChange}
+                onCandidateChange={handleM3CandidateChange}
+                onRejectedToggle={handleM3RejectedToggle}
+                onSubmitAppointment={handleSubmitM3Appointment}
+                onSubmitBulk={handleSubmitM3BulkAppointments}
+              />
+
+              <M4CampaignWorkspace
+                snapshot={snapshot.m4Campaign}
+                selectedCampaign={selectedM4Campaign}
+                selectedSiege={selectedM4Siege}
+                selectedSiegeChoice={selectedM4SiegeChoice}
+                commandStatus={m4CommandStatus}
+                onCampaignChange={handleM4CampaignChange}
+                onSiegeChoiceChange={handleM4SiegeChoiceChange}
+                onSubmitPlan={handleSubmitM4Plan}
+                onSubmitStartMarch={handleSubmitM4StartMarch}
+                onSubmitCancel={handleSubmitM4Cancel}
+                onSubmitSiegeChoice={handleSubmitM4SiegeChoice}
+                onSubmitWithdrawal={handleSubmitM4Withdrawal}
+              />
+
+              <M5PlayableWorkspace
+                snapshot={snapshot.m5Playable}
+                phase={m5Phase}
+                currentStepIndex={m5CurrentStepIndex}
+                previewStepId={m5PreviewStepId}
+                confirmedCommandIds={m5ConfirmedCommandIds}
+                savedSession={m5SavedSession}
+                saveStatus={m5SaveStatus}
+                commandStatus={m5CommandStatus}
+                onStart={handleStartM5Slice}
+                onPreview={handlePreviewM5Command}
+                onConfirm={handleConfirmM5Command}
+                onCancel={handleCancelM5Slice}
+                onFailurePreview={handlePreviewM5Failure}
+                onSave={handleSaveM5Session}
+                onLoad={handleLoadM5Session}
+              />
+
+              <M6AlphaWorkspace
+                snapshot={snapshot.m6Alpha}
+                phase={m6Phase}
+                selectedScenarioId={selectedM6ScenarioId}
+                currentStepIndex={m6CurrentStepIndex}
+                previewStepId={m6PreviewStepId}
+                confirmedCommandIds={m6ConfirmedCommandIds}
+                savedSession={m6SavedSession}
+                saveStatus={m6SaveStatus}
+                commandStatus={m6CommandStatus}
+                onScenarioChange={handleM6ScenarioChange}
+                onStart={handleStartM6Alpha}
+                onPreview={handlePreviewM6Command}
+                onConfirm={handleConfirmM6Command}
+                onSave={handleSaveM6Session}
+                onLoad={handleLoadM6Session}
+                onFailurePreview={handlePreviewM6Failure}
+              />
+              <M7GuidanceWorkspace
+                snapshot={snapshot.m7Guidance}
+                selectedScenarioId={selectedM7ScenarioId}
+                activeSurface={m7Surface}
+                onScenarioChange={handleM7ScenarioChange}
+                onSurfaceSelect={handleM7SurfaceSelect}
+              />
+              {m6BatchBalanceArtifact === null ? null : (
+                <M6BatchBalanceDashboard artifact={m6BatchBalanceArtifact} />
+              )}
+            </section>
+          </section>
+        ) : (
+          <p className="client-shell__debug-hidden">{i18n.t("shell.debug.hiddenNotice")}</p>
+        )}
       </main>
     </ClientI18nContext.Provider>
   );
@@ -938,22 +1060,26 @@ interface DistrictRowButtonProps {
 }
 
 function DistrictRowButton({ row, isSelected, onSelect }: DistrictRowButtonProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   return (
     <button
       className="district-list__row"
       type="button"
-      aria-label={`Select ${row.displayName}`}
+      aria-label={`${i18n.t("shell.objectives.reviewDistrict")} ${formatPlayerDistrictName(
+        row,
+        i18n
+      )}`}
       aria-pressed={isSelected}
       data-district-id={row.districtId}
       onClick={() => onSelect(row)}
       style={{ height: `${DISTRICT_ROW_HEIGHT_PX}px` }}
     >
-      <span>{row.displayName}</span>
+      <span>{formatPlayerDistrictName(row, i18n)}</span>
       <span>{formatInteger(row.population)}</span>
       <span>{formatInteger(row.labor.available)}</span>
       <span>{formatInteger(row.grain.stock)}</span>
       <span>{formatInteger(row.cash.stock)}</span>
-      <span>{formatRouteCell(row)}</span>
+      <span>{formatRouteStatusLabel(row.route.status, i18n)}</span>
     </button>
   );
 }
@@ -969,11 +1095,12 @@ function DistrictPanel({
   selectedSettlement,
   provenanceNote
 }: DistrictPanelProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   if (row === null) {
     return (
-      <aside className="district-panel" aria-label="M2 district panel">
-        <h2>M2 district panel</h2>
-        <p>No district row is available.</p>
+      <aside className="district-panel" aria-label={i18n.t("shell.inspector.label")}>
+        <h2>{i18n.t("shell.inspector.emptyTitle")}</h2>
+        <p>{i18n.t("shell.inspector.emptyText")}</p>
       </aside>
     );
   }
@@ -981,40 +1108,100 @@ function DistrictPanel({
   return (
     <aside
       className="district-panel"
-      aria-label="M2 district panel"
+      aria-label={i18n.t("shell.inspector.label")}
       data-selected-district-id={row.districtId}
     >
       <div className="district-panel__title">
-        <h2>{row.displayName}</h2>
-        <span>{row.seasonal.label}</span>
+        <h2>{formatPlayerDistrictName(row, i18n)}</h2>
+        <span>{formatSeasonLabel(row.seasonal.agriculturePhase, i18n)}</span>
       </div>
       <dl className="district-panel__metrics">
         {selectedSettlement === null ? null : (
-          <Metric label="Settlement" value={selectedSettlement.displayName} />
+          <Metric
+            label={i18n.t("shell.inspector.settlement")}
+            value={formatPlayerSettlementName(i18n)}
+          />
         )}
-        <Metric label="Population" value={formatInteger(row.population)} />
         <Metric
-          label="Labor"
-          value={`${formatInteger(row.labor.available)} available / ${formatInteger(
-            row.labor.committed
-          )} committed`}
+          label={i18n.t("shell.inspector.population")}
+          value={i18n.formatNumber(row.population)}
         />
         <Metric
-          label="Grain"
-          value={`${formatInteger(row.grain.stock)} stock / ${formatInteger(
-            row.grain.lastHarvest
-          )} harvest`}
+          label={i18n.t("shell.inspector.labor")}
+          value={i18n.t("shell.inspector.availableCommitted", {
+            available: i18n.formatNumber(row.labor.available),
+            committed: i18n.formatNumber(row.labor.committed)
+          })}
         />
         <Metric
-          label="Cash"
-          value={`${formatInteger(row.cash.stock)} stock / ${formatInteger(
-            row.cash.cumulativeMobilizationCost
-          )} mobilized`}
+          label={i18n.t("shell.inspector.grain")}
+          value={i18n.t("shell.inspector.stockHarvest", {
+            stock: i18n.formatNumber(row.grain.stock),
+            harvest: i18n.formatNumber(row.grain.lastHarvest)
+          })}
         />
-        <Metric label="Route" value={formatRouteSummary(row)} />
+        <Metric
+          label={i18n.t("shell.inspector.cash")}
+          value={i18n.t("shell.inspector.stockMobilized", {
+            stock: i18n.formatNumber(row.cash.stock),
+            mobilized: i18n.formatNumber(row.cash.cumulativeMobilizationCost)
+          })}
+        />
+        <Metric
+          label={i18n.t("shell.inspector.route")}
+          value={formatPlayerRouteSummary(row, i18n)}
+        />
       </dl>
-      <p className="district-panel__provenance">{provenanceNote}</p>
+      {provenanceNote.length === 0 ? null : (
+        <p className="district-panel__provenance">{provenanceNote}</p>
+      )}
     </aside>
+  );
+}
+
+function ObjectiveText({ snapshot }: { readonly snapshot: ClientReadModelSnapshot }): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  if (snapshot.m7Guidance.scenarios.length === 0) {
+    return (
+      <div className="client-shell__objective-copy" data-objective-state="empty">
+        <strong>{i18n.t("shell.objectives.emptyTitle")}</strong>
+        <span>{i18n.t("shell.objectives.emptyText")}</span>
+      </div>
+    );
+  }
+  if (snapshot.m7Guidance.reviewSummary.blockedScopeNotes.length > 0) {
+    return (
+      <div className="client-shell__objective-copy" data-objective-state="error">
+        <strong>{i18n.t("shell.objectives.errorTitle")}</strong>
+        <span>{i18n.t("shell.objectives.errorText")}</span>
+      </div>
+    );
+  }
+  return (
+    <div className="client-shell__objective-copy" data-objective-state="normal">
+      <strong>{i18n.t("shell.objectives.nextStep")}</strong>
+      <span>{i18n.t("shell.objectives.defaultText")}</span>
+    </div>
+  );
+}
+
+function CommandStatus({
+  m3CommandStatus,
+  m4CommandStatus,
+  m5CommandStatus,
+  m6CommandStatus
+}: {
+  readonly m3CommandStatus: string | null;
+  readonly m4CommandStatus: string | null;
+  readonly m5CommandStatus: string | null;
+  readonly m6CommandStatus: string | null;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const status = m4CommandStatus ?? m3CommandStatus ?? m6CommandStatus ?? m5CommandStatus ?? null;
+  return (
+    <p className="client-shell__command-status" role="status" aria-live="polite">
+      {status ?? i18n.t("shell.debug.hiddenNotice")}
+    </p>
   );
 }
 
@@ -3270,39 +3457,77 @@ function parseM4SiegeChoice(value: string): ClientM4SiegeChoice {
   }
 }
 
-function formatRouteCell(row: ClientDistrictRowReadModel): string {
-  if (row.route.totalCost === null) {
-    return row.route.status;
-  }
-
-  return `${row.route.status} ${row.route.totalCost}`;
+function formatPlayerDistrictName(row: ClientDistrictRowReadModel, i18n: ClientI18n): string {
+  return i18n.t("shell.district.name", {
+    number: i18n.formatNumber(Number(row.districtId))
+  });
 }
 
-function formatRouteSummary(row: ClientDistrictRowReadModel): string {
-  const routeKinds = row.route.routeKinds.length === 0 ? "none" : row.route.routeKinds.join("/");
-  if (row.route.totalCost === null || row.route.bottleneckCapacity === null) {
-    return `${row.route.status}; to district ${row.route.destinationDistrictId}; edges ${row.route.edgeCount}; ${routeKinds}`;
-  }
+function formatPlayerSettlementName(i18n: ClientI18n): string {
+  return i18n.t("shell.settlement.name");
+}
 
-  return `${row.route.status}; to district ${row.route.destinationDistrictId}; cost ${row.route.totalCost}; bottleneck ${row.route.bottleneckCapacity}; ${routeKinds}`;
+function formatSeasonLabel(phase: string, i18n: ClientI18n): string {
+  switch (phase) {
+    case "fallow":
+      return i18n.t("shell.season.fallow");
+    case "planting":
+      return i18n.t("shell.season.planting");
+    case "growing":
+      return i18n.t("shell.season.growing");
+    case "harvest":
+      return i18n.t("shell.season.harvest");
+    default:
+      return phase;
+  }
+}
+
+function formatRouteStatusLabel(
+  status: ClientDistrictRowReadModel["route"]["status"],
+  i18n: ClientI18n
+): string {
+  switch (status) {
+    case "reachable":
+      return i18n.t("shell.route.reachable");
+    case "capacity-exceeded":
+      return i18n.t("shell.route.capacityExceeded");
+    case "unreachable":
+      return i18n.t("shell.route.unreachable");
+  }
+}
+
+function formatPlayerRouteSummary(row: ClientDistrictRowReadModel, i18n: ClientI18n): string {
+  const status = formatRouteStatusLabel(row.route.status, i18n);
+  if (row.route.totalCost === null || row.route.bottleneckCapacity === null) {
+    return i18n.t("shell.route.summaryUnreachable", { status });
+  }
+  return i18n.t("shell.route.summaryReachable", {
+    status,
+    kinds: row.route.routeKinds.join("/"),
+    cost: i18n.formatNumber(row.route.totalCost),
+    capacity: i18n.formatNumber(row.route.bottleneckCapacity)
+  });
 }
 
 function clampZoomLevel(value: number): number {
   return Math.min(2, Math.max(0.75, value));
 }
 
-function formatMapSelection(
+function formatPlayerMapSelection(
   selectedDistrict: ClientDistrictRowReadModel | null,
-  selectedSettlement: ClientMapSettlementReadModel | null
+  selectedSettlement: ClientMapSettlementReadModel | null,
+  i18n: ClientI18n
 ): string {
   if (selectedDistrict === null) {
-    return "No district selected";
+    return i18n.t("map.selection.empty");
   }
   if (selectedSettlement !== null) {
-    return `${selectedSettlement.displayName} / ${selectedDistrict.displayName}`;
+    return `${formatPlayerSettlementName(i18n)} / ${formatPlayerDistrictName(
+      selectedDistrict,
+      i18n
+    )}`;
   }
-
-  return selectedDistrict.displayName;
+  return formatPlayerDistrictName(selectedDistrict, i18n);
 }
 
 function getHighResolutionTime(): number {

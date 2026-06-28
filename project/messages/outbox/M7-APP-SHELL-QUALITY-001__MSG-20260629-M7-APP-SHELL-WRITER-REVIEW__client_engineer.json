@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260629-M7-APP-SHELL-WRITER-REVIEW",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M7 Beta player app shell: default player mode now shows a top status bar, central map region, selected district inspector, objective/action panel, notices, settings/language entry, and a separated developer overlay. Player mode hides prototype dashboard framing, state hash, revision, milestone workspaces, raw command ids, raw reason codes, and fixture display names by default; the legacy M2-M7 workspaces remain reachable only through explicit debug mode for developer evidence. Shell strings use the accepted i18n foundation for en-US, zh-CN, and system fallback, and React/Pixi remain read-model presentation coordinators without WorldState authority.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    ".storybook/WebClientShell.stories.tsx"
+  ],
+  "branch_or_worktree": "feat/m7-app-shell-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree contains only allowed-path task changes plus this writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-APP-SHELL-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed successfully; M7-APP-SHELL-QUALITY-001 is IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready list returned M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001; current task remains in progress pending review."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "M7-APP-SHELL-QUALITY-001 JSON shape ok."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff validates against the project handoff schema."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web shell suite passed: 1 test file, 8 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 test file, 15 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite Web build completed successfully; existing chunk-size warnings were emitted."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully; Vite emitted existing large-chunk/plugin-timing warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 15 tests, including player/default shell, language switching, debug-on flows, and viewport overflow checks."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop bridge; renderer navigation remains restricted; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format, lint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "PLAYER_DEBUG_SEPARATION",
+      "decision": "Kept legacy M2-M7 milestone workspaces available only under explicit debug mode instead of deleting them, preserving developer evidence while removing prototype framing from player mode."
+    },
+    {
+      "id": "READ_MODEL_ONLY_SHELL",
+      "decision": "The Beta shell derives labels, metrics, objective text, and action availability from existing client read-model slices and existing command factories; it does not own WorldState or duplicate simulation formulas."
+    },
+    {
+      "id": "LOCALIZED_PLAYER_LABELS",
+      "decision": "Default player-visible district, settlement, route, command status, and objective labels are localized and sanitized away from prototype/test fixture display names."
+    }
+  ],
+  "risks": [
+    {
+      "id": "MAP_PRESENTATION_FOLLOWUP",
+      "severity": "P2",
+      "summary": "The Pixi canvas still renders through the existing map-renderer package, which is outside this task's allowed modification scope; deeper map label LOD/art treatment remains for M7-MAP-PRESENTATION-QUALITY-001."
+    },
+    {
+      "id": "DEBUG_OVERLAY_RAW_DATA",
+      "severity": "P2",
+      "summary": "Raw milestone labels, ids, hashes, and reason-code diagnostics are intentionally still present in explicit debug mode for developer validation; QA should verify they are absent from default player mode."
+    },
+    {
+      "id": "ELECTRON_REVIEW_ROUTE",
+      "severity": "P2",
+      "summary": "This task touches the web shell consumed by Electron and reads locale through the existing bridge; desktop:security-check passed, but Electron-facing risk should remain visible to security_reviewer after QA routing."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Please independently validate M7-APP-SHELL-QUALITY-001 against the task acceptance criteria, especially default player/debug separation, i18n behavior, responsive Storybook/Playwright states, and read-model/command authority boundaries. If Electron shell exposure needs separate signoff, route the security-specific findings onward to security_reviewer.",
+  "created_at": "2026-06-29T00:50:00+08:00"
+}

@@ -111,19 +111,23 @@ export function WebClientShell({
   }
 
   function handleM3CommandSubmit(command: ClientM3SubmittedCommand): void {
-    setM3CommandStatus(`${command.kind} ready for ${command.actor.id}`);
+    void command;
+    setM3CommandStatus(i18n.t("shell.command.m3Ready"));
   }
 
   function handleM4CommandSubmit(command: ClientM4SubmittedCommand): void {
-    setM4CommandStatus(`${command.kind} ready for ${command.actor.id}`);
+    void command;
+    setM4CommandStatus(i18n.t("shell.command.m4Ready"));
   }
 
   function handleM5CommandSubmit(command: ClientM5SubmittedCommand): void {
-    setM5CommandStatus(`${command.kind} confirmed for ${command.actor.id}`);
+    void command;
+    setM5CommandStatus(i18n.t("shell.command.m5Ready"));
   }
 
   function handleM6CommandSubmit(command: ClientM6SubmittedCommand): void {
-    setM6CommandStatus(`${command.kind} submitted for ${command.actor.id}`);
+    void command;
+    setM6CommandStatus(i18n.t("shell.command.m6Ready"));
   }
 
   return (
@@ -147,6 +151,7 @@ export function WebClientShell({
       localePreference={localePreference}
       onLocalePreferenceChange={handleLocalePreferenceChange}
       initialM7Surface={readInitialM7Surface(initialSearch ?? getWindowSearch())}
+      initialDebugMode={readInitialDebugMode(initialSearch ?? getWindowSearch())}
       mapSurface={
         <PixiMapSurface
           snapshot={snapshot.map}
@@ -291,7 +296,12 @@ function PixiMapSurface({
   const selectedDistrict = snapshot.districts.find(
     (district) => district.districtId === selectedDistrictId
   );
-  const selectedDistrictLabel = selectedDistrict?.displayName ?? i18n.t("map.selection.empty");
+  const selectedDistrictLabel =
+    selectedDistrict === undefined
+      ? i18n.t("map.selection.empty")
+      : i18n.t("shell.district.name", {
+          number: i18n.formatNumber(Number(selectedDistrict.districtId))
+        });
 
   return (
     <>
@@ -304,7 +314,7 @@ function PixiMapSurface({
       <div
         ref={hostRef}
         className="map-viewport"
-        aria-label="M2 prototype map viewport"
+        aria-label={i18n.t("shell.mapRegion.label")}
         aria-describedby="map-keyboard-help map-selected-district-status"
         aria-keyshortcuts="ArrowRight ArrowDown ArrowLeft ArrowUp Home End"
         aria-roledescription="keyboard navigable map read model"
@@ -374,4 +384,10 @@ function readInitialM7Surface(search: string): ClientM7CoverageSurface {
     default:
       return "tutorial";
   }
+}
+
+function readInitialDebugMode(search: string): boolean {
+  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  const debug = params.get("debug")?.trim().toLowerCase() ?? "";
+  return debug === "1" || debug === "true" || debug === "on";
 }

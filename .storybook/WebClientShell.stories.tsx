@@ -9,23 +9,23 @@ export const Baseline = {
   render: () => <WebClientShell />
 };
 
-export const M7GuidanceNormal = {
+export const AppShellNormal = {
   render: () => <WebClientShell />
 };
 
-export const M7GuidanceEmpty = {
+export const AppShellEmpty = {
   render: () => <WebClientShell initialSearch="?fixture=m7-empty" />
 };
 
-export const M7GuidanceError = {
+export const AppShellError = {
   render: () => <WebClientShell initialSearch="?fixture=m7-error" />
 };
 
-export const M7GuidanceExtreme = {
+export const AppShellExtreme = {
   render: () => <WebClientShell initialSearch="?fixture=m7-extreme" />
 };
 
-export const M7GuidanceNarrow = {
+export const AppShellNarrow = {
   parameters: {
     viewport: {
       defaultViewport: "mobile1"
@@ -34,47 +34,42 @@ export const M7GuidanceNarrow = {
   render: () => <WebClientShell />
 };
 
-export const M7CoverageNormal = {
-  render: () => <WebClientShell initialSearch="?surface=coverage" />
-};
-
-export const M7CoverageEmpty = {
-  render: () => <WebClientShell initialSearch="?fixture=m7-empty&surface=coverage" />
-};
-
-export const M7CoverageError = {
-  render: () => <WebClientShell initialSearch="?fixture=m7-error&surface=coverage" />
-};
-
-export const M7CoverageExtreme = {
-  render: () => <WebClientShell initialSearch="?fixture=m7-extreme&surface=coverage" />
-};
-
-export const M7CoverageNarrow = {
-  parameters: {
-    viewport: {
-      defaultViewport: "mobile1"
-    }
-  },
-  render: () => <WebClientShell initialSearch="?surface=coverage" />
-};
-
-export const I18nEnglish = {
+export const AppShellEnglish = {
   render: () => <WebClientShell initialLocalePreference="en-US" />
 };
 
-export const I18nSimplifiedChinese = {
+export const AppShellSimplifiedChinese = {
   render: () => (
     <WebClientShell initialLocalePreference="zh-CN" initialSystemLocales={["zh-Hans"]} />
   )
 };
 
-export const I18nSystemFallbackChinese = {
+export const AppShellSystemFallbackChinese = {
   render: () => (
     <WebClientShell initialLocalePreference="system" initialSystemLocales={["zh-Hans"]} />
   )
 };
 
-export const I18nSystemFallbackEnglish = {
+export const AppShellSystemFallbackEnglish = {
   render: () => <WebClientShell initialLocalePreference="system" initialSystemLocales={["fr-FR"]} />
+};
+
+export const AppShellDebugOff = {
+  render: () => <WebClientShell initialSearch="?debug=0" />
+};
+
+export const AppShellDebugOn = {
+  render: () => <WebClientShell initialSearch="?debug=1" />
+};
+
+export const M7CoverageDebug = {
+  render: () => <WebClientShell initialSearch="?surface=coverage&debug=1" />
+};
+
+export const M7CoverageEmptyDebug = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-empty&surface=coverage&debug=1" />
+};
+
+export const M7CoverageErrorDebug = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-error&surface=coverage&debug=1" />
 };
