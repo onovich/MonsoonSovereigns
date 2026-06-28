@@ -5,7 +5,7 @@ import {
   type PixiSceneLayer
 } from "@monsoon/map-renderer";
 import { createClientDistrictId } from "@monsoon/client-core";
-import { ClientShellView } from "@monsoon/ui";
+import { ClientShellView, createClientI18n } from "@monsoon/ui";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
@@ -208,6 +208,42 @@ describe("web client shell", () => {
     expect(markup).toContain('data-settlement-count="10"');
     expect(markup).toContain('data-row-count="30"');
     expect(markup).toContain("District 1");
+  });
+
+  it("localizes player shell accessible names for Simplified Chinese", () => {
+    const snapshot = createBootstrappedShellSnapshot();
+    const i18n = createClientI18n("zh-CN");
+    const markup = renderToStaticMarkup(
+      <ClientShellView
+        snapshot={snapshot}
+        mapMode="seasonal"
+        zoomLevel={1}
+        selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
+        onMapModeChange={() => undefined}
+        onZoomLevelChange={() => undefined}
+        onSelectedEntityChange={() => undefined}
+        onM3CommandSubmit={() => undefined}
+        m3CommandStatus={null}
+        onM4CommandSubmit={() => undefined}
+        m4CommandStatus={null}
+        onM5CommandSubmit={() => undefined}
+        m5CommandStatus={null}
+        onM6CommandSubmit={() => undefined}
+        m6CommandStatus={null}
+        i18n={i18n}
+        mapSurface={
+          <div aria-label={i18n.t("shell.mapRegion.label")} data-renderer-owner="map-renderer" />
+        }
+      />
+    );
+
+    expect(markup).toContain('aria-label="虚拟化地区行"');
+    expect(markup).toContain('aria-label="季节地图模式"');
+    expect(markup).toContain('aria-label="经济地图模式"');
+    expect(markup).toContain('aria-label="按人口排序"');
+    expect(markup).not.toContain('aria-label="Virtualized district rows"');
+    expect(markup).not.toContain('aria-label="Seasonal map mode"');
+    expect(markup).not.toContain('aria-label="Sort by Population"');
   });
 
   it("renders legacy milestone workspaces only in developer overlay", () => {

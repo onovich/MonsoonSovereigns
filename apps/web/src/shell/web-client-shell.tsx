@@ -306,10 +306,10 @@ function PixiMapSurface({
   return (
     <>
       <span id="map-keyboard-help" className="sr-only">
-        Use arrow keys, Home, and End to move the selected district through the map read model.
+        {i18n.t("map.keyboardHelp")}
       </span>
       <span id="map-selected-district-status" className="sr-only" aria-live="polite">
-        Selected map district: {selectedDistrictLabel}.
+        {i18n.t("map.selectedDistrictStatus", { district: selectedDistrictLabel })}
       </span>
       <div
         ref={hostRef}
@@ -317,7 +317,7 @@ function PixiMapSurface({
         aria-label={i18n.t("shell.mapRegion.label")}
         aria-describedby="map-keyboard-help map-selected-district-status"
         aria-keyshortcuts="ArrowRight ArrowDown ArrowLeft ArrowUp Home End"
-        aria-roledescription="keyboard navigable map read model"
+        aria-roledescription={i18n.t("map.roleDescription")}
         data-renderer-owner="map-renderer"
         data-renderer-status={rendererStatus}
         data-renderer-error={mountError ?? undefined}
@@ -329,7 +329,7 @@ function PixiMapSurface({
       />
       {rendererStatus === "error" ? (
         <p className="map-renderer-error" role="alert">
-          Map renderer failed to mount.
+          {i18n.t("map.rendererFailed")}
         </p>
       ) : null}
     </>

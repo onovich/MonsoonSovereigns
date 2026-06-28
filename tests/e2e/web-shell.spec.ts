@@ -43,6 +43,22 @@ test("web shell resolves system language, switches language, and persists prefer
   await expect(page.getByRole("heading", { name: "季风诸王" })).toBeVisible();
   await expect(page.getByLabel("语言")).toHaveValue("system");
   await expect(page.getByLabel("目标与行动")).toContainText("当前目标");
+  await expect(page.getByLabel("虚拟化地区行")).toHaveAttribute("data-row-count", "30");
+  await expect(page.getByRole("button", { name: "经济地图模式" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "按人口排序" })).toBeVisible();
+  await expect(page.getByLabel("Virtualized district rows")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Economy map mode" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Sort by Population" })).toHaveCount(0);
+  await expect(page.locator(".map-viewport")).toHaveAttribute(
+    "aria-roledescription",
+    "可键盘导航的地图只读模型"
+  );
+  await expect(page.locator("#map-keyboard-help")).toContainText(
+    "使用方向键、Home 和 End 在地图只读模型中移动已选地区。"
+  );
+  await expect(page.locator("#map-selected-district-status")).toContainText(
+    "已选地图地区：第 1 地区。"
+  );
 
   await page.getByLabel("语言").selectOption("en-US");
   await expect(page.locator("html")).toHaveAttribute("lang", "en-US");

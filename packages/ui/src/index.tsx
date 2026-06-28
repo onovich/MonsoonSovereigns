@@ -868,7 +868,7 @@ export function ClientShellView({
 
           <div
             className="district-list__viewport"
-            aria-label="Virtualized district rows"
+            aria-label={i18n.t("shell.list.virtualRowsLabel")}
             data-row-count={snapshot.districtList.rows.length}
             data-filtered-row-count={districtProjection.rows.length}
             data-rendered-row-count={visibleRows.length}
@@ -912,10 +912,7 @@ export function ClientShellView({
                 />
               </dl>
             </header>
-            <section
-              className="client-shell__operations"
-              aria-label="Developer milestone workspaces"
-            >
+            <section className="client-shell__operations" aria-label={i18n.t("shell.debug.label")}>
               <M3AppointmentWorkspace
                 snapshot={snapshot.m3Appointment}
                 selectedOffice={selectedM3Office}
@@ -1009,10 +1006,11 @@ interface MapModeButtonProps {
 }
 
 function MapModeButton({ label, mode, activeMode, onSelect }: MapModeButtonProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   return (
     <button
       type="button"
-      aria-label={`${label} map mode`}
+      aria-label={i18n.t("map.modeButtonLabel", { label })}
       aria-pressed={activeMode === mode}
       onClick={() => onSelect(mode)}
     >
@@ -1036,6 +1034,7 @@ function SortButton({
   direction,
   onSort
 }: SortButtonProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   const isActive = activeSortKey === sortKey;
   const suffix = isActive ? (direction === "ascending" ? " up" : " down") : "";
 
@@ -1043,7 +1042,7 @@ function SortButton({
     <button
       className="district-list__sort"
       type="button"
-      aria-label={`Sort by ${label}`}
+      aria-label={i18n.t("shell.table.sortButtonLabel", { label })}
       data-active={isActive}
       onClick={() => onSort(sortKey)}
     >
