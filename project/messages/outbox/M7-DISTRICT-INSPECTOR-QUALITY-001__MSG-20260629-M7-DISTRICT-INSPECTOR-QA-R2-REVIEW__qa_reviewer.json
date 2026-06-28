@@ -1,0 +1,127 @@
+{
+  "message_id": "M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent R2 QA accepts M7-DISTRICT-INSPECTOR-QUALITY-001 at fixed implementation commit db65ad7d24ffcb710c909500f53987ae567d45ae. The prior P1 selected district inspector zh-CN localization blocker is fixed: route kinds, obligation kinds, obligation due labels, route summaries, and route-effect travel-day summaries now use the i18n foundation, and focused UI plus Playwright coverage rejects the prior player-mode leaks Road, road, Garrison, continuous, and English days in the selected district inspector.",
+  "artifacts": [
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "feat/m7-district-inspector-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before QA R2 handoff creation: ## feat/m7-district-inspector-quality."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "Current HEAD was 91288b0dd9f879b73be256fd5999cdb61cb86cf8, a route/process commit after fixed implementation commit db65ad7d24ffcb710c909500f53987ae567d45ae."
+    },
+    {
+      "command": "git diff --name-status db65ad7d24ffcb710c909500f53987ae567d45ae..HEAD",
+      "exit_code": 0,
+      "result": "Later delta is process-only: goal-mode-state, model-routing-state, task/thread registry, R2 writer handoff metadata, and writer-R2-to-QA route."
+    },
+    {
+      "command": "git diff --name-status eb179555d2324311e0966923a137cf81824c01ee..db65ad7d24ffcb710c909500f53987ae567d45ae",
+      "exit_code": 0,
+      "result": "R2 diff changes only allowed paths: packages/ui/src/i18n.ts, packages/ui/src/index.tsx, UI/E2E tests, project task/state/message/route files. No forbidden sim-core, sim-ai, protocol, save-format, map-renderer, platform, content-source/runtime/schema, docs gate/roadmap, release, telemetry, server, multiplayer, account, cloud-save, production-art, branding, M8, or manual-node-battle paths were modified."
+    },
+    {
+      "command": "git diff --name-status e8a854f672a49f2a5271111224b17830b6721de8..db65ad7d24ffcb710c909500f53987ae567d45ae",
+      "exit_code": 0,
+      "result": "Full task diff through R2 remains within allowed apps/web, packages/client-core, packages/ui, tests, .storybook, project/messages, and project task/state paths."
+    },
+    {
+      "command": "git diff --check eb179555d2324311e0966923a137cf81824c01ee..db65ad7d24ffcb710c909500f53987ae567d45ae",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list emitted successfully; M7-DISTRICT-INSPECTOR-QUALITY-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready tasks listed: M7-MAP-PRESENTATION-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer handoff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 test file, 16 tests. The zh-CN selected inspector test asserts localized route/effect text and rejects Road, road, Garrison, continuous, and days."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Vitest client-core suite passed: 1 test file, 22 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web suite passed: 1 test file, 9 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook static build passed and cleaned .tmp/storybook-static; existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 19 tests. The M7 district inspector E2E switches to zh-CN on narrow viewport, verifies localized inspector text, rejects prior P1 tokens, checks bounded rendering, empty/error states, no horizontal overflow, and no console/page errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "focused source inspection: packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/ui-m2-district-list.test.tsx, tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Confirmed R2 helpers format district route kinds, obligation kinds, due labels, and travel-day summaries through i18n. Existing English days matches are outside the player-mode selected district inspector debug/workspace surfaces."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: prior P1 selected district inspector zh-CN localization blocker is fixed.",
+    "ACCEPT: player-mode selected district inspector no longer exposes Road, road, Garrison, continuous, or English days for the default selected district fixture.",
+    "ACCEPT: route kinds, obligation kinds, due labels, route summary kinds, and route-effect travel-day summaries use i18n helpers in packages/ui/src/index.tsx and message keys in packages/ui/src/i18n.ts.",
+    "ACCEPT: focused UI and Playwright tests would fail if the prior P1 tokens return in the selected district inspector.",
+    "ACCEPT: R2 keeps i18n outside sim-core, consumes existing read models/command previews, and introduces no protocol/schema/sim/save/map/platform/content/release/server/cloud/manual-node-battle scope."
+  ],
+  "risks": [
+    "Unknown future due-label strings still fall back through formatReasonCode rather than a schema-enforced due-label enum; this is acceptable for the current read-model fixture and does not block R2.",
+    "Some older debug/developer workspaces still contain English labels such as M4 supply days; they are outside the selected district inspector/player-mode blocker reviewed here.",
+    "Current HEAD 91288b0d includes process route metadata after the requested R2 implementation commit; QA reviewed the fixed implementation commit and confirmed the later delta is process-only."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may validate this QA R2 handoff and proceed with task integration. Do not mark the task CLOSED solely from this handoff until lead-side closure steps are complete.",
+  "created_at": "2026-06-29T06:02:40.5504881+08:00"
+}

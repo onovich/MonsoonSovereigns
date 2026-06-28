@@ -1,0 +1,101 @@
+{
+  "message_id": "M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes the QA P1 selected district inspector localization gap. Player-facing inspector text now formats district route kinds, obligation kinds, due labels, and route travel-day summaries through the i18n foundation, and the zh-CN selected inspector test coverage now asserts that QA-reported English/raw tokens do not appear in player mode.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-district-inspector-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+  "fixed_commit": "db65ad7d24ffcb710c909500f53987ae567d45ae",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial request-changes status was clean. Final status listed only allowed-path modifications: packages/ui/src/i18n.ts, packages/ui/src/index.tsx, project goal/model/task/thread state files, tests/e2e/web-shell.spec.ts, tests/ui-m2-district-list.test.tsx, and this R2 handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "exit_code": 0,
+      "result": "JSON parse/shape OK: task id M7-DISTRICT-INSPECTOR-QUALITY-001, status REVIEW, route_to qa_reviewer, human_gate_required false."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "R2 writer handoff validated against project schema."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 1,
+      "result": "Intermediate focused run failed because the new positive assertion expected陆路 while the current default selected District 1 fixture route kind is coast/沿海. The assertion was corrected to match the current read model while retaining the QA-required negative checks."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 test file, 16 tests. The zh-CN selected inspector assertion now requires localized route kind/effect text and rejects Road, road, Garrison, continuous, and days in player markup."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web suite passed: 1 test file, 9 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 19 tests. The M7 district inspector flow switches to zh-CN on a narrow viewport, asserts localized selected-inspector route/effect text, rejects Road, road, Garrison, continuous, and days, checks bounded district-browser rendering, no horizontal overflow, and no console/page errors."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook static build passed and cleaned .tmp/storybook-static; existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    "Added explicit i18n keys for district route kinds: road, river, and coast.",
+    "Added explicit i18n keys for district obligation kinds: tribute, troop, and garrison.",
+    "Added i18n formatting for due labels continuous, war trigger, and numeric day cadence, with fallback through formatReasonCode for unknown future labels.",
+    "Added i18n formatting for route-effect travel-day summaries instead of hardcoded English days.",
+    "Kept the selected district inspector on existing read models and command previews only; no WorldState ownership, domain data mutation, protocol/schema changes, or sim formula copies were introduced.",
+    "Extended zh reason-token labels used by the i18n fallback so player-visible reason chips no longer expose the QA-reported Garrison token."
+  ],
+  "risks": [
+    "The current default selected District 1 fixture route kind is coast, so the positive zh-CN test asserts沿海 while still rejecting Road/road as QA requested.",
+    "Unknown future reason tokens can still fall back to humanized text through the existing i18n foundation. This R2 covers the QA-reported selected-inspector leaks and the visible related fallback tokens in the current fixture.",
+    "Vite and Storybook still emit pre-existing large chunk warnings, but builds pass."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Please perform R2 QA review for M7-DISTRICT-INSPECTOR-QUALITY-001, focusing on selected district inspector zh-CN localization, player/debug separation, and the new focused UI/Playwright assertions. Do not mark ACCEPTED/CLOSED until QA passes.",
+  "created_at": "2026-06-29T06:12:00.000Z",
+  "updated_at": "2026-06-28T21:58:12.089Z"
+}

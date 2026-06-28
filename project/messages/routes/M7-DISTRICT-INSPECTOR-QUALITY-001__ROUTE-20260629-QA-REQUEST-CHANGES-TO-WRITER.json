@@ -1,0 +1,41 @@
+{
+  "route_id": "ROUTE-20260629-QA-REQUEST-CHANGES-TO-WRITER",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "client_engineer",
+  "target_thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
+  "target_nickname": "Window",
+  "send_method": "send_input",
+  "submission_id": "019f1032-585e-7ab2-90b2-43d7541f818f",
+  "branch_or_worktree": "feat/m7-district-inspector-quality",
+  "source_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+  "requested_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+  "result": "REQUEST_CHANGES_ROUTED_TO_ORIGINAL_WRITER",
+  "request_changes_round": 1,
+  "fixed_implementation_commit_under_review": "eb179555d2324311e0966923a137cf81824c01ee",
+  "qa_reviewer_thread_id": "019f1025-36fc-70d1-92bb-5858b2c7a74f",
+  "qa_status": "REQUEST_CHANGES",
+  "required_fixes": [
+    {
+      "severity": "P1",
+      "summary": "Selected district inspector is not fully localized in player mode.",
+      "details": "In zh-CN, the selected District 1 inspector can show English/raw tokens such as Road, road, Garrison, continuous, and 12 days from DistrictTraitList, DistrictEffectList, and formatPlayerRouteSummary.",
+      "required_action": "Add i18n formatting for district route kinds, obligation kinds, due labels/time units, and route-effect travel-day summaries; use those helpers for all selected-inspector player text."
+    },
+    {
+      "severity": "P1",
+      "summary": "Tests do not catch the zh-CN inspector token leak.",
+      "details": "Existing focused UI/E2E tests pass while player-visible English/raw tokens remain possible.",
+      "required_action": "Add focused UI and/or Playwright zh-CN assertions that the selected district inspector uses localized route kind/unit/due text and does not contain Road, road, Garrison, continuous, or days in player mode."
+    }
+  ],
+  "created_at": "2026-06-29T05:46:00.000Z",
+  "sent_at": "2026-06-29T05:51:00.000Z",
+  "delivery": {
+    "method": "send_input",
+    "status": "sent",
+    "submission_id": "019f1032-585e-7ab2-90b2-43d7541f818f",
+    "sent_at": "2026-06-29T05:51:00.000Z",
+    "note": "Lead routed QA REQUEST_CHANGES back to original client_engineer writer."
+  }
+}

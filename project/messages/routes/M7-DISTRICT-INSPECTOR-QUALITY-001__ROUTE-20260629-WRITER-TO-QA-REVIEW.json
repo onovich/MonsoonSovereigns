@@ -1,0 +1,51 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-TO-QA-REVIEW",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "source_role": "lead_orchestrator",
+  "source_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "source_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+  "source_status": "REVIEW",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f1025-36fc-70d1-92bb-5858b2c7a74f",
+  "target_thread_nickname": "Auditor",
+  "requested_action": "Perform independent read-only QA review of M7-DISTRICT-INSPECTOR-QUALITY-001 at fixed implementation commit eb179555d2324311e0966923a137cf81824c01ee.",
+  "branch_or_worktree": "feat/m7-district-inspector-quality",
+  "base_main_commit": "e8a854f672a49f2a5271111224b17830b6721de8",
+  "implementation_commit": "eb179555d2324311e0966923a137cf81824c01ee",
+  "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+  "review_scope": [
+    "Verify actual diff against allowed_paths and forbidden_paths.",
+    "Verify selected district inspector is player-facing, localized, and consumes existing read models/command previews only.",
+    "Verify district list remains secondary with search, route-status filter, sort, folding, bounded rendering/virtualization, empty state, and selection/map sync where supported.",
+    "Verify player mode hides prototype district labels, milestone labels, raw IDs, state hash, raw reason codes, and debug diagnostics.",
+    "Verify Storybook, focused UI tests, Playwright, build, and pnpm check evidence are meaningful and passing.",
+    "Verify no sim-core, protocol, save, map-renderer, platform, content-source, docs gate/roadmap, release, telemetry, server, multiplayer, account, cloud-save, production-art, branding, M8, or manual-node-battle scope was introduced."
+  ],
+  "required_tests": [
+    "git status --short --branch",
+    "git diff --name-status e8a854f672a49f2a5271111224b17830b6721de8..eb179555d2324311e0966923a137cf81824c01ee",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "git diff --check e8a854f672a49f2a5271111224b17830b6721de8..eb179555d2324311e0966923a137cf81824c01ee",
+    "pnpm --filter @monsoon/ui test",
+    "pnpm --filter @monsoon/client-core test",
+    "pnpm --filter web test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm check"
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-29T05:34:00.000Z",
+  "delivery": {
+    "method": "send_input",
+    "status": "sent",
+    "submission_id": "019f1026-ac78-7bc1-9151-8091a5126a38",
+    "sent_at": "2026-06-29T05:36:00.000Z",
+    "note": "Lead sent formal QA review route to spawned qa_reviewer thread."
+  },
+  "route_sent_at": "2026-06-29T05:36:00.000Z"
+}

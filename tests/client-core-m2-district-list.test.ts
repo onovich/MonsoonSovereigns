@@ -99,6 +99,21 @@ describe("M2 district list client read model", () => {
     expect(findClientDistrictRow(fixture.rows, first.districtId)).toBe(first);
   });
 
+  test("filters district rows by route status without owning world state", () => {
+    const fixture = createSyntheticDistrictPressureFixture();
+    const filteredRows = selectClientDistrictRows({
+      rows: fixture.rows,
+      filter: "",
+      routeStatusFilter: "unreachable",
+      sortKey: "district",
+      sortDirection: "ascending"
+    });
+
+    expect(filteredRows.length).toBeGreaterThan(0);
+    expect(filteredRows.every((row) => row.route.status === "unreachable")).toBe(true);
+    expect(JSON.stringify(filteredRows)).not.toContain("WorldState");
+  });
+
   test("calculates a bounded virtual row window for list pressure rendering", () => {
     const fixture = createSyntheticDistrictPressureFixture();
     const window = calculateClientVirtualWindow({

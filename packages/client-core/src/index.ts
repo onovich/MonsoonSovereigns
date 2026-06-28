@@ -1926,6 +1926,7 @@ export type ClientDistrictSortDirection = "ascending" | "descending";
 export interface ClientDistrictRowSelectionInput {
   readonly rows: readonly ClientDistrictRowReadModel[];
   readonly filter: string;
+  readonly routeStatusFilter?: ClientDistrictRouteStatus | "all";
   readonly sortKey: ClientDistrictSortKey;
   readonly sortDirection: ClientDistrictSortDirection;
 }
@@ -6558,10 +6559,13 @@ export function selectClientDistrictRows(
   input: ClientDistrictRowSelectionInput
 ): readonly ClientDistrictRowReadModel[] {
   const normalizedFilter = input.filter.trim().toLowerCase();
-  const filteredRows =
-    normalizedFilter.length === 0
-      ? input.rows
-      : input.rows.filter((row) => rowMatchesFilter(row, normalizedFilter));
+  const routeStatusFilter = input.routeStatusFilter ?? "all";
+  const filteredRows = input.rows.filter((row) => {
+    if (routeStatusFilter !== "all" && row.route.status !== routeStatusFilter) {
+      return false;
+    }
+    return normalizedFilter.length === 0 || rowMatchesFilter(row, normalizedFilter);
+  });
 
   const direction = input.sortDirection === "ascending" ? 1 : -1;
   return [...filteredRows].sort(
