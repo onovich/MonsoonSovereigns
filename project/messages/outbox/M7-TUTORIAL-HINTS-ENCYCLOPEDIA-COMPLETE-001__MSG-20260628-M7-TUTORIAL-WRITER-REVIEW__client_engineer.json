@@ -1,0 +1,110 @@
+{
+  "message_id": "MSG-20260628-M7-TUTORIAL-WRITER-REVIEW",
+  "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Completed M7 Beta tutorial, contextual hints, and encyclopedia UI/read-model surfaces over accepted M1-M7 slices. The implementation adds an M7 guidance read-model slice, M7 shell fixture variants, React panels for tutorial/hints/encyclopedia/review state, Storybook normal/empty/error/extreme/narrow states, and Playwright coverage across the required desktop viewports. Scope correction: an initial attempt to add @monsoon/content-runtime as a client-core dependency was removed, pnpm-lock.yaml was restored to no diff, and the final implementation uses local content-record-shaped read-model inputs without new package dependencies.",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "2abd654d8f2cd29d30f2288b3137f26161683037",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only allowed-path implementation files and this handoff are modified; known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains untouched. No pnpm-lock.yaml or package dependency diff remains."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed task registry; M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 remains IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "READY tasks are M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0,
+      "result": "JSON parse/shape OK; task id/status/scope/manual-node-battle decision verified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Handoff schema validation passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "apps/web Vitest passed: 1 file, 4 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "UI SSR Vitest passed: 1 file, 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Client-core focused Vitest passed: 1 file, 19 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web production build succeeded; existing >500 kB chunk warning remains."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build succeeded and cleaned .tmp/storybook-static; existing large chunk/plugin timing warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium passed: 13 tests, including M7 guidance flow and viewport overflow coverage."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, workspace typecheck, and architecture boundaries passed."
+    }
+  ],
+  "decisions": [
+    "Added ClientM7GuidanceReadModelSnapshot as an incremental client read-model slice instead of storing WorldState or moving domain rules into UI.",
+    "Rendered tutorial, hints, encyclopedia, and review-boundary panels from read-model fields, reason codes, command preview kinds, and content-record-shaped M7 review records.",
+    "Kept M6_GATE as PASS_WITH_LIMITS, manual node battle as DEFER_MANUAL_NODE_BATTLE, and formal content lock as not accepted.",
+    "Added Storybook normal/empty/error/extreme/narrow states through existing web shell fixture routing.",
+    "Corrected scope after lead warning by removing the attempted @monsoon/content-runtime package dependency and restoring pnpm-lock.yaml to no diff."
+  ],
+  "risks": [
+    "M7 guidance content records are a compact client read-model fixture for Beta surfaces, not formal content lock acceptance or final historical wording.",
+    "Large Vite/Storybook chunk warnings remain pre-existing build warnings; no new dependency was retained.",
+    "Known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains in the worktree and was not touched."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the M7 Beta tutorial, contextual hints, encyclopedia surfaces, scope correction, and validation evidence.",
+  "created_at": "2026-06-28T15:17:11.0930986+08:00",
+  "review_head_commit": "2abd654d8f2cd29d30f2288b3137f26161683037",
+  "updated_at": "2026-06-28T07:21:39.988Z"
+}

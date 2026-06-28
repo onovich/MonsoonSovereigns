@@ -5,10 +5,14 @@ import {
   createM6AlphaEmptyReadModelFixture,
   createM6AlphaErrorReadModelFixture,
   createM6AlphaExtremeReadModelFixture,
+  createM7GuidanceEmptyReadModelFixture,
+  createM7GuidanceErrorReadModelFixture,
+  createM7GuidanceExtremeReadModelFixture,
   createSyntheticDistrictPressureFixture,
   type ClientReadModelSnapshot,
   withDistrictListReadModel,
-  withM6AlphaReadModel
+  withM6AlphaReadModel,
+  withM7GuidanceReadModel
 } from "@monsoon/client-core";
 import { createHelloThirtyDayRequest } from "@monsoon/protocol";
 
@@ -50,6 +54,24 @@ export function createWebClientShellSnapshot(search = ""): ClientReadModelSnapsh
       createM6AlphaExtremeReadModelFixture(defaultSnapshot)
     );
   }
+  if (fixtureMode === "m7-empty") {
+    return withM7GuidanceReadModel(
+      defaultSnapshot,
+      createM7GuidanceEmptyReadModelFixture(defaultSnapshot)
+    );
+  }
+  if (fixtureMode === "m7-error") {
+    return withM7GuidanceReadModel(
+      defaultSnapshot,
+      createM7GuidanceErrorReadModelFixture(defaultSnapshot)
+    );
+  }
+  if (fixtureMode === "m7-extreme") {
+    return withM7GuidanceReadModel(
+      defaultSnapshot,
+      createM7GuidanceExtremeReadModelFixture(defaultSnapshot)
+    );
+  }
 
   return defaultSnapshot;
 }
@@ -62,7 +84,15 @@ export function createStressValidationShellSnapshot(
 
 function readFixtureMode(
   search: string
-): "default" | "stress" | "m6-empty" | "m6-error" | "m6-extreme" {
+):
+  | "default"
+  | "stress"
+  | "m6-empty"
+  | "m6-error"
+  | "m6-extreme"
+  | "m7-empty"
+  | "m7-error"
+  | "m7-extreme" {
   const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
   const rawFixture = params.get("fixture")?.trim().toLowerCase() ?? "";
 
@@ -77,6 +107,15 @@ function readFixtureMode(
   }
   if (rawFixture === "m6-extreme" || rawFixture === "alpha-extreme") {
     return "m6-extreme";
+  }
+  if (rawFixture === "m7-empty" || rawFixture === "beta-guidance-empty") {
+    return "m7-empty";
+  }
+  if (rawFixture === "m7-error" || rawFixture === "beta-guidance-error") {
+    return "m7-error";
+  }
+  if (rawFixture === "m7-extreme" || rawFixture === "beta-guidance-extreme") {
+    return "m7-extreme";
   }
 
   return "default";

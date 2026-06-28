@@ -1,0 +1,150 @@
+{
+  "message_id": "MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW",
+  "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent R2 QA accepts M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001. The prior P1 drift is fixed: the M7 guidance fixture is mechanically compared against accepted content-source/m7-beta-scenarios/beta-scenario-person-event-set.json, the runtime projection carries the accepted labels, review states, localization strings, known-gap count, and contracted counts, and UI continues to render only client read-model data without holding WorldState or duplicating authoritative sim rules.",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/client-core/src/m7-beta-guidance-content.ts",
+    "packages/ui/src/index.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-WRITER-R2-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "318e68225051e0bf4ca786405bcd62303cb8aeac",
+  "reviewed_fix_commit": "963bf558ff9136bdc69e115232929f4b5e7493c8",
+  "reviewed_writer_head_commit": "edc31aeecfa71a3efe6f5e86c1e8cc58421d94b6",
+  "tests_run": [
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are limited to allowed web, client-core, ui, Storybook, tests, task, message, route, goal-mode, model-routing, and thread-registry paths."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- pnpm-lock.yaml package.json packages/client-core/package.json packages/ui/package.json apps/web/package.json packages/content-schema/package.json packages/content-runtime/package.json",
+      "exit_code": 0,
+      "result": "No package manifest, package dependency, or pnpm-lock.yaml drift."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- packages/sim-core packages/sim-ai packages/protocol packages/save-format packages/map-renderer packages/platform packages/desktop tools .github docs PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION.md",
+      "exit_code": 0,
+      "result": "No forbidden desktop, sim, protocol, save, map, platform, tools, CI, docs gate, roadmap, risk/acceptance, PROJECT_STATUS, manifest, checksum, or validation-report drift."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R2 handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "rg boundary scans over changed app/client/ui/test surfaces",
+      "exit_code": 0,
+      "result": "No new sim-core/sim-ai dependency, Node fs/Electron dependency in runtime UI/client code, WorldState storage, Math.random, Date.now, telemetry/account/cloud/server/multiplayer/release/branding/save migration implementation, or manual node battle implementation was found in the reviewed M7 surfaces."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 20 tests. The R2 guard directly compares the generated M7 guidance fixture with accepted content-source JSON and asserts the contracted 3 scenarios, 6 persons, 3 titles, 5 events, 36 localization records, 6 claims, 4 known gaps, HIST-M7-FILL-001-SCOPE INFERRED/HIGH, Forced movement and population-loss review, CULTURE_HUMAN_GATE_REQUIRED, Composite court broker 1531, and LANGUAGE_REVIEW_REQUIRED."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 10 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 4 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web production build succeeded; existing chunk-size warning remains."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build succeeded; M7 normal, empty, error, extreme, and narrow stories are present."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium passed: 13 tests, including M7 flow assertions and required viewport overflow coverage."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, workspace typecheck, and architecture boundaries passed."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remained before this QA R2 handoff file was added."
+    }
+  ],
+  "decisions": [
+    {
+      "verdict": "ACCEPT",
+      "reason": "R2 removes the stale UI-local M7 content pack and adds a discriminating source/fixture equality test plus targeted assertions for the prior drift."
+    },
+    {
+      "scope": "PASS",
+      "reason": "The diff stays within allowed paths and does not touch pnpm-lock.yaml, package manifests, forbidden runtime packages, prior gate docs, roadmap, PROJECT_STATUS, release, branding, save migration, manual node battle, telemetry, accounts, cloud, server, or multiplayer scope."
+    },
+    {
+      "architecture_boundary": "PASS",
+      "reason": "M7 tutorial, hints, and encyclopedia are projected from client read models, reason codes, command previews, and content-record-shaped data. React stores only UI selection state and consumes ClientM7GuidanceReadModelSnapshot; it does not hold WorldState."
+    },
+    {
+      "historical_cultural_boundary": "PASS",
+      "reason": "Player-facing M7 wording preserves accepted content labels and review states, keeps formal content lock not accepted, and exposes Human Gate / language-review states instead of presenting uncertain material as final certainty."
+    },
+    {
+      "ui_evidence": "PASS",
+      "reason": "Storybook states cover normal, empty, error, extreme, and narrow cases; Playwright covers M7 flow content and viewport overflow across required desktop sizes."
+    },
+    {
+      "test_discrimination": "PASS",
+      "reason": "Tests fail on accepted-source drift, claim label/confidence drift, reviewState drift, localization string drift, known-gap count drift, and contracted count drift."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "R2",
+      "summary": "packages/client-core/src/m7-beta-guidance-content.ts is a generated client fixture copied from accepted content-source JSON.",
+      "mitigation": "The client-core test compares it exactly to content-source/m7-beta-scenarios/beta-scenario-person-event-set.json so intentional content-source changes must be mechanically synced before tests pass."
+    },
+    {
+      "severity": "R3",
+      "summary": "The actual branch HEAD advanced from the routed writer head edc31aee to 318e6822 with route/status process files only.",
+      "mitigation": "The reviewed business fix remains commit 963bf558, and the current HEAD diff was included in scope checks."
+    },
+    {
+      "severity": "R3",
+      "summary": "Known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains in the worktree.",
+      "mitigation": "It was ignored and not modified."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Accept the R2 QA verdict for M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 and proceed with lead orchestration.",
+  "created_at": "2026-06-28T16:00:00+08:00"
+}

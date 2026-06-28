@@ -31,6 +31,8 @@ import {
   type StartCampaignMarchCommandV1
 } from "@monsoon/protocol";
 
+import { M7_BETA_GUIDANCE_SOURCE } from "./m7-beta-guidance-content";
+
 export const CLIENT_READ_MODEL_PROTOCOL_VERSION = 1;
 
 export type Brand<T, B extends string> = T & { readonly __brand: B };
@@ -63,6 +65,7 @@ export interface ClientReadModelSnapshot {
   readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
   readonly m5Playable: ClientM5PlayableReadModelSnapshot;
   readonly m6Alpha: ClientM6AlphaReadModelSnapshot;
+  readonly m7Guidance: ClientM7GuidanceReadModelSnapshot;
 }
 
 export interface HelloSimulationSummaryReadModel {
@@ -1403,6 +1406,292 @@ export type ClientM6ReasonSourceKind =
   | "succession"
   | "terminal";
 
+export type ClientM7ContentLabel =
+  | "HISTORICAL"
+  | "INFERRED"
+  | "COMPOSITE"
+  | "FICTIONAL"
+  | "RESEARCH REQUIRED";
+export type ClientM7ContentConfidence = "HIGH" | "MEDIUM" | "LOW" | "DISPUTED";
+export type ClientM7ReviewState =
+  | "DRAFT_CONTENT"
+  | "RESEARCH REQUIRED"
+  | "SOURCE_RECORDED"
+  | "HISTORICAL_REVIEW_READY"
+  | "HISTORICAL_ACCEPTED"
+  | "CULTURE_RISK_REQUEST_CHANGES"
+  | "CULTURE_HUMAN_GATE_REQUIRED"
+  | "LANGUAGE_REVIEW_REQUIRED"
+  | "SCHEMA_VALIDATED"
+  | "QA_REVIEW_READY"
+  | "LOCK_CANDIDATE";
+export type ClientM7GuidanceSurface = "tutorial" | "hints" | "encyclopedia";
+
+interface ClientM7RuntimeSourceRecord {
+  readonly sourceId: string;
+  readonly sourceClass:
+    | "PROJECT_BASELINE"
+    | "PROJECT_POLICY"
+    | "PROJECT_BIBLIOGRAPHY"
+    | "REVIEW_BASELINE"
+    | "ACADEMIC_CANDIDATE";
+  readonly citation: string;
+  readonly accessStatus: string;
+  readonly pageOrSection: string;
+  readonly formalUse: string;
+}
+
+interface ClientM7RuntimeClaimRecord {
+  readonly claimId: string;
+  readonly claim: string;
+  readonly label: ClientM7ContentLabel;
+  readonly confidence: ClientM7ContentConfidence;
+  readonly sourceIds: readonly string[];
+  readonly sourcePassages: readonly string[];
+  readonly sourceStatements: readonly string[];
+  readonly scholarlyInterpretations: readonly string[];
+  readonly researcherInference: string;
+  readonly competingInterpretations: readonly string[];
+  readonly gameAbstraction: string;
+  readonly researchStatus: "PAGE_VERIFIED" | "SUMMARY_ONLY" | "RESEARCH_REQUIRED";
+  readonly humanGate: boolean;
+}
+
+interface ClientM7RuntimeLocalizationRecord {
+  readonly key: string;
+  readonly zhHans: string;
+  readonly english: string;
+  readonly sourceNote: string;
+  readonly context: string;
+  readonly characterLimit: number;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly owner: string;
+  readonly deterministicOrder: number;
+}
+
+interface ClientM7RuntimeTitleRecord {
+  readonly titleId: string;
+  readonly localizationKey: string;
+  readonly label: ClientM7ContentLabel;
+  readonly confidence: ClientM7ContentConfidence;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly owner: string;
+  readonly deterministicOrder: number;
+}
+
+interface ClientM7RuntimePersonRecord {
+  readonly personId: string;
+  readonly displayNameKey: string;
+  readonly titleIds: readonly string[];
+  readonly label: ClientM7ContentLabel;
+  readonly confidence: ClientM7ContentConfidence;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly owner: string;
+  readonly scenarioIds: readonly string[];
+  readonly roleTag: string;
+  readonly deterministicOrder: number;
+}
+
+interface ClientM7RuntimeViolenceCostRecord {
+  readonly victimGroups: readonly string[];
+  readonly sourceRegions: readonly string[];
+  readonly immediateCosts: readonly string[];
+  readonly longTermConsequences: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+}
+
+interface ClientM7RuntimeEventChoiceRecord {
+  readonly choiceId: string;
+  readonly localizationKey: string;
+  readonly aiReasonKey: string;
+  readonly costSummaryKey: string;
+}
+
+interface ClientM7RuntimeEventRecord {
+  readonly eventId: string;
+  readonly localizationKey: string;
+  readonly label: ClientM7ContentLabel;
+  readonly confidence: ClientM7ContentConfidence;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly owner: string;
+  readonly triggerKey: string;
+  readonly scenarioIds: readonly string[];
+  readonly personIds: readonly string[];
+  readonly titleIds: readonly string[];
+  readonly choices: readonly ClientM7RuntimeEventChoiceRecord[];
+  readonly violenceCostRecord: ClientM7RuntimeViolenceCostRecord | null;
+  readonly deterministicOrder: number;
+}
+
+interface ClientM7RuntimeScenarioHookRecord {
+  readonly hookId: string;
+  readonly hookKind: "start" | "victory" | "failure" | "tutorial" | "encyclopedia";
+  readonly localizationKey: string;
+  readonly targetIds: readonly string[];
+}
+
+interface ClientM7RuntimeScenarioRecord {
+  readonly scenarioId: string;
+  readonly scenarioKey: string;
+  readonly displayNameKey: string;
+  readonly startYear: number;
+  readonly label: ClientM7ContentLabel;
+  readonly confidence: ClientM7ContentConfidence;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly owner: string;
+  readonly personIds: readonly string[];
+  readonly titleIds: readonly string[];
+  readonly eventIds: readonly string[];
+  readonly localizationKeys: readonly string[];
+  readonly hooks: readonly ClientM7RuntimeScenarioHookRecord[];
+  readonly deterministicOrder: number;
+}
+
+interface ClientM7RuntimeContentPack {
+  readonly schemaVersion: 1;
+  readonly kind: "m7.beta-scenario-person-event-set";
+  readonly fixtureId: string;
+  readonly fixtureKind: "beta-scenario-person-event-set";
+  readonly contentScope: "m7-beta-content-fill";
+  readonly notContentLockAcceptance: true;
+  readonly m6GateCarryForward: "PASS_WITH_LIMITS";
+  readonly manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE";
+  readonly sourceRecords: readonly ClientM7RuntimeSourceRecord[];
+  readonly claimRecords: readonly ClientM7RuntimeClaimRecord[];
+  readonly localization: readonly ClientM7RuntimeLocalizationRecord[];
+  readonly titles: readonly ClientM7RuntimeTitleRecord[];
+  readonly persons: readonly ClientM7RuntimePersonRecord[];
+  readonly events: readonly ClientM7RuntimeEventRecord[];
+  readonly scenarios: readonly ClientM7RuntimeScenarioRecord[];
+  readonly knownGaps: readonly string[];
+}
+
+interface ClientM7RuntimeContentPackIndex {
+  getClaim(claimId: string): ClientM7RuntimeClaimRecord | undefined;
+  getLocalization(key: string): ClientM7RuntimeLocalizationRecord | undefined;
+}
+
+export interface ClientM7GuidanceReadModelSnapshot {
+  readonly revision: ClientReadModelRevision;
+  readonly selectedScenarioId: string;
+  readonly provenance: ClientM7GuidanceProvenanceReadModel;
+  readonly contentPack: ClientM7ContentPackSummaryReadModel;
+  readonly scenarios: readonly ClientM7ScenarioGuidanceReadModel[];
+  readonly tutorial: ClientM7TutorialReadModel;
+  readonly hints: ClientM7HintReadModel;
+  readonly encyclopedia: ClientM7EncyclopediaReadModel;
+  readonly reviewSummary: ClientM7ReviewSummaryReadModel;
+}
+
+export interface ClientM7GuidanceProvenanceReadModel {
+  readonly kind: "m7-beta-content-records-and-client-read-model";
+  readonly note: string;
+}
+
+export interface ClientM7ContentPackSummaryReadModel {
+  readonly fixtureId: string;
+  readonly manifestHash: string;
+  readonly scenarioCount: number;
+  readonly personCount: number;
+  readonly eventCount: number;
+  readonly knownGapCount: number;
+  readonly notContentLockAcceptance: true;
+  readonly m6GateCarryForward: "PASS_WITH_LIMITS";
+  readonly manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE";
+}
+
+export interface ClientM7ScenarioGuidanceReadModel {
+  readonly scenarioId: string;
+  readonly label: string;
+  readonly startYear: number;
+  readonly contentLabel: ClientM7ContentLabel;
+  readonly confidence: ClientM7ContentConfidence;
+  readonly reviewState: ClientM7ReviewState;
+  readonly hookIds: readonly string[];
+  readonly tutorialHookText: string;
+  readonly encyclopediaHookText: string;
+  readonly linkedClaimIds: readonly string[];
+}
+
+export interface ClientM7TutorialReadModel {
+  readonly steps: readonly ClientM7TutorialStepReadModel[];
+}
+
+export interface ClientM7TutorialStepReadModel {
+  readonly stepId: string;
+  readonly milestone: "M1" | "M2" | "M3" | "M4" | "M5" | "M6" | "M7";
+  readonly title: string;
+  readonly summary: string;
+  readonly commandKind: AuthoritativeGameCommandV1["kind"] | null;
+  readonly querySurface: string;
+  readonly reasonCodes: readonly string[];
+  readonly encyclopediaRefs: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly contentLabel: ClientM7ContentLabel;
+}
+
+export interface ClientM7HintReadModel {
+  readonly groups: readonly ClientM7HintGroupReadModel[];
+}
+
+export interface ClientM7HintGroupReadModel {
+  readonly groupId: string;
+  readonly title: string;
+  readonly surface: string;
+  readonly hints: readonly ClientM7ContextualHintReadModel[];
+}
+
+export interface ClientM7ContextualHintReadModel {
+  readonly hintId: string;
+  readonly text: string;
+  readonly triggerReasonCodes: readonly string[];
+  readonly commandPreviewKind: AuthoritativeGameCommandV1["kind"] | null;
+  readonly linkedEntryIds: readonly string[];
+  readonly reviewState: ClientM7ReviewState;
+  readonly contentLabel: ClientM7ContentLabel;
+}
+
+export interface ClientM7EncyclopediaReadModel {
+  readonly selectedEntryId: string;
+  readonly entries: readonly ClientM7EncyclopediaEntryReadModel[];
+}
+
+export interface ClientM7EncyclopediaEntryReadModel {
+  readonly entryId: string;
+  readonly title: string;
+  readonly systemMilestone: "M1" | "M2" | "M3" | "M4" | "M5" | "M6" | "M7";
+  readonly contentLabel: ClientM7ContentLabel;
+  readonly confidence: ClientM7ContentConfidence;
+  readonly reviewState: ClientM7ReviewState;
+  readonly summary: string;
+  readonly sourceIds: readonly string[];
+  readonly claimIds: readonly string[];
+  readonly linkedReasonCodes: readonly string[];
+  readonly contentRecordRefs: readonly string[];
+}
+
+export interface ClientM7ReviewSummaryReadModel {
+  readonly reviewStateCounts: readonly ClientM7ReviewStateCountReadModel[];
+  readonly humanGateClaimCount: number;
+  readonly knownGaps: readonly string[];
+  readonly blockedScopeNotes: readonly string[];
+}
+
+export interface ClientM7ReviewStateCountReadModel {
+  readonly reviewState: ClientM7ReviewState;
+  readonly count: number;
+}
+
 export interface ClientM6SessionSaveV1 {
   readonly schemaVersion: 1;
   readonly scenarioId: ClientM6AlphaReadModelSnapshot["scenarioId"];
@@ -1540,7 +1829,8 @@ export function createInitialClientReadModelSnapshot(): ClientReadModelSnapshot 
     m3Appointment: createEmptyM3AppointmentReadModel(revision),
     m4Campaign: createEmptyM4CampaignReadModel(revision),
     m5Playable: createEmptyM5PlayableReadModel(revision),
-    m6Alpha: createEmptyM6AlphaReadModel(revision)
+    m6Alpha: createEmptyM6AlphaReadModel(revision),
+    m7Guidance: createEmptyM7GuidanceReadModel(revision)
   };
 }
 
@@ -1600,6 +1890,13 @@ export function createM2PrototypeClientReadModelSnapshot(
     m3Appointment,
     m5Playable
   };
+  const m6Alpha = createM6AlphaReadModelFixture(snapshotWithM5);
+  const snapshotWithM6 = {
+    ...snapshotWithM5,
+    map: fixture.map,
+    districtList: fixture.districtList,
+    m6Alpha
+  };
 
   return {
     ...baseSnapshot,
@@ -1629,7 +1926,8 @@ export function createM2PrototypeClientReadModelSnapshot(
     m3Appointment,
     m4Campaign,
     m5Playable,
-    m6Alpha: createM6AlphaReadModelFixture(snapshotWithM5)
+    m6Alpha,
+    m7Guidance: createM7GuidanceReadModelFixture(snapshotWithM6)
   };
 }
 
@@ -1753,7 +2051,8 @@ export function applyClientReadModelDelta(
         m3Appointment: snapshot.m3Appointment,
         m4Campaign: snapshot.m4Campaign,
         m5Playable: snapshot.m5Playable,
-        m6Alpha: snapshot.m6Alpha
+        m6Alpha: snapshot.m6Alpha,
+        m7Guidance: snapshot.m7Guidance
       };
     case "replace":
       return delta.snapshot;
@@ -1833,7 +2132,8 @@ export function projectHelloSimulationResult(
     m3Appointment: createEmptyM3AppointmentReadModel(revision),
     m4Campaign: createEmptyM4CampaignReadModel(revision),
     m5Playable: createEmptyM5PlayableReadModel(revision),
-    m6Alpha: createEmptyM6AlphaReadModel(revision)
+    m6Alpha: createEmptyM6AlphaReadModel(revision),
+    m7Guidance: createEmptyM7GuidanceReadModel(revision)
   };
 }
 
@@ -3270,6 +3570,146 @@ export function withM6AlphaReadModel(
   };
 }
 
+export function withM7GuidanceReadModel(
+  snapshot: ClientReadModelSnapshot,
+  m7Guidance: ClientM7GuidanceReadModelSnapshot
+): ClientReadModelSnapshot {
+  return {
+    ...snapshot,
+    m7Guidance
+  };
+}
+
+export function createM7GuidanceReadModelFixture(
+  baseSnapshot: Pick<
+    ClientReadModelSnapshot,
+    "revision" | "districtList" | "m3Appointment" | "m4Campaign" | "m5Playable" | "m6Alpha"
+  >
+): ClientM7GuidanceReadModelSnapshot {
+  const pack: ClientM7RuntimeContentPack = M7_BETA_GUIDANCE_SOURCE;
+  assertM7GuidanceSourceCounts(pack);
+  const index = createClientM7RuntimeContentPackIndex(pack);
+  const localizationByKey = new Map(pack.localization.map((entry) => [entry.key, entry.english]));
+  const scenarios = pack.scenarios.map((scenario) =>
+    createM7ScenarioGuidance({ scenario, localizationByKey })
+  );
+  const selectedScenario = scenarios[0];
+  if (selectedScenario === undefined) {
+    throw new Error("M7 guidance content pack must contain at least one scenario.");
+  }
+
+  const encyclopedia = createM7EncyclopediaReadModel(baseSnapshot, pack, index);
+  const tutorial = createM7TutorialReadModel(baseSnapshot, selectedScenario, encyclopedia);
+  const hints = createM7HintReadModel(baseSnapshot, selectedScenario, encyclopedia);
+
+  return {
+    revision: baseSnapshot.revision,
+    selectedScenarioId: selectedScenario.scenarioId,
+    provenance: {
+      kind: "m7-beta-content-records-and-client-read-model",
+      note: "M7 Beta guidance is projected from accepted client read-model slices plus content-record-shaped M7 review records; the client does not own simulation rules or formal content-lock acceptance."
+    },
+    contentPack: {
+      fixtureId: pack.fixtureId,
+      manifestHash: pack.fixtureId,
+      scenarioCount: pack.scenarios.length,
+      personCount: pack.persons.length,
+      eventCount: pack.events.length,
+      knownGapCount: pack.knownGaps.length,
+      notContentLockAcceptance: pack.notContentLockAcceptance,
+      m6GateCarryForward: pack.m6GateCarryForward,
+      manualNodeBattleDecision: pack.manualNodeBattleDecision
+    },
+    scenarios,
+    tutorial,
+    hints,
+    encyclopedia,
+    reviewSummary: createM7ReviewSummary(pack)
+  };
+}
+
+export function createM7GuidanceEmptyReadModelFixture(
+  baseSnapshot: Pick<ClientReadModelSnapshot, "revision">
+): ClientM7GuidanceReadModelSnapshot {
+  return createEmptyM7GuidanceReadModel(baseSnapshot.revision);
+}
+
+export function createM7GuidanceErrorReadModelFixture(
+  baseSnapshot: Pick<
+    ClientReadModelSnapshot,
+    "revision" | "districtList" | "m3Appointment" | "m4Campaign" | "m5Playable" | "m6Alpha"
+  >
+): ClientM7GuidanceReadModelSnapshot {
+  const fixture = createM7GuidanceReadModelFixture(baseSnapshot);
+  return {
+    ...fixture,
+    selectedScenarioId: "scenario.beta.1581.succession-fracture",
+    provenance: {
+      ...fixture.provenance,
+      note: `${fixture.provenance.note} Error fixture: review gates remain visible and block any formal content-lock claim.`
+    },
+    reviewSummary: {
+      ...fixture.reviewSummary,
+      blockedScopeNotes: [
+        ...fixture.reviewSummary.blockedScopeNotes,
+        "CULTURE_HUMAN_GATE_REQUIRED content is surfaced as risk context only."
+      ]
+    }
+  };
+}
+
+export function createM7GuidanceExtremeReadModelFixture(
+  baseSnapshot: Pick<
+    ClientReadModelSnapshot,
+    "revision" | "districtList" | "m3Appointment" | "m4Campaign" | "m5Playable" | "m6Alpha"
+  >
+): ClientM7GuidanceReadModelSnapshot {
+  const fixture = createM7GuidanceReadModelFixture(baseSnapshot);
+  const extraTutorialSteps: ClientM7TutorialStepReadModel[] = [];
+  const extraEntries: ClientM7EncyclopediaEntryReadModel[] = [];
+  for (let index = 0; index < 12; index += 1) {
+    const suffix = (index + 1).toString().padStart(2, "0");
+    extraTutorialSteps.push({
+      stepId: `m7.tutorial.extreme.${suffix}`,
+      milestone: index % 2 === 0 ? "M4" : "M6",
+      title: `Extreme review pass ${suffix}`,
+      summary:
+        "Stress guidance repeats accepted command previews, reason chips, and review-state badges without creating new rules.",
+      commandKind: index % 2 === 0 ? "sim.start-campaign-march" : "sim.evaluate-m6-alpha-outcome",
+      querySurface: "client.m7.guidance.extreme",
+      reasonCodes: ["m7.guidance.extreme", `m7.guidance.extreme.${suffix}`],
+      encyclopediaRefs: ["encyclopedia.m7.review-labels"],
+      reviewState: "SCHEMA_VALIDATED",
+      contentLabel: "COMPOSITE"
+    });
+    extraEntries.push({
+      entryId: `encyclopedia.m7.extreme.${suffix}`,
+      title: `Extreme encyclopedia review ${suffix}`,
+      systemMilestone: index % 2 === 0 ? "M4" : "M7",
+      contentLabel: "COMPOSITE",
+      confidence: "LOW",
+      reviewState: "SCHEMA_VALIDATED",
+      summary:
+        "Stress entry for narrow and high-DPI layout checks; evidence stays in the read-model surface.",
+      sourceIds: ["source.review.m7.baseline"],
+      claimIds: ["HIST-M7-FILL-001-SCOPE"],
+      linkedReasonCodes: ["m7.guidance.extreme"],
+      contentRecordRefs: ["content.m7.beta.hook.encyclopedia.review_labels"]
+    });
+  }
+
+  return {
+    ...fixture,
+    tutorial: {
+      steps: [...fixture.tutorial.steps, ...extraTutorialSteps]
+    },
+    encyclopedia: {
+      ...fixture.encyclopedia,
+      entries: [...fixture.encyclopedia.entries, ...extraEntries]
+    }
+  };
+}
+
 export function createM6SessionSave(input: {
   readonly snapshot: ClientM6AlphaReadModelSnapshot;
   readonly phase: ClientM6AlphaPhase;
@@ -3515,6 +3955,535 @@ function createEmptyM6AlphaReadModel(
     },
     reasonSummaries: []
   };
+}
+
+function createEmptyM7GuidanceReadModel(
+  revision: ClientReadModelRevision
+): ClientM7GuidanceReadModelSnapshot {
+  return {
+    revision,
+    selectedScenarioId: "scenario.beta.none",
+    provenance: {
+      kind: "m7-beta-content-records-and-client-read-model",
+      note: "No M7 Beta guidance read-model slice has been projected yet."
+    },
+    contentPack: {
+      fixtureId: "m7.beta.guidance.empty",
+      manifestHash: "00000000",
+      scenarioCount: 0,
+      personCount: 0,
+      eventCount: 0,
+      knownGapCount: 0,
+      notContentLockAcceptance: true,
+      m6GateCarryForward: "PASS_WITH_LIMITS",
+      manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE"
+    },
+    scenarios: [],
+    tutorial: {
+      steps: []
+    },
+    hints: {
+      groups: []
+    },
+    encyclopedia: {
+      selectedEntryId: "encyclopedia.m7.none",
+      entries: []
+    },
+    reviewSummary: {
+      reviewStateCounts: [],
+      humanGateClaimCount: 0,
+      knownGaps: [],
+      blockedScopeNotes: [
+        "Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+        "Formal content lock acceptance is not part of this read-model."
+      ]
+    }
+  };
+}
+
+function createM7ScenarioGuidance(input: {
+  readonly scenario: ClientM7RuntimeScenarioRecord;
+  readonly localizationByKey: ReadonlyMap<string, string>;
+}): ClientM7ScenarioGuidanceReadModel {
+  const tutorialHook = input.scenario.hooks.find((hook) => hook.hookKind === "tutorial");
+  const encyclopediaHook = input.scenario.hooks.find((hook) => hook.hookKind === "encyclopedia");
+  return {
+    scenarioId: input.scenario.scenarioId,
+    label: readM7LocalizedText(input.localizationByKey, input.scenario.displayNameKey),
+    startYear: input.scenario.startYear,
+    contentLabel: input.scenario.label,
+    confidence: input.scenario.confidence,
+    reviewState: input.scenario.reviewState,
+    hookIds: input.scenario.hooks.map((hook) => hook.hookId),
+    tutorialHookText:
+      tutorialHook === undefined
+        ? "No tutorial hook is available for this scenario."
+        : readM7LocalizedText(input.localizationByKey, tutorialHook.localizationKey),
+    encyclopediaHookText:
+      encyclopediaHook === undefined
+        ? "No encyclopedia hook is available for this scenario."
+        : readM7LocalizedText(input.localizationByKey, encyclopediaHook.localizationKey),
+    linkedClaimIds: input.scenario.claimIds
+  };
+}
+
+function createM7TutorialReadModel(
+  baseSnapshot: Pick<
+    ClientReadModelSnapshot,
+    "districtList" | "m3Appointment" | "m4Campaign" | "m5Playable" | "m6Alpha"
+  >,
+  selectedScenario: ClientM7ScenarioGuidanceReadModel,
+  encyclopedia: ClientM7EncyclopediaReadModel
+): ClientM7TutorialReadModel {
+  const firstM5Step = baseSnapshot.m5Playable.steps[0] ?? null;
+  const firstM6Step = baseSnapshot.m6Alpha.steps[0] ?? null;
+  const firstM4Plan = baseSnapshot.m4Campaign.plans[0] ?? null;
+  const firstM3Reason = baseSnapshot.m3Appointment.reasonSummaries[0]?.reasonCode;
+  const routeReason = baseSnapshot.m4Campaign.route.reasonCodes[0] ?? "route.forecast.none";
+  const m7EntryIds = encyclopedia.entries.map((entry) => entry.entryId);
+
+  return {
+    steps: [
+      {
+        stepId: "m7.tutorial.m1.command-query-save",
+        milestone: "M1",
+        title: "Command, query, and checkpoint authority",
+        summary: `Read the current state hash ${baseSnapshot.m6Alpha.replay.currentHash}; tutorial progress is client-only and commands still go through DTO previews.`,
+        commandKind: "sim.verify-state-hash",
+        querySurface: "simulation.stateHash",
+        reasonCodes: ["m1.determinism.state-hash", "client.session.checkpoint-only"],
+        encyclopediaRefs: ["encyclopedia.m7.m1-authority"],
+        reviewState: "SCHEMA_VALIDATED",
+        contentLabel: "FICTIONAL"
+      },
+      {
+        stepId: "m7.tutorial.m2.map-economy-routes",
+        milestone: "M2",
+        title: "Map, economy, and route pressure",
+        summary: `Inspect ${baseSnapshot.districtList.rows.length} district rows and route forecasts before reading campaign hints.`,
+        commandKind: null,
+        querySurface: "districtList.rows + map.routes",
+        reasonCodes: [routeReason, "m2.routes.read-model-visible"],
+        encyclopediaRefs: ["encyclopedia.m7.m2-map-economy-routes"],
+        reviewState: "SCHEMA_VALIDATED",
+        contentLabel: "FICTIONAL"
+      },
+      {
+        stepId: "m7.tutorial.m3-offices-obligations",
+        milestone: "M3",
+        title: "Offices, obligations, and succession",
+        summary: `Use appointment previews and visible rejection reasons; first visible reason is ${firstM3Reason ?? "none"}.`,
+        commandKind: "sim.appoint-office",
+        querySurface: "m3Appointment.reasonSummaries",
+        reasonCodes: [firstM3Reason ?? "m3.appointment.no-reason", "succession.designation"],
+        encyclopediaRefs: ["encyclopedia.m7.m3-governance"],
+        reviewState: "SCHEMA_VALIDATED",
+        contentLabel: "FICTIONAL"
+      },
+      {
+        stepId: "m7.tutorial.m4-campaign-postwar",
+        milestone: "M4",
+        title: "Campaign logistics, siege, and postwar handoff",
+        summary: `Preview ${firstM4Plan?.targetLabel ?? "campaign target"} with AI and withdrawal reasons before confirming campaign commands.`,
+        commandKind: "sim.create-campaign-objective",
+        querySurface: "m4Campaign.plans + m4Campaign.aiReason",
+        reasonCodes: [
+          baseSnapshot.m4Campaign.aiReason.primaryReasonCode,
+          "postwar.candidate.ready"
+        ],
+        encyclopediaRefs: ["encyclopedia.m7.m4-campaign-loop"],
+        reviewState: "SCHEMA_VALIDATED",
+        contentLabel: "FICTIONAL"
+      },
+      {
+        stepId: "m7.tutorial.m5-playable-loop",
+        milestone: "M5",
+        title: "Playable slice flow",
+        summary: `Run the accepted M5 sequence through preview and confirm; the first command is ${firstM5Step?.preview.commandKind ?? "unavailable"}.`,
+        commandKind: firstM5Step?.command.kind ?? null,
+        querySurface: "m5Playable.steps",
+        reasonCodes: firstM5Step?.reasonCodes ?? ["m5.slice.no-step"],
+        encyclopediaRefs: ["encyclopedia.m7.m5-playable-loop"],
+        reviewState: "SCHEMA_VALIDATED",
+        contentLabel: "COMPOSITE"
+      },
+      {
+        stepId: "m7.tutorial.m6-alpha-victory",
+        milestone: "M6",
+        title: "Alpha recognized-order surfaces",
+        summary: `Follow diplomacy, legitimacy, succession, policy, adviser, and terminal panels; first Alpha command is ${firstM6Step?.preview.commandKind ?? "unavailable"}.`,
+        commandKind: firstM6Step?.command.kind ?? null,
+        querySurface: "m6Alpha.steps + m6Alpha.reasonSummaries",
+        reasonCodes: [
+          baseSnapshot.m6Alpha.adviser.primaryReasonCode,
+          ...baseSnapshot.m6Alpha.terminal.reasonCodes.slice(0, 2)
+        ],
+        encyclopediaRefs: ["encyclopedia.m7.m6-alpha-surfaces"],
+        reviewState: "SCHEMA_VALIDATED",
+        contentLabel: "COMPOSITE"
+      },
+      {
+        stepId: "m7.tutorial.m7-content-review",
+        milestone: "M7",
+        title: "Beta content review labels",
+        summary: `${selectedScenario.tutorialHookText} Selected scenario ${selectedScenario.label} carries ${selectedScenario.reviewState}.`,
+        commandKind: null,
+        querySurface: "m7Guidance.scenarios + contentPack.reviewState",
+        reasonCodes: ["m7.guidance.review-state-visible", "m7.content-lock.not-accepted"],
+        encyclopediaRefs: m7EntryIds.slice(0, 3),
+        reviewState: selectedScenario.reviewState,
+        contentLabel: selectedScenario.contentLabel
+      }
+    ]
+  };
+}
+
+function createM7HintReadModel(
+  baseSnapshot: Pick<
+    ClientReadModelSnapshot,
+    "m3Appointment" | "m4Campaign" | "m5Playable" | "m6Alpha"
+  >,
+  selectedScenario: ClientM7ScenarioGuidanceReadModel,
+  encyclopedia: ClientM7EncyclopediaReadModel
+): ClientM7HintReadModel {
+  const firstRejected = baseSnapshot.m3Appointment.reasonSummaries.find((summary) =>
+    summary.sourceKinds.includes("bulk")
+  );
+  const firstM5Step = baseSnapshot.m5Playable.steps[0] ?? null;
+  const firstM6PolicyEntry = baseSnapshot.m6Alpha.encyclopedia.entries.find((entry) =>
+    entry.entryId.includes("policy_event")
+  );
+  return {
+    groups: [
+      {
+        groupId: "m7.hints.map-and-economy",
+        title: "Map and economy context",
+        surface: "M2 district operations",
+        hints: [
+          {
+            hintId: "m7.hint.route-risk",
+            text: "Route hints mirror forecast reason chips and never recalculate seasonal capacity in the UI.",
+            triggerReasonCodes: baseSnapshot.m4Campaign.route.reasonCodes,
+            commandPreviewKind: null,
+            linkedEntryIds: ["encyclopedia.m7.m2-map-economy-routes"],
+            reviewState: "SCHEMA_VALIDATED",
+            contentLabel: "FICTIONAL"
+          }
+        ]
+      },
+      {
+        groupId: "m7.hints.commands",
+        title: "Command preview context",
+        surface: "M3-M6 command panels",
+        hints: [
+          {
+            hintId: "m7.hint.rejection-reasons",
+            text: "Rejected candidates and blocked commands are explained by reason codes from preview/query data.",
+            triggerReasonCodes: [firstRejected?.reasonCode ?? "office-eligibility-failed"],
+            commandPreviewKind: "sim.appoint-office",
+            linkedEntryIds: ["encyclopedia.m7.m3-governance"],
+            reviewState: "SCHEMA_VALIDATED",
+            contentLabel: "FICTIONAL"
+          },
+          {
+            hintId: "m7.hint.playable-preview",
+            text: "Playable-flow hints follow the current command preview and client checkpoint status.",
+            triggerReasonCodes: firstM5Step?.reasonCodes ?? ["m5.slice.no-step"],
+            commandPreviewKind: firstM5Step?.command.kind ?? null,
+            linkedEntryIds: ["encyclopedia.m7.m5-playable-loop"],
+            reviewState: "SCHEMA_VALIDATED",
+            contentLabel: "COMPOSITE"
+          },
+          {
+            hintId: "m7.hint.alpha-policy",
+            text: `Policy and event hints link to encyclopedia refs such as ${firstM6PolicyEntry?.entryId ?? "none"}.`,
+            triggerReasonCodes: firstM6PolicyEntry?.linkedReasonCodes ?? ["m6.policy.no-entry"],
+            commandPreviewKind: "sim.choose-policy-event-option",
+            linkedEntryIds: ["encyclopedia.m7.m6-alpha-surfaces"],
+            reviewState: "SCHEMA_VALIDATED",
+            contentLabel: "COMPOSITE"
+          }
+        ]
+      },
+      {
+        groupId: "m7.hints.content-review",
+        title: "Content review context",
+        surface: "M7 tutorial and encyclopedia",
+        hints: [
+          {
+            hintId: "m7.hint.review-gaps",
+            text: selectedScenario.tutorialHookText,
+            triggerReasonCodes: ["m7.guidance.review-state-visible"],
+            commandPreviewKind: null,
+            linkedEntryIds: encyclopedia.entries
+              .filter((entry) => entry.systemMilestone === "M7")
+              .map((entry) => entry.entryId),
+            reviewState: selectedScenario.reviewState,
+            contentLabel: selectedScenario.contentLabel
+          }
+        ]
+      }
+    ]
+  };
+}
+
+function createM7EncyclopediaReadModel(
+  baseSnapshot: Pick<ClientReadModelSnapshot, "m4Campaign" | "m5Playable" | "m6Alpha">,
+  pack: ClientM7RuntimeContentPack,
+  index: ClientM7RuntimeContentPackIndex
+): ClientM7EncyclopediaReadModel {
+  const firstScenario = pack.scenarios[0];
+  if (firstScenario === undefined) {
+    throw new Error("M7 guidance content pack must contain a scenario entry.");
+  }
+  const reviewClaim = index.getClaim("HIST-M7-FILL-001-SCOPE");
+  const scenarioClaim = index.getClaim("HIST-M7-FILL-002-SCENARIO-ANCHORS");
+  const noBuffClaim = index.getClaim("HIST-M7-FILL-006-NO-CULTURE-BUFF");
+  const highRiskEvent = pack.events.find((event) => event.violenceCostRecord !== null);
+  const highRiskEventTitle =
+    highRiskEvent === undefined
+      ? "M7 culture risk and violence costs"
+      : readM7IndexedEnglish(index, highRiskEvent.localizationKey);
+  const languageReviewPerson = pack.persons.find(
+    (person) => person.reviewState === "LANGUAGE_REVIEW_REQUIRED"
+  );
+  const languageReviewPersonName =
+    languageReviewPerson === undefined
+      ? "no accepted person localization"
+      : readM7IndexedEnglish(index, languageReviewPerson.displayNameKey);
+  const languageReviewNote =
+    languageReviewPerson === undefined
+      ? "Accepted person language review records are unavailable."
+      : `Accepted person display ${languageReviewPersonName} remains ${languageReviewPerson.reviewState}.`;
+
+  return {
+    selectedEntryId: "encyclopedia.m7.review-labels",
+    entries: [
+      {
+        entryId: "encyclopedia.m7.m1-authority",
+        title: "M1 command/query/save authority",
+        systemMilestone: "M1",
+        contentLabel: "FICTIONAL",
+        confidence: "HIGH",
+        reviewState: "SCHEMA_VALIDATED",
+        summary:
+          "Tutorial state is a client session aid; authoritative world changes remain command/query/save evidence.",
+        sourceIds: ["source.project.docs.10"],
+        claimIds: ["HIST-M7-FILL-001-SCOPE"],
+        linkedReasonCodes: ["m1.determinism.state-hash", "client.session.checkpoint-only"],
+        contentRecordRefs: ["simulation.stateHash"]
+      },
+      {
+        entryId: "encyclopedia.m7.m2-map-economy-routes",
+        title: "M2 map economy route read models",
+        systemMilestone: "M2",
+        contentLabel: "FICTIONAL",
+        confidence: "HIGH",
+        reviewState: "SCHEMA_VALIDATED",
+        summary:
+          "District operations, route previews, and map labels are projections for scanning and selection.",
+        sourceIds: ["source.project.docs.10"],
+        claimIds: ["HIST-M7-FILL-001-SCOPE"],
+        linkedReasonCodes: baseSnapshot.m4Campaign.route.reasonCodes,
+        contentRecordRefs: ["districtList.rows", "map.routes"]
+      },
+      {
+        entryId: "encyclopedia.m7.m3-governance",
+        title: "M3 offices obligations succession",
+        systemMilestone: "M3",
+        contentLabel: "FICTIONAL",
+        confidence: "HIGH",
+        reviewState: "SCHEMA_VALIDATED",
+        summary:
+          "Appointments, obligation status, succession pressure, and postwar method names surface accepted read-model reasons.",
+        sourceIds: ["source.project.docs.10"],
+        claimIds: ["HIST-M7-FILL-001-SCOPE"],
+        linkedReasonCodes: ["succession.designation", "postwar.candidate.ready"],
+        contentRecordRefs: ["m3Appointment.reasonSummaries"]
+      },
+      {
+        entryId: "encyclopedia.m7.m4-campaign-loop",
+        title: "M4 campaign logistics and war outcome loop",
+        systemMilestone: "M4",
+        contentLabel: "FICTIONAL",
+        confidence: "HIGH",
+        reviewState: "SCHEMA_VALIDATED",
+        summary:
+          "Campaign, march, siege, withdrawal, AI, and postwar handoff panels expose command previews and reason-coded reports.",
+        sourceIds: ["source.project.docs.10"],
+        claimIds: ["HIST-M7-FILL-001-SCOPE"],
+        linkedReasonCodes: [
+          baseSnapshot.m4Campaign.aiReason.primaryReasonCode,
+          "withdrawal.reason.supply-collapse"
+        ],
+        contentRecordRefs: ["m4Campaign.aiReason", "m4Campaign.warReports"]
+      },
+      {
+        entryId: "encyclopedia.m7.m5-playable-loop",
+        title: "M5 playable slice checkpoints",
+        systemMilestone: "M5",
+        contentLabel: "COMPOSITE",
+        confidence: "MEDIUM",
+        reviewState: "SCHEMA_VALIDATED",
+        summary:
+          "The playable flow provides preview, confirm, save, load, success, and failure surfaces without manual node battle.",
+        sourceIds: ["source.project.docs.10"],
+        claimIds: ["HIST-M7-FILL-001-SCOPE"],
+        linkedReasonCodes: ["m5.slice.command-preview", "m5.save.client-session-written"],
+        contentRecordRefs: ["m5Playable.steps", "m5Playable.failureStep"]
+      },
+      {
+        entryId: "encyclopedia.m7.m6-alpha-surfaces",
+        title: "M6 Alpha recognized-order surfaces",
+        systemMilestone: "M6",
+        contentLabel: "COMPOSITE",
+        confidence: "MEDIUM",
+        reviewState: "SCHEMA_VALIDATED",
+        summary:
+          "Diplomacy, legitimacy, succession, policy events, adviser reasons, map candidates, and terminal outcome remain visible.",
+        sourceIds: ["source.project.docs.10"],
+        claimIds: ["HIST-M7-FILL-001-SCOPE"],
+        linkedReasonCodes: [
+          baseSnapshot.m6Alpha.adviser.primaryReasonCode,
+          ...baseSnapshot.m6Alpha.terminal.reasonCodes.slice(0, 2)
+        ],
+        contentRecordRefs: ["m6Alpha.reasonSummaries", "m6Alpha.encyclopedia.entries"]
+      },
+      {
+        entryId: "encyclopedia.m7.review-labels",
+        title: "M7 Beta review labels",
+        systemMilestone: "M7",
+        contentLabel: reviewClaim?.label ?? firstScenario.label,
+        confidence: reviewClaim?.confidence ?? firstScenario.confidence,
+        reviewState: "SCHEMA_VALIDATED",
+        summary:
+          reviewClaim?.gameAbstraction ??
+          "Beta guidance shows review labels and does not grant formal content-lock acceptance.",
+        sourceIds: firstScenario.sourceIds,
+        claimIds: firstScenario.claimIds,
+        linkedReasonCodes: ["m7.guidance.review-state-visible", "m7.content-lock.not-accepted"],
+        contentRecordRefs: ["content.m7.beta.hook.encyclopedia.review_labels"]
+      },
+      {
+        entryId: "encyclopedia.m7.scenario-anchors",
+        title: "M7 scenario anchors",
+        systemMilestone: "M7",
+        contentLabel: scenarioClaim?.label ?? "COMPOSITE",
+        confidence: scenarioClaim?.confidence ?? "LOW",
+        reviewState: firstScenario.reviewState,
+        summary: `${scenarioClaim?.gameAbstraction ?? "Composite scenario anchors remain reviewable and may be changed by later research."} ${languageReviewNote}`,
+        sourceIds: firstScenario.sourceIds,
+        claimIds: firstScenario.claimIds,
+        linkedReasonCodes: ["m7.scenario.anchor.review-required"],
+        contentRecordRefs: pack.scenarios.map((scenario) => scenario.scenarioId)
+      },
+      {
+        entryId: "encyclopedia.m7.culture-risk-costs",
+        title: highRiskEventTitle,
+        systemMilestone: "M7",
+        contentLabel: noBuffClaim?.label ?? "INFERRED",
+        confidence: noBuffClaim?.confidence ?? "MEDIUM",
+        reviewState: highRiskEvent?.reviewState ?? "SCHEMA_VALIDATED",
+        summary:
+          "High-risk event terms keep visible review states and cost records; they are not converted into bonuses.",
+        sourceIds: highRiskEvent?.sourceIds ?? ["source.review.m7.baseline"],
+        claimIds: highRiskEvent?.claimIds ?? ["HIST-M7-FILL-006-NO-CULTURE-BUFF"],
+        linkedReasonCodes: ["m7.culture-risk.cost-visible", "m7.no-culture-buff"],
+        contentRecordRefs:
+          highRiskEvent === undefined
+            ? ["content.m7.beta.event.none"]
+            : [highRiskEvent.eventId, highRiskEvent.triggerKey]
+      }
+    ]
+  };
+}
+
+function createM7ReviewSummary(pack: ClientM7RuntimeContentPack): ClientM7ReviewSummaryReadModel {
+  const counts = new Map<ClientM7ReviewState, number>();
+  const add = (reviewState: ClientM7ReviewState): void => {
+    counts.set(reviewState, (counts.get(reviewState) ?? 0) + 1);
+  };
+  for (const localization of pack.localization) {
+    add(localization.reviewState);
+  }
+  for (const title of pack.titles) {
+    add(title.reviewState);
+  }
+  for (const person of pack.persons) {
+    add(person.reviewState);
+  }
+  for (const event of pack.events) {
+    add(event.reviewState);
+  }
+  for (const scenario of pack.scenarios) {
+    add(scenario.reviewState);
+  }
+
+  return {
+    reviewStateCounts: [...counts.entries()]
+      .map(([reviewState, count]) => ({ reviewState, count }))
+      .sort((left, right) => left.reviewState.localeCompare(right.reviewState)),
+    humanGateClaimCount: pack.claimRecords.filter((claim) => claim.humanGate).length,
+    knownGaps: pack.knownGaps,
+    blockedScopeNotes: [
+      "M6_GATE remains PASS_WITH_LIMITS.",
+      "Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+      "Formal content lock acceptance remains outside this UI task."
+    ]
+  };
+}
+
+function readM7LocalizedText(localizationByKey: ReadonlyMap<string, string>, key: string): string {
+  const text = localizationByKey.get(key);
+  if (text === undefined) {
+    throw new Error(`Missing M7 localization key ${key}.`);
+  }
+  return text;
+}
+
+function readM7IndexedEnglish(index: ClientM7RuntimeContentPackIndex, key: string): string {
+  const localization = index.getLocalization(key);
+  if (localization === undefined) {
+    throw new Error(`Missing M7 localization key ${key}.`);
+  }
+  return localization.english;
+}
+
+function createClientM7RuntimeContentPackIndex(
+  pack: ClientM7RuntimeContentPack
+): ClientM7RuntimeContentPackIndex {
+  const claimById = new Map(pack.claimRecords.map((claim) => [claim.claimId, claim]));
+  const localizationByKey = new Map(
+    pack.localization.map((localization) => [localization.key, localization])
+  );
+  return {
+    getClaim(claimId: string): ClientM7RuntimeClaimRecord | undefined {
+      return claimById.get(claimId);
+    },
+    getLocalization(key: string): ClientM7RuntimeLocalizationRecord | undefined {
+      return localizationByKey.get(key);
+    }
+  };
+}
+
+function assertM7GuidanceSourceCounts(pack: ClientM7RuntimeContentPack): void {
+  const expectedCounts = [
+    { label: "scenarioCount", actual: pack.scenarios.length, expected: 3 },
+    { label: "personCount", actual: pack.persons.length, expected: 6 },
+    { label: "titleCount", actual: pack.titles.length, expected: 3 },
+    { label: "eventCount", actual: pack.events.length, expected: 5 },
+    { label: "localizationCount", actual: pack.localization.length, expected: 36 },
+    { label: "claimCount", actual: pack.claimRecords.length, expected: 6 },
+    { label: "knownGapCount", actual: pack.knownGaps.length, expected: 4 }
+  ];
+
+  for (const count of expectedCounts) {
+    if (count.actual !== count.expected) {
+      throw new Error(
+        `M7 accepted guidance source ${count.label} mismatch: expected ${count.expected}, received ${count.actual}.`
+      );
+    }
+  }
 }
 
 function createM6ScenarioFixtures(startHash: string): readonly ClientM6ScenarioReadModel[] {

@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-TUTORIAL-WRITER-TO-QA-REVIEW",
+  "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "from_role": "client_engineer",
+  "from_thread_id": "019f0cff-f5d7-7942-9d9b-15b9449590d7",
+  "from_thread_nickname": "Window",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
+  "to_thread_nickname": "Gate",
+  "coordinated_by": "lead_orchestrator",
+  "coordinator_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "route_type": "REVIEW",
+  "route_status": "SENT",
+  "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia",
+  "base_main_commit": "71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7",
+  "review_commit": "2abd654d1d9c924fdc12798778f77af7e7941a0e",
+  "review_head_commit": "e5b61a95eb54e76a88c9051c9123294268ec92fe",
+  "source_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
+  "expected_review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-REVIEW__qa_reviewer.json",
+  "read_only": true,
+  "allowed_paths": [
+    "apps/web/**",
+    "packages/client-core/**",
+    "packages/ui/**",
+    "packages/content-schema/**",
+    "packages/content-runtime/**",
+    "content-source/**",
+    "tests/**",
+    ".storybook/**",
+    "project/tasks/active/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/**",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "forbidden_paths": [
+    "apps/desktop/**",
+    "apps/sim-runner/**",
+    "apps/content-tools/**",
+    "packages/sim-core/**",
+    "packages/sim-ai/**",
+    "packages/protocol/**",
+    "packages/save-format/**",
+    "packages/map-renderer/**",
+    "packages/platform/**",
+    "tools/**",
+    ".github/**",
+    "docs/decisions/**",
+    "docs/GATE-M0.md",
+    "docs/GATE-M1.md",
+    "docs/GATE-M2.md",
+    "docs/GATE-M3.md",
+    "docs/GATE-M4.md",
+    "docs/GATE-M5.md",
+    "docs/GATE-M6.md",
+    "docs/11-roadmap.md",
+    "docs/13-risk-register-and-test-strategy.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "MANIFEST.md",
+    "SHA256SUMS.txt",
+    "VALIDATION_REPORT.md",
+    "PROJECT_STATUS.md"
+  ],
+  "lead_verified_checks": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "4 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "10 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "19 tests passed"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "13 Chromium tests passed"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0
+    }
+  ],
+  "requested_review": [
+    "Review actual origin/main...HEAD diff for allowed/forbidden scope and absence of pnpm-lock/package dependency drift.",
+    "Verify tutorial, contextual hints, and encyclopedia surfaces are driven by read models/reason codes/content-record-shaped data and do not duplicate authoritative sim rules or WorldState.",
+    "Verify Storybook and Playwright coverage across M7 normal/empty/error/extreme/narrow states and supported viewports is meaningful.",
+    "Verify historical/cultural wording preserves accepted labels/review status and does not create formal content lock acceptance.",
+    "Verify no telemetry, account/cloud/server/multiplayer, arbitrary-code mods, release/branding, save migration, or manual node battle content is introduced.",
+    "Return ACCEPT, REQUEST_CHANGES, or BLOCKED and write the expected QA handoff."
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "known_untracked": [
+    "docs/M7_UI_Localization_Art_Handoff_Prompts.md"
+  ],
+  "created_at": "2026-06-28T07:23:25.030Z",
+  "updated_at": "2026-06-28T07:24:12.378Z",
+  "qa_submission_id": "019f0d1c-f0ed-7470-8d3e-f44858b782b4",
+  "sent_at": "2026-06-28T07:24:12.378Z"
+}

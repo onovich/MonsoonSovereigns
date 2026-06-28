@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW",
+  "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes the QA P1 drift by removing the UI-local M7_BETA_GUIDANCE_RUNTIME_PACK and projecting the M7 guidance read model from a deterministic generated client fixture copied from the accepted content-source/m7-beta-scenarios/beta-scenario-person-event-set.json. The fixture is mechanically compared to the accepted source in client-core tests, and exact contracted counts plus QA-pointed claim, localization, and review-state values are asserted. No dependency or pnpm-lock.yaml diff was introduced.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/client-core/src/m7-beta-guidance-content.ts",
+    "packages/ui/src/index.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "963bf5580a64304f8ab852dfacbc6fa638350af5",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified: packages/client-core/src/index.ts, packages/ui/src/index.tsx, tests/client-core-m2-district-list.test.ts, tests/e2e/web-shell.spec.ts, tests/ui-m2-district-list.test.tsx. Added: packages/client-core/src/m7-beta-guidance-content.ts and this R2 handoff. Known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains untouched. No pnpm-lock.yaml or package.json diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA handoff JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 20 tests. Added drift guard comparing generated M7 fixture to accepted content-source JSON and exact assertions for 3 scenarios, 6 persons, 3 titles, 5 events, 36 localization records, 6 claims, 4 known gaps, HIST-M7-FILL-001-SCOPE INFERRED/HIGH, Forced movement and population-loss review, CULTURE_HUMAN_GATE_REQUIRED, Composite court broker 1531, and LANGUAGE_REVIEW_REQUIRED."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "UI SSR Vitest passed: 1 file, 10 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "apps/web Vitest passed: 1 file, 4 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web production build succeeded; existing >500 kB chunk warning remains."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build succeeded and cleaned .tmp/storybook-static; existing chunk-size and plugin timing warnings remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium passed: 13 tests, including M7 encyclopedia tab assertions for INFERRED, Forced movement and population-loss review, Composite court broker 1531, CULTURE_HUMAN_GATE_REQUIRED, LANGUAGE_REVIEW_REQUIRED, and viewport overflow coverage."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, workspace typecheck, and architecture boundaries passed."
+    }
+  ],
+  "decisions": [
+    "Removed the compact UI-local M7 guidance pack instead of keeping a second hand-authored source of historical/cultural labels.",
+    "Added packages/client-core/src/m7-beta-guidance-content.ts as a deterministic generated client fixture from the accepted content-source JSON, avoiding a new workspace dependency and avoiding pnpm-lock.yaml changes.",
+    "Kept the React UI on read-model data only; encyclopedia entries now render accepted source localization/review values such as Forced movement and population-loss review and LANGUAGE_REVIEW_REQUIRED.",
+    "Added tests that fail on source/fixture drift, contracted count drift, claim label/confidence drift, localization string drift, reviewState drift, and known-gap count drift.",
+    "Preserved the earlier scope correction: no @monsoon/content-runtime dependency, no pnpm-lock.yaml diff, and no expansion into formal content lock acceptance, manual node battle, telemetry, accounts, cloud, server, multiplayer, release, branding, or save migration."
+  ],
+  "risks": [
+    "The generated client fixture must be regenerated if the accepted content-source JSON is intentionally changed; the new test will fail until it is mechanically synced.",
+    "Large Vite/Storybook chunk warnings remain existing build warnings, not introduced by a new dependency.",
+    "Known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains in the worktree and was not touched."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the R2 drift fix, generated fixture guard, updated UI read-model rendering, and validation evidence.",
+  "created_at": "2026-06-28T15:49:00+08:00",
+  "review_head_commit": "963bf5580a64304f8ab852dfacbc6fa638350af5",
+  "updated_at": "2026-06-28T07:53:26.268Z"
+}

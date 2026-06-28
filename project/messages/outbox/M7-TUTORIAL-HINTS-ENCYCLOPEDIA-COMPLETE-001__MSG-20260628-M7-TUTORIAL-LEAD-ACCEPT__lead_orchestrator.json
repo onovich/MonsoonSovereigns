@@ -1,0 +1,98 @@
+{
+  "message_id": "MSG-20260628-M7-TUTORIAL-LEAD-ACCEPT",
+  "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 after independent QA R2 ACCEPT. The task adds Beta tutorial, contextual hints, and encyclopedia client/read-model surfaces; QA R1 requested repair for accepted M7 content-label drift; writer R2 mechanically aligned the guidance fixture with accepted content-source/m7-beta-scenarios/beta-scenario-person-event-set.json and added drift-guard tests; QA R2 accepted. This acceptance does not close the task until the branch enters origin/main.",
+  "branch_or_worktree": "feat/m7-tutorial-hints-encyclopedia / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "318e68225051e0bf4ca786405bcd62303cb8aeac",
+  "accepted_head_commit": "318e68225051e0bf4ca786405bcd62303cb8aeac",
+  "base_main_commit": "71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/client-core/src/m7-beta-guidance-content.ts",
+    "packages/ui/src/index.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R2 handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-QA-R2-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA R2 ACCEPT handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "20 tests passed including accepted-content drift guard."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "10 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "4 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "passed with existing chunk-size warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "passed with existing chunk/plugin warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "13 Chromium tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT after independent QA R2 ACCEPT; task remains not CLOSED until PR integration into origin/main.",
+    "M7 guidance now mechanically aligns with accepted content-source labels/review states/counts and tests fail on drift.",
+    "No package dependency or pnpm-lock.yaml change was introduced.",
+    "Formal content lock remains a future Human Gate and is not created by this task.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+  ],
+  "risks": [
+    "Generated client fixture must be mechanically synced if accepted content-source changes; the new drift guard blocks unsynced changes.",
+    "Existing Vite/Storybook chunk warnings remain non-blocking.",
+    "Known unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains outside this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then close M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 and continue to the next dependency-ready M7 task.",
+  "created_at": "2026-06-28T08:03:53.885Z"
+}
