@@ -11,7 +11,7 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-28T22:39:53.531+08:00",
+        "updated_at": "2026-06-28T22:52:52.265+08:00",
         "task_id": "M7-I18N-FOUNDATION-001",
         "task_ids": [
           "M7-I18N-FOUNDATION-001"
@@ -5757,7 +5757,7 @@
       "start_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T21:27:25.1239661+08:00",
-      "updated_at": "2026-06-28T22:39:53.531+08:00"
+      "updated_at": "2026-06-28T22:52:52.265+08:00"
     },
     "M7-I18N-FOUNDATION-001:client_engineer": {
       "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
@@ -5772,13 +5772,12 @@
       "branch_or_worktree": "feat/m7-i18n-foundation",
       "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
       "review_commit": "3fcdb724f630f6cf498df26cc3f65729fe029306",
-      "closed_at": "2026-06-28T22:39:53.531+08:00",
-      "updated_at": "2026-06-28T22:39:53.531+08:00"
+      "updated_at": "2026-06-28T22:52:52.265+08:00"
     },
     "M7-I18N-FOUNDATION-001:systems_architect": {
       "thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "active_reviewer_r2",
+      "status": "closed_accepted_r2",
       "role": "systems_architect",
       "nickname": "Keystone",
       "configured_model": "gpt-5.5",
@@ -5786,15 +5785,16 @@
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-i18n-foundation",
-      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-R2-TO-SYSTEMS-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "review_status": "ACCEPT",
       "review_commit": "3fcdb724f630f6cf498df26cc3f65729fe029306",
-      "routed_at": "2026-06-28T22:39:53.531+08:00"
+      "closed_at": "2026-06-28T22:52:52.265+08:00",
+      "updated_at": "2026-06-28T22:52:52.265+08:00"
     },
     "M7-I18N-FOUNDATION-001:qa_reviewer": {
       "thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "closed_request_changes",
+      "status": "active_reviewer_r2",
       "role": "qa_reviewer",
       "nickname": "Gate the 2nd",
       "configured_model": "gpt-5.5",
@@ -5802,9 +5802,10 @@
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-i18n-foundation",
-      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
-      "review_status": "REQUEST_CHANGES",
-      "updated_at": "2026-06-28T22:39:53.531+08:00"
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-R2-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-R2-REVIEW__qa_reviewer.json",
+      "review_commit": "3fcdb724f630f6cf498df26cc3f65729fe029306",
+      "routed_at": "2026-06-28T22:52:52.265+08:00"
     }
   },
   "replaced_threads": [
@@ -5917,5 +5918,5 @@
       "replaced_at": "2026-06-28T08:46:06.641Z"
     }
   ],
-  "updated_at": "2026-06-28T22:39:53.531+08:00"
+  "updated_at": "2026-06-28T22:52:52.265+08:00"
 }
