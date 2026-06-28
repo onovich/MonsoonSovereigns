@@ -1,0 +1,136 @@
+{
+  "message_id": "MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "R3 fixes the remaining R2 P1 localization finding. The default player-mode active sort indicator no longer renders literal English up/down suffixes; packages/ui/src/index.tsx now derives both visible direction text and active sort aria labels from packages/ui/src/i18n.ts. The zh-CN/system fallback coverage now asserts the active district sort button name and visible text, and fails if English up/down returns. Prior R1/R2 i18n accessibility findings for list, map mode, sort labels, map keyboard help, selected district live status, map role description, renderer failure text, and developer workspace labeling remain fixed. Diff scope is inside allowed paths, no forbidden scope was touched, debug/raw diagnostics remain explicit debug-only, and no Electron security reviewer escalation is required.",
+  "artifacts": [
+    "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW__qa_reviewer.json",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "feat/m7-app-shell-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "dd98fb27cbf5241002302cc483234b01160c265e",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m7-app-shell-quality; local HEAD 5490201b is ahead of origin by eleven process/review commits; working tree clean before writing this QA R3 handoff."
+    },
+    {
+      "command": "git show --stat --oneline dd98fb27cbf5241002302cc483234b01160c265e",
+      "exit_code": 0,
+      "result": "dd98fb27 fix(ui): localize M7 sort direction indicator; 5 files changed, 118 insertions, 2 deletions."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-APP-SHELL-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R3-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "R3 writer handoff validates."
+    },
+    {
+      "command": "git diff --check 9bd14c6d..dd98fb27cbf5241002302cc483234b01160c265e",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --name-only 9bd14c6d..dd98fb27cbf5241002302cc483234b01160c265e with task allowed/forbidden path guard",
+      "exit_code": 0,
+      "result": "23 changed paths checked; outside_allowed=[] and forbidden_hits=[]."
+    },
+    {
+      "command": "git diff ac6464b6884404e091dc421979b8654dc2c47b26..dd98fb27cbf5241002302cc483234b01160c265e -- packages/ui/src/i18n.ts packages/ui/src/index.tsx apps/web/src/shell/web-client-shell.test.tsx tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "R3 implementation delta is limited to the active sort localization fix and focused web/E2E regression coverage: 4 files, 26 insertions, 2 deletions."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/index.tsx -Pattern '\" up\"','\" down\"','> up<','> down<'",
+      "exit_code": 0,
+      "result": "No matches in implementation."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/index.tsx,apps/web/src/shell/web-client-shell.tsx -Pattern prior hard-coded English accessibility labels",
+      "exit_code": 0,
+      "result": "No implementation matches for Virtualized district rows, Seasonal map mode, Sort by Population, map keyboard help, selected map district live text, keyboard navigable map read model, map renderer failure, or Developer milestone workspaces."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/i18n.ts,packages/ui/src/index.tsx -Pattern sortButtonActiveLabel, sortDirection.ascending, sortDirection.descending",
+      "exit_code": 0,
+      "result": "Sort direction labels and active sort aria label are defined in en-US and zh-CN catalogs and consumed from ClientI18nContext in SortButton."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web shell suite passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 file, 15 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 15 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only the monsoonDesktop bridge; renderer file navigation is restricted; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed successfully; M7-APP-SHELL-QUALITY-001 remains REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready output returned M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_R3_SORT_DIRECTION_I18N",
+      "decision": "The R2 visible active-sort direction defect is fixed. The active sort button now renders localized direction text and localized active aria labels through the accepted i18n foundation."
+    },
+    {
+      "id": "PRIOR_I18N_ACCESSIBILITY_FIXES_REMAIN_FIXED",
+      "decision": "The prior hard-coded default player-mode accessibility labels remain absent from implementation files, with zh-CN/system fallback positive coverage and English-negative coverage still present."
+    },
+    {
+      "id": "DEBUG_SEPARATION_ACCEPTED",
+      "decision": "State hash, revision, fixture labels, raw reason-code surfaces, and legacy milestone workspaces remain mounted only in explicit debug/developer overlay mode; default player mode renders only the localized hidden-diagnostics notice."
+    },
+    {
+      "id": "READ_MODEL_BOUNDARY_ACCEPTED",
+      "decision": "The shell remains a presentation/read-model coordinator. The reviewed R3 delta does not introduce authoritative WorldState ownership, hidden simulation commands, duplicated simulation formulas, or React/Pixi authoritative state."
+    },
+    {
+      "id": "NO_SECURITY_ESCALATION_R3",
+      "decision": "No security_reviewer escalation is required. R3 touched UI/i18n/test paths only, and an independent pnpm desktop:security-check rerun passed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "SECURITY_RESIDUAL_ELECTRON_BASELINE",
+      "severity": "P3",
+      "summary": "Residual Electron risk is limited to the existing desktop shell baseline; R3 introduced no new Electron IPC, preload, navigation, telemetry, server, account, multiplayer, or cloud-save surface."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may proceed with integration/closure gates for M7-APP-SHELL-QUALITY-001.",
+  "created_at": "2026-06-29T03:52:32+08:00"
+}

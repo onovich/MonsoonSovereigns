@@ -77,10 +77,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-APP-SHELL-QUALITY-001 R3 review routing checkpoint",
+    "approval_source": "M7-APP-SHELL-QUALITY-001 lead acceptance checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. R3 fix is in independent QA review.",
-    "recorded_at": "2026-06-28T19:46:19.888Z"
+    "note": "No Human Gate is active. QA R3 accepted M7 app shell quality task.",
+    "recorded_at": "2026-06-28T19:55:24.802Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -867,7 +867,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T19:47:10.168Z",
+  "last_updated_at": "2026-06-28T19:55:24.802Z",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1937,8 +1937,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "REVIEW",
-  "next_machine_action": "Await qa_reviewer R3 handoff for M7-APP-SHELL-QUALITY-001.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Open PR for M7-APP-SHELL-QUALITY-001, wait for CI, merge, sync main, then close task.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -1994,7 +1994,7 @@
     ]
   },
   "m7_app_shell_quality": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-APP-SHELL-QUALITY-001",
     "branch_or_worktree": "feat/m7-app-shell-quality",
     "base_main_commit": "9bd14c6d",
@@ -2005,8 +2005,8 @@
     "writer_thread_nickname": "Window the 2nd",
     "expected_writer_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T16:17:06.608Z",
-    "updated_at": "2026-06-28T19:47:10.168Z",
-    "next_action": "Await qa_reviewer R3 review for M7-APP-SHELL-QUALITY-001.",
+    "updated_at": "2026-06-28T19:55:24.802Z",
+    "next_action": "Open PR, wait for CI, merge, then close after main integration.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R3-REVIEW__client_engineer.json",
@@ -2036,6 +2036,12 @@
     "qa_r3_route": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-WRITER-R3-TO-QA-REVIEW.json",
     "expected_qa_r3_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW__qa_reviewer.json",
     "qa_r3_route_sent_at": "2026-06-28T19:47:10.168Z",
-    "qa_r3_submission_id": "019f0fc5-1c62-7fd0-a37a-13761f7e20df"
+    "qa_r3_submission_id": "019f0fc5-1c62-7fd0-a37a-13761f7e20df",
+    "qa_status_r3": "ACCEPT",
+    "qa_r3_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T19:55:24.802Z",
+    "accepted_implementation_commit": "dd98fb27cbf5241002302cc483234b01160c265e",
+    "accepted_branch_head": "5490201b77ac9ec0d2e3c65918e4029971eed06c"
   }
 }
