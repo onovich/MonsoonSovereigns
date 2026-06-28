@@ -8,9 +8,13 @@ import {
   createM6AlphaEmptyReadModelFixture,
   createM6AlphaErrorReadModelFixture,
   createM6AlphaExtremeReadModelFixture,
+  createM7GuidanceEmptyReadModelFixture,
+  createM7GuidanceErrorReadModelFixture,
+  createM7GuidanceExtremeReadModelFixture,
   createSyntheticDistrictPressureFixture,
   type ClientMapMode,
   withM6AlphaReadModel,
+  withM7GuidanceReadModel,
   withDistrictListReadModel
 } from "../packages/client-core/src/index";
 import { ClientShellView } from "../packages/ui/src/index";
@@ -196,6 +200,55 @@ describe("M2 district client UI", () => {
     expect(extremeMarkup).toContain("Defer settlement review");
     expect(extremeMarkup).toContain('role="list"');
     expect(extremeMarkup).toContain('role="listitem"');
+    expect(extremeMarkup).not.toContain("WorldState");
+  });
+
+  test("renders M7 tutorial hints encyclopedia surfaces from read-model content records", () => {
+    const snapshot = createM2PrototypeClientReadModelSnapshot();
+    const markup = renderToStaticMarkup(createShell(snapshot));
+    const m7Markup = markup.slice(markup.indexOf("M7 tutorial / hints / encyclopedia"));
+
+    expect(markup).toContain("M7 tutorial / hints / encyclopedia");
+    expect(markup).toContain('aria-label="M7 tutorial hints encyclopedia workspace"');
+    expect(markup).toContain('data-tutorial-step-count="7"');
+    expect(markup).toContain('data-encyclopedia-entry-count="9"');
+    expect(markup).toContain('data-not-content-lock-acceptance="true"');
+    expect(markup).toContain('data-manual-node-battle-decision="DEFER_MANUAL_NODE_BATTLE"');
+    expect(markup).toContain("M1: Command, query, and checkpoint authority");
+    expect(markup).toContain("M7: Beta content review labels");
+    expect(markup).toContain("Encyclopedia entries expose historical");
+    expect(markup).toContain("RESEARCH REQUIRED");
+    expect(markup).toContain("CULTURE_HUMAN_GATE_REQUIRED");
+    expect(markup).toContain("Formal content lock acceptance remains outside this UI task.");
+    expect(m7Markup).not.toContain("placeholder-only");
+    expect(markup).not.toContain("WorldState");
+    expect(markup).not.toContain("telemetry");
+  });
+
+  test("renders M7 empty, error, and extreme Storybook states", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const emptyMarkup = renderToStaticMarkup(
+      createShell(
+        withM7GuidanceReadModel(baseSnapshot, createM7GuidanceEmptyReadModelFixture(baseSnapshot))
+      )
+    );
+    const errorMarkup = renderToStaticMarkup(
+      createShell(
+        withM7GuidanceReadModel(baseSnapshot, createM7GuidanceErrorReadModelFixture(baseSnapshot))
+      )
+    );
+    const extremeMarkup = renderToStaticMarkup(
+      createShell(
+        withM7GuidanceReadModel(baseSnapshot, createM7GuidanceExtremeReadModelFixture(baseSnapshot))
+      )
+    );
+
+    expect(emptyMarkup).toContain("No guidance projected");
+    expect(emptyMarkup).toContain('data-tutorial-step-count="0"');
+    expect(errorMarkup).toContain("review gates remain visible");
+    expect(errorMarkup).toContain("scenario.beta.1581.succession-fracture");
+    expect(extremeMarkup).toContain("Extreme review pass 12");
+    expect(extremeMarkup).toContain('data-encyclopedia-entry-count="21"');
     expect(extremeMarkup).not.toContain("WorldState");
   });
 });

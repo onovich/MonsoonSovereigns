@@ -436,6 +436,65 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   expect(parseCssDurationMs(transitionDuration)).toBeLessThanOrEqual(0.01);
 });
 
+test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without scope expansion", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const workspace = page.getByLabel("M7 tutorial hints encyclopedia workspace");
+  await expect(workspace).toHaveAttribute("data-tutorial-step-count", "7");
+  await expect(workspace).toHaveAttribute("data-encyclopedia-entry-count", "9");
+  await expect(workspace).toHaveAttribute("data-not-content-lock-acceptance", "true");
+  await expect(workspace).toHaveAttribute(
+    "data-manual-node-battle-decision",
+    "DEFER_MANUAL_NODE_BATTLE"
+  );
+  await expect(page.getByLabel("M7 tutorial steps")).toContainText(
+    "M1: Command, query, and checkpoint authority"
+  );
+  await expect(page.getByLabel("M7 review summary and blockers")).toContainText(
+    "Formal content lock acceptance remains outside this UI task."
+  );
+
+  await page.getByRole("tab", { name: "Hints" }).click();
+  await expect(workspace).toHaveAttribute("data-active-surface", "hints");
+  await expect(page.getByLabel("M7 contextual hints")).toContainText(
+    "Route hints mirror forecast reason chips"
+  );
+  await expect(page.getByLabel("M7 contextual hints")).toContainText(
+    "m7.guidance.review-state-visible"
+  );
+
+  await page.getByRole("tab", { name: "Encyclopedia" }).click();
+  await expect(workspace).toHaveAttribute("data-active-surface", "encyclopedia");
+  await expect(page.getByLabel("M7 encyclopedia entries")).toContainText(
+    "M7: M7 Beta review labels"
+  );
+  await expect(page.getByLabel("M7 encyclopedia entries")).toContainText(
+    "CULTURE_HUMAN_GATE_REQUIRED"
+  );
+  await expect(page.getByLabel("M7 review summary and blockers")).toContainText(
+    "DEFER_MANUAL_NODE_BATTLE"
+  );
+
+  await page
+    .getByLabel("Select M7 Beta scenario")
+    .selectOption("scenario.beta.1581.succession-fracture");
+  await expect(workspace).toHaveAttribute(
+    "data-selected-scenario-id",
+    "scenario.beta.1581.succession-fracture"
+  );
+  await expect(page.getByLabel("M7 selected scenario guidance")).toContainText(
+    "1581 succession fracture"
+  );
+
+  const m7Text = await workspace.textContent();
+  expect(m7Text ?? "").not.toContain("placeholder-only");
+  await expect(
+    page.getByRole("button", { name: /\b(telemetry|account|server|mod)\b/i })
+  ).toHaveCount(0);
+});
+
 test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
@@ -510,6 +569,42 @@ test("M6 Alpha workspace has no horizontal overflow across required desktop view
       const workspace = document.querySelector(".m6-alpha");
       if (workspace === null) {
         throw new Error("Expected M6 Alpha workspace.");
+      }
+      const workspaceBox = workspace.getBoundingClientRect();
+      return {
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        workspaceRight: workspaceBox.right
+      };
+    });
+
+    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+    expect(overflow.workspaceRight).toBeLessThanOrEqual(overflow.clientWidth);
+  }
+});
+
+test("M7 guidance workspace has no horizontal overflow across required viewports", async ({
+  page
+}) => {
+  const viewports = [
+    { width: 1280, height: 720 },
+    { width: 1280, height: 800 },
+    { width: 1920, height: 1080 },
+    { width: 2560, height: 1080 }
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/?fixture=m7-extreme");
+    await page.evaluate(() => {
+      document.documentElement.style.fontSize = "20px";
+    });
+    await expect(page.getByLabel("M7 tutorial hints encyclopedia workspace")).toBeVisible();
+    await page.getByRole("tab", { name: "Encyclopedia" }).click();
+    const overflow = await page.evaluate(() => {
+      const workspace = document.querySelector(".m7-guidance");
+      if (workspace === null) {
+        throw new Error("Expected M7 guidance workspace.");
       }
       const workspaceBox = workspace.getBoundingClientRect();
       return {

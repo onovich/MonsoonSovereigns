@@ -20,6 +20,10 @@ import {
   createM5SessionSave,
   createM6AlphaReadModelFixture,
   createM6SessionSave,
+  createM7GuidanceEmptyReadModelFixture,
+  createM7GuidanceErrorReadModelFixture,
+  createM7GuidanceExtremeReadModelFixture,
+  createM7GuidanceReadModelFixture,
   createSyntheticDistrictPressureFixture,
   findM3Office,
   findM4CampaignPlan,
@@ -30,7 +34,8 @@ import {
   parseM6SessionSave,
   projectM2DistrictRowsFromProtocolReadModels,
   selectClientDistrictRows,
-  withDistrictListReadModel
+  withDistrictListReadModel,
+  withM7GuidanceReadModel
 } from "../packages/client-core/src/index";
 
 describe("M2 district list client read model", () => {
@@ -465,5 +470,77 @@ describe("M6 Alpha client read model", () => {
       ok: false,
       reasonCode: "m6.save.unsupported-version"
     });
+  });
+});
+
+describe("M7 tutorial hints encyclopedia client read model", () => {
+  test("projects Beta guidance from content runtime records and accepted read-model slices", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const fixture = createM7GuidanceReadModelFixture(baseSnapshot);
+
+    expect(fixture.contentPack.notContentLockAcceptance).toBe(true);
+    expect(fixture.contentPack.m6GateCarryForward).toBe("PASS_WITH_LIMITS");
+    expect(fixture.contentPack.manualNodeBattleDecision).toBe("DEFER_MANUAL_NODE_BATTLE");
+    expect(fixture.scenarios).toHaveLength(3);
+    expect(fixture.tutorial.steps.map((step) => step.milestone)).toEqual([
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7"
+    ]);
+    expect(fixture.hints.groups.length).toBeGreaterThanOrEqual(3);
+    expect(fixture.encyclopedia.entries.map((entry) => entry.systemMilestone)).toEqual([
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7",
+      "M7",
+      "M7"
+    ]);
+    expect(fixture.encyclopedia.entries).toContainEqual(
+      expect.objectContaining({
+        entryId: "encyclopedia.m7.review-labels",
+        contentLabel: "FICTIONAL",
+        reviewState: "SCHEMA_VALIDATED"
+      })
+    );
+    expect(fixture.encyclopedia.entries).toContainEqual(
+      expect.objectContaining({
+        entryId: "encyclopedia.m7.culture-risk-costs",
+        reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
+      })
+    );
+    expect(fixture.reviewSummary.humanGateClaimCount).toBe(2);
+    expect(JSON.stringify(fixture)).not.toContain("WorldState");
+    expect(JSON.stringify(fixture)).not.toContain("telemetry");
+  });
+
+  test("supports empty, error, and extreme M7 guidance fixture states", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const empty = createM7GuidanceEmptyReadModelFixture(baseSnapshot);
+    const error = createM7GuidanceErrorReadModelFixture(baseSnapshot);
+    const extreme = createM7GuidanceExtremeReadModelFixture(baseSnapshot);
+    const withGuidance = withM7GuidanceReadModel(baseSnapshot, extreme);
+
+    expect(empty.tutorial.steps).toHaveLength(0);
+    expect(empty.encyclopedia.entries).toHaveLength(0);
+    expect(error.selectedScenarioId).toBe("scenario.beta.1581.succession-fracture");
+    expect(error.reviewSummary.blockedScopeNotes).toContain(
+      "CULTURE_HUMAN_GATE_REQUIRED content is surfaced as risk context only."
+    );
+    expect(extreme.tutorial.steps.length).toBeGreaterThan(
+      baseSnapshot.m7Guidance.tutorial.steps.length
+    );
+    expect(extreme.encyclopedia.entries.length).toBeGreaterThan(
+      baseSnapshot.m7Guidance.encyclopedia.entries.length
+    );
+    expect(withGuidance.m7Guidance).toBe(extreme);
+    expect(withGuidance.m6Alpha).toBe(baseSnapshot.m6Alpha);
   });
 });

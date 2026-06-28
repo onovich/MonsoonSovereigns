@@ -59,6 +59,12 @@ import {
   type ClientM6SubmittedCommand,
   type ClientM6SuccessionReadModel,
   type ClientM6TerminalReadModel,
+  type ClientM7EncyclopediaEntryReadModel,
+  type ClientM7GuidanceReadModelSnapshot,
+  type ClientM7GuidanceSurface,
+  type ClientM7HintGroupReadModel,
+  type ClientM7ScenarioGuidanceReadModel,
+  type ClientM7TutorialStepReadModel,
   type ClientOfficeId,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
@@ -142,6 +148,10 @@ export function ClientShellView({
   const [m6ConfirmedCommandIds, setM6ConfirmedCommandIds] = useState<readonly string[]>([]);
   const [m6SavedSession, setM6SavedSession] = useState("");
   const [m6SaveStatus, setM6SaveStatus] = useState<string | null>(null);
+  const [selectedM7ScenarioId, setSelectedM7ScenarioId] = useState(
+    snapshot.m7Guidance.selectedScenarioId
+  );
+  const [m7Surface, setM7Surface] = useState<ClientM7GuidanceSurface>("tutorial");
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -503,6 +513,14 @@ export function ClientShellView({
     setM6PreviewStepId(snapshot.m6Alpha.failureStep.stepId);
   }
 
+  function handleM7ScenarioChange(event: ChangeEvent<HTMLSelectElement>): void {
+    setSelectedM7ScenarioId(event.currentTarget.value);
+  }
+
+  function handleM7SurfaceSelect(surface: ClientM7GuidanceSurface): void {
+    setM7Surface(surface);
+  }
+
   function handleZoomIn(): void {
     onZoomLevelChange(clampZoomLevel(zoomLevel + 0.25));
   }
@@ -749,6 +767,13 @@ export function ClientShellView({
           onSave={handleSaveM6Session}
           onLoad={handleLoadM6Session}
           onFailurePreview={handlePreviewM6Failure}
+        />
+        <M7GuidanceWorkspace
+          snapshot={snapshot.m7Guidance}
+          selectedScenarioId={selectedM7ScenarioId}
+          activeSurface={m7Surface}
+          onScenarioChange={handleM7ScenarioChange}
+          onSurfaceSelect={handleM7SurfaceSelect}
         />
         {m6BatchBalanceArtifact === null ? null : (
           <M6BatchBalanceDashboard artifact={m6BatchBalanceArtifact} />
@@ -1979,6 +2004,389 @@ function M6AlphaWorkspace({
         />
         <M6ReasonSummaryPanel summaries={snapshot.reasonSummaries} />
       </div>
+    </section>
+  );
+}
+
+interface M7GuidanceWorkspaceProps {
+  readonly snapshot: ClientM7GuidanceReadModelSnapshot;
+  readonly selectedScenarioId: string;
+  readonly activeSurface: ClientM7GuidanceSurface;
+  readonly onScenarioChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onSurfaceSelect: (surface: ClientM7GuidanceSurface) => void;
+}
+
+function M7GuidanceWorkspace({
+  snapshot,
+  selectedScenarioId,
+  activeSurface,
+  onScenarioChange,
+  onSurfaceSelect
+}: M7GuidanceWorkspaceProps): ReactElement {
+  const selectedScenario =
+    snapshot.scenarios.find((scenario) => scenario.scenarioId === selectedScenarioId) ??
+    snapshot.scenarios[0] ??
+    null;
+  const selectedScenarioHelp =
+    selectedScenario === null
+      ? "No M7 Beta scenario guidance is available."
+      : `${selectedScenario.label}; ${selectedScenario.contentLabel}; ${selectedScenario.reviewState}; ${selectedScenario.startYear}.`;
+  const selectedEntry =
+    snapshot.encyclopedia.entries.find(
+      (entry) => entry.entryId === snapshot.encyclopedia.selectedEntryId
+    ) ??
+    snapshot.encyclopedia.entries[0] ??
+    null;
+
+  return (
+    <section
+      className="m7-guidance"
+      aria-label="M7 tutorial hints encyclopedia workspace"
+      aria-describedby="m7-guidance-accessibility-status"
+      data-selected-scenario-id={selectedScenarioId}
+      data-active-surface={activeSurface}
+      data-tutorial-step-count={snapshot.tutorial.steps.length}
+      data-hint-group-count={snapshot.hints.groups.length}
+      data-encyclopedia-entry-count={snapshot.encyclopedia.entries.length}
+      data-not-content-lock-acceptance={
+        snapshot.contentPack.notContentLockAcceptance ? "true" : "false"
+      }
+      data-manual-node-battle-decision={snapshot.contentPack.manualNodeBattleDecision}
+    >
+      <span id="m7-guidance-accessibility-status" className="sr-only">
+        M7 guidance surface {activeSurface}. Selected scenario: {selectedScenarioHelp}. Entries:{" "}
+        {snapshot.encyclopedia.entries.length}.
+      </span>
+      <span id="m7-guidance-scenario-description" className="sr-only">
+        Selected M7 scenario: {selectedScenarioHelp}
+      </span>
+      <div className="m7-guidance__header">
+        <div>
+          <h2>M7 tutorial / hints / encyclopedia</h2>
+          <p>{snapshot.provenance.note}</p>
+        </div>
+        <dl className="m7-guidance__summary">
+          <Metric label="Scenarios" value={snapshot.contentPack.scenarioCount.toString()} />
+          <Metric label="Events" value={snapshot.contentPack.eventCount.toString()} />
+          <Metric label="Known gaps" value={snapshot.contentPack.knownGapCount.toString()} />
+          <Metric label="Hash" value={snapshot.contentPack.manifestHash} />
+        </dl>
+      </div>
+
+      <div className="m7-guidance__controls">
+        <label className="m7-guidance__field">
+          <span>Scenario</span>
+          <select
+            aria-label="Select M7 Beta scenario"
+            aria-describedby="m7-guidance-scenario-description"
+            value={selectedScenarioId}
+            onChange={onScenarioChange}
+            disabled={snapshot.scenarios.length === 0}
+          >
+            {snapshot.scenarios.length === 0 ? (
+              <option value="scenario.beta.none">No scenario guidance</option>
+            ) : (
+              snapshot.scenarios.map((scenario) => (
+                <option key={scenario.scenarioId} value={scenario.scenarioId}>
+                  {scenario.label}
+                </option>
+              ))
+            )}
+          </select>
+        </label>
+        <div className="m7-guidance__tabs" role="tablist" aria-label="M7 guidance surfaces">
+          <M7SurfaceTab
+            label="Tutorial"
+            surface="tutorial"
+            activeSurface={activeSurface}
+            onSelect={onSurfaceSelect}
+          />
+          <M7SurfaceTab
+            label="Hints"
+            surface="hints"
+            activeSurface={activeSurface}
+            onSelect={onSurfaceSelect}
+          />
+          <M7SurfaceTab
+            label="Encyclopedia"
+            surface="encyclopedia"
+            activeSurface={activeSurface}
+            onSelect={onSurfaceSelect}
+          />
+        </div>
+      </div>
+
+      <div className="m7-guidance__grid">
+        {selectedScenario === null ? (
+          <M7EmptyPanel />
+        ) : (
+          <M7ScenarioPanel scenario={selectedScenario} selectedEntry={selectedEntry} />
+        )}
+        <M7ReviewPanel snapshot={snapshot} />
+        {activeSurface === "tutorial" ? <M7TutorialPanel steps={snapshot.tutorial.steps} /> : null}
+        {activeSurface === "hints" ? <M7HintsPanel groups={snapshot.hints.groups} /> : null}
+        {activeSurface === "encyclopedia" ? (
+          <M7EncyclopediaPanel entries={snapshot.encyclopedia.entries} />
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function M7SurfaceTab({
+  label,
+  surface,
+  activeSurface,
+  onSelect
+}: {
+  readonly label: string;
+  readonly surface: ClientM7GuidanceSurface;
+  readonly activeSurface: ClientM7GuidanceSurface;
+  readonly onSelect: (surface: ClientM7GuidanceSurface) => void;
+}): ReactElement {
+  function handleClick(): void {
+    onSelect(surface);
+  }
+
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={activeSurface === surface}
+      aria-controls={`m7-${surface}-panel`}
+      onClick={handleClick}
+    >
+      {label}
+    </button>
+  );
+}
+
+function M7EmptyPanel(): ReactElement {
+  return (
+    <section className="m7-guidance__panel" aria-label="M7 empty guidance state">
+      <h3>No guidance projected</h3>
+      <div className="m7-guidance__fact">
+        <strong>m7.guidance.empty</strong>
+        <span>No tutorial, hint, or encyclopedia read-model slice is available.</span>
+      </div>
+    </section>
+  );
+}
+
+function M7ScenarioPanel({
+  scenario,
+  selectedEntry
+}: {
+  readonly scenario: ClientM7ScenarioGuidanceReadModel;
+  readonly selectedEntry: ClientM7EncyclopediaEntryReadModel | null;
+}): ReactElement {
+  return (
+    <section className="m7-guidance__panel" aria-label="M7 selected scenario guidance">
+      <h3>Selected scenario</h3>
+      <dl className="m7-guidance__metrics">
+        <Metric label="Start year" value={scenario.startYear.toString()} />
+        <Metric label="Label" value={scenario.contentLabel} />
+        <Metric label="Confidence" value={scenario.confidence} />
+        <Metric label="Review" value={scenario.reviewState} />
+      </dl>
+      <div className="m7-guidance__fact">
+        <strong>{scenario.label}</strong>
+        <span>{scenario.tutorialHookText}</span>
+        <span>{scenario.encyclopediaHookText}</span>
+        <ReasonChips reasonCodes={scenario.linkedClaimIds} />
+      </div>
+      {selectedEntry === null ? null : (
+        <div className="m7-guidance__fact" data-entry-id={selectedEntry.entryId}>
+          <strong>{selectedEntry.title}</strong>
+          <span>
+            {selectedEntry.contentLabel}; {selectedEntry.reviewState}
+          </span>
+          <span>{selectedEntry.summary}</span>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function M7ReviewPanel({
+  snapshot
+}: {
+  readonly snapshot: ClientM7GuidanceReadModelSnapshot;
+}): ReactElement {
+  return (
+    <section className="m7-guidance__panel" aria-label="M7 review summary and blockers">
+      <h3>Review summary</h3>
+      <dl className="m7-guidance__metrics">
+        <Metric label="M6 gate" value={snapshot.contentPack.m6GateCarryForward} />
+        <Metric label="Manual battle" value={snapshot.contentPack.manualNodeBattleDecision} />
+        <Metric label="Human gates" value={snapshot.reviewSummary.humanGateClaimCount.toString()} />
+        <Metric label="Content lock" value="not accepted" />
+      </dl>
+      <div className="m7-guidance__stack" role="list">
+        {snapshot.reviewSummary.reviewStateCounts.map((entry) => (
+          <div className="m7-guidance__fact" key={entry.reviewState} role="listitem">
+            <strong>{entry.reviewState}</strong>
+            <span>{entry.count} records</span>
+          </div>
+        ))}
+        {snapshot.reviewSummary.blockedScopeNotes.map((note) => (
+          <div className="m7-guidance__fact" key={note} role="listitem">
+            <strong>Scope boundary</strong>
+            <span>{note}</span>
+          </div>
+        ))}
+        {snapshot.reviewSummary.knownGaps.map((gap) => (
+          <div className="m7-guidance__fact" key={gap} role="listitem">
+            <strong>Known gap</strong>
+            <span>{gap}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function M7TutorialPanel({
+  steps
+}: {
+  readonly steps: readonly ClientM7TutorialStepReadModel[];
+}): ReactElement {
+  return (
+    <section
+      className="m7-guidance__panel m7-guidance__panel--wide"
+      aria-label="M7 tutorial steps"
+      data-step-count={steps.length}
+      id="m7-tutorial-panel"
+      role="tabpanel"
+    >
+      <h3>Beta tutorial</h3>
+      {steps.length === 0 ? (
+        <div className="m7-guidance__fact">
+          <strong>No tutorial steps</strong>
+          <span>M7 tutorial read-model is empty.</span>
+        </div>
+      ) : (
+        <div className="m7-guidance__list" role="list">
+          {steps.map((step) => (
+            <article
+              className="m7-guidance__fact"
+              key={step.stepId}
+              role="listitem"
+              data-milestone={step.milestone}
+              data-review-state={step.reviewState}
+            >
+              <strong>
+                {step.milestone}: {step.title}
+              </strong>
+              <span>{step.summary}</span>
+              <span>
+                {step.querySurface}; {step.commandKind ?? "query-only"}
+              </span>
+              <span>
+                {step.contentLabel}; {step.reviewState}
+              </span>
+              <ReasonChips reasonCodes={[...step.reasonCodes, ...step.encyclopediaRefs]} />
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function M7HintsPanel({
+  groups
+}: {
+  readonly groups: readonly ClientM7HintGroupReadModel[];
+}): ReactElement {
+  return (
+    <section
+      className="m7-guidance__panel m7-guidance__panel--wide"
+      aria-label="M7 contextual hints"
+      data-group-count={groups.length}
+      id="m7-hints-panel"
+      role="tabpanel"
+    >
+      <h3>Contextual hints</h3>
+      {groups.length === 0 ? (
+        <div className="m7-guidance__fact">
+          <strong>No contextual hints</strong>
+          <span>M7 hint read-model is empty.</span>
+        </div>
+      ) : (
+        <div className="m7-guidance__list" role="list">
+          {groups.map((group) => (
+            <article className="m7-guidance__fact" key={group.groupId} role="listitem">
+              <strong>{group.title}</strong>
+              <span>{group.surface}</span>
+              <div className="m7-guidance__stack" role="list">
+                {group.hints.map((hint) => (
+                  <div className="m7-guidance__subfact" key={hint.hintId} role="listitem">
+                    <strong>{hint.hintId}</strong>
+                    <span>{hint.text}</span>
+                    <span>
+                      {hint.commandPreviewKind ?? "query-only"}; {hint.contentLabel};{" "}
+                      {hint.reviewState}
+                    </span>
+                    <ReasonChips
+                      reasonCodes={[...hint.triggerReasonCodes, ...hint.linkedEntryIds]}
+                    />
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function M7EncyclopediaPanel({
+  entries
+}: {
+  readonly entries: readonly ClientM7EncyclopediaEntryReadModel[];
+}): ReactElement {
+  return (
+    <section
+      className="m7-guidance__panel m7-guidance__panel--wide"
+      aria-label="M7 encyclopedia entries"
+      data-entry-count={entries.length}
+      id="m7-encyclopedia-panel"
+      role="tabpanel"
+    >
+      <h3>Encyclopedia</h3>
+      {entries.length === 0 ? (
+        <div className="m7-guidance__fact">
+          <strong>No encyclopedia entries</strong>
+          <span>M7 encyclopedia read-model is empty.</span>
+        </div>
+      ) : (
+        <div className="m7-guidance__list" role="list">
+          {entries.map((entry) => (
+            <article
+              className="m7-guidance__fact"
+              key={entry.entryId}
+              role="listitem"
+              data-entry-id={entry.entryId}
+              data-system-milestone={entry.systemMilestone}
+              data-review-state={entry.reviewState}
+            >
+              <strong>
+                {entry.systemMilestone}: {entry.title}
+              </strong>
+              <span>
+                {entry.contentLabel}; {entry.confidence}; {entry.reviewState}
+              </span>
+              <span>{entry.summary}</span>
+              <span>Records {entry.contentRecordRefs.join(", ")}</span>
+              <ReasonChips
+                reasonCodes={[...entry.claimIds, ...entry.sourceIds, ...entry.linkedReasonCodes]}
+              />
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
