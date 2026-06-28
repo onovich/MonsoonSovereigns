@@ -4,7 +4,7 @@
   "milestone": "M7",
   "status": "REVIEW",
   "owner_role": "client_engineer",
-  "reviewer_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
   "dependencies": [
     "M7-UI-LOCALIZATION-PLAN-001"
@@ -94,7 +94,9 @@
       "start_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T21:27:25.1239661+08:00",
-      "updated_at": "2026-06-28T21:27:25.1239661+08:00"
+      "updated_at": "2026-06-28T21:27:25.1239661+08:00",
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "role": "lead_orchestrator"
     },
     "client_engineer": {
       "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
@@ -112,12 +114,13 @@
       "routed_at": "2026-06-28T21:27:25.1239661+08:00",
       "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
       "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
-      "closed_at": "2026-06-28T21:56:18.9396215+08:00"
+      "closed_at": "2026-06-28T21:56:18.9396215+08:00",
+      "updated_at": "2026-06-28T22:11:35.681+08:00"
     },
     "systems_architect": {
       "thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "active_reviewer",
+      "status": "closed_accepted",
       "role": "systems_architect",
       "nickname": "Keystone",
       "configured_model": "gpt-5.5",
@@ -127,10 +130,28 @@
       "branch_or_worktree": "feat/m7-i18n-foundation",
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
-      "routed_at": "2026-06-28T21:58:09.3109039+08:00"
+      "routed_at": "2026-06-28T21:58:09.3109039+08:00",
+      "systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+      "closed_at": "2026-06-28T22:11:35.681+08:00",
+      "updated_at": "2026-06-28T22:11:35.681+08:00"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "status": "active_reviewer",
+      "role": "qa_reviewer",
+      "nickname": "Gate the 2nd",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+      "routed_at": "2026-06-28T22:11:35.681+08:00"
     }
   },
-  "route_to": "systems_architect",
+  "route_to": "qa_reviewer",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
     "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
@@ -144,7 +165,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-28T21:58:09.3109039+08:00",
+  "updated_at": "2026-06-28T22:11:35.681+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -177,5 +198,11 @@
   "systems_thread_nickname": "Keystone",
   "systems_review_route": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
   "expected_systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
-  "next_action": "Await systems_architect review of the M7 i18n foundation."
+  "next_action": "Await independent qa_reviewer acceptance of M7-I18N-FOUNDATION-001.",
+  "systems_status": "ACCEPT",
+  "systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+  "qa_thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
+  "qa_thread_nickname": "Gate the 2nd",
+  "qa_route": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+  "expected_qa_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json"
 }

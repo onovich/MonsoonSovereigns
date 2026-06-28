@@ -1,0 +1,133 @@
+{
+  "message_id": "MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems architecture review accepts commit 0ae7ab4ac983360b31c7592f82066c6320679669. The i18n foundation remains in @monsoon/ui and apps/web platform/client shell code, with no changes to sim-core, sim-ai, protocol, save-format, map-renderer authority, Electron main/preload, dependencies, docs/decisions, tools, or CI. The locale preference model supports system, en-US, and zh-CN; zh/zh-CN/zh-Hans/zh-Hans-CN/zh-SG aliases canonicalize to zh-CN and are covered by unit, Web, Storybook, and Playwright evidence. Web reads navigator locales, Electron uses the existing monsoonDesktop.getRuntimeInfo locale bridge only, and no IPC channel, Node integration, or renderer capability was added. Language switching writes localStorage and document.lang only, leaves read-model snapshots/state hash/command DTOs/save payloads/AI behavior untouched, and localizes reason-code display while preserving raw reason codes in data attributes for diagnostics.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/i18n-platform.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m7-i18n-foundation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Reviewed worktree status. Source-code commit is 0ae7ab4a on feat/m7-i18n-foundation. Process/task state files were already or concurrently dirty; this review does not revert them. This systems handoff is the only source-controlled artifact intentionally added by this reviewer."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-I18N-FOUNDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-I18N-FOUNDATION-001 remains REVIEW; no downstream task was started."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Reported M7-DESIGN-TOKENS-ASSET-SLOTS-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 as ready/draft candidates; this review routes only to QA."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 13 tests. Covered zh-Hans alias canonicalization, localized reason display, and read-model/hash immutability assertions."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 6 tests. Covered localStorage migration, browser/desktop locale resolution, and shell snapshot immutability."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 14/14. Covered system zh-Hans fallback to zh-CN, manual switch to en-US, persistence across reload, document.lang updates, and no visible raw route.season.monsoon-risk in the tested M4 supply panel."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary check passed. Architecture checker reported boundaries passed and the self-test fixture produced expected violations."
+    },
+    {
+      "command": "rg i18n/locale/language and import-boundary searches over sim-core/sim-ai/protocol/save-format/map-renderer/apps/desktop",
+      "exit_code": 0,
+      "result": "No commit changes or new imports put i18n into sim-core, sim-ai, protocol, save-format, or map-renderer. Existing Electron getRuntimeInfo locale bridge was confirmed unchanged."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_CLIENT_LAYER_I18N_BOUNDARY",
+      "decision": "Accept the implementation boundary: i18n lives in @monsoon/ui and apps/web shell/platform code only. It does not enter simulation authority, protocol DTOs, save envelopes, AI planners, or map-renderer authority."
+    },
+    {
+      "id": "ACCEPT_LOCALE_CANONICALIZATION",
+      "decision": "Accept system/en-US/zh-CN as the client preference surface and zh-Hans-family alias migration to canonical zh-CN. Persisted legacy zh-Hans values are rewritten to zh-CN."
+    },
+    {
+      "id": "ACCEPT_PLATFORM_BOUNDARY",
+      "decision": "Accept the platform split: Web reads navigator and localStorage; Electron renderer reuses only the existing monsoonDesktop.getRuntimeInfo locale data. No new IPC, preload method, Node integration, remote URL, or filesystem capability is introduced."
+    },
+    {
+      "id": "ACCEPT_NO_AUTHORITY_CHANGE",
+      "decision": "Language preference, resolved locale, localStorage persistence, and document.lang are UI/session concerns only. They do not affect authoritative WorldState, state hash, command history, save payloads, command DTO construction, or AI/player command parity."
+    },
+    {
+      "id": "ACCEPT_REASON_CODE_DISPLAY_BOUNDARY",
+      "decision": "Reason codes are displayed through typed UiMessageKey-backed catalog entries or deterministic fallback formatting. Raw reason codes remain available only through diagnostic data attributes such as data-reason-code and data-status-reason."
+    },
+    {
+      "id": "NO_SECURITY_REVIEW_REQUIRED",
+      "decision": "Do not route an additional security_reviewer pass for this commit because Electron main/preload/security files and IPC channel definitions are unchanged, and the renderer consumes an already-approved, narrow runtime-info bridge."
+    },
+    {
+      "id": "NO_ADR_REQUIRED",
+      "decision": "No ADR is required for this task because it implements the approved M7 client i18n foundation inside existing client/platform boundaries and does not change frozen product/platform/core architecture or dependency policy."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FULL_UI_STRING_COVERAGE_REMAINS_DOWNSTREAM",
+      "severity": "P2",
+      "summary": "This foundation localizes app shell language controls, map controls, and reason-code display paths, but many existing prototype/player-facing labels remain English or read-model sourced.",
+      "mitigation": "Keep downstream M7 app shell, map, inspector, appointment, guidance, regression matrix, and UI-localization exit tasks responsible for full player-mode string coverage."
+    },
+    {
+      "id": "ENGLISH_DIALECT_NEGOTIATION_EDGE",
+      "severity": "P3",
+      "summary": "Locale matching recognizes en and en-US explicitly. A browser language list such as en-GB followed by zh-Hans would skip en-GB and resolve zh-CN, even though an English fallback may be the expected user preference.",
+      "mitigation": "Non-blocking for this task because the accepted surface is en-US/zh-CN/system and unsupported locales fall back to en-US when no later supported locale exists. QA may choose to request a small follow-up if broader en-* matching is desired before localization matrix validation."
+    },
+    {
+      "id": "WORKTREE_PROCESS_STATE_DIRTY",
+      "severity": "P3",
+      "summary": "The worktree contains dirty process/task/message state files outside the reviewed source commit, including goal/model/thread state files and the writer handoff state.",
+      "mitigation": "Treat as orchestration state for lead/QA reconciliation. This systems review did not revert or alter source files and intentionally adds only this handoff."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Perform independent QA acceptance of M7-I18N-FOUNDATION-001, focusing on locale canonicalization/persistence, browser and Electron-safe locale paths, Playwright no-bare-reason coverage, and confirmation that no simulation/protocol/save/map authority behavior changed.",
+  "created_at": "2026-06-28T22:05:52.2701916+08:00"
+}

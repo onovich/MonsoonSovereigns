@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-I18N-FOUNDATION-001",
-    "updated_at": "2026-06-28T21:27:25.1239661+08:00",
+    "updated_at": "2026-06-28T22:11:35.681+08:00",
     "concurrent_task_ids": [
       "M7-I18N-FOUNDATION-001"
     ]
@@ -2555,7 +2555,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T21:00:00.0000000+08:00",
+  "updated_at": "2026-06-28T22:11:35.681+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -3719,6 +3719,69 @@
       "qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-PLAN-001__MSG-20260628-M7-UI-LOCALIZATION-PLAN-QA-REVIEW__qa_reviewer.json",
       "closed_at": "2026-06-28T21:10:14.6163624+08:00",
       "updated_at": "2026-06-28T21:10:14.6163624+08:00"
+    },
+    "M7-I18N-FOUNDATION-001:lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "status": "active_router",
+      "role": "lead_orchestrator",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "updated_at": "2026-06-28T22:11:35.681+08:00"
+    },
+    "M7-I18N-FOUNDATION-001:client_engineer": {
+      "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "status": "closed_review_ready",
+      "role": "client_engineer",
+      "nickname": "Window",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+      "closed_at": "2026-06-28T21:56:18.9396215+08:00",
+      "updated_at": "2026-06-28T22:11:35.681+08:00"
+    },
+    "M7-I18N-FOUNDATION-001:systems_architect": {
+      "thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "status": "closed_accepted",
+      "role": "systems_architect",
+      "nickname": "Keystone",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+      "systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+      "routed_at": "2026-06-28T21:58:09.3109039+08:00",
+      "closed_at": "2026-06-28T22:11:35.681+08:00",
+      "updated_at": "2026-06-28T22:11:35.681+08:00"
+    },
+    "M7-I18N-FOUNDATION-001:qa_reviewer": {
+      "thread_id": "019f0e8f-1907-72c2-beb1-9522d515307c",
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "status": "active_reviewer",
+      "role": "qa_reviewer",
+      "nickname": "Gate the 2nd",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-REVIEW__qa_reviewer.json",
+      "routed_at": "2026-06-28T22:11:35.681+08:00"
     }
   },
   "m7_ui_localization_art_coordination": {
