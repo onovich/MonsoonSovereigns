@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-APP-SHELL-QUALITY-001",
-    "updated_at": "2026-06-28T16:17:06.608Z",
+    "updated_at": "2026-06-28T19:03:23.528Z",
     "concurrent_task_ids": [
       "M7-APP-SHELL-QUALITY-001"
     ]
@@ -2555,7 +2555,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T16:17:06.608Z",
+  "updated_at": "2026-06-28T19:03:23.528Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -4063,20 +4063,24 @@
     ]
   },
   "m7_app_shell_quality": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-APP-SHELL-QUALITY-001",
     "branch_or_worktree": "feat/m7-app-shell-quality",
     "base_main_commit": "9bd14c6d",
     "previous_closed_task": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
     "start_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-START__lead_orchestrator.json",
-    "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+    "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
     "writer_thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
     "writer_thread_nickname": "Window the 2nd",
     "expected_writer_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T16:17:06.608Z",
-    "updated_at": "2026-06-28T16:17:06.608Z",
+    "updated_at": "2026-06-28T19:03:23.528Z",
     "next_action": "Await client_engineer writer handoff for M7-APP-SHELL-QUALITY-001.",
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "qa_thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+    "qa_thread_nickname": "Gate",
+    "review_commit": "47d413198897466420afff587a7ef903479e94cb",
+    "expected_qa_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json"
   }
 }

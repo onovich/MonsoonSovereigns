@@ -2,7 +2,7 @@
   "id": "M7-APP-SHELL-QUALITY-001",
   "summary": "Productize the M7 player app shell",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -95,12 +95,12 @@
       "actual_effort": "xhigh",
       "branch_or_worktree": "feat/m7-app-shell-quality",
       "created_at": "2026-06-28T16:17:06.608Z",
-      "updated_at": "2026-06-28T16:17:06.608Z"
+      "updated_at": "2026-06-28T19:03:23.528Z"
     },
     "client_engineer": {
       "thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
       "task_id": "M7-APP-SHELL-QUALITY-001",
-      "status": "active_writer",
+      "status": "review_ready",
       "role": "client_engineer",
       "nickname": "Window the 2nd",
       "configured_model": "gpt-5.5",
@@ -110,7 +110,28 @@
       "branch_or_worktree": "feat/m7-app-shell-quality",
       "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
-      "routed_at": "2026-06-28T16:17:06.608Z"
+      "routed_at": "2026-06-28T16:17:06.608Z",
+      "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "47d413198897466420afff587a7ef903479e94cb",
+      "updated_at": "2026-06-28T19:03:23.528Z"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+      "task_id": "M7-APP-SHELL-QUALITY-001",
+      "status": "active_reviewer",
+      "role": "qa_reviewer",
+      "nickname": "Gate",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-app-shell-quality",
+      "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+      "review_commit": "47d413198897466420afff587a7ef903479e94cb",
+      "source_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json",
+      "routed_at": "2026-06-28T19:03:23.528Z",
+      "updated_at": "2026-06-28T19:03:23.528Z"
     }
   },
   "route_to": "qa_reviewer",
@@ -127,7 +148,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-28T16:17:06.608Z",
+  "updated_at": "2026-06-28T19:03:23.528Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -153,5 +174,11 @@
   "writer_thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
   "writer_thread_nickname": "Window the 2nd",
   "expected_writer_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
-  "next_action": "Await client_engineer writer handoff for M7-APP-SHELL-QUALITY-001."
+  "next_action": "Await independent qa_reviewer acceptance for M7-APP-SHELL-QUALITY-001.",
+  "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+  "review_commit": "47d413198897466420afff587a7ef903479e94cb",
+  "qa_thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+  "qa_thread_nickname": "Gate",
+  "qa_route": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+  "expected_qa_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json"
 }

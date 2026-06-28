@@ -1,0 +1,32 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-TO-QA-REVIEW",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "source_role": "client_engineer",
+  "source_thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
+  "source_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+  "source_status": "REVIEW",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+  "target_thread_nickname": "Gate",
+  "requested_action": "Independently review the fixed M7 app shell implementation against task acceptance criteria, allowed/forbidden paths, player/debug separation, i18n behavior, read-model authority boundaries, Storybook/Playwright coverage, and Electron-facing residual risk.",
+  "branch_or_worktree": "feat/m7-app-shell-quality",
+  "review_commit": "47d413198897466420afff587a7ef903479e94cb",
+  "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T19:03:23.528Z",
+  "route_sent_at": null,
+  "delivery": {
+    "method": "spawn_agent_initial_prompt_then_send_input_route",
+    "status": "pending_send_input",
+    "note": "QA reviewer was spawned with the full route context; parent lead will also send a compact persisted route message after this file is committed."
+  },
+  "acceptance_focus": [
+    "default player mode hides prototype framing, milestone labels, hashes, revisions, raw ids, raw reason codes, and test fixture names",
+    "debug mode explicitly separates diagnostics",
+    "English, zh-CN, and system fallback use accepted i18n foundation",
+    "shell remains read-model/presentation coordinator and does not own authoritative WorldState",
+    "Storybook and Playwright cover normal, empty, error, narrow, English, zh-CN, and debug-on/off without overlap",
+    "no release/commercial/branding/final art/telemetry/server/multiplayer/account/cloud save/manual node battle scope"
+  ]
+}

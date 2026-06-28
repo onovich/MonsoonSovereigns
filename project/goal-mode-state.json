@@ -20,7 +20,7 @@
     "client_engineer": {
       "thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
       "task_id": "M7-APP-SHELL-QUALITY-001",
-      "status": "active_writer",
+      "status": "review_ready",
       "role": "client_engineer",
       "nickname": "Window the 2nd",
       "configured_model": "gpt-5.5",
@@ -29,8 +29,24 @@
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-app-shell-quality",
       "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
-      "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
-      "routed_at": "2026-06-28T16:17:06.608Z"
+      "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "47d413198897466420afff587a7ef903479e94cb"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+      "task_id": "M7-APP-SHELL-QUALITY-001",
+      "status": "active_reviewer",
+      "role": "qa_reviewer",
+      "nickname": "Gate",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-app-shell-quality",
+      "route_file": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "47d413198897466420afff587a7ef903479e94cb",
+      "routed_at": "2026-06-28T19:03:23.528Z"
     }
   },
   "last_integrated_task": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
@@ -61,10 +77,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-APP-SHELL-QUALITY-001 start checkpoint",
+    "approval_source": "M7-APP-SHELL-QUALITY-001 review routing checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. M7-APP-SHELL-QUALITY-001 has started with client_engineer writer.",
-    "recorded_at": "2026-06-28T16:17:06.608Z"
+    "note": "No Human Gate is active. M7-APP-SHELL-QUALITY-001 is in independent QA review.",
+    "recorded_at": "2026-06-28T19:03:23.528Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -851,7 +867,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T16:17:06.608Z",
+  "last_updated_at": "2026-06-28T19:03:23.528Z",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1921,8 +1937,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "IN_PROGRESS",
-  "next_machine_action": "Await client_engineer writer handoff for M7-APP-SHELL-QUALITY-001.",
+  "current_task_status": "REVIEW",
+  "next_machine_action": "Await qa_reviewer handoff for M7-APP-SHELL-QUALITY-001.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -1978,7 +1994,7 @@
     ]
   },
   "m7_app_shell_quality": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-APP-SHELL-QUALITY-001",
     "branch_or_worktree": "feat/m7-app-shell-quality",
     "base_main_commit": "9bd14c6d",
@@ -1989,9 +2005,15 @@
     "writer_thread_nickname": "Window the 2nd",
     "expected_writer_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T16:17:06.608Z",
-    "updated_at": "2026-06-28T16:17:06.608Z",
-    "next_action": "Await client_engineer writer handoff for M7-APP-SHELL-QUALITY-001.",
+    "updated_at": "2026-06-28T19:03:23.528Z",
+    "next_action": "Await independent qa_reviewer acceptance for M7-APP-SHELL-QUALITY-001.",
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "47d413198897466420afff587a7ef903479e94cb",
+    "qa_thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+    "qa_thread_nickname": "Gate",
+    "qa_route": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json"
   }
 }
