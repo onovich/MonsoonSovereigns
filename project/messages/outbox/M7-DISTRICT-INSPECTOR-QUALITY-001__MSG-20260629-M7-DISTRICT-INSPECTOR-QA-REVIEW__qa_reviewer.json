@@ -1,0 +1,136 @@
+{
+  "message_id": "M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA review requests changes for M7-DISTRICT-INSPECTOR-QUALITY-001 at fixed implementation commit eb179555d2324311e0966923a137cf81824c01ee. Scope, architecture boundaries, Storybook build, focused tests, Playwright, web build, and pnpm check are reproducible, but the selected district inspector is not fully localized in player mode: newly surfaced route, trait, obligation, and route-effect text can display English/raw tokens in zh-CN, so the localization acceptance criteria are not met.",
+  "artifacts": [
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "packages/client-core/src/index.ts",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "feat/m7-district-inspector-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "eb179555d2324311e0966923a137cf81824c01ee",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Current worktree was clean before writing this QA handoff: ## feat/m7-district-inspector-quality. Current HEAD is 49d8c6f5db448894edb87f65d38eaccde5540fe7, a process route commit after the fixed implementation commit."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "49d8c6f5db448894edb87f65d38eaccde5540fe7."
+    },
+    {
+      "command": "git diff --name-status eb179555d2324311e0966923a137cf81824c01ee..HEAD",
+      "exit_code": 0,
+      "result": "Later delta is process-only: goal-mode-state, model-routing-state, task/thread registry, writer handoff metadata, and writer-to-QA route. QA reviewed product changes at fixed commit eb179555d2324311e0966923a137cf81824c01ee."
+    },
+    {
+      "command": "git diff --name-status e8a854f672a49f2a5271111224b17830b6721de8..eb179555d2324311e0966923a137cf81824c01ee",
+      "exit_code": 0,
+      "result": "Changed files are limited to allowed apps/web, packages/client-core, packages/ui, tests, .storybook, project/messages, and project task/state paths. No forbidden sim-core, protocol, save-format, map-renderer, platform, content-source, docs gate/roadmap, release, telemetry, server, multiplayer, account, cloud-save, production-art, branding, M8, or manual-node-battle paths were modified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list emitted successfully; M7-DISTRICT-INSPECTOR-QUALITY-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready tasks listed: M7-MAP-PRESENTATION-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "git diff --check e8a854f672a49f2a5271111224b17830b6721de8..eb179555d2324311e0966923a137cf81824c01ee",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 test file, 16 tests. Coverage does not assert zh-CN selected district inspector route kind/unit/due-label localization, so it misses the defect."
+    },
+    {
+      "command": "pnpm --filter @monsoon/client-core test",
+      "exit_code": 0,
+      "result": "Vitest client-core suite passed: 1 test file, 22 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web suite passed: 1 test file, 9 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook static build passed and cleaned .tmp/storybook-static; existing large chunk warning remained."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 19 tests. The new M7 district inspector test covers headings, route filter, folding, bounded rendering, empty/error states, narrow viewport, no horizontal overflow, and no console errors, but it does not fail on English/raw route text in zh-CN."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "focused source inspection: packages/ui/src/index.tsx, packages/ui/src/i18n.ts, packages/client-core/src/index.ts, tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Found player-visible localization defects in the selected district inspector at packages/ui/src/index.tsx:1299, packages/ui/src/index.tsx:1311, packages/ui/src/index.tsx:1402, packages/ui/src/index.tsx:1422. Existing tests do not assert against these zh-CN leaks."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: fixed implementation commit eb179555d2324311e0966923a137cf81824c01ee does not satisfy the selected district inspector localization acceptance criteria.",
+    "Scope and architecture boundaries are otherwise acceptable: implementation uses client-core/UI/web/tests/Storybook/process paths only, with no forbidden sim-core, protocol, save, map-renderer, platform, content-source, release, telemetry, server, multiplayer, account, cloud-save, branding, production-art, M8, or manual-node-battle scope.",
+    "District list secondary-browser requirements are mostly met: search, route-status filter, sort, folding, bounded virtualized rendering, empty state, and map/selection sync through existing selected entity callbacks are present.",
+    "Player/debug separation is mostly preserved: state hash, revision, provenance, raw workspace diagnostics, and raw reason-code details are only in debug mode; player mode uses formatted reason text rather than raw reason-code strings.",
+    "Tests and builds are reproducible but insufficient for acceptance because they pass while the zh-CN selected district inspector can still display English/raw tokens."
+  ],
+  "risks": [
+    "DistrictEffectList associates M3 obligations to districts by parsing the obligationId suffix because ClientM3ObligationReadModel has no explicit districtId. This stays within existing read-model data but is brittle; richer obligation/district associations should be routed through a future read-model/schema task rather than expanded in UI code.",
+    "Some older debug-only M3/M4/M5/M6 workspace text remains English by design behind the developer overlay. That is not the blocker here; the blocker is player-visible selected district inspector text.",
+    "Current HEAD 49d8c6f5 includes a process route commit after fixed implementation commit eb179555d2324311e0966923a137cf81824c01ee; QA treated it as route metadata and reviewed product code at the fixed commit."
+  ],
+  "blockers": [
+    {
+      "severity": "P1",
+      "file": "packages/ui/src/index.tsx",
+      "symbol": "DistrictTraitList / DistrictEffectList / formatPlayerRouteSummary",
+      "reproduction": "Open the web shell at the default fixture, switch Language to zh-CN, and inspect the selected District 1 panel. The new terrain/economy and effects sections can render English/raw tokens such as route kind Road, route summary road, obligation kind Garrison, due label continuous, and route effect summary ending in '12 days'. Source evidence: DistrictTraitList maps routeKinds through formatReasonStatus at line 1299 and reuses formatPlayerRouteSummary at line 1311; DistrictEffectList formats obligationKind and raw dueLabel at lines 1402 and 1404; route effect summary hardcodes 'days' at lines 1422-1424. The default fixtures provide route kind road and a District 1 route forecast with travelDays 12, plus a District 1 garrison obligation.",
+      "impact": "Violates acceptance criteria requiring the selected district inspector to be player-readable and localized, and requiring player labels/reason displays to use the i18n foundation. Current English/zh-CN focused tests pass despite the leak, so the implementation would regress zh-CN player quality without detection.",
+      "required_fix": "Add explicit i18n formatting for district route kinds, obligation kinds, due labels/time units, and route-effect travel-day summaries; use those helpers everywhere selected inspector player text is rendered. Add focused UI and/or Playwright assertions in zh-CN that the selected district inspector contains the localized route kind/unit/due text and does not contain English/raw tokens such as Road, road, Garrison, continuous, or days."
+    }
+  ],
+  "route_to": "client_engineer",
+  "requested_action": "Route back to the original client_engineer writer for the blocker fix. After repair, rerun the focused UI tests, Playwright M7 district inspector coverage, build/storybook/check as appropriate, validate the writer handoff, and return to independent QA review. Do not mark M7-DISTRICT-INSPECTOR-QUALITY-001 ACCEPTED/CLOSED yet.",
+  "created_at": "2026-06-29T05:40:40.1129452+08:00"
+}

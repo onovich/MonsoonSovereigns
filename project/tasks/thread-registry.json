@@ -11,7 +11,7 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T05:36:00.000Z",
+        "updated_at": "2026-06-29T05:46:00.000Z",
         "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
         "task_ids": [
           "M7-DISTRICT-INSPECTOR-QUALITY-001"
@@ -6083,7 +6083,7 @@
     "M7-DISTRICT-INSPECTOR-QUALITY-001:client_engineer": {
       "thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "review_ready",
+      "status": "active_writer",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -6092,18 +6092,19 @@
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-district-inspector-quality",
       "route_file": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
-      "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
       "routed_at": "2026-06-29T05:12:00.000Z",
-      "updated_at": "2026-06-29T05:34:00.000Z",
+      "updated_at": "2026-06-29T05:46:00.000Z",
       "route_sent_at": "2026-06-29T05:14:00.000Z",
       "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
       "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "eb179555d2324311e0966923a137cf81824c01ee"
+      "review_commit": "eb179555d2324311e0966923a137cf81824c01ee",
+      "request_changes_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-WRITER.json"
     },
     "M7-DISTRICT-INSPECTOR-QUALITY-001:qa_reviewer": {
       "thread_id": "019f1025-36fc-70d1-92bb-5858b2c7a74f",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "active_reviewer",
+      "status": "request_changes",
       "role": "qa_reviewer",
       "nickname": "Auditor",
       "configured_model": "gpt-5.5",
@@ -6116,9 +6117,10 @@
       "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
       "implementation_commit": "eb179555d2324311e0966923a137cf81824c01ee",
       "routed_at": "2026-06-29T05:34:00.000Z",
-      "updated_at": "2026-06-29T05:36:00.000Z",
+      "updated_at": "2026-06-29T05:46:00.000Z",
       "route_sent_at": "2026-06-29T05:36:00.000Z",
-      "route_submission_id": "019f1026-ac78-7bc1-9151-8091a5126a38"
+      "route_submission_id": "019f1026-ac78-7bc1-9151-8091a5126a38",
+      "qa_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json"
     }
   },
   "replaced_threads": [
@@ -6231,5 +6233,5 @@
       "replaced_at": "2026-06-28T08:46:06.641Z"
     }
   ],
-  "updated_at": "2026-06-29T05:36:00.000Z"
+  "updated_at": "2026-06-29T05:46:00.000Z"
 }

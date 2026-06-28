@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-    "updated_at": "2026-06-29T05:36:00.000Z",
+    "updated_at": "2026-06-29T05:46:00.000Z",
     "concurrent_task_ids": [
       "M7-DISTRICT-INSPECTOR-QUALITY-001"
     ]
@@ -4173,7 +4173,7 @@
     ]
   },
   "m7_district_inspector_quality": {
-    "status": "REVIEW",
+    "status": "IN_PROGRESS",
     "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
     "branch_or_worktree": "feat/m7-district-inspector-quality",
     "writer_thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
@@ -4182,8 +4182,8 @@
     "route_file": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T05:12:00.000Z",
-    "updated_at": "2026-06-29T05:36:00.000Z",
-    "next_action": "Await independent qa_reviewer review.",
+    "updated_at": "2026-06-29T05:46:00.000Z",
+    "next_action": "Await client_engineer R2 fix after QA REQUEST_CHANGES.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_sent_at": "2026-06-29T05:14:00.000Z",
@@ -4195,6 +4195,12 @@
     "qa_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
     "expected_qa_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
     "qa_route_sent_at": "2026-06-29T05:36:00.000Z",
-    "qa_route_submission_id": "019f1026-ac78-7bc1-9151-8091a5126a38"
+    "qa_route_submission_id": "019f1026-ac78-7bc1-9151-8091a5126a38",
+    "qa_status": "REQUEST_CHANGES",
+    "qa_review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+    "request_changes_round": 1,
+    "request_changes_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+    "request_changes_route": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-WRITER.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json"
   }
 }
