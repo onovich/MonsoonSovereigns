@@ -9,22 +9,8 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
-      "status": "active_waiting_systems_review",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator"
-    },
-    "gameplay_designer": {
-      "thread_id": "019f0ac6-e0ae-7903-a258-ae2f92db6619",
-      "nickname": "Ledger the 3rd",
-      "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
-      "status": "review_ready",
-      "role": "gameplay_designer"
-    },
-    "systems_architect": {
-      "thread_id": "019f0c87-0fbf-7830-90e5-08484fab11c1",
-      "nickname": "Lintel",
-      "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
-      "status": "review_in_progress",
-      "role": "systems_architect"
     }
   },
   "last_integrated_task": "M7-TASK-GRAPH-001",
@@ -843,7 +829,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T12:42:17.9564797+08:00",
+  "last_updated_at": "2026-06-28T12:48:34.4918832+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1560,7 +1546,7 @@
     "closure_recorded_at": "2026-06-28T04:31:17.9147991+08:00"
   },
   "m7_content_lock_contract": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
     "branch_or_worktree": "design/m7-content-lock-contract",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -1579,10 +1565,10 @@
     "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
     "started_at": "2026-06-28T04:31:17.9147991+08:00",
-    "updated_at": "2026-06-28T12:42:17.9564797+08:00",
+    "updated_at": "2026-06-28T12:48:34.4918832+08:00",
     "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-28T04:38:12.1103688+08:00",
-    "next_action": "Await systems_architect review verdict.",
+    "next_action": "Push branch, open PR, wait for CI, merge to main, then close M7-CONTENT-LOCK-CONTRACT-001.",
     "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
     "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101",
     "review_commit": "7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
@@ -1590,6 +1576,15 @@
     "systems_thread_nickname": "Lintel",
     "systems_review_route": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-WRITER-TO-SYSTEMS-REVIEW.json",
     "systems_review_submission_id": "019f0c88-f5f4-7e33-b737-3cc2e69ea517",
-    "routed_to_systems_at": "2026-06-28T12:42:17.9564797+08:00"
+    "routed_to_systems_at": "2026-06-28T12:42:17.9564797+08:00",
+    "systems_status": "ACCEPT",
+    "systems_review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-SYSTEMS-REVIEW__systems_architect.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T12:48:34.4918832+08:00",
+    "accepted_head_commit": "4b6736becbb41ea9f8f93ddce828a4de3239f7ca",
+    "child_threads_closed": [
+      "019f0ac6-e0ae-7903-a258-ae2f92db6619",
+      "019f0c87-0fbf-7830-90e5-08484fab11c1"
+    ]
   }
 }
