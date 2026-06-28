@@ -98,3 +98,36 @@ export const AppointmentFlowNarrow = {
   },
   render: () => <WebClientShell initialSearch="?fixture=appointment-extreme" />
 };
+
+export const DistrictInspectorNormal = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const DistrictInspectorEmpty = {
+  render: () => <WebClientShell initialSearch="?fixture=district-empty" />
+};
+
+export const DistrictInspectorError = {
+  render: () => <WebClientShell initialSearch="?fixture=district-error" />
+};
+
+export const DistrictInspectorExtreme = {
+  render: () => <WebClientShell initialSearch="?fixture=stress" />
+};
+
+export const DistrictInspectorNarrow = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1"
+    }
+  },
+  render: () => <WebClientShell initialSearch="?fixture=stress" />
+};
+
+export const DistrictInspectorEnglish = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const DistrictInspectorSimplifiedChinese = {
+  render: () => <WebClientShell initialLocalePreference="zh-CN" />
+};

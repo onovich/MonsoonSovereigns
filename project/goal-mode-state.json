@@ -20,7 +20,7 @@
     "client_engineer": {
       "thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "active_writer",
+      "status": "review_ready",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -32,7 +32,9 @@
       "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
       "routed_at": "2026-06-29T05:12:00.000Z",
       "route_sent_at": "2026-06-29T05:14:00.000Z",
-      "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6"
+      "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
+      "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T05:24:00.000Z"
     }
   },
   "last_integrated_task": "M7-APPOINTMENT-FLOW-QUALITY-001",
@@ -1925,8 +1927,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "IN_PROGRESS",
-  "next_machine_action": "Await client_engineer writer REVIEW handoff for M7-DISTRICT-INSPECTOR-QUALITY-001.",
+  "current_task_status": "REVIEW",
+  "next_machine_action": "Await qa_reviewer review handoff for M7-DISTRICT-INSPECTOR-QUALITY-001.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -2113,7 +2115,7 @@
     ]
   },
   "m7_district_inspector_quality": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
     "branch_or_worktree": "feat/m7-district-inspector-quality",
     "base_main_commit": "e8a854f672a49f2a5271111224b17830b6721de8",
@@ -2124,11 +2126,12 @@
     "writer_thread_nickname": "Window",
     "expected_writer_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T05:12:00.000Z",
-    "updated_at": "2026-06-29T05:14:00.000Z",
-    "next_action": "Await client_engineer writer REVIEW handoff for M7-DISTRICT-INSPECTOR-QUALITY-001.",
+    "updated_at": "2026-06-29T05:24:00.000Z",
+    "next_action": "Await qa_reviewer review handoff.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_sent_at": "2026-06-29T05:14:00.000Z",
-    "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6"
+    "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
+    "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json"
   }
 }

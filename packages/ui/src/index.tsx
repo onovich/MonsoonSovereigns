@@ -159,6 +159,7 @@ const DISTRICT_TABLE_VIEWPORT_HEIGHT_PX = 352;
 const DISTRICT_TABLE_OVERSCAN_ROWS = 8;
 const ClientI18nContext = createContext<ClientI18n>(DEFAULT_CLIENT_I18N);
 type M3AppointmentFlowStage = "select-office" | "compare-candidates" | "preview" | "result";
+type DistrictRouteStatusFilter = ClientDistrictRowReadModel["route"]["status"] | "all";
 
 export function ClientShellView({
   snapshot,
@@ -189,8 +190,10 @@ export function ClientShellView({
       ? selectedEntity.districtId
       : (selectedEntity?.districtId ?? snapshot.districtList.selectedDistrictId);
   const [filter, setFilter] = useState("");
+  const [routeStatusFilter, setRouteStatusFilter] = useState<DistrictRouteStatusFilter>("all");
   const [sortKey, setSortKey] = useState<ClientDistrictSortKey>("district");
   const [sortDirection, setSortDirection] = useState<ClientDistrictSortDirection>("ascending");
+  const [isDistrictBrowserCollapsed, setDistrictBrowserCollapsed] = useState(false);
   const [scrollTopPx, setScrollTopPx] = useState(0);
   const [lastSelectionMs, setLastSelectionMs] = useState(0);
   const [selectedM3OfficeId, setSelectedM3OfficeId] = useState<ClientOfficeId | null>(
@@ -231,6 +234,7 @@ export function ClientShellView({
     const rows = selectClientDistrictRows({
       rows: snapshot.districtList.rows,
       filter,
+      routeStatusFilter,
       sortKey,
       sortDirection
     });
@@ -238,7 +242,7 @@ export function ClientShellView({
       rows,
       derivationMs: getHighResolutionTime() - startedAt
     };
-  }, [filter, snapshot.districtList.rows, sortDirection, sortKey]);
+  }, [filter, routeStatusFilter, snapshot.districtList.rows, sortDirection, sortKey]);
 
   const virtualWindow = calculateClientVirtualWindow({
     rowCount: districtProjection.rows.length,
@@ -293,6 +297,11 @@ export function ClientShellView({
 
   function handleFilterChange(event: ChangeEvent<HTMLInputElement>): void {
     setFilter(event.currentTarget.value);
+    setScrollTopPx(0);
+  }
+
+  function handleRouteStatusFilterChange(event: ChangeEvent<HTMLSelectElement>): void {
+    setRouteStatusFilter(parseDistrictRouteStatusFilter(event.currentTarget.value));
     setScrollTopPx(0);
   }
 
@@ -772,7 +781,14 @@ export function ClientShellView({
             <DistrictPanel
               row={selectedDistrict}
               selectedSettlement={selectedSettlement}
+              m3Appointment={snapshot.m3Appointment}
+              m4Campaign={snapshot.m4Campaign}
+              canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
+              canPreviewCampaign={selectedM4Campaign !== null}
               provenanceNote={debugMode ? snapshot.districtList.provenance.note : ""}
+              onPreviewAppointment={handleOpenM3AppointmentFlow}
+              onPreviewCampaign={handleSubmitM4Plan}
+              onReviewObligations={handleSubmitM4StartMarch}
             />
 
             <section
@@ -836,7 +852,31 @@ export function ClientShellView({
           onConfirm={handleConfirmM3Appointment}
         />
 
-        <section className="client-shell__route-queue" aria-label={i18n.t("shell.list.label")}>
+        <section
+          className="client-shell__route-queue"
+          aria-label={i18n.t("shell.list.label")}
+          data-folded={isDistrictBrowserCollapsed ? "true" : "false"}
+          data-render-bound="virtualized"
+        >
+          <header className="district-list__header">
+            <div>
+              <h2>{i18n.t("shell.list.title")}</h2>
+              <p>
+                {i18n.t("shell.list.count", {
+                  visible: i18n.formatNumber(districtProjection.rows.length),
+                  total: i18n.formatNumber(snapshot.districtList.rows.length)
+                })}
+              </p>
+            </div>
+            <button
+              type="button"
+              aria-label={i18n.t("shell.list.toggle")}
+              aria-expanded={!isDistrictBrowserCollapsed}
+              onClick={() => setDistrictBrowserCollapsed(!isDistrictBrowserCollapsed)}
+            >
+              {isDistrictBrowserCollapsed ? i18n.t("shell.list.show") : i18n.t("shell.list.hide")}
+            </button>
+          </header>
           <div className="district-list__toolbar">
             <label className="district-list__filter">
               <span>{i18n.t("shell.list.filter")}</span>
@@ -846,6 +886,19 @@ export function ClientShellView({
                 onChange={handleFilterChange}
                 placeholder={i18n.t("shell.list.placeholder")}
               />
+            </label>
+            <label className="district-list__filter">
+              <span>{i18n.t("shell.list.routeFilter")}</span>
+              <select
+                aria-label={i18n.t("shell.list.routeFilter")}
+                value={routeStatusFilter}
+                onChange={handleRouteStatusFilterChange}
+              >
+                <option value="all">{i18n.t("shell.list.allRoutes")}</option>
+                <option value="reachable">{i18n.t("shell.route.reachable")}</option>
+                <option value="capacity-exceeded">{i18n.t("shell.route.capacityExceeded")}</option>
+                <option value="unreachable">{i18n.t("shell.route.unreachable")}</option>
+              </select>
             </label>
             <output
               aria-label={i18n.t("shell.list.performance")}
@@ -857,78 +910,88 @@ export function ClientShellView({
             </output>
           </div>
 
-          <div className="district-list__head">
-            <SortButton
-              label={i18n.t("shell.table.district")}
-              sortKey="district"
-              activeSortKey={sortKey}
-              direction={sortDirection}
-              onSort={handleSort}
-            />
-            <SortButton
-              label={i18n.t("shell.table.population")}
-              sortKey="population"
-              activeSortKey={sortKey}
-              direction={sortDirection}
-              onSort={handleSort}
-            />
-            <SortButton
-              label={i18n.t("shell.table.labor")}
-              sortKey="labor"
-              activeSortKey={sortKey}
-              direction={sortDirection}
-              onSort={handleSort}
-            />
-            <SortButton
-              label={i18n.t("shell.table.grain")}
-              sortKey="grain"
-              activeSortKey={sortKey}
-              direction={sortDirection}
-              onSort={handleSort}
-            />
-            <SortButton
-              label={i18n.t("shell.table.cash")}
-              sortKey="cash"
-              activeSortKey={sortKey}
-              direction={sortDirection}
-              onSort={handleSort}
-            />
-            <SortButton
-              label={i18n.t("shell.table.route")}
-              sortKey="route"
-              activeSortKey={sortKey}
-              direction={sortDirection}
-              onSort={handleSort}
-            />
-          </div>
-
-          <div
-            className="district-list__viewport"
-            aria-label={i18n.t("shell.list.virtualRowsLabel")}
-            data-row-count={snapshot.districtList.rows.length}
-            data-filtered-row-count={districtProjection.rows.length}
-            data-rendered-row-count={visibleRows.length}
-            onScroll={handleScroll}
-          >
-            <div
-              className="district-list__spacer"
-              style={{ height: `${virtualWindow.totalHeightPx}px` }}
-            >
-              <div
-                className="district-list__rows"
-                style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
-              >
-                {visibleRows.map((row) => (
-                  <DistrictRowButton
-                    key={row.districtId}
-                    row={row}
-                    isSelected={selectedDistrictId === row.districtId}
-                    onSelect={handleSelect}
-                  />
-                ))}
+          {isDistrictBrowserCollapsed ? null : (
+            <>
+              <div className="district-list__head">
+                <SortButton
+                  label={i18n.t("shell.table.district")}
+                  sortKey="district"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label={i18n.t("shell.table.population")}
+                  sortKey="population"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label={i18n.t("shell.table.labor")}
+                  sortKey="labor"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label={i18n.t("shell.table.grain")}
+                  sortKey="grain"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label={i18n.t("shell.table.cash")}
+                  sortKey="cash"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label={i18n.t("shell.table.route")}
+                  sortKey="route"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
               </div>
-            </div>
-          </div>
+
+              <div
+                className="district-list__viewport"
+                aria-label={i18n.t("shell.list.virtualRowsLabel")}
+                data-row-count={snapshot.districtList.rows.length}
+                data-filtered-row-count={districtProjection.rows.length}
+                data-rendered-row-count={visibleRows.length}
+                data-render-limit={virtualWindow.visibleCount}
+                data-route-filter={routeStatusFilter}
+                onScroll={handleScroll}
+              >
+                {districtProjection.rows.length === 0 ? (
+                  <p className="district-list__empty">{i18n.t("shell.list.empty")}</p>
+                ) : (
+                  <div
+                    className="district-list__spacer"
+                    style={{ height: `${virtualWindow.totalHeightPx}px` }}
+                  >
+                    <div
+                      className="district-list__rows"
+                      style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
+                    >
+                      {visibleRows.map((row) => (
+                        <DistrictRowButton
+                          key={row.districtId}
+                          row={row}
+                          isSelected={selectedDistrictId === row.districtId}
+                          onSelect={handleSelect}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </section>
 
         {debugMode ? (
@@ -1130,13 +1193,27 @@ function DistrictRowButton({ row, isSelected, onSelect }: DistrictRowButtonProps
 interface DistrictPanelProps {
   readonly row: ClientDistrictRowReadModel | null;
   readonly selectedSettlement: ClientMapSettlementReadModel | null;
+  readonly m3Appointment: ClientM3AppointmentReadModelSnapshot;
+  readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
+  readonly canPreviewAppointment: boolean;
+  readonly canPreviewCampaign: boolean;
   readonly provenanceNote: string;
+  readonly onPreviewAppointment: () => void;
+  readonly onPreviewCampaign: () => void;
+  readonly onReviewObligations: () => void;
 }
 
 function DistrictPanel({
   row,
   selectedSettlement,
-  provenanceNote
+  m3Appointment,
+  m4Campaign,
+  canPreviewAppointment,
+  canPreviewCampaign,
+  provenanceNote,
+  onPreviewAppointment,
+  onPreviewCampaign,
+  onReviewObligations
 }: DistrictPanelProps): ReactElement {
   const i18n = useContext(ClientI18nContext);
   if (row === null) {
@@ -1195,10 +1272,226 @@ function DistrictPanel({
           value={formatPlayerRouteSummary(row, i18n)}
         />
       </dl>
+      <DistrictTraitList row={row} />
+      <DistrictGovernanceState row={row} appointment={m3Appointment} />
+      <DistrictEffectList row={row} appointment={m3Appointment} campaign={m4Campaign} />
+      <DistrictActionList
+        row={row}
+        canPreviewAppointment={canPreviewAppointment}
+        canPreviewCampaign={canPreviewCampaign}
+        onPreviewAppointment={onPreviewAppointment}
+        onPreviewCampaign={onPreviewCampaign}
+        onReviewObligations={onReviewObligations}
+      />
       {provenanceNote.length === 0 ? null : (
         <p className="district-panel__provenance">{provenanceNote}</p>
       )}
     </aside>
+  );
+}
+
+function DistrictTraitList({ row }: { readonly row: ClientDistrictRowReadModel }): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const routeKinds =
+    row.route.routeKinds.length === 0
+      ? i18n.t("shell.inspector.routeBlockedTrait")
+      : i18n.t("shell.inspector.routeTrait", {
+          kinds: row.route.routeKinds.map((kind) => formatReasonStatus(kind, i18n)).join("/")
+        });
+  return (
+    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.traits")}>
+      <h3>{i18n.t("shell.inspector.traits")}</h3>
+      <div className="district-panel__chips" role="list">
+        <span role="listitem">
+          {i18n.t("shell.inspector.seasonTrait", {
+            phase: formatSeasonLabel(row.seasonal.agriculturePhase, i18n)
+          })}
+        </span>
+        <span role="listitem">{routeKinds}</span>
+        <span role="listitem">{formatPlayerRouteSummary(row, i18n)}</span>
+      </div>
+    </section>
+  );
+}
+
+function DistrictGovernanceState({
+  row,
+  appointment
+}: {
+  readonly row: ClientDistrictRowReadModel;
+  readonly appointment: ClientM3AppointmentReadModelSnapshot;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const offices = appointment.offices.filter(
+    (office) => office.administrativePreview?.districtId === row.districtId
+  );
+  const primaryOffice = offices[0] ?? null;
+  const administrativePreview = primaryOffice?.administrativePreview ?? null;
+
+  return (
+    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.governance")}>
+      <h3>{i18n.t("shell.inspector.governance")}</h3>
+      {administrativePreview === null ? (
+        <p>{i18n.t("shell.inspector.governanceUnassigned")}</p>
+      ) : (
+        <div className="district-panel__fact">
+          <strong>
+            {i18n.t("shell.inspector.governancePreview", {
+              mode: formatReasonStatus(administrativePreview.controlMode, i18n),
+              load: i18n.formatNumber(administrativePreview.administrativeLoad),
+              readiness: formatBps(administrativePreview.readinessBps)
+            })}
+          </strong>
+          <ReasonChips reasonCodes={administrativePreview.reasonCodes} />
+        </div>
+      )}
+      <h3>{i18n.t("shell.inspector.appointment")}</h3>
+      {primaryOffice === null ? (
+        <p>{i18n.t("shell.inspector.appointmentUnavailable")}</p>
+      ) : (
+        <div className="district-panel__fact">
+          <strong>
+            {primaryOffice.holderCharacterId === null
+              ? i18n.t("shell.inspector.appointmentVacant", { office: primaryOffice.displayName })
+              : i18n.t("shell.inspector.appointmentHeld", { office: primaryOffice.displayName })}
+          </strong>
+          <ReasonChips
+            reasonCodes={[...primaryOffice.reasonCodes, ...primaryOffice.policy.reasonCodes]}
+          />
+        </div>
+      )}
+    </section>
+  );
+}
+
+function DistrictEffectList({
+  row,
+  appointment,
+  campaign
+}: {
+  readonly row: ClientDistrictRowReadModel;
+  readonly appointment: ClientM3AppointmentReadModelSnapshot;
+  readonly campaign: ClientM4CampaignReadModelSnapshot;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const relevantObligations = appointment.obligations.filter((obligation) =>
+    obligation.obligationId.endsWith(`.${Number(row.districtId)}`)
+  );
+  const relevantPostwarOutcomes = campaign.warReports.filter(
+    (report) => report.postwarCandidate?.districtId === row.districtId
+  );
+  const routeForecast = campaign.route.sourceForecasts.find(
+    (forecast) =>
+      forecast.originDistrictId === row.districtId ||
+      forecast.destinationDistrictId === row.districtId
+  );
+  const hasEffects =
+    relevantObligations.length > 0 ||
+    relevantPostwarOutcomes.length > 0 ||
+    routeForecast !== undefined;
+
+  return (
+    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.effects")}>
+      <h3>{i18n.t("shell.inspector.effects")}</h3>
+      {hasEffects ? (
+        <div className="district-panel__effect-list" role="list">
+          {relevantObligations.map((obligation) => (
+            <div className="district-panel__fact" key={obligation.obligationId} role="listitem">
+              <strong>
+                {i18n.t("shell.inspector.effectObligation", {
+                  kind: formatReasonStatus(obligation.obligationKind, i18n),
+                  amount: i18n.formatNumber(obligation.amount),
+                  due: obligation.dueLabel
+                })}
+              </strong>
+              <ReasonChips reasonCodes={obligation.reasonCodes} />
+            </div>
+          ))}
+          {relevantPostwarOutcomes.map((report) => (
+            <div className="district-panel__fact" key={report.outcomeId} role="listitem">
+              <strong>{i18n.t("shell.inspector.effectPostwar")}</strong>
+              <ReasonChips
+                reasonCodes={report.postwarCandidate?.reasonCodes ?? report.reasonCodes}
+              />
+            </div>
+          ))}
+          {routeForecast === undefined ? null : (
+            <div className="district-panel__fact" role="listitem">
+              <strong>
+                {i18n.t("shell.inspector.effectRoute", {
+                  summary: `${formatRouteStatusLabel(routeForecast.status, i18n)}; ${i18n.formatNumber(
+                    routeForecast.travelDays
+                  )} days`
+                })}
+              </strong>
+              <ReasonChips
+                reasonCodes={[
+                  ...(routeForecast.overloadedReasonCode === null
+                    ? []
+                    : [routeForecast.overloadedReasonCode]),
+                  ...routeForecast.seasonRiskReasonCodes
+                ]}
+              />
+            </div>
+          )}
+        </div>
+      ) : (
+        <p>{i18n.t("shell.inspector.noEffects")}</p>
+      )}
+    </section>
+  );
+}
+
+function DistrictActionList({
+  row,
+  canPreviewAppointment,
+  canPreviewCampaign,
+  onPreviewAppointment,
+  onPreviewCampaign,
+  onReviewObligations
+}: {
+  readonly row: ClientDistrictRowReadModel;
+  readonly canPreviewAppointment: boolean;
+  readonly canPreviewCampaign: boolean;
+  readonly onPreviewAppointment: () => void;
+  readonly onPreviewCampaign: () => void;
+  readonly onReviewObligations: () => void;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const canUseRoute = row.route.status !== "unreachable";
+  const unavailableReasons = [
+    ...(canPreviewAppointment ? [] : [i18n.t("shell.inspector.reasonNoAppointment")]),
+    ...(canPreviewCampaign ? [] : [i18n.t("shell.inspector.reasonNoCampaign")]),
+    ...(canUseRoute ? [] : [i18n.t("shell.inspector.reasonRouteUnavailable")])
+  ];
+  return (
+    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.actions")}>
+      <h3>{i18n.t("shell.inspector.actions")}</h3>
+      <div className="district-panel__actions">
+        <button type="button" disabled={!canPreviewAppointment} onClick={onPreviewAppointment}>
+          {i18n.t("shell.inspector.actionAppointment")}
+        </button>
+        <button type="button" disabled={!canPreviewCampaign} onClick={onPreviewCampaign}>
+          {i18n.t("shell.inspector.actionCampaign")}
+        </button>
+        <button type="button" disabled={!canUseRoute} onClick={onReviewObligations}>
+          {i18n.t("shell.inspector.actionObligations")}
+        </button>
+      </div>
+      {unavailableReasons.length === 0 ? null : (
+        <div
+          className="district-panel__unavailable"
+          aria-label={i18n.t("shell.inspector.unavailableReasons")}
+        >
+          <strong>{i18n.t("shell.inspector.unavailableReasons")}</strong>
+          <ul>
+            {unavailableReasons.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -3870,6 +4163,18 @@ function parseM4SiegeChoice(value: string): ClientM4SiegeChoice {
       return value;
     default:
       throw new Error(`Unsupported M4 siege choice ${value}.`);
+  }
+}
+
+function parseDistrictRouteStatusFilter(value: string): DistrictRouteStatusFilter {
+  switch (value) {
+    case "all":
+    case "reachable":
+    case "capacity-exceeded":
+    case "unreachable":
+      return value;
+    default:
+      return "all";
   }
 }
 

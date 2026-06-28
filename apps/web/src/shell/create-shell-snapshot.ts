@@ -1,5 +1,6 @@
 import {
   applyClientReadModelDelta,
+  createClientDistrictId,
   createInitialClientReadModelSnapshot,
   createM2PrototypeClientReadModelSnapshot,
   createM6AlphaEmptyReadModelFixture,
@@ -35,6 +36,20 @@ export function createWebClientShellSnapshot(search = ""): ClientReadModelSnapsh
 
   if (fixtureMode === "stress") {
     return createStressValidationShellSnapshot(defaultSnapshot);
+  }
+  if (fixtureMode === "district-empty") {
+    return withDistrictListReadModel(defaultSnapshot, {
+      revision: defaultSnapshot.districtList.revision,
+      provenance: {
+        kind: "simulation-read-model",
+        note: "Empty district browser fixture for UI validation."
+      },
+      rows: [],
+      selectedDistrictId: createClientDistrictId(1)
+    });
+  }
+  if (fixtureMode === "district-error") {
+    return createDistrictRouteUnavailableShellSnapshot(defaultSnapshot);
   }
   if (fixtureMode === "m6-empty") {
     return withM6AlphaReadModel(
@@ -105,6 +120,8 @@ function readFixtureMode(
 ):
   | "default"
   | "stress"
+  | "district-empty"
+  | "district-error"
   | "m6-empty"
   | "m6-error"
   | "m6-extreme"
@@ -119,6 +136,12 @@ function readFixtureMode(
 
   if (rawFixture === "stress" || rawFixture === "m4-stress") {
     return "stress";
+  }
+  if (rawFixture === "district-empty" || rawFixture === "inspector-empty") {
+    return "district-empty";
+  }
+  if (rawFixture === "district-error" || rawFixture === "inspector-error") {
+    return "district-error";
   }
   if (rawFixture === "m6-empty" || rawFixture === "alpha-empty") {
     return "m6-empty";
@@ -149,6 +172,30 @@ function readFixtureMode(
   }
 
   return "default";
+}
+
+function createDistrictRouteUnavailableShellSnapshot(
+  snapshot: ClientReadModelSnapshot
+): ClientReadModelSnapshot {
+  const rows = snapshot.districtList.rows.map((row, index) =>
+    index === 0
+      ? {
+          ...row,
+          route: {
+            ...row.route,
+            status: "unreachable" as const,
+            totalCost: null,
+            bottleneckCapacity: null,
+            edgeCount: 0,
+            routeKinds: []
+          }
+        }
+      : row
+  );
+  return withDistrictListReadModel(snapshot, {
+    ...snapshot.districtList,
+    rows
+  });
 }
 
 function withM3AppointmentReadModel(

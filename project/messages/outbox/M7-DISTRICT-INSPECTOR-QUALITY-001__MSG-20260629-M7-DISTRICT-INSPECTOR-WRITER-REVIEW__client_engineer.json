@@ -1,0 +1,106 @@
+{
+  "message_id": "M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer",
+  "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Productized the selected district inspector and kept the district list as a secondary browser. The inspector now exposes localized player-facing terrain/economic traits, population, labor, grain, cash, route state, governance preview, appointment state, district effects, actions, and unavailable reasons from existing read-model and command-preview surfaces only. The route queue now supports search, route-status filtering, sort, folding, empty state, and bounded virtualized rendering while preserving map/selection sync and player/debug separation.",
+  "artifacts": [
+    "packages/client-core/src/index.ts",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/client-core-m2-district-list.test.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "branch_or_worktree": "feat/m7-district-inspector-quality",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Listed modified allowed-path files for Web/UI/client-core/tests/project status plus this handoff; no forbidden paths modified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DISTRICT-INSPECTOR-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list emitted successfully; M7-DISTRICT-INSPECTOR-QUALITY-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready tasks listed: M7-MAP-PRESENTATION-QUALITY-001, M7-PLAYER-GUIDANCE-LITE-001, M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "exit_code": 0,
+      "result": "JSON parse/shape check passed; task id, REVIEW status, route_to qa_reviewer, and required top-level fields verified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff validated against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 file, 16 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web suite passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing chunk-size warning remained."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook static build passed; existing Vite chunk/plugin timing warnings remained."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 19 tests, including M7 district inspector localization/secondary-browser/no-console/no-overflow coverage."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format, lint, typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    "Kept inspector data derived from existing client read-model slices: district rows, M3 administrative previews/obligations/enfeoffment, and M4 route/postwar projections.",
+    "Kept raw reason codes in dev/debug-only surfaces; player-facing reason displays continue through the i18n formatter.",
+    "Implemented route-status filtering as client-core read-model row selection, not UI-local domain rules.",
+    "Added district-empty and district-error web fixtures for UI validation only; no sim-core, protocol, content, map-renderer, or platform behavior changed."
+  ],
+  "risks": [
+    "The current terrain/economic trait display is bounded by existing read models and uses season plus route/economy indicators; richer terrain taxonomy would require a future systems_architect/protocol route.",
+    "Some governance/effect associations are as granular as current read-model IDs allow; no WorldState or sim formulas were introduced to infer missing relationships.",
+    "Vite and Storybook still report pre-existing large chunk/plugin timing warnings, but builds pass."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review M7-DISTRICT-INSPECTOR-QUALITY-001 for acceptance criteria, player/debug separation, i18n coverage, viewport behavior, and read-model/command-boundary compliance. Do not mark ACCEPTED/CLOSED until review passes.",
+  "created_at": "2026-06-29T05:24:00.000Z"
+}

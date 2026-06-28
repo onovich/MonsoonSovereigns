@@ -2,7 +2,7 @@
   "id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
   "summary": "Productize district inspector and secondary district list",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -100,7 +100,7 @@
     "client_engineer": {
       "thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
       "task_id": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-      "status": "active_writer",
+      "status": "review_ready",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -111,9 +111,10 @@
       "route_file": "project/messages/routes/M7-DISTRICT-INSPECTOR-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
       "routed_at": "2026-06-29T05:12:00.000Z",
-      "updated_at": "2026-06-29T05:14:00.000Z",
+      "updated_at": "2026-06-29T05:24:00.000Z",
       "route_sent_at": "2026-06-29T05:14:00.000Z",
-      "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6"
+      "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
+      "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json"
     }
   },
   "route_to": "qa_reviewer",
@@ -130,7 +131,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-29T05:14:00.000Z",
+  "updated_at": "2026-06-29T05:24:00.000Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -156,7 +157,8 @@
   "writer_thread_id": "019f100e-9a22-7793-a953-a41b9a948703",
   "writer_thread_nickname": "Window",
   "expected_writer_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-  "next_action": "Await client_engineer writer REVIEW handoff for M7-DISTRICT-INSPECTOR-QUALITY-001.",
+  "next_action": "Await qa_reviewer review of the M7 district inspector quality implementation.",
   "route_sent_at": "2026-06-29T05:14:00.000Z",
-  "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6"
+  "route_submission_id": "019f1011-1d6d-76a0-bca0-9a70c4d1d6c6",
+  "review_handoff": "project/messages/outbox/M7-DISTRICT-INSPECTOR-QUALITY-001__MSG-20260629-M7-DISTRICT-INSPECTOR-WRITER-REVIEW__client_engineer.json"
 }

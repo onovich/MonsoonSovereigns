@@ -48,7 +48,39 @@ describe("M2 district client UI", () => {
     expect(markup).toContain("Grain");
     expect(markup).toContain("Cash");
     expect(markup).toContain("Route");
+    expect(markup).toContain("Terrain / economy");
+    expect(markup).toContain("Governance");
+    expect(markup).toContain("Appointment state");
+    expect(markup).toContain("Effects");
+    expect(markup).toContain("District actions");
     expect(markup).toContain("Synthetic UI pressure data");
+  });
+
+  test("renders district inspector empty and Chinese player states without raw reason codes", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const emptyMarkup = renderToStaticMarkup(
+      createShell(
+        withDistrictListReadModel(baseSnapshot, {
+          ...baseSnapshot.districtList,
+          rows: []
+        }),
+        "tutorial",
+        createClientI18n("en-US"),
+        "en-US",
+        false
+      )
+    );
+    const chineseMarkup = renderToStaticMarkup(
+      createShell(baseSnapshot, "tutorial", createClientI18n("zh-CN"), "zh-CN", false)
+    );
+
+    expect(emptyMarkup).toContain("No District Selected");
+    expect(emptyMarkup).toContain("No districts match the current browser filters.");
+    expect(chineseMarkup).toContain("地貌 / 经济");
+    expect(chineseMarkup).toContain("任命状态");
+    expect(chineseMarkup).toContain("地区行动");
+    expect(chineseMarkup).not.toContain("appointment.holder.skill-strong");
+    expect(chineseMarkup).not.toContain("route.season.monsoon-risk");
   });
 
   test("server renders only the virtualized first window for the 4000-row fixture", () => {

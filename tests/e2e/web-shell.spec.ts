@@ -142,6 +142,74 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   expect(selectionMs).toBeLessThan(10);
 });
 
+test("M7 district inspector is localized secondary browser with bounded rendering", async ({
+  page
+}) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      consoleErrors.push(message.text());
+    }
+  });
+  page.on("pageerror", (error) => {
+    consoleErrors.push(error.message);
+  });
+
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/");
+
+  const panel = page.locator(".district-panel");
+  const browser = page.getByLabel("Route queue");
+  const rows = page.getByLabel("Virtualized district rows");
+
+  await expect(panel).toContainText("Terrain / economy");
+  await expect(panel).toContainText("Governance");
+  await expect(panel).toContainText("Appointment state");
+  await expect(panel).toContainText("Effects");
+  await expect(panel).toContainText("District actions");
+  await expect(browser).toHaveAttribute("data-render-bound", "virtualized");
+  await expect(rows).toHaveAttribute("data-render-limit", "16");
+  await page.getByLabel("Route status").selectOption("unreachable");
+  await expect(rows).toHaveAttribute("data-route-filter", "unreachable");
+  await expect(rows).toHaveAttribute("data-filtered-row-count", "1");
+  await page.getByLabel("Filter").fill("no matching district");
+  await expect(rows).toHaveAttribute("data-filtered-row-count", "0");
+  await expect(rows).toContainText("No districts match the current browser filters.");
+  await page.getByRole("button", { name: "Toggle district browser" }).click();
+  await expect(browser).toHaveAttribute("data-folded", "true");
+  await expect(page.getByLabel("Virtualized district rows")).toHaveCount(0);
+  await page.getByRole("button", { name: "Toggle district browser" }).click();
+  await expect(browser).toHaveAttribute("data-folded", "false");
+  await expect(page.getByText("Prototype District 001")).toHaveCount(0);
+  await expect(page.getByText("appointment.holder.skill-strong")).toHaveCount(0);
+  await expect(page.getByText("route.season.monsoon-risk")).toHaveCount(0);
+  await expect(page.getByText(/\bM[2-7]\b/u)).toHaveCount(0);
+
+  await page.goto("/?fixture=district-error");
+  await expect(panel).toContainText("Route is unavailable for this district.");
+  await expect(panel.getByRole("button", { name: "Review obligations" })).toBeDisabled();
+
+  await page.goto("/?fixture=district-empty");
+  await expect(panel).toContainText("No District Selected");
+  await expect(page.getByLabel("Virtualized district rows")).toContainText(
+    "No districts match the current browser filters."
+  );
+
+  await page.setViewportSize({ width: 390, height: 720 });
+  await page.goto("/");
+  await page.getByLabel("Language").selectOption("zh-CN");
+  await expect(panel).toContainText("地貌 / 经济");
+  await expect(panel).toContainText("任命状态");
+  await expect(panel).toContainText("地区行动");
+  await expect(page.getByLabel("路线队列")).toHaveAttribute("data-render-bound", "virtualized");
+  const overflow = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth
+  }));
+  expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+  expect(consoleErrors).toEqual([]);
+});
+
 test("M3 appointment workspace submits appointment and bulk command DTOs", async ({ page }) => {
   await page.goto("/?debug=1");
 
