@@ -131,3 +131,38 @@ export const DistrictInspectorEnglish = {
 export const DistrictInspectorSimplifiedChinese = {
   render: () => <WebClientShell initialLocalePreference="zh-CN" />
 };
+
+export const MapPresentationNormal = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const MapPresentationEmpty = {
+  render: () => <WebClientShell initialSearch="?fixture=district-empty" />
+};
+
+export const MapPresentationError = {
+  render: () => <WebClientShell initialSearch="?fixture=district-error" />
+};
+
+export const MapPresentationExtreme = {
+  render: () => <WebClientShell initialSearch="?fixture=stress" />
+};
+
+export const MapPresentationNarrow = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1"
+    }
+  },
+  render: () => <WebClientShell initialSearch="?fixture=stress" />
+};
+
+export const MapPresentationEnglish = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const MapPresentationSimplifiedChinese = {
+  render: () => (
+    <WebClientShell initialLocalePreference="zh-CN" initialSystemLocales={["zh-Hans"]} />
+  )
+};

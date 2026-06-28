@@ -18,6 +18,7 @@ import {
   ClientShellView,
   createClientI18n,
   type ClientI18n,
+  type ClientMapPanOffset,
   type ClientLocalePreference
 } from "@monsoon/ui";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactElement } from "react";
@@ -58,6 +59,11 @@ export function WebClientShell({
   const [desktopLocale, setDesktopLocale] = useState<string | null>(null);
   const [mapMode, setMapMode] = useState<ClientMapMode>("seasonal");
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [panOffset, setPanOffset] = useState<ClientMapPanOffset>({
+    xInMapUnits: 0,
+    yInMapUnits: 0
+  });
+  const [hoveredEntity, setHoveredEntity] = useState<ClientMapEntitySelection | null>(null);
   const [m3CommandStatus, setM3CommandStatus] = useState<string | null>(null);
   const [m4CommandStatus, setM4CommandStatus] = useState<string | null>(null);
   const [m5CommandStatus, setM5CommandStatus] = useState<string | null>(null);
@@ -70,9 +76,11 @@ export function WebClientShell({
     () => ({
       mode: mapMode,
       zoomLevel,
-      selectedEntity
+      selectedEntity,
+      hoveredEntity,
+      panOffset
     }),
-    [mapMode, selectedEntity, zoomLevel]
+    [hoveredEntity, mapMode, panOffset, selectedEntity, zoomLevel]
   );
   const resolvedLocale = resolveBrowserClientLocale({
     preference: localePreference,
@@ -80,6 +88,10 @@ export function WebClientShell({
     desktopLocale
   });
   const i18n = useMemo(() => createClientI18n(resolvedLocale), [resolvedLocale]);
+  const localizedMapSnapshot = useMemo(
+    () => createLocalizedMapSnapshot(snapshot.map, i18n),
+    [i18n, snapshot.map]
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -135,10 +147,14 @@ export function WebClientShell({
       snapshot={snapshot}
       mapMode={mapMode}
       zoomLevel={zoomLevel}
+      panOffset={panOffset}
       selectedEntity={selectedEntity}
+      hoveredEntity={hoveredEntity}
       onMapModeChange={setMapMode}
       onZoomLevelChange={setZoomLevel}
+      onPanOffsetChange={setPanOffset}
       onSelectedEntityChange={setSelectedEntity}
+      onHoveredEntityChange={setHoveredEntity}
       onM3CommandSubmit={handleM3CommandSubmit}
       m3CommandStatus={m3CommandStatus}
       onM4CommandSubmit={handleM4CommandSubmit}
@@ -154,10 +170,11 @@ export function WebClientShell({
       initialDebugMode={readInitialDebugMode(initialSearch ?? getWindowSearch())}
       mapSurface={
         <PixiMapSurface
-          snapshot={snapshot.map}
+          snapshot={localizedMapSnapshot}
           viewport={viewport}
           i18n={i18n}
           onSelectedEntityChange={setSelectedEntity}
+          onHoveredEntityChange={setHoveredEntity}
         />
       }
     />
@@ -169,13 +186,15 @@ interface PixiMapSurfaceProps {
   readonly viewport: MapRenderViewport;
   readonly i18n: ClientI18n;
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
+  readonly onHoveredEntityChange: (selection: ClientMapEntitySelection | null) => void;
 }
 
 function PixiMapSurface({
   snapshot,
   viewport,
   i18n,
-  onSelectedEntityChange
+  onSelectedEntityChange,
+  onHoveredEntityChange
 }: PixiMapSurfaceProps): ReactElement {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<MountedPixiMapRenderer | null>(null);
@@ -223,6 +242,7 @@ function PixiMapSurface({
       initialSnapshot: pendingDeltaRef.current.snapshot,
       viewport: pendingDeltaRef.current.viewport,
       onSelectEntity: onSelectedEntityChange,
+      onHoverEntity: onHoveredEntityChange,
       signal: abortController.signal
     })
       .then((renderer) => {
@@ -256,7 +276,7 @@ function PixiMapSurface({
       renderer?.destroy();
       host.replaceChildren();
     };
-  }, [onSelectedEntityChange]);
+  }, [onHoveredEntityChange, onSelectedEntityChange]);
 
   function handleMapKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
     const districtCount = snapshot.districts.length;
@@ -390,4 +410,27 @@ function readInitialDebugMode(search: string): boolean {
   const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
   const debug = params.get("debug")?.trim().toLowerCase() ?? "";
   return debug === "1" || debug === "true" || debug === "on";
+}
+
+function createLocalizedMapSnapshot(
+  snapshot: ClientMapReadModelSnapshot,
+  i18n: ClientI18n
+): ClientMapReadModelSnapshot {
+  return {
+    ...snapshot,
+    anchors: snapshot.anchors.map((anchor) => ({ ...anchor })),
+    districts: snapshot.districts.map((district) => ({
+      ...district,
+      displayName: i18n.t("shell.district.name", {
+        number: i18n.formatNumber(Number(district.districtId))
+      })
+    })),
+    settlements: snapshot.settlements.map((settlement) => ({
+      ...settlement,
+      displayName: `${i18n.t("shell.settlement.name")} ${i18n.formatNumber(
+        Number(settlement.settlementId)
+      )}`
+    })),
+    routes: snapshot.routes.map((route) => ({ ...route }))
+  };
 }

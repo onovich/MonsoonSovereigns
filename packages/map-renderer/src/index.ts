@@ -24,6 +24,21 @@ export interface MapRenderViewport {
   readonly mode: ClientMapMode;
   readonly zoomLevel: number;
   readonly selectedEntity: ClientMapEntitySelection | null;
+  readonly hoveredEntity?: ClientMapEntitySelection | null;
+  readonly panOffset?: MapRenderPanOffset;
+}
+
+export interface MapRenderPanOffset {
+  readonly xInMapUnits: number;
+  readonly yInMapUnits: number;
+}
+
+interface ResolvedMapRenderViewport {
+  readonly mode: ClientMapMode;
+  readonly zoomLevel: number;
+  readonly selectedEntity: ClientMapEntitySelection | null;
+  readonly hoveredEntity: ClientMapEntitySelection | null;
+  readonly panOffset: MapRenderPanOffset;
 }
 
 export interface MapRenderPlan {
@@ -34,6 +49,7 @@ export interface MapRenderPlan {
   };
   readonly mode: ClientMapMode;
   readonly zoomLevel: number;
+  readonly panOffset: MapRenderPanOffset;
   readonly anchors: readonly MapAnchorRenderInstruction[];
   readonly districts: readonly MapDistrictRenderInstruction[];
   readonly settlements: readonly MapSettlementRenderInstruction[];
@@ -115,7 +131,10 @@ export interface MapDistrictRenderInstruction {
   readonly polygon: readonly MapPointRenderInstruction[];
   readonly fillColor: number;
   readonly strokeColor: number;
+  readonly routeStatus: ClientDistrictRouteStatus;
+  readonly presentationState: "default" | "hovered" | "selected" | "reachable" | "blocked";
   readonly isSelected: boolean;
+  readonly isHovered: boolean;
 }
 
 export interface MapSettlementRenderInstruction extends MapPointRenderInstruction {
@@ -124,7 +143,10 @@ export interface MapSettlementRenderInstruction extends MapPointRenderInstructio
   readonly districtId: number;
   readonly radiusInMapUnits: number;
   readonly fillColor: number;
+  readonly strokeColor: number;
+  readonly presentationState: "default" | "hovered" | "selected";
   readonly isSelected: boolean;
+  readonly isHovered: boolean;
 }
 
 export interface MapRouteRenderInstruction {
@@ -132,6 +154,8 @@ export interface MapRouteRenderInstruction {
   readonly points: readonly MapPointRenderInstruction[];
   readonly strokeColor: number;
   readonly widthInMapUnits: number;
+  readonly routeStatus: ClientDistrictRouteStatus;
+  readonly presentationState: "default" | "reachable" | "overloaded" | "blocked" | "selected";
   readonly isSelected: boolean;
 }
 
@@ -159,6 +183,7 @@ export interface MountPixiMapRendererOptions {
   readonly initialSnapshot: ClientMapReadModelSnapshot;
   readonly viewport: MapRenderViewport;
   readonly onSelectEntity: (selection: ClientMapEntitySelection) => void;
+  readonly onHoverEntity?: (selection: ClientMapEntitySelection | null) => void;
   readonly signal?: AbortSignal;
 }
 
@@ -259,7 +284,7 @@ interface PixiGraphics extends PixiDisplayObject {
   fill(style: PixiFillStyle): this;
   lineTo(x: number, y: number): this;
   moveTo(x: number, y: number): this;
-  on(eventName: "pointerdown", callback: () => void): this;
+  on(eventName: "pointerdown" | "pointerover" | "pointerout", callback: () => void): this;
   poly(points: readonly number[]): this;
   stroke(style: PixiStrokeStyle): this;
 }
@@ -308,7 +333,12 @@ const MINIMUM_PIXI_SURFACE_SIZE_PX = 1;
 const defaultViewport: MapRenderViewport = {
   mode: "seasonal",
   zoomLevel: 1,
-  selectedEntity: null
+  selectedEntity: null,
+  hoveredEntity: null,
+  panOffset: {
+    xInMapUnits: 0,
+    yInMapUnits: 0
+  }
 };
 
 const toneFillColor: Readonly<Record<ClientMapAnchorTone, number>> = {
@@ -328,6 +358,7 @@ export function buildMapRenderPlan(
     bounds: snapshot.bounds,
     mode: resolvedViewport.mode,
     zoomLevel: resolvedViewport.zoomLevel,
+    panOffset: resolvedViewport.panOffset,
     anchors: snapshot.anchors.map((anchor) => ({
       id: anchor.id,
       label: anchor.label,
@@ -449,7 +480,12 @@ export async function mountPixiMapRenderer(
     });
     throwIfAborted(options.signal);
 
-    const renderer = new BrowserPixiMapRenderer(app, pixi, options.onSelectEntity);
+    const renderer = new BrowserPixiMapRenderer(
+      app,
+      pixi,
+      options.onSelectEntity,
+      options.onHoverEntity ?? (() => undefined)
+    );
     options.host.replaceChildren(app.canvas);
     app.canvas.classList.add("pixi-map__canvas");
     app.canvas.setAttribute("aria-label", "MapRenderer Pixi canvas");
@@ -618,16 +654,19 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
   private readonly settlementLayer: PixiContainer;
   private readonly labelLayer: PixiContainer;
   private readonly onSelectEntity: (selection: ClientMapEntitySelection) => void;
+  private readonly onHoverEntity: (selection: ClientMapEntitySelection | null) => void;
 
   public constructor(
     app: PixiApplication,
     pixi: PixiRuntimeModule,
-    onSelectEntity: (selection: ClientMapEntitySelection) => void
+    onSelectEntity: (selection: ClientMapEntitySelection) => void,
+    onHoverEntity: (selection: ClientMapEntitySelection | null) => void
   ) {
     this.app = app;
     this.pixi = pixi;
     this.canvas = app.canvas;
     this.onSelectEntity = onSelectEntity;
+    this.onHoverEntity = onHoverEntity;
     this.rootLayer = new this.pixi.Container();
     this.districtLayer = new this.pixi.Container();
     this.routeLayer = new this.pixi.Container();
@@ -671,9 +710,11 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     );
     const scale = Math.max(0.1, baseScale * plan.zoomLevel);
     this.rootLayer.scale.set(scale);
+    const centeredOffsetX = (this.canvas.clientWidth - plan.bounds.widthInMapUnits * scale) / 2;
+    const centeredOffsetY = (this.canvas.clientHeight - plan.bounds.heightInMapUnits * scale) / 2;
     this.rootLayer.position.set(
-      Math.max(0, (this.canvas.clientWidth - plan.bounds.widthInMapUnits * scale) / 2),
-      Math.max(0, (this.canvas.clientHeight - plan.bounds.heightInMapUnits * scale) / 2)
+      centeredOffsetX + plan.panOffset.xInMapUnits * scale,
+      centeredOffsetY + plan.panOffset.yInMapUnits * scale
     );
 
     for (let index = 0; index < plan.districts.length; index += 1) {
@@ -703,10 +744,19 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     this.canvas.setAttribute("data-map-scale", scale.toFixed(6));
     this.canvas.setAttribute("data-map-offset-x", this.rootLayer.position.x.toFixed(3));
     this.canvas.setAttribute("data-map-offset-y", this.rootLayer.position.y.toFixed(3));
+    this.canvas.setAttribute("data-pan-x", plan.panOffset.xInMapUnits.toFixed(2));
+    this.canvas.setAttribute("data-pan-y", plan.panOffset.yInMapUnits.toFixed(2));
     this.canvas.setAttribute("data-district-count", plan.districts.length.toString());
     this.canvas.setAttribute("data-settlement-count", plan.settlements.length.toString());
     this.canvas.setAttribute("data-route-count", plan.routes.length.toString());
     this.canvas.setAttribute("data-label-count", plan.labels.length.toString());
+    this.canvas.setAttribute(
+      "data-hovered-entity",
+      plan.districts.some((district) => district.isHovered) ||
+        plan.settlements.some((settlement) => settlement.isHovered)
+        ? "present"
+        : "none"
+    );
     this.app.render();
   }
 
@@ -730,6 +780,12 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     graphics.hitArea = new this.pixi.Polygon(polygonPoints);
     graphics.on("pointerdown", () => {
       this.onSelectEntity({ kind: "district", districtId: readModel.districtId });
+    });
+    graphics.on("pointerover", () => {
+      this.onHoverEntity({ kind: "district", districtId: readModel.districtId });
+    });
+    graphics.on("pointerout", () => {
+      this.onHoverEntity(null);
     });
     return graphics;
   }
@@ -764,7 +820,7 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
       .circle(instruction.xInMapUnits, instruction.yInMapUnits, instruction.radiusInMapUnits)
       .fill({ color: instruction.fillColor })
       .stroke({
-        color: MAP_RENDER_TOKENS.settlements.strokeDefault,
+        color: instruction.strokeColor,
         width: instruction.isSelected ? 3 : MAP_RENDER_TOKENS.routes.widthDefaultInMapUnits
       });
     graphics.eventMode = "static";
@@ -776,12 +832,22 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
         districtId: readModel.districtId
       });
     });
+    graphics.on("pointerover", () => {
+      this.onHoverEntity({
+        kind: "settlement",
+        settlementId: readModel.settlementId,
+        districtId: readModel.districtId
+      });
+    });
+    graphics.on("pointerout", () => {
+      this.onHoverEntity(null);
+    });
     return graphics;
   }
 
   private createLabel(instruction: MapLabelRenderInstruction): PixiText {
     const text = new this.pixi.Text({
-      text: instruction.label.replace("Prototype ", ""),
+      text: instruction.label,
       style: {
         fill:
           instruction.tone === "district"
@@ -902,21 +968,30 @@ function destroyPixiApplication(app: PixiApplication): void {
   }
 }
 
-function resolveViewport(viewport: Partial<MapRenderViewport>): MapRenderViewport {
+function resolveViewport(viewport: Partial<MapRenderViewport>): ResolvedMapRenderViewport {
   return {
     mode: viewport.mode ?? defaultViewport.mode,
     zoomLevel: viewport.zoomLevel ?? defaultViewport.zoomLevel,
-    selectedEntity: viewport.selectedEntity ?? defaultViewport.selectedEntity
+    selectedEntity: viewport.selectedEntity ?? defaultViewport.selectedEntity,
+    hoveredEntity: viewport.hoveredEntity ?? null,
+    panOffset: viewport.panOffset ?? {
+      xInMapUnits: 0,
+      yInMapUnits: 0
+    }
   };
 }
 
 function buildDistrictInstruction(
   district: ClientMapDistrictReadModel,
-  viewport: MapRenderViewport
+  viewport: ResolvedMapRenderViewport
 ): MapDistrictRenderInstruction {
   const isSelected =
     viewport.selectedEntity?.kind === "district" &&
     viewport.selectedEntity.districtId === district.districtId;
+  const isHovered =
+    viewport.hoveredEntity?.kind === "district" &&
+    viewport.hoveredEntity.districtId === district.districtId;
+  const presentationState = districtPresentationState(district.route.status, isSelected, isHovered);
 
   return {
     id: `district-${district.districtId}`,
@@ -925,18 +1000,27 @@ function buildDistrictInstruction(
     fillColor: districtFillColor(district, viewport.mode),
     strokeColor: isSelected
       ? MAP_RENDER_TOKENS.districts.strokeSelected
-      : MAP_RENDER_TOKENS.districts.strokeDefault,
-    isSelected
+      : isHovered
+        ? MAP_RENDER_TOKENS.districts.strokeHovered
+        : MAP_RENDER_TOKENS.districts.strokeDefault,
+    routeStatus: district.route.status,
+    presentationState,
+    isSelected,
+    isHovered
   };
 }
 
 function buildSettlementInstruction(
   settlement: ClientMapSettlementReadModel,
-  viewport: MapRenderViewport
+  viewport: ResolvedMapRenderViewport
 ): MapSettlementRenderInstruction {
   const isSelected =
     viewport.selectedEntity?.kind === "settlement" &&
     viewport.selectedEntity.settlementId === settlement.settlementId;
+  const isHovered =
+    viewport.hoveredEntity?.kind === "settlement" &&
+    viewport.hoveredEntity.settlementId === settlement.settlementId;
+  const presentationState = isSelected ? "selected" : isHovered ? "hovered" : "default";
 
   return {
     id: `settlement-${settlement.settlementId}`,
@@ -947,19 +1031,27 @@ function buildSettlementInstruction(
     radiusInMapUnits: SETTLEMENT_RADIUS_IN_MAP_UNITS,
     fillColor: isSelected
       ? MAP_RENDER_TOKENS.settlements.fillSelected
-      : MAP_RENDER_TOKENS.settlements.fillDefault,
-    isSelected
+      : isHovered
+        ? MAP_RENDER_TOKENS.settlements.fillHovered
+        : MAP_RENDER_TOKENS.settlements.fillDefault,
+    strokeColor: isHovered
+      ? MAP_RENDER_TOKENS.settlements.strokeHovered
+      : MAP_RENDER_TOKENS.settlements.strokeDefault,
+    presentationState,
+    isSelected,
+    isHovered
   };
 }
 
 function buildRouteInstruction(
   route: ClientMapRouteReadModel,
-  viewport: MapRenderViewport
+  viewport: ResolvedMapRenderViewport
 ): MapRouteRenderInstruction {
+  const selectedDistrictId = viewport.selectedEntity?.districtId;
   const isSelected =
-    viewport.selectedEntity?.kind === "district" &&
-    (viewport.selectedEntity.districtId === route.originDistrictId ||
-      viewport.selectedEntity.districtId === route.destinationDistrictId);
+    selectedDistrictId !== undefined &&
+    (selectedDistrictId === route.originDistrictId ||
+      selectedDistrictId === route.destinationDistrictId);
 
   return {
     id: `route-${route.originDistrictId}-${route.destinationDistrictId}`,
@@ -969,13 +1061,15 @@ function buildRouteInstruction(
       isSelected || viewport.mode === "routes"
         ? MAP_RENDER_TOKENS.routes.widthProminentInMapUnits
         : MAP_RENDER_TOKENS.routes.widthDefaultInMapUnits,
+    routeStatus: route.status,
+    presentationState: routePresentationState(route.status, isSelected),
     isSelected
   };
 }
 
 function buildLabelInstructions(
   snapshot: ClientMapReadModelSnapshot,
-  viewport: MapRenderViewport
+  viewport: ResolvedMapRenderViewport
 ): readonly MapLabelRenderInstruction[] {
   if (viewport.zoomLevel < 1.35) {
     return [];
@@ -1173,6 +1267,40 @@ function routeStrokeColor(status: ClientMapRouteReadModel["status"]): number {
       return MAP_RENDER_TOKENS.routes.overloaded;
     case "unreachable":
       return MAP_RENDER_TOKENS.routes.blocked;
+  }
+}
+
+function districtPresentationState(
+  status: ClientDistrictRouteStatus,
+  isSelected: boolean,
+  isHovered: boolean
+): MapDistrictRenderInstruction["presentationState"] {
+  if (isSelected) {
+    return "selected";
+  }
+  if (isHovered) {
+    return "hovered";
+  }
+  if (status === "reachable") {
+    return "reachable";
+  }
+  return "blocked";
+}
+
+function routePresentationState(
+  status: ClientDistrictRouteStatus,
+  isSelected: boolean
+): MapRouteRenderInstruction["presentationState"] {
+  if (isSelected) {
+    return "selected";
+  }
+  switch (status) {
+    case "reachable":
+      return "reachable";
+    case "capacity-exceeded":
+      return "overloaded";
+    case "unreachable":
+      return "blocked";
   }
 }
 

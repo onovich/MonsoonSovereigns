@@ -135,7 +135,9 @@ export interface ClientShellViewProps {
   readonly mapSurface: ReactElement;
   readonly mapMode: ClientMapMode;
   readonly zoomLevel: number;
+  readonly panOffset?: ClientMapPanOffset;
   readonly selectedEntity: ClientMapEntitySelection | null;
+  readonly hoveredEntity?: ClientMapEntitySelection | null;
   readonly m6BatchBalanceArtifact?: M6BatchBalanceDashboardArtifact | null;
   readonly initialM7Surface?: ClientM7CoverageSurface;
   readonly initialDebugMode?: boolean;
@@ -144,7 +146,9 @@ export interface ClientShellViewProps {
   readonly onLocalePreferenceChange?: (preference: ClientLocalePreference) => void;
   readonly onMapModeChange: (mode: ClientMapMode) => void;
   readonly onZoomLevelChange: (zoomLevel: number) => void;
+  readonly onPanOffsetChange?: (panOffset: ClientMapPanOffset) => void;
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
+  readonly onHoveredEntityChange?: (selection: ClientMapEntitySelection | null) => void;
   readonly onM3CommandSubmit: (command: ClientM3SubmittedCommand) => void;
   readonly m3CommandStatus: string | null;
   readonly onM4CommandSubmit: (command: ClientM4SubmittedCommand) => void;
@@ -155,9 +159,20 @@ export interface ClientShellViewProps {
   readonly m6CommandStatus: string | null;
 }
 
+export interface ClientMapPanOffset {
+  readonly xInMapUnits: number;
+  readonly yInMapUnits: number;
+}
+
 const DISTRICT_ROW_HEIGHT_PX = 44;
 const DISTRICT_TABLE_VIEWPORT_HEIGHT_PX = 352;
 const DISTRICT_TABLE_OVERSCAN_ROWS = 8;
+const MAP_PAN_STEP_IN_MAP_UNITS = 24;
+const MAP_PAN_LIMIT_IN_MAP_UNITS = 180;
+const ZERO_MAP_PAN_OFFSET: ClientMapPanOffset = {
+  xInMapUnits: 0,
+  yInMapUnits: 0
+};
 const ClientI18nContext = createContext<ClientI18n>(DEFAULT_CLIENT_I18N);
 type M3AppointmentFlowStage = "select-office" | "compare-candidates" | "preview" | "result";
 type DistrictRouteStatusFilter = ClientDistrictRowReadModel["route"]["status"] | "all";
@@ -167,7 +182,9 @@ export function ClientShellView({
   mapSurface,
   mapMode,
   zoomLevel,
+  panOffset = ZERO_MAP_PAN_OFFSET,
   selectedEntity,
+  hoveredEntity = null,
   m6BatchBalanceArtifact = null,
   initialM7Surface = "tutorial",
   initialDebugMode = false,
@@ -176,7 +193,9 @@ export function ClientShellView({
   onLocalePreferenceChange,
   onMapModeChange,
   onZoomLevelChange,
+  onPanOffsetChange,
   onSelectedEntityChange,
+  onHoveredEntityChange,
   onM3CommandSubmit,
   m3CommandStatus,
   onM4CommandSubmit,
@@ -261,6 +280,20 @@ export function ClientShellView({
     selectedEntity?.kind === "settlement"
       ? (snapshot.map.settlements.find(
           (settlement) => settlement.settlementId === selectedEntity.settlementId
+        ) ?? null)
+      : null;
+  const hoveredDistrictId =
+    hoveredEntity?.kind === "settlement"
+      ? hoveredEntity.districtId
+      : (hoveredEntity?.districtId ?? null);
+  const hoveredDistrict =
+    hoveredDistrictId === null
+      ? null
+      : findClientDistrictRow(snapshot.districtList.rows, hoveredDistrictId);
+  const hoveredSettlement =
+    hoveredEntity?.kind === "settlement"
+      ? (snapshot.map.settlements.find(
+          (settlement) => settlement.settlementId === hoveredEntity.settlementId
         ) ?? null)
       : null;
   const visibleRows = districtProjection.rows.slice(
@@ -632,6 +665,17 @@ export function ClientShellView({
     onZoomLevelChange(clampZoomLevel(zoomLevel - 0.25));
   }
 
+  function handlePan(delta: ClientMapPanOffset): void {
+    onPanOffsetChange?.({
+      xInMapUnits: clampMapPanOffset(panOffset.xInMapUnits + delta.xInMapUnits),
+      yInMapUnits: clampMapPanOffset(panOffset.yInMapUnits + delta.yInMapUnits)
+    });
+  }
+
+  function handlePanReset(): void {
+    onPanOffsetChange?.(ZERO_MAP_PAN_OFFSET);
+  }
+
   function handleLocalePreferenceChange(event: ChangeEvent<HTMLSelectElement>): void {
     const nextPreference = CLIENT_LOCALE_PREFERENCES.find(
       (preference) => preference === event.currentTarget.value
@@ -752,6 +796,51 @@ export function ClientShellView({
                     +
                   </button>
                 </div>
+                <div className="map-pan" role="group" aria-label={i18n.t("map.panLabel")}>
+                  <button
+                    type="button"
+                    aria-label={i18n.t("map.panUp")}
+                    onClick={() =>
+                      handlePan({ xInMapUnits: 0, yInMapUnits: -MAP_PAN_STEP_IN_MAP_UNITS })
+                    }
+                  >
+                    N
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={i18n.t("map.panLeft")}
+                    onClick={() =>
+                      handlePan({ xInMapUnits: -MAP_PAN_STEP_IN_MAP_UNITS, yInMapUnits: 0 })
+                    }
+                  >
+                    W
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={i18n.t("map.panReset")}
+                    onClick={handlePanReset}
+                  >
+                    0
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={i18n.t("map.panRight")}
+                    onClick={() =>
+                      handlePan({ xInMapUnits: MAP_PAN_STEP_IN_MAP_UNITS, yInMapUnits: 0 })
+                    }
+                  >
+                    E
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={i18n.t("map.panDown")}
+                    onClick={() =>
+                      handlePan({ xInMapUnits: 0, yInMapUnits: MAP_PAN_STEP_IN_MAP_UNITS })
+                    }
+                  >
+                    S
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -762,19 +851,31 @@ export function ClientShellView({
               data-route-count={snapshot.map.routes.length}
               data-map-mode={mapMode}
               data-zoom-level={zoomLevel.toFixed(2)}
+              data-pan-x={panOffset.xInMapUnits.toFixed(2)}
+              data-pan-y={panOffset.yInMapUnits.toFixed(2)}
               data-selected-district-id={selectedDistrict?.districtId ?? "none"}
               data-selected-entity-kind={selectedEntity?.kind ?? "none"}
+              data-hovered-district-id={hoveredDistrict?.districtId ?? "none"}
             >
               {mapSurface}
               <span className="client-shell__map-selection">
                 {formatPlayerMapSelection(selectedDistrict, selectedSettlement, i18n)}
               </span>
+              <output
+                className="client-shell__map-tooltip"
+                aria-label={i18n.t("shell.mapHover.label")}
+                aria-live="polite"
+              >
+                {formatPlayerMapHover(hoveredDistrict, hoveredSettlement, i18n)}
+              </output>
             </div>
 
             <div className="client-shell__map-legend" aria-label={i18n.t("shell.mapLegend.label")}>
-              <span>{i18n.t("shell.mapLegend.selected")}</span>
-              <span>{i18n.t("shell.mapLegend.routes")}</span>
-              <span>{i18n.t("shell.mapLegend.season")}</span>
+              <MapLegendItem tone="selected" label={i18n.t("shell.mapLegend.selected")} />
+              <MapLegendItem tone="reachable" label={i18n.t("shell.mapLegend.reachable")} />
+              <MapLegendItem tone="blocked" label={i18n.t("shell.mapLegend.blocked")} />
+              <MapLegendItem tone="overloaded" label={i18n.t("shell.mapLegend.overloaded")} />
+              <MapLegendItem tone="settlement" label={i18n.t("shell.mapLegend.settlement")} />
             </div>
           </section>
 
@@ -984,7 +1085,15 @@ export function ClientShellView({
                           key={row.districtId}
                           row={row}
                           isSelected={selectedDistrictId === row.districtId}
+                          isHovered={hoveredDistrictId === row.districtId}
                           onSelect={handleSelect}
+                          onHover={(hoveredRow) =>
+                            onHoveredEntityChange?.(
+                              hoveredRow === null
+                                ? null
+                                : { kind: "district", districtId: hoveredRow.districtId }
+                            )
+                          }
                         />
                       ))}
                     </div>
@@ -1163,10 +1272,18 @@ function SortButton({
 interface DistrictRowButtonProps {
   readonly row: ClientDistrictRowReadModel;
   readonly isSelected: boolean;
+  readonly isHovered: boolean;
   readonly onSelect: (row: ClientDistrictRowReadModel) => void;
+  readonly onHover: (row: ClientDistrictRowReadModel | null) => void;
 }
 
-function DistrictRowButton({ row, isSelected, onSelect }: DistrictRowButtonProps): ReactElement {
+function DistrictRowButton({
+  row,
+  isSelected,
+  isHovered,
+  onSelect,
+  onHover
+}: DistrictRowButtonProps): ReactElement {
   const i18n = useContext(ClientI18nContext);
   return (
     <button
@@ -1178,7 +1295,12 @@ function DistrictRowButton({ row, isSelected, onSelect }: DistrictRowButtonProps
       )}`}
       aria-pressed={isSelected}
       data-district-id={row.districtId}
+      data-hovered={isHovered ? "true" : "false"}
       onClick={() => onSelect(row)}
+      onFocus={() => onHover(row)}
+      onBlur={() => onHover(null)}
+      onMouseEnter={() => onHover(row)}
+      onMouseLeave={() => onHover(null)}
       style={{ height: `${DISTRICT_ROW_HEIGHT_PX}px` }}
     >
       <span>{formatPlayerDistrictName(row, i18n)}</span>
@@ -1188,6 +1310,20 @@ function DistrictRowButton({ row, isSelected, onSelect }: DistrictRowButtonProps
       <span>{formatInteger(row.cash.stock)}</span>
       <span>{formatRouteStatusLabel(row.route.status, i18n)}</span>
     </button>
+  );
+}
+
+interface MapLegendItemProps {
+  readonly tone: "selected" | "reachable" | "blocked" | "overloaded" | "settlement";
+  readonly label: string;
+}
+
+function MapLegendItem({ tone, label }: MapLegendItemProps): ReactElement {
+  return (
+    <span className="client-shell__map-legend-item" data-map-legend-tone={tone}>
+      <span aria-hidden="true" />
+      {label}
+    </span>
   );
 }
 
@@ -4291,6 +4427,10 @@ function clampZoomLevel(value: number): number {
   return Math.min(2, Math.max(0.75, value));
 }
 
+function clampMapPanOffset(value: number): number {
+  return Math.min(MAP_PAN_LIMIT_IN_MAP_UNITS, Math.max(-MAP_PAN_LIMIT_IN_MAP_UNITS, value));
+}
+
 function formatPlayerMapSelection(
   selectedDistrict: ClientDistrictRowReadModel | null,
   selectedSettlement: ClientMapSettlementReadModel | null,
@@ -4306,6 +4446,26 @@ function formatPlayerMapSelection(
     )}`;
   }
   return formatPlayerDistrictName(selectedDistrict, i18n);
+}
+
+function formatPlayerMapHover(
+  hoveredDistrict: ClientDistrictRowReadModel | null,
+  hoveredSettlement: ClientMapSettlementReadModel | null,
+  i18n: ClientI18n
+): string {
+  if (hoveredDistrict === null) {
+    return i18n.t("shell.mapHover.empty");
+  }
+  if (hoveredSettlement !== null) {
+    return i18n.t("shell.mapHover.settlement", {
+      settlement: formatPlayerSettlementName(i18n),
+      district: formatPlayerDistrictName(hoveredDistrict, i18n)
+    });
+  }
+  return i18n.t("shell.mapHover.district", {
+    district: formatPlayerDistrictName(hoveredDistrict, i18n),
+    route: formatPlayerRouteSummary(hoveredDistrict, i18n)
+  });
 }
 
 function getHighResolutionTime(): number {

@@ -9,6 +9,7 @@ export const MAP_RENDER_TOKENS = {
   },
   districts: {
     strokeDefault: 0x91a0a6,
+    strokeHovered: 0x2f6f73,
     strokeSelected: 0x172126,
     seasonal: {
       fallow: 0xd9d1be,
@@ -39,8 +40,10 @@ export const MAP_RENDER_TOKENS = {
   },
   settlements: {
     fillDefault: 0xf7f4ea,
+    fillHovered: 0xe7f2ef,
     fillSelected: 0x172126,
-    strokeDefault: 0x4b5b63
+    strokeDefault: 0x4b5b63,
+    strokeHovered: 0x2f6f73
   },
   labels: {
     districtFill: 0x172126,
