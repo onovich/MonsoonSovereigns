@@ -31,11 +31,12 @@ export function readStoredLocalePreference(
   if (storage === null) {
     return "system";
   }
-  const parsed = parseClientLocalePreference(storage.getItem(CLIENT_LOCALE_STORAGE_KEY));
+  const stored = readLocaleStorageValue(storage);
+  const parsed = parseClientLocalePreference(stored);
   if (parsed === null) {
     return "system";
   }
-  storage.setItem(CLIENT_LOCALE_STORAGE_KEY, parsed);
+  writeLocaleStorageValue(storage, parsed);
   return parsed;
 }
 
@@ -43,7 +44,9 @@ export function persistLocalePreference(
   storage: LocaleStorageLike | null,
   preference: ClientLocalePreference
 ): void {
-  storage?.setItem(CLIENT_LOCALE_STORAGE_KEY, preference);
+  if (storage !== null) {
+    writeLocaleStorageValue(storage, preference);
+  }
 }
 
 export function readBrowserSystemLocales(source: BrowserLocaleSource | null): readonly string[] {
@@ -116,4 +119,23 @@ function isRuntimeInfoWithLocale(value: unknown): value is { readonly locale: st
     "locale" in value &&
     typeof value.locale === "string"
   );
+}
+
+function readLocaleStorageValue(storage: LocaleStorageLike): string | null {
+  try {
+    return storage.getItem(CLIENT_LOCALE_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeLocaleStorageValue(
+  storage: LocaleStorageLike,
+  preference: ClientLocalePreference
+): void {
+  try {
+    storage.setItem(CLIENT_LOCALE_STORAGE_KEY, preference);
+  } catch {
+    // Locale preference is a UI convenience; failed storage must not block boot.
+  }
 }

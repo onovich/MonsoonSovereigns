@@ -1,0 +1,95 @@
+{
+  "message_id": "MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Fixed the QA-blocking locale canonicalization defect. The client i18n foundation now canonicalizes supported locale families instead of relying on a narrow alias list: en and en-* resolve to en-US, and zh and zh-* resolve to zh-CN unless a future Human Gate adds another Chinese locale. Web locale persistence now safely migrates persisted en-* and zh-* values to supported preferences, and localStorage getItem/setItem failures fall back without blocking boot. No sim-core, sim-ai, protocol, save-format, map-renderer, Electron IPC/preload, dependency, gate document, or product-scope path was changed.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/i18n-platform.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "feat/m7-i18n-foundation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "uncommitted on 4f5a5f15396c41b50ad6a018f0cfd06f45d4c7ef",
+  "tests_run": [
+    {
+      "command": "node --experimental-strip-types -e QA locale edge probe",
+      "exit_code": 0,
+      "result": "{\"enGbThenZh\":\"en-US\",\"zhTw\":\"zh-CN\",\"zhHk\":\"zh-CN\",\"zhHansHk\":\"zh-CN\"}; matches QA expected_after_fix."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 13 tests. Added en/en-* and zh/zh-* family canonicalization coverage including en-GB before zh-Hans, zh-TW, zh-HK, and zh-Hans-HK."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 7 tests. Added Web persistence migration for zh-Hans, zh-TW, en-GB, system fallback for en-GB/zh-HK/zh-Hans-HK, and localStorage getItem/setItem throw protection."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 14/14. Existing system zh-Hans fallback, manual switch, persistence, document.lang, viewport, keyboard, and core UI flows remain green."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-I18N-FOUNDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer handoff JSON."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LOCALE-FAMILY-CANONICALIZATION",
+      "decision": "Replaced the narrow Simplified Chinese alias list with supported language-family canonicalization. en and every en-* BCP-47 tag canonicalize to en-US; zh and every zh-* tag canonicalize to zh-CN."
+    },
+    {
+      "id": "PERSISTED-PREFERENCE-MIGRATION",
+      "decision": "Persisted legacy or regional locale values such as en-GB, zh-Hans, zh-TW, zh-HK, and zh-Hans-HK are parsed into the supported preference set before being rewritten to localStorage."
+    },
+    {
+      "id": "SAFE-LOCAL-STORAGE-FAILURE",
+      "decision": "localStorage access remains a UI convenience. getItem failure falls back to system; setItem failure is swallowed so locale preference persistence cannot block Web shell boot."
+    },
+    {
+      "id": "NO-BOUNDARY-EXPANSION-R2",
+      "decision": "The R2 repair changed only UI/Web/test code in allowed paths. It did not add dependencies, Electron IPC/preload surface, protocol fields, save fields, simulation behavior, map-renderer behavior, or product scope."
+    }
+  ],
+  "risks": [
+    {
+      "id": "CHINESE-LOCALE-POLICY-IS-FOUNDATION-SCOPED",
+      "severity": "P2",
+      "summary": "All zh-* system tags now map to zh-CN. This intentionally follows the current supported surface and product directive, but it is not a cultural/language-content decision that traditional Chinese or region-specific Chinese support is complete.",
+      "mitigation": "Future Traditional Chinese, regional Chinese, or additional locale support must go through a Human Gate/task update before changing SUPPORTED_CLIENT_LOCALE_FAMILIES."
+    },
+    {
+      "id": "FULL-PLAYER-STRING-COVERAGE-REMAINS-DOWNSTREAM",
+      "severity": "P3",
+      "summary": "This R2 repair only fixes locale negotiation/persistence. Full player-mode text cleanup remains assigned to downstream M7 UI quality tasks.",
+      "mitigation": "Keep M7 app shell, map, inspector, appointment, guidance, regression matrix, and UI-localization exit tasks responsible for final no-bare-key/no-debug-string coverage."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R2 locale-family canonicalization policy and confirm it satisfies the accepted systems boundary: client-only i18n, no sim/protocol/save/map authority changes, no Electron IPC/preload expansion, and current zh-* -> zh-CN behavior scoped to the present supported locale set. After systems review, route back to qa_reviewer for R2 verification.",
+  "created_at": "2026-06-28T22:34:34.6043067+08:00"
+}

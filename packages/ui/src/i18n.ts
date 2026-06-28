@@ -3,14 +3,12 @@ export type ClientResolvedLocale = Exclude<ClientLocalePreference, "system">;
 
 export const CLIENT_LOCALE_PREFERENCES = ["system", "en-US", "zh-CN"] as const;
 export const CLIENT_RESOLVED_LOCALES = ["en-US", "zh-CN"] as const;
+export const ENGLISH_CANONICAL_LOCALE = "en-US";
 export const SIMPLIFIED_CHINESE_CANONICAL_LOCALE = "zh-CN";
-export const SIMPLIFIED_CHINESE_ALIASES = [
-  "zh",
-  "zh-CN",
-  "zh-Hans",
-  "zh-Hans-CN",
-  "zh-SG"
-] as const;
+export const SUPPORTED_CLIENT_LOCALE_FAMILIES = {
+  en: ENGLISH_CANONICAL_LOCALE,
+  zh: SIMPLIFIED_CHINESE_CANONICAL_LOCALE
+} as const;
 
 const enUSMessages = {
   "app.title": "Monsoon Sovereigns",
@@ -218,18 +216,22 @@ export function parseClientLocalePreference(value: string | null): ClientLocaleP
     return null;
   }
   const normalized = value.trim();
-  if (normalized === "system" || normalized === "en-US" || normalized === "zh-CN") {
-    return normalized;
+  if (normalized.toLowerCase() === "system") {
+    return "system";
   }
-  return isSimplifiedChineseLocale(normalized) ? SIMPLIFIED_CHINESE_CANONICAL_LOCALE : null;
+  return normalizeClientLocaleTag(normalized);
 }
 
 export function normalizeClientLocaleTag(value: string): ClientResolvedLocale | null {
-  const normalized = value.trim();
-  if (normalized.toLowerCase() === "en" || normalized.toLowerCase() === "en-us") {
-    return "en-US";
+  const normalized = value.trim().toLowerCase();
+  const languageFamily = normalized.split("-")[0];
+  if (languageFamily === "en") {
+    return ENGLISH_CANONICAL_LOCALE;
   }
-  return isSimplifiedChineseLocale(normalized) ? SIMPLIFIED_CHINESE_CANONICAL_LOCALE : null;
+  if (languageFamily === "zh") {
+    return SIMPLIFIED_CHINESE_CANONICAL_LOCALE;
+  }
+  return null;
 }
 
 export function resolveClientLocale(input: {
@@ -250,11 +252,6 @@ export function resolveClientLocale(input: {
 
 export function isBareReasonCodeLike(value: string): boolean {
   return /(?:^|\s)(?:[a-z][a-z0-9]*[.:_-]){1,}[a-z0-9-]+(?:\s|$)/u.test(value);
-}
-
-function isSimplifiedChineseLocale(value: string): boolean {
-  const normalized = value.trim().toLowerCase();
-  return SIMPLIFIED_CHINESE_ALIASES.some((alias) => alias.toLowerCase() === normalized);
 }
 
 function formatUnknownReasonCode(reasonCode: string, locale: ClientResolvedLocale): string {

@@ -311,13 +311,42 @@ describe("M2 district client UI", () => {
     expect(extremeCoverageMarkup).toContain('data-asset-reference-count="8"');
   });
 
-  test("resolves zh-Hans aliases to the zh-CN client locale", () => {
+  test("canonicalizes supported en-* and zh-* locale families", () => {
+    expect(parseClientLocalePreference("en")).toBe("en-US");
+    expect(parseClientLocalePreference("en-GB")).toBe("en-US");
     expect(parseClientLocalePreference("zh-Hans")).toBe("zh-CN");
+    expect(parseClientLocalePreference("zh-TW")).toBe("zh-CN");
+    expect(parseClientLocalePreference("zh-HK")).toBe("zh-CN");
+    expect(parseClientLocalePreference("zh-Hans-HK")).toBe("zh-CN");
     expect(parseClientLocalePreference("zh-CN")).toBe("zh-CN");
     expect(
       resolveClientLocale({
         preference: "system",
+        systemLocales: ["en-GB", "zh-Hans"]
+      })
+    ).toBe("en-US");
+    expect(
+      resolveClientLocale({
+        preference: "system",
         systemLocales: ["zh-Hans", "en-US"]
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["zh-TW"]
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["zh-HK"]
+      })
+    ).toBe("zh-CN");
+    expect(
+      resolveClientLocale({
+        preference: "system",
+        systemLocales: ["zh-Hans-HK"]
       })
     ).toBe("zh-CN");
     expect(
