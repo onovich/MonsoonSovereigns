@@ -2,7 +2,7 @@
   "id": "M7-APP-SHELL-QUALITY-001",
   "summary": "Productize the M7 player app shell",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -87,7 +87,7 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-APP-SHELL-QUALITY-001",
-      "status": "active_router",
+      "status": "closed_integrated",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -95,12 +95,16 @@
       "actual_effort": "xhigh",
       "branch_or_worktree": "feat/m7-app-shell-quality",
       "created_at": "2026-06-28T16:17:06.608Z",
-      "updated_at": "2026-06-28T19:20:37.348Z"
+      "updated_at": "2026-06-28T20:00:34.367Z",
+      "lead_close_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 179,
+      "integrated_main_commit": "6814706e34b9aed54a0aceb25a62dadcd319da65",
+      "closed_at": "2026-06-28T20:00:34.367Z"
     },
     "client_engineer": {
       "thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
       "task_id": "M7-APP-SHELL-QUALITY-001",
-      "status": "accepted_waiting_integration",
+      "status": "closed_integrated",
       "role": "client_engineer",
       "nickname": "Window the 2nd",
       "configured_model": "gpt-5.5",
@@ -113,15 +117,19 @@
       "routed_at": "2026-06-28T16:17:06.608Z",
       "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R3-REVIEW__client_engineer.json",
       "review_commit": "dd98fb27cbf5241002302cc483234b01160c265e",
-      "updated_at": "2026-06-28T19:55:24.802Z",
+      "updated_at": "2026-06-28T20:00:34.367Z",
       "request_changes_route": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-QA-R2-REQUEST-CHANGES-TO-WRITER.json",
       "route_sent_at": "2026-06-28T19:40:34.279Z",
-      "route_submission_id": "019f0fbe-cdc9-7550-8bd6-540d89206306"
+      "route_submission_id": "019f0fbe-cdc9-7550-8bd6-540d89206306",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 179,
+      "integrated_main_commit": "6814706e34b9aed54a0aceb25a62dadcd319da65",
+      "closed_at": "2026-06-28T20:00:34.367Z"
     },
     "qa_reviewer": {
       "thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
       "task_id": "M7-APP-SHELL-QUALITY-001",
-      "status": "accepted",
+      "status": "closed_integrated",
       "role": "qa_reviewer",
       "nickname": "Gate",
       "configured_model": "gpt-5.5",
@@ -134,12 +142,16 @@
       "source_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
       "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW__qa_reviewer.json",
       "routed_at": "2026-06-28T19:03:23.528Z",
-      "updated_at": "2026-06-28T19:55:24.802Z",
+      "updated_at": "2026-06-28T20:00:34.367Z",
       "route_sent_at": "2026-06-28T19:47:10.168Z",
       "route_submission_id": "019f0fc5-1c62-7fd0-a37a-13761f7e20df",
       "qa_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json",
       "qa_r2_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R2-REVIEW__qa_reviewer.json",
-      "qa_r3_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW__qa_reviewer.json"
+      "qa_r3_review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW__qa_reviewer.json",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 179,
+      "integrated_main_commit": "6814706e34b9aed54a0aceb25a62dadcd319da65",
+      "closed_at": "2026-06-28T20:00:34.367Z"
     }
   },
   "route_to": "qa_reviewer",
@@ -156,7 +168,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-28T19:55:24.802Z",
+  "updated_at": "2026-06-28T20:01:26.568Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -182,7 +194,7 @@
   "writer_thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
   "writer_thread_nickname": "Window the 2nd",
   "expected_writer_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
-  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED after origin/main contains the accepted commits.",
+  "next_action": "Start M7-APPOINTMENT-FLOW-QUALITY-001 after closure enters main.",
   "review_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R3-REVIEW__client_engineer.json",
   "review_commit": "dd98fb27cbf5241002302cc483234b01160c265e",
   "qa_thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
@@ -216,5 +228,22 @@
   "lead_accept_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-06-28T19:55:24.802Z",
   "accepted_implementation_commit": "dd98fb27cbf5241002302cc483234b01160c265e",
-  "accepted_branch_head": "5490201b77ac9ec0d2e3c65918e4029971eed06c"
+  "accepted_branch_head": "5490201b77ac9ec0d2e3c65918e4029971eed06c",
+  "integrated_pr": 179,
+  "integrated_main_commit": "6814706e34b9aed54a0aceb25a62dadcd319da65",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/179",
+  "lead_close_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-06-28T20:00:34.367Z",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "child_threads_closed": [
+    "019f0f04-198a-73b0-94cc-d01d36ef3c56",
+    "019f0f9c-332b-7472-9b55-b6440262b78c"
+  ],
+  "next_ready_tasks": [
+    "M7-APPOINTMENT-FLOW-QUALITY-001",
+    "M7-DISTRICT-INSPECTOR-QUALITY-001",
+    "M7-MAP-PRESENTATION-QUALITY-001",
+    "M7-PLAYER-GUIDANCE-LITE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ]
 }
