@@ -1,0 +1,65 @@
+{
+  "message_id": "MSG-20260628-M7-SCENARIO-FILL-CLOSED",
+  "task_id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-SCENARIO-PERSON-EVENT-FILL-001 is CLOSED after PR #165 merged into origin/main at 2c15f8a21d985244c6896e934a1c96cca4629edf. The task filled the M7 Beta scenario/person/event content path, resolved QA REQUEST_CHANGES with R2 runtime parser hardening, received independent QA R2 ACCEPT, passed PR CI, and was integrated to main. Formal content lock remains a future Human Gate and manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+  "branch_or_worktree": "chore/close-m7-scenario-person-event-fill / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "2c15f8a21d985244c6896e934a1c96cca4629edf",
+  "integrated_pr": 165,
+  "integrated_main_commit": "2c15f8a21d985244c6896e934a1c96cca4629edf",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/165",
+  "artifacts": [
+    "content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
+    "packages/content-schema/src/m7-beta-scenario.ts",
+    "packages/content-runtime/src/m7-beta-scenario.ts",
+    "apps/content-tools/src/m7-beta-scenario.ts",
+    "tests/content-schema-graph-source.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-CLOSED__lead_orchestrator.json"
+  ],
+  "tests_run": [
+    {
+      "command": "PR #165 CI: Quality, Web, and Browser Smoke",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "PR #165 CI: Windows Desktop Smoke Artifact",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SCENARIO-PERSON-EVENT-FILL-001",
+      "exit_code": 0,
+      "result": "VALID before closure; closure validation pending this handoff commit."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "passed before PR"
+    }
+  ],
+  "decisions": [
+    "CLOSED only after PR #165 entered origin/main.",
+    "Formal content lock acceptance remains future Human Gate and was not created.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and no blocking manual node battle task was added.",
+    "PROJECT_STATUS.md was not updated because it is forbidden for this task scope."
+  ],
+  "risks": [
+    "High-risk runtime classifier remains term-based and should be extended by future content tasks if new taxonomy terms are introduced.",
+    "Formal historical/cultural names, transliterations, symbols, art/music/clothing/architecture/religious imagery remain future review/Human Gate material."
+  ],
+  "blockers": [],
+  "next_ready_tasks": [
+    "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001"
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Continue to the highest-priority dependency-ready M7 task.",
+  "created_at": "2026-06-28T06:47:07.289Z"
+}
