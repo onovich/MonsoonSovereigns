@@ -239,3 +239,11 @@ The DAG covers content lock planning, historical/cultural/language review, full 
 `M7-CONTENT-LOCK-CONTRACT-001` is the only first downstream task marked `READY` after task graph closure. All other downstream M7 tasks remain `DRAFT`.
 
 The graph preserves `M6_GATE = PASS_WITH_LIMITS` and `DEFER_MANUAL_NODE_BATTLE` exactly. It creates no manual node battle implementation task and no M7/M8 blocking manual node battle spike, research, validation, or exit-gate dependency. Major cultural risk, formal content lock acceptance, manual playthrough acceptance requiring human judgment, commercial/release/branding, telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mods, irreversible migration, and frozen product/platform/core architecture changes remain Human Gates.
+
+## 22. M7 Content Lock Contract Snapshot
+
+`M7-CONTENT-LOCK-CONTRACT-001` is CLOSED after PR #161 entered `origin/main` at `4c350b5b37748e96aa6ead8d7060c00cf3d5f367`. The accepted gameplay_designer contract defines M7 Beta content-lock scope, required review states, post-lock defect-only policy, explicit balance-tuning window, downstream evidence mapping, and Human Gate boundaries without approving the formal content lock.
+
+The task is planning-only. It creates no final content, product code, package code, content-source data, platform behavior, release artifact, telemetry, server/multiplayer behavior, cloud-save implementation, arbitrary-code mod support, roadmap edit, acceptance-matrix edit, prior gate edit, or ADR change. Formal content lock acceptance remains a future Human Gate.
+
+`M6_GATE = PASS_WITH_LIMITS` and `DEFER_MANUAL_NODE_BATTLE` remain preserved exactly. Manual node battle remains only a post-1.0 non-blocking candidate unless a later Human Gate reverses it. The next dependency-ready M7 tasks are `M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001` and `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001`; the lead will start `M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001` first.

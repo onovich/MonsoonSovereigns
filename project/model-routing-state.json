@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
-    "updated_at": "2026-06-28T12:48:34.4918832+08:00"
+    "updated_at": "2026-06-28T12:54:50.6586491+08:00"
   },
   "retired_lead_threads": [
     {
@@ -2437,7 +2437,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T12:48:34.4918832+08:00",
+  "updated_at": "2026-06-28T12:54:50.6586491+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2938,9 +2938,9 @@
     "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION"
   },
   "m7_start": {
-    "status": "CONTENT_LOCK_CONTRACT_REVIEW_READY",
+    "status": "CONTENT_LOCK_CONTRACT_CLOSED",
     "current_milestone": "M7",
-    "next_action": "Validate gameplay_designer REVIEW handoff, then route M7-CONTENT-LOCK-CONTRACT-001 to systems_architect.",
+    "next_action": "Start M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   },
@@ -3096,7 +3096,7 @@
     "closure_recorded_at": "2026-06-28T04:31:17.9147991+08:00"
   },
   "m7_content_lock_contract": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-CONTENT-LOCK-CONTRACT-001",
     "branch_or_worktree": "design/m7-content-lock-contract",
     "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -3113,10 +3113,10 @@
     "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-CONTENT-LOCK-CONTRACT-001__ROUTE-20260628-M7-CONTENT-LOCK-LEAD-TO-GAMEPLAY-START.json",
     "started_at": "2026-06-28T04:31:17.9147991+08:00",
-    "updated_at": "2026-06-28T12:48:34.4918832+08:00",
+    "updated_at": "2026-06-28T12:54:50.6586491+08:00",
     "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-WRITER-REVIEW__gameplay_designer.json",
     "review_ready_at": "2026-06-28T04:38:12.1103688+08:00",
-    "next_action": "Push branch, open PR, wait for CI, merge to main, then close M7-CONTENT-LOCK-CONTRACT-001.",
+    "next_action": "Start M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 as the highest-priority dependency-ready M7 task; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is also dependency-ready but not selected first.",
     "route_sent_at": "2026-06-28T04:34:14.0465143+08:00",
     "start_submission_id": "019f0aca-1855-78e0-86db-4f9304226101",
     "review_commit": "7acdad1be31bc3f87f4c8d1ecc2c363ea48f372e",
@@ -3133,6 +3133,16 @@
     "child_threads_closed": [
       "019f0ac6-e0ae-7903-a258-ae2f92db6619",
       "019f0c87-0fbf-7830-90e5-08484fab11c1"
+    ],
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 161,
+    "integrated_main_commit": "4c350b5b37748e96aa6ead8d7060c00cf3d5f367",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/161",
+    "lead_close_handoff": "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-28T12:54:50.6586491+08:00",
+    "next_ready_tasks": [
+      "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   }
 }
