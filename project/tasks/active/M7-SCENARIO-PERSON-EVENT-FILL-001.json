@@ -2,7 +2,7 @@
   "id": "M7-SCENARIO-PERSON-EVENT-FILL-001",
   "summary": "Fill M7 Beta scenario, person, and event content path",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "IN_PROGRESS",
   "owner_role": "historical_researcher",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -95,7 +95,7 @@
     "historical_researcher": {
       "thread_id": "019f0cbc-49e0-7751-97a3-24ce9c4682d0",
       "nickname": "Archive",
-      "status": "review",
+      "status": "in_progress",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -103,18 +103,22 @@
       "branch_or_worktree": "content/m7-scenario-person-event-fill",
       "base_main_commit": "3b64847785d58f6bb660be31c693622874aab48d",
       "created_at": "2026-06-28T05:39:16.616Z",
-      "updated_at": "2026-06-28T06:09:44.184Z",
+      "updated_at": "2026-06-28T06:20:14.635Z",
       "start_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-SCENARIO-PERSON-EVENT-FILL-001__ROUTE-20260628-M7-SCENARIO-FILL-LEAD-TO-HISTORICAL-START.json",
-      "next_action": "Await qa_reviewer review of the M7 scenario/person/event fill path.",
+      "next_action": "Repair QA-requested runtime parser/test gaps and return R2 REVIEW handoff.",
       "route_sent_at": "2026-06-28T05:41:17.029Z",
       "start_submission_id": "019f0cbe-c700-79f2-a738-a4c30eb3e359",
-      "review_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW__historical_researcher.json"
+      "review_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-WRITER-REVIEW__historical_researcher.json",
+      "request_changes_round": 2,
+      "request_changes_route": "project/messages/routes/M7-SCENARIO-PERSON-EVENT-FILL-001__ROUTE-20260628-M7-SCENARIO-FILL-QA-REQUEST-CHANGES-TO-HISTORICAL.json",
+      "request_changes_submission_id": "019f0ce2-6adf-7721-8307-7936aa65c6dc",
+      "request_changes_sent_at": "2026-06-28T06:20:14.635Z"
     },
     "qa_reviewer": {
       "thread_id": "019f0cd7-ed09-7f92-9bbb-48ff07429aaf",
       "nickname": "Witness",
-      "status": "review",
+      "status": "request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -129,13 +133,15 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T06:09:44.184Z",
-      "updated_at": "2026-06-28T06:10:36.326Z",
-      "next_action": "Review actual diff and produce QA handoff.",
+      "updated_at": "2026-06-28T06:19:28.281Z",
+      "next_action": "Await writer R2 repair and reroute.",
       "qa_submission_id": "019f0cd9-9497-7b20-a5a8-1945fd91211a",
-      "qa_route_sent_at": "2026-06-28T06:10:36.326Z"
+      "qa_route_sent_at": "2026-06-28T06:10:36.326Z",
+      "qa_status": "REQUEST_CHANGES",
+      "qa_review_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-REVIEW__qa_reviewer.json"
     }
   },
-  "route_to": "qa_reviewer",
+  "route_to": "historical_researcher",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
     "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; this task must not create implementation, M7/M8 blocking spike, research, validation, or exit-gate dependency for manual node battle.",
@@ -144,7 +150,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T06:10:36.326Z",
+  "updated_at": "2026-06-28T06:20:14.635Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -189,12 +195,18 @@
     "m6_gate_carry_forward": "PASS_WITH_LIMITS"
   },
   "scheduling_reason": "Selected after M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 because it is the direct content-lane consumer of the accepted review baseline; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is also dependency-ready and remains unstarted.",
-  "next_action": "Await independent qa_reviewer verdict for the M7 scenario/person/event fill path.",
+  "next_action": "Historical researcher must repair QA-requested runtime parser/test gaps and return R2 REVIEW handoff.",
   "route_sent_at": "2026-06-28T05:41:17.029Z",
   "start_submission_id": "019f0cbe-c700-79f2-a738-a4c30eb3e359",
   "qa_thread_id": "019f0cd7-ed09-7f92-9bbb-48ff07429aaf",
   "qa_thread_nickname": "Witness",
   "qa_route": "project/messages/routes/M7-SCENARIO-PERSON-EVENT-FILL-001__ROUTE-20260628-M7-SCENARIO-FILL-WRITER-TO-QA-REVIEW.json",
   "routed_to_qa_at": "2026-06-28T06:10:36.326Z",
-  "qa_submission_id": "019f0cd9-9497-7b20-a5a8-1945fd91211a"
+  "qa_submission_id": "019f0cd9-9497-7b20-a5a8-1945fd91211a",
+  "request_changes_round": 2,
+  "qa_status": "REQUEST_CHANGES",
+  "qa_review_handoff": "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-QA-REVIEW__qa_reviewer.json",
+  "request_changes_route": "project/messages/routes/M7-SCENARIO-PERSON-EVENT-FILL-001__ROUTE-20260628-M7-SCENARIO-FILL-QA-REQUEST-CHANGES-TO-HISTORICAL.json",
+  "request_changes_submission_id": "019f0ce2-6adf-7721-8307-7936aa65c6dc",
+  "request_changes_sent_at": "2026-06-28T06:20:14.635Z"
 }
