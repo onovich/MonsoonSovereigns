@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-I18N-FOUNDATION-001"
   ],
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M7-UI-LOCALIZATION-PLAN-001",
   "last_integrated_task": "M7-UI-LOCALIZATION-PLAN-001",
   "last_main_commit": "43edb04439eb243a5c19d1c22bc59095bab36867",
@@ -36,7 +36,7 @@
     "client_engineer": {
       "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
       "task_id": "M7-I18N-FOUNDATION-001",
-      "status": "active_writer",
+      "status": "closed_review_ready",
       "role": "client_engineer",
       "nickname": "Window",
       "configured_model": "gpt-5.5",
@@ -46,7 +46,25 @@
       "branch_or_worktree": "feat/m7-i18n-foundation",
       "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
-      "routed_at": "2026-06-28T21:27:25.1239661+08:00"
+      "routed_at": "2026-06-28T21:27:25.1239661+08:00",
+      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+      "closed_at": "2026-06-28T21:56:18.9396215+08:00"
+    },
+    "systems_architect": {
+      "thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
+      "task_id": "M7-I18N-FOUNDATION-001",
+      "status": "active_reviewer",
+      "role": "systems_architect",
+      "nickname": "Keystone",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-i18n-foundation",
+      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
+      "routed_at": "2026-06-28T21:58:09.3109039+08:00"
     }
   },
   "unresolved_risks": [
@@ -77,11 +95,11 @@
     "note": "No Human Gate is active. Formal content lock and major cultural-risk decisions remain future Human Gates; M7 UI/localization planning must not implement UI or reverse DEFER_MANUAL_NODE_BATTLE.",
     "recorded_at": "2026-06-28T20:39:18.2016568+08:00"
   },
-  "next_machine_action": "Await client_engineer writer REVIEW handoff for M7-I18N-FOUNDATION-001, then route to systems_architect.",
+  "next_machine_action": "Await systems_architect review of M7-I18N-FOUNDATION-001.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T21:27:25.1239661+08:00",
+  "last_updated_at": "2026-06-28T21:58:09.3109039+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -220,7 +238,7 @@
     ]
   },
   "m7_i18n_foundation": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-I18N-FOUNDATION-001",
     "branch_or_worktree": "feat/m7-i18n-foundation",
     "base_main_commit": "382439d0ab40b4ef6f7172473155c686d81c7ef7",
@@ -237,9 +255,15 @@
     "actual_writer_model": "unknown",
     "actual_writer_effort": "unknown",
     "expected_writer_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
+    "systems_thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
+    "systems_thread_nickname": "Keystone",
+    "systems_review_route": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
     "started_at": "2026-06-28T21:27:25.1239661+08:00",
-    "updated_at": "2026-06-28T21:27:25.1239661+08:00",
-    "next_action": "Await client_engineer writer REVIEW handoff, then route to systems_architect.",
+    "updated_at": "2026-06-28T21:58:09.3109039+08:00",
+    "next_action": "Await systems_architect review of the M7 i18n foundation.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
