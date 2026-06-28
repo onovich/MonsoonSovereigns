@@ -2,7 +2,7 @@
   "schema_version": 1,
   "message_id": "GOAL-MODE-CONTINUATION",
   "type": "goal_mode_continuation",
-  "status": "M7_TUTORIAL_HINTS_ENCYCLOPEDIA_REQUEST_CHANGES",
+  "status": "M7_TUTORIAL_HINTS_ENCYCLOPEDIA_R2_REVIEW",
   "project": "Monsoon Sovereigns",
   "origin_main": "71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7",
   "current_milestone": "M7",
@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001"
   ],
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M7-SCENARIO-PERSON-EVENT-FILL-001",
   "last_integrated_task": "M7-SCENARIO-PERSON-EVENT-FILL-001",
   "last_main_commit": "71fcb49f2cf7aeb0022eb7d72792c4aca8c4ada7",
@@ -32,16 +32,15 @@
     "client_engineer": {
       "thread_id": "019f0cff-f5d7-7942-9d9b-15b9449590d7",
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
-      "status": "in_progress",
+      "status": "review",
       "role": "client_engineer",
       "nickname": "Window",
-      "request_changes_round": 2,
-      "request_changes_submission_id": "019f0d26-abb8-7033-9c6e-4bbdb40b496e"
+      "review_round": 2
     },
     "qa_reviewer": {
       "thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
-      "status": "request_changes",
+      "status": "review_pending_r2",
       "role": "qa_reviewer",
       "nickname": "Gate",
       "read_only": true
@@ -70,14 +69,14 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 request changes route checkpoint",
+    "approval_source": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 r2 writer review checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Repair is limited to accepted M7 content labels/review states in client guidance; formal content lock and manual node battle reversal remain Human Gates.",
-    "recorded_at": "2026-06-28T07:33:59.991Z"
+    "note": "No Human Gate is active. R2 fix mechanically aligns client guidance with accepted M7 content records; formal content lock and manual node battle reversal remain Human Gates.",
+    "recorded_at": "2026-06-28T07:53:26.268Z"
   },
-  "next_machine_action": "Await client_engineer R2 repair handoff for QA-requested M7 content pack drift fix; then validate and reroute to qa_reviewer.",
+  "next_machine_action": "Route client_engineer R2 handoff for M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001 to qa_reviewer.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-28T07:34:47.509Z"
+  "last_updated_at": "2026-06-28T07:53:26.268Z"
 }

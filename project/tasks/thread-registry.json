@@ -5344,7 +5344,7 @@
       "start_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T06:53:11.961Z",
-      "updated_at": "2026-06-28T07:34:47.509Z",
+      "updated_at": "2026-06-28T07:53:26.268Z",
       "start_submission_id": "019f0d01-9272-7bd1-97c2-f3fc907c2d8f",
       "route_sent_at": "2026-06-28T06:54:19.165Z",
       "review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
@@ -5356,14 +5356,16 @@
       "request_changes_route": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-QA-REQUEST-CHANGES-TO-CLIENT.json",
       "qa_status": "REQUEST_CHANGES",
       "request_changes_submission_id": "019f0d26-abb8-7033-9c6e-4bbdb40b496e",
-      "request_changes_sent_at": "2026-06-28T07:34:47.509Z"
+      "request_changes_sent_at": "2026-06-28T07:34:47.509Z",
+      "r2_review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+      "r2_review_commit": "963bf5580a64304f8ab852dfacbc6fa638350af5"
     },
     "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001:client_engineer": {
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
       "role": "client_engineer",
       "thread_id": "019f0cff-f5d7-7942-9d9b-15b9449590d7",
       "nickname": "Window",
-      "status": "in_progress",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -5373,8 +5375,8 @@
       "start_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-LEAD-TO-CLIENT-START.json",
       "created_at": "2026-06-28T06:53:11.961Z",
-      "updated_at": "2026-06-28T07:34:47.509Z",
-      "next_action": "Repair QA-requested M7 content pack drift and return R2 REVIEW handoff.",
+      "updated_at": "2026-06-28T07:53:26.268Z",
+      "next_action": "Await qa_reviewer R2 verdict.",
       "start_submission_id": "019f0d01-9272-7bd1-97c2-f3fc907c2d8f",
       "route_sent_at": "2026-06-28T06:54:19.165Z",
       "review_handoff": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-REVIEW__client_engineer.json",
@@ -5382,14 +5384,16 @@
       "request_changes_round": 2,
       "request_changes_route": "project/messages/routes/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__ROUTE-20260628-M7-TUTORIAL-QA-REQUEST-CHANGES-TO-CLIENT.json",
       "request_changes_submission_id": "019f0d26-abb8-7033-9c6e-4bbdb40b496e",
-      "request_changes_sent_at": "2026-06-28T07:34:47.509Z"
+      "request_changes_sent_at": "2026-06-28T07:34:47.509Z",
+      "review_handoff_r2": "project/messages/outbox/M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001__MSG-20260628-M7-TUTORIAL-WRITER-R2-REVIEW__client_engineer.json",
+      "review_commit_r2": "963bf5580a64304f8ab852dfacbc6fa638350af5"
     },
     "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001:qa_reviewer": {
       "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
       "role": "qa_reviewer",
       "thread_id": "019f0d1b-aa7b-73d3-a815-b63769765c2e",
       "nickname": "Gate",
-      "status": "request_changes",
+      "status": "review_pending_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -5403,8 +5407,8 @@
       "human_gate_required": false,
       "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
       "created_at": "2026-06-28T07:23:25.030Z",
-      "updated_at": "2026-06-28T07:33:59.991Z",
-      "next_action": "Await writer R2 repair and reroute.",
+      "updated_at": "2026-06-28T07:53:26.268Z",
+      "next_action": "Await R2 review route.",
       "qa_submission_id": "019f0d1c-f0ed-7470-8d3e-f44858b782b4",
       "qa_route_sent_at": "2026-06-28T07:24:12.378Z",
       "qa_status": "REQUEST_CHANGES",
@@ -5498,5 +5502,5 @@
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
     }
   ],
-  "updated_at": "2026-06-28T07:34:47.509Z"
+  "updated_at": "2026-06-28T07:53:26.268Z"
 }
