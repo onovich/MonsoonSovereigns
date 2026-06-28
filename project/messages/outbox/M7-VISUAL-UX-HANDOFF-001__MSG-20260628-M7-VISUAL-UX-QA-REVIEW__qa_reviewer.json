@@ -1,0 +1,147 @@
+{
+  "message_id": "MSG-20260628-M7-VISUAL-UX-QA-REVIEW",
+  "task_id": "M7-VISUAL-UX-HANDOFF-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the M7 visual/UX handoff and the systems ACCEPT envelope as coordination-ready. The handoff can be converted into downstream M7 UI/localization quality-track tasks only if those tasks inherit the architecture, i18n, read-model, Human Gate, and non-implementation conditions recorded here and in the systems review.",
+  "artifacts": [
+    "project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+    "content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "research/m7-beta-culture-review",
+  "commit": "b2b7c426",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only unrelated untracked M7-BETA-CULTURE-REVIEW-001 QA handoff JSON was present before this QA handoff was written."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-VISUAL-UX-HANDOFF-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID visual_design_reviewer handoff JSON"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect handoff JSON"
+    },
+    {
+      "command": "node -e JSON parse/shape check for task, visual handoff, and systems handoff",
+      "exit_code": 0,
+      "result": "JSON_PARSE_SHAPE_PASS 3 files"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-VISUAL-UX-HANDOFF-001 and M7-BETA-CULTURE-REVIEW-001 are REVIEW; prior M7 content-lock contract, scenario fill, tutorial, and audio/art/localization prerequisites are CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is the only current ready task; the visual/UX handoff remains review-gated until lead integration."
+    },
+    {
+      "command": "rg -n \"ClientMapEntitySelection|createM3AppointmentCommand\" apps packages tests .storybook",
+      "exit_code": 0,
+      "result": "Confirmed cited map selection and M3 appointment command surfaces exist in client-core/ui/map-renderer/tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID qa_reviewer handoff JSON"
+    },
+    {
+      "command": "node -e JSON parse check for QA handoff",
+      "exit_code": 0,
+      "result": "QA_HANDOFF_JSON_PARSE_PASS"
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Final status after writing this QA handoff also showed parallel project state/culture-review modifications and untracked culture-review handoff files outside this visual/UX QA artifact."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "Final whitespace check still reported no errors."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA-ACCEPT-M7-VISUAL-UX-HANDOFF",
+      "decision": "Accept the visual handoff and systems review as adequate to drive downstream M7 UI/localization planning. This is not implementation approval, content-lock acceptance, production art approval, release approval, or Human Gate approval."
+    },
+    {
+      "id": "CONCEPT-ART-MAPPING-BOUNDARY",
+      "decision": "The visual handoff maps concept-art intent to existing or already-designed read models, UI surfaces, command factories, debug surfaces, and asset slots. Target-expression items must remain UI/layout/copy/token work unless a later task explicitly approves new domain capability."
+    },
+    {
+      "id": "SYSTEMS-CONDITIONS-INHERITED",
+      "decision": "Downstream UI/localization tasks must keep i18n outside sim-core, keep React/client state outside authoritative WorldState ownership, treat Pixi as rebuildable render cache, preserve SimulationPort/GameCommand/query boundaries, and keep player and AI on the same command surface."
+    },
+    {
+      "id": "COORDINATION-SCOPE-ONLY",
+      "decision": "The task status REVIEW and allowed paths are appropriate for a coordination-only handoff. It performs no UI, i18n, token, asset, app-shell, package, sim rule, content-source, release, telemetry, server, multiplayer, cloud-save, account, secret, or manual node battle implementation."
+    },
+    {
+      "id": "HUMAN-GATES-PRESERVED",
+      "decision": "Formal content lock, major cultural-risk symbols/assets, manual playthrough acceptance requiring human judgment, manual node battle reversal, cloud-save/accounts/telemetry/paid services/secrets, commercial/release/branding decisions, arbitrary-code mods, server/multiplayer, irreversible migration, and frozen architecture or historical-policy changes remain Human Gates."
+    },
+    {
+      "id": "MANUAL-NODE-BATTLE-PRESERVED",
+      "decision": "Manual node battle remains DEFER_MANUAL_NODE_BATTLE. The handoff correctly classifies manual node battle UI as rejected for the 1.0 mainline unless a later Human Gate reverses that decision."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-TARGET-EXPRESSION-OVERREAD",
+      "severity": "P1",
+      "summary": "Downstream authors could treat target-expression or designed-but-unsurfaced UI language as authorization for new simulation/product systems.",
+      "mitigation": "Each derived task must cite existing read models, commands, or classify work as layout/copy/token/asset-slot only; any new protocol, schema, sim rule, or domain capability needs separate systems review and, where architectural, ADR/Human Gate routing."
+    },
+    {
+      "id": "M7-HUMAN-GATE-INHERITANCE",
+      "severity": "P1",
+      "summary": "Derived tasks can accidentally narrow the complete Human Gate list if they copy only the short visual handoff summary.",
+      "mitigation": "Lead must copy the full task JSON Human Gate list and systems review conditions into every downstream M7 UI/localization task."
+    },
+    {
+      "id": "M7-CULTURAL-ASSET-SYMBOL-RISK",
+      "severity": "P1",
+      "summary": "Portraits, icons, frames, map symbols, title language, scripts, sacred imagery, clothing, architecture, weapons, flags, music, and ritual motifs can imply unsupported historical or cultural claims.",
+      "mitigation": "Use neutral placeholders, tokens, and replacement slots until historical/cultural review clears specific assets; major unresolved cases go to Human Gate."
+    },
+    {
+      "id": "M7-I18N-LOCALE-CODE-DRIFT",
+      "severity": "P2",
+      "summary": "The product directive and visual handoff name zh-CN, while existing M7 coverage records use zh-Hans for Simplified Chinese.",
+      "mitigation": "The downstream i18n foundation task must explicitly choose or alias locale identifiers through systems review and tests; no locale-code choice is approved by this handoff alone."
+    },
+    {
+      "id": "M7-PARALLEL-WIP-STATUS",
+      "severity": "P2",
+      "summary": "git status showed parallel M7 culture-review/project-state WIP before and after this review artifact was written, including modified state files and untracked culture-review handoff files.",
+      "mitigation": "Lead integration should stage only the intended visual/UX QA handoff for this route, reconcile or separately integrate culture-review state changes, and re-run status before acceptance."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "lead accept and integrate the visual/UX handoff, then create or update downstream M7 UI/localization quality-track tasks while preserving all conditions.",
+  "created_at": "2026-06-28T20:24:04.7562395+08:00"
+}

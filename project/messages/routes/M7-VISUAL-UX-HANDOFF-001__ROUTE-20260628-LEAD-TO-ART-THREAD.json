@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "route_id": "ROUTE-20260628-M7-VISUAL-UX-LEAD-TO-ART-THREAD",
+  "task_id": "M7-VISUAL-UX-HANDOFF-001",
+  "source_role": "lead_orchestrator",
+  "target_role": "visual_design_reviewer",
+  "target_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+  "source_directive": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+  "delivery": {
+    "method": "multi_agent_v1.send_input",
+    "interrupt": false,
+    "submission_id": "019f0e1c-192f-7632-a787-54bde749b0e8",
+    "sent_at": "2026-06-28T20:00:07.0222898+08:00",
+    "result": "SENT"
+  },
+  "message_summary": "Lead sent a compact Prompt B request asking the existing art/visual thread to produce a structured M7-VISUAL-UX-HANDOFF-001 Markdown handoff. The request preserved M7 authority, M7 content-lock status, no M5/M6 rollback, no UI implementation, no new major systems, and DEFER_MANUAL_NODE_BATTLE.",
+  "required_target_output": {
+    "handoff_name": "M7-VISUAL-UX-HANDOFF-001.md",
+    "format": "structured Markdown plus concise JSON-like summary",
+    "route_to": "lead_orchestrator",
+    "requested_action": "systems_architect + client_engineer + qa_reviewer review and convert into M7 UI/localization tasks"
+  },
+  "required_sections": [
+    "Design intent",
+    "Screen-level information hierarchy",
+    "Mapping from concept art to current systems",
+    "Recommended player flow",
+    "Visual direction",
+    "Design tokens",
+    "Asset replacement slots",
+    "Localization implications",
+    "Debug vs player mode separation",
+    "Implementation guidance for client_engineer",
+    "Risks and non-goals",
+    "Handoff summary"
+  ],
+  "non_goals": [
+    "manual node battle implementation",
+    "core simulation rewrite",
+    "final art production",
+    "server, multiplayer, telemetry, cloud-save, paid service, account, or secret integration",
+    "large unapproved dependency",
+    "repo file modification by the art thread without explicit authorization"
+  ],
+  "created_at": "2026-06-28T20:00:07.0222898+08:00"
+}

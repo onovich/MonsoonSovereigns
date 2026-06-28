@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW",
+  "task_id": "M7-VISUAL-UX-HANDOFF-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "The visual/UX handoff is architecturally safe to send to independent QA review and can drive downstream M7 UI/localization planning if derived tasks preserve read-model/GameCommand boundaries, keep i18n outside sim-core, hide debug surfaces from player mode, and inherit the full M7 Human Gate list.",
+  "artifacts": [
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "research/m7-beta-culture-review",
+  "commit": "c57f2899",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Initial pre-write status showed active M7 Beta culture-review and visual-handoff WIP plus incoming visual handoff artifacts; final post-write status showed only this systems review JSON as untracked."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-VISUAL-UX-HANDOFF-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-VISUAL-UX-HANDOFF-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID visual_design_reviewer handoff JSON"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry lists M7-VISUAL-UX-HANDOFF-001 as REVIEW, M7-BETA-CULTURE-REVIEW-001 as REVIEW, and prior M7 content-lock contract/audio-art-localization prerequisites as CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready task output is M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001; visual/UX handoff remains in review routing and does not alter readiness by itself."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-VISUAL-UX-HANDOFF-001 task and visual handoff JSON",
+      "exit_code": 0,
+      "result": "JSON parse/shape check PASS"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors reported."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "SYSTEMS-ACCEPT-M7-VISUAL-UX-HANDOFF",
+      "decision": "Accept the handoff for independent QA review. It is design/UX guidance, not implementation approval, release approval, content-lock acceptance, or Human Gate approval."
+    },
+    {
+      "id": "SIM-CORE-UI-BOUNDARY-PRESERVED",
+      "decision": "The handoff keeps authoritative state in the simulation Worker, uses read models for UI/Pixi presentation, requires player and AI changes to continue through GameCommand/query surfaces, and does not ask React, Pixi, Electron main, or client store to own domain state."
+    },
+    {
+      "id": "I18N-OUTSIDE-SIM-CORE",
+      "decision": "The handoff correctly places localization in the client/UI layer: sim-core emits stable reason codes and context, UI translates player-facing text, and language changes must not affect simulation state hash."
+    },
+    {
+      "id": "PLAYER-MODE-DEBUG-SEPARATION",
+      "decision": "The handoff clearly requires player mode to hide revision, state hash, prototype labels, raw reason codes, internal IDs, dev timings, and test-only labels while preserving a separate explicit debug overlay."
+    },
+    {
+      "id": "M7-SCOPE-PRESERVED",
+      "decision": "The handoff stays within M7 Beta UI/localization/visual-quality scope. It does not authorize M8 release engineering, production art, server/multiplayer, telemetry, cloud-save implementation, large unapproved dependencies, sim-core rewrite, or manual node battle reversal."
+    },
+    {
+      "id": "DOWNSTREAM-TASK-CONDITIONS",
+      "decision": "Derived tasks may cover UI/localization plan, i18n foundation, design tokens/asset slots, app shell quality, map presentation, district inspector, appointment flow, player guidance, and UI regression matrix only as scoped M7 tasks with explicit allowed paths, required tests, reviewer routing, and no implicit public protocol or architecture change. Any new cross-boundary protocol/schema decision requires a task-specific systems review and, if architectural, an ADR."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-VISUAL-TARGET-TO-SYSTEM-DRIFT",
+      "severity": "P1",
+      "summary": "The handoff contains target-expression and designed-but-not-surfaced UI concepts. Downstream task authors could over-read these as new simulation or product systems.",
+      "mitigation": "QA and lead should require every derived task to cite existing read models/commands or explicitly classify the item as layout/copy/token work; new domain capability is out of scope without a separate approved task."
+    },
+    {
+      "id": "M7-HUMAN-GATE-LIST-INHERITANCE",
+      "severity": "P1",
+      "summary": "The handoff summary names the main Human Gate cases but is not the authoritative complete list.",
+      "mitigation": "Downstream tasks must inherit the task JSON Human Gate list: major cultural-risk decisions, formal content-lock acceptance, manual playthrough acceptance needing human judgment, commercial/release/branding, telemetry/accounts/paid services/secrets, server/multiplayer, arbitrary-code mods, cloud-save implementation, irreversible migration, frozen architecture/tech-stack/core-policy changes, and manual node battle reversal."
+    },
+    {
+      "id": "M7-CULTURAL-ASSET-SYMBOL-RISK",
+      "severity": "P1",
+      "summary": "Portrait, icon, frame, map, title, and religious/cultural visual choices can imply unsupported historical or cultural claims.",
+      "mitigation": "Keep M7 implementation to placeholders/tokens/slots unless the item has historical_researcher culture-review clearance; route major cultural-risk findings to the Human Gate."
+    },
+    {
+      "id": "M7-PARALLEL-WIP-INTEGRATION-RISK",
+      "severity": "P2",
+      "summary": "Initial review status observed parallel M7 WIP, while final post-write status showed only this systems review JSON as untracked.",
+      "mitigation": "Lead integration should still re-check status immediately before staging and include only the reviewed handoff/review artifacts for this route."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "independent QA review of task scope, evidence, and readiness to convert into downstream M7 UI/localization tasks.",
+  "created_at": "2026-06-28T20:15:23.1212790+08:00"
+}

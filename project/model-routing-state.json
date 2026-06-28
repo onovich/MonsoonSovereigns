@@ -42,8 +42,12 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-TUTORIAL-HINTS-ENCYCLOPEDIA-COMPLETE-001",
-    "updated_at": "2026-06-28T06:53:11.961Z"
+    "task_id": "M7-BETA-CULTURE-REVIEW-001",
+    "updated_at": "2026-06-28T20:08:30.0000000+08:00",
+    "concurrent_task_ids": [
+      "M7-BETA-CULTURE-REVIEW-001",
+      "M7-VISUAL-UX-HANDOFF-001"
+    ]
   },
   "retired_lead_threads": [
     {
@@ -1898,7 +1902,7 @@
   ],
   "active_threads": [
     {
-      "task_id": null,
+      "task_id": "M7-BETA-CULTURE-REVIEW-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "status": "active_router",
@@ -1906,9 +1910,23 @@
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration selecting next M7 task after audio/art/localization closure",
-      "branch_or_worktree": "main",
-      "updated_at": "2026-06-28T09:10:18.046Z"
+      "responsibility": "lead orchestration for M7 beta culture review",
+      "branch_or_worktree": "research/m7-beta-culture-review",
+      "updated_at": "2026-06-28T09:16:20.781Z"
+    },
+    {
+      "task_id": "M7-BETA-CULTURE-REVIEW-001",
+      "role": "historical_researcher",
+      "thread_id": "019f0d82-dd8b-73c1-a715-045abacda8c0",
+      "nickname": "Chronicle the 2nd",
+      "status": "active_writer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "responsibility": "Write final Beta culture/history/language review evidence",
+      "branch_or_worktree": "research/m7-beta-culture-review",
+      "updated_at": "2026-06-28T09:16:20.781Z"
     }
   ],
   "task_effects": {
@@ -2466,8 +2484,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M7-BETA-CULTURE-REVIEW-001 as next content-lock-chain task after closure merge.",
-  "current_task": null,
+  "next_action": "Await M7-BETA-CULTURE-REVIEW-001 writer REVIEW handoff, then route to qa_reviewer.",
+  "current_task": "M7-BETA-CULTURE-REVIEW-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2517,7 +2535,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T09:10:18.046Z",
+  "updated_at": "2026-06-28T20:28:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2672,7 +2690,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-28T09:10:18.046Z",
+  "last_updated_at": "2026-06-28T09:17:10.572Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -3490,5 +3508,173 @@
       "M7-BETA-CULTURE-REVIEW-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_beta_culture_review": {
+    "status": "ACCEPTED",
+    "task_id": "M7-BETA-CULTURE-REVIEW-001",
+    "branch_or_worktree": "research/m7-beta-culture-review",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0d82-dd8b-73c1-a715-045abacda8c0",
+    "writer_nickname": "Chronicle the 2nd",
+    "owner_role": "historical_researcher",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "base_main_commit": "bf2feede9a32e906e2526ad6137ea18f7e9efba1",
+    "previous_closed_task": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-BETA-CULTURE-REVIEW-LEAD-TO-HISTORICAL-START.json",
+    "started_at": "2026-06-28T09:16:20.781Z",
+    "updated_at": "2026-06-28T20:24:00.0000000+08:00",
+    "next_action": "Open/merge PR after all active branch review work is accepted; close M7-BETA-CULTURE-REVIEW-001 only after the accepted commit enters main.",
+    "start_submission_id": "019f0d84-5f55-74e0-8e67-5e5739eacb5b",
+    "route_sent_at": "2026-06-28T09:17:10.572Z",
+    "review_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-WRITER-REVIEW__historical_researcher.json",
+    "review_evidence": "content-source/m7-beta-culture-review/beta-culture-review-evidence.json",
+    "qa_thread_id": "019f0e25-5cda-7a52-8e6a-b62a4460e947",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_review_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T20:24:00.0000000+08:00",
+    "accepted_head_commit": "b2b7c4260da993f380be9f2d9f888d5d6975da06"
+  },
+  "entries": {
+    "M7-VISUAL-UX-HANDOFF-001:lead_orchestrator": {
+      "task_id": "M7-VISUAL-UX-HANDOFF-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "accepted_pending_integration",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "research/m7-beta-culture-review",
+      "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json",
+      "created_at": "2026-06-28T20:00:07.0222898+08:00",
+      "updated_at": "2026-06-28T20:28:00.0000000+08:00",
+      "next_action": "Await art/visual handoff and route to systems_architect and qa_reviewer.",
+      "lead_accept_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-LEAD-ACCEPT__lead_orchestrator.json"
+    },
+    "M7-VISUAL-UX-HANDOFF-001:visual_design_reviewer": {
+      "task_id": "M7-VISUAL-UX-HANDOFF-001",
+      "role": "visual_design_reviewer",
+      "thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "status": "handoff_provided",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "external_or_existing_art_thread",
+      "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json",
+      "submission_id": "019f0e1c-192f-7632-a787-54bde749b0e8",
+      "created_at": "2026-06-28T20:00:07.0222898+08:00",
+      "updated_at": "2026-06-28T20:08:30.0000000+08:00",
+      "next_action": "Return structured Markdown handoff to lead_orchestrator.",
+      "review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json"
+    },
+    "M7-VISUAL-UX-HANDOFF-001:systems_architect": {
+      "thread_id": "019f0e23-0b6b-7d20-85dc-de8004dba800",
+      "task_id": "M7-VISUAL-UX-HANDOFF-001",
+      "status": "closed_accepted",
+      "role": "systems_architect",
+      "nickname": "Lintel",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-ART-HANDOFF-TO-SYSTEMS-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+      "routed_at": "2026-06-28T20:08:30.0000000+08:00",
+      "systems_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+      "closed_at": "2026-06-28T20:20:00.0000000+08:00",
+      "updated_at": "2026-06-28T20:20:00.0000000+08:00"
+    },
+    "M7-BETA-CULTURE-REVIEW-001:qa_reviewer": {
+      "thread_id": "019f0e25-5cda-7a52-8e6a-b62a4460e947",
+      "task_id": "M7-BETA-CULTURE-REVIEW-001",
+      "status": "closed_accepted",
+      "role": "qa_reviewer",
+      "nickname": "Witness",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-WRITER-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+      "routed_at": "2026-06-28T20:10:30.0000000+08:00",
+      "closed_at": "2026-06-28T20:24:00.0000000+08:00",
+      "updated_at": "2026-06-28T20:24:00.0000000+08:00",
+      "qa_review_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json"
+    },
+    "M7-VISUAL-UX-HANDOFF-001:qa_reviewer": {
+      "thread_id": "019f0e2b-0cd8-7cb2-8a79-f41e08d82dc4",
+      "task_id": "M7-VISUAL-UX-HANDOFF-001",
+      "status": "closed_accepted",
+      "role": "qa_reviewer",
+      "nickname": "Auditor",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+      "routed_at": "2026-06-28T20:20:00.0000000+08:00",
+      "qa_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-28T20:28:00.0000000+08:00",
+      "updated_at": "2026-06-28T20:28:00.0000000+08:00"
+    }
+  },
+  "m7_ui_localization_art_coordination": {
+    "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
+    "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "decision": "Add a M7 UI / Localization / Visual Direction quality track and request structured art/UX handoff before UI beautification implementation.",
+    "visual_task_id": "M7-VISUAL-UX-HANDOFF-001",
+    "art_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+    "art_route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json",
+    "art_submission_id": "019f0e1c-192f-7632-a787-54bde749b0e8",
+    "historical_update_route_file": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-UI-LOCALIZATION-ART-COORDINATION-TO-HISTORICAL.json",
+    "historical_update_submission_id": "019f0e1b-a0e5-7301-b21f-6401e13ad61b",
+    "status": "ROUTED",
+    "received_during_task": "M7-BETA-CULTURE-REVIEW-001",
+    "progress_statement_policy": "Repository facts override stale progress descriptions in the inbound document.",
+    "next_action": "Await art/visual handoff and historical culture review; route returned handoff to systems_architect and qa_reviewer before UI implementation."
+  },
+  "m7_visual_ux_handoff": {
+    "status": "ACCEPTED",
+    "task_id": "M7-VISUAL-UX-HANDOFF-001",
+    "source_directive": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "art_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+    "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json",
+    "submission_id": "019f0e1c-192f-7632-a787-54bde749b0e8",
+    "routed_at": "2026-06-28T20:00:07.0222898+08:00",
+    "next_action": "Open/merge PR, then close M7-VISUAL-UX-HANDOFF-001 only after accepted commit enters main; create or update downstream M7 UI/localization quality-track tasks in a follow-up planning task before implementation.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.json",
+    "review_markdown": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "systems_thread_id": "019f0e23-0b6b-7d20-85dc-de8004dba800",
+    "systems_thread_nickname": "Lintel",
+    "systems_review_route": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-ART-HANDOFF-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+    "updated_at": "2026-06-28T20:28:00.0000000+08:00",
+    "systems_status": "ACCEPT",
+    "systems_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_thread_closed_at": "2026-06-28T20:20:00.0000000+08:00",
+    "qa_thread_id": "019f0e2b-0cd8-7cb2-8a79-f41e08d82dc4",
+    "qa_thread_nickname": "Auditor",
+    "qa_route": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+    "expected_qa_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-28T20:28:00.0000000+08:00",
+    "accepted_head_commit": "b2b7c4260da993f380be9f2d9f888d5d6975da06"
   }
 }
