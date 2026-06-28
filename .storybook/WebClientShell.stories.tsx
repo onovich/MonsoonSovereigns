@@ -58,3 +58,23 @@ export const M7CoverageNarrow = {
   },
   render: () => <WebClientShell initialSearch="?surface=coverage" />
 };
+
+export const I18nEnglish = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const I18nSimplifiedChinese = {
+  render: () => (
+    <WebClientShell initialLocalePreference="zh-CN" initialSystemLocales={["zh-Hans"]} />
+  )
+};
+
+export const I18nSystemFallbackChinese = {
+  render: () => (
+    <WebClientShell initialLocalePreference="system" initialSystemLocales={["zh-Hans"]} />
+  )
+};
+
+export const I18nSystemFallbackEnglish = {
+  render: () => <WebClientShell initialLocalePreference="system" initialSystemLocales={["fr-FR"]} />
+};

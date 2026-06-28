@@ -13,6 +13,13 @@ import {
   createBootstrappedShellSnapshot,
   createWebClientShellSnapshot
 } from "./create-shell-snapshot";
+import {
+  CLIENT_LOCALE_STORAGE_KEY,
+  readBrowserSystemLocales,
+  readStoredLocalePreference,
+  resolveBrowserClientLocale,
+  type LocaleStorageLike
+} from "./i18n-platform";
 
 describe("web client shell", () => {
   it("projects a simulation result into a disposable client read model", () => {
@@ -91,6 +98,32 @@ describe("web client shell", () => {
     expect(markup).toContain('aria-label="M7 audio art localization coverage"');
     expect(markup).toContain("m7.beta.audio-art-localization.coverage.v0");
     expect(markup).toContain("risk.culture-specific-assets-blocked");
+  });
+
+  it("persists zh-Hans locale aliases as zh-CN without changing shell snapshots", () => {
+    const writes = new Map<string, string>([[CLIENT_LOCALE_STORAGE_KEY, "zh-Hans"]]);
+    const storage: LocaleStorageLike = {
+      getItem: (key) => writes.get(key) ?? null,
+      setItem: (key, value) => {
+        writes.set(key, value);
+      }
+    };
+    const snapshot = createWebClientShellSnapshot();
+    const before = JSON.stringify(snapshot);
+
+    expect(readStoredLocalePreference(storage)).toBe("zh-CN");
+    expect(writes.get(CLIENT_LOCALE_STORAGE_KEY)).toBe("zh-CN");
+    expect(
+      readBrowserSystemLocales({ languages: ["zh-Hans", "en-US"], language: "en-US" })
+    ).toEqual(["zh-Hans", "en-US"]);
+    expect(
+      resolveBrowserClientLocale({
+        preference: "system",
+        browserLocales: ["en-US"],
+        desktopLocale: "zh-Hans"
+      })
+    ).toBe("zh-CN");
+    expect(JSON.stringify(snapshot)).toBe(before);
   });
 
   it("renders React from read model snapshots without authority-bearing state", () => {

@@ -14,21 +14,48 @@ import {
   type MapRenderViewport,
   type MountedPixiMapRenderer
 } from "@monsoon/map-renderer";
-import { ClientShellView } from "@monsoon/ui";
+import {
+  ClientShellView,
+  createClientI18n,
+  type ClientI18n,
+  type ClientLocalePreference
+} from "@monsoon/ui";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactElement } from "react";
 
 import { createWebClientShellSnapshot } from "./create-shell-snapshot";
+import {
+  getBrowserLocaleSource,
+  getLocaleStorage,
+  persistLocalePreference,
+  readBrowserSystemLocales,
+  readDesktopRuntimeLocale,
+  readStoredLocalePreference,
+  resolveBrowserClientLocale
+} from "./i18n-platform";
 
 const MAP_RENDERER_MOUNT_TIMEOUT_MS = 2400;
 
 export interface WebClientShellProps {
   readonly initialSearch?: string;
+  readonly initialLocalePreference?: ClientLocalePreference;
+  readonly initialSystemLocales?: readonly string[];
 }
 
-export function WebClientShell({ initialSearch }: WebClientShellProps = {}): ReactElement {
+export function WebClientShell({
+  initialSearch,
+  initialLocalePreference,
+  initialSystemLocales
+}: WebClientShellProps = {}): ReactElement {
   const [snapshot] = useState(() =>
     createWebClientShellSnapshot(initialSearch ?? getWindowSearch())
   );
+  const [localePreference, setLocalePreference] = useState<ClientLocalePreference>(
+    () => initialLocalePreference ?? readStoredLocalePreference(getLocaleStorage())
+  );
+  const [browserSystemLocales] = useState(
+    () => initialSystemLocales ?? readBrowserSystemLocales(getBrowserLocaleSource())
+  );
+  const [desktopLocale, setDesktopLocale] = useState<string | null>(null);
   const [mapMode, setMapMode] = useState<ClientMapMode>("seasonal");
   const [zoomLevel, setZoomLevel] = useState(1);
   const [m3CommandStatus, setM3CommandStatus] = useState<string | null>(null);
@@ -47,6 +74,41 @@ export function WebClientShell({ initialSearch }: WebClientShellProps = {}): Rea
     }),
     [mapMode, selectedEntity, zoomLevel]
   );
+  const resolvedLocale = resolveBrowserClientLocale({
+    preference: localePreference,
+    browserLocales: browserSystemLocales,
+    desktopLocale
+  });
+  const i18n = useMemo(() => createClientI18n(resolvedLocale), [resolvedLocale]);
+
+  useEffect(() => {
+    let isMounted = true;
+    void readDesktopRuntimeLocale()
+      .then((locale) => {
+        if (isMounted) {
+          setDesktopLocale(locale);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setDesktopLocale(null);
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = resolvedLocale;
+    }
+  }, [resolvedLocale]);
+
+  function handleLocalePreferenceChange(preference: ClientLocalePreference): void {
+    setLocalePreference(preference);
+    persistLocalePreference(getLocaleStorage(), preference);
+  }
 
   function handleM3CommandSubmit(command: ClientM3SubmittedCommand): void {
     setM3CommandStatus(`${command.kind} ready for ${command.actor.id}`);
@@ -81,11 +143,15 @@ export function WebClientShell({ initialSearch }: WebClientShellProps = {}): Rea
       m5CommandStatus={m5CommandStatus}
       onM6CommandSubmit={handleM6CommandSubmit}
       m6CommandStatus={m6CommandStatus}
+      i18n={i18n}
+      localePreference={localePreference}
+      onLocalePreferenceChange={handleLocalePreferenceChange}
       initialM7Surface={readInitialM7Surface(initialSearch ?? getWindowSearch())}
       mapSurface={
         <PixiMapSurface
           snapshot={snapshot.map}
           viewport={viewport}
+          i18n={i18n}
           onSelectedEntityChange={setSelectedEntity}
         />
       }
@@ -96,12 +162,14 @@ export function WebClientShell({ initialSearch }: WebClientShellProps = {}): Rea
 interface PixiMapSurfaceProps {
   readonly snapshot: ClientMapReadModelSnapshot;
   readonly viewport: MapRenderViewport;
+  readonly i18n: ClientI18n;
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
 }
 
 function PixiMapSurface({
   snapshot,
   viewport,
+  i18n,
   onSelectedEntityChange
 }: PixiMapSurfaceProps): ReactElement {
   const hostRef = useRef<HTMLDivElement | null>(null);
@@ -223,7 +291,7 @@ function PixiMapSurface({
   const selectedDistrict = snapshot.districts.find(
     (district) => district.districtId === selectedDistrictId
   );
-  const selectedDistrictLabel = selectedDistrict?.displayName ?? "No district selected";
+  const selectedDistrictLabel = selectedDistrict?.displayName ?? i18n.t("map.selection.empty");
 
   return (
     <>

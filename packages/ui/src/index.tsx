@@ -69,7 +69,39 @@ import {
   type ClientOfficeId,
   type ClientReadModelSnapshot
 } from "@monsoon/client-core";
-import { useMemo, useState, type ChangeEvent, type ReactElement, type UIEvent } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type ReactElement,
+  type UIEvent
+} from "react";
+
+import {
+  CLIENT_LOCALE_PREFERENCES,
+  DEFAULT_CLIENT_I18N,
+  type ClientI18n,
+  type ClientLocalePreference
+} from "./i18n";
+
+export {
+  CLIENT_LOCALE_PREFERENCES,
+  CLIENT_RESOLVED_LOCALES,
+  DEFAULT_CLIENT_I18N,
+  SIMPLIFIED_CHINESE_ALIASES,
+  SIMPLIFIED_CHINESE_CANONICAL_LOCALE,
+  createClientI18n,
+  isBareReasonCodeLike,
+  normalizeClientLocaleTag,
+  parseClientLocalePreference,
+  resolveClientLocale,
+  type ClientI18n,
+  type ClientLocalePreference,
+  type ClientResolvedLocale,
+  type UiMessageKey
+} from "./i18n";
 
 export interface ClientShellViewProps {
   readonly snapshot: ClientReadModelSnapshot;
@@ -79,6 +111,9 @@ export interface ClientShellViewProps {
   readonly selectedEntity: ClientMapEntitySelection | null;
   readonly m6BatchBalanceArtifact?: M6BatchBalanceDashboardArtifact | null;
   readonly initialM7Surface?: ClientM7CoverageSurface;
+  readonly i18n?: ClientI18n;
+  readonly localePreference?: ClientLocalePreference;
+  readonly onLocalePreferenceChange?: (preference: ClientLocalePreference) => void;
   readonly onMapModeChange: (mode: ClientMapMode) => void;
   readonly onZoomLevelChange: (zoomLevel: number) => void;
   readonly onSelectedEntityChange: (selection: ClientMapEntitySelection) => void;
@@ -95,6 +130,7 @@ export interface ClientShellViewProps {
 const DISTRICT_ROW_HEIGHT_PX = 44;
 const DISTRICT_TABLE_VIEWPORT_HEIGHT_PX = 352;
 const DISTRICT_TABLE_OVERSCAN_ROWS = 8;
+const ClientI18nContext = createContext<ClientI18n>(DEFAULT_CLIENT_I18N);
 
 export function ClientShellView({
   snapshot,
@@ -104,6 +140,9 @@ export function ClientShellView({
   selectedEntity,
   m6BatchBalanceArtifact = null,
   initialM7Surface = "tutorial",
+  i18n = DEFAULT_CLIENT_I18N,
+  localePreference = "system",
+  onLocalePreferenceChange,
   onMapModeChange,
   onZoomLevelChange,
   onSelectedEntityChange,
@@ -532,257 +571,285 @@ export function ClientShellView({
     onZoomLevelChange(clampZoomLevel(zoomLevel - 0.25));
   }
 
+  function handleLocalePreferenceChange(event: ChangeEvent<HTMLSelectElement>): void {
+    const nextPreference = CLIENT_LOCALE_PREFERENCES.find(
+      (preference) => preference === event.currentTarget.value
+    );
+    if (nextPreference !== undefined) {
+      onLocalePreferenceChange?.(nextPreference);
+    }
+  }
+
   return (
-    <main className="client-shell" aria-label="Monsoon Sovereigns client shell">
-      <section className="client-shell__map" aria-label="Map read model projection">
-        <div className="map-toolbar" aria-label="M2 map controls">
-          <div className="map-mode" role="group" aria-label="Map mode">
-            <MapModeButton
-              label="Seasonal"
-              mode="seasonal"
-              activeMode={mapMode}
-              onSelect={onMapModeChange}
-            />
-            <MapModeButton
-              label="Economy"
-              mode="economy"
-              activeMode={mapMode}
-              onSelect={onMapModeChange}
-            />
-            <MapModeButton
-              label="Routes"
-              mode="routes"
-              activeMode={mapMode}
-              onSelect={onMapModeChange}
-            />
-          </div>
-          <div className="map-zoom" role="group" aria-label="Map zoom">
-            <button type="button" aria-label="Zoom out" onClick={handleZoomOut}>
-              -
-            </button>
-            <output aria-label="Map zoom level" data-zoom-level={zoomLevel.toFixed(2)}>
-              {Math.round(zoomLevel * 100)}%
-            </output>
-            <button type="button" aria-label="Zoom in" onClick={handleZoomIn}>
-              +
-            </button>
-          </div>
-        </div>
-
-        <div
-          className="client-shell__map-surface"
-          data-district-count={snapshot.map.districts.length}
-          data-settlement-count={snapshot.map.settlements.length}
-          data-route-count={snapshot.map.routes.length}
-          data-map-mode={mapMode}
-          data-zoom-level={zoomLevel.toFixed(2)}
-          data-selected-district-id={selectedDistrict?.districtId ?? "none"}
-          data-selected-entity-kind={selectedEntity?.kind ?? "none"}
-        >
-          <span className="client-shell__map-revision">Revision {snapshot.revision}</span>
-          {mapSurface}
-          <span className="client-shell__map-selection">
-            {formatMapSelection(selectedDistrict, selectedSettlement)}
-          </span>
-        </div>
-      </section>
-
-      <section className="client-shell__operations" aria-label="M2 district operations">
-        <header className="client-shell__header">
-          <div>
-            <h1>Monsoon Sovereigns</h1>
-            <p>{snapshot.panels.headline}</p>
-          </div>
-          <dl className="client-shell__status">
-            {snapshot.panels.metrics.map((metric) => (
-              <div className="client-shell__metric" key={metric.label}>
-                <dt>{metric.label}</dt>
-                <dd>{metric.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </header>
-
-        <div className="district-workspace">
-          <section className="district-list" aria-label="M2 district list">
-            <div className="district-list__toolbar">
-              <label className="district-list__filter">
-                <span>Filter</span>
-                <input
-                  aria-label="Filter districts"
-                  value={filter}
-                  onChange={handleFilterChange}
-                  placeholder="District, phase, route"
-                />
-              </label>
-              <output
-                aria-label="District list performance"
-                data-testid="district-list-performance"
-                data-derivation-ms={districtProjection.derivationMs.toFixed(3)}
-                data-selection-ms={lastSelectionMs.toFixed(3)}
-              >
-                {districtProjection.derivationMs.toFixed(2)} ms
+    <ClientI18nContext.Provider value={i18n}>
+      <main className="client-shell" aria-label={i18n.t("app.shellLabel")}>
+        <section className="client-shell__map" aria-label={i18n.t("map.projectionLabel")}>
+          <div className="map-toolbar" aria-label={i18n.t("map.controlsLabel")}>
+            <div className="map-mode" role="group" aria-label={i18n.t("map.modeLabel")}>
+              <MapModeButton
+                label={i18n.t("map.mode.seasonal")}
+                mode="seasonal"
+                activeMode={mapMode}
+                onSelect={onMapModeChange}
+              />
+              <MapModeButton
+                label={i18n.t("map.mode.economy")}
+                mode="economy"
+                activeMode={mapMode}
+                onSelect={onMapModeChange}
+              />
+              <MapModeButton
+                label={i18n.t("map.mode.routes")}
+                mode="routes"
+                activeMode={mapMode}
+                onSelect={onMapModeChange}
+              />
+            </div>
+            <div className="map-zoom" role="group" aria-label={i18n.t("map.zoomLabel")}>
+              <button type="button" aria-label={i18n.t("map.zoomOut")} onClick={handleZoomOut}>
+                -
+              </button>
+              <output aria-label={i18n.t("map.zoomLevel")} data-zoom-level={zoomLevel.toFixed(2)}>
+                {Math.round(zoomLevel * 100)}%
               </output>
+              <button type="button" aria-label={i18n.t("map.zoomIn")} onClick={handleZoomIn}>
+                +
+              </button>
             </div>
+          </div>
 
-            <div className="district-list__head">
-              <SortButton
-                label="District"
-                sortKey="district"
-                activeSortKey={sortKey}
-                direction={sortDirection}
-                onSort={handleSort}
-              />
-              <SortButton
-                label="Population"
-                sortKey="population"
-                activeSortKey={sortKey}
-                direction={sortDirection}
-                onSort={handleSort}
-              />
-              <SortButton
-                label="Labor"
-                sortKey="labor"
-                activeSortKey={sortKey}
-                direction={sortDirection}
-                onSort={handleSort}
-              />
-              <SortButton
-                label="Grain"
-                sortKey="grain"
-                activeSortKey={sortKey}
-                direction={sortDirection}
-                onSort={handleSort}
-              />
-              <SortButton
-                label="Cash"
-                sortKey="cash"
-                activeSortKey={sortKey}
-                direction={sortDirection}
-                onSort={handleSort}
-              />
-              <SortButton
-                label="Route"
-                sortKey="route"
-                activeSortKey={sortKey}
-                direction={sortDirection}
-                onSort={handleSort}
-              />
+          <div
+            className="client-shell__map-surface"
+            data-district-count={snapshot.map.districts.length}
+            data-settlement-count={snapshot.map.settlements.length}
+            data-route-count={snapshot.map.routes.length}
+            data-map-mode={mapMode}
+            data-zoom-level={zoomLevel.toFixed(2)}
+            data-selected-district-id={selectedDistrict?.districtId ?? "none"}
+            data-selected-entity-kind={selectedEntity?.kind ?? "none"}
+          >
+            <span className="client-shell__map-revision">
+              {i18n.t("map.revision", { revision: snapshot.revision.toString() })}
+            </span>
+            {mapSurface}
+            <span className="client-shell__map-selection">
+              {formatMapSelection(selectedDistrict, selectedSettlement)}
+            </span>
+          </div>
+        </section>
+
+        <section className="client-shell__operations" aria-label="M2 district operations">
+          <header className="client-shell__header">
+            <div>
+              <h1>{i18n.t("app.title")}</h1>
+              <p>{snapshot.panels.headline}</p>
             </div>
+            <label className="client-shell__language">
+              <span>{i18n.t("settings.language.label")}</span>
+              <select
+                aria-label={i18n.t("settings.language.label")}
+                value={localePreference}
+                onChange={handleLocalePreferenceChange}
+              >
+                <option value="system">{i18n.t("settings.language.system")}</option>
+                <option value="en-US">{i18n.t("settings.language.enUS")}</option>
+                <option value="zh-CN">{i18n.t("settings.language.zhCN")}</option>
+              </select>
+              <output aria-live="polite">
+                {i18n.t("settings.language.active", { locale: i18n.locale })}
+              </output>
+            </label>
+            <dl className="client-shell__status">
+              {snapshot.panels.metrics.map((metric) => (
+                <div className="client-shell__metric" key={metric.label}>
+                  <dt>{metric.label}</dt>
+                  <dd>{metric.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </header>
 
-            <div
-              className="district-list__viewport"
-              aria-label="Virtualized district rows"
-              data-row-count={snapshot.districtList.rows.length}
-              data-filtered-row-count={districtProjection.rows.length}
-              data-rendered-row-count={visibleRows.length}
-              onScroll={handleScroll}
-            >
+          <div className="district-workspace">
+            <section className="district-list" aria-label="M2 district list">
+              <div className="district-list__toolbar">
+                <label className="district-list__filter">
+                  <span>Filter</span>
+                  <input
+                    aria-label="Filter districts"
+                    value={filter}
+                    onChange={handleFilterChange}
+                    placeholder="District, phase, route"
+                  />
+                </label>
+                <output
+                  aria-label="District list performance"
+                  data-testid="district-list-performance"
+                  data-derivation-ms={districtProjection.derivationMs.toFixed(3)}
+                  data-selection-ms={lastSelectionMs.toFixed(3)}
+                >
+                  {districtProjection.derivationMs.toFixed(2)} ms
+                </output>
+              </div>
+
+              <div className="district-list__head">
+                <SortButton
+                  label="District"
+                  sortKey="district"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label="Population"
+                  sortKey="population"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label="Labor"
+                  sortKey="labor"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label="Grain"
+                  sortKey="grain"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label="Cash"
+                  sortKey="cash"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortButton
+                  label="Route"
+                  sortKey="route"
+                  activeSortKey={sortKey}
+                  direction={sortDirection}
+                  onSort={handleSort}
+                />
+              </div>
+
               <div
-                className="district-list__spacer"
-                style={{ height: `${virtualWindow.totalHeightPx}px` }}
+                className="district-list__viewport"
+                aria-label="Virtualized district rows"
+                data-row-count={snapshot.districtList.rows.length}
+                data-filtered-row-count={districtProjection.rows.length}
+                data-rendered-row-count={visibleRows.length}
+                onScroll={handleScroll}
               >
                 <div
-                  className="district-list__rows"
-                  style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
+                  className="district-list__spacer"
+                  style={{ height: `${virtualWindow.totalHeightPx}px` }}
                 >
-                  {visibleRows.map((row) => (
-                    <DistrictRowButton
-                      key={row.districtId}
-                      row={row}
-                      isSelected={selectedDistrictId === row.districtId}
-                      onSelect={handleSelect}
-                    />
-                  ))}
+                  <div
+                    className="district-list__rows"
+                    style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
+                  >
+                    {visibleRows.map((row) => (
+                      <DistrictRowButton
+                        key={row.districtId}
+                        row={row}
+                        isSelected={selectedDistrictId === row.districtId}
+                        onSelect={handleSelect}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <DistrictPanel
-            row={selectedDistrict}
-            selectedSettlement={selectedSettlement}
-            provenanceNote={snapshot.districtList.provenance.note}
+            <DistrictPanel
+              row={selectedDistrict}
+              selectedSettlement={selectedSettlement}
+              provenanceNote={snapshot.districtList.provenance.note}
+            />
+          </div>
+
+          <M3AppointmentWorkspace
+            snapshot={snapshot.m3Appointment}
+            selectedOffice={selectedM3Office}
+            candidateEligibilities={visibleM3CandidateEligibilities}
+            selectedEligibility={selectedM3Eligibility}
+            showRejectedCandidates={showRejectedM3Candidates}
+            commandStatus={m3CommandStatus}
+            onOfficeChange={handleM3OfficeChange}
+            onCandidateChange={handleM3CandidateChange}
+            onRejectedToggle={handleM3RejectedToggle}
+            onSubmitAppointment={handleSubmitM3Appointment}
+            onSubmitBulk={handleSubmitM3BulkAppointments}
           />
-        </div>
 
-        <M3AppointmentWorkspace
-          snapshot={snapshot.m3Appointment}
-          selectedOffice={selectedM3Office}
-          candidateEligibilities={visibleM3CandidateEligibilities}
-          selectedEligibility={selectedM3Eligibility}
-          showRejectedCandidates={showRejectedM3Candidates}
-          commandStatus={m3CommandStatus}
-          onOfficeChange={handleM3OfficeChange}
-          onCandidateChange={handleM3CandidateChange}
-          onRejectedToggle={handleM3RejectedToggle}
-          onSubmitAppointment={handleSubmitM3Appointment}
-          onSubmitBulk={handleSubmitM3BulkAppointments}
-        />
+          <M4CampaignWorkspace
+            snapshot={snapshot.m4Campaign}
+            selectedCampaign={selectedM4Campaign}
+            selectedSiege={selectedM4Siege}
+            selectedSiegeChoice={selectedM4SiegeChoice}
+            commandStatus={m4CommandStatus}
+            onCampaignChange={handleM4CampaignChange}
+            onSiegeChoiceChange={handleM4SiegeChoiceChange}
+            onSubmitPlan={handleSubmitM4Plan}
+            onSubmitStartMarch={handleSubmitM4StartMarch}
+            onSubmitCancel={handleSubmitM4Cancel}
+            onSubmitSiegeChoice={handleSubmitM4SiegeChoice}
+            onSubmitWithdrawal={handleSubmitM4Withdrawal}
+          />
 
-        <M4CampaignWorkspace
-          snapshot={snapshot.m4Campaign}
-          selectedCampaign={selectedM4Campaign}
-          selectedSiege={selectedM4Siege}
-          selectedSiegeChoice={selectedM4SiegeChoice}
-          commandStatus={m4CommandStatus}
-          onCampaignChange={handleM4CampaignChange}
-          onSiegeChoiceChange={handleM4SiegeChoiceChange}
-          onSubmitPlan={handleSubmitM4Plan}
-          onSubmitStartMarch={handleSubmitM4StartMarch}
-          onSubmitCancel={handleSubmitM4Cancel}
-          onSubmitSiegeChoice={handleSubmitM4SiegeChoice}
-          onSubmitWithdrawal={handleSubmitM4Withdrawal}
-        />
+          <M5PlayableWorkspace
+            snapshot={snapshot.m5Playable}
+            phase={m5Phase}
+            currentStepIndex={m5CurrentStepIndex}
+            previewStepId={m5PreviewStepId}
+            confirmedCommandIds={m5ConfirmedCommandIds}
+            savedSession={m5SavedSession}
+            saveStatus={m5SaveStatus}
+            commandStatus={m5CommandStatus}
+            onStart={handleStartM5Slice}
+            onPreview={handlePreviewM5Command}
+            onConfirm={handleConfirmM5Command}
+            onCancel={handleCancelM5Slice}
+            onFailurePreview={handlePreviewM5Failure}
+            onSave={handleSaveM5Session}
+            onLoad={handleLoadM5Session}
+          />
 
-        <M5PlayableWorkspace
-          snapshot={snapshot.m5Playable}
-          phase={m5Phase}
-          currentStepIndex={m5CurrentStepIndex}
-          previewStepId={m5PreviewStepId}
-          confirmedCommandIds={m5ConfirmedCommandIds}
-          savedSession={m5SavedSession}
-          saveStatus={m5SaveStatus}
-          commandStatus={m5CommandStatus}
-          onStart={handleStartM5Slice}
-          onPreview={handlePreviewM5Command}
-          onConfirm={handleConfirmM5Command}
-          onCancel={handleCancelM5Slice}
-          onFailurePreview={handlePreviewM5Failure}
-          onSave={handleSaveM5Session}
-          onLoad={handleLoadM5Session}
-        />
-
-        <M6AlphaWorkspace
-          snapshot={snapshot.m6Alpha}
-          phase={m6Phase}
-          selectedScenarioId={selectedM6ScenarioId}
-          currentStepIndex={m6CurrentStepIndex}
-          previewStepId={m6PreviewStepId}
-          confirmedCommandIds={m6ConfirmedCommandIds}
-          savedSession={m6SavedSession}
-          saveStatus={m6SaveStatus}
-          commandStatus={m6CommandStatus}
-          onScenarioChange={handleM6ScenarioChange}
-          onStart={handleStartM6Alpha}
-          onPreview={handlePreviewM6Command}
-          onConfirm={handleConfirmM6Command}
-          onSave={handleSaveM6Session}
-          onLoad={handleLoadM6Session}
-          onFailurePreview={handlePreviewM6Failure}
-        />
-        <M7GuidanceWorkspace
-          snapshot={snapshot.m7Guidance}
-          selectedScenarioId={selectedM7ScenarioId}
-          activeSurface={m7Surface}
-          onScenarioChange={handleM7ScenarioChange}
-          onSurfaceSelect={handleM7SurfaceSelect}
-        />
-        {m6BatchBalanceArtifact === null ? null : (
-          <M6BatchBalanceDashboard artifact={m6BatchBalanceArtifact} />
-        )}
-      </section>
-    </main>
+          <M6AlphaWorkspace
+            snapshot={snapshot.m6Alpha}
+            phase={m6Phase}
+            selectedScenarioId={selectedM6ScenarioId}
+            currentStepIndex={m6CurrentStepIndex}
+            previewStepId={m6PreviewStepId}
+            confirmedCommandIds={m6ConfirmedCommandIds}
+            savedSession={m6SavedSession}
+            saveStatus={m6SaveStatus}
+            commandStatus={m6CommandStatus}
+            onScenarioChange={handleM6ScenarioChange}
+            onStart={handleStartM6Alpha}
+            onPreview={handlePreviewM6Command}
+            onConfirm={handleConfirmM6Command}
+            onSave={handleSaveM6Session}
+            onLoad={handleLoadM6Session}
+            onFailurePreview={handlePreviewM6Failure}
+          />
+          <M7GuidanceWorkspace
+            snapshot={snapshot.m7Guidance}
+            selectedScenarioId={selectedM7ScenarioId}
+            activeSurface={m7Surface}
+            onScenarioChange={handleM7ScenarioChange}
+            onSurfaceSelect={handleM7SurfaceSelect}
+          />
+          {m6BatchBalanceArtifact === null ? null : (
+            <M6BatchBalanceDashboard artifact={m6BatchBalanceArtifact} />
+          )}
+        </section>
+      </main>
+    </ClientI18nContext.Provider>
   );
 }
 
@@ -1136,7 +1203,7 @@ function M3AppointmentWorkspace({
           <div className="m3-appointment__reason-summary">
             {snapshot.reasonSummaries.slice(0, 10).map((summary) => (
               <div className="m3-appointment__fact" key={summary.reasonCode}>
-                <strong>{summary.reasonCode}</strong>
+                <ReasonCodeText reasonCode={summary.reasonCode} />
                 <span>
                   {summary.count} / {summary.sourceKinds.join(", ")}
                 </span>
@@ -1485,7 +1552,7 @@ function M4AiPanel({
       <div className="m4-campaign__reason-summary">
         {snapshot.reasonSummaries.slice(0, 8).map((summary) => (
           <div className="m4-campaign__fact" key={summary.reasonCode}>
-            <strong>{summary.reasonCode}</strong>
+            <ReasonCodeText reasonCode={summary.reasonCode} />
             <span>
               {summary.count} / {summary.sourceKinds.join(", ")}
             </span>
@@ -1501,6 +1568,7 @@ function M4WarReportPanel({
 }: {
   readonly reports: readonly ClientM4WarReportReadModel[];
 }): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   return (
     <section className="m4-campaign__panel" aria-label="M4 war report">
       <h3>War report</h3>
@@ -1515,7 +1583,9 @@ function M4WarReportPanel({
             {report.postwarCandidate === null ? null : (
               <span>
                 Handoff {report.postwarCandidate.candidateId}; methods{" "}
-                {report.postwarCandidate.validM3Methods.join(", ")}
+                {report.postwarCandidate.validM3Methods
+                  .map((method) => i18n.formatReasonCode(method))
+                  .join(", ")}
               </span>
             )}
             <ReasonChips
@@ -1563,6 +1633,7 @@ function M5PlayableWorkspace({
   onSave,
   onLoad
 }: M5PlayableWorkspaceProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   const currentStep = getM5CurrentStep(snapshot, currentStepIndex);
   const previewStep =
     previewStepId === snapshot.failureStep.stepId
@@ -1637,8 +1708,9 @@ function M5PlayableWorkspace({
             className="m5-playable__status"
             aria-label="M5 save status"
             data-save-length={savedSession.length}
+            data-status-reason={saveStatus ?? "m5.save.no-client-checkpoint"}
           >
-            {saveStatus ?? "m5.save.no-client-checkpoint"}
+            {formatReasonStatus(saveStatus ?? "m5.save.no-client-checkpoint", i18n)}
           </output>
           <code className="m5-playable__save-preview">
             {savedSession.length === 0 ? "no client checkpoint" : savedSession}
@@ -1659,6 +1731,7 @@ function M5StepPreview({
 }: {
   readonly step: ClientM5PlayableStepReadModel | null;
 }): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   if (step === null) {
     return (
       <div className="m5-playable__fact" aria-label="M5 command preview">
@@ -1677,7 +1750,11 @@ function M5StepPreview({
     >
       <strong>{step.label}</strong>
       <span>
-        {step.preview.commandKind}; {step.preview.commandId}; {step.actorLabel}
+        {step.preview.commandKind};{" "}
+        <span data-command-id={step.preview.commandId}>
+          {i18n.formatReasonCode(step.preview.commandId)}
+        </span>
+        ; {step.actorLabel}
       </span>
       <span>{step.result.summary}</span>
       <ReasonChips reasonCodes={step.reasonCodes} />
@@ -1784,7 +1861,7 @@ function M5ReasonSummaryPanel({
       <div className="m5-playable__stack">
         {snapshot.reasonSummaries.slice(0, 10).map((summary) => (
           <div className="m5-playable__fact" key={summary.reasonCode}>
-            <strong>{summary.reasonCode}</strong>
+            <ReasonCodeText reasonCode={summary.reasonCode} />
             <span>
               {summary.count} / {summary.sourceKinds.join(", ")}
             </span>
@@ -1832,13 +1909,15 @@ function M6AlphaWorkspace({
   onLoad,
   onFailurePreview
 }: M6AlphaWorkspaceProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   const currentStep = getM6CurrentStep(snapshot, currentStepIndex);
   const previewStep =
     previewStepId === snapshot.failureStep.stepId
       ? snapshot.failureStep
       : (snapshot.steps.find((step) => step.stepId === previewStepId) ?? currentStep);
   const isConfirmDisabled = phase !== "running" || currentStep === null;
-  const commandLiveStatus = commandStatus ?? "m6.command.no-alpha-command-submitted";
+  const emptyCommandReason = "m6.command.no-alpha-command-submitted";
+  const commandLiveStatus = commandStatus ?? i18n.formatReasonCode(emptyCommandReason);
   const commandStatusKind = commandStatus === null ? "idle" : "submitted";
   const saveLiveStatus = saveStatus ?? "m6.save.no-client-checkpoint";
   const saveStatusKind =
@@ -1953,6 +2032,7 @@ function M6AlphaWorkspace({
             aria-label="M6 command status"
             aria-live="polite"
             data-status-kind={commandStatusKind}
+            data-status-reason={commandStatus === null ? emptyCommandReason : undefined}
             role="status"
           >
             {commandLiveStatus}
@@ -1983,9 +2063,10 @@ function M6AlphaWorkspace({
             aria-atomic="true"
             data-save-length={savedSession.length}
             data-status-kind={saveStatusKind}
+            data-status-reason={saveLiveStatus}
             role="status"
           >
-            {saveLiveStatus}
+            {formatReasonStatus(saveLiveStatus, i18n)}
           </output>
           <code className="m6-alpha__save-preview">
             {savedSession.length === 0 ? "no Alpha client checkpoint" : savedSession}
@@ -2225,19 +2306,25 @@ function M7ReviewPanel({
 }: {
   readonly snapshot: ClientM7GuidanceReadModelSnapshot;
 }): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   return (
     <section className="m7-guidance__panel" aria-label="M7 review summary and blockers">
       <h3>Review summary</h3>
       <dl className="m7-guidance__metrics">
         <Metric label="M6 gate" value={snapshot.contentPack.m6GateCarryForward} />
-        <Metric label="Manual battle" value={snapshot.contentPack.manualNodeBattleDecision} />
+        <Metric
+          label="Manual battle"
+          value={i18n.formatReasonCode(snapshot.contentPack.manualNodeBattleDecision)}
+        />
         <Metric label="Human gates" value={snapshot.reviewSummary.humanGateClaimCount.toString()} />
         <Metric label="Content lock" value="not accepted" />
       </dl>
       <div className="m7-guidance__stack" role="list">
         {snapshot.reviewSummary.reviewStateCounts.map((entry) => (
           <div className="m7-guidance__fact" key={entry.reviewState} role="listitem">
-            <strong>{entry.reviewState}</strong>
+            <strong data-review-state={entry.reviewState}>
+              {i18n.formatReasonCode(entry.reviewState)}
+            </strong>
             <span>{entry.count} records</span>
           </div>
         ))}
@@ -2880,7 +2967,7 @@ function M6AdviserPanel({ adviser }: { readonly adviser: ClientM6AdviserReadMode
     <section className="m6-alpha__panel" aria-label="M6 AI adviser reasons">
       <h3>AI / adviser reasons</h3>
       <div className="m6-alpha__fact">
-        <strong>{adviser.primaryReasonCode}</strong>
+        <ReasonCodeText reasonCode={adviser.primaryReasonCode} />
         <span>{adviser.commandKind ?? "no command"}</span>
         <ReasonChips reasonCodes={adviser.reasonCodes} />
       </div>
@@ -2978,7 +3065,7 @@ function M6ReasonSummaryPanel({
       <div className="m6-alpha__stack" role="list">
         {summaries.slice(0, 14).map((summary) => (
           <div className="m6-alpha__fact" key={summary.reasonCode} role="listitem">
-            <strong>{summary.reasonCode}</strong>
+            <ReasonCodeText reasonCode={summary.reasonCode} />
             <span>
               {summary.count} / {summary.sourceKinds.join(", ")}
             </span>
@@ -3074,15 +3161,36 @@ interface ReasonChipsProps {
 }
 
 function ReasonChips({ reasonCodes }: ReasonChipsProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
   return (
-    <span className="m3-appointment__reasons" role="list" aria-label="Reason codes">
+    <span className="m3-appointment__reasons" role="list" aria-label={i18n.t("reason.listLabel")}>
       {reasonCodes.map((reasonCode, index) => (
-        <span className="m3-appointment__reason" key={`${reasonCode}:${index}`} role="listitem">
-          {reasonCode}
+        <span
+          className="m3-appointment__reason"
+          data-reason-code={reasonCode}
+          key={`${reasonCode}:${index}`}
+          role="listitem"
+        >
+          {i18n.formatReasonCode(reasonCode)}
         </span>
       ))}
     </span>
   );
+}
+
+function ReasonCodeText({ reasonCode }: { readonly reasonCode: string }): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  return <strong data-reason-code={reasonCode}>{i18n.formatReasonCode(reasonCode)}</strong>;
+}
+
+function formatReasonStatus(status: string, i18n: ClientI18n): string {
+  const separatorIndex = status.indexOf(":");
+  if (separatorIndex < 0) {
+    return i18n.formatReasonCode(status);
+  }
+  const reasonCode = status.slice(0, separatorIndex);
+  const detail = status.slice(separatorIndex + 1);
+  return `${i18n.formatReasonCode(reasonCode)}: ${detail}`;
 }
 
 interface MetricProps {

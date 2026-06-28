@@ -18,6 +18,47 @@ test("web shell loads and projects the read model", async ({ page }) => {
   await expect(page.locator(".client-shell__map-revision")).toContainText("Revision 30");
 });
 
+test("web shell resolves system language, switches language, and persists preference", async ({
+  page
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window.navigator, "languages", {
+      configurable: true,
+      get: () => ["zh-Hans", "en-US"]
+    });
+    Object.defineProperty(window.navigator, "language", {
+      configurable: true,
+      get: () => "zh-Hans"
+    });
+  });
+  await page.goto("/");
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+  await expect(page.getByRole("heading", { name: "季风诸王" })).toBeVisible();
+  await expect(page.getByLabel("语言")).toHaveValue("system");
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText("季风路线风险");
+
+  await page.getByLabel("语言").selectOption("en-US");
+  await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
+  await expect(page.getByRole("heading", { name: "Monsoon Sovereigns" })).toBeVisible();
+  await expect(page.getByLabel("Language")).toHaveValue("en-US");
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText("Monsoon route risk");
+  await expect(
+    page.locator('[data-reason-code="route.season.monsoon-risk"]').first()
+  ).toBeVisible();
+  await expect(page.getByLabel("M4 supply and route forecast")).not.toContainText(
+    "route.season.monsoon-risk"
+  );
+
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
+  await expect(page.getByLabel("Language")).toHaveValue("en-US");
+  const storedPreference = await page.evaluate(() =>
+    window.localStorage.getItem("monsoon.client.localePreference.v1")
+  );
+  expect(storedPreference).toBe("en-US");
+});
+
 test("M2 map zoom, selection, and mode switching updates read-model UI", async ({ page }) => {
   await page.goto("/");
 
@@ -90,19 +131,19 @@ test("M3 appointment workspace submits appointment and bulk command DTOs", async
   await page.getByLabel("Select M3 office").selectOption("2");
   await page.getByLabel("Select appointment candidate").selectOption("2");
   await expect(page.getByLabel("Appointment validation reasons")).toContainText(
-    "appointment.local-claimant"
+    "Local claimant advantage"
   );
   await expect(page.getByLabel("Appointment validation reasons")).toContainText(
-    "office-eligibility-failed"
+    "Office eligibility failed"
   );
   await expect(page.getByLabel("Vacancy succession and obligations")).toContainText("Succession 1");
   await expect(page.getByLabel("Vacancy succession and obligations")).toContainText(
-    "obligation.tribute.regular"
+    "Regular tribute obligation"
   );
   await expect(page.getByLabel("Appointment and enfeoffment results")).toContainText(
-    "enfeoffment.local-holder"
+    "Local holder settlement"
   );
-  await expect(page.getByLabel("Visible reason summaries")).toContainText("character-unavailable");
+  await expect(page.getByLabel("Visible reason summaries")).toContainText("Candidate unavailable");
 
   await page.getByRole("button", { name: "Submit appointment" }).click();
   await expect(page.getByLabel("M3 command status")).toContainText(
@@ -124,15 +165,15 @@ test("M4 campaign planning submits commands and renders risks, AI reasons, and w
   await expect(workspace).toHaveAttribute("data-plan-count", "2");
   await expect(workspace).toHaveAttribute("data-muster-readiness", "partial");
   await expect(workspace).toHaveAttribute("data-war-report-count", "2");
-  await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
-    "route.season.monsoon-risk"
-  );
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText("Monsoon route risk");
   await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText(
-    "withdrawal.reason.supply-collapse"
+    "Withdrawal from supply collapse"
   );
-  await expect(page.getByLabel("M4 AI reasons")).toContainText("m4.ai.withdraw.supply-collapse");
-  await expect(page.getByLabel("M4 war report")).toContainText("postwar.candidate.ready");
-  await expect(page.getByLabel("M4 war report")).toContainText("restore-vassal-ruler");
+  await expect(page.getByLabel("M4 AI reasons")).toContainText(
+    "AI withdraws because supply collapsed"
+  );
+  await expect(page.getByLabel("M4 war report")).toContainText("Postwar candidate ready");
+  await expect(page.getByLabel("M4 war report")).toContainText("Restore vassal ruler option");
 
   await page.getByRole("button", { name: "Submit plan" }).click();
   await expect(page.getByLabel("M4 command status")).toContainText(
@@ -175,20 +216,18 @@ test("M4 stress fixture renders campaign planning and war report under 4000-row 
   const districtRows = page.getByLabel("Virtualized district rows");
   await expect(districtRows).toHaveAttribute("data-row-count", "4000");
   await expect(districtRows).toHaveAttribute("data-rendered-row-count", "16");
-  await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
-    "route.season.monsoon-risk"
-  );
+  await expect(page.getByLabel("M4 supply and route forecast")).toContainText("Monsoon route risk");
   await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
     "Route reservation 502"
   );
   await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
-    "route.capacity.carried-supply-over-bottleneck"
+    "Route Capacity Carried Supply Over Bottleneck"
   );
   await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("March 702");
   await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("Siege 802");
   await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("Withdrawal 902");
-  await expect(page.getByLabel("M4 war report")).toContainText("postwar.candidate.ready");
-  await expect(page.getByLabel("M4 war report")).toContainText("restore-vassal-ruler");
+  await expect(page.getByLabel("M4 war report")).toContainText("Postwar candidate ready");
+  await expect(page.getByLabel("M4 war report")).toContainText("Restore vassal ruler option");
   await expect(page.getByLabel("M4 war report")).toContainText("Outcome 1002");
   await page.getByRole("button", { name: "Submit plan" }).click();
   await expect(page.getByLabel("M4 command status")).toContainText(
@@ -203,12 +242,10 @@ test("M5 playable flow previews confirms saves loads and reaches result", async 
   await expect(workspace).toHaveAttribute("data-scenario-id", "m5.composite.river-gate.v0");
   await expect(workspace).toHaveAttribute("data-phase", "not-started");
   await expect(page.getByLabel("M5 AI risk supply season")).toContainText(
-    "m4.ai.withdraw.supply-collapse"
+    "AI withdraws because supply collapsed"
   );
-  await expect(page.getByLabel("M5 AI risk supply season")).toContainText(
-    "route.season.monsoon-risk"
-  );
-  await expect(page.getByLabel("M5 postwar consequences")).toContainText("postwar.candidate.ready");
+  await expect(page.getByLabel("M5 AI risk supply season")).toContainText("Monsoon route risk");
+  await expect(page.getByLabel("M5 postwar consequences")).toContainText("Postwar candidate ready");
   await expect(page.getByLabel("M5 postwar consequences")).toContainText(
     "Manual node battle UI is unavailable in M5."
   );
@@ -221,7 +258,7 @@ test("M5 playable flow previews confirms saves loads and reaches result", async 
     "sim.create-campaign-objective"
   );
   await expect(page.getByLabel("M5 command preview")).toContainText(
-    "campaign.reason.deterministic-replay"
+    "Deterministic replay campaign reason"
   );
 
   await page.getByRole("button", { name: "Confirm command" }).click();
@@ -231,14 +268,14 @@ test("M5 playable flow previews confirms saves loads and reaches result", async 
   await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
 
   await page.getByRole("button", { name: "Save checkpoint" }).click();
-  await expect(page.getByLabel("M5 save status")).toContainText("m5.save.client-session-written");
+  await expect(page.getByLabel("M5 save status")).toContainText("M5 Save Client Session Written");
   await expect(workspace).toHaveAttribute("data-save-present", "true");
 
   await page.getByRole("button", { name: "Cancel slice" }).click();
   await expect(workspace).toHaveAttribute("data-phase", "cancelled");
   await page.getByRole("button", { name: "Load checkpoint" }).click();
   await expect(workspace).toHaveAttribute("data-phase", "running");
-  await expect(page.getByLabel("M5 save status")).toContainText("m5.load.client-session-restored");
+  await expect(page.getByLabel("M5 save status")).toContainText("M5 Load Client Session Restored");
 
   for (let index = 1; index < 15; index += 1) {
     await page.getByRole("button", { name: "Preview command" }).click();
@@ -250,7 +287,7 @@ test("M5 playable flow previews confirms saves loads and reaches result", async 
   await page.getByRole("button", { name: "Preview failure" }).click();
   await expect(workspace).toHaveAttribute("data-phase", "failure");
   await expect(page.getByLabel("M5 command preview")).toContainText(
-    "m5.slice.duplicate-postwar-governance"
+    "Duplicate postwar governance blocked"
   );
 });
 
@@ -267,16 +304,16 @@ test("M6 Alpha flow covers scenario, diplomacy, policy, encyclopedia, map candid
     "tribute-recognition"
   );
   await expect(page.getByLabel("M6 diplomacy legitimacy succession surfaces")).toContainText(
-    "legitimacy.source.postwar-settlement"
+    "Legitimacy Source Postwar Settlement"
   );
   await expect(page.getByLabel("M6 policy event encyclopedia surfaces")).toContainText(
     "Harbor charter petition"
   );
   await expect(page.getByLabel("M6 policy event encyclopedia surfaces")).toContainText(
-    "encyclopedia.m6.policy_event.harbor"
+    "Encyclopedia M6 Policy Event Harbor"
   );
   await expect(page.getByLabel("M6 AI adviser reasons")).toContainText(
-    "m6.adviser.recognized-order-ready"
+    "Adviser sees recognized order path ready"
   );
   await expect(page.getByLabel("M6 map candidate display")).toContainText(
     "map.alpha.western-mainland-candidate"
@@ -305,12 +342,12 @@ test("M6 Alpha flow covers scenario, diplomacy, policy, encyclopedia, map candid
   await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
 
   await page.getByRole("button", { name: "Save Alpha checkpoint" }).click();
-  await expect(page.getByLabel("M6 save status")).toContainText("m6.save.client-session-written");
+  await expect(page.getByLabel("M6 save status")).toContainText("M6 Save Client Session Written");
   await expect(workspace).toHaveAttribute("data-save-present", "true");
 
   await page.getByRole("button", { name: "Load Alpha checkpoint" }).click();
   await expect(workspace).toHaveAttribute("data-phase", "checkpoint-loaded");
-  await expect(page.getByLabel("M6 save status")).toContainText("m6.load.client-session-restored");
+  await expect(page.getByLabel("M6 save status")).toContainText("M6 Load Client Session Restored");
 
   await page.getByRole("button", { name: "Start Alpha" }).click();
   for (let index = 1; index < 22; index += 1) {
@@ -387,10 +424,10 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   );
   await expect(commandStatus).toHaveAttribute("data-status-kind", "idle");
   await expect(commandStatus).toHaveAttribute("aria-describedby", "m6-alpha-command-description");
-  await expect(commandStatus).toContainText("m6.command.no-alpha-command-submitted");
+  await expect(commandStatus).toContainText("No Alpha command submitted");
   await expect(saveStatus).toHaveAttribute("data-status-kind", "empty");
   await expect(saveStatus).toHaveAttribute("aria-describedby", "m6-alpha-save-description");
-  await expect(saveStatus).toContainText("m6.save.no-client-checkpoint");
+  await expect(saveStatus).toContainText("No client checkpoint");
 
   await scenario.focus();
   await expectFocusOutline(scenario);
@@ -461,9 +498,7 @@ test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without s
   await expect(page.getByLabel("M7 contextual hints")).toContainText(
     "Route hints mirror forecast reason chips"
   );
-  await expect(page.getByLabel("M7 contextual hints")).toContainText(
-    "m7.guidance.review-state-visible"
-  );
+  await expect(page.getByLabel("M7 contextual hints")).toContainText("Review state visible");
 
   await page.getByRole("tab", { name: "Encyclopedia" }).click();
   await expect(workspace).toHaveAttribute("data-active-surface", "encyclopedia");
@@ -481,10 +516,10 @@ test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without s
     "CULTURE_HUMAN_GATE_REQUIRED"
   );
   await expect(page.getByLabel("M7 review summary and blockers")).toContainText(
-    "LANGUAGE_REVIEW_REQUIRED"
+    "Language review required"
   );
   await expect(page.getByLabel("M7 review summary and blockers")).toContainText(
-    "DEFER_MANUAL_NODE_BATTLE"
+    "Manual node battle deferred"
   );
 
   await page.getByRole("tab", { name: "Coverage" }).click();
