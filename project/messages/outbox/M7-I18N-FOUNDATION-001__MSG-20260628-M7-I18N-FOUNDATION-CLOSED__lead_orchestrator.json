@@ -1,0 +1,98 @@
+{
+  "message_id": "MSG-20260628-M7-I18N-FOUNDATION-CLOSED",
+  "task_id": "M7-I18N-FOUNDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-I18N-FOUNDATION-001 is closed after PR #175 passed CI, was merged, and entered origin/main at d1d5b4485c947ff63d307b0c2210894ab05a42a9. The task delivered the client-side i18n foundation for system, en-US, and zh-CN, including locale-family canonicalization, persisted preference migration, safe localStorage failure handling, Storybook and Playwright coverage, and independent systems/QA R2 acceptance. No Human Gate is active.",
+  "branch_or_worktree": "chore/close-m7-i18n-foundation / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "d1d5b4485c947ff63d307b0c2210894ab05a42a9",
+  "integrated_pr": 175,
+  "integrated_main_commit": "d1d5b4485c947ff63d307b0c2210894ab05a42a9",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/175",
+  "accepted_source_commit": "3fcdb724f630f6cf498df26cc3f65729fe029306",
+  "artifacts": [
+    "project/tasks/active/M7-I18N-FOUNDATION-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-CLOSED__lead_orchestrator.json"
+  ],
+  "lead_accept_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-LEAD-ACCEPT__lead_orchestrator.json",
+  "qa_accept_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-QA-R2-REVIEW__qa_reviewer.json",
+  "systems_accept_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-R2-REVIEW__systems_architect.json",
+  "ci_results": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "status": "PASS",
+      "duration": "2m20s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28326382818/job/83916997530"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "status": "PASS",
+      "duration": "48s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28326382818/job/83916997534"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "gh pr checks 175 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "git rev-parse HEAD && git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "Both local main and origin/main resolve to d1d5b4485c947ff63d307b0c2210894ab05a42a9 before closure branch."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-I18N-FOUNDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-I18N-FOUNDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready candidates are M7-DESIGN-TOKENS-ASSET-SLOTS-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in the closure checkpoint."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLOSE_AFTER_MAIN_INTEGRATION",
+      "decision": "Mark M7-I18N-FOUNDATION-001 CLOSED only after PR #175 passed CI and entered origin/main."
+    },
+    {
+      "id": "NEXT_READY_TASKS_RECORDED",
+      "decision": "Record M7-DESIGN-TOKENS-ASSET-SLOTS-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 as the next dependency-ready candidates."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_UI_LOCALIZATION_COVERAGE",
+      "severity": "P3",
+      "summary": "Full player-mode UI localization and no-debug-string coverage remain downstream responsibilities.",
+      "mitigation": "Continue with the accepted M7 UI quality task graph after closure enters main."
+    }
+  ],
+  "child_threads_closed": [
+    "019f0e69-a54b-7fc0-8649-d58805c838f9",
+    "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
+    "019f0e8f-1907-72c2-beb1-9522d515307c"
+  ],
+  "next_ready_tasks": [
+    "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge this closure checkpoint to main, synchronize origin/main, run taskctl ready, and start the highest-priority dependency-ready M7 task.",
+  "created_at": "2026-06-28T23:08:42.8220248+08:00"
+}
