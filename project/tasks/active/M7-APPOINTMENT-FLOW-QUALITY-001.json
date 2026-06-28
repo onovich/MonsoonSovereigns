@@ -2,7 +2,7 @@
   "id": "M7-APPOINTMENT-FLOW-QUALITY-001",
   "summary": "Productize appointment and governance flow",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R3",
@@ -86,7 +86,7 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
-      "status": "accepted_pending_pr",
+      "status": "closed_integrated",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -94,13 +94,18 @@
       "actual_effort": "xhigh",
       "branch_or_worktree": "feat/m7-appointment-flow-quality",
       "created_at": "2026-06-28T20:06:43.812Z",
-      "updated_at": "2026-06-29T04:52:00.000Z",
-      "lead_accept_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-LEAD-ACCEPT__lead_orchestrator.json"
+      "updated_at": "2026-06-29T05:04:00.000Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-LEAD-ACCEPT__lead_orchestrator.json",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 181,
+      "integrated_main_commit": "eec438dbd26e31aa8cf9cbdef68ca12bb53e9709",
+      "closed_at": "2026-06-29T05:04:00.000Z",
+      "lead_close_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-CLOSED__lead_orchestrator.json"
     },
     "client_engineer": {
       "thread_id": "019f0fd6-7bd7-7433-9800-56edd46bb836",
       "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
-      "status": "review_ready",
+      "status": "closed_integrated",
       "role": "client_engineer",
       "nickname": "Canvas",
       "configured_model": "gpt-5.5",
@@ -111,16 +116,20 @@
       "route_file": "project/messages/routes/M7-APPOINTMENT-FLOW-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
       "routed_at": "2026-06-28T20:06:43.812Z",
-      "updated_at": "2026-06-28T20:28:10.058Z",
+      "updated_at": "2026-06-29T05:04:00.000Z",
       "route_sent_at": "2026-06-28T20:07:37.467Z",
       "route_submission_id": "019f0fd7-d0e6-7723-b294-f325d2bb3c1f",
       "review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214"
+      "review_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 181,
+      "integrated_main_commit": "eec438dbd26e31aa8cf9cbdef68ca12bb53e9709",
+      "closed_at": "2026-06-29T05:04:00.000Z"
     },
     "systems_architect": {
       "thread_id": "019f0fea-3b63-7fb3-9cea-850e75215ef5",
       "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
-      "status": "accepted",
+      "status": "closed_integrated",
       "role": "systems_architect",
       "nickname": "Lintel",
       "configured_model": "gpt-5.5",
@@ -133,15 +142,19 @@
       "expected_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
       "routed_at": "2026-06-28T20:28:10.058Z",
-      "updated_at": "2026-06-28T20:39:43.063Z",
+      "updated_at": "2026-06-29T05:04:00.000Z",
       "route_sent_at": "2026-06-28T20:29:06.013Z",
       "route_submission_id": "019f0feb-7868-7112-98ec-2766f2f28d48",
-      "systems_review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-SYSTEMS-REVIEW__systems_architect.json"
+      "systems_review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-SYSTEMS-REVIEW__systems_architect.json",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 181,
+      "integrated_main_commit": "eec438dbd26e31aa8cf9cbdef68ca12bb53e9709",
+      "closed_at": "2026-06-29T05:04:00.000Z"
     },
     "qa_reviewer": {
       "thread_id": "019f0ff4-c0af-77d1-94d8-760e6c3a2a29",
       "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
-      "status": "accepted",
+      "status": "closed_integrated",
       "role": "qa_reviewer",
       "nickname": "Witness",
       "configured_model": "gpt-5.5",
@@ -154,10 +167,14 @@
       "expected_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json",
       "implementation_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
       "routed_at": "2026-06-28T20:39:43.063Z",
-      "updated_at": "2026-06-29T04:52:00.000Z",
+      "updated_at": "2026-06-29T05:04:00.000Z",
       "route_sent_at": "2026-06-28T20:40:40.173Z",
       "route_submission_id": "019f0ff6-130b-7591-b4c7-d23d8b96b66f",
-      "qa_review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json"
+      "qa_review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-QA-REVIEW__qa_reviewer.json",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 181,
+      "integrated_main_commit": "eec438dbd26e31aa8cf9cbdef68ca12bb53e9709",
+      "closed_at": "2026-06-29T05:04:00.000Z"
     }
   },
   "route_to": "systems_architect",
@@ -174,7 +191,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-29T04:52:00.000Z",
+  "updated_at": "2026-06-29T05:04:00.000Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -200,7 +217,7 @@
   "writer_thread_id": "019f0fd6-7bd7-7433-9800-56edd46bb836",
   "writer_thread_nickname": "Canvas",
   "expected_writer_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
-  "next_action": "Open PR, wait for CI, merge to main, sync main, then mark CLOSED only after origin/main contains the accepted commits.",
+  "next_action": "Start M7-DISTRICT-INSPECTOR-QUALITY-001 after closure enters main.",
   "route_sent_at": "2026-06-28T20:07:37.467Z",
   "route_submission_id": "019f0fd7-d0e6-7723-b294-f325d2bb3c1f",
   "review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
@@ -224,5 +241,22 @@
   "lead_accept_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-06-29T04:52:00.000Z",
   "accepted_implementation_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
-  "accepted_branch_head": "2a1aabf40e7cdba217f927d573fa0622d03c908a"
+  "accepted_branch_head": "2a1aabf40e7cdba217f927d573fa0622d03c908a",
+  "integrated_pr": 181,
+  "integrated_main_commit": "eec438dbd26e31aa8cf9cbdef68ca12bb53e9709",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/181",
+  "lead_close_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-06-29T05:04:00.000Z",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "child_threads_closed": [
+    "019f0fd6-7bd7-7433-9800-56edd46bb836",
+    "019f0fea-3b63-7fb3-9cea-850e75215ef5",
+    "019f0ff4-c0af-77d1-94d8-760e6c3a2a29"
+  ],
+  "next_ready_tasks": [
+    "M7-DISTRICT-INSPECTOR-QUALITY-001",
+    "M7-MAP-PRESENTATION-QUALITY-001",
+    "M7-PLAYER-GUIDANCE-LITE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ]
 }

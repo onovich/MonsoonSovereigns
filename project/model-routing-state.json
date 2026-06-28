@@ -42,11 +42,9 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
-    "updated_at": "2026-06-29T04:52:00.000Z",
-    "concurrent_task_ids": [
-      "M7-APPOINTMENT-FLOW-QUALITY-001"
-    ]
+    "task_id": null,
+    "updated_at": "2026-06-29T05:04:00.000Z",
+    "concurrent_task_ids": []
   },
   "retired_lead_threads": [
     {
@@ -4118,14 +4116,14 @@
     "closed_at": "2026-06-28T20:00:34.367Z"
   },
   "m7_appointment_flow_quality": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-APPOINTMENT-FLOW-QUALITY-001",
     "writer_thread_id": "019f0fd6-7bd7-7433-9800-56edd46bb836",
     "writer_thread_nickname": "Canvas",
     "route_file": "project/messages/routes/M7-APPOINTMENT-FLOW-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T20:06:43.812Z",
-    "updated_at": "2026-06-29T04:52:00.000Z",
+    "updated_at": "2026-06-29T05:04:00.000Z",
     "route_sent_at": "2026-06-28T20:07:37.467Z",
     "route_submission_id": "019f0fd7-d0e6-7723-b294-f325d2bb3c1f",
     "review_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-WRITER-REVIEW__client_engineer.json",
@@ -4151,8 +4149,25 @@
     "accepted_at": "2026-06-29T04:52:00.000Z",
     "accepted_implementation_commit": "f69882f5387693f1aa10eca1d5adfdca7b206214",
     "accepted_branch_head": "2a1aabf40e7cdba217f927d573fa0622d03c908a",
-    "next_action": "Open PR, wait for CI, merge to main, then close after origin/main contains accepted commits.",
+    "next_action": "Start M7-DISTRICT-INSPECTOR-QUALITY-001 after closure enters main.",
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "integrated_pr": 181,
+    "integrated_main_commit": "eec438dbd26e31aa8cf9cbdef68ca12bb53e9709",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/181",
+    "lead_close_handoff": "project/messages/outbox/M7-APPOINTMENT-FLOW-QUALITY-001__MSG-20260629-M7-APPOINTMENT-FLOW-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-29T05:04:00.000Z",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "child_threads_closed": [
+      "019f0fd6-7bd7-7433-9800-56edd46bb836",
+      "019f0fea-3b63-7fb3-9cea-850e75215ef5",
+      "019f0ff4-c0af-77d1-94d8-760e6c3a2a29"
+    ],
+    "next_ready_tasks": [
+      "M7-DISTRICT-INSPECTOR-QUALITY-001",
+      "M7-MAP-PRESENTATION-QUALITY-001",
+      "M7-PLAYER-GUIDANCE-LITE-001",
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    ]
   }
 }
