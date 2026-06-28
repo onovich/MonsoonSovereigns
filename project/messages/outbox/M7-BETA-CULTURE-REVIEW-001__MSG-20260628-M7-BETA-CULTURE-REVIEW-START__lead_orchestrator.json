@@ -1,0 +1,45 @@
+{
+  "message_id": "MSG-20260628-M7-BETA-CULTURE-REVIEW-START",
+  "task_id": "M7-BETA-CULTURE-REVIEW-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "historical_researcher",
+  "status": "INFO",
+  "summary": "Start M7-BETA-CULTURE-REVIEW-001 as the next dependency-ready M7 content-lock-chain task after audio/art/localization closure. Save/cloud boundaries remain dependency-ready but unstarted.",
+  "branch_or_worktree": "research/m7-beta-culture-review / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "bf2feede9a32e906e2526ad6137ea18f7e9efba1",
+  "artifacts": [
+    "project/tasks/active/M7-BETA-CULTURE-REVIEW-001.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-START__lead_orchestrator.json",
+    "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-BETA-CULTURE-REVIEW-LEAD-TO-HISTORICAL-START.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-BETA-CULTURE-REVIEW-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 are dependency-ready."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "main was clean except unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md before branch start."
+    }
+  ],
+  "decisions": [
+    "Select M7-BETA-CULTURE-REVIEW-001 before save/cloud because it is the next content-lock-chain review task.",
+    "Major cultural-risk decisions must be recorded as Human Gate-required, not auto-decided.",
+    "Formal content lock remains future Human Gate; this task creates evidence only.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+  ],
+  "risks": [
+    "Task is R4 due to cultural, historical, and language risk.",
+    "Unrelated untracked docs/M7_UI_Localization_Art_Handoff_Prompts.md remains outside scope."
+  ],
+  "blockers": [],
+  "route_to": "historical_researcher",
+  "requested_action": "Write final Beta culture/history/language review evidence and return writer REVIEW handoff for qa_reviewer.",
+  "created_at": "2026-06-28T09:16:20.781Z"
+}

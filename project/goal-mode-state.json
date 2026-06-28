@@ -2,19 +2,44 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-BETA-CULTURE-REVIEW-001",
+    "M7-VISUAL-UX-HANDOFF-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-BETA-CULTURE-REVIEW-001",
       "status": "active_router",
       "role": "lead_orchestrator"
+    },
+    "historical_researcher": {
+      "thread_id": "019f0d82-dd8b-73c1-a715-045abacda8c0",
+      "task_id": "M7-BETA-CULTURE-REVIEW-001",
+      "status": "active_writer",
+      "role": "historical_researcher",
+      "nickname": "Chronicle the 2nd",
+      "product_owner_decision_update": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-UI-LOCALIZATION-ART-COORDINATION-TO-HISTORICAL.json",
+      "product_owner_update_submission_id": "019f0e1b-a0e5-7301-b21f-6401e13ad61b",
+      "updated_at": "2026-06-28T20:00:07.0222898+08:00"
+    },
+    "visual_design_reviewer": {
+      "thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "task_id": "M7-VISUAL-UX-HANDOFF-001",
+      "status": "route_sent",
+      "role": "visual_design_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json",
+      "submission_id": "019f0e1c-192f-7632-a787-54bde749b0e8",
+      "routed_at": "2026-06-28T20:00:07.0222898+08:00"
     }
   },
   "last_integrated_task": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
-  "last_main_commit": "d02c977cd7ed8fa6103eb1c1da30d53811845cb8",
+  "last_main_commit": "bf2feede9a32e906e2526ad6137ea18f7e9efba1",
   "next_ready_tasks": [
-    "M7-BETA-CULTURE-REVIEW-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "unresolved_risks": [
@@ -34,16 +59,23 @@
       "status": "accepted_limit",
       "summary": "M4 gate is PASS_WITH_LIMITS because systems_architect handoff is absent after three real writer stalls; QA accepted the explicit lead reconciliation process exception.",
       "source": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-QA-REVIEW__qa_reviewer.json"
+    },
+    {
+      "id": "M7-VISUAL-UX-HANDOFF-PENDING-001",
+      "severity": "P2",
+      "status": "open",
+      "summary": "Art/visual thread request was delivered, but the structured handoff has not yet been received or reviewed.",
+      "source": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json"
     }
   ],
   "human_gate": {
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001 closure checkpoint",
+    "approval_source": "M7-BETA-CULTURE-REVIEW-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Formal content lock remains a future Human Gate and manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T09:10:18.046Z"
+    "note": "No Human Gate is active. Product-owner directive M7-UI-LOCALIZATION-ART-COORDINATION-001 has been routed as M7 visual/UX handoff work; major cultural-risk findings, formal content lock acceptance, and manual node battle reversal remain Human Gates.",
+    "recorded_at": "2026-06-28T20:00:07.0222898+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -830,7 +862,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T09:10:18.046Z",
+  "last_updated_at": "2026-06-28T20:00:07.0222898+08:00",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1044,7 +1076,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "M6-EXIT-VALIDATION-001",
+  "current_task": "M7-BETA-CULTURE-REVIEW-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -1691,5 +1723,57 @@
       "M7-BETA-CULTURE-REVIEW-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_beta_culture_review": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-BETA-CULTURE-REVIEW-001",
+    "branch_or_worktree": "research/m7-beta-culture-review",
+    "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "writer_thread_id": "019f0d82-dd8b-73c1-a715-045abacda8c0",
+    "writer_nickname": "Chronicle the 2nd",
+    "owner_role": "historical_researcher",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "base_main_commit": "bf2feede9a32e906e2526ad6137ea18f7e9efba1",
+    "previous_closed_task": "M7-AUDIO-ART-LOCALIZATION-COMPLETE-001",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "start_handoff": "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-BETA-CULTURE-REVIEW-LEAD-TO-HISTORICAL-START.json",
+    "started_at": "2026-06-28T09:16:20.781Z",
+    "updated_at": "2026-06-28T09:17:10.572Z",
+    "next_action": "historical_researcher writer returns REVIEW handoff for qa_reviewer.",
+    "start_submission_id": "019f0d84-5f55-74e0-8e67-5e5739eacb5b",
+    "route_sent_at": "2026-06-28T09:17:10.572Z"
+  },
+  "m7_ui_localization_art_coordination": {
+    "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
+    "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "decision": "Add a M7 UI / Localization / Visual Direction quality track and request structured art/UX handoff before UI beautification implementation.",
+    "visual_task_id": "M7-VISUAL-UX-HANDOFF-001",
+    "art_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+    "art_route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json",
+    "art_submission_id": "019f0e1c-192f-7632-a787-54bde749b0e8",
+    "historical_update_route_file": "project/messages/routes/M7-BETA-CULTURE-REVIEW-001__ROUTE-20260628-M7-UI-LOCALIZATION-ART-COORDINATION-TO-HISTORICAL.json",
+    "historical_update_submission_id": "019f0e1b-a0e5-7301-b21f-6401e13ad61b",
+    "status": "ROUTED",
+    "received_during_task": "M7-BETA-CULTURE-REVIEW-001",
+    "progress_statement_policy": "Repository facts override stale progress descriptions in the inbound document.",
+    "next_action": "Await art/visual handoff and historical culture review; route returned handoff to systems_architect and qa_reviewer before UI implementation."
+  },
+  "m7_visual_ux_handoff": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-VISUAL-UX-HANDOFF-001",
+    "source_directive": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "art_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+    "route_file": "project/messages/routes/M7-VISUAL-UX-HANDOFF-001__ROUTE-20260628-LEAD-TO-ART-THREAD.json",
+    "submission_id": "019f0e1c-192f-7632-a787-54bde749b0e8",
+    "routed_at": "2026-06-28T20:00:07.0222898+08:00",
+    "next_action": "Await art/visual handoff and historical culture review; route returned handoff to systems_architect and qa_reviewer before UI implementation.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }
