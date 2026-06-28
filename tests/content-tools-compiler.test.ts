@@ -7,10 +7,12 @@ import {
   parseM1GraphFixtureSourceV0,
   parseM6AlphaMapCandidateSetSourceV0,
   parseM6AlphaScenarioSetSourceV0,
+  parseM7BetaScenarioPersonEventSetSourceV0,
   parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   type M1GraphFixtureSourceV0,
   type M6AlphaMapCandidateSetSourceV0,
+  type M7BetaScenarioPersonEventSetSourceV0,
   type M6AlphaScenarioSetSourceV0,
   type M3CharacterOfficeFixtureSourceV0,
   type M2WorldFixtureSourceV0
@@ -35,6 +37,10 @@ const m6AlphaScenarioFixtureUrl = new URL(
 );
 const m6AlphaMapCandidateFixtureUrl = new URL(
   "../content-source/m6-map-candidates/alpha-map-candidate-set.json",
+  import.meta.url
+);
+const m7BetaScenarioFixtureUrl = new URL(
+  "../content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
   import.meta.url
 );
 
@@ -893,6 +899,111 @@ describe("M6 Alpha Map Candidate Content Compiler v0", () => {
   });
 });
 
+describe("M7 Beta Scenario/Person/Event Content Compiler v0", () => {
+  test("compiles contracted Beta records with labels, owners, review states, and gaps", async () => {
+    const source = await readM7BetaScenarioFixture();
+    const pack = compileContentPackV0OrThrow(source);
+
+    expect(pack.kind).toBe("runtime-m7-beta-scenario-person-event-content-pack-v0");
+    if (pack.kind !== "runtime-m7-beta-scenario-person-event-content-pack-v0") {
+      throw new Error("Expected M7 beta scenario/person/event runtime pack.");
+    }
+    expect(pack.fixtureId).toBe("m7.beta.scenario-person-event.set");
+    expect(pack.notContentLockAcceptance).toBe(true);
+    expect(pack.m6GateCarryForward).toBe("PASS_WITH_LIMITS");
+    expect(pack.manualNodeBattleDecision).toBe("DEFER_MANUAL_NODE_BATTLE");
+    expect(pack.manifest.scenarioCount).toBe(3);
+    expect(pack.manifest.personCount).toBe(6);
+    expect(pack.manifest.titleCount).toBe(3);
+    expect(pack.manifest.eventCount).toBe(5);
+    expect(pack.manifest.localizationCount).toBeGreaterThanOrEqual(30);
+    expect(pack.manifest.manifestHash).toMatch(/^[0-9a-f]{8}$/u);
+    expect(pack.scenarios.map((scenario) => scenario.scenarioKey)).toEqual([
+      "beta-1531-edge-polity",
+      "beta-1569-overextended-suzerainty",
+      "beta-1581-succession-fracture"
+    ]);
+    expect(pack.persons.every((person) => person.owner === "historical_researcher")).toBe(true);
+    expect(pack.titles.every((title) => title.reviewState === "LANGUAGE_REVIEW_REQUIRED")).toBe(
+      true
+    );
+    expect(pack.knownGaps.join(" ")).toContain("RESEARCH REQUIRED");
+    expect(pack.events.find((event) => event.eventId.includes("coercion"))).toMatchObject({
+      reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
+    });
+  });
+
+  test("fails M7 bad references across localization, persons, events, and scenarios", async () => {
+    const source = await readM7BetaScenarioFixture();
+    const badSource = {
+      ...source,
+      localization: source.localization.map((entry, index) =>
+        index === 0 ? { ...entry, claimIds: ["HIST-M7-FILL-MISSING"] } : entry
+      ),
+      persons: source.persons.map((person, index) =>
+        index === 0 ? { ...person, titleIds: ["title.beta.missing"] } : person
+      ),
+      events: source.events.map((event, index) =>
+        index === 0 ? { ...event, personIds: ["person.beta.missing"] } : event
+      ),
+      scenarios: source.scenarios.map((scenario, index) =>
+        index === 0 ? { ...scenario, eventIds: ["event.beta.missing"] } : scenario
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "bad-reference", path: "localization[0].claimIds[0]" }),
+        expect.objectContaining({ code: "bad-reference", path: "persons[0].titleIds[0]" }),
+        expect.objectContaining({ code: "bad-reference", path: "events[0].personIds[0]" }),
+        expect.objectContaining({ code: "bad-reference", path: "scenarios[0].eventIds[0]" })
+      ])
+    );
+  });
+
+  test("fails M7 coercion events without victim and long-term consequence records", async () => {
+    const source = await readM7BetaScenarioFixture();
+    const badSource = {
+      ...source,
+      events: source.events.map((event) =>
+        event.eventId === "event.beta.coercion-cost-review"
+          ? { ...event, violenceCostRecord: null }
+          : event
+      )
+    };
+
+    expect(compileContentPackV0(badSource).errors).toContainEqual(
+      expect.objectContaining({
+        code: "missing-label",
+        path: "events[2].violenceCostRecord"
+      })
+    );
+  });
+
+  test("repeated M7 compiles produce the same manifest hash and runtime order", async () => {
+    const source = await readM7BetaScenarioFixture();
+    const first = compileContentPackV0OrThrow(source);
+    const second = compileContentPackV0OrThrow(structuredClone(source));
+
+    if (
+      first.kind !== "runtime-m7-beta-scenario-person-event-content-pack-v0" ||
+      second.kind !== "runtime-m7-beta-scenario-person-event-content-pack-v0"
+    ) {
+      throw new Error("Expected M7 beta scenario/person/event runtime packs.");
+    }
+    expect(second.manifest.manifestHash).toBe(first.manifest.manifestHash);
+    expect(second.scenarios.map((scenario) => scenario.scenarioId)).toEqual(
+      first.scenarios.map((scenario) => scenario.scenarioId)
+    );
+    expect(second.persons.map((person) => person.personId)).toEqual(
+      first.persons.map((person) => person.personId)
+    );
+    expect(second.events.map((event) => event.eventId)).toEqual(
+      first.events.map((event) => event.eventId)
+    );
+  });
+});
+
 async function readM3CharacterOfficeFixture(): Promise<M3CharacterOfficeFixtureSourceV0> {
   const text = await readFile(m3CharacterOfficeFixtureUrl, "utf8");
   return parseM3CharacterOfficeFixtureSourceV0(JSON.parse(text) as unknown);
@@ -906,6 +1017,11 @@ async function readM6AlphaScenarioFixture(): Promise<M6AlphaScenarioSetSourceV0>
 async function readM6AlphaMapCandidateFixture(): Promise<M6AlphaMapCandidateSetSourceV0> {
   const text = await readFile(m6AlphaMapCandidateFixtureUrl, "utf8");
   return parseM6AlphaMapCandidateSetSourceV0(JSON.parse(text) as unknown);
+}
+
+async function readM7BetaScenarioFixture(): Promise<M7BetaScenarioPersonEventSetSourceV0> {
+  const text = await readFile(m7BetaScenarioFixtureUrl, "utf8");
+  return parseM7BetaScenarioPersonEventSetSourceV0(JSON.parse(text) as unknown);
 }
 
 function requireFirstMapCandidate(

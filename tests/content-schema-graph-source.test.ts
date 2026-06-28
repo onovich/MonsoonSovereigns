@@ -6,12 +6,14 @@ import {
   parseM3PolityVassalageFixtureSourceV0,
   parseM6AlphaMapCandidateSetSourceV0,
   parseM6AlphaScenarioSetSourceV0,
+  parseM7BetaScenarioPersonEventSetSourceV0,
   parseM3CharacterOfficeFixtureSourceV0,
   parseM2WorldFixtureSourceV0,
   validateM2WorldFixtureSourceV0,
   validateM3CharacterOfficeFixtureSourceV0,
   validateM6AlphaMapCandidateSetSourceV0,
   validateM6AlphaScenarioSetSourceV0,
+  validateM7BetaScenarioPersonEventSetSourceV0,
   validateM3PolityVassalageFixtureSourceV0,
   parseM1GraphFixtureSourceV0,
   validateM1GraphFixtureSourceV0
@@ -19,6 +21,10 @@ import {
 
 const m7HistoricalReviewBaselineUrl = new URL(
   "../content-source/m7-review-baseline/historical-cultural-language-review-baseline.json",
+  import.meta.url
+);
+const m7BetaScenarioFixtureUrl = new URL(
+  "../content-source/m7-beta-scenarios/beta-scenario-person-event-set.json",
   import.meta.url
 );
 
@@ -718,6 +724,93 @@ describe("M7 historical, cultural, and language review baseline", () => {
         "victor chronicle causality treated as neutral fact",
         "colonial-era ethnic categories treated as timeless",
         "coercion framed as clean efficiency"
+      ])
+    );
+  });
+});
+
+describe("M7 beta scenario/person/event source schema", () => {
+  test("parses contracted Beta fill records without content-lock acceptance", async () => {
+    const text = await readFile(m7BetaScenarioFixtureUrl, "utf8");
+    const source = parseM7BetaScenarioPersonEventSetSourceV0(JSON.parse(text) as unknown);
+
+    expect(source.kind).toBe("m7.beta-scenario-person-event-set");
+    expect(source.notContentLockAcceptance).toBe(true);
+    expect(source.m6GateCarryForward).toBe("PASS_WITH_LIMITS");
+    expect(source.manualNodeBattleDecision).toBe("DEFER_MANUAL_NODE_BATTLE");
+    expect(source.scenarios).toHaveLength(3);
+    expect(source.persons).toHaveLength(6);
+    expect(source.titles).toHaveLength(3);
+    expect(source.events).toHaveLength(5);
+    expect(source.localization.every((entry) => entry.owner === "historical_researcher")).toBe(
+      true
+    );
+    expect(source.titles.every((entry) => entry.reviewState === "LANGUAGE_REVIEW_REQUIRED")).toBe(
+      true
+    );
+    expect(source.events.find((entry) => entry.eventId.includes("coercion"))).toMatchObject({
+      reviewState: "CULTURE_HUMAN_GATE_REQUIRED"
+    });
+    expect(source.knownGaps.join(" ")).toContain("RESEARCH REQUIRED");
+  });
+
+  test("requires source labels, review states, and localization key shape", () => {
+    expect(
+      validateM7BetaScenarioPersonEventSetSourceV0({
+        schemaVersion: 1,
+        kind: "m7.beta-scenario-person-event-set",
+        fixtureId: "m7.beta.bad",
+        fixtureKind: "beta-scenario-person-event-set",
+        contentScope: "m7-beta-content-fill",
+        notContentLockAcceptance: true,
+        m6GateCarryForward: "PASS_WITH_LIMITS",
+        manualNodeBattleDecision: "DEFER_MANUAL_NODE_BATTLE",
+        sourceRecords: [],
+        claimRecords: [
+          {
+            claimId: "bad-claim",
+            claim: "",
+            label: "CERTAIN",
+            confidence: "HIGH",
+            sourceIds: [],
+            sourcePassages: [],
+            sourceStatements: [],
+            scholarlyInterpretations: [],
+            researcherInference: "",
+            competingInterpretations: [],
+            gameAbstraction: "",
+            researchStatus: "UNKNOWN",
+            humanGate: false
+          }
+        ],
+        localization: [
+          {
+            key: "bad key",
+            zhHans: "",
+            english: "",
+            sourceNote: "",
+            context: "",
+            characterLimit: 0,
+            sourceIds: [],
+            claimIds: [],
+            reviewState: "LOCKED_BY_HUMAN_GATE",
+            owner: "",
+            deterministicOrder: 0
+          }
+        ],
+        titles: [],
+        persons: [],
+        events: [],
+        scenarios: [],
+        knownGaps: []
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-schema", path: "claimRecords[0].claimId" }),
+        expect.objectContaining({ code: "invalid-schema", path: "claimRecords[0].label" }),
+        expect.objectContaining({ code: "invalid-schema", path: "claimRecords[0].researchStatus" }),
+        expect.objectContaining({ code: "invalid-schema", path: "localization[0].key" }),
+        expect.objectContaining({ code: "invalid-schema", path: "localization[0].reviewState" })
       ])
     );
   });

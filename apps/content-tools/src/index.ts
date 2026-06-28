@@ -26,6 +26,7 @@ import {
 } from "@monsoon/content-schema";
 import {
   type RuntimeM6AlphaMapCandidateContentPackV0,
+  type RuntimeM7BetaScenarioPersonEventContentPackV0,
   type RuntimeM6AlphaScenarioContentPackV0,
   parseContentEdgeId,
   parseContentCharacterId,
@@ -64,6 +65,7 @@ import {
 
 import { compileM6AlphaScenarioContentPackV0 } from "./m6-alpha-scenario.ts";
 import { compileM6AlphaMapCandidateContentPackV0 } from "./m6-alpha-map-candidate.ts";
+import { compileM7BetaScenarioPersonEventContentPackV0 } from "./m7-beta-scenario.ts";
 
 export type ContentCompileErrorCode =
   | ContentSchemaError["code"]
@@ -98,7 +100,8 @@ export type ContentCompileResultV0 =
         | RuntimeM2WorldContentPackV0
         | RuntimeM3CharacterOfficeContentPackV0
         | RuntimeM6AlphaScenarioContentPackV0
-        | RuntimeM6AlphaMapCandidateContentPackV0;
+        | RuntimeM6AlphaMapCandidateContentPackV0
+        | RuntimeM7BetaScenarioPersonEventContentPackV0;
       readonly errors: readonly [];
     }
   | {
@@ -183,6 +186,10 @@ export function compileContentPackV0(input: unknown): ContentCompileResultV0 {
     return compileM6AlphaScenarioContentPackV0(input);
   }
 
+  if (isRecord(input) && input["kind"] === "m7.beta-scenario-person-event-set") {
+    return compileM7BetaScenarioPersonEventContentPackV0(input);
+  }
+
   if (isRecord(input) && input["kind"] === "m3.character-office-fixture") {
     return compileM3CharacterOfficeContentPackV0(input);
   }
@@ -227,7 +234,8 @@ export function compileContentPackV0OrThrow(
   | RuntimeM2WorldContentPackV0
   | RuntimeM3CharacterOfficeContentPackV0
   | RuntimeM6AlphaScenarioContentPackV0
-  | RuntimeM6AlphaMapCandidateContentPackV0 {
+  | RuntimeM6AlphaMapCandidateContentPackV0
+  | RuntimeM7BetaScenarioPersonEventContentPackV0 {
   const result = compileContentPackV0(input);
   if (result.status === "ok") {
     return result.pack;
