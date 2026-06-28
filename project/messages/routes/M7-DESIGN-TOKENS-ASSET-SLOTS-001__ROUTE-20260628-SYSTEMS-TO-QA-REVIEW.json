@@ -1,0 +1,80 @@
+{
+  "route_id": "ROUTE-20260628-SYSTEMS-TO-QA-REVIEW",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "lead_orchestrator",
+  "source_role": "systems_architect",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f0eef-602b-7d80-b900-996ea1c96f21",
+  "target_thread_nickname": "Witness the 2nd",
+  "branch_or_worktree": "feat/m7-design-tokens-asset-slots",
+  "review_commit": "7d7952bb169cc776384b78ee3897843ce3313edd",
+  "route_checkpoint_commit": "4bd196ed695e64e775fdb2b81f69c276602b56a2",
+  "source_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+  "writer_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+  "expected_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW__qa_reviewer.json",
+  "requested_action": "Perform independent read-only QA review of M7 design tokens and asset slots after systems ACCEPT. Focus on task acceptance criteria, diff scope, tests, Storybook/E2E evidence, placeholder-only asset policy, no final art/cultural symbol approval, no authoritative-state shift, and downstream UI task readiness. Emit ACCEPT, REQUEST_CHANGES, or BLOCKED handoff.",
+  "required_docs": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "docs/11-roadmap.md",
+    "docs/14-multi-agent-operating-model.md",
+    "docs/27-autonomous-goal-mode.md",
+    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "accepted_by_systems": true,
+  "systems_conclusion": "ACCEPT",
+  "lead_verified_tests": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <systems-handoff>",
+      "exit_code": 0
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "1 file, 15 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 file, 5 tests passed"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "passed with existing large chunk warning"
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "passed with existing large chunk/plugin timing warnings"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm test:e2e --project=chromium",
+      "exit_code": 0,
+      "result": "15/15 passed"
+    }
+  ],
+  "route_to": "qa_reviewer",
+  "next_route_on_accept": "lead_orchestrator",
+  "created_at": "2026-06-28T15:54:22.381Z"
+}

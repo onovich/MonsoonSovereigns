@@ -30,12 +30,13 @@
       "branch_or_worktree": "feat/m7-design-tokens-asset-slots",
       "review_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
       "review_commit": "7d7952bb169cc776384b78ee3897843ce3313edd",
-      "routed_at": "2026-06-28T23:17:17.272+08:00"
+      "routed_at": "2026-06-28T23:17:17.272+08:00",
+      "updated_at": "2026-06-28T15:54:22.381Z"
     },
     "systems_architect": {
       "thread_id": "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
       "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
-      "status": "active_reviewer",
+      "status": "accepted",
       "role": "systems_architect",
       "nickname": "Lintel the 2nd",
       "configured_model": "gpt-5.5",
@@ -46,7 +47,26 @@
       "route_file": "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "7d7952bb169cc776384b78ee3897843ce3313edd",
-      "routed_at": "2026-06-28T15:44:21.923Z"
+      "routed_at": "2026-06-28T15:44:21.923Z",
+      "systems_review_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+      "closed_at": "2026-06-28T15:54:22.381Z",
+      "updated_at": "2026-06-28T15:54:22.381Z"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f0eef-602b-7d80-b900-996ea1c96f21",
+      "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "status": "active_reviewer",
+      "role": "qa_reviewer",
+      "nickname": "Witness the 2nd",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-design-tokens-asset-slots",
+      "route_file": "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "7d7952bb169cc776384b78ee3897843ce3313edd",
+      "routed_at": "2026-06-28T15:54:22.381Z"
     }
   },
   "last_integrated_task": "M7-I18N-FOUNDATION-001",
@@ -77,10 +97,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 review route checkpoint",
+    "approval_source": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 QA route checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. M7-DESIGN-TOKENS-ASSET-SLOTS-001 is in systems_architect review.",
-    "recorded_at": "2026-06-28T15:44:21.923Z"
+    "note": "No Human Gate is active. M7-DESIGN-TOKENS-ASSET-SLOTS-001 is in independent QA review after systems ACCEPT.",
+    "recorded_at": "2026-06-28T15:54:22.381Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -867,7 +887,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T15:44:21.923Z",
+  "last_updated_at": "2026-06-28T15:54:22.381Z",
   "updated_at": "2026-06-27T19:19:27.664Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1938,7 +1958,7 @@
     ]
   },
   "current_task_status": "REVIEW",
-  "next_machine_action": "Await systems_architect review of M7-DESIGN-TOKENS-ASSET-SLOTS-001.",
+  "next_machine_action": "Await independent qa_reviewer review of M7-DESIGN-TOKENS-ASSET-SLOTS-001.",
   "closed_child_threads": [
     "019f0e69-a54b-7fc0-8649-d58805c838f9",
     "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
@@ -1956,8 +1976,8 @@
     "writer_thread_nickname": "Lantern the 2nd",
     "expected_writer_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T23:17:17.272+08:00",
-    "updated_at": "2026-06-28T15:44:21.923Z",
-    "next_action": "Await systems_architect review of the committed M7 design token and asset slot foundation.",
+    "updated_at": "2026-06-28T15:54:22.381Z",
+    "next_action": "Await independent qa_reviewer review after systems_architect ACCEPT.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "review_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
@@ -1965,6 +1985,12 @@
     "systems_thread_id": "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
     "systems_thread_nickname": "Lintel the 2nd",
     "systems_review_route": "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
-    "expected_systems_review_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json"
+    "expected_systems_review_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "ACCEPT",
+    "systems_review_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_thread_id": "019f0eef-602b-7d80-b900-996ea1c96f21",
+    "qa_thread_nickname": "Witness the 2nd",
+    "qa_route": "project/messages/routes/M7-DESIGN-TOKENS-ASSET-SLOTS-001__ROUTE-20260628-SYSTEMS-TO-QA-REVIEW.json",
+    "expected_qa_review_handoff": "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-QA-REVIEW__qa_reviewer.json"
   }
 }

@@ -1,0 +1,168 @@
+{
+  "message_id": "MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW",
+  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems architecture review accepts the committed M7 design-token and asset-slot foundation. The diff is confined to allowed UI, map-renderer, Storybook, tests, and process-message/state paths; no forbidden sim-core, sim-ai, protocol, save-format, Electron, desktop, content-source, dependency, roadmap, ADR, gate, or release artifact path was touched. The new token and slot APIs are explicit presentation schemas, all current slots remain neutral placeholders, map-renderer tokens are derived from read-model snapshots plus viewport intent, and no token, slot, Pixi node, React state, or canvas fallback becomes simulation, history, content, save, command, or authoritative state.",
+  "artifacts": [
+    "packages/ui/src/design-tokens.ts",
+    "packages/ui/src/asset-slots.ts",
+    "packages/ui/src/design-token-asset-slots-view.tsx",
+    "packages/ui/src/index.tsx",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/map-renderer/src/index.ts",
+    ".storybook/M7DesignTokensAssetSlots.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "feat/m7-design-tokens-asset-slots / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "7d7952bb169cc776384b78ee3897843ce3313edd reviewed at route checkpoint 4bd196ed695e64e775fdb2b81f69c276602b56a2",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean worktree on feat/m7-design-tokens-asset-slots tracking origin/feat/m7-design-tokens-asset-slots before and after local tests."
+    },
+    {
+      "command": "git diff --name-status e9f1a4b43d34460b23908f31a8146723004cf5cf HEAD",
+      "exit_code": 0,
+      "result": "20 changed paths, all in .storybook, apps/web styles, packages/ui, packages/map-renderer, tests, project/messages, project task/status routing files."
+    },
+    {
+      "command": "node -e <task allowed/forbidden path scanner>",
+      "exit_code": 0,
+      "result": "Compared diff paths from e9f1a4b43d34460b23908f31a8146723004cf5cf to HEAD against task allowed_paths/forbidden_paths: fileCount 20, violations [], forbiddenHits []."
+    },
+    {
+      "command": "git diff --check e9f1a4b43d34460b23908f31a8146723004cf5cf HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --name-only e9f1a4b43d34460b23908f31a8146723004cf5cf HEAD | rg \"(^|/)(package.json|pnpm-lock.yaml|package-lock.json|yarn.lock|Cargo.toml|Cargo.lock)$\"",
+      "exit_code": 1,
+      "result": "No dependency manifest or lockfile changes matched; rg exit 1 means no matches."
+    },
+    {
+      "command": "git diff --name-only e9f1a4b43d34460b23908f31a8146723004cf5cf HEAD | rg \"^(packages/(sim-core|sim-ai|protocol|save-format|platform-browser|platform-electron)|apps/(desktop|sim-runner|content-tools)|content-source|tools|docs/|\\.github)/\"",
+      "exit_code": 1,
+      "result": "No forbidden package/app/content/tools/docs/.github paths matched; rg exit 1 means no matches."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry command succeeded; M7-DESIGN-TOKENS-ASSET-SLOTS-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready command succeeded; current ready candidate is M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001, independent of this review route."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260628-M7-DESIGN-TOKENS-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "node -e <JSON parse/shape check for task and writer handoff>",
+      "exit_code": 0,
+      "result": "Parsed task and writer handoff; taskStatus REVIEW, handoffStatus REVIEW, handoffRouteTo systems_architect, tests 13, artifacts 11."
+    },
+    {
+      "command": "rg -n '@monsoon/(sim-core|protocol|save-format)|node:fs|node:path|electron|@pixi|pixi\\.js' packages/ui/src/design-tokens.ts packages/ui/src/asset-slots.ts packages/ui/src/design-token-asset-slots-view.tsx packages/map-renderer/src/map-render-tokens.ts packages/map-renderer/src/index.ts",
+      "exit_code": 1,
+      "result": "No forbidden sim-core/protocol/save-format, Node IO, Electron, or direct Pixi package imports matched in the reviewed implementation files; rg exit 1 means no matches."
+    },
+    {
+      "command": "rg -n \"Math\\.random\\(|Date\\.now\\(|new Date\\(|performance\\.now\\(|globalThis\\.performance|localStorage|sessionStorage|indexedDB|crypto\\.randomUUID\" packages/ui/src/design-tokens.ts packages/ui/src/asset-slots.ts packages/ui/src/design-token-asset-slots-view.tsx packages/map-renderer/src/map-render-tokens.ts packages/map-renderer/src/index.ts",
+      "exit_code": 1,
+      "result": "No randomness, real-time, storage, or UUID authority sources matched in the reviewed implementation files; rg exit 1 means no matches."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 15 tests. Covers token export, semantic states, neutral placeholder slots, English/zh-CN stress, debug on/off, no WorldState leakage, and read-model immutability for localization display."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 5 tests. Covers tokenized render plans, read-model delta cache rebuild, and no sim-core/WorldState import in map-renderer source."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed. Architecture checker reported boundaries passed and its self-test fixture produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_PRESENTATION_FOUNDATION_ONLY",
+      "decision": "Accept the design tokens and asset slots as UI/presentation foundation only. They are not content, history, save, command, protocol, or simulation authority."
+    },
+    {
+      "id": "NO_ADR_REQUIRED",
+      "decision": "No ADR is required for this implementation because it does not change package dependency direction, Worker authority, save/protocol schemas, Electron security, core architecture, or frozen product/platform decisions."
+    },
+    {
+      "id": "MAP_RENDER_TOKENS_ARE_RENDER_CACHE_INPUTS",
+      "decision": "Accept MAP_RENDER_TOKENS as map-renderer presentation constants consumed while building render instructions from ClientMapReadModelSnapshot and MapRenderViewport. Pixi/canvas output remains rebuildable render cache."
+    },
+    {
+      "id": "PLACEHOLDER_ONLY_ASSET_REGISTRY",
+      "decision": "Accept the slot registry because all current slot instances are neutral-placeholder, cultural/historical/localization review gates are explicit, and no final art asset path or culture-specific symbol is approved."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_CSS_MIGRATION_REMAINS_INCREMENTAL",
+      "severity": "P3",
+      "summary": "Existing shell CSS still has many legacy literal values. This task establishes tokens and CSS variables but does not complete full product-shell migration.",
+      "mitigation": "Downstream M7 app shell, map, district inspector, appointment, guidance, and regression tasks should consume these token APIs as they touch each surface."
+    },
+    {
+      "id": "FINAL_ART_AND_CULTURAL_SYMBOLS_REMAIN_GATED",
+      "severity": "P2",
+      "summary": "The approved-final-art union type exists for future explicit replacement but no final art is approved here.",
+      "mitigation": "Any culture-specific symbols, portraits, scripts, flags, religious imagery, clothing, architecture, music, or ritual motifs must route through art, culture, historical, and localization review before replacement."
+    },
+    {
+      "id": "ARTIFACT_GENERATING_TESTS_NOT_RERUN_BY_SYSTEMS_REVIEWER",
+      "severity": "P3",
+      "summary": "Systems review did not rerun pnpm build:web, pnpm storybook:build, or pnpm test:e2e --project=chromium because this review was instructed to avoid writes except the handoff JSON. The writer handoff and route file record those commands as passed, including lead-verified evidence.",
+      "mitigation": "Route to qa_reviewer for independent QA review and any artifact-generating verification appropriate to the QA lane."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "qa_reviewer should perform independent QA review of the accepted systems boundary result, with focus on Storybook/E2E evidence, artifact-generating build verification as appropriate, and downstream consumability for M7 app shell, map presentation, district inspector, appointment flow, guidance, and UI regression tasks.",
+  "review": {
+    "review_commit": "7d7952bb169cc776384b78ee3897843ce3313edd",
+    "route_checkpoint_commit": "4bd196ed695e64e775fdb2b81f69c276602b56a2",
+    "base_main_commit": "e9f1a4b43d34460b23908f31a8146723004cf5cf",
+    "human_gate_required": false,
+    "findings": [],
+    "architectural_conclusion": {
+      "allowed_paths_confined": true,
+      "forbidden_paths_touched": false,
+      "sim_core_protocol_save_electron_dependency_changed": false,
+      "authoritative_state_shift": false,
+      "asset_slots_placeholder_only": true,
+      "map_renderer_read_model_viewport_driven": true,
+      "downstream_api_safe_to_consume": true
+    },
+    "external_test_evidence_reviewed": [
+      "Writer handoff records pnpm build:web exit 0 with existing large chunk warnings.",
+      "Writer handoff records pnpm storybook:build exit 0 with existing Storybook warnings.",
+      "Writer handoff records pnpm test:e2e --project=chromium exit 0, 15/15 passed.",
+      "Route file records lead-verified writer handoff validation, task validation, git diff --check, UI/map-renderer tests, web build, Storybook build, pnpm check, and Chromium E2E."
+    ]
+  },
+  "created_at": "2026-06-28T23:50:56.1272236+08:00"
+}
