@@ -1,0 +1,85 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-R3-TO-QA-REVIEW",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "source_role": "client_engineer",
+  "source_thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
+  "source_thread_nickname": "Window the 2nd",
+  "source_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R3-REVIEW__client_engineer.json",
+  "source_status": "REVIEW",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+  "target_thread_nickname": "Gate",
+  "requested_action": "Revalidate R3 fix for visible active sort direction localization and prior app-shell i18n accessibility findings.",
+  "branch_or_worktree": "feat/m7-app-shell-quality",
+  "review_commit": "dd98fb27cbf5241002302cc483234b01160c265e",
+  "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R3-REVIEW__qa_reviewer.json",
+  "previous_qa_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R2-REVIEW__qa_reviewer.json",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T19:46:19.888Z",
+  "route_sent_at": "2026-06-28T19:47:10.168Z",
+  "delivery": {
+    "method": "send_input",
+    "status": "sent",
+    "submission_id": "019f0fc5-1c62-7fd0-a37a-13761f7e20df",
+    "sent_at": "2026-06-28T19:47:10.168Z",
+    "note": "R3 writer handoff routed to existing qa_reviewer for review."
+  },
+  "lead_side_tests": [
+    {
+      "command": "Select-String packages/ui/src/index.tsx for literal \" up\"/\" down\"",
+      "exit_code": 0,
+      "result": "No matches."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "taskctl validate M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "validate-handoff R3 writer handoff",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "9 passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "15 passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "15 passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "passed with existing chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "passed with existing warnings."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "passed."
+    }
+  ]
+}

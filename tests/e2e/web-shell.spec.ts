@@ -4,8 +4,13 @@ test("web shell loads and projects the read model", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByRole("heading", { name: "Monsoon Sovereigns" })).toBeVisible();
-  await expect(page.getByLabel("Map read model projection")).toBeVisible();
-  await expect(page.getByText("M2 prototype map ready")).toBeVisible();
+  await expect(page.locator(".client-shell__map-region")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Realm Map" })).toBeVisible();
+  await expect(page.locator(".client-shell__debug-hidden")).toContainText(
+    "Developer diagnostics are hidden in player mode."
+  );
+  await expect(page.getByText("M2 prototype map ready")).toHaveCount(0);
+  await expect(page.getByText("Prototype District 001")).toHaveCount(0);
   await expectMountedPixiMapRenderer(page);
   await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
     "data-district-count",
@@ -15,7 +20,8 @@ test("web shell loads and projects the read model", async ({ page }) => {
     "data-settlement-count",
     "10"
   );
-  await expect(page.locator(".client-shell__map-revision")).toContainText("Revision 30");
+  await expect(page.locator(".client-shell__dev-overlay")).toHaveCount(0);
+  await expect(page.locator(".client-shell__map-revision")).toHaveCount(0);
 });
 
 test("web shell resolves system language, switches language, and persists preference", async ({
@@ -36,19 +42,36 @@ test("web shell resolves system language, switches language, and persists prefer
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("heading", { name: "季风诸王" })).toBeVisible();
   await expect(page.getByLabel("语言")).toHaveValue("system");
-  await expect(page.getByLabel("M4 supply and route forecast")).toContainText("季风路线风险");
+  await expect(page.getByLabel("目标与行动")).toContainText("当前目标");
+  await expect(page.getByLabel("虚拟化地区行")).toHaveAttribute("data-row-count", "30");
+  await expect(page.getByRole("button", { name: "经济地图模式" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "按人口排序" })).toBeVisible();
+  const activeDistrictSort = page.getByRole("button", {
+    name: "按地区排序，当前升序"
+  });
+  await expect(activeDistrictSort).toBeVisible();
+  await expect(activeDistrictSort).toContainText("地区 升序");
+  await expect(activeDistrictSort).not.toContainText(/\b(?:up|down)\b/iu);
+  await expect(page.getByLabel("Virtualized district rows")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Economy map mode" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Sort by Population" })).toHaveCount(0);
+  await expect(page.locator(".map-viewport")).toHaveAttribute(
+    "aria-roledescription",
+    "可键盘导航的地图只读模型"
+  );
+  await expect(page.locator("#map-keyboard-help")).toContainText(
+    "使用方向键、Home 和 End 在地图只读模型中移动已选地区。"
+  );
+  await expect(page.locator("#map-selected-district-status")).toContainText(
+    "已选地图地区：第 1 地区。"
+  );
 
   await page.getByLabel("语言").selectOption("en-US");
   await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
   await expect(page.getByRole("heading", { name: "Monsoon Sovereigns" })).toBeVisible();
   await expect(page.getByLabel("Language")).toHaveValue("en-US");
-  await expect(page.getByLabel("M4 supply and route forecast")).toContainText("Monsoon route risk");
-  await expect(
-    page.locator('[data-reason-code="route.season.monsoon-risk"]').first()
-  ).toBeVisible();
-  await expect(page.getByLabel("M4 supply and route forecast")).not.toContainText(
-    "route.season.monsoon-risk"
-  );
+  await expect(page.getByLabel("Objectives and actions")).toContainText("Current Objective");
+  await expect(page.getByText("route.season.monsoon-risk")).toHaveCount(0);
 
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
@@ -63,7 +86,7 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await page.goto("/");
 
   const rows = page.getByLabel("Virtualized district rows");
-  const panel = page.getByLabel("M2 district panel");
+  const panel = page.locator(".district-panel");
   const map = page.locator(".client-shell__map-surface");
   const mapCanvas = await expectMountedPixiMapRenderer(page);
   const performanceOutput = page.getByTestId("district-list-performance");
@@ -103,10 +126,10 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
 
   await clickMapPoint(mapCanvas, 168, 64);
   await expect(panel).toHaveAttribute("data-selected-district-id", "2");
-  await expect(panel).toContainText("Prototype Settlement 001");
+  await expect(panel).toContainText("Market settlement");
   await expect(map).toHaveAttribute("data-selected-entity-kind", "settlement");
 
-  await page.getByLabel("Filter districts").fill("planting");
+  await page.getByLabel("Filter").fill("planting");
   await expect(rows).toHaveAttribute("data-filtered-row-count", "8");
   await expect(rows).toHaveAttribute("data-rendered-row-count", "8");
 
@@ -120,7 +143,7 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
 });
 
 test("M3 appointment workspace submits appointment and bulk command DTOs", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?debug=1");
 
   const workspace = page.getByLabel("M3 appointment workspace");
   await expect(workspace).toHaveAttribute("data-office-count", "3");
@@ -146,20 +169,16 @@ test("M3 appointment workspace submits appointment and bulk command DTOs", async
   await expect(page.getByLabel("Visible reason summaries")).toContainText("Candidate unavailable");
 
   await page.getByRole("button", { name: "Submit appointment" }).click();
-  await expect(page.getByLabel("M3 command status")).toContainText(
-    "sim.appoint-office ready for polity:1"
-  );
+  await expect(page.getByLabel("M3 command status")).toContainText("Appointment request prepared.");
 
   await page.getByRole("button", { name: "Submit bulk eligible appointments" }).click();
-  await expect(page.getByLabel("M3 command status")).toContainText(
-    "sim.appoint-offices-bulk ready for polity:1"
-  );
+  await expect(page.getByLabel("M3 command status")).toContainText("Appointment request prepared.");
 });
 
 test("M4 campaign planning submits commands and renders risks, AI reasons, and war report", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("/?debug=1");
 
   const workspace = page.getByLabel("M4 campaign planning workspace");
   await expect(workspace).toHaveAttribute("data-plan-count", "2");
@@ -176,36 +195,26 @@ test("M4 campaign planning submits commands and renders risks, AI reasons, and w
   await expect(page.getByLabel("M4 war report")).toContainText("Restore vassal ruler option");
 
   await page.getByRole("button", { name: "Submit plan" }).click();
-  await expect(page.getByLabel("M4 command status")).toContainText(
-    "sim.create-campaign-objective ready for polity:1"
-  );
+  await expect(page.getByLabel("M4 command status")).toContainText("Campaign request prepared.");
 
   await page.getByRole("button", { name: "Start march" }).click();
-  await expect(page.getByLabel("M4 command status")).toContainText(
-    "sim.start-campaign-march ready for polity:1"
-  );
+  await expect(page.getByLabel("M4 command status")).toContainText("Campaign request prepared.");
 
   await page.getByLabel("Select M4 siege choice").selectOption("assault");
   await page.getByRole("button", { name: "Submit siege choice" }).click();
-  await expect(page.getByLabel("M4 command status")).toContainText(
-    "sim.apply-m4-siege-choice ready for polity:1"
-  );
+  await expect(page.getByLabel("M4 command status")).toContainText("Campaign request prepared.");
 
   await page.getByRole("button", { name: "Withdraw" }).click();
-  await expect(page.getByLabel("M4 command status")).toContainText(
-    "sim.resolve-m4-campaign-withdrawal ready for polity:1"
-  );
+  await expect(page.getByLabel("M4 command status")).toContainText("Campaign request prepared.");
 
   await page.getByRole("button", { name: "Cancel plan" }).click();
-  await expect(page.getByLabel("M4 command status")).toContainText(
-    "sim.cancel-campaign-objective ready for polity:1"
-  );
+  await expect(page.getByLabel("M4 command status")).toContainText("Campaign request prepared.");
 });
 
 test("M4 stress fixture renders campaign planning and war report under 4000-row pressure", async ({
   page
 }) => {
-  await page.goto("/?fixture=stress");
+  await page.goto("/?fixture=stress&debug=1");
 
   const workspace = page.getByLabel("M4 campaign planning workspace");
   await expect(workspace).toHaveAttribute("data-plan-count", "2");
@@ -230,13 +239,11 @@ test("M4 stress fixture renders campaign planning and war report under 4000-row 
   await expect(page.getByLabel("M4 war report")).toContainText("Restore vassal ruler option");
   await expect(page.getByLabel("M4 war report")).toContainText("Outcome 1002");
   await page.getByRole("button", { name: "Submit plan" }).click();
-  await expect(page.getByLabel("M4 command status")).toContainText(
-    "sim.create-campaign-objective ready for polity:1"
-  );
+  await expect(page.getByLabel("M4 command status")).toContainText("Campaign request prepared.");
 });
 
 test("M5 playable flow previews confirms saves loads and reaches result", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?debug=1");
 
   const workspace = page.getByLabel("M5 playable slice workspace");
   await expect(workspace).toHaveAttribute("data-scenario-id", "m5.composite.river-gate.v0");
@@ -262,9 +269,7 @@ test("M5 playable flow previews confirms saves loads and reaches result", async 
   );
 
   await page.getByRole("button", { name: "Confirm command" }).click();
-  await expect(page.getByLabel("M5 command status")).toContainText(
-    "sim.create-campaign-objective confirmed for polity:1"
-  );
+  await expect(page.getByLabel("M5 command status")).toContainText("Slice command confirmed.");
   await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
 
   await page.getByRole("button", { name: "Save checkpoint" }).click();
@@ -294,7 +299,7 @@ test("M5 playable flow previews confirms saves loads and reaches result", async 
 test("M6 Alpha flow covers scenario, diplomacy, policy, encyclopedia, map candidate, checkpoint, and victory", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("/?debug=1");
 
   const workspace = page.getByLabel("M6 Alpha start to victory workspace");
   await expect(workspace).toHaveAttribute("data-scenario-id", "m6.alpha.recognized-order.v0");
@@ -336,9 +341,7 @@ test("M6 Alpha flow covers scenario, diplomacy, policy, encyclopedia, map candid
   );
 
   await page.getByRole("button", { name: "Confirm Alpha command" }).click();
-  await expect(page.getByLabel("M6 command status")).toContainText(
-    "sim.create-campaign-objective submitted for polity:1"
-  );
+  await expect(page.getByLabel("M6 command status")).toContainText("Alpha command submitted.");
   await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
 
   await page.getByRole("button", { name: "Save Alpha checkpoint" }).click();
@@ -375,9 +378,9 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   page
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
+  await page.goto("/?debug=1");
 
-  const map = page.getByLabel("M2 prototype map viewport");
+  const map = page.locator(".map-viewport");
   const mapSurface = page.locator(".client-shell__map-surface");
 
   await page.getByRole("button", { name: "Seasonal map mode" }).focus();
@@ -399,13 +402,13 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   );
   await expect(map).toHaveAttribute("aria-roledescription", "keyboard navigable map read model");
   await expect(page.locator("#map-selected-district-status")).toContainText(
-    "Selected map district: Prototype District 001."
+    "Selected map district:"
   );
   await page.keyboard.press("ArrowRight");
   await expect(mapSurface).toHaveAttribute("data-selected-district-id", "2");
-  await expect(map).toHaveAttribute("data-selected-district-label", "Prototype District 002");
+  await expect(map).toHaveAttribute("data-selected-district-label", /.+/);
   await expect(page.locator("#map-selected-district-status")).toContainText(
-    "Selected map district: Prototype District 002."
+    "Selected map district: District 2."
   );
   await expectFocusOutline(map);
 
@@ -446,7 +449,7 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   await expect(page.getByRole("button", { name: "Confirm Alpha command" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(commandStatus).toHaveAttribute("data-status-kind", "submitted");
-  await expect(commandStatus).toContainText("sim.create-campaign-objective submitted");
+  await expect(commandStatus).toContainText("Alpha command submitted.");
   await expect(workspace).toHaveAttribute("data-confirmed-count", "1");
 
   await page.getByRole("button", { name: "Save Alpha checkpoint" }).focus();
@@ -476,7 +479,7 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
 test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without scope expansion", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("/?debug=1");
 
   const workspace = page.getByLabel("M7 tutorial hints encyclopedia workspace");
   await expect(workspace).toHaveAttribute("data-tutorial-step-count", "7");
@@ -596,7 +599,7 @@ test("M7 design tokens are available to the web shell map flow without final art
 
 test("M3 appointment workspace fits a 1440px desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/");
+  await page.goto("/?debug=1");
 
   const overflow = await page.evaluate(() => {
     const grid = document.querySelector(".m3-appointment__grid");
@@ -627,7 +630,7 @@ test("M5 workspace has no horizontal overflow across required desktop viewports"
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/?debug=1");
     await expect(page.getByLabel("M5 playable slice workspace")).toBeVisible();
     const overflow = await page.evaluate(() => {
       const workspace = document.querySelector(".m5-playable");
@@ -659,7 +662,7 @@ test("M6 Alpha workspace has no horizontal overflow across required desktop view
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/?debug=1");
     await page.evaluate(() => {
       document.documentElement.style.fontSize = "20px";
     });
@@ -694,7 +697,7 @@ test("M7 guidance workspace has no horizontal overflow across required viewports
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto("/?fixture=m7-extreme&surface=coverage");
+    await page.goto("/?fixture=m7-extreme&surface=coverage&debug=1");
     await page.evaluate(() => {
       document.documentElement.style.fontSize = "20px";
     });

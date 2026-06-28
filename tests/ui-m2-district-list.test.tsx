@@ -42,7 +42,7 @@ describe("M2 district client UI", () => {
     );
     const markup = renderToStaticMarkup(createShell(snapshot));
 
-    expect(markup).toContain("M2 district panel");
+    expect(markup).toContain("Selected district inspector");
     expect(markup).toContain("Population");
     expect(markup).toContain("Labor");
     expect(markup).toContain("Grain");
@@ -60,13 +60,15 @@ describe("M2 district client UI", () => {
 
     expect(markup).toContain('data-row-count="4000"');
     expect(markup).toContain('data-rendered-row-count="16"');
-    expect(markup).toContain("Synthetic District 0001");
+    expect(markup).toContain("District 1");
     expect(markup).not.toContain("Synthetic District 4000");
   });
 
   test("renders M2 map controls and fixture counts from read-model slices", () => {
     const snapshot = createM2PrototypeClientReadModelSnapshot();
-    const markup = renderToStaticMarkup(createShell(snapshot));
+    const markup = renderToStaticMarkup(
+      createShell(snapshot, "tutorial", createClientI18n("en-US"), "system", false)
+    );
 
     expect(markup).toContain('data-district-count="30"');
     expect(markup).toContain('data-settlement-count="10"');
@@ -74,7 +76,7 @@ describe("M2 district client UI", () => {
     expect(markup).toContain('aria-label="Seasonal map mode"');
     expect(markup).toContain('aria-label="Economy map mode"');
     expect(markup).toContain('aria-label="Routes map mode"');
-    expect(markup).toContain("Prototype District 001");
+    expect(markup).not.toContain("Prototype District 001");
   });
 
   test("renders M3 appointment workflow, bulk preview, rejection reasons, and outcome reasons", () => {
@@ -464,7 +466,8 @@ function createShell(
   snapshot: Parameters<typeof ClientShellView>[0]["snapshot"],
   initialM7Surface: Parameters<typeof ClientShellView>[0]["initialM7Surface"] = "tutorial",
   i18n: ClientI18n = createClientI18n("en-US"),
-  localePreference: ClientLocalePreference = "system"
+  localePreference: ClientLocalePreference = "system",
+  initialDebugMode = true
 ) {
   const selectedEntity = { kind: "district" as const, districtId: createClientDistrictId(1) };
   const mapMode: ClientMapMode = "seasonal";
@@ -489,7 +492,8 @@ function createShell(
       localePreference={localePreference}
       onLocalePreferenceChange={() => undefined}
       initialM7Surface={initialM7Surface}
-      mapSurface={<div aria-label="M2 prototype map viewport" data-renderer-owner="map-renderer" />}
+      initialDebugMode={initialDebugMode}
+      mapSurface={<div aria-label="Map region" data-renderer-owner="map-renderer" />}
     />
   );
 }

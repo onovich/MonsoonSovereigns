@@ -1,0 +1,104 @@
+{
+  "message_id": "MSG-20260629-M7-APP-SHELL-QA-REVIEW",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA review of fixed commit 47d413198897466420afff587a7ef903479e94cb found the diff is confined to allowed paths and core player/debug separation is mostly in place, but the task acceptance criterion that all player-visible app-shell strings use the accepted i18n foundation is not fully met. Default player mode still exposes hard-coded English accessibility strings for map keyboard help, selected-district live text, map role description, map renderer error, virtualized district rows, map-mode button labels, and sort button labels. Existing web/UI/e2e tests pass, which confirms the current test matrix does not fail on this implementation defect.",
+  "artifacts": [
+    "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-REVIEW__qa_reviewer.json",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx"
+  ],
+  "branch_or_worktree": "feat/m7-app-shell-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "47d413198897466420afff587a7ef903479e94cb",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m7-app-shell-quality; local HEAD is f1cfa8c5 and ahead of origin by one process-route commit; working tree clean."
+    },
+    {
+      "command": "git show --stat --oneline 47d413198897466420afff587a7ef903479e94cb",
+      "exit_code": 0,
+      "result": "47d41319 feat(ui): productize M7 player app shell; 9 files changed, 1271 insertions, 402 deletions."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-APP-SHELL-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff validates."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task, writer handoff, and route file",
+      "exit_code": 0,
+      "result": "Parsed M7 task JSON, writer handoff JSON, and writer-to-QA route JSON."
+    },
+    {
+      "command": "git diff --name-only 9bd14c6d..47d413198897466420afff587a7ef903479e94cb | node -e allowed/forbidden path guard",
+      "exit_code": 0,
+      "result": "15 changed paths checked; notAllowed=[] and forbiddenHits=[]."
+    },
+    {
+      "command": "git diff --check 9bd14c6d..47d413198897466420afff587a7ef903479e94cb",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "rg -n 'Virtualized district rows|Sort by |map mode|Use arrow keys|Selected map district|keyboard navigable map read model|Map renderer failed|Developer milestone workspaces' packages/ui/src/index.tsx apps/web/src/shell/web-client-shell.tsx tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Found hard-coded English player/default accessibility strings in packages/ui/src/index.tsx and apps/web/src/shell/web-client-shell.tsx; tests assert the English names instead of zh-CN/system fallback."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web shell suite passed: 1 file, 8 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 file, 15 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 15 tests."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop bridge; renderer file navigation restricted; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "REQUEST_CHANGES_I18N_ACCESSIBILITY",
+      "decision": "Do not accept this task until default player-mode accessibility strings are routed through packages/ui/src/i18n.ts and regression coverage fails on hard-coded English under zh-CN/system fallback."
+    },
+    {
+      "id": "NO_SECURITY_BLOCKER",
+      "decision": "No separate security_reviewer blocker is raised in this QA pass because the fixed implementation commit does not modify desktop/platform IPC files and pnpm desktop:security-check passed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "TEST_MATRIX_FALSE_POSITIVE",
+      "severity": "P1",
+      "summary": "Current Storybook/Playwright/Vitest coverage can pass while default player-mode accessibility labels remain English-only, so the i18n acceptance criterion is not adequately guarded."
+    },
+    {
+      "id": "ELECTRON_RESIDUAL",
+      "severity": "P3",
+      "summary": "The web shell is consumed by Electron and reads the existing runtime locale bridge, but this review found no new Electron IPC surface and security-check passed."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Localize all default player-mode app-shell accessibility and error strings through the accepted i18n foundation, including packages/ui/src/index.tsx MapModeButton aria labels, SortButton aria labels, virtualized row aria label, developer-workspace label if kept visible to assistive tech only in debug, and apps/web/src/shell/web-client-shell.tsx map keyboard help, selected-district live text, aria-roledescription, and map renderer error. Add focused tests that assert zh-CN/system fallback accessible names are localized and that the English hard-coded labels no longer satisfy the zh-CN path.",
+  "created_at": "2026-06-29T03:15:41+08:00"
+}

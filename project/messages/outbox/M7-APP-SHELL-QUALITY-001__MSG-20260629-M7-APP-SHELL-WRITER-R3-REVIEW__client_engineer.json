@@ -1,0 +1,92 @@
+{
+  "message_id": "MSG-20260629-M7-APP-SHELL-WRITER-R3-REVIEW",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R3 fixes the remaining QA R2 visible localization issue. The active district sort indicator no longer renders literal English \"up\" or \"down\" in default player mode; visible sort direction text and active sort accessible labels now come from packages/ui/src/i18n.ts. Focused zh-CN/system fallback coverage asserts the active sort button renders localized visible text such as \"地区 升序\" and fails if English up/down returns.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "feat/m7-app-shell-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": null,
+  "base_checkpoints": {
+    "current_process_checkpoint_pushed": "7c5e2b5d",
+    "qa_r2_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R2-REVIEW__qa_reviewer.json",
+    "request_changes_route": "project/messages/routes/M7-APP-SHELL-QUALITY-001__ROUTE-20260629-QA-R2-REQUEST-CHANGES-TO-WRITER.json"
+  },
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m7-app-shell-quality; R3 working tree changes are limited to packages/ui i18n/shell, web shell tests, e2e test, and this handoff."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/index.tsx -Pattern '\" up\"','\" down\"'",
+      "exit_code": 0,
+      "result": "No matches for the prior literal English sort suffixes in SortButton implementation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-APP-SHELL-QUALITY-001.json."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "M7-APP-SHELL-QUALITY-001 JSON shape ok."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web shell suite passed: 1 test file, 9 tests, including zh-CN active sort visible suffix regression."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 test file, 15 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 15 tests, including system zh-CN fallback active sort visible text."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format, lint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LOCALIZED_SORT_DIRECTION_TEXT",
+      "decision": "Used i18n catalog keys for active sort direction labels instead of locale-neutral icons so both visible text and accessible state remain explicit in en-US and zh-CN."
+    },
+    {
+      "id": "MINIMAL_R3_SCOPE",
+      "decision": "Limited R3 to the QA R2 sort-direction localization issue; no domain rules, protocol, Electron IPC, release, branding, art, telemetry, server, multiplayer, account, cloud save, or manual battle scope changed."
+    },
+    {
+      "id": "READ_MODEL_BOUNDARY_UNCHANGED",
+      "decision": "Sort UI still only coordinates the existing client read-model list projection and local presentation state; it does not own WorldState or mutate authoritative simulation state."
+    }
+  ],
+  "risks": [
+    {
+      "id": "ACTIVE_SORT_LABEL_CHANGED",
+      "severity": "P3",
+      "summary": "Active sort buttons now expose localized state in their aria-label, for example 'Sort by District, currently ascending' or '按地区排序，当前升序'. Inactive sort labels remain unchanged."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Please independently revalidate M7-APP-SHELL-QUALITY-001 R3, focusing on the QA R2 finding that default player-mode active sort direction must not show English up/down in zh-CN/system fallback and must route through the accepted i18n foundation.",
+  "created_at": "2026-06-29T03:45:00+08:00"
+}

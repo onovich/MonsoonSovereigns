@@ -1,0 +1,32 @@
+{
+  "route_id": "ROUTE-20260629-QA-R2-REQUEST-CHANGES-TO-WRITER",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "source_role": "qa_reviewer",
+  "source_thread_id": "019f0f9c-332b-7472-9b55-b6440262b78c",
+  "source_thread_nickname": "Gate",
+  "source_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R2-REVIEW__qa_reviewer.json",
+  "source_status": "REQUEST_CHANGES",
+  "target_role": "client_engineer",
+  "target_thread_id": "019f0f04-198a-73b0-94cc-d01d36ef3c56",
+  "target_thread_nickname": "Window the 2nd",
+  "requested_action": "Fix remaining visible English sort direction suffix up/down in default player mode, add zh-CN/system fallback regression, and emit R3 writer REVIEW handoff.",
+  "branch_or_worktree": "feat/m7-app-shell-quality",
+  "reviewed_commit": "ac6464b6884404e091dc421979b8654dc2c47b26",
+  "expected_handoff": "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R3-REVIEW__client_engineer.json",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-28T19:39:19.933Z",
+  "route_sent_at": "2026-06-28T19:40:34.279Z",
+  "delivery": {
+    "method": "send_input",
+    "status": "sent",
+    "submission_id": "019f0fbe-cdc9-7550-8bd6-540d89206306",
+    "sent_at": "2026-06-28T19:40:34.279Z",
+    "note": "QA R2 REQUEST_CHANGES routed to the original client_engineer for R3 fix."
+  },
+  "required_fix_evidence": [
+    "packages/ui/src/index.tsx: SortButton visible suffix currently uses literal English up/down",
+    "Use localized i18n keys or locale-neutral iconography for active sort direction",
+    "Add zh-CN/system fallback test that fails if visible active sort button contains English up/down"
+  ]
+}

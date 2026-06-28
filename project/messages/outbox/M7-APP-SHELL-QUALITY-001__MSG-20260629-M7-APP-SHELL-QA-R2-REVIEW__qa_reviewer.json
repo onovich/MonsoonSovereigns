@@ -1,0 +1,119 @@
+{
+  "message_id": "MSG-20260629-M7-APP-SHELL-QA-R2-REVIEW",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "R2 fixes the prior P1 accessibility-label finding for the explicitly named strings: virtualized district rows, map-mode button accessible names, sort button accessible names, map keyboard help, selected-district live status, map role description, map renderer failure text, and developer-workspace label now route through packages/ui/src/i18n.ts, with zh-CN/system fallback positive and English-negative coverage. However, independent review found a remaining default player-mode visible English string: the active sort button renders aria-hidden but visually visible text suffixes \" up\" and \" down\" in packages/ui/src/index.tsx. This still violates the task acceptance criterion that all player-visible app-shell strings use the accepted i18n foundation, and current zh-CN/system fallback tests pass without catching it.",
+  "artifacts": [
+    "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-QA-R2-REVIEW__qa_reviewer.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "feat/m7-app-shell-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "ac6464b6884404e091dc421979b8654dc2c47b26",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On feat/m7-app-shell-quality; local HEAD 59ed3af0 is ahead of origin by six process/review commits; working tree clean before writing this QA R2 handoff."
+    },
+    {
+      "command": "git show --stat --oneline ac6464b6884404e091dc421979b8654dc2c47b26",
+      "exit_code": 0,
+      "result": "ac6464b6 fix(ui): localize M7 shell accessibility labels; 6 files changed, 177 insertions, 12 deletions."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-APP-SHELL-QUALITY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-APP-SHELL-QUALITY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "R2 writer handoff validates."
+    },
+    {
+      "command": "git diff --check 9bd14c6d..ac6464b6884404e091dc421979b8654dc2c47b26",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --name-only 9bd14c6d..ac6464b6884404e091dc421979b8654dc2c47b26 | node -e allowed/forbidden path guard",
+      "exit_code": 0,
+      "result": "19 changed paths checked; notAllowed=[] and forbiddenHits=[]."
+    },
+    {
+      "command": "node -e JSON parse check for task JSON, R2 writer handoff, and R2 route evidence",
+      "exit_code": 0,
+      "result": "Parsed project/tasks/active/M7-APP-SHELL-QUALITY-001.json, R2 writer handoff JSON, and R2 route JSON."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/index.tsx,apps/web/src/shell/web-client-shell.tsx -Pattern 'Virtualized district rows','Sort by ','map mode','Use arrow keys','Selected map district','keyboard navigable map read model','Map renderer failed','Developer milestone workspaces'",
+      "exit_code": 0,
+      "result": "No implementation matches for the prior hard-coded English accessibility strings."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/index.tsx -Pattern '\\\" up\\\"','\\\" down\\\"'",
+      "exit_code": 0,
+      "result": "Found packages/ui/src/index.tsx:1039: const suffix = isActive ? (direction === \"ascending\" ? \" up\" : \" down\") : \"\";"
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest web shell suite passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest UI suite passed: 1 file, 15 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 15 tests."
+    },
+    {
+      "command": "pnpm exec tsx --version",
+      "exit_code": 1,
+      "result": "Optional static-render probe was not used because tsx is not installed; source and existing test evidence were sufficient."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed successfully; M7-APP-SHELL-QUALITY-001 remains REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready output returned M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "PRIOR_P1_ACCESSIBILITY_LABELS_FIXED",
+      "decision": "The R2 implementation resolves the prior hard-coded accessibility-label set and adds zh-CN/system fallback assertions that fail if those English accessible names return."
+    },
+    {
+      "id": "REQUEST_CHANGES_VISIBLE_SORT_DIRECTION",
+      "decision": "Acceptance is still blocked because visible default player-mode sort direction text uses English up/down literals instead of the accepted i18n foundation."
+    },
+    {
+      "id": "NO_SECURITY_ESCALATION_R2",
+      "decision": "No security_reviewer escalation is required from this QA pass; R2 touched UI/i18n/test files only, and no Electron IPC or platform security surface changed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LOCALIZATION_TEST_GAP_SORT_DIRECTION",
+      "severity": "P1",
+      "summary": "Current zh-CN/system fallback tests cover accessible names but not visible active-sort direction text, so they pass while a default player-mode English suffix remains visible."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Localize the active sort direction indicator in packages/ui/src/index.tsx instead of rendering literal English \" up\" / \" down\". Either use localized i18n keys for ascending/descending indicators or replace the visible suffix with locale-neutral iconography while preserving accessible sort state. Add a focused zh-CN/system fallback regression that would fail if the rendered active sort button contains English up/down in default player mode.",
+  "created_at": "2026-06-29T03:36:58+08:00"
+}

@@ -1,0 +1,65 @@
+{
+  "message_id": "MSG-20260629-M7-APP-SHELL-START",
+  "task_id": "M7-APP-SHELL-QUALITY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-APP-SHELL-QUALITY-001 after M7-DESIGN-TOKENS-ASSET-SLOTS-001 closed on origin/main. The task should productize the M7 player app shell using the accepted i18n foundation and design-token/asset-slot foundation while preserving read-model/command authority boundaries and explicit dev overlay separation.",
+  "artifacts": [
+    "project/tasks/active/M7-APP-SHELL-QUALITY-001.json",
+    "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/design-tokens.ts",
+    "packages/ui/src/asset-slots.ts",
+    "packages/ui/src/design-token-asset-slots-view.tsx",
+    "apps/web/src/styles/shell.css",
+    "project/messages/outbox/M7-APP-SHELL-QUALITY-001__MSG-20260629-M7-APP-SHELL-START__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "feat/m7-app-shell-quality / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "9bd14c6d",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main before creating feat/m7-app-shell-quality."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list | rg M7-APP-SHELL|M7-DESIGN|M7-SAVE",
+      "exit_code": 0,
+      "result": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 CLOSED; M7-APP-SHELL-QUALITY-001 DRAFT and dependency-ready; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 also DRAFT/READY."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-APP-SHELL-QUALITY-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 are READY candidates."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "START_UI_QUALITY_TRACK_NEXT",
+      "decision": "Start M7-APP-SHELL-QUALITY-001 before save/cloud boundary planning because the accepted UI/localization/art plan and just-closed token foundation establish the next UI quality track dependency."
+    },
+    {
+      "id": "NO_HUMAN_GATE_ACTIVE",
+      "decision": "No Human Gate is active; task scope explicitly excludes branding, production art, telemetry, server/multiplayer, cloud save implementation, manual node battle, release/commercial decisions, and frozen architecture changes."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PLAYER_DEBUG_SEPARATION",
+      "severity": "P2",
+      "summary": "The task must hide prototype text, milestone labels, state hashes, revisions, raw reason codes, raw IDs, and test-only names in player mode.",
+      "mitigation": "Writer must keep explicit dev/debug overlay separation and add Storybook/Playwright coverage for debug-on/off."
+    },
+    {
+      "id": "AUTHORITY_BOUNDARY",
+      "severity": "P2",
+      "summary": "The app shell must remain a presentation/read-model coordinator.",
+      "mitigation": "No WorldState ownership, hidden commands, duplicated simulation formulas, or direct authoritative state mutation in UI/client store."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement M7-APP-SHELL-QUALITY-001 within allowed paths, run required tests, write validated writer REVIEW handoff, and route to qa_reviewer.",
+  "created_at": "2026-06-28T16:17:06.608Z"
+}
