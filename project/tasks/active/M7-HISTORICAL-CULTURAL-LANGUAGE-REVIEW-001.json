@@ -2,7 +2,7 @@
   "id": "M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001",
   "summary": "Establish M7 historical, cultural, and language review baseline",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "historical_researcher",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -110,20 +110,24 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed_integrated",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "research/m7-historical-cultural-language-review",
       "base_main_commit": "4c434b3c07d250c72ae36796bed724f63390d566",
-      "updated_at": "2026-06-28T05:27:40.948Z",
+      "updated_at": "2026-06-28T05:33:41.573Z",
       "start_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json",
       "route_sent_at": "2026-06-28T05:09:13.406Z",
       "start_submission_id": "019f0ca1-69ad-7793-8881-390869d70768",
       "lead_accept_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-LEAD-ACCEPT__lead_orchestrator.json",
-      "accepted_at": "2026-06-28T05:27:40.948Z"
+      "accepted_at": "2026-06-28T05:27:40.948Z",
+      "integrated_pr": 163,
+      "integrated_main_commit": "67efde9bcca9796bca813298c7125dca29625faf",
+      "lead_close_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-28T05:33:41.573Z"
     },
     "historical_researcher": {
       "thread_id": "019f0c9d-bc2f-7f21-b05e-277a6dae8fb1",
@@ -182,7 +186,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T05:27:40.948Z",
+  "updated_at": "2026-06-28T05:33:41.573Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -205,7 +209,7 @@
   "route_file": "project/messages/routes/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__ROUTE-20260628-M7-HIST-CULT-LANG-LEAD-TO-HISTORICAL-START.json",
   "writer_thread_id": "019f0c9d-bc2f-7f21-b05e-277a6dae8fb1",
   "writer_thread_nickname": "Chronicle",
-  "next_action": "Push branch, open PR, wait for CI, merge to main, then close M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001 and continue to the next dependency-ready M7 task.",
+  "next_action": "Start M7-SCENARIO-PERSON-EVENT-FILL-001 as the next content-lane task; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is also dependency-ready and remains unstarted.",
   "route_sent_at": "2026-06-28T05:09:13.406Z",
   "start_submission_id": "019f0ca1-69ad-7793-8881-390869d70768",
   "qa_thread_id": "019f0cab-6434-7eb0-8e1b-565cd5c6618a",
@@ -223,5 +227,16 @@
   "child_threads_closed": [
     "019f0c9d-bc2f-7f21-b05e-277a6dae8fb1",
     "019f0cab-6434-7eb0-8e1b-565cd5c6618a"
-  ]
+  ],
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "integrated_pr": 163,
+  "integrated_main_commit": "67efde9bcca9796bca813298c7125dca29625faf",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/163",
+  "lead_close_handoff": "project/messages/outbox/M7-HISTORICAL-CULTURAL-LANGUAGE-REVIEW-001__MSG-20260628-M7-HIST-CULT-LANG-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-06-28T05:33:41.573Z",
+  "next_ready_tasks": [
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "M7-SCENARIO-PERSON-EVENT-FILL-001"
+  ],
+  "selected_next_task": "M7-SCENARIO-PERSON-EVENT-FILL-001"
 }
