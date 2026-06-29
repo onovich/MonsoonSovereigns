@@ -21,7 +21,7 @@
     "test_engineer": {
       "thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
-      "status": "replacement_waiting_start_confirmed",
+      "status": "in_progress_r2_replacement",
       "role": "test_engineer",
       "nickname": "Canary the 2nd",
       "configured_model": "gpt-5.4-mini",
@@ -36,7 +36,9 @@
       ],
       "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
       "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T11:52:30.907Z"
+      "updated_at": "2026-06-29T11:53:52.082Z",
+      "route_submission_id": "019f133a-37e8-7241-a111-89b54c696bf3",
+      "route_sent_at": "2026-06-29T11:53:52.082Z"
     },
     "qa_reviewer": {
       "thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
@@ -911,7 +913,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T11:52:30.907Z",
+  "last_updated_at": "2026-06-29T11:53:52.082Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2581,8 +2583,8 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T11:52:30.907Z",
-    "next_action": "Send replacement REQUEST_CHANGES route and wait for R2 handoff.",
+    "updated_at": "2026-06-29T11:53:52.082Z",
+    "next_action": "Wait for replacement test_engineer R2 REVIEW/PARTIAL/BLOCKED handoff.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
@@ -2610,6 +2612,8 @@
     "partial_diff_files": [
       "tests/e2e/web-shell.spec.ts"
     ],
-    "replacement_route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json"
+    "replacement_route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
+    "replacement_route_submission_id": "019f133a-37e8-7241-a111-89b54c696bf3",
+    "replacement_route_sent_at": "2026-06-29T11:53:52.082Z"
   }
 }
