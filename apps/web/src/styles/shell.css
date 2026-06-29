@@ -2226,7 +2226,7 @@ select:focus-visible,
 
 .client-shell--beta .client-shell__map-region {
   display: grid;
-  grid-template-rows: auto minmax(360px, 1fr) auto;
+  grid-template-rows: auto auto minmax(320px, 1fr) auto;
   gap: 10px;
   min-height: calc(100vh - 238px);
 }
@@ -2341,6 +2341,7 @@ select:focus-visible,
   align-self: start;
 }
 
+.client-shell--beta .player-orientation-card,
 .client-shell--beta .district-panel,
 .client-shell--beta .client-shell__objectives,
 .client-shell--beta .client-shell__notices,
@@ -2349,6 +2350,77 @@ select:focus-visible,
   border-radius: var(--ms-radius-panel, 4px);
   background: var(--ms-color-surface-paper);
   padding: 12px;
+}
+
+.player-orientation-card {
+  display: grid;
+  gap: 10px;
+}
+
+.player-orientation-card__header {
+  display: grid;
+  gap: 3px;
+}
+
+.player-orientation-card__header span,
+.player-orientation-card__problem span,
+.player-orientation-card__action span,
+.player-orientation-card dt {
+  color: var(--ms-color-text-muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.player-orientation-card__header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.player-orientation-card__facts,
+.player-orientation-card__consequences {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.player-orientation-card__facts > div,
+.player-orientation-card__consequences > div,
+.player-orientation-card__problem,
+.player-orientation-card__action {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid #d8dee2;
+  border-radius: var(--ms-radius-control);
+  background: #ffffff;
+  padding: 8px;
+}
+
+.player-orientation-card dd,
+.player-orientation-card p {
+  margin: 0;
+  color: var(--ms-color-text-secondary);
+  line-height: 1.35;
+}
+
+.player-orientation-card strong,
+.player-orientation-card__facts dd {
+  color: var(--ms-color-text-primary);
+  line-height: 1.3;
+}
+
+.player-orientation-card__problem {
+  border-color: rgba(184, 135, 70, 0.55);
+  background: #fffaf1;
+}
+
+.player-orientation-card__action {
+  border-color: rgba(47, 111, 115, 0.45);
+  background: #eef7f5;
 }
 
 .client-shell--beta .district-panel {
@@ -2443,18 +2515,16 @@ select:focus-visible,
   font: inherit;
 }
 
-.player-guidance-lite__steps {
+.player-guidance-lite__card {
   display: grid;
   gap: 8px;
   margin: 0;
   padding: 0;
-  list-style: none;
 }
 
-.player-guidance-lite__steps li {
+.player-guidance-lite__card > div {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 3px 8px;
+  gap: 4px;
   border: 1px solid #e0e5e8;
   border-radius: var(--ms-radius-control);
   background: #f9fbfb;
@@ -2462,28 +2532,18 @@ select:focus-visible,
   min-width: 0;
 }
 
-.player-guidance-lite__steps li > span {
-  grid-row: span 2;
-  align-self: start;
-  border-radius: 999px;
-  background: #e8eef0;
-  padding: 2px 7px;
+.player-guidance-lite__card dt {
   color: var(--ms-color-surface-muted);
   font-size: 0.78rem;
   font-weight: 700;
 }
 
-.player-guidance-lite__steps li[data-step-state="active"] {
+.player-guidance-lite__card > div[data-guidance-action="ready"] {
   border-color: var(--ms-color-accent-river);
   background: #eef7f5;
 }
 
-.player-guidance-lite__steps li[data-step-state="done"] > span {
-  background: #e4f0e8;
-  color: #376c45;
-}
-
-.player-guidance-lite__steps p,
+.player-guidance-lite__card dd,
 .player-guidance-lite__costs {
   margin: 0;
 }
@@ -2579,6 +2639,8 @@ select:focus-visible,
 
   .client-shell--beta .client-shell__status,
   .client-shell--beta .district-panel__metrics,
+  .client-shell--beta .player-orientation-card__facts,
+  .client-shell--beta .player-orientation-card__consequences,
   .client-shell--beta .client-shell__debug-facts {
     grid-template-columns: 1fr;
   }

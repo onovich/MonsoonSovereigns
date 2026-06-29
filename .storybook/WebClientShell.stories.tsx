@@ -202,6 +202,37 @@ export const MapSituationSimplifiedChinese = {
   )
 };
 
+export const FirstScreenOrientationNormal = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const FirstScreenOrientationEmpty = {
+  render: () => <WebClientShell initialSearch="?fixture=district-empty" />
+};
+
+export const FirstScreenOrientationError = {
+  render: () => <WebClientShell initialSearch="?fixture=district-error" />
+};
+
+export const FirstScreenOrientationExtreme = {
+  render: () => <WebClientShell initialSearch="?fixture=stress" />
+};
+
+export const FirstScreenOrientationNarrow = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1"
+    }
+  },
+  render: () => <WebClientShell initialSearch="?fixture=stress" />
+};
+
+export const FirstScreenOrientationSimplifiedChinese = {
+  render: () => (
+    <WebClientShell initialLocalePreference="zh-CN" initialSystemLocales={["zh-Hans"]} />
+  )
+};
+
 export const PlayerGuidanceLiteNormal = {
   render: () => <WebClientShell initialLocalePreference="en-US" />
 };
