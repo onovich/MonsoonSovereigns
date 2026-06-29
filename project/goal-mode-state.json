@@ -2,26 +2,40 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
-      "status": "ready_to_route",
+      "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": null,
-      "updated_at": "2026-06-29T20:12:03.204Z"
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "updated_at": "2026-06-29T20:18:14.086Z"
+    },
+    "client_engineer": {
+      "thread_id": "019f1507-44e9-7cb3-90e4-c033f1f90d71",
+      "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "status": "active_writer",
+      "role": "client_engineer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T20:18:14.086Z"
     }
   },
   "last_integrated_task": "M7-MAP-SITUATION-MODE-UX-001",
-  "last_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
-  "next_ready_tasks": [
-    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001"
-  ],
+  "last_main_commit": "14ff4aefca3acda7e20e7603527dc6bf3cffc7df",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -539,7 +553,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M7-PLAYER-FIRST-SCREEN-ORIENTATION-001 as the next M7 UX recovery task.",
+  "next_action": "Wait for client_engineer writer handoff for M7-PLAYER-FIRST-SCREEN-ORIENTATION-001, then route to gameplay_designer review.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -902,8 +916,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T20:12:03.204Z",
-  "updated_at": "2026-06-29T20:12:03.204Z",
+  "last_updated_at": "2026-06-29T20:18:14.086Z",
+  "updated_at": "2026-06-29T20:18:14.086Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",

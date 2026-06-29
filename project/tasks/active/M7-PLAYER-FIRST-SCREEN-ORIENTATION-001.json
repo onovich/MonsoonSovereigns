@@ -2,7 +2,7 @@
   "id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
   "summary": "Make the first screen explain identity, situation, priority problem, and next action within ten seconds",
   "milestone": "M7",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "client_engineer",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R3",
@@ -75,8 +75,27 @@
     "pnpm test:e2e",
     "pnpm check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "start_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "updated_at": "2026-06-29T20:18:14.086Z"
+    },
+    "client_engineer": {
+      "thread_id": "019f1507-44e9-7cb3-90e4-c033f1f90d71",
+      "nickname": "Canvas",
+      "status": "active_writer",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T20:18:14.086Z"
+    }
+  },
   "route_to": "gameplay_designer",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
@@ -88,11 +107,17 @@
     "All player-visible text must go through existing i18n boundaries."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T20:12:03.204Z",
+  "updated_at": "2026-06-29T20:18:14.086Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
   "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
   "ready_after_task": "M7-MAP-SITUATION-MODE-UX-001",
-  "ready_after_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d"
+  "ready_after_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
+  "started_at": "2026-06-29T20:18:14.086Z",
+  "start_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+  "expected_writer_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+  "base_main_commit": "14ff4aefca3acda7e20e7603527dc6bf3cffc7df",
+  "previous_closed_task": "M7-MAP-SITUATION-MODE-UX-001"
 }

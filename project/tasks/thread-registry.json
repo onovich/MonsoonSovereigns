@@ -11,12 +11,12 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T19:45:27.586Z",
-        "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+        "updated_at": "2026-06-29T20:18:14.086Z",
+        "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
         "task_ids": [
-          "M7-MAP-SITUATION-MODE-UX-001"
+          "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001"
         ],
-        "branch_or_worktree": "codex/m7-map-situation-mode-ux"
+        "branch_or_worktree": "codex/m7-player-first-screen-orientation"
       }
     ],
     "retired_leads": [
@@ -7183,14 +7183,31 @@
       "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "ready_to_route",
+      "status": "active_router",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": null,
-      "ready_after_task": "M7-MAP-SITUATION-MODE-UX-001",
-      "updated_at": "2026-06-29T20:12:03.204Z"
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "start_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "updated_at": "2026-06-29T20:18:14.086Z"
+    },
+    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001:client_engineer": {
+      "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "role": "client_engineer",
+      "thread_id": "019f1507-44e9-7cb3-90e4-c033f1f90d71",
+      "nickname": "Canvas",
+      "status": "active_writer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T20:18:14.086Z"
     }
   },
   "replaced_threads": [
@@ -7365,7 +7382,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T20:12:03.204Z",
+  "updated_at": "2026-06-29T20:18:14.086Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
