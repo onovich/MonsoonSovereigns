@@ -1,0 +1,44 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SITUATION-CI-FIX",
+  "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "CI fix for PR #205: root CI ran pnpm test and exposed a stale SSR assertion in tests/ui-m2-district-list.test.tsx that still expected the old Reachable route / Blocked route legend labels. The fix updates that test to the M7 situation-map legend semantics already implemented and reviewed: Situation mode button, Route / supply, Obligation / tributary flow, Threat / risk, Blocked / capacity, and matching legend tones.",
+  "artifacts": [
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CI-FIX__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+  "commit": "e62142a4bb849a20ac426804b7198d9e286f2582",
+  "tests_run": [
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS; architecture, determinism, root Vitest 43 files / 353 tests, and web 9 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; existing Vite chunk-size warning only."
+    }
+  ],
+  "decisions": [
+    "No product code was changed in this CI fix; only stale SSR expectations were updated to match the accepted legend semantics.",
+    "PR #205 should be updated and CI rerun before merge."
+  ],
+  "risks": [],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Push CI fix to PR #205, wait for CI, then merge and close the task after main synchronization.",
+  "created_at": "2026-06-29T20:03:44.439Z"
+}
