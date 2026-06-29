@@ -261,3 +261,9 @@ Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is a
 `systems_architect` accepted the implementation in `project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json`, and independent `qa_reviewer` accepted it in `project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-QA-REVIEW__qa_reviewer.json`. PR #185 passed both Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact.
 
 Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is active. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`. The next dependency-ready M7 tasks are `M7-PLAYER-GUIDANCE-LITE-001` and `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001`; the lead should start `M7-PLAYER-GUIDANCE-LITE-001` first unless `taskctl ready` changes.
+
+`M7-PLAYER-GUIDANCE-LITE-001` is CLOSED after PR #187 entered `origin/main` at `def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99`. The task added a lightweight, localized player guidance panel for the M7 core UI path, including first objective, district selection, district inspection, governance preview, result observation, next-step feedback, and dismiss/collapse controls while preserving existing command and read-model authority boundaries.
+
+Independent `qa_reviewer` accepted the implementation in `project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json`; PR #187 passed both Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact.
+
+Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is active. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`. The next dependency-ready M7 tasks are `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001` and `M7-UI-REGRESSION-MATRIX-001`; the lead should start `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001` first unless `taskctl ready` changes.
