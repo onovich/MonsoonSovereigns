@@ -910,7 +910,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T12:57:13.981Z",
+  "last_updated_at": "2026-06-29T13:01:33.512Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2643,7 +2643,7 @@
     ]
   },
   "m7_platform_resolution_localization_matrix": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
     "branch_or_worktree": "codex/m7-platform-resolution-localization-matrix",
     "base_main_commit": "8812f3a01c4bfd0da3b09d8bb28b617038782ac2",
@@ -2656,8 +2656,8 @@
     "route_file": "project/messages/routes/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T12:24:10.078Z",
-    "updated_at": "2026-06-29T12:57:13.981Z",
-    "next_action": "Run lead integration gates, write lead ACCEPT handoff, then integrate by PR after gates pass.",
+    "updated_at": "2026-06-29T13:01:33.512Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f1357-01e5-7693-b457-d3286d95e540",
@@ -2680,6 +2680,10 @@
     "carry_forward_risks": [
       "Edge and Firefox remain blocked-by-tooling rows until Playwright projects/browser tooling are added and evidence rerun.",
       "Windows DPI 150% remains a follow-up row until a dedicated DPI matrix harness exists."
-    ]
+    ],
+    "lead_accept_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T13:01:33.512Z",
+    "accepted_implementation_commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
+    "accepted_branch_head": "bd4fdda600b3f3d72245c075916822657daec164"
   }
 }

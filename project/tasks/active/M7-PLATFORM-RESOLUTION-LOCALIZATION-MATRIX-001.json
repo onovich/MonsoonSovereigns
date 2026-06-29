@@ -2,7 +2,7 @@
   "id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
   "summary": "Validate Chrome, Edge, Firefox, Windows, resolution, and localization matrix",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -95,7 +95,7 @@
     "This task now depends on M7-UI-REGRESSION-MATRIX-001 so platform/resolution/localization validation cannot pass using stale pre-quality-track UI evidence."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T12:57:13.981Z",
+  "updated_at": "2026-06-29T13:01:33.512Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -126,8 +126,8 @@
     "actual_writer_model": "unknown",
     "actual_writer_effort": "unknown",
     "started_at": "2026-06-29T12:24:10.078Z",
-    "updated_at": "2026-06-29T12:57:13.981Z",
-    "next_action": "Run lead integration gates, write lead ACCEPT handoff, then integrate by PR after gates pass.",
+    "updated_at": "2026-06-29T13:01:33.512Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f1357-01e5-7693-b457-d3286d95e540",
@@ -150,6 +150,10 @@
     "carry_forward_risks": [
       "Edge and Firefox remain blocked-by-tooling rows until Playwright projects/browser tooling are added and evidence rerun.",
       "Windows DPI 150% remains a follow-up row until a dedicated DPI matrix harness exists."
-    ]
+    ],
+    "lead_accept_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T13:01:33.512Z",
+    "accepted_implementation_commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
+    "accepted_branch_head": "bd4fdda600b3f3d72245c075916822657daec164"
   }
 }
