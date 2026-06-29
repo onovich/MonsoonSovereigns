@@ -2,7 +2,7 @@
   "id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
   "summary": "Make the first screen explain identity, situation, priority problem, and next action within ten seconds",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R3",
@@ -88,12 +88,12 @@
     "client_engineer": {
       "thread_id": "019f1507-44e9-7cb3-90e4-c033f1f90d71",
       "nickname": "Canvas",
-      "status": "review_ready_r2",
+      "status": "accepted_pending_integration",
       "branch_or_worktree": "codex/m7-player-first-screen-orientation",
       "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "source_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-29T21:00:35.245Z",
+      "updated_at": "2026-06-29T21:07:33.183Z",
       "route_submission_id": "019f1509-7c5f-7170-b6f2-9ce6ff1e746b",
       "route_sent_at": "2026-06-29T20:19:54.434Z",
       "review_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
@@ -109,13 +109,13 @@
     "gameplay_designer": {
       "thread_id": "019f151a-1f12-7c93-acab-1fb886f1b74c",
       "nickname": "Monsoon",
-      "status": "review_active_r2",
+      "status": "accepted_r2",
       "branch_or_worktree": "codex/m7-player-first-screen-orientation",
       "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
       "expected_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json",
       "review_commit": "dd901022ddc3070ed30cc917501320a213999508",
-      "updated_at": "2026-06-29T21:02:31.421Z",
+      "updated_at": "2026-06-29T21:07:33.183Z",
       "route_submission_id": "019f151a-fed5-7d43-a26d-0432094cf74f",
       "route_sent_at": "2026-06-29T20:39:05.165Z",
       "review_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json",
@@ -128,10 +128,12 @@
       "review_commit_r2": "4d5a6d61",
       "route_status_r2": "SENT",
       "route_submission_id_r2": "SENT_NO_SUBMISSION_ID_RETURNED",
-      "route_sent_at_r2": "2026-06-29T21:02:31.421Z"
+      "route_sent_at_r2": "2026-06-29T21:02:31.421Z",
+      "review_handoff_r2": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "review_status_r2": "ACCEPT"
     }
   },
-  "route_to": "gameplay_designer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -142,7 +144,7 @@
     "All player-visible text must go through existing i18n boundaries."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T21:02:31.421Z",
+  "updated_at": "2026-06-29T21:07:33.183Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -183,5 +185,11 @@
   "expected_gameplay_r2_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
   "gameplay_r2_route_status": "SENT",
   "gameplay_r2_route_sent_at": "2026-06-29T21:02:31.421Z",
-  "gameplay_r2_route_submission_id": "SENT_NO_SUBMISSION_ID_RETURNED"
+  "gameplay_r2_route_submission_id": "SENT_NO_SUBMISSION_ID_RETURNED",
+  "gameplay_status_r2": "ACCEPT",
+  "gameplay_r2_review_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+  "lead_accept_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-29T21:07:33.183Z",
+  "accepted_implementation_commit": "4d5a6d61",
+  "accepted_branch_head": "caea4634"
 }
