@@ -1303,6 +1303,8 @@ const M7_SAVE_MIGRATION_REQUIRED_ACCEPTED_MILESTONES: readonly M7SaveMigrationMi
   "M6"
 ];
 
+const M7_SAVE_MIGRATION_CANDIDATE_MILESTONES: readonly M7SaveMigrationMilestoneV1[] = ["M7"];
+
 const M7_SAVE_MIGRATION_REQUIRED_HUMAN_GATE_CAPABILITIES: readonly M7SaveMigrationHumanGateCapabilityV1[] =
   [
     "account-backed-persistence",
@@ -1548,6 +1550,7 @@ export function validateM7SaveMigrationBoundaryV1(
     "acceptedSaveManifests",
     "accepted-save",
     "local-compatible-load-only",
+    M7_SAVE_MIGRATION_REQUIRED_ACCEPTED_MILESTONES,
     issues
   );
   validateM7BoundaryEntries(
@@ -1555,6 +1558,7 @@ export function validateM7SaveMigrationBoundaryV1(
     "candidateContentManifests",
     "beta-content-lock-candidate",
     "human-gate-required",
+    M7_SAVE_MIGRATION_CANDIDATE_MILESTONES,
     issues
   );
 
@@ -1613,7 +1617,8 @@ export function classifyM7SaveContentManifestBoundaryV1(
     boundary.acceptedSaveManifests,
     input.contentManifestHash,
     input.scenarioId,
-    input.stateHash
+    input.stateHash,
+    M7_SAVE_MIGRATION_REQUIRED_ACCEPTED_MILESTONES
   );
   if (accepted !== undefined) {
     return { status: "accepted-save", entry: accepted };
@@ -1623,7 +1628,8 @@ export function classifyM7SaveContentManifestBoundaryV1(
     boundary.candidateContentManifests,
     input.contentManifestHash,
     input.scenarioId,
-    input.stateHash
+    input.stateHash,
+    M7_SAVE_MIGRATION_CANDIDATE_MILESTONES
   );
   if (candidate !== undefined) {
     return {
@@ -8020,10 +8026,20 @@ function validateM7BoundaryEntries(
   path: string,
   expectedDecisionState: M7SaveMigrationDecisionStateV1,
   expectedMigrationMode: M7SaveMigrationModeV1,
+  allowedMilestones: readonly M7SaveMigrationMilestoneV1[],
   issues: M7SaveMigrationBoundaryIssueV1[]
 ): void {
   entries.forEach((entry, index) => {
     const entryPath = `${path}[${index}]`;
+    if (!allowedMilestones.includes(entry.milestone)) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.milestone`,
+          `${entryPath}.milestone must be one of ${allowedMilestones.join(", ")}.`
+        )
+      );
+    }
     if (entry.decisionState !== expectedDecisionState) {
       issues.push(
         boundaryIssue(
@@ -8094,10 +8110,12 @@ function findM7SaveMigrationBoundaryEntry(
   entries: readonly M7SaveMigrationManifestBoundaryEntryV1[],
   contentManifestHash: string,
   scenarioId: string,
-  stateHash: string | undefined
+  stateHash: string | undefined,
+  allowedMilestones: readonly M7SaveMigrationMilestoneV1[]
 ): M7SaveMigrationManifestBoundaryEntryV1 | undefined {
   return entries.find(
     (entry) =>
+      allowedMilestones.includes(entry.milestone) &&
       entry.contentManifestHash === contentManifestHash &&
       entry.scenarioId === scenarioId &&
       (entry.stateHash === undefined || entry.stateHash === stateHash)

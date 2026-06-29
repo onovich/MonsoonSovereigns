@@ -19,6 +19,8 @@ import {
   SAVE_ENVELOPE_V1_MAGIC,
   SAVE_ENVELOPE_V1_SCHEMA_VERSION,
   classifyM7SaveContentManifestBoundaryV1,
+  createSaveEnvelopeV1,
+  encodeSaveEnvelopeV1,
   validateM7SaveMigrationBoundaryV1,
   validateM7SaveMigrationCandidateV1,
   type M7SaveMigrationCompatibilityBoundaryV1,
@@ -114,6 +116,69 @@ describe("M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 migration boundary", () => {
       status: "beta-content-lock-candidate",
       humanGateRequired: true,
       routeTo: "security_reviewer"
+    });
+  });
+
+  test("rejects QA-reproduced M7 accepted-save boundary bypass before compatibility", async () => {
+    const acceptedSaves = await createAcceptedBoundarySaves();
+    const m7Candidate = await createM7CandidateBoundaryEntry();
+    const m1 = acceptedSaves[0];
+    if (m1 === undefined) {
+      throw new Error("Expected M1 accepted save.");
+    }
+    const m7ForgedEnvelope = createM7CandidateEnvelopeFromSave(m1.save, m7Candidate);
+    const m7AcceptedEntry: M7SaveMigrationManifestBoundaryEntryV1 = {
+      ...m7Candidate,
+      decisionState: "accepted-save",
+      stateHash: m7ForgedEnvelope.body.authoritativeSnapshot.meta.stateHash,
+      migrationMode: "local-compatible-load-only"
+    };
+    const boundary = createBoundary(
+      [...acceptedSaves.map((save) => save.entry), m7AcceptedEntry],
+      [m7Candidate]
+    );
+
+    expect(validateM7SaveMigrationBoundaryV1(boundary)).toMatchObject({
+      ok: false,
+      issues: [
+        {
+          code: "invalid-boundary",
+          path: "acceptedSaveManifests[6].milestone",
+          message: "acceptedSaveManifests[6].milestone must be one of M1, M2, M3, M4, M5, M6."
+        }
+      ]
+    });
+
+    expect(
+      classifyM7SaveContentManifestBoundaryV1(
+        {
+          contentManifestHash: m7ForgedEnvelope.header.contentManifestHash,
+          scenarioId: m7ForgedEnvelope.header.scenarioId,
+          stateHash: m7ForgedEnvelope.body.authoritativeSnapshot.meta.stateHash
+        },
+        boundary
+      )
+    ).toMatchObject({
+      status: "beta-content-lock-candidate",
+      humanGateRequired: true,
+      routeTo: "security_reviewer"
+    });
+
+    expect(
+      validateM7SaveMigrationCandidateV1({
+        boundary,
+        bytes: encodeSaveEnvelopeV1(m7ForgedEnvelope),
+        requestedMode: "local-compatible-load-only"
+      })
+    ).toMatchObject({
+      status: "human-gate-required",
+      reasons: [
+        {
+          code: "invalid-boundary",
+          path: "acceptedSaveManifests[6].milestone",
+          routeTo: "security_reviewer"
+        }
+      ]
     });
   });
 
@@ -336,6 +401,27 @@ function requestRuntimeSave(runtime: SimulationRuntimeV1): RuntimeSaveV1 {
     appVersion: "0.0.0",
     source: "test",
     codecVersion: "save-envelope-v1"
+  });
+}
+
+function createM7CandidateEnvelopeFromSave(
+  save: RuntimeSaveV1,
+  candidate: M7SaveMigrationManifestBoundaryEntryV1
+) {
+  return createSaveEnvelopeV1({
+    build: save.envelope.header.build,
+    scenarioId: candidate.scenarioId,
+    authoritativeSnapshot: {
+      ...save.envelope.body.authoritativeSnapshot,
+      meta: {
+        ...save.envelope.body.authoritativeSnapshot.meta,
+        contentManifestHash: candidate.contentManifestHash
+      }
+    },
+    scheduler: save.envelope.body.scheduler,
+    rng: save.envelope.body.rng,
+    commandTail: save.envelope.body.commandTail,
+    eventTail: save.envelope.body.eventTail
   });
 }
 
