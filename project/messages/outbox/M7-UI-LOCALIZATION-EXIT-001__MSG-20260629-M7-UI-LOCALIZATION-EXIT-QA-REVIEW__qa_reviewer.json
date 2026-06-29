@@ -1,0 +1,182 @@
+{
+  "message_id": "M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer",
+  "task_id": "M7-UI-LOCALIZATION-EXIT-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M7-UI-LOCALIZATION-EXIT-001 as prerequisite evidence only. The lead synthesis and systems ACCEPT truthfully carry all tracked M7 UI/localization/visual quality tasks as CLOSED, record the required build/test evidence, confine this branch to allowed process paths, and preserve Human Gate boundaries. This ACCEPT is not M7 Gate PASS, not formal content lock approval, not production art/cultural approval, not release readiness, and not manual human acceptance. Edge/Firefox remain blocked-by-tooling rows and Windows DPI 150% remains a follow-up row; none are represented as full platform coverage.",
+  "artifacts": [
+    "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-LEAD-ACCEPT__lead_orchestrator.json",
+    "docs/27-autonomous-goal-mode.md",
+    "docs/28-manual-node-battle-decision.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-localization-exit / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "reviewed current HEAD 43b8ec9557a875b02ecd99a16a86725d8597e9d1; lead synthesis 4b9e46dd; systems ACCEPT e11274a5; base main 61c674fac537fc2bbfba88a8d0f2a9271d7af415",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output before QA handoff write; worktree clean."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff contained 9 process-only files: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json, project/tasks/thread-registry.json, lead/start/systems outbox JSON, and lead-to-systems/systems-to-QA route JSON."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-EXIT-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-UI-LOCALIZATION-EXIT-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7 UI/localization/visual evidence rows listed by the lead synthesis are CLOSED. M7-UI-LOCALIZATION-EXIT-001 is REVIEW. M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 remain DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready-task stdout after M7-UI-LOCALIZATION-EXIT-001 entered REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID lead synthesis handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems review handoff JSON."
+    },
+    {
+      "command": "node - <JSON parse/shape check of task, lead synthesis, systems review, evidence_matrix, quality_evidence, risks, and Human Gate fields>",
+      "exit_code": 0,
+      "result": "shape ok: task REVIEW; human_gate_required false; 11 Human Gate rows checked; evidence_matrix count 14 and all rows CLOSED; required quality_evidence keys present; platform_matrix is PASS_WITH_LIMITS; systems status ACCEPT; Edge/Firefox and DPI150 unresolved risks present."
+    },
+    {
+      "command": "node - <allowed path scanner over git diff --name-only origin/main...HEAD>",
+      "exit_code": 0,
+      "result": "changed_count 9; forbidden []. Diff is confined to project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json, project/tasks/thread-registry.json, project/messages/**, project/goal-mode-state.json, and project/model-routing-state.json."
+    },
+    {
+      "command": "git diff origin/main...HEAD -- . ':!project/messages/**' ':!project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json' ':!project/tasks/thread-registry.json' ':!project/goal-mode-state.json' ':!project/model-routing-state.json' --name-only",
+      "exit_code": 0,
+      "result": "No output; no paths outside the allowed set."
+    },
+    {
+      "command": "git diff origin/main...HEAD | Select-String for common secret patterns",
+      "exit_code": 0,
+      "result": "No matches for token/private-key/password/secret/api-key patterns."
+    },
+    {
+      "command": "git diff origin/main...HEAD -- package.json pnpm-lock.yaml .github docs content-source apps packages tools MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output; no dependency, CI, docs gate, content-source, product code, provenance, checksum, or validation-report changes."
+    },
+    {
+      "command": "review evidence: pnpm build:web",
+      "exit_code": 0,
+      "result": "Not rerun locally by QA. Lead synthesis records exit 0 with existing chunk-size warnings; upstream platform/manual-playthrough evidence and CI records also include successful Web build evidence. Current branch has no product-code diff."
+    },
+    {
+      "command": "review evidence: pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Not rerun locally by QA. Lead synthesis records exit 0 with existing Storybook plugin timing/chunk warnings; upstream UI/platform evidence records successful Storybook build. Current branch has no Storybook or product-code diff."
+    },
+    {
+      "command": "review evidence: pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Not rerun locally by QA. Lead synthesis records Chromium 23/23 passing; upstream UI regression and platform QA/CI evidence record the relevant Chromium Playwright suites and unresolved Edge/Firefox/DPI rows."
+    },
+    {
+      "command": "review evidence: pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Not rerun locally by QA. Lead synthesis records exit 0; platform QA records Electron security preferences/preload bridge/IPC allowlist verification. Current branch changes no Electron code."
+    },
+    {
+      "command": "review evidence: pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Not rerun locally by QA. Lead synthesis records exit 0 and .tmp/desktop-package/MonsoonSovereigns-win32-x64 smoke output; upstream CI Windows Desktop Smoke Artifact passed. Current branch creates no release artifact."
+    },
+    {
+      "command": "review evidence: pnpm check",
+      "exit_code": 0,
+      "result": "Not rerun locally by QA. Lead synthesis records exit 0 for format, lint, workspace typecheck, and architecture boundaries; upstream platform/manual evidence records successful pnpm check. Current branch has no package/product diff."
+    },
+    {
+      "command": "Read PROJECT_STATUS.md, AGENTS.md, docs/27-autonomous-goal-mode.md, docs/28-manual-node-battle-decision.md, docs/23-milestone-acceptance-matrix.md, and project/templates/handoff.md",
+      "exit_code": 0,
+      "result": "Confirmed process-only scope, Human Gate boundaries, M7 content-lock/gate separation, and DEFER_MANUAL_NODE_BATTLE remain in force."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPT_PREREQUISITE_EVIDENCE_ONLY",
+      "decision": "Accept this task only as prerequisite evidence for later M7 content-lock and exit validation. It is not formal content lock approval, M7 Gate PASS, release readiness, production art/culture approval, or manual human acceptance."
+    },
+    {
+      "id": "ALL_TRACK_ROWS_CLOSED_OR_CARRIED",
+      "decision": "Accept the lead evidence matrix: all tracked M7 UI/localization/visual quality rows are CLOSED, and the only material platform limitations are explicitly carried as unresolved/follow-up rows."
+    },
+    {
+      "id": "PLATFORM_LIMITS_PRESERVED",
+      "decision": "Accept Edge and Firefox only as blocked-by-tooling rows and Windows DPI 150% only as a follow-up row. Later M7 content-lock or exit claims must carry or resolve them before any full-platform-coverage statement."
+    },
+    {
+      "id": "HUMAN_GATES_PRESERVED",
+      "decision": "No Human Gate is activated or satisfied by this review. Formal content lock, manual human acceptance, production art/cultural choices, release/commercial decisions, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain outside this task."
+    },
+    {
+      "id": "ALLOWED_PATHS_ACCEPTED",
+      "decision": "Accept the branch diff scope. It is confined to the task JSON, thread registry, project/messages, goal-mode-state, and model-routing-state. No product code, dependencies, CI, provenance, content-source, gate docs, or release artifacts changed."
+    },
+    {
+      "id": "HEAVY_COMMANDS_NOT_RERUN",
+      "decision": "QA did not rerun build:web, storybook:build, full e2e, desktop security/package, or pnpm check because this branch is process-only. Acceptance relies on lead synthesis, validated local evidence files, accepted upstream reviewer handoffs, and upstream CI records for those heavy commands."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
+      "severity": "P2",
+      "summary": "Edge and Firefox are not run in the current Playwright setup and remain blocked by tooling.",
+      "mitigation": "Carry into M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 unless browser projects/tooling are added and evidence rerun."
+    },
+    {
+      "id": "M7-WINDOWS-DPI-150-UNRESOLVED",
+      "severity": "P2",
+      "summary": "Windows DPI 150% is not directly exercised by current browser or desktop smoke tooling.",
+      "mitigation": "Carry as a follow-up row until a dedicated DPI harness or explicit accepted limitation exists."
+    },
+    {
+      "id": "DOWNSTREAM_OVERCLAIM_RISK",
+      "severity": "P1",
+      "summary": "Because this synthesis is close to M7 gate material, downstream closure could overclaim content lock, full platform coverage, release readiness, or human manual acceptance.",
+      "mitigation": "Lead closure must retain this QA ACCEPT as prerequisite evidence only and keep all Human Gate rows visible."
+    },
+    {
+      "id": "HEAVY_TESTS_NOT_RERUN_BY_QA",
+      "severity": "P3",
+      "summary": "QA reran process/schema/diff/path checks and reviewed evidence, but did not rerun the heavy product commands on this process-only branch.",
+      "mitigation": "Use the recorded lead synthesis, accepted upstream task handoffs, and upstream CI as the source of truth for those heavy command results."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate this QA ACCEPT as M7 UI/localization exit prerequisite evidence only. Carry Edge/Firefox/DPI150 limitations and all Human Gate boundaries into any later M7 content-lock or exit-validation work.",
+  "created_at": "2026-06-29T22:24:04.8803488+08:00"
+}
