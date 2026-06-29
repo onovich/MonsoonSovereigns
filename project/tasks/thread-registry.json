@@ -11,7 +11,7 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-28T23:21:24.687Z",
+        "updated_at": "2026-06-29T10:50:30.8570165+08:00",
         "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
         "task_ids": [
           "M7-PLAYER-GUIDANCE-LITE-001"
@@ -6254,22 +6254,44 @@
       "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
     },
     "M7-PLAYER-GUIDANCE-LITE-001:client_engineer": {
-      "thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
       "status": "active_writer",
       "role": "client_engineer",
-      "nickname": "Window the 2nd",
+      "nickname": "Lantern",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "feat/m7-player-guidance-lite",
-      "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-REPLACEMENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
-      "routed_at": "2026-06-28T23:21:24.687Z",
-      "route_sent_at": "2026-06-28T23:21:24.687Z",
-      "route_submission_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
-      "updated_at": "2026-06-28T23:21:24.687Z"
+      "replaces_thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "replacement_reason": "previous_writer_stream_disconnected_before_completion_no_handoff_clean_worktree",
+      "routed_at": "2026-06-29T10:50:30.8570165+08:00",
+      "route_sent_at": "2026-06-29T10:50:30.8570165+08:00",
+      "route_submission_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+      "updated_at": "2026-06-29T10:50:30.8570165+08:00"
+    },
+    "M7-PLAYER-GUIDANCE-LITE-001:client_engineer:replaced-019f1088-6159-7bf3-a460-c6d0c6d52482": {
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "role": "client_engineer",
+      "thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "nickname": "Window the 2nd",
+      "status": "closed_errored_no_handoff_clean_worktree",
+      "replaced_by": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+      "replaced_by_nickname": "Lantern",
+      "reason": "previous_writer_stream_disconnected_before_completion_no_handoff_clean_worktree",
+      "original_route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "closed_at": "2026-06-29T10:50:30.8570165+08:00",
+      "replaced_at": "2026-06-29T10:50:30.8570165+08:00",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-player-guidance-lite",
+      "updated_at": "2026-06-29T10:50:30.8570165+08:00"
     }
   },
   "replaced_threads": [
@@ -6380,14 +6402,29 @@
         "tests/ui-m2-district-list.test.tsx"
       ],
       "replaced_at": "2026-06-28T08:46:06.641Z"
+    },
+    {
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "role": "client_engineer",
+      "thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "nickname": "Window the 2nd",
+      "status": "closed_errored_no_handoff_clean_worktree",
+      "replaced_by": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+      "replaced_by_nickname": "Lantern",
+      "reason": "previous_writer_stream_disconnected_before_completion_no_handoff_clean_worktree",
+      "original_route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "closed_at": "2026-06-29T10:50:30.8570165+08:00",
+      "replaced_at": "2026-06-29T10:50:30.8570165+08:00"
     }
   ],
-  "updated_at": "2026-06-28T23:21:24.687Z",
+  "updated_at": "2026-06-29T10:50:30.8570165+08:00",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
     "019f1051-5288-72f3-b885-63f7816b500a",
     "019f1066-9544-7cd2-b9db-ddde19eeb4f6",
-    "019f106f-c3b6-7132-b54c-fe845ff19f80"
+    "019f106f-c3b6-7132-b54c-fe845ff19f80",
+    "019f1088-6159-7bf3-a460-c6d0c6d52482"
   ]
 }

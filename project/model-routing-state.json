@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
-    "updated_at": "2026-06-28T23:21:24.687Z",
+    "updated_at": "2026-06-29T10:50:30.8570165+08:00",
     "concurrent_task_ids": [
       "M7-PLAYER-GUIDANCE-LITE-001"
     ]
@@ -1897,6 +1897,19 @@
       "closed_at": "2026-06-28T09:05:05.993Z",
       "lead_accept_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-LEAD-ACCEPT__lead_orchestrator.json",
       "historical_review_handoff": "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json"
+    },
+    {
+      "thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "role": "client_engineer",
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "configured_model_after_amendment": "gpt-5.5",
+      "configured_effort_after_amendment": "high",
+      "migration_status": "closed_errored_no_handoff_clean_worktree_replaced",
+      "replaced_by": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+      "accepted_task_reopened": false,
+      "updated_at": "2026-06-29T10:50:30.8570165+08:00"
     }
   ],
   "active_threads": [
@@ -2555,7 +2568,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-28T20:40:40.173Z",
+  "updated_at": "2026-06-29T10:50:30.8570165+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -4303,15 +4316,21 @@
     "writer_configured_effort": "high",
     "qa_configured_model": "gpt-5.5",
     "qa_configured_effort": "xhigh",
-    "writer_thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
-    "writer_thread_nickname": "Window the 2nd",
+    "writer_thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+    "writer_thread_nickname": "Lantern",
     "start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
-    "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+    "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-REPLACEMENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-28T23:21:24.687Z",
-    "updated_at": "2026-06-28T23:21:24.687Z",
-    "next_action": "Await client_engineer writer handoff for M7-PLAYER-GUIDANCE-LITE-001.",
+    "updated_at": "2026-06-29T10:50:30.8570165+08:00",
+    "next_action": "Await replacement client_engineer writer handoff for M7-PLAYER-GUIDANCE-LITE-001.",
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "replaces_thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+    "replacement_reason": "previous_writer_stream_disconnected_before_completion_no_handoff_clean_worktree",
+    "replacement_start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-REPLACEMENT-START.json",
+    "route_sent_at": "2026-06-29T10:50:30.8570165+08:00",
+    "route_submission_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f"
   }
 }
