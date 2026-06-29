@@ -1,0 +1,96 @@
+{
+  "message_id": "MSG-20260629-M7-PLAYER-GUIDANCE-CLOSED",
+  "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-PLAYER-GUIDANCE-LITE-001 is CLOSED after PR #187 entered origin/main. The task added lightweight localized player guidance with dismiss/collapse, core path feedback, QA ACCEPT, and passing PR CI gates.",
+  "artifacts": [
+    "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-PLAYER-GUIDANCE-LITE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "PROJECT_STATUS.md"
+  ],
+  "branch_or_worktree": "chore/close-m7-player-guidance-lite",
+  "commit": "def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99",
+  "implementation_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+  "accepted_branch_head": "25f5dcb9",
+  "integrated_pr": 187,
+  "integrated_main_commit": "def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/187",
+  "tests_run": [
+    {
+      "command": "gh pr checks 187 --watch",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 2m41s; Windows Desktop Smoke Artifact passed in 46s."
+    },
+    {
+      "command": "gh pr merge 187 --squash --delete-branch=false",
+      "exit_code": 0,
+      "result": "PR #187 merged."
+    },
+    {
+      "command": "git fetch origin --prune; git checkout main; git pull --ff-only origin main; git log -1 --oneline --decorate",
+      "exit_code": 0,
+      "result": "origin/main synchronized at def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-PLAYER-GUIDANCE-LITE-001 was ACCEPTED on main before closure checkpoint; next ready tasks were M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 and M7-UI-REGRESSION-MATRIX-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 and M7-UI-REGRESSION-MATRIX-001 are READY candidates."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Mark M7-PLAYER-GUIDANCE-LITE-001 CLOSED only after accepted commits entered origin/main through PR #187 and CI passed."
+    },
+    {
+      "id": "NEXT_READY_SELECTION",
+      "decision": "After closure, start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 as the highest-priority dependency-ready M7 task unless taskctl ready changes after closure merge."
+    },
+    {
+      "id": "NO_HUMAN_GATE",
+      "decision": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    }
+  ],
+  "risks": [
+    {
+      "id": "CONTENT_REVIEW_STATE",
+      "severity": "P3",
+      "summary": "Guidance remains review-aware while upstream content blockers exist.",
+      "mitigation": "Future content lock/culture review and UI regression tasks keep this tracked."
+    },
+    {
+      "id": "FOLLOW_UP_UI_REGRESSION",
+      "severity": "P3",
+      "summary": "UI regression matrix is now READY and still needs closure before M7 exit.",
+      "mitigation": "taskctl ready exposes M7-UI-REGRESSION-MATRIX-001 after this closure."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge closure checkpoint, sync main, then start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 unless taskctl ready changes.",
+  "created_at": "2026-06-29T11:32:00.0000000+08:00",
+  "closed_at": "2026-06-29T11:32:00.0000000+08:00",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "child_threads_closed": [
+    "019f1088-6159-7bf3-a460-c6d0c6d52482",
+    "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+    "019f1159-1c62-73e3-92ee-08b50881723d"
+  ],
+  "next_ready_tasks": [
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "M7-UI-REGRESSION-MATRIX-001"
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "task_status": "CLOSED"
+}

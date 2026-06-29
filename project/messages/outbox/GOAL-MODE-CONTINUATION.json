@@ -4,69 +4,37 @@
   "type": "goal_mode_continuation",
   "status": "INFO",
   "project": "Monsoon Sovereigns",
-  "origin_main": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+  "origin_main": "def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99",
   "current_milestone": "M7",
-  "current_task": "M7-PLAYER-GUIDANCE-LITE-001",
-  "current_tasks": [
-    "M7-PLAYER-GUIDANCE-LITE-001"
-  ],
-  "current_task_status": "ACCEPTED",
-  "last_closed_task": "M7-DISTRICT-INSPECTOR-QUALITY-001",
-  "last_integrated_task": "M7-MAP-PRESENTATION-QUALITY-001",
-  "last_main_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+  "current_task": null,
+  "current_tasks": [],
+  "current_task_status": "NONE",
+  "last_closed_task": "M7-PLAYER-GUIDANCE-LITE-001",
+  "last_integrated_task": "M7-PLAYER-GUIDANCE-LITE-001",
+  "last_main_commit": "def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99",
   "ready_tasks": [
-    "M7-PLAYER-GUIDANCE-LITE-001",
-    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "M7-UI-REGRESSION-MATRIX-001"
   ],
   "next_ready_tasks": [
-    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "M7-UI-REGRESSION-MATRIX-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "task_id": null,
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "feat/m7-player-guidance-lite",
+      "branch_or_worktree": "chore/close-m7-player-guidance-lite",
       "created_at": "2026-06-28T23:21:24.687Z",
-      "updated_at": "2026-06-29T11:18:00.0000000+08:00",
+      "updated_at": "2026-06-29T11:32:00.0000000+08:00",
       "start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
-    },
-    "client_engineer": {
-      "thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
-      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
-      "status": "accepted_pending_integration",
-      "role": "client_engineer",
-      "nickname": "Lantern",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "feat/m7-player-guidance-lite",
-      "review_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
-      "updated_at": "2026-06-29T11:18:00.0000000+08:00"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f1159-1c62-73e3-92ee-08b50881723d",
-      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
-      "status": "accepted_pending_integration",
-      "role": "qa_reviewer",
-      "nickname": "Auditor",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "feat/m7-player-guidance-lite",
-      "qa_status": "ACCEPT",
-      "qa_review_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json",
-      "reviewed_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
-      "updated_at": "2026-06-29T11:18:00.0000000+08:00"
     }
   },
   "unresolved_risks": [
@@ -97,11 +65,11 @@
     "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
     "recorded_at": "2026-06-28T23:21:24.687Z"
   },
-  "next_machine_action": "Open PR for M7-PLAYER-GUIDANCE-LITE-001, wait for CI, merge to main, then close after origin/main contains accepted commits.",
+  "next_machine_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-29T11:18:00.0000000+08:00",
+  "last_updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -313,7 +281,9 @@
     "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
     "019f0e8f-1907-72c2-beb1-9522d515307c",
     "019f100e-9a22-7793-a953-a41b9a948703",
-    "019f1025-36fc-70d1-92bb-5858b2c7a74f"
+    "019f1025-36fc-70d1-92bb-5858b2c7a74f",
+    "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+    "019f1159-1c62-73e3-92ee-08b50881723d"
   ],
   "m7_design_tokens_asset_slots": {
     "status": "IN_PROGRESS",
@@ -487,8 +457,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Open PR for M7-PLAYER-GUIDANCE-LITE-001, wait for CI, merge to main, then close after origin/main contains accepted commits.",
-  "updated_at": "2026-06-29T11:18:00.0000000+08:00",
+  "next_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
+  "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -506,9 +476,9 @@
     }
   ],
   "m7_player_guidance_lite": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
-    "branch_or_worktree": "feat/m7-player-guidance-lite",
+    "branch_or_worktree": "chore/close-m7-player-guidance-lite",
     "base_main_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
     "previous_closed_task": "M7-MAP-PRESENTATION-QUALITY-001",
     "start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
@@ -517,8 +487,8 @@
     "writer_thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
     "writer_thread_nickname": "Lantern",
     "started_at": "2026-06-28T23:21:24.687Z",
-    "updated_at": "2026-06-29T11:18:00.0000000+08:00",
-    "next_action": "Open PR for M7-PLAYER-GUIDANCE-LITE-001, wait for CI, merge to main, then close after origin/main contains accepted commits.",
+    "updated_at": "2026-06-29T11:32:00.0000000+08:00",
+    "next_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "replaces_thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
@@ -540,6 +510,21 @@
     "lead_accept_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-29T11:18:00.0000000+08:00",
     "accepted_implementation_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
-    "accepted_branch_head": "5b925b6073431cac0cf64053df08aa928e0947e9"
+    "accepted_branch_head": "5b925b6073431cac0cf64053df08aa928e0947e9",
+    "integrated_pr": 187,
+    "integrated_main_commit": "def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/187",
+    "lead_close_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-29T11:32:00.0000000+08:00",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "child_threads_closed": [
+      "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+      "019f1159-1c62-73e3-92ee-08b50881723d"
+    ],
+    "next_ready_tasks": [
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "M7-UI-REGRESSION-MATRIX-001"
+    ]
   }
 }
