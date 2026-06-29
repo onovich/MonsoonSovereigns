@@ -11,6 +11,11 @@ export const MAP_RENDER_TOKENS = {
     strokeDefault: 0x91a0a6,
     strokeHovered: 0x2f6f73,
     strokeSelected: 0x172126,
+    situation: {
+      stable: 0xcbd8c7,
+      pressure: 0xd9c18c,
+      blocked: 0xd9b6a9
+    },
     seasonal: {
       fallow: 0xd9d1be,
       planting: 0x9ab57a,

@@ -766,6 +766,12 @@ export function ClientShellView({
               <div className="map-toolbar" aria-label={i18n.t("map.controlsLabel")}>
                 <div className="map-mode" role="group" aria-label={i18n.t("map.modeLabel")}>
                   <MapModeButton
+                    label={i18n.t("map.mode.situation")}
+                    mode="situation"
+                    activeMode={mapMode}
+                    onSelect={onMapModeChange}
+                  />
+                  <MapModeButton
                     label={i18n.t("map.mode.seasonal")}
                     mode="seasonal"
                     activeMode={mapMode}
@@ -852,6 +858,8 @@ export function ClientShellView({
               data-settlement-count={snapshot.map.settlements.length}
               data-route-count={snapshot.map.routes.length}
               data-map-mode={mapMode}
+              data-map-presentation={debugMode ? "developer-diagnostics" : "soft-strategic-regions"}
+              data-player-grid={debugMode ? "available-in-developer-overlay" : "hidden"}
               data-zoom-level={zoomLevel.toFixed(2)}
               data-pan-x={panOffset.xInMapUnits.toFixed(2)}
               data-pan-y={panOffset.yInMapUnits.toFixed(2)}
@@ -863,6 +871,13 @@ export function ClientShellView({
               <span className="client-shell__map-selection">
                 {formatPlayerMapSelection(selectedDistrict, selectedSettlement, i18n)}
               </span>
+              {selectedDistrict === null ? null : (
+                <span className="client-shell__map-recommendation">
+                  {i18n.t("shell.mapRecommendation", {
+                    district: formatPlayerDistrictName(selectedDistrict, i18n)
+                  })}
+                </span>
+              )}
               <output
                 className="client-shell__map-tooltip"
                 aria-label={i18n.t("shell.mapHover.label")}
@@ -874,9 +889,10 @@ export function ClientShellView({
 
             <div className="client-shell__map-legend" aria-label={i18n.t("shell.mapLegend.label")}>
               <MapLegendItem tone="selected" label={i18n.t("shell.mapLegend.selected")} />
-              <MapLegendItem tone="reachable" label={i18n.t("shell.mapLegend.reachable")} />
-              <MapLegendItem tone="blocked" label={i18n.t("shell.mapLegend.blocked")} />
-              <MapLegendItem tone="overloaded" label={i18n.t("shell.mapLegend.overloaded")} />
+              <MapLegendItem tone="route" label={i18n.t("shell.mapLegend.routeSupply")} />
+              <MapLegendItem tone="obligation" label={i18n.t("shell.mapLegend.obligationFlow")} />
+              <MapLegendItem tone="threat" label={i18n.t("shell.mapLegend.threatRisk")} />
+              <MapLegendItem tone="blocked" label={i18n.t("shell.mapLegend.blockedCapacity")} />
               <MapLegendItem tone="settlement" label={i18n.t("shell.mapLegend.settlement")} />
             </div>
           </section>
@@ -1328,7 +1344,7 @@ function DistrictRowButton({
 }
 
 interface MapLegendItemProps {
-  readonly tone: "selected" | "reachable" | "blocked" | "overloaded" | "settlement";
+  readonly tone: "selected" | "route" | "obligation" | "threat" | "blocked" | "settlement";
   readonly label: string;
 }
 

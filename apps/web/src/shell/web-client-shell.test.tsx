@@ -74,7 +74,7 @@ describe("web client shell", () => {
     const markup = renderToStaticMarkup(
       <ClientShellView
         snapshot={snapshot}
-        mapMode="seasonal"
+        mapMode="situation"
         zoomLevel={1}
         selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
         onMapModeChange={() => undefined}
@@ -178,7 +178,7 @@ describe("web client shell", () => {
     const markup = renderToStaticMarkup(
       <ClientShellView
         snapshot={snapshot}
-        mapMode="seasonal"
+        mapMode="situation"
         zoomLevel={1}
         selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
         onMapModeChange={() => undefined}
@@ -199,9 +199,17 @@ describe("web client shell", () => {
     expect(markup).toContain("Monsoon Sovereigns");
     expect(markup).toContain("Realm Map");
     expect(markup).toContain("Developer diagnostics are hidden in player mode.");
+    expect(markup).toContain('aria-label="Situation map mode"');
+    expect(markup).toContain('aria-pressed="true">Situation</button>');
     expect(markup).toContain('aria-label="Map pan"');
     expect(markup).toContain('aria-label="Map hover details"');
-    expect(markup).toContain("Reachable route");
+    expect(markup).toContain("Route / supply");
+    expect(markup).toContain("Obligation / tributary flow");
+    expect(markup).toContain("Threat / risk");
+    expect(markup).toContain("Blocked / capacity");
+    expect(markup).toContain('data-map-presentation="soft-strategic-regions"');
+    expect(markup).toContain('data-player-grid="hidden"');
+    expect(markup).toContain("Recommended target: District 1");
     expect(markup).not.toContain("Prototype District 001");
     expect(markup).not.toContain(snapshot.simulation.stateHash);
     expect(markup).not.toContain("M2 prototype map ready");
@@ -219,7 +227,7 @@ describe("web client shell", () => {
     const markup = renderToStaticMarkup(
       <ClientShellView
         snapshot={snapshot}
-        mapMode="seasonal"
+        mapMode="situation"
         zoomLevel={1}
         selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
         onMapModeChange={() => undefined}
@@ -241,12 +249,15 @@ describe("web client shell", () => {
     );
 
     expect(markup).toContain('aria-label="虚拟化地区行"');
-    expect(markup).toContain('aria-label="季节地图模式"');
+    expect(markup).toContain('aria-label="局势地图模式"');
+    expect(markup).toContain("路线 / 补给");
+    expect(markup).toContain("义务 / 朝贡流向");
     expect(markup).toContain('aria-label="经济地图模式"');
     expect(markup).toContain('aria-label="按人口排序"');
     expect(markup).toContain('aria-label="按地区排序，当前升序"');
     expect(markup).toContain('aria-hidden="true"> 升序</span>');
     expect(markup).not.toContain('aria-label="Virtualized district rows"');
+    expect(markup).not.toContain('aria-label="Situation map mode"');
     expect(markup).not.toContain('aria-label="Seasonal map mode"');
     expect(markup).not.toContain('aria-label="Sort by Population"');
     expect(markup).not.toContain('aria-hidden="true"> up</span>');

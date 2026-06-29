@@ -25,9 +25,14 @@ const m6AlphaMapCandidateFixtureUrl = new URL(
 const mapRendererSourceUrl = new URL("../packages/map-renderer/src/index.ts", import.meta.url);
 
 describe("M2 map renderer read-model deltas", () => {
-  test("builds seasonal, economy, and route plans from the M2 read model", () => {
+  test("builds situation, seasonal, economy, and route plans from the M2 read model", () => {
     const fixture = createM2PrototypeReadModelFixture();
 
+    const situation = buildMapRenderPlan(fixture.map, {
+      mode: "situation",
+      zoomLevel: 1,
+      selectedEntity: { kind: "district", districtId: fixture.districtList.selectedDistrictId }
+    });
     const seasonal = buildMapRenderPlan(fixture.map, {
       mode: "seasonal",
       zoomLevel: 1,
@@ -44,6 +49,17 @@ describe("M2 map renderer read-model deltas", () => {
       selectedEntity: { kind: "district", districtId: fixture.districtList.selectedDistrictId }
     });
 
+    expect(situation.mode).toBe("situation");
+    expect(situation.districts).toHaveLength(30);
+    expect(situation.settlements).toHaveLength(10);
+    expect(situation.routes.length).toBeGreaterThan(0);
+    expect(situation.routes.length).toBeLessThan(fixture.map.routes.length);
+    expect(
+      situation.routes.every((route) => route.isSelected || route.routeStatus !== "reachable")
+    ).toBe(true);
+    expect(situation.districts.every((district) => !isAxisAlignedRectangle(district.polygon))).toBe(
+      true
+    );
     expect(seasonal.districts).toHaveLength(30);
     expect(seasonal.settlements).toHaveLength(10);
     expect(seasonal.routes).toHaveLength(42);
@@ -51,7 +67,9 @@ describe("M2 map renderer read-model deltas", () => {
     expect(economy.labels.length).toBeGreaterThanOrEqual(30);
     expect(routes.labels.length).toBeGreaterThanOrEqual(40);
     expect(seasonal.districts[0]?.fillColor).not.toBe(economy.districts[0]?.fillColor);
+    expect(situation.districts[0]?.fillColor).not.toBe(seasonal.districts[0]?.fillColor);
     expect(routes.routes.some((route) => route.widthInMapUnits === 4)).toBe(true);
+    expect(routes.routes).toHaveLength(fixture.map.routes.length);
   });
 
   test("uses centralized map render tokens for layer states", () => {
@@ -98,7 +116,8 @@ describe("M2 map renderer read-model deltas", () => {
     scene.rebuild(fixture.map);
     expect(stage.children).toHaveLength(5);
     expect(getChildLayer(stage, 0).children).toHaveLength(30);
-    expect(getChildLayer(stage, 1).children).toHaveLength(42);
+    expect(getChildLayer(stage, 1).children.length).toBeGreaterThan(0);
+    expect(getChildLayer(stage, 1).children.length).toBeLessThan(42);
     expect(getChildLayer(stage, 2).children).toHaveLength(10);
 
     scene.applyDelta({
@@ -190,4 +209,16 @@ function isPixiSceneLayer(value: unknown): value is PixiSceneLayer {
   }
 
   return "children" in value && "addChild" in value && "removeChildren" in value;
+}
+
+function isAxisAlignedRectangle(
+  polygon: readonly { readonly xInMapUnits: number; readonly yInMapUnits: number }[]
+): boolean {
+  if (polygon.length !== 4) {
+    return false;
+  }
+
+  const uniqueX = new Set(polygon.map((point) => point.xInMapUnits));
+  const uniqueY = new Set(polygon.map((point) => point.yInMapUnits));
+  return uniqueX.size === 2 && uniqueY.size === 2;
 }

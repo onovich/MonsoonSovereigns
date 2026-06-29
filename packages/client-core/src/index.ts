@@ -100,7 +100,7 @@ export interface ClientMapAnchorReadModel {
 
 export type ClientMapAnchorTone = "primary" | "secondary" | "muted";
 
-export type ClientMapMode = "seasonal" | "economy" | "routes";
+export type ClientMapMode = "situation" | "seasonal" | "economy" | "routes";
 
 export type ClientMapEntitySelection =
   | {
@@ -6863,23 +6863,13 @@ function createM2PrototypeDistrictMapFeatures(
     const rowIndex = Math.floor((districtNumber - 1) / M2_PROTOTYPE_GRID_COLUMNS);
     const x = column * M2_PROTOTYPE_CELL_SIZE;
     const y = rowIndex * M2_PROTOTYPE_CELL_SIZE;
-    const polygon = [
-      { xInMapUnits: x, yInMapUnits: y },
-      { xInMapUnits: x + M2_PROTOTYPE_CELL_SIZE, yInMapUnits: y },
-      {
-        xInMapUnits: x + M2_PROTOTYPE_CELL_SIZE,
-        yInMapUnits: y + M2_PROTOTYPE_CELL_SIZE
-      },
-      { xInMapUnits: x, yInMapUnits: y + M2_PROTOTYPE_CELL_SIZE }
-    ];
+    const anchor = createM2PrototypeSoftRegionAnchor(x, y, districtNumber);
+    const polygon = createM2PrototypeSoftRegionPolygon(x, y, districtNumber);
 
     districts.push({
       districtId,
       displayName: row.displayName,
-      anchor: {
-        xInMapUnits: x + M2_PROTOTYPE_CELL_SIZE / 2,
-        yInMapUnits: y + M2_PROTOTYPE_CELL_SIZE / 2
-      },
+      anchor,
       polygon,
       seasonal: row.seasonal,
       population: row.population,
@@ -6898,17 +6888,65 @@ function createM2PrototypeSettlementMapFeatures(): readonly ClientMapSettlementR
     const districtId = createClientDistrictId(districtNumber);
     const column = (districtNumber - 1) % M2_PROTOTYPE_GRID_COLUMNS;
     const rowIndex = Math.floor((districtNumber - 1) / M2_PROTOTYPE_GRID_COLUMNS);
+    const anchor = createM2PrototypeSoftRegionAnchor(
+      column * M2_PROTOTYPE_CELL_SIZE,
+      rowIndex * M2_PROTOTYPE_CELL_SIZE,
+      districtNumber
+    );
 
     return {
       settlementId: createClientSettlementId(index + 1),
       districtId,
       displayName: `Prototype Settlement ${formatThreeDigitId(index + 1)}`,
       anchor: {
-        xInMapUnits: column * M2_PROTOTYPE_CELL_SIZE + 68,
-        yInMapUnits: rowIndex * M2_PROTOTYPE_CELL_SIZE + 64
+        xInMapUnits: anchor.xInMapUnits + 10,
+        yInMapUnits: anchor.yInMapUnits + 18
       }
     };
   });
+}
+
+function createM2PrototypeSoftRegionAnchor(
+  x: number,
+  y: number,
+  districtNumber: number
+): ClientMapPointReadModel {
+  return {
+    xInMapUnits: x + M2_PROTOTYPE_CELL_SIZE / 2 + deterministicRegionOffset(districtNumber, 7, 12),
+    yInMapUnits: y + M2_PROTOTYPE_CELL_SIZE / 2 + deterministicRegionOffset(districtNumber, 11, 10)
+  };
+}
+
+function createM2PrototypeSoftRegionPolygon(
+  x: number,
+  y: number,
+  districtNumber: number
+): readonly ClientMapPointReadModel[] {
+  const size = M2_PROTOTYPE_CELL_SIZE;
+  const point = (baseX: number, baseY: number, salt: number): ClientMapPointReadModel => ({
+    xInMapUnits: x + baseX + deterministicRegionOffset(districtNumber, salt, 5),
+    yInMapUnits: y + baseY + deterministicRegionOffset(districtNumber, salt + 17, 5)
+  });
+
+  return [
+    point(size * 0.1, size * 0.18, 1),
+    point(size * 0.42, size * 0.06, 2),
+    point(size * 0.84, size * 0.12, 3),
+    point(size * 0.95, size * 0.47, 4),
+    point(size * 0.86, size * 0.86, 5),
+    point(size * 0.52, size * 0.96, 6),
+    point(size * 0.14, size * 0.84, 7),
+    point(size * 0.04, size * 0.5, 8)
+  ];
+}
+
+function deterministicRegionOffset(
+  districtNumber: number,
+  salt: number,
+  amplitude: number
+): number {
+  const value = (districtNumber * 37 + salt * 53) % (amplitude * 2 + 1);
+  return value - amplitude;
 }
 
 function createM2PrototypeRouteMapFeatures(

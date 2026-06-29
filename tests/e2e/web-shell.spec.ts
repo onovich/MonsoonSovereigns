@@ -74,6 +74,26 @@ test("web shell loads and projects the read model", async ({ page }) => {
     "data-settlement-count",
     "10"
   );
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-map-mode",
+    "situation"
+  );
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-map-presentation",
+    "soft-strategic-regions"
+  );
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-player-grid",
+    "hidden"
+  );
+  await expect(page.getByRole("button", { name: "Situation map mode" })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  await expect(page.getByLabel("Map legend")).toContainText("Route / supply");
+  await expect(page.getByLabel("Map legend")).toContainText("Obligation / tributary flow");
+  await expect(page.getByLabel("Map legend")).toContainText("Threat / risk");
+  await expect(page.getByLabel("Map legend")).toContainText("Blocked / capacity");
   await expect(page.locator(".client-shell__dev-overlay")).toHaveCount(0);
   await expect(page.locator(".client-shell__map-revision")).toHaveCount(0);
 });
@@ -107,6 +127,8 @@ test("web shell resolves system language, switches language, and persists prefer
   await expect(activeDistrictSort).toContainText("地区 升序");
   await expect(activeDistrictSort).not.toContainText(/\b(?:up|down)\b/iu);
   await expect(page.getByLabel("Virtualized district rows")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "局势地图模式" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Situation map mode" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Economy map mode" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Sort by Population" })).toHaveCount(0);
   await expect(page.locator(".map-viewport")).toHaveAttribute(
@@ -250,16 +272,22 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await expect(mapCanvas).toHaveAttribute("data-renderer-owner", "map-renderer");
   await expect(mapCanvas).toHaveAttribute("data-district-count", "30");
   await expect(mapCanvas).toHaveAttribute("data-settlement-count", "10");
-  await expect(mapCanvas).toHaveAttribute("data-route-count", "42");
+  await expect(mapCanvas).toHaveAttribute("data-route-source-count", "42");
+  await expect(mapCanvas).toHaveAttribute("data-route-policy", "denoised");
   await expect(mapCanvas).toHaveAttribute("data-pan-x", "0.00");
   await expect(mapCanvas).toHaveAttribute("data-hovered-entity", "none");
   await expect(rows).toHaveAttribute("data-row-count", "30");
   await expect(rows).toHaveAttribute("data-rendered-row-count", "16");
   await expect(panel).toHaveAttribute("data-selected-district-id", "1");
   await expect(map).toHaveAttribute("data-selected-district-id", "1");
-  await expect(map).toHaveAttribute("data-map-mode", "seasonal");
+  await expect(map).toHaveAttribute("data-map-mode", "situation");
+  await expect(map).toHaveAttribute("data-map-presentation", "soft-strategic-regions");
+  await expect(map).toHaveAttribute("data-player-grid", "hidden");
   await expect(map).toHaveAttribute("data-zoom-level", "1.00");
-  await expect(mapCanvas).toHaveAttribute("data-map-mode", "seasonal");
+  await expect(mapCanvas).toHaveAttribute("data-map-mode", "situation");
+  const denoisedRouteCount = await readNumberAttribute(mapCanvas, "data-route-count");
+  expect(denoisedRouteCount).toBeGreaterThan(0);
+  expect(denoisedRouteCount).toBeLessThan(42);
 
   await page.getByRole("button", { name: "Economy map mode" }).click();
   await expect(map).toHaveAttribute("data-map-mode", "economy");
@@ -268,6 +296,8 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await page.getByRole("button", { name: "Routes map mode" }).click();
   await expect(map).toHaveAttribute("data-map-mode", "routes");
   await expect(mapCanvas).toHaveAttribute("data-map-mode", "routes");
+  await expect(mapCanvas).toHaveAttribute("data-route-count", "42");
+  await expect(mapCanvas).toHaveAttribute("data-route-policy", "complete");
 
   await page.getByRole("button", { name: "Zoom in" }).click();
   await expect(map).toHaveAttribute("data-zoom-level", "1.25");
@@ -279,8 +309,10 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await page.getByRole("button", { name: "Reset pan" }).click();
   await expect(map).toHaveAttribute("data-pan-x", "0.00");
   await expect(mapCanvas).toHaveAttribute("data-pan-x", "0.00");
-  await expect(page.getByLabel("Map legend")).toContainText("Reachable route");
-  await expect(page.getByLabel("Map legend")).toContainText("Blocked route");
+  await expect(page.getByLabel("Map legend")).toContainText("Route / supply");
+  await expect(page.getByLabel("Map legend")).toContainText("Obligation / tributary flow");
+  await expect(page.getByLabel("Map legend")).toContainText("Threat / risk");
+  await expect(page.getByLabel("Map legend")).toContainText("Blocked / capacity");
   await expect(page.getByLabel("Map hover details")).toContainText(
     "Hover a district or settlement for route details."
   );
@@ -703,7 +735,9 @@ test("M6 Alpha core flow exposes keyboard focus, live status, and non-color stat
   const map = page.locator(".map-viewport");
   const mapSurface = page.locator(".client-shell__map-surface");
 
-  await page.getByRole("button", { name: "Seasonal map mode" }).focus();
+  await page.getByRole("button", { name: "Situation map mode" }).focus();
+  await expect(page.getByRole("button", { name: "Situation map mode" })).toBeFocused();
+  await page.keyboard.press("Tab");
   await expect(page.getByRole("button", { name: "Seasonal map mode" })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(page.getByRole("button", { name: "Economy map mode" })).toBeFocused();

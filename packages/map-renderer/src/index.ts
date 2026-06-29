@@ -331,7 +331,7 @@ const HOST_LAYOUT_TIMEOUT_FRAMES = 90;
 const MINIMUM_PIXI_SURFACE_SIZE_PX = 1;
 
 const defaultViewport: MapRenderViewport = {
-  mode: "seasonal",
+  mode: "situation",
   zoomLevel: 1,
   selectedEntity: null,
   hoveredEntity: null,
@@ -352,6 +352,7 @@ export function buildMapRenderPlan(
   viewport: Partial<MapRenderViewport> = {}
 ): MapRenderPlan {
   const resolvedViewport = resolveViewport(viewport);
+  const visibleRoutes = selectRoutesForViewport(snapshot.routes, resolvedViewport);
 
   return {
     revision: snapshot.revision,
@@ -373,7 +374,7 @@ export function buildMapRenderPlan(
     settlements: snapshot.settlements.map((settlement) =>
       buildSettlementInstruction(settlement, resolvedViewport)
     ),
-    routes: snapshot.routes.map((route) => buildRouteInstruction(route, resolvedViewport)),
+    routes: visibleRoutes.map((route) => buildRouteInstruction(route, resolvedViewport)),
     labels: buildLabelInstructions(snapshot, resolvedViewport)
   };
 }
@@ -749,6 +750,11 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     this.canvas.setAttribute("data-district-count", plan.districts.length.toString());
     this.canvas.setAttribute("data-settlement-count", plan.settlements.length.toString());
     this.canvas.setAttribute("data-route-count", plan.routes.length.toString());
+    this.canvas.setAttribute("data-route-source-count", snapshot.routes.length.toString());
+    this.canvas.setAttribute(
+      "data-route-policy",
+      plan.mode === "situation" ? "denoised" : "complete"
+    );
     this.canvas.setAttribute("data-label-count", plan.labels.length.toString());
     this.canvas.setAttribute(
       "data-hovered-entity",
@@ -1067,6 +1073,33 @@ function buildRouteInstruction(
   };
 }
 
+function selectRoutesForViewport(
+  routes: readonly ClientMapRouteReadModel[],
+  viewport: ResolvedMapRenderViewport
+): readonly ClientMapRouteReadModel[] {
+  if (viewport.mode !== "situation") {
+    return routes;
+  }
+
+  const selectedDistrictId = viewport.selectedEntity?.districtId;
+  return routes.filter((route) => isSituationRouteVisible(route, selectedDistrictId));
+}
+
+function isSituationRouteVisible(
+  route: ClientMapRouteReadModel,
+  selectedDistrictId: ClientMapEntitySelection["districtId"] | undefined
+): boolean {
+  if (
+    selectedDistrictId !== undefined &&
+    (route.originDistrictId === selectedDistrictId ||
+      route.destinationDistrictId === selectedDistrictId)
+  ) {
+    return true;
+  }
+
+  return route.status !== "reachable";
+}
+
 function buildLabelInstructions(
   snapshot: ClientMapReadModelSnapshot,
   viewport: ResolvedMapRenderViewport
@@ -1227,6 +1260,8 @@ function isMapPoint(
 
 function districtFillColor(district: ClientMapDistrictReadModel, mode: ClientMapMode): number {
   switch (mode) {
+    case "situation":
+      return situationFillColor(district.route.status);
     case "seasonal":
       return seasonalFillColor(district.seasonal.agriculturePhase);
     case "economy":
@@ -1237,6 +1272,17 @@ function districtFillColor(district: ClientMapDistrictReadModel, mode: ClientMap
       return district.route.status === "reachable"
         ? MAP_RENDER_TOKENS.districts.routesMode.reachable
         : MAP_RENDER_TOKENS.districts.routesMode.blocked;
+  }
+}
+
+function situationFillColor(status: ClientDistrictRouteStatus): number {
+  switch (status) {
+    case "reachable":
+      return MAP_RENDER_TOKENS.districts.situation.stable;
+    case "capacity-exceeded":
+      return MAP_RENDER_TOKENS.districts.situation.pressure;
+    case "unreachable":
+      return MAP_RENDER_TOKENS.districts.situation.blocked;
   }
 }
 

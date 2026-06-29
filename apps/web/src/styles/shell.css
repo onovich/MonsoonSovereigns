@@ -169,7 +169,8 @@ select:focus-visible,
 }
 
 .client-shell__map-revision,
-.client-shell__map-selection {
+.client-shell__map-selection,
+.client-shell__map-recommendation {
   position: absolute;
   color: #263238;
   font-size: 0.875rem;
@@ -187,6 +188,18 @@ select:focus-visible,
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.client-shell__map-recommendation {
+  inset-inline: 16px;
+  inset-block-start: 16px;
+  max-width: calc(100% - 32px);
+  border: 1px solid rgba(23, 33, 38, 0.22);
+  border-radius: var(--ms-radius-control, 4px);
+  background: rgba(251, 252, 252, 0.9);
+  padding: 5px 8px;
+  overflow-wrap: anywhere;
+  pointer-events: none;
 }
 
 .client-shell__map-tooltip {
@@ -2241,15 +2254,23 @@ select:focus-visible,
   background: linear-gradient(135deg, rgba(47, 111, 115, 0.2), rgba(184, 135, 70, 0.13)), #f6f3ea;
 }
 
-.client-shell--beta .client-shell__map-selection {
+.client-shell--beta .client-shell__map-selection,
+.client-shell--beta .client-shell__map-recommendation {
   z-index: 1;
   inset-inline: 14px;
-  inset-block-end: 12px;
   max-width: calc(100% - 28px);
   border: 1px solid rgba(23, 33, 38, 0.26);
   border-radius: var(--ms-radius-control);
   background: rgba(251, 252, 252, 0.9);
   padding: 5px 8px;
+}
+
+.client-shell--beta .client-shell__map-selection {
+  inset-block-end: 12px;
+}
+
+.client-shell--beta .client-shell__map-recommendation {
+  inset-block-start: 12px;
 }
 
 .client-shell--beta .client-shell__map-legend {
@@ -2288,19 +2309,24 @@ select:focus-visible,
   box-shadow: inset 0 0 0 2px #172126;
 }
 
-.client-shell--beta [data-map-legend-tone="reachable"] span {
+.client-shell--beta [data-map-legend-tone="route"] span {
   border-color: #2f6f73;
   background: #2f6f73;
+}
+
+.client-shell--beta [data-map-legend-tone="obligation"] span {
+  border-color: #8e6b2f;
+  background: linear-gradient(90deg, #b88746 0 42%, #f8ecd6 42% 58%, #b88746 58% 100%);
+}
+
+.client-shell--beta [data-map-legend-tone="threat"] span {
+  border-color: #b88746;
+  background: #b88746;
 }
 
 .client-shell--beta [data-map-legend-tone="blocked"] span {
   border-color: #a65b4b;
   background: repeating-linear-gradient(135deg, #a65b4b 0 3px, #fff7f4 3px 6px);
-}
-
-.client-shell--beta [data-map-legend-tone="overloaded"] span {
-  border-color: #b88746;
-  background: #b88746;
 }
 
 .client-shell--beta [data-map-legend-tone="settlement"] span {
