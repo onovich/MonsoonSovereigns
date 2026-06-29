@@ -26,6 +26,29 @@ describe("SIM-003 protocol command/query schemas", () => {
     });
   });
 
+  test.each([
+    "simulation.account.login",
+    "simulation.cloud-save-sync",
+    "simulation.remote-save-collect",
+    "simulation.telemetry.upload"
+  ])("rejects %s as an unsupported implicit RPC surface", (type) => {
+    expect(
+      parseSimulationMessageV1({
+        protocolVersion: 1,
+        requestId: `req.${type}`,
+        type,
+        payload: {}
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "unknown-message-type",
+        path: "type",
+        message: "Simulation message type is not supported."
+      }
+    });
+  });
+
   test("rejects malformed command payloads without throwing", () => {
     expect(() => parseGameCommandV1(null)).not.toThrow();
     expect(parseGameCommandV1(null)).toEqual({

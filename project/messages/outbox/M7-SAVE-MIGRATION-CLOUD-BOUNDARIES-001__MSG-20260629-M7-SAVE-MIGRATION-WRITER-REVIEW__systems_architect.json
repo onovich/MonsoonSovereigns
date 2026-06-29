@@ -1,0 +1,96 @@
+{
+  "message_id": "MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW",
+  "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Defined a local-only M7 save migration compatibility boundary in save-format, validated M1-M6 accepted save envelopes plus the M7 Beta content-lock candidate manifest, and locked cloud/account/network/telemetry/secrets/provider surfaces behind Human Gate and security review without implementing cloud save.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "packages/save-format/package.json",
+    "tests/save-migration-cloud-boundaries.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Final status shows allowed task changes only: M packages/save-format/package.json; M packages/save-format/src/index.ts; M tests/protocol-command-query-schema.test.ts; ?? tests/save-migration-cloud-boundaries.test.ts; ?? project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json. Initial pre-edit status was clean."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed task registry successfully; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is IN_PROGRESS with systems_architect owner."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-UI-REGRESSION-MATRIX-001 DRAFT test_engineer Establish the M7 UI and localization regression matrix"
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "exit_code": 0,
+      "result": "TASK_SHAPE_OK M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 IN_PROGRESS route_to=security_reviewer"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format typecheck",
+      "exit_code": 0,
+      "result": "tsc --noEmit --project tsconfig.json completed successfully."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "Vitest passed: 3 test files, 27 tests. Included save-format-v1, save-load-contract, and save-migration-cloud-boundaries."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 14 tests. Cloud/account/remote/telemetry worker message probes reject as unknown message types."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic Node/Worker save-load, M4, M5, and M6 hashes matched; root Vitest passed 42 files and 351 tests; web Vitest passed 1 file and 9 tests."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; renderer navigation restricted; allowed IPC channels remain desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json"
+    }
+  ],
+  "decisions": [
+    "M7 migration validation only approves local-compatible-load-only for accepted M1-M6 save manifests; it does not alter Save Envelope v1 or snapshot schema versions.",
+    "M7 Beta content-lock candidate manifests are recognized for review but route to Human Gate and security_reviewer before any automatic migration, irreversible migration, or frozen save/platform decision.",
+    "Cloud save remains candidate-boundary-only; implemented capability list is required to stay empty and unsafe request modes route to Human Gate/security review."
+  ],
+  "risks": [
+    "The compatibility boundary is validation evidence, not formal content lock acceptance or release readiness.",
+    "Future real migration plans must still supply accepted manifest hashes, security review, and Human Gate approval before irreversible or account/cloud-backed behavior."
+  ],
+  "blockers": [],
+  "route_to": "security_reviewer",
+  "requested_action": "Review the save migration compatibility boundary, cloud-save non-implementation boundary, protocol rejection coverage, and Electron/security implications before lead integration.",
+  "created_at": "2026-06-29T15:12:19.8484879+08:00"
+}
