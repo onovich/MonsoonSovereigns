@@ -1033,18 +1033,8 @@ test("M7 guidance workspace has no horizontal overflow across required viewports
 });
 
 test("M7 UI regression matrix stays localized, console-clean, and key-free across supported viewports", async ({
-  page
-}) => {
-  const consoleErrors: string[] = [];
-  page.on("console", (message) => {
-    if (message.type() === "error") {
-      consoleErrors.push(message.text());
-    }
-  });
-  page.on("pageerror", (error) => {
-    consoleErrors.push(error.message);
-  });
-
+  browser
+}, testInfo) => {
   const scenarios = [
     {
       viewport: { width: 1280, height: 720 },
@@ -1067,70 +1057,92 @@ test("M7 UI regression matrix stays localized, console-clean, and key-free acros
   ];
 
   for (const scenario of scenarios) {
-    consoleErrors.length = 0;
-    await page.setViewportSize(scenario.viewport);
-    await page.addInitScript(
-      ({
-        localePreference,
-        browserLocales
-      }: {
-        readonly localePreference: "system" | "en-US" | "zh-CN";
-        readonly browserLocales: readonly string[];
-      }) => {
-        window.localStorage.setItem("monsoon.client.localePreference.v1", localePreference);
-        Object.defineProperty(window.navigator, "languages", {
-          configurable: true,
-          get: () => browserLocales
-        });
-        Object.defineProperty(window.navigator, "language", {
-          configurable: true,
-          get: () => browserLocales[0] ?? "en-US"
-        });
-      },
-      {
-        localePreference: scenario.localePreference,
-        browserLocales: scenario.browserLocales
+    const consoleErrors: string[] = [];
+    const context = await browser.newContext({
+      viewport: scenario.viewport,
+      baseURL: testInfo.project.use.baseURL
+    });
+
+    try {
+      await context.addInitScript(
+        ({
+          localePreference,
+          browserLocales
+        }: {
+          readonly localePreference: "system" | "en-US" | "zh-CN";
+          readonly browserLocales: readonly string[];
+        }) => {
+          window.localStorage.setItem("monsoon.client.localePreference.v1", localePreference);
+          Object.defineProperty(window.navigator, "languages", {
+            configurable: true,
+            get: () => browserLocales
+          });
+          Object.defineProperty(window.navigator, "language", {
+            configurable: true,
+            get: () => browserLocales[0] ?? "en-US"
+          });
+        },
+        {
+          localePreference: scenario.localePreference,
+          browserLocales: scenario.browserLocales
+        }
+      );
+
+      const scenarioPage = await context.newPage();
+
+      scenarioPage.on("console", (message) => {
+        if (message.type() === "error") {
+          consoleErrors.push(message.text());
+        }
+      });
+      scenarioPage.on("pageerror", (error) => {
+        consoleErrors.push(error.message);
+      });
+
+      await scenarioPage.goto("/");
+
+      await expect(scenarioPage.locator("html")).toHaveAttribute("lang", scenario.expectedLang);
+      await expect(scenarioPage.locator(".client-shell__map-surface")).toHaveAttribute(
+        "data-district-count",
+        "30"
+      );
+      await expect(scenarioPage.locator(".client-shell__map-surface")).toHaveAttribute(
+        "data-settlement-count",
+        "10"
+      );
+      await expect(scenarioPage.locator(".client-shell__dev-overlay")).toHaveCount(0);
+      await expect(scenarioPage.getByText("M2 prototype map ready")).toHaveCount(0);
+      await expect(scenarioPage.getByText("Prototype District 001")).toHaveCount(0);
+      await expect(scenarioPage.getByText("state hash")).toHaveCount(0);
+
+      const visibleText = await scenarioPage.locator("body").innerText();
+      expectNoRawPlayerKeys(visibleText);
+      expect(visibleText).not.toContain("placeholder-only");
+      expect(visibleText).not.toContain("prototype-only");
+
+      if (scenario.localePreference === "system") {
+        const languageSelect = scenarioPage.getByLabel(/^(Language|语言)$/u);
+        await expect(languageSelect).toHaveValue("system");
+        await languageSelect.selectOption("en-US");
+        await expect(scenarioPage.locator("html")).toHaveAttribute("lang", "en-US");
+        await languageSelect.selectOption("zh-CN");
+        await expect(scenarioPage.locator("html")).toHaveAttribute("lang", "zh-CN");
+        await expect(
+          await scenarioPage.evaluate(() =>
+            window.localStorage.getItem("monsoon.client.localePreference.v1")
+          )
+        ).toBe("zh-CN");
       }
-    );
-    await page.goto("/");
 
-    await expect(page.locator("html")).toHaveAttribute("lang", scenario.expectedLang);
-    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
-      "data-district-count",
-      "30"
-    );
-    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
-      "data-settlement-count",
-      "10"
-    );
-    await expect(page.locator(".client-shell__dev-overlay")).toHaveCount(0);
-    await expect(page.getByText("M2 prototype map ready")).toHaveCount(0);
-    await expect(page.getByText("Prototype District 001")).toHaveCount(0);
-    await expect(page.getByText("state hash")).toHaveCount(0);
-
-    const visibleText = await page.locator("body").innerText();
-    expectNoRawPlayerKeys(visibleText);
-    expect(visibleText).not.toContain("placeholder-only");
-    expect(visibleText).not.toContain("prototype-only");
-
-    if (scenario.localePreference === "system") {
-      const languageSelect = page.getByLabel(/^(Language|语言)$/u);
-      await expect(languageSelect).toHaveValue("system");
-      await languageSelect.selectOption("en-US");
-      await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
-      await languageSelect.selectOption("zh-CN");
-      await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
-      await expect(
-        await page.evaluate(() => window.localStorage.getItem("monsoon.client.localePreference.v1"))
-      ).toBe("zh-CN");
+      const overflow = await scenarioPage.evaluate(() => ({
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth
+      }));
+      expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+      expect(consoleErrors).toEqual([]);
+    } finally {
+      await context.close();
     }
-
-    const overflow = await page.evaluate(() => ({
-      clientWidth: document.documentElement.clientWidth,
-      scrollWidth: document.documentElement.scrollWidth
-    }));
-    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
-    expect(consoleErrors).toEqual([]);
   }
 });
 
