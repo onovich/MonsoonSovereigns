@@ -42,12 +42,12 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "updated_at": "2026-06-29T14:55:23.348Z",
+    "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+    "updated_at": "2026-06-29T18:58:16.954Z",
     "concurrent_task_ids": [
-      "M7-CONTENT-LOCK-ACCEPTANCE-001"
+      "M7-MAP-SITUATION-MODE-UX-001"
     ],
-    "branch_or_worktree": "codex/m7-content-lock-acceptance"
+    "branch_or_worktree": "codex/m7-ux-recovery-request-changes"
   },
   "retired_lead_threads": [
     {
@@ -1947,7 +1947,7 @@
   ],
   "active_threads": [
     {
-      "task_id": "M7-I18N-FOUNDATION-001",
+      "task_id": "M7-MAP-SITUATION-MODE-UX-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "status": "active_router",
@@ -1955,44 +1955,10 @@
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration for M7 i18n foundation",
-      "branch_or_worktree": "feat/m7-i18n-foundation",
-      "updated_at": "2026-06-28T21:27:25.1239661+08:00"
-    },
-    {
-      "task_id": "M7-I18N-FOUNDATION-001",
-      "role": "client_engineer",
-      "thread_id": "019f0e69-a54b-7fc0-8649-d58805c838f9",
-      "nickname": "Window",
-      "status": "closed_review_ready",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "responsibility": "Implement client-side i18n foundation for system, en-US, and Simplified Chinese",
-      "branch_or_worktree": "feat/m7-i18n-foundation",
-      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-LEAD-TO-CLIENT-START.json",
-      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
-      "review_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "0ae7ab4ac983360b31c7592f82066c6320679669",
-      "closed_at": "2026-06-28T21:56:18.9396215+08:00",
-      "updated_at": "2026-06-28T21:58:09.3109039+08:00"
-    },
-    {
-      "task_id": "M7-I18N-FOUNDATION-001",
-      "role": "systems_architect",
-      "thread_id": "019f0e85-d5ae-7dd2-b02f-b2ae9d109842",
-      "nickname": "Keystone",
-      "status": "active_reviewer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "responsibility": "Review M7 i18n foundation architecture and authority boundaries",
-      "branch_or_worktree": "feat/m7-i18n-foundation",
-      "route_file": "project/messages/routes/M7-I18N-FOUNDATION-001__ROUTE-20260628-WRITER-TO-SYSTEMS-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-28T21:58:09.3109039+08:00"
+      "responsibility": "lead orchestration for M7 UX recovery after product-owner request changes",
+      "branch_or_worktree": "codex/m7-ux-recovery-request-changes",
+      "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
+      "updated_at": "2026-06-29T18:58:16.954Z"
     }
   ],
   "task_effects": {
@@ -2550,8 +2516,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Await systems_architect review of M7-I18N-FOUNDATION-001.",
-  "current_task": "M7-I18N-FOUNDATION-001",
+  "next_action": "Integrate the M7 UX recovery process record, then start M7-MAP-SITUATION-MODE-UX-001 as the active repair task.",
+  "current_task": "M7-MAP-SITUATION-MODE-UX-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2601,7 +2567,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-29T14:56:13.716Z",
+  "updated_at": "2026-06-29T18:58:16.954Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -4461,54 +4427,14 @@
     ]
   },
   "active_task_routes": {
-    "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001": {
-      "owner_role": "balance_analyst",
-      "owner_thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
-      "owner_configured_model": "gpt-5.4-mini",
-      "owner_configured_effort": "high",
-      "reviewer_role": "gameplay_designer",
-      "reviewer_configured_model": "gpt-5.5",
-      "reviewer_configured_effort": "xhigh",
-      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT2-START.json",
-      "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
-      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
-      "updated_at": "2026-06-29T09:36:51.116Z",
-      "route_submission_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
-      "route_sent_at": "2026-06-29T08:46:14.768Z",
-      "owner_thread_nickname": "Measure",
-      "replaces_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
-      "replacement_reason": "previous_replacement_balance_analyst_model_capacity_error_no_handoff_partial_diff_present",
-      "partial_diff_files": [
-        "apps/sim-runner/src/m7-large-scale-balance.ts"
-      ],
-      "status": "CLOSED",
-      "review_commit": "db3f7d13",
-      "writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
-      "reviewer_thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
-      "reviewer_thread_nickname": "Ledger",
-      "review_route": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-TO-GAMEPLAY-REVIEW.json",
-      "expected_review_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
-      "review_route_submission_id": "019f129d-d2a4-79f0-9376-b1c4200b6768",
-      "review_route_sent_at": "2026-06-29T09:03:12.844Z",
-      "request_changes_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
-      "request_changes_route": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-GAMEPLAY-REQUEST-CHANGES-TO-BALANCE.json",
-      "request_changes_submission_id": "019f12a3-6f09-74b0-b093-be30d73fd969",
-      "expected_writer_r2_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
-      "review_commit_r2": "61e26fb4",
-      "writer_r2_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
-      "review_route_r2": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
-      "expected_review_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
-      "review_route_submission_id_r2": "019f12b0-6232-7590-a532-b48ad3b83284",
-      "review_route_sent_at_r2": "2026-06-29T09:23:19.845Z",
-      "gameplay_status_r2": "ACCEPT",
-      "lead_accept_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-LEAD-ACCEPT__lead_orchestrator.json",
-      "accepted_at": "2026-06-29T09:30:55.111Z",
-      "accepted_implementation_commit": "61e26fb4",
-      "accepted_branch_head": "c9be1d5bb11ea5174214b95b0071a81f7b196145",
-      "integrated_pr": 191,
-      "integrated_main_commit": "97d140ec259249c70918065b1c13a16e08e1daf0",
-      "closed_at": "2026-06-29T09:36:51.116Z",
-      "lead_close_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-CLOSED__lead_orchestrator.json"
+    "M7-MAP-SITUATION-MODE-UX-001": {
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect",
+      "status": "ready_after_product_owner_request_changes",
+      "branch_or_worktree": null,
+      "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
+      "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "updated_at": "2026-06-29T18:58:16.954Z"
     }
   },
   "active_routes": {
@@ -4767,6 +4693,15 @@
       ],
       "reviewer_status": "closed_after_package_accept",
       "reviewer_closed_at": "2026-06-29T14:56:13.716Z"
+    },
+    "M7-MAP-SITUATION-MODE-UX-001": {
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect",
+      "status": "ready_after_product_owner_request_changes",
+      "branch_or_worktree": null,
+      "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
+      "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "updated_at": "2026-06-29T18:58:16.954Z"
     }
   }
 }

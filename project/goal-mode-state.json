@@ -3,27 +3,27 @@
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
   "current_tasks": [
-    "M7-CONTENT-LOCK-ACCEPTANCE-001"
+    "M7-MAP-SITUATION-MODE-UX-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-      "status": "blocked_on_product_owner_human_gate",
+      "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+      "status": "preparing_ux_recovery_task",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-content-lock-acceptance",
-      "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
-      "updated_at": "2026-06-29T14:55:23.348Z",
-      "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-ux-recovery-request-changes",
+      "updated_at": "2026-06-29T18:58:16.954Z"
     }
   },
   "last_integrated_task": "M7-UI-LOCALIZATION-EXIT-001",
-  "last_main_commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
-  "next_ready_tasks": [],
+  "last_main_commit": "8a43b535d098d85cbfaf7d3e515643218760ec7f",
+  "next_ready_tasks": [
+    "M7-MAP-SITUATION-MODE-UX-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -59,21 +59,28 @@
       "severity": "R3",
       "status": "carried_limit",
       "summary": "Windows DPI 150% remains follow-up evidence."
+    },
+    {
+      "id": "M7-UX-RECOVERY-BLOCKS-CONTENT-LOCK",
+      "severity": "R4",
+      "status": "active_repair",
+      "summary": "M7 content lock is blocked until UX recovery tasks address first-screen/map/decision experience."
+    },
+    {
+      "id": "M7-RECTANGULAR-GRID-MAP-BLOCKER",
+      "severity": "R4",
+      "status": "active_repair",
+      "summary": "Default player map must stop reading as rectangular grid/debug visualization."
     }
   ],
   "human_gate": {
-    "required": true,
-    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "approval_scope": "FORMAL_CONTENT_LOCK_ACCEPTANCE",
-    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json",
-    "recommended_result": "APPROVE_CONTENT_LOCK_WITH_LIMITS",
-    "required_decision_options": [
-      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
-      "DEFER_CONTENT_LOCK",
-      "REQUEST_CHANGES"
-    ],
-    "note": "Independent QA accepted the evidence package, but formal M7 content lock is not approved. Product-owner decision is required before closing this task or starting M7 exit validation.",
-    "recorded_at": "2026-06-29T14:55:23.348Z"
+    "required": false,
+    "active_gate_task_id": null,
+    "approval_scope": "NONE",
+    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
+    "recommended_result": null,
+    "note": "Product owner selected REQUEST_CHANGES for M7 content lock. Formal content lock remains not accepted; autonomous continuation is allowed only for scoped M7 UX recovery tasks before content lock can be reconsidered.",
+    "recorded_at": "2026-06-29T18:58:16.954Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -897,8 +904,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T14:56:22.870Z",
-  "updated_at": "2026-06-29T14:56:22.870Z",
+  "last_updated_at": "2026-06-29T18:58:16.954Z",
+  "updated_at": "2026-06-29T18:58:16.954Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
