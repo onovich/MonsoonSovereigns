@@ -267,3 +267,11 @@ Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is a
 Independent `qa_reviewer` accepted the implementation in `project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json`; PR #187 passed both Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact.
 
 Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is active. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`. The next dependency-ready M7 tasks are `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001` and `M7-UI-REGRESSION-MATRIX-001`; the lead should start `M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001` first unless `taskctl ready` changes.
+
+## 24. M7 Content Lock Human Gate Snapshot
+
+`M7-CONTENT-LOCK-ACCEPTANCE-001` has reached the formal content-lock Human Gate on branch `codex/m7-content-lock-acceptance`. The lead package is recorded in `project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json`; independent `qa_reviewer` accepted the package as evidence-backed and process-only in `project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json`.
+
+The QA acceptance is not product-owner approval. `M7-CONTENT-LOCK-ACCEPTANCE-001` remains `BLOCKED` on `HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE` until the product owner explicitly chooses `APPROVE_CONTENT_LOCK_WITH_LIMITS`, `DEFER_CONTENT_LOCK`, or `REQUEST_CHANGES`. `content_lock_accepted` remains `false`, and `M7-EXIT-VALIDATION-001` must not start while this gate is unresolved.
+
+The recommended decision option is `APPROVE_CONTENT_LOCK_WITH_LIMITS` as of `origin/main` `62e3c756199f50302ff3b0a5ee087da1fd0bffbe`, carrying the accepted limits: `M6_GATE = PASS_WITH_LIMITS`, `DEFER_MANUAL_NODE_BATTLE`, Edge/Firefox unresolved tooling rows, Windows DPI 150% follow-up, low-end Windows proxy limits, agent-operated manual playthrough evidence only, and no release/commercial/branding/telemetry/server/multiplayer/cloud-save/mod/irreversible-migration approval.

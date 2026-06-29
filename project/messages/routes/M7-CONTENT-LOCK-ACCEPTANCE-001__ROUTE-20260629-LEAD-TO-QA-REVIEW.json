@@ -1,0 +1,56 @@
+{
+  "route_id": "ROUTE-20260629-LEAD-TO-QA-REVIEW",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+  "target_nickname": "Gate the 3rd",
+  "source_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+  "requested_action": "Read-only QA review of the M7 formal content lock Human Gate package. Accept only if the package is evidence-backed, process-only, scoped to allowed paths, does not approve content lock, preserves M6 PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE, records carried limitations, and correctly routes final decision to product owner.",
+  "branch_or_worktree": "codex/m7-content-lock-acceptance",
+  "commit": "9e0c7bdf",
+  "expected_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+  "required_docs": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    ".agents/skills/monsoon-studio-orchestrator/SKILL.md",
+    ".agents/skills/monsoon-studio-orchestrator/references/message-protocol.md",
+    ".agents/skills/monsoon-studio-orchestrator/references/routing-workflow.md"
+  ],
+  "required_evidence": [
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json"
+  ],
+  "stop_conditions": [
+    "If the package overclaims formal content lock approval, return REQUEST_CHANGES.",
+    "If product-owner decision is required for acceptance of the content lock itself, record it as blocker but do not approve the lock.",
+    "If forbidden paths or business code changed, return REQUEST_CHANGES or BLOCKED.",
+    "If evidence is missing for UI/localization exit systems+QA review, return REQUEST_CHANGES."
+  ],
+  "required_tests": [
+    "git status --short",
+    "git diff --name-only origin/main...HEAD",
+    "git diff --check origin/main...HEAD",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+    "node -e JSON parse/shape checks for task, goal-mode-state, model-routing-state, registry, source handoff, and referenced evidence"
+  ],
+  "created_at": "2026-06-29T14:46:30.147Z",
+  "route_submission_id": "019f13d9-41f0-7183-a564-01cb846bb1ac",
+  "route_sent_at": "2026-06-29T14:47:33.170Z",
+  "route_status": "SENT"
+}

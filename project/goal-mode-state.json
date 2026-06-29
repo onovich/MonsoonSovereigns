@@ -9,7 +9,7 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-      "status": "preparing_human_gate_review_package",
+      "status": "blocked_on_product_owner_human_gate",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -17,7 +17,8 @@
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-content-lock-acceptance",
       "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
-      "updated_at": "2026-06-29T14:44:30.619Z"
+      "updated_at": "2026-06-29T14:55:23.348Z",
+      "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json"
     }
   },
   "last_integrated_task": "M7-UI-LOCALIZATION-EXIT-001",
@@ -40,16 +41,39 @@
       "status": "accepted_limit",
       "summary": "M4 gate is PASS_WITH_LIMITS because systems_architect handoff is absent after three real writer stalls; QA accepted the explicit lead reconciliation process exception.",
       "source": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-QA-REVIEW__qa_reviewer.json"
+    },
+    {
+      "id": "M7-CONTENT-LOCK-HUMAN-GATE-PENDING",
+      "severity": "R4",
+      "status": "active_human_gate",
+      "summary": "Formal M7 content lock awaits product-owner decision."
+    },
+    {
+      "id": "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
+      "severity": "R3",
+      "status": "carried_limit",
+      "summary": "Edge/Firefox matrix rows remain unresolved tooling blocks."
+    },
+    {
+      "id": "M7-WINDOWS-DPI-150-UNRESOLVED",
+      "severity": "R3",
+      "status": "carried_limit",
+      "summary": "Windows DPI 150% remains follow-up evidence."
     }
   ],
   "human_gate": {
-    "required": false,
+    "required": true,
     "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "approval_scope": "FORMAL_CONTENT_LOCK_ACCEPTANCE_PENDING_QA_REVIEW",
-    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
-    "recommended_result": "APPROVE_CONTENT_LOCK_WITH_LIMITS_PENDING_PRODUCT_OWNER",
-    "note": "Formal M7 content lock is being packaged for QA review. No product-owner approval is recorded yet, so content lock is not accepted and the task cannot close. Human Gate will become active after QA verifies the package or immediately if QA blocks on owner decision.",
-    "recorded_at": "2026-06-29T14:44:30.619Z"
+    "approval_scope": "FORMAL_CONTENT_LOCK_ACCEPTANCE",
+    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json",
+    "recommended_result": "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+    "required_decision_options": [
+      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+      "DEFER_CONTENT_LOCK",
+      "REQUEST_CHANGES"
+    ],
+    "note": "Independent QA accepted the evidence package, but formal M7 content lock is not approved. Product-owner decision is required before closing this task or starting M7 exit validation.",
+    "recorded_at": "2026-06-29T14:55:23.348Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -873,8 +897,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T14:44:30.619Z",
-  "updated_at": "2026-06-29T14:44:30.619Z",
+  "last_updated_at": "2026-06-29T14:56:22.870Z",
+  "updated_at": "2026-06-29T14:56:22.870Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2771,5 +2795,14 @@
       "019f13be-4700-7a71-a901-48f84a2f6803"
     ],
     "next_ready_tasks": []
-  }
+  },
+  "closed_threads": [
+    {
+      "thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+      "role": "qa_reviewer",
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "status": "closed_after_package_accept",
+      "closed_at": "2026-06-29T14:56:13.716Z"
+    }
+  ]
 }
