@@ -114,6 +114,7 @@ describe("M2 district client UI", () => {
     expect(markup).toContain('data-district-count="30"');
     expect(markup).toContain('data-settlement-count="10"');
     expect(markup).toContain('data-route-count="42"');
+    expect(markup).toContain('aria-label="Situation map mode"');
     expect(markup).toContain('aria-label="Seasonal map mode"');
     expect(markup).toContain('aria-label="Economy map mode"');
     expect(markup).toContain('aria-label="Routes map mode"');
@@ -121,11 +122,14 @@ describe("M2 district client UI", () => {
     expect(markup).toContain('aria-label="Pan up"');
     expect(markup).toContain('aria-label="Reset pan"');
     expect(markup).toContain('aria-label="Map hover details"');
-    expect(markup).toContain("Reachable route");
-    expect(markup).toContain("Blocked route");
-    expect(markup).toContain("Capacity strained");
+    expect(markup).toContain("Route / supply");
+    expect(markup).toContain("Obligation / tributary flow");
+    expect(markup).toContain("Threat / risk");
+    expect(markup).toContain("Blocked / capacity");
     expect(markup).toContain("Settlement marker");
-    expect(markup).toContain('data-map-legend-tone="reachable"');
+    expect(markup).toContain('data-map-legend-tone="route"');
+    expect(markup).toContain('data-map-legend-tone="obligation"');
+    expect(markup).toContain('data-map-legend-tone="threat"');
     expect(markup).toContain('data-pan-x="0.00"');
     expect(markup).toContain('data-hovered-district-id="none"');
     expect(markup).not.toContain("Prototype District 001");

@@ -57,7 +57,7 @@ export function WebClientShell({
     () => initialSystemLocales ?? readBrowserSystemLocales(getBrowserLocaleSource())
   );
   const [desktopLocale, setDesktopLocale] = useState<string | null>(null);
-  const [mapMode, setMapMode] = useState<ClientMapMode>("seasonal");
+  const [mapMode, setMapMode] = useState<ClientMapMode>("situation");
   const [zoomLevel, setZoomLevel] = useState(1);
   const [panOffset, setPanOffset] = useState<ClientMapPanOffset>({
     xInMapUnits: 0,

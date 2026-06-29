@@ -11,12 +11,12 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T18:58:16.954Z",
+        "updated_at": "2026-06-29T19:45:27.586Z",
         "task_id": "M7-MAP-SITUATION-MODE-UX-001",
         "task_ids": [
           "M7-MAP-SITUATION-MODE-UX-001"
         ],
-        "branch_or_worktree": "codex/m7-ux-recovery-request-changes"
+        "branch_or_worktree": "codex/m7-map-situation-mode-ux"
       }
     ],
     "retired_leads": [
@@ -37,7 +37,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-29T14:33:23.055Z"
+      "checked_at": "2026-06-29T19:45:27.586Z"
     }
   },
   "entries": {
@@ -7096,13 +7096,73 @@
       "task_id": "M7-MAP-SITUATION-MODE-UX-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "preparing",
+      "status": "accepted_pending_pr",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-ux-recovery-request-changes",
-      "updated_at": "2026-06-29T18:58:16.954Z"
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "start_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "updated_at": "2026-06-29T20:05:43.343Z",
+      "route_submission_id": "019f14d5-94f4-7eb2-84f4-62c2d9e0a2ee",
+      "route_sent_at": "2026-06-29T19:23:10.561Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "systems_route": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+      "expected_systems_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "systems_route_status": "SENT",
+      "systems_route_submission_id": "019f14ec-e361-79c3-95d5-2ef0ccfc87e7",
+      "systems_status": "ACCEPT",
+      "systems_review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "integration_gate_status": "PASS_AFTER_CI_FIX",
+      "accepted_branch_head": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc",
+      "ci_fix_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CI-FIX__lead_orchestrator.json",
+      "ci_fix_status": "LOCAL_PASS_PENDING_PUSH",
+      "ci_fix_commit": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc"
+    },
+    "M7-MAP-SITUATION-MODE-UX-001:client_engineer": {
+      "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+      "role": "client_engineer",
+      "thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
+      "nickname": "Lantern",
+      "status": "review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T19:45:27.586Z",
+      "route_submission_id": "019f14d5-94f4-7eb2-84f4-62c2d9e0a2ee",
+      "route_sent_at": "2026-06-29T19:23:10.561Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "review_ready_at": "2026-06-29T19:45:27.586Z"
+    },
+    "M7-MAP-SITUATION-MODE-UX-001:systems_architect": {
+      "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+      "role": "systems_architect",
+      "thread_id": "019f14eb-b429-7273-b0af-672531436f66",
+      "nickname": "Keystone",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
+      "updated_at": "2026-06-29T19:55:23.299Z",
+      "route_submission_id": "019f14ec-e361-79c3-95d5-2ef0ccfc87e7",
+      "route_sent_at": "2026-06-29T19:48:40.794Z",
+      "systems_status": "ACCEPT",
+      "systems_review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "systems_review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
+      "accepted_at": "2026-06-29T19:55:23.299Z"
     }
   },
   "replaced_threads": [
@@ -7277,7 +7337,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T18:58:16.954Z",
+  "updated_at": "2026-06-29T20:05:43.343Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",

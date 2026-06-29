@@ -1,0 +1,105 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SITUATION-LEAD-ACCEPT",
+  "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead integration gate accepts M7-MAP-SITUATION-MODE-UX-001 after systems_architect ACCEPT and full local integration verification. The branch changes the default player-facing map to Situation/??, presents deterministic non-rectangular soft strategic regions, de-noises route overlays in situation mode while retaining full routes mode, adds localized map semantics and recommendation presentation, and keeps debug/grid presentation out of player mode. Formal closure is still pending PR CI, merge, main sync, and CLOSED status update.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts"
+  ],
+  "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+  "commit": "7971f98d249ffe40af9cd9e6801b40b0e2bc1449",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; branch clean before integration gate."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-SITUATION-MODE-UX-001",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task listed as ACCEPTED before PR integration."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; next UX recovery task remains DRAFT until this task closes."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-MAP-SITUATION-MODE-UX-001",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "PASS; 1 file, 5 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; existing Vite chunk-size warning only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    "Proceed to PR/CI/merge with task status ACCEPTED, not CLOSED.",
+    "Do not treat this as full M7 content-lock acceptance; it is one UX recovery repair task after product-owner REQUEST_CHANGES.",
+    "Do not start high-fidelity art, final cartography, or manual node battle scope from this task."
+  ],
+  "risks": [
+    "Content lock remains blocked until the broader first-screen, inspector, task-rail, and UX recovery validation tasks complete and product-owner acceptance is reconsidered.",
+    "Map remains low-fidelity synthetic presentation and needs later art/cartography replacement under approved asset workflow."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge, sync main, mark M7-MAP-SITUATION-MODE-UX-001 CLOSED, close child threads, then start the next dependency-ready M7 UX recovery task.",
+  "created_at": "2026-06-29T19:58:12.562Z"
+}

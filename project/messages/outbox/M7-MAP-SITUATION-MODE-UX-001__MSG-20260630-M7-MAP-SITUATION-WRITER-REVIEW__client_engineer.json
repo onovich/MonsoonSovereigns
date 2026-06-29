@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW",
+  "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Lantern completed the M7 map situation-mode recovery implementation and returned a PARTIAL text report after interruption; lead transcribed that report into this formal REVIEW handoff after verifying the actual diff and rerunning required local tests. The implementation makes Situation/?? the default player map mode, replaces prototype rectangular district polygons with deterministic low-fidelity soft strategic regions, de-noises routes in the default situation mode, adds localized route semantics/legend/recommendation presentation, and keeps rectangular grid diagnostics out of player mode.",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/shell/web-client-shell.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/map-renderer/src/map-render-tokens.ts",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/tasks/active/M7-MAP-SITUATION-MODE-UX-001.json",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; implementation files dirty as expected before REVIEW commit."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "PASS; 5 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 9 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; existing Vite chunk-size warning only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-SITUATION-MODE-UX-001",
+      "exit_code": 0,
+      "result": "PASS; task schema valid after REVIEW state update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task registry listed the current M7 recovery task."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no READY output expected while this task is in REVIEW."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "PASS; dirty implementation/review files listed as expected before REVIEW commit."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; handoff schema valid."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-MAP-SITUATION-MODE-UX-001",
+      "exit_code": 0,
+      "result": "PASS; task, handoff, goal-mode, model-routing, and thread registry JSON parsed successfully."
+    }
+  ],
+  "decisions": [
+    "Default player-facing mode is now Situation/?? so the first map read is a strategic situation read, not a seasonal engineering layer.",
+    "M2 prototype district presentation now uses deterministic 8-point soft polygons and anchor offsets derived from district number; this changes only client read-model presentation and introduces no new authoritative geography or content-source facts.",
+    "Situation mode route rendering filters to selected-district routes plus blocked or capacity-risk routes; full route graph remains available in Routes mode.",
+    "Player mode exposes localized legend labels for route/supply, obligation/tributary flow, threat/risk, blocked/capacity, selected district, and settlements; debug grid language remains excluded from default player presentation.",
+    "No manual node battle, simulation, save, protocol, AI, content-source, server, telemetry, account, paid-service, final-art, or release scope was touched."
+  ],
+  "risks": [
+    "This is a low-fidelity UX recovery patch, not final cartography or production art; content lock still needs later product-owner reconsideration after the full UX recovery chain.",
+    "Obligation/tributary-flow semantics are represented at the legend/player-explanation layer using existing read models; no new authoritative obligation route topology is introduced in this task.",
+    "The soft-region polygons remain generated prototype shapes and must not be mistaken for historical geography."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review actual branch diff against M7-MAP-SITUATION-MODE-UX-001 acceptance criteria, focusing on architecture boundaries, read-model-only presentation, deterministic soft-region generation, route de-noising semantics, i18n coverage, player/debug separation, and absence of forbidden scope.",
+  "created_at": "2026-06-29T19:45:27.586Z"
+}

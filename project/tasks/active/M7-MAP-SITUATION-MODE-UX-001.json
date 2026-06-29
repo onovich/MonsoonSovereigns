@@ -2,7 +2,7 @@
   "id": "M7-MAP-SITUATION-MODE-UX-001",
   "summary": "Replace the player-facing rectangular grid map with a low-fidelity strategic situation map",
   "milestone": "M7",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -77,9 +77,43 @@
     "pnpm test:e2e",
     "pnpm check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
-  "route_to": "systems_architect",
+  "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "updated_at": "2026-06-29T19:45:27.586Z"
+    },
+    "client_engineer": {
+      "thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
+      "nickname": "Lantern",
+      "status": "review_ready",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T19:45:27.586Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "review_ready_at": "2026-06-29T19:45:27.586Z"
+    },
+    "systems_architect": {
+      "thread_id": "019f14eb-b429-7273-b0af-672531436f66",
+      "nickname": "Keystone",
+      "status": "accepted",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
+      "updated_at": "2026-06-29T19:55:23.299Z",
+      "route_submission_id": "019f14ec-e361-79c3-95d5-2ef0ccfc87e7",
+      "route_sent_at": "2026-06-29T19:48:40.794Z",
+      "systems_status": "ACCEPT",
+      "systems_review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "accepted_at": "2026-06-29T19:55:23.299Z"
+    }
+  },
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -90,9 +124,30 @@
     "All player-visible text must go through existing i18n boundaries."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T18:58:16.954Z",
+  "updated_at": "2026-06-29T20:05:43.343Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
-  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db"
+  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+  "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+  "review_base_commit": "1ae25b584f8cd92309b89490aed9332fb53db55c",
+  "review_expected_commit": null,
+  "systems_route": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+  "expected_systems_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+  "review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
+  "systems_route_status": "SENT",
+  "systems_route_submission_id": "019f14ec-e361-79c3-95d5-2ef0ccfc87e7",
+  "systems_route_sent_at": "2026-06-29T19:48:40.794Z",
+  "systems_status": "ACCEPT",
+  "systems_review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+  "systems_review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
+  "accepted_at": "2026-06-29T19:55:23.299Z",
+  "accepted_branch_head": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc",
+  "lead_accept_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-LEAD-ACCEPT__lead_orchestrator.json",
+  "integration_gate_status": "PASS_AFTER_CI_FIX",
+  "integration_gate_at": "2026-06-29T19:58:12.562Z",
+  "ci_fix_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CI-FIX__lead_orchestrator.json",
+  "ci_fix_base_commit": "ee6c5d4356cd4e04b15a285a3457efb526a43531",
+  "ci_fix_status": "LOCAL_PASS_PENDING_PUSH",
+  "ci_fix_commit": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc"
 }

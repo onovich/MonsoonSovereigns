@@ -1,0 +1,74 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SITUATION-START",
+  "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Started M7-MAP-SITUATION-MODE-UX-001 after product-owner REQUEST_CHANGES rejected the current M7 content-lock UI/map experience. This task repairs the default player-facing map into a low-fidelity strategic Situation map before content lock can be reconsidered.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-START__lead_orchestrator.json",
+    "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+    "project/tasks/active/M7-MAP-SITUATION-MODE-UX-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-situation-mode-ux / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "b3a9ee724c6c4224d2fac297fdc1afd03673cbf7",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main synchronized with origin/main before task branch creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready task selected: M7-MAP-SITUATION-MODE-UX-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-SITUATION-MODE-UX-001",
+      "exit_code": 0,
+      "result": "Task file valid before start."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "PRODUCT_OWNER_REQUEST_CHANGES_IS_BLOCKING_CONTENT_LOCK",
+      "decision": "Formal M7 content lock remains not accepted; UX recovery proceeds as scoped repair work rather than content-lock approval."
+    },
+    {
+      "id": "START_MAP_REPAIR_FIRST",
+      "decision": "Start the map Situation-mode repair first because the product-owner feedback specifically identifies the rectangular grid map and unexplained lines as the leading blocker."
+    },
+    {
+      "id": "NO_AUTHORITY_OR_CONTENT_EXPANSION",
+      "decision": "Repair must stay in client/read-model/map presentation boundaries and must not change simulation authority, protocol, save format, content-source data, manual node battle, server, telemetry, release, commercial, branding, or final art scope."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-MAP-UX-SCOPE-DRIFT",
+      "severity": "P1",
+      "summary": "Map experience repair can drift into new authoritative geography, pathfinding, or campaign systems.",
+      "mitigation": "Task acceptance restricts implementation to existing read models and presentation-layer geometry/route semantics."
+    },
+    {
+      "id": "ROUTE-SEMANTICS-OVERLOAD",
+      "severity": "P2",
+      "summary": "Route lines can remain visually noisy or semantically unclear if all links stay emphasized by default.",
+      "mitigation": "Situation mode must de-noise routes and provide localized legend semantics; full route network belongs in routes mode."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement within allowed paths, produce a writer REVIEW handoff, and route to systems_architect. Do not open PR, merge, or mark CLOSED.",
+  "created_at": "2026-06-29T19:22:35.679Z",
+  "previous_closed_task": "M7-UI-LOCALIZATION-EXIT-001",
+  "base_main_commit": "b3a9ee724c6c4224d2fac297fdc1afd03673cbf7",
+  "next_ready_tasks_at_start": [
+    "M7-MAP-SITUATION-MODE-UX-001"
+  ],
+  "writer_thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
+  "writer_thread_nickname": "Lantern",
+  "expected_writer_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json"
+}
