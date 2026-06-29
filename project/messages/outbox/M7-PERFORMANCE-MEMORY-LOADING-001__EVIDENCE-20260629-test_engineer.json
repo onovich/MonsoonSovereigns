@@ -1,0 +1,161 @@
+{
+  "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+  "captured_at": "2026-06-29T17:55:12.6438223+08:00",
+  "branch_or_worktree": "codex/m7-performance-memory-loading",
+  "base_main_commit": "60301ed786e814f8538625972c1667f1af0771ff",
+  "host": {
+    "os": "win32",
+    "arch": "x64",
+    "cpu_count": 16,
+    "node_version": "v24.13.1"
+  },
+  "performance_baseline": {
+    "status": "PASS",
+    "fixture": "m1.abstract-graph-30-world-state-v0",
+    "days": 3650,
+    "final_day": 3650,
+    "final_revision": 3650,
+    "day_throughput_per_second": 9136,
+    "p50_step_nanoseconds": 90500,
+    "p95_step_nanoseconds": 237800,
+    "p99_step_nanoseconds": 466300,
+    "save_byte_length": 9980,
+    "save_nanoseconds": 2355300,
+    "load_nanoseconds": 4703700
+  },
+  "determinism": {
+    "status": "PASS",
+    "hello_hash": {
+      "node": "61e0ba1c",
+      "worker_compatible": "61e0ba1c"
+    },
+    "command_query_hash": {
+      "node": "d275faa4",
+      "worker_compatible": "d275faa4"
+    },
+    "save_load_hash": {
+      "node": "28074edd",
+      "worker_compatible": "28074edd",
+      "save_load_byte_length": 10920
+    },
+    "m4_hash": {
+      "node": "232f62ab",
+      "worker_compatible": "232f62ab",
+      "engagement_hash": "334e0df0",
+      "siege_hash": "ac35e97e",
+      "withdrawal_hash": "232f62ab",
+      "postwar_candidates": 1
+    },
+    "m5_hash": {
+      "node": "bf042e42",
+      "worker_compatible": "bf042e42",
+      "loaded_hash": "bf042e42",
+      "postwar_arrangements": 1
+    },
+    "m6_alpha_hash": {
+      "node": "260f46c3",
+      "worker_compatible": "260f46c3",
+      "loaded_hash": "260f46c3",
+      "terminal_outcome": "victory"
+    }
+  },
+  "builds": {
+    "web_build": {
+      "status": "PASS",
+      "output_dir": "apps/web/dist"
+    },
+    "storybook_build": {
+      "status": "PASS",
+      "output_dir": ".tmp/storybook-static",
+      "cleaned_after_build": true
+    },
+    "e2e": {
+      "status": "PASS",
+      "project": "chromium",
+      "tests_total": 21,
+      "tests_passed": 21
+    },
+    "desktop_security_check": {
+      "status": "PASS",
+      "first_run": {
+        "command": "pnpm desktop:security-check",
+        "exit_code": 1,
+        "result": "Concurrent build collided with pnpm desktop:package and failed on ENOTEMPTY while removing apps/desktop/dist/renderer/web/assets."
+      },
+      "serial_rerun": {
+        "command": "pnpm desktop:security-check",
+        "exit_code": 0,
+        "result": "Electron security preferences passed; preload bridge limited to named bridge; renderer navigation restricted to packaged renderer root; allowed IPC channels were desktop:getRuntimeInfo and desktop:setFullscreen."
+      }
+    },
+    "desktop_package": {
+      "status": "PASS",
+      "output_dir": ".tmp/desktop-package/MonsoonSovereigns-win32-x64",
+      "smoke_result": "Packaged main, preload, renderer, and platform adapter artifacts."
+    },
+    "full_test": {
+      "status": "PASS",
+      "command": "pnpm test",
+      "summary": "Architecture boundaries passed; 353 tests passed."
+    },
+    "full_check": {
+      "status": "PASS",
+      "command": "pnpm check",
+      "summary": "Prettier, ESLint, typecheck, and architecture checks passed."
+    }
+  },
+  "artifact_hashes": [
+    {
+      "path": "apps/web/dist/index.html",
+      "sha256": "25DB67399C7C16BB562961CAE24855F5AE85704AC019CB92EB9DC0023FF6886D"
+    },
+    {
+      "path": "apps/web/dist/host-hash-canary.html",
+      "sha256": "E852455FE4A17C5053028C04EF99478CB04CFB4067C06255BF363A8AB87B0F34"
+    },
+    {
+      "path": "apps/web/dist/assets/main-K-Q6mO_-.js",
+      "sha256": "5B9E6758CA411D8740E1CAC8FDAE898598051DA6CA52BC60B3068A6693EB4CC5"
+    },
+    {
+      "path": "apps/web/dist/assets/main-DkXwQTJS.css",
+      "sha256": "879E7F2222EC1F4B893AFBB724FB74FF3072C88048D589428C5AD1DCF0321AAE"
+    },
+    {
+      "path": "apps/desktop/dist/main/main.js",
+      "sha256": "8BE72D09C76EA2EAE18D53A82034EBC5F30A832B58285E34461C5E575967B15B"
+    },
+    {
+      "path": "apps/desktop/dist/preload/preload.cjs",
+      "sha256": "47C3D8605325A78B1DBC282B0D95CCF32A92BC59FE5689CB946566D15DB8EF5A"
+    },
+    {
+      "path": "apps/desktop/dist/renderer/index.html",
+      "sha256": "80A905EE40FDC72FCE47A8F6CAA8A8B832B821433E7C7D35F262A7809C20C002"
+    },
+    {
+      "path": "apps/desktop/dist/renderer/web/assets/main-K-Q6mO_-.js",
+      "sha256": "5B9E6758CA411D8740E1CAC8FDAE898598051DA6CA52BC60B3068A6693EB4CC5"
+    },
+    {
+      "path": ".tmp/desktop-package/MonsoonSovereigns-win32-x64/main/main.js",
+      "sha256": "8BE72D09C76EA2EAE18D53A82034EBC5F30A832B58285E34461C5E575967B15B"
+    },
+    {
+      "path": ".tmp/desktop-package/MonsoonSovereigns-win32-x64/preload/preload.cjs",
+      "sha256": "47C3D8605325A78B1DBC282B0D95CCF32A92BC59FE5689CB946566D15DB8EF5A"
+    },
+    {
+      "path": ".tmp/desktop-package/MonsoonSovereigns-win32-x64/renderer/web/index.html",
+      "sha256": "25DB67399C7C16BB562961CAE24855F5AE85704AC019CB92EB9DC0023FF6886D"
+    },
+    {
+      "path": ".tmp/desktop-package/MonsoonSovereigns-win32-x64/renderer/web/assets/main-K-Q6mO_-.js",
+      "sha256": "5B9E6758CA411D8740E1CAC8FDAE898598051DA6CA52BC60B3068A6693EB4CC5"
+    }
+  ],
+  "notes": [
+    "No code or fixture changes were required for this task.",
+    "The initial desktop:security-check run failed only because it was launched concurrently with desktop:package and collided on the same output tree; the serial rerun passed."
+  ]
+}
