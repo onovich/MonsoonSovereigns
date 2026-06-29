@@ -2,7 +2,7 @@
   "id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
   "summary": "Run large-scale Beta balance and anti-snowball validation",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "balance_analyst",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R4",
@@ -110,6 +110,22 @@
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
       "updated_at": "2026-06-29T08:12:59.704Z"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
+      "status": "active_review_pending_route",
+      "role": "gameplay_designer",
+      "nickname": "Ledger",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+      "source_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+      "review_commit": "db3f7d13",
+      "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-TO-GAMEPLAY-REVIEW.json",
+      "updated_at": "2026-06-29T09:01:34.350Z"
     }
   },
   "route_to": "gameplay_designer",
@@ -121,7 +137,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T08:46:14.768Z",
+  "updated_at": "2026-06-29T09:01:34.350Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -146,7 +162,7 @@
   "writer_thread_nickname": "Measure",
   "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
   "scheduling_reason": "Selected as the highest-priority dependency-ready M7 task after M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 closed; UI/localization/art directive has already been incorporated through closed M7 visual and UI-localization planning tasks.",
-  "next_action": "Await balance_analyst writer REVIEW handoff, validate it, then route to gameplay_designer for independent review.",
+  "next_action": "Await gameplay_designer review handoff; route REQUEST_CHANGES back to balance_analyst or ACCEPT to lead integration.",
   "route_submission_id": "019f1272-19e4-70e3-b089-adda900b1128",
   "route_sent_at": "2026-06-29T08:15:21.784Z",
   "replaces_writer_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
@@ -157,5 +173,12 @@
   "replacement_at": "2026-06-29T08:46:14.768Z",
   "partial_diff_from_replaced_writer": [
     "apps/sim-runner/src/m7-large-scale-balance.ts"
-  ]
+  ],
+  "review_commit": "db3f7d13",
+  "writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+  "gameplay_reviewer_thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
+  "gameplay_reviewer_thread_nickname": "Ledger",
+  "gameplay_review_route": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-TO-GAMEPLAY-REVIEW.json",
+  "expected_gameplay_review_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
+  "routed_to_gameplay_at": "2026-06-29T09:01:34.350Z"
 }

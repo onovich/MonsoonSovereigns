@@ -1,0 +1,26 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-TO-GAMEPLAY-REVIEW",
+  "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+  "from_role": "lead_orchestrator",
+  "source_role": "balance_analyst",
+  "to_role": "gameplay_designer",
+  "to_thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
+  "to_thread_nickname": "Ledger",
+  "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+  "source_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+  "review_commit": "db3f7d13",
+  "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
+  "route_status": "REVIEW_PENDING_SEND_INPUT",
+  "created_at": "2026-06-29T09:01:34.350Z",
+  "required_reads": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001.json",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+    "apps/sim-runner/src/m7-large-scale-balance.ts",
+    "apps/sim-runner/src/run-m7-large-scale-balance.mjs",
+    "tests/sim-runner-m7-large-scale-balance.test.tsx"
+  ],
+  "requested_action": "Review actual diff and writer evidence for M7 balance/anti-snowball acceptance. Return ACCEPT, REQUEST_CHANGES, or BLOCKED handoff.",
+  "route_to": "lead_orchestrator"
+}

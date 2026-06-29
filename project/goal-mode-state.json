@@ -22,7 +22,7 @@
     "balance_analyst": {
       "thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
       "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-      "status": "active_started_replacement2",
+      "status": "closed_review_ready",
       "role": "balance_analyst",
       "nickname": "Measure",
       "configured_model": "gpt-5.4-mini",
@@ -39,7 +39,26 @@
       "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT2-START.json",
       "route_submission_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
       "route_sent_at": "2026-06-29T08:46:14.768Z",
-      "updated_at": "2026-06-29T08:46:14.768Z"
+      "updated_at": "2026-06-29T09:01:34.350Z",
+      "review_commit": "db3f7d13",
+      "review_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
+      "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "status": "active_review_pending_route",
+      "role": "gameplay_designer",
+      "nickname": "Ledger",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+      "source_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+      "review_commit": "db3f7d13",
+      "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-TO-GAMEPLAY-REVIEW.json",
+      "updated_at": "2026-06-29T09:01:34.350Z"
     }
   },
   "last_integrated_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
@@ -875,7 +894,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T08:46:14.768Z",
+  "last_updated_at": "2026-06-29T09:01:34.350Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2375,7 +2394,7 @@
   },
   "m7_large_scale_balance_anti_snowball": {
     "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
     "base_main_commit": "3261dbec16a8383e464d49b6437840055876ba54",
     "previous_closed_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
@@ -2391,7 +2410,7 @@
     "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
     "started_at": "2026-06-29T08:12:59.704Z",
-    "updated_at": "2026-06-29T08:46:14.768Z",
+    "updated_at": "2026-06-29T09:01:34.350Z",
     "next_action": "Await balance_analyst writer REVIEW handoff and route it to gameplay_designer.",
     "route_submission_id": "019f1272-19e4-70e3-b089-adda900b1128",
     "route_sent_at": "2026-06-29T08:15:21.784Z",
@@ -2402,6 +2421,13 @@
     "replaced_at": "2026-06-29T08:46:14.768Z",
     "partial_diff_files": [
       "apps/sim-runner/src/m7-large-scale-balance.ts"
-    ]
+    ],
+    "review_commit": "db3f7d13",
+    "writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+    "gameplay_reviewer_thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
+    "gameplay_reviewer_thread_nickname": "Ledger",
+    "gameplay_review_route": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-TO-GAMEPLAY-REVIEW.json",
+    "expected_gameplay_review_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "routed_to_gameplay_at": "2026-06-29T09:01:34.350Z"
   }
 }
