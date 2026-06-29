@@ -4,23 +4,19 @@
   "type": "goal_mode_continuation",
   "status": "INFO",
   "project": "Monsoon Sovereigns",
-  "origin_main": "10f3fd7ff866e6cbee26b58d08036dd70fb9bb6b",
+  "origin_main": "d3a9be830dcdfa94b852037099bd46702f560a55",
   "current_milestone": "M7",
   "current_task": null,
   "current_tasks": [],
   "current_task_status": "NONE",
-  "last_closed_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
-  "last_integrated_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
-  "last_main_commit": "10f3fd7ff866e6cbee26b58d08036dd70fb9bb6b",
+  "last_closed_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+  "last_integrated_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+  "last_main_commit": "d3a9be830dcdfa94b852037099bd46702f560a55",
   "ready_tasks": [
-    "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-    "M7-PERFORMANCE-MEMORY-LOADING-001",
-    "M7-UI-REGRESSION-MATRIX-001"
+    "M7-DECISION-INSPECTOR-REWRITE-001"
   ],
   "next_ready_tasks": [
-    "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-    "M7-PERFORMANCE-MEMORY-LOADING-001",
-    "M7-UI-REGRESSION-MATRIX-001"
+    "M7-DECISION-INSPECTOR-REWRITE-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
@@ -32,9 +28,9 @@
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-save-migration-cloud-boundaries",
-      "updated_at": "2026-06-29T08:02:58.683Z",
-      "lead_close_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/close-m7-first-screen-orientation",
+      "updated_at": "2026-06-29T21:14:59.495Z",
+      "lead_close_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-CLOSED__lead_orchestrator.json"
     }
   },
   "unresolved_risks": [
@@ -60,16 +56,16 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 closure checkpoint",
+    "approval_source": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-CLOSED__lead_orchestrator.json",
     "recommended_result": null,
-    "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE. Cloud-save enablement, irreversible migration, account/network persistence, telemetry/accounts/secrets, and frozen save/platform decisions remain Human Gates.",
-    "recorded_at": "2026-06-29T08:02:58.683Z"
+    "note": "M7 first-screen orientation is CLOSED after PR #207 reached origin/main. Formal content lock remains not accepted and UX recovery continues through M7-DECISION-INSPECTOR-REWRITE-001; no new Human Gate is active.",
+    "recorded_at": "2026-06-29T21:14:59.495Z"
   },
-  "next_machine_action": "Start the highest-priority dependency-ready M7 task after closure checkpoint enters main unless taskctl ready changes.",
+  "next_machine_action": "Start M7-DECISION-INSPECTOR-REWRITE-001 as the next dependency-ready UX recovery task before formal content lock is reconsidered.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-29T08:02:58.683Z",
+  "last_updated_at": "2026-06-29T21:14:59.495Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -375,7 +371,7 @@
   ],
   "blockers": [],
   "route_to": "lead_orchestrator",
-  "requested_action": "Merge closure checkpoint, sync main, then start the next READY M7 task without asking for continuation unless a Human Gate appears.",
+  "requested_action": "Merge closure checkpoint, sync main, then start M7-DECISION-INSPECTOR-REWRITE-001 without asking for continuation unless a Human Gate appears.",
   "created_at": "2026-06-28T16:11:45.503Z",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -468,7 +464,7 @@
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
   "next_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
-  "updated_at": "2026-06-29T08:02:58.683Z",
+  "updated_at": "2026-06-29T21:14:59.495Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -598,6 +594,24 @@
       "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
       "M7-PERFORMANCE-MEMORY-LOADING-001",
       "M7-UI-REGRESSION-MATRIX-001"
+    ]
+  },
+  "m7_player_first_screen_orientation": {
+    "status": "CLOSED",
+    "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+    "branch_or_worktree": "codex/close-m7-first-screen-orientation",
+    "integrated_pr": 207,
+    "integrated_main_commit": "d3a9be830dcdfa94b852037099bd46702f560a55",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/207",
+    "lead_close_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-29T21:14:59.495Z",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "child_threads_closed": [
+      "019f1507-44e9-7cb3-90e4-c033f1f90d71",
+      "019f151a-1f12-7c93-acab-1fb886f1b74c"
+    ],
+    "next_ready_tasks": [
+      "M7-DECISION-INSPECTOR-REWRITE-001"
     ]
   }
 }
