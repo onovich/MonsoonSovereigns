@@ -1,0 +1,97 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Prepared R2 for the gameplay REQUEST_CHANGES with a narrow UI/i18n/test fix only. The blocked/unreachable-route decision assistant no longer names the disabled Review obligations control as the next action; it now explains that Review obligations is disabled there and tells the player to select a reachable district from the map or route queue first. The right-inspector Decision Data description no longer exposes raw/read-model implementation wording and instead describes population, labor, stores, obligations, supply route, governance, and campaign planning details. Existing grouped data, translated reason codes, and existing preview/confirmation callbacks remain unchanged.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "commit": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+  "tests_run": [
+    {
+      "command": "git branch --show-current",
+      "exit_code": 0,
+      "result": "PASS; branch is codex/m7-decision-inspector-rewrite."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "PASS before R2 edits; only the gameplay review handoff was present as local handoff context."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task registry lists M7-DECISION-INSPECTOR-REWRITE-001 as IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no ready-task output while this repair remains active."
+    },
+    {
+      "command": "pnpm exec prettier --write packages/ui/src/index.tsx packages/ui/src/i18n.ts apps/web/src/shell/web-client-shell.test.tsx tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "PASS; formatted only touched R2 UI/test files."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 10 tests passed, including unreachable-route assistant copy and non-internal inspector wording coverage."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed, including the unreachable district fixture verifying the disabled Review obligations button and executable guidance copy."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; Vite build completed with the existing chunk-size warning only."
+    },
+    {
+      "command": "lead rerun: validate-handoff, taskctl validate, git diff --check, pnpm --filter @monsoon/ui test, pnpm --filter web test, pnpm build:web, pnpm test:e2e, pnpm check",
+      "exit_code": 0,
+      "result": "PASS in lead workspace before routing R2 gameplay review."
+    }
+  ],
+  "decisions": [
+    "Kept the fix presentation-only: the unreachable-route branch now uses new stable i18n keys for recommendation and next action, without adding command paths or UI rule authority.",
+    "Kept the Review obligations button disabled for unreachable routes; the assistant now explicitly explains that disabled state and names the existing map/route queue selection path first.",
+    "Replaced player-facing implementation jargon in the Decision Data description with gameplay terms tied to resources, obligations, supply route, governance, and campaign planning.",
+    "Added static web-shell and Playwright coverage for both R2 review points while preserving the existing reason-code translation and preview/confirmation tests."
+  ],
+  "risks": [
+    "The R2 wording names the map and route queue selection path rather than introducing a new repair action; gameplay review should confirm that is enough guidance for blocked-route states.",
+    "No sim-core, protocol, save, content, Electron, manual node battle, or new command-surface changes were made."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Review the two R2 fixes only: unreachable-route assistant guidance and removal of default player-facing read-model jargon. Do not route to QA until gameplay accepts R2.",
+  "created_at": "2026-06-30T05:58:30.000+08:00"
+}
