@@ -2,7 +2,7 @@
   "id": "M7-MAP-SITUATION-MODE-UX-001",
   "summary": "Replace the player-facing rectangular grid map with a low-fidelity strategic situation map",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -81,36 +81,40 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
+      "status": "closed_integrated",
       "branch_or_worktree": "codex/m7-map-situation-mode-ux",
-      "updated_at": "2026-06-29T19:45:27.586Z"
+      "updated_at": "2026-06-29T20:12:03.204Z"
     },
     "client_engineer": {
       "thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
       "nickname": "Lantern",
-      "status": "review_ready",
+      "status": "closed_integrated",
       "branch_or_worktree": "codex/m7-map-situation-mode-ux",
       "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-29T19:45:27.586Z",
+      "updated_at": "2026-06-29T20:12:03.204Z",
       "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
-      "review_ready_at": "2026-06-29T19:45:27.586Z"
+      "review_ready_at": "2026-06-29T19:45:27.586Z",
+      "closed_at": "2026-06-29T20:12:03.204Z",
+      "close_reason": "task_closed_after_main_integration"
     },
     "systems_architect": {
       "thread_id": "019f14eb-b429-7273-b0af-672531436f66",
       "nickname": "Keystone",
-      "status": "accepted",
+      "status": "closed_integrated",
       "branch_or_worktree": "codex/m7-map-situation-mode-ux",
       "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
-      "updated_at": "2026-06-29T19:55:23.299Z",
+      "updated_at": "2026-06-29T20:12:03.204Z",
       "route_submission_id": "019f14ec-e361-79c3-95d5-2ef0ccfc87e7",
       "route_sent_at": "2026-06-29T19:48:40.794Z",
       "systems_status": "ACCEPT",
       "systems_review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
-      "accepted_at": "2026-06-29T19:55:23.299Z"
+      "accepted_at": "2026-06-29T19:55:23.299Z",
+      "closed_at": "2026-06-29T20:12:03.204Z",
+      "close_reason": "task_closed_after_main_integration"
     }
   },
   "route_to": "lead_orchestrator",
@@ -124,7 +128,7 @@
     "All player-visible text must go through existing i18n boundaries."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T20:05:43.343Z",
+  "updated_at": "2026-06-29T20:12:03.204Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -149,5 +153,15 @@
   "ci_fix_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CI-FIX__lead_orchestrator.json",
   "ci_fix_base_commit": "ee6c5d4356cd4e04b15a285a3457efb526a43531",
   "ci_fix_status": "LOCAL_PASS_PENDING_PUSH",
-  "ci_fix_commit": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc"
+  "ci_fix_commit": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "integrated_pr": 205,
+  "integrated_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/205",
+  "closed_at": "2026-06-29T20:12:03.204Z",
+  "lead_close_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CLOSED__lead_orchestrator.json",
+  "child_threads_closed": [
+    "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
+    "019f14eb-b429-7273-b0af-672531436f66"
+  ]
 }

@@ -42,12 +42,12 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-MAP-SITUATION-MODE-UX-001",
-    "updated_at": "2026-06-29T19:45:27.586Z",
+    "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+    "updated_at": "2026-06-29T20:12:03.204Z",
     "concurrent_task_ids": [
-      "M7-MAP-SITUATION-MODE-UX-001"
+      "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001"
     ],
-    "branch_or_worktree": "codex/m7-map-situation-mode-ux"
+    "branch_or_worktree": null
   },
   "retired_lead_threads": [
     {
@@ -4727,11 +4727,11 @@
     "M7-MAP-SITUATION-MODE-UX-001": {
       "owner_role": "client_engineer",
       "reviewer_role": "systems_architect",
-      "status": "accepted_pending_pr",
+      "status": "closed_integrated",
       "branch_or_worktree": "codex/m7-map-situation-mode-ux",
       "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
       "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
-      "updated_at": "2026-06-29T20:05:43.343Z",
+      "updated_at": "2026-06-29T20:12:03.204Z",
       "owner_thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
       "owner_thread_nickname": "Lantern",
       "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
@@ -4757,7 +4757,21 @@
       "integration_gate_status": "PASS_AFTER_CI_FIX",
       "ci_fix_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CI-FIX__lead_orchestrator.json",
       "ci_fix_status": "LOCAL_PASS_PENDING_PUSH",
-      "ci_fix_commit": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc"
+      "ci_fix_commit": "f5d4dc6c5d8343e07665c38e87cefe04fec04fdc",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 205,
+      "integrated_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
+      "lead_close_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-29T20:12:03.204Z"
+    },
+    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001": {
+      "owner_role": "client_engineer",
+      "reviewer_role": "gameplay_designer",
+      "status": "ready_to_route",
+      "branch_or_worktree": null,
+      "ready_after_task": "M7-MAP-SITUATION-MODE-UX-001",
+      "ready_after_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
+      "updated_at": "2026-06-29T20:12:03.204Z"
     }
   }
 }
