@@ -7272,7 +7272,7 @@
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_routed_r2",
+      "status": "test_review_routed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -7280,9 +7280,10 @@
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "start_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "updated_at": "2026-06-29T21:59:18.805Z",
+      "updated_at": "2026-06-29T22:03:33.357Z",
       "request_changes_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json",
-      "gameplay_r2_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-WRITER-R2-TO-GAMEPLAY-REVIEW.json"
+      "gameplay_r2_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
+      "test_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-R2-TO-TEST-REVIEW.json"
     },
     "M7-DECISION-INSPECTOR-REWRITE-001:client_engineer": {
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
@@ -7316,7 +7317,7 @@
       "role": "gameplay_designer",
       "thread_id": "019f1555-fd2c-72c3-b354-dfd71860980b",
       "nickname": "Ledger",
-      "status": "in_review_r2",
+      "status": "accepted_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7328,7 +7329,7 @@
       "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T21:43:16.068Z",
-      "updated_at": "2026-06-29T21:59:18.805Z",
+      "updated_at": "2026-06-29T22:03:33.357Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
       "review_status": "REQUEST_CHANGES",
       "source_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
@@ -7336,7 +7337,28 @@
       "expected_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
       "review_commit_r2": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
       "route_submission_id_r2": "019f1564-bea9-7c01-8c18-f5ca5fbc81a9",
-      "route_sent_at_r2": "2026-06-29T21:59:18.805Z"
+      "route_sent_at_r2": "2026-06-29T21:59:18.805Z",
+      "review_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "review_status_r2": "ACCEPT"
+    },
+    "M7-DECISION-INSPECTOR-REWRITE-001:test_engineer": {
+      "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+      "role": "test_engineer",
+      "thread_id": "019f1568-723b-7553-92e0-e8562dfcb930",
+      "nickname": "Canary",
+      "status": "in_review",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+      "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-R2-TO-TEST-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "expected_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
+      "review_commit": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-29T22:03:33.357Z",
+      "updated_at": "2026-06-29T22:03:33.357Z"
     }
   },
   "replaced_threads": [
@@ -7511,7 +7533,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T21:59:18.805Z",
+  "updated_at": "2026-06-29T22:03:33.357Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",

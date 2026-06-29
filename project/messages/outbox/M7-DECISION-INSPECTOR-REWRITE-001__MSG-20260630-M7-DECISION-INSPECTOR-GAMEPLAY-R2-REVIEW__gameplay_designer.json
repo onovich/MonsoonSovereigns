@@ -1,0 +1,102 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "gameplay_designer",
+  "status": "ACCEPT",
+  "summary": "Reviewed R2 implementation commit c7f5e9ef5dd124b8cce207932b1baf5ff800fee2 on codex/m7-decision-inspector-rewrite, limited to the two requested R2 fixes and direct regressions. R2 resolves the unreachable-route assistant issue by replacing the disabled Review obligations next-action with player-facing guidance to select a reachable district from the map or route queue first, while still explaining why Review obligations is disabled. R2 also removes the default player inspector raw/read-model implementation wording in English and Chinese. Prior accepted findings remain accepted: decision-assistant structure, grouped decision data, localized reason copy, existing preview/confirmation callbacks, no new command path, and no sim/protocol/save/content/manual-battle scope expansion.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "commit": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; branch is codex/m7-decision-inspector-rewrite and was clean before writing this R2 gameplay handoff."
+    },
+    {
+      "command": "git show --stat --name-status --decorate --no-renames c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+      "exit_code": 0,
+      "result": "PASS; R2 implementation commit touches only packages/ui/src/index.tsx, packages/ui/src/i18n.ts, apps/web/src/shell/web-client-shell.test.tsx, and tests/e2e/web-shell.spec.ts."
+    },
+    {
+      "command": "git diff --name-status 2b151efc79ca730375978cd588a49972d8d6bdc3..c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+      "exit_code": 0,
+      "result": "PASS; reviewed the accumulated R2 branch diff and confirmed no forbidden sim/protocol/save/content/manual-battle implementation scope."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; writer R2 handoff valid."
+    },
+    {
+      "command": "git show --check --no-ext-diff --no-renames --format=short c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+      "exit_code": 0,
+      "result": "PASS; R2 implementation commit has no whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 1 test file / 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 1 test file / 10 tests passed, including blocked-route assistant and English/Chinese non-internal inspector wording coverage."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed, including unreachable district fixture coverage for disabled Review obligations and replacement guidance."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; Vite build completed with the existing chunk-size warning only."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no working-tree whitespace errors before writing this R2 gameplay handoff."
+    },
+    {
+      "command": "manual gameplay/UX inspection of c7f5e9ef5dd124b8cce207932b1baf5ff800fee2 against the two R2 requested fixes",
+      "exit_code": 0,
+      "result": "ACCEPT; the blocked-route next action is no longer a disabled command, the disabled state is explained, and the default player inspector no longer uses raw/read-model wording in English or Chinese."
+    }
+  ],
+  "decisions": [
+    "Accepted R2 blocked-route behavior: the decision assistant now recommends choosing a district with a usable supply route and states that Review obligations is disabled for the unreachable district.",
+    "Accepted R2 selection path wording as usable at low fidelity: it points to existing map and route queue selection surfaces rather than inventing a new repair action or command path.",
+    "Accepted R2 inspector copy cleanup: the English and Chinese Decision Data descriptions now use gameplay terms for population, labor, stores, obligations, supply route, governance, and campaign planning instead of raw/read-model implementation wording.",
+    "Kept prior R1 acceptances in force: the inspector still leads with current problem, recommendation, cost, benefit, risk, and next action before grouped data; existing population/labor/grain/cash/route/governance/obligation/appointment/campaign data remains accessible; reason chips remain player-facing through i18n; preview/confirmation paths are unchanged.",
+    "No regression found into final art, task rail redesign, manual node battle, sim-core, protocol, save-format, content-source, new command surfaces, server, telemetry, account, cloud-save, release, commercial, or branding scope."
+  ],
+  "risks": [
+    "The accepted R2 guidance is still low-fidelity text and selection-path help, not a full route-repair tutorial. That is acceptable for this recovery task but should be revisited only if later player tests show blocked-route confusion remains.",
+    "Future reason-code sources should continue adding stable player-facing i18n keys instead of relying on fallback title-casing."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer_then_qa_reviewer",
+  "requested_action": "Proceed to independent test_engineer/qa_reviewer validation for M7-DECISION-INSPECTOR-REWRITE-001. Do not mark the task ACCEPTED solely from this gameplay handoff.",
+  "created_at": "2026-06-30T06:03:30.000+08:00"
+}

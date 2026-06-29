@@ -43,7 +43,7 @@
     "gameplay_designer": {
       "thread_id": "019f1555-fd2c-72c3-b354-dfd71860980b",
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
-      "status": "in_review_r2",
+      "status": "accepted_r2",
       "role": "gameplay_designer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -54,14 +54,32 @@
       "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
       "expected_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
       "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
-      "updated_at": "2026-06-29T21:59:18.805Z",
+      "updated_at": "2026-06-29T22:03:33.357Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
       "review_status": "REQUEST_CHANGES",
       "source_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
       "route_file_r2": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
       "expected_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
       "review_commit_r2": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
-      "route_submission_id_r2": "019f1564-bea9-7c01-8c18-f5ca5fbc81a9"
+      "route_submission_id_r2": "019f1564-bea9-7c01-8c18-f5ca5fbc81a9",
+      "review_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "review_status_r2": "ACCEPT"
+    },
+    "test_engineer": {
+      "thread_id": "019f1568-723b-7553-92e0-e8562dfcb930",
+      "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+      "status": "in_review",
+      "role": "test_engineer",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+      "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-R2-TO-TEST-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "expected_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
+      "review_commit": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+      "updated_at": "2026-06-29T22:03:33.357Z"
     }
   },
   "last_integrated_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
@@ -122,8 +140,8 @@
     "approval_scope": "NONE",
     "approval_source": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "recommended_result": null,
-    "note": "M7 decision inspector R2 is under gameplay review. Formal content lock remains not accepted; no new Human Gate is active.",
-    "recorded_at": "2026-06-29T21:59:18.805Z"
+    "note": "M7 decision inspector R2 is accepted by gameplay and under independent test validation. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-29T22:03:33.357Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -947,7 +965,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T21:59:18.805Z",
+  "last_updated_at": "2026-06-29T22:03:33.357Z",
   "updated_at": "2026-06-29T21:14:59.495Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2885,8 +2903,8 @@
     "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T21:22:18.104Z",
-    "updated_at": "2026-06-29T21:59:18.805Z",
-    "next_action": "Await gameplay_designer R2 review handoff.",
+    "updated_at": "2026-06-29T22:03:33.357Z",
+    "next_action": "Await test_engineer review handoff, then route QA.",
     "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
     "review_ready_at": "2026-06-29T21:43:30.000Z",
@@ -2907,6 +2925,13 @@
     "gameplay_r2_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
     "expected_gameplay_r2_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
     "gameplay_r2_route_submission_id": "019f1564-bea9-7c01-8c18-f5ca5fbc81a9",
-    "routed_to_gameplay_r2_at": "2026-06-29T21:59:18.805Z"
+    "routed_to_gameplay_r2_at": "2026-06-29T21:59:18.805Z",
+    "gameplay_status_r2": "ACCEPT",
+    "gameplay_r2_review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+    "test_thread_id": "019f1568-723b-7553-92e0-e8562dfcb930",
+    "test_thread_nickname": "Canary",
+    "test_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-R2-TO-TEST-REVIEW.json",
+    "expected_test_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
+    "routed_to_test_at": "2026-06-29T22:03:33.357Z"
   }
 }
