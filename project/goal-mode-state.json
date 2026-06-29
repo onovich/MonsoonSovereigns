@@ -2,82 +2,24 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [
-    "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001"
-  ],
+  "current_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-      "status": "accepted_pending_pr",
+      "task_id": null,
+      "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
-      "updated_at": "2026-06-29T09:30:55.111Z",
-      "start_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-START__lead_orchestrator.json",
-      "lead_accept_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-LEAD-ACCEPT__lead_orchestrator.json",
-      "accepted_at": "2026-06-29T09:30:55.111Z"
-    },
-    "balance_analyst": {
-      "thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
-      "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-      "status": "closed_accepted",
-      "role": "balance_analyst",
-      "nickname": "Measure",
-      "configured_model": "gpt-5.4-mini",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
-      "replaces_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
-      "replacement_reason": "previous_replacement_balance_analyst_model_capacity_error_no_handoff_partial_diff_present",
-      "partial_diff_files": [
-        "apps/sim-runner/src/m7-large-scale-balance.ts"
-      ],
-      "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
-      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT2-START.json",
-      "route_submission_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
-      "route_sent_at": "2026-06-29T08:46:14.768Z",
-      "updated_at": "2026-06-29T09:30:55.111Z",
-      "review_commit": "db3f7d13",
-      "review_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
-      "request_changes_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json",
-      "request_changes_submission_id": "019f12a3-6f09-74b0-b093-be30d73fd969",
-      "expected_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
-      "review_commit_r2": "61e26fb4",
-      "review_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
-      "closed_at": "2026-06-29T09:30:55.111Z",
-      "close_reason": "lead_accepted_after_gameplay_r2_accept"
-    },
-    "gameplay_designer": {
-      "thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
-      "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-      "status": "closed_accepted",
-      "role": "gameplay_designer",
-      "nickname": "Ledger",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
-      "source_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
-      "review_commit": "61e26fb4",
-      "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
-      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
-      "updated_at": "2026-06-29T09:30:55.111Z",
-      "route_submission_id_r2": "019f12b0-6232-7590-a532-b48ad3b83284",
-      "route_sent_at_r2": "2026-06-29T09:23:19.845Z",
-      "review_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
-      "review_status_r2": "ACCEPT",
-      "closed_at": "2026-06-29T09:30:55.111Z",
-      "close_reason": "lead_accepted_after_gameplay_r2_accept"
+      "branch_or_worktree": "codex/close-m7-large-scale-balance-anti-snowball",
+      "updated_at": "2026-06-29T09:36:51.116Z",
+      "lead_close_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-CLOSED__lead_orchestrator.json"
     }
   },
-  "last_integrated_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
-  "last_main_commit": "3261dbec16a8383e464d49b6437840055876ba54",
+  "last_integrated_task": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+  "last_main_commit": "97d140ec259249c70918065b1c13a16e08e1daf0",
   "next_ready_tasks": [
     "M7-PERFORMANCE-MEMORY-LOADING-001",
     "M7-UI-REGRESSION-MATRIX-001"
@@ -105,10 +47,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001 start checkpoint",
+    "approval_source": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001 closure checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE. Formal content lock, cloud-save enablement, irreversible migration, account/network persistence, telemetry/accounts/secrets, and frozen product/platform/core decisions remain Human Gates.",
-    "recorded_at": "2026-06-29T08:12:59.704Z"
+    "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE. Formal content lock, manual playthrough acceptance where human judgment is required, release/commercial/branding, telemetry/accounts/secrets, server/multiplayer, cloud-save enablement, irreversible migration, and frozen product/platform/core decisions remain Human Gates.",
+    "recorded_at": "2026-06-29T09:36:51.116Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -909,7 +851,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T09:30:55.111Z",
+  "last_updated_at": "2026-06-29T09:36:51.116Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2409,8 +2351,8 @@
   },
   "m7_large_scale_balance_anti_snowball": {
     "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
-    "status": "ACCEPTED",
-    "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+    "status": "CLOSED",
+    "branch_or_worktree": "codex/close-m7-large-scale-balance-anti-snowball",
     "base_main_commit": "3261dbec16a8383e464d49b6437840055876ba54",
     "previous_closed_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
     "writer_thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
@@ -2425,8 +2367,8 @@
     "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
     "started_at": "2026-06-29T08:12:59.704Z",
-    "updated_at": "2026-06-29T09:30:55.111Z",
-    "next_action": "Open PR, wait for CI, merge to main, then close after origin/main integration.",
+    "updated_at": "2026-06-29T09:36:51.116Z",
+    "next_action": "Start the highest-priority dependency-ready M7 task after closure enters main.",
     "route_submission_id": "019f1272-19e4-70e3-b089-adda900b1128",
     "route_sent_at": "2026-06-29T08:15:21.784Z",
     "replaces_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
@@ -2464,6 +2406,22 @@
     "lead_accept_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-29T09:30:55.111Z",
     "accepted_implementation_commit": "61e26fb4",
-    "accepted_branch_head": "c9be1d5bb11ea5174214b95b0071a81f7b196145"
+    "accepted_branch_head": "c9be1d5bb11ea5174214b95b0071a81f7b196145",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 191,
+    "integrated_main_commit": "97d140ec259249c70918065b1c13a16e08e1daf0",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/191",
+    "lead_close_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-29T09:36:51.116Z",
+    "child_threads_closed": [
+      "019f126e-0da9-76c3-a842-14039df3bbfb",
+      "019f1275-952a-78d3-a178-a97f14e27e39",
+      "019f128d-e7d2-7233-af50-b724ea0290b7",
+      "019f129b-fd0a-71c2-9536-dffc59336dc8"
+    ],
+    "next_ready_tasks": [
+      "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "M7-UI-REGRESSION-MATRIX-001"
+    ]
   }
 }
