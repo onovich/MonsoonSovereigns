@@ -1,0 +1,39 @@
+{
+  "message_id": "MSG-20260629-M7-PLATFORM-MATRIX-START",
+  "task_id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7 platform, resolution, and localization matrix validation after M7-UI-REGRESSION-MATRIX-001 closed on origin/main. The writer must validate Chrome, Edge, Firefox, Windows desktop smoke, supported resolutions, localization states, UI surfaces, and Electron boundary evidence without adding release, telemetry, accounts, cloud-save, commercial, sim-rule, save migration, or manual node battle scope.",
+  "artifacts": [
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-START__lead_orchestrator.json",
+    "project/messages/routes/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-platform-resolution-localization-matrix",
+  "commit": "8812f3a01c4bfd0da3b09d8bb28b617038782ac2",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main before branch start."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 is READY."
+    }
+  ],
+  "decisions": [
+    "Start the only dependency-ready M7 task selected by taskctl ready.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE and no active Human Gate.",
+    "Cross-browser/platform failures must be recorded as defects or scoped follow-ups; unsupported rows must not be faked."
+  ],
+  "risks": [
+    "Edge/Firefox availability may depend on local Playwright/browser installation; unsupported rows need explicit evidence.",
+    "Desktop packaging and security checks are serialized because they share output directories."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer",
+  "requested_action": "Implement matrix evidence and write writer REVIEW handoff for qa_reviewer.",
+  "created_at": "2026-06-29T12:24:10.078Z"
+}
