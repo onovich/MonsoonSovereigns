@@ -7104,10 +7104,12 @@
       "branch_or_worktree": "codex/m7-map-situation-mode-ux",
       "start_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "updated_at": "2026-06-29T19:45:27.586Z",
+      "updated_at": "2026-06-29T19:47:46.508Z",
       "route_submission_id": "019f14d5-94f4-7eb2-84f4-62c2d9e0a2ee",
       "route_sent_at": "2026-06-29T19:23:10.561Z",
-      "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json"
+      "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "systems_route": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+      "expected_systems_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json"
     },
     "M7-MAP-SITUATION-MODE-UX-001:client_engineer": {
       "task_id": "M7-MAP-SITUATION-MODE-UX-001",
@@ -7128,6 +7130,23 @@
       "route_sent_at": "2026-06-29T19:23:10.561Z",
       "review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
       "review_ready_at": "2026-06-29T19:45:27.586Z"
+    },
+    "M7-MAP-SITUATION-MODE-UX-001:systems_architect": {
+      "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+      "role": "systems_architect",
+      "thread_id": "019f14eb-b429-7273-b0af-672531436f66",
+      "nickname": "Keystone",
+      "status": "review_route_prepared",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
+      "updated_at": "2026-06-29T19:47:46.508Z"
     }
   },
   "replaced_threads": [
@@ -7302,7 +7321,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T19:45:27.586Z",
+  "updated_at": "2026-06-29T19:47:46.508Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
