@@ -1,0 +1,110 @@
+{
+  "message_id": "MSG-20260629-M7-UI-REGRESSION-CLOSED",
+  "task_id": "M7-UI-REGRESSION-MATRIX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed M7-UI-REGRESSION-MATRIX-001 after PR #195 passed CI, merged to main, and origin/main contained the accepted UI/localization regression matrix changes. The task added Playwright coverage for English, zh-CN, system-language fallback, language switching, raw-key hygiene, player-mode debug/prototype text absence, console/pageerror checks, and representative Beta viewports, with each locale/viewport scenario isolated in a fresh browser context.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-ui-regression-matrix",
+  "integrated_pr": 195,
+  "integrated_main_commit": "77585d94d511b2b80186a16b5b3361b3d6193a79",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/195",
+  "ci": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "result": "pass",
+      "duration": "2m37s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28371118255/job/84048807281"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "result": "pass",
+      "duration": "45s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28371118255/job/84048807250"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Passed; 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Passed; 17 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Passed; 5 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed with existing plugin timing/chunk warnings."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 UI regression matrix\"",
+      "exit_code": 0,
+      "result": "Passed; focused Chromium test 1/1."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 22/22."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "gh pr checks 195 --watch --interval 10",
+      "exit_code": 0,
+      "result": "CI passed: Quality/Web/Browser Smoke 2m37s; Windows Desktop Smoke Artifact 45s."
+    }
+  ],
+  "decisions": [
+    "Task is CLOSED only after accepted changes entered origin/main via PR #195.",
+    "Cross-browser, Windows DPI, and full platform/resolution localization permutations remain deferred to M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; no release, telemetry, account, cloud-save, commercial, server, multiplayer, or authority-boundary scope was added."
+  ],
+  "risks": [
+    "Remaining Firefox/Edge/DPI/platform localization coverage is tracked by the platform/resolution localization matrix task."
+  ],
+  "blockers": [],
+  "child_threads_closed": [
+    "019f131a-1f3c-75c2-b346-b48346480c99",
+    "019f1338-a100-72d3-ae69-f4d1ab9be209",
+    "019f1329-d67d-73c3-aa45-4fd5aadcda03"
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Synchronize main, run taskctl ready, and start the highest-priority dependency-ready M7 task.",
+  "created_at": "2026-06-29T12:18:10.237Z",
+  "commit": "77585d94d511b2b80186a16b5b3361b3d6193a79",
+  "next_ready_tasks": [
+    "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+  ],
+  "updated_at": "2026-06-29T12:18:42.412Z"
+}

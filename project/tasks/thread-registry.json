@@ -11,12 +11,10 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T12:11:17.938Z",
+        "updated_at": "2026-06-29T12:18:10.237Z",
         "task_id": null,
-        "task_ids": [
-          "M7-UI-REGRESSION-MATRIX-001"
-        ],
-        "branch_or_worktree": "codex/m7-ui-regression-matrix"
+        "task_ids": [],
+        "branch_or_worktree": "codex/close-m7-ui-regression-matrix"
       }
     ],
     "retired_leads": [
@@ -37,7 +35,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-29T12:11:17.938Z"
+      "checked_at": "2026-06-29T12:18:10.237Z"
     }
   },
   "entries": {
@@ -6680,7 +6678,7 @@
       "role": "test_engineer",
       "thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
       "nickname": "Canary the 2nd",
-      "status": "review_handoff_r2_submitted",
+      "status": "closed_integrated",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -6693,18 +6691,26 @@
       ],
       "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
       "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T12:01:28.832Z",
+      "updated_at": "2026-06-29T12:18:42.412Z",
       "route_submission_id": "019f133a-37e8-7241-a111-89b54c696bf3",
       "route_sent_at": "2026-06-29T11:53:52.082Z",
       "review_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
       "review_commit_r2": "d05411b887ae601973482fb3a0739a590d18c831",
-      "writer_r2_handoff_commit": "6e1e7448c3762b4049c0e651017e065d3e5decfd"
+      "writer_r2_handoff_commit": "6e1e7448c3762b4049c0e651017e065d3e5decfd",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 195,
+      "integrated_main_commit": "77585d94d511b2b80186a16b5b3361b3d6193a79",
+      "closed_at": "2026-06-29T12:18:10.237Z",
+      "lead_close_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json",
+      "next_ready_tasks": [
+        "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+      ]
     },
     "M7-UI-REGRESSION-MATRIX-001:lead_orchestrator": {
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "ACCEPTED",
+      "status": "closed_integrated",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -6712,18 +6718,26 @@
       "branch_or_worktree": "codex/m7-ui-regression-matrix",
       "start_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
-      "updated_at": "2026-06-29T12:11:17.938Z",
+      "updated_at": "2026-06-29T12:18:42.412Z",
       "lead_accept_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-29T12:11:17.938Z",
       "accepted_implementation_commit": "d05411b887ae601973482fb3a0739a590d18c831",
-      "accepted_branch_head": "c469c860a3c93bd603dc323298e0a0de2f741443"
+      "accepted_branch_head": "c469c860a3c93bd603dc323298e0a0de2f741443",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 195,
+      "integrated_main_commit": "77585d94d511b2b80186a16b5b3361b3d6193a79",
+      "closed_at": "2026-06-29T12:18:10.237Z",
+      "lead_close_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json",
+      "next_ready_tasks": [
+        "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+      ]
     },
     "M7-UI-REGRESSION-MATRIX-001:qa_reviewer": {
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
       "role": "qa_reviewer",
       "thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
       "nickname": "Gate",
-      "status": "qa_r2_accept",
+      "status": "closed_integrated",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -6735,7 +6749,7 @@
       "review_commit": "4c8e6786b7c25b8fdefbf56911449b12e348ddad",
       "route_submission_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
       "route_sent_at": "2026-06-29T11:36:15.555Z",
-      "updated_at": "2026-06-29T12:06:27.022Z",
+      "updated_at": "2026-06-29T12:18:42.412Z",
       "qa_status": "REQUEST_CHANGES",
       "qa_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
       "source_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
@@ -6745,7 +6759,15 @@
       "route_submission_id_r2": "019f1342-5ece-7342-8eeb-7d08bc117946",
       "route_sent_at_r2": "2026-06-29T12:05:29.421Z",
       "qa_status_r2": "ACCEPT",
-      "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json"
+      "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 195,
+      "integrated_main_commit": "77585d94d511b2b80186a16b5b3361b3d6193a79",
+      "closed_at": "2026-06-29T12:18:10.237Z",
+      "lead_close_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json",
+      "next_ready_tasks": [
+        "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+      ]
     },
     "M7-UI-REGRESSION-MATRIX-001:test_engineer:replaced-019f131a-1f3c-75c2-b346-b48346480c99": {
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
@@ -6953,7 +6975,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T12:11:17.938Z",
+  "updated_at": "2026-06-29T12:18:42.412Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -6972,6 +6994,9 @@
     "019f129b-fd0a-71c2-9536-dffc59336dc8",
     "019f12c3-aabc-71b3-9df0-f651c1c1c062",
     "019f12e5-d6c9-7751-87c7-610efb7d0c0e",
-    "019f12d2-8b3b-7480-9aab-6f408c430e15"
+    "019f12d2-8b3b-7480-9aab-6f408c430e15",
+    "019f131a-1f3c-75c2-b346-b48346480c99",
+    "019f1338-a100-72d3-ae69-f4d1ab9be209",
+    "019f1329-d67d-73c3-aa45-4fd5aadcda03"
   ]
 }
