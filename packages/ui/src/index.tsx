@@ -31,6 +31,7 @@ import {
   type ClientM3CharacterReadModel,
   type ClientM3OfficeReadModel,
   type ClientM3ObligationReadModel,
+  type ClientM3PolityReadModel,
   type ClientM3SubmittedCommand,
   type ClientM4CampaignPlanReadModel,
   type ClientM4CampaignReadModelSnapshot,
@@ -38,6 +39,7 @@ import {
   type ClientM4MarchReadModel,
   type ClientM4MusterReadModel,
   type ClientM4RouteForecastReadModel,
+  type ClientM4RouteSourceForecastReadModel,
   type ClientM4SiegeChoice,
   type ClientM4SiegeReadModel,
   type ClientM4SubmittedCommand,
@@ -697,7 +699,11 @@ export function ClientShellView({
         <header className="client-shell__topbar" aria-label={i18n.t("shell.topStatus.label")}>
           <div className="client-shell__brand">
             <h1>{i18n.t("app.title")}</h1>
-            <p>{i18n.t("shell.objectives.defaultText")}</p>
+            <p>
+              {i18n.t("shell.identity.value", {
+                court: formatPlayerCourtIdentity(snapshot.m3Appointment, i18n)
+              })}
+            </p>
           </div>
           <dl className="client-shell__status">
             <Metric
@@ -741,15 +747,17 @@ export function ClientShellView({
                 {i18n.t("settings.language.active", { locale: i18n.locale })}
               </output>
             </label>
-            <button
-              className="client-shell__debug-toggle"
-              type="button"
-              aria-label={i18n.t("shell.debug.toggle")}
-              aria-pressed={debugMode}
-              onClick={() => setDebugMode(!debugMode)}
-            >
-              {debugMode ? i18n.t("shell.debug.hide") : i18n.t("shell.debug.show")}
-            </button>
+            {debugMode ? (
+              <button
+                className="client-shell__debug-toggle"
+                type="button"
+                aria-label={i18n.t("shell.debug.toggle")}
+                aria-pressed="true"
+                onClick={() => setDebugMode(false)}
+              >
+                {i18n.t("shell.debug.hide")}
+              </button>
+            ) : null}
           </section>
         </header>
 
@@ -851,6 +859,15 @@ export function ClientShellView({
                 </div>
               </div>
             </div>
+
+            <PlayerFirstScreenBrief
+              snapshot={snapshot}
+              selectedDistrict={selectedDistrict}
+              selectedOffice={selectedM3Office}
+              selectedCampaign={selectedM4Campaign}
+              canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
+              canPreviewCampaign={selectedM4Campaign !== null}
+            />
 
             <div
               className="client-shell__map-surface"
@@ -1229,9 +1246,7 @@ export function ClientShellView({
               )}
             </section>
           </section>
-        ) : (
-          <p className="client-shell__debug-hidden">{i18n.t("shell.debug.hiddenNotice")}</p>
-        )}
+        ) : null}
       </main>
     </ClientI18nContext.Provider>
   );
@@ -1677,13 +1692,212 @@ interface PlayerGuidanceLiteProps {
   readonly onToggleCollapse: () => void;
 }
 
-type PlayerGuidanceStepState = "pending" | "active" | "done";
+interface PlayerFirstScreenBriefProps {
+  readonly snapshot: ClientReadModelSnapshot;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly selectedOffice: ClientM3OfficeReadModel | null;
+  readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly canPreviewAppointment: boolean;
+  readonly canPreviewCampaign: boolean;
+}
 
-interface PlayerGuidanceLiteStep {
-  readonly key: string;
-  readonly title: string;
-  readonly body: string;
-  readonly state: PlayerGuidanceStepState;
+interface PlayerFirstScreenBriefContent {
+  readonly identity: string;
+  readonly situation: string;
+  readonly problem: string;
+  readonly why: string;
+  readonly action: string;
+  readonly cost: string;
+  readonly ignored: string;
+}
+
+function PlayerFirstScreenBrief({
+  snapshot,
+  selectedDistrict,
+  selectedOffice,
+  selectedCampaign,
+  canPreviewAppointment,
+  canPreviewCampaign
+}: PlayerFirstScreenBriefProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const content = createPlayerFirstScreenBriefContent({
+    snapshot,
+    selectedDistrict,
+    selectedOffice,
+    selectedCampaign,
+    canPreviewAppointment,
+    canPreviewCampaign,
+    i18n
+  });
+
+  return (
+    <section className="player-orientation-card" aria-label={i18n.t("shell.firstScreen.label")}>
+      <header className="player-orientation-card__header">
+        <span>{i18n.t("shell.firstScreen.eyebrow")}</span>
+        <h2>{i18n.t("shell.firstScreen.title")}</h2>
+      </header>
+      <dl className="player-orientation-card__facts">
+        <div>
+          <dt>{i18n.t("shell.firstScreen.identityLabel")}</dt>
+          <dd>{content.identity}</dd>
+        </div>
+        <div>
+          <dt>{i18n.t("shell.firstScreen.situationLabel")}</dt>
+          <dd>{content.situation}</dd>
+        </div>
+      </dl>
+      <div className="player-orientation-card__problem">
+        <span>{i18n.t("shell.firstScreen.problemLabel")}</span>
+        <strong>{content.problem}</strong>
+        <p>{content.why}</p>
+      </div>
+      <div className="player-orientation-card__action">
+        <span>{i18n.t("shell.firstScreen.actionLabel")}</span>
+        <strong>{content.action}</strong>
+      </div>
+      <dl className="player-orientation-card__consequences">
+        <div>
+          <dt>{i18n.t("shell.firstScreen.costLabel")}</dt>
+          <dd>{content.cost}</dd>
+        </div>
+        <div>
+          <dt>{i18n.t("shell.firstScreen.ignoredLabel")}</dt>
+          <dd>{content.ignored}</dd>
+        </div>
+      </dl>
+    </section>
+  );
+}
+
+function createPlayerFirstScreenBriefContent({
+  snapshot,
+  selectedDistrict,
+  selectedOffice,
+  selectedCampaign,
+  canPreviewAppointment,
+  canPreviewCampaign,
+  i18n
+}: PlayerFirstScreenBriefProps & { readonly i18n: ClientI18n }): PlayerFirstScreenBriefContent {
+  const court = formatPlayerCourtIdentity(snapshot.m3Appointment, i18n);
+  const season = i18n.t("shell.currentSeason.value");
+  const day = i18n.t("shell.currentDay.value", {
+    day: i18n.formatNumber(snapshot.m4Campaign.day)
+  });
+  const districtName =
+    selectedDistrict === null ? "" : formatPlayerDistrictName(selectedDistrict, i18n);
+  const relevantObligations =
+    selectedDistrict === null
+      ? []
+      : snapshot.m3Appointment.obligations.filter((obligation) =>
+          obligation.obligationId.endsWith(`.${Number(selectedDistrict.districtId)}`)
+        );
+  const breachedOrPendingObligation = relevantObligations.find(
+    (obligation) => obligation.status === "breached" || obligation.status === "pending"
+  );
+  const routeForecast =
+    selectedDistrict === null
+      ? undefined
+      : snapshot.m4Campaign.route.sourceForecasts.find(
+          (forecast) =>
+            forecast.originDistrictId === selectedDistrict.districtId ||
+            forecast.destinationDistrictId === selectedDistrict.districtId
+        );
+
+  if (selectedDistrict === null) {
+    return {
+      identity: i18n.t("shell.firstScreen.identity", { court }),
+      situation: i18n.t("shell.firstScreen.situationNoDistrict", { season, day }),
+      problem: i18n.t("shell.firstScreen.problem.noDistrict"),
+      why: i18n.t("shell.firstScreen.why.noDistrict"),
+      action: i18n.t("shell.firstScreen.action.selectDistrict"),
+      cost: i18n.t("shell.firstScreen.cost.noDistrict"),
+      ignored: i18n.t("shell.firstScreen.ignored.noDistrict")
+    };
+  }
+
+  if (selectedDistrict.route.status === "unreachable") {
+    return {
+      identity: i18n.t("shell.firstScreen.identity", { court }),
+      situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
+      problem: i18n.t("shell.firstScreen.problem.blockedRoute", { district: districtName }),
+      why: i18n.t("shell.firstScreen.why.blockedRoute"),
+      action: i18n.t("shell.firstScreen.action.reviewObligations"),
+      cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
+      ignored: i18n.t("shell.firstScreen.ignored.blockedRoute")
+    };
+  }
+
+  if (breachedOrPendingObligation !== undefined) {
+    return {
+      identity: i18n.t("shell.firstScreen.identity", { court }),
+      situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
+      problem: i18n.t("shell.firstScreen.problem.obligation", {
+        district: districtName,
+        kind: formatDistrictObligationKind(breachedOrPendingObligation.obligationKind, i18n)
+      }),
+      why: i18n.t("shell.firstScreen.why.obligation"),
+      action: i18n.t("shell.firstScreen.action.reviewObligations"),
+      cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
+      ignored: i18n.t("shell.firstScreen.ignored.obligation")
+    };
+  }
+
+  if (canPreviewAppointment && selectedOffice !== null) {
+    return {
+      identity: i18n.t("shell.firstScreen.identity", { court }),
+      situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
+      problem: i18n.t("shell.firstScreen.problem.governance", { district: districtName }),
+      why: i18n.t("shell.firstScreen.why.governance"),
+      action: i18n.t("shell.firstScreen.action.previewAppointment", {
+        office: selectedOffice.displayName
+      }),
+      cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
+      ignored: i18n.t("shell.firstScreen.ignored.governance")
+    };
+  }
+
+  if (canPreviewCampaign && selectedCampaign !== null) {
+    return {
+      identity: i18n.t("shell.firstScreen.identity", { court }),
+      situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
+      problem: i18n.t("shell.firstScreen.problem.campaign", {
+        target: selectedCampaign.targetLabel
+      }),
+      why: i18n.t("shell.firstScreen.why.campaign"),
+      action: i18n.t("shell.firstScreen.action.previewCampaign"),
+      cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
+      ignored: i18n.t("shell.firstScreen.ignored.campaign")
+    };
+  }
+
+  return {
+    identity: i18n.t("shell.firstScreen.identity", { court }),
+    situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
+    problem: i18n.t("shell.firstScreen.problem.supply", { district: districtName }),
+    why: i18n.t("shell.firstScreen.why.supply"),
+    action: i18n.t("shell.firstScreen.action.reviewObligations"),
+    cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
+    ignored: i18n.t("shell.firstScreen.ignored.supply")
+  };
+}
+
+function formatFirstScreenSelectedCost(
+  selectedDistrict: ClientDistrictRowReadModel,
+  routeForecast: ClientM4RouteSourceForecastReadModel | undefined,
+  i18n: ClientI18n
+): string {
+  if (routeForecast !== undefined) {
+    return i18n.t("shell.firstScreen.cost.selectedWithRoute", {
+      grain: i18n.formatNumber(selectedDistrict.grain.stock),
+      cash: i18n.formatNumber(selectedDistrict.cash.stock),
+      travelDays: i18n.formatNumber(routeForecast.travelDays)
+    });
+  }
+
+  return i18n.t("shell.firstScreen.cost.selected", {
+    grain: i18n.formatNumber(selectedDistrict.grain.stock),
+    cash: i18n.formatNumber(selectedDistrict.cash.stock)
+  });
 }
 
 function PlayerGuidanceLite({
@@ -1710,65 +1924,24 @@ function PlayerGuidanceLite({
   const hasOpenedGovernancePreview = m3FlowStage !== "select-office";
   const hasObservedResult = commandStatus !== null || m3FlowStage === "result";
   const canOpenAction = canPreviewAppointment || canPreviewCampaign;
-  const steps: readonly PlayerGuidanceLiteStep[] = [
-    {
-      key: "first-objective",
-      title: i18n.t("shell.guidanceLite.firstObjective.title"),
-      body: i18n.t("shell.guidanceLite.firstObjective.text"),
-      state: guidanceState === "normal" ? "done" : "active"
-    },
-    {
-      key: "select-district",
-      title: i18n.t("shell.guidanceLite.selectDistrict.title"),
-      body:
-        selectedDistrict === null
-          ? i18n.t("shell.guidanceLite.selectDistrict.pending")
-          : i18n.t("shell.guidanceLite.selectDistrict.done", { district: selectedDistrictName }),
-      state: selectedDistrict === null ? "active" : "done"
-    },
-    {
-      key: "inspect-district",
-      title: i18n.t("shell.guidanceLite.inspectDistrict.title"),
-      body:
-        selectedDistrict === null
-          ? i18n.t("shell.guidanceLite.inspectDistrict.pending")
-          : i18n.t("shell.guidanceLite.inspectDistrict.done"),
-      state: selectedDistrict === null ? "pending" : "done"
-    },
-    {
-      key: "governance-action",
-      title: i18n.t("shell.guidanceLite.action.title"),
-      body:
-        m3FlowStage === "result"
-          ? i18n.t("shell.guidanceLite.action.done")
-          : hasOpenedGovernancePreview
-            ? i18n.t("shell.guidanceLite.action.active")
-            : i18n.t("shell.guidanceLite.action.pending"),
-      state:
-        m3FlowStage === "result"
-          ? "done"
-          : hasOpenedGovernancePreview || canOpenAction
-            ? "active"
-            : "pending"
-    },
-    {
-      key: "observe-result",
-      title: i18n.t("shell.guidanceLite.observe.title"),
-      body:
-        commandStatus === null
-          ? i18n.t("shell.guidanceLite.observe.pending")
-          : i18n.t("shell.guidanceLite.observe.done", { status: commandStatus }),
-      state: hasObservedResult ? "done" : "pending"
-    },
-    {
-      key: "next-step-feedback",
-      title: i18n.t("shell.guidanceLite.next.title"),
-      body: hasObservedResult
-        ? i18n.t("shell.guidanceLite.next.done")
-        : i18n.t("shell.guidanceLite.next.pending"),
-      state: hasObservedResult ? "active" : "pending"
-    }
-  ];
+  const focusText =
+    selectedDistrict === null
+      ? i18n.t("shell.guidanceLite.focus.noDistrict")
+      : i18n.t("shell.guidanceLite.focus.selectedDistrict", { district: selectedDistrictName });
+  const actionText =
+    m3FlowStage === "result"
+      ? i18n.t("shell.guidanceLite.action.done")
+      : hasOpenedGovernancePreview
+        ? i18n.t("shell.guidanceLite.action.active")
+        : canOpenAction
+          ? i18n.t("shell.guidanceLite.action.pending")
+          : i18n.t("shell.guidanceLite.action.selectDistrict");
+  const safetyText =
+    commandStatus === null
+      ? i18n.t("shell.guidanceLite.observe.pending")
+      : hasObservedResult
+        ? i18n.t("shell.guidanceLite.observe.done", { status: commandStatus })
+        : i18n.t("shell.guidanceLite.observe.pending");
 
   if (isDismissed) {
     return (
@@ -1820,18 +1993,28 @@ function PlayerGuidanceLite({
       </header>
       {isCollapsed ? null : (
         <>
-          <ol
-            className="player-guidance-lite__steps"
-            aria-label={i18n.t("shell.guidanceLite.stepsLabel")}
-          >
-            {steps.map((step) => (
-              <li key={step.key} data-step-state={step.state}>
-                <span>{formatGuidanceStepState(step.state, i18n)}</span>
-                <strong>{step.title}</strong>
-                <p>{step.body}</p>
-              </li>
-            ))}
-          </ol>
+          <dl className="player-guidance-lite__card">
+            <div>
+              <dt>{i18n.t("shell.guidanceLite.objectiveLabel")}</dt>
+              <dd>{i18n.t("shell.guidanceLite.firstObjective.text")}</dd>
+            </div>
+            <div>
+              <dt>{i18n.t("shell.guidanceLite.focusLabel")}</dt>
+              <dd>{focusText}</dd>
+            </div>
+            <div
+              data-guidance-action={
+                canOpenAction || hasOpenedGovernancePreview ? "ready" : "blocked"
+              }
+            >
+              <dt>{i18n.t("shell.guidanceLite.actionLabel")}</dt>
+              <dd>{actionText}</dd>
+            </div>
+            <div>
+              <dt>{i18n.t("shell.guidanceLite.safetyLabel")}</dt>
+              <dd>{safetyText}</dd>
+            </div>
+          </dl>
           <p className="player-guidance-lite__costs">{i18n.t("shell.guidanceLite.costsVisible")}</p>
         </>
       )}
@@ -1862,17 +2045,6 @@ function formatGuidanceSourceText(state: "empty" | "error" | "normal", i18n: Cli
   }
 }
 
-function formatGuidanceStepState(state: PlayerGuidanceStepState, i18n: ClientI18n): string {
-  switch (state) {
-    case "active":
-      return i18n.t("shell.guidanceLite.state.active");
-    case "done":
-      return i18n.t("shell.guidanceLite.state.done");
-    case "pending":
-      return i18n.t("shell.guidanceLite.state.pending");
-  }
-}
-
 function CommandStatus({
   m3CommandStatus,
   m4CommandStatus,
@@ -1888,7 +2060,7 @@ function CommandStatus({
   const status = m4CommandStatus ?? m3CommandStatus ?? m6CommandStatus ?? m5CommandStatus ?? null;
   return (
     <p className="client-shell__command-status" role="status" aria-live="polite">
-      {status ?? i18n.t("shell.debug.hiddenNotice")}
+      {status ?? i18n.t("shell.actions.idleStatus")}
     </p>
   );
 }
@@ -4457,6 +4629,34 @@ function formatInteger(value: number): string {
 
 function formatBps(value: number): string {
   return `${Math.round(value / 100)}%`;
+}
+
+function formatPlayerCourtIdentity(
+  snapshot: ClientM3AppointmentReadModelSnapshot,
+  i18n: ClientI18n
+): string {
+  const actorPolity = findActorPolity(snapshot);
+  return actorPolity?.displayName ?? i18n.t("shell.identity.fallbackCourt");
+}
+
+function findActorPolity(
+  snapshot: ClientM3AppointmentReadModelSnapshot
+): ClientM3PolityReadModel | null {
+  const actorPrefix = "polity:";
+  if (!snapshot.commandActor.id.startsWith(actorPrefix)) {
+    return snapshot.polities.find((polity) => polity.relationKind === "court") ?? null;
+  }
+
+  const actorPolityId = Number(snapshot.commandActor.id.slice(actorPrefix.length));
+  if (!Number.isInteger(actorPolityId)) {
+    return snapshot.polities.find((polity) => polity.relationKind === "court") ?? null;
+  }
+
+  return (
+    snapshot.polities.find((polity) => Number(polity.polityId) === actorPolityId) ??
+    snapshot.polities.find((polity) => polity.relationKind === "court") ??
+    null
+  );
 }
 
 function formatBoolean(value: boolean): string {

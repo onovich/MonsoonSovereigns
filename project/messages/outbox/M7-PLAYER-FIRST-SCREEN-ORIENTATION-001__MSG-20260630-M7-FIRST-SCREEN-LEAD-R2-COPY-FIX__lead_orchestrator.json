@@ -1,0 +1,91 @@
+{
+  "message_id": "MSG-20260630-M7-FIRST-SCREEN-LEAD-R2-COPY-FIX",
+  "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Lead applied a minimal supplemental copy cleanup after the client_engineer R2 handoff: default player first-screen wording now says costs and constraints instead of blockers, and default player-mode tests reject any visible blockers/debug/internal review copy while explicit debug mode remains intact.",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-LEAD-R2-COPY-FIX__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+  "commit": "4d5a6d61",
+  "tests_run": [
+    {
+      "command": "pnpm exec prettier --write packages/ui/src/i18n.ts apps/web/src/shell/web-client-shell.test.tsx tests/e2e/web-shell.spec.ts tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "PASS; unchanged after formatting."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task listed as REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no READY output while task is in REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task/goal-mode/thread-registry/R2 handoff",
+      "exit_code": 0,
+      "result": "PASS; shape-ok."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 9 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; existing Vite chunk-size warning only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    "Kept explicit debug overlay support for ?debug=1 and debug-mode tests, while removing default player-mode controls and diagnostic fallback text.",
+    "Tightened player-facing first-screen wording from blockers to constraints so the no-internal-copy rule is easier for gameplay review to audit.",
+    "No sim-core, protocol, save-format, content-source, final art, task rail, full inspector rewrite, or manual battle scope was touched."
+  ],
+  "risks": [
+    "This resolves player-mode debug/internal copy leakage for the first-screen task only; broader decision inspector and task rail recovery remain separate DRAFT tasks."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Review the R2 implementation plus lead supplemental copy cleanup against the gameplay REQUEST_CHANGES findings.",
+  "created_at": "2026-06-29T21:00:35.245Z"
+}

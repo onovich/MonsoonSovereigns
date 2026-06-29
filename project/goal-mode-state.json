@@ -2,26 +2,82 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
-      "status": "ready_to_route",
+      "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": null,
-      "updated_at": "2026-06-29T20:12:03.204Z"
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "updated_at": "2026-06-29T20:18:14.086Z"
+    },
+    "client_engineer": {
+      "thread_id": "019f1507-44e9-7cb3-90e4-c033f1f90d71",
+      "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "status": "accepted_pending_integration",
+      "role": "client_engineer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T21:07:33.183Z",
+      "route_submission_id": "019f1509-7c5f-7170-b6f2-9ce6ff1e746b",
+      "route_sent_at": "2026-06-29T20:19:54.434Z",
+      "review_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "review_ready_at": "2026-06-29T20:36:44.809Z",
+      "request_changes_source": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "request_changes_route": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json",
+      "route_status": "SENT",
+      "request_changes_sent_at": "2026-06-29T20:50:02.902Z",
+      "request_changes_submission_id": "SENT_NO_SUBMISSION_ID_RETURNED",
+      "review_handoff_r2": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW__client_engineer.json",
+      "lead_supplemental_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-LEAD-R2-COPY-FIX__lead_orchestrator.json"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f151a-1f12-7c93-acab-1fb886f1b74c",
+      "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "status": "accepted_r2",
+      "role": "gameplay_designer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "review_commit": "dd901022ddc3070ed30cc917501320a213999508",
+      "updated_at": "2026-06-29T21:07:33.183Z",
+      "route_submission_id": "019f151a-fed5-7d43-a26d-0432094cf74f",
+      "route_sent_at": "2026-06-29T20:39:05.165Z",
+      "review_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "review_status": "REQUEST_CHANGES",
+      "source_handoff_r2": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW__client_engineer.json",
+      "lead_supplemental_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-LEAD-R2-COPY-FIX__lead_orchestrator.json",
+      "route_file_r2": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
+      "supplemental_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-LEAD-R2-COPY-FIX__lead_orchestrator.json",
+      "expected_handoff_r2": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "review_commit_r2": "4d5a6d61",
+      "route_status_r2": "SENT",
+      "route_submission_id_r2": "SENT_NO_SUBMISSION_ID_RETURNED",
+      "route_sent_at_r2": "2026-06-29T21:02:31.421Z",
+      "review_handoff_r2": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "review_status_r2": "ACCEPT"
     }
   },
   "last_integrated_task": "M7-MAP-SITUATION-MODE-UX-001",
-  "last_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
-  "next_ready_tasks": [
-    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001"
-  ],
+  "last_main_commit": "14ff4aefca3acda7e20e7603527dc6bf3cffc7df",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -77,8 +133,8 @@
     "approval_scope": "NONE",
     "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
     "recommended_result": null,
-    "note": "UX recovery is continuing after M7-MAP-SITUATION-MODE-UX-001 closed; formal content lock remains not accepted.",
-    "recorded_at": "2026-06-29T20:12:03.204Z"
+    "note": "M7 first-screen orientation accepted locally after gameplay R2 ACCEPT; PR CI/merge/main closure still pending. Formal content lock remains not accepted.",
+    "recorded_at": "2026-06-29T21:07:33.183Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -539,7 +595,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M7-PLAYER-FIRST-SCREEN-ORIENTATION-001 as the next M7 UX recovery task.",
+  "next_action": "Wait for gameplay_designer review of M7-PLAYER-FIRST-SCREEN-ORIENTATION-001.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -902,8 +958,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T20:12:03.204Z",
-  "updated_at": "2026-06-29T20:12:03.204Z",
+  "last_updated_at": "2026-06-29T21:07:33.183Z",
+  "updated_at": "2026-06-29T20:39:05.165Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",

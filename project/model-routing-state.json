@@ -43,11 +43,11 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
-    "updated_at": "2026-06-29T20:12:03.204Z",
+    "updated_at": "2026-06-29T20:18:14.086Z",
     "concurrent_task_ids": [
       "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001"
     ],
-    "branch_or_worktree": null
+    "branch_or_worktree": "codex/m7-player-first-screen-orientation"
   },
   "retired_lead_threads": [
     {
@@ -4767,11 +4767,66 @@
     "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001": {
       "owner_role": "client_engineer",
       "reviewer_role": "gameplay_designer",
-      "status": "ready_to_route",
-      "branch_or_worktree": null,
+      "status": "gameplay_review_active",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
       "ready_after_task": "M7-MAP-SITUATION-MODE-UX-001",
       "ready_after_main_commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
-      "updated_at": "2026-06-29T20:12:03.204Z"
+      "updated_at": "2026-06-29T20:39:05.165Z",
+      "owner_thread_id": "019f1507-44e9-7cb3-90e4-c033f1f90d71",
+      "owner_thread_nickname": "Canvas",
+      "owner_configured_model": "gpt-5.5",
+      "owner_configured_effort": "high",
+      "reviewer_configured_model": "gpt-5.5",
+      "reviewer_configured_effort": "xhigh",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_writer_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
+      "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "started_at": "2026-06-29T20:18:14.086Z",
+      "route_submission_id": "019f1509-7c5f-7170-b6f2-9ce6ff1e746b",
+      "route_sent_at": "2026-06-29T20:19:54.434Z",
+      "review_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "review_ready_at": "2026-06-29T20:36:44.809Z",
+      "reviewer_thread_id": "019f151a-1f12-7c93-acab-1fb886f1b74c",
+      "reviewer_nickname": "Monsoon",
+      "gameplay_route": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
+      "expected_gameplay_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "review_commit": "dd901022ddc3070ed30cc917501320a213999508",
+      "gameplay_route_status": "SENT",
+      "gameplay_route_submission_id": "019f151a-fed5-7d43-a26d-0432094cf74f",
+      "gameplay_route_sent_at": "2026-06-29T20:39:05.165Z"
+    }
+  },
+  "tasks": {
+    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001": {
+      "owner_role": "client_engineer",
+      "owner_thread_id": "019f1507-44e9-7cb3-90e4-c033f1f90d71",
+      "owner_thread_nickname": "Canvas",
+      "owner_configured_model": "gpt-5.5",
+      "owner_configured_effort": "high",
+      "reviewer_role": "gameplay_designer",
+      "reviewer_configured_model": "gpt-5.5",
+      "reviewer_configured_effort": "xhigh",
+      "status": "gameplay_review_active",
+      "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+      "route_file": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_writer_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
+      "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "started_at": "2026-06-29T20:18:14.086Z",
+      "updated_at": "2026-06-29T20:39:05.165Z",
+      "route_submission_id": "019f1509-7c5f-7170-b6f2-9ce6ff1e746b",
+      "route_sent_at": "2026-06-29T20:19:54.434Z",
+      "review_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "review_ready_at": "2026-06-29T20:36:44.809Z",
+      "reviewer_thread_id": "019f151a-1f12-7c93-acab-1fb886f1b74c",
+      "reviewer_nickname": "Monsoon",
+      "gameplay_route": "project/messages/routes/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
+      "expected_gameplay_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "review_commit": "dd901022ddc3070ed30cc917501320a213999508",
+      "gameplay_route_status": "SENT",
+      "gameplay_route_submission_id": "019f151a-fed5-7d43-a26d-0432094cf74f",
+      "gameplay_route_sent_at": "2026-06-29T20:39:05.165Z"
     }
   }
 }

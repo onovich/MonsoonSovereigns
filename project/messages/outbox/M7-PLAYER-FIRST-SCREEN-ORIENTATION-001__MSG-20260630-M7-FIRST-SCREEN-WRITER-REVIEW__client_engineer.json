@@ -1,0 +1,95 @@
+{
+  "message_id": "MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW",
+  "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Canvas implemented the M7 first-screen orientation recovery and returned PARTIAL after interruption before formal handoff creation. Lead transcribed the PARTIAL into this formal REVIEW handoff after inspecting the actual diff and rerunning required tests. The implementation adds a player-facing Court Brief / ???? orientation card on the first map screen, updates the top identity copy, compresses generic guidance into Objective/Focus/Action/Safety, localizes all new player-facing text, adds Storybook states, and updates SSR/E2E coverage for English and Chinese player-mode first-screen orientation.",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/tasks/active/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001.json",
+    "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; dirty implementation/review files present before REVIEW commit."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task listed as REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no READY output while task is in REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "exit_code": 0,
+      "result": "PASS; task, goal-mode, model-routing, and thread registry JSON parsed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 9 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; existing Vite chunk-size warning only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; writer REVIEW handoff schema valid."
+    }
+  ],
+  "decisions": [
+    "First-screen orientation is implemented as a concise map-screen Court Brief, not as a new modal or tutorial gate, so the player sees identity, situation, problem, action, cost, and ignored-risk without opening extra panels.",
+    "Existing M3/M4 read models provide court identity, selected district, appointment/campaign preview availability, route forecast, and cost/risk copy; no authoritative WorldState, sim, protocol, save, or domain rule code was changed.",
+    "Generic player guidance was reduced from checklist prose to Objective/Focus/Action/Safety to avoid overwhelming the first screen while preserving preview/confirmation safety language.",
+    "Full decision-inspector rewrite, bottom task rail, final art, production cartography, and manual node battle remain out of scope."
+  ],
+  "risks": [
+    "Court Brief uses low-fidelity existing read-model heuristics to choose the priority problem and must be reviewed by gameplay_designer for product clarity and overclaiming risk.",
+    "This task improves first-screen orientation but does not complete the broader M7 UX recovery chain or unblock content lock by itself."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Review the first-screen orientation UX against the product-owner REQUEST_CHANGES: can a player understand identity, situation, current problem, recommended next action, cost, and ignored risk within ten seconds without scope expansion?",
+  "created_at": "2026-06-29T20:36:44.809Z"
+}

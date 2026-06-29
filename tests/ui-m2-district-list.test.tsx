@@ -405,23 +405,38 @@ describe("M2 district client UI", () => {
     );
 
     expect(englishMarkup).toContain('aria-label="Player guidance"');
-    expect(englishMarkup).toContain("First objective");
-    expect(englishMarkup).toContain("Select a district");
-    expect(englishMarkup).toContain("Inspect the district");
-    expect(englishMarkup).toContain("Preview governance");
-    expect(englishMarkup).toContain("Observe result");
-    expect(englishMarkup).toContain("Next step");
+    expect(englishMarkup).toContain('aria-label="First screen orientation"');
+    expect(englishMarkup).toContain("Court Brief");
+    expect(englishMarkup).toContain("You are stewarding Validation Court.");
+    expect(englishMarkup).toContain("Priority problem");
+    expect(englishMarkup).toContain("Recommended next action");
+    expect(englishMarkup).toContain("Cost");
+    expect(englishMarkup).toContain("If ignored");
+    expect(englishMarkup).toContain("Objective");
+    expect(englishMarkup).toContain("Focus");
+    expect(englishMarkup).toContain("Action");
+    expect(englishMarkup).toContain("Safety");
     expect(englishMarkup).toContain("Preview before confirming");
     expect(englishMarkup).toContain('data-guidance-evidence="available"');
     expect(chineseMarkup).toContain('aria-label="玩家指引"');
-    expect(chineseMarkup).toContain("首要目标");
-    expect(chineseMarkup).toContain("选择地区");
+    expect(chineseMarkup).toContain('aria-label="首屏导向"');
+    expect(chineseMarkup).toContain("宫廷简报");
+    expect(chineseMarkup).toContain("玩家身份");
+    expect(chineseMarkup).toContain("优先问题");
+    expect(chineseMarkup).toContain("建议下一步");
     expect(chineseMarkup).toContain("确认前先预览");
     expect(emptyMarkup).toContain('data-guidance-state="empty"');
-    expect(emptyMarkup).toContain("Guidance read model is unavailable");
+    expect(emptyMarkup).toContain("Use the map and district panel to choose your next focus.");
     expect(errorMarkup).toContain('data-guidance-state="error"');
-    expect(errorMarkup).toContain("Guidance remains under review");
+    expect(errorMarkup).toContain(
+      "Preview first; confirmation is separate, and unsafe actions stay blocked."
+    );
     expect(englishMarkup).not.toContain("state hash");
+    expect(englishMarkup).not.toContain("Developer Overlay");
+    expect(englishMarkup).not.toContain("Developer diagnostics");
+    expect(englishMarkup).not.toContain("developer diagnostics");
+    expect(englishMarkup).not.toContain("Guidance remains under review");
+    expect(englishMarkup).not.toContain("blockers");
     expect(englishMarkup).not.toContain("Prototype District 001");
     expect(englishMarkup).not.toContain("route.season.monsoon-risk");
     expect(englishMarkup).not.toContain("m7.guidance");
