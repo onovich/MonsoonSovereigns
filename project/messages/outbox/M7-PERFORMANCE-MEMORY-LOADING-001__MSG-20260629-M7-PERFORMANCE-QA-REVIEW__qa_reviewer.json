@@ -1,0 +1,97 @@
+{
+  "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+  "message_id": "MSG-20260629-M7-PERFORMANCE-QA-REVIEW",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Writer handoff is valid JSON, routes to qa_reviewer, and the branch diff is confined to allowed process/message/task paths. However, the evidence does not satisfy the M7 acceptance criteria for Beta-scale performance, memory, and loading validation: it reuses the SIM-005 30-node M1 perf baseline, records no memory/RSS/heap metric, records no explicit thresholds or accepted budgets, and does not provide low-end Windows assumptions or a reproducible Web/map/UI loading-density measurement beyond the generic Chromium E2E pass.",
+  "artifacts": [
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__EVIDENCE-20260629-test_engineer.json",
+    "project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json",
+    "packages/sim-core/scripts/performance-baseline.mjs",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M5-PERFORMANCE-GATE-001__MSG-20260627-M5-PERFORMANCE-GATE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-performance-memory-loading / D:/WebProjects/MonsoonSovereigns",
+  "commit": "d30095d26ec0f26fad82bd4374525e30d03f970d",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean branch: codex/m7-performance-memory-loading...origin/codex/m7-performance-memory-loading."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Only project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json, and M7 performance outbox/route messages changed."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format issues."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PERFORMANCE-MEMORY-LOADING-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for the evidence report and task file",
+      "exit_code": 0,
+      "result": "Task/evidence IDs match; task status REVIEW; evidence has 12 artifact hashes; performance_baseline PASS; desktop_security_check PASS."
+    },
+    {
+      "command": "git rev-parse HEAD && git log --oneline --decorate --max-count=8",
+      "exit_code": 0,
+      "result": "Current branch HEAD is d30095d26ec0f26fad82bd4374525e30d03f970d, a process-only QA route commit after writer handoff commit 4fcb62244ba90859196cff4086460724213dfa81."
+    },
+    {
+      "command": "node -e artifact hash verification from evidence report",
+      "exit_code": 0,
+      "result": "All 12 evidence artifact hashes matched the local output files."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- apps packages tests content-source tools .github docs PROJECT_STATUS.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No output; no product code, test code, content, tools, CI, docs, gate/status, manifest, checksum, or validation report drift."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- packages/sim-core packages/sim-ai packages/save-format packages/client-core packages/map-renderer packages/ui apps/web apps/desktop apps/sim-runner tests .storybook",
+      "exit_code": 0,
+      "result": "No output; sim-core and client/platform package boundaries were not changed in this branch."
+    },
+    {
+      "command": "git grep -n -E \"signed|release readiness|release-ready|Steam|store|commercial|telemetry|analytics|server|multiplayer|cloud-save implementation|cloud save implementation|arbitrary-code|manual node battle\" -- M7 performance evidence/task/process files",
+      "exit_code": 0,
+      "result": "Matches are task non-goals/Human Gate guardrails and historical state text only; no signed release readiness, telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mod, manual node battle, or commercial commitment was introduced."
+    },
+    {
+      "command": "Read packages/sim-core/scripts/performance-baseline.mjs and compare M5 performance gate handoffs",
+      "exit_code": 0,
+      "result": "The current M7 evidence uses the SIM-005 m1.abstract-graph-30 3650-day baseline. The M5 accepted gate included additional live Web responsiveness, RSS memory, multi-year run, save/load, and import/export timing probes that are absent from the M7 evidence."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES route_to=test_engineer; do not advance to lead integration yet.",
+    "The initial pnpm desktop:security-check ENOTEMPTY is sufficiently reported as a concurrent output-tree collision with pnpm desktop:package, and the serial rerun passing is acceptable evidence for that command.",
+    "No forbidden path, production dependency, telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mod, manual node battle, release/commercial/branding decision, or frozen decision change was found.",
+    "sim-core determinism/boundary risk was not worsened by the diff because no product package changed; writer-reported pnpm check/test/sim:determinism remain useful supporting evidence, but they cannot replace missing M7 performance/memory/loading measurements."
+  ],
+  "risks": [
+    "Accepting the current evidence would incorrectly treat an M1 30-node fixture baseline as M7 Beta-scale performance proof.",
+    "No memory/RSS/heap measurement is recorded, so the memory portion of M7-PERFORMANCE-MEMORY-LOADING-001 is unverified.",
+    "No explicit thresholds, budgets, PASS_WITH_LIMITS rationale, or low-end Windows assumption is recorded, so the PASS labels in the evidence are not auditable against the task criteria.",
+    "Map/UI density and Web startup/loading are only indirectly covered by a generic 21-test Chromium E2E pass and build success; there is no reproducible measured loading/density result in the evidence report."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer",
+  "requested_action": "Add a corrected R2 evidence report/handoff that covers M7 Beta-scale performance, memory/RSS or heap, explicit thresholds or PASS_WITH_LIMITS budgets, low-end Windows assumptions, Web startup/loading, map/UI density, save/load timing, desktop smoke/package evidence, and artifact hashes. Keep the ENOTEMPTY concurrent-output-tree note and serial security-check rerun result. If Beta-scale or low-end validation cannot be run in this environment, mark the task PARTIAL/BLOCKED and route the exact limitation rather than claiming ACCEPT-ready evidence.",
+  "created_at": "2026-06-29T18:05:52.1578521+08:00"
+}
