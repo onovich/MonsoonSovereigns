@@ -1,0 +1,173 @@
+{
+  "message_id": "M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-QA-REVIEW__qa_reviewer",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M7-DECISION-INSPECTOR-REWRITE-001 for lead integration. The right inspector now leads with current problem, recommendation, cost, benefit, risk, next action, and localized reason chips before grouped decision data; population, labor, grain, cash, route, governance, obligation, appointment, and campaign data remain reachable under decision sections. R1 gameplay REQUEST_CHANGES was fixed in R2: unreachable-route guidance no longer points at a disabled Review obligations action, and default player inspector copy no longer exposes raw/read-model wording. The implementation remains presentation/client-test scoped, preserves existing command callbacks and preview/confirmation boundaries, and does not touch forbidden sim/protocol/save/content/Electron/manual-battle/server/telemetry/cloud-save/release/commercial/branding paths. This ACCEPT is QA review evidence only; lead_orchestrator must perform integration and task closure.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "reviewed current HEAD 4c012af4; implementation 2b151efc79ca730375978cd588a49972d8d6bdc3; R2 fix c7f5e9ef5dd124b8cce207932b1baf5ff800fee2; base main c889473e82cb6df48f70bc90e2ddba659e9b2bde",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before QA handoff write: branch codex/m7-decision-inspector-rewrite, no dirty or staged files."
+    },
+    {
+      "command": "git log --oneline --decorate -12",
+      "exit_code": 0,
+      "result": "HEAD 4c012af4 is QA route process commit. R2 fix c7f5e9ef follows implementation 2b151efc and start commit 27e7a37a."
+    },
+    {
+      "command": "git diff --name-status c889473e82cb6df48f70bc90e2ddba659e9b2bde..HEAD",
+      "exit_code": 0,
+      "result": "Changed paths are apps/web shell test/CSS, packages/ui index/i18n, tests/e2e web shell, task/thread/goal-mode files, and M7 decision-inspector handoff/route files. No forbidden implementation paths changed."
+    },
+    {
+      "command": "git diff --name-status 2b151efc79ca730375978cd588a49972d8d6bdc3..c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+      "exit_code": 0,
+      "result": "R2 implementation delta is limited to packages/ui/src/index.tsx, packages/ui/src/i18n.ts, apps/web/src/shell/web-client-shell.test.tsx, tests/e2e/web-shell.spec.ts, and process handoff/task files."
+    },
+    {
+      "command": "git diff --name-only c889473e82cb6df48f70bc90e2ddba659e9b2bde..HEAD | Select-String <forbidden path pattern>",
+      "exit_code": 0,
+      "result": "No matches for packages/sim-core, sim-ai, protocol, save-format, platform-browser, platform-electron, apps/desktop, apps/sim-runner, apps/content-tools, content-source, tools, .github, gate docs, roadmap, acceptance matrix, MANIFEST, SHA256SUMS, or VALIDATION_REPORT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed M7-DECISION-INSPECTOR-REWRITE-001 as REVIEW; M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED and M7-EXIT-VALIDATION-001 remains DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No stdout while this REVIEW task is active."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+      "exit_code": 0,
+      "result": "shape ok M7-DECISION-INSPECTOR-REWRITE-001 REVIEW 12; verified required task fields, four acceptance criteria, required_tests, gameplay R2 ACCEPT, and test ACCEPT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer R2 handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID gameplay R2 handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID test handoff JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 10 tests, including decision assistant ordering, non-internal copy, and unreachable-route disabled-action coverage."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 23 Chromium tests, including decision-assistant inspector, blocked-route guidance, raw key suppression, preview/confirmation, localization, and viewport coverage."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format check, lint, workspace typecheck, and architecture boundary check."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite Web build passed with the existing chunk-size warning."
+    },
+    {
+      "command": "Select-String static scan over packages/ui/src/index.tsx, packages/ui/src/i18n.ts, apps/web/src/shell/web-client-shell.test.tsx, tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Reviewed decision assistant, reason-code formatting, blocked-route i18n, action callbacks, and test assertions. rg was unavailable in this environment with Access denied, so Select-String was used as fallback."
+    },
+    {
+      "command": "git status --short --branch after tests/build",
+      "exit_code": 0,
+      "result": "Before writing this QA handoff, worktree remained clean on codex/m7-decision-inspector-rewrite."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPTANCE_CRITERIA_MET",
+      "decision": "Accepted. The right inspector prioritizes current problem, recommendation, cost, benefit, risk, and next action before grouped district data; tests assert ordering and visible sections."
+    },
+    {
+      "id": "READ_MODEL_DATA_REMAIN_AVAILABLE",
+      "decision": "Accepted. Population, labor, grain, cash, route/campaign, governance/appointment, obligation, and campaign/postwar effects remain visible under decision data subsections."
+    },
+    {
+      "id": "PLAYER_COPY_AND_REASON_CODES",
+      "decision": "Accepted for this task scope. Reviewed reason chips through i18n.formatReasonCode, added stable reason keys for reviewed route/campaign/grain/muster/governance/obligation/siege/withdrawal/postwar codes, and verified player-mode tests reject raw reason-code/internal-id leaks and R1 raw/read-model inspector wording."
+    },
+    {
+      "id": "R2_FIX_VALIDATED",
+      "decision": "Accepted. R1 gameplay REQUEST_CHANGES was addressed: blocked-route next action now tells the player to select a reachable district from the map or route queue first, and default inspector copy no longer says raw district read-model values."
+    },
+    {
+      "id": "COMMAND_BOUNDARY_PRESERVED",
+      "decision": "Accepted. The inspector derives presentation from read models and only calls existing appointment/campaign/obligation callbacks. It does not import sim-core/protocol changes, duplicate domain rules, or mutate authoritative WorldState from UI."
+    },
+    {
+      "id": "SCOPE_BOUNDARY_PRESERVED",
+      "decision": "Accepted. Diff scope is limited to allowed web/ui/test/process paths. No sim-core, protocol, save-format, content-source, Electron, manual node battle, server, telemetry, cloud-save, release, commercial, or branding changes were found."
+    },
+    {
+      "id": "PROCESS_EVIDENCE_COHERENT",
+      "decision": "Accepted. Writer R2, gameplay R2, and test handoffs validate; task JSON and thread fields coherently route from R1 REQUEST_CHANGES to R2 ACCEPT and test ACCEPT, with QA as the next reviewer."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LOW_FIDELITY_BLOCKED_ROUTE_GUIDANCE",
+      "severity": "P3",
+      "summary": "Blocked-route guidance is text-level help that points to existing map/route queue selection surfaces, not a full route-repair tutorial.",
+      "mitigation": "Acceptable for this right-inspector recovery task; carry only if later UX smoke or player review still reports blocked-route confusion."
+    },
+    {
+      "id": "FUTURE_REASON_CODE_COVERAGE",
+      "severity": "P3",
+      "summary": "The i18n fallback still title-cases unknown reason codes. Current reviewed player paths and tests cover the known inspected codes, but future reason sources can regress if stable keys are not added.",
+      "mitigation": "Future UI tasks should keep adding explicit player-facing i18n keys and raw-key assertions for any newly surfaced reason source."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate this QA ACCEPT and proceed with PR/task integration. Do not mark content lock, M7 exit, release readiness, manual node battle reversal, server/telemetry/cloud-save/commercial/branding scope, or final-art/cultural production approval from this review.",
+  "created_at": "2026-06-30T06:19:24.1315749+08:00"
+}
