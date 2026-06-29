@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Rewrote the right selected-district inspector into a decision assistant. The panel now leads with current problem, recommendation, cost, benefit, risk, next action, and translated reason chips before showing grouped read-model data. Existing population, labor, grain, cash, route, governance, obligation, appointment, and campaign data remain available under decision data sections. Actions still call the existing appointment/campaign/obligation preview and confirmation flows; no sim-core, protocol, or domain-rule changes were made.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
+  "tests_run": [
+    {
+      "command": "git branch --show-current",
+      "exit_code": 0,
+      "result": "PASS; branch is codex/m7-decision-inspector-rewrite."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "PASS at start; working tree was clean before edits."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task registry listed M7-DECISION-INSPECTOR-REWRITE-001 as IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no ready-task output while this repair task is active."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-DECISION-INSPECTOR-REWRITE-001.json",
+      "exit_code": 0,
+      "result": "PASS; task id and IN_PROGRESS status matched expected shape."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 9 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; Vite build completed with the existing chunk-size warning only."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "INITIAL FAIL; Prettier reported packages/ui/src/i18n.ts and packages/ui/src/index.tsx before targeted formatting."
+    },
+    {
+      "command": "pnpm exec prettier --write packages/ui/src/i18n.ts packages/ui/src/index.tsx",
+      "exit_code": 0,
+      "result": "PASS; formatted only modified UI source files."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 1,
+      "result": "INITIAL FAIL; one existing M4 stress assertion expected fallback title-case reason text after the reason code received a stable i18n key."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed after updating the assertion to player-facing reason text."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "PASS; dirty files are limited to allowed UI/test/handoff paths."
+    },
+    {
+      "command": "lead rerun: validate-handoff, taskctl validate, git diff --check, pnpm --filter @monsoon/ui test, pnpm --filter web test, pnpm build:web, pnpm test:e2e, pnpm check",
+      "exit_code": 0,
+      "result": "PASS in lead workspace before routing gameplay review."
+    }
+  ],
+  "decisions": [
+    "Decision assistant is a presentation-only derivation over existing read models; it does not create a UI rule authority or mutate WorldState.",
+    "The first visible inspector block now uses player labels for current problem, recommendation, cost, benefit, risk, and next action before resource metrics.",
+    "Raw district read-model values remain visible but are grouped as decision data: resources, route/campaign, governance/appointment, effects, and actions.",
+    "Reason chips continue through i18n.formatReasonCode; additional stable reason keys were added for route, campaign, grain, muster, governance, obligation, siege, withdrawal, and postwar codes used by the inspector and M4 panels.",
+    "Existing appointment preview/confirm and M4 command callbacks were reused; no new production dependency or protocol surface was introduced."
+  ],
+  "risks": [
+    "The recommendation priority is intentionally shallow and read-model based; gameplay review should verify whether obligation-first versus appointment-first ordering matches the desired player guidance.",
+    "The i18n catalog now translates more M4 reason codes, so tests that intentionally expected fallback title-case text may need to assert player-facing copy instead.",
+    "No Electron files were touched, so no new Electron security review trigger was introduced by this diff."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer_then_test_engineer_qa_reviewer",
+  "requested_action": "Review the decision-inspector rewrite for player comprehension and UX priority, then route to test_engineer/qa_reviewer for independent validation. Do not mark accepted until reviewer approval.",
+  "created_at": "2026-06-29T21:36:00.000Z"
+}

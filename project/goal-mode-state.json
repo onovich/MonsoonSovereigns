@@ -21,7 +21,7 @@
     "client_engineer": {
       "thread_id": "019f1542-b98b-7080-829a-c61485780bdd",
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
-      "status": "in_progress",
+      "status": "review_ready",
       "role": "client_engineer",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
@@ -30,7 +30,9 @@
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-29T21:22:18.104Z"
+      "updated_at": "2026-06-29T21:43:30.000Z",
+      "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3"
     }
   },
   "last_integrated_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
@@ -91,8 +93,8 @@
     "approval_scope": "NONE",
     "approval_source": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "recommended_result": null,
-    "note": "M7 decision inspector rewrite is in progress as part of UX recovery. Formal content lock remains not accepted; no new Human Gate is active.",
-    "recorded_at": "2026-06-29T21:22:18.104Z"
+    "note": "M7 decision inspector rewrite is ready for gameplay review. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-29T21:43:30.000Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -916,7 +918,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T21:22:18.104Z",
+  "last_updated_at": "2026-06-29T21:43:30.000Z",
   "updated_at": "2026-06-29T21:14:59.495Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2843,7 +2845,7 @@
     ]
   },
   "m7_decision_inspector_rewrite": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
     "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
     "base_main_commit": "c889473e82cb6df48f70bc90e2ddba659e9b2bde",
@@ -2854,7 +2856,10 @@
     "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T21:22:18.104Z",
-    "updated_at": "2026-06-29T21:22:18.104Z",
-    "next_action": "Await client_engineer writer handoff, then route to gameplay_designer review."
+    "updated_at": "2026-06-29T21:43:30.000Z",
+    "next_action": "Route writer handoff to gameplay_designer review.",
+    "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
+    "review_ready_at": "2026-06-29T21:43:30.000Z"
   }
 }

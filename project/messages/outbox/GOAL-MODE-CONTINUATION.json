@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-DECISION-INSPECTOR-REWRITE-001"
   ],
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
   "last_integrated_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
   "last_main_commit": "d3a9be830dcdfa94b852037099bd46702f560a55",
@@ -32,7 +32,7 @@
     "client_engineer": {
       "thread_id": "019f1542-b98b-7080-829a-c61485780bdd",
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
-      "status": "in_progress",
+      "status": "review_ready",
       "role": "client_engineer",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
@@ -41,7 +41,9 @@
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-29T21:22:18.104Z"
+      "updated_at": "2026-06-29T21:43:30.000Z",
+      "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3"
     }
   },
   "unresolved_risks": [
@@ -69,14 +71,14 @@
     "approval_scope": "NONE",
     "approval_source": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "recommended_result": null,
-    "note": "M7 decision inspector rewrite is in progress as part of UX recovery. Formal content lock remains not accepted; no new Human Gate is active.",
-    "recorded_at": "2026-06-29T21:22:18.104Z"
+    "note": "M7 decision inspector rewrite is ready for gameplay review. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-29T21:43:30.000Z"
   },
-  "next_machine_action": "Await M7-DECISION-INSPECTOR-REWRITE-001 writer handoff, then route gameplay review.",
+  "next_machine_action": "Route M7-DECISION-INSPECTOR-REWRITE-001 writer handoff to gameplay_designer review.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-29T21:22:18.104Z",
+  "last_updated_at": "2026-06-29T21:43:30.000Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -475,7 +477,7 @@
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
   "next_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
-  "updated_at": "2026-06-29T21:22:18.104Z",
+  "updated_at": "2026-06-29T21:43:30.000Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -626,7 +628,7 @@
     ]
   },
   "m7_decision_inspector_rewrite": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
     "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
     "base_main_commit": "c889473e82cb6df48f70bc90e2ddba659e9b2bde",
@@ -637,7 +639,10 @@
     "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T21:22:18.104Z",
-    "updated_at": "2026-06-29T21:22:18.104Z",
-    "next_action": "Await client_engineer writer handoff, then route to gameplay_designer review."
+    "updated_at": "2026-06-29T21:43:30.000Z",
+    "next_action": "Route writer handoff to gameplay_designer review.",
+    "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
+    "review_ready_at": "2026-06-29T21:43:30.000Z"
   }
 }
