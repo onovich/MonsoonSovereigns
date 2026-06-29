@@ -2,7 +2,7 @@
   "id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
   "summary": "Run large-scale Beta balance and anti-snowball validation",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "balance_analyst",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R4",
@@ -81,7 +81,7 @@
   "threads": {
     "balance_analyst": {
       "thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
-      "status": "closed_review_ready_r2",
+      "status": "closed_accepted",
       "role": "balance_analyst",
       "nickname": "Measure",
       "configured_model": "gpt-5.4-mini",
@@ -102,7 +102,9 @@
       "request_changes_submission_id": "019f12a3-6f09-74b0-b093-be30d73fd969",
       "expected_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
       "review_commit_r2": "61e26fb4",
-      "review_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json"
+      "review_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
+      "closed_at": "2026-06-29T09:30:55.111Z",
+      "close_reason": "lead_accepted_after_gameplay_r2_accept"
     },
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -117,7 +119,7 @@
     },
     "gameplay_designer": {
       "thread_id": "019f129b-fd0a-71c2-9536-dffc59336dc8",
-      "status": "active_r2_reviewing",
+      "status": "closed_accepted",
       "role": "gameplay_designer",
       "nickname": "Ledger",
       "configured_model": "gpt-5.5",
@@ -131,7 +133,11 @@
       "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
       "updated_at": "2026-06-29T09:23:19.845Z",
       "route_submission_id_r2": "019f12b0-6232-7590-a532-b48ad3b83284",
-      "route_sent_at_r2": "2026-06-29T09:23:19.845Z"
+      "route_sent_at_r2": "2026-06-29T09:23:19.845Z",
+      "review_handoff_r2": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "review_status_r2": "ACCEPT",
+      "closed_at": "2026-06-29T09:30:55.111Z",
+      "close_reason": "lead_accepted_after_gameplay_r2_accept"
     }
   },
   "route_to": "gameplay_designer",
@@ -143,7 +149,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T09:23:19.845Z",
+  "updated_at": "2026-06-29T09:30:55.111Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -168,7 +174,7 @@
   "writer_thread_nickname": "Measure",
   "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
   "scheduling_reason": "Selected as the highest-priority dependency-ready M7 task after M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 closed; UI/localization/art directive has already been incorporated through closed M7 visual and UI-localization planning tasks.",
-  "next_action": "Await gameplay_designer R2 review handoff; route REQUEST_CHANGES back to balance_analyst or ACCEPT to lead integration.",
+  "next_action": "Open PR, wait for CI, merge to main, sync main, then close task only after origin/main contains accepted changes.",
   "route_submission_id": "019f1272-19e4-70e3-b089-adda900b1128",
   "route_sent_at": "2026-06-29T08:15:21.784Z",
   "replaces_writer_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
@@ -202,5 +208,10 @@
   "expected_gameplay_r2_review_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
   "routed_to_gameplay_r2_at": "2026-06-29T09:21:56.560Z",
   "gameplay_r2_review_submission_id": "019f12b0-6232-7590-a532-b48ad3b83284",
-  "gameplay_r2_review_route_sent_at": "2026-06-29T09:23:19.845Z"
+  "gameplay_r2_review_route_sent_at": "2026-06-29T09:23:19.845Z",
+  "gameplay_status_r2": "ACCEPT",
+  "lead_accept_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-29T09:30:55.111Z",
+  "accepted_implementation_commit": "61e26fb4",
+  "accepted_branch_head": "c9be1d5bb11ea5174214b95b0071a81f7b196145"
 }
