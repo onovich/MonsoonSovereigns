@@ -16,7 +16,7 @@
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-ui-localization-exit",
-      "updated_at": "2026-06-29T14:07:30.832Z",
+      "updated_at": "2026-06-29T14:08:43.748Z",
       "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
       "review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json"
     },
@@ -24,7 +24,7 @@
       "thread_id": "019f13b3-3858-7a20-88da-b0fb6261a434",
       "nickname": "Keystone the 2nd",
       "task_id": "M7-UI-LOCALIZATION-EXIT-001",
-      "status": "spawned_pending_route",
+      "status": "active_routed",
       "role": "systems_architect",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -34,7 +34,9 @@
       "route_file": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-29T14:07:30.832Z"
+      "updated_at": "2026-06-29T14:08:43.748Z",
+      "route_submission_id": "019f13b5-b752-7261-b130-d3eb689d11f1",
+      "route_sent_at": "2026-06-29T14:08:43.748Z"
     }
   },
   "last_integrated_task": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
@@ -890,7 +892,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T14:07:30.832Z",
+  "last_updated_at": "2026-06-29T14:08:43.748Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2751,13 +2753,16 @@
     "systems_route": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
     "expected_systems_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
     "started_at": "2026-06-29T14:07:30.832Z",
-    "updated_at": "2026-06-29T14:07:30.832Z",
-    "next_action": "Send lead synthesis to systems_architect and wait for ACCEPT/REQUEST_CHANGES/BLOCKED before QA review.",
+    "updated_at": "2026-06-29T14:08:43.748Z",
+    "next_action": "Wait for systems_architect ACCEPT/REQUEST_CHANGES/BLOCKED handoff before QA review.",
     "unresolved_risks": [
       "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
       "M7-WINDOWS-DPI-150-UNRESOLVED"
     ],
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "systems_route_submission_id": "019f13b5-b752-7261-b130-d3eb689d11f1",
+    "systems_route_sent_at": "2026-06-29T14:08:43.748Z",
+    "systems_route_status": "SENT"
   }
 }
