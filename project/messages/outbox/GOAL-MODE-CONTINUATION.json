@@ -4,33 +4,46 @@
   "type": "goal_mode_continuation",
   "status": "INFO",
   "project": "Monsoon Sovereigns",
-  "origin_main": "763beaa8d67cac18314172210950dea948e1a69a",
+  "origin_main": "2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
   "current_milestone": "M7",
-  "current_task": null,
-  "current_tasks": [],
-  "current_task_status": "NONE",
+  "current_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "current_tasks": [
+    "M7-TASK-RAIL-COLLAPSED-DRAWERS-001"
+  ],
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M7-DECISION-INSPECTOR-REWRITE-001",
   "last_integrated_task": "M7-DECISION-INSPECTOR-REWRITE-001",
-  "last_main_commit": "763beaa8d67cac18314172210950dea948e1a69a",
-  "ready_tasks": [
-    "M7-TASK-RAIL-COLLAPSED-DRAWERS-001"
-  ],
-  "next_ready_tasks": [
-    "M7-TASK-RAIL-COLLAPSED-DRAWERS-001"
-  ],
+  "last_main_commit": "2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
+  "ready_tasks": [],
+  "next_ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-decision-inspector-rewrite",
-      "updated_at": "2026-06-29T22:29:07.356Z",
-      "lead_close_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "updated_at": "2026-06-29T22:38:58.254Z",
+      "start_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json"
+    },
+    "client_engineer": {
+      "thread_id": "019f1587-afd6-7bf3-b40c-a1e0604771b0",
+      "nickname": "Canvas the 2nd",
+      "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "status": "active_writer",
+      "role": "client_engineer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T22:38:58.254Z"
     }
   },
   "unresolved_risks": [
@@ -56,16 +69,16 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-CLOSED__lead_orchestrator.json",
+    "approval_source": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
     "recommended_result": null,
-    "note": "M7 decision inspector rewrite is CLOSED after PR #209 reached origin/main. Formal content lock remains not accepted; UX recovery continues with M7-TASK-RAIL-COLLAPSED-DRAWERS-001.",
-    "recorded_at": "2026-06-29T22:29:07.356Z"
+    "note": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001 is IN_PROGRESS as the next M7 UX recovery task. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-29T22:38:58.254Z"
   },
-  "next_machine_action": "Start M7-TASK-RAIL-COLLAPSED-DRAWERS-001 as the next dependency-ready UX recovery task before formal content lock is reconsidered.",
+  "next_machine_action": "Await M7-TASK-RAIL-COLLAPSED-DRAWERS-001 writer handoff, then route to independent qa_reviewer.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-29T22:29:07.356Z",
+  "last_updated_at": "2026-06-29T22:38:58.254Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -464,7 +477,7 @@
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
   "next_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
-  "updated_at": "2026-06-29T22:29:07.356Z",
+  "updated_at": "2026-06-29T22:38:58.254Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -684,5 +697,28 @@
     "next_ready_tasks": [
       "M7-TASK-RAIL-COLLAPSED-DRAWERS-001"
     ]
+  },
+  "m7_task_rail_collapsed_drawers": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+    "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+    "base_main_commit": "2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
+    "previous_closed_task": "M7-DECISION-INSPECTOR-REWRITE-001",
+    "writer_thread_id": "019f1587-afd6-7bf3-b40c-a1e0604771b0",
+    "writer_thread_nickname": "Canvas the 2nd",
+    "owner_role": "client_engineer",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "start_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-29T22:38:58.254Z",
+    "updated_at": "2026-06-29T22:38:58.254Z",
+    "next_action": "Await client_engineer writer handoff, then validate and route to qa_reviewer.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }

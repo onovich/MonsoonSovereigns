@@ -2,7 +2,7 @@
   "id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
   "summary": "Replace bottom information walls with an actionable task rail and collapsed drawers",
   "milestone": "M7",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -74,9 +74,33 @@
     "pnpm test:e2e",
     "pnpm check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
-  "route_to": "lead_orchestrator",
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "start_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+      "updated_at": "2026-06-29T22:38:58.254Z"
+    },
+    "client_engineer": {
+      "thread_id": "019f1587-afd6-7bf3-b40c-a1e0604771b0",
+      "nickname": "Canvas the 2nd",
+      "status": "active_writer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-29T22:38:58.254Z",
+      "updated_at": "2026-06-29T22:38:58.254Z"
+    }
+  },
+  "route_to": "client_engineer",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -88,11 +112,20 @@
     "Promoted to READY after M7-DECISION-INSPECTOR-REWRITE-001 entered origin/main through PR #209."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T22:29:07.356Z",
+  "updated_at": "2026-06-29T22:38:58.254Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
   "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
   "ready_after_task": "M7-DECISION-INSPECTOR-REWRITE-001",
-  "ready_after_main_commit": "763beaa8d67cac18314172210950dea948e1a69a"
+  "ready_after_main_commit": "763beaa8d67cac18314172210950dea948e1a69a",
+  "started_at": "2026-06-29T22:38:58.254Z",
+  "base_main_commit": "2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
+  "start_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+  "expected_writer_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+  "writer_thread_id": "019f1587-afd6-7bf3-b40c-a1e0604771b0",
+  "writer_thread_nickname": "Canvas the 2nd",
+  "previous_closed_task": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "next_action": "Await client_engineer writer handoff, validate it, then route to independent qa_reviewer."
 }

@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260630-M7-TASK-RAIL-START",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7 task rail and collapsed drawers after the decision inspector rewrite closure reached origin/main. This task turns bottom information walls into compact actionable task cards and only expands the currently relevant drawer so the first screen remains readable.",
+  "artifacts": [
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/goal-mode-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+  "commit": "2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001 READY."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Started from clean main after PR #210 closure merge."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "NEXT_UX_RECOVERY_TASK",
+      "decision": "Start M7-TASK-RAIL-COLLAPSED-DRAWERS-001 because art/UX feedback requires a compact action rail before content lock can be reconsidered."
+    },
+    {
+      "id": "NO_CONTENT_LOCK_APPROVAL",
+      "decision": "Do not treat this UX repair as formal M7 content-lock approval."
+    },
+    {
+      "id": "SCOPE_BOUNDARY",
+      "decision": "No sim/protocol/save/content-source/final-art/manual-battle/server/telemetry/cloud-save scope is authorized."
+    }
+  ],
+  "risks": [
+    {
+      "id": "TASK_RAIL_CAN_HIDE_STATE_DETAIL",
+      "severity": "R3",
+      "summary": "Collapsed cards can hide important state if severity, reason, and action copy are not explicit enough.",
+      "mitigation": "Each card must show one problem, one reason, one action, and severity/urgency through text plus visual treatment; QA must check 1280x720 and 1440x900."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement the bounded task rail/collapsed drawer rewrite and return a validated writer handoff for independent QA review.",
+  "created_at": "2026-06-29T22:38:58.254Z"
+}
