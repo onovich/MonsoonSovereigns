@@ -6562,27 +6562,19 @@
     "M7-PERFORMANCE-MEMORY-LOADING-001:test_engineer": {
       "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
       "role": "test_engineer",
-      "thread_id": "019f12c3-aabc-71b3-9df0-f651c1c1c062",
-      "nickname": "Gauge",
-      "status": "in_progress_r2",
+      "thread_id": "019f12e5-d6c9-7751-87c7-610efb7d0c0e",
+      "nickname": "Canary",
+      "status": "replacement_waiting_start_confirmed",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-performance-memory-loading",
-      "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
-      "expected_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T10:09:52.283Z",
-      "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
-      "route_sent_at": "2026-06-29T09:48:36.974Z",
-      "review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
-      "review_commit": "2bdd522808d1b3a86dda09c80c8aa7bf2f5e026b",
-      "writer_handoff_commit": "4fcb62244ba90859196cff4086460724213dfa81",
-      "request_changes_round": 1,
-      "request_changes_route": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST.json",
-      "expected_handoff_r2": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json",
-      "request_changes_submission_id": "019f12db-08a9-7141-8689-ac1f5013c049",
-      "request_changes_sent_at": "2026-06-29T10:09:52.283Z"
+      "replaces_thread_id": "019f12c3-aabc-71b3-9df0-f651c1c1c062",
+      "replacement_reason": "original_test_engineer_model_capacity_error_no_r2_handoff_no_partial_diff_clean_worktree",
+      "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
+      "expected_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json",
+      "updated_at": "2026-06-29T10:22:12.880Z"
     },
     "M7-PERFORMANCE-MEMORY-LOADING-001:lead_orchestrator": {
       "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
@@ -6619,6 +6611,36 @@
       "updated_at": "2026-06-29T10:08:42.634Z",
       "qa_status": "REQUEST_CHANGES",
       "qa_review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-REVIEW__qa_reviewer.json"
+    },
+    "M7-PERFORMANCE-MEMORY-LOADING-001:test_engineer:replaced-019f12c3-aabc-71b3-9df0-f651c1c1c062": {
+      "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "role": "test_engineer",
+      "thread_id": "019f12c3-aabc-71b3-9df0-f651c1c1c062",
+      "nickname": "Gauge",
+      "status": "closed_errored_no_r2_handoff_clean_worktree",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-performance-memory-loading",
+      "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+      "updated_at": "2026-06-29T10:22:12.880Z",
+      "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
+      "route_sent_at": "2026-06-29T09:48:36.974Z",
+      "review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "2bdd522808d1b3a86dda09c80c8aa7bf2f5e026b",
+      "writer_handoff_commit": "4fcb62244ba90859196cff4086460724213dfa81",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST.json",
+      "expected_handoff_r2": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json",
+      "request_changes_submission_id": "019f12db-08a9-7141-8689-ac1f5013c049",
+      "request_changes_sent_at": "2026-06-29T10:09:52.283Z",
+      "replaced_by": "019f12e5-d6c9-7751-87c7-610efb7d0c0e",
+      "replaced_by_nickname": "Canary",
+      "reason": "model_capacity_error_after_REQUEST_CHANGES_no_r2_handoff_no_partial_diff",
+      "closed_at": "2026-06-29T10:22:12.880Z",
+      "replaced_at": "2026-06-29T10:22:12.880Z"
     }
   },
   "replaced_threads": [
@@ -6768,9 +6790,19 @@
         "apps/sim-runner/src/m7-large-scale-balance.ts"
       ],
       "replaced_at": "2026-06-29T08:46:14.768Z"
+    },
+    {
+      "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "role": "test_engineer",
+      "thread_id": "019f12c3-aabc-71b3-9df0-f651c1c1c062",
+      "status": "closed_errored_no_r2_handoff_clean_worktree",
+      "replaced_by": "019f12e5-d6c9-7751-87c7-610efb7d0c0e",
+      "replaced_by_nickname": "Canary",
+      "reason": "model_capacity_error_after_REQUEST_CHANGES_no_r2_handoff_no_partial_diff",
+      "replaced_at": "2026-06-29T10:22:12.880Z"
     }
   ],
-  "updated_at": "2026-06-29T10:09:52.283Z",
+  "updated_at": "2026-06-29T10:22:12.880Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
