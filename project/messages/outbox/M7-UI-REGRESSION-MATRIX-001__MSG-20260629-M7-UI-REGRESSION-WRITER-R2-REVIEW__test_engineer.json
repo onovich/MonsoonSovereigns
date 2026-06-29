@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW",
+  "task_id": "M7-UI-REGRESSION-MATRIX-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Refined the M7 UI regression matrix so each locale and viewport scenario runs in its own browser context with its own console/pageerror capture and a configured baseURL. This removes the shared-page init-script ordering hazard while preserving observable-only checks, language-switch persistence, and console-clean assertions.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-regression-matrix",
+  "commit": "d05411b887ae601973482fb3a0739a590d18c831",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean working tree before writing the R2 handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; M7-UI-REGRESSION-MATRIX-001 is in progress."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No stdout; exit code 0."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "shape-ok M7-UI-REGRESSION-MATRIX-001 IN_PROGRESS qa_reviewer 15 6"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting issues."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 UI regression matrix\"",
+      "exit_code": 0,
+      "result": "Focused Chromium Playwright test passed: 1 passed (2.9s)."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 5 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright chromium suite passed: 22 tests, 22 passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "scenario_isolation",
+      "result": "Each locale scenario now uses a fresh browser context, which prevents init-script accumulation and makes en-US, zh-CN, and system-language inputs deterministic."
+    },
+    {
+      "type": "baseurl_handling",
+      "result": "The manual browser context now receives the configured baseURL so relative navigation stays aligned with the project Playwright setup."
+    }
+  ],
+  "risks": [
+    "Chromium-only coverage remains acceptable for this task, but Firefox, Edge, and Windows DPI/localization permutations still belong to the separate platform/resolution matrix task."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the R2 isolation fix and the recorded validation evidence. Accept if the locale, viewport, console-error, and language-switch persistence coverage remains sufficient.",
+  "created_at": "2026-06-29T19:58:47.9584923+08:00"
+}
