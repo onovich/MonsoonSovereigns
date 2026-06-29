@@ -2,7 +2,7 @@
   "id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
   "summary": "Validate Chrome, Edge, Firefox, Windows, resolution, and localization matrix",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -82,7 +82,8 @@
   ],
   "branch_or_worktree": "codex/m7-platform-resolution-localization-matrix",
   "threads": {
-    "test_engineer": "019f1355-4381-7910-b54f-760e2e4f6fcf"
+    "test_engineer": "019f1355-4381-7910-b54f-760e2e4f6fcf",
+    "qa_reviewer": "019f136b-f97d-7eb0-903c-7ace3625e17f"
   },
   "route_to": "qa_reviewer",
   "notes": [
@@ -94,7 +95,7 @@
     "This task now depends on M7-UI-REGRESSION-MATRIX-001 so platform/resolution/localization validation cannot pass using stale pre-quality-track UI evidence."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T12:25:21.066Z",
+  "updated_at": "2026-06-29T12:48:36.719Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -125,14 +126,20 @@
     "actual_writer_model": "unknown",
     "actual_writer_effort": "unknown",
     "started_at": "2026-06-29T12:24:10.078Z",
-    "updated_at": "2026-06-29T12:25:21.066Z",
-    "next_action": "Wait for test_engineer writer REVIEW handoff.",
+    "updated_at": "2026-06-29T12:48:36.719Z",
+    "next_action": "Send writer handoff to qa_reviewer and wait for QA ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f1357-01e5-7693-b457-d3286d95e540",
     "route_sent_at": "2026-06-29T12:25:21.066Z",
     "route_status": "SENT",
     "review_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
-    "next_action": "Wait for qa_reviewer review."
+    "review_commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
+    "writer_handoff_commit": "d8c0d1506a27ad972e24baf46763e2fd9ec8dc0d",
+    "qa_thread_id": "019f136b-f97d-7eb0-903c-7ace3625e17f",
+    "qa_thread_nickname": "Auditor the 2nd",
+    "qa_route": "project/messages/routes/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-06-29T12:48:36.719Z"
   }
 }
