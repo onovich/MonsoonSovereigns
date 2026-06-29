@@ -2,7 +2,7 @@
   "id": "M7-UI-REGRESSION-MATRIX-001",
   "summary": "Establish the M7 UI and localization regression matrix",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -106,7 +106,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-29T12:06:27.022Z",
+  "updated_at": "2026-06-29T12:11:17.938Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -131,8 +131,8 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T12:06:27.022Z",
-    "next_action": "Run lead integration gates, write lead ACCEPT handoff, then integrate by PR after gates pass.",
+    "updated_at": "2026-06-29T12:11:17.938Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
     "route_sent_at": "2026-06-29T11:20:57.328Z",
     "review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
@@ -174,6 +174,10 @@
     "qa_r2_route_status": "SENT",
     "qa_status_r2": "ACCEPT",
     "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
-    "qa_r2_accepted_at": "2026-06-29T12:06:27.022Z"
+    "qa_r2_accepted_at": "2026-06-29T12:06:27.022Z",
+    "lead_accept_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T12:11:17.938Z",
+    "accepted_implementation_commit": "d05411b887ae601973482fb3a0739a590d18c831",
+    "accepted_branch_head": "c469c860a3c93bd603dc323298e0a0de2f741443"
   }
 }

@@ -16,7 +16,7 @@
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-ui-regression-matrix",
-      "updated_at": "2026-06-29T12:06:27.022Z"
+      "updated_at": "2026-06-29T12:11:17.938Z"
     },
     "test_engineer": {
       "thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
@@ -923,7 +923,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T12:06:27.022Z",
+  "last_updated_at": "2026-06-29T12:11:17.938Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2576,7 +2576,7 @@
     ]
   },
   "m7_ui_regression_matrix": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-UI-REGRESSION-MATRIX-001",
     "branch_or_worktree": "codex/m7-ui-regression-matrix",
     "base_main_commit": "131a4334f67f68b39349ff24498ec0249f43c137",
@@ -2593,8 +2593,8 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T12:06:27.022Z",
-    "next_action": "Run lead integration gates, write lead ACCEPT handoff, then integrate by PR after gates pass.",
+    "updated_at": "2026-06-29T12:11:17.938Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
@@ -2635,6 +2635,10 @@
     "qa_r2_route_sent_at": "2026-06-29T12:05:29.421Z",
     "qa_r2_route_status": "SENT",
     "qa_status_r2": "ACCEPT",
-    "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json"
+    "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T12:11:17.938Z",
+    "accepted_implementation_commit": "d05411b887ae601973482fb3a0739a590d18c831",
+    "accepted_branch_head": "c469c860a3c93bd603dc323298e0a0de2f741443"
   }
 }

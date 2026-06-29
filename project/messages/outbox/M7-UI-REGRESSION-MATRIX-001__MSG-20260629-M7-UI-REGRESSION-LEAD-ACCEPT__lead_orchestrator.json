@@ -1,0 +1,130 @@
+{
+  "message_id": "MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT",
+  "task_id": "M7-UI-REGRESSION-MATRIX-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Accepted the M7 UI and localization regression matrix after QA R2 ACCEPT and lead integration gates. The accepted Playwright matrix isolates every locale/viewport scenario in a fresh browser context and page, covers English, zh-CN, system-language fallback, language switching, localStorage persistence, visible raw-key hygiene, player-mode debug/prototype text absence, console/pageerror checks, and representative Beta viewports. The task remains observable-only through DOM/read-model behavior and does not inspect authoritative WorldState or Pixi internals.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-regression-matrix",
+  "commit": "c469c860a3c93bd603dc323298e0a0de2f741443",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean before lead accept handoff write."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed; M7-UI-REGRESSION-MATRIX-001 was REVIEW before lead accept."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY task output while this task is active."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA R2 ACCEPT handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task file",
+      "exit_code": 0,
+      "result": "shape-ok M7-UI-REGRESSION-MATRIX-001 REVIEW qa_reviewer 6 15."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format issues."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff limited to tests/e2e/web-shell.spec.ts plus allowed project task/message/state files."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- forbidden path set",
+      "exit_code": 0,
+      "result": "No forbidden path output."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Passed; 1 file and 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Passed; 1 file and 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Passed; 1 file and 5 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed; Vite build completed with existing >500k chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed; Storybook build completed with existing plugin timing and chunk warnings."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 UI regression matrix\"",
+      "exit_code": 0,
+      "result": "Passed; focused Chromium Playwright test 1/1 passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 22/22 tests passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Passed; Electron security preferences, preload bridge, renderer navigation restriction, and IPC allowlist verified."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed; format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    "Accept QA R2 status=ACCEPT and advance task to ACCEPTED pending PR CI and main integration.",
+    "R2 fixed the prior Playwright addInitScript isolation defect by creating a fresh browser context and page per locale/viewport scenario.",
+    "Firefox, Edge, Windows DPI, and full platform/resolution localization permutations remain deferred to M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; no release, signing, update, telemetry, account, cloud-save, commercial workflow, server, multiplayer, or authority-boundary change is introduced."
+  ],
+  "risks": [
+    "Chromium-only regression coverage is accepted for this task because cross-browser/platform/DPI permutations are explicitly assigned to the platform/resolution localization matrix task.",
+    "Existing build chunk-size and Storybook plugin timing warnings remain non-blocking and unchanged by this task."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then close M7-UI-REGRESSION-MATRIX-001 after origin/main contains the accepted changes.",
+  "created_at": "2026-06-29T12:11:17.938Z"
+}
