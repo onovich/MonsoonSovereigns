@@ -2,7 +2,7 @@
   "id": "M7-DECISION-INSPECTOR-REWRITE-001",
   "summary": "Rewrite the right inspector as a decision assistant instead of a raw data stack",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "IN_PROGRESS",
   "owner_role": "client_engineer",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R3",
@@ -87,7 +87,7 @@
     "client_engineer": {
       "thread_id": "019f1542-b98b-7080-829a-c61485780bdd",
       "nickname": "Window",
-      "status": "review_ready",
+      "status": "in_progress_r2",
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-START__lead_orchestrator.json",
@@ -96,16 +96,21 @@
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "updated_at": "2026-06-29T21:43:30.000Z",
+      "updated_at": "2026-06-29T21:51:26.035Z",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T21:22:18.104Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3"
+      "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
+      "expected_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "request_changes_source": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "request_changes_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json",
+      "request_changes_submission_id": "019f155d-8196-7431-adad-6fbdea532579",
+      "request_changes_sent_at": "2026-06-29T21:51:26.035Z"
     },
     "gameplay_designer": {
       "thread_id": "019f1555-fd2c-72c3-b354-dfd71860980b",
       "nickname": "Ledger",
-      "status": "in_review",
+      "status": "request_changes",
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
@@ -117,10 +122,12 @@
       "actual_effort": "unknown",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T21:43:16.068Z",
-      "updated_at": "2026-06-29T21:43:16.068Z"
+      "updated_at": "2026-06-29T21:51:26.035Z",
+      "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "review_status": "REQUEST_CHANGES"
     }
   },
-  "route_to": "gameplay_designer",
+  "route_to": "client_engineer",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -132,7 +139,7 @@
     "Promoted to READY after M7-PLAYER-FIRST-SCREEN-ORIENTATION-001 entered origin/main through PR #207."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T21:43:16.068Z",
+  "updated_at": "2026-06-29T21:51:26.035Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -149,5 +156,12 @@
   "review_ready_at": "2026-06-29T21:43:30.000Z",
   "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
   "gameplay_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
-  "expected_gameplay_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json"
+  "expected_gameplay_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+  "gameplay_status": "REQUEST_CHANGES",
+  "gameplay_review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+  "request_changes_round": 1,
+  "request_changes_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json",
+  "expected_writer_r2_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+  "request_changes_sent_at": "2026-06-29T21:51:26.035Z",
+  "request_changes_submission_id": "019f155d-8196-7431-adad-6fbdea532579"
 }

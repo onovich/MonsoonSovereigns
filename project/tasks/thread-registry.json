@@ -7272,7 +7272,7 @@
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_routed",
+      "status": "request_changes_routed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -7280,14 +7280,15 @@
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "start_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "updated_at": "2026-06-29T21:43:16.068Z"
+      "updated_at": "2026-06-29T21:51:26.035Z",
+      "request_changes_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json"
     },
     "M7-DECISION-INSPECTOR-REWRITE-001:client_engineer": {
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
       "role": "client_engineer",
       "thread_id": "019f1542-b98b-7080-829a-c61485780bdd",
       "nickname": "Window",
-      "status": "review_ready",
+      "status": "in_progress_r2",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7298,16 +7299,21 @@
       "expected_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T21:22:18.104Z",
-      "updated_at": "2026-06-29T21:43:30.000Z",
+      "updated_at": "2026-06-29T21:51:26.035Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3"
+      "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
+      "expected_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "request_changes_source": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "request_changes_route": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json",
+      "request_changes_submission_id": "019f155d-8196-7431-adad-6fbdea532579",
+      "request_changes_sent_at": "2026-06-29T21:51:26.035Z"
     },
     "M7-DECISION-INSPECTOR-REWRITE-001:gameplay_designer": {
       "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
       "role": "gameplay_designer",
       "thread_id": "019f1555-fd2c-72c3-b354-dfd71860980b",
       "nickname": "Ledger",
-      "status": "in_review",
+      "status": "request_changes",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7319,7 +7325,9 @@
       "review_commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T21:43:16.068Z",
-      "updated_at": "2026-06-29T21:43:16.068Z"
+      "updated_at": "2026-06-29T21:51:26.035Z",
+      "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "review_status": "REQUEST_CHANGES"
     }
   },
   "replaced_threads": [
@@ -7494,7 +7502,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T21:43:16.068Z",
+  "updated_at": "2026-06-29T21:51:26.035Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
