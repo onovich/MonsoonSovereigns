@@ -1,0 +1,104 @@
+{
+  "message_id": "MSG-20260629-M7-PLATFORM-MATRIX-CLOSED",
+  "task_id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 after PR #197 passed CI, merged to main, and origin/main contained the accepted platform/resolution/localization matrix evidence. The task adds truthful Chromium-supported UI/platform matrix coverage, Windows desktop smoke evidence, and explicit unresolved Edge/Firefox/Windows DPI 150% rows for M7-UI-LOCALIZATION-EXIT-001 to carry or resolve.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "tests/e2e/m7-platform-resolution-localization.matrix.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-platform-resolution-localization-matrix",
+  "commit": "ae754bbbbbdb278a58de6299a4ccec646590902f",
+  "integrated_pr": 197,
+  "integrated_main_commit": "ae754bbbbbdb278a58de6299a4ccec646590902f",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/197",
+  "ci": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "result": "pass",
+      "duration": "2m48s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28373971971/job/84058697210"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "result": "pass",
+      "duration": "51s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28373971971/job/84058696970"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Passed; 9 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed with existing chunk warning."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 23/23."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "gh pr checks 197 --watch --interval 10",
+      "exit_code": 0,
+      "result": "CI passed: Quality/Web/Browser Smoke 2m48s; Windows Desktop Smoke Artifact 51s."
+    }
+  ],
+  "decisions": [
+    "Task is CLOSED only after accepted changes entered origin/main via PR #197.",
+    "Edge, Firefox, and Windows DPI 150% are unresolved matrix rows, not passed coverage.",
+    "M7-UI-LOCALIZATION-EXIT-001 must carry or resolve those rows before claiming full platform coverage.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; no release, telemetry, account, cloud-save, commercial, server, multiplayer, sim-rule, content fact, or save migration scope was added."
+  ],
+  "risks": [
+    "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED: Edge and Firefox remain blocked-by-tooling rows until Playwright projects/browser tooling are added and evidence rerun.",
+    "M7-WINDOWS-DPI-150-UNRESOLVED: Windows DPI 150% remains a follow-up row until a dedicated DPI matrix harness exists.",
+    "M7-UI-LOCALIZATION-EXIT-001 must carry or resolve these rows before any full platform coverage claim."
+  ],
+  "blockers": [],
+  "child_threads_closed": [
+    "019f1355-4381-7910-b54f-760e2e4f6fcf",
+    "019f136b-f97d-7eb0-903c-7ace3625e17f"
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Run taskctl ready and start the highest-priority dependency-ready M7 task.",
+  "created_at": "2026-06-29T13:07:42.179Z",
+  "next_ready_tasks": [
+    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+    "M7-UI-LOCALIZATION-EXIT-001"
+  ],
+  "updated_at": "2026-06-29T13:08:16.377Z"
+}
