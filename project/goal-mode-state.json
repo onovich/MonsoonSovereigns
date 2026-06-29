@@ -16,7 +16,7 @@
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-ui-regression-matrix",
-      "updated_at": "2026-06-29T11:19:29.482Z"
+      "updated_at": "2026-06-29T12:06:27.022Z"
     },
     "test_engineer": {
       "thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
@@ -46,7 +46,7 @@
     "qa_reviewer": {
       "thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
-      "status": "pending_r2_review_send",
+      "status": "qa_r2_accept",
       "role": "qa_reviewer",
       "nickname": "Gate",
       "configured_model": "gpt-5.5",
@@ -59,11 +59,15 @@
       "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
       "route_submission_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
       "route_sent_at": "2026-06-29T11:36:15.555Z",
-      "updated_at": "2026-06-29T12:01:28.832Z",
+      "updated_at": "2026-06-29T12:06:27.022Z",
       "qa_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
       "route_file_r2": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
       "source_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
-      "expected_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json"
+      "expected_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+      "route_submission_id_r2": "019f1342-5ece-7342-8eeb-7d08bc117946",
+      "route_sent_at_r2": "2026-06-29T12:05:29.421Z",
+      "qa_status_r2": "ACCEPT",
+      "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json"
     }
   },
   "last_integrated_task": "M7-PERFORMANCE-MEMORY-LOADING-001",
@@ -919,7 +923,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T12:01:28.832Z",
+  "last_updated_at": "2026-06-29T12:06:27.022Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2589,8 +2593,8 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T12:01:28.832Z",
-    "next_action": "Send R2 evidence to qa_reviewer and wait for QA R2 ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
+    "updated_at": "2026-06-29T12:06:27.022Z",
+    "next_action": "Run lead integration gates, write lead ACCEPT handoff, then integrate by PR after gates pass.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
@@ -2626,6 +2630,11 @@
     "writer_r2_handoff_commit": "6e1e7448c3762b4049c0e651017e065d3e5decfd",
     "qa_r2_route": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
     "expected_qa_r2_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
-    "routed_to_qa_r2_at": "2026-06-29T12:01:28.832Z"
+    "routed_to_qa_r2_at": "2026-06-29T12:01:28.832Z",
+    "qa_r2_route_submission_id": "019f1342-5ece-7342-8eeb-7d08bc117946",
+    "qa_r2_route_sent_at": "2026-06-29T12:05:29.421Z",
+    "qa_r2_route_status": "SENT",
+    "qa_status_r2": "ACCEPT",
+    "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json"
   }
 }

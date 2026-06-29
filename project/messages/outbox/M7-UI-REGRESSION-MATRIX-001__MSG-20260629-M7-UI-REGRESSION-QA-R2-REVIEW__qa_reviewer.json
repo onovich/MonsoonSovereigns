@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW",
+  "task_id": "M7-UI-REGRESSION-MATRIX-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "R2 独立 QA 复核通过。上一轮 P2 已解决：M7 UI regression matrix 不再在同一个 page 上叠加多个 addInitScript，而是为每个 locale/viewport scenario 创建独立 browser context 和 page，使用配置 baseURL，每个 scenario 独立捕获 console/pageerror，并在 finally 中关闭 context。system-language 场景仍验证 Language/语言切换和 localStorage 持久化。Diff 仍限于允许路径，没有新增 forbidden path、release/signing/update/telemetry/account/cloud-save/commercial workflow，也未探入 sim-core 权威状态或 Pixi 内部。",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-regression-matrix",
+  "commit": "de30ab0839ffbafb7ff3a2f21c40358b7a619a3e",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## codex/m7-ui-regression-matrix...origin/codex/m7-ui-regression-matrix; clean before QA R2 handoff write."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff includes allowed process/message/task files and tests/e2e/web-shell.spec.ts only."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer handoff; status REVIEW and route_to qa_reviewer."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task file",
+      "exit_code": 0,
+      "result": "shape-ok M7-UI-REGRESSION-MATRIX-001 REVIEW qa_reviewer 15 28"
+    },
+    {
+      "command": "git diff origin/main...HEAD -- tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Reviewed R2 test diff. The M7 matrix now uses browser.newContext with scenario viewport/baseURL, context.addInitScript once per context, context.newPage, per-page console/pageerror capture, and finally context.close."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "de30ab0839ffbafb7ff3a2f21c40358b7a619a3e"
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- <forbidden paths>",
+      "exit_code": 0,
+      "result": "No forbidden path output for sim-core, sim-ai, protocol, save-format, content packages, apps/sim-runner, apps/content-tools, content-source, tools, .github, frozen docs, PROJECT_STATUS, manifests, or validation reports."
+    },
+    {
+      "command": "git diff origin/main...HEAD -G\"release|signing|sign|telemetry|account|cloud-save|cloudSave|commercial|autoUpdater|update\" -- scoped changed paths",
+      "exit_code": 0,
+      "result": "Reviewed matches; additions are process text/handoff statements only. No release, signing, update, telemetry, account, cloud-save, or commercial workflow was added."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 UI regression matrix\"",
+      "exit_code": 0,
+      "result": "Focused Chromium Playwright test passed: 1 passed (2.9s)."
+    },
+    {
+      "command": "Get-Content -Raw -Encoding UTF8 playwright.config.ts",
+      "exit_code": 0,
+      "result": "Confirmed Playwright config defines use.baseURL as http://127.0.0.1:4173 and chromium-only project, matching the R2 context baseURL usage."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "review_result",
+      "result": "ACCEPT. The prior init-script ordering and locale scenario isolation defect is resolved."
+    },
+    {
+      "type": "scenario_isolation",
+      "result": "Each locale/viewport scenario runs in a fresh browser context and page; there is no accumulation of multiple page.addInitScript calls on one page."
+    },
+    {
+      "type": "coverage_review",
+      "result": "Coverage still includes system-language, English, zh-CN, language switching, localStorage persistence, visible raw-key hygiene, no player-mode debug/prototype text, console-error/pageerror checks, and representative Beta viewports."
+    },
+    {
+      "type": "authority_boundary",
+      "result": "The regression remains observable-only through DOM attributes, visible text, localStorage, and browser events; it does not inspect authoritative WorldState, sim-core internals, or Pixi DisplayObject internals."
+    },
+    {
+      "type": "platform_matrix_boundary",
+      "result": "Firefox, Edge, Windows DPI, and full platform/resolution localization permutations remain correctly deferred to M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001."
+    }
+  ],
+  "risks": [
+    "Chromium-only focused coverage is acceptable for this task because the task and R2 handoff explicitly defer Firefox/Edge/DPI/platform permutations to the separate platform/resolution localization matrix task.",
+    "The R2 route file remains a process routing artifact; lead_orchestrator should normalize any route status bookkeeping during integration if required."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate M7-UI-REGRESSION-MATRIX-001 if lead gates remain clean, preserving the deferred Firefox/Edge/DPI/platform matrix risk for the dedicated platform task.",
+  "created_at": "2026-06-29T20:04:39.8531302+08:00"
+}
