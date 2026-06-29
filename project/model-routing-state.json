@@ -43,11 +43,11 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-SITUATION-MODE-UX-001",
-    "updated_at": "2026-06-29T18:58:16.954Z",
+    "updated_at": "2026-06-29T19:22:35.679Z",
     "concurrent_task_ids": [
       "M7-MAP-SITUATION-MODE-UX-001"
     ],
-    "branch_or_worktree": "codex/m7-ux-recovery-request-changes"
+    "branch_or_worktree": "codex/m7-map-situation-mode-ux"
   },
   "retired_lead_threads": [
     {
@@ -1955,10 +1955,30 @@
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "lead orchestration for M7 UX recovery after product-owner request changes",
-      "branch_or_worktree": "codex/m7-ux-recovery-request-changes",
+      "responsibility": "lead orchestration for M7 map situation UX recovery",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
       "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
-      "updated_at": "2026-06-29T18:58:16.954Z"
+      "updated_at": "2026-06-29T19:23:10.561Z",
+      "route_submission_id": "019f14d5-94f4-7eb2-84f4-62c2d9e0a2ee",
+      "route_sent_at": "2026-06-29T19:23:10.561Z"
+    },
+    {
+      "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+      "role": "client_engineer",
+      "thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
+      "nickname": "Lantern",
+      "status": "active_writer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "responsibility": "Implement default Situation map, de-noised route semantics, localized legend, and player-mode no-grid UX recovery",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T19:23:10.561Z",
+      "route_submission_id": "019f14d5-94f4-7eb2-84f4-62c2d9e0a2ee",
+      "route_sent_at": "2026-06-29T19:23:10.561Z"
     }
   ],
   "task_effects": {
@@ -2516,7 +2536,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Integrate the M7 UX recovery process record, then start M7-MAP-SITUATION-MODE-UX-001 as the active repair task.",
+  "next_action": "Await client_engineer writer REVIEW handoff for M7-MAP-SITUATION-MODE-UX-001, then route to systems_architect.",
   "current_task": "M7-MAP-SITUATION-MODE-UX-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2567,7 +2587,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-29T18:58:16.954Z",
+  "updated_at": "2026-06-29T19:23:10.561Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2722,7 +2742,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-28T21:58:09.3109039+08:00",
+  "last_updated_at": "2026-06-29T19:23:10.561Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4429,12 +4449,22 @@
   "active_task_routes": {
     "M7-MAP-SITUATION-MODE-UX-001": {
       "owner_role": "client_engineer",
+      "owner_thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
+      "owner_thread_nickname": "Lantern",
+      "owner_configured_model": "gpt-5.5",
+      "owner_configured_effort": "high",
       "reviewer_role": "systems_architect",
-      "status": "ready_after_product_owner_request_changes",
-      "branch_or_worktree": null,
+      "reviewer_configured_model": "gpt-5.5",
+      "reviewer_configured_effort": "xhigh",
+      "status": "writer_in_progress",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_writer_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
       "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
       "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
-      "updated_at": "2026-06-29T18:58:16.954Z"
+      "route_sent_at": "2026-06-29T19:23:10.561Z",
+      "updated_at": "2026-06-29T19:23:10.561Z",
+      "route_submission_id": "019f14d5-94f4-7eb2-84f4-62c2d9e0a2ee"
     }
   },
   "active_routes": {
@@ -4697,11 +4727,17 @@
     "M7-MAP-SITUATION-MODE-UX-001": {
       "owner_role": "client_engineer",
       "reviewer_role": "systems_architect",
-      "status": "ready_after_product_owner_request_changes",
-      "branch_or_worktree": null,
+      "status": "writer_in_progress",
+      "branch_or_worktree": "codex/m7-map-situation-mode-ux",
       "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
       "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
-      "updated_at": "2026-06-29T18:58:16.954Z"
+      "updated_at": "2026-06-29T19:23:10.561Z",
+      "owner_thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
+      "owner_thread_nickname": "Lantern",
+      "route_file": "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_writer_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+      "route_submission_id": "019f14d5-94f4-7eb2-84f4-62c2d9e0a2ee",
+      "route_sent_at": "2026-06-29T19:23:10.561Z"
     }
   }
 }
