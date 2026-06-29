@@ -9,14 +9,14 @@
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "task_id": "M7-MAP-SITUATION-MODE-UX-001",
-      "status": "active_router",
+      "status": "accepted_pending_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-map-situation-mode-ux",
-      "updated_at": "2026-06-29T19:45:27.586Z"
+      "updated_at": "2026-06-29T19:55:23.299Z"
     },
     "client_engineer": {
       "thread_id": "019f14d2-03b8-76e3-a080-4b1e225f8d7b",
@@ -39,7 +39,7 @@
     "systems_architect": {
       "thread_id": "019f14eb-b429-7273-b0af-672531436f66",
       "task_id": "M7-MAP-SITUATION-MODE-UX-001",
-      "status": "review_active",
+      "status": "accepted",
       "role": "systems_architect",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -50,9 +50,12 @@
       "source_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "6cecab24b72bb13d2f46203c606d3dbff59170f4",
-      "updated_at": "2026-06-29T19:48:40.794Z",
+      "updated_at": "2026-06-29T19:55:23.299Z",
       "route_submission_id": "019f14ec-e361-79c3-95d5-2ef0ccfc87e7",
-      "route_sent_at": "2026-06-29T19:48:40.794Z"
+      "route_sent_at": "2026-06-29T19:48:40.794Z",
+      "systems_status": "ACCEPT",
+      "systems_review_handoff": "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+      "accepted_at": "2026-06-29T19:55:23.299Z"
     }
   },
   "last_integrated_task": "M7-UI-LOCALIZATION-EXIT-001",
@@ -575,7 +578,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Wait for systems_architect review of M7-MAP-SITUATION-MODE-UX-001.",
+  "next_action": "Run integration gates for accepted M7-MAP-SITUATION-MODE-UX-001, then PR/CI/merge and close after main integration.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -938,8 +941,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T19:48:40.794Z",
-  "updated_at": "2026-06-29T19:48:40.794Z",
+  "last_updated_at": "2026-06-29T19:55:23.299Z",
+  "updated_at": "2026-06-29T19:55:23.299Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
