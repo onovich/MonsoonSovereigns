@@ -1,0 +1,111 @@
+{
+  "message_id": "MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW",
+  "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "from_role": "security_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent security review accepted commit 7df9c5ee0feade50203b6e75dd7400dc20e62f77. The diff defines local save migration compatibility boundaries and negative cloud/account/network/telemetry/implicit-RPC rejection coverage only; it does not implement cloud save, accounts, paid services, secrets, network sync, server persistence, telemetry, remote collection, provider integration, arbitrary-code mods, hidden RPC, or object graph serialization. Unsafe modes and M7 candidate content manifests route to Human Gate/security review, Electron source boundaries are unchanged, and all reviewed changes are within the task allowed paths.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "packages/save-format/package.json",
+    "tests/save-migration-cloud-boundaries.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+  "commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output before handoff write; worktree was clean after review commands."
+    },
+    {
+      "command": "git show --stat --oneline 7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+      "exit_code": 0,
+      "result": "Commit 7df9c5ee adds save migration boundary checks: 5 files changed, 1110 insertions, 1 deletion."
+    },
+    {
+      "command": "git diff --name-only 28cb469aa9695c9c54887b8241093a80dccc44b5..7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+      "exit_code": 0,
+      "result": "Changed paths were packages/save-format/package.json, packages/save-format/src/index.ts, task/goal/model/thread/message route state files under allowed project paths, and tests/protocol-command-query-schema.test.ts plus tests/save-migration-cloud-boundaries.test.ts. No forbidden path matched the task forbidden list."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "git diff --check 28cb469aa9695c9c54887b8241093a80dccc44b5..7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "Vitest passed: 3 files, 27 tests, including tests/save-migration-cloud-boundaries.test.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 14 tests, including cloud/account/remote/telemetry implicit-RPC rejection cases."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; renderer navigation restricted; allowed IPC channels remain desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed successfully; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Next ready task listed as M7-UI-REGRESSION-MATRIX-001."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "exit_code": 0,
+      "result": "TASK_SHAPE_OK M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 REVIEW route_to=security_reviewer."
+    },
+    {
+      "command": "Select-String keyword scans over the review diff and source paths",
+      "exit_code": 0,
+      "result": "No new fetch/XMLHttpRequest/WebSocket/Electron IPC/openExternal/eval/remote execution implementation was found in changed code. Matches in the diff were boundary literals, negative tests, and process messages. apps/desktop source still has nodeIntegration=false, contextIsolation=true, sandbox=true, and connect-src 'self'."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture check and determinism passed; root Vitest passed 42 files and 351 tests; web Vitest passed 1 file and 9 tests."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: save-format changes are explicit and versioned. packages/save-format/src/index.ts:1169 defines M7_SAVE_MIGRATION_BOUNDARY_SCHEMA_VERSION = 1 and lines 1174-1188 enumerate Human Gate capabilities for account, provider, cloud-save, frozen decisions, implicit RPC, irreversible migration, network sync, object graph serialization, paid service, remote collection, secrets, server persistence, and telemetry.",
+    "ACCEPT: boundary validation rejects unsafe cloud implementation state. packages/save-format/src/index.ts:1469-1601 checks schema/magic/schema versions, required M1-M6 accepted milestones, M7 candidate presence, candidate-only cloud decision state, required security reviewer route, empty implementedCapabilities, and required Human Gate capability coverage.",
+    "ACCEPT: high-level migration validation routes unsafe behavior instead of accepting it. packages/save-format/src/index.ts:1647-1716 validates the boundary first, returns human-gate-required for any requestedMode other than local-compatible-load-only, decodes through decodeSaveEnvelopeV1, returns human-gate-required for M7 Beta content-lock candidates, and rejects non-accepted manifests.",
+    "ACCEPT: protocol additions are negative tests only. tests/protocol-command-query-schema.test.ts:30-34 probes simulation.account.login, simulation.cloud-save-sync, simulation.remote-save-collect, and simulation.telemetry.upload and expects unknown-message-type rejection.",
+    "ACCEPT: malformed/future/cross-manifest/unsafe/cloud-capability tests are meaningful. tests/save-migration-cloud-boundaries.test.ts:77 covers M1-M6 accepted saves and M7 candidate-only handling; line 120 covers malformed, future, cross-manifest, and non-boundary rejection; line 193 covers unsafe request routing; line 224 covers implemented cloud capability rejection.",
+    "ACCEPT: Electron/security boundaries are not changed by the review diff. Source checks still show apps/desktop/src/main/security.ts:6 nodeIntegration false, :7 contextIsolation true, :8 sandbox true, and :20 connect-src 'self'; desktop:security-check passed.",
+    "ACCEPT: dependency/license surface did not expand. packages/save-format/package.json only adds the new save-migration-cloud-boundaries test file to the package test script; dependencies are unchanged."
+  ],
+  "risks": [
+    "Residual API-use risk: classifyM7SaveContentManifestBoundaryV1 assumes callers pass a boundary that has already been validated. The reviewed high-level entry point validateM7SaveMigrationCandidateV1 performs that validation first, so no current exploitable acceptance path was found; future callers should use the high-level validator or validateM7SaveMigrationBoundaryV1 first.",
+    "This acceptance is security-boundary evidence only. It is not formal content lock acceptance, cloud-save approval, irreversible migration approval, release readiness, or a Human Gate decision."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed to lead orchestration/integration gates, then route to qa_reviewer for functional acceptance after security acceptance.",
+  "created_at": "2026-06-29T15:28:08.1904105+08:00"
+}
