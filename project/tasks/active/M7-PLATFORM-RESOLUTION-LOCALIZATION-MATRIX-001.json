@@ -2,7 +2,7 @@
   "id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
   "summary": "Validate Chrome, Edge, Firefox, Windows, resolution, and localization matrix",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -95,7 +95,7 @@
     "This task now depends on M7-UI-REGRESSION-MATRIX-001 so platform/resolution/localization validation cannot pass using stale pre-quality-track UI evidence."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T13:01:33.512Z",
+  "updated_at": "2026-06-29T13:08:16.377Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -126,8 +126,8 @@
     "actual_writer_model": "unknown",
     "actual_writer_effort": "unknown",
     "started_at": "2026-06-29T12:24:10.078Z",
-    "updated_at": "2026-06-29T13:01:33.512Z",
-    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
+    "updated_at": "2026-06-29T13:08:16.377Z",
+    "next_action": "Run taskctl ready and start the highest-priority dependency-ready M7 task.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f1357-01e5-7693-b457-d3286d95e540",
@@ -148,12 +148,27 @@
     "qa_review_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
     "qa_accepted_at": "2026-06-29T12:57:13.981Z",
     "carry_forward_risks": [
-      "Edge and Firefox remain blocked-by-tooling rows until Playwright projects/browser tooling are added and evidence rerun.",
-      "Windows DPI 150% remains a follow-up row until a dedicated DPI matrix harness exists."
+      "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED: Edge and Firefox remain blocked-by-tooling rows until Playwright projects/browser tooling are added and evidence rerun.",
+      "M7-WINDOWS-DPI-150-UNRESOLVED: Windows DPI 150% remains a follow-up row until a dedicated DPI matrix harness exists.",
+      "M7-UI-LOCALIZATION-EXIT-001 must carry or resolve these rows before any full platform coverage claim."
     ],
     "lead_accept_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-29T13:01:33.512Z",
     "accepted_implementation_commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
-    "accepted_branch_head": "bd4fdda600b3f3d72245c075916822657daec164"
+    "accepted_branch_head": "bd4fdda600b3f3d72245c075916822657daec164",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 197,
+    "integrated_main_commit": "ae754bbbbbdb278a58de6299a4ccec646590902f",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/197",
+    "lead_close_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-29T13:07:42.179Z",
+    "child_threads_closed": [
+      "019f1355-4381-7910-b54f-760e2e4f6fcf",
+      "019f136b-f97d-7eb0-903c-7ace3625e17f"
+    ],
+    "next_ready_tasks": [
+      "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "M7-UI-LOCALIZATION-EXIT-001"
+    ]
   }
 }
