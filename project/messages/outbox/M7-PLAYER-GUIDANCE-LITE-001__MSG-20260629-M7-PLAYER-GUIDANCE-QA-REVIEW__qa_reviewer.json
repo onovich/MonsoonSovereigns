@@ -1,0 +1,154 @@
+{
+  "message_id": "MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW",
+  "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+  "status": "ACCEPT",
+  "role": "qa_reviewer",
+  "thread_id": "019f1159-1c62-73e3-92ee-08b50881723d",
+  "reviewed_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+  "reviewed_base_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+  "current_branch_head": "5b925b6073431cac0cf64053df08aa928e0947e9",
+  "reviewed_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+  "branch_or_worktree": "feat/m7-player-guidance-lite",
+  "review_scope": "fd88e5d6a83355cbd94ab022a153cb66cfee568e..bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+  "decision": "Acceptance criteria satisfied; no blocking correctness, authority, scope, localization, or coverage defects found.",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean working tree before QA handoff write."
+    },
+    {
+      "command": "git rev-parse --abbrev-ref HEAD; git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "Branch feat/m7-player-guidance-lite; current HEAD 5b925b6073431cac0cf64053df08aa928e0947e9."
+    },
+    {
+      "command": "git merge-base --is-ancestor bbbd0fa59d6b5e72526140d178fd780de4bcf38f HEAD",
+      "exit_code": 0,
+      "result": "Implementation commit bbbd0fa is an ancestor of current branch HEAD."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-GUIDANCE-LITE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-PLAYER-GUIDANCE-LITE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry parsed; M7-PLAYER-GUIDANCE-LITE-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Next ready task reported as M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "git diff --check fd88e5d6a83355cbd94ab022a153cb66cfee568e..bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+      "exit_code": 0,
+      "result": "No whitespace errors in reviewed implementation diff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in current working tree diff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-PLAYER-GUIDANCE-LITE-001",
+      "exit_code": 0,
+      "result": "task shape ok M7-PLAYER-GUIDANCE-LITE-001 REVIEW client_engineer qa_reviewer 6."
+    },
+    {
+      "command": "forbidden path check over fd88e5d..bbbd0fa",
+      "exit_code": 0,
+      "result": "Passed; changed files are under allowed app/ui/test/storybook/project-message/state paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm test:e2e -- --grep M7 player guidance lite",
+      "exit_code": 0,
+      "result": "Playwright argument forwarding ran full Chromium suite; 21/21 tests passed, including M7 guidance collapse/dismiss/core appointment path and English/zh-CN/system fallback localization tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, workspace typecheck, and architecture boundary check passed."
+    }
+  ],
+  "findings": [],
+  "acceptance_check": {
+    "lightweight_dismissible_collapsible_guidance": "PASS: React local state implements dismiss, restore, and collapse without world-state writes.",
+    "required_guidance_steps": "PASS: first objective, select district, inspect district, action preview, observe result, and next-step feedback are present and covered.",
+    "existing_read_models_and_localized_text": "PASS: implementation consumes existing ClientReadModelSnapshot/M7 guidance read-model content, selected district state, existing command status, and i18n keys.",
+    "not_full_tutorial_system": "PASS: no new tutorial engine, dependency, protocol, save, sim, or content schema was added.",
+    "command_safety_and_cost_visibility": "PASS: guidance has no command-submit handler; existing preview/confirm controls remain separate and guidance explicitly preserves visible costs/rejection reasons.",
+    "no_player_only_privilege": "PASS: confirmed command copy and existing tests keep standard GameCommand parity; no player-only command path was introduced.",
+    "no_player_mode_debug_leak": "PASS: player-mode tests assert no state hash, Prototype District text, raw reason code text, or bare m7 guidance keys in the guidance path.",
+    "localization_coverage": "PASS: Storybook stories and Playwright/Vitest coverage include English, zh-CN, and system fallback paths."
+  },
+  "scope_check": {
+    "allowed_paths_only": true,
+    "forbidden_paths_touched": [],
+    "reviewed_changed_files": [
+      ".storybook/WebClientShell.stories.tsx",
+      "apps/web/src/styles/shell.css",
+      "packages/ui/src/i18n.ts",
+      "packages/ui/src/index.tsx",
+      "project/goal-mode-state.json",
+      "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+      "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-REPLACEMENT-START__lead_orchestrator.json",
+      "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
+      "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-REPLACEMENT-START.json",
+      "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "project/model-routing-state.json",
+      "project/tasks/active/M7-PLAYER-GUIDANCE-LITE-001.json",
+      "project/tasks/thread-registry.json",
+      "tests/e2e/web-shell.spec.ts",
+      "tests/ui-m2-district-list.test.tsx"
+    ],
+    "post_implementation_head_diff": "bbbd0fa..HEAD only contains process/QA route state files; no implementation file changed after reviewed_commit.",
+    "architecture_boundary": "PASS: pnpm check architecture boundary check passed; no sim-core/protocol/save/map-renderer/platform/desktop/docs/status/CI forbidden path was touched by reviewed implementation diff."
+  },
+  "risks": [
+    {
+      "id": "NON_BLOCKING_METADATA_001",
+      "severity": "info",
+      "detail": "Writer handoff head_commit and commit fields are null. validate-handoff passes, the route/task metadata names reviewed_commit bbbd0fa, and bbbd0fa is an ancestor of current HEAD; treat as non-blocking metadata defect."
+    },
+    {
+      "id": "BRANCH_HEAD_ROUTE_COMMIT",
+      "severity": "info",
+      "detail": "Current branch HEAD is 5b925b6 because a process route commit was added after implementation. QA reviewed implementation diff fd88e5d..bbbd0fa and confirmed bbbd0fa..HEAD is process-only."
+    },
+    {
+      "id": "CONTENT_REVIEW_STATE",
+      "severity": "low",
+      "detail": "Default M7 guidance remains review-aware because upstream content review blockers still exist; this matches task boundary and is not a blocker."
+    }
+  ],
+  "ROUTE_TO": "lead_orchestrator",
+  "requested_action": "Lead may integrate/accept M7-PLAYER-GUIDANCE-LITE-001; no writer repair requested.",
+  "created_at": "2026-06-29T11:15:00+08:00",
+  "from_role": "qa_reviewer",
+  "summary": "Independent QA accepted M7-PLAYER-GUIDANCE-LITE-001 after reviewing fd88e5d..bbbd0fa, rerunning task/handoff/diff checks, focused UI tests, full Chromium e2e, and pnpm check.",
+  "route_to": "lead_orchestrator",
+  "artifacts": [
+    "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "decisions": [
+    "ACCEPT: lightweight localized player guidance meets task acceptance criteria.",
+    "Non-blocking: writer handoff head_commit/commit fields are null, but validator passes and reviewed_commit is identified by task/route metadata.",
+    "Non-blocking: current branch HEAD 5b925b6 is a process route commit after implementation; reviewed implementation commit bbbd0fa is an ancestor and no implementation files changed after it."
+  ],
+  "blockers": [],
+  "commit": null
+}
