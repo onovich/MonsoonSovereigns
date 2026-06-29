@@ -1,0 +1,60 @@
+{
+  "message_id": "MSG-20260629-M7-UI-LOCALIZATION-EXIT-START",
+  "task_id": "M7-UI-LOCALIZATION-EXIT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7 UI/localization exit validation after M7 manual playthrough evidence closed on origin/main. This task is process/evidence-only and must synthesize the M7 UI/localization/visual quality track without approving formal content lock, release readiness, production art, telemetry, cloud save, server/multiplayer, or manual node battle scope.",
+  "artifacts": [
+    "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+    "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-localization-exit",
+  "commit": "61c674fac537fc2bbfba88a8d0f2a9271d7af415",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main at 61c674fac537fc2bbfba88a8d0f2a9271d7af415 before branching; clean codex/m7-ui-localization-exit after gates."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-EXIT-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "All prerequisite M7 UI/localization/visual quality tasks are CLOSED; M7-UI-LOCALIZATION-EXIT-001 is DRAFT before this synthesis."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-UI-LOCALIZATION-EXIT-001 is the only dependency-ready task before this synthesis."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-UI-LOCALIZATION-EXIT-001",
+      "exit_code": 0,
+      "result": "shape-ok: owner lead_orchestrator, reviewer qa_reviewer, allowed paths process-only, human_gate_required false."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "Passed before synthesis; no local diff at gate time."
+    }
+  ],
+  "decisions": [
+    "Start the only dependency-ready M7 task selected by taskctl ready.",
+    "Owner is lead_orchestrator, so lead produces synthesis and routes it to systems_architect and independent qa_reviewer before acceptance.",
+    "No Human Gate is active; formal content lock, manual human acceptance, production art/cultural symbols, release/commercial, cloud-save implementation, telemetry, server/multiplayer, and manual node battle reversal remain gated elsewhere."
+  ],
+  "risks": [
+    "The platform matrix contains unresolved Edge/Firefox and Windows DPI 150% rows; this exit synthesis must carry them as limitations rather than pass claims.",
+    "Visual UX guidance must not be overread as new domain-system authorization."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Write lead synthesis and route to systems_architect review.",
+  "created_at": "2026-06-29T14:07:30.832Z"
+}

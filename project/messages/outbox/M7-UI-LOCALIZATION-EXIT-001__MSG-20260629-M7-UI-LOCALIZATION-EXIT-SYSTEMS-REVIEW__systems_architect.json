@@ -1,0 +1,159 @@
+{
+  "message_id": "M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect",
+  "task_id": "M7-UI-LOCALIZATION-EXIT-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Independent systems_architect review accepts the M7 UI/localization exit lead synthesis as prerequisite evidence only. The reviewed branch is process/evidence-only: actual diff paths are limited to the task JSON, thread registry, project/messages, goal-mode-state, and model-routing-state. No product code, package code, docs/decisions, content source, dependency, CI, release, server, telemetry, cloud-save, or manual-node-battle scope is changed. The synthesis correctly carries the M7 UI/localization/visual quality track without converting it into M7 Gate PASS, formal content lock approval, production art/culture approval, release readiness, or human manual acceptance. Architecture boundaries remain preserved: sim-core has no i18n/React/Pixi/Electron/DOM/Node IO coupling, UI does not own authoritative WorldState, Pixi remains render-cache/read-model presentation, and player/AI authority remains through GameCommand/query/read-model surfaces. Debug/player separation, zh-CN/zh-Hans locale handling, and platform coverage are accepted only with the limits stated in the synthesis: player-mode debug absence is covered only for tested paths, zh-* canonicalizes to zh-CN for the current supported surface and is not Traditional/regional Chinese support, and Edge/Firefox plus Windows DPI 150% remain unresolved/follow-up rows rather than passed coverage.",
+  "artifacts": [
+    "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+    "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-I18N-FOUNDATION-001__MSG-20260628-M7-I18N-FOUNDATION-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-AUDIO-ART-LOCALIZATION-COMPLETE-001__MSG-20260628-M7-AUDIO-ART-LOCALIZATION-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-localization-exit / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "reviewed current route checkpoint 2689839090a838c47f224892bf72ea0807ce22d4; lead synthesis commit under review 4b9e46dd; base main 61c674fac537fc2bbfba88a8d0f2a9271d7af415",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output on recheck immediately before writing this systems handoff; worktree was clean."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed files before this systems handoff: project/goal-mode-state.json; lead synthesis outbox JSON; start outbox JSON; systems route JSON; project/model-routing-state.json; M7-UI-LOCALIZATION-EXIT-001 task JSON; project/tasks/thread-registry.json."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-LOCALIZATION-EXIT-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-UI-LOCALIZATION-EXIT-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID lead synthesis handoff JSON."
+    },
+    {
+      "command": "node -e <JSON parse/shape check of synthesis evidence_matrix and quality_evidence>",
+      "exit_code": 0,
+      "result": "shape-ok: status REVIEW; evidence_matrix count 14; no missing required UI/localization/visual track rows; no malformed evidence rows; quality_evidence contains web_build, storybook_build, playwright_e2e, desktop_security_check, desktop_package_smoke, pnpm_check, missing_key_raw_key, no_debug_text, console_errors, viewports, and platform_matrix. platform_matrix is PASS_WITH_LIMITS; debug_player_separation is PASS_WITH_LIMITS; locale_policy is PASS_WITH_NOTE."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list | Select-String -Pattern <M7 UI/localization track>",
+      "exit_code": 0,
+      "result": "All referenced M7 UI/localization/visual quality-track prerequisite tasks are CLOSED; M7-UI-LOCALIZATION-EXIT-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No task rows printed after M7-UI-LOCALIZATION-EXIT-001 entered REVIEW."
+    },
+    {
+      "command": "node -e <allowed path scanner over git diff --name-only origin/main...HEAD>",
+      "exit_code": 0,
+      "result": "changed_count 7; forbidden []; diff is confined to project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json, project/tasks/thread-registry.json, project/messages/**, project/goal-mode-state.json, and project/model-routing-state.json."
+    },
+    {
+      "command": "$script | node - <sim-core forbidden import/require and nondeterministic API scanner>",
+      "exit_code": 0,
+      "result": "Checked 10 packages/sim-core TypeScript files; bad []. No forbidden React/Pixi/Electron/fs/node:path/os imports or require calls, and no Math.random()/Date.now() usage found by the scanner."
+    },
+    {
+      "command": "Select-String over M7-I18N-FOUNDATION R2 systems/QA/lead handoffs for zh-CN, zh-Hans, canonical, sim-core, Human Gate",
+      "exit_code": 0,
+      "result": "Upstream evidence states en/en-* -> en-US and zh/zh-* -> zh-CN for the current supported surface, persisted regional values migrate to canonical preferences, the repair is client-only, and future Traditional/regional Chinese support needs separate approval."
+    },
+    {
+      "command": "Select-String over M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX handoffs for Edge, Firefox, DPI, unresolved, expectedLang, zh-CN, zh-Hans",
+      "exit_code": 0,
+      "result": "Upstream evidence states Chrome/Chromium and Windows desktop smoke are covered, while Edge, Firefox, and Windows DPI 150% remain blocked-by-tooling/follow-up rows and must not be described as passed coverage."
+    },
+    {
+      "command": "Select-String over M7-UI-REGRESSION-MATRIX handoffs for debug, prototype, raw, player, console",
+      "exit_code": 0,
+      "result": "Upstream evidence covers observable player-mode no-debug/prototype text, raw-key hygiene, console/pageerror checks, and locale/viewport isolation for tested paths only; it does not inspect authoritative WorldState or Pixi internals."
+    },
+    {
+      "command": "Select-String over M7-MAP-PRESENTATION systems handoff for Pixi, read-model, WorldState, authority, GameCommand, React",
+      "exit_code": 0,
+      "result": "Upstream systems review accepted Pixi/map-renderer as disposable render-plan/cache rebuilt from read models; hover/selection/pan/reachable/blocked/overloaded states are presentation only, and localized display snapshots do not mutate simulation/hash inputs."
+    },
+    {
+      "command": "Select-String over M7-AUDIO-ART-LOCALIZATION and M7-MANUAL-PLAYTHROUGH handoffs for production art/cultural/content-lock/Human Gate/manual acceptance",
+      "exit_code": 0,
+      "result": "Upstream evidence is framed as content-lock preparation and agent-operated local preview evidence only. It explicitly does not approve formal content lock, production culture assets, human manual acceptance, release/commercial scope, telemetry/accounts/secrets, cloud save, server/multiplayer, or manual node battle reversal."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_SYNTHESIS_AS_PREREQUISITE_EVIDENCE_ONLY",
+      "decision": "Accept the lead synthesis for M7 UI/localization exit evidence only. This is not M7 Gate PASS, formal content lock acceptance, production art/cultural approval, release readiness, or product-owner manual acceptance."
+    },
+    {
+      "id": "PROCESS_ONLY_DIFF_ACCEPTED",
+      "decision": "Accept the actual diff scope. It changes only allowed process/task/message/state files and does not touch apps, packages, content-source, docs/decisions, gate docs, tools, CI, dependencies, release artifacts, or product code."
+    },
+    {
+      "id": "ARCHITECTURE_BOUNDARIES_PRESERVED",
+      "decision": "Accept the architecture boundary claim. No current diff changes product code, and the upstream evidence plus sim-core scan support that i18n remains outside sim-core, UI does not own authoritative WorldState, Pixi is render-cache/read-model presentation, and player/AI authority remains through GameCommand/query/read-model surfaces."
+    },
+    {
+      "id": "DEBUG_PLAYER_SEPARATION_ACCEPTED_WITH_LIMITS",
+      "decision": "Accept debug/player separation only as scoped by the UI regression matrix and covered player-mode paths. Dev/debug affordances remain allowed where explicitly scoped and must not be reclassified as player-mode UX."
+    },
+    {
+      "id": "ZH_POLICY_ACCEPTED_WITH_NOTE",
+      "decision": "Accept the synthesis description of zh-CN/zh-Hans risk. Current support canonicalizes zh/zh-* to zh-CN for Simplified Chinese behavior and expectedLang normalization; it is not completed Traditional Chinese, regional Chinese, or culture-specific language support."
+    },
+    {
+      "id": "PLATFORM_ROWS_REMAIN_UNRESOLVED",
+      "decision": "Accept Edge, Firefox, and Windows DPI 150% as unresolved/follow-up rows carried by this synthesis. They are not passed full-platform coverage and must remain visible in later content-lock or M7-exit claims unless new tooling and evidence resolve them."
+    },
+    {
+      "id": "NO_HUMAN_GATE_ACTIVATED_BY_THIS_REVIEW",
+      "decision": "No Human Gate is activated by this systems review. Formal content lock, manual human acceptance, production art/cultural choices, release/commercial decisions, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain separate Human Gates if requested."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
+      "severity": "P2",
+      "summary": "Edge and Firefox are not actually run in the current workspace because the Playwright matrix is Chromium-only.",
+      "mitigation": "Carry as unresolved/follow-up into M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 unless browser tooling is added and evidence rerun."
+    },
+    {
+      "id": "M7-WINDOWS-DPI-150-UNRESOLVED",
+      "severity": "P2",
+      "summary": "Windows DPI 150% is not directly exercised by the current browser or desktop smoke tooling.",
+      "mitigation": "Carry as unresolved/follow-up until a dedicated DPI harness exists or a Human/lead gate accepts the limitation explicitly."
+    },
+    {
+      "id": "HUMAN_GATE_SCOPE_MUST_NOT_BE_INFERRED",
+      "severity": "P1",
+      "summary": "The synthesis is close to later M7 gate material, so downstream reviewers must not infer formal content lock, human playthrough acceptance, release readiness, production art/cultural approval, or manual node battle reversal from this ACCEPT.",
+      "mitigation": "Keep the Human Gate list from the task JSON and synthesis intact in QA and lead closure."
+    },
+    {
+      "id": "HEAVY_PRODUCT_TESTS_NOT_RERUN_IN_THIS_REVIEW",
+      "severity": "P3",
+      "summary": "This systems pass reran process, handoff, JSON shape, path, and boundary checks, and sampled upstream evidence. It did not rerun pnpm build:web, Storybook, e2e, desktop package, or pnpm check locally.",
+      "mitigation": "Use the lead synthesis and accepted upstream handoffs as recorded evidence for those heavy commands; QA may rerun selected product commands if independent verification requires it."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Run independent QA review of the M7 UI/localization exit synthesis and this systems ACCEPT. Preserve the stated limitations: this is prerequisite evidence only, Edge/Firefox/DPI150 remain unresolved/follow-up, and no Human Gate scope is approved by this task.",
+  "created_at": "2026-06-29T22:13:53.3042747+08:00"
+}
