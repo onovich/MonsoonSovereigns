@@ -1,0 +1,97 @@
+{
+  "message_id": "MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED",
+  "task_id": "M7-UI-LOCALIZATION-EXIT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed M7-UI-LOCALIZATION-EXIT-001 after PR #201 passed CI, merged to main, and origin/main contained the accepted UI/localization exit prerequisite evidence. The closure preserves all accepted limitations: this is not M7 Gate PASS, formal content lock approval, release readiness, production art/culture approval, or manual human acceptance; Edge/Firefox and Windows DPI 150% remain unresolved/follow-up rows.",
+  "artifacts": [
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-ui-localization-exit",
+  "commit": "f0a49d1457feafac1a3fc5721466badad8d102dd",
+  "integrated_pr": 201,
+  "integrated_main_commit": "f0a49d1457feafac1a3fc5721466badad8d102dd",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/201",
+  "ci": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "result": "pass",
+      "duration": "2m50s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28379468547/job/84077846504"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "result": "pass",
+      "duration": "1m21s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28379468547/job/84077846623"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing chunk-size warnings before PR."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed with existing Storybook plugin timing/chunk warnings before PR."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 23/23 before PR."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Passed before PR."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Passed before PR."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed before PR."
+    },
+    {
+      "command": "gh pr checks 201 --watch --interval 10",
+      "exit_code": 0,
+      "result": "CI passed: Quality/Web/Browser Smoke 2m50s; Windows Desktop Smoke Artifact 1m21s."
+    },
+    {
+      "command": "gh pr merge 201 --squash --delete-branch --admin",
+      "exit_code": 0,
+      "result": "Merged PR #201; origin/main advanced to f0a49d1457feafac1a3fc5721466badad8d102dd."
+    }
+  ],
+  "decisions": [
+    "Task is CLOSED only after accepted evidence entered origin/main via PR #201 and CI passed.",
+    "M7 UI/localization exit is prerequisite evidence only and is not M7 Gate PASS, formal content lock approval, release readiness, production art/culture approval, or manual human acceptance.",
+    "Edge/Firefox remain blocked-by-tooling rows and Windows DPI 150% remains a follow-up row; later M7 content lock or exit validation must carry or resolve them.",
+    "No Human Gate is active now. Formal content lock, manual human acceptance, production art/cultural choices, release/commercial, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain future Human Gates if requested."
+  ],
+  "risks": [
+    "Downstream M7 content-lock and exit validation must avoid overclaiming full platform coverage or human approval from this prerequisite evidence."
+  ],
+  "blockers": [],
+  "child_threads_closed": [
+    "019f13b3-3858-7a20-88da-b0fb6261a434",
+    "019f13be-4700-7a71-a901-48f84a2f6803"
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Run taskctl ready and start the highest-priority dependency-ready M7 task.",
+  "created_at": "2026-06-29T14:33:23.055Z",
+  "next_ready_tasks": []
+}
