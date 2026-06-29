@@ -2,28 +2,60 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-PLAYER-GUIDANCE-LITE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "chore/close-m7-map-presentation-quality",
-      "created_at": "2026-06-28T22:18:34.157Z",
-      "updated_at": "2026-06-28T23:14:02.491Z",
-      "start_handoff": "project/messages/outbox/M7-MAP-PRESENTATION-QUALITY-001__MSG-20260629-M7-MAP-PRESENTATION-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-MAP-PRESENTATION-QUALITY-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
+      "branch_or_worktree": "feat/m7-player-guidance-lite",
+      "created_at": "2026-06-28T23:21:24.687Z",
+      "updated_at": "2026-06-29T11:18:00.0000000+08:00",
+      "start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
+    },
+    "client_engineer": {
+      "thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "status": "accepted_pending_integration",
+      "role": "client_engineer",
+      "nickname": "Lantern",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-player-guidance-lite",
+      "review_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+      "updated_at": "2026-06-29T11:18:00.0000000+08:00"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f1159-1c62-73e3-92ee-08b50881723d",
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "status": "accepted_pending_integration",
+      "role": "qa_reviewer",
+      "nickname": "Auditor",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "feat/m7-player-guidance-lite",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json",
+      "reviewed_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+      "updated_at": "2026-06-29T11:18:00.0000000+08:00"
     }
   },
   "last_integrated_task": "M7-MAP-PRESENTATION-QUALITY-001",
-  "last_main_commit": "5ff2985b7e3490621544bc11fedf24a26fb9c9ce",
+  "last_main_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
   "next_ready_tasks": [
-    "M7-PLAYER-GUIDANCE-LITE-001",
     "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
   ],
   "unresolved_risks": [
@@ -52,7 +84,7 @@
     "approval_source": "M7-MAP-PRESENTATION-QUALITY-001 start checkpoint",
     "recommended_result": null,
     "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T22:18:34.157Z"
+    "recorded_at": "2026-06-28T23:21:24.687Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -309,6 +341,20 @@
       "status": "closed_running_no_handoff_clean_worktree",
       "reason": "closed_after_wait_timeout_status_request_no_response_no_handoff_clean_worktree",
       "replaced_at": "2026-06-28T00:54:17.462+08:00"
+    },
+    {
+      "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+      "role": "client_engineer",
+      "thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+      "nickname": "Window the 2nd",
+      "status": "closed_errored_no_handoff_clean_worktree",
+      "replaced_by": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+      "replaced_by_nickname": "Lantern",
+      "reason": "previous_writer_stream_disconnected_before_completion_no_handoff_clean_worktree",
+      "original_route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "closed_at": "2026-06-29T10:50:30.8570165+08:00",
+      "replaced_at": "2026-06-29T10:50:30.8570165+08:00"
     }
   ],
   "m5_performance_gate": {
@@ -839,8 +885,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-28T23:14:02.491Z",
-  "updated_at": "2026-06-28T23:14:02.491Z",
+  "last_updated_at": "2026-06-29T11:18:00.0000000+08:00",
+  "updated_at": "2026-06-29T11:18:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1909,8 +1955,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "CLOSED",
-  "next_machine_action": "Start M7-PLAYER-GUIDANCE-LITE-001 as the highest-priority dependency-ready M7 task unless taskctl ready changes.",
+  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Await client_engineer writer handoff for M7-PLAYER-GUIDANCE-LITE-001.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -2219,5 +2265,42 @@
       "M7-PLAYER-GUIDANCE-LITE-001",
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
+  },
+  "m7_player_guidance_lite": {
+    "status": "ACCEPTED",
+    "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+    "branch_or_worktree": "feat/m7-player-guidance-lite",
+    "base_main_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+    "previous_closed_task": "M7-MAP-PRESENTATION-QUALITY-001",
+    "start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-REPLACEMENT-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+    "writer_thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+    "writer_thread_nickname": "Lantern",
+    "started_at": "2026-06-28T23:21:24.687Z",
+    "updated_at": "2026-06-29T11:18:00.0000000+08:00",
+    "next_action": "Open PR for M7-PLAYER-GUIDANCE-LITE-001, wait for CI, merge to main, then close after origin/main contains accepted commits.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "replaces_thread_id": "019f1088-6159-7bf3-a460-c6d0c6d52482",
+    "replacement_reason": "previous_writer_stream_disconnected_before_completion_no_handoff_clean_worktree",
+    "replacement_start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-REPLACEMENT-START.json",
+    "route_sent_at": "2026-06-29T10:50:30.8570165+08:00",
+    "route_submission_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+    "review_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+    "qa_thread_id": "019f1159-1c62-73e3-92ee-08b50881723d",
+    "qa_thread_nickname": "Auditor",
+    "qa_route": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_review_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json",
+    "qa_route_sent_at": "2026-06-29T11:08:30.0000000+08:00",
+    "qa_route_submission_id": "019f1159-1c62-73e3-92ee-08b50881723d",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T11:18:00.0000000+08:00",
+    "accepted_implementation_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+    "accepted_branch_head": "5b925b6073431cac0cf64053df08aa928e0947e9"
   }
 }

@@ -82,6 +82,98 @@ test("web shell resolves system language, switches language, and persists prefer
   expect(storedPreference).toBe("en-US");
 });
 
+test("M7 player guidance lite supports collapse dismiss and the core appointment path", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const guidance = page.getByRole("region", { name: "Player guidance" });
+  await expect(guidance).toHaveAttribute("data-guidance-state", "error");
+  await expect(guidance).toHaveAttribute("data-guidance-evidence", "available");
+  await expect(guidance).toContainText("Guidance remains under review");
+  await expect(guidance).toContainText("First objective");
+  await expect(guidance).toContainText("Select a district");
+  await expect(guidance).toContainText("Inspect the district");
+  await expect(guidance).toContainText("Preview governance");
+  await expect(guidance).toContainText("Observe result");
+  await expect(guidance).toContainText("Next step");
+  await expect(guidance).toContainText("Preview before confirming");
+
+  await guidance.getByRole("button", { name: "Collapse guidance" }).click();
+  await expect(guidance).toHaveAttribute("data-guidance-collapsed", "true");
+  await expect(guidance).not.toContainText("Inspect the district");
+  await guidance.getByRole("button", { name: "Expand guidance" }).click();
+  await expect(guidance).toHaveAttribute("data-guidance-collapsed", "false");
+
+  await guidance.getByRole("button", { name: "Dismiss guidance" }).click();
+  await expect(page.locator(".player-guidance-lite")).toHaveAttribute(
+    "data-guidance-state",
+    "dismissed"
+  );
+  await page.getByRole("button", { name: "Show guidance" }).click();
+  await expect(guidance).toHaveAttribute("data-guidance-state", "error");
+
+  await page
+    .getByLabel("Player action queue")
+    .getByRole("button", { name: "Preview Appointment" })
+    .click();
+  await expect(page.getByLabel("Appointment and governance flow")).toHaveAttribute(
+    "data-flow-stage",
+    "compare-candidates"
+  );
+  await expect(guidance).toContainText("Compare candidates and read the projected impact.");
+  await page
+    .getByLabel("Appointment and governance flow")
+    .getByRole("button", {
+      name: "Preview appointment"
+    })
+    .click();
+  await page
+    .getByLabel("Appointment and governance flow")
+    .getByRole("button", {
+      name: "Confirm appointment"
+    })
+    .click();
+  await expect(guidance).toContainText("Appointment request prepared.");
+  await expect(guidance).toContainText("Review the result, then select another pressure point.");
+  await expect(page.getByText("route.season.monsoon-risk")).toHaveCount(0);
+  await expect(page.getByText("Prototype District 001")).toHaveCount(0);
+  await expect(page.getByText("state hash")).toHaveCount(0);
+});
+
+test("M7 player guidance lite localizes English Chinese and system fallback", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window.navigator, "languages", {
+      configurable: true,
+      get: () => ["zh-Hans", "en-US"]
+    });
+    Object.defineProperty(window.navigator, "language", {
+      configurable: true,
+      get: () => "zh-Hans"
+    });
+  });
+  await page.goto("/");
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("首要目标");
+  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("确认前先预览");
+
+  await page.getByLabel("语言").selectOption("en-US");
+  await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
+  await expect(page.getByRole("region", { name: "Player guidance" })).toContainText(
+    "First objective"
+  );
+  await expect(page.getByRole("region", { name: "Player guidance" })).toContainText(
+    "Preview before confirming"
+  );
+
+  await page.getByLabel("Language").selectOption("zh-CN");
+  await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("选择地区");
+  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("下一步");
+  await expect(page.getByText("shell.guidanceLite")).toHaveCount(0);
+});
+
 test("M2 map zoom, selection, and mode switching updates read-model UI", async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on("console", (message) => {

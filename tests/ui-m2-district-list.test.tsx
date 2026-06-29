@@ -373,6 +373,56 @@ describe("M2 district client UI", () => {
     expect(extremeCoverageMarkup).toContain('data-asset-reference-count="8"');
   });
 
+  test("renders M7 player guidance lite in localized player mode without raw debug labels", () => {
+    const baseSnapshot = createM2PrototypeClientReadModelSnapshot();
+    const englishMarkup = renderToStaticMarkup(
+      createShell(baseSnapshot, "tutorial", createClientI18n("en-US"), "en-US", false)
+    );
+    const chineseMarkup = renderToStaticMarkup(
+      createShell(baseSnapshot, "tutorial", createClientI18n("zh-CN"), "zh-CN", false)
+    );
+    const emptyMarkup = renderToStaticMarkup(
+      createShell(
+        withM7GuidanceReadModel(baseSnapshot, createM7GuidanceEmptyReadModelFixture(baseSnapshot)),
+        "tutorial",
+        createClientI18n("en-US"),
+        "en-US",
+        false
+      )
+    );
+    const errorMarkup = renderToStaticMarkup(
+      createShell(
+        withM7GuidanceReadModel(baseSnapshot, createM7GuidanceErrorReadModelFixture(baseSnapshot)),
+        "tutorial",
+        createClientI18n("en-US"),
+        "en-US",
+        false
+      )
+    );
+
+    expect(englishMarkup).toContain('aria-label="Player guidance"');
+    expect(englishMarkup).toContain("First objective");
+    expect(englishMarkup).toContain("Select a district");
+    expect(englishMarkup).toContain("Inspect the district");
+    expect(englishMarkup).toContain("Preview governance");
+    expect(englishMarkup).toContain("Observe result");
+    expect(englishMarkup).toContain("Next step");
+    expect(englishMarkup).toContain("Preview before confirming");
+    expect(englishMarkup).toContain('data-guidance-evidence="available"');
+    expect(chineseMarkup).toContain('aria-label="玩家指引"');
+    expect(chineseMarkup).toContain("首要目标");
+    expect(chineseMarkup).toContain("选择地区");
+    expect(chineseMarkup).toContain("确认前先预览");
+    expect(emptyMarkup).toContain('data-guidance-state="empty"');
+    expect(emptyMarkup).toContain("Guidance read model is unavailable");
+    expect(errorMarkup).toContain('data-guidance-state="error"');
+    expect(errorMarkup).toContain("Guidance remains under review");
+    expect(englishMarkup).not.toContain("state hash");
+    expect(englishMarkup).not.toContain("Prototype District 001");
+    expect(englishMarkup).not.toContain("route.season.monsoon-risk");
+    expect(englishMarkup).not.toContain("m7.guidance");
+  });
+
   test("canonicalizes supported en-* and zh-* locale families", () => {
     expect(parseClientLocalePreference("en")).toBe("en-US");
     expect(parseClientLocalePreference("en-GB")).toBe("en-US");

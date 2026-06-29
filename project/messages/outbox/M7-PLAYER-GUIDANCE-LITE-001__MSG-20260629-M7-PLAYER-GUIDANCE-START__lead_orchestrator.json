@@ -1,0 +1,74 @@
+{
+  "message_id": "MSG-20260629-M7-PLAYER-GUIDANCE-START",
+  "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Started M7-PLAYER-GUIDANCE-LITE-001 after M7-MAP-PRESENTATION-QUALITY-001 CLOSED and entered origin/main. This task adds lightweight, dismissible, localized player guidance for the M7 core UI path without creating a full tutorial system or changing simulation authority.",
+  "artifacts": [
+    "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
+    "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json",
+    "project/tasks/active/M7-PLAYER-GUIDANCE-LITE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "feat/m7-player-guidance-lite / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main synchronized with origin/main before task branch creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready tasks were M7-PLAYER-GUIDANCE-LITE-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001; selected player guidance as the highest-priority UI/localization follow-up."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-GUIDANCE-LITE-001",
+      "exit_code": 0,
+      "result": "Task file valid before start."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "START_PLAYER_GUIDANCE_AFTER_MAP_PRESENTATION",
+      "decision": "Start M7-PLAYER-GUIDANCE-LITE-001 after map presentation closure because the accepted UI/localization plan orders core surfaces before guidance/regression exit work."
+    },
+    {
+      "id": "REUSE_EXISTING_GUIDANCE_SURFACES",
+      "decision": "Writer should reuse accepted M7 tutorial/hints/encyclopedia/guidance read-model assets and productize a lightweight core path rather than create a full new tutorial system."
+    },
+    {
+      "id": "NO_HUMAN_GATE",
+      "decision": "No Human Gate is active; manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    }
+  ],
+  "risks": [
+    {
+      "id": "GUIDANCE_SCOPE_DRIFT",
+      "severity": "P2",
+      "summary": "Lightweight guidance can drift into a full tutorial or new rules system.",
+      "mitigation": "Task acceptance restricts work to existing read models, command previews, localized text, and dismissible UI."
+    },
+    {
+      "id": "CULTURAL_WORDING_BOUNDARY",
+      "severity": "P2",
+      "summary": "Unreviewed culture-specific wording or symbols could be introduced by player guidance copy.",
+      "mitigation": "Use accepted review-state wording and route unresolved culture-specific content rather than deciding locally."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Client engineer should implement within allowed paths, write writer REVIEW handoff, and route to qa_reviewer. Do not open PR, merge, or mark CLOSED.",
+  "created_at": "2026-06-28T23:21:24.687Z",
+  "previous_closed_task": "M7-MAP-PRESENTATION-QUALITY-001",
+  "base_main_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+  "next_ready_tasks_at_start": [
+    "M7-PLAYER-GUIDANCE-LITE-001",
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ],
+  "expected_writer_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json"
+}

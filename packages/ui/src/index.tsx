@@ -248,6 +248,8 @@ export function ClientShellView({
   );
   const [m7Surface, setM7Surface] = useState<ClientM7CoverageSurface>(initialM7Surface);
   const [debugMode, setDebugMode] = useState(initialDebugMode);
+  const [isGuidanceDismissed, setGuidanceDismissed] = useState(false);
+  const [isGuidanceCollapsed, setGuidanceCollapsed] = useState(false);
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -898,7 +900,19 @@ export function ClientShellView({
               aria-label={i18n.t("shell.objectives.label")}
             >
               <h2>{i18n.t("shell.objectives.title")}</h2>
-              <ObjectiveText snapshot={snapshot} />
+              <PlayerGuidanceLite
+                snapshot={snapshot}
+                selectedDistrict={selectedDistrict}
+                isDismissed={isGuidanceDismissed}
+                isCollapsed={isGuidanceCollapsed}
+                canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
+                canPreviewCampaign={selectedM4Campaign !== null}
+                m3FlowStage={m3FlowStage}
+                commandStatus={m3CommandStatus ?? m4CommandStatus ?? null}
+                onDismiss={() => setGuidanceDismissed(true)}
+                onRestore={() => setGuidanceDismissed(false)}
+                onToggleCollapse={() => setGuidanceCollapsed(!isGuidanceCollapsed)}
+              />
               <div className="client-shell__action-grid" aria-label={i18n.t("shell.actions.label")}>
                 <button
                   type="button"
@@ -1633,30 +1647,214 @@ function DistrictActionList({
   );
 }
 
-function ObjectiveText({ snapshot }: { readonly snapshot: ClientReadModelSnapshot }): ReactElement {
+interface PlayerGuidanceLiteProps {
+  readonly snapshot: ClientReadModelSnapshot;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly isDismissed: boolean;
+  readonly isCollapsed: boolean;
+  readonly canPreviewAppointment: boolean;
+  readonly canPreviewCampaign: boolean;
+  readonly m3FlowStage: M3AppointmentFlowStage;
+  readonly commandStatus: string | null;
+  readonly onDismiss: () => void;
+  readonly onRestore: () => void;
+  readonly onToggleCollapse: () => void;
+}
+
+type PlayerGuidanceStepState = "pending" | "active" | "done";
+
+interface PlayerGuidanceLiteStep {
+  readonly key: string;
+  readonly title: string;
+  readonly body: string;
+  readonly state: PlayerGuidanceStepState;
+}
+
+function PlayerGuidanceLite({
+  snapshot,
+  selectedDistrict,
+  isDismissed,
+  isCollapsed,
+  canPreviewAppointment,
+  canPreviewCampaign,
+  m3FlowStage,
+  commandStatus,
+  onDismiss,
+  onRestore,
+  onToggleCollapse
+}: PlayerGuidanceLiteProps): ReactElement {
   const i18n = useContext(ClientI18nContext);
-  if (snapshot.m7Guidance.scenarios.length === 0) {
+  const guidanceState = getGuidanceReadModelState(snapshot);
+  const selectedDistrictName =
+    selectedDistrict === null ? "" : formatPlayerDistrictName(selectedDistrict, i18n);
+  const hasGuidanceEvidence =
+    snapshot.m7Guidance.tutorial.steps.length > 0 &&
+    snapshot.m7Guidance.hints.groups.length > 0 &&
+    snapshot.m7Guidance.encyclopedia.entries.length > 0;
+  const hasOpenedGovernancePreview = m3FlowStage !== "select-office";
+  const hasObservedResult = commandStatus !== null || m3FlowStage === "result";
+  const canOpenAction = canPreviewAppointment || canPreviewCampaign;
+  const steps: readonly PlayerGuidanceLiteStep[] = [
+    {
+      key: "first-objective",
+      title: i18n.t("shell.guidanceLite.firstObjective.title"),
+      body: i18n.t("shell.guidanceLite.firstObjective.text"),
+      state: guidanceState === "normal" ? "done" : "active"
+    },
+    {
+      key: "select-district",
+      title: i18n.t("shell.guidanceLite.selectDistrict.title"),
+      body:
+        selectedDistrict === null
+          ? i18n.t("shell.guidanceLite.selectDistrict.pending")
+          : i18n.t("shell.guidanceLite.selectDistrict.done", { district: selectedDistrictName }),
+      state: selectedDistrict === null ? "active" : "done"
+    },
+    {
+      key: "inspect-district",
+      title: i18n.t("shell.guidanceLite.inspectDistrict.title"),
+      body:
+        selectedDistrict === null
+          ? i18n.t("shell.guidanceLite.inspectDistrict.pending")
+          : i18n.t("shell.guidanceLite.inspectDistrict.done"),
+      state: selectedDistrict === null ? "pending" : "done"
+    },
+    {
+      key: "governance-action",
+      title: i18n.t("shell.guidanceLite.action.title"),
+      body:
+        m3FlowStage === "result"
+          ? i18n.t("shell.guidanceLite.action.done")
+          : hasOpenedGovernancePreview
+            ? i18n.t("shell.guidanceLite.action.active")
+            : i18n.t("shell.guidanceLite.action.pending"),
+      state:
+        m3FlowStage === "result"
+          ? "done"
+          : hasOpenedGovernancePreview || canOpenAction
+            ? "active"
+            : "pending"
+    },
+    {
+      key: "observe-result",
+      title: i18n.t("shell.guidanceLite.observe.title"),
+      body:
+        commandStatus === null
+          ? i18n.t("shell.guidanceLite.observe.pending")
+          : i18n.t("shell.guidanceLite.observe.done", { status: commandStatus }),
+      state: hasObservedResult ? "done" : "pending"
+    },
+    {
+      key: "next-step-feedback",
+      title: i18n.t("shell.guidanceLite.next.title"),
+      body: hasObservedResult
+        ? i18n.t("shell.guidanceLite.next.done")
+        : i18n.t("shell.guidanceLite.next.pending"),
+      state: hasObservedResult ? "active" : "pending"
+    }
+  ];
+
+  if (isDismissed) {
     return (
-      <div className="client-shell__objective-copy" data-objective-state="empty">
-        <strong>{i18n.t("shell.objectives.emptyTitle")}</strong>
-        <span>{i18n.t("shell.objectives.emptyText")}</span>
+      <div className="player-guidance-lite" data-guidance-state="dismissed">
+        <p>{i18n.t("shell.guidanceLite.dismissed")}</p>
+        <button type="button" onClick={onRestore}>
+          {i18n.t("shell.guidanceLite.restore")}
+        </button>
       </div>
     );
+  }
+
+  return (
+    <section
+      className="player-guidance-lite"
+      aria-label={i18n.t("shell.guidanceLite.label")}
+      data-guidance-state={guidanceState}
+      data-guidance-collapsed={isCollapsed ? "true" : "false"}
+      data-guidance-evidence={hasGuidanceEvidence ? "available" : "missing"}
+    >
+      <header className="player-guidance-lite__header">
+        <div>
+          <strong>{i18n.t("shell.guidanceLite.title")}</strong>
+          <span>{formatGuidanceSourceText(guidanceState, i18n)}</span>
+        </div>
+        <div className="player-guidance-lite__controls">
+          <button
+            type="button"
+            aria-expanded={!isCollapsed}
+            aria-label={
+              isCollapsed
+                ? i18n.t("shell.guidanceLite.expand")
+                : i18n.t("shell.guidanceLite.collapse")
+            }
+            onClick={onToggleCollapse}
+          >
+            {isCollapsed
+              ? i18n.t("shell.guidanceLite.expand")
+              : i18n.t("shell.guidanceLite.collapse")}
+          </button>
+          <button
+            type="button"
+            aria-label={i18n.t("shell.guidanceLite.dismiss")}
+            onClick={onDismiss}
+          >
+            {i18n.t("shell.guidanceLite.dismiss")}
+          </button>
+        </div>
+      </header>
+      {isCollapsed ? null : (
+        <>
+          <ol
+            className="player-guidance-lite__steps"
+            aria-label={i18n.t("shell.guidanceLite.stepsLabel")}
+          >
+            {steps.map((step) => (
+              <li key={step.key} data-step-state={step.state}>
+                <span>{formatGuidanceStepState(step.state, i18n)}</span>
+                <strong>{step.title}</strong>
+                <p>{step.body}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="player-guidance-lite__costs">{i18n.t("shell.guidanceLite.costsVisible")}</p>
+        </>
+      )}
+    </section>
+  );
+}
+
+function getGuidanceReadModelState(
+  snapshot: ClientReadModelSnapshot
+): "empty" | "error" | "normal" {
+  if (snapshot.m7Guidance.scenarios.length === 0) {
+    return "empty";
   }
   if (snapshot.m7Guidance.reviewSummary.blockedScopeNotes.length > 0) {
-    return (
-      <div className="client-shell__objective-copy" data-objective-state="error">
-        <strong>{i18n.t("shell.objectives.errorTitle")}</strong>
-        <span>{i18n.t("shell.objectives.errorText")}</span>
-      </div>
-    );
+    return "error";
   }
-  return (
-    <div className="client-shell__objective-copy" data-objective-state="normal">
-      <strong>{i18n.t("shell.objectives.nextStep")}</strong>
-      <span>{i18n.t("shell.objectives.defaultText")}</span>
-    </div>
-  );
+  return "normal";
+}
+
+function formatGuidanceSourceText(state: "empty" | "error" | "normal", i18n: ClientI18n): string {
+  switch (state) {
+    case "empty":
+      return i18n.t("shell.guidanceLite.sourceEmpty");
+    case "error":
+      return i18n.t("shell.guidanceLite.sourceError");
+    case "normal":
+      return i18n.t("shell.guidanceLite.sourceReady");
+  }
+}
+
+function formatGuidanceStepState(state: PlayerGuidanceStepState, i18n: ClientI18n): string {
+  switch (state) {
+    case "active":
+      return i18n.t("shell.guidanceLite.state.active");
+    case "done":
+      return i18n.t("shell.guidanceLite.state.done");
+    case "pending":
+      return i18n.t("shell.guidanceLite.state.pending");
+  }
 }
 
 function CommandStatus({

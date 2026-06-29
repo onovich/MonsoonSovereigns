@@ -166,3 +166,42 @@ export const MapPresentationSimplifiedChinese = {
     <WebClientShell initialLocalePreference="zh-CN" initialSystemLocales={["zh-Hans"]} />
   )
 };
+
+export const PlayerGuidanceLiteNormal = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const PlayerGuidanceLiteEmpty = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-empty" />
+};
+
+export const PlayerGuidanceLiteError = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-error" />
+};
+
+export const PlayerGuidanceLiteExtreme = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-extreme" />
+};
+
+export const PlayerGuidanceLiteNarrow = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1"
+    }
+  },
+  render: () => <WebClientShell initialSearch="?fixture=m7-extreme" />
+};
+
+export const PlayerGuidanceLiteEnglish = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const PlayerGuidanceLiteSimplifiedChinese = {
+  render: () => (
+    <WebClientShell initialLocalePreference="zh-CN" initialSystemLocales={["zh-Hans"]} />
+  )
+};
+
+export const PlayerGuidanceLiteSystemFallback = {
+  render: () => <WebClientShell initialLocalePreference="system" initialSystemLocales={["fr-FR"]} />
+};

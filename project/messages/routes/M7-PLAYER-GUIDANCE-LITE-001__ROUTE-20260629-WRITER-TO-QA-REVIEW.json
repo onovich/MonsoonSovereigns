@@ -1,0 +1,48 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-TO-QA-REVIEW",
+  "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+  "source_role": "client_engineer",
+  "source_thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+  "source_thread_nickname": "Lantern",
+  "source_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+  "source_status": "REVIEW",
+  "routed_by_role": "lead_orchestrator",
+  "routed_by_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "target_role": "qa_reviewer",
+  "target_thread_id": "019f1159-1c62-73e3-92ee-08b50881723d",
+  "target_thread_nickname": "Auditor",
+  "requested_action": "Perform independent read-only QA review of M7-PLAYER-GUIDANCE-LITE-001 actual diff and writer handoff. Return ACCEPT or REQUEST_CHANGES.",
+  "branch_or_worktree": "feat/m7-player-guidance-lite",
+  "base_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+  "implementation_commit": "bbbd0fa59d6b5e72526140d178fd780de4bcf38f",
+  "expected_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-QA-REVIEW__qa_reviewer.json",
+  "reviewed_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+  "acceptance_focus": [
+    "Lightweight dismissible/collapsible localized player guidance for first objective, select district, inspect district, action preview, observe result, and next-step feedback.",
+    "Reuse existing read models and command previews; do not create a full tutorial system or authority mutation path.",
+    "No forced irreversible command submission, hidden costs, player-only privileged behavior, or debug/prototype leakage in player mode.",
+    "English, zh-CN, and system fallback Storybook/Playwright coverage.",
+    "Allowed paths only and no forbidden package/docs/status/CI changes."
+  ],
+  "known_metadata_note": "Writer handoff validator passed. Handoff head_commit/commit fields are null, but git branch HEAD and writer final report identify implementation_commit bbbd0fa59d6b5e72526140d178fd780de4bcf38f; QA should decide whether this is non-blocking metadata or requires changes.",
+  "required_checks": [
+    "git status --short",
+    "taskctl validate M7-PLAYER-GUIDANCE-LITE-001",
+    "validate-handoff writer handoff",
+    "git diff --check",
+    "scope/forbidden-path review",
+    "risk-based UI/e2e/test evidence review or rerun"
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-29T11:08:30.0000000+08:00",
+  "delivery": {
+    "method": "spawn_agent",
+    "status": "sent",
+    "agent_id": "019f1159-1c62-73e3-92ee-08b50881723d",
+    "nickname": "Auditor",
+    "sent_at": "2026-06-29T11:08:30.0000000+08:00",
+    "note": "Lead spawned real independent qa_reviewer with this route content in the initial prompt."
+  },
+  "route_sent_at": "2026-06-29T11:08:30.0000000+08:00"
+}
