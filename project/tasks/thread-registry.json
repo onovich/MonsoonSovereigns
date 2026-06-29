@@ -11,10 +11,12 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T13:07:42.179Z",
-        "task_id": null,
-        "task_ids": [],
-        "branch_or_worktree": "codex/close-m7-platform-resolution-localization-matrix"
+        "updated_at": "2026-06-29T13:17:41.835Z",
+        "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+        "task_ids": [
+          "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001"
+        ],
+        "branch_or_worktree": "codex/m7-manual-playthrough-evidence"
       }
     ],
     "retired_leads": [
@@ -35,7 +37,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-29T13:07:42.179Z"
+      "checked_at": "2026-06-29T13:17:41.835Z"
     }
   },
   "entries": {
@@ -6903,6 +6905,35 @@
         "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
         "M7-UI-LOCALIZATION-EXIT-001"
       ]
+    },
+    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001:lead_orchestrator": {
+      "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+      "start_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "updated_at": "2026-06-29T13:17:41.835Z"
+    },
+    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001:test_engineer": {
+      "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "role": "test_engineer",
+      "thread_id": "019f1384-9ccc-76d2-ae0d-c14d05de4627",
+      "nickname": "Probe the 2nd",
+      "status": "spawned_pending_route",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+      "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "expected_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+      "updated_at": "2026-06-29T13:17:41.835Z"
     }
   },
   "replaced_threads": [
@@ -7077,7 +7108,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T13:08:16.377Z",
+  "updated_at": "2026-06-29T13:17:41.835Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",

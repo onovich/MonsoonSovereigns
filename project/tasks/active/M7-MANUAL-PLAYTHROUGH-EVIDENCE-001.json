@@ -2,7 +2,7 @@
   "id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
   "summary": "Collect Beta manual playthrough evidence without autonomous acceptance",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "IN_PROGRESS",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -62,8 +62,33 @@
     "pnpm test:e2e",
     "pnpm desktop:package"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+  "threads": {
+    "test_engineer": {
+      "thread_id": "019f1384-9ccc-76d2-ae0d-c14d05de4627",
+      "nickname": "Probe the 2nd",
+      "status": "spawned_pending_route",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "expected_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+      "started_at": "2026-06-29T13:17:41.835Z",
+      "updated_at": "2026-06-29T13:17:41.835Z"
+    },
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+      "start_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-START__lead_orchestrator.json",
+      "updated_at": "2026-06-29T13:17:41.835Z"
+    }
+  },
   "route_to": "qa_reviewer",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -73,7 +98,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-29T13:17:41.835Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -89,5 +114,12 @@
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
   ],
-  "manual_acceptance_human_gate_required": true
+  "manual_acceptance_human_gate_required": true,
+  "start_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+  "expected_writer_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+  "started_at": "2026-06-29T13:17:41.835Z",
+  "base_main_commit": "60259ff1dedcc05bd7a93d776724efe8492fc7e7",
+  "previous_closed_task": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+  "next_action": "Send prepared route to test_engineer, then wait for writer REVIEW or BLOCKED handoff."
 }

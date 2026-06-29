@@ -2,26 +2,42 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-platform-resolution-localization-matrix",
-      "updated_at": "2026-06-29T13:07:42.179Z",
-      "lead_close_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+      "updated_at": "2026-06-29T13:17:41.835Z",
+      "start_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-START__lead_orchestrator.json"
+    },
+    "test_engineer": {
+      "thread_id": "019f1384-9ccc-76d2-ae0d-c14d05de4627",
+      "nickname": "Probe the 2nd",
+      "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "status": "spawned_pending_route",
+      "role": "test_engineer",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+      "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "expected_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+      "updated_at": "2026-06-29T13:17:41.835Z"
     }
   },
   "last_integrated_task": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
-  "last_main_commit": "ae754bbbbbdb278a58de6299a4ccec646590902f",
+  "last_main_commit": "60259ff1dedcc05bd7a93d776724efe8492fc7e7",
   "next_ready_tasks": [
-    "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
     "M7-UI-LOCALIZATION-EXIT-001"
   ],
   "unresolved_risks": [
@@ -47,10 +63,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 closure checkpoint",
+    "approval_source": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE. Formal content lock, manual playthrough acceptance where human judgment is required, release/commercial/branding, telemetry/accounts/secrets, server/multiplayer, cloud-save enablement, irreversible migration, frozen product/platform/core decisions, and major cultural-risk decisions remain Human Gates.",
-    "recorded_at": "2026-06-29T13:07:42.179Z"
+    "note": "No Human Gate is active. Manual playthrough acceptance where human judgment is required remains a future Human Gate if evidence requires it; this task records evidence only. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-29T13:17:41.835Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -874,7 +890,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T13:08:16.377Z",
+  "last_updated_at": "2026-06-29T13:17:41.835Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2664,5 +2680,29 @@
       "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
       "M7-UI-LOCALIZATION-EXIT-001"
     ]
+  },
+  "m7_manual_playthrough_evidence": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+    "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+    "base_main_commit": "60259ff1dedcc05bd7a93d776724efe8492fc7e7",
+    "previous_closed_task": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+    "writer_thread_id": "019f1384-9ccc-76d2-ae0d-c14d05de4627",
+    "writer_thread_nickname": "Probe the 2nd",
+    "owner_role": "test_engineer",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.4-mini",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "start_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+    "started_at": "2026-06-29T13:17:41.835Z",
+    "updated_at": "2026-06-29T13:17:41.835Z",
+    "next_action": "Send route to test_engineer and wait for writer REVIEW/BLOCKED handoff.",
+    "human_gate_required": false,
+    "manual_acceptance_human_gate_required": true,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }
