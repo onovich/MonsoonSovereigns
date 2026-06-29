@@ -2,7 +2,7 @@
   "id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
   "summary": "Run large-scale Beta balance and anti-snowball validation",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "balance_analyst",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R4",
@@ -77,7 +77,7 @@
     "pnpm test",
     "pnpm check"
   ],
-  "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+  "branch_or_worktree": "codex/close-m7-large-scale-balance-anti-snowball",
   "threads": {
     "balance_analyst": {
       "thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
@@ -149,7 +149,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T09:30:55.111Z",
+  "updated_at": "2026-06-29T09:36:51.116Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -174,7 +174,7 @@
   "writer_thread_nickname": "Measure",
   "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
   "scheduling_reason": "Selected as the highest-priority dependency-ready M7 task after M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 closed; UI/localization/art directive has already been incorporated through closed M7 visual and UI-localization planning tasks.",
-  "next_action": "Open PR, wait for CI, merge to main, sync main, then close task only after origin/main contains accepted changes.",
+  "next_action": "Start the highest-priority dependency-ready M7 task after this closure checkpoint enters main.",
   "route_submission_id": "019f1272-19e4-70e3-b089-adda900b1128",
   "route_sent_at": "2026-06-29T08:15:21.784Z",
   "replaces_writer_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
@@ -213,5 +213,21 @@
   "lead_accept_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-06-29T09:30:55.111Z",
   "accepted_implementation_commit": "61e26fb4",
-  "accepted_branch_head": "c9be1d5bb11ea5174214b95b0071a81f7b196145"
+  "accepted_branch_head": "c9be1d5bb11ea5174214b95b0071a81f7b196145",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "integrated_pr": 191,
+  "integrated_main_commit": "97d140ec259249c70918065b1c13a16e08e1daf0",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/191",
+  "lead_close_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-06-29T09:36:51.116Z",
+  "child_threads_closed": [
+    "019f126e-0da9-76c3-a842-14039df3bbfb",
+    "019f1275-952a-78d3-a178-a97f14e27e39",
+    "019f128d-e7d2-7233-af50-b724ea0290b7",
+    "019f129b-fd0a-71c2-9536-dffc59336dc8"
+  ],
+  "next_ready_tasks": [
+    "M7-PERFORMANCE-MEMORY-LOADING-001",
+    "M7-UI-REGRESSION-MATRIX-001"
+  ]
 }
