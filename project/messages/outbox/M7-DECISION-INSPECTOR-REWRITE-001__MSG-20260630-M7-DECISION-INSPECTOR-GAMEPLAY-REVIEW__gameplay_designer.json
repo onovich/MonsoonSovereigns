@@ -1,0 +1,101 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "gameplay_designer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Reviewed implementation commit 2b151efc79ca730375978cd588a49972d8d6bdc3 on codex/m7-decision-inspector-rewrite. The rewrite mostly satisfies the decision-assistant structure: the right inspector now leads with current problem, recommendation, cost, benefit, risk, next action, and localized reason chips before grouped population/labor/grain/cash/route/governance/obligation/appointment/campaign data. Existing preview/confirmation paths are reused and no forbidden domain command path was introduced. Gameplay review still requests R2 before QA because the blocked-route recommendation can point the player to a disabled action, and the default player inspector contains newly added internal read-model copy.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "commit": "2b151efc79ca730375978cd588a49972d8d6bdc3",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; branch is codex/m7-decision-inspector-rewrite and was clean before writing this gameplay handoff."
+    },
+    {
+      "command": "git show --stat --name-status --decorate --no-renames 2b151efc79ca730375978cd588a49972d8d6bdc3",
+      "exit_code": 0,
+      "result": "PASS; reviewed implementation commit touching packages/ui/src/index.tsx, packages/ui/src/i18n.ts, apps/web/src/styles/shell.css, apps/web/src/shell/web-client-shell.test.tsx, and tests/e2e/web-shell.spec.ts."
+    },
+    {
+      "command": "git diff --name-status 2b151efc79ca730375978cd588a49972d8d6bdc3..HEAD",
+      "exit_code": 0,
+      "result": "PASS; subsequent branch changes are process/task/handoff routing files only, not implementation code."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; writer handoff valid."
+    },
+    {
+      "command": "git diff --check 2b151efc79ca730375978cd588a49972d8d6bdc3..HEAD",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors in process commits after reviewed implementation."
+    },
+    {
+      "command": "git show --check --no-ext-diff --no-renames --format=short 2b151efc79ca730375978cd588a49972d8d6bdc3",
+      "exit_code": 0,
+      "result": "PASS; implementation commit has no whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 1 test file / 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 1 test file / 9 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "manual gameplay/UX inspection of packages/ui/src/index.tsx and packages/ui/src/i18n.ts against the task acceptance criteria",
+      "exit_code": 0,
+      "result": "REQUEST_CHANGES; structure and command-boundary behavior are acceptable, but blocked-route next action and player-facing internal copy need R2."
+    }
+  ],
+  "decisions": [
+    "Accepted as directionally correct that the right inspector now puts the decision assistant before raw metrics and groups existing data under resources, route/campaign, governance/appointment, effects, and actions.",
+    "Accepted that population, labor, grain, cash, route, governance, obligation, appointment, and campaign data remain reachable after the decision summary.",
+    "Accepted that reason chips in the inspected player path use i18n.formatReasonCode and the added stable reason keys hide the reviewed raw reason codes in default player mode.",
+    "Accepted that appointment and campaign actions still use existing preview/confirmation callbacks; no copied sim-core rule authority or new command path was found in the implementation diff.",
+    "Requested R2 because packages/ui/src/index.tsx:1809-1817 recommends Review obligations for an unreachable route, while packages/ui/src/index.tsx:1990-2007 disables the Review obligations button for the same unreachable-route state. A decision assistant cannot name a disabled control as the next action without giving the player an executable alternative.",
+    "Requested R2 because packages/ui/src/i18n.ts:112-113 and :568 add player-visible copy saying raw district read-model values. That is implementation language in the default right inspector and works against the product-owner complaint that the UI is not understandable or game-like."
+  ],
+  "risks": [
+    "If the blocked-route mismatch ships to QA, QA can pass structural tests while players still see an instruction they cannot execute.",
+    "The i18n fallback still title-cases unknown reason codes; the reviewed fixtures are covered, but future player-mode reason sources should keep adding stable player-copy keys rather than relying on fallback output.",
+    "The R2 fix should remain copy/flow-level and must not expand into final art, manual node battle, new domain rules, or new command surfaces."
+  ],
+  "blockers": [
+    "Fix blocked-route assistant behavior so the displayed next action is executable or explicitly tells the player what to do when Review obligations is disabled.",
+    "Replace the player-facing raw/read-model wording in the right inspector with gameplay copy tied to obligations, supply, governance, and campaign planning."
+  ],
+  "route_to": "client_engineer",
+  "requested_action": "Prepare R2 for the two gameplay/UX issues above, then reroute to gameplay_designer before test_engineer/qa_reviewer. Do not send this implementation to QA yet.",
+  "created_at": "2026-06-30T05:49:30.000+08:00"
+}

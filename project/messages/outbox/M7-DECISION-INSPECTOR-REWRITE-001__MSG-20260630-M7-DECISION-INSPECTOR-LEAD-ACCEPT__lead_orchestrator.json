@@ -1,0 +1,98 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-LEAD-ACCEPT",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-DECISION-INSPECTOR-REWRITE-001 for PR integration after client_engineer implementation, gameplay REQUEST_CHANGES/R2 ACCEPT, test_engineer ACCEPT, and independent QA ACCEPT. The right inspector now starts from current problem, recommendation, cost, benefit, risk, next action, and localized reasons before grouped district data; R2 fixed blocked-route disabled-action guidance and removed player-facing read-model jargon.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/styles/shell.css",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "commit": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-r2/gameplay-r2/test/qa handoffs>",
+      "exit_code": 0,
+      "result": "PASS; all review handoffs validated."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 10 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; existing Vite chunk-size warning only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, architecture."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_FOR_INTEGRATION",
+      "decision": "Accept the task after gameplay R2 ACCEPT, test ACCEPT, and QA ACCEPT."
+    },
+    {
+      "id": "NO_CONTENT_LOCK_APPROVAL",
+      "decision": "This acceptance does not approve formal M7 content lock, M7 exit, final art, release readiness, manual node battle, telemetry, server, cloud-save, commercial, or branding scope."
+    },
+    {
+      "id": "NEXT_UX_CHAIN_REMAINS",
+      "decision": "Continue UX recovery after integration; task rail and UX recovery validation remain separate downstream tasks."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LOW_FIDELITY_BLOCKED_ROUTE_GUIDANCE",
+      "severity": "P3",
+      "summary": "Blocked-route guidance remains text-level selection help, not a full route repair tutorial.",
+      "mitigation": "Acceptable for this task; UX smoke/player feedback can revisit if confusion persists."
+    },
+    {
+      "id": "FUTURE_REASON_CODE_KEYS",
+      "severity": "P3",
+      "summary": "Future reason sources still need explicit player-facing i18n keys to avoid fallback raw-ish text.",
+      "mitigation": "Carry into subsequent UI tasks and raw-key assertions."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then close the task only after origin/main contains the accepted changes.",
+  "created_at": "2026-06-29T22:22:05.187Z"
+}
