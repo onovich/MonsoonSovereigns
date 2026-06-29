@@ -11,10 +11,12 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T09:36:51.116Z",
+        "updated_at": "2026-06-29T09:46:40.833Z",
         "task_id": null,
-        "task_ids": [],
-        "branch_or_worktree": "codex/close-m7-large-scale-balance-anti-snowball"
+        "task_ids": [
+          "M7-PERFORMANCE-MEMORY-LOADING-001"
+        ],
+        "branch_or_worktree": "codex/m7-performance-memory-loading"
       }
     ],
     "retired_leads": [
@@ -35,7 +37,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-29T08:12:59.704Z"
+      "checked_at": "2026-06-29T09:46:40.833Z"
     }
   },
   "entries": {
@@ -6556,6 +6558,35 @@
       "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
       "integrated_pr": 191,
       "integrated_main_commit": "97d140ec259249c70918065b1c13a16e08e1daf0"
+    },
+    "M7-PERFORMANCE-MEMORY-LOADING-001:test_engineer": {
+      "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "role": "test_engineer",
+      "thread_id": "019f12c3-aabc-71b3-9df0-f651c1c1c062",
+      "nickname": "Gauge",
+      "status": "waiting_start_confirmed",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-performance-memory-loading",
+      "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "expected_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+      "updated_at": "2026-06-29T09:46:40.833Z"
+    },
+    "M7-PERFORMANCE-MEMORY-LOADING-001:lead_orchestrator": {
+      "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-performance-memory-loading",
+      "start_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "updated_at": "2026-06-29T09:46:40.833Z"
     }
   },
   "replaced_threads": [
@@ -6707,7 +6738,7 @@
       "replaced_at": "2026-06-29T08:46:14.768Z"
     }
   ],
-  "updated_at": "2026-06-29T09:36:51.116Z",
+  "updated_at": "2026-06-29T09:46:40.833Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
