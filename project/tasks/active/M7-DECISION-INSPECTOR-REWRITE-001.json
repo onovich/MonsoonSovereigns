@@ -2,7 +2,7 @@
   "id": "M7-DECISION-INSPECTOR-REWRITE-001",
   "summary": "Rewrite the right inspector as a decision assistant instead of a raw data stack",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "client_engineer",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R3",
@@ -74,21 +74,22 @@
     "pnpm test:e2e",
     "pnpm check"
   ],
-  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "branch_or_worktree": "codex/close-m7-decision-inspector-rewrite",
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_integration",
+      "status": "closed_integrated",
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "start_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "updated_at": "2026-06-29T22:22:05.187Z",
-      "lead_accept_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json"
+      "updated_at": "2026-06-29T22:29:07.356Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json",
+      "closed_at": "2026-06-29T22:29:07.356Z"
     },
     "client_engineer": {
       "thread_id": "019f1542-b98b-7080-829a-c61485780bdd",
       "nickname": "Window",
-      "status": "review_ready_r2",
+      "status": "closed_after_accept_review_and_main_integration",
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-START__lead_orchestrator.json",
@@ -97,7 +98,7 @@
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "updated_at": "2026-06-29T21:59:18.805Z",
+      "updated_at": "2026-06-29T22:29:07.356Z",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T21:22:18.104Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
@@ -108,12 +109,13 @@
       "request_changes_submission_id": "019f155d-8196-7431-adad-6fbdea532579",
       "request_changes_sent_at": "2026-06-29T21:51:26.035Z",
       "review_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
-      "review_commit_r2": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2"
+      "review_commit_r2": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+      "closed_at": "2026-06-29T22:29:07.356Z"
     },
     "gameplay_designer": {
       "thread_id": "019f1555-fd2c-72c3-b354-dfd71860980b",
       "nickname": "Ledger",
-      "status": "accepted_r2",
+      "status": "closed_after_accept_review_and_main_integration",
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
@@ -125,7 +127,7 @@
       "actual_effort": "unknown",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T21:43:16.068Z",
-      "updated_at": "2026-06-29T22:03:33.357Z",
+      "updated_at": "2026-06-29T22:29:07.356Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-REVIEW__gameplay_designer.json",
       "review_status": "REQUEST_CHANGES",
       "source_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
@@ -135,12 +137,13 @@
       "route_submission_id_r2": "019f1564-bea9-7c01-8c18-f5ca5fbc81a9",
       "route_sent_at_r2": "2026-06-29T21:59:18.805Z",
       "review_handoff_r2": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
-      "review_status_r2": "ACCEPT"
+      "review_status_r2": "ACCEPT",
+      "closed_at": "2026-06-29T22:29:07.356Z"
     },
     "test_engineer": {
       "thread_id": "019f1568-723b-7553-92e0-e8562dfcb930",
       "nickname": "Canary",
-      "status": "accepted",
+      "status": "closed_after_accept_review_and_main_integration",
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-GAMEPLAY-R2-TO-TEST-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
@@ -152,14 +155,15 @@
       "actual_effort": "unknown",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T22:03:33.357Z",
-      "updated_at": "2026-06-29T22:12:00.061Z",
+      "updated_at": "2026-06-29T22:29:07.356Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
-      "review_status": "ACCEPT"
+      "review_status": "ACCEPT",
+      "closed_at": "2026-06-29T22:29:07.356Z"
     },
     "qa_reviewer": {
       "thread_id": "019f1570-3f32-7c01-b2be-3939bcb88621",
       "nickname": "Gate",
-      "status": "accepted",
+      "status": "closed_after_accept_review_and_main_integration",
       "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
       "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-TEST-TO-QA-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
@@ -171,9 +175,10 @@
       "actual_effort": "unknown",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T22:12:00.061Z",
-      "updated_at": "2026-06-29T22:22:05.187Z",
+      "updated_at": "2026-06-29T22:29:07.356Z",
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-QA-REVIEW__qa_reviewer.json",
-      "review_status": "ACCEPT"
+      "review_status": "ACCEPT",
+      "closed_at": "2026-06-29T22:29:07.356Z"
     }
   },
   "route_to": "lead_orchestrator",
@@ -188,7 +193,7 @@
     "Promoted to READY after M7-PLAYER-FIRST-SCREEN-ORIENTATION-001 entered origin/main through PR #207."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T22:22:05.187Z",
+  "updated_at": "2026-06-29T22:29:07.356Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -234,5 +239,31 @@
   "lead_accept_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-06-29T22:22:05.187Z",
   "accepted_implementation_commit": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
-  "accepted_branch_head": "c15bcc98675c96da8ae447eefc110b18f1e1872a"
+  "accepted_branch_head": "5dca4390dfed7a1db78885be387dd643ebbe91da",
+  "closed_at": "2026-06-29T22:29:07.356Z",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "integrated_pr": 209,
+  "integrated_main_commit": "763beaa8d67cac18314172210950dea948e1a69a",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/209",
+  "lead_close_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-CLOSED__lead_orchestrator.json",
+  "next_ready_tasks": [
+    "M7-TASK-RAIL-COLLAPSED-DRAWERS-001"
+  ],
+  "tests_run_after_merge": [
+    {
+      "command": "gh pr checks 209 --watch",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 2m40s; Windows Desktop Smoke Artifact passed in 51s."
+    },
+    {
+      "command": "gh pr merge 209 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #209 merged and origin/main advanced to 763beaa8d67cac18314172210950dea948e1a69a."
+    },
+    {
+      "command": "git status --short --branch; git rev-parse origin/main; git log -1 --oneline --decorate",
+      "exit_code": 0,
+      "result": "Local main synchronized to 763beaa8d67cac18314172210950dea948e1a69a before closure branch was created."
+    }
+  ]
 }

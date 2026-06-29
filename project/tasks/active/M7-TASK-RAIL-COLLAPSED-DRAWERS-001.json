@@ -2,7 +2,7 @@
   "id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
   "summary": "Replace bottom information walls with an actionable task rail and collapsed drawers",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "READY",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -76,7 +76,7 @@
   ],
   "branch_or_worktree": null,
   "threads": {},
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -84,12 +84,15 @@
     "UI must use read models and existing GameCommand/query boundaries; do not mutate authoritative WorldState from React, Pixi, or renderer.",
     "Pixi/map presentation is render-cache-only and must remain rebuildable from read models.",
     "No server, multiplayer, telemetry, account, cloud-save implementation, release, commercial, branding, production-art, or paid-service scope is authorized.",
-    "All player-visible text must go through existing i18n boundaries."
+    "All player-visible text must go through existing i18n boundaries.",
+    "Promoted to READY after M7-DECISION-INSPECTOR-REWRITE-001 entered origin/main through PR #209."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T18:58:16.954Z",
+  "updated_at": "2026-06-29T22:29:07.356Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
-  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db"
+  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+  "ready_after_task": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "ready_after_main_commit": "763beaa8d67cac18314172210950dea948e1a69a"
 }
