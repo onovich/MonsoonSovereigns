@@ -1,0 +1,142 @@
+{
+  "message_id": "MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW",
+  "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 as truthful agent-operated local preview playthrough evidence and routing input only. The writer handoff does not claim product-owner or human manual acceptance approval, keeps formal/manual human judgment acceptance behind the M7 content-lock Human Gate where required, records build commit, seed source, scenario label, save/checkpoint visibility, platform, locale, resolution, and defect/limitation notes, and does not change product code, content data, balance, UI, save, release, telemetry, server/multiplayer, branding/commercial, or manual node battle scope.",
+  "artifacts": [
+    "project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+    "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+  "commit": null,
+  "reviewed_writer_commit": "74bc340a393bc3cbed919fb7552755d13aa32e89",
+  "reviewed_branch_head_before_qa_handoff": "f56d8516f530c822dc6ddfdeefec94607dc36470",
+  "reviewed_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean worktree before QA handoff creation."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff contains only allowed process/task/message/state files: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/thread-registry.json, project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json, and M7 manual playthrough message/route JSON files."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff on final reviewed branch state."
+    },
+    {
+      "command": "node -e JSON parse/shape check of writer handoff evidence fields",
+      "exit_code": 0,
+      "result": "shape-ok; evidence includes build_commit, seed, scenario, save_checkpoints[6], duration, platform, locale, resolution, and defects[3]."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry lists M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 as REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready output is M7-UI-LOCALIZATION-EXIT-001 DRAFT."
+    },
+    {
+      "command": "PowerShell forbidden-path scanner over git diff --name-only origin/main...HEAD",
+      "exit_code": 0,
+      "result": "forbidden-scan-ok; no apps, packages, content-source, tools, .github, frozen docs, manifest/checksum/report, product code, content, UI, save, release, telemetry, server, mod, branding, commercial, or manual-node-battle path was changed."
+    },
+    {
+      "command": "git log --oneline --decorate --max-count=12 origin/main..HEAD",
+      "exit_code": 0,
+      "result": "Reviewed process-only commit chain: start route, record route, writer evidence, route to QA, and record QA route. Current reviewed head f56d8516 follows the route commit 7bfc0593 named in the review package."
+    },
+    {
+      "command": "git rev-parse b49e8956732a00e87e395243cb9aace367670547",
+      "exit_code": 0,
+      "result": "Writer evidence build_commit exists and resolves to b49e8956732a00e87e395243cb9aace367670547."
+    },
+    {
+      "command": "git grep -n selected evidence strings",
+      "exit_code": 0,
+      "result": "Confirmed the scenario label and m5.composite.river-gate.v0 save/checkpoint identifiers exist in current repo surfaces/content; no product code was modified by this task."
+    },
+    {
+      "command": "Review writer tests_run records for pnpm build:web, pnpm test:e2e, pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Writer handoff records pnpm build:web exit 0 with existing chunk warning, pnpm test:e2e exit 0 with 23/23 Chromium tests passed, and pnpm desktop:package exit 0 with .tmp desktop package smoke output. QA did not rerun these write-producing commands during the read-only review."
+    },
+    {
+      "command": "Read related M7 content-lock and content-fill task contracts",
+      "exit_code": 0,
+      "result": "Confirmed formal content lock acceptance and manual human judgment acceptance remain Human Gates; the Beta scenario/person/event set has three scenario candidates, so this QA ACCEPT must not be read as full scenario-by-scenario human approval."
+    }
+  ],
+  "acceptance_check": {
+    "allowed_paths": "PASS: actual diff is limited to task JSON, thread registry, goal/model state, and project/messages artifacts allowed by the task.",
+    "forbidden_scope": "PASS: no product code, package code, content-source data, balance tuning, UI fix, save migration, release artifact, telemetry, server/multiplayer, arbitrary-code mod, branding/commercial decision, or manual node battle work appears in the diff.",
+    "evidence_truthfulness": "PASS: writer classifies the evidence as agent-operated local preview evidence, not product-owner/human manual acceptance approval.",
+    "human_gate_boundary": "PASS: task JSON keeps manual_acceptance_human_gate_required true; writer summary, decisions, risks, defects, and requested_action all route formal/manual human judgment acceptance to the M7 content-lock Human Gate if required.",
+    "required_tests": "PASS_WITH_QA_NOTE: writer recorded all required commands; QA reran task validate, list, ready, writer handoff validation, evidence shape check, git diff name/status/check, and forbidden-path checks. Writer handoff still records an earlier validate-handoff failure row, but the final reviewed writer handoff validates successfully.",
+    "manual_node_battle": "PASS: DEFER_MANUAL_NODE_BATTLE is preserved and no reversal, spike, implementation, validation dependency, or blocking research path is introduced.",
+    "p0_p1_culture_release": "PASS: no P0/P1, major cultural-risk acceptance, irreversible migration, release/commercial question, or manual node battle reversal is introduced by the evidence branch."
+  },
+  "findings": [],
+  "decisions": [
+    {
+      "id": "QA-ACCEPT-EVIDENCE-ONLY",
+      "decision": "Accept the task as record/routing evidence, not as formal manual acceptance, product-owner approval, content lock approval, or release readiness."
+    },
+    {
+      "id": "QA-HUMAN-GATE-PRESERVED",
+      "decision": "If formal/manual human judgment acceptance is required, it remains a Human Gate under M7-CONTENT-LOCK-ACCEPTANCE-001; this task must not auto-approve it."
+    },
+    {
+      "id": "QA-SCOPE-CLEAN",
+      "decision": "Accept the actual diff scope as process-only and within allowed paths."
+    },
+    {
+      "id": "QA-MANUAL-BATTLE-DEFERRED",
+      "decision": "Manual node battle remains DEFER_MANUAL_NODE_BATTLE with no M7/M8 blocking work or reversal."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "R4",
+      "summary": "The collected evidence is local agent-operated preview evidence. It is not a human stopwatch manual playthrough, product-owner manual acceptance, content lock approval, release artifact, or production save artifact.",
+      "mitigation": "Preserve Human Gate routing for any formal/manual human judgment acceptance and require the lead/content-lock task to synthesize this only as evidence input."
+    },
+    {
+      "severity": "R3",
+      "summary": "The accepted Beta content set has three scenario candidates; this handoff records visible 1531 preview evidence and limitations, not full scenario-by-scenario human approval.",
+      "mitigation": "M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 must not claim complete human manual acceptance solely from this task."
+    },
+    {
+      "severity": "R2",
+      "summary": "Writer handoff records an earlier validate-handoff failure row instead of a final pass row, although QA reran validation and the final writer handoff is valid.",
+      "mitigation": "This QA handoff records the final validate-handoff pass; lead should rely on the QA validation result for final artifact validity."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may accept/integrate M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 as truthful process evidence only. Preserve the Human Gate for any formal/manual human judgment acceptance and do not treat this as content lock approval, release readiness, or manual node battle reversal.",
+  "created_at": "2026-06-29T21:47:12.2116352+08:00"
+}
