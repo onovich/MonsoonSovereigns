@@ -1,0 +1,66 @@
+{
+  "message_id": "MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW",
+  "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+  "from_role": "gameplay_designer",
+  "status": "REQUEST_CHANGES",
+  "summary": "First-screen Court Brief and compressed guidance largely satisfy the orientation goal, but default player mode still exposes developer/debug/internal copy. This fails the explicit player-mode no-debug-leak acceptance criterion and needs a small UI/i18n/test correction before gameplay acceptance.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-GAMEPLAY-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+  "commit": "dd901022ddc3070ed30cc917501320a213999508",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; branch was clean at start of review."
+    },
+    {
+      "command": "git diff origin/main...HEAD --stat",
+      "exit_code": 0,
+      "result": "PASS; reviewed changed UI, i18n, tests, Storybook, task, route, and message files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "exit_code": 0,
+      "result": "PASS."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors."
+    },
+    {
+      "command": "manual inspection of packages/ui/src/index.tsx, packages/ui/src/i18n.ts, tests/e2e/web-shell.spec.ts, tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "REQUEST_CHANGES; player-mode developer/debug/internal copy remains visible and tests assert one instance."
+    }
+  ],
+  "decisions": [
+    "Court Brief placement and content are acceptable in principle: it answers identity, date/season, priority problem, recommended action, cost, and ignored consequence without opening another panel.",
+    "Generic guidance is improved from a checklist into Objective/Focus/Action/Safety and keeps preview/confirmation safety.",
+    "No scope drift found into sim/domain rules, protocol, save format, full inspector rewrite, task rail, final art, or manual battle."
+  ],
+  "risks": [
+    "Leaving developer-overlay and diagnostics text on the default first screen keeps the UI feeling like a tool/debug build rather than a player-facing game screen.",
+    "Current E2E coverage misses the acceptance wording because it checks for state hash/prototype/raw reason leaks but not developer/debug/internal player-mode labels."
+  ],
+  "blockers": [
+    "Remove or hide player-mode Developer Overlay / developer diagnostics copy from the default player screen, or replace it with player-facing neutral status text.",
+    "Update E2E/SSR assertions so player mode fails on Developer Overlay/developer diagnostics/internal debug text while preserving preview/confirmation safety coverage."
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route back to client_engineer for the minimal player-mode debug/internal copy cleanup and matching test update, then return to gameplay_designer review.",
+  "created_at": "2026-06-29T20:49:08.144Z"
+}
