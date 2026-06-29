@@ -21,7 +21,7 @@
     "test_engineer": {
       "thread_id": "019f12c3-aabc-71b3-9df0-f651c1c1c062",
       "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
-      "status": "in_progress",
+      "status": "review_handoff_submitted",
       "role": "test_engineer",
       "nickname": "Gauge",
       "configured_model": "gpt-5.4-mini",
@@ -31,9 +31,30 @@
       "branch_or_worktree": "codex/m7-performance-memory-loading",
       "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
       "expected_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T09:48:36.974Z",
+      "updated_at": "2026-06-29T10:01:05.741Z",
       "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
-      "route_sent_at": "2026-06-29T09:48:36.974Z"
+      "route_sent_at": "2026-06-29T09:48:36.974Z",
+      "review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "2bdd522808d1b3a86dda09c80c8aa7bf2f5e026b",
+      "writer_handoff_commit": "4fcb62244ba90859196cff4086460724213dfa81"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f12d2-8b3b-7480-9aab-6f408c430e15",
+      "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+      "status": "in_review",
+      "role": "qa_reviewer",
+      "nickname": "Witness",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-performance-memory-loading",
+      "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-REVIEW__qa_reviewer.json",
+      "route_submission_id": "019f12d2-8b3b-7480-9aab-6f408c430e15",
+      "route_sent_at": "2026-06-29T10:01:05.741Z",
+      "updated_at": "2026-06-29T10:01:05.741Z"
     }
   },
   "last_integrated_task": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
@@ -868,7 +889,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T09:48:36.974Z",
+  "last_updated_at": "2026-06-29T10:01:05.741Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2442,7 +2463,7 @@
     ]
   },
   "m7_performance_memory_loading": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
     "branch_or_worktree": "codex/m7-performance-memory-loading",
     "base_main_commit": "60301ed786e814f8538625972c1667f1af0771ff",
@@ -2459,11 +2480,21 @@
     "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T09:46:40.833Z",
-    "updated_at": "2026-06-29T09:48:36.974Z",
-    "next_action": "Wait for test_engineer REVIEW handoff, validate it, then route to qa_reviewer.",
+    "updated_at": "2026-06-29T10:01:05.741Z",
+    "next_action": "Wait for qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
-    "route_sent_at": "2026-06-29T09:48:36.974Z"
+    "route_sent_at": "2026-06-29T09:48:36.974Z",
+    "review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
+    "evidence_report": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__EVIDENCE-20260629-test_engineer.json",
+    "review_commit": "2bdd522808d1b3a86dda09c80c8aa7bf2f5e026b",
+    "writer_handoff_commit": "4fcb62244ba90859196cff4086460724213dfa81",
+    "qa_thread_id": "019f12d2-8b3b-7480-9aab-6f408c430e15",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-06-29T10:01:05.741Z",
+    "qa_route_submission_id": "019f12d2-8b3b-7480-9aab-6f408c430e15"
   }
 }
