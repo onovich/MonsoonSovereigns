@@ -1,0 +1,68 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-CLOSED",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7 decision inspector rewrite is CLOSED after PR #209 passed CI, merged, and origin/main contains the accepted decision-assistant inspector. UX recovery continues with M7-TASK-RAIL-COLLAPSED-DRAWERS-001 before formal content lock can be reconsidered.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/goal-mode-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-decision-inspector-rewrite",
+  "commit": "763beaa8d67cac18314172210950dea948e1a69a",
+  "tests_run": [
+    {
+      "command": "gh pr checks 209 --watch",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 2m40s; Windows Desktop Smoke Artifact passed in 51s."
+    },
+    {
+      "command": "gh pr merge 209 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #209 merged; origin/main advanced to 763beaa8d67cac18314172210950dea948e1a69a."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "PASS before closure update."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Mark M7-DECISION-INSPECTOR-REWRITE-001 CLOSED only after PR #209 passed CI, merged, and origin/main contained the accepted changes."
+    },
+    {
+      "id": "NEXT_READY_SELECTION",
+      "decision": "Promote M7-TASK-RAIL-COLLAPSED-DRAWERS-001 to READY because its dependency is now integrated."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "Do not reopen or approve M7 content lock from this task; UX recovery must continue through task rail and UX validation."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-UX-RECOVERY-INCOMPLETE",
+      "severity": "R4",
+      "summary": "First-screen/map/decision inspector steps are closed, but collapsed task rail and UX recovery validation remain before content lock reconsideration.",
+      "mitigation": "Start M7-TASK-RAIL-COLLAPSED-DRAWERS-001 next."
+    },
+    {
+      "id": "LOW_FIDELITY_BLOCKED_ROUTE_GUIDANCE",
+      "severity": "P3",
+      "summary": "Accepted guidance is text-level and may need later UX smoke attention.",
+      "mitigation": "Carry into M7-UX-RECOVERY-VALIDATION-001 if player confusion remains."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge this closure checkpoint, sync main, then start M7-TASK-RAIL-COLLAPSED-DRAWERS-001 without asking for continuation unless a Human Gate appears.",
+  "created_at": "2026-06-29T22:29:07.356Z"
+}
