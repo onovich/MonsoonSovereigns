@@ -19,29 +19,24 @@
       "updated_at": "2026-06-29T11:19:29.482Z"
     },
     "test_engineer": {
-      "thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
+      "thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
-      "status": "in_progress_r2",
+      "status": "replacement_waiting_start_confirmed",
       "role": "test_engineer",
-      "nickname": "Probe",
+      "nickname": "Canary the 2nd",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-ui-regression-matrix",
-      "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
-      "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T11:46:13.757Z",
-      "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
-      "route_sent_at": "2026-06-29T11:20:57.328Z",
-      "review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
-      "review_commit": "b2467768b7b39c34688a8ecd6ce5398d7bcd694b",
-      "writer_handoff_commit": "4c8e6786b7c25b8fdefbf56911449b12e348ddad",
-      "request_changes_round": 1,
-      "request_changes_route": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST.json",
-      "expected_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
-      "request_changes_submission_id": "019f1333-3cd2-7460-a9f8-f735d17d470a",
-      "request_changes_sent_at": "2026-06-29T11:46:13.757Z"
+      "replaces_thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
+      "replacement_reason": "original_test_engineer_model_capacity_error_no_r2_handoff_partial_diff_present",
+      "partial_diff_files": [
+        "tests/e2e/web-shell.spec.ts"
+      ],
+      "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
+      "updated_at": "2026-06-29T11:52:30.907Z"
     },
     "qa_reviewer": {
       "thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
@@ -59,7 +54,7 @@
       "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
       "route_submission_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
       "route_sent_at": "2026-06-29T11:36:15.555Z",
-      "updated_at": "2026-06-29T11:44:53.804Z",
+      "updated_at": "2026-06-29T11:52:30.907Z",
       "qa_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json"
     }
   },
@@ -373,6 +368,19 @@
       "replaced_by_nickname": "Canary",
       "reason": "model_capacity_error_after_REQUEST_CHANGES_no_r2_handoff_no_partial_diff",
       "replaced_at": "2026-06-29T10:22:12.880Z"
+    },
+    {
+      "task_id": "M7-UI-REGRESSION-MATRIX-001",
+      "role": "test_engineer",
+      "thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
+      "status": "closed_errored_no_r2_handoff_partial_diff_present",
+      "replaced_by": "019f1338-a100-72d3-ae69-f4d1ab9be209",
+      "replaced_by_nickname": "Canary the 2nd",
+      "reason": "model_capacity_error_after_REQUEST_CHANGES_no_r2_handoff_partial_diff_present",
+      "partial_diff_files": [
+        "tests/e2e/web-shell.spec.ts"
+      ],
+      "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
   "m5_performance_gate": {
@@ -903,7 +911,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T11:46:13.757Z",
+  "last_updated_at": "2026-06-29T11:52:30.907Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2573,8 +2581,8 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T11:46:13.757Z",
-    "next_action": "Wait for test_engineer R2 handoff.",
+    "updated_at": "2026-06-29T11:52:30.907Z",
+    "next_action": "Send replacement REQUEST_CHANGES route and wait for R2 handoff.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
@@ -2594,6 +2602,14 @@
     "request_changes_route": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST.json",
     "expected_writer_r2_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
     "request_changes_submission_id": "019f1333-3cd2-7460-a9f8-f735d17d470a",
-    "request_changes_sent_at": "2026-06-29T11:46:13.757Z"
+    "request_changes_sent_at": "2026-06-29T11:46:13.757Z",
+    "replaces_thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
+    "replacement_writer_thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
+    "replacement_writer_thread_nickname": "Canary the 2nd",
+    "replacement_reason": "original_test_engineer_model_capacity_error_no_r2_handoff_partial_diff_present",
+    "partial_diff_files": [
+      "tests/e2e/web-shell.spec.ts"
+    ],
+    "replacement_route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json"
   }
 }

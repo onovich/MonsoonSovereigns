@@ -89,7 +89,7 @@
   ],
   "branch_or_worktree": "codex/m7-ui-regression-matrix",
   "threads": {
-    "test_engineer": "019f131a-1f3c-75c2-b346-b48346480c99",
+    "test_engineer": "019f1338-a100-72d3-ae69-f4d1ab9be209",
     "qa_reviewer": "019f1329-d67d-73c3-aa45-4fd5aadcda03"
   },
   "route_to": "qa_reviewer",
@@ -106,7 +106,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-29T11:46:13.757Z",
+  "updated_at": "2026-06-29T11:52:30.907Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -131,8 +131,8 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T11:46:13.757Z",
-    "next_action": "Send QA REQUEST_CHANGES back to original test_engineer for deterministic locale scenario isolation fix.",
+    "updated_at": "2026-06-29T11:52:30.907Z",
+    "next_action": "Send replacement REQUEST_CHANGES R2 route to new test_engineer thread; replacement must work with existing partial diff.",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
     "route_sent_at": "2026-06-29T11:20:57.328Z",
     "review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
@@ -151,6 +151,15 @@
     "expected_writer_r2_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
     "request_changes_at": "2026-06-29T11:44:53.804Z",
     "request_changes_submission_id": "019f1333-3cd2-7460-a9f8-f735d17d470a",
-    "request_changes_sent_at": "2026-06-29T11:46:13.757Z"
+    "request_changes_sent_at": "2026-06-29T11:46:13.757Z",
+    "replaces_thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
+    "replacement_writer_thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
+    "replacement_writer_thread_nickname": "Canary the 2nd",
+    "replacement_reason": "original_test_engineer_model_capacity_error_no_r2_handoff_partial_diff_present",
+    "partial_diff_files": [
+      "tests/e2e/web-shell.spec.ts"
+    ],
+    "replacement_route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
+    "replaced_at": "2026-06-29T11:52:30.907Z"
   }
 }
