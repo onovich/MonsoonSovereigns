@@ -1,0 +1,237 @@
+{
+  "message_id": "MSG-20260629-M7-BALANCE-WRITER-REVIEW",
+  "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+  "from_role": "balance_analyst",
+  "status": "REVIEW",
+  "summary": "Implemented a deterministic local M7 large-scale balance runner and focused evidence test. The batch artifact covers 3 Beta scenarios x 12 deterministic seeds = 36 runs, carries forward M6 PASS_WITH_LIMITS, and records local reviewable distribution evidence rather than a single-run story: primarySignalCounts runaway-expansion=4, unavoidable-collapse=9, no-action-heavy-ai=11, exploit-loop=10, direct-control-dominance=1, stable=1; aggregate snowball=63, collapse=96, no-action=82, exploit-loop=80, direct-control=47, anti-stall=69; max no-action share=0.571, p95 no-action share=0.571, p95 direct-control share=0.000. Replay pointers are populated for all six signals, reason-code evidence includes the dominant bundle/default/scenario reasons plus the signal-level reasons, and the module now parses cleanly after removing a duplicated helper block that had caused Node to reject the file.",
+  "artifacts": [
+    "apps/sim-runner/src/m7-large-scale-balance.ts",
+    "apps/sim-runner/src/run-m7-large-scale-balance.mjs",
+    "apps/sim-runner/package.json",
+    "tests/sim-runner-m7-large-scale-balance.test.tsx",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+    "m7.large-scale-balance-artifact.v1 schema v1 hash=e0e5969c sampleSize=36 runCount=36 scenarioCount=3 seedCount=12",
+    "replayPointers runawayExpansion=scenario.beta.1581.succession-fracture|seed=1543|step=0|event=event.beta.succession-warning|choice=choice.beta.agent-delay unavoidableCollapse=scenario.beta.1531.edge-polity|seed=1531|step=3|event=event.beta.coercion-cost-review|choice=choice.beta.defer-coercion noActionHeavyAi=scenario.beta.1569.overextended-suzerainty|seed=1531|step=0|event=event.beta.campaign-window-warning|choice=choice.beta.agent-delay exploitLoopDetected=scenario.beta.1581.succession-fracture|seed=1531|step=0|event=event.beta.succession-warning|choice=choice.beta.agent-delay directControlDominance=scenario.beta.1531.edge-polity|seed=1657|step=0|event=event.beta.coercion-cost-review|choice=choice.beta.defer-coercion stable=scenario.beta.1581.succession-fracture|seed=1559|step=0|event=event.beta.coercion-cost-review|choice=choice.beta.defer-coercion"
+  ],
+  "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+  "commit": "db3f7d13",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "clean before handoff write after commit db3f7d13"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "task registry listed; next READY M7 items were M7-PERFORMANCE-MEMORY-LOADING-001 and M7-UI-REGRESSION-MATRIX-001"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "READY list matched the task registry view"
+    },
+    {
+      "command": "node --input-type=module -e JSON parse/shape check for M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "exit_code": 0,
+      "result": "task JSON parsed; id matched; allowed_paths=14; forbidden_paths=25; required_tests=13"
+    },
+    {
+      "command": "pnpm vitest run tests/sim-runner-m7-large-scale-balance.test.tsx",
+      "exit_code": 0,
+      "result": "1 test file passed; 1 test passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "25 test files passed; 191 tests passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-ai test",
+      "exit_code": 0,
+      "result": "3 test files passed; 6 tests passed"
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "node/worker hashes matched for hello simulation, command/query, save/load, M4, M5, and M6 Alpha"
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 baseline recorded; day throughput 13528/sec; p50 60500ns; p95 132500ns; p99 205400ns"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture boundaries passed; 43 test files passed; 353 tests passed; web 1 file and 9 tests passed"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m7-large-scale-balance",
+      "exit_code": 0,
+      "result": "artifact generated locally; hash e0e5969c; 3 scenarios; 12 seeds; 36 runs; validation passed"
+    }
+  ],
+  "decisions": [
+    {
+      "type": "artifact_snapshot",
+      "schema": "m7.large-scale-balance-artifact.v1",
+      "artifactHash": "e0e5969c",
+      "sampleSize": 36,
+      "runCount": 36,
+      "scenarioCount": 3,
+      "seedCount": 12,
+      "carryForwardM6Gate": "PASS_WITH_LIMITS"
+    },
+    {
+      "type": "distribution_summary",
+      "primarySignalCounts": {
+        "runaway-expansion": 4,
+        "unavoidable-collapse": 9,
+        "no-action-heavy-ai": 11,
+        "exploit-loop": 10,
+        "direct-control-dominance": 1,
+        "stable": 1
+      },
+      "snowballScore": 63,
+      "collapseScore": 96,
+      "noActionScore": 82,
+      "exploitLoopScore": 80,
+      "directControlScore": 47,
+      "antiStallScore": 69,
+      "maxNoActionShare": 0.571,
+      "maxDirectControlShare": 0,
+      "noActionShareP95": 0.571,
+      "directControlShareP95": 0,
+      "replayPointers": {
+        "runawayExpansion": "scenario.beta.1581.succession-fracture|seed=1543|step=0|event=event.beta.succession-warning|choice=choice.beta.agent-delay",
+        "unavoidableCollapse": "scenario.beta.1531.edge-polity|seed=1531|step=3|event=event.beta.coercion-cost-review|choice=choice.beta.defer-coercion",
+        "noActionHeavyAi": "scenario.beta.1569.overextended-suzerainty|seed=1531|step=0|event=event.beta.campaign-window-warning|choice=choice.beta.agent-delay",
+        "exploitLoopDetected": "scenario.beta.1581.succession-fracture|seed=1531|step=0|event=event.beta.succession-warning|choice=choice.beta.agent-delay",
+        "directControlDominance": "scenario.beta.1531.edge-polity|seed=1657|step=0|event=event.beta.coercion-cost-review|choice=choice.beta.defer-coercion",
+        "stable": "scenario.beta.1581.succession-fracture|seed=1559|step=0|event=event.beta.coercion-cost-review|choice=choice.beta.defer-coercion"
+      },
+      "reasonCodeEvidence": [
+        {
+          "reasonCode": "m7.balance.bundle.6b8ef809",
+          "count": 36,
+          "sampleRunIds": [
+            "scenario.beta.1531.edge-polity.seed-1531",
+            "scenario.beta.1569.overextended-suzerainty.seed-1531",
+            "scenario.beta.1581.succession-fracture.seed-1531"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.choice.default",
+          "count": 36,
+          "sampleRunIds": [
+            "scenario.beta.1531.edge-polity.seed-1531",
+            "scenario.beta.1569.overextended-suzerainty.seed-1531",
+            "scenario.beta.1581.succession-fracture.seed-1531"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.decision.advance",
+          "count": 36,
+          "sampleRunIds": [
+            "scenario.beta.1531.edge-polity.seed-1531",
+            "scenario.beta.1569.overextended-suzerainty.seed-1531",
+            "scenario.beta.1581.succession-fracture.seed-1531"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.decision.defer",
+          "count": 36,
+          "sampleRunIds": [
+            "scenario.beta.1531.edge-polity.seed-1531",
+            "scenario.beta.1569.overextended-suzerainty.seed-1531",
+            "scenario.beta.1581.succession-fracture.seed-1531"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.event.review.CULTURE_HUMAN_GATE_REQUIRED",
+          "count": 36,
+          "sampleRunIds": [
+            "scenario.beta.1531.edge-polity.seed-1531",
+            "scenario.beta.1569.overextended-suzerainty.seed-1531",
+            "scenario.beta.1581.succession-fracture.seed-1531"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.signal.runaway-expansion",
+          "count": 4,
+          "sampleRunIds": [
+            "scenario.beta.1581.succession-fracture.seed-1543",
+            "scenario.beta.1569.overextended-suzerainty.seed-1569",
+            "scenario.beta.1581.succession-fracture.seed-1657"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.signal.unavoidable-collapse",
+          "count": 9,
+          "sampleRunIds": [
+            "scenario.beta.1531.edge-polity.seed-1531",
+            "scenario.beta.1569.overextended-suzerainty.seed-1543",
+            "scenario.beta.1531.edge-polity.seed-1569"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.signal.no-action-heavy-ai",
+          "count": 11,
+          "sampleRunIds": [
+            "scenario.beta.1569.overextended-suzerainty.seed-1531",
+            "scenario.beta.1531.edge-polity.seed-1543",
+            "scenario.beta.1531.edge-polity.seed-1559"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.signal.exploit-loop",
+          "count": 10,
+          "sampleRunIds": [
+            "scenario.beta.1581.succession-fracture.seed-1531",
+            "scenario.beta.1531.edge-polity.seed-1571",
+            "scenario.beta.1581.succession-fracture.seed-1571"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.signal.direct-control-dominance",
+          "count": 1,
+          "sampleRunIds": [
+            "scenario.beta.1531.edge-polity.seed-1657"
+          ]
+        },
+        {
+          "reasonCode": "m7.balance.signal.stable",
+          "count": 1,
+          "sampleRunIds": [
+            "scenario.beta.1581.succession-fracture.seed-1559"
+          ]
+        }
+      ]
+    }
+  ],
+  "risks": [
+    "artifactHash is command-context sensitive because packageManagerVersion() reads the active npm user agent; compare hashes within the same invocation family rather than across node-vs-pnpm runs.",
+    "The balance batch is bound to the current local Beta content-source snapshot, so later content edits will legitimately change hashes, replay pointers, and distribution counts.",
+    "Direct-control share remains 0 across the sampled runs; if future content introduces stronger default-choice dominance, re-run the batch to keep that signal exercised."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Read the diff as a local balance evidence review: confirm the artifact schema/hash, sample size, replay pointers, and signal distribution are sufficient for M7 anti-snowball assessment, and advise whether explicit tuning or a follow-up validation pass is warranted.",
+  "created_at": "2026-06-29T08:57:10.317Z"
+}
