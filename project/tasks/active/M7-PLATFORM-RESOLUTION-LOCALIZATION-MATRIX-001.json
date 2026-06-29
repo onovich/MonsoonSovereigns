@@ -2,7 +2,7 @@
   "id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
   "summary": "Validate Chrome, Edge, Firefox, Windows, resolution, and localization matrix",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -80,8 +80,11 @@
     "pnpm desktop:package",
     "pnpm check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-platform-resolution-localization-matrix",
+  "threads": {
+    "test_engineer": "019f1355-4381-7910-b54f-760e2e4f6fcf",
+    "qa_reviewer": "019f136b-f97d-7eb0-903c-7ace3625e17f"
+  },
   "route_to": "qa_reviewer",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -92,7 +95,7 @@
     "This task now depends on M7-UI-REGRESSION-MATRIX-001 so platform/resolution/localization validation cannot pass using stale pre-quality-track UI evidence."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T20:48:00+08:00",
+  "updated_at": "2026-06-29T13:01:33.512Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -107,5 +110,50 @@
     "irreversible save/content migration",
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
-  ]
+  ],
+  "process": {
+    "base_main_commit": "8812f3a01c4bfd0da3b09d8bb28b617038782ac2",
+    "previous_closed_task": "M7-UI-REGRESSION-MATRIX-001",
+    "start_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+    "writer_thread_id": "019f1355-4381-7910-b54f-760e2e4f6fcf",
+    "writer_thread_nickname": "Gauge the 2nd",
+    "owner_role": "test_engineer",
+    "reviewer_role": "qa_reviewer",
+    "configured_writer_model": "gpt-5.4-mini",
+    "configured_writer_effort": "high",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "started_at": "2026-06-29T12:24:10.078Z",
+    "updated_at": "2026-06-29T13:01:33.512Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "route_submission_id": "019f1357-01e5-7693-b457-d3286d95e540",
+    "route_sent_at": "2026-06-29T12:25:21.066Z",
+    "route_status": "SENT",
+    "review_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+    "review_commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
+    "writer_handoff_commit": "d8c0d1506a27ad972e24baf46763e2fd9ec8dc0d",
+    "qa_thread_id": "019f136b-f97d-7eb0-903c-7ace3625e17f",
+    "qa_thread_nickname": "Auditor the 2nd",
+    "qa_route": "project/messages/routes/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-06-29T12:48:36.719Z",
+    "qa_route_submission_id": "019f136d-9b46-70a3-8cc6-b854ab34966e",
+    "qa_route_sent_at": "2026-06-29T12:50:03.771Z",
+    "qa_route_status": "SENT",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "qa_accepted_at": "2026-06-29T12:57:13.981Z",
+    "carry_forward_risks": [
+      "Edge and Firefox remain blocked-by-tooling rows until Playwright projects/browser tooling are added and evidence rerun.",
+      "Windows DPI 150% remains a follow-up row until a dedicated DPI matrix harness exists."
+    ],
+    "lead_accept_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T13:01:33.512Z",
+    "accepted_implementation_commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
+    "accepted_branch_head": "bd4fdda600b3f3d72245c075916822657daec164"
+  }
 }

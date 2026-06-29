@@ -1,0 +1,134 @@
+{
+  "matrixId": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+  "supportedScenarios": [
+    {
+      "label": "chromium-system-1280x720",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "localePreference": "system",
+      "browserLocales": ["zh-Hans", "en-US"],
+      "expectedLang": "zh-CN"
+    },
+    {
+      "label": "chromium-en-us-1280x800",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "localePreference": "en-US",
+      "browserLocales": ["fr-FR", "en-US"],
+      "expectedLang": "en-US"
+    },
+    {
+      "label": "chromium-zh-cn-1920x1080",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "localePreference": "zh-CN",
+      "browserLocales": ["en-US"],
+      "expectedLang": "zh-CN"
+    },
+    {
+      "label": "chromium-system-2560x1080",
+      "viewport": {
+        "width": 2560,
+        "height": 1080
+      },
+      "localePreference": "system",
+      "browserLocales": ["zh-Hans", "en-US"],
+      "expectedLang": "zh-CN"
+    }
+  ],
+  "supportedResolutions": [
+    {
+      "smokeId": "viewport.1280x720",
+      "width": 1280,
+      "height": 720,
+      "status": "pass"
+    },
+    {
+      "smokeId": "viewport.16x10-text-scale",
+      "width": 1280,
+      "height": 800,
+      "status": "pass"
+    },
+    {
+      "smokeId": "viewport.high-dpi",
+      "width": 1920,
+      "height": 1080,
+      "status": "pass"
+    },
+    {
+      "smokeId": "viewport.ultrawide",
+      "width": 2560,
+      "height": 1080,
+      "status": "pass"
+    }
+  ],
+  "supportedLocales": [
+    {
+      "localePreference": "system",
+      "browserLocales": ["zh-Hans", "en-US"],
+      "expectedLang": "zh-CN",
+      "status": "pass"
+    },
+    {
+      "localePreference": "en-US",
+      "browserLocales": ["fr-FR", "en-US"],
+      "expectedLang": "en-US",
+      "status": "pass"
+    },
+    {
+      "localePreference": "zh-CN",
+      "browserLocales": ["en-US"],
+      "expectedLang": "zh-CN",
+      "status": "pass"
+    }
+  ],
+  "supportedExecutionRows": [
+    {
+      "axis": "browser",
+      "label": "Chrome",
+      "status": "pass",
+      "evidence": "pnpm test:e2e"
+    },
+    {
+      "axis": "desktop",
+      "label": "Windows desktop smoke",
+      "status": "pass",
+      "evidence": ["pnpm desktop:security-check", "pnpm desktop:package"]
+    }
+  ],
+  "unsupportedRows": [
+    {
+      "axis": "browser",
+      "label": "Edge",
+      "status": "blocked-by-tooling",
+      "reason": "Playwright config only defines chromium in this workspace."
+    },
+    {
+      "axis": "browser",
+      "label": "Firefox",
+      "status": "blocked-by-tooling",
+      "reason": "Playwright config only defines chromium in this workspace."
+    },
+    {
+      "axis": "dpi",
+      "label": "Windows DPI 150%",
+      "status": "follow-up",
+      "reason": "No dedicated DPI matrix harness is provisioned in the current browser and desktop smoke tooling."
+    }
+  ],
+  "surfaceCoverage": [
+    "tutorial",
+    "hints",
+    "encyclopedia",
+    "map",
+    "major command flows",
+    "save/load surface",
+    "terminal/evidence views"
+  ]
+}

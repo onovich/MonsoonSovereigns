@@ -1,0 +1,161 @@
+{
+  "message_id": "MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW",
+  "task_id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the platform/resolution/localization matrix evidence. The branch adds observable Playwright matrix coverage and an explicit JSON fixture for supported Chromium/Windows desktop smoke, supported resolutions, supported locale states, and scoped unsupported rows. Edge, Firefox, and Windows DPI 150% are not represented as covered; they remain unresolved matrix rows for M7-UI-LOCALIZATION-EXIT-001 to carry or resolve.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "tests/e2e/m7-platform-resolution-localization.matrix.json",
+    "playwright.config.ts",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/tasks/active/M7-UI-LOCALIZATION-EXIT-001.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-platform-resolution-localization-matrix",
+  "commit": "cb83d3dedddbef3dd00fdeb529b81ae485033528",
+  "reviewed_writer_commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
+  "reviewed_handoff": "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean tracked worktree on codex/m7-platform-resolution-localization-matrix before this QA handoff was written."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Changed files are process/task/message files plus tests/e2e/web-shell.spec.ts and tests/e2e/m7-platform-resolution-localization.matrix.json."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting errors."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No working tree whitespace or patch formatting errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task and fixture",
+      "exit_code": 0,
+      "result": "Both project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json and tests/e2e/m7-platform-resolution-localization.matrix.json parsed successfully."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 as REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready-task stdout in the current state."
+    },
+    {
+      "command": "PowerShell allowed/forbidden path scanner over git diff --name-only origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No allowed-path violations and no forbidden-path hits."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- forbidden path list",
+      "exit_code": 0,
+      "result": "No forbidden path output for sim-runner, content-tools, sim-core, sim-ai, protocol, save-format, tools, .github, frozen docs, PROJECT_STATUS, manifests, checksums, or validation reports."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 23/23 tests."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only the named monsoonDesktop bridge; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke completed; output .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "diff keyword scan for nodeIntegration/contextIsolation/ipc/telemetry/account/cloud/server/fetch/WebSocket",
+      "exit_code": 0,
+      "result": "Changed product-surface diff contains no Electron IPC, telemetry, account, cloud-save, network, or hidden-server implementation. Matches are limited to Node fs/path imports in the Playwright spec fixture loader."
+    },
+    {
+      "command": "Read required files and related M7 handoffs",
+      "exit_code": 0,
+      "result": "Reviewed AGENTS.md, PROJECT_STATUS.md, project/goal-mode-state.json, task JSON, writer handoff, tests/e2e/web-shell.spec.ts, matrix fixture, playwright.config.ts, route file, M7-UI-REGRESSION writer/QA/closed handoffs, M7-UI-LOCALIZATION-PLAN QA handoff, and related map/guidance/save-boundary QA handoffs."
+    }
+  ],
+  "acceptance_check": {
+    "explicit_matrix_evidence": "PASS: fixture records Chrome pass, Windows desktop smoke pass, four supported resolutions, three supported locale rows, and explicit unsupported rows for Edge, Firefox, and Windows DPI 150%. The fixture shape is asserted by the new Playwright test.",
+    "surface_coverage": "PASS: e2e suite and fixture cover tutorial, hints, encyclopedia, map, major command flows, save/load surface, and terminal/evidence views. QA reran full Chromium e2e and it passed 23/23.",
+    "overflow_overlap": "PASS: existing and extended e2e coverage checks no horizontal overflow across required desktop viewports and matrix scenarios; the full e2e rerun passed.",
+    "edge_firefox_dpi_handling": "PASS_WITH_FOLLOW_UP: Edge and Firefox are blocked-by-tooling because playwright.config.ts defines chromium only; Windows DPI 150% is a follow-up because no dedicated DPI harness exists. These rows are not fake pass evidence.",
+    "m7_ui_localization_exit_dependency": "PASS_WITH_RISK: M7-UI-LOCALIZATION-EXIT-001 depends on this task, so exit evidence must explicitly carry or resolve the Edge/Firefox/DPI rows before claiming full platform coverage.",
+    "electron_renderer_boundary": "PASS: no changed Electron/renderer implementation expands Node integration, arbitrary IPC, hidden server, telemetry, accounts, or cloud-save; pnpm desktop:security-check passed.",
+    "locale_policy": "PASS: expectedLang zh-CN is consistent with the existing i18n-platform normalization of zh-Hans/zh-Hans-HK to zh-CN while UI-visible supported locale labels include zh-Hans and en-US."
+  },
+  "findings": [],
+  "decisions": [
+    {
+      "id": "QA-ACCEPT-MATRIX",
+      "decision": "Accept this task as a truthful platform/resolution/localization evidence matrix rather than full cross-browser enablement."
+    },
+    {
+      "id": "QA-UNSUPPORTED-ROWS-NOT-COVERED",
+      "decision": "Edge, Firefox, and Windows DPI 150% are accepted only as unresolved blocked/follow-up matrix rows. They must not be described later as passed coverage unless tooling is added and evidence rerun."
+    },
+    {
+      "id": "QA-EXIT-CARRYOVER",
+      "decision": "M7-UI-LOCALIZATION-EXIT-001 may use this handoff as input, but it must explicitly decide whether the unsupported rows are acceptable scoped follow-ups, defects, or blockers for the exit gate."
+    },
+    {
+      "id": "QA-LOCALE-NORMALIZATION",
+      "decision": "Accept fixture expectedLang zh-CN for zh-Hans browser/system inputs because existing locale code normalizes Simplified Chinese variants to zh-CN and the supported-locale UI still exposes zh-Hans/en-US labels."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
+      "severity": "P2",
+      "summary": "Edge and Firefox are not actually run in this workspace because Playwright config has only the chromium project.",
+      "mitigation": "Recorded as blocked-by-tooling rows. M7-UI-LOCALIZATION-EXIT-001 must not claim Edge/Firefox pass coverage without adding/running those projects or accepting a scoped follow-up."
+    },
+    {
+      "id": "M7-WINDOWS-DPI-150-UNRESOLVED",
+      "severity": "P2",
+      "summary": "Windows DPI 150% is not directly exercised by the current browser or desktop smoke tooling.",
+      "mitigation": "Recorded as a follow-up row. Exit validation must carry or resolve it."
+    },
+    {
+      "id": "WRITER-INITIAL-FAILURES",
+      "severity": "P3",
+      "summary": "Writer reported initial pnpm test:e2e and pnpm check failures before fixing fixture loading/formatting.",
+      "mitigation": "QA reran pnpm test:e2e and pnpm check successfully on the final branch state."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may accept/integrate M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001. Preserve the Edge/Firefox/Windows DPI 150% unresolved-row risk for M7-UI-LOCALIZATION-EXIT-001 and do not mark those rows as passed coverage without new evidence.",
+  "created_at": "2026-06-29T20:54:49.8595217+08:00"
+}

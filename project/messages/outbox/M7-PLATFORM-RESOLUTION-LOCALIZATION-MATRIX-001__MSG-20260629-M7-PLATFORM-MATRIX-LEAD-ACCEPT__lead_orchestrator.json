@@ -1,0 +1,128 @@
+{
+  "message_id": "MSG-20260629-M7-PLATFORM-MATRIX-LEAD-ACCEPT",
+  "task_id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Accepted the M7 platform, resolution, and localization matrix after independent QA ACCEPT and lead integration gates. The accepted evidence adds observable Playwright matrix coverage and a JSON fixture for Chromium-supported browser/resolution/localization rows plus Windows desktop smoke evidence. Edge, Firefox, and Windows DPI 150% remain explicit blocked-by-tooling/follow-up rows and must be carried into M7-UI-LOCALIZATION-EXIT-001 before any full platform coverage claim.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "tests/e2e/m7-platform-resolution-localization.matrix.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/m7-platform-resolution-localization-matrix",
+  "commit": "bd4fdda600b3f3d72245c075916822657daec164",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean before lead accept handoff write."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed; current task REVIEW before lead accept."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY stdout while this task is active."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs writer handoff",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs QA handoff",
+      "exit_code": 0,
+      "result": "VALID QA ACCEPT handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task and fixture",
+      "exit_code": 0,
+      "result": "shape-ok M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 REVIEW 4 supported scenarios, 3 unsupported rows."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format issues."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff limited to allowed tests and process/task/message/state files."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- forbidden path set",
+      "exit_code": 0,
+      "result": "No forbidden path output."
+    },
+    {
+      "command": "diff keyword scan for Electron/network/cloud/telemetry/account terms",
+      "exit_code": 0,
+      "result": "No product boundary expansion; matches limited to process text and Playwright test fixture loader context."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Passed; 1 file and 9 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed; Vite build completed with existing >500k chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed; Storybook build completed with existing chunk warning."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 23/23 tests passed, including the new platform matrix fixture test."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Passed; Electron security preferences, preload bridge, renderer navigation restriction, and IPC allowlist verified."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Passed; package smoke output under .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed; format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    "Accept QA status=ACCEPT and advance task to ACCEPTED pending PR CI and main integration.",
+    "Accept this as truthful matrix evidence, not full cross-browser enablement.",
+    "Carry Edge, Firefox, and Windows DPI 150% unresolved rows into M7-UI-LOCALIZATION-EXIT-001; do not claim them passed without new tooling/evidence.",
+    "Accept zh-CN expectedLang normalization for zh-Hans visible locale labels as consistent with current locale policy.",
+    "No Human Gate is active; this task does not add release, telemetry, accounts, cloud-save, server/multiplayer, manual node battle, commercial, branding, sim-rule, content fact, or save migration scope."
+  ],
+  "risks": [
+    "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED: Edge and Firefox are blocked by current Playwright tooling and remain unresolved rows.",
+    "M7-WINDOWS-DPI-150-UNRESOLVED: Windows DPI 150% is not directly exercised by current tooling and remains a follow-up row.",
+    "M7-UI-LOCALIZATION-EXIT-001 must decide whether these unresolved rows are acceptable scoped follow-ups, defects, or blockers."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then close M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 after origin/main contains accepted changes.",
+  "created_at": "2026-06-29T13:01:33.512Z"
+}
