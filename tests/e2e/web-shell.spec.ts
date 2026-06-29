@@ -1,4 +1,58 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { expect, test, type Locator, type Page } from "@playwright/test";
+
+type PlatformMatrixScenario = {
+  readonly label: string;
+  readonly viewport: {
+    readonly width: number;
+    readonly height: number;
+  };
+  readonly localePreference: "system" | "en-US" | "zh-CN";
+  readonly browserLocales: readonly string[];
+  readonly expectedLang: "en-US" | "zh-CN";
+};
+
+type PlatformMatrixResolutionRow = {
+  readonly smokeId: string;
+  readonly width: number;
+  readonly height: number;
+  readonly status: "pass";
+};
+
+type PlatformMatrixLocaleRow = {
+  readonly localePreference: "system" | "en-US" | "zh-CN";
+  readonly browserLocales: readonly string[];
+  readonly expectedLang: "en-US" | "zh-CN";
+  readonly status: "pass";
+};
+
+type PlatformMatrixExecutionRow = {
+  readonly axis: "browser" | "desktop";
+  readonly label: string;
+  readonly status: "pass";
+  readonly evidence: string | readonly string[];
+};
+
+type PlatformMatrixUnsupportedRow = {
+  readonly axis: "browser" | "dpi";
+  readonly label: string;
+  readonly status: "blocked-by-tooling" | "follow-up";
+  readonly reason: string;
+};
+
+type PlatformMatrixFixture = {
+  readonly matrixId: "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001";
+  readonly supportedScenarios: readonly PlatformMatrixScenario[];
+  readonly supportedResolutions: readonly PlatformMatrixResolutionRow[];
+  readonly supportedLocales: readonly PlatformMatrixLocaleRow[];
+  readonly supportedExecutionRows: readonly PlatformMatrixExecutionRow[];
+  readonly unsupportedRows: readonly PlatformMatrixUnsupportedRow[];
+  readonly surfaceCoverage: readonly string[];
+};
+
+const platformMatrix = readPlatformMatrixFixture();
 
 test("web shell loads and projects the read model", async ({ page }) => {
   await page.goto("/");
@@ -812,11 +866,17 @@ test("M7 tutorial hints encyclopedia flow exposes Beta review surfaces without s
     "8"
   );
   await expect(page.getByLabel("M7 supported locale matrix")).toContainText("zh-Hans");
+  await expect(page.getByLabel("M7 supported locale matrix")).toContainText("en-US");
   await expect(page.getByLabel("M7 asset reference manifest")).toContainText(
     "audio.ui.risk-warning"
   );
   await expect(page.getByLabel("M7 localization checks")).toContainText("loc.content-record.keys");
   await expect(page.getByLabel("M7 viewport smoke coverage")).toContainText("viewport.1280x720");
+  await expect(page.getByLabel("M7 viewport smoke coverage")).toContainText(
+    "viewport.16x10-text-scale"
+  );
+  await expect(page.getByLabel("M7 viewport smoke coverage")).toContainText("viewport.high-dpi");
+  await expect(page.getByLabel("M7 viewport smoke coverage")).toContainText("viewport.ultrawide");
   await expect(page.getByLabel("M7 post-1.0 gaps and risks")).toContainText(
     "risk.culture-specific-assets-blocked"
   );
@@ -1032,29 +1092,75 @@ test("M7 guidance workspace has no horizontal overflow across required viewports
   }
 });
 
+test("M7 platform matrix fixture records supported browser, resolution, locale, and unsupported rows explicitly", async () => {
+  expect(platformMatrix.matrixId).toBe("M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001");
+
+  expect(platformMatrix.supportedExecutionRows).toHaveLength(2);
+  expect(platformMatrix.supportedExecutionRows[0]?.axis).toBe("browser");
+  expect(platformMatrix.supportedExecutionRows[0]?.label).toBe("Chrome");
+  expect(platformMatrix.supportedExecutionRows[0]?.status).toBe("pass");
+  expect(platformMatrix.supportedExecutionRows[0]?.evidence).toBe("pnpm test:e2e");
+  expect(platformMatrix.supportedExecutionRows[1]?.axis).toBe("desktop");
+  expect(platformMatrix.supportedExecutionRows[1]?.label).toBe("Windows desktop smoke");
+  expect(platformMatrix.supportedExecutionRows[1]?.status).toBe("pass");
+  expect(platformMatrix.supportedExecutionRows[1]?.evidence).toEqual([
+    "pnpm desktop:security-check",
+    "pnpm desktop:package"
+  ]);
+
+  expect(platformMatrix.supportedResolutions).toHaveLength(4);
+  expect(platformMatrix.supportedResolutions.map((row) => row.smokeId)).toEqual([
+    "viewport.1280x720",
+    "viewport.16x10-text-scale",
+    "viewport.high-dpi",
+    "viewport.ultrawide"
+  ]);
+  expect(platformMatrix.supportedResolutions.map((row) => `${row.width}x${row.height}`)).toEqual([
+    "1280x720",
+    "1280x800",
+    "1920x1080",
+    "2560x1080"
+  ]);
+  expect(platformMatrix.supportedResolutions.every((row) => row.status === "pass")).toBe(true);
+
+  expect(platformMatrix.supportedLocales).toHaveLength(3);
+  expect(platformMatrix.supportedLocales.map((row) => row.localePreference)).toEqual([
+    "system",
+    "en-US",
+    "zh-CN"
+  ]);
+  expect(platformMatrix.supportedLocales.map((row) => row.expectedLang)).toEqual([
+    "zh-CN",
+    "en-US",
+    "zh-CN"
+  ]);
+  expect(platformMatrix.supportedLocales.every((row) => row.status === "pass")).toBe(true);
+
+  expect(platformMatrix.unsupportedRows.map((row) => row.label)).toEqual([
+    "Edge",
+    "Firefox",
+    "Windows DPI 150%"
+  ]);
+  expect(platformMatrix.unsupportedRows.map((row) => row.status)).toEqual([
+    "blocked-by-tooling",
+    "blocked-by-tooling",
+    "follow-up"
+  ]);
+  expect(platformMatrix.surfaceCoverage).toEqual([
+    "tutorial",
+    "hints",
+    "encyclopedia",
+    "map",
+    "major command flows",
+    "save/load surface",
+    "terminal/evidence views"
+  ]);
+});
+
 test("M7 UI regression matrix stays localized, console-clean, and key-free across supported viewports", async ({
   browser
 }, testInfo) => {
-  const scenarios = [
-    {
-      viewport: { width: 1280, height: 720 },
-      localePreference: "system" as const,
-      browserLocales: ["zh-Hans", "en-US"],
-      expectedLang: "zh-CN"
-    },
-    {
-      viewport: { width: 1280, height: 800 },
-      localePreference: "en-US" as const,
-      browserLocales: ["fr-FR", "en-US"],
-      expectedLang: "en-US"
-    },
-    {
-      viewport: { width: 1920, height: 1080 },
-      localePreference: "zh-CN" as const,
-      browserLocales: ["en-US"],
-      expectedLang: "zh-CN"
-    }
-  ];
+  const scenarios = platformMatrix.supportedScenarios;
 
   for (const scenario of scenarios) {
     const consoleErrors: string[] = [];
@@ -1209,4 +1315,12 @@ function expectNoRawPlayerKeys(text: string): void {
     /\b(?:shell|appointment|map|reason|settings|m[0-9]+)(?:[.-][a-z0-9-]+)+\b/giu
   );
   expect(rawKeyMatches ?? []).toEqual([]);
+}
+
+function readPlatformMatrixFixture(): PlatformMatrixFixture {
+  const fixturePath = resolve(
+    process.cwd(),
+    "tests/e2e/m7-platform-resolution-localization.matrix.json"
+  );
+  return JSON.parse(readFileSync(fixturePath, "utf8")) as PlatformMatrixFixture;
 }
