@@ -6446,20 +6446,24 @@
     "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001:balance_analyst": {
       "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
       "role": "balance_analyst",
-      "thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
-      "nickname": "Abacus",
-      "status": "active_started_replacement",
+      "thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
+      "nickname": "Measure",
+      "status": "active_started_replacement2",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
-      "replaces_thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
-      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT-START.json",
-      "route_submission_id": "019f1275-952a-78d3-a178-a97f14e27e39",
-      "route_sent_at": "2026-06-29T08:19:46.557Z",
+      "replaces_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+      "replacement_reason": "previous_replacement_balance_analyst_model_capacity_error_no_handoff_partial_diff_present",
+      "partial_diff_files": [
+        "apps/sim-runner/src/m7-large-scale-balance.ts"
+      ],
+      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT2-START.json",
+      "route_submission_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
+      "route_sent_at": "2026-06-29T08:46:14.768Z",
       "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
-      "updated_at": "2026-06-29T08:19:46.557Z"
+      "updated_at": "2026-06-29T08:46:14.768Z"
     },
     "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001:lead_orchestrator": {
       "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
@@ -6493,6 +6497,24 @@
       "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
       "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
       "updated_at": "2026-06-29T08:19:46.557Z"
+    },
+    "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001:balance_analyst:replaced-019f1275-952a-78d3-a178-a97f14e27e39": {
+      "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "role": "balance_analyst",
+      "thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+      "nickname": "Abacus",
+      "status": "closed_errored_no_handoff_partial_diff_present",
+      "replaced_by": "019f128d-e7d2-7233-af50-b724ea0290b7",
+      "replaced_by_nickname": "Measure",
+      "reason": "previous_replacement_balance_analyst_model_capacity_error_no_handoff_partial_diff_present",
+      "partial_diff_files": [
+        "apps/sim-runner/src/m7-large-scale-balance.ts"
+      ],
+      "closed_at": "2026-06-29T08:46:14.768Z",
+      "replaced_at": "2026-06-29T08:46:14.768Z",
+      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+      "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+      "updated_at": "2026-06-29T08:46:14.768Z"
     }
   },
   "replaced_threads": [
@@ -6628,9 +6650,23 @@
       "replaced_by_nickname": "Abacus",
       "reason": "previous_balance_analyst_errored_context_window_before_handoff_clean_worktree",
       "replaced_at": "2026-06-29T08:19:46.557Z"
+    },
+    {
+      "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "role": "balance_analyst",
+      "thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+      "nickname": "Abacus",
+      "status": "closed_errored_no_handoff_partial_diff_present",
+      "replaced_by": "019f128d-e7d2-7233-af50-b724ea0290b7",
+      "replaced_by_nickname": "Measure",
+      "reason": "previous_replacement_balance_analyst_model_capacity_error_no_handoff_partial_diff_present",
+      "partial_diff_files": [
+        "apps/sim-runner/src/m7-large-scale-balance.ts"
+      ],
+      "replaced_at": "2026-06-29T08:46:14.768Z"
     }
   ],
-  "updated_at": "2026-06-29T08:19:46.557Z",
+  "updated_at": "2026-06-29T08:46:14.768Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -6643,6 +6679,7 @@
     "019f122a-b52f-71d0-afea-b8ace2f88662",
     "019f123e-c7fa-71e0-9d53-929bd51e5966",
     "019f1249-9875-7183-aa34-4f2d896dab6c",
-    "019f126e-0da9-76c3-a842-14039df3bbfb"
+    "019f126e-0da9-76c3-a842-14039df3bbfb",
+    "019f1275-952a-78d3-a178-a97f14e27e39"
   ]
 }

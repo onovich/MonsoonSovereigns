@@ -2593,7 +2593,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-29T08:19:46.557Z",
+  "updated_at": "2026-06-29T08:46:14.768Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -4455,21 +4455,24 @@
   "active_task_routes": {
     "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001": {
       "owner_role": "balance_analyst",
-      "owner_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+      "owner_thread_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
       "owner_configured_model": "gpt-5.4-mini",
       "owner_configured_effort": "high",
       "reviewer_role": "gameplay_designer",
       "reviewer_configured_model": "gpt-5.5",
       "reviewer_configured_effort": "xhigh",
-      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT-START.json",
+      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT2-START.json",
       "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
       "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
-      "updated_at": "2026-06-29T08:19:46.557Z",
-      "route_submission_id": "019f1275-952a-78d3-a178-a97f14e27e39",
-      "route_sent_at": "2026-06-29T08:19:46.557Z",
-      "owner_thread_nickname": "Abacus",
-      "replaces_thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
-      "replacement_reason": "previous_balance_analyst_errored_context_window_before_handoff_clean_worktree"
+      "updated_at": "2026-06-29T08:46:14.768Z",
+      "route_submission_id": "019f128d-e7d2-7233-af50-b724ea0290b7",
+      "route_sent_at": "2026-06-29T08:46:14.768Z",
+      "owner_thread_nickname": "Measure",
+      "replaces_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+      "replacement_reason": "previous_replacement_balance_analyst_model_capacity_error_no_handoff_partial_diff_present",
+      "partial_diff_files": [
+        "apps/sim-runner/src/m7-large-scale-balance.ts"
+      ]
     }
   }
 }
