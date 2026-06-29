@@ -2,7 +2,7 @@
   "id": "M7-PERFORMANCE-MEMORY-LOADING-001",
   "summary": "Validate Beta performance, memory, and loading behavior",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -97,7 +97,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T11:07:43.295Z",
+  "updated_at": "2026-06-29T11:13:56.007Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -120,8 +120,8 @@
     "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T09:46:40.833Z",
-    "updated_at": "2026-06-29T11:07:43.295Z",
-    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
+    "updated_at": "2026-06-29T11:13:56.007Z",
+    "next_action": "Start M7-UI-REGRESSION-MATRIX-001 after closure checkpoint enters main.",
     "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
     "route_sent_at": "2026-06-29T09:48:36.974Z",
     "review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
@@ -165,6 +165,20 @@
     "lead_accept_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-29T11:07:43.295Z",
     "accepted_implementation_commit": "e475553e",
-    "accepted_branch_head": "e102945d4a8a270b15eeaa4254b8df608f1bcae0"
+    "accepted_branch_head": "e102945d4a8a270b15eeaa4254b8df608f1bcae0",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 193,
+    "integrated_main_commit": "b2af704e6d5bf8c157e1a59b5073525a54671485",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/193",
+    "lead_close_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-29T11:13:56.007Z",
+    "child_threads_closed": [
+      "019f12c3-aabc-71b3-9df0-f651c1c1c062",
+      "019f12e5-d6c9-7751-87c7-610efb7d0c0e",
+      "019f12d2-8b3b-7480-9aab-6f408c430e15"
+    ],
+    "next_ready_tasks": [
+      "M7-UI-REGRESSION-MATRIX-001"
+    ]
   }
 }
