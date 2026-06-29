@@ -1,0 +1,89 @@
+{
+  "message_id": "MSG-20260629-M7-MANUAL-PLAYTHROUGH-CLOSED",
+  "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 after PR #199 passed CI, merged to main, and origin/main contained the accepted manual playthrough evidence. The task records truthful agent-operated local preview evidence only and preserves formal/manual human judgment acceptance as a Human Gate if required.",
+  "artifacts": [
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-CLOSED__lead_orchestrator.json",
+    "project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-manual-playthrough-evidence",
+  "commit": "2d8f778b2052e788d273f8798065fb8e71fba0b1",
+  "integrated_pr": 199,
+  "integrated_main_commit": "2d8f778b2052e788d273f8798065fb8e71fba0b1",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/199",
+  "ci": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "result": "pass",
+      "duration": "3m0s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28377154671/job/84069706617"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "result": "pass",
+      "duration": "51s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28377154671/job/84069706529"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing chunk-size warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 23/23."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Passed; desktop package smoke output generated."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed; format, lint, typecheck, and architecture boundaries passed."
+    },
+    {
+      "command": "gh pr checks 199 --watch --interval 10",
+      "exit_code": 0,
+      "result": "CI passed: Quality/Web/Browser Smoke 3m0s; Windows Desktop Smoke Artifact 51s."
+    },
+    {
+      "command": "gh pr merge 199 --squash --delete-branch --admin",
+      "exit_code": 0,
+      "result": "Merged PR #199; origin/main advanced to 2d8f778b2052e788d273f8798065fb8e71fba0b1."
+    }
+  ],
+  "decisions": [
+    "Task is CLOSED only after accepted evidence entered origin/main via PR #199.",
+    "Accepted evidence is local agent-operated preview evidence and routing input only, not product-owner manual acceptance or formal content-lock approval.",
+    "No Human Gate is active now; formal/manual human judgment acceptance remains a future Human Gate if required by M7-CONTENT-LOCK-ACCEPTANCE-001 or M7-EXIT-VALIDATION-001.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE with no reversal, spike, implementation, validation dependency, or blocking research path."
+  ],
+  "risks": [
+    "M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 must not overclaim complete human manual acceptance from this evidence alone.",
+    "The evidence covers the visible 1531 preview path and recorded limitations; it is not a release artifact or production save artifact."
+  ],
+  "blockers": [],
+  "child_threads_closed": [
+    "019f1384-9ccc-76d2-ae0d-c14d05de4627",
+    "019f139c-8b89-7a21-8cd5-08b234883b48"
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Run taskctl ready and start the highest-priority dependency-ready M7 task.",
+  "created_at": "2026-06-29T13:58:25.814Z",
+  "next_ready_tasks": [
+    "M7-UI-LOCALIZATION-EXIT-001"
+  ]
+}

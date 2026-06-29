@@ -42,12 +42,10 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
-    "updated_at": "2026-06-29T13:52:00.028Z",
-    "concurrent_task_ids": [
-      "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001"
-    ],
-    "branch_or_worktree": "codex/m7-manual-playthrough-evidence"
+    "task_id": null,
+    "updated_at": "2026-06-29T13:58:25.814Z",
+    "concurrent_task_ids": [],
+    "branch_or_worktree": "codex/close-m7-manual-playthrough-evidence"
   },
   "retired_lead_threads": [
     {
@@ -2593,7 +2591,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-29T13:52:00.028Z",
+  "updated_at": "2026-06-29T13:58:25.814Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -4663,8 +4661,8 @@
       "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
       "expected_writer_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
       "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
-      "status": "accepted_pending_integration",
-      "updated_at": "2026-06-29T13:52:00.028Z",
+      "status": "closed_integrated",
+      "updated_at": "2026-06-29T13:58:25.814Z",
       "route_submission_id": "019f1388-efa3-7ee2-b208-3d39759719b8",
       "route_sent_at": "2026-06-29T13:19:51.553Z",
       "review_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
@@ -4679,7 +4677,12 @@
       "accepted_at": "2026-06-29T13:52:00.028Z",
       "qa_status": "ACCEPT",
       "qa_review_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
-      "qa_review_commit": "2e74a6804d0e02ee1dab788361212361da73cef3"
+      "qa_review_commit": "2e74a6804d0e02ee1dab788361212361da73cef3",
+      "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+      "integrated_pr": 199,
+      "integrated_main_commit": "2d8f778b2052e788d273f8798065fb8e71fba0b1",
+      "closed_at": "2026-06-29T13:58:25.814Z",
+      "lead_close_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-CLOSED__lead_orchestrator.json"
     }
   }
 }
