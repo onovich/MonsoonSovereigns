@@ -2,24 +2,26 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-CONTENT-LOCK-ACCEPTANCE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_router",
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "status": "preparing_human_gate_review_package",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-ui-localization-exit",
-      "updated_at": "2026-06-29T14:33:23.055Z",
-      "lead_close_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-content-lock-acceptance",
+      "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+      "updated_at": "2026-06-29T14:44:30.619Z"
     }
   },
   "last_integrated_task": "M7-UI-LOCALIZATION-EXIT-001",
-  "last_main_commit": "f0a49d1457feafac1a3fc5721466badad8d102dd",
+  "last_main_commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -42,12 +44,12 @@
   ],
   "human_gate": {
     "required": false,
-    "active_gate_task_id": null,
-    "approval_scope": "NONE",
-    "approval_source": "M7-UI-LOCALIZATION-EXIT-001 closure checkpoint",
-    "recommended_result": null,
-    "note": "No Human Gate is active. Formal content lock, manual human acceptance, production art/cultural choices, release/commercial, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain future Human Gates if requested. Edge/Firefox and Windows DPI 150% remain carried limitations.",
-    "recorded_at": "2026-06-29T14:33:23.055Z"
+    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "approval_scope": "FORMAL_CONTENT_LOCK_ACCEPTANCE_PENDING_QA_REVIEW",
+    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+    "recommended_result": "APPROVE_CONTENT_LOCK_WITH_LIMITS_PENDING_PRODUCT_OWNER",
+    "note": "Formal M7 content lock is being packaged for QA review. No product-owner approval is recorded yet, so content lock is not accepted and the task cannot close. Human Gate will become active after QA verifies the package or immediately if QA blocks on owner decision.",
+    "recorded_at": "2026-06-29T14:44:30.619Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -871,8 +873,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T14:33:23.055Z",
-  "updated_at": "2026-06-29T11:32:00.0000000+08:00",
+  "last_updated_at": "2026-06-29T14:44:30.619Z",
+  "updated_at": "2026-06-29T14:44:30.619Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",

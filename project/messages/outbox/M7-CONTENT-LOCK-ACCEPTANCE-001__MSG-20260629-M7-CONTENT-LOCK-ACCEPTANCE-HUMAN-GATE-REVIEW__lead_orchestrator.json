@@ -1,0 +1,162 @@
+{
+  "message_id": "MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Formal M7 content lock acceptance Human Gate package is ready for independent QA review. Lead recommendation is APPROVE_CONTENT_LOCK_WITH_LIMITS as a product-owner decision option, not an agent approval. The task must remain unclosed and not content-locked until explicit product-owner approval is recorded.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-SCENARIO-PERSON-EVENT-FILL-001__MSG-20260628-M7-SCENARIO-FILL-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md"
+  ],
+  "branch_or_worktree": "codex/m7-content-lock-acceptance",
+  "commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch codex/m7-content-lock-acceptance; status before package writes was M project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json."
+    },
+    {
+      "command": "git rev-parse HEAD && git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "HEAD=62e3c756199f50302ff3b0a5ee087da1fd0bffbe; origin/main=62e3c756199f50302ff3b0a5ee087da1fd0bffbe; package is based on current origin/main."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "exit_code": 0,
+      "result": "VALID task file before synthesis."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready task output after current task entered IN_PROGRESS/REVIEW."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-CONTENT-LOCK-ACCEPTANCE-001 and evidence files",
+      "exit_code": 0,
+      "result": "Task file and 13 referenced evidence artifacts parsed or existed; missing optional artifacts are intentionally not listed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID handoff schema after Human Gate REVIEW package creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry lists M7-CONTENT-LOCK-ACCEPTANCE-001 as REVIEW; all listed dependencies are CLOSED."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-CONTENT-LOCK-ACCEPTANCE-001, goal-mode-state, and handoff",
+      "exit_code": 0,
+      "result": "SHAPE_OK content_lock_accepted=false, route=qa_reviewer, pending_qa_review=true."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in current process-only diff."
+    },
+    {
+      "command": "git diff --name-only",
+      "exit_code": 0,
+      "result": "Changed paths are project process/message/task/model-routing/goal-mode files only; no apps/packages/content-source/tools/.github/docs Gate/roadmap/manifest files changed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "RECOMMENDATION_FOR_HUMAN_GATE",
+      "decision": "Recommend product owner choose APPROVE_CONTENT_LOCK_WITH_LIMITS for M7 Beta content lock as of origin/main 62e3c756199f50302ff3b0a5ee087da1fd0bffbe, if the owner accepts the listed limits and exclusions."
+    },
+    {
+      "id": "NOT_AGENT_APPROVAL",
+      "decision": "This recommendation is not a formal content lock approval; only an explicit product-owner decision can approve or reject content lock."
+    },
+    {
+      "id": "POST_LOCK_ALLOWED_SCOPE",
+      "decision": "If approved, autonomous post-lock work should be limited to defect fixes, compatibility fixes, and explicit balance tuning; no new large system, content expansion, release/commercial/branding, telemetry, server, cloud, or mod decision is authorized."
+    },
+    {
+      "id": "M6_LIMITS_PRESERVED",
+      "decision": "M6_GATE remains PASS_WITH_LIMITS; Alpha/local evidence limits and unsigned Windows desktop smoke limitations are preserved."
+    },
+    {
+      "id": "MANUAL_NODE_BATTLE_DEFERRED",
+      "decision": "DEFER_MANUAL_NODE_BATTLE remains in force and content lock cannot reverse it or make manual node battle a M7/M8 blocker."
+    },
+    {
+      "id": "UI_EXIT_PREREQUISITE_MET_WITH_LIMITS",
+      "decision": "M7-UI-LOCALIZATION-EXIT-001 is CLOSED with systems and QA review evidence, but it is prerequisite evidence only, not M7 Gate PASS, release readiness, production art/culture approval, or manual human acceptance."
+    },
+    {
+      "id": "PLATFORM_LIMITS_CARRIED",
+      "decision": "Edge/Firefox remain blocked-by-tooling rows; Windows DPI 150% remains a follow-up row. No full platform coverage claim is made."
+    },
+    {
+      "id": "MANUAL_PLAYTHROUGH_LIMITS_CARRIED",
+      "decision": "Manual playthrough evidence is agent-operated local preview evidence only and not product-owner manual acceptance."
+    },
+    {
+      "id": "CLOUD_SAVE_AND_RELEASE_GATES_CARRIED",
+      "decision": "Cloud-save implementation, accounts/secrets/network persistence, release/commercial/branding, telemetry, server/multiplayer, arbitrary-code mods, irreversible migration, and major cultural-risk decisions remain Human Gates."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FORMAL_CONTENT_LOCK_PENDING_OWNER_DECISION",
+      "severity": "R4",
+      "summary": "No product-owner approval has been recorded; the task cannot close as content locked and must remain BLOCKED or PARTIAL after QA package review."
+    },
+    {
+      "id": "M7-CULTURE-PRODUCTION-LIMIT",
+      "severity": "R4",
+      "summary": "Beta culture review is accepted as evidence only; production art/culture decisions and major cultural-risk choices remain gated."
+    },
+    {
+      "id": "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
+      "severity": "R3",
+      "summary": "Edge and Firefox matrix rows are unresolved until tooling/projects are added and evidence rerun."
+    },
+    {
+      "id": "M7-WINDOWS-DPI-150-UNRESOLVED",
+      "severity": "R3",
+      "summary": "Windows DPI 150% remains follow-up evidence, not passed coverage."
+    },
+    {
+      "id": "M7-LOW-END-WINDOWS-PROXY-LIMIT",
+      "severity": "R3",
+      "summary": "Performance evidence includes low-end Windows proxy limitations and is not signed release hardware certification."
+    },
+    {
+      "id": "M7-MANUAL-HUMAN-ACCEPTANCE-PENDING",
+      "severity": "R4",
+      "summary": "Agent-operated manual playthrough evidence does not equal product-owner manual acceptance."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE",
+      "owner": "product_owner",
+      "summary": "Explicit product-owner decision is required: APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES. Until then the task cannot be CLOSED and content lock is not accepted."
+    }
+  ],
+  "route_to": "qa_reviewer",
+  "requested_action": "Read-only QA review: verify the package is evidence-backed, truthful about limitations, within allowed paths, preserves M6 PASS_WITH_LIMITS and DEFER_MANUAL_NODE_BATTLE, does not claim formal lock approval, and correctly identifies the active Human Gate decision.",
+  "created_at": "2026-06-29T14:44:30.619Z"
+}
