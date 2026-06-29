@@ -16,7 +16,7 @@
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
-      "updated_at": "2026-06-29T13:41:39.189Z",
+      "updated_at": "2026-06-29T13:42:47.623Z",
       "start_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-START__lead_orchestrator.json"
     },
     "test_engineer": {
@@ -42,7 +42,7 @@
       "thread_id": "019f139c-8b89-7a21-8cd5-08b234883b48",
       "nickname": "Gate the 2nd",
       "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
-      "status": "spawned_pending_route",
+      "status": "active_routed",
       "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -53,7 +53,9 @@
       "source_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
       "expected_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
       "review_commit": "74bc340a393bc3cbed919fb7552755d13aa32e89",
-      "updated_at": "2026-06-29T13:41:39.189Z"
+      "updated_at": "2026-06-29T13:42:47.623Z",
+      "route_submission_id": "019f139d-ed60-7f01-b7c4-626e54df3bac",
+      "route_sent_at": "2026-06-29T13:42:47.623Z"
     }
   },
   "last_integrated_task": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
@@ -911,7 +913,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T13:41:39.189Z",
+  "last_updated_at": "2026-06-29T13:42:47.623Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2720,8 +2722,8 @@
     "route_file": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T13:17:41.835Z",
-    "updated_at": "2026-06-29T13:41:39.189Z",
-    "next_action": "Send writer REVIEW handoff to independent qa_reviewer and wait for ACCEPT/REQUEST_CHANGES/BLOCKED.",
+    "updated_at": "2026-06-29T13:42:47.623Z",
+    "next_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
     "human_gate_required": false,
     "manual_acceptance_human_gate_required": true,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
@@ -2733,6 +2735,9 @@
     "qa_thread_id": "019f139c-8b89-7a21-8cd5-08b234883b48",
     "qa_thread_nickname": "Gate the 2nd",
     "qa_route": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
-    "expected_qa_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json"
+    "expected_qa_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
+    "qa_route_submission_id": "019f139d-ed60-7f01-b7c4-626e54df3bac",
+    "qa_route_sent_at": "2026-06-29T13:42:47.623Z",
+    "qa_route_status": "SENT"
   }
 }

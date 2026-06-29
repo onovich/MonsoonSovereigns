@@ -95,7 +95,7 @@
     "qa_reviewer": {
       "thread_id": "019f139c-8b89-7a21-8cd5-08b234883b48",
       "nickname": "Gate the 2nd",
-      "status": "spawned_pending_route",
+      "status": "active_routed",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -105,7 +105,9 @@
       "expected_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
       "review_commit": "74bc340a393bc3cbed919fb7552755d13aa32e89",
       "started_at": "2026-06-29T13:41:39.189Z",
-      "updated_at": "2026-06-29T13:41:39.189Z"
+      "updated_at": "2026-06-29T13:42:47.623Z",
+      "route_submission_id": "019f139d-ed60-7f01-b7c4-626e54df3bac",
+      "route_sent_at": "2026-06-29T13:42:47.623Z"
     }
   },
   "route_to": "qa_reviewer",
@@ -117,7 +119,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T13:41:39.189Z",
+  "updated_at": "2026-06-29T13:42:47.623Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -140,12 +142,15 @@
   "started_at": "2026-06-29T13:17:41.835Z",
   "base_main_commit": "60259ff1dedcc05bd7a93d776724efe8492fc7e7",
   "previous_closed_task": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
-  "next_action": "Send writer REVIEW handoff to independent qa_reviewer and wait for ACCEPT/REQUEST_CHANGES/BLOCKED.",
+  "next_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
   "route_submission_id": "019f1388-efa3-7ee2-b208-3d39759719b8",
   "route_sent_at": "2026-06-29T13:19:51.553Z",
   "route_status": "SENT",
   "review_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
   "review_commit": "74bc340a393bc3cbed919fb7552755d13aa32e89",
   "qa_route": "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
-  "expected_qa_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json"
+  "expected_qa_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
+  "qa_route_submission_id": "019f139d-ed60-7f01-b7c4-626e54df3bac",
+  "qa_route_sent_at": "2026-06-29T13:42:47.623Z",
+  "qa_route_status": "SENT"
 }
