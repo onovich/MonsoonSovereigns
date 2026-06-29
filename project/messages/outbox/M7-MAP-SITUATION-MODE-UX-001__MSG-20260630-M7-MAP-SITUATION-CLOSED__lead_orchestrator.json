@@ -1,0 +1,70 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SITUATION-CLOSED",
+  "task_id": "M7-MAP-SITUATION-MODE-UX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Closed M7-MAP-SITUATION-MODE-UX-001 after PR #205 passed CI, merged to main, and origin/main advanced to 4970eca4676d2eb732231d0268880e7ac1a4817d. This resolves the first M7 UX recovery blocker for the player-facing map: default Situation/?? mode, non-rectangular low-fidelity strategic regions, route de-noising, localized map legend/recommendation presentation, and player-mode debug/grid suppression. It is not formal M7 content-lock acceptance, final cartography, production art, or manual node battle scope.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-START__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CI-FIX__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-SITUATION-MODE-UX-001__MSG-20260630-M7-MAP-SITUATION-CLOSED__lead_orchestrator.json",
+    "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+    "project/messages/routes/M7-MAP-SITUATION-MODE-UX-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+    "project/tasks/active/M7-MAP-SITUATION-MODE-UX-001.json",
+    "project/tasks/active/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-map-situation-mode-ux",
+  "commit": "4970eca4676d2eb732231d0268880e7ac1a4817d",
+  "tests_run": [
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS after CI fix; architecture, determinism, root Vitest 43 files / 353 tests, and web 9 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS after CI fix; format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS after CI fix; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS after CI fix; existing Vite chunk-size warning only."
+    },
+    {
+      "command": "gh pr checks 205 --watch --interval 10",
+      "exit_code": 0,
+      "result": "PASS; Quality/Web/Browser Smoke passed in 2m53s and Windows Desktop Smoke Artifact passed in 48s."
+    },
+    {
+      "command": "gh pr merge 205 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "Merged PR #205; origin/main advanced to 4970eca4676d2eb732231d0268880e7ac1a4817d."
+    }
+  ],
+  "decisions": [
+    "Task is CLOSED only after PR #205 passed CI, merged, and origin/main contains the accepted implementation.",
+    "M7 content lock remains blocked on broader UX recovery; this task does not reopen or accept M7-CONTENT-LOCK-ACCEPTANCE-001.",
+    "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001 is promoted to READY as the next dependency-ready UX recovery task.",
+    "Closed child threads: client_engineer 019f14d2-03b8-76e3-a080-4b1e225f8d7b and systems_architect 019f14eb-b429-7273-b0af-672531436f66."
+  ],
+  "risks": [
+    "The map remains low-fidelity synthetic presentation, not final cartography or historical geography.",
+    "The product-owner UX request is only partially repaired; first-screen orientation, decision inspector, task rail, and UX validation remain before content lock can be reconsidered."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge this closure record, sync main, then start M7-PLAYER-FIRST-SCREEN-ORIENTATION-001 on a new branch with client_engineer writer and gameplay_designer review.",
+  "created_at": "2026-06-29T20:12:03.204Z"
+}
