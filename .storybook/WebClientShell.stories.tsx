@@ -271,3 +271,32 @@ export const PlayerGuidanceLiteSimplifiedChinese = {
 export const PlayerGuidanceLiteSystemFallback = {
   render: () => <WebClientShell initialLocalePreference="system" initialSystemLocales={["fr-FR"]} />
 };
+
+export const TaskRailNormal = {
+  render: () => <WebClientShell initialLocalePreference="en-US" />
+};
+
+export const TaskRailEmpty = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-empty" initialLocalePreference="en-US" />
+};
+
+export const TaskRailError = {
+  render: () => <WebClientShell initialSearch="?fixture=m7-error" initialLocalePreference="en-US" />
+};
+
+export const TaskRailExtreme = {
+  render: () => (
+    <WebClientShell initialSearch="?fixture=m7-extreme" initialLocalePreference="en-US" />
+  )
+};
+
+export const TaskRailNarrow = {
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1"
+    }
+  },
+  render: () => (
+    <WebClientShell initialSearch="?fixture=m7-extreme" initialLocalePreference="en-US" />
+  )
+};

@@ -178,6 +178,25 @@ const ZERO_MAP_PAN_OFFSET: ClientMapPanOffset = {
 const ClientI18nContext = createContext<ClientI18n>(DEFAULT_CLIENT_I18N);
 type M3AppointmentFlowStage = "select-office" | "compare-candidates" | "preview" | "result";
 type DistrictRouteStatusFilter = ClientDistrictRowReadModel["route"]["status"] | "all";
+type ClientTaskRailDrawerId =
+  | "obligations"
+  | "appointments"
+  | "succession"
+  | "campaign"
+  | "notifications"
+  | "results";
+type ClientTaskRailSeverity = "danger" | "warning" | "ready" | "info" | "success";
+
+interface ClientTaskRailCard {
+  readonly id: ClientTaskRailDrawerId;
+  readonly title: string;
+  readonly problem: string;
+  readonly reason: string;
+  readonly action: string;
+  readonly severity: ClientTaskRailSeverity;
+  readonly urgency: string;
+  readonly icon: string;
+}
 
 export function ClientShellView({
   snapshot,
@@ -252,6 +271,7 @@ export function ClientShellView({
   const [debugMode, setDebugMode] = useState(initialDebugMode);
   const [isGuidanceDismissed, setGuidanceDismissed] = useState(false);
   const [isGuidanceCollapsed, setGuidanceCollapsed] = useState(false);
+  const [activeTaskDrawer, setActiveTaskDrawer] = useState<ClientTaskRailDrawerId>("obligations");
 
   const districtProjection = useMemo(() => {
     const startedAt = getHighResolutionTime();
@@ -928,227 +948,83 @@ export function ClientShellView({
               onReviewObligations={handleSubmitM4StartMarch}
             />
 
-            <section
-              className="client-shell__objectives"
-              aria-label={i18n.t("shell.objectives.label")}
-            >
-              <h2>{i18n.t("shell.objectives.title")}</h2>
-              <PlayerGuidanceLite
-                snapshot={snapshot}
-                selectedDistrict={selectedDistrict}
-                isDismissed={isGuidanceDismissed}
-                isCollapsed={isGuidanceCollapsed}
-                canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
-                canPreviewCampaign={selectedM4Campaign !== null}
-                m3FlowStage={m3FlowStage}
-                commandStatus={m3CommandStatus ?? m4CommandStatus ?? null}
-                onDismiss={() => setGuidanceDismissed(true)}
-                onRestore={() => setGuidanceDismissed(false)}
-                onToggleCollapse={() => setGuidanceCollapsed(!isGuidanceCollapsed)}
-              />
-              <div className="client-shell__action-grid" aria-label={i18n.t("shell.actions.label")}>
-                <button
-                  type="button"
-                  disabled={selectedM3Office === null || selectedM3Eligibility === null}
-                  onClick={handleOpenM3AppointmentFlow}
-                >
-                  {i18n.t("shell.actions.previewAppointment")}
-                </button>
-                <button
-                  type="button"
-                  disabled={selectedM4Campaign === null}
-                  onClick={handleSubmitM4Plan}
-                >
-                  {i18n.t("shell.actions.previewCampaign")}
-                </button>
-                <button type="button" onClick={handleSubmitM4StartMarch}>
-                  {i18n.t("shell.actions.reviewObligations")}
-                </button>
-              </div>
-              <CommandStatus
-                m3CommandStatus={m3CommandStatus}
-                m4CommandStatus={m4CommandStatus}
-                m5CommandStatus={m5CommandStatus}
-                m6CommandStatus={m6CommandStatus}
-              />
-            </section>
-
-            <section
-              className="client-shell__notices"
-              aria-label={i18n.t("shell.notifications.label")}
-            >
-              <h2>{i18n.t("shell.notifications.label")}</h2>
-              <ul>
-                <li>{i18n.t("shell.notifications.obligation")}</li>
-                <li>{i18n.t("shell.notifications.supply")}</li>
-                <li>{i18n.t("shell.notifications.contentReview")}</li>
-              </ul>
-            </section>
+            <TaskRail
+              snapshot={snapshot}
+              selectedDistrict={selectedDistrict}
+              selectedOffice={selectedM3Office}
+              selectedEligibility={selectedM3Eligibility}
+              selectedCampaign={selectedM4Campaign}
+              activeDrawer={activeTaskDrawer}
+              m3FlowStage={m3FlowStage}
+              m3CommandStatus={m3CommandStatus}
+              m4CommandStatus={m4CommandStatus}
+              m5CommandStatus={m5CommandStatus}
+              m6CommandStatus={m6CommandStatus}
+              isGuidanceDismissed={isGuidanceDismissed}
+              isGuidanceCollapsed={isGuidanceCollapsed}
+              appointmentFlow={
+                <M3AppointmentFlow
+                  snapshot={snapshot.m3Appointment}
+                  selectedOffice={selectedM3Office}
+                  candidateEligibilities={selectedM3OfficeEligibilities}
+                  selectedEligibility={selectedM3Eligibility}
+                  flowStage={m3FlowStage}
+                  commandStatus={m3CommandStatus}
+                  onOfficeChange={handleM3OfficeChange}
+                  onCandidateChange={handleM3CandidateChange}
+                  onCandidateKeyChange={handleM3CandidateKeyChange}
+                  onPreview={handlePreviewM3Appointment}
+                  onConfirm={handleConfirmM3Appointment}
+                />
+              }
+              routeQueue={
+                <DistrictRouteQueue
+                  rows={snapshot.districtList.rows}
+                  visibleRows={visibleRows}
+                  projectedRowCount={districtProjection.rows.length}
+                  selectedDistrictId={selectedDistrictId}
+                  hoveredDistrictId={hoveredDistrictId}
+                  isCollapsed={isDistrictBrowserCollapsed}
+                  routeStatusFilter={routeStatusFilter}
+                  filter={filter}
+                  sortKey={sortKey}
+                  sortDirection={sortDirection}
+                  virtualWindow={virtualWindow}
+                  derivationMs={districtProjection.derivationMs}
+                  selectionMs={lastSelectionMs}
+                  onToggleCollapsed={() => setDistrictBrowserCollapsed(!isDistrictBrowserCollapsed)}
+                  onFilterChange={handleFilterChange}
+                  onRouteStatusFilterChange={handleRouteStatusFilterChange}
+                  onScroll={handleScroll}
+                  onSort={handleSort}
+                  onSelect={handleSelect}
+                  onHover={(hoveredRow) =>
+                    onHoveredEntityChange?.(
+                      hoveredRow === null
+                        ? null
+                        : { kind: "district", districtId: hoveredRow.districtId }
+                    )
+                  }
+                />
+              }
+              onDrawerChange={setActiveTaskDrawer}
+              onOpenAppointment={() => {
+                handleOpenM3AppointmentFlow();
+                setActiveTaskDrawer("appointments");
+              }}
+              onPreviewCampaign={() => {
+                handleSubmitM4Plan();
+                setActiveTaskDrawer("campaign");
+              }}
+              onReviewObligations={() => {
+                handleSubmitM4StartMarch();
+                setActiveTaskDrawer("obligations");
+              }}
+              onDismissGuidance={() => setGuidanceDismissed(true)}
+              onRestoreGuidance={() => setGuidanceDismissed(false)}
+              onToggleGuidanceCollapse={() => setGuidanceCollapsed(!isGuidanceCollapsed)}
+            />
           </aside>
-        </section>
-
-        <M3AppointmentFlow
-          snapshot={snapshot.m3Appointment}
-          selectedOffice={selectedM3Office}
-          candidateEligibilities={selectedM3OfficeEligibilities}
-          selectedEligibility={selectedM3Eligibility}
-          flowStage={m3FlowStage}
-          commandStatus={m3CommandStatus}
-          onOfficeChange={handleM3OfficeChange}
-          onCandidateChange={handleM3CandidateChange}
-          onCandidateKeyChange={handleM3CandidateKeyChange}
-          onPreview={handlePreviewM3Appointment}
-          onConfirm={handleConfirmM3Appointment}
-        />
-
-        <section
-          className="client-shell__route-queue"
-          aria-label={i18n.t("shell.list.label")}
-          data-folded={isDistrictBrowserCollapsed ? "true" : "false"}
-          data-render-bound="virtualized"
-        >
-          <header className="district-list__header">
-            <div>
-              <h2>{i18n.t("shell.list.title")}</h2>
-              <p>
-                {i18n.t("shell.list.count", {
-                  visible: i18n.formatNumber(districtProjection.rows.length),
-                  total: i18n.formatNumber(snapshot.districtList.rows.length)
-                })}
-              </p>
-            </div>
-            <button
-              type="button"
-              aria-label={i18n.t("shell.list.toggle")}
-              aria-expanded={!isDistrictBrowserCollapsed}
-              onClick={() => setDistrictBrowserCollapsed(!isDistrictBrowserCollapsed)}
-            >
-              {isDistrictBrowserCollapsed ? i18n.t("shell.list.show") : i18n.t("shell.list.hide")}
-            </button>
-          </header>
-          <div className="district-list__toolbar">
-            <label className="district-list__filter">
-              <span>{i18n.t("shell.list.filter")}</span>
-              <input
-                aria-label={i18n.t("shell.list.filter")}
-                value={filter}
-                onChange={handleFilterChange}
-                placeholder={i18n.t("shell.list.placeholder")}
-              />
-            </label>
-            <label className="district-list__filter">
-              <span>{i18n.t("shell.list.routeFilter")}</span>
-              <select
-                aria-label={i18n.t("shell.list.routeFilter")}
-                value={routeStatusFilter}
-                onChange={handleRouteStatusFilterChange}
-              >
-                <option value="all">{i18n.t("shell.list.allRoutes")}</option>
-                <option value="reachable">{i18n.t("shell.route.reachable")}</option>
-                <option value="capacity-exceeded">{i18n.t("shell.route.capacityExceeded")}</option>
-                <option value="unreachable">{i18n.t("shell.route.unreachable")}</option>
-              </select>
-            </label>
-            <output
-              aria-label={i18n.t("shell.list.performance")}
-              data-testid="district-list-performance"
-              data-derivation-ms={districtProjection.derivationMs.toFixed(3)}
-              data-selection-ms={lastSelectionMs.toFixed(3)}
-            >
-              {districtProjection.derivationMs.toFixed(2)} ms
-            </output>
-          </div>
-
-          {isDistrictBrowserCollapsed ? null : (
-            <>
-              <div className="district-list__head">
-                <SortButton
-                  label={i18n.t("shell.table.district")}
-                  sortKey="district"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label={i18n.t("shell.table.population")}
-                  sortKey="population"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label={i18n.t("shell.table.labor")}
-                  sortKey="labor"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label={i18n.t("shell.table.grain")}
-                  sortKey="grain"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label={i18n.t("shell.table.cash")}
-                  sortKey="cash"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-                <SortButton
-                  label={i18n.t("shell.table.route")}
-                  sortKey="route"
-                  activeSortKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-              </div>
-
-              <div
-                className="district-list__viewport"
-                aria-label={i18n.t("shell.list.virtualRowsLabel")}
-                data-row-count={snapshot.districtList.rows.length}
-                data-filtered-row-count={districtProjection.rows.length}
-                data-rendered-row-count={visibleRows.length}
-                data-render-limit={virtualWindow.visibleCount}
-                data-route-filter={routeStatusFilter}
-                onScroll={handleScroll}
-              >
-                {districtProjection.rows.length === 0 ? (
-                  <p className="district-list__empty">{i18n.t("shell.list.empty")}</p>
-                ) : (
-                  <div
-                    className="district-list__spacer"
-                    style={{ height: `${virtualWindow.totalHeightPx}px` }}
-                  >
-                    <div
-                      className="district-list__rows"
-                      style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
-                    >
-                      {visibleRows.map((row) => (
-                        <DistrictRowButton
-                          key={row.districtId}
-                          row={row}
-                          isSelected={selectedDistrictId === row.districtId}
-                          isHovered={hoveredDistrictId === row.districtId}
-                          onSelect={handleSelect}
-                          onHover={(hoveredRow) =>
-                            onHoveredEntityChange?.(
-                              hoveredRow === null
-                                ? null
-                                : { kind: "district", districtId: hoveredRow.districtId }
-                            )
-                          }
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
         </section>
 
         {debugMode ? (
@@ -1605,7 +1481,7 @@ function DistrictRouteCampaignData({
             campaignPlan === null
               ? i18n.t("shell.inspector.routeCampaign.noCampaign")
               : i18n.t("shell.inspector.routeCampaign.campaignValue", {
-                  target: campaignPlan.targetLabel,
+                  target: formatCampaignPlanTargetLabel(campaignPlan, i18n),
                   status: formatReasonStatus(campaignPlan.statusReasonCode, i18n)
                 })
           }
@@ -1851,7 +1727,7 @@ function createDistrictDecisionAssistant({
   if (canPreviewCampaign && campaignPlan !== null) {
     return {
       problem: i18n.t("shell.inspector.decision.problem.campaign", {
-        target: campaignPlan.targetLabel
+        target: formatCampaignPlanTargetLabel(campaignPlan, i18n)
       }),
       recommendation: i18n.t("shell.inspector.decision.recommendation.campaign"),
       cost,
@@ -2207,7 +2083,7 @@ function createPlayerFirstScreenBriefContent({
       identity: i18n.t("shell.firstScreen.identity", { court }),
       situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
       problem: i18n.t("shell.firstScreen.problem.campaign", {
-        target: selectedCampaign.targetLabel
+        target: formatCampaignPlanTargetLabel(selectedCampaign, i18n)
       }),
       why: i18n.t("shell.firstScreen.why.campaign"),
       action: i18n.t("shell.firstScreen.action.previewCampaign"),
@@ -2408,6 +2284,638 @@ function CommandStatus({
     <p className="client-shell__command-status" role="status" aria-live="polite">
       {status ?? i18n.t("shell.actions.idleStatus")}
     </p>
+  );
+}
+
+interface TaskRailProps {
+  readonly snapshot: ClientReadModelSnapshot;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly selectedOffice: ClientM3OfficeReadModel | null;
+  readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
+  readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly activeDrawer: ClientTaskRailDrawerId;
+  readonly m3FlowStage: M3AppointmentFlowStage;
+  readonly m3CommandStatus: string | null;
+  readonly m4CommandStatus: string | null;
+  readonly m5CommandStatus: string | null;
+  readonly m6CommandStatus: string | null;
+  readonly isGuidanceDismissed: boolean;
+  readonly isGuidanceCollapsed: boolean;
+  readonly appointmentFlow: ReactElement;
+  readonly routeQueue: ReactElement;
+  readonly onDrawerChange: (drawerId: ClientTaskRailDrawerId) => void;
+  readonly onOpenAppointment: () => void;
+  readonly onPreviewCampaign: () => void;
+  readonly onReviewObligations: () => void;
+  readonly onDismissGuidance: () => void;
+  readonly onRestoreGuidance: () => void;
+  readonly onToggleGuidanceCollapse: () => void;
+}
+
+function TaskRail({
+  snapshot,
+  selectedDistrict,
+  selectedOffice,
+  selectedEligibility,
+  selectedCampaign,
+  activeDrawer,
+  m3FlowStage,
+  m3CommandStatus,
+  m4CommandStatus,
+  m5CommandStatus,
+  m6CommandStatus,
+  isGuidanceDismissed,
+  isGuidanceCollapsed,
+  appointmentFlow,
+  routeQueue,
+  onDrawerChange,
+  onOpenAppointment,
+  onPreviewCampaign,
+  onReviewObligations,
+  onDismissGuidance,
+  onRestoreGuidance,
+  onToggleGuidanceCollapse
+}: TaskRailProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const cards = createTaskRailCards({
+    snapshot,
+    selectedDistrict,
+    selectedOffice,
+    selectedEligibility,
+    selectedCampaign,
+    m3CommandStatus,
+    m4CommandStatus,
+    m5CommandStatus,
+    m6CommandStatus,
+    i18n
+  });
+  const activeCard = cards.find((card) => card.id === activeDrawer) ?? cards[0];
+  const activeDrawerId = activeCard?.id ?? "obligations";
+
+  return (
+    <section
+      className="task-rail"
+      aria-label={i18n.t("shell.taskRail.label")}
+      data-active-drawer={activeDrawerId}
+      data-task-rail-card-count={cards.length}
+    >
+      <header className="task-rail__header">
+        <h2>{i18n.t("shell.taskRail.title")}</h2>
+        <p>{i18n.t("shell.taskRail.summary")}</p>
+      </header>
+      <div className="task-rail__cards" aria-label={i18n.t("shell.actions.label")}>
+        {cards.map((card) => (
+          <button
+            type="button"
+            className="task-rail__card"
+            key={card.id}
+            aria-expanded={activeDrawerId === card.id}
+            data-task-rail-card-kind={card.id}
+            data-task-severity={card.severity}
+            data-task-active={activeDrawerId === card.id ? "true" : "false"}
+            onClick={() => {
+              onDrawerChange(card.id);
+              if (card.id === "appointments") {
+                onOpenAppointment();
+              }
+            }}
+          >
+            <span className="task-rail__icon" aria-hidden="true">
+              {card.icon}
+            </span>
+            <span className="task-rail__copy">
+              <strong>{card.title}</strong>
+              <span>{card.problem}</span>
+              <small>{card.reason}</small>
+            </span>
+            <span className="task-rail__meta">
+              <span>{card.urgency}</span>
+              <span>{card.action}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+      <section
+        className="task-rail__drawer"
+        aria-label={i18n.t("shell.taskRail.drawerLabel")}
+        data-task-drawer-expanded={activeDrawerId}
+      >
+        {renderTaskRailDrawer({
+          drawerId: activeDrawerId,
+          snapshot,
+          selectedDistrict,
+          selectedOffice,
+          selectedCampaign,
+          m3FlowStage,
+          m3CommandStatus,
+          m4CommandStatus,
+          m5CommandStatus,
+          m6CommandStatus,
+          isGuidanceDismissed,
+          isGuidanceCollapsed,
+          appointmentFlow,
+          routeQueue,
+          onPreviewCampaign,
+          onReviewObligations,
+          onDismissGuidance,
+          onRestoreGuidance,
+          onToggleGuidanceCollapse,
+          i18n
+        })}
+      </section>
+    </section>
+  );
+}
+
+function createTaskRailCards({
+  snapshot,
+  selectedDistrict,
+  selectedOffice,
+  selectedEligibility,
+  selectedCampaign,
+  m3CommandStatus,
+  m4CommandStatus,
+  m5CommandStatus,
+  m6CommandStatus,
+  i18n
+}: {
+  readonly snapshot: ClientReadModelSnapshot;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly selectedOffice: ClientM3OfficeReadModel | null;
+  readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
+  readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly m3CommandStatus: string | null;
+  readonly m4CommandStatus: string | null;
+  readonly m5CommandStatus: string | null;
+  readonly m6CommandStatus: string | null;
+  readonly i18n: ClientI18n;
+}): readonly ClientTaskRailCard[] {
+  const district =
+    selectedDistrict === null ? "" : formatPlayerDistrictName(selectedDistrict, i18n);
+  const selectedObligation =
+    selectedDistrict === null
+      ? null
+      : findDistrictObligation(selectedDistrict, snapshot.m3Appointment);
+  const commandStatus = m4CommandStatus ?? m3CommandStatus ?? m6CommandStatus ?? m5CommandStatus;
+  const reviewNoteCount = snapshot.m7Guidance.reviewSummary.blockedScopeNotes.length;
+  const resultCount =
+    snapshot.m3Appointment.appointmentResults.length +
+    snapshot.m3Appointment.enfeoffmentResults.length +
+    snapshot.m4Campaign.warReports.length;
+
+  return [
+    {
+      id: "obligations",
+      title: i18n.t("shell.taskRail.obligations.title"),
+      problem:
+        selectedDistrict === null
+          ? i18n.t("shell.taskRail.problem.selectDistrict")
+          : selectedObligation === null
+            ? i18n.t("shell.taskRail.obligations.problemStable", { district })
+            : i18n.t("shell.taskRail.obligations.problem", {
+                district,
+                kind: formatDistrictObligationKind(selectedObligation.obligationKind, i18n)
+              }),
+      reason:
+        selectedDistrict?.route.status === "unreachable"
+          ? i18n.t("shell.taskRail.reason.routeBlocked")
+          : i18n.t("shell.taskRail.obligations.reason"),
+      action: i18n.t("shell.actions.reviewObligations"),
+      severity:
+        selectedDistrict?.route.status === "unreachable"
+          ? "danger"
+          : selectedObligation === null
+            ? "ready"
+            : "warning",
+      urgency:
+        selectedDistrict?.route.status === "unreachable"
+          ? i18n.t("shell.taskRail.urgency.now")
+          : i18n.t("shell.taskRail.urgency.soon"),
+      icon: "!"
+    },
+    {
+      id: "appointments",
+      title: i18n.t("shell.taskRail.appointments.title"),
+      problem:
+        selectedOffice === null
+          ? i18n.t("shell.taskRail.appointments.problemEmpty")
+          : i18n.t("shell.taskRail.appointments.problem", { office: selectedOffice.displayName }),
+      reason:
+        selectedEligibility?.status === "rejected"
+          ? i18n.t("shell.taskRail.appointments.reasonRejected")
+          : i18n.t("shell.taskRail.appointments.reason"),
+      action: i18n.t("shell.actions.previewAppointment"),
+      severity: selectedOffice === null ? "info" : "ready",
+      urgency: i18n.t("shell.taskRail.urgency.next"),
+      icon: "+"
+    },
+    {
+      id: "succession",
+      title: i18n.t("shell.taskRail.succession.title"),
+      problem:
+        snapshot.m3Appointment.successionCrises.length === 0
+          ? i18n.t("shell.taskRail.succession.problemStable")
+          : i18n.t("shell.taskRail.succession.problem", {
+              count: i18n.formatNumber(snapshot.m3Appointment.successionCrises.length)
+            }),
+      reason: i18n.t("shell.taskRail.succession.reason"),
+      action: i18n.t("shell.taskRail.action.reviewDrawer"),
+      severity: snapshot.m3Appointment.successionCrises.length === 0 ? "success" : "warning",
+      urgency:
+        snapshot.m3Appointment.successionCrises.length === 0
+          ? i18n.t("shell.taskRail.urgency.watch")
+          : i18n.t("shell.taskRail.urgency.soon"),
+      icon: "^"
+    },
+    {
+      id: "campaign",
+      title: i18n.t("shell.taskRail.campaign.title"),
+      problem:
+        selectedCampaign === null
+          ? i18n.t("shell.taskRail.campaign.problemEmpty")
+          : i18n.t("shell.taskRail.campaign.problem", {
+              target: formatCampaignPlanTargetLabel(selectedCampaign, i18n)
+            }),
+      reason: i18n.t("shell.taskRail.campaign.reason", {
+        days: i18n.formatNumber(snapshot.m4Campaign.grain.expectedDaysOfSupply)
+      }),
+      action: i18n.t("shell.actions.previewCampaign"),
+      severity:
+        snapshot.m4Campaign.grain.expectedDaysOfSupply < 30
+          ? "warning"
+          : selectedCampaign === null
+            ? "info"
+            : "ready",
+      urgency: i18n.t("shell.taskRail.urgency.next"),
+      icon: ">"
+    },
+    {
+      id: "notifications",
+      title: i18n.t("shell.taskRail.notifications.title"),
+      problem:
+        reviewNoteCount === 0
+          ? i18n.t("shell.taskRail.notifications.problem")
+          : i18n.t("shell.taskRail.notifications.problemReview", {
+              count: i18n.formatNumber(reviewNoteCount)
+            }),
+      reason: i18n.t("shell.taskRail.notifications.reason"),
+      action: i18n.t("shell.taskRail.action.reviewDrawer"),
+      severity: reviewNoteCount === 0 ? "info" : "warning",
+      urgency: i18n.t("shell.taskRail.urgency.watch"),
+      icon: "i"
+    },
+    {
+      id: "results",
+      title: i18n.t("shell.taskRail.results.title"),
+      problem:
+        commandStatus === null
+          ? i18n.t("shell.actions.idleStatus")
+          : i18n.t("shell.taskRail.results.problem", { status: commandStatus }),
+      reason: i18n.t("shell.taskRail.results.reason", {
+        count: i18n.formatNumber(resultCount)
+      }),
+      action: i18n.t("shell.taskRail.action.reviewDrawer"),
+      severity: commandStatus === null ? "info" : "success",
+      urgency:
+        commandStatus === null
+          ? i18n.t("shell.taskRail.urgency.watch")
+          : i18n.t("shell.taskRail.urgency.now"),
+      icon: "#"
+    }
+  ];
+}
+
+function renderTaskRailDrawer({
+  drawerId,
+  snapshot,
+  selectedDistrict,
+  selectedOffice,
+  selectedCampaign,
+  m3FlowStage,
+  m3CommandStatus,
+  m4CommandStatus,
+  m5CommandStatus,
+  m6CommandStatus,
+  isGuidanceDismissed,
+  isGuidanceCollapsed,
+  appointmentFlow,
+  routeQueue,
+  onPreviewCampaign,
+  onReviewObligations,
+  onDismissGuidance,
+  onRestoreGuidance,
+  onToggleGuidanceCollapse,
+  i18n
+}: Omit<
+  TaskRailProps,
+  "activeDrawer" | "selectedEligibility" | "onDrawerChange" | "onOpenAppointment"
+> & {
+  readonly drawerId: ClientTaskRailDrawerId;
+  readonly i18n: ClientI18n;
+}): ReactElement {
+  switch (drawerId) {
+    case "appointments":
+      return appointmentFlow;
+    case "campaign":
+      return (
+        <div className="task-rail__drawer-panel">
+          <h3>{i18n.t("shell.taskRail.campaign.title")}</h3>
+          <p>
+            {selectedCampaign === null
+              ? i18n.t("shell.taskRail.campaign.problemEmpty")
+              : i18n.t("shell.taskRail.campaign.problem", {
+                  target: formatCampaignPlanTargetLabel(selectedCampaign, i18n)
+                })}
+          </p>
+          <dl className="task-rail__drawer-metrics">
+            <Metric
+              label={i18n.t("shell.inspector.routeCampaign.muster")}
+              value={i18n.t("shell.inspector.routeCampaign.musterValue", {
+                readiness: snapshot.m4Campaign.muster.readiness,
+                assembled: i18n.formatNumber(snapshot.m4Campaign.muster.assembledTroops),
+                promised: i18n.formatNumber(snapshot.m4Campaign.muster.promisedTroops)
+              })}
+            />
+            <Metric
+              label={i18n.t("shell.inspector.routeCampaign.grain")}
+              value={i18n.t("shell.inspector.routeCampaign.grainValue", {
+                reserved: i18n.formatNumber(snapshot.m4Campaign.grain.grainReserved),
+                required: i18n.formatNumber(snapshot.m4Campaign.grain.grainRequired),
+                days: i18n.formatNumber(snapshot.m4Campaign.grain.expectedDaysOfSupply)
+              })}
+            />
+          </dl>
+          <div className="client-shell__action-grid" aria-label={i18n.t("shell.actions.label")}>
+            <button type="button" disabled={selectedCampaign === null} onClick={onPreviewCampaign}>
+              {i18n.t("shell.actions.previewCampaign")}
+            </button>
+          </div>
+        </div>
+      );
+    case "succession":
+      return (
+        <div className="task-rail__drawer-panel">
+          <h3>{i18n.t("shell.taskRail.succession.title")}</h3>
+          <p>
+            {snapshot.m3Appointment.successionCrises.length === 0
+              ? i18n.t("shell.taskRail.succession.problemStable")
+              : i18n.t("shell.taskRail.succession.problem", {
+                  count: i18n.formatNumber(snapshot.m3Appointment.successionCrises.length)
+                })}
+          </p>
+          <p>{i18n.t("shell.taskRail.succession.reason")}</p>
+        </div>
+      );
+    case "notifications":
+      return (
+        <div className="task-rail__drawer-panel">
+          <PlayerGuidanceLite
+            snapshot={snapshot}
+            selectedDistrict={selectedDistrict}
+            isDismissed={isGuidanceDismissed}
+            isCollapsed={isGuidanceCollapsed}
+            canPreviewAppointment={selectedOffice !== null}
+            canPreviewCampaign={selectedCampaign !== null}
+            m3FlowStage={m3FlowStage}
+            commandStatus={m3CommandStatus ?? m4CommandStatus ?? null}
+            onDismiss={onDismissGuidance}
+            onRestore={onRestoreGuidance}
+            onToggleCollapse={onToggleGuidanceCollapse}
+          />
+          <section
+            className="client-shell__notices"
+            aria-label={i18n.t("shell.notifications.label")}
+          >
+            <h3>{i18n.t("shell.notifications.label")}</h3>
+            <ul>
+              <li>{i18n.t("shell.notifications.obligation")}</li>
+              <li>{i18n.t("shell.notifications.supply")}</li>
+              <li>{i18n.t("shell.notifications.contentReview")}</li>
+            </ul>
+          </section>
+        </div>
+      );
+    case "results":
+      return (
+        <div className="task-rail__drawer-panel">
+          <h3>{i18n.t("shell.taskRail.results.title")}</h3>
+          <CommandStatus
+            m3CommandStatus={m3CommandStatus}
+            m4CommandStatus={m4CommandStatus}
+            m5CommandStatus={m5CommandStatus}
+            m6CommandStatus={m6CommandStatus}
+          />
+        </div>
+      );
+    case "obligations":
+      return (
+        <div className="task-rail__drawer-panel">
+          <h3>{i18n.t("shell.taskRail.obligations.title")}</h3>
+          <div className="client-shell__action-grid" aria-label={i18n.t("shell.actions.label")}>
+            <button
+              type="button"
+              disabled={selectedDistrict?.route.status === "unreachable"}
+              onClick={onReviewObligations}
+            >
+              {i18n.t("shell.actions.reviewObligations")}
+            </button>
+          </div>
+          {routeQueue}
+        </div>
+      );
+  }
+}
+
+interface DistrictRouteQueueProps {
+  readonly rows: readonly ClientDistrictRowReadModel[];
+  readonly visibleRows: readonly ClientDistrictRowReadModel[];
+  readonly projectedRowCount: number;
+  readonly selectedDistrictId: ClientDistrictRowReadModel["districtId"];
+  readonly hoveredDistrictId: ClientDistrictRowReadModel["districtId"] | null;
+  readonly isCollapsed: boolean;
+  readonly routeStatusFilter: DistrictRouteStatusFilter;
+  readonly filter: string;
+  readonly sortKey: ClientDistrictSortKey;
+  readonly sortDirection: ClientDistrictSortDirection;
+  readonly virtualWindow: ReturnType<typeof calculateClientVirtualWindow>;
+  readonly derivationMs: number;
+  readonly selectionMs: number;
+  readonly onToggleCollapsed: () => void;
+  readonly onFilterChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  readonly onRouteStatusFilterChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  readonly onScroll: (event: UIEvent<HTMLDivElement>) => void;
+  readonly onSort: (nextSortKey: ClientDistrictSortKey) => void;
+  readonly onSelect: (row: ClientDistrictRowReadModel) => void;
+  readonly onHover: (row: ClientDistrictRowReadModel | null) => void;
+}
+
+function DistrictRouteQueue({
+  rows,
+  visibleRows,
+  projectedRowCount,
+  selectedDistrictId,
+  hoveredDistrictId,
+  isCollapsed,
+  routeStatusFilter,
+  filter,
+  sortKey,
+  sortDirection,
+  virtualWindow,
+  derivationMs,
+  selectionMs,
+  onToggleCollapsed,
+  onFilterChange,
+  onRouteStatusFilterChange,
+  onScroll,
+  onSort,
+  onSelect,
+  onHover
+}: DistrictRouteQueueProps): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  return (
+    <section
+      className="client-shell__route-queue"
+      aria-label={i18n.t("shell.list.label")}
+      data-folded={isCollapsed ? "true" : "false"}
+      data-render-bound="virtualized"
+    >
+      <header className="district-list__header">
+        <div>
+          <h3>{i18n.t("shell.list.title")}</h3>
+          <p>
+            {i18n.t("shell.list.count", {
+              visible: i18n.formatNumber(projectedRowCount),
+              total: i18n.formatNumber(rows.length)
+            })}
+          </p>
+        </div>
+        <button
+          type="button"
+          aria-label={i18n.t("shell.list.toggle")}
+          aria-expanded={!isCollapsed}
+          onClick={onToggleCollapsed}
+        >
+          {isCollapsed ? i18n.t("shell.list.show") : i18n.t("shell.list.hide")}
+        </button>
+      </header>
+      <div className="district-list__toolbar">
+        <label className="district-list__filter">
+          <span>{i18n.t("shell.list.filter")}</span>
+          <input
+            aria-label={i18n.t("shell.list.filter")}
+            value={filter}
+            onChange={onFilterChange}
+            placeholder={i18n.t("shell.list.placeholder")}
+          />
+        </label>
+        <label className="district-list__filter">
+          <span>{i18n.t("shell.list.routeFilter")}</span>
+          <select
+            aria-label={i18n.t("shell.list.routeFilter")}
+            value={routeStatusFilter}
+            onChange={onRouteStatusFilterChange}
+          >
+            <option value="all">{i18n.t("shell.list.allRoutes")}</option>
+            <option value="reachable">{i18n.t("shell.route.reachable")}</option>
+            <option value="capacity-exceeded">{i18n.t("shell.route.capacityExceeded")}</option>
+            <option value="unreachable">{i18n.t("shell.route.unreachable")}</option>
+          </select>
+        </label>
+        <output
+          aria-label={i18n.t("shell.list.performance")}
+          data-testid="district-list-performance"
+          data-derivation-ms={derivationMs.toFixed(3)}
+          data-selection-ms={selectionMs.toFixed(3)}
+        >
+          {derivationMs.toFixed(2)} ms
+        </output>
+      </div>
+
+      {isCollapsed ? null : (
+        <>
+          <div className="district-list__head">
+            <SortButton
+              label={i18n.t("shell.table.district")}
+              sortKey="district"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={onSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.population")}
+              sortKey="population"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={onSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.labor")}
+              sortKey="labor"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={onSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.grain")}
+              sortKey="grain"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={onSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.cash")}
+              sortKey="cash"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={onSort}
+            />
+            <SortButton
+              label={i18n.t("shell.table.route")}
+              sortKey="route"
+              activeSortKey={sortKey}
+              direction={sortDirection}
+              onSort={onSort}
+            />
+          </div>
+
+          <div
+            className="district-list__viewport"
+            aria-label={i18n.t("shell.list.virtualRowsLabel")}
+            data-row-count={rows.length}
+            data-filtered-row-count={projectedRowCount}
+            data-rendered-row-count={visibleRows.length}
+            data-render-limit={virtualWindow.visibleCount}
+            data-route-filter={routeStatusFilter}
+            onScroll={onScroll}
+          >
+            {projectedRowCount === 0 ? (
+              <p className="district-list__empty">{i18n.t("shell.list.empty")}</p>
+            ) : (
+              <div
+                className="district-list__spacer"
+                style={{ height: `${virtualWindow.totalHeightPx}px` }}
+              >
+                <div
+                  className="district-list__rows"
+                  style={{ transform: `translateY(${virtualWindow.offsetTopPx}px)` }}
+                >
+                  {visibleRows.map((row) => (
+                    <DistrictRowButton
+                      key={row.districtId}
+                      row={row}
+                      isSelected={selectedDistrictId === row.districtId}
+                      isHovered={hoveredDistrictId === row.districtId}
+                      onSelect={onSelect}
+                      onHover={onHover}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </section>
   );
 }
 
@@ -5080,6 +5588,18 @@ function formatPlayerDistrictName(row: ClientDistrictRowReadModel, i18n: ClientI
   return i18n.t("shell.district.name", {
     number: i18n.formatNumber(Number(row.districtId))
   });
+}
+
+function formatCampaignPlanTargetLabel(
+  plan: ClientM4CampaignPlanReadModel,
+  i18n: ClientI18n
+): string {
+  if (plan.target.kind === "district") {
+    return i18n.t("shell.district.name", {
+      number: i18n.formatNumber(Number(plan.target.districtId))
+    });
+  }
+  return plan.targetLabel;
 }
 
 function formatPlayerSettlementName(i18n: ClientI18n): string {
