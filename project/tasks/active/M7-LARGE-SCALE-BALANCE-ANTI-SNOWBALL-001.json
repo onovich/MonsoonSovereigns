@@ -80,20 +80,22 @@
   "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
   "threads": {
     "balance_analyst": {
-      "thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
-      "status": "active_started",
+      "thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+      "status": "active_started_replacement",
       "role": "balance_analyst",
-      "nickname": "Tide",
+      "nickname": "Abacus",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+      "replaces_thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
+      "replacement_reason": "previous_balance_analyst_errored_context_window_before_handoff_clean_worktree",
       "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
-      "routed_at": "2026-06-29T08:12:59.704Z",
-      "updated_at": "2026-06-29T08:15:21.784Z",
-      "route_submission_id": "019f1272-19e4-70e3-b089-adda900b1128",
-      "route_sent_at": "2026-06-29T08:15:21.784Z"
+      "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT-START.json",
+      "route_submission_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+      "route_sent_at": "2026-06-29T08:19:46.557Z",
+      "updated_at": "2026-06-29T08:19:46.557Z"
     },
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -116,7 +118,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T08:15:21.784Z",
+  "updated_at": "2026-06-29T08:19:46.557Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -137,11 +139,17 @@
   "previous_closed_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
   "start_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-START.json",
-  "writer_thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
-  "writer_thread_nickname": "Tide",
+  "writer_thread_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+  "writer_thread_nickname": "Abacus",
   "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
   "scheduling_reason": "Selected as the highest-priority dependency-ready M7 task after M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 closed; UI/localization/art directive has already been incorporated through closed M7 visual and UI-localization planning tasks.",
   "next_action": "Await balance_analyst writer REVIEW handoff, validate it, then route to gameplay_designer for independent review.",
   "route_submission_id": "019f1272-19e4-70e3-b089-adda900b1128",
-  "route_sent_at": "2026-06-29T08:15:21.784Z"
+  "route_sent_at": "2026-06-29T08:15:21.784Z",
+  "replaces_writer_thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
+  "replacement_reason": "previous_balance_analyst_errored_context_window_before_handoff_clean_worktree",
+  "replacement_start_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-REPLACEMENT-START__lead_orchestrator.json",
+  "replacement_route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-REPLACEMENT-START.json",
+  "replacement_submission_id": "019f1275-952a-78d3-a178-a97f14e27e39",
+  "replacement_at": "2026-06-29T08:19:46.557Z"
 }
