@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "test_engineer",
+  "status": "ACCEPT",
+  "summary": "Validated the R2 decision-inspector rewrite on codex/m7-decision-inspector-rewrite. The right inspector now leads with the decision assistant before grouped decision data, the non-debug player shell no longer exposes raw reason-code or read-model implementation wording, the unreachable-route path explains why Review obligations is disabled, and existing preview/confirmation flows remain intact without introducing a new command path.",
+  "artifacts": [
+    "D:/WebProjects/MonsoonSovereigns/project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-TEST-REVIEW__test_engineer.json",
+    "D:/WebProjects/MonsoonSovereigns/project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "D:/WebProjects/MonsoonSovereigns/project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+    "D:/WebProjects/MonsoonSovereigns/project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+    "D:/WebProjects/MonsoonSovereigns/apps/web/src/shell/web-client-shell.test.tsx",
+    "D:/WebProjects/MonsoonSovereigns/tests/e2e/web-shell.spec.ts",
+    "D:/WebProjects/MonsoonSovereigns/packages/ui/src/index.tsx",
+    "D:/WebProjects/MonsoonSovereigns/packages/ui/src/i18n.ts"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "commit": "c7f5e9ef5dd124b8cce207932b1baf5ff800fee2",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; branch is codex/m7-decision-inspector-rewrite and the worktree was clean before writing this handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-DECISION-INSPECTOR-REWRITE-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task registry resolved successfully."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no ready-task output while this review task remains active."
+    },
+    {
+      "command": "node -e JSON.parse task shape check for project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+      "exit_code": 0,
+      "result": "PASS; required task fields and required_tests shape were present."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; writer R2 handoff is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "PASS; gameplay R2 handoff is valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no whitespace or patch-format issues."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 10 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed, including decision-assistant and unreachable-route coverage."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; Vite build completed with only the pre-existing chunk-size warning."
+    }
+  ],
+  "decisions": [
+    "Accepted the decision-assistant ordering: the right inspector presents current problem, recommendation, cost, benefit, risk, and next action before grouped decision data.",
+    "Accepted the non-debug copy cleanup: raw reason-code and read-model implementation wording is hidden from player mode, while existing translated reason chips remain available.",
+    "Accepted the unreachable-route fix: Review obligations is disabled there, and the copy now tells the player to choose a reachable district from the map or route queue first.",
+    "Accepted that preview/confirmation remains on the existing command path and the tests do not introduce any new command surface."
+  ],
+  "risks": [
+    "The blocked-route guidance is intentionally low-fidelity and points to existing map/route queue selection surfaces rather than a new recovery action.",
+    "No regression was detected in the existing preview/confirmation or localized coverage matrix, but any future routing rewrite should preserve the current command boundary."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Run independent QA review of M7-DECISION-INSPECTOR-REWRITE-001; if acceptable, continue the workflow from QA.",
+  "created_at": "2026-06-30T06:09:37.2332025+08:00"
+}
