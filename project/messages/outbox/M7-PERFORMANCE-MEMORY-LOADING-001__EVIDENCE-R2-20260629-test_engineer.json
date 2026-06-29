@@ -1,0 +1,390 @@
+{
+  "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+  "captured_at": "2026-06-29T10:52:19.532Z",
+  "branch_or_worktree": "codex/m7-performance-memory-loading",
+  "base_main_commit": "60301ed786e814f8538625972c1667f1af0771ff",
+  "report_kind": "R2",
+  "threshold_basis": {
+    "status": "PASS_WITH_LIMITS",
+    "note": "M7 Beta thresholds are not frozen in task metadata. The report uses the accepted Beta-scale artifact contract plus conservative local sanity bounds."
+  },
+  "measurements": {
+    "schemaVersion": 1,
+    "taskId": "M7-PERFORMANCE-MEMORY-LOADING-001",
+    "generatedAt": "2026-06-29T10:48:17.664Z",
+    "host": {
+      "platform": "win32",
+      "arch": "x64",
+      "nodeVersion": "v24.13.1",
+      "cpuCount": 16,
+      "totalMemoryMb": 48297,
+      "freeMemoryMb": 10496,
+      "release": "10.0.26200",
+      "hostname": "Win-Onovich"
+    },
+    "assumptions": [
+      {
+        "kind": "low_end_windows_proxy",
+        "status": "proxy",
+        "note": "This host is a Windows x64 workstation, not a verified low-end endpoint. The low-end Windows assumption is therefore treated as a proxy budget rather than direct device validation."
+      }
+    ],
+    "m7LargeScaleBalance": {
+      "status": "PASS",
+      "carryForwardM6Gate": "PASS_WITH_LIMITS",
+      "sampleSize": 36,
+      "artifactHash": "f671ff59",
+      "contentBundleHash": "6b8ef809",
+      "aggregate": {
+        "scenarioCount": 3,
+        "seedCount": 12,
+        "runCount": 36,
+        "runawayExpansionCount": 17,
+        "unavoidableCollapseCount": 35,
+        "noActionHeavyAiCount": 22,
+        "exploitLoopDetectedCount": 24,
+        "directControlDominanceCount": 0,
+        "stableCount": 0,
+        "averageSnowballScore": 63,
+        "averageCollapseScore": 96,
+        "averageNoActionScore": 82,
+        "averageExploitLoopScore": 80,
+        "averageDirectControlScore": 47,
+        "averageAntiStallScore": 69,
+        "maxNoActionShare": 0.571,
+        "maxDirectControlShare": 0,
+        "noActionShareP95": 0.571,
+        "directControlShareP95": 0,
+        "primarySignalCounts": {
+          "runaway-expansion": 4,
+          "unavoidable-collapse": 10,
+          "no-action-heavy-ai": 11,
+          "exploit-loop": 11,
+          "direct-control-dominance": 0,
+          "stable": 0
+        },
+        "scenarioCoverage": [
+          {
+            "scenarioId": "scenario.beta.1531.edge-polity",
+            "runCount": 12
+          },
+          {
+            "scenarioId": "scenario.beta.1569.overextended-suzerainty",
+            "runCount": 12
+          },
+          {
+            "scenarioId": "scenario.beta.1581.succession-fracture",
+            "runCount": 12
+          }
+        ]
+      },
+      "performance": {
+        "durationMs": 16.23,
+        "hostMemoryBefore": {
+          "rssMb": 154,
+          "heapTotalMb": 115,
+          "heapUsedMb": 63,
+          "externalMb": 17
+        },
+        "hostMemoryAfter": {
+          "rssMb": 157,
+          "heapTotalMb": 115,
+          "heapUsedMb": 69,
+          "externalMb": 17
+        }
+      },
+      "thresholds": {
+        "basis": "PASS_WITH_LIMITS",
+        "note": "M7 Beta thresholds are not frozen in task metadata. This evidence uses the accepted Beta-scale artifact contract and treats the observed measurements as conservative sanity bounds."
+      }
+    },
+    "saveLoad": {
+      "status": "PASS",
+      "durationMs": 16.18,
+      "saveByteLength": 10920,
+      "finalHash": "28074edd",
+      "loadedHash": "28074edd",
+      "replayedHash": "28074edd"
+    },
+    "web": {
+      "status": "PASS",
+      "baseUrl": "http://127.0.0.1:54583",
+      "startup": {
+        "route": "/",
+        "durationMs": 183.23,
+        "navigation": {
+          "startTime": 0,
+          "responseStartMs": 9.900000095367432,
+          "domInteractiveMs": 15.799999952316284,
+          "domContentLoadedEventEndMs": 56.59999990463257,
+          "loadEventEndMs": 57.200000047683716,
+          "transferSize": 797,
+          "encodedBodySize": 497,
+          "decodedBodySize": 497
+        },
+        "pageMetrics": {
+          "jsHeapUsedSize": 10000000,
+          "jsHeapTotalSize": 10600000,
+          "domContentLoadedEventEndMs": 56.59999990463257,
+          "loadEventEndMs": 57.200000047683716,
+          "firstPaintMs": 140,
+          "firstContentfulPaintMs": 140
+        },
+        "densityProxy": {
+          "renderedRowCount": 16,
+          "derivationMs": 0.1,
+          "selectionMs": 0
+        }
+      },
+      "coverage": {
+        "route": "/?fixture=m7-extreme&surface=coverage&debug=1",
+        "durationMs": 141.76,
+        "activeSurface": "coverage",
+        "localeCount": 2,
+        "assetReferenceCount": 8,
+        "coverageVisible": true,
+        "guidanceVisible": true
+      }
+    },
+    "artifacts": {
+      "web": {
+        "rootDir": "D:\\WebProjects\\MonsoonSovereigns\\apps\\web\\dist",
+        "exists": true,
+        "files": [
+          {
+            "path": "BitmapFont-BXYK09Tq.js",
+            "sha256": "9E64320B6DAABA419626EEDF0BDAC5620B2AD730FB0AC345528977B1DC5D960F"
+          },
+          {
+            "path": "browserAll-Dx9e-6DC.js",
+            "sha256": "FC0A1E8353A3836CA7393A65CF45D85F5D37C0DBFF6E87A3D7F3872C349409B6"
+          },
+          {
+            "path": "BufferResource-CAoH_-t_.js",
+            "sha256": "6F5D7CF26694D7822C34CFB20465020B5434086591E1E4824316A7C355524052"
+          },
+          {
+            "path": "Cache-Dhb9_xG-.js",
+            "sha256": "AC35FD032D96988EE0FED8C249027EA9A8A24D9AC91CA083998E32466FD14F53"
+          },
+          {
+            "path": "CanvasPool-BApThOKx.js",
+            "sha256": "6E3C735CAC356DAFA4E869B1BA48D4963199CA06082B20CC471AA076D6CAFABB"
+          },
+          {
+            "path": "CanvasRenderer-R3FUEhmB.js",
+            "sha256": "D1BFB2891CFF37D27AB99CC5E6EFB4FF14BD2738EA2AC88A54031C289C5A56AD"
+          },
+          {
+            "path": "canvasUtils-CjGbgx1U.js",
+            "sha256": "8706217BD49DD224781D92ED7F58E06E2DDE24B892501F8BD83C133D1CA9D180"
+          },
+          {
+            "path": "FederatedEventTarget-BvEi81ss.js",
+            "sha256": "5019271B1D6FFB624FE9677D21A9EF23ED7FDB1CDA0293A9071B1073CF0D0352"
+          },
+          {
+            "path": "Filter-E00N4y-q.js",
+            "sha256": "D1200EA177F93FB3A9153DAF165DFC64369B13809E27918E14598E488CAFCB26"
+          },
+          {
+            "path": "FilterSystem-BeVmpx47.js",
+            "sha256": "C303DA48DD58D5AA5B5511D23D853831857C5FEB5E3FC0D49D03279DD29A7C3A"
+          },
+          {
+            "path": "GCManagedHash-Bwh-SpCc.js",
+            "sha256": "79D7D853E1C8542ADC355A5DE4AEEC07977DDFA27B2EDC2840D19235B98D1F60"
+          },
+          {
+            "path": "Geometry-CsKLLwGK.js",
+            "sha256": "56800CEF06139129EE068C49F651DC7442737C78DC20B464D7FEC2B20FEFE4E0"
+          },
+          {
+            "path": "getTextureBatchBindGroup-Bhn2xgcl.js",
+            "sha256": "C1E1E6FC6EB40A5580005DB392450BC9109FE57656700ED8C3C3B094E08A2458"
+          },
+          {
+            "path": "GraphicsContext-G9r4UICP.js",
+            "sha256": "A33DB40FC3956CC6716BF8B4712C9BD11CDB1A20C6CA207463778C416A987933"
+          },
+          {
+            "path": "host-hash-canary-worker-DlWCw6WK.js",
+            "sha256": "70970B610A8F54E3CA1B813B70D52DC8C46F183747D8A073DC90526A4E7F1A68"
+          },
+          {
+            "path": "host-hash-canary.html",
+            "sha256": "E852455FE4A17C5053028C04EF99478CB04CFB4067C06255BF363A8AB87B0F34"
+          },
+          {
+            "path": "hostHashCanary-Dk0YpMqr.js",
+            "sha256": "47548F8B73C2E6A2F816FAC54A3C0326C9FF63FE74F42B2A58C68173355388D1"
+          },
+          {
+            "path": "index.html",
+            "sha256": "25DB67399C7C16BB562961CAE24855F5AE85704AC019CB92EB9DC0023FF6886D"
+          },
+          {
+            "path": "init-Bll1_wli.js",
+            "sha256": "220F21FCA9E6253DCFAFAAA39B581A35D6B4D8B11B351B59824F0B860F42A950"
+          },
+          {
+            "path": "lib-Cr-F5_Qq.js",
+            "sha256": "3B840E548C843EA610C318EA2DEF62F9238465883DDFC393D716B8EC3CB88BE0"
+          },
+          {
+            "path": "main-DkXwQTJS.css",
+            "sha256": "879E7F2222EC1F4B893AFBB724FB74FF3072C88048D589428C5AD1DCF0321AAE"
+          },
+          {
+            "path": "main-K-Q6mO_-.js",
+            "sha256": "5B9E6758CA411D8740E1CAC8FDAE898598051DA6CA52BC60B3068A6693EB4CC5"
+          },
+          {
+            "path": "modulepreload-polyfill-Dezn_h7o.js",
+            "sha256": "785597BCA2E7DD97A652A20A197C077079E635A5663433448E0E1D9FD8C98A64"
+          },
+          {
+            "path": "RenderTargetSystem-BL1qtZsJ.js",
+            "sha256": "A60C74293018B2E0B77CA0227310B2527139DB13CE15DF50019390681E20E21E"
+          },
+          {
+            "path": "WebGLRenderer-EL_DLrJk.js",
+            "sha256": "C971E51C66E009CBA23C9A7E14A7955FC80B73574D0DA16807CA9ED4CE249F8C"
+          },
+          {
+            "path": "WebGPURenderer-CYrP1oC_.js",
+            "sha256": "80DBEA94A5285A000BC2327D1F8EE114A891578C6C4D8320F6418479147B9FFB"
+          },
+          {
+            "path": "webworkerAll-9foa81Bo.js",
+            "sha256": "45E289D23894BF61DF87568C71BA228B94F6C9F0F54657D1655E2FB5CB451F26"
+          }
+        ],
+        "treeHash": "33F83A371AFE40CF1F3BB7958AFE737B2D5AD731C723ACAEDC05E8585C80AA66"
+      },
+      "desktopPackage": {
+        "rootDir": "D:\\WebProjects\\MonsoonSovereigns\\.tmp\\desktop-package\\MonsoonSovereigns-win32-x64",
+        "exists": true,
+        "files": [
+          {
+            "path": "BitmapFont-BXYK09Tq.js",
+            "sha256": "9E64320B6DAABA419626EEDF0BDAC5620B2AD730FB0AC345528977B1DC5D960F"
+          },
+          {
+            "path": "browserAll-Dx9e-6DC.js",
+            "sha256": "FC0A1E8353A3836CA7393A65CF45D85F5D37C0DBFF6E87A3D7F3872C349409B6"
+          },
+          {
+            "path": "BufferResource-CAoH_-t_.js",
+            "sha256": "6F5D7CF26694D7822C34CFB20465020B5434086591E1E4824316A7C355524052"
+          },
+          {
+            "path": "Cache-Dhb9_xG-.js",
+            "sha256": "AC35FD032D96988EE0FED8C249027EA9A8A24D9AC91CA083998E32466FD14F53"
+          },
+          {
+            "path": "CanvasPool-BApThOKx.js",
+            "sha256": "6E3C735CAC356DAFA4E869B1BA48D4963199CA06082B20CC471AA076D6CAFABB"
+          },
+          {
+            "path": "CanvasRenderer-R3FUEhmB.js",
+            "sha256": "D1BFB2891CFF37D27AB99CC5E6EFB4FF14BD2738EA2AC88A54031C289C5A56AD"
+          },
+          {
+            "path": "canvasUtils-CjGbgx1U.js",
+            "sha256": "8706217BD49DD224781D92ED7F58E06E2DDE24B892501F8BD83C133D1CA9D180"
+          },
+          {
+            "path": "FederatedEventTarget-BvEi81ss.js",
+            "sha256": "5019271B1D6FFB624FE9677D21A9EF23ED7FDB1CDA0293A9071B1073CF0D0352"
+          },
+          {
+            "path": "Filter-E00N4y-q.js",
+            "sha256": "D1200EA177F93FB3A9153DAF165DFC64369B13809E27918E14598E488CAFCB26"
+          },
+          {
+            "path": "FilterSystem-BeVmpx47.js",
+            "sha256": "C303DA48DD58D5AA5B5511D23D853831857C5FEB5E3FC0D49D03279DD29A7C3A"
+          },
+          {
+            "path": "GCManagedHash-Bwh-SpCc.js",
+            "sha256": "79D7D853E1C8542ADC355A5DE4AEEC07977DDFA27B2EDC2840D19235B98D1F60"
+          },
+          {
+            "path": "Geometry-CsKLLwGK.js",
+            "sha256": "56800CEF06139129EE068C49F651DC7442737C78DC20B464D7FEC2B20FEFE4E0"
+          },
+          {
+            "path": "getTextureBatchBindGroup-Bhn2xgcl.js",
+            "sha256": "C1E1E6FC6EB40A5580005DB392450BC9109FE57656700ED8C3C3B094E08A2458"
+          },
+          {
+            "path": "GraphicsContext-G9r4UICP.js",
+            "sha256": "A33DB40FC3956CC6716BF8B4712C9BD11CDB1A20C6CA207463778C416A987933"
+          },
+          {
+            "path": "host-hash-canary-worker-DlWCw6WK.js",
+            "sha256": "70970B610A8F54E3CA1B813B70D52DC8C46F183747D8A073DC90526A4E7F1A68"
+          },
+          {
+            "path": "hostHashCanary-Dk0YpMqr.js",
+            "sha256": "47548F8B73C2E6A2F816FAC54A3C0326C9FF63FE74F42B2A58C68173355388D1"
+          },
+          {
+            "path": "init-Bll1_wli.js",
+            "sha256": "220F21FCA9E6253DCFAFAAA39B581A35D6B4D8B11B351B59824F0B860F42A950"
+          },
+          {
+            "path": "lib-Cr-F5_Qq.js",
+            "sha256": "3B840E548C843EA610C318EA2DEF62F9238465883DDFC393D716B8EC3CB88BE0"
+          },
+          {
+            "path": "main-DkXwQTJS.css",
+            "sha256": "879E7F2222EC1F4B893AFBB724FB74FF3072C88048D589428C5AD1DCF0321AAE"
+          },
+          {
+            "path": "main-K-Q6mO_-.js",
+            "sha256": "5B9E6758CA411D8740E1CAC8FDAE898598051DA6CA52BC60B3068A6693EB4CC5"
+          },
+          {
+            "path": "main/main.js",
+            "sha256": "8BE72D09C76EA2EAE18D53A82034EBC5F30A832B58285E34461C5E575967B15B"
+          },
+          {
+            "path": "modulepreload-polyfill-Dezn_h7o.js",
+            "sha256": "785597BCA2E7DD97A652A20A197C077079E635A5663433448E0E1D9FD8C98A64"
+          },
+          {
+            "path": "preload/preload.cjs",
+            "sha256": "47C3D8605325A78B1DBC282B0D95CCF32A92BC59FE5689CB946566D15DB8EF5A"
+          },
+          {
+            "path": "renderer/web/index.html",
+            "sha256": "25DB67399C7C16BB562961CAE24855F5AE85704AC019CB92EB9DC0023FF6886D"
+          },
+          {
+            "path": "RenderTargetSystem-BL1qtZsJ.js",
+            "sha256": "A60C74293018B2E0B77CA0227310B2527139DB13CE15DF50019390681E20E21E"
+          },
+          {
+            "path": "WebGLRenderer-EL_DLrJk.js",
+            "sha256": "C971E51C66E009CBA23C9A7E14A7955FC80B73574D0DA16807CA9ED4CE249F8C"
+          },
+          {
+            "path": "WebGPURenderer-CYrP1oC_.js",
+            "sha256": "80DBEA94A5285A000BC2327D1F8EE114A891578C6C4D8320F6418479147B9FFB"
+          },
+          {
+            "path": "webworkerAll-9foa81Bo.js",
+            "sha256": "45E289D23894BF61DF87568C71BA228B94F6C9F0F54657D1655E2FB5CB451F26"
+          }
+        ],
+        "treeHash": "DD75741482BB065B361A8ED8CA0DB0081731315D0346562A3EC390248A193FD7"
+      }
+    }
+  },
+  "notes": [
+    "The host is a Windows x64 workstation, not a verified low-end endpoint. Low-end Windows validation is therefore a proxy assumption only.",
+    "The prior desktop:security-check ENOTEMPTY collision remains a known concurrent output-tree hazard from the earlier R1 evidence; this R2 run was serialized and passed."
+  ]
+}
