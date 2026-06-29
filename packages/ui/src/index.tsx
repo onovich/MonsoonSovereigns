@@ -1407,6 +1407,15 @@ function DistrictPanel({
     );
   }
 
+  const decision = createDistrictDecisionAssistant({
+    row,
+    m3Appointment,
+    m4Campaign,
+    canPreviewAppointment,
+    canPreviewCampaign,
+    i18n
+  });
+
   return (
     <aside
       className="district-panel"
@@ -1417,6 +1426,104 @@ function DistrictPanel({
         <h2>{formatPlayerDistrictName(row, i18n)}</h2>
         <span>{formatSeasonLabel(row.seasonal.agriculturePhase, i18n)}</span>
       </div>
+      <DistrictDecisionAssistant decision={decision} />
+      <DistrictDecisionData
+        row={row}
+        selectedSettlement={selectedSettlement}
+        appointment={m3Appointment}
+        campaign={m4Campaign}
+      />
+      <DistrictActionList
+        row={row}
+        canPreviewAppointment={canPreviewAppointment}
+        canPreviewCampaign={canPreviewCampaign}
+        onPreviewAppointment={onPreviewAppointment}
+        onPreviewCampaign={onPreviewCampaign}
+        onReviewObligations={onReviewObligations}
+      />
+      {provenanceNote.length === 0 ? null : (
+        <p className="district-panel__provenance">{provenanceNote}</p>
+      )}
+    </aside>
+  );
+}
+
+interface DistrictDecisionAssistantSummary {
+  readonly problem: string;
+  readonly recommendation: string;
+  readonly cost: string;
+  readonly benefit: string;
+  readonly risk: string;
+  readonly nextAction: string;
+  readonly reasonCodes: readonly string[];
+}
+
+function DistrictDecisionAssistant({
+  decision
+}: {
+  readonly decision: DistrictDecisionAssistantSummary;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  return (
+    <section
+      className="district-panel__decision"
+      aria-label={i18n.t("shell.inspector.decision.label")}
+    >
+      <h3>{i18n.t("shell.inspector.decision.title")}</h3>
+      <dl className="district-panel__decision-grid">
+        <Metric label={i18n.t("shell.inspector.decision.problem")} value={decision.problem} />
+        <Metric
+          label={i18n.t("shell.inspector.decision.recommendation")}
+          value={decision.recommendation}
+        />
+        <Metric label={i18n.t("shell.inspector.decision.cost")} value={decision.cost} />
+        <Metric label={i18n.t("shell.inspector.decision.benefit")} value={decision.benefit} />
+        <Metric label={i18n.t("shell.inspector.decision.risk")} value={decision.risk} />
+        <Metric label={i18n.t("shell.inspector.decision.nextAction")} value={decision.nextAction} />
+      </dl>
+      <ReasonChips reasonCodes={decision.reasonCodes} />
+    </section>
+  );
+}
+
+function DistrictDecisionData({
+  row,
+  selectedSettlement,
+  appointment,
+  campaign
+}: {
+  readonly row: ClientDistrictRowReadModel;
+  readonly selectedSettlement: ClientMapSettlementReadModel | null;
+  readonly appointment: ClientM3AppointmentReadModelSnapshot;
+  readonly campaign: ClientM4CampaignReadModelSnapshot;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  return (
+    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.data.label")}>
+      <h3>{i18n.t("shell.inspector.data.title")}</h3>
+      <p>{i18n.t("shell.inspector.data.description")}</p>
+      <DistrictResourceData row={row} selectedSettlement={selectedSettlement} />
+      <DistrictRouteCampaignData row={row} campaign={campaign} />
+      <DistrictGovernanceState row={row} appointment={appointment} />
+      <DistrictEffectList row={row} appointment={appointment} campaign={campaign} />
+    </section>
+  );
+}
+
+function DistrictResourceData({
+  row,
+  selectedSettlement
+}: {
+  readonly row: ClientDistrictRowReadModel;
+  readonly selectedSettlement: ClientMapSettlementReadModel | null;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  return (
+    <section
+      className="district-panel__subsection"
+      aria-label={i18n.t("shell.inspector.resources.label")}
+    >
+      <h4>{i18n.t("shell.inspector.resources.title")}</h4>
       <dl className="district-panel__metrics">
         {selectedSettlement === null ? null : (
           <Metric
@@ -1449,26 +1556,75 @@ function DistrictPanel({
             mobilized: i18n.formatNumber(row.cash.cumulativeMobilizationCost)
           })}
         />
+      </dl>
+      <DistrictTraitList row={row} />
+    </section>
+  );
+}
+
+function DistrictRouteCampaignData({
+  row,
+  campaign
+}: {
+  readonly row: ClientDistrictRowReadModel;
+  readonly campaign: ClientM4CampaignReadModelSnapshot;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const routeForecast = findDistrictRouteForecast(row, campaign);
+  const campaignPlan = findDistrictCampaignPlan(row, campaign);
+  return (
+    <section
+      className="district-panel__subsection"
+      aria-label={i18n.t("shell.inspector.routeCampaign.label")}
+    >
+      <h4>{i18n.t("shell.inspector.routeCampaign.title")}</h4>
+      <dl className="district-panel__metrics">
         <Metric
           label={i18n.t("shell.inspector.route")}
           value={formatPlayerRouteSummary(row, i18n)}
         />
+        <Metric
+          label={i18n.t("shell.inspector.routeCampaign.muster")}
+          value={i18n.t("shell.inspector.routeCampaign.musterValue", {
+            readiness: i18n.formatReasonCode(campaign.muster.readiness),
+            assembled: i18n.formatNumber(campaign.muster.assembledTroops),
+            promised: i18n.formatNumber(campaign.muster.promisedTroops)
+          })}
+        />
+        <Metric
+          label={i18n.t("shell.inspector.routeCampaign.grain")}
+          value={i18n.t("shell.inspector.routeCampaign.grainValue", {
+            reserved: i18n.formatNumber(campaign.grain.grainReserved),
+            required: i18n.formatNumber(campaign.grain.grainRequired),
+            days: i18n.formatNumber(campaign.grain.expectedDaysOfSupply)
+          })}
+        />
+        <Metric
+          label={i18n.t("shell.inspector.routeCampaign.campaign")}
+          value={
+            campaignPlan === null
+              ? i18n.t("shell.inspector.routeCampaign.noCampaign")
+              : i18n.t("shell.inspector.routeCampaign.campaignValue", {
+                  target: campaignPlan.targetLabel,
+                  status: formatReasonStatus(campaignPlan.statusReasonCode, i18n)
+                })
+          }
+        />
       </dl>
-      <DistrictTraitList row={row} />
-      <DistrictGovernanceState row={row} appointment={m3Appointment} />
-      <DistrictEffectList row={row} appointment={m3Appointment} campaign={m4Campaign} />
-      <DistrictActionList
-        row={row}
-        canPreviewAppointment={canPreviewAppointment}
-        canPreviewCampaign={canPreviewCampaign}
-        onPreviewAppointment={onPreviewAppointment}
-        onPreviewCampaign={onPreviewCampaign}
-        onReviewObligations={onReviewObligations}
-      />
-      {provenanceNote.length === 0 ? null : (
-        <p className="district-panel__provenance">{provenanceNote}</p>
+      {routeForecast === null ? null : (
+        <div className="district-panel__fact">
+          <strong>
+            {i18n.t("shell.inspector.effectRoute", {
+              summary: `${formatRouteStatusLabel(routeForecast.status, i18n)}; ${formatDistrictTravelDays(
+                routeForecast.travelDays,
+                i18n
+              )}`
+            })}
+          </strong>
+          <ReasonChips reasonCodes={getRouteForecastReasonCodes(routeForecast)} />
+        </div>
       )}
-    </aside>
+    </section>
   );
 }
 
@@ -1481,8 +1637,8 @@ function DistrictTraitList({ row }: { readonly row: ClientDistrictRowReadModel }
           kinds: formatDistrictRouteKinds(row.route.routeKinds, i18n)
         });
   return (
-    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.traits")}>
-      <h3>{i18n.t("shell.inspector.traits")}</h3>
+    <section className="district-panel__subsection" aria-label={i18n.t("shell.inspector.traits")}>
+      <h4>{i18n.t("shell.inspector.traits")}</h4>
       <div className="district-panel__chips" role="list">
         <span role="listitem">
           {i18n.t("shell.inspector.seasonTrait", {
@@ -1511,8 +1667,11 @@ function DistrictGovernanceState({
   const administrativePreview = primaryOffice?.administrativePreview ?? null;
 
   return (
-    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.governance")}>
-      <h3>{i18n.t("shell.inspector.governance")}</h3>
+    <section
+      className="district-panel__subsection"
+      aria-label={i18n.t("shell.inspector.governance")}
+    >
+      <h4>{i18n.t("shell.inspector.governance")}</h4>
       {administrativePreview === null ? (
         <p>{i18n.t("shell.inspector.governanceUnassigned")}</p>
       ) : (
@@ -1527,7 +1686,7 @@ function DistrictGovernanceState({
           <ReasonChips reasonCodes={administrativePreview.reasonCodes} />
         </div>
       )}
-      <h3>{i18n.t("shell.inspector.appointment")}</h3>
+      <h4>{i18n.t("shell.inspector.appointment")}</h4>
       {primaryOffice === null ? (
         <p>{i18n.t("shell.inspector.appointmentUnavailable")}</p>
       ) : (
@@ -1573,8 +1732,8 @@ function DistrictEffectList({
     routeForecast !== undefined;
 
   return (
-    <section className="district-panel__section" aria-label={i18n.t("shell.inspector.effects")}>
-      <h3>{i18n.t("shell.inspector.effects")}</h3>
+    <section className="district-panel__subsection" aria-label={i18n.t("shell.inspector.effects")}>
+      <h4>{i18n.t("shell.inspector.effects")}</h4>
       {hasEffects ? (
         <div className="district-panel__effect-list" role="list">
           {relevantObligations.map((obligation) => (
@@ -1623,6 +1782,193 @@ function DistrictEffectList({
       )}
     </section>
   );
+}
+
+function createDistrictDecisionAssistant({
+  row,
+  m3Appointment,
+  m4Campaign,
+  canPreviewAppointment,
+  canPreviewCampaign,
+  i18n
+}: {
+  readonly row: ClientDistrictRowReadModel;
+  readonly m3Appointment: ClientM3AppointmentReadModelSnapshot;
+  readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
+  readonly canPreviewAppointment: boolean;
+  readonly canPreviewCampaign: boolean;
+  readonly i18n: ClientI18n;
+}): DistrictDecisionAssistantSummary {
+  const district = formatPlayerDistrictName(row, i18n);
+  const obligation = findDistrictObligation(row, m3Appointment);
+  const administrativePreview = findDistrictAdministrativePreview(row, m3Appointment);
+  const routeForecast = findDistrictRouteForecast(row, m4Campaign);
+  const campaignPlan = findDistrictCampaignPlan(row, m4Campaign);
+  const cost = formatDistrictDecisionCost(row, routeForecast, m4Campaign, i18n);
+
+  if (row.route.status === "unreachable") {
+    return {
+      problem: i18n.t("shell.inspector.decision.problem.blockedRoute", { district }),
+      recommendation: i18n.t("shell.inspector.decision.recommendation.reviewRoute"),
+      cost,
+      benefit: i18n.t("shell.inspector.decision.benefit.route"),
+      risk: i18n.t("shell.inspector.decision.risk.blockedRoute"),
+      nextAction: i18n.t("shell.inspector.actionObligations"),
+      reasonCodes: uniqueReasonCodes([
+        ...getRouteForecastReasonCodes(routeForecast),
+        ...m4Campaign.route.reasonCodes
+      ])
+    };
+  }
+
+  if (obligation !== null) {
+    return {
+      problem: i18n.t("shell.inspector.decision.problem.obligation", {
+        district,
+        kind: formatDistrictObligationKind(obligation.obligationKind, i18n)
+      }),
+      recommendation: i18n.t("shell.inspector.decision.recommendation.obligation"),
+      cost,
+      benefit: i18n.t("shell.inspector.decision.benefit.obligation"),
+      risk: i18n.t("shell.inspector.decision.risk.obligation"),
+      nextAction: i18n.t("shell.inspector.actionObligations"),
+      reasonCodes: uniqueReasonCodes(obligation.reasonCodes)
+    };
+  }
+
+  if (canPreviewAppointment && administrativePreview !== null) {
+    return {
+      problem: i18n.t("shell.inspector.decision.problem.governance", { district }),
+      recommendation: i18n.t("shell.inspector.decision.recommendation.appointment"),
+      cost,
+      benefit: i18n.t("shell.inspector.decision.benefit.governance"),
+      risk: i18n.t("shell.inspector.decision.risk.governance"),
+      nextAction: i18n.t("shell.inspector.actionAppointment"),
+      reasonCodes: uniqueReasonCodes(administrativePreview.reasonCodes)
+    };
+  }
+
+  if (canPreviewCampaign && campaignPlan !== null) {
+    return {
+      problem: i18n.t("shell.inspector.decision.problem.campaign", {
+        target: campaignPlan.targetLabel
+      }),
+      recommendation: i18n.t("shell.inspector.decision.recommendation.campaign"),
+      cost,
+      benefit: i18n.t("shell.inspector.decision.benefit.campaign"),
+      risk: i18n.t("shell.inspector.decision.risk.campaign"),
+      nextAction: i18n.t("shell.inspector.actionCampaign"),
+      reasonCodes: uniqueReasonCodes([
+        campaignPlan.statusReasonCode,
+        ...campaignPlan.reasonCodes,
+        ...campaignPlan.forecast.reasonCodes,
+        ...getRouteForecastReasonCodes(routeForecast)
+      ])
+    };
+  }
+
+  return {
+    problem: i18n.t("shell.inspector.decision.problem.supply", { district }),
+    recommendation: i18n.t("shell.inspector.decision.recommendation.supply"),
+    cost,
+    benefit: i18n.t("shell.inspector.decision.benefit.supply"),
+    risk: i18n.t("shell.inspector.decision.risk.supply"),
+    nextAction: i18n.t("shell.inspector.actionObligations"),
+    reasonCodes: uniqueReasonCodes([
+      ...getRouteForecastReasonCodes(routeForecast),
+      ...m4Campaign.grain.reasonCodes,
+      ...m4Campaign.route.reasonCodes
+    ])
+  };
+}
+
+function findDistrictObligation(
+  row: ClientDistrictRowReadModel,
+  appointment: ClientM3AppointmentReadModelSnapshot
+): ClientM3ObligationReadModel | null {
+  return (
+    appointment.obligations.find((obligation) =>
+      obligation.obligationId.endsWith(`.${Number(row.districtId)}`)
+    ) ?? null
+  );
+}
+
+function findDistrictAdministrativePreview(
+  row: ClientDistrictRowReadModel,
+  appointment: ClientM3AppointmentReadModelSnapshot
+): ClientM3OfficeReadModel["administrativePreview"] | null {
+  return (
+    appointment.offices.find(
+      (office) => office.administrativePreview?.districtId === row.districtId
+    )?.administrativePreview ?? null
+  );
+}
+
+function findDistrictRouteForecast(
+  row: ClientDistrictRowReadModel,
+  campaign: ClientM4CampaignReadModelSnapshot
+): ClientM4RouteSourceForecastReadModel | null {
+  return (
+    campaign.route.sourceForecasts.find(
+      (forecast) =>
+        forecast.originDistrictId === row.districtId ||
+        forecast.destinationDistrictId === row.districtId
+    ) ?? null
+  );
+}
+
+function findDistrictCampaignPlan(
+  row: ClientDistrictRowReadModel,
+  campaign: ClientM4CampaignReadModelSnapshot
+): ClientM4CampaignPlanReadModel | null {
+  return (
+    campaign.plans.find(
+      (plan) => plan.target.kind === "district" && plan.target.districtId === row.districtId
+    ) ?? null
+  );
+}
+
+function getRouteForecastReasonCodes(
+  routeForecast: ClientM4RouteSourceForecastReadModel | null
+): readonly string[] {
+  if (routeForecast === null) {
+    return [];
+  }
+  return [
+    ...(routeForecast.overloadedReasonCode === null ? [] : [routeForecast.overloadedReasonCode]),
+    ...routeForecast.seasonRiskReasonCodes
+  ];
+}
+
+function formatDistrictDecisionCost(
+  row: ClientDistrictRowReadModel,
+  routeForecast: ClientM4RouteSourceForecastReadModel | null,
+  campaign: ClientM4CampaignReadModelSnapshot,
+  i18n: ClientI18n
+): string {
+  const baseCost = i18n.t("shell.inspector.decision.costValue", {
+    grain: i18n.formatNumber(row.grain.stock),
+    cash: i18n.formatNumber(row.cash.stock),
+    reserved: i18n.formatNumber(campaign.grain.grainReserved),
+    required: i18n.formatNumber(campaign.grain.grainRequired)
+  });
+  if (routeForecast === null) {
+    return baseCost;
+  }
+  return i18n.t("shell.inspector.decision.costValueWithTravel", {
+    cost: baseCost,
+    travelDays: i18n.formatNumber(routeForecast.travelDays)
+  });
+}
+
+function uniqueReasonCodes(reasonCodes: readonly string[]): readonly string[] {
+  const uniqueCodes: string[] = [];
+  for (const reasonCode of reasonCodes) {
+    if (!uniqueCodes.includes(reasonCode)) {
+      uniqueCodes.push(reasonCode);
+    }
+  }
+  return uniqueCodes;
 }
 
 function DistrictActionList({

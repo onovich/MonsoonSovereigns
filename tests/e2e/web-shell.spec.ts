@@ -342,6 +342,13 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await clickMapPoint(mapCanvas, 150, 50);
   await expect(panel).toHaveAttribute("data-selected-district-id", "2");
   await expect(map).toHaveAttribute("data-selected-district-id", "2");
+  await expect(panel.getByLabel("District decision assistant")).toContainText("Current problem");
+  await expect(panel.getByLabel("District decision assistant")).toContainText("Recommendation");
+  await expect(panel.getByLabel("District decision assistant")).toContainText("Next action");
+  await expect(panel.getByLabel("Decision data grouped by choice")).toContainText("Resources");
+  await expect(panel.getByLabel("Decision data grouped by choice")).toContainText(
+    "Route / Campaign"
+  );
   await expect(panel).toContainText("Population");
   await expect(panel).toContainText("Labor");
   await expect(panel).toContainText("Grain");
@@ -388,10 +395,25 @@ test("M7 district inspector is localized secondary browser with bounded renderin
   const rows = page.getByLabel("Virtualized district rows");
 
   await expect(panel).toContainText("Terrain / economy");
+  await expect(panel).toContainText("Decision Assistant");
+  await expect(panel).toContainText("Current problem");
+  await expect(panel).toContainText("Recommendation");
+  await expect(panel).toContainText("Cost");
+  await expect(panel).toContainText("Benefit");
+  await expect(panel).toContainText("Risk");
+  await expect(panel).toContainText("Next action");
+  await expect(panel).toContainText("Decision Data");
   await expect(panel).toContainText("Governance");
   await expect(panel).toContainText("Appointment state");
   await expect(panel).toContainText("Effects");
   await expect(panel).toContainText("District actions");
+  await expect(panel.locator(".district-panel__decision")).toBeVisible();
+  await expect(panel.locator(".district-panel__decision")).not.toContainText(
+    "appointment.holder.skill-strong"
+  );
+  await expect(panel.locator(".district-panel__decision")).not.toContainText(
+    "route.season.monsoon-risk"
+  );
   await expect(browser).toHaveAttribute("data-render-bound", "virtualized");
   await expect(rows).toHaveAttribute("data-render-limit", "16");
   await page.getByLabel("Route status").selectOption("unreachable");
@@ -408,6 +430,7 @@ test("M7 district inspector is localized secondary browser with bounded renderin
   await expect(page.getByText("Prototype District 001")).toHaveCount(0);
   await expect(page.getByText("appointment.holder.skill-strong")).toHaveCount(0);
   await expect(page.getByText("route.season.monsoon-risk")).toHaveCount(0);
+  await expect(page.getByText("m4.campaign.10.outcome")).toHaveCount(0);
   await expect(page.getByText(/\bM[2-7]\b/u)).toHaveCount(0);
 
   await page.goto("/?fixture=district-error");
@@ -598,7 +621,7 @@ test("M4 stress fixture renders campaign planning and war report under 4000-row 
     "Route reservation 502"
   );
   await expect(page.getByLabel("M4 supply and route forecast")).toContainText(
-    "Route Capacity Carried Supply Over Bottleneck"
+    "Carried supply exceeds the route bottleneck"
   );
   await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("March 702");
   await expect(page.getByLabel("M4 march siege withdrawal state")).toContainText("Siege 802");

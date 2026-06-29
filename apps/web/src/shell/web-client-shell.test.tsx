@@ -199,6 +199,16 @@ describe("web client shell", () => {
     expect(markup).toContain("Monsoon Sovereigns");
     expect(markup).toContain("Realm Map");
     expect(markup).toContain("No action has been previewed yet.");
+    expect(markup).toContain("Decision Assistant");
+    expect(markup).toContain("Current problem");
+    expect(markup).toContain("Recommendation");
+    expect(markup).toContain("Cost");
+    expect(markup).toContain("Benefit");
+    expect(markup).toContain("Risk");
+    expect(markup).toContain("Next action");
+    expect(markup).toContain("Decision Data");
+    expect(markup.indexOf("Current problem")).toBeLessThan(markup.indexOf("Population"));
+    expect(markup.indexOf("Recommendation")).toBeLessThan(markup.indexOf("Grain"));
     expect(markup).toContain('aria-label="Situation map mode"');
     expect(markup).toContain('aria-pressed="true">Situation</button>');
     expect(markup).toContain('aria-label="Map pan"');
@@ -213,6 +223,9 @@ describe("web client shell", () => {
     expect(markup).not.toContain("Prototype District 001");
     expect(markup).not.toContain(snapshot.simulation.stateHash);
     expect(markup).not.toContain("M2 prototype map ready");
+    expect(markup).not.toContain("route.season.monsoon-risk");
+    expect(markup).not.toContain("appointment.holder.skill-strong");
+    expect(markup).not.toContain("m4.campaign.10.outcome");
     expect(markup).not.toContain("Developer Overlay");
     expect(markup).not.toContain("Developer diagnostics");
     expect(markup).not.toContain("developer diagnostics");
@@ -224,6 +237,7 @@ describe("web client shell", () => {
     expect(markup).toContain('data-settlement-count="10"');
     expect(markup).toContain('data-row-count="30"');
     expect(markup).toContain("District 1");
+    expect(markup).toContain("Monsoon route risk");
   });
 
   it("localizes player shell accessible names for Simplified Chinese", () => {
