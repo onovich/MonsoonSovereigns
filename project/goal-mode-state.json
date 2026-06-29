@@ -16,7 +16,7 @@
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-ui-localization-exit",
-      "updated_at": "2026-06-29T14:19:53.936Z",
+      "updated_at": "2026-06-29T14:28:00.851Z",
       "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
       "review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json"
     },
@@ -34,7 +34,7 @@
       "route_file": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
       "source_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-29T14:18:32.015Z",
+      "updated_at": "2026-06-29T14:28:00.851Z",
       "route_submission_id": "019f13b5-b752-7261-b130-d3eb689d11f1",
       "route_sent_at": "2026-06-29T14:08:43.748Z",
       "systems_status": "ACCEPT",
@@ -45,7 +45,7 @@
       "thread_id": "019f13be-4700-7a71-a901-48f84a2f6803",
       "nickname": "Witness the 2nd",
       "task_id": "M7-UI-LOCALIZATION-EXIT-001",
-      "status": "active_routed",
+      "status": "accepted",
       "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -56,9 +56,12 @@
       "source_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
       "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json",
       "review_commit": "e11274a54c7f43def29fb6e538667d286110b500",
-      "updated_at": "2026-06-29T14:19:53.936Z",
+      "updated_at": "2026-06-29T14:28:00.851Z",
       "route_submission_id": "019f13bf-dc00-7b91-bad3-e31d75a3fcae",
-      "route_sent_at": "2026-06-29T14:19:53.936Z"
+      "route_sent_at": "2026-06-29T14:19:53.936Z",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json",
+      "qa_review_commit": "87f64ad8"
     }
   },
   "last_integrated_task": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
@@ -87,10 +90,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-UI-LOCALIZATION-EXIT-001 lead synthesis checkpoint",
+    "approval_source": "M7-UI-LOCALIZATION-EXIT-001 lead acceptance checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Formal content lock, production art/cultural choices, manual human acceptance, release/commercial, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain Human Gates if requested. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-29T14:07:30.832Z"
+    "note": "No Human Gate is active. UI/localization exit acceptance is prerequisite evidence only; formal content lock, manual human acceptance, production art/cultural choices, release/commercial, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain future Human Gates if requested.",
+    "recorded_at": "2026-06-29T14:28:00.851Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -914,7 +917,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T14:19:53.936Z",
+  "last_updated_at": "2026-06-29T14:28:00.851Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2761,7 +2764,7 @@
     ]
   },
   "m7_ui_localization_exit": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-UI-LOCALIZATION-EXIT-001",
     "branch_or_worktree": "codex/m7-ui-localization-exit",
     "base_main_commit": "61c674fac537fc2bbfba88a8d0f2a9271d7af415",
@@ -2775,8 +2778,8 @@
     "systems_route": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
     "expected_systems_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
     "started_at": "2026-06-29T14:07:30.832Z",
-    "updated_at": "2026-06-29T14:19:53.936Z",
-    "next_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
+    "updated_at": "2026-06-29T14:28:00.851Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after accepted evidence enters origin/main.",
     "unresolved_risks": [
       "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
       "M7-WINDOWS-DPI-150-UNRESOLVED"
@@ -2795,6 +2798,11 @@
     "expected_qa_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json",
     "qa_route_submission_id": "019f13bf-dc00-7b91-bad3-e31d75a3fcae",
     "qa_route_sent_at": "2026-06-29T14:19:53.936Z",
-    "qa_route_status": "SENT"
+    "qa_route_status": "SENT",
+    "lead_accept_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T14:28:00.851Z",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json",
+    "qa_review_commit": "87f64ad8"
   }
 }
