@@ -1,0 +1,109 @@
+{
+  "message_id": "MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW",
+  "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Collected agent-operated local Beta playthrough evidence from the web preview surface. The evidence records build commit b49e8956732a00e87e395243cb9aace367670547, seed 1531 as surfaced by the selected scenario label, selected scenario 1531 Edge Polity Composite Scenario, save/load checkpoint visibility, local client-session checkpoint output, Windows/Chrome preview context, zh-CN locale, 1440x900 resolution, and the current defect/Human Gate boundary. This is REVIEW evidence only, not manual acceptance approval; formal/manual human judgment remains routed to the M7 content-lock Human Gate if acceptance is required.",
+  "artifacts": [
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Worktree was clean before the writer-review and state updates."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 was IN_PROGRESS before this writer review was written."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Returned M7-UI-LOCALIZATION-EXIT-001 as the next dependency-ready M7 task."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "shape-ok"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web build completed successfully with existing chunk-size warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright chromium suite passed: 23 tests, 23 passed."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke output was written to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 1,
+      "result": "The file was invalid before this correction because the validation-pending rows were not integers."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "Passed with no whitespace or patch formatting issues."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "evidence_classification",
+      "result": "Classified the collected data as REVIEW evidence because it is agent-operated local preview evidence, not a human product-owner manual acceptance decision."
+    },
+    {
+      "type": "human_gate_boundary",
+      "result": "Formal manual acceptance remains routed to M7-CONTENT-LOCK-ACCEPTANCE-001 if human judgment is required."
+    },
+    {
+      "type": "scenario_seed",
+      "result": "Used seed 1531 as surfaced by the selected scenario label; no separate seed field was exposed by the preview surface."
+    }
+  ],
+  "risks": [
+    "The preview surface shows projected read-model and checkpoint evidence, not a production save artifact or release artifact.",
+    "Exact manual acceptance requires a Human Gate and is intentionally not approved here.",
+    "The observed duration is a local evidence sweep rather than a human stopwatch over a real manual playthrough."
+  ],
+  "blockers": [],
+  "evidence": {
+    "build_commit": "b49e8956732a00e87e395243cb9aace367670547",
+    "seed": "1531",
+    "scenario": "1531 Edge Polity Composite Scenario; COMPOSITE; RESEARCH REQUIRED; 1531.",
+    "save_checkpoints": [
+      "Save checkpoint",
+      "Load checkpoint",
+      "M5 Save Client Session Written",
+      "{\"schemaVersion\":1,\"scenarioId\":\"m5.composite.river-gate.v0\",\"phase\":\"not-started\",\"currentStepIndex\":0,\"confirmedCommandIds\":[],\"checkpointLabel\":\"m5.step.01.sim.create-campaign-objective\",\"stateHash\":\"61e0ba1c\"}",
+      "M5 Save No Client 检查点",
+      "no client checkpoint"
+    ],
+    "duration": "local agent-operated evidence sweep; exact human-playthrough stopwatch was not exposed by the preview surface",
+    "platform": "Windows 11 local preview in Chrome",
+    "locale": "zh-CN",
+    "resolution": "1440x900",
+    "defects": [
+      "Manual acceptance remains a Human Gate and was not approved autonomously.",
+      "The evidence is local preview output from projected read-model surfaces, not a released build artifact.",
+      "No dedicated seed field was exposed; seed 1531 was inferred from the selected scenario label."
+    ]
+  },
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the collected evidence only. If formal manual acceptance is required, keep that decision as a Human Gate rather than treating this writer handoff as approval.",
+  "created_at": "2026-06-29T21:33:02.8150249+08:00"
+}
