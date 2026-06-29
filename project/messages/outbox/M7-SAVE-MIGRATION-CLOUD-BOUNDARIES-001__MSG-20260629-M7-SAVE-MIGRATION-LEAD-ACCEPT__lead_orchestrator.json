@@ -1,0 +1,83 @@
+{
+  "message_id": "MSG-20260629-M7-SAVE-MIGRATION-LEAD-ACCEPT",
+  "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepted M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after systems_architect R2 fixed the M7 accepted-save boundary bypass, security_reviewer accepted the cloud/save security boundary, qa_reviewer accepted R2 functional coverage, and lead integration gates passed locally.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "packages/save-format/package.json",
+    "tests/save-migration-cloud-boundaries.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+  "commit": "d8303516d7efc388b917abda8fbe8b79578fee93",
+  "tests_run": [
+    {
+      "command": "git status --short --branch; git diff --check; git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "Clean branch at d8303516d7efc388b917abda8fbe8b79578fee93 before lead accept status update; diff check passed."
+    },
+    {
+      "command": "taskctl validate/list/ready",
+      "exit_code": 0,
+      "result": "Task valid; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 in REVIEW before lead accept; M7-UI-REGRESSION-MATRIX-001 ready."
+    },
+    {
+      "command": "validate-handoff writer R2/security/QA R2",
+      "exit_code": 0,
+      "result": "All required handoffs valid."
+    },
+    {
+      "command": "JSON parse/shape check for task, registry, goal-mode, routing state, continuation",
+      "exit_code": 0,
+      "result": "JSON_OK."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "3 files, 28 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 file, 14 tests passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; allowed IPC unchanged."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, recursive typecheck, and architecture boundaries passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture/determinism passed; root Vitest 42 files / 352 tests passed; web Vitest 1 file / 9 tests passed."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: M7 save migration boundary now supports local-compatible-load-only for M1-M6 accepted saves and keeps M7 Beta content-lock manifests candidate-only with Human Gate/security review.",
+    "ACCEPT: cloud save remains candidate-boundary-only; no account, network sync, telemetry, secrets, provider, server persistence, paid service, remote collection, implicit RPC, object graph serialization, or cloud implementation is introduced.",
+    "ACCEPT: QA P1 accepted-save M7 bypass is fixed and covered by regression; no Human Gate is active for this task."
+  ],
+  "risks": [
+    "Formal M7 content lock acceptance remains future Human Gate work and is not approved by this task.",
+    "Future irreversible migration, cloud-save enablement, account-backed persistence, network persistence, telemetry/accounts/secrets, and frozen save/platform changes remain Human Gates."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then mark task CLOSED only after origin/main contains accepted changes.",
+  "created_at": "2026-06-29T07:57:01.562Z",
+  "implementation_commit": "c79ef7e3a9f20180f22b96e1c6303ca0fd11a2b6",
+  "accepted_branch_head": "d8303516d7efc388b917abda8fbe8b79578fee93",
+  "security_review_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+  "qa_accept_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json"
+}

@@ -1166,6 +1166,163 @@ export type DecodeSaveEnvelopeV1Result =
       readonly reasons: readonly SaveLoadRejectionReasonV1[];
     };
 
+export const M7_SAVE_MIGRATION_BOUNDARY_SCHEMA_VERSION = 1;
+
+export type M7SaveMigrationMilestoneV1 = "M1" | "M2" | "M3" | "M4" | "M5" | "M6" | "M7";
+export type M7SaveMigrationDecisionStateV1 = "accepted-save" | "beta-content-lock-candidate";
+export type M7SaveMigrationModeV1 = "human-gate-required" | "local-compatible-load-only";
+export type M7SaveMigrationHumanGateCapabilityV1 =
+  | "account-backed-persistence"
+  | "cloud-provider-integration"
+  | "cloud-save-enablement"
+  | "frozen-platform-decision"
+  | "frozen-save-format-decision"
+  | "implicit-rpc"
+  | "irreversible-migration"
+  | "network-sync"
+  | "object-graph-serialization"
+  | "paid-service"
+  | "remote-collection"
+  | "secrets"
+  | "server-persistence"
+  | "telemetry";
+export type M7SaveMigrationRequestModeV1 =
+  | "local-compatible-load-only"
+  | M7SaveMigrationHumanGateCapabilityV1;
+
+export interface M7SaveMigrationManifestBoundaryEntryV1 {
+  readonly milestone: M7SaveMigrationMilestoneV1;
+  readonly decisionState: M7SaveMigrationDecisionStateV1;
+  readonly contentManifestHash: string;
+  readonly scenarioId: string;
+  readonly stateHash?: string;
+  readonly envelopeSchemaVersion: typeof SAVE_ENVELOPE_V1_SCHEMA_VERSION;
+  readonly snapshotSchemaVersion: 0;
+  readonly migrationMode: M7SaveMigrationModeV1;
+}
+
+export interface M7CloudSaveCandidateBoundaryV1 {
+  readonly decisionState: "candidate-boundary-only";
+  readonly implementedCapabilities: readonly M7SaveMigrationHumanGateCapabilityV1[];
+  readonly requiredReviewRoute: "security_reviewer";
+}
+
+export interface M7SaveMigrationCompatibilityBoundaryV1 {
+  readonly schemaVersion: typeof M7_SAVE_MIGRATION_BOUNDARY_SCHEMA_VERSION;
+  readonly envelopeMagic: typeof SAVE_ENVELOPE_V1_MAGIC;
+  readonly envelopeSchemaVersion: typeof SAVE_ENVELOPE_V1_SCHEMA_VERSION;
+  readonly snapshotSchemaVersion: 0;
+  readonly migrationMode: "local-compatible-load-only";
+  readonly acceptedSaveManifests: readonly M7SaveMigrationManifestBoundaryEntryV1[];
+  readonly candidateContentManifests: readonly M7SaveMigrationManifestBoundaryEntryV1[];
+  readonly cloudSave: M7CloudSaveCandidateBoundaryV1;
+  readonly humanGateCapabilities: readonly M7SaveMigrationHumanGateCapabilityV1[];
+}
+
+export type M7SaveMigrationBoundaryIssueCodeV1 =
+  | "cloud-save-implementation-present"
+  | "human-gate-missing"
+  | "invalid-boundary"
+  | "missing-milestone";
+
+export interface M7SaveMigrationBoundaryIssueV1 {
+  readonly code: M7SaveMigrationBoundaryIssueCodeV1;
+  readonly path: string;
+  readonly message: string;
+}
+
+export type M7SaveMigrationBoundaryValidationResultV1 =
+  | { readonly ok: true }
+  | {
+      readonly ok: false;
+      readonly issues: readonly M7SaveMigrationBoundaryIssueV1[];
+    };
+
+export type M7SaveContentManifestBoundaryResultV1 =
+  | {
+      readonly status: "accepted-save";
+      readonly entry: M7SaveMigrationManifestBoundaryEntryV1;
+    }
+  | {
+      readonly status: "beta-content-lock-candidate";
+      readonly entry: M7SaveMigrationManifestBoundaryEntryV1;
+      readonly humanGateRequired: true;
+      readonly routeTo: "security_reviewer";
+    }
+  | {
+      readonly status: "not-accepted";
+      readonly reason: SaveLoadRejectionReasonV1;
+    };
+
+export type M7SaveMigrationHumanGateReasonCodeV1 =
+  | M7SaveMigrationHumanGateCapabilityV1
+  | "invalid-boundary"
+  | "m7-beta-content-lock-candidate";
+
+export interface M7SaveMigrationHumanGateReasonV1 {
+  readonly code: M7SaveMigrationHumanGateReasonCodeV1;
+  readonly path: string;
+  readonly message: string;
+  readonly humanGateRequired: true;
+  readonly routeTo: "security_reviewer";
+}
+
+export interface ValidateM7SaveMigrationCandidateV1Input {
+  readonly boundary: M7SaveMigrationCompatibilityBoundaryV1;
+  readonly bytes: Uint8Array;
+  readonly requestedMode: M7SaveMigrationRequestModeV1;
+  readonly expectedContentManifestHash?: string;
+  readonly expectedScenarioId?: string;
+  readonly maxBytes?: number;
+  readonly maxDepth?: number;
+  readonly validateWorldSnapshot?: (worldCandidate: unknown) => readonly SaveSemanticIssueV1[];
+}
+
+export type ValidateM7SaveMigrationCandidateV1Result =
+  | {
+      readonly status: "compatible";
+      readonly envelope: SaveEnvelopeV1;
+      readonly matchingEntry: M7SaveMigrationManifestBoundaryEntryV1;
+      readonly worldCandidate: unknown;
+    }
+  | {
+      readonly status: "human-gate-required";
+      readonly reasons: readonly M7SaveMigrationHumanGateReasonV1[];
+    }
+  | {
+      readonly status: "rejected";
+      readonly reasons: readonly SaveLoadRejectionReasonV1[];
+    };
+
+const M7_SAVE_MIGRATION_REQUIRED_ACCEPTED_MILESTONES: readonly M7SaveMigrationMilestoneV1[] = [
+  "M1",
+  "M2",
+  "M3",
+  "M4",
+  "M5",
+  "M6"
+];
+
+const M7_SAVE_MIGRATION_CANDIDATE_MILESTONES: readonly M7SaveMigrationMilestoneV1[] = ["M7"];
+
+const M7_SAVE_MIGRATION_REQUIRED_HUMAN_GATE_CAPABILITIES: readonly M7SaveMigrationHumanGateCapabilityV1[] =
+  [
+    "account-backed-persistence",
+    "cloud-provider-integration",
+    "cloud-save-enablement",
+    "frozen-platform-decision",
+    "frozen-save-format-decision",
+    "implicit-rpc",
+    "irreversible-migration",
+    "network-sync",
+    "object-graph-serialization",
+    "paid-service",
+    "remote-collection",
+    "secrets",
+    "server-persistence",
+    "telemetry"
+  ];
+
 export interface WorldStateV0ForSave {
   readonly meta: SaveWorldMetaV0Dto;
   readonly definitions: SaveWorldDefinitionsV0Dto;
@@ -1309,6 +1466,261 @@ export function decodeSaveEnvelopeV1(
     envelope,
     worldCandidate
   };
+}
+
+export function validateM7SaveMigrationBoundaryV1(
+  boundary: M7SaveMigrationCompatibilityBoundaryV1
+): M7SaveMigrationBoundaryValidationResultV1 {
+  const issues: M7SaveMigrationBoundaryIssueV1[] = [];
+
+  if (boundary.schemaVersion !== M7_SAVE_MIGRATION_BOUNDARY_SCHEMA_VERSION) {
+    issues.push(
+      boundaryIssue(
+        "invalid-boundary",
+        "schemaVersion",
+        "M7 save migration boundary schemaVersion must be 1."
+      )
+    );
+  }
+  if (boundary.envelopeMagic !== SAVE_ENVELOPE_V1_MAGIC) {
+    issues.push(
+      boundaryIssue("invalid-boundary", "envelopeMagic", "Save envelope magic must remain v1.")
+    );
+  }
+  if (boundary.envelopeSchemaVersion !== SAVE_ENVELOPE_V1_SCHEMA_VERSION) {
+    issues.push(
+      boundaryIssue(
+        "invalid-boundary",
+        "envelopeSchemaVersion",
+        "Save envelope schemaVersion must remain 1."
+      )
+    );
+  }
+  if (boundary.snapshotSchemaVersion !== 0) {
+    issues.push(
+      boundaryIssue(
+        "invalid-boundary",
+        "snapshotSchemaVersion",
+        "Save world snapshot schemaVersion must remain 0."
+      )
+    );
+  }
+  if (boundary.migrationMode !== "local-compatible-load-only") {
+    issues.push(
+      boundaryIssue(
+        "invalid-boundary",
+        "migrationMode",
+        "M7 migration validation may only approve local-compatible-load-only."
+      )
+    );
+  }
+
+  for (const milestone of M7_SAVE_MIGRATION_REQUIRED_ACCEPTED_MILESTONES) {
+    if (
+      !boundary.acceptedSaveManifests.some(
+        (entry) => entry.milestone === milestone && entry.decisionState === "accepted-save"
+      )
+    ) {
+      issues.push(
+        boundaryIssue(
+          "missing-milestone",
+          "acceptedSaveManifests",
+          `M7 save migration boundary must include an accepted ${milestone} save manifest.`
+        )
+      );
+    }
+  }
+
+  if (
+    !boundary.candidateContentManifests.some(
+      (entry) => entry.milestone === "M7" && entry.decisionState === "beta-content-lock-candidate"
+    )
+  ) {
+    issues.push(
+      boundaryIssue(
+        "missing-milestone",
+        "candidateContentManifests",
+        "M7 save migration boundary must include the Beta content-lock candidate manifest."
+      )
+    );
+  }
+
+  validateM7BoundaryEntries(
+    boundary.acceptedSaveManifests,
+    "acceptedSaveManifests",
+    "accepted-save",
+    "local-compatible-load-only",
+    M7_SAVE_MIGRATION_REQUIRED_ACCEPTED_MILESTONES,
+    issues
+  );
+  validateM7BoundaryEntries(
+    boundary.candidateContentManifests,
+    "candidateContentManifests",
+    "beta-content-lock-candidate",
+    "human-gate-required",
+    M7_SAVE_MIGRATION_CANDIDATE_MILESTONES,
+    issues
+  );
+
+  if (boundary.cloudSave.decisionState !== "candidate-boundary-only") {
+    issues.push(
+      boundaryIssue(
+        "invalid-boundary",
+        "cloudSave.decisionState",
+        "Cloud save must remain candidate-boundary-only in M7."
+      )
+    );
+  }
+  if (boundary.cloudSave.requiredReviewRoute !== "security_reviewer") {
+    issues.push(
+      boundaryIssue(
+        "invalid-boundary",
+        "cloudSave.requiredReviewRoute",
+        "Cloud save candidate decisions must route to security_reviewer."
+      )
+    );
+  }
+  if (boundary.cloudSave.implementedCapabilities.length > 0) {
+    issues.push(
+      boundaryIssue(
+        "cloud-save-implementation-present",
+        "cloudSave.implementedCapabilities",
+        "Cloud save boundary must not implement account, network, server, telemetry, secret, paid service, or provider capabilities."
+      )
+    );
+  }
+
+  for (const capability of M7_SAVE_MIGRATION_REQUIRED_HUMAN_GATE_CAPABILITIES) {
+    if (!boundary.humanGateCapabilities.includes(capability)) {
+      issues.push(
+        boundaryIssue(
+          "human-gate-missing",
+          "humanGateCapabilities",
+          `M7 save migration boundary must route ${capability} to Human Gate and security review.`
+        )
+      );
+    }
+  }
+
+  return issues.length === 0 ? { ok: true } : { ok: false, issues };
+}
+
+export function classifyM7SaveContentManifestBoundaryV1(
+  input: {
+    readonly contentManifestHash: string;
+    readonly scenarioId: string;
+    readonly stateHash?: string;
+  },
+  boundary: M7SaveMigrationCompatibilityBoundaryV1
+): M7SaveContentManifestBoundaryResultV1 {
+  const accepted = findM7SaveMigrationBoundaryEntry(
+    boundary.acceptedSaveManifests,
+    input.contentManifestHash,
+    input.scenarioId,
+    input.stateHash,
+    M7_SAVE_MIGRATION_REQUIRED_ACCEPTED_MILESTONES
+  );
+  if (accepted !== undefined) {
+    return { status: "accepted-save", entry: accepted };
+  }
+
+  const candidate = findM7SaveMigrationBoundaryEntry(
+    boundary.candidateContentManifests,
+    input.contentManifestHash,
+    input.scenarioId,
+    input.stateHash,
+    M7_SAVE_MIGRATION_CANDIDATE_MILESTONES
+  );
+  if (candidate !== undefined) {
+    return {
+      status: "beta-content-lock-candidate",
+      entry: candidate,
+      humanGateRequired: true,
+      routeTo: "security_reviewer"
+    };
+  }
+
+  return {
+    status: "not-accepted",
+    reason: reason(
+      "content-manifest-mismatch",
+      "header.contentManifestHash",
+      `Save content manifest ${input.contentManifestHash} is not accepted by the M7 migration boundary.`
+    )
+  };
+}
+
+export function validateM7SaveMigrationCandidateV1(
+  input: ValidateM7SaveMigrationCandidateV1Input
+): ValidateM7SaveMigrationCandidateV1Result {
+  const boundaryValidation = validateM7SaveMigrationBoundaryV1(input.boundary);
+  if (!boundaryValidation.ok) {
+    return {
+      status: "human-gate-required",
+      reasons: boundaryValidation.issues.map((issue) => ({
+        code: "invalid-boundary",
+        path: issue.path,
+        message: issue.message,
+        humanGateRequired: true,
+        routeTo: "security_reviewer"
+      }))
+    };
+  }
+
+  if (input.requestedMode !== "local-compatible-load-only") {
+    return {
+      status: "human-gate-required",
+      reasons: [
+        {
+          code: input.requestedMode,
+          path: "requestedMode",
+          message: `${input.requestedMode} requires Human Gate and security review before implementation.`,
+          humanGateRequired: true,
+          routeTo: "security_reviewer"
+        }
+      ]
+    };
+  }
+
+  const decoded = decodeSaveEnvelopeV1(input.bytes, m7DecodeOptions(input));
+  if (decoded.status === "rejected") {
+    return decoded;
+  }
+
+  const manifestBoundary = classifyM7SaveContentManifestBoundaryV1(
+    {
+      contentManifestHash: decoded.envelope.header.contentManifestHash,
+      scenarioId: decoded.envelope.header.scenarioId,
+      stateHash: decoded.envelope.body.authoritativeSnapshot.meta.stateHash
+    },
+    input.boundary
+  );
+
+  switch (manifestBoundary.status) {
+    case "accepted-save":
+      return {
+        status: "compatible",
+        envelope: decoded.envelope,
+        matchingEntry: manifestBoundary.entry,
+        worldCandidate: decoded.worldCandidate
+      };
+    case "beta-content-lock-candidate":
+      return {
+        status: "human-gate-required",
+        reasons: [
+          {
+            code: "m7-beta-content-lock-candidate",
+            path: "candidateContentManifests",
+            message:
+              "M7 Beta content-lock candidate manifests are recognized for review but cannot enable automatic migration before Human Gate.",
+            humanGateRequired: true,
+            routeTo: "security_reviewer"
+          }
+        ]
+      };
+    case "not-accepted":
+      return { status: "rejected", reasons: [manifestBoundary.reason] };
+  }
 }
 
 export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnapshotV0Dto {
@@ -7607,6 +8019,146 @@ function fallbackAdvanceCommand(): GameCommandV1 {
     expectedDay: 0,
     expectedRevision: 0
   };
+}
+
+function validateM7BoundaryEntries(
+  entries: readonly M7SaveMigrationManifestBoundaryEntryV1[],
+  path: string,
+  expectedDecisionState: M7SaveMigrationDecisionStateV1,
+  expectedMigrationMode: M7SaveMigrationModeV1,
+  allowedMilestones: readonly M7SaveMigrationMilestoneV1[],
+  issues: M7SaveMigrationBoundaryIssueV1[]
+): void {
+  entries.forEach((entry, index) => {
+    const entryPath = `${path}[${index}]`;
+    if (!allowedMilestones.includes(entry.milestone)) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.milestone`,
+          `${entryPath}.milestone must be one of ${allowedMilestones.join(", ")}.`
+        )
+      );
+    }
+    if (entry.decisionState !== expectedDecisionState) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.decisionState`,
+          `${entryPath}.decisionState must be ${expectedDecisionState}.`
+        )
+      );
+    }
+    if (entry.envelopeSchemaVersion !== SAVE_ENVELOPE_V1_SCHEMA_VERSION) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.envelopeSchemaVersion`,
+          `${entryPath}.envelopeSchemaVersion must be 1.`
+        )
+      );
+    }
+    if (entry.snapshotSchemaVersion !== 0) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.snapshotSchemaVersion`,
+          `${entryPath}.snapshotSchemaVersion must be 0.`
+        )
+      );
+    }
+    if (entry.contentManifestHash.length === 0) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.contentManifestHash`,
+          `${entryPath}.contentManifestHash must be non-empty.`
+        )
+      );
+    }
+    if (entry.scenarioId.length === 0) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.scenarioId`,
+          `${entryPath}.scenarioId must be non-empty.`
+        )
+      );
+    }
+    if (entry.stateHash !== undefined && !/^[0-9a-f]{8}$/u.test(entry.stateHash)) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.stateHash`,
+          `${entryPath}.stateHash must be an 8-character lowercase hex hash when present.`
+        )
+      );
+    }
+    if (entry.migrationMode !== expectedMigrationMode) {
+      issues.push(
+        boundaryIssue(
+          "invalid-boundary",
+          `${entryPath}.migrationMode`,
+          `${entryPath}.migrationMode must be ${expectedMigrationMode}.`
+        )
+      );
+    }
+  });
+}
+
+function findM7SaveMigrationBoundaryEntry(
+  entries: readonly M7SaveMigrationManifestBoundaryEntryV1[],
+  contentManifestHash: string,
+  scenarioId: string,
+  stateHash: string | undefined,
+  allowedMilestones: readonly M7SaveMigrationMilestoneV1[]
+): M7SaveMigrationManifestBoundaryEntryV1 | undefined {
+  return entries.find(
+    (entry) =>
+      allowedMilestones.includes(entry.milestone) &&
+      entry.contentManifestHash === contentManifestHash &&
+      entry.scenarioId === scenarioId &&
+      (entry.stateHash === undefined || entry.stateHash === stateHash)
+  );
+}
+
+function m7DecodeOptions(
+  input: ValidateM7SaveMigrationCandidateV1Input
+): DecodeSaveEnvelopeV1Options {
+  let options: DecodeSaveEnvelopeV1Options = {};
+  if (input.expectedContentManifestHash !== undefined) {
+    options = {
+      ...options,
+      expectedContentManifestHash: input.expectedContentManifestHash
+    };
+  }
+  if (input.expectedScenarioId !== undefined) {
+    options = {
+      ...options,
+      expectedScenarioId: input.expectedScenarioId
+    };
+  }
+  if (input.maxBytes !== undefined) {
+    options = { ...options, maxBytes: input.maxBytes };
+  }
+  if (input.maxDepth !== undefined) {
+    options = { ...options, maxDepth: input.maxDepth };
+  }
+  if (input.validateWorldSnapshot !== undefined) {
+    options = {
+      ...options,
+      validateWorldSnapshot: input.validateWorldSnapshot
+    };
+  }
+  return options;
+}
+
+function boundaryIssue(
+  code: M7SaveMigrationBoundaryIssueCodeV1,
+  path: string,
+  message: string
+): M7SaveMigrationBoundaryIssueV1 {
+  return { code, path, message };
 }
 
 function reason(

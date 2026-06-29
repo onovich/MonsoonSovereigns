@@ -1,0 +1,55 @@
+{
+  "route_id": "ROUTE-20260629-WRITER-TO-SECURITY-REVIEW",
+  "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "source_role": "lead_orchestrator",
+  "source_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "source_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+  "source_status": "REVIEW",
+  "source_writer_role": "systems_architect",
+  "source_writer_thread_id": "019f122a-b52f-71d0-afea-b8ace2f88662",
+  "target_role": "security_reviewer",
+  "target_thread_id": "019f123e-c7fa-71e0-9d53-929bd51e5966",
+  "target_thread_nickname": "Bastion",
+  "requested_action": "Perform read-only security review of the M7 save migration compatibility boundary and cloud-save candidate non-implementation boundary. Verify no account, network sync, telemetry, secrets, server persistence, provider integration, implicit RPC, object graph serialization, or Electron security weakening was introduced.",
+  "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+  "base_main_commit": "28cb469aa9695c9c54887b8241093a80dccc44b5",
+  "review_commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+  "source_commit_note": "Writer handoff commit is null because the lead committed the reviewed implementation after validating the handoff; review branch head is the implementation commit.",
+  "writer_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+  "expected_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+  "changed_paths": [
+    "packages/save-format/package.json",
+    "packages/save-format/src/index.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/save-migration-cloud-boundaries.test.ts",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json"
+  ],
+  "acceptance_focus": [
+    "Define and validate M7 save migration compatibility boundaries for accepted save/content manifest versions, including rejection behavior for malformed, future, cross-manifest, and unsafe migration inputs.",
+    "Cloud-save remains a candidate decision boundary only: no account system, paid service, secrets, network sync, server, telemetry, remote collection, or cloud provider integration is implemented.",
+    "Any irreversible migration, cloud-save enablement, account-backed persistence, or frozen save-format/platform decision routes to Human Gate and security review before implementation.",
+    "Save/protocol payloads remain explicit, serializable, versioned, and parser-validated; no object graph serialization or implicit RPC is introduced.",
+    "Compatibility tests cover M1-M6 accepted saves and the M7 Beta content-lock candidate manifests before M7 exit."
+  ],
+  "required_tests": [
+    "git status --short",
+    "git show --stat --oneline 7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+    "git diff --check 28cb469aa9695c9c54887b8241093a80dccc44b5..7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm desktop:security-check"
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "created_at": "2026-06-29T07:20:05.682Z",
+  "delivery": {
+    "method": "spawn_agent",
+    "status": "sent",
+    "agent_id": "019f123e-c7fa-71e0-9d53-929bd51e5966",
+    "nickname": "Bastion",
+    "sent_at": "2026-06-29T07:20:05.682Z",
+    "note": "Lead spawned a real read-only security_reviewer with route content in the initial prompt."
+  },
+  "route_sent_at": "2026-06-29T07:20:05.682Z"
+}

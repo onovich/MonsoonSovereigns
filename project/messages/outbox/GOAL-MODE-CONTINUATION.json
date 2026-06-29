@@ -4,37 +4,94 @@
   "type": "goal_mode_continuation",
   "status": "INFO",
   "project": "Monsoon Sovereigns",
-  "origin_main": "def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99",
+  "origin_main": "28cb469aa9695c9c54887b8241093a80dccc44b5",
   "current_milestone": "M7",
-  "current_task": null,
-  "current_tasks": [],
-  "current_task_status": "NONE",
+  "current_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "current_tasks": [
+    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+  ],
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M7-PLAYER-GUIDANCE-LITE-001",
   "last_integrated_task": "M7-PLAYER-GUIDANCE-LITE-001",
-  "last_main_commit": "def9a9885c4f48d9c0c6e0b86c6ec4393c3f9e99",
+  "last_main_commit": "28cb469aa9695c9c54887b8241093a80dccc44b5",
   "ready_tasks": [
-    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
     "M7-UI-REGRESSION-MATRIX-001"
   ],
   "next_ready_tasks": [
-    "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
     "M7-UI-REGRESSION-MATRIX-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "chore/close-m7-player-guidance-lite",
-      "created_at": "2026-06-28T23:21:24.687Z",
-      "updated_at": "2026-06-29T11:32:00.0000000+08:00",
-      "start_handoff": "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-PLAYER-GUIDANCE-LITE-001__ROUTE-20260629-LEAD-TO-CLIENT-START.json"
+      "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+      "updated_at": "2026-06-29T07:20:05.682Z",
+      "start_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-LEAD-TO-SYSTEMS-START.json"
+    },
+    "systems_architect": {
+      "thread_id": "019f122a-b52f-71d0-afea-b8ace2f88662",
+      "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "status": "review_r2",
+      "role": "systems_architect",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+      "route_file": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-R2-REVIEW__systems_architect.json",
+      "updated_at": "2026-06-29T07:49:19.590Z",
+      "review_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+      "review_commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+      "request_changes_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW__qa_reviewer.json",
+      "request_changes_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-SYSTEMS.json",
+      "review_handoff_r2": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-R2-REVIEW__systems_architect.json",
+      "review_commit_r2": "c79ef7e3"
+    },
+    "security_reviewer": {
+      "thread_id": "019f123e-c7fa-71e0-9d53-929bd51e5966",
+      "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "status": "accept",
+      "role": "security_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+      "route_file": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-WRITER-TO-SECURITY-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+      "implementation_commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+      "updated_at": "2026-06-29T07:31:57.229Z",
+      "security_review_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f1249-9875-7183-aa34-4f2d896dab6c",
+      "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "status": "reviewing_r2",
+      "role": "qa_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+      "route_file": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-SECURITY-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+      "source_writer_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW__qa_reviewer.json",
+      "implementation_commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+      "updated_at": "2026-06-29T07:49:19.590Z",
+      "qa_review_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW__qa_reviewer.json",
+      "route_file_r2": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
+      "source_handoff_r2": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-R2-REVIEW__systems_architect.json",
+      "expected_handoff_r2": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json"
     }
   },
   "unresolved_risks": [
@@ -60,16 +117,16 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-MAP-PRESENTATION-QUALITY-001 start checkpoint",
+    "approval_source": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 start checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-28T23:21:24.687Z"
+    "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE. Irreversible migration and cloud-save/account/network/provider enablement remain Human Gates if encountered.",
+    "recorded_at": "2026-06-29T06:59:11.148Z"
   },
-  "next_machine_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
+  "next_machine_action": "Open PR for M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001, wait for CI, merge to main, then close task.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-29T11:32:00.0000000+08:00",
+  "last_updated_at": "2026-06-29T07:57:01.562Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -302,70 +359,68 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   },
-  "task_id": "M7-DESIGN-TOKENS-ASSET-SLOTS-001",
+  "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
   "from_role": "lead_orchestrator",
-  "summary": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 is CLOSED after PR #177 entered origin/main. Next action is to sync main after this closure checkpoint and start M7-APP-SHELL-QUALITY-001 unless taskctl ready changes.",
+  "summary": "Started M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after M7-PLAYER-GUIDANCE-LITE-001 closure entered origin/main. This task validates save migration compatibility and cloud-save candidate decision boundaries without implementing cloud save, accounts, network sync, telemetry, secrets, providers, or irreversible migration.",
   "artifacts": [
-    "project/messages/outbox/M7-DESIGN-TOKENS-ASSET-SLOTS-001__MSG-20260629-M7-DESIGN-TOKENS-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-START__lead_orchestrator.json",
+    "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-LEAD-TO-SYSTEMS-START.json",
+    "project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json",
+    "project/tasks/thread-registry.json",
     "project/goal-mode-state.json",
-    "project/tasks/active/M7-DESIGN-TOKENS-ASSET-SLOTS-001.json"
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
   ],
-  "branch_or_worktree": "feat/m7-player-guidance-lite",
-  "commit": "08127380716c1ef93d5849e92080e85400bc0fd4",
+  "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+  "commit": "28cb469aa9695c9c54887b8241093a80dccc44b5",
   "tests_run": [
     {
-      "command": "gh pr checks 177 --watch",
+      "command": "git status --short --branch",
       "exit_code": 0,
-      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+      "result": "Branch codex/m7-save-migration-cloud-boundaries created from clean origin/main."
     },
     {
-      "command": "gh pr merge 177 --squash --delete-branch=false",
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
       "exit_code": 0,
-      "result": "PR #177 merged."
-    },
-    {
-      "command": "git fetch origin --prune; git checkout main; git pull --ff-only origin main; git log -1 --oneline --decorate",
-      "exit_code": 0,
-      "result": "origin/main synchronized at 08127380716c1ef93d5849e92080e85400bc0fd4."
-    },
-    {
-      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list | rg M7-DESIGN|M7-SAVE|M7-APP|...",
-      "exit_code": 0,
-      "result": "M7-DESIGN-TOKENS-ASSET-SLOTS-001 was ACCEPTED on main before closure checkpoint; M7-APP-SHELL-QUALITY-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 were READY."
+      "result": "Task file valid before start."
     },
     {
       "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
       "exit_code": 0,
-      "result": "M7-APP-SHELL-QUALITY-001 and M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 are READY candidates."
+      "result": "Ready tasks were M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 and M7-UI-REGRESSION-MATRIX-001; selected save/cloud boundary task as highest-priority dependency-ready M7 task."
     }
   ],
   "decisions": [
     {
-      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
-      "decision": "Mark M7-DESIGN-TOKENS-ASSET-SLOTS-001 CLOSED only after accepted commits entered origin/main through PR #177 and CI passed."
+      "id": "START_SAVE_MIGRATION_BOUNDARY_TASK",
+      "decision": "Start the R4 systems_architect task now that previous UI guidance closure is integrated and task dependencies are satisfied."
     },
     {
-      "id": "NEXT_READY_SELECTION",
-      "decision": "After closure, continue the M7 UI/localization quality track with M7-APP-SHELL-QUALITY-001 before the independent save/cloud boundary planning task, unless taskctl ready changes after closure merge."
+      "id": "CLOUD_SAVE_REMAINS_CANDIDATE_BOUNDARY_ONLY",
+      "decision": "This task may define and test rejection/decision boundaries only; no account, network, provider, telemetry, secret, paid service, or cloud implementation is authorized."
+    },
+    {
+      "id": "NO_HUMAN_GATE",
+      "decision": "No Human Gate is active; irreversible migration and cloud-save enablement remain Human Gates if encountered."
     }
   ],
   "risks": [
     {
-      "id": "DOWNSTREAM_UI_MIGRATION_REMAINS",
-      "severity": "P3",
-      "summary": "The token/slot foundation is integrated but downstream app shell, map, inspector, appointment, guidance, and regression surfaces still need productization.",
-      "mitigation": "Start M7-APP-SHELL-QUALITY-001 after closure enters main and keep subsequent UI tasks scoped to their task files."
+      "id": "SAVE_MIGRATION_SCOPE_DRIFT",
+      "severity": "P1",
+      "summary": "Compatibility-boundary work can drift into irreversible migration behavior or save-format commitments.",
+      "mitigation": "Writer must keep changes parser-validated and reversible/test-oriented, and route any irreversible or frozen decision to Human Gate and security review."
     },
     {
-      "id": "FINAL_ART_REMAINS_GATED",
-      "severity": "P2",
-      "summary": "No production art or culture-specific asset is approved by this closed task.",
-      "mitigation": "Future asset replacement must preserve visual/cultural/historical/localization review gates."
+      "id": "CLOUD_SAVE_SECURITY_DRIFT",
+      "severity": "P1",
+      "summary": "Cloud-save wording could accidentally imply account/network/provider implementation.",
+      "mitigation": "Task explicitly forbids accounts, network sync, secrets, remote collection, paid services, telemetry, server, and provider integration."
     }
   ],
   "blockers": [],
-  "route_to": "lead_orchestrator",
-  "requested_action": "Merge closure checkpoint, sync main, then start the next READY M7 task.",
+  "route_to": "systems_architect",
+  "requested_action": "Systems architect should implement/validate within allowed paths, write writer REVIEW handoff, and route to security_reviewer. Do not open PR, merge, or mark CLOSED.",
   "created_at": "2026-06-28T16:11:45.503Z",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -458,7 +513,7 @@
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
   "next_action": "Start M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 after closure enters main unless taskctl ready changes.",
-  "updated_at": "2026-06-29T11:32:00.0000000+08:00",
+  "updated_at": "2026-06-29T07:57:01.562Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -526,5 +581,52 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
       "M7-UI-REGRESSION-MATRIX-001"
     ]
+  },
+  "m7_save_migration_cloud_boundaries": {
+    "status": "ACCEPTED",
+    "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+    "base_main_commit": "28cb469aa9695c9c54887b8241093a80dccc44b5",
+    "previous_closed_task": "M7-PLAYER-GUIDANCE-LITE-001",
+    "start_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-LEAD-TO-SYSTEMS-START.json",
+    "writer_thread_id": "019f122a-b52f-71d0-afea-b8ace2f88662",
+    "writer_thread_nickname": "Keystone",
+    "owner_role": "systems_architect",
+    "reviewer_role": "security_reviewer",
+    "configured_writer_model": "gpt-5.5",
+    "configured_writer_effort": "xhigh",
+    "actual_writer_model": "unknown",
+    "actual_writer_effort": "unknown",
+    "expected_writer_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+    "started_at": "2026-06-29T06:59:11.148Z",
+    "updated_at": "2026-06-29T07:57:01.562Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "review_commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+    "writer_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+    "security_thread_id": "019f123e-c7fa-71e0-9d53-929bd51e5966",
+    "security_thread_nickname": "Bastion",
+    "security_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-WRITER-TO-SECURITY-REVIEW.json",
+    "expected_security_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+    "security_status": "ACCEPT",
+    "security_review_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+    "qa_thread_id": "019f1249-9875-7183-aa34-4f2d896dab6c",
+    "qa_thread_nickname": "Auditor",
+    "qa_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-SECURITY-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "REQUEST_CHANGES",
+    "qa_review_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW__qa_reviewer.json",
+    "request_changes_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-SYSTEMS.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-R2-REVIEW__systems_architect.json",
+    "review_commit_r2": "c79ef7e3",
+    "writer_r2_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-R2-REVIEW__systems_architect.json",
+    "qa_r2_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
+    "expected_qa_r2_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T07:57:01.562Z",
+    "accepted_implementation_commit": "c79ef7e3a9f20180f22b96e1c6303ca0fd11a2b6",
+    "accepted_branch_head": "d8303516d7efc388b917abda8fbe8b79578fee93"
   }
 }

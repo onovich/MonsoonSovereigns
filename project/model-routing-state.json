@@ -42,9 +42,12 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": null,
-    "updated_at": "2026-06-29T11:32:00.0000000+08:00",
-    "concurrent_task_ids": []
+    "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "updated_at": "2026-06-29T07:20:05.682Z",
+    "concurrent_task_ids": [
+      "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
+    ],
+    "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries"
   },
   "retired_lead_threads": [
     {
@@ -4385,5 +4388,52 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
       "M7-UI-REGRESSION-MATRIX-001"
     ]
+  },
+  "m7_save_migration_cloud_boundaries": {
+    "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+    "status": "ACCEPTED",
+    "writer_thread_id": "019f122a-b52f-71d0-afea-b8ace2f88662",
+    "writer_thread_nickname": "Keystone",
+    "writer_role": "systems_architect",
+    "writer_configured_model": "gpt-5.5",
+    "writer_configured_effort": "xhigh",
+    "writer_actual_model": "unknown",
+    "writer_actual_effort": "unknown",
+    "reviewer_role": "security_reviewer",
+    "reviewer_configured_model": "gpt-5.5",
+    "reviewer_configured_effort": "xhigh",
+    "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+    "route_file": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-LEAD-TO-SYSTEMS-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+    "started_at": "2026-06-29T06:59:11.148Z",
+    "updated_at": "2026-06-29T07:57:01.562Z",
+    "reviewer_thread_id": "019f123e-c7fa-71e0-9d53-929bd51e5966",
+    "reviewer_thread_nickname": "Bastion",
+    "reviewer_actual_model": "unknown",
+    "reviewer_actual_effort": "unknown",
+    "review_commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+    "security_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-WRITER-TO-SECURITY-REVIEW.json",
+    "expected_security_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+    "security_status": "ACCEPT",
+    "qa_thread_id": "019f1249-9875-7183-aa34-4f2d896dab6c",
+    "qa_thread_nickname": "Auditor",
+    "qa_role": "qa_reviewer",
+    "qa_configured_model": "gpt-5.5",
+    "qa_configured_effort": "xhigh",
+    "qa_actual_model": "unknown",
+    "qa_actual_effort": "unknown",
+    "qa_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-SECURITY-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "REQUEST_CHANGES",
+    "request_changes_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-SYSTEMS.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-R2-REVIEW__systems_architect.json",
+    "review_commit_r2": "c79ef7e3",
+    "writer_r2_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-R2-REVIEW__systems_architect.json",
+    "qa_r2_route": "project/messages/routes/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
+    "expected_qa_r2_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T07:57:01.562Z",
+    "accepted_implementation_commit": "c79ef7e3a9f20180f22b96e1c6303ca0fd11a2b6",
+    "accepted_branch_head": "d8303516d7efc388b917abda8fbe8b79578fee93"
   }
 }
