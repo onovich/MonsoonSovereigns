@@ -2,27 +2,44 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-UI-LOCALIZATION-EXIT-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-UI-LOCALIZATION-EXIT-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-manual-playthrough-evidence",
-      "updated_at": "2026-06-29T13:58:25.814Z",
-      "lead_close_handoff": "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-ui-localization-exit",
+      "updated_at": "2026-06-29T14:07:30.832Z",
+      "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
+      "review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json"
+    },
+    "systems_architect": {
+      "thread_id": "019f13b3-3858-7a20-88da-b0fb6261a434",
+      "nickname": "Keystone the 2nd",
+      "task_id": "M7-UI-LOCALIZATION-EXIT-001",
+      "status": "spawned_pending_route",
+      "role": "systems_architect",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-ui-localization-exit",
+      "route_file": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-06-29T14:07:30.832Z"
     }
   },
   "last_integrated_task": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
-  "last_main_commit": "2d8f778b2052e788d273f8798065fb8e71fba0b1",
-  "next_ready_tasks": [
-    "M7-UI-LOCALIZATION-EXIT-001"
-  ],
+  "last_main_commit": "61c674fac537fc2bbfba88a8d0f2a9271d7af415",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -46,10 +63,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 closure checkpoint",
+    "approval_source": "M7-UI-LOCALIZATION-EXIT-001 lead synthesis checkpoint",
     "recommended_result": null,
-    "note": "No Human Gate is active. This task preserves formal/manual human judgment acceptance as a future Human Gate if required and does not approve it autonomously. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
-    "recorded_at": "2026-06-29T13:58:25.814Z"
+    "note": "No Human Gate is active. Formal content lock, production art/cultural choices, manual human acceptance, release/commercial, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain Human Gates if requested. Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "recorded_at": "2026-06-29T14:07:30.832Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -873,7 +890,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T13:58:25.814Z",
+  "last_updated_at": "2026-06-29T14:07:30.832Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2718,5 +2735,29 @@
     "next_ready_tasks": [
       "M7-UI-LOCALIZATION-EXIT-001"
     ]
+  },
+  "m7_ui_localization_exit": {
+    "status": "REVIEW",
+    "task_id": "M7-UI-LOCALIZATION-EXIT-001",
+    "branch_or_worktree": "codex/m7-ui-localization-exit",
+    "base_main_commit": "61c674fac537fc2bbfba88a8d0f2a9271d7af415",
+    "previous_closed_task": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+    "owner_role": "lead_orchestrator",
+    "reviewer_role": "qa_reviewer",
+    "systems_thread_id": "019f13b3-3858-7a20-88da-b0fb6261a434",
+    "systems_thread_nickname": "Keystone the 2nd",
+    "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
+    "review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+    "systems_route": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "started_at": "2026-06-29T14:07:30.832Z",
+    "updated_at": "2026-06-29T14:07:30.832Z",
+    "next_action": "Send lead synthesis to systems_architect and wait for ACCEPT/REQUEST_CHANGES/BLOCKED before QA review.",
+    "unresolved_risks": [
+      "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
+      "M7-WINDOWS-DPI-150-UNRESOLVED"
+    ],
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }

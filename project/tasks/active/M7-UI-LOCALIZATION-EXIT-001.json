@@ -2,7 +2,7 @@
   "id": "M7-UI-LOCALIZATION-EXIT-001",
   "summary": "Validate completion of the M7 UI and localization quality track",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "REVIEW",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -66,8 +66,35 @@
     "pnpm desktop:package",
     "pnpm check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-ui-localization-exit",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "review_ready",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-ui-localization-exit",
+      "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
+      "review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+      "updated_at": "2026-06-29T14:07:30.832Z"
+    },
+    "systems_architect": {
+      "thread_id": "019f13b3-3858-7a20-88da-b0fb6261a434",
+      "nickname": "Keystone the 2nd",
+      "status": "spawned_pending_route",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+      "started_at": "2026-06-29T14:07:30.832Z",
+      "updated_at": "2026-06-29T14:07:30.832Z"
+    }
+  },
   "route_to": "qa_reviewer",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -82,7 +109,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-28T20:48:00+08:00",
+  "updated_at": "2026-06-29T14:07:30.832Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -99,5 +126,14 @@
     "manual node battle reversal or any formal 1.0 scope reversal"
   ],
   "source_directive": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
-  "visual_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md"
+  "visual_handoff": "project/messages/outbox/M7-VISUAL-UX-HANDOFF-001__MSG-20260628-M7-VISUAL-UX-HANDOFF__visual_design_reviewer.md",
+  "start_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-START__lead_orchestrator.json",
+  "review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
+  "systems_route": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-LEAD-TO-SYSTEMS-REVIEW.json",
+  "expected_systems_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+  "base_main_commit": "61c674fac537fc2bbfba88a8d0f2a9271d7af415",
+  "previous_closed_task": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+  "started_at": "2026-06-29T14:07:30.832Z",
+  "review_ready_at": "2026-06-29T14:07:30.832Z",
+  "next_action": "Send lead synthesis to systems_architect and wait for ACCEPT/REQUEST_CHANGES/BLOCKED before QA review."
 }
