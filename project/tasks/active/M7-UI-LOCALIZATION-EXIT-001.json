@@ -83,7 +83,7 @@
     "systems_architect": {
       "thread_id": "019f13b3-3858-7a20-88da-b0fb6261a434",
       "nickname": "Keystone the 2nd",
-      "status": "active_routed",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -92,9 +92,27 @@
       "source_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-LEAD-SYNTHESIS__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
       "started_at": "2026-06-29T14:07:30.832Z",
-      "updated_at": "2026-06-29T14:08:43.748Z",
+      "updated_at": "2026-06-29T14:18:32.015Z",
       "route_submission_id": "019f13b5-b752-7261-b130-d3eb689d11f1",
-      "route_sent_at": "2026-06-29T14:08:43.748Z"
+      "route_sent_at": "2026-06-29T14:08:43.748Z",
+      "systems_status": "ACCEPT",
+      "systems_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+      "systems_review_commit": "e11274a54c7f43def29fb6e538667d286110b500"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f13be-4700-7a71-a901-48f84a2f6803",
+      "nickname": "Witness the 2nd",
+      "status": "spawned_pending_route",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "route_file": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "e11274a54c7f43def29fb6e538667d286110b500",
+      "started_at": "2026-06-29T14:18:32.015Z",
+      "updated_at": "2026-06-29T14:18:32.015Z"
     }
   },
   "route_to": "qa_reviewer",
@@ -111,7 +129,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T20:48:00+08:00",
-  "updated_at": "2026-06-29T14:08:43.748Z",
+  "updated_at": "2026-06-29T14:18:32.015Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -137,8 +155,13 @@
   "previous_closed_task": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
   "started_at": "2026-06-29T14:07:30.832Z",
   "review_ready_at": "2026-06-29T14:07:30.832Z",
-  "next_action": "Wait for systems_architect ACCEPT/REQUEST_CHANGES/BLOCKED handoff before QA review.",
+  "next_action": "Send systems ACCEPT to independent qa_reviewer and wait for ACCEPT/REQUEST_CHANGES/BLOCKED.",
   "systems_route_submission_id": "019f13b5-b752-7261-b130-d3eb689d11f1",
   "systems_route_sent_at": "2026-06-29T14:08:43.748Z",
-  "systems_route_status": "SENT"
+  "systems_route_status": "SENT",
+  "systems_status": "ACCEPT",
+  "systems_review_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+  "systems_review_commit": "e11274a54c7f43def29fb6e538667d286110b500",
+  "qa_route": "project/messages/routes/M7-UI-LOCALIZATION-EXIT-001__ROUTE-20260629-SYSTEMS-TO-QA-REVIEW.json",
+  "expected_qa_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json"
 }
