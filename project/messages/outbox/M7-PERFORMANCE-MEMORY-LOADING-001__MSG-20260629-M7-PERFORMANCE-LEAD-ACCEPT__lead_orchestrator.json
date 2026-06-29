@@ -1,0 +1,121 @@
+{
+  "message_id": "MSG-20260629-M7-PERFORMANCE-LEAD-ACCEPT",
+  "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Accepted M7 performance, memory, and loading validation after QA R2 ACCEPT. R2 evidence now uses the M7 Beta-scale artifact sampleSize=36 across 3 scenarios and 12 seeds, records RSS/heap memory, save/load timing, Web startup/loading and map/UI density proxy, desktop security/package smoke, and artifact tree hashes. The task is accepted with PASS_WITH_LIMITS for unfrozen M7 numeric thresholds and low-end Windows proxy evidence, not signed release readiness.",
+  "artifacts": [
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__EVIDENCE-R2-20260629-test_engineer.json",
+    "project/messages/tools/m7-performance-memory-loading-evidence.mjs",
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-R2-REVIEW__qa_reviewer.json",
+    "project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/m7-performance-memory-loading",
+  "commit": "e102945d4a8a270b15eeaa4254b8df608f1bcae0",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PERFORMANCE-MEMORY-LOADING-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed; M7-PERFORMANCE-MEMORY-LOADING-001 is REVIEW before lead accept."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-UI-REGRESSION-MATRIX-001 is next dependency-ready task while this task is active."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-R2-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA R2 ACCEPT handoff."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task, R2 writer handoff, QA R2 handoff, and R2 evidence",
+      "exit_code": 0,
+      "result": "LEAD_JSON_SHAPE_OK; R2 evidence sampleSize=36 and threshold=PASS_WITH_LIMITS."
+    },
+    {
+      "command": "node project/messages/tools/m7-performance-memory-loading-evidence.mjs summarized via PowerShell ConvertFrom-Json",
+      "exit_code": 0,
+      "result": "RUNNER_OK sampleSize=36 artifactHash=f671ff59 saveLoadMs=22.04 webStartupMs=212.14 desktopTreeHash=DD75741482BB065B361A8ED8CA0DB0081731315D0346562A3EC390248A193FD7."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format issues."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "Passed; SIM-005 supporting baseline dayThroughputPerSecond=8513, p95=241700ns, p99=443500ns."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Passed; Node and worker-compatible hashes matched through M6 Alpha."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed; Vite build completed with existing >500k chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Passed; Storybook build completed with existing plugin timing and chunk warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 21/21 tests passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Passed; security preferences, preload bridge, renderer navigation restriction, and IPC allowlist verified."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Passed; package smoke output under .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Passed; architecture, determinism, root 43 files/353 tests, web 1 file/9 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed; format, lint, typecheck, architecture."
+    }
+  ],
+  "decisions": [
+    "Accept QA R2 status=ACCEPT and advance task to ACCEPTED pending PR CI and main integration.",
+    "Record R2 performance evidence as PASS_WITH_LIMITS because task metadata does not freeze numeric M7 thresholds.",
+    "Record low-end Windows evidence as proxy only; no claim of true low-end hardware validation or signed release readiness.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE; no telemetry, server/multiplayer, cloud-save implementation, arbitrary-code mod, commercial/release/branding, frozen architecture, or irreversible migration change is introduced."
+  ],
+  "risks": [
+    "True low-end Windows hardware validation remains future matrix evidence; this task records a proxy assumption only.",
+    "Desktop security/package commands share output trees and should remain serialized.",
+    "R2 artifact file paths in the evidence omit the asset directory prefix for bundled assets, but QA verified hashes with fallback roots and stable tree hashes; future evidence scripts should improve path clarity."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, wait for CI, merge to main, then close M7-PERFORMANCE-MEMORY-LOADING-001 after origin/main contains the accepted changes.",
+  "created_at": "2026-06-29T11:07:43.295Z"
+}

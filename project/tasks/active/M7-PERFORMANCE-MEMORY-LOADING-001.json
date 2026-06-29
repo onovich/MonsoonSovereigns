@@ -2,7 +2,7 @@
   "id": "M7-PERFORMANCE-MEMORY-LOADING-001",
   "summary": "Validate Beta performance, memory, and loading behavior",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -97,7 +97,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T10:58:50.097Z",
+  "updated_at": "2026-06-29T11:07:43.295Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -120,8 +120,8 @@
     "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T09:46:40.833Z",
-    "updated_at": "2026-06-29T10:58:50.097Z",
-    "next_action": "Send R2 evidence to qa_reviewer and wait for QA R2 handoff.",
+    "updated_at": "2026-06-29T11:07:43.295Z",
+    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
     "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
     "route_sent_at": "2026-06-29T09:48:36.974Z",
     "review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
@@ -159,6 +159,12 @@
     "expected_qa_r2_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-R2-REVIEW__qa_reviewer.json",
     "routed_to_qa_r2_at": "2026-06-29T10:57:36.804Z",
     "qa_r2_route_submission_id": "019f1307-e228-7060-ab62-a46b478a58e9",
-    "qa_r2_route_sent_at": "2026-06-29T10:58:50.097Z"
+    "qa_r2_route_sent_at": "2026-06-29T10:58:50.097Z",
+    "qa_status_r2": "ACCEPT",
+    "qa_r2_review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-R2-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-29T11:07:43.295Z",
+    "accepted_implementation_commit": "e475553e",
+    "accepted_branch_head": "e102945d4a8a270b15eeaa4254b8df608f1bcae0"
   }
 }
