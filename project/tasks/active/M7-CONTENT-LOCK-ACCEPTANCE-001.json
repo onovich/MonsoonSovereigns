@@ -2,7 +2,7 @@
   "id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
   "summary": "Route formal M7 content lock acceptance Human Gate",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "BLOCKED",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -62,8 +62,11 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
     "git diff --check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-content-lock-acceptance",
+  "threads": {
+    "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "qa_reviewer": "019f13d7-d3e3-7f92-b115-73d8deabff3a"
+  },
   "route_to": "qa_reviewer",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -74,7 +77,7 @@
     "M7-UI-LOCALIZATION-EXIT-001 is a required prerequisite so formal content lock cannot pass while the UI/localization/visual quality track remains unfinished."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T20:48:00+08:00",
+  "updated_at": "2026-06-29T14:56:13.716Z",
   "human_gate_required": true,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -90,5 +93,23 @@
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
   ],
-  "human_gate_type": "FORMAL_CONTENT_LOCK_ACCEPTANCE"
+  "human_gate_type": "FORMAL_CONTENT_LOCK_ACCEPTANCE",
+  "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
+  "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+  "base_main_commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
+  "recommendation": "APPROVE_CONTENT_LOCK_WITH_LIMITS_PENDING_PRODUCT_OWNER",
+  "content_lock_accepted": false,
+  "human_gate_state": "PENDING_PRODUCT_OWNER_DECISION",
+  "qa_route": "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
+  "expected_qa_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+  "qa_thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+  "qa_route_submission_id": "019f13d9-41f0-7183-a564-01cb846bb1ac",
+  "qa_route_sent_at": "2026-06-29T14:47:33.170Z",
+  "qa_route_status": "SENT",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+  "qa_review_commit": "9e0c7bdf2b7c8e37fae35eb885cc2d54d497c24d",
+  "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json",
+  "blocker": "HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE",
+  "qa_thread_closed_at": "2026-06-29T14:56:13.716Z"
 }

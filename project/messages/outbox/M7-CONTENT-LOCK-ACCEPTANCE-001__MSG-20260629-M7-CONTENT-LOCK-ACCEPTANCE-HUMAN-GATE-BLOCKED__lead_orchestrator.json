@@ -1,0 +1,90 @@
+{
+  "message_id": "MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "BLOCKED",
+  "summary": "M7 formal content lock package has independent QA ACCEPT, but formal content lock remains unapproved and blocked on product-owner Human Gate. The task is intentionally not CLOSED and content_lock_accepted remains false until the owner decision is recorded.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-content-lock-acceptance",
+  "commit": "9e0c7bdf2b7c8e37fae35eb885cc2d54d497c24d",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "exit_code": 0,
+      "result": "VALID before BLOCKED Human Gate state write."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Current process diff before blocked-state commit: M PROJECT_STATUS.md\n M project/goal-mode-state.json\n M project/model-routing-state.json\n M project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json\n M project/tasks/thread-registry.json\n?? project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json\n?? project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD && git diff --check",
+      "exit_code": 0,
+      "result": "Whitespace checks passed for committed and working process diffs."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD plus git diff --name-only",
+      "exit_code": 0,
+      "result": "Changed paths are process/status/message/task/model/goal files only: project/goal-mode-state.json; project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json; project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json; project/model-routing-state.json; project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json; project/tasks/thread-registry.json; PROJECT_STATUS.md; project/goal-mode-state.json; project/model-routing-state.json; project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json; project/tasks/thread-registry.json."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPTED_PACKAGE",
+      "decision": "Independent qa_reviewer accepted the Human Gate package as evidence-backed and process-only."
+    },
+    {
+      "id": "CONTENT_LOCK_NOT_APPROVED",
+      "decision": "No product-owner approval is recorded; do not mark content locked and do not close M7-CONTENT-LOCK-ACCEPTANCE-001 as CLOSED."
+    },
+    {
+      "id": "ACTIVE_HUMAN_GATE",
+      "decision": "Set the active Human Gate to FORMAL_CONTENT_LOCK_ACCEPTANCE with product_owner as decision owner."
+    },
+    {
+      "id": "RECOMMENDED_OPTION",
+      "decision": "Lead recommendation for owner consideration is APPROVE_CONTENT_LOCK_WITH_LIMITS as of origin/main 62e3c756199f50302ff3b0a5ee087da1fd0bffbe."
+    },
+    {
+      "id": "LIMITS_CARRIED",
+      "decision": "Carry M6 PASS_WITH_LIMITS, DEFER_MANUAL_NODE_BATTLE, Edge/Firefox tooling gaps, Windows DPI 150% follow-up, low-end Windows proxy limits, agent-operated manual playthrough limits, and all release/commercial/telemetry/server/cloud/mod/migration/culture Human Gates."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FORMAL_CONTENT_LOCK_OWNER_DECISION_PENDING",
+      "severity": "R4",
+      "summary": "Autonomous continuation must pause at this Human Gate until the product owner explicitly decides."
+    },
+    {
+      "id": "OVERCLAIM_RISK",
+      "severity": "R3",
+      "summary": "Downstream records must not interpret QA package ACCEPT as M7 Gate PASS, release readiness, production art/culture approval, full platform coverage, or manual human acceptance."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE",
+      "owner": "product_owner",
+      "summary": "Choose APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES."
+    }
+  ],
+  "route_to": "product_owner",
+  "requested_action": "Product-owner Human Gate decision required. If approving, respond with APPROVE_CONTENT_LOCK_WITH_LIMITS and accept the listed limitations; otherwise respond DEFER_CONTENT_LOCK or REQUEST_CHANGES with required changes.",
+  "created_at": "2026-06-29T14:55:23.348Z"
+}

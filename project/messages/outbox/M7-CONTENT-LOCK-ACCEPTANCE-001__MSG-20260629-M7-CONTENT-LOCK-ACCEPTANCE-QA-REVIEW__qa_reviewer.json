@@ -1,0 +1,162 @@
+{
+  "message_id": "MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the M7 formal content lock Human Gate package as evidence-backed, process-only, and truthful about carried limits. This ACCEPT is package acceptance only: formal content lock is not approved, the task must not be closed as content locked, and explicit product-owner decision remains required.",
+  "artifacts": [
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+    "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-CONTRACT-001__MSG-20260628-M7-CONTENT-LOCK-CONTRACT-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-BETA-CULTURE-REVIEW-001__MSG-20260628-M7-BETA-CULTURE-REVIEW-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-content-lock-acceptance",
+  "commit": "9e0c7bdf2b7c8e37fae35eb885cc2d54d497c24d",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Tracked dirty state before QA handoff was limited to allowed process files: project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json, project/tasks/thread-registry.json; untracked route file was project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json."
+    },
+    {
+      "command": "git branch --show-current",
+      "exit_code": 0,
+      "result": "codex/m7-content-lock-acceptance"
+    },
+    {
+      "command": "git rev-parse --short HEAD",
+      "exit_code": 0,
+      "result": "9e0c7bdf"
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "9e0c7bdf2b7c8e37fae35eb885cc2d54d497c24d"
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Only allowed committed paths changed: project/goal-mode-state.json; project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json; project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json; project/model-routing-state.json; project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json; project/tasks/thread-registry.json."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --stat origin/main...HEAD",
+      "exit_code": 0,
+      "result": "6 process/message/state files changed, 293 insertions, 30 deletions; no apps, packages, content-source, tools, .github, gate docs, roadmap, manifest, checksum, or release-report paths."
+    },
+    {
+      "command": "git show --stat --oneline --decorate --no-renames HEAD",
+      "exit_code": 0,
+      "result": "HEAD 9e0c7bdf chore(process): prepare M7 content lock gate; same 6 process/message/state files as the branch diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID source handoff schema."
+    },
+    {
+      "command": "node - <<'NODE' JSON evidence shape check",
+      "exit_code": 1,
+      "result": "PowerShell rejected Bash heredoc syntax before project validation ran; rerun with PowerShell here-string below."
+    },
+    {
+      "command": "PowerShell here-string piped to node - for required evidence JSON shape check",
+      "exit_code": 0,
+      "result": "All checks true: source handoff status REVIEW/routes qa_reviewer, NOT_AGENT_APPROVAL present, Human Gate blocker present, no content_lock_accepted=true claim, M6 limits and manual node battle deferral preserved, platform/manual-playthrough limits carried, and UI/localization systems+QA ACCEPT evidence present."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-CONTENT-LOCK-ACCEPTANCE-001 listed as REVIEW; required upstream M7 evidence tasks listed CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready-task output while current Human Gate package remains in review."
+    },
+    {
+      "command": "node -e / PowerShell here-string parse and shape check for task, goal-mode-state, model-routing-state, registry, source handoff, and referenced evidence",
+      "exit_code": 0,
+      "result": "All checks true: task status REVIEW, human_gate_required=true, content_lock_accepted=false, human_gate_state=QA_REVIEW_IN_PROGRESS; goal state points to active gate with pending owner recommendation; registry QA route points to source handoff; all required evidence JSON parsed; UI systems and QA evidence are ACCEPT."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPT_PACKAGE_NOT_LOCK",
+      "decision": "Accept the Human Gate review package as truthful and evidence-backed, but do not approve formal content lock."
+    },
+    {
+      "id": "PRODUCT_OWNER_DECISION_REQUIRED",
+      "decision": "Formal content lock acceptance remains an R4 Human Gate decision for product_owner: APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES."
+    },
+    {
+      "id": "ALLOWED_PATHS_ONLY",
+      "decision": "Committed branch diff is confined to allowed process, message, task, goal-mode, model-routing, and thread-registry paths; no forbidden business, content-source, CI, roadmap, gate, manifest, checksum, or release artifact path changed."
+    },
+    {
+      "id": "M6_PASS_WITH_LIMITS_PRESERVED",
+      "decision": "The package preserves M6_GATE=PASS_WITH_LIMITS and does not rewrite Alpha/local evidence, batch-balance, adviser, prior M4/M5 process limits, or unsigned desktop smoke limitations into release readiness."
+    },
+    {
+      "id": "DEFER_MANUAL_NODE_BATTLE_PRESERVED",
+      "decision": "DEFER_MANUAL_NODE_BATTLE remains in force; the package creates no M7/M8 manual node battle implementation, spike, research, validation, or exit-gate dependency."
+    },
+    {
+      "id": "UI_LOCALIZATION_EXIT_EVIDENCE_PRESENT",
+      "decision": "M7-UI-LOCALIZATION-EXIT-001 is CLOSED and has both systems_architect ACCEPT and qa_reviewer ACCEPT evidence; the package still treats it as prerequisite evidence only."
+    },
+    {
+      "id": "CARRIED_LIMITS_PRESERVED",
+      "decision": "The package carries Edge/Firefox tooling blocks, Windows DPI 150% follow-up, low-end Windows proxy limits, agent-operated manual playthrough limits, production culture/art limits, cloud-save/release/commercial/telemetry/server/mod gates, and major cultural-risk Human Gates."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FORMAL_CONTENT_LOCK_PENDING_OWNER_DECISION",
+      "severity": "R4",
+      "summary": "QA accepts only the package; no product-owner approval is recorded, so content lock remains not accepted and autonomous continuation must stay paused at this decision point."
+    },
+    {
+      "id": "DOWNSTREAM_OVERCLAIM_RISK",
+      "severity": "R3",
+      "summary": "Lead and any later gate must not convert this QA ACCEPT into M7 Gate PASS, release readiness, production art/culture approval, full platform coverage, or manual human acceptance."
+    },
+    {
+      "id": "ALLOWED_UNCOMMITTED_ROUTE_STATE_PRESENT",
+      "severity": "R2",
+      "summary": "Before this QA handoff, git status showed allowed uncommitted route/state files produced by routing. They are not forbidden-path changes, but lead integration should reconcile and commit them with the QA handoff."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE",
+      "owner": "product_owner",
+      "summary": "Explicit product-owner decision is required before the task can be closed as content locked or any content lock state can be accepted."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route the QA-accepted package to product_owner for the formal content lock Human Gate decision. Do not close M7-CONTENT-LOCK-ACCEPTANCE-001 as content locked, do not mark content_lock_accepted=true, and do not continue autonomous M7/M8 work until the owner decision is recorded.",
+  "created_at": "2026-06-29T22:51:45.3570517+08:00"
+}

@@ -11,10 +11,12 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T14:33:23.055Z",
-        "task_id": null,
-        "task_ids": [],
-        "branch_or_worktree": "codex/close-m7-ui-localization-exit"
+        "updated_at": "2026-06-29T14:44:30.619Z",
+        "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+        "task_ids": [
+          "M7-CONTENT-LOCK-ACCEPTANCE-001"
+        ],
+        "branch_or_worktree": "codex/m7-content-lock-acceptance"
       }
     ],
     "retired_leads": [
@@ -7050,6 +7052,45 @@
       "integrated_main_commit": "f0a49d1457feafac1a3fc5721466badad8d102dd",
       "closed_at": "2026-06-29T14:33:23.055Z",
       "lead_close_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json"
+    },
+    "M7-CONTENT-LOCK-ACCEPTANCE-001:lead_orchestrator": {
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "blocked_on_product_owner_human_gate",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-content-lock-acceptance",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
+      "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+      "updated_at": "2026-06-29T14:55:23.348Z",
+      "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json"
+    },
+    "M7-CONTENT-LOCK-ACCEPTANCE-001:qa_reviewer": {
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+      "updated_at": "2026-06-29T14:56:13.716Z",
+      "nickname": "Gate the 3rd",
+      "status": "closed_after_package_accept",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-content-lock-acceptance",
+      "route_file": "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "9e0c7bdf",
+      "route_submission_id": "019f13d9-41f0-7183-a564-01cb846bb1ac",
+      "route_sent_at": "2026-06-29T14:47:33.170Z",
+      "route_status": "SENT",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+      "close_reason": "qa_accept_review_package_human_gate_pending_product_owner",
+      "closed_at": "2026-06-29T14:56:13.716Z"
     }
   },
   "replaced_threads": [
@@ -7224,7 +7265,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T14:33:23.055Z",
+  "updated_at": "2026-06-29T14:56:13.716Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -7276,6 +7317,13 @@
       "task_id": "M7-UI-LOCALIZATION-EXIT-001",
       "status": "closed_after_accept_review_and_main_integration",
       "closed_at": "2026-06-29T14:33:23.055Z"
+    },
+    {
+      "thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+      "role": "qa_reviewer",
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "status": "closed_after_package_accept",
+      "closed_at": "2026-06-29T14:56:13.716Z"
     }
   ]
 }

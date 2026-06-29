@@ -2,24 +2,27 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-CONTENT-LOCK-ACCEPTANCE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
-      "status": "active_router",
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "status": "blocked_on_product_owner_human_gate",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-ui-localization-exit",
-      "updated_at": "2026-06-29T14:33:23.055Z",
-      "lead_close_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-content-lock-acceptance",
+      "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+      "updated_at": "2026-06-29T14:55:23.348Z",
+      "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json"
     }
   },
   "last_integrated_task": "M7-UI-LOCALIZATION-EXIT-001",
-  "last_main_commit": "f0a49d1457feafac1a3fc5721466badad8d102dd",
+  "last_main_commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -38,16 +41,39 @@
       "status": "accepted_limit",
       "summary": "M4 gate is PASS_WITH_LIMITS because systems_architect handoff is absent after three real writer stalls; QA accepted the explicit lead reconciliation process exception.",
       "source": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-QA-REVIEW__qa_reviewer.json"
+    },
+    {
+      "id": "M7-CONTENT-LOCK-HUMAN-GATE-PENDING",
+      "severity": "R4",
+      "status": "active_human_gate",
+      "summary": "Formal M7 content lock awaits product-owner decision."
+    },
+    {
+      "id": "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
+      "severity": "R3",
+      "status": "carried_limit",
+      "summary": "Edge/Firefox matrix rows remain unresolved tooling blocks."
+    },
+    {
+      "id": "M7-WINDOWS-DPI-150-UNRESOLVED",
+      "severity": "R3",
+      "status": "carried_limit",
+      "summary": "Windows DPI 150% remains follow-up evidence."
     }
   ],
   "human_gate": {
-    "required": false,
-    "active_gate_task_id": null,
-    "approval_scope": "NONE",
-    "approval_source": "M7-UI-LOCALIZATION-EXIT-001 closure checkpoint",
-    "recommended_result": null,
-    "note": "No Human Gate is active. Formal content lock, manual human acceptance, production art/cultural choices, release/commercial, telemetry/accounts/secrets, cloud-save implementation, server/multiplayer, and manual node battle reversal remain future Human Gates if requested. Edge/Firefox and Windows DPI 150% remain carried limitations.",
-    "recorded_at": "2026-06-29T14:33:23.055Z"
+    "required": true,
+    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "approval_scope": "FORMAL_CONTENT_LOCK_ACCEPTANCE",
+    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json",
+    "recommended_result": "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+    "required_decision_options": [
+      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+      "DEFER_CONTENT_LOCK",
+      "REQUEST_CHANGES"
+    ],
+    "note": "Independent QA accepted the evidence package, but formal M7 content lock is not approved. Product-owner decision is required before closing this task or starting M7 exit validation.",
+    "recorded_at": "2026-06-29T14:55:23.348Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -871,8 +897,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T14:33:23.055Z",
-  "updated_at": "2026-06-29T11:32:00.0000000+08:00",
+  "last_updated_at": "2026-06-29T14:56:22.870Z",
+  "updated_at": "2026-06-29T14:56:22.870Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2769,5 +2795,14 @@
       "019f13be-4700-7a71-a901-48f84a2f6803"
     ],
     "next_ready_tasks": []
-  }
+  },
+  "closed_threads": [
+    {
+      "thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+      "role": "qa_reviewer",
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "status": "closed_after_package_accept",
+      "closed_at": "2026-06-29T14:56:13.716Z"
+    }
+  ]
 }

@@ -42,10 +42,12 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": null,
-    "updated_at": "2026-06-29T14:33:23.055Z",
-    "concurrent_task_ids": [],
-    "branch_or_worktree": "codex/close-m7-ui-localization-exit"
+    "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "updated_at": "2026-06-29T14:55:23.348Z",
+    "concurrent_task_ids": [
+      "M7-CONTENT-LOCK-ACCEPTANCE-001"
+    ],
+    "branch_or_worktree": "codex/m7-content-lock-acceptance"
   },
   "retired_lead_threads": [
     {
@@ -1933,6 +1935,14 @@
       "migration_status": "closed_after_task_main_integration",
       "accepted_task_reopened": false,
       "updated_at": "2026-06-29T11:32:00.0000000+08:00"
+    },
+    {
+      "thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+      "role": "qa_reviewer",
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "migration_status": "closed_after_package_accept",
+      "accepted_task_reopened": false,
+      "closed_at": "2026-06-29T14:56:13.716Z"
     }
   ],
   "active_threads": [
@@ -2591,7 +2601,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-29T14:33:23.055Z",
+  "updated_at": "2026-06-29T14:56:13.716Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -4722,6 +4732,41 @@
       "integrated_main_commit": "f0a49d1457feafac1a3fc5721466badad8d102dd",
       "closed_at": "2026-06-29T14:33:23.055Z",
       "lead_close_handoff": "project/messages/outbox/M7-UI-LOCALIZATION-EXIT-001__MSG-20260629-M7-UI-LOCALIZATION-EXIT-CLOSED__lead_orchestrator.json"
+    },
+    "M7-CONTENT-LOCK-ACCEPTANCE-001": {
+      "owner_role": "lead_orchestrator",
+      "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "reviewer_role": "qa_reviewer",
+      "reviewer_configured_model": "gpt-5.5",
+      "reviewer_configured_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-content-lock-acceptance",
+      "status": "blocked_on_product_owner_human_gate",
+      "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
+      "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
+      "updated_at": "2026-06-29T14:56:13.716Z",
+      "reviewer_thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
+      "reviewer_nickname": "Gate the 3rd",
+      "qa_route": "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
+      "expected_qa_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "9e0c7bdf",
+      "qa_route_submission_id": "019f13d9-41f0-7183-a564-01cb846bb1ac",
+      "qa_route_sent_at": "2026-06-29T14:47:33.170Z",
+      "qa_route_status": "SENT",
+      "qa_status": "ACCEPT",
+      "qa_review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+      "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json",
+      "human_gate_required": true,
+      "required_decision_options": [
+        "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+        "DEFER_CONTENT_LOCK",
+        "REQUEST_CHANGES"
+      ],
+      "reviewer_status": "closed_after_package_accept",
+      "reviewer_closed_at": "2026-06-29T14:56:13.716Z"
     }
   }
 }
