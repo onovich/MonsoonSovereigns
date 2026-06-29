@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW",
+  "task_id": "M7-UI-REGRESSION-MATRIX-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Added a focused M7 UI regression matrix in tests/e2e/web-shell.spec.ts. The new Chromium Playwright coverage exercises system, English, and Simplified Chinese locale paths, language switching, player-mode key hygiene, console-error capture, and supported Beta viewport checks while keeping the test observable-only and outside sim-core or Pixi authority.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    ".storybook/WebClientShell.stories.tsx",
+    ".storybook/M7DesignTokensAssetSlots.stories.tsx",
+    "apps/desktop/scripts/security-check.mjs",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-regression-matrix",
+  "commit": "b2467768b7b39c34688a8ecd6ce5398d7bcd694b",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean working tree before writing the handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; M7-UI-REGRESSION-MATRIX-001 is in progress."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No stdout; exit code 0."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "shape-ok"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting issues."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 5 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright chromium suite passed: 22 tests, 22 passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "coverage_shape",
+      "result": "Kept the regression matrix in tests/e2e/web-shell.spec.ts so the M7 shell, locale, and command-boundary checks stay close to the existing web-shell coverage and remain observable-only."
+    },
+    {
+      "type": "tooling_scope",
+      "result": "Used the existing Chromium Playwright suite plus desktop security smoke; no release, signing, telemetry, account, cloud-save, or commercial workflow was added."
+    }
+  ],
+  "risks": [
+    "Chromium-only E2E does not cover Firefox, Edge, or Windows DPI/localization permutations; those remain for the M7 platform/resolution localization matrix task.",
+    "The matrix deliberately verifies observable behavior only and does not inspect authoritative WorldState or Pixi internals."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the new M7 UI regression matrix test and the recorded evidence. Accept if the locale, viewport, console-error, and player-mode key-hygiene coverage is sufficient, or request changes with exact failing evidence.",
+  "created_at": "2026-06-29T19:32:54.0002166+08:00"
+}

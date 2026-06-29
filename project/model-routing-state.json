@@ -43,9 +43,11 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": null,
-    "updated_at": "2026-06-29T09:36:51.116Z",
-    "concurrent_task_ids": [],
-    "branch_or_worktree": "codex/close-m7-large-scale-balance-anti-snowball"
+    "updated_at": "2026-06-29T12:11:17.938Z",
+    "concurrent_task_ids": [
+      "M7-UI-REGRESSION-MATRIX-001"
+    ],
+    "branch_or_worktree": "codex/m7-ui-regression-matrix"
   },
   "retired_lead_threads": [
     {
@@ -2591,7 +2593,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-29T11:13:56.007Z",
+  "updated_at": "2026-06-29T12:11:17.938Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -4546,6 +4548,52 @@
       "integrated_main_commit": "b2af704e6d5bf8c157e1a59b5073525a54671485",
       "closed_at": "2026-06-29T11:13:56.007Z",
       "lead_close_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-CLOSED__lead_orchestrator.json"
+    },
+    "M7-UI-REGRESSION-MATRIX-001": {
+      "owner_role": "test_engineer",
+      "owner_thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
+      "owner_nickname": "Canary the 2nd",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "reviewer_role": "qa_reviewer",
+      "reviewer_configured_model": "gpt-5.5",
+      "reviewer_configured_effort": "xhigh",
+      "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
+      "status": "ACCEPTED",
+      "updated_at": "2026-06-29T12:11:17.938Z",
+      "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
+      "route_sent_at": "2026-06-29T11:20:57.328Z",
+      "reviewer_thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
+      "reviewer_nickname": "Gate",
+      "qa_route": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+      "expected_qa_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
+      "qa_status": "REQUEST_CHANGES",
+      "qa_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
+      "request_changes_round": 1,
+      "request_changes_route": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST.json",
+      "expected_writer_r2_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
+      "request_changes_submission_id": "019f1333-3cd2-7460-a9f8-f735d17d470a",
+      "request_changes_sent_at": "2026-06-29T11:46:13.757Z",
+      "replaces_thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
+      "replacement_reason": "original_test_engineer_model_capacity_error_no_r2_handoff_partial_diff_present",
+      "partial_diff_files": [
+        "tests/e2e/web-shell.spec.ts"
+      ],
+      "replacement_route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
+      "replacement_route_submission_id": "019f133a-37e8-7241-a111-89b54c696bf3",
+      "replacement_route_sent_at": "2026-06-29T11:53:52.082Z",
+      "qa_r2_route": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
+      "expected_qa_r2_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+      "qa_r2_route_submission_id": "019f1342-5ece-7342-8eeb-7d08bc117946",
+      "qa_r2_route_sent_at": "2026-06-29T12:05:29.421Z",
+      "qa_status_r2": "ACCEPT",
+      "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-29T12:11:17.938Z",
+      "accepted_implementation_commit": "d05411b887ae601973482fb3a0739a590d18c831",
+      "accepted_branch_head": "c469c860a3c93bd603dc323298e0a0de2f741443"
     }
   }
 }

@@ -1,0 +1,61 @@
+{
+  "message_id": "MSG-20260629-M7-UI-REGRESSION-START",
+  "task_id": "M7-UI-REGRESSION-MATRIX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Started M7 UI and localization regression matrix after M7 performance validation closure entered main. Registered test_engineer writer and prepared START_CONFIRMED route.",
+  "artifacts": [
+    "project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-regression-matrix",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "clean main synchronized with origin/main before branch creation"
+    },
+    {
+      "command": "git rev-parse HEAD origin/main main",
+      "exit_code": 0,
+      "result": "all at 131a4334f67f68b39349ff24498ec0249f43c137"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-UI-REGRESSION-MATRIX-001 was dependency-ready before start"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-status M7-UI-REGRESSION-MATRIX-001 IN_PROGRESS",
+      "exit_code": 0,
+      "result": "task status set to IN_PROGRESS"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs set-thread M7-UI-REGRESSION-MATRIX-001 test_engineer 019f131a-1f3c-75c2-b346-b48346480c99",
+      "exit_code": 0,
+      "result": "test_engineer thread registered"
+    }
+  ],
+  "decisions": [
+    "Continue autonomous M7 execution; no Human Gate is active.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE.",
+    "This start checkpoint corrects last_main_commit to actual closure commit 131a4334f67f68b39349ff24498ec0249f43c137 after PR #194."
+  ],
+  "risks": [
+    "Task is R3 and touches UI regression coverage; failures must be recorded as defects or BLOCKED rather than weakening/skipping tests.",
+    "Player/debug separation and UI/sim authority boundaries must remain intact."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer",
+  "requested_action": "Await START_CONFIRMED, then implement the M7 UI/localization regression matrix within allowed paths and emit REVIEW/PARTIAL/BLOCKED handoff to qa_reviewer.",
+  "created_at": "2026-06-29T11:19:29.482Z"
+}
