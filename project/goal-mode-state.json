@@ -21,7 +21,7 @@
     "test_engineer": {
       "thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
-      "status": "in_progress",
+      "status": "review_handoff_submitted",
       "role": "test_engineer",
       "nickname": "Probe",
       "configured_model": "gpt-5.4-mini",
@@ -31,9 +31,30 @@
       "branch_or_worktree": "codex/m7-ui-regression-matrix",
       "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
       "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T11:20:57.328Z",
+      "updated_at": "2026-06-29T11:36:15.555Z",
       "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
-      "route_sent_at": "2026-06-29T11:20:57.328Z"
+      "route_sent_at": "2026-06-29T11:20:57.328Z",
+      "review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "b2467768b7b39c34688a8ecd6ce5398d7bcd694b",
+      "writer_handoff_commit": "4c8e6786b7c25b8fdefbf56911449b12e348ddad"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
+      "task_id": "M7-UI-REGRESSION-MATRIX-001",
+      "status": "in_review",
+      "role": "qa_reviewer",
+      "nickname": "Gate",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-ui-regression-matrix",
+      "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
+      "route_submission_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
+      "route_sent_at": "2026-06-29T11:36:15.555Z",
+      "updated_at": "2026-06-29T11:36:15.555Z"
     }
   },
   "last_integrated_task": "M7-PERFORMANCE-MEMORY-LOADING-001",
@@ -876,7 +897,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T11:20:57.328Z",
+  "last_updated_at": "2026-06-29T11:36:15.555Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2529,7 +2550,7 @@
     ]
   },
   "m7_ui_regression_matrix": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-UI-REGRESSION-MATRIX-001",
     "branch_or_worktree": "codex/m7-ui-regression-matrix",
     "base_main_commit": "131a4334f67f68b39349ff24498ec0249f43c137",
@@ -2546,11 +2567,20 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T11:20:57.328Z",
-    "next_action": "Wait for test_engineer REVIEW/PARTIAL/BLOCKED handoff.",
+    "updated_at": "2026-06-29T11:36:15.555Z",
+    "next_action": "Wait for qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
-    "route_sent_at": "2026-06-29T11:20:57.328Z"
+    "route_sent_at": "2026-06-29T11:20:57.328Z",
+    "review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
+    "review_commit": "b2467768b7b39c34688a8ecd6ce5398d7bcd694b",
+    "writer_handoff_commit": "4c8e6786b7c25b8fdefbf56911449b12e348ddad",
+    "qa_thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
+    "qa_thread_nickname": "Gate",
+    "qa_route": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-06-29T11:36:15.555Z",
+    "qa_route_submission_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03"
   }
 }

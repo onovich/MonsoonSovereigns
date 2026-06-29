@@ -6680,7 +6680,7 @@
       "role": "test_engineer",
       "thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
       "nickname": "Probe",
-      "status": "in_progress",
+      "status": "review_handoff_submitted",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -6688,9 +6688,12 @@
       "branch_or_worktree": "codex/m7-ui-regression-matrix",
       "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
       "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T11:20:57.328Z",
+      "updated_at": "2026-06-29T11:36:15.555Z",
       "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
-      "route_sent_at": "2026-06-29T11:20:57.328Z"
+      "route_sent_at": "2026-06-29T11:20:57.328Z",
+      "review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "b2467768b7b39c34688a8ecd6ce5398d7bcd694b",
+      "writer_handoff_commit": "4c8e6786b7c25b8fdefbf56911449b12e348ddad"
     },
     "M7-UI-REGRESSION-MATRIX-001:lead_orchestrator": {
       "task_id": "M7-UI-REGRESSION-MATRIX-001",
@@ -6705,6 +6708,25 @@
       "start_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
       "updated_at": "2026-06-29T11:19:29.482Z"
+    },
+    "M7-UI-REGRESSION-MATRIX-001:qa_reviewer": {
+      "task_id": "M7-UI-REGRESSION-MATRIX-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
+      "nickname": "Gate",
+      "status": "in_review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-ui-regression-matrix",
+      "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "4c8e6786b7c25b8fdefbf56911449b12e348ddad",
+      "route_submission_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
+      "route_sent_at": "2026-06-29T11:36:15.555Z",
+      "updated_at": "2026-06-29T11:36:15.555Z"
     }
   },
   "replaced_threads": [
@@ -6866,7 +6888,7 @@
       "replaced_at": "2026-06-29T10:22:12.880Z"
     }
   ],
-  "updated_at": "2026-06-29T11:20:57.328Z",
+  "updated_at": "2026-06-29T11:36:15.555Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
