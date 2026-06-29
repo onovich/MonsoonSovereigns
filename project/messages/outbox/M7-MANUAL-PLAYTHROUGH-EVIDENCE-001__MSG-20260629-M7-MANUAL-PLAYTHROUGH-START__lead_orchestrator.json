@@ -1,0 +1,46 @@
+{
+  "message_id": "MSG-20260629-M7-MANUAL-PLAYTHROUGH-START",
+  "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7 manual Beta playthrough evidence collection after M7 platform/resolution/localization matrix closure entered origin/main. The writer must collect evidence only and must not autonomously approve human-judgment playthrough acceptance.",
+  "artifacts": [
+    "project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-START__lead_orchestrator.json",
+    "project/messages/routes/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__ROUTE-20260629-LEAD-TO-TEST-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+  "commit": "60259ff1dedcc05bd7a93d776724efe8492fc7e7",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On codex/m7-manual-playthrough-evidence with no local file changes before start registration."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "Task file valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 and M7-UI-LOCALIZATION-EXIT-001 are dependency-ready; lead selected manual playthrough evidence first because it is listed first and uses test_engineer ownership."
+    }
+  ],
+  "decisions": [
+    "Start the highest-priority dependency-ready M7 task selected by taskctl ready.",
+    "Manual playthrough acceptance where human judgment is required remains a Human Gate; this task records and routes evidence rather than approving it autonomously.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE and no active Human Gate.",
+    "No product code, content data, balance tuning, UI fix, save migration, release artifact, telemetry, server/multiplayer, arbitrary-code mod, branding, commercial decision, or manual node battle work is authorized."
+  ],
+  "risks": [
+    "Manual playthrough evidence may identify a Human Gate need; if so the writer must record BLOCKED/Human Gate evidence rather than infer approval.",
+    "Evidence task allowed paths are process/state/message only; any product defect fix must become a separate task after review.",
+    "M7-UI-LOCALIZATION-EXIT-001 must later carry or resolve unresolved Edge/Firefox and Windows DPI 150% rows from the platform matrix."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer",
+  "requested_action": "Collect Beta manual playthrough evidence, run required commands, and write writer REVIEW handoff for qa_reviewer without autonomously approving human-gated acceptance.",
+  "created_at": "2026-06-29T13:17:41.835Z"
+}

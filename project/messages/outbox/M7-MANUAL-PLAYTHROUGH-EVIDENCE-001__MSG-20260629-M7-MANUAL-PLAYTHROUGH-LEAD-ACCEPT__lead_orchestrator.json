@@ -1,0 +1,102 @@
+{
+  "message_id": "MSG-20260629-M7-MANUAL-PLAYTHROUGH-LEAD-ACCEPT",
+  "task_id": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 as process/evidence work after independent QA ACCEPT. The accepted result is truthful agent-operated local preview playthrough evidence and routing input only; it is not product-owner manual acceptance, content-lock approval, release readiness, or a manual node battle decision.",
+  "artifacts": [
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/tasks/active/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/m7-manual-playthrough-evidence",
+  "commit": "2e74a6804d0e02ee1dab788361212361da73cef3",
+  "reviewed_writer_commit": "74bc340a393bc3cbed919fb7552755d13aa32e89",
+  "reviewed_qa_commit": "2e74a6804d0e02ee1dab788361212361da73cef3",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MANUAL-PLAYTHROUGH-EVIDENCE-001__MSG-20260629-M7-MANUAL-PLAYTHROUGH-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA ACCEPT handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001 listed as REVIEW before lead acceptance update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-UI-LOCALIZATION-EXIT-001 is the next dependency-ready task."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task/writer/QA evidence",
+      "exit_code": 0,
+      "result": "task REVIEW, writer REVIEW, QA ACCEPT, evidence present, manual_acceptance_human_gate_required true."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Only process/task/message/state files changed."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Passed with existing chunk-size warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Passed; Chromium 23/23."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Passed; desktop package smoke output written to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed; format, lint, typecheck, and architecture boundaries passed."
+    }
+  ],
+  "decisions": [
+    "Accept the task as evidence/routing work only, not as formal manual acceptance or content-lock approval.",
+    "Preserve manual_acceptance_human_gate_required=true for any future formal/manual human judgment acceptance.",
+    "Preserve DEFER_MANUAL_NODE_BATTLE; no reversal, spike, implementation, or exit dependency is introduced.",
+    "Proceed to PR integration. Task remains ACCEPTED until the PR enters origin/main; only then may it be CLOSED."
+  ],
+  "risks": [
+    "Evidence is local agent-operated preview evidence, not a human stopwatch manual playthrough or product-owner approval.",
+    "M7-CONTENT-LOCK-ACCEPTANCE-001 and M7-EXIT-VALIDATION-001 must not overclaim full human manual acceptance from this task alone.",
+    "The preview surface exposes seed 1531 via scenario label rather than a separate seed field."
+  ],
+  "blockers": [],
+  "human_gate": {
+    "required_now": false,
+    "preserved_for_future_acceptance": true,
+    "note": "Formal/manual human judgment acceptance remains a Human Gate if required by content lock or M7 exit; this task records accepted evidence only."
+  },
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, require CI, merge to main, then close the task only after origin/main contains the accepted evidence.",
+  "created_at": "2026-06-29T13:52:00.028Z"
+}
