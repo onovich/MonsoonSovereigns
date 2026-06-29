@@ -2,9 +2,7 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [
-    "M7-UI-REGRESSION-MATRIX-001"
-  ],
+  "current_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -15,64 +13,16 @@
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-ui-regression-matrix",
-      "updated_at": "2026-06-29T12:11:17.938Z"
-    },
-    "test_engineer": {
-      "thread_id": "019f1338-a100-72d3-ae69-f4d1ab9be209",
-      "task_id": "M7-UI-REGRESSION-MATRIX-001",
-      "status": "review_handoff_r2_submitted",
-      "role": "test_engineer",
-      "nickname": "Canary the 2nd",
-      "configured_model": "gpt-5.4-mini",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-ui-regression-matrix",
-      "replaces_thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
-      "replacement_reason": "original_test_engineer_model_capacity_error_no_r2_handoff_partial_diff_present",
-      "partial_diff_files": [
-        "tests/e2e/web-shell.spec.ts"
-      ],
-      "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
-      "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T12:01:28.832Z",
-      "route_submission_id": "019f133a-37e8-7241-a111-89b54c696bf3",
-      "route_sent_at": "2026-06-29T11:53:52.082Z",
-      "review_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
-      "review_commit_r2": "d05411b887ae601973482fb3a0739a590d18c831",
-      "writer_r2_handoff_commit": "6e1e7448c3762b4049c0e651017e065d3e5decfd"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
-      "task_id": "M7-UI-REGRESSION-MATRIX-001",
-      "status": "qa_r2_accept",
-      "role": "qa_reviewer",
-      "nickname": "Gate",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-ui-regression-matrix",
-      "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-TO-QA-REVIEW.json",
-      "source_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
-      "expected_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
-      "route_submission_id": "019f1329-d67d-73c3-aa45-4fd5aadcda03",
-      "route_sent_at": "2026-06-29T11:36:15.555Z",
-      "updated_at": "2026-06-29T12:06:27.022Z",
-      "qa_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json",
-      "route_file_r2": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
-      "source_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-R2-REVIEW__test_engineer.json",
-      "expected_handoff_r2": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json",
-      "route_submission_id_r2": "019f1342-5ece-7342-8eeb-7d08bc117946",
-      "route_sent_at_r2": "2026-06-29T12:05:29.421Z",
-      "qa_status_r2": "ACCEPT",
-      "qa_r2_review_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-R2-REVIEW__qa_reviewer.json"
+      "branch_or_worktree": "codex/close-m7-ui-regression-matrix",
+      "updated_at": "2026-06-29T12:18:10.237Z",
+      "lead_close_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json"
     }
   },
-  "last_integrated_task": "M7-PERFORMANCE-MEMORY-LOADING-001",
-  "last_main_commit": "131a4334f67f68b39349ff24498ec0249f43c137",
-  "next_ready_tasks": [],
+  "last_integrated_task": "M7-UI-REGRESSION-MATRIX-001",
+  "last_main_commit": "77585d94d511b2b80186a16b5b3361b3d6193a79",
+  "next_ready_tasks": [
+    "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -96,10 +46,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "M7-UI-REGRESSION-MATRIX-001 start checkpoint",
+    "approval_source": "M7-UI-REGRESSION-MATRIX-001 closure checkpoint",
     "recommended_result": null,
     "note": "No Human Gate is active. Manual node battle remains DEFER_MANUAL_NODE_BATTLE. Formal content lock, manual playthrough acceptance where human judgment is required, release/commercial/branding, telemetry/accounts/secrets, server/multiplayer, cloud-save enablement, irreversible migration, frozen product/platform/core decisions, and major cultural-risk decisions remain Human Gates.",
-    "recorded_at": "2026-06-29T11:19:29.482Z"
+    "recorded_at": "2026-06-29T12:18:10.237Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -923,7 +873,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T12:11:17.938Z",
+  "last_updated_at": "2026-06-29T12:18:42.412Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2576,9 +2526,9 @@
     ]
   },
   "m7_ui_regression_matrix": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-UI-REGRESSION-MATRIX-001",
-    "branch_or_worktree": "codex/m7-ui-regression-matrix",
+    "branch_or_worktree": "codex/close-m7-ui-regression-matrix",
     "base_main_commit": "131a4334f67f68b39349ff24498ec0249f43c137",
     "previous_closed_task": "M7-PERFORMANCE-MEMORY-LOADING-001",
     "writer_thread_id": "019f131a-1f3c-75c2-b346-b48346480c99",
@@ -2593,8 +2543,8 @@
     "route_file": "project/messages/routes/M7-UI-REGRESSION-MATRIX-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T11:19:29.482Z",
-    "updated_at": "2026-06-29T12:11:17.938Z",
-    "next_action": "Open PR, wait for CI, merge to main, then close task after origin/main contains accepted changes.",
+    "updated_at": "2026-06-29T12:18:42.412Z",
+    "next_action": "Run taskctl ready and start the highest-priority dependency-ready M7 task.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "route_submission_id": "019f131c-0696-7da2-9054-bcaf9d05e022",
@@ -2639,6 +2589,20 @@
     "lead_accept_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-29T12:11:17.938Z",
     "accepted_implementation_commit": "d05411b887ae601973482fb3a0739a590d18c831",
-    "accepted_branch_head": "c469c860a3c93bd603dc323298e0a0de2f741443"
+    "accepted_branch_head": "c469c860a3c93bd603dc323298e0a0de2f741443",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 195,
+    "integrated_main_commit": "77585d94d511b2b80186a16b5b3361b3d6193a79",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/195",
+    "lead_close_handoff": "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-29T12:18:10.237Z",
+    "child_threads_closed": [
+      "019f131a-1f3c-75c2-b346-b48346480c99",
+      "019f1338-a100-72d3-ae69-f4d1ab9be209",
+      "019f1329-d67d-73c3-aa45-4fd5aadcda03"
+    ],
+    "next_ready_tasks": [
+      "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001"
+    ]
   }
 }
