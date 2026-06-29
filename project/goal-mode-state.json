@@ -2,27 +2,40 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [],
+  "current_tasks": [
+    "M7-DECISION-INSPECTOR-REWRITE-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": null,
+      "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
       "status": "active_router",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-first-screen-orientation",
-      "updated_at": "2026-06-29T21:14:59.495Z",
-      "lead_close_handoff": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+      "updated_at": "2026-06-29T21:22:18.104Z"
+    },
+    "client_engineer": {
+      "thread_id": "019f1542-b98b-7080-829a-c61485780bdd",
+      "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+      "status": "in_progress",
+      "role": "client_engineer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+      "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+      "updated_at": "2026-06-29T21:22:18.104Z"
     }
   },
   "last_integrated_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
   "last_main_commit": "d3a9be830dcdfa94b852037099bd46702f560a55",
-  "next_ready_tasks": [
-    "M7-DECISION-INSPECTOR-REWRITE-001"
-  ],
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -76,10 +89,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-CLOSED__lead_orchestrator.json",
+    "approval_source": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "recommended_result": null,
-    "note": "M7 first-screen orientation is CLOSED after PR #207 reached origin/main. Formal content lock remains not accepted and UX recovery continues through M7-DECISION-INSPECTOR-REWRITE-001; no new Human Gate is active.",
-    "recorded_at": "2026-06-29T21:14:59.495Z"
+    "note": "M7 decision inspector rewrite is in progress as part of UX recovery. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-29T21:22:18.104Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -903,7 +916,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T21:14:59.495Z",
+  "last_updated_at": "2026-06-29T21:22:18.104Z",
   "updated_at": "2026-06-29T21:14:59.495Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2828,5 +2841,20 @@
     "next_ready_tasks": [
       "M7-DECISION-INSPECTOR-REWRITE-001"
     ]
+  },
+  "m7_decision_inspector_rewrite": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+    "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+    "base_main_commit": "c889473e82cb6df48f70bc90e2ddba659e9b2bde",
+    "previous_closed_task": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+    "writer_thread_id": "019f1542-b98b-7080-829a-c61485780bdd",
+    "writer_thread_nickname": "Window",
+    "start_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-29T21:22:18.104Z",
+    "updated_at": "2026-06-29T21:22:18.104Z",
+    "next_action": "Await client_engineer writer handoff, then route to gameplay_designer review."
   }
 }

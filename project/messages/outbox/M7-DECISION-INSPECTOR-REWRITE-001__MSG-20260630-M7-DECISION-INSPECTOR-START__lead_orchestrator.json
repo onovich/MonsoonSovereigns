@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260630-M7-DECISION-INSPECTOR-START",
+  "task_id": "M7-DECISION-INSPECTOR-REWRITE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7 decision inspector rewrite after M7 first-screen orientation closure reached origin/main. The task turns the right inspector from a raw data stack into a decision assistant while preserving read-model and command preview authority boundaries.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "project/goal-mode-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/routes/M7-DECISION-INSPECTOR-REWRITE-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-decision-inspector-rewrite",
+  "commit": "c889473e82cb6df48f70bc90e2ddba659e9b2bde",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-DECISION-INSPECTOR-REWRITE-001 READY."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Started from clean main after PR #208 closure merge."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "NEXT_UX_RECOVERY_TASK",
+      "decision": "Start M7-DECISION-INSPECTOR-REWRITE-001 because art/UX feedback requires a decision-focused right inspector before content lock can be reconsidered."
+    },
+    {
+      "id": "NO_CONTENT_LOCK_APPROVAL",
+      "decision": "Do not treat this repair as formal M7 content-lock approval."
+    },
+    {
+      "id": "SCOPE_BOUNDARY",
+      "decision": "No sim/protocol/save/content-source/final-art/manual-battle scope is authorized."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DECISION_COPY_CAN_HIDE_DOMAIN_RULES",
+      "severity": "R3",
+      "summary": "UI recommendation copy may accidentally duplicate domain logic if not built from existing read models and preview flows.",
+      "mitigation": "Writer must use existing read models and preview/confirmation surfaces, with gameplay review before acceptance."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement the bounded inspector rewrite and return a validated writer handoff for gameplay review.",
+  "created_at": "2026-06-29T21:22:18.104Z"
+}
