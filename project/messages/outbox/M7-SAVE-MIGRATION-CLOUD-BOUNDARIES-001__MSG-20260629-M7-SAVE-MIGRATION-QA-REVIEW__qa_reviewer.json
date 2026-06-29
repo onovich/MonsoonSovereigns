@@ -1,0 +1,136 @@
+{
+  "message_id": "MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW",
+  "task_id": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Functional QA cannot accept commit 7df9c5ee0feade50203b6e75dd7400dc20e62f77 because the M7 candidate-only boundary can be bypassed by a validated boundary that places an M7 manifest in acceptedSaveManifests. The required tests and handoff validations otherwise pass, and no current Human Gate is active.",
+  "artifacts": [
+    "packages/save-format/src/index.ts",
+    "tests/save-migration-cloud-boundaries.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+    "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-save-migration-cloud-boundaries",
+  "commit": "7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "No output before writing the QA handoff; tracked worktree was clean."
+    },
+    {
+      "command": "git branch --show-current; git rev-parse HEAD; git rev-parse 7df9c5ee0feade50203b6e75dd7400dc20e62f77; git rev-parse 28cb469aa9695c9c54887b8241093a80dccc44b5",
+      "exit_code": 0,
+      "result": "Branch codex/m7-save-migration-cloud-boundaries; HEAD 6795d1a832c160c770c1d9c992d15bdf3c89755b; implementation commit 7df9c5ee0feade50203b6e75dd7400dc20e62f77; base main 28cb469aa9695c9c54887b8241093a80dccc44b5."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-WRITER-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID security handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed successfully; M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-UI-REGRESSION-MATRIX-001 is the listed ready task."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 and project/goal-mode-state.json",
+      "exit_code": 0,
+      "result": "TASK_SHAPE_OK M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 REVIEW route_to=security_reviewer human_gate_required=false; goal-mode human_gate.required=false, and cloud-save/account/network/irreversible migration decisions remain Human Gates."
+    },
+    {
+      "command": "git diff --check 28cb469aa9695c9c54887b8241093a80dccc44b5..7df9c5ee0feade50203b6e75dd7400dc20e62f77",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git diff --name-only 28cb469aa9695c9c54887b8241093a80dccc44b5..7df9c5ee0feade50203b6e75dd7400dc20e62f77 | forbidden-path scan",
+      "exit_code": 0,
+      "result": "No task-forbidden path matched. Diff is limited to allowed save-format, tests, and project process/message/state paths."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "Vitest passed: 3 test files, 27 tests, including tests/save-migration-cloud-boundaries.test.ts."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 14 tests, including negative implicit-RPC protocol probes."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; deterministic Node/Worker save-load, M4, M5, and M6 hashes matched; root Vitest passed 42 files and 351 tests; web Vitest passed 1 file and 9 tests."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only monsoonDesktop; renderer navigation restricted; allowed IPC channels remain desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier format check, ESLint, recursive typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module one-off M7 accepted-save boundary bypass probe",
+      "exit_code": 0,
+      "result": "Reproduced defect: validateM7SaveMigrationBoundaryV1 returned {ok:true} for a boundary containing an M7 acceptedSaveManifests entry; validateM7SaveMigrationCandidateV1 then returned status=compatible with matchingEntry.milestone=M7 instead of human-gate-required."
+    }
+  ],
+  "decisions": [
+    "REQUEST_CHANGES: Security ACCEPT remains valid for the reviewed threat surface, but functional QA found a candidate-only boundary bypass that must be fixed before lead integration.",
+    "No Human Gate is active in task JSON or goal-mode state. Cloud-save enablement, irreversible migration, account-backed persistence, network persistence, telemetry/accounts/secrets, and frozen save/platform decisions remain Human Gates.",
+    "The implementation diff is within allowed paths and does not modify forbidden package/source/status/gate/roadmap paths."
+  ],
+  "risks": [
+    {
+      "severity": "P1",
+      "file": "packages/save-format/src/index.ts",
+      "symbols": [
+        "validateM7SaveMigrationBoundaryV1",
+        "validateM7BoundaryEntries",
+        "validateM7SaveMigrationCandidateV1"
+      ],
+      "risk": "Current boundary validation allows milestone M7 in acceptedSaveManifests. A caller can provide an M7 accepted-save entry and receive compatible migration approval before formal M7 content lock/Human Gate acceptance."
+    },
+    {
+      "severity": "P2",
+      "file": "tests/save-migration-cloud-boundaries.test.ts",
+      "risk": "Existing tests prove M1-M6 accepted saves and M7 candidate classification, but they do not fail when an M7 manifest is placed in acceptedSaveManifests and accepted as compatible."
+    }
+  ],
+  "blockers": [
+    {
+      "severity": "P1",
+      "file": "packages/save-format/src/index.ts",
+      "line": 1516,
+      "symbol": "validateM7SaveMigrationBoundaryV1",
+      "repro": "Construct a boundary with valid M1-M6 accepted dummy entries, one M7 entry in acceptedSaveManifests matching a save, and a separate M7 candidateContentManifests entry. validateM7SaveMigrationBoundaryV1 returns ok:true; validateM7SaveMigrationCandidateV1 with requestedMode local-compatible-load-only returns compatible with matchingEntry.milestone M7.",
+      "impact": "This violates the M7 Beta content-lock candidate boundary because an M7 manifest can be treated as an accepted local-compatible save without the formal content-lock/Human Gate path.",
+      "required_fix": "Reject M7 entries, and preferably any non-M1-through-M6 entries, in acceptedSaveManifests for this task's current boundary; ensure M7 manifests can only appear under candidateContentManifests with beta-content-lock-candidate and migrationMode human-gate-required unless a later explicit Human Gate/ADR changes the contract. Add a regression that the reproduced M7 accepted-save boundary returns ok:false or human-gate-required, and that validateM7SaveMigrationCandidateV1 cannot return compatible for an M7 manifest before formal content lock approval."
+    }
+  ],
+  "route_to": "systems_architect",
+  "requested_action": "Fix the M7 accepted-save boundary bypass and add a failing regression, then rerun the save-format/protocol/full required gates and return an updated systems_architect handoff for QA re-review.",
+  "created_at": "2026-06-29T15:38:32.2457264+08:00"
+}
