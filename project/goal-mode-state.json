@@ -21,7 +21,7 @@
     "test_engineer": {
       "thread_id": "019f12c3-aabc-71b3-9df0-f651c1c1c062",
       "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
-      "status": "waiting_start_confirmed",
+      "status": "in_progress",
       "role": "test_engineer",
       "nickname": "Gauge",
       "configured_model": "gpt-5.4-mini",
@@ -31,7 +31,9 @@
       "branch_or_worktree": "codex/m7-performance-memory-loading",
       "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
       "expected_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-29T09:46:40.833Z"
+      "updated_at": "2026-06-29T09:48:36.974Z",
+      "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
+      "route_sent_at": "2026-06-29T09:48:36.974Z"
     }
   },
   "last_integrated_task": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
@@ -866,7 +868,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T09:46:40.833Z",
+  "last_updated_at": "2026-06-29T09:48:36.974Z",
   "updated_at": "2026-06-29T11:32:00.0000000+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2457,9 +2459,11 @@
     "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T09:46:40.833Z",
-    "updated_at": "2026-06-29T09:46:40.833Z",
-    "next_action": "Send START_CONFIRMED to test_engineer and wait for REVIEW handoff routed to qa_reviewer.",
+    "updated_at": "2026-06-29T09:48:36.974Z",
+    "next_action": "Wait for test_engineer REVIEW handoff, validate it, then route to qa_reviewer.",
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
+    "route_sent_at": "2026-06-29T09:48:36.974Z"
   }
 }
