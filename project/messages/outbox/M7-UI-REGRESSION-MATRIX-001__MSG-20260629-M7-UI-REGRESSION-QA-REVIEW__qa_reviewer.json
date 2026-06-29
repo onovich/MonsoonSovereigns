@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260629-M7-UI-REGRESSION-QA-REVIEW",
+  "task_id": "M7-UI-REGRESSION-MATRIX-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "独立 QA 复核拒收当前 M7 UI 回归矩阵。分支范围、writer handoff schema、任务 JSON、禁止路径、发布/遥测/账户/云存档/商业流程边界均通过核对；新增 Playwright 覆盖也保持在 DOM/read-model 可观察行为层面，没有探入 sim-core 权威状态或 Pixi 内部。但新增矩阵用例在同一个 page 循环中反复注册持久 page.addInitScript，后续导航会同时执行多个写入同一 localStorage key 和 navigator locale getter 的 init script。Playwright 1.61 本地类型文档声明多个 init script 的执行顺序未定义，因此该矩阵的 en-US/zh-CN/system 场景隔离不确定，不能作为 Beta 本地化回归门禁接受。",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-ui-regression-matrix",
+  "commit": "12852d8f29698f692faf9c09ad1c2b79aec1eadd",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "## codex/m7-ui-regression-matrix...origin/codex/m7-ui-regression-matrix; no dirty tracked or untracked work before QA handoff write."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Diff confined to allowed task/process/message paths and tests/e2e/web-shell.spec.ts; no forbidden paths listed."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-UI-REGRESSION-MATRIX-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UI-REGRESSION-MATRIX-001__MSG-20260629-M7-UI-REGRESSION-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff; status REVIEW and route_to qa_reviewer."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-UI-REGRESSION-MATRIX-001",
+      "exit_code": 0,
+      "result": "shape-ok M7-UI-REGRESSION-MATRIX-001 REVIEW qa_reviewer 15 28"
+    },
+    {
+      "command": "git diff origin/main...HEAD -- tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Reviewed the single product/test diff; only one new Playwright test and helper were added."
+    },
+    {
+      "command": "git log --oneline --decorate --max-count=8",
+      "exit_code": 0,
+      "result": "HEAD is 12852d8f (origin/codex/m7-ui-regression-matrix), a newer relevant QA routing commit after writer handoff commit 4c8e6786."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD -- <forbidden paths>",
+      "exit_code": 0,
+      "result": "No forbidden path output for sim-core, sim-ai, protocol, save-format, content packages, apps/sim-runner, apps/content-tools, content-source, tools, .github, frozen docs, PROJECT_STATUS, manifests, or validation reports."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 UI regression matrix\"",
+      "exit_code": 0,
+      "result": "Focused Chromium Playwright test passed once: 1 passed (3.1s). This confirms current behavior can pass but does not remove the init-script isolation defect."
+    },
+    {
+      "command": "Select-String on local Playwright 1.61.0 types.d.ts for addInitScript order note",
+      "exit_code": 0,
+      "result": "types.d.ts documents that the order of evaluation of multiple scripts installed via browserContext.addInitScript and page.addInitScript is not defined."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "review_result",
+      "result": "REQUEST_CHANGES because the regression matrix's locale scenarios are not isolated deterministically."
+    },
+    {
+      "type": "scope_review",
+      "result": "Diff stays within allowed paths; no product code, release, signing, update, telemetry, account, cloud-save, commercial, sim-core, protocol, save, content, CI, roadmap, gate, or acceptance-matrix changes were added."
+    },
+    {
+      "type": "boundary_review",
+      "result": "The new test uses observable DOM attributes, visible text, localStorage, and page errors only; it does not inspect authoritative WorldState, Pixi DisplayObject internals, or sim-core implementation details."
+    },
+    {
+      "type": "platform_matrix_boundary",
+      "result": "Remaining Firefox, Edge, Windows DPI, and full platform/resolution localization coverage is correctly left as risk for M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 rather than absorbed into this task."
+    }
+  ],
+  "risks": [
+    "Chromium-only coverage remains acceptable for this task only because the task explicitly records Firefox/Edge/DPI/localization permutations as follow-up platform-matrix risk.",
+    "The current visible-text raw-key scan would not catch every possible bare key in non-visible accessible labels; after fixing scenario isolation, consider scanning relevant aria-label/title/placeholder text if the writer wants stronger no-bare-key coverage."
+  ],
+  "blockers": [
+    {
+      "severity": "P2",
+      "file": "tests/e2e/web-shell.spec.ts",
+      "symbol": "M7 UI regression matrix stays localized, console-clean, and key-free across supported viewports",
+      "repro": "Inspect lines 1072-1088: each loop iteration calls page.addInitScript on the same page, setting monsoon.client.localePreference.v1 and overriding navigator.languages/language. Then later iterations call page.goto('/') with all prior init scripts still registered. Local Playwright 1.61 types.d.ts states the order of evaluation of multiple page/context init scripts is not defined.",
+      "impact": "The English, Simplified Chinese, and system-language scenarios are not isolated deterministic inputs. Depending on init-script evaluation order, a later scenario can boot with an earlier scenario's localStorage value or navigator locale override, so the regression matrix may fail intermittently or validate the wrong locale path.",
+      "required_fix": "Refactor the matrix so each scenario has isolated setup. Acceptable fixes include creating a fresh page or browser context per scenario, disposing the previous addInitScript Disposable before the next navigation, or using one stable init script whose data is set deterministically before navigation. Re-run the focused e2e and required validation commands after the fix."
+    }
+  ],
+  "route_to": "test_engineer",
+  "requested_action": "Fix the Playwright locale scenario isolation defect in tests/e2e/web-shell.spec.ts, rerun the focused M7 UI regression matrix test plus required gates, and submit an updated writer handoff for QA review.",
+  "created_at": "2026-06-29T19:42:44.5024291+08:00"
+}
