@@ -2,7 +2,7 @@
   "id": "M7-PERFORMANCE-MEMORY-LOADING-001",
   "summary": "Validate Beta performance, memory, and loading behavior",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -97,7 +97,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-29T10:23:38.689Z",
+  "updated_at": "2026-06-29T10:57:36.804Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -120,8 +120,8 @@
     "route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-29T09:46:40.833Z",
-    "updated_at": "2026-06-29T10:23:38.689Z",
-    "next_action": "Send replacement REQUEST_CHANGES R2 route to the new test_engineer thread.",
+    "updated_at": "2026-06-29T10:57:36.804Z",
+    "next_action": "Send R2 evidence to qa_reviewer and wait for QA R2 handoff.",
     "route_submission_id": "019f12c7-8d1c-7bf1-af6c-6acd3c0ef775",
     "route_sent_at": "2026-06-29T09:48:36.974Z",
     "review_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW__test_engineer.json",
@@ -150,6 +150,13 @@
     "replacement_route_file": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-QA-REQUEST-CHANGES-TO-TEST-REPLACEMENT.json",
     "replaced_at": "2026-06-29T10:22:12.880Z",
     "replacement_route_submission_id": "019f12e7-a7a2-7982-ab35-d9eba258cfb9",
-    "replacement_route_sent_at": "2026-06-29T10:23:38.689Z"
+    "replacement_route_sent_at": "2026-06-29T10:23:38.689Z",
+    "review_ready_r2_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json",
+    "evidence_r2_report": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__EVIDENCE-R2-20260629-test_engineer.json",
+    "review_commit_r2": "e475553e",
+    "writer_r2_handoff_commit": "f18dff8a",
+    "qa_r2_route": "project/messages/routes/M7-PERFORMANCE-MEMORY-LOADING-001__ROUTE-20260629-WRITER-R2-TO-QA-REVIEW.json",
+    "expected_qa_r2_handoff": "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-QA-R2-REVIEW__qa_reviewer.json",
+    "routed_to_qa_r2_at": "2026-06-29T10:57:36.804Z"
   }
 }
