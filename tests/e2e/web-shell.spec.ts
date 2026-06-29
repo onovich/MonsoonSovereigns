@@ -403,6 +403,11 @@ test("M7 district inspector is localized secondary browser with bounded renderin
   await expect(panel).toContainText("Risk");
   await expect(panel).toContainText("Next action");
   await expect(panel).toContainText("Decision Data");
+  await expect(panel).toContainText(
+    "Population, labor, stores, obligations, supply route, governance, and campaign planning details stay below the recommendation."
+  );
+  await expect(panel).not.toContainText("Raw district read-model values");
+  await expect(panel).not.toContainText("raw district read-model values");
   await expect(panel).toContainText("Governance");
   await expect(panel).toContainText("Appointment state");
   await expect(panel).toContainText("Effects");
@@ -435,6 +440,12 @@ test("M7 district inspector is localized secondary browser with bounded renderin
 
   await page.goto("/?fixture=district-error");
   await expect(panel).toContainText("Route is unavailable for this district.");
+  await expect(panel.getByLabel("District decision assistant")).toContainText(
+    "Review obligations is disabled here; select a reachable district from the map or route queue first."
+  );
+  await expect(panel.getByLabel("District decision assistant")).not.toContainText(
+    "Review obligations and route pressure before committing troops."
+  );
   await expect(panel.getByRole("button", { name: "Review obligations" })).toBeDisabled();
 
   await page.goto("/?fixture=district-empty");

@@ -207,6 +207,9 @@ describe("web client shell", () => {
     expect(markup).toContain("Risk");
     expect(markup).toContain("Next action");
     expect(markup).toContain("Decision Data");
+    expect(markup).toContain(
+      "Population, labor, stores, obligations, supply route, governance, and campaign planning details stay below the recommendation."
+    );
     expect(markup.indexOf("Current problem")).toBeLessThan(markup.indexOf("Population"));
     expect(markup.indexOf("Recommendation")).toBeLessThan(markup.indexOf("Grain"));
     expect(markup).toContain('aria-label="Situation map mode"');
@@ -226,6 +229,8 @@ describe("web client shell", () => {
     expect(markup).not.toContain("route.season.monsoon-risk");
     expect(markup).not.toContain("appointment.holder.skill-strong");
     expect(markup).not.toContain("m4.campaign.10.outcome");
+    expect(markup).not.toContain("Raw district read-model values");
+    expect(markup).not.toContain("raw district read-model values");
     expect(markup).not.toContain("Developer Overlay");
     expect(markup).not.toContain("Developer diagnostics");
     expect(markup).not.toContain("developer diagnostics");
@@ -271,6 +276,10 @@ describe("web client shell", () => {
     expect(markup).toContain('aria-label="局势地图模式"');
     expect(markup).toContain("路线 / 补给");
     expect(markup).toContain("义务 / 朝贡流向");
+    expect(markup).toContain(
+      "人口、劳力、库存、义务、补给路线、治理与战役规划细节保留在建议之后。"
+    );
+    expect(markup).not.toContain("原始地区只读模型");
     expect(markup).toContain('aria-label="经济地图模式"');
     expect(markup).toContain('aria-label="按人口排序"');
     expect(markup).toContain('aria-label="按地区排序，当前升序"');
@@ -281,6 +290,38 @@ describe("web client shell", () => {
     expect(markup).not.toContain('aria-label="Sort by Population"');
     expect(markup).not.toContain('aria-hidden="true"> up</span>');
     expect(markup).not.toContain('aria-hidden="true"> down</span>');
+  });
+
+  it("explains the disabled obligation action for an unreachable district", () => {
+    const snapshot = createWebClientShellSnapshot("?fixture=district-error");
+    const markup = renderToStaticMarkup(
+      <ClientShellView
+        snapshot={snapshot}
+        mapMode="situation"
+        zoomLevel={1}
+        selectedEntity={{ kind: "district", districtId: createClientDistrictId(1) }}
+        onMapModeChange={() => undefined}
+        onZoomLevelChange={() => undefined}
+        onSelectedEntityChange={() => undefined}
+        onM3CommandSubmit={() => undefined}
+        m3CommandStatus={null}
+        onM4CommandSubmit={() => undefined}
+        m4CommandStatus={null}
+        onM5CommandSubmit={() => undefined}
+        m5CommandStatus={null}
+        onM6CommandSubmit={() => undefined}
+        m6CommandStatus={null}
+        mapSurface={<div aria-label="Map region" data-renderer-owner="map-renderer" />}
+      />
+    );
+
+    expect(markup).toContain("District 1 cannot support a usable route.");
+    expect(markup).toContain(
+      "Review obligations is disabled here; select a reachable district from the map or route queue first."
+    );
+    expect(markup).toContain("Route is unavailable for this district.");
+    expect(markup).toContain('<button type="button" disabled="">Review obligations</button>');
+    expect(markup).not.toContain("Review obligations and route pressure before committing troops.");
   });
 
   it("renders legacy milestone workspaces only in developer overlay", () => {

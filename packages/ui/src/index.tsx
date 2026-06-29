@@ -1809,11 +1809,11 @@ function createDistrictDecisionAssistant({
   if (row.route.status === "unreachable") {
     return {
       problem: i18n.t("shell.inspector.decision.problem.blockedRoute", { district }),
-      recommendation: i18n.t("shell.inspector.decision.recommendation.reviewRoute"),
+      recommendation: i18n.t("shell.inspector.decision.recommendation.blockedRoute"),
       cost,
       benefit: i18n.t("shell.inspector.decision.benefit.route"),
       risk: i18n.t("shell.inspector.decision.risk.blockedRoute"),
-      nextAction: i18n.t("shell.inspector.actionObligations"),
+      nextAction: i18n.t("shell.inspector.decision.nextAction.blockedRoute"),
       reasonCodes: uniqueReasonCodes([
         ...getRouteForecastReasonCodes(routeForecast),
         ...m4Campaign.route.reasonCodes

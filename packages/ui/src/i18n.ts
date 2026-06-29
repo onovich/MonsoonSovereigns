@@ -74,6 +74,8 @@ const enUSMessages = {
     "{district} can improve reliability through governance.",
   "shell.inspector.decision.problem.campaign": "{target} needs a supply check before commitment.",
   "shell.inspector.decision.problem.supply": "{district} is the active pressure point.",
+  "shell.inspector.decision.recommendation.blockedRoute":
+    "Choose a district with a usable supply route before reviewing obligations.",
   "shell.inspector.decision.recommendation.reviewRoute":
     "Review obligations and route pressure before committing troops.",
   "shell.inspector.decision.recommendation.obligation":
@@ -104,13 +106,15 @@ const enUSMessages = {
     "If ignored, troops and grain can be committed before the court can sustain them.",
   "shell.inspector.decision.risk.supply":
     "If ignored, the next preview may be based on incomplete pressure data.",
+  "shell.inspector.decision.nextAction.blockedRoute":
+    "Review obligations is disabled here; select a reachable district from the map or route queue first.",
   "shell.inspector.decision.costValue":
     "{grain} grain, {cash} cash; campaign reserve {reserved}/{required}",
   "shell.inspector.decision.costValueWithTravel": "{cost}; {travelDays} travel days",
   "shell.inspector.data.label": "Decision data grouped by choice",
   "shell.inspector.data.title": "Decision Data",
   "shell.inspector.data.description":
-    "Raw district read-model values remain below the recommendation, grouped by the decision they affect.",
+    "Population, labor, stores, obligations, supply route, governance, and campaign planning details stay below the recommendation.",
   "shell.inspector.resources.label": "Resources for this decision",
   "shell.inspector.resources.title": "Resources",
   "shell.inspector.routeCampaign.label": "Route and campaign cost data",
@@ -546,6 +550,8 @@ const zhCNMessages: UiCatalog = {
   "shell.inspector.decision.problem.governance": "{district}可通过治理提升可靠度。",
   "shell.inspector.decision.problem.campaign": "{target}需要先检查补给。",
   "shell.inspector.decision.problem.supply": "{district}是当前压力点。",
+  "shell.inspector.decision.recommendation.blockedRoute":
+    "先选择有可用补给路线的地区，再查看义务。",
   "shell.inspector.decision.recommendation.reviewRoute": "先查看义务与路线压力，再承诺出兵。",
   "shell.inspector.decision.recommendation.obligation": "先处理义务路径，再打开更大的战役。",
   "shell.inspector.decision.recommendation.appointment": "先预览任命影响；确认仍然是单独步骤。",
@@ -561,11 +567,14 @@ const zhCNMessages: UiCatalog = {
   "shell.inspector.decision.risk.governance": "若忽略，地区可能继续拖累备战度。",
   "shell.inspector.decision.risk.campaign": "若忽略，可能在宫廷可承担前消耗兵力与粮食。",
   "shell.inspector.decision.risk.supply": "若忽略，下一次预览可能基于不完整压力信息。",
+  "shell.inspector.decision.nextAction.blockedRoute":
+    "此处无法查看义务；请先从地图或路线队列选择一个可达地区。",
   "shell.inspector.decision.costValue": "{grain} 粮食、{cash} 现金；战役保留 {reserved}/{required}",
   "shell.inspector.decision.costValueWithTravel": "{cost}；{travelDays} 日行程",
   "shell.inspector.data.label": "按决策分组的地区数据",
   "shell.inspector.data.title": "决策数据",
-  "shell.inspector.data.description": "原始地区只读模型数值保留在建议之后，按它们影响的决策分组。",
+  "shell.inspector.data.description":
+    "人口、劳力、库存、义务、补给路线、治理与战役规划细节保留在建议之后。",
   "shell.inspector.resources.label": "本次决策的资源",
   "shell.inspector.resources.title": "资源",
   "shell.inspector.routeCampaign.label": "路线与战役代价数据",
