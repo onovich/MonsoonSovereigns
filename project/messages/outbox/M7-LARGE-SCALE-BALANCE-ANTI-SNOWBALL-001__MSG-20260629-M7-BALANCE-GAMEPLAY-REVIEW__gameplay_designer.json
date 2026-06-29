@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW",
+  "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+  "from_role": "gameplay_designer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Read-only gameplay review of implementation commit db3f7d13 on branch codex/m7-large-scale-balance-anti-snowball. The implementation stays local and reviewable, preserves M6 PASS_WITH_LIMITS, adds no telemetry/server/hidden manager/AI privilege, and does not alter the player/AI command/query/save authority boundary. However, the current artifact cannot be accepted as M7 anti-snowball evidence because several primary signals are manufactured or mis-labeled by score noise rather than backed by the recorded metrics and replay pointers. Direct-control dominance is counted while directControlShare remains 0. Stable is selected for a run that still has runaway/collapse flags. The exploit-loop representative pointer falls back to step 0 instead of identifying an actual repeat/concentration window. These issues make the evidence unsafe for downstream tuning and defect follow-up.",
+  "artifacts": [
+    "apps/sim-runner/src/m7-large-scale-balance.ts",
+    "apps/sim-runner/src/run-m7-large-scale-balance.mjs",
+    "apps/sim-runner/package.json",
+    "tests/sim-runner-m7-large-scale-balance.test.tsx",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+    "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-WRITER-TO-GAMEPLAY-REVIEW.json",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-GAMEPLAY-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+  "commit": "db3f7d13",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean review branch before handoff write; branch codex/m7-large-scale-balance-anti-snowball matched origin."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+      "exit_code": 0,
+      "result": "Writer handoff schema validated."
+    },
+    {
+      "command": "git diff --check db3f7d13^ db3f7d13",
+      "exit_code": 0,
+      "result": "No whitespace errors in implementation commit diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "exit_code": 0,
+      "result": "Task registry validation passed for M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001."
+    },
+    {
+      "command": "pnpm vitest run tests/sim-runner-m7-large-scale-balance.test.tsx",
+      "exit_code": 0,
+      "result": "Focused M7 large-scale balance artifact test passed: 1 test file, 1 test."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module artifact summary import check",
+      "exit_code": 0,
+      "result": "Direct import artifact validation passed; hash was 1a777598 because package manager context differed, confirming writer's context-sensitive hash risk."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m7-large-scale-balance | node summary parser",
+      "exit_code": 0,
+      "result": "pnpm invocation reproduced writer artifactHash e0e5969c, packageManager pnpm@11.7.0, sampleSize 36, scenarioCount 3, seedCount 12, runCount 36, and populated replay pointers."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module signal detail probe",
+      "exit_code": 0,
+      "result": "Found evidence mismatch: direct-control-dominance run scenario.beta.1531.edge-polity.seed-1657 has directControlScore 100 but directControlShare 0; stable representative scenario.beta.1581.succession-fracture.seed-1559 still has runawayExpansion=true and unavoidableCollapse=true; exploit-loop representative points to step 0 rather than an actual loop window."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "acceptance_review",
+      "result": "request_changes",
+      "reason": "The artifact records schema/hash/sample size/scenario coverage and is deterministic, but signal semantics are not reliable enough for M7 anti-snowball evidence."
+    },
+    {
+      "type": "accepted_aspects",
+      "items": [
+        "Artifact kind m7.large-scale-balance-artifact.v1 and schemaVersion 1 are present.",
+        "pnpm script invocation reproduces writer hash e0e5969c with 36 runs across 3 scenarios and 12 deterministic seeds.",
+        "Evidence is local and reviewable, with no telemetry, server, network collection, hidden manager, or AI privilege introduced.",
+        "M6_GATE is carried forward as PASS_WITH_LIMITS and not rewritten as final Alpha/Beta balance proof.",
+        "Implementation does not change sim-core/protocol/save authority, so the existing player/AI command/query/save boundary is not weakened."
+      ]
+    },
+    {
+      "type": "finding",
+      "severity": "major",
+      "path": "apps/sim-runner/src/m7-large-scale-balance.ts",
+      "lines": "599-618",
+      "issue": "direct-control-dominance can be flagged by hashNoise even when directControlShare is 0.",
+      "evidence": "Artifact aggregate reports directControlDominanceCount=7 and directControlScore=100 for scenario.beta.1531.edge-polity.seed-1657, while maxDirectControlShare=0 and directControlShareP95=0. This means the direct-control dominance replay pointer is not evidence of direct-control dominance."
+    },
+    {
+      "type": "finding",
+      "severity": "major",
+      "path": "apps/sim-runner/src/m7-large-scale-balance.ts",
+      "lines": "608-627",
+      "issue": "stable can become dominant despite active runaway/collapse flags.",
+      "evidence": "Representative stable run scenario.beta.1581.succession-fracture.seed-1559 has runawayExpansion=true and unavoidableCollapse=true. Stable must mean no major risk signal is active, not merely that stableScore wins a score sort."
+    },
+    {
+      "type": "finding",
+      "severity": "major",
+      "path": "apps/sim-runner/src/m7-large-scale-balance.ts",
+      "lines": "593-629, 1142-1151",
+      "issue": "exploit-loop replay pointers are not reliably actionable.",
+      "evidence": "The exploit-loop representative scenario.beta.1581.succession-fracture.seed-1531 uses step 0 because no consecutive repeated event/choice is found, so the pointer does not identify the loop or concentration window that caused the signal."
+    },
+    {
+      "type": "required_change",
+      "items": [
+        "Make each primary signal and flag depend on its own observable metric or reason-code condition. Hash-derived values may be used only for deterministic tie-breaks or sampling variation, not to create the existence of runaway, collapse, exploit, direct-control, or stable evidence.",
+        "For direct-control dominance, require positive directControlShare or an explicit direct-control decision/reason code. If the sampled artifact has maxDirectControlShare=0, directControlDominanceCount should be 0 and the replay pointer should be null, or the scenario/choice model must produce real direct-control evidence.",
+        "For stable, require all major risk flags to be false or below documented thresholds before dominantSignal can be stable.",
+        "For exploit-loop, record the repeated event/choice pair or concentration window in the replay pointer and reason-code evidence; do not fall back to step 0 for loop evidence.",
+        "Update the focused test so it checks semantic consistency, not just that every signal count is greater than 0.",
+        "Regenerate the artifact with the pnpm script and update the writer handoff summary after the semantics are fixed."
+      ]
+    }
+  ],
+  "risks": [
+    "The current 36-run artifact is useful as a deterministic content diagnostic, but accepting it unchanged would overstate anti-snowball coverage and create misleading follow-up tuning targets.",
+    "The hash remains invocation-context sensitive through packageManagerVersion(); this is acceptable only if the handoff continues to specify the pnpm invocation family used for comparison."
+  ],
+  "blockers": [],
+  "route_to": "balance_analyst",
+  "requested_action": "Please revise the M7 large-scale balance artifact semantics so signal counts, dominantSignal, replay pointers, and reason-code evidence are tied to observable metrics rather than hash-driven false positives. Re-run the focused test and pnpm artifact generation, then route back to gameplay_designer review.",
+  "created_at": "2026-06-29T17:06:33.7735332+08:00"
+}
