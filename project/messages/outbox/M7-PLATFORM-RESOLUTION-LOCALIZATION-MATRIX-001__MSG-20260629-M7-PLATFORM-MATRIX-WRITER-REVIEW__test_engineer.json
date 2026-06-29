@@ -1,0 +1,125 @@
+{
+  "message_id": "MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW",
+  "task_id": "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Added an observable-only M7 platform/resolution/localization matrix in tests/e2e/web-shell.spec.ts plus a JSON fixture under tests/e2e. The Chromium Playwright coverage now records supported browser, desktop smoke, supported resolution, and locale rows, and it keeps Edge, Firefox, and Windows DPI 150% as explicit unsupported follow-ups instead of pretending they are covered.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "tests/e2e/m7-platform-resolution-localization.matrix.json",
+    "project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json",
+    "project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-platform-resolution-localization-matrix",
+  "commit": "1e07ad8b901c6005a2669b70f488eead4a83fae3",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean working tree after commit 1."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001 is in progress."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No stdout; exit code 0."
+    },
+    {
+      "command": "node -e \"const fs=require('node:fs');const p='project/tasks/active/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));if(j.id!=='M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001') throw new Error('bad id');if(j.status!=='IN_PROGRESS') throw new Error('bad status '+j.status);if(j.route_to!=='qa_reviewer') throw new Error('bad route_to '+j.route_to);if(!Array.isArray(j.acceptance_criteria)||j.acceptance_criteria.length<5) throw new Error('bad acceptance');console.log('shape-ok')\"",
+      "exit_code": 0,
+      "result": "shape-ok"
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully with chunk-size warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 1,
+      "result": "Initial attempt failed because tests/e2e/web-shell.spec.ts loaded the fixture with import.meta.url in a CJS Playwright load path: Cannot use 'import.meta' outside a module."
+    },
+    {
+      "command": "pnpm prettier --write tests/e2e/web-shell.spec.ts tests/e2e/m7-platform-resolution-localization.matrix.json",
+      "exit_code": 0,
+      "result": "Formatted tests/e2e/web-shell.spec.ts; matrix fixture was unchanged."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright chromium suite passed: 23 tests, 23 passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Packaged main, preload, renderer, and platform adapter artifacts into .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting issues."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "Initial attempt failed because Prettier flagged tests/e2e/web-shell.spec.ts."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001__MSG-20260629-M7-PLATFORM-MATRIX-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "Schema and route validation passed."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "coverage_shape",
+      "result": "Kept the matrix close to the existing web-shell Playwright coverage and anchored the supported rows in a JSON fixture so the assertions stay observable-only."
+    },
+    {
+      "type": "tooling_scope",
+      "result": "Recorded Edge and Firefox as blocked-by-tooling because this workspace's Playwright config only defines chromium, and recorded Windows DPI 150% as a follow-up because there is no dedicated DPI matrix harness."
+    },
+    {
+      "type": "loader_fix",
+      "result": "Switched the fixture loader from import.meta.url to process.cwd() after the first Playwright attempt proved this spec is being loaded through a CJS path in the current tooling."
+    }
+  ],
+  "risks": [
+    "Edge and Firefox remain explicit unsupported rows until the workspace grows a non-chromium Playwright matrix.",
+    "Windows DPI 150% remains a follow-up because there is still no dedicated DPI harness in the current browser/desktop smoke tooling.",
+    "The supported locale matrix shows the UI-visible zh-Hans/en-US labels while the fixture normalizes expectedLang to zh-CN for system and zh-CN rows; QA should confirm that this normalization matches the intended locale policy."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the new platform/resolution/localization matrix evidence. Accept if the Chromium and desktop-supported rows plus the explicit unsupported follow-ups are sufficient, or request changes with exact failing evidence.",
+  "created_at": "2026-06-29T20:44:28.4726110+08:00"
+}
