@@ -1,0 +1,140 @@
+{
+  "message_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes QA REQUEST_CHANGES by making the compact task rail first-screen actionable at 1280x720 and 1440x900, replacing task rail appointment rejection implementation jargon with player-facing eligibility language, and adding Playwright regressions for viewport intersection and en/zh jargon absence.",
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+  "commit": "0da728e3; no commit made, review the working tree diff",
+  "route_to": "qa_reviewer",
+  "next_route_to": "qa_reviewer",
+  "requested_action": "Review R2 fixes for M7-TASK-RAIL-COLLAPSED-DRAWERS-001 against QA REQUEST_CHANGES findings and acceptance criteria.",
+  "created_at": "2026-06-30T07:20:13.2930047+08:00",
+  "artifacts": [
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "changed_files": [
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "qa_findings_response": [
+    {
+      "finding": "P1 first-screen task rail and drawer actions were offscreen at 1280x720 and 1440x900.",
+      "response": "Fixed. TaskRail now renders before DistrictPanel in the side rail. The side rail is ordered before the map at the <=1320px desktop breakpoint, and side/task drawer content uses bounded internal scrolling so long inspector and route queue content cannot push the rail below the first viewport.",
+      "evidence": "New Playwright regression `M7 task rail is first-screen actionable at required desktop viewports` asserts all six task rail cards, the active obligations drawer, and the drawer primary action intersect the viewport at 1280x720 and 1440x900."
+    },
+    {
+      "finding": "P1 player copy leaked `read-model reasons` / `只读模型原因` in `shell.taskRail.appointments.reasonRejected`.",
+      "response": "Fixed. The English copy now says `The selected candidate is blocked by office eligibility concerns.` and the Chinese copy now uses player-facing office-eligibility language without read-model/internal terminology.",
+      "evidence": "New Playwright regression `M7 task rail appointment-error copy hides implementation jargon in English and Chinese` checks the appointment-error task rail copy in en-US and zh-CN and asserts no read-model/raw/internal jargon appears in the task rail."
+    },
+    {
+      "finding": "P2 test coverage did not fail when the task rail was below the fold or when implementation jargon was visible.",
+      "response": "Fixed. Added viewport-intersection helper and two dedicated e2e regressions for default first-screen actionability and en/zh jargon absence. Updated the web shell unit test to match the new required DOM order while preserving decision assistant internal ordering checks.",
+      "evidence": "`pnpm test:e2e` now runs 25 tests and passed 25/25."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree has modified R2 files only: apps/web/src/shell/web-client-shell.test.tsx, apps/web/src/styles/shell.css, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts. No commit made."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list loaded; M7-TASK-RAIL-COLLAPSED-DRAWERS-001 remains IN_PROGRESS for client_engineer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Command completed with no ready-task output."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+      "exit_code": 0,
+      "result": "TASK_JSON_SHAPE_OK M7-TASK-RAIL-COLLAPSED-DRAWERS-001 IN_PROGRESS."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 10 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed. Existing chunk-size warnings for lib/main chunks over 500 kB remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 25/25 tests, including new 1280x720 and 1440x900 task rail viewport regressions and en/zh jargon checks."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format:check, lint, typecheck, and architecture:check."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID handoff JSON."
+    }
+  ],
+  "acceptance_criteria_mapping": [
+    {
+      "criterion": "Bottom panels default to compact task rail cards for obligations, appointments, succession, campaign prep, notifications, and results.",
+      "status": "met",
+      "evidence": "Six task rail cards remain present and are now asserted to intersect the default viewport at 1280x720 and 1440x900."
+    },
+    {
+      "criterion": "Only the currently relevant drawer expands; other areas preserve map context and do not swamp the first screen.",
+      "status": "met",
+      "evidence": "Only the active obligations drawer renders by default. The rail appears before long inspector details, and long side/drawer content is bounded with internal scrolling."
+    },
+    {
+      "criterion": "Task rail cards state one problem, one reason, one action, and severity/urgency using text, icon/shape, and color.",
+      "status": "met",
+      "evidence": "Existing card structure remains intact; rejected appointment reason now uses player-facing office eligibility language in both locales."
+    },
+    {
+      "criterion": "Responsive coverage includes 1280x720 and 1440x900 without text overlap or hidden primary actions.",
+      "status": "met",
+      "evidence": "New Playwright test asserts task rail cards, active drawer, and drawer primary action intersect the viewport at 1280x720 and 1440x900 and that document-level horizontal overflow is absent."
+    }
+  ],
+  "decisions": [
+    "Preserved existing read-model and GameCommand/query boundaries; no sim-core, protocol, save, content-source, docs/GATE, roadmap, CI, server, telemetry, cloud-save, or manual node battle scope was touched.",
+    "Used layout order and bounded scrolling rather than duplicating domain state or creating a separate first-screen data source.",
+    "Scoped negative jargon assertions to the player-facing task rail, because existing debug/developer and map read-model strings outside this task remain separate surfaces."
+  ],
+  "risks": [
+    "QA should visually confirm the new side-first ordering at 1280x720 because the map moves below the rail at that breakpoint to satisfy first-screen actionability.",
+    "The route queue remains available inside the obligations drawer with internal scroll behavior; QA should confirm the reduced visible area still supports scanning.",
+    "Build still reports pre-existing chunk-size warnings over 500 kB; this task did not address bundling."
+  ],
+  "blockers": []
+}

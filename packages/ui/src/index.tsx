@@ -935,19 +935,6 @@ export function ClientShellView({
           </section>
 
           <aside className="client-shell__side" aria-label={i18n.t("shell.inspector.label")}>
-            <DistrictPanel
-              row={selectedDistrict}
-              selectedSettlement={selectedSettlement}
-              m3Appointment={snapshot.m3Appointment}
-              m4Campaign={snapshot.m4Campaign}
-              canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
-              canPreviewCampaign={selectedM4Campaign !== null}
-              provenanceNote={debugMode ? snapshot.districtList.provenance.note : ""}
-              onPreviewAppointment={handleOpenM3AppointmentFlow}
-              onPreviewCampaign={handleSubmitM4Plan}
-              onReviewObligations={handleSubmitM4StartMarch}
-            />
-
             <TaskRail
               snapshot={snapshot}
               selectedDistrict={selectedDistrict}
@@ -1023,6 +1010,19 @@ export function ClientShellView({
               onDismissGuidance={() => setGuidanceDismissed(true)}
               onRestoreGuidance={() => setGuidanceDismissed(false)}
               onToggleGuidanceCollapse={() => setGuidanceCollapsed(!isGuidanceCollapsed)}
+            />
+
+            <DistrictPanel
+              row={selectedDistrict}
+              selectedSettlement={selectedSettlement}
+              m3Appointment={snapshot.m3Appointment}
+              m4Campaign={snapshot.m4Campaign}
+              canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
+              canPreviewCampaign={selectedM4Campaign !== null}
+              provenanceNote={debugMode ? snapshot.districtList.provenance.note : ""}
+              onPreviewAppointment={handleOpenM3AppointmentFlow}
+              onPreviewCampaign={handleSubmitM4Plan}
+              onReviewObligations={handleSubmitM4StartMarch}
             />
           </aside>
         </section>
@@ -2646,7 +2646,12 @@ function renderTaskRailDrawer({
             />
           </dl>
           <div className="client-shell__action-grid" aria-label={i18n.t("shell.actions.label")}>
-            <button type="button" disabled={selectedCampaign === null} onClick={onPreviewCampaign}>
+            <button
+              type="button"
+              data-task-drawer-primary-action="true"
+              disabled={selectedCampaign === null}
+              onClick={onPreviewCampaign}
+            >
               {i18n.t("shell.actions.previewCampaign")}
             </button>
           </div>
@@ -2714,6 +2719,7 @@ function renderTaskRailDrawer({
           <div className="client-shell__action-grid" aria-label={i18n.t("shell.actions.label")}>
             <button
               type="button"
+              data-task-drawer-primary-action="true"
               disabled={selectedDistrict?.route.status === "unreachable"}
               onClick={onReviewObligations}
             >

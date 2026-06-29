@@ -54,6 +54,21 @@ type PlatformMatrixFixture = {
 
 const platformMatrix = readPlatformMatrixFixture();
 
+async function expectIntersectsViewport(locator: Locator): Promise<void> {
+  const intersectsViewport = await locator.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.width > 0 &&
+      rect.height > 0 &&
+      rect.bottom > 0 &&
+      rect.right > 0 &&
+      rect.top < window.innerHeight &&
+      rect.left < window.innerWidth
+    );
+  });
+  expect(intersectsViewport).toBe(true);
+}
+
 test("web shell loads and projects the read model", async ({ page }) => {
   await page.goto("/");
 
@@ -291,6 +306,68 @@ test("M7 player guidance lite localizes English Chinese and system fallback", as
   await expect(page.locator(".player-guidance-lite")).toContainText("焦点");
   await expect(page.locator(".player-guidance-lite")).toContainText("行动");
   await expect(page.getByText("shell.guidanceLite")).toHaveCount(0);
+});
+
+test("M7 task rail is first-screen actionable at required desktop viewports", async ({ page }) => {
+  const viewports = [
+    { width: 1280, height: 720 },
+    { width: 1440, height: 900 }
+  ];
+  const cardKinds = [
+    "obligations",
+    "appointments",
+    "succession",
+    "campaign",
+    "notifications",
+    "results"
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+
+    const taskRail = page.getByRole("region", { name: "Task rail" });
+    await expect(taskRail).toHaveAttribute("data-task-rail-card-count", "6");
+    await expect(taskRail).toHaveAttribute("data-active-drawer", "obligations");
+    await expectIntersectsViewport(taskRail);
+
+    for (const kind of cardKinds) {
+      await expectIntersectsViewport(taskRail.locator(`[data-task-rail-card-kind="${kind}"]`));
+    }
+
+    const activeDrawer = page.getByLabel("Expanded task drawer");
+    await expect(activeDrawer).toHaveAttribute("data-task-drawer-expanded", "obligations");
+    await expectIntersectsViewport(activeDrawer);
+    await expectIntersectsViewport(
+      activeDrawer.locator('[data-task-drawer-primary-action="true"]')
+    );
+
+    const overflow = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth
+    }));
+    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+  }
+});
+
+test("M7 task rail appointment-error copy hides implementation jargon in English and Chinese", async ({
+  page
+}) => {
+  await page.goto("/?fixture=appointment-error");
+  const englishTaskRail = page.getByRole("region", { name: "Task rail" });
+  await expect(englishTaskRail.locator('[data-task-rail-card-kind="appointments"]')).toContainText(
+    "office eligibility concerns"
+  );
+  const englishText = (await englishTaskRail.textContent()) ?? "";
+  expect(englishText).not.toMatch(/read-model|raw reason|reason-code|internal jargon/i);
+
+  await page.getByLabel("Language").selectOption("zh-CN");
+  const chineseTaskRail = page.getByRole("region", { name: "任务栏" });
+  await expect(chineseTaskRail.locator('[data-task-rail-card-kind="appointments"]')).toContainText(
+    "职位条件疑虑"
+  );
+  const chineseText = (await chineseTaskRail.textContent()) ?? "";
+  expect(chineseText).not.toMatch(/只读模型|内部原因码|内部术语|原始原因码/);
 });
 
 test("M2 map zoom, selection, and mode switching updates read-model UI", async ({ page }) => {

@@ -2374,6 +2374,13 @@ select:focus-visible,
   grid-template-rows: auto minmax(0, 1fr);
   gap: 12px;
   align-self: start;
+  max-height: calc(100vh - 132px);
+  overflow: hidden;
+}
+
+.client-shell--beta .client-shell__side > .district-panel {
+  min-height: 0;
+  overflow: auto;
 }
 
 .client-shell--beta .player-orientation-card,
@@ -2605,8 +2612,11 @@ select:focus-visible,
 
 .task-rail {
   display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
   gap: 10px;
   min-width: 0;
+  max-height: calc(100vh - 148px);
+  overflow: hidden;
 }
 
 .task-rail__header {
@@ -2738,6 +2748,8 @@ select:focus-visible,
 .task-rail__drawer {
   display: grid;
   min-width: 0;
+  min-height: 0;
+  overflow: auto;
   border-block-start: 1px solid #d8dee2;
   padding-block-start: 10px;
 }
@@ -2851,12 +2863,17 @@ select:focus-visible,
     grid-template-columns: 1fr;
   }
 
+  .client-shell--beta .client-shell__side {
+    order: -1;
+    max-height: calc(100vh - 132px);
+  }
+
   .client-shell--beta .map-toolbar {
     grid-template-columns: 1fr;
   }
 
   .client-shell--beta .client-shell__map-region {
-    min-height: 520px;
+    min-height: 0;
   }
 
   .task-rail__cards {

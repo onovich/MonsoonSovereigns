@@ -284,7 +284,7 @@ const enUSMessages = {
   "shell.taskRail.appointments.problemEmpty": "No appointment preview is available yet.",
   "shell.taskRail.appointments.reason": "Candidate comparison stays reversible until confirmation.",
   "shell.taskRail.appointments.reasonRejected":
-    "The selected candidate is blocked by read-model reasons.",
+    "The selected candidate is blocked by office eligibility concerns.",
   "shell.taskRail.succession.title": "Succession",
   "shell.taskRail.succession.problem": "{count} succession issue needs attention.",
   "shell.taskRail.succession.problemStable": "No active succession crisis is projected.",
@@ -758,7 +758,7 @@ const zhCNMessages: UiCatalog = {
   "shell.taskRail.appointments.problem": "可预览{office}。",
   "shell.taskRail.appointments.problemEmpty": "暂时没有可用的任命预览。",
   "shell.taskRail.appointments.reason": "候选比较在确认前仍可撤回。",
-  "shell.taskRail.appointments.reasonRejected": "已选候选人被只读模型原因阻止。",
+  "shell.taskRail.appointments.reasonRejected": "已选候选人因职位条件疑虑被阻止。",
   "shell.taskRail.succession.title": "继承",
   "shell.taskRail.succession.problem": "有 {count} 项继承问题需要关注。",
   "shell.taskRail.succession.problemStable": "当前没有继承危机投影。",

@@ -210,8 +210,14 @@ describe("web client shell", () => {
     expect(markup).toContain(
       "Population, labor, stores, obligations, supply route, governance, and campaign planning details stay below the recommendation."
     );
-    expect(markup.indexOf("Current problem")).toBeLessThan(markup.indexOf("Population"));
-    expect(markup.indexOf("Recommendation")).toBeLessThan(markup.indexOf("Grain"));
+    expect(markup.indexOf("Task Rail")).toBeLessThan(markup.indexOf("Decision Assistant"));
+    const decisionAssistantIndex = markup.indexOf("Decision Assistant");
+    expect(markup.indexOf("Current problem", decisionAssistantIndex)).toBeLessThan(
+      markup.indexOf("Population", decisionAssistantIndex)
+    );
+    expect(markup.indexOf("Recommendation", decisionAssistantIndex)).toBeLessThan(
+      markup.indexOf("Grain", decisionAssistantIndex)
+    );
     expect(markup).toContain('aria-label="Situation map mode"');
     expect(markup).toContain('aria-pressed="true">Situation</button>');
     expect(markup).toContain('aria-label="Map pan"');
