@@ -198,7 +198,7 @@ describe("web client shell", () => {
 
     expect(markup).toContain("Monsoon Sovereigns");
     expect(markup).toContain("Realm Map");
-    expect(markup).toContain("Developer diagnostics are hidden in player mode.");
+    expect(markup).toContain("No action has been previewed yet.");
     expect(markup).toContain('aria-label="Situation map mode"');
     expect(markup).toContain('aria-pressed="true">Situation</button>');
     expect(markup).toContain('aria-label="Map pan"');
@@ -213,6 +213,11 @@ describe("web client shell", () => {
     expect(markup).not.toContain("Prototype District 001");
     expect(markup).not.toContain(snapshot.simulation.stateHash);
     expect(markup).not.toContain("M2 prototype map ready");
+    expect(markup).not.toContain("Developer Overlay");
+    expect(markup).not.toContain("Developer diagnostics");
+    expect(markup).not.toContain("developer diagnostics");
+    expect(markup).not.toContain("Guidance remains under review");
+    expect(markup).not.toContain("blockers");
     expect(markup).not.toContain('aria-label="M3 appointment workspace"');
     expect(markup).toContain('data-renderer-owner="map-renderer"');
     expect(markup).toContain('data-district-count="30"');
@@ -289,6 +294,7 @@ describe("web client shell", () => {
     );
 
     expect(markup).toContain("Developer Overlay");
+    expect(markup).toContain("Hide developer overlay");
     expect(markup).toContain(snapshot.simulation.stateHash);
     expect(markup).toContain('aria-label="M3 appointment workspace"');
     expect(markup).toContain('data-bulk-eligible-count="2"');

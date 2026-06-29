@@ -426,10 +426,17 @@ describe("M2 district client UI", () => {
     expect(chineseMarkup).toContain("建议下一步");
     expect(chineseMarkup).toContain("确认前先预览");
     expect(emptyMarkup).toContain('data-guidance-state="empty"');
-    expect(emptyMarkup).toContain("Guidance read model is unavailable");
+    expect(emptyMarkup).toContain("Use the map and district panel to choose your next focus.");
     expect(errorMarkup).toContain('data-guidance-state="error"');
-    expect(errorMarkup).toContain("Guidance remains under review");
+    expect(errorMarkup).toContain(
+      "Preview first; confirmation is separate, and unsafe actions stay blocked."
+    );
     expect(englishMarkup).not.toContain("state hash");
+    expect(englishMarkup).not.toContain("Developer Overlay");
+    expect(englishMarkup).not.toContain("Developer diagnostics");
+    expect(englishMarkup).not.toContain("developer diagnostics");
+    expect(englishMarkup).not.toContain("Guidance remains under review");
+    expect(englishMarkup).not.toContain("blockers");
     expect(englishMarkup).not.toContain("Prototype District 001");
     expect(englishMarkup).not.toContain("route.season.monsoon-risk");
     expect(englishMarkup).not.toContain("m7.guidance");

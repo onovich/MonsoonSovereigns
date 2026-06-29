@@ -747,15 +747,17 @@ export function ClientShellView({
                 {i18n.t("settings.language.active", { locale: i18n.locale })}
               </output>
             </label>
-            <button
-              className="client-shell__debug-toggle"
-              type="button"
-              aria-label={i18n.t("shell.debug.toggle")}
-              aria-pressed={debugMode}
-              onClick={() => setDebugMode(!debugMode)}
-            >
-              {debugMode ? i18n.t("shell.debug.hide") : i18n.t("shell.debug.show")}
-            </button>
+            {debugMode ? (
+              <button
+                className="client-shell__debug-toggle"
+                type="button"
+                aria-label={i18n.t("shell.debug.toggle")}
+                aria-pressed="true"
+                onClick={() => setDebugMode(false)}
+              >
+                {i18n.t("shell.debug.hide")}
+              </button>
+            ) : null}
           </section>
         </header>
 
@@ -1244,9 +1246,7 @@ export function ClientShellView({
               )}
             </section>
           </section>
-        ) : (
-          <p className="client-shell__debug-hidden">{i18n.t("shell.debug.hiddenNotice")}</p>
-        )}
+        ) : null}
       </main>
     </ClientI18nContext.Provider>
   );
@@ -2060,7 +2060,7 @@ function CommandStatus({
   const status = m4CommandStatus ?? m3CommandStatus ?? m6CommandStatus ?? m5CommandStatus ?? null;
   return (
     <p className="client-shell__command-status" role="status" aria-live="polite">
-      {status ?? i18n.t("shell.debug.hiddenNotice")}
+      {status ?? i18n.t("shell.actions.idleStatus")}
     </p>
   );
 }

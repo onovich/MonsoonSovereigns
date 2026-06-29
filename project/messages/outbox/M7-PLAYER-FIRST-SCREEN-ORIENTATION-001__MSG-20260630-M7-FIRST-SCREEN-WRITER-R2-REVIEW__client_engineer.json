@@ -1,0 +1,91 @@
+{
+  "message_id": "MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW",
+  "task_id": "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R2 removes default player-mode developer/debug/internal copy while preserving the accepted first-screen Court Brief, objective/focus/action/safety guidance card, selected-district binding, and existing preview/confirmation command boundaries. The default player shell no longer renders Developer Overlay controls, developer diagnostics hidden text, CommandStatus diagnostic fallback, or guidance reviewer/blocker wording; explicit ?debug=1 developer overlay remains available for diagnostics.",
+  "artifacts": [
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/tasks/active/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001.json",
+    "project/messages/outbox/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001__MSG-20260630-M7-FIRST-SCREEN-WRITER-R2-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-player-first-screen-orientation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; branch codex/m7-player-first-screen-orientation with five R2 implementation/test files dirty before process closeout."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-FIRST-SCREEN-ORIENTATION-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task registry listed M7-PLAYER-FIRST-SCREEN-ORIENTATION-001 as IN_PROGRESS before R2 handoff status update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no ready-task output while this repair task is active."
+    },
+    {
+      "command": "node -e JSON parse/shape check for task/goal-mode/thread-registry",
+      "exit_code": 0,
+      "result": "PASS; task, goal-mode, and thread-registry JSON roots parsed as objects."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 9 tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; Vite build completed with existing chunk-size warning only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 23 Chromium tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    "Default player mode does not render the developer overlay toggle; explicit debug mode remains accessible through existing debug query initialization and can still be hidden from that state.",
+    "Default player mode no longer renders the developer diagnostics hidden footer.",
+    "CommandStatus idle fallback now uses neutral player copy: no action has been previewed yet.",
+    "Guidance empty/error/source copy now explains player-safe behavior without review, blocker, or read-model wording.",
+    "Default notices now avoid internal content-review phrasing while preserving cautious content presentation.",
+    "R2 did not alter sim-core, protocol, save format, content-source, final art, manual battle, full inspector rewrite, task rail, or command authority boundaries."
+  ],
+  "risks": [
+    "Explicit debug-mode strings still contain developer diagnostics language by design; gameplay review should judge only default player mode against this request.",
+    "The first-screen orientation remains a low-fidelity UX recovery surface, not final art or full decision-inspector rewrite."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Review the R2 diff against the gameplay REQUEST_CHANGES items, focusing on default player-mode absence of Developer Overlay/developer diagnostics/internal review or blocker copy while preserving preview/confirmation safety and first-screen orientation.",
+  "created_at": "2026-06-29T20:53:57.055Z"
+}

@@ -60,9 +60,11 @@ test("web shell loads and projects the read model", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Monsoon Sovereigns" })).toBeVisible();
   await expect(page.locator(".client-shell__map-region")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Realm Map" })).toBeVisible();
-  await expect(page.locator(".client-shell__debug-hidden")).toContainText(
-    "Developer diagnostics are hidden in player mode."
-  );
+  await expect(page.getByText("Developer Overlay")).toHaveCount(0);
+  await expect(page.getByText("Developer diagnostics")).toHaveCount(0);
+  await expect(page.getByText("developer diagnostics")).toHaveCount(0);
+  await expect(page.getByText("blockers")).toHaveCount(0);
+  await expect(page.getByText("No action has been previewed yet.")).toBeVisible();
   await expect(page.getByText("M2 prototype map ready")).toHaveCount(0);
   await expect(page.getByText("Prototype District 001")).toHaveCount(0);
   await expectMountedPixiMapRenderer(page);
@@ -175,7 +177,11 @@ test("M7 player guidance lite supports collapse dismiss and the core appointment
   const guidance = page.getByRole("region", { name: "Player guidance" });
   await expect(guidance).toHaveAttribute("data-guidance-state", "error");
   await expect(guidance).toHaveAttribute("data-guidance-evidence", "available");
-  await expect(guidance).toContainText("Guidance remains under review");
+  await expect(guidance).toContainText(
+    "Preview first; confirmation is separate, and unsafe actions stay blocked."
+  );
+  await expect(guidance).not.toContainText("Guidance remains under review");
+  await expect(guidance).not.toContainText("blockers");
   await expect(guidance).toContainText("Objective");
   await expect(guidance).toContainText("Focus");
   await expect(guidance).toContainText("Action");
