@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW",
+  "task_id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+  "from_role": "balance_analyst",
+  "status": "REVIEW",
+  "summary": "Revised the M7 large-scale balance artifact so primary signals now reflect observed evidence rather than score noise. Direct-control dominance is gated by positive directControlShare, so the current pnpm artifact keeps directControlDominanceCount at 0 with directControl replay pointer null because maxDirectControlShare=0. Stable is now eligible only when all major risk flags are clear, so stableCount is 0 and the stable replay pointer is null in this batch. Exploit-loop replay evidence now identifies the repeated pair window instead of falling back to step 0. The focused test now checks semantic consistency instead of asserting that every signal must appear, and the pnpm artifact evidence was regenerated with hash fb804949 over 36 runs across 3 scenarios and 12 seeds.",
+  "artifacts": [
+    "apps/sim-runner/src/m7-large-scale-balance.ts",
+    "apps/sim-runner/src/run-m7-large-scale-balance.mjs",
+    "apps/sim-runner/package.json",
+    "tests/sim-runner-m7-large-scale-balance.test.tsx",
+    "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-R2-REVIEW__balance_analyst.json",
+    "m7.large-scale-balance-artifact.v1 schema v1 hash=fb804949 sampleSize=36 runCount=36 scenarioCount=3 seedCount=12",
+    "replayPointers runawayExpansion=scenario.beta.1581.succession-fracture|seed=1543|step=0|event=event.beta.succession-warning|choice=choice.beta.agent-delay unavoidableCollapse=scenario.beta.1531.edge-polity|seed=1531|step=3|event=event.beta.coercion-cost-review|choice=choice.beta.defer-coercion noActionHeavyAi=scenario.beta.1569.overextended-suzerainty|seed=1531|step=0|event=event.beta.campaign-window-warning|choice=choice.beta.agent-delay exploitLoopDetected=scenario.beta.1581.succession-fracture|seed=1531|loop=repeated-pair|event=event.beta.succession-warning|choice=choice.beta.agent-delay|steps=0,3 directControlDominance=null stable=null",
+    "reasonCodeEvidence bundle=36 choice.default=36 decision.advance=36 decision.defer=36 decision.reform=24 decision.wait=24 event.human-gate=36 event.violence-cost=36 signal.exploit-loop=11 signal.no-action-heavy-ai=11 signal.unavoidable-collapse=10 signal.runaway-expansion=4 signal.direct-control-dominance=0 signal.stable=0"
+  ],
+  "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+  "commit": "61e26fb4",
+  "tests_run": [
+    {
+      "command": "pnpm vitest run tests/sim-runner-m7-large-scale-balance.test.tsx",
+      "exit_code": 0,
+      "result": "1 test file passed; 1 test passed"
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-runner sim:m7-large-scale-balance",
+      "exit_code": 0,
+      "result": "artifact generated successfully; hash fb804949; 3 scenarios; 12 seeds; 36 runs; direct-control and stable replay pointers were null"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001.json"
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed"
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "architecture boundaries passed; 43 test files passed; 353 tests passed; web 1 file and 9 tests passed"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ],
+  "decisions": [
+    {
+      "type": "direct_control_gate",
+      "result": "direct-control dominance now requires directControlShare > 0; with maxDirectControlShare=0 the count stays 0 and the replay pointer is null."
+    },
+    {
+      "type": "stable_gate",
+      "result": "stable is now eligible only when runawayExpansion, unavoidableCollapse, noActionHeavyAi, exploitLoopDetected, and directControlDominance are all false; this batch therefore keeps stableCount at 0 and stable replay pointer null."
+    },
+    {
+      "type": "exploit_loop_pointer",
+      "result": "exploit-loop replay pointers now encode the repeated pair or concentration window. The current batch uses loop=repeated-pair with steps=0,3 for scenario.beta.1581.succession-fracture."
+    },
+    {
+      "type": "reason_code_evidence",
+      "items": [
+        "bundle=36",
+        "choice.default=36",
+        "decision.advance=36",
+        "decision.defer=36",
+        "decision.reform=24",
+        "decision.wait=24",
+        "event.human-gate=36",
+        "event.violence-cost=36",
+        "signal.exploit-loop=11",
+        "signal.no-action-heavy-ai=11",
+        "signal.unavoidable-collapse=10",
+        "signal.runaway-expansion=4",
+        "signal.direct-control-dominance=0",
+        "signal.stable=0"
+      ]
+    }
+  ],
+  "risks": [
+    "artifactHash remains invocation-context sensitive because packageManagerVersion() reads the active pnpm user agent; compare the pnpm-generated artifact with the pnpm-generated baseline, not a bare node import.",
+    "The current batch is still content-snapshot dependent, so later Beta content edits may legitimately change the distribution, replay pointers, and artifact hash.",
+    "Direct-control and stable evidence are intentionally absent in this batch. That is the expected result for the current content snapshot, but future content changes could reintroduce either signal and should be revalidated."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Review the R2 evidence for semantic correctness: direct-control dominance is now gated by positive share, stable is gated by the risk thresholds, exploit-loop replay evidence names the repeated pair window, and the focused test checks semantic consistency. Accept or request further changes.",
+  "created_at": "2026-06-29T09:18:14.600Z"
+}
