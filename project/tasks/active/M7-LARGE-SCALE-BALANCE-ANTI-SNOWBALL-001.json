@@ -2,7 +2,7 @@
   "id": "M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001",
   "summary": "Run large-scale Beta balance and anti-snowball validation",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "IN_PROGRESS",
   "owner_role": "balance_analyst",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R4",
@@ -77,8 +77,34 @@
     "pnpm test",
     "pnpm check"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+  "threads": {
+    "balance_analyst": {
+      "thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
+      "status": "active_waiting_start_confirmed",
+      "role": "balance_analyst",
+      "nickname": "Tide",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+      "expected_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+      "routed_at": "2026-06-29T08:12:59.704Z",
+      "updated_at": "2026-06-29T08:12:59.704Z"
+    },
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_router",
+      "role": "lead_orchestrator",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-large-scale-balance-anti-snowball",
+      "updated_at": "2026-06-29T08:12:59.704Z"
+    }
+  },
   "route_to": "gameplay_designer",
   "notes": [
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -88,7 +114,7 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-28T03:55:00+08:00",
+  "updated_at": "2026-06-29T08:12:59.704Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -103,5 +129,15 @@
     "irreversible save/content migration",
     "frozen product, platform, core architecture, technology stack, simulation authority, deterministic, or historical-policy changes",
     "manual node battle reversal or any formal 1.0 scope reversal"
-  ]
+  ],
+  "started_at": "2026-06-29T08:12:59.704Z",
+  "base_main_commit": "3261dbec16a8383e464d49b6437840055876ba54",
+  "previous_closed_task": "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001",
+  "start_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__ROUTE-20260629-LEAD-TO-BALANCE-START.json",
+  "writer_thread_id": "019f126e-0da9-76c3-a842-14039df3bbfb",
+  "writer_thread_nickname": "Tide",
+  "expected_writer_handoff": "project/messages/outbox/M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001__MSG-20260629-M7-BALANCE-WRITER-REVIEW__balance_analyst.json",
+  "scheduling_reason": "Selected as the highest-priority dependency-ready M7 task after M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 closed; UI/localization/art directive has already been incorporated through closed M7 visual and UI-localization planning tasks.",
+  "next_action": "Await balance_analyst writer REVIEW handoff, validate it, then route to gameplay_designer for independent review."
 }
