@@ -1,0 +1,52 @@
+{
+  "message_id": "MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "product_owner",
+  "status": "REQUEST_CHANGES",
+  "summary": "Product owner rejects formal M7 content lock for current UI experience. The current interface is not understandable or game-like enough: the map reads as a rectangular engineering grid, routes/lines have unclear meaning, the player cannot tell what to do or what to focus on, and the experience does not evoke the strategic-map readability expected from the Nobunaga no Yabou reference. This is a UX/playability blocker, not a request for high-fidelity final art.",
+  "artifacts": [
+    "C:/Users/ADMINI~1/AppData/Local/Temp/codex-clipboard-f795de31-2240-44eb-b95e-aac4c84cbe24.png",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
+    "Codex thread 019f05b0-7e7e-71e3-b18f-e41c938a38db latest visual/UX feedback"
+  ],
+  "branch_or_worktree": "codex/m7-ux-recovery-request-changes",
+  "commit": "8a43b535d098d85cbfaf7d3e515643218760ec7f",
+  "tests_run": [
+    {
+      "command": "codex_app.read_thread 019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "exit_code": 0,
+      "result": "Read latest art/visual thread feedback. It classifies the state as REQUEST_CHANGES_UI_EXPERIENCE and lists M7 must-fix items before content lock."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main before creating UX recovery process branch."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CONTENT_LOCK_REQUEST_CHANGES",
+      "decision": "Do not approve M7 content lock. Convert the Human Gate result to REQUEST_CHANGES and continue with scoped M7 UX recovery tasks."
+    },
+    {
+      "id": "RECTANGULAR_GRID_NOT_ACCEPTABLE",
+      "decision": "A rectangular engineering grid cannot remain the player-facing M7 strategic map; low-fidelity is acceptable, but it must read as a strategic territorial/geographic map."
+    },
+    {
+      "id": "NOT_HIGH_FIDELITY_ART_REQUEST",
+      "decision": "The required recovery is product readability and playability, not final art production."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-UX-LOCK-BLOCKER",
+      "severity": "R4",
+      "summary": "M7 content lock remains blocked until the player-facing first-screen/map/decision experience is repaired and independently reviewed."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Create and execute M7 UX recovery tasks before re-opening formal content lock acceptance.",
+  "created_at": "2026-06-29T18:58:16.954Z"
+}

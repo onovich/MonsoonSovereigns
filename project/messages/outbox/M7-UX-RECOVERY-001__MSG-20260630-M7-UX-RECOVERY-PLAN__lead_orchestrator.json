@@ -1,0 +1,59 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-PLAN",
+  "task_id": "M7-UX-RECOVERY-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead converted product-owner UI/map feedback and visual thread REQUEST_CHANGES_UI_EXPERIENCE into an M7 UX recovery task graph. Formal content lock remains rejected/pending; autonomous work may continue only on these scoped repair tasks before content lock can be reconsidered.",
+  "artifacts": [
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
+    "project/tasks/active/M7-MAP-SITUATION-MODE-UX-001.json",
+    "project/tasks/active/M7-PLAYER-FIRST-SCREEN-ORIENTATION-001.json",
+    "project/tasks/active/M7-DECISION-INSPECTOR-REWRITE-001.json",
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/tasks/active/M7-UX-RECOVERY-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/m7-ux-recovery-request-changes",
+  "commit": "8a43b535d098d85cbfaf7d3e515643218760ec7f",
+  "tests_run": [
+    {
+      "command": "codex_app.read_thread 019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "exit_code": 0,
+      "result": "Read latest visual thread feedback and incorporated must-do M7 recovery items."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before process branch creation."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "M7_CONTENT_LOCK_REQUEST_CHANGES",
+      "decision": "Formal M7 content lock is not approved; repair tasks must complete before re-opening acceptance."
+    },
+    {
+      "id": "FIRST_RECOVERY_TASK",
+      "decision": "Start M7-MAP-SITUATION-MODE-UX-001 first because map readability and rectangular-grid replacement are the clearest product-owner blocker."
+    },
+    {
+      "id": "RECOVERY_SCOPE",
+      "decision": "Scope is low-fidelity but playable UX: strategic map readability, first-screen orientation, decision inspector, task rail, and validation. No final art, server, telemetry, cloud-save, release/commercial, or manual node battle scope."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-UX-RECOVERY-R4",
+      "severity": "R4",
+      "summary": "The recovery changes are product-facing and must retain sim/read-model authority boundaries and independent review."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Validate task graph, integrate process branch, then start M7-MAP-SITUATION-MODE-UX-001 with client_engineer and systems_architect review.",
+  "created_at": "2026-06-29T18:58:16.954Z"
+}

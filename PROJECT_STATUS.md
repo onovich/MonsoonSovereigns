@@ -275,3 +275,12 @@ Current milestone remains **M7 / Beta: Content And Quality**. No Human Gate is a
 The QA acceptance is not product-owner approval. `M7-CONTENT-LOCK-ACCEPTANCE-001` remains `BLOCKED` on `HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE` until the product owner explicitly chooses `APPROVE_CONTENT_LOCK_WITH_LIMITS`, `DEFER_CONTENT_LOCK`, or `REQUEST_CHANGES`. `content_lock_accepted` remains `false`, and `M7-EXIT-VALIDATION-001` must not start while this gate is unresolved.
 
 The recommended decision option is `APPROVE_CONTENT_LOCK_WITH_LIMITS` as of `origin/main` `62e3c756199f50302ff3b0a5ee087da1fd0bffbe`, carrying the accepted limits: `M6_GATE = PASS_WITH_LIMITS`, `DEFER_MANUAL_NODE_BATTLE`, Edge/Firefox unresolved tooling rows, Windows DPI 150% follow-up, low-end Windows proxy limits, agent-operated manual playthrough evidence only, and no release/commercial/branding/telemetry/server/multiplayer/cloud-save/mod/irreversible-migration approval.
+
+
+## 25. M7 UX Recovery Request Changes Snapshot
+
+On 2026-06-30 the product owner rejected formal M7 content lock for player-facing UX reasons. The current Web preview was judged not understandable, not game-like enough, and especially blocked by the player-facing map reading as a rectangular engineering grid with unexplained route lines. This is recorded in `project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json`.
+
+The visual/design thread `019f05b0-7e7e-71e3-b18f-e41c938a38db` returned `REQUEST_CHANGES_UI_EXPERIENCE`: M7 must fix first-screen orientation, default situation map mode, route semantics/legend, route de-noising, decision-focused right inspector, collapsed task rail, player-mode debug suppression, and UX smoke coverage before content lock can be reconsidered.
+
+Formal content lock remains not approved: `M7-CONTENT-LOCK-ACCEPTANCE-001` stays blocked with `content_lock_accepted=false`, while the active repair path starts with `M7-MAP-SITUATION-MODE-UX-001`. This recovery does not authorize high-fidelity final art, manual node battle, server/multiplayer, telemetry, accounts, cloud-save implementation, release/commercial/branding decisions, or production cultural assets.
