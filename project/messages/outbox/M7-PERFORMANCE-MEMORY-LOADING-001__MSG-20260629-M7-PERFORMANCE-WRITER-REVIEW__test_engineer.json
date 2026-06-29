@@ -1,0 +1,109 @@
+{
+  "message_id": "MSG-20260629-M7-PERFORMANCE-WRITER-REVIEW",
+  "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Validated the M7 Beta performance, memory, and loading baseline on the contracted content set with no code changes. The evidence report captures host details, measured performance numbers, deterministic hashes, build/package artifact hashes, and the only test-ordering issue encountered during desktop security checking.",
+  "artifacts": [
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__EVIDENCE-20260629-test_engineer.json",
+    "apps/web/dist",
+    "apps/desktop/dist",
+    ".tmp/desktop-package/MonsoonSovereigns-win32-x64"
+  ],
+  "branch_or_worktree": "codex/m7-performance-memory-loading",
+  "commit": "2bdd522808d1b3a86dda09c80c8aa7bf2f5e026b",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PERFORMANCE-MEMORY-LOADING-001",
+      "exit_code": 0,
+      "result": "Validated task metadata and scope."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; M7-PERFORMANCE-MEMORY-LOADING-001 is in progress."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Reported M7-UI-REGRESSION-MATRIX-001 as dependency-ready."
+    },
+    {
+      "command": "node -e \"const fs=require('node:fs'); const task=JSON.parse(fs.readFileSync('project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json','utf8')); const required=['id','summary','owner_role','reviewer_role','status','scope','acceptance_criteria','required_tests','risk_level','branch_or_worktree','route_to']; const missing=required.filter((key)=>!(key in task)); if (missing.length) { throw new Error('Missing keys: '+missing.join(',')); } console.log('task-json-ok', task.id, task.status, task.owner_role, task.reviewer_role);\"",
+      "exit_code": 0,
+      "result": "task-json-ok M7-PERFORMANCE-MEMORY-LOADING-001 IN_PROGRESS test_engineer qa_reviewer"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting issues."
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 performance baseline passed on fixture m1.abstract-graph-30-world-state-v0; node v24.13.1; win32 x64; cpuCount=16; days=3650; finalDay=3650; finalRevision=3650; dayThroughputPerSecond=9136; p50StepNanoseconds=90500; p95StepNanoseconds=237800; p99StepNanoseconds=466300; saveByteLength=9980; saveNanoseconds=2355300; loadNanoseconds=4703700."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and Worker-compatible hashes matched for hello, command/query, save/load, M4 replay, M5 playable loop, and M6 Alpha loop."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully and cleaned .tmp/storybook-static."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright chromium suite passed: 21 tests, 21 passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 1,
+      "result": "First concurrent run failed with ENOTEMPTY while removing apps/desktop/dist/renderer/web/assets because pnpm desktop:package was running in parallel."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke output written to .tmp/desktop-package/MonsoonSovereigns-win32-x64."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Serial rerun passed; Electron security preferences, preload bridge shape, renderer navigation restriction, and allowed IPC channels were verified."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; vitest suites passed; web tests passed; 353 tests passed in the root suite."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Prettier, ESLint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean working tree after the evidence commit."
+    }
+  ],
+  "decisions": [
+    "No code or fixture change was required; the task is satisfied by measured evidence capture and deterministic artifact hashing.",
+    "The desktop security check was serialized after an initial concurrent ENOTEMPTY failure because it shares the same build output tree with desktop:package."
+  ],
+  "risks": [
+    "The performance baseline is a measurement capture, not a code fix; no explicit regression threshold was encoded in the task JSON, so QA should judge the evidence against the current baseline contract.",
+    "Desktop security checking is order-sensitive when run concurrently with desktop packaging; this is an execution hazard, not a product defect."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the evidence report, measured baseline metrics, artifact hashes, and serialized desktop security/package results, then accept or request changes.",
+  "created_at": "2026-06-29T17:56:59.3220452+08:00"
+}

@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW",
+  "task_id": "M7-PERFORMANCE-MEMORY-LOADING-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Validated the M7 Beta performance, memory, loading, and packaging surface with a local R2 measurement runner. The report now uses the contracted M7 Beta-scale artifact (sampleSize=36 across 3 scenarios and 12 seeds), records host memory RSS/heap before and after the run, captures reproducible Web startup/loading and M7 UI density proxies from the built web app, times save/load, and carries forward the prior desktop security concurrent ENOTEMPTY note as a serialized rerun pass.",
+  "artifacts": [
+    "project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__EVIDENCE-R2-20260629-test_engineer.json",
+    "project/messages/tools/m7-performance-memory-loading-evidence.mjs",
+    "apps/web/dist",
+    "apps/desktop/dist",
+    ".tmp/desktop-package/MonsoonSovereigns-win32-x64"
+  ],
+  "branch_or_worktree": "codex/m7-performance-memory-loading",
+  "commit": "e475553e",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PERFORMANCE-MEMORY-LOADING-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-PERFORMANCE-MEMORY-LOADING-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; M7-PERFORMANCE-MEMORY-LOADING-001 is in progress."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Reported M7-UI-REGRESSION-MATRIX-001 as dependency-ready."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-PERFORMANCE-MEMORY-LOADING-001 task + R2 evidence",
+      "exit_code": 0,
+      "result": "task and evidence JSON shapes validated; sampleSize=36; saveLoadMs=16.18; startupMs=183.23; desktopTreeHash=DD75741482BB065B361A8ED8CA0DB0081731315D0346562A3EC390248A193FD7"
+    },
+    {
+      "command": "pnpm sim:perf-baseline",
+      "exit_code": 0,
+      "result": "SIM-005 performance baseline passed on fixture m1.abstract-graph-30-world-state-v0; node v24.13.1; win32 x64; cpuCount=16; days=3650; finalDay=3650; finalRevision=3650; dayThroughputPerSecond=6091; p50StepNanoseconds=118900; p95StepNanoseconds=341500; p99StepNanoseconds=758700; saveByteLength=9980; saveNanoseconds=3471200; loadNanoseconds=4875600."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and Worker-compatible hashes matched for hello, command/query, save/load, M4 replay, M5 playable loop, and M6 Alpha loop."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully; built app bundles and host-hash-canary assets."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully and cleaned .tmp/storybook-static."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright chromium suite passed: 21 tests, 21 passed."
+    },
+    {
+      "command": "pnpm desktop:security-check",
+      "exit_code": 0,
+      "result": "Electron security preferences passed; preload exposes only the named bridge; renderer file navigation is restricted to the packaged renderer root; allowed IPC channels are desktop:getRuntimeInfo and desktop:setFullscreen."
+    },
+    {
+      "command": "pnpm desktop:package",
+      "exit_code": 0,
+      "result": "Desktop package smoke output written to .tmp/desktop-package/MonsoonSovereigns-win32-x64 and packaged main, preload, renderer, and platform adapter artifacts."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Architecture boundaries passed; 43 test files passed; 353 tests passed; web 1 file and 9 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting issues."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/M7-PERFORMANCE-MEMORY-LOADING-001__MSG-20260629-M7-PERFORMANCE-WRITER-R2-REVIEW__test_engineer.json"
+    }
+  ],
+  "decisions": [
+    {
+      "type": "measurement_basis",
+      "result": "The R2 report uses the actual M7 Beta-scale artifact from apps/sim-runner (sampleSize=36; 3 scenarios; 12 seeds) instead of the earlier M1 30-node baseline, and marks the gate PASS_WITH_LIMITS because formal M7 thresholds are not frozen in the task metadata."
+    },
+    {
+      "type": "memory_basis",
+      "result": "Host memory is recorded as RSS/heap before and after the Beta-scale run, using the current Windows x64 workstation as a proxy for low-end Windows rather than pretending it is a verified low-end machine."
+    },
+    {
+      "type": "web_basis",
+      "result": "Web startup/loading is measured from the built apps/web/dist served locally, with a fixed en-US navigator proxy to keep selectors stable and a read-model density proxy taken from the district list performance surface."
+    },
+    {
+      "type": "desktop_basis",
+      "result": "Desktop security/package smoke is recorded as a serialized rerun; the earlier concurrent ENOTEMPTY collision remains a known output-tree hazard from the prior evidence and is not treated as a product defect."
+    }
+  ],
+  "risks": [
+    "The low-end Windows claim is still a proxy assumption; this host is a Windows x64 workstation and does not substitute for a true low-end endpoint.",
+    "The desktop security check is order-sensitive when run concurrently with desktop packaging because both commands touch the same output tree.",
+    "M7 thresholds are not frozen in task metadata, so the gate remains PASS_WITH_LIMITS rather than unconditional PASS."
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the R2 evidence report, the local measurement runner, and the serialized desktop security/package results, then accept or request changes.",
+  "created_at": "2026-06-29T10:53:33.684Z"
+}
