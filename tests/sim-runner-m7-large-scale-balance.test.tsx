@@ -31,16 +31,21 @@ describe("M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001 local evidence", () => {
     expect(artifact.aggregate.primarySignalCounts["unavoidable-collapse"]).toBeGreaterThan(0);
     expect(artifact.aggregate.primarySignalCounts["no-action-heavy-ai"]).toBeGreaterThan(0);
     expect(artifact.aggregate.primarySignalCounts["exploit-loop"]).toBeGreaterThan(0);
-    expect(artifact.aggregate.primarySignalCounts["direct-control-dominance"]).toBeGreaterThan(0);
-    expect(artifact.aggregate.primarySignalCounts.stable).toBeGreaterThan(0);
+    expect(artifact.aggregate.primarySignalCounts["direct-control-dominance"]).toBe(0);
+    expect(artifact.aggregate.primarySignalCounts.stable).toBe(0);
     expect(artifact.aggregate.noActionShareP95).toBeGreaterThanOrEqual(0);
     expect(artifact.aggregate.directControlShareP95).toBeGreaterThanOrEqual(0);
+    expect(artifact.aggregate.maxDirectControlShare).toBe(0);
     expect(artifact.replayPointers.runawayExpansion).not.toBeNull();
     expect(artifact.replayPointers.unavoidableCollapse).not.toBeNull();
     expect(artifact.replayPointers.noActionHeavyAi).not.toBeNull();
     expect(artifact.replayPointers.exploitLoopDetected).not.toBeNull();
-    expect(artifact.replayPointers.directControlDominance).not.toBeNull();
-    expect(artifact.replayPointers.stable).not.toBeNull();
+    expect(artifact.replayPointers.exploitLoopDetected).toMatch(
+      /\|loop=(repeated-pair|concentration-window)\|/
+    );
+    expect(artifact.replayPointers.exploitLoopDetected).not.toContain("|step=0");
+    expect(artifact.replayPointers.directControlDominance).toBeNull();
+    expect(artifact.replayPointers.stable).toBeNull();
     expect(artifact.reasonCodeEvidence.length).toBeGreaterThan(0);
     expect(artifact.reasonCodeEvidence[0]?.sampleRunIds.length).toBeGreaterThan(0);
     expect(
@@ -65,10 +70,10 @@ describe("M7-LARGE-SCALE-BALANCE-ANTI-SNOWBALL-001 local evidence", () => {
       artifact.reasonCodeEvidence.some(
         (row) => row.reasonCode === "m7.balance.signal.direct-control-dominance"
       )
-    ).toBe(true);
+    ).toBe(false);
     expect(
       artifact.reasonCodeEvidence.some((row) => row.reasonCode === "m7.balance.signal.stable")
-    ).toBe(true);
+    ).toBe(false);
     expect(artifact.csvSummary).toContain("scenarioId");
     expect(artifact.csvSummary).toContain("mostCommonReasonCode");
     expect(serialized).not.toContain("authoritativeSnapshot");

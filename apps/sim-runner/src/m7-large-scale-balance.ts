@@ -195,6 +195,13 @@ export interface M7LargeScaleBalanceReasonCodeEvidenceV1 {
   readonly sampleRunIds: readonly string[];
 }
 
+interface M7BalanceExploitLoopEvidenceV1 {
+  readonly kind: "repeated-pair" | "concentration-window";
+  readonly eventId: string;
+  readonly choiceId: string;
+  readonly stepIndices: readonly number[];
+}
+
 export interface M7LargeScaleBalanceArtifactV1 {
   readonly schemaVersion: typeof M7_BETA_LARGE_SCALE_BALANCE_ARTIFACT_SCHEMA_VERSION;
   readonly kind: typeof M7_BETA_LARGE_SCALE_BALANCE_ARTIFACT_KIND;
@@ -568,6 +575,7 @@ function runScenarioBatchV1(input: {
   const maxChoiceCount = maxMapValue(choiceCounts);
   const diversity = uniqueEvents / stepCount;
   const hashNoise = hashText(`${scenario.scenarioId}:${seed}:mix:${sourceBundleHash}`);
+  const exploitLoopEvidence = analyzeExploitLoopEvidenceV1(trace);
 
   const snowballScore = clampScore(
     (hashNoise % 100) +
@@ -605,28 +613,52 @@ function runScenarioBatchV1(input: {
   const antiStallScore = clampScore(
     100 - Math.round(noActionShare * 100) + uniqueEvents * 4 - repeatEventCount * 8 + investCount * 6
   );
-  const stableScore = clampScore(
+  const rawStableScore = clampScore(
     ((hashNoise >>> 23) % 100) +
-      Math.max(0, 3 - [advanceCount, waitCount, deferCount, stabilizeCount, investCount, reformCount].filter((value) => value > 0).length) * 12
+      Math.max(
+        0,
+        3 -
+          [advanceCount, waitCount, deferCount, stabilizeCount, investCount, reformCount].filter(
+            (value) => value > 0
+          ).length
+      ) * 12
   );
 
   const flags: M7LargeScaleBalanceRunFlagsV1 = {
     runawayExpansion: snowballScore >= 70,
     unavoidableCollapse: collapseScore >= 70,
     noActionHeavyAi: noActionShare >= 0.5,
-    exploitLoopDetected: exploitLoopScore >= 70,
-    directControlDominance: directControlScore >= 85
+    exploitLoopDetected: exploitLoopEvidence !== null && exploitLoopScore >= 70,
+    directControlDominance: directControlShare > 0 && directControlScore >= 85
   };
+  const stableEligible =
+    !flags.runawayExpansion &&
+    !flags.unavoidableCollapse &&
+    !flags.noActionHeavyAi &&
+    !flags.exploitLoopDetected &&
+    !flags.directControlDominance;
+  const dominantDirectControlScore = flags.directControlDominance ? directControlScore : -1;
+  const dominantExploitLoopScore = flags.exploitLoopDetected ? exploitLoopScore : -1;
+  const dominantStableScore = stableEligible ? rawStableScore : -1;
   const dominantSignal = dominantSignalV1({
     snowballScore,
     collapseScore,
     noActionScore,
-    exploitLoopScore,
-    directControlScore,
-    stableScore
+    exploitLoopScore: dominantExploitLoopScore,
+    directControlScore: dominantDirectControlScore,
+    stableScore: dominantStableScore
   });
-  const dominantSignalStepIndex = dominantSignalStepIndexV1(trace, dominantSignal);
-  const replayPointer = trace[dominantSignalStepIndex]?.replayPointer ?? trace[0]?.replayPointer ?? `${scenario.scenarioId}|seed=${seed}|step=0`;
+  const dominantSignalStepIndex = dominantSignalStepIndexV1(trace, dominantSignal, exploitLoopEvidence);
+  const replayPointer =
+    dominantSignal === "exploit-loop" && exploitLoopEvidence !== null
+      ? buildExploitLoopReplayPointerV1({
+          scenarioId: scenario.scenarioId,
+          seed,
+          evidence: exploitLoopEvidence
+        })
+      : trace[dominantSignalStepIndex]?.replayPointer ??
+        trace[0]?.replayPointer ??
+        `${scenario.scenarioId}|seed=${seed}|step=0`;
   const runHash = hashCanonical({
     scenarioId: scenario.scenarioId,
     seed,
@@ -1035,6 +1067,18 @@ function buildReplayPointersFromSignalsV1(
   return runs.find((run) => run.dominantSignal === signal)?.replayPointer ?? null;
 }
 
+function buildExploitLoopReplayPointerV1(input: {
+  readonly scenarioId: string;
+  readonly seed: number;
+  readonly evidence: M7BalanceExploitLoopEvidenceV1;
+}): string {
+  const stepLabel =
+    input.evidence.kind === "repeated-pair"
+      ? input.evidence.stepIndices.join(",")
+      : `${input.evidence.stepIndices[0]}-${input.evidence.stepIndices[input.evidence.stepIndices.length - 1]}`;
+  return `${input.scenarioId}|seed=${input.seed}|loop=${input.evidence.kind}|event=${input.evidence.eventId}|choice=${input.evidence.choiceId}|steps=${stepLabel}`;
+}
+
 function buildReplayPointersV1(
   runs: readonly M7LargeScaleBalanceRunV1[]
 ): M7LargeScaleBalanceArtifactV1["replayPointers"] {
@@ -1122,7 +1166,8 @@ function dominantSignalV1(input: {
 
 function dominantSignalStepIndexV1(
   trace: readonly M7LargeScaleBalanceStepV1[],
-  signal: M7BalanceSignalV1
+  signal: M7BalanceSignalV1,
+  exploitLoopEvidence: M7BalanceExploitLoopEvidenceV1 | null
 ): number {
   if (trace.length === 0) {
     return 0;
@@ -1140,12 +1185,8 @@ function dominantSignalStepIndexV1(
     return index >= 0 ? index : 0;
   }
   if (signal === "exploit-loop") {
-    for (let index = 1; index < trace.length; index += 1) {
-      const previous = trace[index - 1];
-      const current = trace[index];
-      if (previous?.eventId === current?.eventId && previous.choiceId === current.choiceId) {
-        return index;
-      }
+    if (exploitLoopEvidence !== null && exploitLoopEvidence.stepIndices.length > 0) {
+      return exploitLoopEvidence.stepIndices[1] ?? exploitLoopEvidence.stepIndices[0] ?? 0;
     }
     return 0;
   }
@@ -1274,6 +1315,115 @@ function csvEscape(value: string): string {
 
 function uniqueSortedStrings(values: readonly string[]): readonly string[] {
   return [...new Set(values)].sort(compareText);
+}
+
+function analyzeExploitLoopEvidenceV1(
+  trace: readonly M7LargeScaleBalanceStepV1[]
+): M7BalanceExploitLoopEvidenceV1 | null {
+  if (trace.length < 2) {
+    return null;
+  }
+
+  const pairCounts = new Map<
+    string,
+    {
+      readonly eventId: string;
+      readonly choiceId: string;
+      stepIndices: number[];
+    }
+  >();
+  const eventCounts = new Map<string, number[]>();
+  const choiceCounts = new Map<string, number[]>();
+
+  for (const step of trace) {
+    const pairKey = `${step.eventId}|${step.choiceId}`;
+    const pairEntry = pairCounts.get(pairKey) ?? {
+      eventId: step.eventId,
+      choiceId: step.choiceId,
+      stepIndices: []
+    };
+    pairEntry.stepIndices.push(step.stepIndex);
+    pairCounts.set(pairKey, pairEntry);
+
+    const eventIndices = eventCounts.get(step.eventId) ?? [];
+    eventIndices.push(step.stepIndex);
+    eventCounts.set(step.eventId, eventIndices);
+
+    const choiceIndices = choiceCounts.get(step.choiceId) ?? [];
+    choiceIndices.push(step.stepIndex);
+    choiceCounts.set(step.choiceId, choiceIndices);
+  }
+
+  const repeatedPair = [...pairCounts.values()]
+    .filter((entry) => entry.stepIndices.length >= 2)
+    .sort((left, right) => {
+      const countDelta = right.stepIndices.length - left.stepIndices.length;
+      if (countDelta !== 0) {
+        return countDelta;
+      }
+      const leftFirst = left.stepIndices[0] ?? Number.MAX_SAFE_INTEGER;
+      const rightFirst = right.stepIndices[0] ?? Number.MAX_SAFE_INTEGER;
+      return leftFirst - rightFirst || compareText(`${left.eventId}|${left.choiceId}`, `${right.eventId}|${right.choiceId}`);
+    })[0];
+  if (repeatedPair !== undefined) {
+    return {
+      kind: "repeated-pair",
+      eventId: repeatedPair.eventId,
+      choiceId: repeatedPair.choiceId,
+      stepIndices: uniqueSortedNumbers(repeatedPair.stepIndices).slice(0, 4)
+    };
+  }
+
+  const repeatedEvent = selectConcentrationEntryV1(eventCounts);
+  const repeatedChoice = selectConcentrationEntryV1(choiceCounts);
+  if (repeatedEvent === null && repeatedChoice === null) {
+    return null;
+  }
+
+  const eventId = repeatedEvent?.label ?? repeatedChoice?.label ?? trace[0]?.eventId ?? "";
+  const choiceId = repeatedChoice?.label ?? repeatedEvent?.label ?? trace[0]?.choiceId ?? "";
+  const stepIndices = uniqueSortedNumbers([
+    ...(repeatedEvent?.stepIndices ?? []),
+    ...(repeatedChoice?.stepIndices ?? [])
+  ]).slice(0, 4);
+  if (stepIndices.length < 2) {
+    return null;
+  }
+
+  return {
+    kind: "concentration-window",
+    eventId,
+    choiceId,
+    stepIndices
+  };
+}
+
+function selectConcentrationEntryV1(
+  entries: ReadonlyMap<string, number[]>
+): { readonly label: string; readonly stepIndices: readonly number[] } | null {
+  const sortedEntries = [...entries.entries()]
+    .filter(([, stepIndices]) => stepIndices.length >= 2)
+    .sort((left, right) => {
+      const countDelta = right[1].length - left[1].length;
+      if (countDelta !== 0) {
+        return countDelta;
+      }
+      const leftFirst = left[1][0] ?? Number.MAX_SAFE_INTEGER;
+      const rightFirst = right[1][0] ?? Number.MAX_SAFE_INTEGER;
+      return leftFirst - rightFirst || compareText(left[0], right[0]);
+    });
+  const top = sortedEntries[0];
+  if (top === undefined) {
+    return null;
+  }
+  return {
+    label: top[0],
+    stepIndices: uniqueSortedNumbers(top[1]).slice(0, 4)
+  };
+}
+
+function uniqueSortedNumbers(values: readonly number[]): readonly number[] {
+  return [...new Set(values)].sort((left, right) => left - right);
 }
 
 function maxMapValue(values: ReadonlyMap<string, number>): number {
