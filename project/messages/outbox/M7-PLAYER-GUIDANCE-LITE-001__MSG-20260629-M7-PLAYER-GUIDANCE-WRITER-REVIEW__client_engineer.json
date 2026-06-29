@@ -1,0 +1,126 @@
+{
+  "message_id": "MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW",
+  "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
+  "from_role": "client_engineer",
+  "role": "client_engineer",
+  "thread_id": "019f1148-ac43-72d1-aeb2-44a4c14ee39f",
+  "status": "REVIEW",
+  "summary": "Implemented a lightweight M7 player guidance panel in the player shell with localized six-step guidance for first objective, district selection, inspection, governance preview, result observation, and next-step feedback. The panel is collapsible, dismissible/restorable, consumes existing read-model state and M7 guidance evidence, and does not submit commands or mutate simulation state.",
+  "branch_or_worktree": "feat/m7-player-guidance-lite",
+  "base_commit": "fd88e5d6a83355cbd94ab022a153cb66cfee568e",
+  "head_commit": null,
+  "head_commit_note": "This handoff is committed with the implementation; the exact final branch head is reported after commit by git rev-parse HEAD.",
+  "commit": null,
+  "route_to": "qa_reviewer",
+  "ROUTE_TO": "qa_reviewer",
+  "requested_action": "review",
+  "created_at": "2026-06-29T11:05:00+08:00",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/styles/shell.css",
+    ".storybook/WebClientShell.stories.tsx",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json"
+  ],
+  "changed_files": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed only this task's modified UI, Storybook, test, and handoff files before commit."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-PLAYER-GUIDANCE-LITE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-PLAYER-GUIDANCE-LITE-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed tasks; M7-PLAYER-GUIDANCE-LITE-001 remained IN_PROGRESS at validation time."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Reported M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001 as next ready task."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-PLAYER-GUIDANCE-LITE-001",
+      "exit_code": 0,
+      "result": "task file shape ok M7-PLAYER-GUIDANCE-LITE-001 IN_PROGRESS client_engineer qa_reviewer 6 14"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "All M1/M2/M3/M6/M7 content fixtures validated; M7 beta scenario-person-event manifest hash 92aed91e."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 9 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build passed; existing chunk-size warning remained."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed; existing Vite chunk-size and plugin timing warnings remained."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 21/21 tests, including English, zh-CN, system fallback, collapse, dismiss, and appointment-path guidance checks."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID project/messages/outbox/M7-PLAYER-GUIDANCE-LITE-001__MSG-20260629-M7-PLAYER-GUIDANCE-WRITER-REVIEW__client_engineer.json"
+    }
+  ],
+  "decisions": [
+    "Kept guidance as React local UI state only; dismiss/collapse does not write simulation state or client read models.",
+    "Consumed existing read-model presence, appointment flow state, command status, and M7 tutorial/hint/encyclopedia evidence instead of creating a new tutorial system.",
+    "Kept command submission in existing preview/confirm controls; guidance never auto-submits commands and explicitly reminds that command costs and rejection reasons stay visible in action panels.",
+    "Kept raw M7 tutorial/hints/encyclopedia workspace behind existing debug mode; player guidance uses localized generic player text and does not expose raw ids, raw reason codes, state hash, revision, milestone labels, or prototype labels.",
+    "Default guidance state remains review-aware because the current M7 content pack still carries review blockers; guidance stays usable while warning against irreversible choices."
+  ],
+  "scope_notes": [
+    "Modified only allowed paths under apps/web, packages/ui, tests, .storybook, and project/messages.",
+    "No packages/sim-core, protocol, save-format, map-renderer, platform, Electron, docs, status, or CI files were modified.",
+    "No new dependency, server, telemetry, cloud-save, account, release, branding, or manual node battle scope was introduced.",
+    "Historical and cultural wording is generic and review-aware; unresolved content risk remains routed by existing M7 review blockers rather than invented in UI text."
+  ],
+  "risks": [
+    "M7 guidance defaults to review-aware warning state because formal content lock acceptance is still outside this task.",
+    "Vite and Storybook continue to emit pre-existing chunk-size warnings; build commands exit successfully."
+  ],
+  "blockers": []
+}
