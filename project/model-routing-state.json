@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_map_topology_validation_in_progress",
+    "status": "active_map_topology_validation_qa_review",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "updated_at": "2026-06-30T20:47:20.072Z",
+    "updated_at": "2026-06-30T20:58:23.832Z",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
@@ -5494,11 +5494,11 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Wait for M7-MAP-TOPOLOGY-VALIDATION-001 test_engineer REVIEW handoff.",
-  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Wait for M7-MAP-TOPOLOGY-VALIDATION-001 independent qa_reviewer decision.",
+  "current_task_status": "REVIEW",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "owner_role": "test_engineer",
     "owner_configured_model": "gpt-5.4-mini",
     "owner_configured_effort": "high",
@@ -5513,6 +5513,13 @@
     "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-30T20:47:20.072Z",
-    "next_action": "Wait for test_engineer REVIEW handoff."
+    "next_action": "Wait for independent qa_reviewer decision.",
+    "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+    "review_ready_at": "2026-06-30T20:58:23.832Z",
+    "qa_thread_id": "019f1a52-6f93-7653-bbb0-5f85ba33a507",
+    "qa_thread_nickname": "Witness the 2nd",
+    "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-06-30T20:58:23.832Z"
   }
 }

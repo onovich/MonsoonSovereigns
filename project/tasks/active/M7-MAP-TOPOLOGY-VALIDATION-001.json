@@ -5,31 +5,44 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_monitoring_writer",
+      "status": "review_routed_to_qa",
       "branch_or_worktree": "codex/m7-map-topology-validation",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
       "base_main_commit": "e7b414271a355b4be7b78cb7c5b43db6a152bc38",
-      "updated_at": "2026-06-30T20:47:20.072Z"
+      "updated_at": "2026-06-30T20:58:23.832Z",
+      "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
+      "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json"
     },
     "test_engineer": {
       "thread_id": "019f1a48-010b-78b3-a682-af32c69fd521",
       "nickname": "Canary the 2nd",
-      "status": "in_progress",
+      "status": "review_ready",
       "branch_or_worktree": "codex/m7-map-topology-validation",
       "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-30T20:47:20.072Z"
+      "updated_at": "2026-06-30T20:58:23.832Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f1a52-6f93-7653-bbb0-5f85ba33a507",
+      "nickname": "Witness the 2nd",
+      "status": "review_requested",
+      "branch_or_worktree": "codex/m7-map-topology-validation",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-06-30T20:58:23.832Z"
     }
   },
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T20:47:20.072Z",
+  "updated_at": "2026-06-30T20:58:23.832Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-VALIDATION-001",
   "summary": "Validate topology-backed map recovery before M7 content-lock reconsideration",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "dependencies": [
@@ -100,5 +113,12 @@
   "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
   "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
   "started_at": "2026-06-30T20:47:20.072Z",
-  "next_action": "Wait for test_engineer REVIEW handoff, validate evidence, then route to independent qa_reviewer."
+  "next_action": "Wait for independent qa_reviewer ACCEPT / REQUEST_CHANGES / BLOCKED.",
+  "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+  "review_ready_at": "2026-06-30T20:58:23.832Z",
+  "qa_thread_id": "019f1a52-6f93-7653-bbb0-5f85ba33a507",
+  "qa_thread_nickname": "Witness the 2nd",
+  "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
+  "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+  "routed_to_qa_at": "2026-06-30T20:58:23.832Z"
 }
