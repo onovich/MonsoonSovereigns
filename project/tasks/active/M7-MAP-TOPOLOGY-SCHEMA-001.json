@@ -5,31 +5,47 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started_writer",
+      "status": "routed_to_qa",
       "branch_or_worktree": "codex/m7-map-topology-schema",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
-      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
+      "updated_at": "2026-06-30T23:55:00+08:00"
     },
     "systems_architect": {
       "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "nickname": "Lintel",
-      "status": "in_progress",
+      "status": "review_ready",
       "branch_or_worktree": "codex/m7-map-topology-schema",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
       "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
       "replacement_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "review_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
+      "updated_at": "2026-06-30T23:31:46.5495120+08:00"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
+      "nickname": "Auditor",
+      "status": "in_progress",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
+      "source_handoffs": [
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json"
+      ],
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "50540c83",
+      "updated_at": "2026-06-30T23:55:00+08:00"
     }
   },
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T23:14:02.6327270+08:00",
+  "updated_at": "2026-06-30T23:55:00+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "summary": "Introduce authoritative map topology definitions and read queries",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "dependencies": [
@@ -108,5 +124,13 @@
   "replacement_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
   "replacement_route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
   "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
-  "next_action": "Wait for systems_architect REVIEW handoff, then route to qa_reviewer."
+  "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+  "anti_grid_amendment_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json",
+  "review_commit": "50540c83",
+  "qa_thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
+  "qa_thread_nickname": "Auditor",
+  "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
+  "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+  "routed_to_qa_at": "2026-06-30T23:55:00+08:00",
+  "next_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff."
 }

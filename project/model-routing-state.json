@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_map_topology_schema_writer_in_progress",
+    "status": "active_map_topology_schema_qa_review_in_progress",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
-    "updated_at": "2026-06-30T22:41:30.6510548+08:00",
+    "updated_at": "2026-06-30T23:55:00+08:00",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-SCHEMA-001"
     ],
@@ -5550,7 +5550,7 @@
     ]
   },
   "m7_map_topology_schema": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
     "owner_role": "systems_architect",
     "reviewer_role": "qa_reviewer",
@@ -5565,9 +5565,17 @@
     "replacement_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
     "started_at": "2026-06-30T22:41:30.6510548+08:00",
-    "updated_at": "2026-06-30T23:14:02.6327270+08:00",
+    "updated_at": "2026-06-30T23:55:00+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Wait for systems_architect REVIEW handoff, then route to qa_reviewer."
+    "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+    "anti_grid_amendment_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json",
+    "review_commit": "50540c83",
+    "qa_thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
+    "qa_thread_nickname": "Auditor",
+    "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-06-30T23:55:00+08:00",
+    "next_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff."
   }
 }

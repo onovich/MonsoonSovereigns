@@ -4,13 +4,13 @@
   "type": "goal_mode_continuation",
   "status": "IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "02bf1690f7ef09784984f30ecaa0db19feb5595e",
+  "origin_main": "30779bac55c5192a666aa95611741443c8f3239e",
   "current_milestone": "M7",
   "current_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "current_tasks": [
     "M7-MAP-TOPOLOGY-SCHEMA-001"
   ],
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "REVIEW",
   "last_closed_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
   "last_integrated_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
   "last_main_commit": "30779bac55c5192a666aa95611741443c8f3239e",
@@ -23,14 +23,14 @@
       "task_ids": [
         "M7-MAP-TOPOLOGY-SCHEMA-001"
       ],
-      "status": "writer_in_progress",
+      "status": "qa_review_in_progress",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-map-topology-schema",
-      "updated_at": "2026-06-30T22:41:30.6510548+08:00",
+      "updated_at": "2026-06-30T23:55:00+08:00",
       "ready_after_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
       "ready_after_main_commit": "30779bac55c5192a666aa95611741443c8f3239e",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json"
@@ -38,17 +38,38 @@
     "systems_architect": {
       "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
-      "status": "in_progress",
+      "status": "review_ready",
       "role": "systems_architect",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-map-topology-schema",
-      "updated_at": "2026-06-30T23:14:02.6327270+08:00",
+      "updated_at": "2026-06-30T23:31:46.5495120+08:00",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
       "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json"
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "review_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "status": "in_progress",
+      "role": "qa_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "updated_at": "2026-06-30T23:55:00+08:00",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
+      "source_handoffs": [
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json"
+      ],
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "50540c83"
     }
   },
   "unresolved_risks": [
@@ -102,7 +123,7 @@
     {
       "id": "M7-MAP-TOPOLOGY-RECOVERY-BLOCKS-CONTENT-LOCK",
       "severity": "R4",
-      "status": "active_repair_planning_review",
+      "status": "schema_qa_review_in_progress",
       "summary": "Product owner rejected content lock because the map remains rectangular/grid-like at the topology level; topology recovery must validate before content lock reconsideration."
     }
   ],
@@ -116,7 +137,7 @@
     "note": "Product owner already requested changes. The active path is topology recovery review, not waiting for product-owner Human Gate reconsideration.",
     "recorded_at": "2026-06-30T21:47:04.0374837+08:00"
   },
-  "next_machine_action": "Wait for systems_architect REVIEW handoff for M7-MAP-TOPOLOGY-SCHEMA-001; do not start M7-EXIT-VALIDATION-001 and keep content lock blocked.",
+  "next_machine_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff for M7-MAP-TOPOLOGY-SCHEMA-001; do not start M7-EXIT-VALIDATION-001 and keep content lock blocked.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",

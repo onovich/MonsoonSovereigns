@@ -5,13 +5,13 @@
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
         "role": "lead_orchestrator",
-        "status": "active_map_topology_schema_writer_in_progress",
+        "status": "active_map_topology_schema_qa_review_in_progress",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-30T22:41:30.6510548+08:00",
+        "updated_at": "2026-06-30T23:55:00+08:00",
         "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
         "task_ids": [
           "M7-MAP-TOPOLOGY-SCHEMA-001"
@@ -7805,7 +7805,7 @@
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started_writer",
+      "status": "routed_to_qa",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -7813,7 +7813,7 @@
       "branch_or_worktree": "codex/m7-map-topology-schema",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
-      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
+      "updated_at": "2026-06-30T23:55:00+08:00"
     },
     "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect:replaced:019f18fa-eb5b-7c90-b951-f8416dc8742d": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
@@ -7841,7 +7841,7 @@
       "role": "systems_architect",
       "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "nickname": "Lintel",
-      "status": "in_progress",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7852,7 +7852,31 @@
       "previous_source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "review_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
+      "updated_at": "2026-06-30T23:31:46.5495120+08:00"
+    },
+    "M7-MAP-TOPOLOGY-SCHEMA-001:qa_reviewer": {
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
+      "nickname": "Auditor",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "source_handoffs": [
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json"
+      ],
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-30T23:55:00+08:00",
+      "review_commit": "50540c83",
+      "updated_at": "2026-06-30T23:55:00+08:00"
     }
   },
   "replaced_threads": [
@@ -8508,7 +8532,7 @@
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started_writer",
+      "status": "routed_to_qa",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -8516,7 +8540,7 @@
       "branch_or_worktree": "codex/m7-map-topology-schema",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
-      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
+      "updated_at": "2026-06-30T23:55:00+08:00"
     },
     "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect:replaced:019f18fa-eb5b-7c90-b951-f8416dc8742d": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
@@ -8544,7 +8568,7 @@
       "role": "systems_architect",
       "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "nickname": "Lintel",
-      "status": "in_progress",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -8555,7 +8579,31 @@
       "previous_source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "review_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
+      "updated_at": "2026-06-30T23:31:46.5495120+08:00"
+    },
+    "M7-MAP-TOPOLOGY-SCHEMA-001:qa_reviewer": {
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
+      "nickname": "Auditor",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "source_handoffs": [
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+        "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json"
+      ],
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-30T23:55:00+08:00",
+      "review_commit": "50540c83",
+      "updated_at": "2026-06-30T23:55:00+08:00"
     }
   }
 }
