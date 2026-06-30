@@ -30,17 +30,17 @@ const enUSMessages = {
   "shell.mapSummary": "Strategic situation map for districts, supply routes, and pressure points.",
   "shell.mapRecommendation": "Recommended target: {district}",
   "shell.mapLegend.label": "Map legend",
-  "shell.mapLegend.selected": "Selected district",
+  "shell.mapLegend.selected": "Current focus",
   "shell.mapLegend.routes": "Route layer",
   "shell.mapLegend.season": "Season layer",
   "shell.mapLegend.reachable": "Reachable route",
   "shell.mapLegend.blocked": "Blocked route",
   "shell.mapLegend.overloaded": "Capacity strained",
-  "shell.mapLegend.routeSupply": "Route / supply",
-  "shell.mapLegend.obligationFlow": "Obligation / tributary flow",
-  "shell.mapLegend.threatRisk": "Threat / risk",
-  "shell.mapLegend.blockedCapacity": "Blocked / capacity",
-  "shell.mapLegend.settlement": "Settlement marker",
+  "shell.mapLegend.routeSupply": "Supply path for the selected focus",
+  "shell.mapLegend.obligationFlow": "Obligation pressure tied to this focus",
+  "shell.mapLegend.threatRisk": "Risk area relevant to the open task",
+  "shell.mapLegend.blockedCapacity": "Blocked or strained path",
+  "shell.mapLegend.settlement": "Settlement",
   "shell.mapHover.label": "Map hover details",
   "shell.mapHover.empty": "Hover a district or settlement for route details.",
   "shell.mapHover.district": "{district}; {route}",
@@ -232,7 +232,10 @@ const enUSMessages = {
   "shell.selectedContext.label": "Selected district context",
   "shell.selectedContext.obligation":
     "{district}: {kind} obligation, {amount} due. Open the obligation panel from here.",
+  "shell.selectedContext.focus": "{district}: {action}. {reason}",
   "shell.selectedContext.openObligation": "Handle obligation",
+  "shell.decisionSurface.object.court": "Court",
+  "shell.decisionSurface.reason.obligationDue": "{amount} is due from this district.",
   "shell.guidanceLite.label": "Player guidance",
   "shell.guidanceLite.stepsLabel": "Player guidance steps",
   "shell.guidanceLite.title": "Player Guidance",
@@ -1088,7 +1091,10 @@ const zhCNMessages: UiCatalog = {
   "reason.m7.reviewStateVisible": "复核状态可见",
   "reason.manualNodeBattleDeferred": "手动节点会战已推迟",
   "reason.languageReviewRequired": "需要语言复核",
-  "reason.cultureHumanGateRequired": "需要文化 Human Gate"
+  "reason.cultureHumanGateRequired": "需要文化 Human Gate",
+  "shell.selectedContext.focus": "{district}: {action}. {reason}",
+  "shell.decisionSurface.object.court": "Court",
+  "shell.decisionSurface.reason.obligationDue": "{amount} is due from this district."
 };
 
 const catalogs: Record<ClientResolvedLocale, UiCatalog> = {

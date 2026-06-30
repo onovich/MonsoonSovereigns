@@ -1,0 +1,127 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW",
+  "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Synchronized the M7 strategic decision surface across task cards, map selection metadata, district list focus state, and the right inspector using a UI-only derived decision focus. Map legend entries now expose only stage-relevant overlays by default and use player-facing language for current focus, supply paths, obligation pressure, risk areas, blocked paths, and settlements. Focused Playwright coverage now proves obligations, appointments, and campaign task-card entry points keep map/list/inspector action and active-object state aligned while hiding irrelevant overlays and debug/read-model wording from the player legend.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-decision-surface-sync / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Initial task worktree was clean on codex/m7-map-decision-surface-sync before implementation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-DECISION-SURFACE-SYNC-001",
+      "exit_code": 0,
+      "result": "Task metadata validated."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M7-MAP-DECISION-SURFACE-SYNC-001.json",
+      "exit_code": 0,
+      "result": "Task id/status/route_to parsed successfully: M7-MAP-DECISION-SURFACE-SYNC-001, IN_PROGRESS, systems_architect."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready check exited cleanly with no console output."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui typecheck",
+      "exit_code": 0,
+      "result": "@monsoon/ui TypeScript check passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "@monsoon/ui Vitest suite passed: 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Web shell Vitest suite passed: 10 tests."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/map-renderer-m2-map.test.ts",
+      "exit_code": 0,
+      "result": "Map renderer Vitest coverage passed: 5 tests."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 decision surface synchronizes\"",
+      "exit_code": 0,
+      "result": "Focused Playwright decision-surface sync test passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before implementation commit."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Repository format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web production build passed; Vite emitted existing chunk-size warnings only."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook static build passed; Vite emitted timing/chunk warnings only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Full Playwright Chromium suite passed: 28 tests."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "UI_DERIVED_DECISION_FOCUS",
+      "decision": "Added a client-only derived decision focus in packages/ui that combines the selected read-model object, active task drawer, existing map mode, and command/query status; it does not introduce or mutate authoritative WorldState."
+    },
+    {
+      "id": "SURFACE_SYNC_ATTRIBUTES",
+      "decision": "Task rail, map surface, right inspector, route queue, and selected district rows now expose the same current action and active object so task-card, map, list, and inspector entry points stay aligned."
+    },
+    {
+      "id": "STAGE_RELEVANT_LEGEND",
+      "decision": "Map legend tones are filtered by active task and user-selected map mode, so route, obligation, risk, focus, settlement, and blocked overlays appear only when relevant or explicitly requested."
+    },
+    {
+      "id": "PLAYER_LANGUAGE_LEGEND",
+      "decision": "Legend copy was changed from engineering-style labels to player-facing meanings such as current focus, supply path, obligation pressure, risk area, blocked path, and settlement."
+    },
+    {
+      "id": "READ_MODEL_BOUNDARY_PRESERVED",
+      "decision": "The UI continues to consume existing client read-model slices and command/query outcomes only; no sim-core, protocol, save-format, Electron, server, content-source, or platform files were touched."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LOW_FIDELITY_MAP_REMAINS",
+      "severity": "P3",
+      "summary": "The map is still a low-fidelity strategic surface, but the visible legend and overlay filtering now make it read as a decision map instead of a debug diagram."
+    },
+    {
+      "id": "COLLAPSED_ROUTE_QUEUE_SYNC",
+      "severity": "P3",
+      "summary": "The district route queue remains mounted in a folded state outside the obligations drawer so list focus can stay synchronized across appointment and campaign task-card entry points; reviewer should confirm this is acceptable for the intended interaction model."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Please review M7-MAP-DECISION-SURFACE-SYNC-001 for architecture and protocol-boundary fit, especially that the decision focus remains a UI read-model projection and that task-card/map/list/inspector synchronization does not create new authoritative client state. After architecture review, route to test_engineer and qa_reviewer; add security_reviewer only if Electron risk is identified.",
+  "created_at": "2026-06-30T19:57:26+08:00"
+}

@@ -1,0 +1,89 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT",
+  "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-MAP-DECISION-SURFACE-SYNC-001 after systems_architect ACCEPT and independent qa_reviewer ACCEPT. The accepted implementation synchronizes task rail, strategic map metadata, route queue/district list focus state, and right inspector around UI-derived active action and active object metadata; filters default player map overlays so route/obligation/risk/focus information appears only when phase-relevant or explicitly selected; and preserves command/query/read-model authority boundaries. This acceptance does not approve formal M7 content lock and does not close the task until PR CI passes and the branch enters origin/main.",
+  "artifacts": [
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/tasks/active/M7-MAP-DECISION-SURFACE-SYNC-001.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-decision-surface-sync",
+  "commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+  "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+  "accepted_branch_head": "28135e1581476ce6c176964f81b220a50ebc5fd0",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer, systems, QA handoffs>",
+      "exit_code": 0,
+      "result": "PASS; writer REVIEW, systems ACCEPT, and QA ACCEPT handoffs are all valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-DECISION-SURFACE-SYNC-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list; node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; registry lists this task as REVIEW and ready emits no downstream task while it remains active."
+    },
+    {
+      "command": "git diff --check 26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1..HEAD",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors across the branch before lead acceptance."
+    },
+    {
+      "command": "git diff --name-only 26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1..HEAD",
+      "exit_code": 0,
+      "result": "PASS; implementation and process changes are limited to UI/Web/test paths plus project task/message/state and PROJECT_STATUS process note. Systems and QA accepted PROJECT_STATUS.md as a lead process checkpoint exception."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format check, lint, workspace typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_TASK",
+      "decision": "Accept M7-MAP-DECISION-SURFACE-SYNC-001 for PR integration after systems_architect and independent QA accepted."
+    },
+    {
+      "id": "PROJECT_STATUS_PROCESS_EXCEPTION_ACCEPTED",
+      "decision": "Accept PROJECT_STATUS.md in the cumulative branch as a lead process checkpoint exception, consistent with systems and QA review; the implementation commit itself stayed within allowed UI/Web/test paths."
+    },
+    {
+      "id": "NO_CONTENT_LOCK_APPROVAL",
+      "decision": "This task acceptance does not approve formal M7 content lock. M7-SYSTEMIC-INTERACTION-VALIDATION-001 must still run before product-owner reconsideration."
+    },
+    {
+      "id": "NO_SCOPE_EXPANSION",
+      "decision": "No sim-core, protocol, save-format, content-source, Electron, server, telemetry, final art, dependency, or manual node battle scope is approved or changed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LEGACY_MAP_A11Y_READ_MODEL_COPY",
+      "severity": "P3",
+      "summary": "QA noted existing map accessibility copy with read-model wording outside the updated visible legend path. It is not a blocker for this task but should be considered if later UX review expands to screen-reader copy."
+    },
+    {
+      "id": "SYSTEMIC_VALIDATION_REMAINS",
+      "severity": "R2",
+      "summary": "The broader systemic recovery still needs M7-SYSTEMIC-INTERACTION-VALIDATION-001 and product-owner content-lock reconsideration."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR for M7-MAP-DECISION-SURFACE-SYNC-001, wait for PR CI, merge to main, then mark the task CLOSED and continue to M7-SYSTEMIC-INTERACTION-VALIDATION-001.",
+  "created_at": "2026-06-30T20:19:35.2212703+08:00"
+}
