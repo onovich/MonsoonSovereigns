@@ -2,7 +2,7 @@
   "id": "M7-MAP-DECISION-SURFACE-SYNC-001",
   "summary": "Synchronize strategic map, task rail, and inspector as one decision surface",
   "milestone": "M7",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -80,16 +80,17 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "awaiting_qa_review",
+      "status": "accepted_pr_pending",
       "branch_or_worktree": "codex/m7-map-decision-surface-sync",
       "start_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "updated_at": "2026-06-30T20:10:37.8229868+08:00"
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
+      "lead_accept_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "client_engineer": {
       "thread_id": "019f184d-4a65-7af3-b367-e2b6932de186",
       "nickname": "Window",
-      "status": "review",
+      "status": "accepted",
       "role": "client_engineer",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
@@ -100,7 +101,7 @@
       "source_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
       "started_at": "2026-06-30T19:32:39.6612127+08:00",
-      "updated_at": "2026-06-30T19:59:35.6875155+08:00",
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
       "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
       "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c"
     },
@@ -119,14 +120,14 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
       "started_at": "2026-06-30T19:59:35.6875155+08:00",
-      "updated_at": "2026-06-30T20:10:37.8229868+08:00",
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
       "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json"
     },
     "qa_reviewer": {
       "thread_id": "019f1870-98c2-76f3-9e7d-e6654c1ed203",
       "nickname": "Witness",
       "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
-      "status": "in_progress",
+      "status": "accept",
       "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -138,7 +139,8 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
       "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
       "started_at": "2026-06-30T20:10:37.8229868+08:00",
-      "updated_at": "2026-06-30T20:10:37.8229868+08:00"
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json"
     }
   },
   "route_to": "systems_architect",
@@ -151,7 +153,7 @@
     "All player-visible text must pass through existing i18n boundaries."
   ],
   "created_at": "2026-06-30T09:46:39.564Z",
-  "updated_at": "2026-06-30T20:10:37.8229868+08:00",
+  "updated_at": "2026-06-30T20:19:35.2212703+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
@@ -161,7 +163,7 @@
   "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
   "ready_after_main_commit": "26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1",
   "ready_after_pr": 217,
-  "next_action": "Await independent qa_reviewer review.",
+  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted implementation.",
   "started_at": "2026-06-30T19:32:39.6612127+08:00",
   "start_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
@@ -180,5 +182,11 @@
   "qa_thread_nickname": "Witness",
   "qa_route": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
   "expected_qa_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
-  "routed_to_qa_at": "2026-06-30T20:10:37.8229868+08:00"
+  "routed_to_qa_at": "2026-06-30T20:10:37.8229868+08:00",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
+  "lead_accept_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-06-30T20:19:35.2212703+08:00",
+  "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+  "accepted_branch_head": "28135e1581476ce6c176964f81b220a50ebc5fd0"
 }

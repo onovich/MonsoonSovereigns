@@ -1,0 +1,133 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SYNC-QA-REVIEW",
+  "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M7-MAP-DECISION-SURFACE-SYNC-001 for the scoped systemic-interaction recovery step. Implementation commit 6b793907fc27308a96b7e2d5fd23da8134b6927c synchronizes the task rail, strategic map surface metadata, route queue/district list focus state, and right inspector around a UI-derived active action and active object. Default player mode no longer exposes every legend overlay at once: obligation focus shows current focus, selected supply path, obligation pressure, and settlement, while risk and blocked/capacity overlays are phase- or mode-relevant. The map renderer already filters situation-mode route rendering to selected-district related routes plus non-reachable routes, so the visible low-fidelity map is not an all-lines engineering diagram. Legend copy is player-facing and the new focused tests guard against read-model, debug, command-path, GameCommand, raw-reason, and reason-code wording in the player legend/task surface. The implementation stays inside UI/Web/test paths and preserves command/query/read-model boundaries; no authoritative WorldState mutation path, sim-core/protocol/save/content/Electron change, server, telemetry, manual node battle, final art, or dependency scope was introduced. The cumulative branch contains PROJECT_STATUS.md from the lead start process note outside task allowed_paths, but QA accepts it as a process checkpoint exception because it is not part of the implementation commit and has no product-code or forbidden-package impact.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+    "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-decision-surface-sync / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "implementation 6b793907fc27308a96b7e2d5fd23da8134b6927c; writer handoff 70207269817859dfd48c147a7a92afbe95f2b7fb; current branch process head 1b8b526a777f7e234802366a9b229bbcd42adf78 plus systems and QA handoff files",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before QA handoff write, branch was codex/m7-map-decision-surface-sync with untracked systems review handoff and systems-to-QA route only."
+    },
+    {
+      "command": "git diff --name-only 26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1..HEAD",
+      "exit_code": 0,
+      "result": "Cumulative tracked branch diff contained UI/Web/test files, allowed project task/message/route/model-state files, and PROJECT_STATUS.md from the lead process note."
+    },
+    {
+      "command": "git diff --check 26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-DECISION-SURFACE-SYNC-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry lists M7-MAP-DECISION-SURFACE-SYNC-001 as REVIEW/client_engineer; M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED and M7-SYSTEMIC-INTERACTION-VALIDATION-001 remains DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready check exited cleanly with no console output."
+    },
+    {
+      "command": "node -e <allowed/forbidden path scanner for 9a8fa0b5..6b793907 and 26e5bf68..HEAD>",
+      "exit_code": 0,
+      "result": "Implementation commit notAllowed [] and forbiddenHits []; cumulative branch forbiddenHits [] and notAllowed [PROJECT_STATUS.md] only."
+    },
+    {
+      "command": "git show --stat --oneline 6b793907fc27308a96b7e2d5fd23da8134b6927c",
+      "exit_code": 0,
+      "result": "Implementation commit changes only apps/web/src/shell/web-client-shell.test.tsx, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, and tests/ui-m2-district-list.test.tsx."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 10 tests."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 decision surface synchronizes\"",
+      "exit_code": 0,
+      "result": "Focused Playwright passed: 1/1 Chromium test. Existing NO_COLOR/FORCE_COLOR warnings only."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, workspace typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_DECISION_SURFACE_SYNC",
+      "decision": "Accept the UI-derived ClientDecisionSurfaceFocus and propagated data attributes as presentation/test metadata that synchronizes task cards, map selection, district list, route queue, and inspector without creating authoritative client world state."
+    },
+    {
+      "id": "ACCEPT_OVERLAY_DENOISING",
+      "decision": "Accept the default overlay/legend de-noising because player mode now exposes only phase-relevant legend tones, and situation-mode renderer behavior keeps route rendering selected-district or blocked-route relevant unless the user chooses route mode."
+    },
+    {
+      "id": "ACCEPT_PLAYER_LANGUAGE_LEGEND",
+      "decision": "Accept player-facing legend copy for this task. QA observed no new debug, read-model, command-path, GameCommand, raw-reason, or reason-code wording in the player legend or focused decision-surface test path."
+    },
+    {
+      "id": "ACCEPT_BOUNDARY_FIT",
+      "decision": "Accept the architecture boundary: player actions still submit through existing client command DTO builders and submit callbacks; the implementation introduces no sim-core, protocol, save-format, content-source, Electron, server, telemetry, dependency, or manual-battle changes."
+    },
+    {
+      "id": "ACCEPT_PROJECT_STATUS_PROCESS_EXCEPTION",
+      "decision": "Accept PROJECT_STATUS.md in the cumulative branch as a lead process start checkpoint exception, not an implementation-scope violation. The implementation commit itself stays within allowed paths and no forbidden path is present."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LEGACY_MAP_A11Y_READ_MODEL_COPY",
+      "severity": "P3",
+      "summary": "Existing map accessibility roledescription/help copy still contains read-model wording outside the updated legend path.",
+      "mitigation": "Not accepted as a blocker for this task because the current acceptance target was visible legend/decision-surface synchronization and the legacy text is already covered by pre-existing tests. Recommend a later accessibility-copy cleanup if content lock UX review expands to screen-reader copy."
+    },
+    {
+      "id": "PIXEL_LEVEL_UX_JUDGMENT_REMAINS_FOR_NEXT_VALIDATION",
+      "severity": "P3",
+      "summary": "QA validated DOM state, renderer route-filter behavior, tests, and boundary fit, but did not re-run the full screenshot matrix in this handoff.",
+      "mitigation": "Writer recorded build:web, storybook:build, and full 28-test e2e evidence; systems reran focused coverage. The next M7 systemic interaction validation should provide the broader UX/screenshot pass before content-lock reconsideration."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may treat M7-MAP-DECISION-SURFACE-SYNC-001 as QA accepted after handoff validation and proceed with normal integration/PR CI routing. Do not mark formal M7 content lock accepted from this task alone; it only advances the systemic interaction recovery chain toward M7-SYSTEMIC-INTERACTION-VALIDATION-001.",
+  "created_at": "2026-06-30T20:16:36+08:00"
+}

@@ -14,21 +14,22 @@
         "M7-CONTENT-LOCK-ACCEPTANCE-001",
         "M7-MAP-DECISION-SURFACE-SYNC-001"
       ],
-      "status": "awaiting_qa_review",
+      "status": "accepted_pr_pending",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-map-decision-surface-sync",
-      "updated_at": "2026-06-30T20:10:37.8229868+08:00",
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
       "start_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json"
+      "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "client_engineer": {
       "thread_id": "019f184d-4a65-7af3-b367-e2b6932de186",
       "nickname": "Window",
-      "status": "review",
+      "status": "accepted",
       "role": "client_engineer",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
@@ -39,7 +40,7 @@
       "source_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
       "started_at": "2026-06-30T19:32:39.6612127+08:00",
-      "updated_at": "2026-06-30T19:59:35.6875155+08:00",
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
       "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
       "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c"
     },
@@ -58,14 +59,14 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json",
       "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
       "started_at": "2026-06-30T19:59:35.6875155+08:00",
-      "updated_at": "2026-06-30T20:10:37.8229868+08:00",
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
       "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json"
     },
     "qa_reviewer": {
       "thread_id": "019f1870-98c2-76f3-9e7d-e6654c1ed203",
       "nickname": "Witness",
       "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
-      "status": "in_progress",
+      "status": "accept",
       "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -77,7 +78,8 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
       "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
       "started_at": "2026-06-30T20:10:37.8229868+08:00",
-      "updated_at": "2026-06-30T20:10:37.8229868+08:00"
+      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json"
     }
   },
   "last_integrated_task": "M7-CORE-ACTION-LOOP-UX-001",
@@ -968,7 +970,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-30T20:10:37.8229868+08:00",
+  "last_updated_at": "2026-06-30T20:19:35.2212703+08:00",
   "updated_at": "2026-06-29T22:29:07.356Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2038,8 +2040,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "REVIEW",
-  "next_machine_action": "Await independent qa_reviewer review for M7-MAP-DECISION-SURFACE-SYNC-001.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Open PR for M7-MAP-DECISION-SURFACE-SYNC-001, wait for CI, merge to main, then close the task after origin/main integration.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3254,7 +3256,7 @@
     ]
   },
   "m7_map_decision_surface_sync": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
     "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
     "ready_after_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
@@ -3263,7 +3265,7 @@
     "reviewer_role": "systems_architect",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await independent qa_reviewer review.",
+    "next_action": "Open PR, wait for CI, merge to main, then close after origin/main integration.",
     "updated_at": "2026-06-30T19:25:37.5986242+08:00",
     "branch_or_worktree": "codex/m7-map-decision-surface-sync",
     "base_main_commit": "26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1",
@@ -3287,6 +3289,12 @@
     "qa_thread_nickname": "Witness",
     "qa_route": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
     "expected_qa_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
-    "routed_to_qa_at": "2026-06-30T20:10:37.8229868+08:00"
+    "routed_to_qa_at": "2026-06-30T20:10:37.8229868+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-30T20:19:35.2212703+08:00",
+    "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+    "accepted_branch_head": "28135e1581476ce6c176964f81b220a50ebc5fd0"
   }
 }
