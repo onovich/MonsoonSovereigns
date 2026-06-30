@@ -1,5 +1,6 @@
 import {
   calculateClientVirtualWindow,
+  createClientDistrictId,
   createM3AppointmentCommand,
   createM3BulkAppointmentCommand,
   createM4CampaignPlanCommand,
@@ -199,6 +200,19 @@ interface ClientTaskRailCard {
   readonly icon: string;
 }
 
+interface ClientDecisionSurfaceFocus {
+  readonly actionId: ClientTaskRailDrawerId;
+  readonly activeObjectLabel: string;
+  readonly activeObjectKind: "district" | "settlement" | "court";
+  readonly actionLabel: string;
+  readonly phaseLabel: string;
+  readonly problem: string;
+  readonly reason: string;
+  readonly visibleLegendTones: readonly MapLegendTone[];
+}
+
+type MapLegendTone = "selected" | "route" | "obligation" | "threat" | "blocked" | "settlement";
+
 export function ClientShellView({
   snapshot,
   mapSurface,
@@ -366,6 +380,22 @@ export function ClientShellView({
         snapshot.m4Campaign.plans[0] ??
         null);
   const selectedM4Siege = snapshot.m4Campaign.sieges[0] ?? null;
+  const decisionFocus = createDecisionSurfaceFocus({
+    snapshot,
+    selectedDistrict,
+    selectedSettlement,
+    selectedOffice: selectedM3Office,
+    selectedCampaign: selectedM4Campaign,
+    actionId: activeTaskDrawer,
+    mapMode,
+    m3FlowStage,
+    appointmentSubmissionState: m3AppointmentSubmissionState,
+    m3CommandStatus,
+    m4CommandStatus,
+    m5CommandStatus,
+    m6CommandStatus,
+    i18n
+  });
 
   function handleFilterChange(event: ChangeEvent<HTMLInputElement>): void {
     setFilter(event.currentTarget.value);
@@ -446,6 +476,11 @@ export function ClientShellView({
   }
 
   function handleOpenM3AppointmentFlow(): void {
+    const officeDistrictId = selectedM3Office?.administrativePreview?.districtId ?? null;
+    if (officeDistrictId !== null) {
+      onSelectedEntityChange({ kind: "district", districtId: officeDistrictId });
+    }
+    setDistrictBrowserCollapsed(true);
     setM3FlowStage(selectedM3Office === null ? "select-office" : "compare-candidates");
   }
 
@@ -475,6 +510,17 @@ export function ClientShellView({
     setRouteStatusFilter("all");
     setDistrictBrowserCollapsed(false);
     setActiveTaskDrawer("obligations");
+  }
+
+  function handleOpenCampaign(): void {
+    if (selectedM4Campaign?.target.kind === "district") {
+      onSelectedEntityChange({
+        kind: "district",
+        districtId: createClientDistrictId(Number(selectedM4Campaign.target.districtId))
+      });
+    }
+    setDistrictBrowserCollapsed(true);
+    setActiveTaskDrawer("campaign");
   }
 
   function handleConfirmObligationSupport(): void {
@@ -952,6 +998,9 @@ export function ClientShellView({
               data-selected-district-id={selectedDistrict?.districtId ?? "none"}
               data-selected-entity-kind={selectedEntity?.kind ?? "none"}
               data-hovered-district-id={hoveredDistrict?.districtId ?? "none"}
+              data-decision-action={decisionFocus.actionId}
+              data-decision-object={decisionFocus.activeObjectLabel}
+              data-visible-overlays={decisionFocus.visibleLegendTones.join(" ")}
             >
               {mapSurface}
               <span className="client-shell__map-selection">
@@ -971,6 +1020,7 @@ export function ClientShellView({
                     ? null
                     : findDistrictObligation(selectedDistrict, snapshot.m3Appointment)
                 }
+                decisionFocus={decisionFocus}
                 onOpenObligations={handleOpenObligations}
               />
               <output
@@ -983,12 +1033,9 @@ export function ClientShellView({
             </div>
 
             <div className="client-shell__map-legend" aria-label={i18n.t("shell.mapLegend.label")}>
-              <MapLegendItem tone="selected" label={i18n.t("shell.mapLegend.selected")} />
-              <MapLegendItem tone="route" label={i18n.t("shell.mapLegend.routeSupply")} />
-              <MapLegendItem tone="obligation" label={i18n.t("shell.mapLegend.obligationFlow")} />
-              <MapLegendItem tone="threat" label={i18n.t("shell.mapLegend.threatRisk")} />
-              <MapLegendItem tone="blocked" label={i18n.t("shell.mapLegend.blockedCapacity")} />
-              <MapLegendItem tone="settlement" label={i18n.t("shell.mapLegend.settlement")} />
+              {decisionFocus.visibleLegendTones.map((tone) => (
+                <MapLegendItem key={tone} tone={tone} label={formatMapLegendTone(tone, i18n)} />
+              ))}
             </div>
           </section>
 
@@ -999,6 +1046,7 @@ export function ClientShellView({
               selectedOffice={selectedM3Office}
               selectedEligibility={selectedM3Eligibility}
               selectedCampaign={selectedM4Campaign}
+              decisionFocus={decisionFocus}
               activeDrawer={activeTaskDrawer}
               m3FlowStage={m3FlowStage}
               m3CommandStatus={m3CommandStatus}
@@ -1038,6 +1086,7 @@ export function ClientShellView({
                   virtualWindow={virtualWindow}
                   derivationMs={districtProjection.derivationMs}
                   selectionMs={lastSelectionMs}
+                  currentActionId={decisionFocus.actionId}
                   onToggleCollapsed={() => setDistrictBrowserCollapsed(!isDistrictBrowserCollapsed)}
                   onFilterChange={handleFilterChange}
                   onRouteStatusFilterChange={handleRouteStatusFilterChange}
@@ -1059,6 +1108,7 @@ export function ClientShellView({
                 setActiveTaskDrawer("appointments");
               }}
               onOpenObligations={handleOpenObligations}
+              onOpenCampaign={handleOpenCampaign}
               onPreviewCampaign={() => {
                 handleSubmitM4Plan();
                 setActiveTaskDrawer("campaign");
@@ -1076,6 +1126,7 @@ export function ClientShellView({
               m4Campaign={snapshot.m4Campaign}
               canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
               canPreviewCampaign={selectedM4Campaign !== null}
+              decisionFocus={decisionFocus}
               provenanceNote={debugMode ? snapshot.districtList.provenance.note : ""}
               onPreviewAppointment={() => {
                 handleOpenM3AppointmentFlow();
@@ -1254,6 +1305,7 @@ interface DistrictRowButtonProps {
   readonly row: ClientDistrictRowReadModel;
   readonly isSelected: boolean;
   readonly isHovered: boolean;
+  readonly currentActionId: ClientTaskRailDrawerId;
   readonly onSelect: (row: ClientDistrictRowReadModel) => void;
   readonly onHover: (row: ClientDistrictRowReadModel | null) => void;
 }
@@ -1262,6 +1314,7 @@ function DistrictRowButton({
   row,
   isSelected,
   isHovered,
+  currentActionId,
   onSelect,
   onHover
 }: DistrictRowButtonProps): ReactElement {
@@ -1277,6 +1330,8 @@ function DistrictRowButton({
       aria-pressed={isSelected}
       data-district-id={row.districtId}
       data-hovered={isHovered ? "true" : "false"}
+      data-active-object={isSelected ? "true" : "false"}
+      data-current-action={isSelected ? currentActionId : "none"}
       onClick={() => onSelect(row)}
       onFocus={() => onHover(row)}
       onBlur={() => onHover(null)}
@@ -1308,17 +1363,308 @@ function MapLegendItem({ tone, label }: MapLegendItemProps): ReactElement {
   );
 }
 
+function createDecisionSurfaceFocus({
+  snapshot,
+  selectedDistrict,
+  selectedSettlement,
+  selectedOffice,
+  selectedCampaign,
+  actionId,
+  mapMode,
+  m3FlowStage,
+  appointmentSubmissionState,
+  m3CommandStatus,
+  m4CommandStatus,
+  m5CommandStatus,
+  m6CommandStatus,
+  i18n
+}: {
+  readonly snapshot: ClientReadModelSnapshot;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly selectedSettlement: ClientMapSettlementReadModel | null;
+  readonly selectedOffice: ClientM3OfficeReadModel | null;
+  readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly actionId: ClientTaskRailDrawerId;
+  readonly mapMode: ClientMapMode;
+  readonly m3FlowStage: M3AppointmentFlowStage;
+  readonly appointmentSubmissionState: M3AppointmentSubmissionState;
+  readonly m3CommandStatus: string | null;
+  readonly m4CommandStatus: string | null;
+  readonly m5CommandStatus: string | null;
+  readonly m6CommandStatus: string | null;
+  readonly i18n: ClientI18n;
+}): ClientDecisionSurfaceFocus {
+  const activeObjectLabel =
+    selectedSettlement === null
+      ? selectedDistrict === null
+        ? i18n.t("shell.decisionSurface.object.court")
+        : formatPlayerDistrictName(selectedDistrict, i18n)
+      : formatPlayerSettlementName(i18n);
+  const activeObjectKind =
+    selectedSettlement === null ? (selectedDistrict === null ? "court" : "district") : "settlement";
+  const selectedObligation =
+    selectedDistrict === null
+      ? null
+      : findDistrictObligation(selectedDistrict, snapshot.m3Appointment);
+  const commandStatus = m4CommandStatus ?? m3CommandStatus ?? m6CommandStatus ?? m5CommandStatus;
+  const actionLabel = formatDecisionSurfaceAction(actionId, i18n);
+  const phaseLabel = formatDecisionSurfacePhase({
+    actionId,
+    m3FlowStage,
+    appointmentSubmissionState,
+    commandStatus,
+    i18n
+  });
+  const problem = formatDecisionSurfaceProblem({
+    actionId,
+    activeObjectLabel,
+    selectedDistrict,
+    selectedOffice,
+    selectedCampaign,
+    selectedObligation,
+    commandStatus,
+    i18n
+  });
+  const reason = formatDecisionSurfaceReason({
+    actionId,
+    selectedDistrict,
+    selectedObligation,
+    selectedCampaign,
+    campaignSupplyDays: snapshot.m4Campaign.grain.expectedDaysOfSupply,
+    i18n
+  });
+
+  return {
+    actionId,
+    activeObjectLabel,
+    activeObjectKind,
+    actionLabel,
+    phaseLabel,
+    problem,
+    reason,
+    visibleLegendTones: selectVisibleMapLegendTones({
+      actionId,
+      mapMode,
+      selectedDistrict
+    })
+  };
+}
+
+function formatDecisionSurfaceAction(actionId: ClientTaskRailDrawerId, i18n: ClientI18n): string {
+  switch (actionId) {
+    case "obligations":
+      return i18n.t("shell.actions.reviewObligations");
+    case "appointments":
+      return i18n.t("shell.actions.previewAppointment");
+    case "campaign":
+      return i18n.t("shell.actions.previewCampaign");
+    case "succession":
+    case "notifications":
+    case "results":
+      return i18n.t("shell.taskRail.action.reviewDrawer");
+  }
+}
+
+function formatDecisionSurfacePhase({
+  actionId,
+  m3FlowStage,
+  appointmentSubmissionState,
+  commandStatus,
+  i18n
+}: {
+  readonly actionId: ClientTaskRailDrawerId;
+  readonly m3FlowStage: M3AppointmentFlowStage;
+  readonly appointmentSubmissionState: M3AppointmentSubmissionState;
+  readonly commandStatus: string | null;
+  readonly i18n: ClientI18n;
+}): string {
+  if (actionId === "appointments") {
+    if (commandStatus !== null || appointmentSubmissionState === "accepted") {
+      return i18n.t("shell.actionLoop.phase.result");
+    }
+    if (m3FlowStage === "preview") {
+      return i18n.t("shell.actionLoop.phase.confirm");
+    }
+    return i18n.t("shell.actionLoop.phase.appointment");
+  }
+  if (actionId === "campaign") {
+    return i18n.t("shell.actionLoop.phase.campaign");
+  }
+  if (actionId === "obligations") {
+    return i18n.t("shell.actionLoop.phase.obligation");
+  }
+  if (actionId === "results") {
+    return i18n.t("shell.actionLoop.phase.result");
+  }
+  return i18n.t("shell.actionLoop.phase.supply");
+}
+
+function formatDecisionSurfaceProblem({
+  actionId,
+  activeObjectLabel,
+  selectedDistrict,
+  selectedOffice,
+  selectedCampaign,
+  selectedObligation,
+  commandStatus,
+  i18n
+}: {
+  readonly actionId: ClientTaskRailDrawerId;
+  readonly activeObjectLabel: string;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly selectedOffice: ClientM3OfficeReadModel | null;
+  readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly selectedObligation: ClientM3ObligationReadModel | null;
+  readonly commandStatus: string | null;
+  readonly i18n: ClientI18n;
+}): string {
+  switch (actionId) {
+    case "appointments":
+      return selectedOffice === null
+        ? i18n.t("shell.taskRail.appointments.problemEmpty")
+        : i18n.t("shell.taskRail.appointments.problem", { office: selectedOffice.displayName });
+    case "campaign":
+      return selectedCampaign === null
+        ? i18n.t("shell.taskRail.campaign.problemEmpty")
+        : i18n.t("shell.taskRail.campaign.problem", {
+            target: formatCampaignPlanTargetLabel(selectedCampaign, i18n)
+          });
+    case "succession":
+      return i18n.t("shell.taskRail.succession.reason");
+    case "notifications":
+      return i18n.t("shell.taskRail.notifications.problem");
+    case "results":
+      return commandStatus === null
+        ? i18n.t("shell.actions.idleStatus")
+        : i18n.t("shell.taskRail.results.problem", { status: commandStatus });
+    case "obligations":
+      if (selectedDistrict === null) {
+        return i18n.t("shell.taskRail.problem.selectDistrict");
+      }
+      if (selectedObligation === null) {
+        return i18n.t("shell.taskRail.obligations.problemStable", {
+          district: activeObjectLabel
+        });
+      }
+      return i18n.t("shell.taskRail.obligations.problem", {
+        district: activeObjectLabel,
+        kind: formatDistrictObligationKind(selectedObligation.obligationKind, i18n)
+      });
+  }
+}
+
+function formatDecisionSurfaceReason({
+  actionId,
+  selectedDistrict,
+  selectedObligation,
+  selectedCampaign,
+  campaignSupplyDays,
+  i18n
+}: {
+  readonly actionId: ClientTaskRailDrawerId;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly selectedObligation: ClientM3ObligationReadModel | null;
+  readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly campaignSupplyDays: number;
+  readonly i18n: ClientI18n;
+}): string {
+  if (selectedDistrict?.route.status === "unreachable") {
+    return i18n.t("shell.taskRail.reason.routeBlocked");
+  }
+  switch (actionId) {
+    case "appointments":
+      return i18n.t("shell.taskRail.appointments.reason");
+    case "campaign":
+      return selectedCampaign === null
+        ? i18n.t("shell.taskRail.campaign.problemEmpty")
+        : i18n.t("shell.taskRail.campaign.reason", {
+            days: i18n.formatNumber(campaignSupplyDays)
+          });
+    case "succession":
+      return i18n.t("shell.taskRail.succession.reason");
+    case "notifications":
+      return i18n.t("shell.taskRail.notifications.reason");
+    case "results":
+      return i18n.t("shell.taskRail.results.reason", { count: i18n.formatNumber(0) });
+    case "obligations":
+      return selectedObligation === null
+        ? i18n.t("shell.taskRail.obligations.reason")
+        : i18n.t("shell.decisionSurface.reason.obligationDue", {
+            amount: i18n.formatNumber(selectedObligation.amount)
+          });
+  }
+}
+
+function selectVisibleMapLegendTones({
+  actionId,
+  mapMode,
+  selectedDistrict
+}: {
+  readonly actionId: ClientTaskRailDrawerId;
+  readonly mapMode: ClientMapMode;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+}): readonly MapLegendTone[] {
+  const tones: MapLegendTone[] = ["selected"];
+  if (mapMode === "routes" || actionId === "obligations" || actionId === "campaign") {
+    tones.push("route");
+  }
+  if (actionId === "obligations") {
+    tones.push("obligation");
+  }
+  if (
+    mapMode === "routes" ||
+    selectedDistrict?.route.status === "capacity-exceeded" ||
+    selectedDistrict?.route.status === "unreachable"
+  ) {
+    tones.push("blocked");
+  }
+  if (actionId === "campaign" || actionId === "notifications") {
+    tones.push("threat");
+  }
+  tones.push("settlement");
+  return uniqueLegendTones(tones);
+}
+
+function uniqueLegendTones(tones: readonly MapLegendTone[]): readonly MapLegendTone[] {
+  const uniqueTones: MapLegendTone[] = [];
+  for (const tone of tones) {
+    if (!uniqueTones.includes(tone)) {
+      uniqueTones.push(tone);
+    }
+  }
+  return uniqueTones;
+}
+
+function formatMapLegendTone(tone: MapLegendTone, i18n: ClientI18n): string {
+  switch (tone) {
+    case "selected":
+      return i18n.t("shell.mapLegend.selected");
+    case "route":
+      return i18n.t("shell.mapLegend.routeSupply");
+    case "obligation":
+      return i18n.t("shell.mapLegend.obligationFlow");
+    case "threat":
+      return i18n.t("shell.mapLegend.threatRisk");
+    case "blocked":
+      return i18n.t("shell.mapLegend.blockedCapacity");
+    case "settlement":
+      return i18n.t("shell.mapLegend.settlement");
+  }
+}
+
 function SelectedDistrictActionContext({
   selectedDistrict,
   obligation,
+  decisionFocus,
   onOpenObligations
 }: {
   readonly selectedDistrict: ClientDistrictRowReadModel | null;
   readonly obligation: ClientM3ObligationReadModel | null;
+  readonly decisionFocus: ClientDecisionSurfaceFocus;
   readonly onOpenObligations: () => void;
 }): ReactElement | null {
   const i18n = useContext(ClientI18nContext);
-  if (selectedDistrict === null || obligation === null) {
+  if (selectedDistrict === null) {
     return null;
   }
 
@@ -1327,18 +1673,28 @@ function SelectedDistrictActionContext({
     <div
       className="client-shell__selected-context"
       aria-label={i18n.t("shell.selectedContext.label")}
-      data-selected-context-obligation="true"
+      data-selected-context-obligation={obligation === null ? "false" : "true"}
+      data-selected-context-action={decisionFocus.actionId}
+      data-selected-context-object={district}
     >
       <span>
-        {i18n.t("shell.selectedContext.obligation", {
-          district,
-          kind: formatDistrictObligationKind(obligation.obligationKind, i18n),
-          amount: i18n.formatNumber(obligation.amount)
-        })}
+        {obligation === null || decisionFocus.actionId !== "obligations"
+          ? i18n.t("shell.selectedContext.focus", {
+              district,
+              action: decisionFocus.actionLabel,
+              reason: decisionFocus.reason
+            })
+          : i18n.t("shell.selectedContext.obligation", {
+              district,
+              kind: formatDistrictObligationKind(obligation.obligationKind, i18n),
+              amount: i18n.formatNumber(obligation.amount)
+            })}
       </span>
-      <button type="button" onClick={onOpenObligations}>
-        {i18n.t("shell.selectedContext.openObligation")}
-      </button>
+      {decisionFocus.actionId === "obligations" ? (
+        <button type="button" onClick={onOpenObligations}>
+          {i18n.t("shell.selectedContext.openObligation")}
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -1350,6 +1706,7 @@ interface DistrictPanelProps {
   readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
   readonly canPreviewAppointment: boolean;
   readonly canPreviewCampaign: boolean;
+  readonly decisionFocus: ClientDecisionSurfaceFocus;
   readonly provenanceNote: string;
   readonly onPreviewAppointment: () => void;
   readonly onPreviewCampaign: () => void;
@@ -1363,6 +1720,7 @@ function DistrictPanel({
   m4Campaign,
   canPreviewAppointment,
   canPreviewCampaign,
+  decisionFocus,
   provenanceNote,
   onPreviewAppointment,
   onPreviewCampaign,
@@ -1384,6 +1742,7 @@ function DistrictPanel({
     m4Campaign,
     canPreviewAppointment,
     canPreviewCampaign,
+    preferredAction: decisionFocus.actionId,
     i18n
   });
 
@@ -1392,6 +1751,8 @@ function DistrictPanel({
       className="district-panel"
       aria-label={i18n.t("shell.inspector.label")}
       data-selected-district-id={row.districtId}
+      data-active-object={decisionFocus.activeObjectLabel}
+      data-current-action={decisionFocus.actionId}
     >
       <div className="district-panel__title">
         <h2>{formatPlayerDistrictName(row, i18n)}</h2>
@@ -1761,6 +2122,7 @@ function createDistrictDecisionAssistant({
   m4Campaign,
   canPreviewAppointment,
   canPreviewCampaign,
+  preferredAction,
   i18n
 }: {
   readonly row: ClientDistrictRowReadModel;
@@ -1768,6 +2130,7 @@ function createDistrictDecisionAssistant({
   readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
   readonly canPreviewAppointment: boolean;
   readonly canPreviewCampaign: boolean;
+  readonly preferredAction: ClientTaskRailDrawerId;
   readonly i18n: ClientI18n;
 }): DistrictDecisionAssistantSummary {
   const district = formatPlayerDistrictName(row, i18n);
@@ -1788,6 +2151,41 @@ function createDistrictDecisionAssistant({
       reasonCodes: uniqueReasonCodes([
         ...getRouteForecastReasonCodes(routeForecast),
         ...m4Campaign.route.reasonCodes
+      ])
+    };
+  }
+
+  if (
+    preferredAction === "appointments" &&
+    canPreviewAppointment &&
+    administrativePreview !== null
+  ) {
+    return {
+      problem: i18n.t("shell.inspector.decision.problem.governance", { district }),
+      recommendation: i18n.t("shell.inspector.decision.recommendation.appointment"),
+      cost,
+      benefit: i18n.t("shell.inspector.decision.benefit.governance"),
+      risk: i18n.t("shell.inspector.decision.risk.governance"),
+      nextAction: i18n.t("shell.inspector.actionAppointment"),
+      reasonCodes: uniqueReasonCodes(administrativePreview.reasonCodes)
+    };
+  }
+
+  if (preferredAction === "campaign" && canPreviewCampaign && campaignPlan !== null) {
+    return {
+      problem: i18n.t("shell.inspector.decision.problem.campaign", {
+        target: formatCampaignPlanTargetLabel(campaignPlan, i18n)
+      }),
+      recommendation: i18n.t("shell.inspector.decision.recommendation.campaign"),
+      cost,
+      benefit: i18n.t("shell.inspector.decision.benefit.campaign"),
+      risk: i18n.t("shell.inspector.decision.risk.campaign"),
+      nextAction: i18n.t("shell.inspector.actionCampaign"),
+      reasonCodes: uniqueReasonCodes([
+        campaignPlan.statusReasonCode,
+        ...campaignPlan.reasonCodes,
+        ...campaignPlan.forecast.reasonCodes,
+        ...getRouteForecastReasonCodes(routeForecast)
       ])
     };
   }
@@ -2437,6 +2835,7 @@ interface TaskRailProps {
   readonly selectedOffice: ClientM3OfficeReadModel | null;
   readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
   readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
+  readonly decisionFocus: ClientDecisionSurfaceFocus;
   readonly activeDrawer: ClientTaskRailDrawerId;
   readonly m3FlowStage: M3AppointmentFlowStage;
   readonly m3CommandStatus: string | null;
@@ -2450,6 +2849,7 @@ interface TaskRailProps {
   readonly onDrawerChange: (drawerId: ClientTaskRailDrawerId) => void;
   readonly onOpenAppointment: () => void;
   readonly onOpenObligations: () => void;
+  readonly onOpenCampaign: () => void;
   readonly onPreviewCampaign: () => void;
   readonly onConfirmObligation: () => void;
   readonly onDismissGuidance: () => void;
@@ -2463,6 +2863,7 @@ function TaskRail({
   selectedOffice,
   selectedEligibility,
   selectedCampaign,
+  decisionFocus,
   activeDrawer,
   m3FlowStage,
   m3CommandStatus,
@@ -2476,6 +2877,7 @@ function TaskRail({
   onDrawerChange,
   onOpenAppointment,
   onOpenObligations,
+  onOpenCampaign,
   onPreviewCampaign,
   onConfirmObligation,
   onDismissGuidance,
@@ -2503,6 +2905,8 @@ function TaskRail({
       className="task-rail"
       aria-label={i18n.t("shell.taskRail.label")}
       data-active-drawer={activeDrawerId}
+      data-current-action={decisionFocus.actionId}
+      data-active-object={decisionFocus.activeObjectLabel}
       data-task-rail-card-count={cards.length}
     >
       <header className="task-rail__header">
@@ -2519,6 +2923,8 @@ function TaskRail({
             data-task-rail-card-kind={card.id}
             data-task-severity={card.severity}
             data-task-active={activeDrawerId === card.id ? "true" : "false"}
+            data-current-action={decisionFocus.actionId === card.id ? "true" : "false"}
+            aria-current={decisionFocus.actionId === card.id ? "true" : undefined}
             onClick={() => {
               onDrawerChange(card.id);
               if (card.id === "appointments") {
@@ -2526,6 +2932,9 @@ function TaskRail({
               }
               if (card.id === "obligations") {
                 onOpenObligations();
+              }
+              if (card.id === "campaign") {
+                onOpenCampaign();
               }
             }}
           >
@@ -2566,6 +2975,7 @@ function TaskRail({
           routeQueue,
           onPreviewCampaign,
           onOpenObligations,
+          onOpenCampaign,
           onConfirmObligation,
           onDismissGuidance,
           onRestoreGuidance,
@@ -2573,6 +2983,7 @@ function TaskRail({
           i18n
         })}
       </section>
+      {activeDrawerId === "obligations" ? null : routeQueue}
     </section>
   );
 }
@@ -2759,7 +3170,7 @@ function renderTaskRailDrawer({
   i18n
 }: Omit<
   TaskRailProps,
-  "activeDrawer" | "selectedEligibility" | "onDrawerChange" | "onOpenAppointment"
+  "activeDrawer" | "selectedEligibility" | "decisionFocus" | "onDrawerChange" | "onOpenAppointment"
 > & {
   readonly drawerId: ClientTaskRailDrawerId;
   readonly i18n: ClientI18n;
@@ -2995,6 +3406,7 @@ interface DistrictRouteQueueProps {
   readonly virtualWindow: ReturnType<typeof calculateClientVirtualWindow>;
   readonly derivationMs: number;
   readonly selectionMs: number;
+  readonly currentActionId: ClientTaskRailDrawerId;
   readonly onToggleCollapsed: () => void;
   readonly onFilterChange: (event: ChangeEvent<HTMLInputElement>) => void;
   readonly onRouteStatusFilterChange: (event: ChangeEvent<HTMLSelectElement>) => void;
@@ -3018,6 +3430,7 @@ function DistrictRouteQueue({
   virtualWindow,
   derivationMs,
   selectionMs,
+  currentActionId,
   onToggleCollapsed,
   onFilterChange,
   onRouteStatusFilterChange,
@@ -3033,6 +3446,8 @@ function DistrictRouteQueue({
       aria-label={i18n.t("shell.list.label")}
       data-folded={isCollapsed ? "true" : "false"}
       data-render-bound="virtualized"
+      data-selected-district-id={selectedDistrictId}
+      data-current-action={currentActionId}
     >
       <header className="district-list__header">
         <div>
@@ -3160,6 +3575,7 @@ function DistrictRouteQueue({
                       row={row}
                       isSelected={selectedDistrictId === row.districtId}
                       isHovered={hoveredDistrictId === row.districtId}
+                      currentActionId={currentActionId}
                       onSelect={onSelect}
                       onHover={onHover}
                     />

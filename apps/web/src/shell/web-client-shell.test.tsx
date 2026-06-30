@@ -222,10 +222,13 @@ describe("web client shell", () => {
     expect(markup).toContain('aria-pressed="true">Situation</button>');
     expect(markup).toContain('aria-label="Map pan"');
     expect(markup).toContain('aria-label="Map hover details"');
-    expect(markup).toContain("Route / supply");
-    expect(markup).toContain("Obligation / tributary flow");
-    expect(markup).toContain("Threat / risk");
-    expect(markup).toContain("Blocked / capacity");
+    expect(markup).toContain("Supply path for the selected focus");
+    expect(markup).toContain("Obligation pressure tied to this focus");
+    expect(markup).not.toContain("Risk area relevant to the open task");
+    expect(markup).not.toContain("Blocked or strained path");
+    expect(markup).toContain('data-decision-action="obligations"');
+    expect(markup).toContain('data-current-action="obligations"');
+    expect(markup).toContain('data-active-object="District 1"');
     expect(markup).toContain('data-map-presentation="soft-strategic-regions"');
     expect(markup).toContain('data-player-grid="hidden"');
     expect(markup).toContain("Recommended target: District 1");

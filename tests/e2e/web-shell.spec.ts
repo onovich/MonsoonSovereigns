@@ -136,17 +136,6 @@ test("web shell loads and projects the read model", async ({ page }) => {
   expect(obligationPanelText).not.toMatch(
     /read model|read-model|read-only|GameCommand|command path|raw reason|reason-code|internal jargon/i
   );
-  await expect(page.getByRole("button", { name: "Prepare obligation support" })).toBeEnabled();
-  await page.getByRole("button", { name: "Prepare obligation support" }).click();
-  await expect(page.getByLabel("Expanded task drawer")).toHaveAttribute(
-    "data-task-drawer-expanded",
-    "results"
-  );
-  await expect(page.getByLabel("Expanded task drawer")).toContainText(
-    "District 1 Troop obligation support prepared"
-  );
-  await expect(page.getByText("M2 prototype map ready")).toHaveCount(0);
-  await expect(page.getByText("Prototype District 001")).toHaveCount(0);
   await expectMountedPixiMapRenderer(page);
   await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
     "data-district-count",
@@ -172,10 +161,41 @@ test("web shell loads and projects the read model", async ({ page }) => {
     "aria-pressed",
     "true"
   );
-  await expect(page.getByLabel("Map legend")).toContainText("Route / supply");
-  await expect(page.getByLabel("Map legend")).toContainText("Obligation / tributary flow");
-  await expect(page.getByLabel("Map legend")).toContainText("Threat / risk");
-  await expect(page.getByLabel("Map legend")).toContainText("Blocked / capacity");
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-visible-overlays",
+    "selected route obligation settlement"
+  );
+  await expect(page.getByLabel("Map legend")).toContainText("Supply path for the selected focus");
+  await expect(page.getByLabel("Map legend")).toContainText(
+    "Obligation pressure tied to this focus"
+  );
+  await expect(page.getByLabel("Map legend")).not.toContainText(
+    "Risk area relevant to the open task"
+  );
+  await expect(page.getByRole("button", { name: "Prepare obligation support" })).toBeEnabled();
+  await page.getByRole("button", { name: "Prepare obligation support" }).click();
+  await expect(page.getByLabel("Expanded task drawer")).toHaveAttribute(
+    "data-task-drawer-expanded",
+    "results"
+  );
+  await expect(page.getByLabel("Expanded task drawer")).toContainText(
+    "District 1 Troop obligation support prepared"
+  );
+  await expect(page.getByText("M2 prototype map ready")).toHaveCount(0);
+  await expect(page.getByText("Prototype District 001")).toHaveCount(0);
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-visible-overlays",
+    "selected settlement"
+  );
+  await expect(page.getByLabel("Map legend")).not.toContainText(
+    "Supply path for the selected focus"
+  );
+  await expect(page.getByLabel("Map legend")).not.toContainText(
+    "Obligation pressure tied to this focus"
+  );
+  await expect(page.getByLabel("Map legend")).not.toContainText(
+    "Risk area relevant to the open task"
+  );
   await expect(page.locator(".client-shell__dev-overlay")).toHaveCount(0);
   await expect(page.locator(".client-shell__map-revision")).toHaveCount(0);
 });
@@ -207,6 +227,60 @@ test("appointment preview and confirmation show durable player feedback", async 
   await expect(appointmentFlow.getByRole("status")).toContainText("Accepted");
   await expect(appointmentFlow.getByRole("status")).toContainText("Appointment request prepared.");
   await expect(page.getByLabel("Core action loop")).toContainText("Read result");
+});
+
+test("M7 decision surface synchronizes task card map list and inspector focus", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  const taskRail = page.getByRole("region", { name: "Task rail" });
+  const mapSurface = page.locator(".client-shell__map-surface");
+  const inspector = page.locator(".district-panel");
+  const routeQueue = page.locator(".client-shell__route-queue");
+  const activeDistrictRow = page.locator('.district-list__row[data-active-object="true"]');
+  const mapLegend = page.getByLabel("Map legend");
+
+  await expect(taskRail).toHaveAttribute("data-current-action", "obligations");
+  await expect(taskRail).toHaveAttribute("data-active-object", "District 1");
+  await expect(mapSurface).toHaveAttribute("data-decision-action", "obligations");
+  await expect(mapSurface).toHaveAttribute("data-decision-object", "District 1");
+  await expect(mapSurface).toHaveAttribute("data-selected-district-id", "1");
+  await expect(inspector).toHaveAttribute("data-current-action", "obligations");
+  await expect(inspector).toHaveAttribute("data-active-object", "District 1");
+  await expect(routeQueue).toHaveAttribute("data-current-action", "obligations");
+  await expect(routeQueue).toHaveAttribute("data-selected-district-id", "1");
+  await expect(activeDistrictRow).toHaveAttribute("data-district-id", "1");
+  await expect(activeDistrictRow).toHaveAttribute("data-current-action", "obligations");
+  await expect(mapLegend).not.toContainText("Risk area relevant to the open task");
+
+  await taskRail.locator('[data-task-rail-card-kind="appointments"]').click();
+  await expect(taskRail).toHaveAttribute("data-current-action", "appointments");
+  await expect(taskRail.locator('[data-task-rail-card-kind="appointments"]')).toHaveAttribute(
+    "data-current-action",
+    "true"
+  );
+  await expect(mapSurface).toHaveAttribute("data-decision-action", "appointments");
+  await expect(inspector).toHaveAttribute("data-current-action", "appointments");
+  await expect(routeQueue).toHaveAttribute("data-current-action", "appointments");
+  await expect(routeQueue).toHaveAttribute("data-selected-district-id", "1");
+  await expect(routeQueue).toHaveAttribute("data-folded", "true");
+  await expect(inspector).toContainText("Preview appointment");
+  await expect(mapSurface).toHaveAttribute("data-visible-overlays", "selected settlement");
+  await expect(mapLegend).not.toContainText("Obligation pressure tied to this focus");
+
+  await taskRail.locator('[data-task-rail-card-kind="campaign"]').click();
+  await expect(taskRail).toHaveAttribute("data-current-action", "campaign");
+  await expect(mapSurface).toHaveAttribute("data-decision-action", "campaign");
+  await expect(inspector).toHaveAttribute("data-current-action", "campaign");
+  await expect(taskRail.locator('[data-task-rail-card-kind="campaign"]')).toHaveAttribute(
+    "data-current-action",
+    "true"
+  );
+  await expect(mapLegend).toContainText("Risk area relevant to the open task");
+  await expect(mapLegend).not.toContainText("read-model");
+  await expect(mapLegend).not.toContainText("debug");
+  await expect(mapLegend).not.toContainText("command path");
 });
 
 test("web shell resolves system language, switches language, and persists preference", async ({
@@ -497,10 +571,13 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
       "aria-roledescription",
       "keyboard navigable map read model"
     );
-    await expect(mapLegend).toContainText("Route / supply");
-    await expect(mapLegend).toContainText("Obligation / tributary flow");
-    await expect(mapLegend).toContainText("Threat / risk");
-    await expect(mapLegend).toContainText("Blocked / capacity");
+    await expect(mapSurface).toHaveAttribute(
+      "data-visible-overlays",
+      "selected route obligation settlement"
+    );
+    await expect(mapLegend).toContainText("Supply path for the selected focus");
+    await expect(mapLegend).toContainText("Obligation pressure tied to this focus");
+    await expect(mapLegend).not.toContainText("Risk area relevant to the open task");
     await expect(page.getByLabel("Map hover details")).toContainText(
       "Hover a district or settlement for route details."
     );
@@ -620,10 +697,18 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await page.getByRole("button", { name: "Reset pan" }).click();
   await expect(map).toHaveAttribute("data-pan-x", "0.00");
   await expect(mapCanvas).toHaveAttribute("data-pan-x", "0.00");
-  await expect(page.getByLabel("Map legend")).toContainText("Route / supply");
-  await expect(page.getByLabel("Map legend")).toContainText("Obligation / tributary flow");
-  await expect(page.getByLabel("Map legend")).toContainText("Threat / risk");
-  await expect(page.getByLabel("Map legend")).toContainText("Blocked / capacity");
+  await expect(map).toHaveAttribute(
+    "data-visible-overlays",
+    "selected route obligation blocked settlement"
+  );
+  await expect(page.getByLabel("Map legend")).toContainText("Supply path for the selected focus");
+  await expect(page.getByLabel("Map legend")).toContainText(
+    "Obligation pressure tied to this focus"
+  );
+  await expect(page.getByLabel("Map legend")).toContainText("Blocked or strained path");
+  await expect(page.getByLabel("Map legend")).not.toContainText(
+    "Risk area relevant to the open task"
+  );
   await expect(page.getByLabel("Map hover details")).toContainText(
     "Hover a district or settlement for route details."
   );
