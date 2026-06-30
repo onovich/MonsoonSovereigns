@@ -350,6 +350,95 @@ test("M7 task rail is first-screen actionable at required desktop viewports", as
   }
 });
 
+test("M7 UX recovery smoke captures first screen, objective, and map screenshots without debug labels", async ({
+  page
+}) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("monsoon.client.localePreference.v1", "en-US");
+  });
+
+  const evidenceRoot = resolve(process.cwd(), "project/messages/outbox");
+  const viewports = [
+    {
+      label: "desktop",
+      viewport: { width: 1440, height: 900 },
+      screenshotFile: "M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png"
+    },
+    {
+      label: "smaller",
+      viewport: { width: 1280, height: 720 },
+      screenshotFile: "M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png"
+    }
+  ] as const;
+
+  for (const scenario of viewports) {
+    await page.setViewportSize(scenario.viewport);
+    await page.goto("/");
+
+    const mapCanvas = await expectMountedPixiMapRenderer(page);
+    const firstScreen = page.getByRole("region", { name: "First screen orientation" });
+    const guidance = page.getByRole("region", { name: "Player guidance" });
+    const decisionAssistant = page.getByRole("region", { name: "District decision assistant" });
+
+    await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
+    await expect(page.locator(".client-shell")).toHaveAttribute("data-debug-mode", "off");
+    await expect(page.locator(".client-shell__dev-overlay")).toHaveCount(0);
+    await expect(page.getByText("Developer Overlay")).toHaveCount(0);
+    await expect(page.getByText("Developer diagnostics")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Monsoon Sovereigns" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Realm Map" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Situation map mode" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+      "data-map-mode",
+      "situation"
+    );
+    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+      "data-map-presentation",
+      "soft-strategic-regions"
+    );
+    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+      "data-player-grid",
+      "hidden"
+    );
+    await expect(page.locator(".map-viewport")).toHaveAttribute(
+      "aria-roledescription",
+      "keyboard navigable map read model"
+    );
+    await expect(page.getByLabel("Map legend")).toContainText("Route / supply");
+    await expect(page.getByLabel("Map legend")).toContainText("Obligation / tributary flow");
+    await expect(page.getByLabel("Map legend")).toContainText("Threat / risk");
+    await expect(page.getByLabel("Map legend")).toContainText("Blocked / capacity");
+    await expect(page.getByLabel("Map hover details")).toContainText(
+      "Hover a district or settlement for route details."
+    );
+    await expect(firstScreen).toContainText("Who you are");
+    await expect(firstScreen).toContainText("When and where");
+    await expect(firstScreen).toContainText("Priority problem");
+    await expect(firstScreen).toContainText("Recommended next action");
+    await expect(firstScreen).toContainText("You are stewarding");
+
+    const taskRail = page.getByRole("region", { name: "Task rail" });
+    await taskRail.locator('[data-task-rail-card-kind="notifications"]').click();
+    await expect(guidance).toHaveAttribute("data-guidance-state", "error");
+    await expect(guidance).toContainText("Objective");
+    await expect(guidance).toContainText("Focus");
+    await expect(guidance).toContainText("Action");
+    await expect(guidance).toContainText("Safety");
+    await expect(decisionAssistant).toContainText("Current problem");
+    await expect(decisionAssistant).toContainText("Recommendation");
+    await expect(decisionAssistant).toContainText("Next action");
+    await expect(mapCanvas).toHaveAttribute("data-renderer-owner", "map-renderer");
+    await expect(mapCanvas).toBeVisible();
+
+    await page.screenshot({
+      path: resolve(evidenceRoot, scenario.screenshotFile)
+    });
+  }
+});
+
 test("M7 task rail appointment-error copy hides implementation jargon in English and Chinese", async ({
   page
 }) => {

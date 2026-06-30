@@ -31,19 +31,20 @@
       "start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-START__lead_orchestrator.json"
     },
     "test_engineer": {
-      "thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
-      "nickname": "Gauge",
+      "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
+      "nickname": "Canary",
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
-      "status": "in_progress",
+      "status": "in_progress_replacement",
       "role": "test_engineer",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-ux-recovery-validation",
-      "route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
+      "route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-REPLACEMENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
-      "updated_at": "2026-06-30T04:17:11.565Z"
+      "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
+      "updated_at": "2026-06-30T04:29:17.193Z"
     }
   },
   "unresolved_risks": [
@@ -104,11 +105,11 @@
     "note": "M7-UX-RECOVERY-VALIDATION-001 is IN_PROGRESS. Formal content lock remains not accepted; no new Human Gate is active.",
     "recorded_at": "2026-06-30T04:17:11.565Z"
   },
-  "next_machine_action": "Await M7-UX-RECOVERY-VALIDATION-001 writer handoff, validate it, route to independent QA, then integrate only after acceptance.",
+  "next_machine_action": "Await replacement test_engineer writer handoff for M7-UX-RECOVERY-VALIDATION-001, then route to independent QA.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-30T04:17:11.565Z",
+  "last_updated_at": "2026-06-30T04:29:17.193Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -813,15 +814,19 @@
     "reviewer_role": "qa_reviewer",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await test_engineer writer handoff, then route to independent qa_reviewer.",
-    "updated_at": "2026-06-30T04:17:11.565Z",
+    "next_action": "Await replacement test_engineer writer handoff, then route to independent qa_reviewer.",
+    "updated_at": "2026-06-30T04:29:17.193Z",
     "branch_or_worktree": "codex/m7-ux-recovery-validation",
     "base_main_commit": "ade15c64fe69dc25b6ea3a21847fa4145612209f",
-    "writer_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
-    "writer_thread_nickname": "Gauge",
+    "writer_thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
+    "writer_thread_nickname": "Canary",
     "start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
-    "started_at": "2026-06-30T04:17:11.565Z"
+    "started_at": "2026-06-30T04:17:11.565Z",
+    "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
+    "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
+    "replacement_start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-REPLACEMENT-START__lead_orchestrator.json",
+    "replacement_route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-REPLACEMENT-START.json"
   }
 }
