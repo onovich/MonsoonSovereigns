@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CLOSED",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-MAP-TOPOLOGY-CLIENT-001 is closed because PR #229 passed Quality/Web/Browser Smoke and Windows Desktop Smoke Artifact, merged into origin/main, and local main synchronized to ad93aab15a95911a493dc8b1d8795595bc5d2684. The player-facing map now consumes topology-backed district polygons, explicit route polylines, route-node anchors, and anti-grid proof tests instead of hidden rectangular/grid/lattice authority. Formal M7 content lock remains blocked until M7-MAP-TOPOLOGY-VALIDATION-001 validates the recovery and the product owner reconsiders it.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-map-topology-client",
+  "commit": "ad93aab15a95911a493dc8b1d8795595bc5d2684",
+  "integrated_pr": 229,
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/229",
+  "implementation_commits": [
+    "52a99da1",
+    "5764849c"
+  ],
+  "tests_run": [
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Local full test command passed after CI hash metric fix."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Formatting, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "Task schema valid before closure."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before CI fix commit."
+    },
+    {
+      "command": "gh pr checks 229 --watch --interval 15",
+      "exit_code": 0,
+      "result": "Quality/Web/Browser Smoke passed in 2m40s; Windows Desktop Smoke Artifact passed in 51s."
+    },
+    {
+      "command": "gh pr merge 229 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #229 merged into main as ad93aab15a95911a493dc8b1d8795595bc5d2684."
+    }
+  ],
+  "reviewer_evidence": {
+    "systems_architect": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "qa_reviewer": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json",
+    "qa_incremental_ci_fix": {
+      "thread_id": "019f1a25-cdf8-7d22-a6ac-7b5980e41ea6",
+      "status": "ACCEPT",
+      "source": "multi_agent.wait_agent response after CI fix commit 5764849c; no separate qa_reviewer-authored file was created",
+      "summary": "QA confirmed the post-review CI fix only restores the shell State hash metric, does not weaken tests, does not touch forbidden paths, and does not reintroduce hidden grid/lattice or fake routes.",
+      "commands": [
+        "pnpm exec vitest run --config vitest.config.ts tests/deterministic-hash.test.ts",
+        "git diff --check 52a99da1..5764849c",
+        "taskctl validate M7-MAP-TOPOLOGY-CLIENT-001"
+      ]
+    }
+  },
+  "decisions": [
+    {
+      "id": "CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "CLOSED only after PR #229 entered origin/main and local main synchronized to ad93aab15a95911a493dc8b1d8795595bc5d2684."
+    },
+    {
+      "id": "TOPOLOGY_CLIENT_ACCEPTED",
+      "decision": "Default player-facing map now consumes accepted M7 topology read models and explicit route polylines; renderer-only route guessing remains disallowed."
+    },
+    {
+      "id": "CONTENT_LOCK_REMAINS_BLOCKED",
+      "decision": "Do not reopen or approve M7 content lock from this closure; M7-MAP-TOPOLOGY-VALIDATION-001 must validate topology recovery first."
+    },
+    {
+      "id": "NEXT_TASK_TOPOLOGY_VALIDATION",
+      "decision": "Continue with M7-MAP-TOPOLOGY-VALIDATION-001."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FORMAL_CONTENT_LOCK_NOT_APPROVED",
+      "severity": "R4",
+      "summary": "Formal M7 content lock remains blocked until topology validation and product-owner reconsideration."
+    },
+    {
+      "id": "TOPOLOGY_VALIDATION_PENDING",
+      "severity": "R4",
+      "summary": "M7-MAP-TOPOLOGY-VALIDATION-001 must still prove anti-grid/lattice behavior, deterministic path previews, screenshot/manual smoke, and console cleanliness end to end."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Synchronize closure to main and start M7-MAP-TOPOLOGY-VALIDATION-001.",
+  "created_at": "2026-06-30T20:38:43.871Z"
+}
