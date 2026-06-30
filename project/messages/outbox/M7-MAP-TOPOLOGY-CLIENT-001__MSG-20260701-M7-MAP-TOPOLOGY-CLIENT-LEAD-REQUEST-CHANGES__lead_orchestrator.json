@@ -1,0 +1,56 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-REQUEST-CHANGES",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "REQUEST_CHANGES",
+  "summary": "Lead reviewed the client writer REVIEW handoff and requested changes before systems review. The implementation direction is promising but must clean unrelated evidence PNG churn, make the 1280x720 map evidence actually readable, and remove or justify route point generation that still appears to be endpoint/anchor straight-line fallback.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-REQUEST-CHANGES-TO-CLIENT.json",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "26f68044",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "Writer REVIEW handoff was structurally valid."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Writer diff included allowed client/ui/test paths, new topology evidence images, and modified old M7 systemic validation evidence PNGs."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "REQUEST_CHANGES_BEFORE_SYSTEMS_REVIEW",
+      "decision": "Do not route to systems_architect yet because the evidence set is polluted by old screenshot changes and the 1280x720 screenshot does not visibly prove map topology recovery."
+    },
+    {
+      "id": "ROUTE_POLYLINE_MUST_BE_EXPLICIT",
+      "decision": "Route points must come from explicit route-node/polyline read models. District anchor or centroid straight-line fallback cannot satisfy the anti-grid requirement."
+    }
+  ],
+  "risks": [
+    {
+      "id": "OLD_EVIDENCE_PNG_CHURN",
+      "severity": "R3",
+      "summary": "Regenerated M7-SYSTEMIC-INTERACTION-VALIDATION screenshots are unrelated to this task and must be removed from the diff."
+    },
+    {
+      "id": "ROUTE_ANCHOR_FALLBACK_RISK",
+      "severity": "R4",
+      "summary": "points: [from, to] can still be a center/anchor straight-line route unless the source is explicit route-node/polyline data."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Clean evidence churn, improve 1280x720 map evidence, fix or block route polyline generation, then return R2 REVIEW handoff.",
+  "created_at": "2026-07-01T03:20:10.0000000+08:00"
+}

@@ -42,7 +42,7 @@
     "client_engineer": {
       "thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
       "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-      "status": "in_progress_with_anti_grid_constraints",
+      "status": "request_changes_round_1",
       "role": "client_engineer",
       "nickname": "Window the 2nd",
       "configured_model": "gpt-5.5",
@@ -50,12 +50,16 @@
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-map-topology-client",
-      "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+      "updated_at": "2026-07-01T03:20:10.0000000+08:00",
       "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json",
       "interrupt_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-INTERRUPT.json",
       "constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
       "constraints_submission_id": "019f19d5-3c8a-76c2-90e1-7a585700aa5a",
+      "request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-REQUEST-CHANGES-TO-CLIENT.json",
+      "request_changes_submission_id": "019f19f5-f192-7752-b119-87060815d11e",
+      "expected_handoff_r2": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json"
     },
     "gameplay_designer": {
@@ -158,7 +162,7 @@
     "note": "Product owner already requested changes. The active path is topology recovery review, not waiting for product-owner Human Gate reconsideration.",
     "recorded_at": "2026-06-30T21:47:04.0374837+08:00"
   },
-  "next_machine_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence.",
+  "next_machine_action": "Await client_engineer R2 REVIEW handoff after lead REQUEST_CHANGES cleanup.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -468,7 +472,7 @@
   ],
   "blockers": [],
   "route_to": "client_engineer",
-  "requested_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence.",
+  "requested_action": "Await client_engineer R2 REVIEW handoff after lead REQUEST_CHANGES cleanup.",
   "created_at": "2026-06-28T16:11:45.503Z",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -560,8 +564,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence.",
-  "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+  "next_action": "Await client_engineer R2 REVIEW handoff after lead REQUEST_CHANGES cleanup.",
+  "updated_at": "2026-07-01T03:20:10.0000000+08:00",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1274,7 +1278,10 @@
     "art_readability_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
     "constraints_forwarded_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json",
     "client_constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
-    "updated_at": "2026-07-01T02:35:10.0000000+08:00",
-    "next_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence."
+    "lead_request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "lead_request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-REQUEST-CHANGES-TO-CLIENT.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
+    "updated_at": "2026-07-01T03:20:10.0000000+08:00",
+    "next_action": "Await client_engineer R2 REVIEW handoff after lead REQUEST_CHANGES cleanup."
   }
 }

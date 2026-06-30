@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-    "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+    "updated_at": "2026-07-01T03:20:10.0000000+08:00",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-CLIENT-001"
     ],
@@ -5349,7 +5349,10 @@
       "art_readability_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
       "constraints_forwarded_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json",
       "client_constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
-      "updated_at": "2026-07-01T02:35:10.0000000+08:00"
+      "lead_request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "lead_request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-REQUEST-CHANGES-TO-CLIENT.json",
+      "expected_writer_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
+      "updated_at": "2026-07-01T03:20:10.0000000+08:00"
     }
   },
   "m7_systemic_interaction_recovery": {
@@ -5771,7 +5774,10 @@
     "art_readability_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
     "constraints_forwarded_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json",
     "client_constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
-    "updated_at": "2026-07-01T02:35:10.0000000+08:00",
-    "next_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence."
+    "lead_request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "lead_request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-REQUEST-CHANGES-TO-CLIENT.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
+    "updated_at": "2026-07-01T03:20:10.0000000+08:00",
+    "next_action": "Await client_engineer R2 REVIEW handoff after lead REQUEST_CHANGES cleanup."
   }
 }
