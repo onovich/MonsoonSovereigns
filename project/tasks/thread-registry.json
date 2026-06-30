@@ -7490,21 +7490,22 @@
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
+      "status": "active_router_accepting_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-ux-recovery-validation",
       "source_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-START__lead_orchestrator.json",
-      "updated_at": "2026-06-30T04:17:11.565Z"
+      "updated_at": "2026-06-30T05:32:29.617Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "M7-UX-RECOVERY-VALIDATION-001:test_engineer": {
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "test_engineer",
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
-      "status": "review_ready_r3_routed_to_qa",
+      "status": "accepted_by_qa_and_lead",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7534,14 +7535,15 @@
       "r3_route_sent_at": "2026-06-30T05:17:57.361Z",
       "review_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
       "review_status_r3": "REVIEW",
-      "review_commit_r3": "523bd6364a82a2aba0f7a4fed1889792762579eb"
+      "review_commit_r3": "523bd6364a82a2aba0f7a4fed1889792762579eb",
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "M7-UX-RECOVERY-VALIDATION-001:client_engineer": {
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "client_engineer",
       "thread_id": "019f16df-915f-7123-a288-1dd8ec6ce265",
       "nickname": "Window",
-      "status": "review_ready",
+      "status": "accepted_by_qa_and_lead",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7557,14 +7559,15 @@
       "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
       "review_status": "REVIEW",
       "review_ready_at": "2026-06-30T05:30:00.000Z",
-      "updated_at": "2026-06-30T05:16:17.702Z"
+      "updated_at": "2026-06-30T05:32:29.617Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
     },
     "M7-UX-RECOVERY-VALIDATION-001:qa_reviewer": {
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f16fa-a455-7ef3-9267-43bc03777e9c",
       "nickname": "Gate",
-      "status": "review_in_progress",
+      "status": "accepted",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7577,7 +7580,10 @@
       "route_created_at": "2026-06-30T05:22:55.356Z",
       "route_submission_id": "019f16fc-a885-7232-bd95-321ec4f35220",
       "route_sent_at": "2026-06-30T05:24:51.452Z",
-      "updated_at": "2026-06-30T05:24:51.452Z"
+      "updated_at": "2026-06-30T05:32:29.617Z",
+      "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-QA-REVIEW__qa_reviewer.json",
+      "review_status": "ACCEPT",
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
     }
   },
   "replaced_threads": [
@@ -7763,7 +7769,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-06-30T05:24:51.452Z",
+  "updated_at": "2026-06-30T05:32:29.617Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
