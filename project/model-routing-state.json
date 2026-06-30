@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_map_topology_recovery_review_r2",
+    "status": "active_map_topology_schema_writer_in_progress",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -38,16 +38,16 @@
       "active_lead_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "source": "M7 map topology recovery planning update"
+      "source": "M7 map topology schema task start"
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
-    "updated_at": "2026-06-30T22:29:26.2066820+08:00",
+    "updated_at": "2026-06-30T22:41:30.6510548+08:00",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-SCHEMA-001"
     ],
-    "branch_or_worktree": "codex/close-m7-map-topology-recovery",
+    "branch_or_worktree": "codex/m7-map-topology-schema",
     "active_gate_task_id": null
   },
   "retired_lead_threads": [
@@ -1972,15 +1972,30 @@
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "ready_to_start",
+      "status": "writer_in_progress",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "Start M7 authoritative map topology schema task after recovery package entered main.",
-      "branch_or_worktree": "codex/close-m7-map-topology-recovery",
+      "responsibility": "Coordinate M7 authoritative map topology schema implementation and wait for systems_architect REVIEW handoff.",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
       "active_gate_task_id": null,
-      "updated_at": "2026-06-30T22:29:26.2066820+08:00"
+      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
+    },
+    {
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "role": "systems_architect",
+      "thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "responsibility": "Implement authoritative topology definitions and read/query boundaries per ADR-010.",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
     }
   ],
   "task_effects": {
@@ -2577,7 +2592,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M7-MAP-TOPOLOGY-SCHEMA-001 from origin/main; do not wait on old content-lock Human Gate and do not start M7 exit.",
+  "next_action": "Wait for M7-MAP-TOPOLOGY-SCHEMA-001 systems_architect REVIEW handoff; then route to independent qa_reviewer. Do not start M7 exit.",
   "current_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -5532,5 +5547,24 @@
     "next_ready_tasks": [
       "M7-MAP-TOPOLOGY-SCHEMA-001"
     ]
+  },
+  "m7_map_topology_schema": {
+    "status": "IN_PROGRESS",
+    "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+    "owner_role": "systems_architect",
+    "reviewer_role": "qa_reviewer",
+    "branch_or_worktree": "codex/m7-map-topology-schema",
+    "ready_after_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
+    "ready_after_main_commit": "30779bac55c5192a666aa95611741443c8f3239e",
+    "writer_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
+    "writer_thread_nickname": "Meridian",
+    "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+    "started_at": "2026-06-30T22:41:30.6510548+08:00",
+    "updated_at": "2026-06-30T22:41:30.6510548+08:00",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "Wait for systems_architect REVIEW handoff, then route to qa_reviewer."
   }
 }
