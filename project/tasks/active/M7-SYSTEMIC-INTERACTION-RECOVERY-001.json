@@ -2,7 +2,7 @@
   "id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
   "summary": "Plan the second M7 systemic interaction recovery after product-owner UX rejection",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -66,9 +66,13 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_recovery_planning",
-      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
-      "updated_at": "2026-06-30T09:46:39.564Z"
+      "status": "closed_after_main_integration",
+      "branch_or_worktree": "codex/close-m7-systemic-interaction-recovery",
+      "updated_at": "2026-06-30T10:06:55.944Z",
+      "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 215,
+      "integrated_main_commit": "1c86eb860369b7b488a070f55db8efaf76aa05e1",
+      "closed_at": "2026-06-30T10:06:55.944Z"
     },
     "gameplay_designer": {
       "thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
@@ -100,7 +104,7 @@
     "All player-visible text must pass through existing i18n boundaries."
   ],
   "created_at": "2026-06-30T09:46:39.564Z",
-  "updated_at": "2026-06-30T10:00:25.039Z",
+  "updated_at": "2026-06-30T10:06:55.944Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
@@ -138,5 +142,14 @@
   "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
   "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
   "accepted_at": "2026-06-30T10:00:25.039Z",
-  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package."
+  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package.",
+  "integrated_pr": 215,
+  "integrated_main_commit": "1c86eb860369b7b488a070f55db8efaf76aa05e1",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/215",
+  "closed_at": "2026-06-30T10:06:55.944Z",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-CLOSED__lead_orchestrator.json",
+  "next_ready_tasks": [
+    "M7-CORE-ACTION-LOOP-UX-001"
+  ]
 }
