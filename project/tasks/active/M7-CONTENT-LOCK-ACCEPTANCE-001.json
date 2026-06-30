@@ -63,7 +63,7 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
     "git diff --check"
   ],
-  "branch_or_worktree": "codex/m7-content-lock-acceptance",
+  "branch_or_worktree": "codex/close-m7-systemic-interaction-validation",
   "threads": {
     "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
     "qa_reviewer": "019f13d7-d3e3-7f92-b115-73d8deabff3a"
@@ -77,10 +77,11 @@
     "Stop and route to the named reviewer or Human Gate if allowed paths are insufficient, required tests cannot run, or a Human Gate decision is needed.",
     "M7-UI-LOCALIZATION-EXIT-001 is a required prerequisite so formal content lock cannot pass while the UI/localization/visual quality track remains unfinished.",
     "UX recovery validation is now closed in main, but this task remains BLOCKED until the product owner explicitly accepts, defers, or requests changes for formal M7 content lock.",
-    "Second product-owner REQUEST_CHANGES received after UX recovery validation: obligation handling, appointment feedback, and phase/action loop remain blockers."
+    "Second product-owner REQUEST_CHANGES received after UX recovery validation: obligation handling, appointment feedback, and phase/action loop remain blockers.",
+    "Systemic interaction recovery validation is now closed in main, but this task remains BLOCKED until the product owner explicitly accepts, defers, or requests changes for formal M7 content lock."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-30T09:46:39.564Z",
+  "updated_at": "2026-06-30T21:02:21.5067142+08:00",
   "human_gate_required": true,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -100,9 +101,9 @@
   "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
   "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
   "base_main_commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
-  "recommendation": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
+  "recommendation": "RECONSIDER_CONTENT_LOCK_WITH_VALIDATED_SYSTEMIC_INTERACTION_RECOVERY",
   "content_lock_accepted": false,
-  "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
+  "human_gate_state": "SYSTEMIC_INTERACTION_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
   "qa_route": "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
   "expected_qa_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
   "qa_thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
@@ -132,8 +133,8 @@
   "ux_recovery_validation_pr": 213,
   "ux_recovery_validation_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
   "ux_recovery_validation_closed_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
-  "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-  "next_action": "Complete the systemic interaction recovery task graph and independent validation before product-owner content-lock reconsideration can reopen.",
+  "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-INTERACTION-VALIDATED__lead_orchestrator.json",
+  "next_action": "Product-owner Human Gate decision required: choose APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES. Do not start M7-EXIT-VALIDATION-001 until this gate is resolved.",
   "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
   "systemic_interaction_recovery_plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
   "systemic_recovery_tasks": [
@@ -141,5 +142,17 @@
     "M7-CORE-ACTION-LOOP-UX-001",
     "M7-MAP-DECISION-SURFACE-SYNC-001",
     "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
+  ],
+  "product_owner_reconsideration_required": true,
+  "systemic_interaction_validation_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+  "systemic_interaction_validation_pr": 221,
+  "systemic_interaction_validation_main_commit": "2adc668bba95724aa2448bd898983fc6d9740178",
+  "systemic_interaction_validation_closed_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-CLOSED__lead_orchestrator.json",
+  "systemic_interaction_validation_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
+  "reconsideration_ready": true,
+  "decision_options": [
+    "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+    "DEFER_CONTENT_LOCK",
+    "REQUEST_CHANGES"
   ]
 }

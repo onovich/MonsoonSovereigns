@@ -2,7 +2,7 @@
   "id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
   "summary": "Validate the systemic M7 interaction recovery before content lock reconsideration",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -78,21 +78,22 @@
     "screenshot evidence for 1440x900 and at least one smaller supported viewport",
     "manual-smoke notes that name what the player can do next and how command result feedback appears"
   ],
-  "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+  "branch_or_worktree": "codex/close-m7-systemic-interaction-validation",
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pr_pending",
-      "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+      "status": "closed",
+      "branch_or_worktree": "codex/close-m7-systemic-interaction-validation",
       "start_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
-      "updated_at": "2026-06-30T20:54:07.5697108+08:00",
-      "lead_accept_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-CLOSED__lead_orchestrator.json",
+      "updated_at": "2026-06-30T21:02:21.5067142+08:00"
     },
     "test_engineer": {
       "thread_id": "019f1884-3ea6-7672-8235-69d0fb8f9591",
       "nickname": "Probe",
-      "status": "accepted",
+      "status": "closed",
       "role": "test_engineer",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
@@ -111,7 +112,7 @@
       "thread_id": "019f1890-e974-79b1-a8b5-9a8bf2220f27",
       "nickname": "Auditor the 2nd",
       "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
-      "status": "accept",
+      "status": "closed",
       "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -137,7 +138,7 @@
     "All player-visible text must pass through existing i18n boundaries."
   ],
   "created_at": "2026-06-30T09:46:39.564Z",
-  "updated_at": "2026-06-30T20:54:07.5697108+08:00",
+  "updated_at": "2026-06-30T21:02:21.5067142+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
@@ -147,7 +148,7 @@
   "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
   "ready_after_main_commit": "88ad6146a9d47bf98e3643a218bce6fc8b17dccd",
   "ready_after_pr": 219,
-  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED and reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration.",
+  "next_action": "Wait for product-owner decision on M7-CONTENT-LOCK-ACCEPTANCE-001; do not start M7-EXIT-VALIDATION-001 while the Human Gate is unresolved.",
   "started_at": "2026-06-30T20:32:45.8274835+08:00",
   "start_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
@@ -165,5 +166,16 @@
   "lead_accept_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-06-30T20:54:07.5697108+08:00",
   "accepted_implementation_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
-  "accepted_branch_head": "e6ea8bfaea6510ac608b5061b3552fb43857eef9"
+  "accepted_branch_head": "e6ea8bfaea6510ac608b5061b3552fb43857eef9",
+  "integrated_pr": 221,
+  "integrated_main_commit": "2adc668bba95724aa2448bd898983fc6d9740178",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/221",
+  "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-06-30T21:02:21.5067142+08:00",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "child_threads_closed": [
+    "019f1884-3ea6-7672-8235-69d0fb8f9591",
+    "019f1890-e974-79b1-a8b5-9a8bf2220f27"
+  ],
+  "next_ready_tasks": []
 }
