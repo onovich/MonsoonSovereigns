@@ -1,0 +1,67 @@
+{
+  "message_id": "MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN",
+  "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Created a bounded second M7 UX recovery task graph for the systemic interaction blockers named by the product owner: missing obligation handling entry, unclear appointment preview/confirm feedback, lack of turn/phase/action rhythm, and weak Nobunaga-like strategic readability.",
+  "artifacts": [
+    "project/tasks/active/M7-SYSTEMIC-INTERACTION-RECOVERY-001.json",
+    "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+    "project/tasks/active/M7-MAP-DECISION-SURFACE-SYNC-001.json",
+    "project/tasks/active/M7-SYSTEMIC-INTERACTION-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+  "commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
+  "tests_run": [
+    {
+      "command": "git fetch origin --prune && git pull --ff-only origin main",
+      "exit_code": 0,
+      "result": "origin/main was already up to date before planning branch creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY task before planning because content lock was blocked pending product-owner decision."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CONTENT_LOCK_REMAINS_FALSE",
+      "decision": "M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED with content_lock_accepted=false."
+    },
+    {
+      "id": "NEW_REPAIR_SEQUENCE",
+      "decision": "Downstream sequence is core action loop recovery, map decision-surface sync, then systemic interaction validation before content-lock reconsideration."
+    },
+    {
+      "id": "M7_EXIT_STILL_BLOCKED",
+      "decision": "M7-EXIT-VALIDATION-001 must not start until the new recovery validation passes and content lock is explicitly reconsidered by the product owner."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-OVERFOCUS-STATIC-VISUALS",
+      "severity": "R3",
+      "summary": "Future fixes may again polish panels without closing command entry and feedback loops.",
+      "mitigation": "Acceptance criteria require playable flows, task-to-entry closure, and command-result feedback."
+    },
+    {
+      "id": "M7-SCOPE-DRIFT-FINAL-ART",
+      "severity": "R3",
+      "summary": "The feedback could be misread as final art direction.",
+      "mitigation": "Tasks explicitly allow low-fidelity UI and forbid production-art/content expansion scope."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Read-only review of the new task graph, content-lock blocker state, allowed/forbidden paths, and absence of product-code changes.",
+  "created_at": "2026-06-30T09:46:39.564Z"
+}

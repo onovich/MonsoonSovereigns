@@ -1,0 +1,59 @@
+{
+  "message_id": "MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "product_owner",
+  "status": "REQUEST_CHANGES",
+  "summary": "Product owner rejects M7 content lock again after live preview. The UI still does not tell the player how to handle a District 1 troop obligation, appointment preview/confirm has unclear meaning and weak post-submit feedback, and the overall experience lacks a recognizable turn/phase/action loop comparable to Nobunaga no Yabou-like grand strategy readability. This is a systemic interaction blocker, not a high-fidelity art request.",
+  "artifacts": [
+    "C:/Users/ADMINI~1/AppData/Local/Temp/codex-clipboard-98ff2101-4355-404e-ab41-e339a3931f29.png",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
+    "Codex gameplay_designer thread 019f17da-4fb8-7980-95e0-f5dace70eb30",
+    "Codex research_scout thread 019f17da-70e2-7d13-b8cb-2814bfaa196d",
+    "Codex art/visual thread 019f05b0-7e7e-71e3-b18f-e41c938a38db"
+  ],
+  "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+  "commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
+  "tests_run": [
+    {
+      "command": "spawn_agent gameplay_designer",
+      "exit_code": 0,
+      "result": "Returned systemic interaction recovery recommendations: phase loop, task-to-entry closure, obligation docket, appointment feedback, and map/panel sync."
+    },
+    {
+      "command": "spawn_agent research_scout",
+      "exit_code": 0,
+      "result": "Returned official Nobunaga reference findings for main screen, proposals/activity lists, map views, command confirmation, and time advancement rhythm."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main before creating systemic interaction recovery planning branch."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CONTENT_LOCK_REQUEST_CHANGES_R2",
+      "decision": "Do not approve M7 content lock. UX recovery validation did not solve the systemic interaction loop and command-feedback blockers."
+    },
+    {
+      "id": "SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
+      "decision": "Create an M7 systemic interaction recovery task graph before re-opening content-lock reconsideration."
+    },
+    {
+      "id": "LOW_FIDELITY_OK_BUT_PLAYABLE_REQUIRED",
+      "decision": "Do not chase final art now; the required bar is a coherent playable product experience with clear phase, action entry, and feedback loops."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-SYSTEMIC-UX-BLOCKER",
+      "severity": "R4",
+      "summary": "The product still reads as an information dump rather than a strategy game until phase/action loop, obligation handling, map focus, and command feedback are repaired."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Keep content lock blocked, create the systemic interaction recovery task graph, and start the first implementation task after independent planning QA accepts the graph.",
+  "created_at": "2026-06-30T09:46:39.564Z"
+}

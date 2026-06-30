@@ -5,19 +5,20 @@
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
         "role": "lead_orchestrator",
-        "status": "active",
+        "status": "active_planning_accepted_pending_integration",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-30T05:49:02.567Z",
-        "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+        "updated_at": "2026-06-30T10:00:25.039Z",
+        "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
         "task_ids": [
-          "M7-CONTENT-LOCK-ACCEPTANCE-001"
+          "M7-CONTENT-LOCK-ACCEPTANCE-001",
+          "M7-SYSTEMIC-INTERACTION-RECOVERY-001"
         ],
-        "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
-        "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001"
+        "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+        "active_gate_task_id": null
       }
     ],
     "retired_leads": [
@@ -38,7 +39,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-30T05:49:02.567Z"
+      "checked_at": "2026-06-30T10:00:25.039Z"
     }
   },
   "entries": {
@@ -7596,6 +7597,56 @@
       "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
       "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
       "closed_at": "2026-06-30T05:49:02.567Z"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001:lead_orchestrator": {
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "accepted_pending_pr_merge",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "updated_at": "2026-06-30T10:00:25.039Z",
+      "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+      "accepted_at": "2026-06-30T10:00:25.039Z"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001:gameplay_designer": {
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "role": "gameplay_designer",
+      "thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
+      "status": "closed_design_summary_recorded",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "mode": "read_only",
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001:research_scout": {
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "role": "research_scout",
+      "thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+      "status": "closed_research_summary_recorded",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "medium",
+      "mode": "read_only",
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001:qa_reviewer": {
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
+      "nickname": "Auditor",
+      "status": "accepted_read_only_review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+      "review_status": "ACCEPT",
+      "updated_at": "2026-06-30T10:00:25.039Z"
     }
   },
   "replaced_threads": [
@@ -7781,7 +7832,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-06-30T05:49:02.567Z",
+  "updated_at": "2026-06-30T10:00:25.039Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -7938,6 +7989,20 @@
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "status": "closed_after_accept_review_and_main_integration",
       "closed_at": "2026-06-30T05:49:02.567Z"
+    },
+    {
+      "thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
+      "role": "gameplay_designer",
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "status": "closed_design_summary_recorded",
+      "closed_at": "2026-06-30T09:46:39.564Z"
+    },
+    {
+      "thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+      "role": "research_scout",
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "status": "closed_research_summary_recorded",
+      "closed_at": "2026-06-30T09:46:39.564Z"
     }
   ]
 }

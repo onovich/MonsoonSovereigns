@@ -1,0 +1,142 @@
+{
+  "id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+  "summary": "Plan the second M7 systemic interaction recovery after product-owner UX rejection",
+  "milestone": "M7",
+  "status": "ACCEPTED",
+  "owner_role": "lead_orchestrator",
+  "reviewer_role": "qa_reviewer",
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-UX-RECOVERY-VALIDATION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "PROJECT_STATUS.md",
+      "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+      "project/tasks/active/M7-SYSTEMIC-INTERACTION-RECOVERY-001.json",
+      "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+      "project/tasks/active/M7-MAP-DECISION-SURFACE-SYNC-001.json",
+      "project/tasks/active/M7-SYSTEMIC-INTERACTION-VALIDATION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/decisions/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Record the product-owner second REQUEST_CHANGES: the current interface still lacks clear handling entry points for obligations, appointment preview/confirmation feedback, and a recognizable turn/phase/action loop.",
+    "Synthesize the gameplay_designer interaction critique and research_scout Nobunaga reference findings into a bounded M7 recovery task graph.",
+    "Keep M7-CONTENT-LOCK-ACCEPTANCE-001 blocked with content_lock_accepted=false and prevent M7-EXIT-VALIDATION-001 from starting until the new recovery validation passes and the product owner reconsiders content lock.",
+    "Create downstream implementation and validation tasks with explicit allowed/forbidden paths, reviewers, acceptance criteria, and tests.",
+    "Do not modify product code, package code, content-source data, roadmap, prior gate docs, accepted ADRs, CI, release artifacts, or platform behavior in this planning task."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate <TASK_ID>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M7 systemic interaction recovery tasks",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <lead-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_recovery_planning",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    },
+    "gameplay_designer": {
+      "thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
+      "status": "closed_design_summary_recorded",
+      "mode": "read_only",
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    },
+    "research_scout": {
+      "thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+      "status": "closed_research_summary_recorded",
+      "mode": "read_only",
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
+      "status": "accepted_read_only_review",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-06-30T10:00:25.039Z"
+    }
+  },
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This is a product-owner REQUEST_CHANGES recovery path. It must not approve formal M7 content lock.",
+    "The target is a playable, understandable low-fidelity product experience, not high-fidelity final art.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and is not reopened by this recovery path.",
+    "No server, multiplayer, telemetry, paid service, account, cloud-save implementation, release, branding, or arbitrary-code mod scope is authorized.",
+    "UI must use read models and existing command/query boundaries; React, Pixi, and renderer code must not mutate authoritative WorldState.",
+    "All player-visible text must pass through existing i18n boundaries."
+  ],
+  "created_at": "2026-06-30T09:46:39.564Z",
+  "updated_at": "2026-06-30T10:00:25.039Z",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+  "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
+  "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+  "request_changes_basis": {
+    "product_owner_feedback": [
+      "Obligation prompt says District 1 has a troop obligation, but the player cannot find where to handle it.",
+      "Appointment preview/confirm flow does not explain what is being previewed, does not provide strong result feedback, and leaves the confirm button looking still actionable.",
+      "The UI lacks a clear turn or phase structure and shows too much information and too many decisions at once.",
+      "The experience does not yet evoke the strategic readability expected from Nobunaga no Yabou-like grand strategy."
+    ],
+    "gameplay_designer_summary": [
+      "Adopt a visible court phase loop: situation briefing, obligations and court, supply and campaign, preview and confirm, advance and results.",
+      "Task cards must bind a target object, map focus, right-side entry, primary action, blocker reason, and success state.",
+      "Obligations need a docket flow with choose obligation, choose treatment, preview consequence, confirm, and result feedback.",
+      "Appointments need before/after preview, disabled/in-flight/accepted/rejected confirmation states, and visible result feedback.",
+      "Map, task rail, and inspector must select the same object and hide unrelated route lines by default."
+    ],
+    "nobunaga_reference_summary": [
+      "Nobunaga main screens orient players with top status, proposals/activity lists, reports/event lists, map view changes, and explicit time advancement/settlement rhythm.",
+      "Confirmation often schedules or commits a command while visible time progression or settlement resolves results; players can see state and status after committing.",
+      "Strategic maps are action surfaces with selectable castles/districts/roads/armies and view modes for resources, troops, roads, bases, and relations."
+    ],
+    "reference_urls": [
+      "https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/3300.html",
+      "https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/4100.html",
+      "https://www.gamecity.ne.jp/manual/shinsei/jp/3300.html",
+      "https://www.gamecity.ne.jp/manual/shinsei/jp/4100.html",
+      "https://www.gamecity.ne.jp/manual/shinsei/jp/7100.html"
+    ]
+  },
+  "qa_status": "ACCEPT",
+  "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
+  "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+  "accepted_at": "2026-06-30T10:00:25.039Z",
+  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package."
+}

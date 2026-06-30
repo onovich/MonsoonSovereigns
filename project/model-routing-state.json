@@ -38,17 +38,18 @@
       "active_lead_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "source": "project leadership state reconciliation after M7 UX recovery validation closure"
+      "source": "project leadership state reconciliation after systemic interaction recovery request changes"
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "updated_at": "2026-06-30T05:51:50.925Z",
+    "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+    "updated_at": "2026-06-30T09:46:39.564Z",
     "concurrent_task_ids": [
-      "M7-CONTENT-LOCK-ACCEPTANCE-001"
+      "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "M7-SYSTEMIC-INTERACTION-RECOVERY-001"
     ],
-    "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
-    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001"
+    "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+    "active_gate_task_id": null
   },
   "retired_lead_threads": [
     {
@@ -1969,18 +1970,18 @@
   ],
   "active_threads": [
     {
-      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_human_gate_router",
+      "status": "active_planning_accepted_pending_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "Hold formal M7 content lock Human Gate after UX recovery validation closed in main.",
-      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
-      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-      "updated_at": "2026-06-30T05:51:50.925Z"
+      "responsibility": "Route the second M7 systemic interaction recovery planning package after product-owner REQUEST_CHANGES.",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "updated_at": "2026-06-30T10:00:25.039Z"
     }
   ],
   "task_effects": {
@@ -2398,16 +2399,29 @@
       "next_ready_tasks": []
     },
     "M7-CONTENT-LOCK-ACCEPTANCE-001": {
-      "status": "BLOCKED",
       "owner_role": "lead_orchestrator",
+      "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "reviewer_role": "product_owner",
-      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "blocked_request_changes_recovery_required",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
       "human_gate_required": true,
-      "human_gate_state": "UX_RECOVERY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+      "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
       "content_lock_accepted": false,
-      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-      "updated_at": "2026-06-30T05:51:50.925Z",
-      "next_action": "Product owner decision required before M7 exit validation can start."
+      "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+      "systemic_interaction_recovery_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "updated_at": "2026-06-30T09:55:51.879Z",
+      "next_action": "Complete systemic interaction recovery and validation before content-lock reconsideration can reopen.",
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001": {
+      "status": "REVIEW",
+      "owner_role": "lead_orchestrator",
+      "reviewer_role": "qa_reviewer",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "updated_at": "2026-06-30T09:55:51.879Z",
+      "next_action": "Await independent QA review of the systemic interaction recovery planning package."
     }
   },
   "m6_scenario_data_pipeline": {
@@ -2564,8 +2578,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Wait for product-owner decision on M7 formal content lock after UX recovery validation closure; do not start M7 exit validation while blocked.",
-  "current_task": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package.",
+  "current_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2615,7 +2629,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-30T05:51:50.925Z",
+  "updated_at": "2026-06-30T10:00:25.039Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2770,7 +2784,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-30T05:51:50.925Z",
+  "last_updated_at": "2026-06-30T10:00:25.039Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4009,10 +4023,23 @@
       "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "blocked_human_gate_after_ux_recovery_validation",
-      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
-      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-      "updated_at": "2026-06-30T05:51:50.925Z"
+      "status": "blocked_request_changes_recovery_required",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+      "updated_at": "2026-06-30T09:55:51.879Z"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001:lead_orchestrator": {
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "updated_at": "2026-06-30T09:55:51.879Z"
     }
   },
   "m7_ui_localization_art_coordination": {
@@ -4532,14 +4559,29 @@
     "M7-CONTENT-LOCK-ACCEPTANCE-001": {
       "owner_role": "lead_orchestrator",
       "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "reviewer_role": "product_owner",
+      "status": "blocked_request_changes_recovery_required",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "human_gate_required": true,
+      "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
+      "content_lock_accepted": false,
+      "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+      "systemic_interaction_recovery_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "updated_at": "2026-06-30T09:55:51.879Z",
+      "next_action": "Complete systemic interaction recovery and validation before content-lock reconsideration can reopen.",
+      "owner_configured_model": "gpt-5.5",
+      "owner_configured_effort": "xhigh"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001": {
+      "owner_role": "lead_orchestrator",
+      "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "owner_configured_model": "gpt-5.5",
       "owner_configured_effort": "xhigh",
-      "reviewer_role": "product_owner",
-      "status": "blocked_human_gate",
-      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
-      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-      "source_task_closed_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
-      "updated_at": "2026-06-30T05:51:50.925Z"
+      "reviewer_role": "qa_reviewer",
+      "status": "review",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "updated_at": "2026-06-30T09:55:51.879Z"
     }
   },
   "active_routes": {
@@ -4768,10 +4810,15 @@
       "owner_role": "lead_orchestrator",
       "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "reviewer_role": "product_owner",
-      "status": "blocked_human_gate",
-      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
-      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-      "updated_at": "2026-06-30T05:51:50.925Z"
+      "status": "blocked_request_changes_recovery_required",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "human_gate_required": true,
+      "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
+      "content_lock_accepted": false,
+      "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+      "systemic_interaction_recovery_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "updated_at": "2026-06-30T09:55:51.879Z",
+      "next_action": "Complete systemic interaction recovery and validation before content-lock reconsideration can reopen."
     },
     "M7-MAP-SITUATION-MODE-UX-001": {
       "owner_role": "client_engineer",
@@ -4858,6 +4905,15 @@
       "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
       "closed_at": "2026-06-30T05:51:50.925Z",
       "updated_at": "2026-06-30T05:51:50.925Z"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001": {
+      "owner_role": "lead_orchestrator",
+      "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "reviewer_role": "qa_reviewer",
+      "status": "review",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "updated_at": "2026-06-30T09:55:51.879Z"
     }
   },
   "tasks": {
@@ -4911,11 +4967,25 @@
       "reviewer_role": "product_owner",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "human_gate_required": true,
-      "human_gate_state": "UX_RECOVERY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+      "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
       "content_lock_accepted": false,
       "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-      "updated_at": "2026-06-30T05:51:50.925Z",
-      "next_action": "Product owner decision required before M7 exit validation can start."
+      "updated_at": "2026-06-30T09:55:51.879Z",
+      "next_action": "Complete systemic interaction recovery and validation before content-lock reconsideration can reopen.",
+      "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json"
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001": {
+      "status": "ACCEPTED",
+      "owner_role": "lead_orchestrator",
+      "reviewer_role": "qa_reviewer",
+      "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "updated_at": "2026-06-30T10:00:25.039Z",
+      "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
+      "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+      "accepted_at": "2026-06-30T10:00:25.039Z",
+      "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package."
     }
   },
   "m7_ux_recovery_validation": {
@@ -4936,9 +5006,78 @@
     "status": "BLOCKED",
     "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
     "human_gate_required": true,
-    "human_gate_state": "UX_RECOVERY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+    "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
     "content_lock_accepted": false,
-    "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-    "updated_at": "2026-06-30T05:51:50.925Z"
+    "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+    "updated_at": "2026-06-30T09:55:51.879Z"
+  },
+  "task_routing": {
+    "M7-CONTENT-LOCK-ACCEPTANCE-001": {
+      "owner_role": "lead_orchestrator",
+      "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "reviewer_role": "product_owner",
+      "status": "blocked_request_changes_recovery_required",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "human_gate_required": true,
+      "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
+      "content_lock_accepted": false,
+      "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+      "systemic_interaction_recovery_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "updated_at": "2026-06-30T09:55:51.879Z",
+      "next_action": "Complete systemic interaction recovery and validation before content-lock reconsideration can reopen."
+    },
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001": {
+      "owner_role": "lead_orchestrator",
+      "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "reviewer_role": "qa_reviewer",
+      "status": "accepted_pending_pr_merge",
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
+      "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+      "expected_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-06-30T10:00:25.039Z",
+      "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
+      "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+      "accepted_at": "2026-06-30T10:00:25.039Z"
+    },
+    "M7-CORE-ACTION-LOOP-UX-001": {
+      "owner_role": "client_engineer",
+      "reviewer_role": "gameplay_designer",
+      "status": "draft_after_planning_accept",
+      "branch_or_worktree": null,
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    },
+    "M7-MAP-DECISION-SURFACE-SYNC-001": {
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect",
+      "status": "draft",
+      "branch_or_worktree": null,
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    },
+    "M7-SYSTEMIC-INTERACTION-VALIDATION-001": {
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer",
+      "status": "draft",
+      "branch_or_worktree": null,
+      "updated_at": "2026-06-30T09:46:39.564Z"
+    }
+  },
+  "m7_systemic_interaction_recovery": {
+    "status": "ACCEPTED",
+    "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+    "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+    "base_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
+    "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+    "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+    "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
+    "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+    "next_ready_after_accept": [
+      "M7-CORE-ACTION-LOOP-UX-001"
+    ],
+    "updated_at": "2026-06-30T10:00:25.039Z",
+    "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
+    "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+    "accepted_at": "2026-06-30T10:00:25.039Z",
+    "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package."
   }
 }
