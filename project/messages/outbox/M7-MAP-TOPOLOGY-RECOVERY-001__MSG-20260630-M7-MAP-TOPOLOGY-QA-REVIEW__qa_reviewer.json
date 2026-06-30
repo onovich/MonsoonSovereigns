@@ -1,0 +1,113 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts the M7 topology recovery planning package. The package records the third product-owner REQUEST_CHANGES as an authoritative topology blocker, not visual polish; ADR-010 rejects rectangular-grid disguise and defines polygon governance plus explicit route/transport graph; content lock remains blocked with content_lock_accepted=false; M7 exit remains DRAFT; and downstream topology tasks remain DRAFT until this package enters origin/main.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-RECOVERY-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-R2__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-recovery",
+  "commit": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean branch codex/m7-map-topology-recovery."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c"
+    },
+    {
+      "command": "git diff --name-status 02bf1690f7ef09784984f30ecaa0db19feb5595e..HEAD",
+      "exit_code": 0,
+      "result": "Only PROJECT_STATUS.md, ADR, task/state, handoff, and route files changed; no apps, packages, content-source, tools, or .github changes."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-RECOVERY-001 and related topology/content-lock tasks",
+      "exit_code": 0,
+      "result": "PASS: recovery, content lock, and all four downstream topology tasks are VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-CONTENT-LOCK-ACCEPTANCE-001 BLOCKED; M7-EXIT-VALIDATION-001 DRAFT; topology downstream tasks DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs product-owner request, lead plan, R2 repair, systems R1, and systems R3 handoffs",
+      "exit_code": 0,
+      "result": "PASS: all reviewed handoffs are VALID."
+    },
+    {
+      "command": "JSON parse/field check for goal-mode-state, model-routing-state, GOAL-MODE-CONTINUATION, and thread-registry",
+      "exit_code": 0,
+      "result": "PASS; active Human Gate fields are required=false and active_gate_task_id=null."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPTS_TOPOLOGY_RECOVERY_PACKAGE",
+      "decision": "Accept the topology recovery planning package and route it back to lead_orchestrator for PR integration."
+    },
+    {
+      "id": "SCHEMA_READY_ONLY_AFTER_MAIN",
+      "decision": "M7-MAP-TOPOLOGY-SCHEMA-001 may become READY only after this accepted recovery package enters origin/main."
+    },
+    {
+      "id": "CONTENT_LOCK_REMAINS_BLOCKED",
+      "decision": "This acceptance does not approve M7 content lock; M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED with content_lock_accepted=false."
+    }
+  ],
+  "risks": [
+    {
+      "id": "MINIMAL_SYSTEMS_R3_RATIONALE",
+      "severity": "P3",
+      "summary": "Systems R3 handoff records a minimal ACCEPT result without detailed rationale.",
+      "mitigation": "QA independently reviewed the package and accepted it."
+    },
+    {
+      "id": "SUPERSEDED_R2_ROUTE_READY_TO_SEND",
+      "severity": "P3",
+      "summary": "One superseded R2 route file remains READY_TO_SEND.",
+      "mitigation": "R3 route is SENT with submission id and ACCEPT result; current task/state points to QA and then lead integration."
+    },
+    {
+      "id": "HISTORICAL_PRIOR_RECONSIDERATION_RISK_TEXT",
+      "severity": "P3",
+      "summary": "Historical risk entries still mention the earlier systemic-recovery reconsideration state.",
+      "mitigation": "Active gate fields and continuation state correctly say no Human Gate is waiting."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate the accepted topology recovery planning package through PR/CI/main, close M7-MAP-TOPOLOGY-RECOVERY-001 after main integration, then make M7-MAP-TOPOLOGY-SCHEMA-001 READY.",
+  "created_at": "2026-06-30T22:15:34.3326087+08:00"
+}

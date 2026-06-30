@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
-    "updated_at": "2026-06-30T22:03:17.8498858+08:00",
+    "updated_at": "2026-06-30T22:15:34.3326087+08:00",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-RECOVERY-001"
     ],
@@ -1972,15 +1972,15 @@
       "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_pending_qa_reviewer",
+      "status": "accepted_pr_pending",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "Route systems-accepted M7 map topology recovery package to independent QA.",
+      "responsibility": "Integrate QA-accepted M7 map topology recovery package through PR and main.",
       "branch_or_worktree": "codex/m7-map-topology-recovery",
       "active_gate_task_id": null,
-      "updated_at": "2026-06-30T22:03:17.8498858+08:00"
+      "updated_at": "2026-06-30T22:15:34.3326087+08:00"
     }
   ],
   "task_effects": {
@@ -2577,7 +2577,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Route systems-accepted M7-MAP-TOPOLOGY-RECOVERY-001 package to independent qa_reviewer; do not wait on old content-lock Human Gate and do not start M7 exit.",
+  "next_action": "Open and merge M7-MAP-TOPOLOGY-RECOVERY-001 PR; do not wait on old content-lock Human Gate and do not start M7 exit.",
   "current_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -4595,14 +4595,18 @@
       "owner_role": "gameplay_designer",
       "owner_thread_id": "019f18ad-576b-7540-9487-817812e3f5b6",
       "reviewer_role": "systems_architect",
-      "status": "review_pending_qa_reviewer",
+      "status": "accepted_pr_pending",
       "branch_or_worktree": "codex/m7-map-topology-recovery",
       "plan_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json",
       "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
       "expected_systems_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R2-REVIEW__systems_architect.json",
       "systems_r3_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R3-TO-SYSTEMS-REVIEW.json",
-      "updated_at": "2026-06-30T22:03:17.8498858+08:00",
-      "next_action": "Independent QA review required before acceptance."
+      "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+      "qa_thread_id": "019f18dc-5eeb-7690-bd27-c5a7c900ded9",
+      "qa_thread_nickname": "Witness",
+      "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
+      "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+      "next_action": "Open PR and merge after CI before closing."
     }
   },
   "active_routes": {
@@ -5236,14 +5240,18 @@
       "owner_role": "gameplay_designer",
       "owner_thread_id": "019f18ad-576b-7540-9487-817812e3f5b6",
       "reviewer_role": "systems_architect",
-      "status": "review_pending_qa_reviewer",
+      "status": "accepted_pr_pending",
       "branch_or_worktree": "codex/m7-map-topology-recovery",
       "plan_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json",
       "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
       "expected_systems_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R2-REVIEW__systems_architect.json",
       "systems_r3_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R3-TO-SYSTEMS-REVIEW.json",
-      "updated_at": "2026-06-30T22:03:17.8498858+08:00",
-      "next_action": "Independent QA review required before acceptance."
+      "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+      "qa_thread_id": "019f18dc-5eeb-7690-bd27-c5a7c900ded9",
+      "qa_thread_nickname": "Witness",
+      "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
+      "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+      "next_action": "Open PR and merge after CI before closing."
     }
   },
   "m7_systemic_interaction_recovery": {
@@ -5484,7 +5492,7 @@
     "closed_at": "2026-06-30T21:02:21.5067142+08:00"
   },
   "m7_map_topology_recovery": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
     "owner_role": "gameplay_designer",
     "owner_configured_model": "gpt-5.5",
@@ -5495,11 +5503,18 @@
     "qa_role": "qa_reviewer",
     "branch_or_worktree": "codex/m7-map-topology-recovery",
     "plan_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json",
-    "updated_at": "2026-06-30T22:03:17.8498858+08:00",
-    "next_action": "Route systems-accepted package to independent QA review.",
+    "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+    "next_action": "Open PR, wait for CI, merge to main, then make M7-MAP-TOPOLOGY-SCHEMA-001 READY.",
     "systems_status": "ACCEPT",
     "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
     "systems_r3_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R3-TO-SYSTEMS-REVIEW.json",
-    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
+    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_thread_id": "019f18dc-5eeb-7690-bd27-c5a7c900ded9",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+    "accepted_at": "2026-06-30T22:15:34.3326087+08:00",
+    "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c"
   }
 }

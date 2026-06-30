@@ -12,15 +12,15 @@
       "task_ids": [
         "M7-MAP-TOPOLOGY-RECOVERY-001"
       ],
-      "status": "review_pending_qa_reviewer",
+      "status": "accepted_pr_pending",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-map-topology-recovery",
-      "updated_at": "2026-06-30T22:03:17.8498858+08:00",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json"
+      "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
     }
   },
   "last_integrated_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
@@ -1986,8 +1986,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "REVIEW",
-  "next_machine_action": "Route M7-MAP-TOPOLOGY-RECOVERY-001 to independent qa_reviewer; no active Human Gate is waiting and M7-EXIT-VALIDATION-001 must not start.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Open and merge M7-MAP-TOPOLOGY-RECOVERY-001 PR; do not start M7-EXIT-VALIDATION-001 and do not make downstream topology tasks READY until main integration.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3322,7 +3322,7 @@
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "m7_map_topology_recovery": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
     "owner_role": "gameplay_designer",
     "reviewer_role": "systems_architect",
@@ -3343,13 +3343,20 @@
       "M7-MAP-TOPOLOGY-CLIENT-001",
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
-    "next_action": "Route systems-accepted topology recovery package to independent qa_reviewer.",
-    "updated_at": "2026-06-30T22:03:17.8498858+08:00",
+    "next_action": "Open PR, wait for CI, merge to main, then make M7-MAP-TOPOLOGY-SCHEMA-001 READY.",
+    "updated_at": "2026-06-30T22:15:34.3326087+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "systems_status": "ACCEPT",
     "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
     "systems_r3_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R3-TO-SYSTEMS-REVIEW.json",
-    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
+    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_thread_id": "019f18dc-5eeb-7690-bd27-c5a7c900ded9",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+    "accepted_at": "2026-06-30T22:15:34.3326087+08:00",
+    "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c"
   }
 }

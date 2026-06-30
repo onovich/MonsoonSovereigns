@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-MAP-TOPOLOGY-RECOVERY-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
   "last_integrated_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
   "last_main_commit": "02bf1690f7ef09784984f30ecaa0db19feb5595e",
@@ -23,15 +23,15 @@
       "task_ids": [
         "M7-MAP-TOPOLOGY-RECOVERY-001"
       ],
-      "status": "review_pending_qa_reviewer",
+      "status": "accepted_pr_pending",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-map-topology-recovery",
-      "updated_at": "2026-06-30T22:03:17.8498858+08:00",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json"
+      "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
     }
   },
   "unresolved_risks": [
@@ -99,11 +99,11 @@
     "note": "Product owner already requested changes. The active path is topology recovery review, not waiting for product-owner Human Gate reconsideration.",
     "recorded_at": "2026-06-30T21:47:04.0374837+08:00"
   },
-  "next_machine_action": "Route M7-MAP-TOPOLOGY-RECOVERY-001 to independent qa_reviewer; no active Human Gate is waiting and M7-EXIT-VALIDATION-001 must not start.",
+  "next_machine_action": "Open and merge M7-MAP-TOPOLOGY-RECOVERY-001 PR; do not start M7-EXIT-VALIDATION-001 and do not make downstream topology tasks READY until main integration.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-30T22:03:17.8498858+08:00",
+  "last_updated_at": "2026-06-30T22:15:34.3326087+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -475,7 +475,7 @@
     ]
   },
   "m7_map_presentation_quality": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-MAP-PRESENTATION-QUALITY-001",
     "branch_or_worktree": "feat/m7-map-presentation-quality",
     "base_main_commit": "9a3b0c40cb5e7086fa9e5560f2bde89c62c3c131",
@@ -1083,13 +1083,20 @@
       "M7-MAP-TOPOLOGY-CLIENT-001",
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
-    "next_action": "Route systems-accepted topology recovery package to independent qa_reviewer.",
-    "updated_at": "2026-06-30T22:03:17.8498858+08:00",
+    "next_action": "Open PR, wait for CI, merge to main, then make M7-MAP-TOPOLOGY-SCHEMA-001 READY.",
+    "updated_at": "2026-06-30T22:15:34.3326087+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "systems_status": "ACCEPT",
     "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
     "systems_r3_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R3-TO-SYSTEMS-REVIEW.json",
-    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
+    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_thread_id": "019f18dc-5eeb-7690-bd27-c5a7c900ded9",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+    "accepted_at": "2026-06-30T22:15:34.3326087+08:00",
+    "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c"
   }
 }

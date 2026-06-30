@@ -5,10 +5,11 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_pending_qa_reviewer",
+      "status": "accepted_pr_pending",
       "branch_or_worktree": "codex/m7-map-topology-recovery",
-      "updated_at": "2026-06-30T22:03:17.8498858+08:00",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json"
+      "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
     },
     "gameplay_designer": {
       "thread_id": "019f18ad-576b-7540-9487-817812e3f5b6",
@@ -16,15 +17,24 @@
       "status": "completed_read_only_research_summary_recorded",
       "mode": "read_only",
       "updated_at": "2026-06-30T21:29:09.7679151+08:00"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f18dc-5eeb-7690-bd27-c5a7c900ded9",
+      "nickname": "Witness",
+      "status": "accepted_read_only_review",
+      "branch_or_worktree": "codex/m7-map-topology-recovery",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-06-30T22:15:34.3326087+08:00"
     }
   },
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T21:47:04.0374837+08:00",
+  "updated_at": "2026-06-30T22:15:34.3326087+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-RECOVERY-001",
   "summary": "Plan authoritative map topology recovery after product-owner rejection of grid-like map substrate",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "required_reviewers": [
@@ -93,11 +103,11 @@
     "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json",
     "git diff --check"
   ],
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task is created from a product-owner REQUEST_CHANGES during formal M7 content-lock reconsideration.",
     "The accepted direction is not high-fidelity art; it is a low-fidelity but authoritative strategic map substrate.",
-    "ADR-010 is PROPOSED until systems_architect and independent qa_reviewer accept this package.",
+    "ADR-010 remains PROPOSED but is accepted for planning by systems_architect and independent qa_reviewer; downstream implementation must still validate before content lock reconsideration.",
     "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and is not reopened by this map topology work.",
     "Historical Southeast Asia district borders, ports, river importance, and route claims remain RESEARCH REQUIRED before formal historical content is asserted.",
     "No GIS, server, Rust/WASM, multiplayer, telemetry, account, paid service, production art, or commercial/release decision is authorized.",
@@ -120,7 +130,7 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_action": "Route systems-accepted ADR/task-chain package to independent qa_reviewer; only after QA acceptance and main integration can M7-MAP-TOPOLOGY-SCHEMA-001 become READY.",
+  "next_action": "Open PR, wait for CI, merge to main, then close M7-MAP-TOPOLOGY-RECOVERY-001 and make M7-MAP-TOPOLOGY-SCHEMA-001 READY.",
   "request_changes_round": 1,
   "systems_status": "ACCEPT",
   "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
@@ -130,5 +140,12 @@
   "expected_systems_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R2-REVIEW__systems_architect.json",
   "systems_r3_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R3-TO-SYSTEMS-REVIEW.json",
   "systems_r3_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
-  "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
+  "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+  "qa_status": "ACCEPT",
+  "qa_thread_id": "019f18dc-5eeb-7690-bd27-c5a7c900ded9",
+  "qa_thread_nickname": "Witness",
+  "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
+  "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+  "accepted_at": "2026-06-30T22:15:34.3326087+08:00",
+  "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c"
 }
