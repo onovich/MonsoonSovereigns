@@ -2,7 +2,7 @@
   "id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
   "summary": "Validate the systemic M7 interaction recovery before content lock reconsideration",
   "milestone": "M7",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -82,16 +82,16 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_started_task",
+      "status": "awaiting_qa_review",
       "branch_or_worktree": "codex/m7-systemic-interaction-validation",
       "start_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
-      "updated_at": "2026-06-30T20:32:45.8274835+08:00"
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00"
     },
     "test_engineer": {
       "thread_id": "019f1884-3ea6-7672-8235-69d0fb8f9591",
       "nickname": "Probe",
-      "status": "in_progress",
+      "status": "review",
       "role": "test_engineer",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
@@ -102,7 +102,27 @@
       "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
       "started_at": "2026-06-30T20:32:45.8274835+08:00",
-      "updated_at": "2026-06-30T20:32:45.8274835+08:00"
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00",
+      "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f1890-e974-79b1-a8b5-9a8bf2220f27",
+      "nickname": "Auditor the 2nd",
+      "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+      "status": "in_progress",
+      "role": "qa_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+      "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+      "started_at": "2026-06-30T20:45:54.9465842+08:00",
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00"
     }
   },
   "route_to": "qa_reviewer",
@@ -115,7 +135,7 @@
     "All player-visible text must pass through existing i18n boundaries."
   ],
   "created_at": "2026-06-30T09:46:39.564Z",
-  "updated_at": "2026-06-30T20:32:45.8274835+08:00",
+  "updated_at": "2026-06-30T20:45:54.9465842+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
@@ -125,9 +145,17 @@
   "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
   "ready_after_main_commit": "88ad6146a9d47bf98e3643a218bce6fc8b17dccd",
   "ready_after_pr": 219,
-  "next_action": "Await test_engineer writer validation handoff for qa_reviewer review.",
+  "next_action": "Await independent qa_reviewer review.",
   "started_at": "2026-06-30T20:32:45.8274835+08:00",
   "start_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
   "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
-  "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json"
+  "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+  "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+  "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+  "review_ready_at": "2026-06-30T20:45:54.9465842+08:00",
+  "qa_thread_id": "019f1890-e974-79b1-a8b5-9a8bf2220f27",
+  "qa_thread_nickname": "Auditor the 2nd",
+  "qa_route": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+  "expected_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
+  "routed_to_qa_at": "2026-06-30T20:45:54.9465842+08:00"
 }

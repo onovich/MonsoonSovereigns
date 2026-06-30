@@ -8182,7 +8182,7 @@
       "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started_writer",
+      "status": "awaiting_qa_review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -8190,14 +8190,15 @@
       "branch_or_worktree": "codex/m7-systemic-interaction-validation",
       "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
-      "updated_at": "2026-06-30T20:32:45.8274835+08:00"
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00",
+      "qa_route": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json"
     },
     "M7-SYSTEMIC-INTERACTION-VALIDATION-001:test_engineer": {
       "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
       "role": "test_engineer",
       "thread_id": "019f1884-3ea6-7672-8235-69d0fb8f9591",
       "nickname": "Probe",
-      "status": "in_progress",
+      "status": "review",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -8208,7 +8209,28 @@
       "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T20:32:45.8274835+08:00",
-      "updated_at": "2026-06-30T20:32:45.8274835+08:00"
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00",
+      "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e"
+    },
+    "M7-SYSTEMIC-INTERACTION-VALIDATION-001:qa_reviewer": {
+      "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f1890-e974-79b1-a8b5-9a8bf2220f27",
+      "nickname": "Auditor the 2nd",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+      "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
+      "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-30T20:45:54.9465842+08:00",
+      "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00"
     }
   }
 }

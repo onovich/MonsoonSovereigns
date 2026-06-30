@@ -5156,20 +5156,26 @@
     "M7-SYSTEMIC-INTERACTION-VALIDATION-001": {
       "owner_role": "test_engineer",
       "reviewer_role": "qa_reviewer",
-      "status": "in_progress",
+      "status": "qa_review_in_progress",
       "branch_or_worktree": "codex/m7-systemic-interaction-validation",
-      "updated_at": "2026-06-30T20:32:45.8274835+08:00",
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00",
       "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
       "ready_after_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
       "ready_after_pr": 219,
-      "next_action": "Await test_engineer writer handoff for qa_reviewer review.",
+      "next_action": "Await independent qa_reviewer review.",
       "owner_model": "gpt-5.4-mini",
       "owner_effort": "high",
       "owner_thread_id": "019f1884-3ea6-7672-8235-69d0fb8f9591",
       "owner_thread_nickname": "Probe",
       "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
       "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
-      "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json"
+      "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+      "qa_thread_id": "019f1890-e974-79b1-a8b5-9a8bf2220f27",
+      "qa_thread_nickname": "Auditor the 2nd",
+      "qa_route": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "expected_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json"
     }
   },
   "m7_systemic_interaction_recovery": {
@@ -5236,14 +5242,14 @@
       ]
     },
     "M7-SYSTEMIC-INTERACTION-VALIDATION-001": {
-      "status": "in_progress",
+      "status": "qa_review_in_progress",
       "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
       "ready_after_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
       "ready_after_pr": 219,
       "owner_role": "test_engineer",
       "reviewer_role": "qa_reviewer",
-      "updated_at": "2026-06-30T20:32:45.8274835+08:00",
-      "next_action": "Await test_engineer writer handoff for qa_reviewer review.",
+      "updated_at": "2026-06-30T20:45:54.9465842+08:00",
+      "next_action": "Await independent qa_reviewer review.",
       "owner_model": "gpt-5.4-mini",
       "owner_effort": "high",
       "owner_thread_id": "019f1884-3ea6-7672-8235-69d0fb8f9591",
@@ -5251,7 +5257,13 @@
       "branch_or_worktree": "codex/m7-systemic-interaction-validation",
       "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
       "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
-      "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json"
+      "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+      "qa_thread_id": "019f1890-e974-79b1-a8b5-9a8bf2220f27",
+      "qa_thread_nickname": "Auditor the 2nd",
+      "qa_route": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "expected_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json"
     }
   },
   "m7_core_action_loop_ux": {
@@ -5360,7 +5372,7 @@
     ]
   },
   "m7_systemic_interaction_validation": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
     "owner_role": "test_engineer",
     "reviewer_role": "qa_reviewer",
@@ -5368,7 +5380,7 @@
     "ready_after_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
     "ready_after_pr": 219,
     "updated_at": "2026-06-30T20:25:35.5998964+08:00",
-    "next_action": "Await test_engineer writer handoff.",
+    "next_action": "Await independent qa_reviewer review.",
     "branch_or_worktree": "codex/m7-systemic-interaction-validation",
     "base_main_commit": "88ad6146a9d47bf98e3643a218bce6fc8b17dccd",
     "writer_thread_id": "019f1884-3ea6-7672-8235-69d0fb8f9591",
@@ -5378,6 +5390,14 @@
     "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-30T20:32:45.8274835+08:00",
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+    "review_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+    "review_ready_at": "2026-06-30T20:45:54.9465842+08:00",
+    "qa_thread_id": "019f1890-e974-79b1-a8b5-9a8bf2220f27",
+    "qa_thread_nickname": "Auditor the 2nd",
+    "qa_route": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-06-30T20:45:54.9465842+08:00"
   }
 }
