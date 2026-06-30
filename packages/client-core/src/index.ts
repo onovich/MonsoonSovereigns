@@ -11,9 +11,15 @@ import {
   type GameCommandV1,
   type HelloSimulationResultDto,
   type ListM2EconomySummariesResultV1,
+  type ListMapTopologyResultV1,
   type ListM3AdministrativeBurdenResultV1,
   type ListM3DecisionScaffoldsResultV1,
   type ListM3SuccessionCrisesResultV1,
+  type MapTopologyPathPreviewEdgeReadModelV1,
+  type MapTopologyReadModelV1,
+  type MapTopologyRouteAvailabilityReadModelV1,
+  type MapTopologyRouteEdgeReadModelV1,
+  type MapTopologyRouteModeV1,
   type M2TransportRouteKindV1,
   type M3PostwarGovernanceMethodV1,
   type M4CampaignAiDecisionTraceV1,
@@ -26,6 +32,7 @@ import {
   type M5PlayableLoopScriptV1,
   type M6AlphaStartToVictoryScriptV1,
   type PreviewM2TransportRouteResultV1,
+  type PreviewMapTopologyPathResultV1,
   type PreviewM3PostwarGovernanceResultV1,
   type ResolveM4CampaignWithdrawalCommandV1,
   type StartCampaignMarchCommandV1
@@ -83,6 +90,7 @@ export interface ClientMapReadModelSnapshot {
   readonly districts: readonly ClientMapDistrictReadModel[];
   readonly settlements: readonly ClientMapSettlementReadModel[];
   readonly routes: readonly ClientMapRouteReadModel[];
+  readonly topology?: ClientMapTopologyReadModel;
 }
 
 export interface ClientMapBoundsReadModel {
@@ -147,6 +155,99 @@ export interface ClientMapRouteReadModel {
   readonly bottleneckCapacity: number | null;
   readonly routeKinds: readonly ClientDistrictRouteKind[];
   readonly points: readonly ClientMapPointReadModel[];
+  readonly routeId?: number;
+  readonly sourceId?: string;
+  readonly availability?: ClientTopologyRouteAvailability;
+  readonly reasonCodes?: readonly string[];
+  readonly isDecisionRelevant?: boolean;
+}
+
+export type ClientTopologyRouteAvailability = "open" | "blocked" | "unknown";
+export type ClientTopologyPathPreviewStatus =
+  | "reachable"
+  | "capacity-exceeded"
+  | "blocked"
+  | "no-known-route";
+
+export interface ClientMapTopologyReadModel {
+  readonly topologyHash: string;
+  readonly contentManifestHash: string;
+  readonly routeNodes: readonly ClientMapRouteNodeReadModel[];
+  readonly routeEdges: readonly ClientMapRouteEdgeReadModel[];
+  readonly pathPreviews: readonly ClientMapPathPreviewReadModel[];
+  readonly antiGridEvidence: ClientMapTopologyAntiGridEvidenceReadModel;
+}
+
+export interface ClientMapRouteNodeReadModel {
+  readonly nodeId: string;
+  readonly nodeKind: string;
+  readonly districtId: ClientDistrictId;
+  readonly displayName: string;
+  readonly anchor: ClientMapPointReadModel;
+}
+
+export interface ClientMapRouteEdgeReadModel {
+  readonly routeId: number;
+  readonly sourceId: string;
+  readonly originDistrictId: ClientDistrictId;
+  readonly destinationDistrictId: ClientDistrictId;
+  readonly mode: ClientDistrictRouteKind;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly availability: ClientTopologyRouteAvailability;
+  readonly availabilityReasonCode: string | null;
+  readonly seasonality: readonly ClientMapRouteSeasonalModifierReadModel[];
+  readonly reasonCodes: readonly string[];
+  readonly points: readonly ClientMapPointReadModel[];
+}
+
+export interface ClientMapRouteSeasonalModifierReadModel {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCode: string | null;
+}
+
+export interface ClientMapPathPreviewReadModel {
+  readonly status: ClientTopologyPathPreviewStatus;
+  readonly topologyHash: string | null;
+  readonly originDistrictId: ClientDistrictId;
+  readonly destinationDistrictId: ClientDistrictId;
+  readonly stockAmount: number;
+  readonly estimatedDays: number | null;
+  readonly bottleneckCapacity: number | null;
+  readonly edgeSequence: readonly ClientMapPathPreviewEdgeReadModel[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientMapPathPreviewEdgeReadModel {
+  readonly routeId: number;
+  readonly sourceId: string;
+  readonly mode: ClientDistrictRouteKind;
+  readonly fromDistrictId: ClientDistrictId;
+  readonly toDistrictId: ClientDistrictId;
+  readonly seasonalCost: number;
+  readonly baseTravelCost: number;
+  readonly seasonalCapacity: number;
+  readonly baseCapacity: number;
+  readonly availability: ClientTopologyRouteAvailability;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface ClientMapTopologyAntiGridEvidenceReadModel {
+  readonly visualNeighborWithoutRoute: ClientTopologyEvidencePairReadModel;
+  readonly visuallyDistantExplicitRoute: ClientTopologyEvidencePairReadModel;
+  readonly geometryPerturbationInvariantPath: ClientTopologyEvidencePairReadModel;
+  readonly variableRouteDegreeNodeIds: readonly string[];
+  readonly deadEndDistrictIds: readonly ClientDistrictId[];
+  readonly chokepointRouteIds: readonly number[];
+}
+
+export interface ClientTopologyEvidencePairReadModel {
+  readonly originDistrictId: ClientDistrictId;
+  readonly destinationDistrictId: ClientDistrictId;
+  readonly reasonCodes: readonly string[];
+  readonly edgeSequence: readonly number[];
 }
 
 export interface ClientPanelReadModelSnapshot {
@@ -2119,11 +2220,202 @@ export function createM2PrototypeClientReadModelSnapshot(
   };
 }
 
+export function createM7TopologyClientReadModelSnapshot(
+  baseSnapshot = createInitialClientReadModelSnapshot()
+): ClientReadModelSnapshot {
+  const fixture = createM7TopologyReadModelFixture(baseSnapshot.revision);
+  const m4Campaign = createM4CampaignReadModelFixture(baseSnapshot.revision);
+  const snapshotWithM4 = {
+    ...baseSnapshot,
+    m4Campaign
+  };
+  const m3Appointment = createM3AppointmentReadModelFixture(baseSnapshot.revision);
+  const m5Playable = createM5PlayableReadModelFixture(snapshotWithM4);
+  const snapshotWithM5 = {
+    ...snapshotWithM4,
+    m3Appointment,
+    m5Playable
+  };
+  const m6Alpha = createM6AlphaReadModelFixture(snapshotWithM5);
+  const snapshotWithM6 = {
+    ...snapshotWithM5,
+    map: fixture.map,
+    districtList: fixture.districtList,
+    m6Alpha
+  };
+
+  return {
+    ...baseSnapshot,
+    map: fixture.map,
+    panels: {
+      headline: "Topology-backed map ready",
+      metrics: [
+        {
+          label: "District polygons",
+          value: fixture.map.districts.length.toString()
+        },
+        {
+          label: "Route edges",
+          value: fixture.map.routes.length.toString()
+        },
+        {
+          label: "Path previews",
+          value: fixture.pathPreviewResults.length.toString()
+        },
+        {
+          label: "Topology hash",
+          value: fixture.topologyResult.topology.topologyHash
+        },
+        {
+          label: "State hash",
+          value: baseSnapshot.simulation.stateHash
+        }
+      ]
+    },
+    districtList: fixture.districtList,
+    m3Appointment,
+    m4Campaign,
+    m5Playable,
+    m6Alpha,
+    m7Guidance: createM7GuidanceReadModelFixture(snapshotWithM6)
+  };
+}
+
 export interface ClientM2PrototypeReadModelFixture {
   readonly map: ClientMapReadModelSnapshot;
   readonly districtList: ClientDistrictListReadModelSnapshot;
   readonly economyResult: ListM2EconomySummariesResultV1;
   readonly routePreviewResults: readonly PreviewM2TransportRouteResultV1[];
+}
+
+export interface ClientM7TopologyReadModelFixture {
+  readonly map: ClientMapReadModelSnapshot;
+  readonly districtList: ClientDistrictListReadModelSnapshot;
+  readonly topologyResult: ListMapTopologyResultV1;
+  readonly pathPreviewResults: readonly PreviewMapTopologyPathResultV1[];
+}
+
+export function createM7TopologyReadModelFixture(
+  revision = createClientReadModelRevision(1)
+): ClientM7TopologyReadModelFixture {
+  const topologyResult = createM7TopologyListResult(Number(revision));
+  const pathPreviewResults = createM7TopologyPathPreviewResults(Number(revision));
+  return projectM7TopologyClientReadModels({
+    revision,
+    topologyResult,
+    pathPreviewResults
+  });
+}
+
+export interface ProjectM7TopologyClientReadModelsInput {
+  readonly revision: ClientReadModelRevision;
+  readonly topologyResult: ListMapTopologyResultV1;
+  readonly pathPreviewResults: readonly PreviewMapTopologyPathResultV1[];
+}
+
+export function projectM7TopologyClientReadModels(
+  input: ProjectM7TopologyClientReadModelsInput
+): ClientM7TopologyReadModelFixture {
+  const rows = projectM7TopologyDistrictRows(input.topologyResult, input.pathPreviewResults);
+  const selected = rows[0];
+  if (selected === undefined) {
+    throw new Error("M7 topology read model must contain at least one district row.");
+  }
+
+  const districtById = new Map<ClientDistrictId, ClientDistrictRowReadModel>(
+    rows.map((row) => [row.districtId, row])
+  );
+  const districtFeatures = input.topologyResult.topology.districts.map((district, index) => {
+    const districtId = createClientDistrictId(district.districtId);
+    const row = districtById.get(districtId);
+    if (row === undefined) {
+      throw new Error(`M7 topology district ${district.districtId} has no projected row.`);
+    }
+
+    return {
+      districtId,
+      displayName: formatTopologyDistrictDisplayName(index + 1),
+      anchor: topologyPointToClientPoint(district.anchor),
+      polygon: district.polygon.map(topologyPointToClientPoint),
+      seasonal: row.seasonal,
+      population: row.population,
+      availableLabor: row.labor.available,
+      grainStock: row.grain.stock,
+      cashStock: row.cash.stock,
+      route: row.route
+    };
+  });
+  const routeNodes = input.topologyResult.topology.routeNodes.map((node) => ({
+    nodeId: node.nodeId,
+    nodeKind: node.nodeKind,
+    districtId: createClientDistrictId(node.districtId),
+    displayName: formatTopologyNodeDisplayName(node.nodeId),
+    anchor: topologyPointToClientPoint(node.anchor)
+  }));
+  const routeEdges = projectM7TopologyRouteEdges(input.topologyResult.topology, routeNodes);
+  const pathPreviews = input.pathPreviewResults.map((result) =>
+    projectM7TopologyPathPreview(result.route)
+  );
+  const decisionRelevantRouteIds = new Set<number>(
+    pathPreviews
+      .filter((preview) => preview.originDistrictId === selected.districtId)
+      .filter((preview) => preview.status === "reachable" || preview.status === "capacity-exceeded")
+      .flatMap((preview) => preview.edgeSequence.map((edge) => edge.routeId))
+  );
+  const mapRoutes = routeEdges
+    .filter((edge) => edge.points.length >= 2)
+    .map((edge) => ({
+      originDistrictId: edge.originDistrictId,
+      destinationDistrictId: edge.destinationDistrictId,
+      status: edge.availability === "blocked" ? ("unreachable" as const) : ("reachable" as const),
+      stockAmount: 0,
+      totalCost: edge.baseTravelCost,
+      bottleneckCapacity: edge.baseCapacity,
+      routeKinds: [edge.mode],
+      points: edge.points,
+      routeId: edge.routeId,
+      sourceId: edge.sourceId,
+      availability: edge.availability,
+      reasonCodes: edge.reasonCodes,
+      isDecisionRelevant: decisionRelevantRouteIds.has(edge.routeId)
+    }));
+  const bounds = deriveBoundsFromTopology(input.topologyResult.topology);
+
+  return {
+    topologyResult: input.topologyResult,
+    pathPreviewResults: input.pathPreviewResults,
+    map: {
+      revision: input.revision,
+      bounds,
+      anchors: routeNodes.map((node) => ({
+        id: createClientMapAnchorId(node.nodeId.replace(".", "-")),
+        label: node.displayName,
+        xInMapUnits: node.anchor.xInMapUnits,
+        yInMapUnits: node.anchor.yInMapUnits,
+        tone: node.nodeKind === "port" || node.nodeKind === "pass" ? "secondary" : "muted"
+      })),
+      districts: districtFeatures,
+      settlements: [],
+      routes: mapRoutes,
+      topology: {
+        topologyHash: input.topologyResult.topology.topologyHash,
+        contentManifestHash: input.topologyResult.topology.contentManifestHash,
+        routeNodes,
+        routeEdges,
+        pathPreviews,
+        antiGridEvidence: createM7TopologyAntiGridEvidence(pathPreviews)
+      }
+    },
+    districtList: {
+      revision: input.revision,
+      provenance: {
+        kind: "simulation-read-model",
+        note: "M7 topology fixture projected from accepted topology and path preview read-model DTOs; renderer does not infer routes from geometry."
+      },
+      rows,
+      selectedDistrictId: selected.districtId
+    }
+  };
 }
 
 export function createM2PrototypeReadModelFixture(
@@ -6778,6 +7070,621 @@ function createSyntheticDistrictPressureRow(
   };
 }
 
+function createM7TopologyListResult(revision: number): ListMapTopologyResultV1 {
+  return {
+    kind: "sim.list-map-topology",
+    day: 0,
+    revision,
+    topology: {
+      schemaVersion: 1,
+      topologyHash: "1ba53651",
+      contentManifestHash: "d474a105",
+      districts: M7_TOPOLOGY_DISTRICTS,
+      routeNodes: M7_TOPOLOGY_ROUTE_NODES,
+      routeEdges: M7_TOPOLOGY_ROUTE_EDGES
+    }
+  };
+}
+
+function createM7TopologyPathPreviewResults(
+  revision: number
+): readonly PreviewMapTopologyPathResultV1[] {
+  return [
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 1,
+      destinationDistrictId: 10,
+      stockAmount: 40,
+      totalCost: 26,
+      bottleneckCapacity: 100,
+      routeIds: [1, 24, 14],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 2,
+      destinationDistrictId: 9,
+      stockAmount: 40,
+      totalCost: 10,
+      bottleneckCapacity: 180,
+      routeIds: [24],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "capacity-exceeded",
+      originDistrictId: 2,
+      destinationDistrictId: 9,
+      stockAmount: 220,
+      totalCost: 10,
+      bottleneckCapacity: 180,
+      routeIds: [24],
+      reasonCodes: ["topology.path.capacity-exceeded"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 3,
+      destinationDistrictId: 10,
+      stockAmount: 40,
+      totalCost: 17,
+      bottleneckCapacity: 160,
+      routeIds: [20, 21],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 4,
+      destinationDistrictId: 12,
+      stockAmount: 40,
+      totalCost: 8,
+      bottleneckCapacity: 120,
+      routeIds: [22],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 5,
+      destinationDistrictId: 8,
+      stockAmount: 40,
+      totalCost: 8,
+      bottleneckCapacity: 130,
+      routeIds: [9],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 1,
+      destinationDistrictId: 13,
+      stockAmount: 40,
+      totalCost: 25,
+      bottleneckCapacity: 100,
+      routeIds: [3, 22, 19],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 7,
+      destinationDistrictId: 8,
+      stockAmount: 40,
+      totalCost: 7,
+      bottleneckCapacity: 120,
+      routeIds: [11],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 8,
+      destinationDistrictId: 12,
+      stockAmount: 40,
+      totalCost: 11,
+      bottleneckCapacity: 103,
+      routeIds: [15],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 9,
+      destinationDistrictId: 10,
+      stockAmount: 40,
+      totalCost: 8,
+      bottleneckCapacity: 125,
+      routeIds: [13],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 10,
+      destinationDistrictId: 3,
+      stockAmount: 40,
+      totalCost: 17,
+      bottleneckCapacity: 160,
+      routeIds: [21, 23],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 11,
+      destinationDistrictId: 12,
+      stockAmount: 40,
+      totalCost: 11,
+      bottleneckCapacity: 90,
+      routeIds: [16],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "reachable",
+      originDistrictId: 12,
+      destinationDistrictId: 13,
+      stockAmount: 40,
+      totalCost: 10,
+      bottleneckCapacity: 100,
+      routeIds: [19],
+      reasonCodes: ["topology.path.reachable"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "no-known-route",
+      originDistrictId: 13,
+      destinationDistrictId: 14,
+      stockAmount: 40,
+      totalCost: null,
+      bottleneckCapacity: null,
+      routeIds: [],
+      reasonCodes: ["topology.path.no-known-route", "topology.no-known-route.synthetic-outer-sound"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "no-known-route",
+      originDistrictId: 14,
+      destinationDistrictId: 13,
+      stockAmount: 40,
+      totalCost: null,
+      bottleneckCapacity: null,
+      routeIds: [],
+      reasonCodes: ["topology.path.no-known-route", "topology.no-known-route.synthetic-outer-sound"]
+    }),
+    createM7TopologyPathPreviewResult(revision, {
+      status: "blocked",
+      originDistrictId: 6,
+      destinationDistrictId: 13,
+      stockAmount: 40,
+      totalCost: null,
+      bottleneckCapacity: null,
+      routeIds: [25],
+      reasonCodes: ["topology.path.blocked", "topology.blocked.synthetic-pass-survey"]
+    })
+  ];
+}
+
+function createM7TopologyPathPreviewResult(
+  revision: number,
+  input: {
+    readonly status: ClientTopologyPathPreviewStatus;
+    readonly originDistrictId: number;
+    readonly destinationDistrictId: number;
+    readonly stockAmount: number;
+    readonly totalCost: number | null;
+    readonly bottleneckCapacity: number | null;
+    readonly routeIds: readonly number[];
+    readonly reasonCodes: readonly string[];
+  }
+): PreviewMapTopologyPathResultV1 {
+  const edges = input.routeIds.map((routeId) =>
+    createM7TopologyPathPreviewEdge(routeId, input.stockAmount)
+  );
+  const route =
+    input.status === "reachable" || input.status === "capacity-exceeded"
+      ? {
+          status: input.status,
+          topologyHash: M7_TOPOLOGY_HASH,
+          originDistrictId: input.originDistrictId,
+          destinationDistrictId: input.destinationDistrictId,
+          stockAmount: input.stockAmount,
+          totalCost: input.totalCost ?? 0,
+          bottleneckCapacity: input.bottleneckCapacity ?? 0,
+          edges,
+          reasonCodes: input.reasonCodes,
+          tieBreakEvidence: M7_TOPOLOGY_TIE_BREAK_EVIDENCE
+        }
+      : {
+          status: input.status,
+          topologyHash: input.status === "blocked" ? M7_TOPOLOGY_HASH : null,
+          originDistrictId: input.originDistrictId,
+          destinationDistrictId: input.destinationDistrictId,
+          stockAmount: input.stockAmount,
+          edges,
+          reasonCodes: input.reasonCodes,
+          tieBreakEvidence: M7_TOPOLOGY_TIE_BREAK_EVIDENCE
+        };
+
+  return {
+    kind: "sim.preview-map-topology-path",
+    day: 0,
+    revision,
+    monthOfYear: 1,
+    route
+  };
+}
+
+function createM7TopologyPathPreviewEdge(
+  routeId: number,
+  stockAmount: number
+): MapTopologyPathPreviewEdgeReadModelV1 {
+  const routeEdge = M7_TOPOLOGY_ROUTE_EDGES.find((edge) => edge.routeId === routeId);
+  if (routeEdge === undefined) {
+    throw new Error(`Missing M7 topology route edge ${routeId}.`);
+  }
+  const seasonal = routeEdge.seasonality[0];
+  const costMultiplierBps = seasonal?.costMultiplierBps ?? 10_000;
+  const capacityMultiplierBps = seasonal?.capacityMultiplierBps ?? 10_000;
+  const seasonalCost = Math.round((routeEdge.baseTravelCost * costMultiplierBps) / 10_000);
+  const seasonalCapacity = Math.round((routeEdge.baseCapacity * capacityMultiplierBps) / 10_000);
+
+  return {
+    routeId: routeEdge.routeId,
+    sourceId: routeEdge.sourceId,
+    from: routeEdge.from,
+    to: routeEdge.to,
+    fromDistrictId: routeEdge.fromDistrictId,
+    toDistrictId: routeEdge.toDistrictId,
+    mode: routeEdge.mode,
+    baseTravelCost: routeEdge.baseTravelCost,
+    seasonalCost,
+    baseCapacity: routeEdge.baseCapacity,
+    seasonalCapacity,
+    stockAmount,
+    remainingCapacityAfterStock: Math.max(0, seasonalCapacity - stockAmount),
+    availability: routeEdge.availability,
+    metadata: routeEdge.metadata,
+    reasonCodes: [
+      `topology.route.mode.${routeEdge.mode}`,
+      `topology.terrain.${routeEdge.metadata.terrainClass}`,
+      `topology.risk.${routeEdge.metadata.riskClass}`,
+      routeEdge.availability.kind === "blocked"
+        ? routeEdge.availability.reasonCode
+        : "topology.route.open",
+      ...(seasonal?.reasonCodes ?? ["topology.season.synthetic.01"])
+    ]
+  };
+}
+
+function projectM7TopologyDistrictRows(
+  topologyResult: ListMapTopologyResultV1,
+  pathPreviewResults: readonly PreviewMapTopologyPathResultV1[]
+): readonly ClientDistrictRowReadModel[] {
+  const previewByOriginDistrictId = new Map<number, PreviewMapTopologyPathResultV1>();
+  for (const preview of pathPreviewResults) {
+    if (!previewByOriginDistrictId.has(preview.route.originDistrictId)) {
+      previewByOriginDistrictId.set(preview.route.originDistrictId, preview);
+    }
+  }
+
+  return topologyResult.topology.districts.map((district, index) => {
+    const districtId = createClientDistrictId(district.districtId);
+    const preview = previewByOriginDistrictId.get(district.districtId);
+    const phase = pickByIndex(SYNTHETIC_AGRICULTURE_PHASES, index);
+
+    return {
+      districtId,
+      displayName: formatTopologyDistrictDisplayName(index + 1),
+      seasonal: {
+        monthOfYear: 1,
+        agriculturePhase: phase,
+        label: `M01 ${phase}`
+      },
+      population: 1_150 + index * 170 + (district.metadata.terrainClass === "coastal" ? 120 : 0),
+      labor: {
+        available: 430 + index * 29,
+        committed: (index % 4) * 18
+      },
+      grain: {
+        stock: 2_800 + index * 91,
+        lastHarvest: phase === "harvest" ? 760 + index * 11 : 0
+      },
+      cash: {
+        stock: 940 + index * 47,
+        cumulativeMobilizationCost: (index % 5) * 55
+      },
+      route:
+        preview === undefined
+          ? createUnreachableRouteSummary(districtId)
+          : routeSummaryFromTopologyPreview(preview)
+    };
+  });
+}
+
+function projectM7TopologyRouteEdges(
+  topology: MapTopologyReadModelV1,
+  routeNodes: readonly ClientMapRouteNodeReadModel[]
+): readonly ClientMapRouteEdgeReadModel[] {
+  const routeNodeAnchorById = new Map<string, ClientMapPointReadModel>(
+    routeNodes.map((node) => [node.nodeId, node.anchor])
+  );
+
+  return topology.routeEdges.map((edge) => {
+    const points = resolveTopologyRouteNodePolyline(edge, routeNodeAnchorById);
+    return {
+      routeId: edge.routeId,
+      sourceId: edge.sourceId,
+      originDistrictId: createClientDistrictId(edge.fromDistrictId),
+      destinationDistrictId: createClientDistrictId(edge.toDistrictId),
+      mode: edge.mode,
+      baseTravelCost: edge.baseTravelCost,
+      baseCapacity: edge.baseCapacity,
+      availability: topologyAvailabilityToClient(edge.availability),
+      availabilityReasonCode:
+        edge.availability.kind === "blocked" ? edge.availability.reasonCode : null,
+      seasonality: edge.seasonality.map((seasonal) => ({
+        month: seasonal.month,
+        costMultiplierBps: seasonal.costMultiplierBps,
+        capacityMultiplierBps: seasonal.capacityMultiplierBps,
+        reasonCode: seasonal.reasonCodes[0] ?? null
+      })),
+      reasonCodes: [
+        `topology.route.mode.${edge.mode}`,
+        `topology.terrain.${edge.metadata.terrainClass}`,
+        `topology.risk.${edge.metadata.riskClass}`,
+        edge.availability.kind === "blocked" ? edge.availability.reasonCode : "topology.route.open"
+      ],
+      points
+    };
+  });
+}
+
+function resolveTopologyRouteNodePolyline(
+  edge: MapTopologyRouteEdgeReadModelV1,
+  routeNodeAnchorById: ReadonlyMap<string, ClientMapPointReadModel>
+): readonly ClientMapPointReadModel[] {
+  if (edge.from.kind !== "route-node" || edge.to.kind !== "route-node") {
+    return [];
+  }
+  const from = routeNodeAnchorById.get(edge.from.nodeId);
+  const to = routeNodeAnchorById.get(edge.to.nodeId);
+  if (from === undefined || to === undefined) {
+    throw new Error(`Missing route-node polyline endpoint for route ${edge.routeId}.`);
+  }
+  return [from, to];
+}
+
+function projectM7TopologyPathPreview(
+  preview: PreviewMapTopologyPathResultV1["route"]
+): ClientMapPathPreviewReadModel {
+  if (preview.status === "reachable" || preview.status === "capacity-exceeded") {
+    return {
+      status: preview.status,
+      topologyHash: preview.topologyHash,
+      originDistrictId: createClientDistrictId(preview.originDistrictId),
+      destinationDistrictId: createClientDistrictId(preview.destinationDistrictId),
+      stockAmount: preview.stockAmount,
+      estimatedDays: preview.totalCost,
+      bottleneckCapacity: preview.bottleneckCapacity,
+      edgeSequence: preview.edges.map(projectM7TopologyPathPreviewEdge),
+      reasonCodes: preview.reasonCodes
+    };
+  }
+  return {
+    status: preview.status,
+    topologyHash: preview.topologyHash,
+    originDistrictId: createClientDistrictId(preview.originDistrictId),
+    destinationDistrictId: createClientDistrictId(preview.destinationDistrictId),
+    stockAmount: preview.stockAmount,
+    estimatedDays: null,
+    bottleneckCapacity: null,
+    edgeSequence: preview.edges.map(projectM7TopologyPathPreviewEdge),
+    reasonCodes: preview.reasonCodes
+  };
+}
+
+function projectM7TopologyPathPreviewEdge(
+  edge: MapTopologyPathPreviewEdgeReadModelV1
+): ClientMapPathPreviewEdgeReadModel {
+  return {
+    routeId: edge.routeId,
+    sourceId: edge.sourceId,
+    mode: edge.mode,
+    fromDistrictId: createClientDistrictId(edge.fromDistrictId),
+    toDistrictId: createClientDistrictId(edge.toDistrictId),
+    seasonalCost: edge.seasonalCost,
+    baseTravelCost: edge.baseTravelCost,
+    seasonalCapacity: edge.seasonalCapacity,
+    baseCapacity: edge.baseCapacity,
+    availability: topologyAvailabilityToClient(edge.availability),
+    reasonCodes: edge.reasonCodes
+  };
+}
+
+function routeSummaryFromTopologyPreview(
+  preview: PreviewMapTopologyPathResultV1
+): ClientDistrictRouteSummaryReadModel {
+  const route = preview.route;
+  const destinationDistrictId = createClientDistrictId(route.destinationDistrictId);
+  if (route.status === "reachable" || route.status === "capacity-exceeded") {
+    return {
+      status: route.status,
+      destinationDistrictId,
+      stockAmount: route.stockAmount,
+      totalCost: route.totalCost,
+      bottleneckCapacity: route.bottleneckCapacity,
+      edgeCount: route.edges.length,
+      routeKinds: route.edges.map((edge) => edge.mode)
+    };
+  }
+
+  return {
+    status: "unreachable",
+    destinationDistrictId,
+    stockAmount: route.stockAmount,
+    totalCost: null,
+    bottleneckCapacity: null,
+    edgeCount: 0,
+    routeKinds: []
+  };
+}
+
+function topologyPointToClientPoint(point: {
+  readonly x: number;
+  readonly y: number;
+}): ClientMapPointReadModel {
+  return {
+    xInMapUnits: point.x,
+    yInMapUnits: point.y
+  };
+}
+
+function topologyAvailabilityToClient(
+  availability: MapTopologyRouteAvailabilityReadModelV1
+): ClientTopologyRouteAvailability {
+  return availability.kind;
+}
+
+function deriveBoundsFromTopology(topology: MapTopologyReadModelV1): ClientMapBoundsReadModel {
+  const points = [
+    ...topology.districts.flatMap((district) => district.polygon),
+    ...topology.routeNodes.map((node) => node.anchor)
+  ];
+  const maxX = Math.max(...points.map((point) => point.x));
+  const maxY = Math.max(...points.map((point) => point.y));
+  return {
+    widthInMapUnits: maxX + 48,
+    heightInMapUnits: maxY + 48
+  };
+}
+
+function createM7TopologyAntiGridEvidence(
+  previews: readonly ClientMapPathPreviewReadModel[]
+): ClientMapTopologyAntiGridEvidenceReadModel {
+  return {
+    visualNeighborWithoutRoute: createTopologyEvidencePair(previews, 13, 14),
+    visuallyDistantExplicitRoute: createTopologyEvidencePair(previews, 2, 9),
+    geometryPerturbationInvariantPath: createTopologyEvidencePair(previews, 1, 13),
+    variableRouteDegreeNodeIds: ["route-node.node-river-gate", "route-node.node-isolated-lookout"],
+    deadEndDistrictIds: [createClientDistrictId(11), createClientDistrictId(14)],
+    chokepointRouteIds: [24, 25]
+  };
+}
+
+function createTopologyEvidencePair(
+  previews: readonly ClientMapPathPreviewReadModel[],
+  originDistrictId: number,
+  destinationDistrictId: number
+): ClientTopologyEvidencePairReadModel {
+  const preview = previews.find(
+    (candidate) =>
+      Number(candidate.originDistrictId) === originDistrictId &&
+      Number(candidate.destinationDistrictId) === destinationDistrictId
+  );
+  if (preview === undefined) {
+    throw new Error(
+      `Missing topology evidence preview ${originDistrictId}->${destinationDistrictId}.`
+    );
+  }
+  return {
+    originDistrictId: createClientDistrictId(originDistrictId),
+    destinationDistrictId: createClientDistrictId(destinationDistrictId),
+    reasonCodes: preview.reasonCodes,
+    edgeSequence: preview.edgeSequence.map((edge) => edge.routeId)
+  };
+}
+
+function formatTopologyDistrictDisplayName(districtNumber: number): string {
+  return `District ${districtNumber}`;
+}
+
+function formatTopologyNodeDisplayName(nodeId: string): string {
+  return nodeId
+    .replace("route-node.", "")
+    .replace("node-", "")
+    .split("-")
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
+}
+
+function createM7TopologyDistrict(
+  districtId: number,
+  sourceSuffix: string,
+  anchor: { readonly x: number; readonly y: number },
+  polygon: readonly (readonly [number, number])[],
+  terrainClass: MapTopologyReadModelV1["districts"][number]["metadata"]["terrainClass"] = "lowland",
+  riskClass: MapTopologyReadModelV1["districts"][number]["metadata"]["riskClass"] = "low"
+): MapTopologyReadModelV1["districts"][number] {
+  return {
+    districtId,
+    sourceId: `topology-district-${sourceSuffix}`,
+    displayNameKey: `topology.district.${sourceSuffix}`,
+    anchor,
+    polygon: polygon.map(([x, y]) => ({ x, y })),
+    metadata: {
+      historicity: "FICTIONAL",
+      terrainClass,
+      riskClass
+    }
+  };
+}
+
+function createM7TopologyRouteNode(
+  nodeId: string,
+  nodeKind: MapTopologyReadModelV1["routeNodes"][number]["nodeKind"],
+  districtId: number,
+  anchor: { readonly x: number; readonly y: number }
+): MapTopologyReadModelV1["routeNodes"][number] {
+  return {
+    nodeId: `route-node.${nodeId}`,
+    nodeKind,
+    districtId,
+    displayNameKey: `topology.routeNode.${nodeId}`,
+    anchor
+  };
+}
+
+function createM7TopologyRouteEdge(
+  routeId: number,
+  from: MapTopologyRouteEdgeReadModelV1["from"],
+  to: MapTopologyRouteEdgeReadModelV1["to"],
+  mode: MapTopologyRouteModeV1,
+  baseTravelCost: number,
+  baseCapacity: number,
+  terrainClass: MapTopologyReadModelV1["routeEdges"][number]["metadata"]["terrainClass"] = "lowland",
+  riskClass: MapTopologyReadModelV1["routeEdges"][number]["metadata"]["riskClass"] = "low",
+  availability: MapTopologyRouteAvailabilityReadModelV1 = { kind: "open" }
+): MapTopologyRouteEdgeReadModelV1 {
+  return {
+    routeId,
+    sourceId: `topology-route-${formatThreeDigitId(routeId)}`,
+    from,
+    to,
+    fromDistrictId: endpointDistrictId(from),
+    toDistrictId: endpointDistrictId(to),
+    mode,
+    baseTravelCost,
+    baseCapacity,
+    seasonality: [
+      {
+        month: 1,
+        costMultiplierBps: riskClass === "seasonal" ? 12_000 : 10_000,
+        capacityMultiplierBps: riskClass === "seasonal" ? 9_000 : 10_000,
+        reasonCodes: ["topology.season.synthetic.01"]
+      }
+    ],
+    availability,
+    metadata: {
+      historicity: "FICTIONAL",
+      terrainClass,
+      riskClass
+    }
+  };
+}
+
+function endpointDistrictId(endpoint: MapTopologyRouteEdgeReadModelV1["from"]): number {
+  if (endpoint.kind === "district") {
+    return endpoint.districtId;
+  }
+  if (endpoint.kind === "settlement") {
+    throw new Error(`Settlement route endpoint ${endpoint.settlementId} is not projected yet.`);
+  }
+  const routeNode = M7_TOPOLOGY_ROUTE_NODES.find((node) => node.nodeId === endpoint.nodeId);
+  if (routeNode === undefined) {
+    throw new Error(`Missing route-node endpoint ${endpoint.nodeId}.`);
+  }
+  return routeNode.districtId;
+}
+
 function createM2PrototypeEconomyResult(revision: number): ListM2EconomySummariesResultV1 {
   const districts: M2EconomyDistrictProtocolRow[] = [];
   for (let districtNumber = 1; districtNumber <= M2_PROTOTYPE_DISTRICT_COUNT; districtNumber += 1) {
@@ -7096,6 +8003,469 @@ const SYNTHETIC_AGRICULTURE_PHASES: readonly string[] = [
 ];
 
 const SYNTHETIC_ROUTE_KINDS: readonly ClientDistrictRouteKind[] = ["road", "river", "coast"];
+
+const M7_TOPOLOGY_HASH = "1ba53651";
+
+const M7_TOPOLOGY_TIE_BREAK_EVIDENCE = {
+  orderedBy: [
+    "total-cost",
+    "edge-count",
+    "route-id-sequence",
+    "endpoint-id-sequence",
+    "district-id"
+  ],
+  candidateCount: 50,
+  selectedRouteIds: [],
+  selectedEndpointKeys: []
+} as const;
+
+const M7_TOPOLOGY_DISTRICTS: MapTopologyReadModelV1["districts"] = [
+  createM7TopologyDistrict(1, "north-gate", { x: 55, y: 70 }, [
+    [40, 50],
+    [75, 45],
+    [90, 70],
+    [65, 95],
+    [35, 90]
+  ]),
+  createM7TopologyDistrict(
+    2,
+    "delta-landing",
+    { x: 150, y: 62 },
+    [
+      [118, 36],
+      [174, 34],
+      [194, 70],
+      [158, 102],
+      [116, 88]
+    ],
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyDistrict(
+    3,
+    "coast-road",
+    { x: 255, y: 88 },
+    [
+      [224, 54],
+      [286, 48],
+      [314, 96],
+      [274, 132],
+      [218, 114]
+    ],
+    "coastal",
+    "low"
+  ),
+  createM7TopologyDistrict(
+    4,
+    "west-terrace",
+    { x: 104, y: 170 },
+    [
+      [62, 142],
+      [120, 132],
+      [154, 172],
+      [120, 214],
+      [70, 206]
+    ],
+    "upland",
+    "low"
+  ),
+  createM7TopologyDistrict(
+    5,
+    "north-ford",
+    { x: 207, y: 178 },
+    [
+      [170, 146],
+      [230, 140],
+      [266, 182],
+      [224, 220],
+      [168, 208]
+    ],
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyDistrict(
+    6,
+    "east-pass",
+    { x: 330, y: 190 },
+    [
+      [292, 158],
+      [352, 148],
+      [394, 194],
+      [354, 238],
+      [294, 224]
+    ],
+    "upland",
+    "contested"
+  ),
+  createM7TopologyDistrict(
+    7,
+    "low-west",
+    { x: 70, y: 286 },
+    [
+      [36, 248],
+      [94, 236],
+      [132, 282],
+      [92, 328],
+      [32, 318]
+    ],
+    "lowland",
+    "low"
+  ),
+  createM7TopologyDistrict(
+    8,
+    "lowland-store",
+    { x: 178, y: 300 },
+    [
+      [136, 262],
+      [206, 250],
+      [246, 298],
+      [198, 348],
+      [136, 334]
+    ],
+    "lowland",
+    "seasonal"
+  ),
+  createM7TopologyDistrict(
+    9,
+    "river-gate",
+    { x: 286, y: 304 },
+    [
+      [244, 268],
+      [306, 256],
+      [354, 304],
+      [306, 354],
+      [246, 340]
+    ],
+    "riverine",
+    "hazardous"
+  ),
+  createM7TopologyDistrict(
+    10,
+    "coast-light",
+    { x: 408, y: 286 },
+    [
+      [366, 250],
+      [430, 238],
+      [480, 282],
+      [434, 330],
+      [368, 322]
+    ],
+    "coastal",
+    "low"
+  ),
+  createM7TopologyDistrict(
+    11,
+    "southwest-end",
+    { x: 98, y: 418 },
+    [
+      [58, 380],
+      [124, 370],
+      [160, 420],
+      [116, 466],
+      [54, 452]
+    ],
+    "upland",
+    "low"
+  ),
+  createM7TopologyDistrict(
+    12,
+    "south-ford",
+    { x: 222, y: 426 },
+    [
+      [180, 388],
+      [244, 378],
+      [292, 426],
+      [246, 474],
+      [184, 462]
+    ],
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyDistrict(
+    13,
+    "east-ridge",
+    { x: 356, y: 432 },
+    [
+      [318, 394],
+      [382, 382],
+      [432, 428],
+      [386, 480],
+      [318, 468]
+    ],
+    "upland",
+    "contested"
+  ),
+  createM7TopologyDistrict(
+    14,
+    "outer-sound",
+    { x: 492, y: 430 },
+    [
+      [454, 392],
+      [520, 382],
+      [562, 430],
+      [514, 482],
+      [452, 468]
+    ],
+    "coastal",
+    "unknown"
+  )
+];
+
+const M7_TOPOLOGY_ROUTE_NODES: MapTopologyReadModelV1["routeNodes"] = [
+  createM7TopologyRouteNode("node-delta-wharf", "port", 2, { x: 150, y: 62 }),
+  createM7TopologyRouteNode("node-north-ford", "warehouse", 5, { x: 207, y: 178 }),
+  createM7TopologyRouteNode("node-east-pass", "pass", 6, { x: 330, y: 190 }),
+  createM7TopologyRouteNode("node-lowland-store", "warehouse", 8, { x: 178, y: 300 }),
+  createM7TopologyRouteNode("node-river-gate", "special", 9, { x: 286, y: 304 }),
+  createM7TopologyRouteNode("node-coast-light", "port", 10, { x: 408, y: 286 }),
+  createM7TopologyRouteNode("node-south-ford", "pass", 12, { x: 222, y: 426 }),
+  createM7TopologyRouteNode("node-isolated-lookout", "special", 14, { x: 492, y: 430 })
+];
+
+const M7_TOPOLOGY_ROUTE_EDGES: MapTopologyReadModelV1["routeEdges"] = [
+  createM7TopologyRouteEdge(
+    1,
+    { kind: "district", districtId: 1 },
+    { kind: "district", districtId: 2 },
+    "road",
+    8,
+    130
+  ),
+  createM7TopologyRouteEdge(
+    2,
+    { kind: "district", districtId: 2 },
+    { kind: "district", districtId: 3 },
+    "road",
+    9,
+    120
+  ),
+  createM7TopologyRouteEdge(
+    3,
+    { kind: "district", districtId: 1 },
+    { kind: "district", districtId: 4 },
+    "road",
+    7,
+    110
+  ),
+  createM7TopologyRouteEdge(
+    4,
+    { kind: "district", districtId: 2 },
+    { kind: "district", districtId: 5 },
+    "road",
+    6,
+    150,
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    5,
+    { kind: "district", districtId: 3 },
+    { kind: "district", districtId: 6 },
+    "road",
+    10,
+    100,
+    "upland",
+    "contested"
+  ),
+  createM7TopologyRouteEdge(
+    6,
+    { kind: "district", districtId: 4 },
+    { kind: "district", districtId: 5 },
+    "road",
+    6,
+    140
+  ),
+  createM7TopologyRouteEdge(
+    7,
+    { kind: "district", districtId: 5 },
+    { kind: "district", districtId: 6 },
+    "road",
+    8,
+    120,
+    "upland",
+    "contested"
+  ),
+  createM7TopologyRouteEdge(
+    8,
+    { kind: "district", districtId: 4 },
+    { kind: "district", districtId: 7 },
+    "road",
+    9,
+    110
+  ),
+  createM7TopologyRouteEdge(
+    9,
+    { kind: "district", districtId: 5 },
+    { kind: "district", districtId: 8 },
+    "road",
+    7,
+    145,
+    "lowland",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    10,
+    { kind: "district", districtId: 6 },
+    { kind: "district", districtId: 9 },
+    "road",
+    8,
+    105,
+    "upland",
+    "contested"
+  ),
+  createM7TopologyRouteEdge(
+    11,
+    { kind: "district", districtId: 7 },
+    { kind: "district", districtId: 8 },
+    "road",
+    7,
+    120
+  ),
+  createM7TopologyRouteEdge(
+    12,
+    { kind: "district", districtId: 8 },
+    { kind: "district", districtId: 9 },
+    "road",
+    6,
+    130,
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    13,
+    { kind: "district", districtId: 9 },
+    { kind: "district", districtId: 10 },
+    "road",
+    8,
+    125,
+    "coastal",
+    "low"
+  ),
+  createM7TopologyRouteEdge(
+    14,
+    { kind: "route-node", nodeId: "route-node.node-river-gate" },
+    { kind: "district", districtId: 10 },
+    "road",
+    8,
+    100,
+    "coastal",
+    "low"
+  ),
+  createM7TopologyRouteEdge(
+    15,
+    { kind: "district", districtId: 8 },
+    { kind: "district", districtId: 12 },
+    "road",
+    9,
+    115,
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    16,
+    { kind: "district", districtId: 11 },
+    { kind: "district", districtId: 12 },
+    "road",
+    11,
+    90,
+    "upland",
+    "low"
+  ),
+  createM7TopologyRouteEdge(
+    17,
+    { kind: "route-node", nodeId: "route-node.node-river-gate" },
+    { kind: "district", districtId: 13 },
+    "river",
+    9,
+    180,
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    18,
+    { kind: "district", districtId: 12 },
+    { kind: "district", districtId: 13 },
+    "road",
+    9,
+    100,
+    "upland",
+    "contested"
+  ),
+  createM7TopologyRouteEdge(
+    19,
+    { kind: "district", districtId: 12 },
+    { kind: "district", districtId: 13 },
+    "road",
+    10,
+    100,
+    "upland",
+    "contested"
+  ),
+  createM7TopologyRouteEdge(
+    20,
+    { kind: "district", districtId: 3 },
+    { kind: "route-node", nodeId: "route-node.node-coast-light" },
+    "coast",
+    12,
+    160,
+    "coastal",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    21,
+    { kind: "route-node", nodeId: "route-node.node-coast-light" },
+    { kind: "district", districtId: 10 },
+    "coast",
+    5,
+    160,
+    "coastal",
+    "low"
+  ),
+  createM7TopologyRouteEdge(
+    22,
+    { kind: "district", districtId: 4 },
+    { kind: "district", districtId: 12 },
+    "road",
+    8,
+    120,
+    "upland",
+    "low"
+  ),
+  createM7TopologyRouteEdge(
+    23,
+    { kind: "route-node", nodeId: "route-node.node-coast-light" },
+    { kind: "district", districtId: 3 },
+    "coast",
+    12,
+    160,
+    "coastal",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    24,
+    { kind: "route-node", nodeId: "route-node.node-delta-wharf" },
+    { kind: "route-node", nodeId: "route-node.node-river-gate" },
+    "river",
+    10,
+    180,
+    "riverine",
+    "seasonal"
+  ),
+  createM7TopologyRouteEdge(
+    25,
+    { kind: "district", districtId: 6 },
+    { kind: "district", districtId: 13 },
+    "road",
+    13,
+    100,
+    "upland",
+    "contested",
+    {
+      kind: "blocked",
+      reasonCode: "topology.blocked.synthetic-pass-survey"
+    }
+  )
+];
 
 const M7_UI_CHROME_LOCALIZATION_KEYS: readonly string[] = [
   "ui.m7.guidance.heading",

@@ -1,0 +1,36 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "product_owner",
+  "status": "REQUEST_CHANGES",
+  "summary": "Product owner clarified that the blocker is not map shape polish but the hidden spatial topology: a regular rectangular, hex, sequential-id, or lattice substrate disguised with irregular polygons is unacceptable. Mature strategy-game topology research must be incorporated before the client task proceeds.",
+  "artifacts": [
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION__product_owner.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "tests_run": [],
+  "decisions": [
+    {
+      "id": "ANTI_GRID_CLARIFICATION",
+      "decision": "A renderer that visually disguises a regular grid or lattice as irregular regions does not satisfy M7 map topology recovery."
+    },
+    {
+      "id": "RESEARCH_BEFORE_CLIENT_REVIEW",
+      "decision": "Pause client implementation review until a gameplay_designer completes mature-strategy-game topology research and lead forwards the resulting constraints to the client writer."
+    }
+  ],
+  "risks": [
+    {
+      "id": "VISUAL_SKINNING_FALSE_POSITIVE",
+      "severity": "R4",
+      "summary": "Screenshots alone can falsely pass if visual regions look irregular while pathing, selection, adjacency, or route explanations still derive from hidden grid/lattice logic."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Interrupt client_engineer, spawn a read-only gameplay_designer research pass on mature strategy-game map topology, consult the visual design thread for readability constraints, then resume client work only with hard anti-grid implementation and test constraints.",
+  "created_at": "2026-07-01T02:29:21.8995203+08:00"
+}

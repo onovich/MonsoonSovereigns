@@ -1,0 +1,46 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "visual_design_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "The visual design thread confirmed the product issue is not prettiness but fake topology readability. M7 client acceptance must prove the player sees districts, nodes, route hierarchy, control, and action relationships rather than a regular grid or lattice wearing irregular shapes.",
+  "artifacts": [
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-ART-TOPOLOGY-READABILITY.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "tests_run": [],
+  "decisions": [
+    {
+      "id": "LOW_FIDELITY_OK_LOW_SEMANTICS_NOT_OK",
+      "decision": "Low-fidelity visuals are acceptable for M7; low-semantic visuals are not."
+    },
+    {
+      "id": "DEFAULT_MAP_AS_REGION_AND_NETWORK",
+      "decision": "Default player map must present irregular districts, meaningful nodes, route modes, blocked/unknown states, and current decision focus."
+    },
+    {
+      "id": "VISUAL_ANTIPATTERNS",
+      "decision": "Uniform honeycomb/Voronoi cells, regular perturbed grids, center-to-center route lines, equal route degrees, straight rectangular map boundaries, and all-route debug overlays are visual anti-patterns."
+    }
+  ],
+  "risks": [
+    {
+      "id": "SCREENSHOT_ONLY_RISK",
+      "severity": "R4",
+      "summary": "Screenshots must show topology semantics, not just non-square silhouettes."
+    },
+    {
+      "id": "OVERLAY_NOISE_RISK",
+      "severity": "R3",
+      "summary": "Showing the full route/debug graph by default can make the map feel like an engineering graph rather than a game decision surface."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Require the client task to implement visible district/node/route/control hierarchy, map/list/task/inspector sync, route legend, and anti-grid screenshot evidence before systems/QA review.",
+  "created_at": "2026-07-01T02:33:12.0000000+08:00"
+}

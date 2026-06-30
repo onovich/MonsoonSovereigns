@@ -1,0 +1,24 @@
+{
+  "route_id": "M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-SYSTEMS-R3-TO-QA-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f1a25-cdf8-7d22-a6ac-7b5980e41ea6",
+  "to_thread_nickname": "Gate the 2nd",
+  "status": "SENT",
+  "sent_at": "2026-07-01T04:07:00.0000000+08:00",
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "source_handoffs": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json"
+  ],
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json",
+  "review_scope": [
+    "Independent read-only QA acceptance for player-facing topology client recovery.",
+    "Check allowed and forbidden paths, tests, screenshot evidence, anti-grid/lattice proof, and no product/architecture scope drift.",
+    "Confirm District 1 obligation path, route preview/reason copy, and map/task/inspector synchronization did not regress."
+  ],
+  "requested_action": "Return ACCEPT, REQUEST_CHANGES, or BLOCKED. If ACCEPT, route to lead_orchestrator for integration gates.",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+}

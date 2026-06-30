@@ -1,0 +1,23 @@
+{
+  "route_id": "ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "client_engineer",
+  "to_thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
+  "to_thread_nickname": "Window the 2nd",
+  "status": "SENT",
+  "sent_at": "2026-07-01T02:35:10.0000000+08:00",
+  "submission_id": "019f19d5-3c8a-76c2-90e1-7a585700aa5a",
+  "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json",
+  "source_research_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+  "source_visual_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json",
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "base_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "requested_action": "Resume implementation using topology-backed client projections and explicit route polylines; return REVIEW with anti-grid tests and screenshot evidence.",
+  "notes": [
+    "Do not use M2_PROTOTYPE_GRID_COLUMNS, sequential route pairs, anchor straight lines, centroid adjacency, bbox adjacency, nearest-neighbor geometry, or visual adjacency as player-facing authority.",
+    "Report BLOCKED_FOR_ALLOWED_SCOPE_GAP if allowed client paths cannot consume accepted topology query/read-model surfaces.",
+    "Required evidence includes visual-neighbor-without-route, visually-distant-explicit-route, geometry-perturbation-without-path-change, route mode/capacity/season/blocker reason copy, and 1440x900 plus 1280x720 screenshots."
+  ]
+}

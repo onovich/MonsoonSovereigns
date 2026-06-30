@@ -1,0 +1,86 @@
+{
+  "message_id": "M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Default web/client map now uses a topology-backed projection with district polygons, route nodes, explicit route edges, path preview edge sequences, topology hash, and localized reason-code copy. The renderer draws only read-model polygons/polylines and no longer falls back from empty route polylines to district anchors. Default situation overlay is selection/path-preview scoped; full route view remains opt-in via routes mode.",
+  "artifacts": [
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1440x900.png",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1280x720.png"
+  ],
+  "branch_or_worktree": "D:\\WebProjects\\MonsoonSovereigns / codex/m7-map-topology-client",
+  "commit": "HEAD 26f68044; working tree contains uncommitted review changes",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Listed modified client/map/ui/tests files plus generated topology screenshots."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 file, 9 tests passed, including topology anti-grid renderer/projection cases."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 file, 11 tests passed, including topology default shell and no-known/blocked preview copy."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build succeeded; existing large chunk warnings only."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build succeeded; existing Vite chunk/plugin timing warnings only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "30 Playwright tests passed; generated required 1440x900 and 1280x720 topology screenshots."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture boundaries passed."
+    }
+  ],
+  "decisions": [
+    "Added client-core topology-facing projection and fixture shaped like accepted topology/path-preview read models; no protocol, sim-core, save-format, or content-source edits.",
+    "Default web shell now uses createM7TopologyClientReadModelSnapshot instead of createM2PrototypeClientReadModelSnapshot.",
+    "Route render instructions only consume read-model route.points; M6 candidate fallback from empty route polyline to district anchors was removed.",
+    "Situation-mode route overlay is scoped to selected district endpoints and path-preview marked routeIds; routes mode remains the explicit full-route opt-in.",
+    "Inspector route preview displays player-localized edge sequence, mode, estimated days, bottleneck capacity, seasonal variation, no-known/blocked/capacity reasons, and route mode/terrain/risk reason chips."
+  ],
+  "risks": [
+    "Topology fixture is client-side projection coverage over accepted surfaces, not a direct runtime query subscription yet; systems_architect should confirm final wiring target for live query transport.",
+    "E2E regenerated existing M7 systemic interaction screenshot PNGs while producing the new topology evidence images.",
+    "Legacy M2 prototype fixture remains in client-core for existing tests, but is no longer the default player map path."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review anti-grid client topology implementation, validate allowed-scope compliance, and route to test_engineer/qa_reviewer after architecture review.",
+  "created_at": "2026-07-01T03:13:53.5445738+08:00"
+}

@@ -25,7 +25,9 @@ import {
   type ClientDistrictSortKey,
   type ClientMapEntitySelection,
   type ClientMapMode,
+  type ClientMapPathPreviewReadModel,
   type ClientMapSettlementReadModel,
+  type ClientMapTopologyReadModel,
   type ClientM3AppointmentEligibilityReadModel,
   type ClientM3AppointmentReadModelSnapshot,
   type ClientM3BulkAppointmentPreviewItemReadModel,
@@ -989,9 +991,16 @@ export function ClientShellView({
               data-district-count={snapshot.map.districts.length}
               data-settlement-count={snapshot.map.settlements.length}
               data-route-count={snapshot.map.routes.length}
+              data-route-source-count={
+                snapshot.map.topology?.routeEdges.length ?? snapshot.map.routes.length
+              }
+              data-topology-hash={snapshot.map.topology?.topologyHash ?? "none"}
+              data-route-policy="selection-preview-only"
               data-map-mode={mapMode}
-              data-map-presentation={debugMode ? "developer-diagnostics" : "soft-strategic-regions"}
-              data-player-grid={debugMode ? "available-in-developer-overlay" : "hidden"}
+              data-map-presentation={
+                debugMode ? "developer-diagnostics" : "topology-region-network"
+              }
+              data-player-grid={debugMode ? "debug-reference-only" : "not-used"}
               data-zoom-level={zoomLevel.toFixed(2)}
               data-pan-x={panOffset.xInMapUnits.toFixed(2)}
               data-pan-y={panOffset.yInMapUnits.toFixed(2)}
@@ -1124,6 +1133,7 @@ export function ClientShellView({
               selectedSettlement={selectedSettlement}
               m3Appointment={snapshot.m3Appointment}
               m4Campaign={snapshot.m4Campaign}
+              topology={snapshot.map.topology}
               canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
               canPreviewCampaign={selectedM4Campaign !== null}
               decisionFocus={decisionFocus}
@@ -1704,6 +1714,7 @@ interface DistrictPanelProps {
   readonly selectedSettlement: ClientMapSettlementReadModel | null;
   readonly m3Appointment: ClientM3AppointmentReadModelSnapshot;
   readonly m4Campaign: ClientM4CampaignReadModelSnapshot;
+  readonly topology: ClientMapTopologyReadModel | undefined;
   readonly canPreviewAppointment: boolean;
   readonly canPreviewCampaign: boolean;
   readonly decisionFocus: ClientDecisionSurfaceFocus;
@@ -1718,6 +1729,7 @@ function DistrictPanel({
   selectedSettlement,
   m3Appointment,
   m4Campaign,
+  topology,
   canPreviewAppointment,
   canPreviewCampaign,
   decisionFocus,
@@ -1764,6 +1776,7 @@ function DistrictPanel({
         selectedSettlement={selectedSettlement}
         appointment={m3Appointment}
         campaign={m4Campaign}
+        topology={topology}
       />
       <DistrictActionList
         row={row}
@@ -1822,12 +1835,14 @@ function DistrictDecisionData({
   row,
   selectedSettlement,
   appointment,
-  campaign
+  campaign,
+  topology
 }: {
   readonly row: ClientDistrictRowReadModel;
   readonly selectedSettlement: ClientMapSettlementReadModel | null;
   readonly appointment: ClientM3AppointmentReadModelSnapshot;
   readonly campaign: ClientM4CampaignReadModelSnapshot;
+  readonly topology: ClientMapTopologyReadModel | undefined;
 }): ReactElement {
   const i18n = useContext(ClientI18nContext);
   return (
@@ -1835,7 +1850,7 @@ function DistrictDecisionData({
       <h3>{i18n.t("shell.inspector.data.title")}</h3>
       <p>{i18n.t("shell.inspector.data.description")}</p>
       <DistrictResourceData row={row} selectedSettlement={selectedSettlement} />
-      <DistrictRouteCampaignData row={row} campaign={campaign} />
+      <DistrictRouteCampaignData row={row} campaign={campaign} topology={topology} />
       <DistrictGovernanceState row={row} appointment={appointment} />
       <DistrictEffectList row={row} appointment={appointment} campaign={campaign} />
     </section>
@@ -1896,14 +1911,17 @@ function DistrictResourceData({
 
 function DistrictRouteCampaignData({
   row,
-  campaign
+  campaign,
+  topology
 }: {
   readonly row: ClientDistrictRowReadModel;
   readonly campaign: ClientM4CampaignReadModelSnapshot;
+  readonly topology: ClientMapTopologyReadModel | undefined;
 }): ReactElement {
   const i18n = useContext(ClientI18nContext);
   const routeForecast = findDistrictRouteForecast(row, campaign);
   const campaignPlan = findDistrictCampaignPlan(row, campaign);
+  const topologyPreviews = selectTopologyPreviewsForDistrict(row, topology);
   return (
     <section
       className="district-panel__subsection"
@@ -1956,7 +1974,57 @@ function DistrictRouteCampaignData({
           <ReasonChips reasonCodes={getRouteForecastReasonCodes(routeForecast)} />
         </div>
       )}
+      {topologyPreviews.length === 0 ? null : (
+        <div
+          className="district-panel__fact"
+          aria-label={i18n.t("shell.inspector.routePreview.label")}
+        >
+          <strong>{i18n.t("shell.inspector.routePreview.title")}</strong>
+          <div className="district-panel__chips" role="list">
+            {topologyPreviews.map((preview) => (
+              <TopologyPathPreviewFact preview={preview} key={formatTopologyPreviewKey(preview)} />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
+  );
+}
+
+function TopologyPathPreviewFact({
+  preview
+}: {
+  readonly preview: ClientMapPathPreviewReadModel;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const reasonCodes = [
+    ...preview.reasonCodes,
+    ...preview.edgeSequence.flatMap((edge) => edge.reasonCodes)
+  ];
+  return (
+    <span
+      className="district-panel__route-preview"
+      data-route-preview-status={preview.status}
+      data-route-preview-origin={preview.originDistrictId}
+      data-route-preview-destination={preview.destinationDistrictId}
+      data-route-preview-edge-sequence={preview.edgeSequence
+        .map((edge) => edge.routeId.toString())
+        .join(",")}
+      role="listitem"
+    >
+      <span>
+        {i18n.t("shell.inspector.routePreview.summary", {
+          destination: formatPlayerDistrictId(preview.destinationDistrictId, i18n),
+          status: formatTopologyPathStatus(preview.status, i18n),
+          edges: formatTopologyEdgeSequence(preview, i18n),
+          modes: formatTopologyPreviewModes(preview, i18n),
+          days: formatNullableNumber(preview.estimatedDays, i18n),
+          capacity: formatNullableNumber(preview.bottleneckCapacity, i18n),
+          seasonal: formatTopologySeasonalVariation(preview, i18n)
+        })}
+      </span>
+      <ReasonChips reasonCodes={dedupeReasonCodes(reasonCodes)} />
+    </span>
   );
 }
 
@@ -6492,6 +6560,116 @@ function formatPlayerRouteSummary(row: ClientDistrictRowReadModel, i18n: ClientI
     cost: i18n.formatNumber(row.route.totalCost),
     capacity: i18n.formatNumber(row.route.bottleneckCapacity)
   });
+}
+
+function selectTopologyPreviewsForDistrict(
+  row: ClientDistrictRowReadModel,
+  topology: ClientMapTopologyReadModel | undefined
+): readonly ClientMapPathPreviewReadModel[] {
+  if (topology === undefined) {
+    return [];
+  }
+  return topology.pathPreviews.filter(
+    (preview) =>
+      preview.originDistrictId === row.districtId ||
+      preview.destinationDistrictId === row.districtId
+  );
+}
+
+function formatTopologyPreviewKey(preview: ClientMapPathPreviewReadModel): string {
+  return `${preview.originDistrictId}:${preview.destinationDistrictId}:${preview.status}`;
+}
+
+function formatTopologyPathStatus(
+  status: ClientMapPathPreviewReadModel["status"],
+  i18n: ClientI18n
+): string {
+  return i18n.t(`shell.inspector.routePreview.status.${status}`);
+}
+
+function formatTopologyEdgeSequence(
+  preview: ClientMapPathPreviewReadModel,
+  i18n: ClientI18n
+): string {
+  if (preview.edgeSequence.length === 0) {
+    return i18n.t("shell.inspector.routePreview.noEdges");
+  }
+  return preview.edgeSequence
+    .map((edge) =>
+      i18n.t("shell.inspector.routePreview.edge", {
+        id: i18n.formatNumber(edge.routeId)
+      })
+    )
+    .join(" -> ");
+}
+
+function formatTopologyPreviewModes(
+  preview: ClientMapPathPreviewReadModel,
+  i18n: ClientI18n
+): string {
+  const seen = new Set<ClientMapPathPreviewReadModel["edgeSequence"][number]["mode"]>();
+  const modes: ClientMapPathPreviewReadModel["edgeSequence"][number]["mode"][] = [];
+  for (const edge of preview.edgeSequence) {
+    if (!seen.has(edge.mode)) {
+      seen.add(edge.mode);
+      modes.push(edge.mode);
+    }
+  }
+  if (modes.length === 0) {
+    return i18n.t("shell.inspector.routePreview.noModes");
+  }
+  return modes.map((mode) => formatDistrictRouteKind(mode, i18n)).join(", ");
+}
+
+function formatTopologySeasonalVariation(
+  preview: ClientMapPathPreviewReadModel,
+  i18n: ClientI18n
+): string {
+  const seasonalEdges = preview.edgeSequence.filter(
+    (edge) =>
+      edge.seasonalCost !== edge.baseTravelCost || edge.seasonalCapacity !== edge.baseCapacity
+  );
+  if (seasonalEdges.length === 0) {
+    return i18n.t("shell.inspector.routePreview.seasonStable");
+  }
+  const first = seasonalEdges[0];
+  if (first === undefined) {
+    return i18n.t("shell.inspector.routePreview.seasonStable");
+  }
+  return i18n.t("shell.inspector.routePreview.seasonChanged", {
+    edge: i18n.formatNumber(first.routeId),
+    cost: i18n.formatNumber(first.seasonalCost),
+    baseCost: i18n.formatNumber(first.baseTravelCost),
+    capacity: i18n.formatNumber(first.seasonalCapacity),
+    baseCapacity: i18n.formatNumber(first.baseCapacity)
+  });
+}
+
+function formatNullableNumber(value: number | null, i18n: ClientI18n): string {
+  return value === null ? i18n.t("shell.inspector.routePreview.unknown") : i18n.formatNumber(value);
+}
+
+function formatPlayerDistrictId(
+  districtId: ClientMapPathPreviewReadModel["destinationDistrictId"],
+  i18n: ClientI18n
+): string {
+  return i18n.t("shell.district.name", { number: i18n.formatNumber(districtId) });
+}
+
+function dedupeReasonCodes(reasonCodes: readonly string[]): readonly string[] {
+  return dedupeStrings(reasonCodes);
+}
+
+function dedupeStrings(values: readonly string[]): readonly string[] {
+  const seen = new Set<string>();
+  const deduped: string[] = [];
+  for (const value of values) {
+    if (!seen.has(value)) {
+      seen.add(value);
+      deduped.push(value);
+    }
+  }
+  return deduped;
 }
 
 function clampZoomLevel(value: number): number {

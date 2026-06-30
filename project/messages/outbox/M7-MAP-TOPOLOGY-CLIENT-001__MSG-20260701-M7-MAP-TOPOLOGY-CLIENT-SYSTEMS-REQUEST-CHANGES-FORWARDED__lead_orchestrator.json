@@ -1,0 +1,34 @@
+{
+  "message_id": "M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REQUEST-CHANGES-FORWARDED",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "client_engineer",
+  "to_thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
+  "status": "REQUEST_CHANGES",
+  "summary": "Forward systems_architect REQUEST_CHANGES on the R2 topology client implementation. The architecture review accepts the anti-fake-line decision and default path move away from M2 grid, but requires visible route nodes in the browser renderer, stronger screenshot evidence, and a real projection-level geometry perturbation test before QA.",
+  "source_review": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
+  "required_changes": [
+    {
+      "id": "F1_BROWSER_ROUTE_NODES_NOT_RENDERED",
+      "required_change": "Render existing topology route-node anchors in the browser Pixi renderer from the existing MapAnchorRenderInstruction/read-model surface. Add data-anchor-count or equivalent test evidence. Anchor rendering must stay non-authoritative and must not infer routes or reachability from anchor positions."
+    },
+    {
+      "id": "F2_SCREENSHOT_EVIDENCE_INSUFFICIENT",
+      "required_change": "Regenerate 1440x900 and 1280x720 evidence after route-node rendering. The default visible map must show irregular district polygons, route-node markers, explicit route 24, selected/control/action affordances, and no rectangular, hex, or regular-lattice board. Screenshot-only styling may frame the map but must not fake semantics."
+    },
+    {
+      "id": "F3_GEOMETRY_PERTURBATION_TEST_TOO_WEAK",
+      "required_change": "Strengthen the perturbation test by exercising projectM7TopologyClientReadModels with a perturbed topology DTO and the same accepted path-preview DTOs, then assert unchanged path preview edge sequences/reason codes, drawable route ids, route-source count, and district-endpoint non-drawing."
+    }
+  ],
+  "accepted_decisions_to_keep": [
+    "Keep the default player path on createBootstrappedShellSnapshot -> createM7TopologyClientReadModelSnapshot -> accepted topology/path preview DTO projection.",
+    "Keep legacy M2_PROTOTYPE_GRID_COLUMNS off the default player path.",
+    "Keep the no-fake-line rule: do not draw district endpoint legs from centroid, bbox, nearest-neighbor, district anchor, or visual adjacency.",
+    "Keep route 24 as the only drawable route unless another accepted topology route has explicit route-node/polyline points inside the allowed current DTO surface.",
+    "Do not modify protocol/schema/sim-core/save/content-source/gate docs for this task."
+  ],
+  "expected_next_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json",
+  "route_to_after_repair": "systems_architect",
+  "created_at": "2026-07-01T03:45:30.0000000+08:00"
+}

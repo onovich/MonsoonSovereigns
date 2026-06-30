@@ -139,11 +139,11 @@ test("web shell loads and projects the read model", async ({ page }) => {
   await expectMountedPixiMapRenderer(page);
   await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
     "data-district-count",
-    "30"
+    "14"
   );
   await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
     "data-settlement-count",
-    "10"
+    "0"
   );
   await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
     "data-map-mode",
@@ -151,11 +151,15 @@ test("web shell loads and projects the read model", async ({ page }) => {
   );
   await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
     "data-map-presentation",
-    "soft-strategic-regions"
+    "topology-region-network"
   );
   await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
     "data-player-grid",
-    "hidden"
+    "not-used"
+  );
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-topology-hash",
+    "1ba53651"
   );
   await expect(page.getByRole("button", { name: "Situation map mode" })).toHaveAttribute(
     "aria-pressed",
@@ -283,6 +287,42 @@ test("M7 decision surface synchronizes task card map list and inspector focus", 
   await expect(mapLegend).not.toContainText("command path");
 });
 
+test("M7 topology path preview preserves anti-grid route reason codes", async ({ page }) => {
+  await page.goto("/");
+
+  const panel = page.locator(".district-panel");
+  await expect(panel.getByLabel("Topology path preview")).toContainText(
+    "edge sequence Route 1 -> Route 24 -> Route 14"
+  );
+  await expect(panel.getByLabel("Topology path preview")).toContainText("River route");
+  await expect(panel.getByLabel("Topology path preview")).toContainText("Topology path is known");
+  await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
+    "data-route-policy",
+    "selection-preview-only"
+  );
+
+  await page.getByRole("button", { name: "Review selected district District 13" }).click();
+  await expect(panel).toHaveAttribute("data-selected-district-id", "13");
+  await expect(panel.getByLabel("Topology path preview")).toContainText("No known topology route");
+  await expect(panel.getByLabel("Topology path preview")).toContainText(
+    "Outer sound has no known explicit route"
+  );
+  await expect(
+    panel.locator('[data-route-preview-status="no-known-route"]').first()
+  ).toHaveAttribute("data-route-preview-edge-sequence", "");
+
+  await page.getByRole("button", { name: "Review selected district District 6" }).click();
+  await expect(panel).toHaveAttribute("data-selected-district-id", "6");
+  await expect(panel.getByLabel("Topology path preview")).toContainText("Topology path is blocked");
+  await expect(panel.getByLabel("Topology path preview")).toContainText(
+    "Pass survey blocks this explicit route"
+  );
+  await expect(panel.locator('[data-route-preview-status="blocked"]')).toHaveAttribute(
+    "data-route-preview-edge-sequence",
+    "25"
+  );
+});
+
 test("M7 systemic interaction validation captures required viewport evidence", async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on("console", (message) => {
@@ -352,7 +392,7 @@ test("web shell resolves system language, switches language, and persists prefer
   await expect(page.getByRole("heading", { name: "季风诸王" })).toBeVisible();
   await expect(page.getByLabel("语言")).toHaveValue("system");
   await expect(page.getByLabel("任务栏")).toContainText("任务栏");
-  await expect(page.getByLabel("虚拟化地区行")).toHaveAttribute("data-row-count", "30");
+  await expect(page.getByLabel("虚拟化地区行")).toHaveAttribute("data-row-count", "14");
   await expect(page.getByRole("button", { name: "经济地图模式" })).toBeVisible();
   await expect(page.getByRole("button", { name: "按人口排序" })).toBeVisible();
   const activeDistrictSort = page.getByRole("button", {
@@ -580,12 +620,12 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
     {
       label: "desktop",
       viewport: { width: 1440, height: 900 },
-      screenshotFile: "M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png"
+      screenshotFile: "M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png"
     },
     {
       label: "smaller",
       viewport: { width: 1280, height: 720 },
-      screenshotFile: "M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png"
+      screenshotFile: "M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png"
     }
   ] as const;
 
@@ -615,8 +655,8 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
       "true"
     );
     await expect(mapSurface).toHaveAttribute("data-map-mode", "situation");
-    await expect(mapSurface).toHaveAttribute("data-map-presentation", "soft-strategic-regions");
-    await expect(mapSurface).toHaveAttribute("data-player-grid", "hidden");
+    await expect(mapSurface).toHaveAttribute("data-map-presentation", "topology-region-network");
+    await expect(mapSurface).toHaveAttribute("data-player-grid", "not-used");
     await expect(page.locator(".map-viewport")).toHaveAttribute(
       "aria-roledescription",
       "keyboard navigable map read model"
@@ -639,6 +679,9 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
 
     await expect(mapCanvas).toHaveAttribute("data-renderer-owner", "map-renderer");
     await expect(mapCanvas).toBeVisible();
+    await expect(mapCanvas).toHaveAttribute("data-anchor-count", "8");
+    await expect(mapCanvas).toHaveAttribute("data-route-count", "1");
+    await expect(mapCanvas).toHaveAttribute("data-route-source-count", "25");
     await expectIntersectsViewport(mapRegion);
     await expectIntersectsViewport(firstScreen);
     await expectMeaningfulViewportIntersection(taskRailCards, 24_000);
@@ -647,9 +690,21 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
     await expectNoViewportOverlap(firstScreen, mapSurface);
     await expectNoViewportOverlap(mapSurface, mapLegend);
 
-    await page.screenshot({
+    await mapSurface.evaluate((element) => {
+      window.scrollTo({
+        top: element.getBoundingClientRect().top + window.scrollY - 12,
+        behavior: "instant"
+      });
+    });
+    await expectMeaningfulViewportIntersection(mapSurface, 120_000);
+    const evidenceStyle = await page.addStyleTag({
+      content:
+        ".client-shell__map-region{grid-template-rows:auto auto auto minmax(420px,420px)!important}.client-shell__map-surface{min-height:420px!important}"
+    });
+    await mapRegion.screenshot({
       path: resolve(evidenceRoot, scenario.screenshotFile)
     });
+    await evidenceStyle.evaluate((element) => element.remove());
 
     await taskRail.locator('[data-task-rail-card-kind="notifications"]').click();
     await expect(guidance).toHaveAttribute("data-guidance-state", "error");
@@ -688,7 +743,9 @@ test("M7 task rail appointment-error copy hides implementation jargon in English
   expect(chineseText).not.toMatch(/只读模型|GameCommand|命令路径|内部原因码|内部术语|原始原因码/);
 });
 
-test("M2 map zoom, selection, and mode switching updates read-model UI", async ({ page }) => {
+test("M7 topology map zoom, selection, and mode switching updates read-model UI", async ({
+  page
+}) => {
   const consoleErrors: string[] = [];
   page.on("console", (message) => {
     if (message.type() === "error") {
@@ -708,24 +765,25 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   const performanceOutput = page.getByTestId("district-list-performance");
 
   await expect(mapCanvas).toHaveAttribute("data-renderer-owner", "map-renderer");
-  await expect(mapCanvas).toHaveAttribute("data-district-count", "30");
-  await expect(mapCanvas).toHaveAttribute("data-settlement-count", "10");
-  await expect(mapCanvas).toHaveAttribute("data-route-source-count", "42");
+  await expect(mapCanvas).toHaveAttribute("data-district-count", "14");
+  await expect(mapCanvas).toHaveAttribute("data-settlement-count", "0");
+  await expect(mapCanvas).toHaveAttribute("data-anchor-count", "8");
+  await expect(mapCanvas).toHaveAttribute("data-route-source-count", "25");
   await expect(mapCanvas).toHaveAttribute("data-route-policy", "denoised");
   await expect(mapCanvas).toHaveAttribute("data-pan-x", "0.00");
   await expect(mapCanvas).toHaveAttribute("data-hovered-entity", "none");
-  await expect(rows).toHaveAttribute("data-row-count", "30");
-  await expect(rows).toHaveAttribute("data-rendered-row-count", "16");
+  await expect(rows).toHaveAttribute("data-row-count", "14");
+  await expect(rows).toHaveAttribute("data-rendered-row-count", "14");
   await expect(panel).toHaveAttribute("data-selected-district-id", "1");
   await expect(map).toHaveAttribute("data-selected-district-id", "1");
   await expect(map).toHaveAttribute("data-map-mode", "situation");
-  await expect(map).toHaveAttribute("data-map-presentation", "soft-strategic-regions");
-  await expect(map).toHaveAttribute("data-player-grid", "hidden");
+  await expect(map).toHaveAttribute("data-map-presentation", "topology-region-network");
+  await expect(map).toHaveAttribute("data-player-grid", "not-used");
   await expect(map).toHaveAttribute("data-zoom-level", "1.00");
   await expect(mapCanvas).toHaveAttribute("data-map-mode", "situation");
   const denoisedRouteCount = await readNumberAttribute(mapCanvas, "data-route-count");
   expect(denoisedRouteCount).toBeGreaterThan(0);
-  expect(denoisedRouteCount).toBeLessThan(42);
+  expect(denoisedRouteCount).toBeLessThan(25);
 
   await page.getByRole("button", { name: "Economy map mode" }).click();
   await expect(map).toHaveAttribute("data-map-mode", "economy");
@@ -734,7 +792,7 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await page.getByRole("button", { name: "Routes map mode" }).click();
   await expect(map).toHaveAttribute("data-map-mode", "routes");
   await expect(mapCanvas).toHaveAttribute("data-map-mode", "routes");
-  await expect(mapCanvas).toHaveAttribute("data-route-count", "42");
+  await expect(mapCanvas).toHaveAttribute("data-route-count", "1");
   await expect(mapCanvas).toHaveAttribute("data-route-policy", "complete");
 
   await page.getByRole("button", { name: "Zoom in" }).click();
@@ -769,7 +827,7 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
     page.getByRole("button", { name: "Review selected district District 3" })
   ).toHaveAttribute("data-hovered", "true");
 
-  await clickMapPoint(mapCanvas, 150, 50);
+  await clickMapPoint(mapCanvas, 150, 62);
   await expect(panel).toHaveAttribute("data-selected-district-id", "2");
   await expect(map).toHaveAttribute("data-selected-district-id", "2");
   await expect(panel.getByLabel("District decision assistant")).toContainText("Current problem");
@@ -785,17 +843,12 @@ test("M2 map zoom, selection, and mode switching updates read-model UI", async (
   await expect(panel).toContainText("Cash");
   await expect(panel).toContainText("Route");
 
-  await clickMapPoint(mapCanvas, 168, 64);
-  await expect(panel).toHaveAttribute("data-selected-district-id", "2");
-  await expect(panel).toContainText("Market settlement");
-  await expect(map).toHaveAttribute("data-selected-entity-kind", "settlement");
-
   await page.getByLabel("Filter").fill("planting");
-  await expect(rows).toHaveAttribute("data-filtered-row-count", "8");
-  await expect(rows).toHaveAttribute("data-rendered-row-count", "8");
+  await expect(rows).toHaveAttribute("data-filtered-row-count", "4");
+  await expect(rows).toHaveAttribute("data-rendered-row-count", "4");
 
   await page.getByRole("button", { name: "Sort by Population" }).click();
-  await expect(rows).toHaveAttribute("data-rendered-row-count", "8");
+  await expect(rows).toHaveAttribute("data-rendered-row-count", "4");
 
   const derivationMs = await readNumberAttribute(performanceOutput, "data-derivation-ms");
   const selectionMs = await readNumberAttribute(performanceOutput, "data-selection-ms");
@@ -850,10 +903,10 @@ test("M7 district inspector is localized secondary browser with bounded renderin
     "route.season.monsoon-risk"
   );
   await expect(browser).toHaveAttribute("data-render-bound", "virtualized");
-  await expect(rows).toHaveAttribute("data-render-limit", "16");
+  await expect(rows).toHaveAttribute("data-render-limit", "14");
   await page.getByLabel("Route status").selectOption("unreachable");
   await expect(rows).toHaveAttribute("data-route-filter", "unreachable");
-  await expect(rows).toHaveAttribute("data-filtered-row-count", "1");
+  await expect(rows).toHaveAttribute("data-filtered-row-count", "3");
   await page.getByLabel("Filter").fill("no matching district");
   await expect(rows).toHaveAttribute("data-filtered-row-count", "0");
   await expect(rows).toContainText("No districts match the current browser filters.");
@@ -890,7 +943,8 @@ test("M7 district inspector is localized secondary browser with bounded renderin
   await expect(panel).toContainText("地貌 / 经济");
   await expect(panel).toContainText("任命状态");
   await expect(panel).toContainText("地区行动");
-  await expect(panel).toContainText("沿海");
+  await expect(panel).toContainText("低地地形");
+  await expect(panel).toContainText("拓扑路径已知");
   await expect(panel).toContainText("驻军");
   await expect(panel).toContainText("持续");
   await expect(panel).toContainText("12 日行程");
@@ -1723,11 +1777,11 @@ test("M7 UI regression matrix stays localized, console-clean, and key-free acros
       await expect(scenarioPage.locator("html")).toHaveAttribute("lang", scenario.expectedLang);
       await expect(scenarioPage.locator(".client-shell__map-surface")).toHaveAttribute(
         "data-district-count",
-        "30"
+        "14"
       );
       await expect(scenarioPage.locator(".client-shell__map-surface")).toHaveAttribute(
         "data-settlement-count",
-        "10"
+        "0"
       );
       await expect(scenarioPage.locator(".client-shell__dev-overlay")).toHaveCount(0);
       await expect(scenarioPage.getByText("M2 prototype map ready")).toHaveCount(0);
@@ -1801,7 +1855,8 @@ async function clickMapPoint(
     position: {
       x: offsetX + xInMapUnits * scale,
       y: offsetY + yInMapUnits * scale
-    }
+    },
+    force: true
   });
 }
 

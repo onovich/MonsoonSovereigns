@@ -1,0 +1,63 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "gameplay_designer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Read-only gameplay research concluded that M7 client work must change direction: current schema/topology surfaces are sufficient to proceed, but the client default snapshot/read model still risks old M2 grid projection. The client must consume topology-backed district polygons, route nodes, route edges, path previews, and reason codes instead of disguising grid or centroid logic.",
+  "artifacts": [
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "tests_run": [],
+  "decisions": [
+    {
+      "id": "REQUEST_CHANGES_NOT_SCHEMA_BLOCKED",
+      "decision": "This is not BLOCKED_FOR_SCHEMA_GAP because accepted schema/query surfaces exist, including map topology listing, topology path preview, topology hash, edge/path reason codes, and fixture anti-grid cases."
+    },
+    {
+      "id": "AUTHORITY_TOPOLOGY",
+      "decision": "Use ADR-010 hybrid topology: district/province polygons are the governance and selection surface; explicit route/transport graph edges are the movement, supply, obligation delivery, campaign, AI, and reason-code surface."
+    },
+    {
+      "id": "CLIENT_READ_MODEL_GAP",
+      "decision": "The client must add topology-facing projections inside allowed client paths; if existing read models cannot express required route edge/path details, report an allowed-scope gap rather than inventing renderer-side authority."
+    },
+    {
+      "id": "MATURE_GAME_PATTERN",
+      "decision": "Nobunaga-like and Total War-like campaign maps communicate castles/settlements, regions, roads, route capacity, provisions, and campaign targets; they are not regular hidden-grid tile boards."
+    }
+  ],
+  "risks": [
+    {
+      "id": "OLD_M2_GRID_PROJECTION",
+      "severity": "R4",
+      "summary": "packages/client-core/src/index.ts still contains M2_PROTOTYPE_GRID_COLUMNS and center/anchor-derived legacy projections that must not drive the player-facing default map."
+    },
+    {
+      "id": "CENTROID_ROUTE_FALLBACK",
+      "severity": "R4",
+      "summary": "packages/map-renderer/src/index.ts still has anchor/centroid fallback behaviors; route rendering must prefer explicit topology route-node polylines and edge sequences."
+    },
+    {
+      "id": "VISUAL_ONLY_FALSE_PASS",
+      "severity": "R4",
+      "summary": "A map can look non-rectangular while still behaving like a grid; acceptance must include visual-neighbor-without-route, visually-distant-explicit-route, and geometry-perturbation-without-path-change evidence."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Forward hard anti-grid constraints to the client_engineer. Require topology-backed client projection, route preview, renderer plan, localized reason copy, screenshots, and anti-grid tests before REVIEW.",
+  "created_at": "2026-07-01T02:33:12.0000000+08:00",
+  "source_links": [
+    "https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/7100.html",
+    "https://www.koeitecmoeurope.com/manual/nobunaga/awakening/en/4200.html",
+    "https://academy.totalwar.com/campaign-provinces-and-settlements/",
+    "https://www.redblobgames.com/pathfinding/a-star/introduction.html",
+    "https://www.redblobgames.com/grids/hexagons/"
+  ]
+}
