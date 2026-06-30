@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_map_topology_fixture_accepted_pending_pr",
+    "status": "active_map_topology_fixture_accepted_ci_fix_pending_pr",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-    "updated_at": "2026-06-30T18:02:48.925Z",
+    "updated_at": "2026-06-30T18:10:00.168Z",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-FIXTURE-001"
     ],
@@ -2631,7 +2631,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Wait for M7-MAP-TOPOLOGY-SCHEMA-001 systems_architect REVIEW handoff; then route to independent qa_reviewer. Do not start M7 exit.",
+  "next_action": "Push CI fix, wait for PR CI, merge to main, then close task after origin/main integration.",
   "current_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2682,7 +2682,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-30T10:06:55.944Z",
+  "updated_at": "2026-06-30T18:10:00.168Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2837,7 +2837,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-30T10:06:55.944Z",
+  "last_updated_at": "2026-06-30T18:10:00.168Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5666,7 +5666,7 @@
     "replacement_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-REPLACEMENT-START__lead_orchestrator.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
     "started_at": "2026-07-01T00:26:01.3756143+08:00",
-    "updated_at": "2026-06-30T18:02:48.925Z",
+    "updated_at": "2026-06-30T18:10:00.168Z",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
@@ -5680,7 +5680,7 @@
     "systems_thread_nickname": "Keystone the 2nd",
     "systems_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
     "expected_systems_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
-    "next_action": "Open PR, wait for CI, merge to main, then close M7-MAP-TOPOLOGY-FIXTURE-001 only after origin/main contains the accepted branch.",
+    "next_action": "Push CI fix and process record, wait for PR CI, merge to main, then close after origin/main integration.",
     "historical_status": "ACCEPT",
     "historical_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
     "historical_reviewed_at": "2026-06-30T17:36:02.274Z",
@@ -5714,6 +5714,8 @@
     "accepted_at": "2026-06-30T18:02:48.925Z",
     "accepted_implementation_commit": "effaa013429805bffc597e58718e30aed75ae7ab",
     "accepted_content_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
-    "accepted_branch_head": "865865e3"
+    "accepted_branch_head": "0c49451e",
+    "ci_fix_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CI-FIX__lead_orchestrator.json",
+    "ci_fix_commit": "0c49451e"
   }
 }

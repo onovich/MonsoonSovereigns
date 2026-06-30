@@ -1,0 +1,73 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CI-FIX",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Lead applied a minimal CI fix after PR #227 Quality/Web/Browser Smoke failed in full vitest: tests/content-schema-graph-source.test.ts still built an M2 prototype fixture DTO without the now-required explicit topology and district topologyMetadata fields. The fix updates that test fixture only, preserving the accepted topology implementation and content-lock boundaries.",
+  "artifacts": [
+    "tests/content-schema-graph-source.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CI-FIX__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "0c49451e",
+  "tests_run": [
+    {
+      "command": "gh run view 28465589145 --log-failed",
+      "exit_code": 0,
+      "result": "PR #227 failed Quality/Web/Browser Smoke in tests/content-schema-graph-source.test.ts because the test DTO lacked topology and districts[0].topologyMetadata."
+    },
+    {
+      "command": "pnpm vitest run --root . tests/content-schema-graph-source.test.ts",
+      "exit_code": 0,
+      "result": "Focused schema test passed: 1 test file, 18 tests."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "CI-equivalent test command passed locally: architecture check, determinism, 44 root test files / 362 tests, and web tests 1 file / 10 tests."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CI_FIX_TEST_FIXTURE_ONLY",
+      "decision": "Only tests/content-schema-graph-source.test.ts changed. The fix updates a test DTO to the explicit topology schema contract; it does not alter production content, compiler/runtime authority, client rendering, content lock, or roadmap scope."
+    },
+    {
+      "id": "ACCEPTANCE_REMAINS_VALID",
+      "decision": "Historical, systems, QA R2, and lead acceptance remain valid. This CI fix is mechanical coverage alignment for the new required schema fields."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_CLIENT_TOPOLOGY_PENDING",
+      "severity": "R4",
+      "summary": "Client rendering/hit testing remains downstream and is not approved by this CI fix."
+    },
+    {
+      "id": "FORMAL_CONTENT_LOCK_NOT_APPROVED",
+      "severity": "R4",
+      "summary": "M7 content lock remains blocked pending full topology recovery validation and product-owner reconsideration."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Push CI fix, wait for PR CI, merge to main if checks pass, then close M7-MAP-TOPOLOGY-FIXTURE-001 after origin/main integration.",
+  "created_at": "2026-06-30T18:10:00.168Z"
+}
