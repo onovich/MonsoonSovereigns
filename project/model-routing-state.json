@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_map_topology_schema_qa_review_in_progress",
+    "status": "active_map_topology_schema_accepted_pending_pr",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
-    "updated_at": "2026-06-30T23:55:00+08:00",
+    "updated_at": "2026-06-30T23:59:45+08:00",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-SCHEMA-001"
     ],
@@ -4149,7 +4149,7 @@
     ]
   },
   "m7_i18n_foundation": {
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "task_id": "M7-I18N-FOUNDATION-001",
     "branch_or_worktree": "feat/m7-i18n-foundation",
     "base_main_commit": "382439d0ab40b4ef6f7172473155c686d81c7ef7",
@@ -5565,7 +5565,7 @@
     "replacement_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
     "started_at": "2026-06-30T22:41:30.6510548+08:00",
-    "updated_at": "2026-06-30T23:55:00+08:00",
+    "updated_at": "2026-06-30T23:59:45+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
@@ -5575,7 +5575,12 @@
     "qa_thread_nickname": "Auditor",
     "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
     "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
     "routed_to_qa_at": "2026-06-30T23:55:00+08:00",
-    "next_action": "Wait for independent qa_reviewer ACCEPT/REQUEST_CHANGES/BLOCKED handoff."
+    "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-30T23:59:45+08:00",
+    "accepted_branch_head": "3854448993e911b0c814355fb502162798b7f292",
+    "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED after origin/main integration."
   }
 }

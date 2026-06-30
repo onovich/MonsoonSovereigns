@@ -1,0 +1,93 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-LEAD-ACCEPT",
+  "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-MAP-TOPOLOGY-SCHEMA-001 after systems_architect implementation, lead anti-grid/lattice amendment, and independent qa_reviewer ACCEPT. The accepted branch introduces the authoritative topology schema/read-query/save boundary and tightens downstream tasks so hidden regular grids/lattices cannot pass content-lock recovery.",
+  "artifacts": [
+    "docs/decisions/ADR-010-map-topology.md",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/map-topology-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/m2-route-transport-v0.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-schema",
+  "commit": "3854448993e911b0c814355fb502162798b7f292",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID qa_reviewer ACCEPT handoff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed, 198 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 14 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "3 test files passed, 29 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPTS_SCHEMA_TASK",
+      "decision": "Accept the schema task for PR integration; do not mark CLOSED until the accepted branch enters origin/main."
+    },
+    {
+      "id": "ANTI_GRID_STANDARD_CARRIED_FORWARD",
+      "decision": "Carry the tightened anti-grid/lattice acceptance standard into M7-MAP-TOPOLOGY-FIXTURE-001, M7-MAP-TOPOLOGY-CLIENT-001, and M7-MAP-TOPOLOGY-VALIDATION-001."
+    },
+    {
+      "id": "CONTENT_LOCK_STAYS_BLOCKED",
+      "decision": "This ACCEPT does not approve formal M7 content lock or M7 exit validation."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FIXTURE_CLIENT_PENDING",
+      "severity": "carried-risk",
+      "summary": "Default player-facing fixture content and client rendering still need migration before the visible map experience is acceptable.",
+      "mitigation": "Start M7-MAP-TOPOLOGY-FIXTURE-001 after this task closes in main."
+    },
+    {
+      "id": "LEGACY_ROUTE_BRIDGE",
+      "severity": "carried-risk",
+      "summary": "definitions.routes remains as a compatibility projection bridge.",
+      "mitigation": "Downstream migration and validation must keep player-facing logic on topology route edges."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR, run CI, merge to main when checks pass, then mark M7-MAP-TOPOLOGY-SCHEMA-001 CLOSED and start M7-MAP-TOPOLOGY-FIXTURE-001.",
+  "created_at": "2026-06-30T23:59:45+08:00"
+}
