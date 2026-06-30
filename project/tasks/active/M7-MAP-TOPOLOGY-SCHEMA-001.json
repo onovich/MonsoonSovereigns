@@ -5,16 +5,16 @@
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_pr",
+      "status": "closed_after_main_integration",
       "branch_or_worktree": "codex/m7-map-topology-schema",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
-      "updated_at": "2026-06-30T23:59:45+08:00"
+      "updated_at": "2026-07-01T00:12:00+08:00"
     },
     "systems_architect": {
       "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "nickname": "Lintel",
-      "status": "review_ready",
+      "status": "closed",
       "branch_or_worktree": "codex/m7-map-topology-schema",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
       "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
@@ -22,12 +22,12 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
       "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
       "review_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
-      "updated_at": "2026-06-30T23:31:46.5495120+08:00"
+      "updated_at": "2026-07-01T00:12:00+08:00"
     },
     "qa_reviewer": {
       "thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
       "nickname": "Auditor",
-      "status": "accepted",
+      "status": "closed",
       "branch_or_worktree": "codex/m7-map-topology-schema",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-SYSTEMS-TO-QA-REVIEW.json",
       "source_handoffs": [
@@ -37,16 +37,16 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
       "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW__qa_reviewer.json",
       "review_commit": "50540c83",
-      "updated_at": "2026-06-30T23:59:18+08:00"
+      "updated_at": "2026-07-01T00:12:00+08:00"
     }
   },
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T23:59:45+08:00",
+  "updated_at": "2026-07-01T00:12:00+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "summary": "Introduce authoritative map topology definitions and read queries",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "dependencies": [
@@ -139,5 +139,19 @@
   "accepted_at": "2026-06-30T23:59:45+08:00",
   "accepted_implementation_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
   "accepted_branch_head": "3854448993e911b0c814355fb502162798b7f292",
-  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED after origin/main integration."
+  "integrated_pr": 225,
+  "integrated_main_commit": "a670d4c462f941ba461869e53a758dc512d8c604",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/225",
+  "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260701-M7-MAP-TOPOLOGY-SCHEMA-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-07-01T00:12:00+08:00",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "child_threads_closed": [
+    "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+    "019f193b-9417-73d0-91e3-f718fea66a30",
+    "019f192d-e3e3-7623-b959-49c3280f134e"
+  ],
+  "next_ready_tasks": [
+    "M7-MAP-TOPOLOGY-FIXTURE-001"
+  ],
+  "next_action": "Start M7-MAP-TOPOLOGY-FIXTURE-001 as the next topology recovery task."
 }

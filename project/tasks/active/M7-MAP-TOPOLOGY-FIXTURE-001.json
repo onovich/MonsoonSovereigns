@@ -9,7 +9,7 @@
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-FIXTURE-001",
   "summary": "Migrate prototype map content away from rectangular-grid topology",
-  "status": "DRAFT",
+  "status": "READY",
   "owner_role": "simulation_engineer",
   "reviewer_role": "historical_researcher",
   "required_reviewers": [
@@ -72,5 +72,10 @@
     "This task is allowed to use low-fidelity synthetic map data; it must not sneak in formal production historical map claims.",
     "Historical/cultural risk escalates to Human Gate if contested real-world claims become unavoidable.",
     "Because this task may touch sim-core/content-runtime authority code, systems_architect review is required in addition to historical and QA review."
-  ]
+  ],
+  "ready_after_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "ready_after_pr": 225,
+  "ready_after_main_commit": "a670d4c462f941ba461869e53a758dc512d8c604",
+  "ready_at": "2026-07-01T00:12:00+08:00",
+  "next_action": "Start after M7-MAP-TOPOLOGY-SCHEMA-001 closure enters origin/main."
 }
