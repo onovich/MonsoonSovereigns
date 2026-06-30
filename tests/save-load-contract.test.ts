@@ -15,11 +15,13 @@ import {
   canonicalizeM2EconomyPopulationState,
   createM2EconomyPopulationStateV0,
   createM3PolityVassalageStateV0,
+  createMapTopologyDefinitionV1,
   createWorldStateV0,
   bootSimulationV1,
   defineDistrict,
   definePerson,
   definePolity,
+  defineRoute,
   hashWorldStateV0,
   loadSaveV1,
   requestSaveV1,
@@ -370,6 +372,85 @@ describe("SIM-005 Node runner and Worker save/load contract", () => {
       code: "content-manifest-mismatch",
       path: "header.contentManifestHash",
       message: `Save content manifest ${saved.envelope.header.contentManifestHash} does not match expected 00000000.`
+    });
+  });
+
+  test("topology save/load preserves topology hash and rejects incompatible topology snapshots", () => {
+    const runtime = createTopologySaveRuntime();
+    const topologyHash = runtime.world.definitions.topology?.topologyHash;
+    if (topologyHash === undefined) {
+      throw new Error("Expected topology hash.");
+    }
+
+    const saved = requestSaveV1(runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+
+    expect(saved.envelope.body.authoritativeSnapshot.definitions.topology?.topologyHash).toBe(
+      topologyHash
+    );
+
+    const loaded = loadSaveV1(runtime, saved.bytes, {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+    expect(loaded.status).toBe("loaded");
+    if (loaded.status !== "loaded") {
+      throw new Error("Expected topology save to load.");
+    }
+    expect(loaded.runtime.world.definitions.topology?.topologyHash).toBe(topologyHash);
+
+    const missingTopology = createSaveEnvelopeV1({
+      build: saved.envelope.header.build,
+      scenarioId: saved.envelope.header.scenarioId,
+      authoritativeSnapshot: withoutSavedTopology(saved.envelope.body.authoritativeSnapshot),
+      scheduler: saved.envelope.body.scheduler,
+      rng: saved.envelope.body.rng,
+      commandTail: saved.envelope.body.commandTail,
+      eventTail: saved.envelope.body.eventTail
+    });
+    const missingResult = loadSaveV1(runtime, encodeSaveEnvelopeV1(missingTopology), {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+    expect(missingResult.status).toBe("rejected");
+    if (missingResult.status !== "rejected") {
+      throw new Error("Expected missing topology save to reject.");
+    }
+    expect(missingResult.runtime.world.meta.stateHash).toBe(runtime.world.meta.stateHash);
+    expect(missingResult.reasons).toContainEqual({
+      code: "semantic-invariant",
+      path: "definitions.topology",
+      message: "Save snapshot is missing required map topology for this runtime."
+    });
+
+    const mismatchedTopology = createSaveEnvelopeV1({
+      build: saved.envelope.header.build,
+      scenarioId: saved.envelope.header.scenarioId,
+      authoritativeSnapshot: withSavedTopologyHash(
+        saved.envelope.body.authoritativeSnapshot,
+        "00000000"
+      ),
+      scheduler: saved.envelope.body.scheduler,
+      rng: saved.envelope.body.rng,
+      commandTail: saved.envelope.body.commandTail,
+      eventTail: saved.envelope.body.eventTail
+    });
+    const mismatchedResult = loadSaveV1(runtime, encodeSaveEnvelopeV1(mismatchedTopology), {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+    expect(mismatchedResult.status).toBe("rejected");
+    if (mismatchedResult.status !== "rejected") {
+      throw new Error("Expected topology hash mismatch to reject.");
+    }
+    expect(mismatchedResult.runtime.world.meta.stateHash).toBe(runtime.world.meta.stateHash);
+    expect(mismatchedResult.reasons).toContainEqual({
+      code: "semantic-invariant",
+      path: "definitions.topology.topologyHash",
+      message: `Save topology hash 00000000 does not match runtime topology hash ${topologyHash}.`
     });
   });
 
@@ -789,6 +870,109 @@ function createM2M3CompatibilityRuntime(): SimulationRuntimeV1 {
     commandTail: [],
     eventTail: []
   };
+}
+
+function createTopologySaveRuntime(): SimulationRuntimeV1 {
+  const contentManifestHash = "m7.topology.save";
+  const districts = [
+    defineDistrict({ id: 1, displayNameKey: "topology.save.origin" }),
+    defineDistrict({ id: 2, displayNameKey: "topology.save.destination" })
+  ];
+  const routes = [defineRoute({ id: 1, fromDistrictId: 1, toDistrictId: 2, lengthInMapUnits: 4 })];
+  const topology = createMapTopologyDefinitionV1({
+    contentManifestHash,
+    districts: [
+      topologySaveDistrict(1, "topology.save.origin"),
+      topologySaveDistrict(2, "topology.save.destination")
+    ],
+    routeEdges: [
+      {
+        routeId: 1,
+        sourceId: "topology.save.route.1",
+        from: { kind: "district", districtId: 1 },
+        to: { kind: "district", districtId: 2 },
+        mode: "road",
+        baseTravelCost: 4,
+        baseCapacity: 100,
+        seasonality: topologySaveSeasonality(),
+        availability: { kind: "open" },
+        metadata: {
+          historicity: "COMPOSITE",
+          terrainClass: "lowland",
+          riskClass: "low"
+        }
+      }
+    ]
+  });
+  const world = createWorldStateV0({
+    seed: 1531,
+    contentManifestHash,
+    currentDay: 0,
+    revision: 0,
+    definitions: {
+      polities: [],
+      persons: [],
+      districts,
+      settlements: [],
+      routes,
+      topology
+    }
+  });
+
+  return {
+    world,
+    acceptedCommandIds: [],
+    commandTail: [],
+    eventTail: []
+  };
+}
+
+function topologySaveDistrict(
+  districtId: number,
+  displayNameKey: string
+): {
+  readonly districtId: number;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly anchor: { readonly x: number; readonly y: number };
+  readonly polygon: readonly { readonly x: number; readonly y: number }[];
+  readonly metadata: {
+    readonly historicity: "COMPOSITE";
+    readonly terrainClass: "lowland";
+    readonly riskClass: "low";
+  };
+} {
+  const x = districtId * 10;
+  return {
+    districtId,
+    sourceId: `topology.save.district.${districtId}`,
+    displayNameKey,
+    anchor: { x, y: 10 },
+    polygon: [
+      { x: x - 1, y: 9 },
+      { x: x + 1, y: 9 },
+      { x, y: 11 }
+    ],
+    metadata: {
+      historicity: "COMPOSITE",
+      terrainClass: "lowland",
+      riskClass: "low"
+    }
+  };
+}
+
+function topologySaveSeasonality(): readonly {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCodes: readonly string[];
+}[] {
+  return Array.from({ length: 12 }, (_unused, index) => ({
+    month: index + 1,
+    costMultiplierBps: 10_000,
+    capacityMultiplierBps: 10_000,
+    reasonCodes: []
+  }));
 }
 
 function validateReplayWorld(world: WorldStateV0): boolean {
@@ -1216,6 +1400,40 @@ function withoutSavedM3State(snapshot: SaveWorldSnapshotV0Dto): SaveWorldSnapsho
       settlements: snapshot.state.settlements,
       routes: snapshot.state.routes,
       ...(snapshot.state.m2 === undefined ? {} : { m2: snapshot.state.m2 })
+    }
+  };
+}
+
+function withoutSavedTopology(snapshot: SaveWorldSnapshotV0Dto): SaveWorldSnapshotV0Dto {
+  return {
+    ...snapshot,
+    definitions: {
+      polities: snapshot.definitions.polities,
+      persons: snapshot.definitions.persons,
+      districts: snapshot.definitions.districts,
+      settlements: snapshot.definitions.settlements,
+      routes: snapshot.definitions.routes
+    }
+  };
+}
+
+function withSavedTopologyHash(
+  snapshot: SaveWorldSnapshotV0Dto,
+  topologyHash: string
+): SaveWorldSnapshotV0Dto {
+  const topology = snapshot.definitions.topology;
+  if (topology === undefined) {
+    throw new Error("Expected saved topology.");
+  }
+
+  return {
+    ...snapshot,
+    definitions: {
+      ...snapshot.definitions,
+      topology: {
+        ...topology,
+        topologyHash
+      }
     }
   };
 }

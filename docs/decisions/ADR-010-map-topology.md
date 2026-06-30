@@ -23,13 +23,14 @@ Use a hybrid topology for the strategic map:
 2. Explicit Route/Transport graph edges are the movement, supply, obligation delivery, campaign planning, AI pathing, and reason-code surface.
 3. Renderer geometry is derived from compiled content/read models and never becomes authoritative simulation state.
 4. Path costs, capacity, seasonal modifiers, risk, known/unknown state, and route blockers are explicit edge attributes or query results.
-5. No player-facing default map, AI decision, or save/runtime path may infer authoritative adjacency or distance from a rectangular grid.
+5. No player-facing default map, AI decision, or save/runtime path may infer authoritative adjacency or distance from a rectangular grid, hex grid, axial/cube coordinate system, or any regular lattice that has only been visually disguised as irregular territory.
 
 This keeps the game about political regions, vassal obligations, routes, rivers, monsoon timing, storage, and bottlenecks. It avoids turning the project into a tile-economy game while still giving players a readable map surface.
 
 ## Rejected Options
 
 - Rectangular grid with irregular visual outlines: rejected because the topology still leaks through adjacency, distance, pathing, hit testing, AI explanations, and saves.
+- Regular lattice with non-rectangular skins: rejected for the same reason. A synthetic fixture may use a procedural tool to sketch polygons, but the shipped prototype cannot derive authority adjacency, pathing, route cost, or content validation from row/column order, sequential ids, hex axial/cube coordinates, or a hidden lattice.
 - Hex map as the authority model: rejected for this project because it would push governance, vassalage, and campaign logistics toward tile economics. Hex logic may still inspire clear adjacency and distance tests.
 - Engine navmesh as the authority model: rejected because Unity/Unreal-style navmesh is aimed at agent movement, not political district control and deterministic grand-strategy saves.
 - True GIS production map for M7/M8: rejected as out of scope because it brings licensing, projection, historical-accuracy, content-production, and cultural-risk burdens.
@@ -48,14 +49,24 @@ Only after validation enters `origin/main` may `M7-CONTENT-LOCK-ACCEPTANCE-001` 
 
 ## Invariants
 
-- District adjacency is explicit data or derived by a content compiler from accepted polygon/route definitions, never from row/column grid position in player-facing authority paths.
+- District adjacency is explicit data or derived by a content compiler from accepted polygon/route definitions, never from row/column grid position, hex axial/cube coordinates, sequential ids, or regular lattice neighbors in player-facing authority paths.
 - Route endpoints reference valid district, settlement, port, pass, warehouse, or special-node ids.
 - Route tie-breakers are stable and deterministic: total cost, edge count, route id, then stable endpoint ids.
-- Visual coordinates do not define authoritative travel distance.
+- Visual coordinates do not define authoritative travel distance, reachability, AI path quality, or route cost. Perturbing polygon coordinates must not change route selection unless explicit route-edge data changes.
 - Route capacity cannot be double-spent by multiple convoys or campaign plans.
 - Isolated playable regions require explicit isolated/no-known-route reason codes.
 - Renderer and UI consume read models; they do not mutate authoritative `WorldState`.
 - `Math.random`, `Date.now`, render frame timing, object iteration order, and hidden global penalties cannot decide authoritative topology results.
+
+## Anti-Grid Acceptance Standard
+
+A topology-backed map is not accepted merely because it stops drawing square tiles. The following must be true before M7 content lock can reopen:
+
+- Default player-facing content must include irregular COMPOSITE districts with variable route degree, dead ends, chokepoints, river/coast/road modes, at least one explicit isolated or no-known-route reason, one visual-neighbor pair with no route, and one visually distant pair connected by an explicit route.
+- The content compiler must reject duplicate topology ids/source ids, missing endpoints, invalid or zero-area polygons, self-intersecting polygons, route nodes outside their district, disconnected playable graphs without explicit reason codes, and any row/column-only adjacency shortcut.
+- `definitions.routes` may remain only as a compatibility projection or migration bridge while topology is introduced. Long-term movement, supply, obligation delivery, campaign, AI, and player explanations must use topology route edges as the authoritative surface.
+- AI and adviser text must consume the same topology/path query as player UI, including blocked, unknown, capacity, season, and bottleneck reason codes.
+- Save/load must preserve topology hash or reject incompatible topology with structured errors; it must not silently fall back to legacy grid behavior.
 
 ## Player-Facing Requirements
 
@@ -84,6 +95,19 @@ Reference URLs recorded by the research thread:
 - https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/AreasAndCosts.html
 - https://dev.epicgames.com/documentation/unreal-engine/navigation-system-in-unreal-engine
 - https://simblob.blogspot.com/2010/09/polygon-map-generation-part-1.html
+
+A second read-only gameplay design pass on 2026-06-30, thread `019f192d-e3e3-7623-b959-49c3280f134e`, returned `ACCEPT_WITH_REQUIRED_AMENDMENTS`. It tightened the standard above: point-to-point or area-movement style explicit routes are a better low-fidelity prototype target than any hidden grid; Voronoi/Delaunay may assist fixture sketching only, not generate historical or authoritative road claims; and M7 fixture/client validation must prove the map is no longer a regular lattice wearing irregular shapes.
+
+Additional reference URLs from that pass:
+
+- https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/7100.html
+- https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/4300.html
+- https://www.koeitecmoeurope.com/manual/nobunaga/awakening/en/4200.html
+- https://academy.totalwar.com/the-province-system/
+- https://hoi4.paradoxwikis.com/Map_modding
+- https://eu4.paradoxwikis.com/Map_modding
+- https://ck3.paradoxwikis.com/Map_modding
+- https://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
 
 ## Risks
 

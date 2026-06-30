@@ -803,6 +803,14 @@ export interface ListDistrictSummariesQueryV1 {
   readonly kind: "sim.list-district-summaries";
 }
 
+export interface ListMapTopologyQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-map-topology";
+  readonly payload: {
+    readonly queryId: string;
+  };
+}
+
 export interface ListM2EconomySummariesQueryV1 {
   readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
   readonly kind: "sim.list-m2-economy-summaries";
@@ -826,6 +834,17 @@ export interface ListM3SuccessionCrisesQueryV1 {
 export interface PreviewM2TransportRouteQueryV1 {
   readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
   readonly kind: "sim.preview-m2-transport-route";
+  readonly payload: {
+    readonly queryId: string;
+    readonly originDistrictId: number;
+    readonly destinationDistrictId: number;
+    readonly stockAmount: number;
+  };
+}
+
+export interface PreviewMapTopologyPathQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.preview-map-topology-path";
   readonly payload: {
     readonly queryId: string;
     readonly originDistrictId: number;
@@ -969,11 +988,13 @@ export type GameQueryV1 =
   | GetStateHashQueryV1
   | GetCalendarQueryV1
   | ListDistrictSummariesQueryV1
+  | ListMapTopologyQueryV1
   | ListM2EconomySummariesQueryV1
   | ListM3AdministrativeBurdenQueryV1
   | ListM3DecisionScaffoldsQueryV1
   | ListM3SuccessionCrisesQueryV1
   | PreviewM2TransportRouteQueryV1
+  | PreviewMapTopologyPathQueryV1
   | PreviewM3PostwarGovernanceQueryV1
   | CompareM3PostwarGovernanceOutcomesQueryV1
   | ListM4CampaignPlansQueryV1
@@ -1159,6 +1180,159 @@ export interface PreviewM2TransportRouteResultV1 {
   readonly revision: number;
   readonly monthOfYear: number;
   readonly route: M2TransportRoutePreviewReadModelV1;
+}
+
+export type MapTopologyRouteModeV1 = "coast" | "river" | "road";
+export type MapTopologyTerrainClassV1 =
+  | "coastal"
+  | "lowland"
+  | "pass"
+  | "riverine"
+  | "upland"
+  | "urban"
+  | "unknown";
+export type MapTopologyRiskClassV1 = "contested" | "hazardous" | "low" | "seasonal" | "unknown";
+export type MapTopologyHistoricityTagV1 = "COMPOSITE" | "FICTIONAL" | "HISTORICAL" | "INFERRED";
+export type MapTopologyRouteNodeKindV1 = "pass" | "port" | "special" | "warehouse";
+
+export interface MapTopologyPointReadModelV1 {
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface MapTopologyMetadataReadModelV1 {
+  readonly historicity: MapTopologyHistoricityTagV1;
+  readonly terrainClass: MapTopologyTerrainClassV1;
+  readonly riskClass: MapTopologyRiskClassV1;
+}
+
+export type MapTopologyRouteEndpointReadModelV1 =
+  | { readonly kind: "district"; readonly districtId: number }
+  | { readonly kind: "route-node"; readonly nodeId: string }
+  | { readonly kind: "settlement"; readonly settlementId: number };
+
+export type MapTopologyRouteAvailabilityReadModelV1 =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
+
+export interface MapTopologySeasonalModifierReadModelV1 {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface MapTopologyDistrictReadModelV1 {
+  readonly districtId: number;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly anchor: MapTopologyPointReadModelV1;
+  readonly polygon: readonly MapTopologyPointReadModelV1[];
+  readonly metadata: MapTopologyMetadataReadModelV1;
+}
+
+export interface MapTopologyRouteNodeReadModelV1 {
+  readonly nodeId: string;
+  readonly nodeKind: MapTopologyRouteNodeKindV1;
+  readonly districtId: number;
+  readonly displayNameKey: string;
+  readonly anchor: MapTopologyPointReadModelV1;
+}
+
+export interface MapTopologyRouteEdgeReadModelV1 {
+  readonly routeId: number;
+  readonly sourceId: string;
+  readonly from: MapTopologyRouteEndpointReadModelV1;
+  readonly to: MapTopologyRouteEndpointReadModelV1;
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+  readonly mode: MapTopologyRouteModeV1;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly seasonality: readonly MapTopologySeasonalModifierReadModelV1[];
+  readonly availability: MapTopologyRouteAvailabilityReadModelV1;
+  readonly metadata: MapTopologyMetadataReadModelV1;
+}
+
+export interface MapTopologyReadModelV1 {
+  readonly schemaVersion: 1;
+  readonly topologyHash: string;
+  readonly contentManifestHash: string;
+  readonly districts: readonly MapTopologyDistrictReadModelV1[];
+  readonly routeNodes: readonly MapTopologyRouteNodeReadModelV1[];
+  readonly routeEdges: readonly MapTopologyRouteEdgeReadModelV1[];
+}
+
+export interface ListMapTopologyResultV1 {
+  readonly kind: "sim.list-map-topology";
+  readonly day: number;
+  readonly revision: number;
+  readonly topology: MapTopologyReadModelV1;
+}
+
+export interface MapTopologyPathPreviewEdgeReadModelV1 {
+  readonly routeId: number;
+  readonly sourceId: string;
+  readonly from: MapTopologyRouteEndpointReadModelV1;
+  readonly to: MapTopologyRouteEndpointReadModelV1;
+  readonly fromDistrictId: number;
+  readonly toDistrictId: number;
+  readonly mode: MapTopologyRouteModeV1;
+  readonly baseTravelCost: number;
+  readonly seasonalCost: number;
+  readonly baseCapacity: number;
+  readonly seasonalCapacity: number;
+  readonly stockAmount: number;
+  readonly remainingCapacityAfterStock: number;
+  readonly availability: MapTopologyRouteAvailabilityReadModelV1;
+  readonly metadata: MapTopologyMetadataReadModelV1;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface MapTopologyTieBreakEvidenceReadModelV1 {
+  readonly orderedBy: readonly [
+    "total-cost",
+    "edge-count",
+    "route-id-sequence",
+    "endpoint-id-sequence",
+    "district-id"
+  ];
+  readonly candidateCount: number;
+  readonly selectedRouteIds: readonly number[];
+  readonly selectedEndpointKeys: readonly string[];
+}
+
+export type MapTopologyPathPreviewReadModelV1 =
+  | {
+      readonly status: "blocked" | "no-known-route";
+      readonly topologyHash: string | null;
+      readonly originDistrictId: number;
+      readonly destinationDistrictId: number;
+      readonly stockAmount: number;
+      readonly edges: readonly MapTopologyPathPreviewEdgeReadModelV1[];
+      readonly reasonCodes: readonly string[];
+      readonly tieBreakEvidence: MapTopologyTieBreakEvidenceReadModelV1;
+    }
+  | {
+      readonly status: "capacity-exceeded" | "reachable";
+      readonly topologyHash: string;
+      readonly originDistrictId: number;
+      readonly destinationDistrictId: number;
+      readonly stockAmount: number;
+      readonly totalCost: number;
+      readonly bottleneckCapacity: number;
+      readonly edges: readonly MapTopologyPathPreviewEdgeReadModelV1[];
+      readonly reasonCodes: readonly string[];
+      readonly tieBreakEvidence: MapTopologyTieBreakEvidenceReadModelV1;
+    };
+
+export interface PreviewMapTopologyPathResultV1 {
+  readonly kind: "sim.preview-map-topology-path";
+  readonly day: number;
+  readonly revision: number;
+  readonly monthOfYear: number;
+  readonly route: MapTopologyPathPreviewReadModelV1;
 }
 
 export interface M3PostwarGovernanceObligationShapeReadModelV1 {
@@ -2536,8 +2710,38 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
           kind
         }
       };
+    case "sim.list-map-topology": {
+      const payload = parseListMapTopologyPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.preview-m2-transport-route": {
       const payload = parsePreviewM2TransportRoutePayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.preview-map-topology-path": {
+      const payload = parsePreviewMapTopologyPathPayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -4857,6 +5061,93 @@ function parsePreviewM2TransportRoutePayload(
       destinationDistrictId: destinationDistrictId.value,
       stockAmount: stockAmount.value
     }
+  };
+}
+
+function parseListMapTopologyPayload(
+  input: unknown
+): ProtocolParseResult<ListMapTopologyQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.list-map-topology payload must be an object."
+    );
+  }
+
+  const queryId = parseQueryId(input["queryId"]);
+  if (!queryId.ok) {
+    return queryId;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId: queryId.value
+    }
+  };
+}
+
+function parsePreviewMapTopologyPathPayload(
+  input: unknown
+): ProtocolParseResult<PreviewMapTopologyPathQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.preview-map-topology-path payload must be an object."
+    );
+  }
+
+  const queryId = parseQueryId(input["queryId"]);
+  if (!queryId.ok) {
+    return queryId;
+  }
+
+  const originDistrictId = parsePositiveSafeInteger(
+    input["originDistrictId"],
+    "payload.originDistrictId"
+  );
+  if (!originDistrictId.ok) {
+    return originDistrictId;
+  }
+
+  const destinationDistrictId = parsePositiveSafeInteger(
+    input["destinationDistrictId"],
+    "payload.destinationDistrictId"
+  );
+  if (!destinationDistrictId.ok) {
+    return destinationDistrictId;
+  }
+
+  const stockAmount = parsePositiveSafeInteger(input["stockAmount"], "payload.stockAmount");
+  if (!stockAmount.ok) {
+    return stockAmount;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId: queryId.value,
+      originDistrictId: originDistrictId.value,
+      destinationDistrictId: destinationDistrictId.value,
+      stockAmount: stockAmount.value
+    }
+  };
+}
+
+function parseQueryId(input: unknown): ProtocolParseResult<string> {
+  if (typeof input !== "string" || !COMMAND_ID_PATTERN.test(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload.queryId",
+      "queryId must match [A-Za-z0-9._:-]{1,96}."
+    );
+  }
+
+  return {
+    ok: true,
+    value: input
   };
 }
 

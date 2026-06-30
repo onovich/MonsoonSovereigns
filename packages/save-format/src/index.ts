@@ -57,12 +57,103 @@ export interface SaveRouteDefinitionDto {
   readonly lengthInMapUnits: number;
 }
 
+export type SaveMapTopologyRouteModeV1Dto = "coast" | "river" | "road";
+export type SaveMapTopologyTerrainClassV1Dto =
+  | "coastal"
+  | "lowland"
+  | "pass"
+  | "riverine"
+  | "upland"
+  | "urban"
+  | "unknown";
+export type SaveMapTopologyRiskClassV1Dto =
+  | "contested"
+  | "hazardous"
+  | "low"
+  | "seasonal"
+  | "unknown";
+export type SaveMapTopologyHistoricityTagV1Dto =
+  | "COMPOSITE"
+  | "FICTIONAL"
+  | "HISTORICAL"
+  | "INFERRED";
+export type SaveMapTopologyRouteNodeKindV1Dto = "pass" | "port" | "special" | "warehouse";
+
+export interface SaveMapTopologyPointV1Dto {
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface SaveMapTopologyMetadataV1Dto {
+  readonly historicity: SaveMapTopologyHistoricityTagV1Dto;
+  readonly terrainClass: SaveMapTopologyTerrainClassV1Dto;
+  readonly riskClass: SaveMapTopologyRiskClassV1Dto;
+}
+
+export interface SaveMapTopologyDistrictDefinitionV1Dto {
+  readonly districtId: number;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly anchor: SaveMapTopologyPointV1Dto;
+  readonly polygon: readonly SaveMapTopologyPointV1Dto[];
+  readonly metadata: SaveMapTopologyMetadataV1Dto;
+}
+
+export interface SaveMapTopologyRouteNodeDefinitionV1Dto {
+  readonly nodeId: string;
+  readonly nodeKind: SaveMapTopologyRouteNodeKindV1Dto;
+  readonly districtId: number;
+  readonly displayNameKey: string;
+  readonly anchor: SaveMapTopologyPointV1Dto;
+}
+
+export type SaveMapTopologyRouteEndpointV1Dto =
+  | { readonly kind: "district"; readonly districtId: number }
+  | { readonly kind: "route-node"; readonly nodeId: string }
+  | { readonly kind: "settlement"; readonly settlementId: number };
+
+export interface SaveMapTopologySeasonalModifierV1Dto {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export type SaveMapTopologyRouteAvailabilityV1Dto =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
+
+export interface SaveMapTopologyRouteEdgeDefinitionV1Dto {
+  readonly routeId: number;
+  readonly sourceId: string;
+  readonly from: SaveMapTopologyRouteEndpointV1Dto;
+  readonly to: SaveMapTopologyRouteEndpointV1Dto;
+  readonly mode: SaveMapTopologyRouteModeV1Dto;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly seasonality: readonly SaveMapTopologySeasonalModifierV1Dto[];
+  readonly availability: SaveMapTopologyRouteAvailabilityV1Dto;
+  readonly metadata: SaveMapTopologyMetadataV1Dto;
+}
+
+export interface SaveMapTopologyDefinitionV1Dto {
+  readonly schemaVersion: 1;
+  readonly hashAlgorithm: "fnv1a32-canonical-map-topology-v1";
+  readonly topologyHash: string;
+  readonly contentManifestHash: string;
+  readonly districts: readonly SaveMapTopologyDistrictDefinitionV1Dto[];
+  readonly routeNodes: readonly SaveMapTopologyRouteNodeDefinitionV1Dto[];
+  readonly routeEdges: readonly SaveMapTopologyRouteEdgeDefinitionV1Dto[];
+}
+
 export interface SaveWorldDefinitionsV0Dto {
   readonly polities: readonly SaveSimpleDefinitionDto[];
   readonly persons: readonly SaveSimpleDefinitionDto[];
   readonly districts: readonly SaveSimpleDefinitionDto[];
   readonly settlements: readonly SaveSettlementDefinitionDto[];
   readonly routes: readonly SaveRouteDefinitionDto[];
+  readonly topology?: SaveMapTopologyDefinitionV1Dto;
 }
 
 export interface SaveSimpleRuntimeStateDto {
@@ -1775,7 +1866,10 @@ export function worldStateV0ToSaveDto(world: WorldStateV0ForSave): SaveWorldSnap
         fromDistrictId: route.fromDistrictId,
         toDistrictId: route.toDistrictId,
         lengthInMapUnits: route.lengthInMapUnits
-      }))
+      })),
+      ...(world.definitions.topology === undefined
+        ? {}
+        : { topology: copyMapTopologyDefinition(world.definitions.topology) })
     },
     state
   };
@@ -2166,18 +2260,34 @@ function parseWorldDefinitions(
   const districts = parseSimpleDefinitions(input["districts"], "districts", errors);
   const settlements = parseSettlements(input["settlements"], errors);
   const routes = parseRoutes(input["routes"], errors);
+  const topology =
+    input["topology"] === undefined
+      ? undefined
+      : parseMapTopologyDefinition(
+          input["topology"],
+          "body.authoritativeSnapshot.definitions.topology",
+          errors
+        );
 
   if (
     polities === undefined ||
     persons === undefined ||
     districts === undefined ||
     settlements === undefined ||
-    routes === undefined
+    routes === undefined ||
+    (input["topology"] !== undefined && topology === undefined)
   ) {
     return undefined;
   }
 
-  return { polities, persons, districts, settlements, routes };
+  return {
+    polities,
+    persons,
+    districts,
+    settlements,
+    routes,
+    ...(topology === undefined ? {} : { topology })
+  };
 }
 
 function parseWorldRuntimeState(
@@ -2445,6 +2555,377 @@ function parseRoutes(
         readPositiveSafeInteger(entry, "lengthInMapUnits", `${path}.lengthInMapUnits`, errors) ?? 0
     };
   });
+}
+
+function parseMapTopologyDefinition(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyDefinitionV1Dto | undefined {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "Map topology definition must be an object."));
+    return undefined;
+  }
+  if (input["schemaVersion"] !== 1) {
+    errors.push(reason("invalid-schema", `${path}.schemaVersion`, "schemaVersion must be 1."));
+  }
+  if (input["hashAlgorithm"] !== "fnv1a32-canonical-map-topology-v1") {
+    errors.push(
+      reason(
+        "invalid-schema",
+        `${path}.hashAlgorithm`,
+        "hashAlgorithm must be fnv1a32-canonical-map-topology-v1."
+      )
+    );
+  }
+
+  const topologyHash = readChecksum(input, "topologyHash", `${path}.topologyHash`, errors);
+  const contentManifestHash = readNonEmptyString(
+    input,
+    "contentManifestHash",
+    `${path}.contentManifestHash`,
+    errors
+  );
+  const districts = parseMapTopologyArray(
+    input["districts"],
+    `${path}.districts`,
+    "Map topology districts",
+    errors,
+    parseMapTopologyDistrict
+  );
+  const routeNodes = parseMapTopologyArray(
+    input["routeNodes"],
+    `${path}.routeNodes`,
+    "Map topology routeNodes",
+    errors,
+    parseMapTopologyRouteNode
+  );
+  const routeEdges = parseMapTopologyArray(
+    input["routeEdges"],
+    `${path}.routeEdges`,
+    "Map topology routeEdges",
+    errors,
+    parseMapTopologyRouteEdge
+  );
+
+  if (
+    topologyHash === undefined ||
+    contentManifestHash === undefined ||
+    districts === undefined ||
+    routeNodes === undefined ||
+    routeEdges === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    schemaVersion: 1,
+    hashAlgorithm: "fnv1a32-canonical-map-topology-v1",
+    topologyHash,
+    contentManifestHash,
+    districts,
+    routeNodes,
+    routeEdges
+  };
+}
+
+function parseMapTopologyArray<TValue>(
+  input: unknown,
+  path: string,
+  label: string,
+  errors: SaveLoadRejectionReasonV1[],
+  parseEntry: (entry: unknown, entryPath: string, errors: SaveLoadRejectionReasonV1[]) => TValue
+): readonly TValue[] | undefined {
+  if (!Array.isArray(input)) {
+    errors.push(reason("invalid-schema", path, `${label} must be an array.`));
+    return undefined;
+  }
+
+  return input.map((entry, index) => parseEntry(entry, `${path}[${index}]`, errors));
+}
+
+function parseMapTopologyDistrict(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyDistrictDefinitionV1Dto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "Map topology district must be an object."));
+    return {
+      districtId: 0,
+      sourceId: "",
+      displayNameKey: "",
+      anchor: { x: 0, y: 0 },
+      polygon: [],
+      metadata: fallbackMapTopologyMetadata()
+    };
+  }
+
+  const polygon = parseMapTopologyArray(
+    input["polygon"],
+    `${path}.polygon`,
+    "Map topology district polygon",
+    errors,
+    parseMapTopologyPoint
+  );
+  return {
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    sourceId: readNonEmptyString(input, "sourceId", `${path}.sourceId`, errors) ?? "",
+    displayNameKey:
+      readNonEmptyString(input, "displayNameKey", `${path}.displayNameKey`, errors) ?? "",
+    anchor: parseMapTopologyPoint(input["anchor"], `${path}.anchor`, errors),
+    polygon: polygon ?? [],
+    metadata: parseMapTopologyMetadata(input["metadata"], `${path}.metadata`, errors)
+  };
+}
+
+function parseMapTopologyRouteNode(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyRouteNodeDefinitionV1Dto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "Map topology route node must be an object."));
+    return {
+      nodeId: "",
+      nodeKind: "special",
+      districtId: 0,
+      displayNameKey: "",
+      anchor: { x: 0, y: 0 }
+    };
+  }
+
+  return {
+    nodeId: readNonEmptyString(input, "nodeId", `${path}.nodeId`, errors) ?? "",
+    nodeKind: parseMapTopologyRouteNodeKind(input["nodeKind"], `${path}.nodeKind`, errors),
+    districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0,
+    displayNameKey:
+      readNonEmptyString(input, "displayNameKey", `${path}.displayNameKey`, errors) ?? "",
+    anchor: parseMapTopologyPoint(input["anchor"], `${path}.anchor`, errors)
+  };
+}
+
+function parseMapTopologyRouteEdge(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyRouteEdgeDefinitionV1Dto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "Map topology route edge must be an object."));
+    return {
+      routeId: 0,
+      sourceId: "",
+      from: { kind: "district", districtId: 0 },
+      to: { kind: "district", districtId: 0 },
+      mode: "road",
+      baseTravelCost: 0,
+      baseCapacity: 0,
+      seasonality: [],
+      availability: { kind: "open" },
+      metadata: fallbackMapTopologyMetadata()
+    };
+  }
+
+  const seasonality = parseMapTopologyArray(
+    input["seasonality"],
+    `${path}.seasonality`,
+    "Map topology route edge seasonality",
+    errors,
+    parseMapTopologySeasonalModifier
+  );
+  return {
+    routeId: readPositiveSafeInteger(input, "routeId", `${path}.routeId`, errors) ?? 0,
+    sourceId: readNonEmptyString(input, "sourceId", `${path}.sourceId`, errors) ?? "",
+    from: parseMapTopologyRouteEndpoint(input["from"], `${path}.from`, errors),
+    to: parseMapTopologyRouteEndpoint(input["to"], `${path}.to`, errors),
+    mode: parseMapTopologyRouteMode(input["mode"], `${path}.mode`, errors),
+    baseTravelCost:
+      readPositiveSafeInteger(input, "baseTravelCost", `${path}.baseTravelCost`, errors) ?? 0,
+    baseCapacity:
+      readPositiveSafeInteger(input, "baseCapacity", `${path}.baseCapacity`, errors) ?? 0,
+    seasonality: seasonality ?? [],
+    availability: parseMapTopologyRouteAvailability(
+      input["availability"],
+      `${path}.availability`,
+      errors
+    ),
+    metadata: parseMapTopologyMetadata(input["metadata"], `${path}.metadata`, errors)
+  };
+}
+
+function parseMapTopologyPoint(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyPointV1Dto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "Map topology point must be an object."));
+    return { x: 0, y: 0 };
+  }
+
+  return {
+    x:
+      readIntegerInRange(
+        input,
+        "x",
+        `${path}.x`,
+        Number.MIN_SAFE_INTEGER,
+        Number.MAX_SAFE_INTEGER,
+        errors
+      ) ?? 0,
+    y:
+      readIntegerInRange(
+        input,
+        "y",
+        `${path}.y`,
+        Number.MIN_SAFE_INTEGER,
+        Number.MAX_SAFE_INTEGER,
+        errors
+      ) ?? 0
+  };
+}
+
+function parseMapTopologyMetadata(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyMetadataV1Dto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "Map topology metadata must be an object."));
+    return fallbackMapTopologyMetadata();
+  }
+
+  return {
+    historicity: parseMapTopologyHistoricityTag(
+      input["historicity"],
+      `${path}.historicity`,
+      errors
+    ),
+    terrainClass: parseMapTopologyTerrainClass(
+      input["terrainClass"],
+      `${path}.terrainClass`,
+      errors
+    ),
+    riskClass: parseMapTopologyRiskClass(input["riskClass"], `${path}.riskClass`, errors)
+  };
+}
+
+function parseMapTopologyRouteEndpoint(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyRouteEndpointV1Dto {
+  if (!isRecord(input)) {
+    errors.push(reason("invalid-schema", path, "Map topology route endpoint must be an object."));
+    return { kind: "district", districtId: 0 };
+  }
+
+  if (input["kind"] === "district") {
+    return {
+      kind: "district",
+      districtId: readPositiveSafeInteger(input, "districtId", `${path}.districtId`, errors) ?? 0
+    };
+  }
+  if (input["kind"] === "route-node") {
+    return {
+      kind: "route-node",
+      nodeId: readNonEmptyString(input, "nodeId", `${path}.nodeId`, errors) ?? ""
+    };
+  }
+  if (input["kind"] === "settlement") {
+    return {
+      kind: "settlement",
+      settlementId:
+        readPositiveSafeInteger(input, "settlementId", `${path}.settlementId`, errors) ?? 0
+    };
+  }
+
+  errors.push(
+    reason(
+      "invalid-schema",
+      `${path}.kind`,
+      "Map topology route endpoint kind must be district, route-node, or settlement."
+    )
+  );
+  return { kind: "district", districtId: 0 };
+}
+
+function parseMapTopologySeasonalModifier(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologySeasonalModifierV1Dto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "Map topology seasonal modifier must be an object.")
+    );
+    return {
+      month: 1,
+      costMultiplierBps: 10_000,
+      capacityMultiplierBps: 10_000,
+      reasonCodes: []
+    };
+  }
+  const reasonCodes = parseStringArray(input["reasonCodes"], `${path}.reasonCodes`, errors);
+  return {
+    month: readIntegerInRange(input, "month", `${path}.month`, 1, 12, errors) ?? 1,
+    costMultiplierBps:
+      readIntegerInRange(
+        input,
+        "costMultiplierBps",
+        `${path}.costMultiplierBps`,
+        1,
+        30_000,
+        errors
+      ) ?? 10_000,
+    capacityMultiplierBps:
+      readIntegerInRange(
+        input,
+        "capacityMultiplierBps",
+        `${path}.capacityMultiplierBps`,
+        0,
+        30_000,
+        errors
+      ) ?? 10_000,
+    reasonCodes: reasonCodes ?? []
+  };
+}
+
+function parseMapTopologyRouteAvailability(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyRouteAvailabilityV1Dto {
+  if (!isRecord(input)) {
+    errors.push(
+      reason("invalid-schema", path, "Map topology route availability must be an object.")
+    );
+    return { kind: "open" };
+  }
+  if (input["kind"] === "open") {
+    return { kind: "open" };
+  }
+  if (input["kind"] === "blocked") {
+    return {
+      kind: "blocked",
+      reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+    };
+  }
+  if (input["kind"] === "unknown") {
+    return {
+      kind: "unknown",
+      reasonCode: readNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors) ?? ""
+    };
+  }
+
+  errors.push(
+    reason(
+      "invalid-schema",
+      `${path}.kind`,
+      "Map topology route availability kind must be open, blocked, or unknown."
+    )
+  );
+  return { kind: "open" };
 }
 
 function parseSimpleRuntimeStates(
@@ -6479,7 +6960,12 @@ function copySaveBody(body: SaveBodyV1): SaveBodyV1 {
           fromDistrictId: route.fromDistrictId,
           toDistrictId: route.toDistrictId,
           lengthInMapUnits: route.lengthInMapUnits
-        }))
+        })),
+        ...(body.authoritativeSnapshot.definitions.topology === undefined
+          ? {}
+          : {
+              topology: copyMapTopologyDefinition(body.authoritativeSnapshot.definitions.topology)
+            })
       },
       state
     },
@@ -6505,6 +6991,107 @@ function copySimpleDefinition(definition: SaveSimpleDefinitionDto): SaveSimpleDe
     id: definition.id,
     displayNameKey: definition.displayNameKey
   };
+}
+
+function copyMapTopologyDefinition(
+  topology: SaveMapTopologyDefinitionV1Dto
+): SaveMapTopologyDefinitionV1Dto {
+  return {
+    schemaVersion: 1,
+    hashAlgorithm: "fnv1a32-canonical-map-topology-v1",
+    topologyHash: topology.topologyHash,
+    contentManifestHash: topology.contentManifestHash,
+    districts: topology.districts.map((district) => ({
+      districtId: district.districtId,
+      sourceId: district.sourceId,
+      displayNameKey: district.displayNameKey,
+      anchor: copyMapTopologyPoint(district.anchor),
+      polygon: district.polygon.map(copyMapTopologyPoint),
+      metadata: copyMapTopologyMetadata(district.metadata)
+    })),
+    routeNodes: topology.routeNodes.map((node) => ({
+      nodeId: node.nodeId,
+      nodeKind: node.nodeKind,
+      districtId: node.districtId,
+      displayNameKey: node.displayNameKey,
+      anchor: copyMapTopologyPoint(node.anchor)
+    })),
+    routeEdges: topology.routeEdges.map((edge) => ({
+      routeId: edge.routeId,
+      sourceId: edge.sourceId,
+      from: copyMapTopologyRouteEndpoint(edge.from),
+      to: copyMapTopologyRouteEndpoint(edge.to),
+      mode: edge.mode,
+      baseTravelCost: edge.baseTravelCost,
+      baseCapacity: edge.baseCapacity,
+      seasonality: edge.seasonality.map((season) => ({
+        month: season.month,
+        costMultiplierBps: season.costMultiplierBps,
+        capacityMultiplierBps: season.capacityMultiplierBps,
+        reasonCodes: season.reasonCodes.map((reasonCode) => reasonCode)
+      })),
+      availability: copyMapTopologyRouteAvailability(edge.availability),
+      metadata: copyMapTopologyMetadata(edge.metadata)
+    }))
+  };
+}
+
+function copyMapTopologyPoint(point: SaveMapTopologyPointV1Dto): SaveMapTopologyPointV1Dto {
+  return {
+    x: point.x,
+    y: point.y
+  };
+}
+
+function copyMapTopologyMetadata(
+  metadata: SaveMapTopologyMetadataV1Dto
+): SaveMapTopologyMetadataV1Dto {
+  return {
+    historicity: metadata.historicity,
+    terrainClass: metadata.terrainClass,
+    riskClass: metadata.riskClass
+  };
+}
+
+function copyMapTopologyRouteEndpoint(
+  endpoint: SaveMapTopologyRouteEndpointV1Dto
+): SaveMapTopologyRouteEndpointV1Dto {
+  switch (endpoint.kind) {
+    case "district":
+      return {
+        kind: "district",
+        districtId: endpoint.districtId
+      };
+    case "route-node":
+      return {
+        kind: "route-node",
+        nodeId: endpoint.nodeId
+      };
+    case "settlement":
+      return {
+        kind: "settlement",
+        settlementId: endpoint.settlementId
+      };
+  }
+}
+
+function copyMapTopologyRouteAvailability(
+  availability: SaveMapTopologyRouteAvailabilityV1Dto
+): SaveMapTopologyRouteAvailabilityV1Dto {
+  switch (availability.kind) {
+    case "open":
+      return { kind: "open" };
+    case "blocked":
+      return {
+        kind: "blocked",
+        reasonCode: availability.reasonCode
+      };
+    case "unknown":
+      return {
+        kind: "unknown",
+        reasonCode: availability.reasonCode
+      };
+  }
 }
 
 function parseM6AlphaRuntimeState(
@@ -7602,6 +8189,14 @@ function fallbackM2MarketDistrict(): SaveM2DistrictMarketStateDto {
   };
 }
 
+function fallbackMapTopologyMetadata(): SaveMapTopologyMetadataV1Dto {
+  return {
+    historicity: "COMPOSITE",
+    terrainClass: "unknown",
+    riskClass: "unknown"
+  };
+}
+
 function parseM2AgriculturePhase(
   input: unknown,
   path: string,
@@ -7632,6 +8227,104 @@ function parseM2RouteKind(
 
   errors.push(reason("invalid-schema", path, "M2 routeKind must be coast, river, or road."));
   return "road";
+}
+
+function parseMapTopologyRouteNodeKind(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyRouteNodeKindV1Dto {
+  if (input === "pass" || input === "port" || input === "special" || input === "warehouse") {
+    return input;
+  }
+
+  errors.push(
+    reason(
+      "invalid-schema",
+      path,
+      "Map topology route node kind must be pass, port, special, or warehouse."
+    )
+  );
+  return "special";
+}
+
+function parseMapTopologyRouteMode(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyRouteModeV1Dto {
+  if (input === "coast" || input === "river" || input === "road") {
+    return input;
+  }
+
+  errors.push(
+    reason("invalid-schema", path, "Map topology route mode must be coast, river, or road.")
+  );
+  return "road";
+}
+
+function parseMapTopologyHistoricityTag(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyHistoricityTagV1Dto {
+  if (
+    input === "COMPOSITE" ||
+    input === "FICTIONAL" ||
+    input === "HISTORICAL" ||
+    input === "INFERRED"
+  ) {
+    return input;
+  }
+
+  errors.push(
+    reason(
+      "invalid-schema",
+      path,
+      "Map topology historicity must be COMPOSITE, FICTIONAL, HISTORICAL, or INFERRED."
+    )
+  );
+  return "COMPOSITE";
+}
+
+function parseMapTopologyTerrainClass(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyTerrainClassV1Dto {
+  if (
+    input === "coastal" ||
+    input === "lowland" ||
+    input === "pass" ||
+    input === "riverine" ||
+    input === "upland" ||
+    input === "urban" ||
+    input === "unknown"
+  ) {
+    return input;
+  }
+
+  errors.push(reason("invalid-schema", path, "Map topology terrainClass is invalid."));
+  return "unknown";
+}
+
+function parseMapTopologyRiskClass(
+  input: unknown,
+  path: string,
+  errors: SaveLoadRejectionReasonV1[]
+): SaveMapTopologyRiskClassV1Dto {
+  if (
+    input === "contested" ||
+    input === "hazardous" ||
+    input === "low" ||
+    input === "seasonal" ||
+    input === "unknown"
+  ) {
+    return input;
+  }
+
+  errors.push(reason("invalid-schema", path, "Map topology riskClass is invalid."));
+  return "unknown";
 }
 
 function readNonEmptyString(

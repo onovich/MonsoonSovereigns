@@ -1,0 +1,52 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START",
+  "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-MAP-TOPOLOGY-SCHEMA-001 after M7-MAP-TOPOLOGY-RECOVERY-001 closed in origin/main through PR #224. The task must implement authoritative topology definitions and read/query boundaries per ADR-010 before fixture, client, and validation tasks proceed.",
+  "artifacts": [
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-schema",
+  "commit": "30779bac55c5192a666aa95611741443c8f3239e",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main before starting codex/m7-map-topology-schema."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-MAP-TOPOLOGY-SCHEMA-001 READY."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "START_SCHEMA_AFTER_TOPOLOGY_RECOVERY_MAIN",
+      "decision": "Start schema only after topology recovery closure entered origin/main."
+    },
+    {
+      "id": "KEEP_CONTENT_LOCK_BLOCKED",
+      "decision": "Do not start M7 exit or approve content lock during schema work."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PUBLIC_TOPOLOGY_SAVE_PROTOCOL_BOUNDARY",
+      "severity": "R4",
+      "summary": "The task touches topology, protocol, content-runtime, and save boundaries.",
+      "mitigation": "Owner is systems_architect; QA acceptance required before integration."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Implement M7-MAP-TOPOLOGY-SCHEMA-001 within allowed paths and return a REVIEW handoff to qa_reviewer.",
+  "created_at": "2026-06-30T22:41:30.6510548+08:00"
+}

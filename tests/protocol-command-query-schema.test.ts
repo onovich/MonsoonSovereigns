@@ -1210,6 +1210,67 @@ describe("SIM-003 protocol command/query schemas", () => {
         message: "payload.stockAmount must be a positive safe integer."
       }
     });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-map-topology",
+        payload: {
+          queryId: "topology.list.1"
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-map-topology",
+        payload: {
+          queryId: "topology.list.1"
+        }
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-map-topology-path",
+        payload: {
+          queryId: "topology.path.1",
+          originDistrictId: 1,
+          destinationDistrictId: 4,
+          stockAmount: 40
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.preview-map-topology-path",
+        payload: {
+          queryId: "topology.path.1",
+          originDistrictId: 1,
+          destinationDistrictId: 4,
+          stockAmount: 40
+        }
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-map-topology-path",
+        payload: {
+          queryId: "topology.path.bad",
+          originDistrictId: 1,
+          destinationDistrictId: 4,
+          stockAmount: 0
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.stockAmount",
+        message: "payload.stockAmount must be a positive safe integer."
+      }
+    });
   });
 
   test("accepts and rejects M4 campaign AI decision trace schema", () => {

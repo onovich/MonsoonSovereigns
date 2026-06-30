@@ -1,0 +1,135 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-QA-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts M7-MAP-TOPOLOGY-SCHEMA-001 at branch head 50540c832f882ea647b42678d83f2b7da235c7b2. The implemented schema and query path define an authoritative MapTopologyDefinitionV1 with district polygons, anchors, metadata, route nodes, explicit route endpoints/edges, route modes, capacity, seasonality, availability, terrain/risk/historicity metadata, and stable topology hash. sim.list-map-topology and sim.preview-map-topology-path reject missing topology and derive reachability/cost only from explicit topology.routeEdges; visual coordinates, row/column, hex, sequential ids, renderer geometry, and hidden regular lattice shortcuts are not used in the new topology path. Save/load preserves topology hash and rejects missing or mismatched topology for topology-backed runtimes. Scope changes are within the task's allowed paths; the mid-task anti-grid amendment is recorded in the task file, ADR, PROJECT_STATUS, downstream task criteria, and lead handoff without authorizing client rendering, content-source migration, final art, manual node battle, server, telemetry, or formal historical map claims.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/decisions/ADR-010-map-topology.md",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/map-topology-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/m2-route-transport-v0.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-schema",
+  "commit": "50540c832f882ea647b42678d83f2b7da235c7b2",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean before QA handoff creation at branch codex/m7-map-topology-schema tracking origin/codex/m7-map-topology-schema."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD and git diff --name-status",
+      "exit_code": 0,
+      "result": "Committed diff only touches PROJECT_STATUS, ADR, sim-core, protocol, save-format, allowed task/state/message files, and tests. No forbidden apps/web, apps/desktop, packages/ui, packages/map-renderer, content-source, .github, tools, gate, roadmap, manifest, checksum, or validation-report paths. No uncommitted changes before QA handoff creation."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS: no whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID anti-grid amendment handoff."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "PASS: 26 test files and 198 tests passed, including tests/sim-core-map-topology.test.ts anti-grid coverage for visual-neighbor-without-route, visually-distant explicit route, geometry perturbation without path change, stable route tie-break evidence, topology hash validation, and no-topology query rejection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "PASS: 1 test file and 14 tests passed, including sim.list-map-topology and sim.preview-map-topology-path query schema coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "PASS: 3 test files and 29 tests passed, including topology save/load hash preservation plus missing and mismatched topology rejection."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "PASS: 1 test file and 16 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS: format:check, lint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPTS_SCHEMA_AND_QUERY_BOUNDARY",
+      "decision": "Accept the schema/query/save implementation because topology-backed pathing uses explicit topology.routeEdges and missing topology is rejected on the new query path instead of falling back to legacy grid/route behavior."
+    },
+    {
+      "id": "ANTI_GRID_AMENDMENT_ACCEPTED_FOR_THIS_TASK",
+      "decision": "Accept the mid-task anti-grid amendment as properly recorded and in scope: schema tests prove visual-neighbor-without-route, visually-distant explicit route, geometry perturbation without path change, and stable tie-break behavior."
+    },
+    {
+      "id": "M2_COMPAT_PROJECTION_ALLOWED_WITH_RISK",
+      "decision": "Allow definitions.routes/M2 transport compatibility as a projection during topology introduction because topology-backed previews delegate to previewMapTopologyPathV1 before projecting to the legacy M2 read shape; old no-topology worlds retain legacy behavior only outside the new authoritative topology path."
+    },
+    {
+      "id": "CONTENT_LOCK_REMAINS_BLOCKED",
+      "decision": "This ACCEPT does not approve M7 content lock or M7 exit; downstream fixture, client, and validation tasks must still complete and the product owner must explicitly reconsider content lock."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FIXTURE_AND_CLIENT_STILL_PENDING",
+      "severity": "carried-risk",
+      "summary": "The default player-facing content and client renderer are intentionally not migrated in this schema task; the product-facing map may still present old fixture/client behavior until M7-MAP-TOPOLOGY-FIXTURE-001 and M7-MAP-TOPOLOGY-CLIENT-001 land.",
+      "mitigation": "Downstream task acceptance criteria now require irregular COMPOSITE fixture topology, anti-grid/lattice proof, topology read-model driven rendering, and screenshot/component evidence."
+    },
+    {
+      "id": "CONTENT_COMPILER_GEOMETRY_VALIDATION_PENDING",
+      "severity": "carried-risk",
+      "summary": "sim-core schema validation checks topology references, duplicate ids/source ids, seasonality, hash, and polygon point count, but zero-area/self-intersection polygon rejection and route-node-inside-polygon enforcement are deferred to fixture/content validation work.",
+      "mitigation": "M7-MAP-TOPOLOGY-FIXTURE-001 and M7-MAP-TOPOLOGY-VALIDATION-001 now explicitly require negative content-compiler tests for invalid polygons, route nodes outside polygons, disconnected graphs, and grid/hex/lattice leakage."
+    },
+    {
+      "id": "DEFINITIONS_ROUTES_COMPAT_BRIDGE",
+      "severity": "carried-risk",
+      "summary": "definitions.routes still exists as a compatibility projection/migration bridge and M2 preview still supports legacy no-topology worlds.",
+      "mitigation": "Topology-backed worlds delegate M2 preview to topology.routeEdges first; QA should keep this risk visible until fixture/client/migration tasks remove player-facing dependence on legacy routes."
+    },
+    {
+      "id": "FORMAL_CONTENT_LOCK_NOT_APPROVED",
+      "severity": "process",
+      "summary": "M7 content lock remains blocked with content_lock_accepted=false; this schema ACCEPT is not product-owner approval.",
+      "mitigation": "Do not start M7-EXIT-VALIDATION-001 until the full topology recovery chain validates in origin/main and the product owner reconsiders content lock."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator should integrate the accepted schema review through the normal PR/CI/main flow, keep the carried fixture/client/content-validation risks on the downstream topology tasks, and not reopen M7 content lock or M7 exit until the full topology recovery chain is accepted.",
+  "created_at": "2026-06-30T23:59:18+08:00"
+}

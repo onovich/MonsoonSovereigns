@@ -33,6 +33,7 @@ export type GameDay = Brand<number, "GameDay">;
 export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
 export type ContentManifestHash = Brand<string, "ContentManifestHash">;
+export type MapTopologyHash = Brand<string, "MapTopologyHash">;
 
 export const WORLD_STATE_V0_SCHEMA_VERSION = 0;
 export const GAME_DAY_SCHEDULER_VERSION = 1;
@@ -66,12 +67,100 @@ export interface RouteDefinition {
   readonly lengthInMapUnits: number;
 }
 
+export type MapTopologyRouteModeV1 = "coast" | "river" | "road";
+export type MapTopologyTerrainClassV1 =
+  | "coastal"
+  | "lowland"
+  | "pass"
+  | "riverine"
+  | "upland"
+  | "urban"
+  | "unknown";
+export type MapTopologyRiskClassV1 = "contested" | "hazardous" | "low" | "seasonal" | "unknown";
+export type MapTopologyHistoricityTagV1 = "COMPOSITE" | "FICTIONAL" | "HISTORICAL" | "INFERRED";
+export type MapTopologyRouteNodeKindV1 = "pass" | "port" | "special" | "warehouse";
+
+export interface MapTopologyPointV1 {
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface MapTopologyDistrictMetadataV1 {
+  readonly historicity: MapTopologyHistoricityTagV1;
+  readonly terrainClass: MapTopologyTerrainClassV1;
+  readonly riskClass: MapTopologyRiskClassV1;
+}
+
+export interface MapTopologyDistrictDefinitionV1 {
+  readonly districtId: DistrictId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly anchor: MapTopologyPointV1;
+  readonly polygon: readonly MapTopologyPointV1[];
+  readonly metadata: MapTopologyDistrictMetadataV1;
+}
+
+export interface MapTopologyRouteNodeDefinitionV1 {
+  readonly nodeId: string;
+  readonly nodeKind: MapTopologyRouteNodeKindV1;
+  readonly districtId: DistrictId;
+  readonly displayNameKey: string;
+  readonly anchor: MapTopologyPointV1;
+}
+
+export type MapTopologyRouteEndpointV1 =
+  | { readonly kind: "district"; readonly districtId: DistrictId }
+  | { readonly kind: "route-node"; readonly nodeId: string }
+  | { readonly kind: "settlement"; readonly settlementId: SettlementId };
+
+export interface MapTopologySeasonalModifierV1 {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export type MapTopologyRouteAvailabilityV1 =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
+
+export interface MapTopologyRouteEdgeMetadataV1 {
+  readonly historicity: MapTopologyHistoricityTagV1;
+  readonly terrainClass: MapTopologyTerrainClassV1;
+  readonly riskClass: MapTopologyRiskClassV1;
+}
+
+export interface MapTopologyRouteEdgeDefinitionV1 {
+  readonly routeId: RouteId;
+  readonly sourceId: string;
+  readonly from: MapTopologyRouteEndpointV1;
+  readonly to: MapTopologyRouteEndpointV1;
+  readonly mode: MapTopologyRouteModeV1;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly seasonality: readonly MapTopologySeasonalModifierV1[];
+  readonly availability: MapTopologyRouteAvailabilityV1;
+  readonly metadata: MapTopologyRouteEdgeMetadataV1;
+}
+
+export interface MapTopologyDefinitionV1 {
+  readonly schemaVersion: 1;
+  readonly hashAlgorithm: "fnv1a32-canonical-map-topology-v1";
+  readonly topologyHash: MapTopologyHash;
+  readonly contentManifestHash: ContentManifestHash;
+  readonly districts: readonly MapTopologyDistrictDefinitionV1[];
+  readonly routeNodes: readonly MapTopologyRouteNodeDefinitionV1[];
+  readonly routeEdges: readonly MapTopologyRouteEdgeDefinitionV1[];
+}
+
 export interface WorldDefinitionsV0 {
   readonly polities: readonly PolityDefinition[];
   readonly persons: readonly PersonDefinition[];
   readonly districts: readonly DistrictDefinition[];
   readonly settlements: readonly SettlementDefinition[];
   readonly routes: readonly RouteDefinition[];
+  readonly topology?: MapTopologyDefinitionV1;
 }
 
 export interface PolityState {
@@ -1202,6 +1291,37 @@ export interface DefineRouteInput {
   readonly lengthInMapUnits: unknown;
 }
 
+export interface CreateMapTopologyDefinitionV1Input {
+  readonly contentManifestHash: unknown;
+  readonly districts: readonly {
+    readonly districtId: unknown;
+    readonly sourceId: unknown;
+    readonly displayNameKey: unknown;
+    readonly anchor: unknown;
+    readonly polygon: readonly unknown[];
+    readonly metadata: unknown;
+  }[];
+  readonly routeNodes?: readonly {
+    readonly nodeId: unknown;
+    readonly nodeKind: unknown;
+    readonly districtId: unknown;
+    readonly displayNameKey: unknown;
+    readonly anchor: unknown;
+  }[];
+  readonly routeEdges: readonly {
+    readonly routeId: unknown;
+    readonly sourceId: unknown;
+    readonly from: unknown;
+    readonly to: unknown;
+    readonly mode: unknown;
+    readonly baseTravelCost: unknown;
+    readonly baseCapacity: unknown;
+    readonly seasonality: readonly unknown[];
+    readonly availability: unknown;
+    readonly metadata: unknown;
+  }[];
+}
+
 export interface CreateM2TransportStateV0Input {
   readonly routes: readonly {
     readonly routeId: unknown;
@@ -1380,6 +1500,14 @@ export function parseContentManifestHash(value: unknown): ContentManifestHash {
   return value as ContentManifestHash;
 }
 
+export function parseMapTopologyHash(value: unknown): MapTopologyHash {
+  if (typeof value !== "string" || !/^[0-9a-f]{8}$/u.test(value)) {
+    throw new Error("MapTopologyHash must be an 8-character lowercase hex string.");
+  }
+
+  return value as MapTopologyHash;
+}
+
 export function definePolity(input: DefinePolityInput): PolityDefinition {
   return {
     id: parsePolityId(input.id),
@@ -1418,6 +1546,57 @@ export function defineRoute(input: DefineRouteInput): RouteDefinition {
     fromDistrictId: parseDistrictId(input.fromDistrictId),
     toDistrictId: parseDistrictId(input.toDistrictId),
     lengthInMapUnits: parsePositiveInteger(input.lengthInMapUnits, "Route lengthInMapUnits")
+  };
+}
+
+export function createMapTopologyDefinitionV1(
+  input: CreateMapTopologyDefinitionV1Input
+): MapTopologyDefinitionV1 {
+  const topologyWithoutHash = canonicalizeMapTopologyDefinitionV1({
+    schemaVersion: 1,
+    hashAlgorithm: "fnv1a32-canonical-map-topology-v1",
+    topologyHash: parseMapTopologyHash("00000000"),
+    contentManifestHash: parseContentManifestHash(input.contentManifestHash),
+    districts: input.districts.map((district) => ({
+      districtId: parseDistrictId(district.districtId),
+      sourceId: parseNonEmptyString(district.sourceId, "MapTopology district sourceId"),
+      displayNameKey: parseDisplayNameKey(
+        district.displayNameKey,
+        "MapTopology district displayNameKey"
+      ),
+      anchor: parseMapTopologyPoint(district.anchor, "MapTopology district anchor"),
+      polygon: district.polygon.map((point) =>
+        parseMapTopologyPoint(point, "MapTopology district polygon point")
+      ),
+      metadata: parseMapTopologyDistrictMetadata(district.metadata)
+    })),
+    routeNodes: (input.routeNodes ?? []).map((node) => ({
+      nodeId: parseMapTopologyNodeId(node.nodeId, "MapTopology route node nodeId"),
+      nodeKind: parseMapTopologyRouteNodeKind(node.nodeKind),
+      districtId: parseDistrictId(node.districtId),
+      displayNameKey: parseDisplayNameKey(
+        node.displayNameKey,
+        "MapTopology route node displayNameKey"
+      ),
+      anchor: parseMapTopologyPoint(node.anchor, "MapTopology route node anchor")
+    })),
+    routeEdges: input.routeEdges.map((edge) => ({
+      routeId: parseRouteId(edge.routeId),
+      sourceId: parseNonEmptyString(edge.sourceId, "MapTopology route edge sourceId"),
+      from: parseMapTopologyRouteEndpoint(edge.from),
+      to: parseMapTopologyRouteEndpoint(edge.to),
+      mode: parseMapTopologyRouteMode(edge.mode),
+      baseTravelCost: parsePositiveInteger(edge.baseTravelCost, "MapTopology baseTravelCost"),
+      baseCapacity: parsePositiveInteger(edge.baseCapacity, "MapTopology baseCapacity"),
+      seasonality: edge.seasonality.map(parseMapTopologySeasonalModifier),
+      availability: parseMapTopologyRouteAvailability(edge.availability),
+      metadata: parseMapTopologyRouteEdgeMetadata(edge.metadata)
+    }))
+  });
+
+  return {
+    ...topologyWithoutHash,
+    topologyHash: hashMapTopologyDefinitionV1(topologyWithoutHash)
   };
 }
 
@@ -1530,6 +1709,44 @@ export function createM2RouteTransportStateV0(
     });
   }
 
+  if (definitions.topology !== undefined) {
+    return canonicalizeM2TransportState({
+      schemaVersion: 1,
+      routes: definitions.topology.routeEdges.map((route) => {
+        const fromDistrictId = mapTopologyEndpointDistrictId(definitions, route.from);
+        const toDistrictId = mapTopologyEndpointDistrictId(definitions, route.to);
+
+        return {
+          routeId: route.routeId,
+          fromDistrictId,
+          toDistrictId,
+          routeKind: route.mode,
+          baseTravelCost: route.baseTravelCost,
+          baseCapacity: route.baseCapacity
+        };
+      }),
+      districtSeasonality: definitions.districts.map((district) => ({
+        districtId: district.id,
+        regionalCurveId: parseRegionalSeasonalCurveId(1)
+      })),
+      regionalCurves:
+        definitions.districts.length === 0
+          ? []
+          : [
+              {
+                id: parseRegionalSeasonalCurveId(1),
+                monthlyValues: Array.from({ length: 12 }, (_unused, index) => ({
+                  month: index + 1,
+                  monsoonIntensityBps: 0,
+                  agricultureWorkBps: 10_000,
+                  riverNavigabilityBps: 10_000,
+                  roadTravelCostBps: 10_000
+                }))
+              }
+            ]
+    });
+  }
+
   const neutralCurveId = parseRegionalSeasonalCurveId(1);
   const neutralMonths = Array.from({ length: 12 }, (_unused, index) => ({
     month: index + 1,
@@ -1633,6 +1850,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     `definitions.districts=${formatDistrictDefinitions(world.definitions.districts)}`,
     `definitions.settlements=${formatSettlementDefinitions(world.definitions.settlements)}`,
     `definitions.routes=${formatRouteDefinitions(world.definitions.routes)}`,
+    ...formatMapTopologyCanonicalLines(world.definitions.topology),
     `state.polities=${formatPolityStates(world.state.polities)}`,
     `state.persons=${formatPersonStates(world.state.persons)}`,
     `state.districts=${formatDistrictStates(world.state.districts)}`,
@@ -1864,6 +2082,342 @@ function validateDefinitionEntryShapes(
       errors
     );
   });
+
+  if (definitions.topology !== undefined) {
+    validateMapTopologyEntryShapes(definitions.topology, errors);
+  }
+}
+
+const MAP_TOPOLOGY_ROUTE_MODES: readonly MapTopologyRouteModeV1[] = ["coast", "river", "road"];
+const MAP_TOPOLOGY_TERRAIN_CLASSES: readonly MapTopologyTerrainClassV1[] = [
+  "coastal",
+  "lowland",
+  "pass",
+  "riverine",
+  "upland",
+  "urban",
+  "unknown"
+];
+const MAP_TOPOLOGY_RISK_CLASSES: readonly MapTopologyRiskClassV1[] = [
+  "contested",
+  "hazardous",
+  "low",
+  "seasonal",
+  "unknown"
+];
+const MAP_TOPOLOGY_HISTORICITY_TAGS: readonly MapTopologyHistoricityTagV1[] = [
+  "COMPOSITE",
+  "FICTIONAL",
+  "HISTORICAL",
+  "INFERRED"
+];
+const MAP_TOPOLOGY_ROUTE_NODE_KINDS: readonly MapTopologyRouteNodeKindV1[] = [
+  "pass",
+  "port",
+  "special",
+  "warehouse"
+];
+
+function validateMapTopologyEntryShapes(topology: unknown, errors: WorldInvariantError[]): void {
+  if (!validateRecordEntry(topology, "definitions.topology", "MapTopologyDefinitionV1", errors)) {
+    return;
+  }
+
+  if (topology["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.topology.schemaVersion",
+      message: "MapTopologyDefinition schemaVersion must be 1."
+    });
+  }
+  if (topology["hashAlgorithm"] !== "fnv1a32-canonical-map-topology-v1") {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.topology.hashAlgorithm",
+      message: "MapTopologyDefinition hashAlgorithm must be fnv1a32-canonical-map-topology-v1."
+    });
+  }
+  validateMapTopologyHashField(
+    topology,
+    "topologyHash",
+    "definitions.topology.topologyHash",
+    errors
+  );
+  validateNonEmptyStringField(
+    topology,
+    "contentManifestHash",
+    "definitions.topology.contentManifestHash",
+    errors
+  );
+  validateMapTopologyArray(
+    topology["districts"],
+    "definitions.topology.districts",
+    errors,
+    (entry, path) => validateMapTopologyDistrictEntry(entry, path, errors)
+  );
+  validateMapTopologyArray(
+    topology["routeNodes"],
+    "definitions.topology.routeNodes",
+    errors,
+    (entry, path) => validateMapTopologyRouteNodeEntry(entry, path, errors)
+  );
+  validateMapTopologyArray(
+    topology["routeEdges"],
+    "definitions.topology.routeEdges",
+    errors,
+    (entry, path) => validateMapTopologyRouteEdgeEntry(entry, path, errors)
+  );
+}
+
+function validateMapTopologyArray(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[],
+  validateEntry: (entry: unknown, path: string) => void
+): void {
+  if (!Array.isArray(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: `${path} must be an array.`
+    });
+    return;
+  }
+  input.forEach((entry, index) => validateEntry(entry, `${path}[${index}]`));
+}
+
+function validateMapTopologyDistrictEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyDistrictDefinition", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateDisplayNameKeyField(
+    input,
+    `${path}.displayNameKey`,
+    "MapTopologyDistrictDefinition",
+    errors
+  );
+  validateMapTopologyPointEntry(input["anchor"], `${path}.anchor`, errors);
+  validateMapTopologyArray(input["polygon"], `${path}.polygon`, errors, (entry, entryPath) =>
+    validateMapTopologyPointEntry(entry, entryPath, errors)
+  );
+  validateMapTopologyDistrictMetadataEntry(input["metadata"], `${path}.metadata`, errors);
+}
+
+function validateMapTopologyRouteNodeEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyRouteNodeDefinition", errors)) {
+    return;
+  }
+  validateNonEmptyStringField(input, "nodeId", `${path}.nodeId`, errors);
+  validateStringUnionField(
+    input,
+    "nodeKind",
+    `${path}.nodeKind`,
+    MAP_TOPOLOGY_ROUTE_NODE_KINDS,
+    errors
+  );
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validateDisplayNameKeyField(
+    input,
+    `${path}.displayNameKey`,
+    "MapTopologyRouteNodeDefinition",
+    errors
+  );
+  validateMapTopologyPointEntry(input["anchor"], `${path}.anchor`, errors);
+}
+
+function validateMapTopologyRouteEdgeEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyRouteEdgeDefinition", errors)) {
+    return;
+  }
+  validatePositiveIntegerField(input, "routeId", `${path}.routeId`, "RouteId", errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateMapTopologyRouteEndpointEntry(input["from"], `${path}.from`, errors);
+  validateMapTopologyRouteEndpointEntry(input["to"], `${path}.to`, errors);
+  validateStringUnionField(input, "mode", `${path}.mode`, MAP_TOPOLOGY_ROUTE_MODES, errors);
+  validatePositiveIntegerField(
+    input,
+    "baseTravelCost",
+    `${path}.baseTravelCost`,
+    "baseTravelCost",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "baseCapacity",
+    `${path}.baseCapacity`,
+    "baseCapacity",
+    errors
+  );
+  validateMapTopologyArray(
+    input["seasonality"],
+    `${path}.seasonality`,
+    errors,
+    (entry, entryPath) => validateMapTopologySeasonalModifierEntry(entry, entryPath, errors)
+  );
+  validateMapTopologyRouteAvailabilityEntry(input["availability"], `${path}.availability`, errors);
+  validateMapTopologyRouteEdgeMetadataEntry(input["metadata"], `${path}.metadata`, errors);
+}
+
+function validateMapTopologyPointEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyPoint", errors)) {
+    return;
+  }
+  validateSafeIntegerField(input, "x", `${path}.x`, errors);
+  validateSafeIntegerField(input, "y", `${path}.y`, errors);
+}
+
+function validateMapTopologyDistrictMetadataEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyDistrictMetadata", errors)) {
+    return;
+  }
+  validateStringUnionField(
+    input,
+    "historicity",
+    `${path}.historicity`,
+    MAP_TOPOLOGY_HISTORICITY_TAGS,
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "terrainClass",
+    `${path}.terrainClass`,
+    MAP_TOPOLOGY_TERRAIN_CLASSES,
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "riskClass",
+    `${path}.riskClass`,
+    MAP_TOPOLOGY_RISK_CLASSES,
+    errors
+  );
+}
+
+function validateMapTopologyRouteEdgeMetadataEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyRouteEdgeMetadata", errors)) {
+    return;
+  }
+  validateStringUnionField(
+    input,
+    "historicity",
+    `${path}.historicity`,
+    MAP_TOPOLOGY_HISTORICITY_TAGS,
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "terrainClass",
+    `${path}.terrainClass`,
+    MAP_TOPOLOGY_TERRAIN_CLASSES,
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "riskClass",
+    `${path}.riskClass`,
+    MAP_TOPOLOGY_RISK_CLASSES,
+    errors
+  );
+}
+
+function validateMapTopologyRouteEndpointEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyRouteEndpoint", errors)) {
+    return;
+  }
+  validateStringUnionField(
+    input,
+    "kind",
+    `${path}.kind`,
+    ["district", "route-node", "settlement"],
+    errors
+  );
+  if (input["kind"] === "district") {
+    validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  }
+  if (input["kind"] === "route-node") {
+    validateNonEmptyStringField(input, "nodeId", `${path}.nodeId`, errors);
+  }
+  if (input["kind"] === "settlement") {
+    validatePositiveIntegerField(
+      input,
+      "settlementId",
+      `${path}.settlementId`,
+      "SettlementId",
+      errors
+    );
+  }
+}
+
+function validateMapTopologySeasonalModifierEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologySeasonalModifier", errors)) {
+    return;
+  }
+  validateIntegerFieldInRange(input, "month", `${path}.month`, 1, 12, errors);
+  validateIntegerFieldInRange(
+    input,
+    "costMultiplierBps",
+    `${path}.costMultiplierBps`,
+    1,
+    30_000,
+    errors
+  );
+  validateIntegerFieldInRange(
+    input,
+    "capacityMultiplierBps",
+    `${path}.capacityMultiplierBps`,
+    0,
+    30_000,
+    errors
+  );
+  validateStringArray(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateMapTopologyRouteAvailabilityEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "MapTopologyRouteAvailability", errors)) {
+    return;
+  }
+  validateStringUnionField(input, "kind", `${path}.kind`, ["blocked", "open", "unknown"], errors);
+  if (input["kind"] === "blocked" || input["kind"] === "unknown") {
+    validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  }
 }
 
 function validateSimpleDefinitionEntries(
@@ -5501,6 +6055,65 @@ function validateNonEmptyStringField(
   });
 }
 
+function validateMapTopologyHashField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (typeof value === "string" && /^[0-9a-f]{8}$/u.test(value)) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be an 8-character lowercase hex string.`
+  });
+}
+
+function validateSafeIntegerField(
+  entry: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  const value = entry[key];
+  if (typeof value === "number" && Number.isSafeInteger(value)) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be a safe integer.`
+  });
+}
+
+function validateStringArray(input: unknown, path: string, errors: WorldInvariantError[]): void {
+  if (!Array.isArray(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: `${path} must be an array.`
+    });
+    return;
+  }
+
+  input.forEach((value, index) => {
+    if (typeof value === "string" && value.length > 0) {
+      return;
+    }
+
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}[${index}]`,
+      message: `${path}[${index}] must be a non-empty string.`
+    });
+  });
+}
+
 function validateNullableStringField(
   entry: Record<string, unknown>,
   key: string,
@@ -5741,8 +6354,69 @@ function canonicalizeDefinitions(definitions: WorldDefinitionsV0): WorldDefiniti
     persons: sortByNumericId(definitions.persons),
     districts: sortByNumericId(definitions.districts),
     settlements: sortByNumericId(definitions.settlements),
-    routes: sortByNumericId(definitions.routes)
+    routes: sortByNumericId(definitions.routes),
+    ...(definitions.topology === undefined
+      ? {}
+      : { topology: canonicalizeMapTopologyDefinitionV1(definitions.topology) })
   };
+}
+
+export function canonicalizeMapTopologyDefinitionV1(
+  topology: MapTopologyDefinitionV1
+): MapTopologyDefinitionV1 {
+  return {
+    schemaVersion: 1,
+    hashAlgorithm: "fnv1a32-canonical-map-topology-v1",
+    topologyHash: topology.topologyHash,
+    contentManifestHash: topology.contentManifestHash,
+    districts: sortMapTopologyDistrictDefinitions(topology.districts).map((district) => ({
+      districtId: district.districtId,
+      sourceId: district.sourceId,
+      displayNameKey: district.displayNameKey,
+      anchor: copyMapTopologyPoint(district.anchor),
+      polygon: district.polygon.map(copyMapTopologyPoint),
+      metadata: {
+        historicity: district.metadata.historicity,
+        terrainClass: district.metadata.terrainClass,
+        riskClass: district.metadata.riskClass
+      }
+    })),
+    routeNodes: sortMapTopologyRouteNodeDefinitions(topology.routeNodes).map((node) => ({
+      nodeId: node.nodeId,
+      nodeKind: node.nodeKind,
+      districtId: node.districtId,
+      displayNameKey: node.displayNameKey,
+      anchor: copyMapTopologyPoint(node.anchor)
+    })),
+    routeEdges: sortMapTopologyRouteEdgeDefinitions(topology.routeEdges).map((edge) => ({
+      routeId: edge.routeId,
+      sourceId: edge.sourceId,
+      from: copyMapTopologyRouteEndpoint(edge.from),
+      to: copyMapTopologyRouteEndpoint(edge.to),
+      mode: edge.mode,
+      baseTravelCost: edge.baseTravelCost,
+      baseCapacity: edge.baseCapacity,
+      seasonality: sortMapTopologySeasonalModifiers(edge.seasonality).map((season) => ({
+        month: season.month,
+        costMultiplierBps: season.costMultiplierBps,
+        capacityMultiplierBps: season.capacityMultiplierBps,
+        reasonCodes: sortText(season.reasonCodes)
+      })),
+      availability: copyMapTopologyRouteAvailability(edge.availability),
+      metadata: {
+        historicity: edge.metadata.historicity,
+        terrainClass: edge.metadata.terrainClass,
+        riskClass: edge.metadata.riskClass
+      }
+    }))
+  };
+}
+
+export function hashMapTopologyDefinitionV1(topology: MapTopologyDefinitionV1): MapTopologyHash {
+  const canonicalTopology = canonicalizeMapTopologyDefinitionV1(topology);
+  return parseMapTopologyHash(
+    toFixedHexHash(hashText(formatMapTopologyDefinitionForHash(canonicalTopology)))
+  );
 }
 
 export function canonicalizeM2EconomyPopulationState(
@@ -6713,6 +7387,204 @@ function parseM2RouteKind(value: unknown): M2RouteKindV0 {
   throw new Error("M2 routeKind must be coast, river, or road.");
 }
 
+function parseNonEmptyString(value: unknown, label: string): string {
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`${label} must be a non-empty string.`);
+  }
+
+  return value;
+}
+
+function parseMapTopologyPoint(value: unknown, label: string): MapTopologyPointV1 {
+  if (!isRecord(value)) {
+    throw new Error(`${label} must be an object.`);
+  }
+
+  return {
+    x: parseIntegerInRange(
+      value["x"],
+      `${label}.x`,
+      Number.MIN_SAFE_INTEGER,
+      Number.MAX_SAFE_INTEGER
+    ),
+    y: parseIntegerInRange(
+      value["y"],
+      `${label}.y`,
+      Number.MIN_SAFE_INTEGER,
+      Number.MAX_SAFE_INTEGER
+    )
+  };
+}
+
+function parseMapTopologyDistrictMetadata(value: unknown): MapTopologyDistrictMetadataV1 {
+  if (!isRecord(value)) {
+    throw new Error("MapTopology district metadata must be an object.");
+  }
+
+  return {
+    historicity: parseMapTopologyHistoricityTag(value["historicity"]),
+    terrainClass: parseMapTopologyTerrainClass(value["terrainClass"]),
+    riskClass: parseMapTopologyRiskClass(value["riskClass"])
+  };
+}
+
+function parseMapTopologyRouteEdgeMetadata(value: unknown): MapTopologyRouteEdgeMetadataV1 {
+  if (!isRecord(value)) {
+    throw new Error("MapTopology route edge metadata must be an object.");
+  }
+
+  return {
+    historicity: parseMapTopologyHistoricityTag(value["historicity"]),
+    terrainClass: parseMapTopologyTerrainClass(value["terrainClass"]),
+    riskClass: parseMapTopologyRiskClass(value["riskClass"])
+  };
+}
+
+function parseMapTopologyNodeId(value: unknown, label: string): string {
+  return parseNonEmptyString(value, label);
+}
+
+function parseMapTopologyRouteNodeKind(value: unknown): MapTopologyRouteNodeKindV1 {
+  if (value === "pass" || value === "port" || value === "special" || value === "warehouse") {
+    return value;
+  }
+
+  throw new Error("MapTopology route node kind is invalid.");
+}
+
+function parseMapTopologyRouteMode(value: unknown): MapTopologyRouteModeV1 {
+  if (value === "coast" || value === "river" || value === "road") {
+    return value;
+  }
+
+  throw new Error("MapTopology route mode must be coast, river, or road.");
+}
+
+function parseMapTopologyTerrainClass(value: unknown): MapTopologyTerrainClassV1 {
+  if (
+    value === "coastal" ||
+    value === "lowland" ||
+    value === "pass" ||
+    value === "riverine" ||
+    value === "upland" ||
+    value === "urban" ||
+    value === "unknown"
+  ) {
+    return value;
+  }
+
+  throw new Error("MapTopology terrainClass is invalid.");
+}
+
+function parseMapTopologyRiskClass(value: unknown): MapTopologyRiskClassV1 {
+  if (
+    value === "contested" ||
+    value === "hazardous" ||
+    value === "low" ||
+    value === "seasonal" ||
+    value === "unknown"
+  ) {
+    return value;
+  }
+
+  throw new Error("MapTopology riskClass is invalid.");
+}
+
+function parseMapTopologyHistoricityTag(value: unknown): MapTopologyHistoricityTagV1 {
+  if (
+    value === "COMPOSITE" ||
+    value === "FICTIONAL" ||
+    value === "HISTORICAL" ||
+    value === "INFERRED"
+  ) {
+    return value;
+  }
+
+  throw new Error("MapTopology historicity tag is invalid.");
+}
+
+function parseMapTopologyRouteEndpoint(value: unknown): MapTopologyRouteEndpointV1 {
+  if (!isRecord(value)) {
+    throw new Error("MapTopology route endpoint must be an object.");
+  }
+
+  const kind = value["kind"];
+  if (kind === "district") {
+    return {
+      kind,
+      districtId: parseDistrictId(value["districtId"])
+    };
+  }
+  if (kind === "route-node") {
+    return {
+      kind,
+      nodeId: parseMapTopologyNodeId(value["nodeId"], "MapTopology route endpoint nodeId")
+    };
+  }
+  if (kind === "settlement") {
+    return {
+      kind,
+      settlementId: parseSettlementId(value["settlementId"])
+    };
+  }
+
+  throw new Error("MapTopology route endpoint kind is invalid.");
+}
+
+function parseMapTopologySeasonalModifier(value: unknown): MapTopologySeasonalModifierV1 {
+  if (!isRecord(value)) {
+    throw new Error("MapTopology seasonal modifier must be an object.");
+  }
+
+  const reasonCodes = value["reasonCodes"];
+  if (!Array.isArray(reasonCodes)) {
+    throw new Error("MapTopology seasonal modifier reasonCodes must be an array.");
+  }
+
+  return {
+    month: parseIntegerInRange(value["month"], "MapTopology seasonal modifier month", 1, 12),
+    costMultiplierBps: parseIntegerInRange(
+      value["costMultiplierBps"],
+      "MapTopology seasonal modifier costMultiplierBps",
+      1,
+      30_000
+    ),
+    capacityMultiplierBps: parseIntegerInRange(
+      value["capacityMultiplierBps"],
+      "MapTopology seasonal modifier capacityMultiplierBps",
+      0,
+      30_000
+    ),
+    reasonCodes: reasonCodes.map((reasonCode) =>
+      parseNonEmptyString(reasonCode, "MapTopology seasonal modifier reasonCode")
+    )
+  };
+}
+
+function parseMapTopologyRouteAvailability(value: unknown): MapTopologyRouteAvailabilityV1 {
+  if (!isRecord(value)) {
+    throw new Error("MapTopology route availability must be an object.");
+  }
+
+  if (value["kind"] === "open") {
+    return { kind: "open" };
+  }
+  if (value["kind"] === "blocked") {
+    return {
+      kind: "blocked",
+      reasonCode: parseNonEmptyString(value["reasonCode"], "MapTopology blocked route reasonCode")
+    };
+  }
+  if (value["kind"] === "unknown") {
+    return {
+      kind: "unknown",
+      reasonCode: parseNonEmptyString(value["reasonCode"], "MapTopology unknown route reasonCode")
+    };
+  }
+
+  throw new Error("MapTopology route availability kind is invalid.");
+}
+
 const M3_ADMINISTRATIVE_CONTROL_MODES: readonly M3AdministrativeControlModeV0[] = [
   "direct",
   "vassal",
@@ -7235,6 +8107,94 @@ function sortByNumericId<TValue extends { readonly id: number }>(
     .map((value, index) => ({ value, index }))
     .sort((left, right) => left.value.id - right.value.id || left.index - right.index)
     .map((entry) => entry.value);
+}
+
+function sortMapTopologyDistrictDefinitions(
+  values: readonly MapTopologyDistrictDefinitionV1[]
+): readonly MapTopologyDistrictDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      left.districtId - right.districtId ||
+      compareText(left.sourceId, right.sourceId) ||
+      compareText(left.displayNameKey, right.displayNameKey)
+  );
+}
+
+function sortMapTopologyRouteNodeDefinitions(
+  values: readonly MapTopologyRouteNodeDefinitionV1[]
+): readonly MapTopologyRouteNodeDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      compareText(left.nodeId, right.nodeId) ||
+      left.districtId - right.districtId ||
+      compareText(left.displayNameKey, right.displayNameKey)
+  );
+}
+
+function sortMapTopologyRouteEdgeDefinitions(
+  values: readonly MapTopologyRouteEdgeDefinitionV1[]
+): readonly MapTopologyRouteEdgeDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      left.routeId - right.routeId ||
+      compareText(left.sourceId, right.sourceId) ||
+      compareText(formatMapTopologyEndpoint(left.from), formatMapTopologyEndpoint(right.from)) ||
+      compareText(formatMapTopologyEndpoint(left.to), formatMapTopologyEndpoint(right.to))
+  );
+}
+
+function sortMapTopologySeasonalModifiers(
+  values: readonly MapTopologySeasonalModifierV1[]
+): readonly MapTopologySeasonalModifierV1[] {
+  return [...values].sort((left, right) => left.month - right.month);
+}
+
+function copyMapTopologyPoint(point: MapTopologyPointV1): MapTopologyPointV1 {
+  return {
+    x: point.x,
+    y: point.y
+  };
+}
+
+function copyMapTopologyRouteEndpoint(
+  endpoint: MapTopologyRouteEndpointV1
+): MapTopologyRouteEndpointV1 {
+  switch (endpoint.kind) {
+    case "district":
+      return {
+        kind: "district",
+        districtId: endpoint.districtId
+      };
+    case "route-node":
+      return {
+        kind: "route-node",
+        nodeId: endpoint.nodeId
+      };
+    case "settlement":
+      return {
+        kind: "settlement",
+        settlementId: endpoint.settlementId
+      };
+  }
+}
+
+function copyMapTopologyRouteAvailability(
+  availability: MapTopologyRouteAvailabilityV1
+): MapTopologyRouteAvailabilityV1 {
+  switch (availability.kind) {
+    case "open":
+      return { kind: "open" };
+    case "blocked":
+      return {
+        kind: "blocked",
+        reasonCode: availability.reasonCode
+      };
+    case "unknown":
+      return {
+        kind: "unknown",
+        reasonCode: availability.reasonCode
+      };
+  }
 }
 
 function sortByDefinitionId<TValue extends { readonly definitionId: number }>(
@@ -9174,6 +10134,117 @@ function formatM2SeasonalMonths(values: readonly M2SeasonalMonthStateV0[]): stri
     .join("+");
 }
 
+function formatMapTopologyDefinition(topology: MapTopologyDefinitionV1 | undefined): string {
+  if (topology === undefined) {
+    return "none";
+  }
+
+  const canonicalTopology = canonicalizeMapTopologyDefinitionV1(topology);
+  return `hash=${canonicalTopology.topologyHash};${formatMapTopologyDefinitionForHash(
+    canonicalTopology
+  )}`;
+}
+
+function formatMapTopologyCanonicalLines(
+  topology: MapTopologyDefinitionV1 | undefined
+): readonly string[] {
+  if (topology === undefined) {
+    return [];
+  }
+
+  return [`definitions.topology=${formatMapTopologyDefinition(topology)}`];
+}
+
+function formatMapTopologyDefinitionForHash(topology: MapTopologyDefinitionV1): string {
+  const canonicalTopology = canonicalizeMapTopologyDefinitionV1(topology);
+  return [
+    "map-topology-v1",
+    `schemaVersion=${canonicalTopology.schemaVersion}`,
+    `hashAlgorithm=${canonicalTopology.hashAlgorithm}`,
+    `contentManifestHash=${canonicalTopology.contentManifestHash}`,
+    `districts=${canonicalTopology.districts.map(formatMapTopologyDistrict).join(",")}`,
+    `routeNodes=${canonicalTopology.routeNodes.map(formatMapTopologyRouteNode).join(",")}`,
+    `routeEdges=${canonicalTopology.routeEdges.map(formatMapTopologyRouteEdge).join(",")}`
+  ].join("|");
+}
+
+function formatMapTopologyDistrict(district: MapTopologyDistrictDefinitionV1): string {
+  return [
+    district.districtId,
+    district.sourceId,
+    district.displayNameKey,
+    formatMapTopologyPoint(district.anchor),
+    district.polygon.map(formatMapTopologyPoint).join("+"),
+    formatMapTopologyMetadata(district.metadata)
+  ].join(":");
+}
+
+function formatMapTopologyRouteNode(node: MapTopologyRouteNodeDefinitionV1): string {
+  return [
+    node.nodeId,
+    node.nodeKind,
+    node.districtId,
+    node.displayNameKey,
+    formatMapTopologyPoint(node.anchor)
+  ].join(":");
+}
+
+function formatMapTopologyRouteEdge(edge: MapTopologyRouteEdgeDefinitionV1): string {
+  return [
+    edge.routeId,
+    edge.sourceId,
+    formatMapTopologyEndpoint(edge.from),
+    formatMapTopologyEndpoint(edge.to),
+    edge.mode,
+    edge.baseTravelCost,
+    edge.baseCapacity,
+    edge.seasonality.map(formatMapTopologySeasonalModifier).join("+"),
+    formatMapTopologyAvailability(edge.availability),
+    formatMapTopologyMetadata(edge.metadata)
+  ].join(":");
+}
+
+function formatMapTopologyPoint(point: MapTopologyPointV1): string {
+  return `${point.x}.${point.y}`;
+}
+
+function formatMapTopologyMetadata(
+  metadata: MapTopologyDistrictMetadataV1 | MapTopologyRouteEdgeMetadataV1
+): string {
+  return `${metadata.historicity}.${metadata.terrainClass}.${metadata.riskClass}`;
+}
+
+function formatMapTopologySeasonalModifier(season: MapTopologySeasonalModifierV1): string {
+  return [
+    season.month,
+    season.costMultiplierBps,
+    season.capacityMultiplierBps,
+    sortText(season.reasonCodes).join("/")
+  ].join(".");
+}
+
+function formatMapTopologyAvailability(availability: MapTopologyRouteAvailabilityV1): string {
+  switch (availability.kind) {
+    case "open":
+      return "open";
+    case "blocked":
+      return `blocked.${availability.reasonCode}`;
+    case "unknown":
+      return `unknown.${availability.reasonCode}`;
+  }
+}
+
+export function formatMapTopologyEndpoint(endpoint: MapTopologyRouteEndpointV1): string {
+  switch (endpoint.kind) {
+    case "district":
+      return `district.${endpoint.districtId}`;
+    case "route-node":
+      return `route-node.${endpoint.nodeId}`;
+    case "settlement":
+      return `settlement.${endpoint.settlementId}`;
+  }
+}
+
 function formatDistrictControl(control: DistrictControlState): string {
   switch (control.kind) {
     case "controlled":
@@ -9310,6 +10381,23 @@ function validateMeta(world: WorldStateV0Candidate, errors: WorldInvariantError[
     });
   }
 
+  const topologyContentManifestHash = getRecordPath(world, [
+    "definitions",
+    "topology",
+    "contentManifestHash"
+  ]);
+  if (
+    typeof contentManifestHash === "string" &&
+    topologyContentManifestHash !== undefined &&
+    topologyContentManifestHash !== contentManifestHash
+  ) {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.topology.contentManifestHash",
+      message: "Map topology contentManifestHash must match WorldState meta.contentManifestHash."
+    });
+  }
+
   if (!isNonnegativeInteger(getRecordPath(world, ["meta", "currentDay"]))) {
     errors.push({
       code: "invalid-day",
@@ -9349,6 +10437,9 @@ function validateDefinitions(definitions: WorldDefinitionsV0, errors: WorldInvar
   validateDuplicateIds(definitions.districts, "DistrictId", "definitions.districts", errors);
   validateDuplicateIds(definitions.settlements, "SettlementId", "definitions.settlements", errors);
   validateDuplicateIds(definitions.routes, "RouteId", "definitions.routes", errors);
+  if (definitions.topology !== undefined) {
+    validateMapTopologyDefinitions(definitions.topology, errors);
+  }
 }
 
 function validateDuplicateIds(
@@ -9415,6 +10506,354 @@ function validateDefinitionReferences(
       });
     }
   });
+
+  if (definitions.topology !== undefined) {
+    validateMapTopologyReferences(definitions, definitions.topology, errors);
+  }
+}
+
+function validateMapTopologyDefinitions(
+  topology: MapTopologyDefinitionV1,
+  errors: WorldInvariantError[]
+): void {
+  validateMapTopologyDuplicateNumbers(
+    topology.districts.map((district) => district.districtId),
+    "DistrictId",
+    "definitions.topology.districts",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    topology.districts.map((district) => district.sourceId),
+    "district sourceId",
+    "definitions.topology.districts",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    topology.routeNodes.map((node) => node.nodeId),
+    "route nodeId",
+    "definitions.topology.routeNodes",
+    errors
+  );
+  validateMapTopologyDuplicateNumbers(
+    topology.routeEdges.map((edge) => edge.routeId),
+    "RouteId",
+    "definitions.topology.routeEdges",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    topology.routeEdges.map((edge) => edge.sourceId),
+    "route sourceId",
+    "definitions.topology.routeEdges",
+    errors
+  );
+
+  const expectedHash = hashMapTopologyDefinitionV1(topology);
+  if (topology.topologyHash !== expectedHash) {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.topology.topologyHash",
+      message: `MapTopologyDefinition topologyHash ${topology.topologyHash} does not match canonical hash ${expectedHash}.`
+    });
+  }
+
+  topology.districts.forEach((district, index) => {
+    if (district.polygon.length < 3) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.topology.districts[${index}].polygon`,
+        message: "Map topology district polygon must contain at least 3 anchors."
+      });
+    }
+  });
+
+  topology.routeEdges.forEach((edge, index) => {
+    validateMapTopologySeasonality(edge.seasonality, index, errors);
+    if (formatMapTopologyEndpoint(edge.from) === formatMapTopologyEndpoint(edge.to)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.topology.routeEdges[${index}].to`,
+        message: "Map topology route edge endpoints must be different."
+      });
+    }
+  });
+}
+
+function validateMapTopologyDuplicateNumbers(
+  values: readonly number[],
+  label: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  const seen = new Set<number>();
+  for (const value of values) {
+    if (seen.has(value)) {
+      errors.push({
+        code: "duplicate-definition-id",
+        path,
+        message: `Duplicate map topology ${label} ${value}.`
+      });
+      continue;
+    }
+    seen.add(value);
+  }
+}
+
+function validateMapTopologyDuplicateStrings(
+  values: readonly string[],
+  label: string,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  const seen = new Set<string>();
+  for (const value of values) {
+    if (seen.has(value)) {
+      errors.push({
+        code: "duplicate-definition-id",
+        path,
+        message: `Duplicate map topology ${label} ${value}.`
+      });
+      continue;
+    }
+    seen.add(value);
+  }
+}
+
+function validateMapTopologySeasonality(
+  seasonality: readonly MapTopologySeasonalModifierV1[],
+  routeIndex: number,
+  errors: WorldInvariantError[]
+): void {
+  if (seasonality.length !== 12) {
+    errors.push({
+      code: "invalid-schema",
+      path: `definitions.topology.routeEdges[${routeIndex}].seasonality`,
+      message: "Map topology route edge seasonality must contain exactly 12 months."
+    });
+  }
+
+  const months = new Set<number>();
+  seasonality.forEach((season, seasonIndex) => {
+    if (months.has(season.month)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: `definitions.topology.routeEdges[${routeIndex}].seasonality[${seasonIndex}].month`,
+        message: `Duplicate map topology seasonal month ${season.month}.`
+      });
+    }
+    months.add(season.month);
+  });
+
+  for (let month = 1; month <= 12; month += 1) {
+    if (!months.has(month)) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.topology.routeEdges[${routeIndex}].seasonality`,
+        message: `Map topology route edge seasonality is missing month ${month}.`
+      });
+    }
+  }
+}
+
+function validateMapTopologyReferences(
+  definitions: WorldDefinitionsV0,
+  topology: MapTopologyDefinitionV1,
+  errors: WorldInvariantError[]
+): void {
+  const districtIds = idsOf(definitions.districts);
+  const settlementIds = idsOf(definitions.settlements);
+  const routeById = new Map<number, RouteDefinition>();
+  definitions.routes.forEach((route) => {
+    routeById.set(route.id, route);
+  });
+
+  topology.districts.forEach((district, index) => {
+    const matchingDistrict = definitions.districts.find(
+      (entry) => entry.id === district.districtId
+    );
+    if (matchingDistrict === undefined) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.topology.districts[${index}].districtId`,
+        message: `Map topology district references missing DistrictId ${district.districtId}.`
+      });
+      return;
+    }
+    if (matchingDistrict.displayNameKey !== district.displayNameKey) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.topology.districts[${index}].displayNameKey`,
+        message: "Map topology district displayNameKey must match DistrictDefinition."
+      });
+    }
+  });
+
+  const topologyDistrictIds = new Set(topology.districts.map((district) => district.districtId));
+  definitions.districts.forEach((district) => {
+    if (!topologyDistrictIds.has(district.id)) {
+      errors.push({
+        code: "bad-reference",
+        path: "definitions.topology.districts",
+        message: `Map topology is missing polygon definition for DistrictId ${district.id}.`
+      });
+    }
+  });
+
+  topology.routeNodes.forEach((node, index) => {
+    if (!districtIds.has(node.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.topology.routeNodes[${index}].districtId`,
+        message: `Map topology route node references missing DistrictId ${node.districtId}.`
+      });
+    }
+  });
+
+  topology.routeEdges.forEach((edge, index) => {
+    const routeDefinition = routeById.get(edge.routeId);
+    if (routeDefinition === undefined) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.topology.routeEdges[${index}].routeId`,
+        message: `Map topology route edge references missing RouteId ${edge.routeId}.`
+      });
+    }
+
+    validateMapTopologyEndpointReference(
+      definitions,
+      topology,
+      edge.from,
+      `definitions.topology.routeEdges[${index}].from`,
+      errors
+    );
+    validateMapTopologyEndpointReference(
+      definitions,
+      topology,
+      edge.to,
+      `definitions.topology.routeEdges[${index}].to`,
+      errors
+    );
+
+    const fromDistrictId = tryMapTopologyEndpointDistrictId(definitions, topology, edge.from);
+    const toDistrictId = tryMapTopologyEndpointDistrictId(definitions, topology, edge.to);
+    if (fromDistrictId !== undefined && toDistrictId !== undefined) {
+      if (fromDistrictId === toDistrictId) {
+        errors.push({
+          code: "bad-reference",
+          path: `definitions.topology.routeEdges[${index}].to`,
+          message: "Map topology route edge must connect two different districts."
+        });
+      }
+      if (routeDefinition !== undefined) {
+        if (routeDefinition.fromDistrictId !== fromDistrictId) {
+          errors.push({
+            code: "bad-reference",
+            path: `definitions.topology.routeEdges[${index}].from`,
+            message: "Map topology route edge from endpoint must match RouteDefinition."
+          });
+        }
+        if (routeDefinition.toDistrictId !== toDistrictId) {
+          errors.push({
+            code: "bad-reference",
+            path: `definitions.topology.routeEdges[${index}].to`,
+            message: "Map topology route edge to endpoint must match RouteDefinition."
+          });
+        }
+        if (routeDefinition.lengthInMapUnits !== edge.baseTravelCost) {
+          errors.push({
+            code: "invalid-schema",
+            path: `definitions.topology.routeEdges[${index}].baseTravelCost`,
+            message: "Map topology route edge baseTravelCost must match RouteDefinition length."
+          });
+        }
+      }
+    }
+
+    if (edge.from.kind === "settlement" && !settlementIds.has(edge.from.settlementId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.topology.routeEdges[${index}].from.settlementId`,
+        message: `Map topology route edge references missing SettlementId ${edge.from.settlementId}.`
+      });
+    }
+    if (edge.to.kind === "settlement" && !settlementIds.has(edge.to.settlementId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.topology.routeEdges[${index}].to.settlementId`,
+        message: `Map topology route edge references missing SettlementId ${edge.to.settlementId}.`
+      });
+    }
+  });
+}
+
+function validateMapTopologyEndpointReference(
+  definitions: WorldDefinitionsV0,
+  topology: MapTopologyDefinitionV1,
+  endpoint: MapTopologyRouteEndpointV1,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (tryMapTopologyEndpointDistrictId(definitions, topology, endpoint) !== undefined) {
+    return;
+  }
+
+  errors.push({
+    code: "bad-reference",
+    path,
+    message: `Map topology endpoint ${formatMapTopologyEndpoint(endpoint)} cannot be resolved to a district.`
+  });
+}
+
+export function mapTopologyEndpointDistrictId(
+  definitions: WorldDefinitionsV0,
+  endpoint: MapTopologyRouteEndpointV1
+): DistrictId {
+  const topology = definitions.topology;
+  if (topology === undefined) {
+    throw new Error("Map topology endpoint cannot be resolved without definitions.topology.");
+  }
+
+  const districtId = tryMapTopologyEndpointDistrictId(definitions, topology, endpoint);
+  if (districtId === undefined) {
+    throw new Error(`Map topology endpoint ${formatMapTopologyEndpoint(endpoint)} is unresolved.`);
+  }
+
+  return parseDistrictId(districtId);
+}
+
+export function tryMapTopologyEndpointDistrictId(
+  definitions: WorldDefinitionsV0,
+  topology: MapTopologyDefinitionV1,
+  endpoint: MapTopologyRouteEndpointV1
+): DistrictId | undefined {
+  switch (endpoint.kind) {
+    case "district":
+      if (definitions.districts.some((district) => district.id === endpoint.districtId)) {
+        return endpoint.districtId;
+      }
+      return undefined;
+    case "route-node": {
+      const node = topology.routeNodes.find((entry) => entry.nodeId === endpoint.nodeId);
+      if (
+        node !== undefined &&
+        definitions.districts.some((district) => district.id === node.districtId)
+      ) {
+        return node.districtId;
+      }
+      return undefined;
+    }
+    case "settlement": {
+      const settlement = definitions.settlements.find(
+        (entry) => entry.id === endpoint.settlementId
+      );
+      if (
+        settlement !== undefined &&
+        definitions.districts.some((district) => district.id === settlement.districtId)
+      ) {
+        return settlement.districtId;
+      }
+      return undefined;
+    }
+  }
 }
 
 function validateRuntimeState(world: WorldStateV0Candidate, errors: WorldInvariantError[]): void {
@@ -9589,6 +11028,10 @@ function validateM2RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
   for (const route of world.definitions.routes) {
     routeDefinitionById.set(route.id, route);
   }
+  const topologyRouteById = new Map<number, MapTopologyRouteEdgeDefinitionV1>();
+  world.definitions.topology?.routeEdges.forEach((route) => {
+    topologyRouteById.set(route.routeId, route);
+  });
   m2.transport.routes.forEach((route, index) => {
     if (routeIds.has(route.routeId)) {
       errors.push({
@@ -9619,6 +11062,54 @@ function validateM2RuntimeState(world: WorldStateV0Candidate, errors: WorldInvar
           code: "bad-reference",
           path: `state.m2.transport.routes[${index}].toDistrictId`,
           message: "M2 route transport toDistrictId must match RouteDefinition."
+        });
+      }
+    }
+
+    const topologyRoute = topologyRouteById.get(route.routeId);
+    if (topologyRoute !== undefined) {
+      const topology = world.definitions.topology;
+      const topologyFromDistrictId =
+        topology === undefined
+          ? undefined
+          : tryMapTopologyEndpointDistrictId(world.definitions, topology, topologyRoute.from);
+      const topologyToDistrictId =
+        topology === undefined
+          ? undefined
+          : tryMapTopologyEndpointDistrictId(world.definitions, topology, topologyRoute.to);
+      if (topologyFromDistrictId !== undefined && route.fromDistrictId !== topologyFromDistrictId) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m2.transport.routes[${index}].fromDistrictId`,
+          message: "M2 route transport fromDistrictId must match topology route endpoint."
+        });
+      }
+      if (topologyToDistrictId !== undefined && route.toDistrictId !== topologyToDistrictId) {
+        errors.push({
+          code: "bad-reference",
+          path: `state.m2.transport.routes[${index}].toDistrictId`,
+          message: "M2 route transport toDistrictId must match topology route endpoint."
+        });
+      }
+      if (route.routeKind !== topologyRoute.mode) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m2.transport.routes[${index}].routeKind`,
+          message: "M2 route transport routeKind must match topology route mode."
+        });
+      }
+      if (route.baseTravelCost !== topologyRoute.baseTravelCost) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m2.transport.routes[${index}].baseTravelCost`,
+          message: "M2 route transport baseTravelCost must match topology route cost."
+        });
+      }
+      if (route.baseCapacity !== topologyRoute.baseCapacity) {
+        errors.push({
+          code: "invalid-schema",
+          path: `state.m2.transport.routes[${index}].baseCapacity`,
+          message: "M2 route transport baseCapacity must match topology route capacity."
         });
       }
     }

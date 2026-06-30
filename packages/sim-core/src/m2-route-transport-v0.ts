@@ -1,4 +1,5 @@
 import { getGameCalendarDate } from "./scheduler-v0.ts";
+import { previewMapTopologyPathV1 } from "./map-topology-v1.ts";
 import {
   parseDistrictId,
   type DistrictId,
@@ -69,6 +70,42 @@ export function previewM2TransportRouteV0(
   input: M2TransportRoutePreviewInputV0
 ): M2TransportRoutePreviewV0 {
   const monthOfYear = getGameCalendarDate(input.day).monthOfYear;
+  if (world.definitions.topology !== undefined) {
+    const topologyPreview = previewMapTopologyPathV1(world, input);
+    if (topologyPreview.status !== "reachable" && topologyPreview.status !== "capacity-exceeded") {
+      return {
+        status: "unreachable",
+        originDistrictId: input.originDistrictId,
+        destinationDistrictId: input.destinationDistrictId,
+        stockAmount: input.stockAmount,
+        monthOfYear,
+        edges: []
+      };
+    }
+
+    return {
+      status: topologyPreview.status,
+      originDistrictId: topologyPreview.originDistrictId,
+      destinationDistrictId: topologyPreview.destinationDistrictId,
+      stockAmount: topologyPreview.stockAmount,
+      monthOfYear,
+      totalCost: topologyPreview.totalCost,
+      bottleneckCapacity: topologyPreview.bottleneckCapacity,
+      edges: topologyPreview.edges.map((edge) => ({
+        routeId: edge.routeId,
+        fromDistrictId: edge.fromDistrictId,
+        toDistrictId: edge.toDistrictId,
+        routeKind: edge.mode,
+        baseTravelCost: edge.baseTravelCost,
+        seasonalCost: edge.seasonalCost,
+        baseCapacity: edge.baseCapacity,
+        seasonalCapacity: edge.seasonalCapacity,
+        stockAmount: edge.stockAmount,
+        remainingCapacityAfterStock: edge.remainingCapacityAfterStock
+      }))
+    };
+  }
+
   const transport = world.state.m2?.transport;
   if (transport === undefined || input.originDistrictId === input.destinationDistrictId) {
     return {
