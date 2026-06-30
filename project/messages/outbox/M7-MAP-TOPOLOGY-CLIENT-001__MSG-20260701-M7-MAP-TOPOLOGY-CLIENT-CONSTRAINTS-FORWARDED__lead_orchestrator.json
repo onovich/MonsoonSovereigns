@@ -1,0 +1,48 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead forwarded the gameplay anti-grid research and visual readability feedback to the client_engineer. M7-MAP-TOPOLOGY-CLIENT-001 resumes with hard constraints to replace the player-facing default grid-derived map projection with topology-backed client read models and explicit route-node polylines.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "Gameplay research handoff is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+      "exit_code": 0,
+      "result": "Visual readability handoff is valid."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLIENT_RESUMED_WITH_ANTI_GRID_CONSTRAINTS",
+      "decision": "Client implementation may resume, but final REVIEW must prove the default player map is topology-backed and no longer grid/hex/lattice/sequential-id/centroid-derived."
+    },
+    {
+      "id": "NO_FORBIDDEN_PATHS",
+      "decision": "Client may only use allowed task paths. If accepted topology surfaces are insufficient, writer must report BLOCKED_FOR_ALLOWED_SCOPE_GAP instead of editing forbidden schema/sim/save/content paths or inventing renderer authority."
+    }
+  ],
+  "risks": [
+    {
+      "id": "IMPLEMENTATION_SCOPE_RISK",
+      "severity": "R4",
+      "summary": "The implementation touches client projection, map renderer planning, UI copy, tests, and screenshots; systems and QA review must inspect actual diff, not only visual output."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement topology-backed client map and route decision surface, then return writer REVIEW handoff with anti-grid evidence.",
+  "created_at": "2026-07-01T02:35:10.0000000+08:00"
+}

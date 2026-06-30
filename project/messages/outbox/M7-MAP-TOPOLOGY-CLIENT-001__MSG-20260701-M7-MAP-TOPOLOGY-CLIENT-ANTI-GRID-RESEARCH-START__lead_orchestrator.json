@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH-START",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Lead interrupted the client writer after product-owner clarification that topology, not visual shape, is the current blocker. A read-only gameplay_designer research pass was spawned to compare mature strategy-game map topology patterns and produce hard constraints for the client task.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION__product_owner.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-INTERRUPT.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-ANTI-GRID-RESEARCH.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-ART-TOPOLOGY-READABILITY.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "Task schema remained valid before anti-grid research routing."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before anti-grid research routing."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLIENT_WRITER_INTERRUPTED",
+      "decision": "Client writer was interrupted and instructed not to continue any hidden grid/lattice/sequential-id/centroid-guess implementation direction."
+    },
+    {
+      "id": "DESIGN_RESEARCH_REQUIRED",
+      "decision": "A gameplay_designer thread must return a mature-game topology assessment before client implementation resumes toward REVIEW."
+    },
+    {
+      "id": "ART_THREAD_CONSULTED_FOR_READABILITY",
+      "decision": "The existing visual design thread was asked for topology readability constraints only; it must not decide authority topology."
+    }
+  ],
+  "risks": [
+    {
+      "id": "READ_MODEL_GAP_RISK",
+      "severity": "R4",
+      "summary": "If accepted read models cannot express the mature topology plan, the client task must report a schema gap instead of inventing renderer-side authority."
+    }
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Complete read-only mature strategy-game map topology research, then return a Chinese structured handoff for lead routing to client_engineer.",
+  "created_at": "2026-07-01T02:29:21.8995203+08:00"
+}

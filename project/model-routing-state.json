@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_ready_for_next_task",
+    "status": "active_map_topology_client_in_progress",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -43,9 +43,11 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-    "updated_at": "2026-06-30T18:17:24.246Z",
-    "concurrent_task_ids": [],
-    "branch_or_worktree": "codex/close-m7-map-topology-fixture",
+    "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+    "concurrent_task_ids": [
+      "M7-MAP-TOPOLOGY-CLIENT-001"
+    ],
+    "branch_or_worktree": "codex/m7-map-topology-client",
     "active_gate_task_id": null
   },
   "retired_lead_threads": [
@@ -5332,6 +5334,22 @@
       "integrated_pr": 227,
       "integrated_main_commit": "3ab56d888fc8ee344147281fd0b4f05eded4da1f",
       "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CLOSED__lead_orchestrator.json"
+    },
+    "M7-MAP-TOPOLOGY-CLIENT-001": {
+      "status": "in_progress",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json",
+      "writer_thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
+      "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json",
+      "client_interrupt_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-INTERRUPT.json",
+      "gameplay_research_thread_id": "019f19c9-ae01-7690-b7ac-4f68ac6fe4ae",
+      "gameplay_research_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-ANTI-GRID-RESEARCH.json",
+      "gameplay_research_expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+      "gameplay_research_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+      "art_readability_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-ART-TOPOLOGY-READABILITY.json",
+      "art_readability_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+      "constraints_forwarded_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json",
+      "client_constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
+      "updated_at": "2026-07-01T02:35:10.0000000+08:00"
     }
   },
   "m7_systemic_interaction_recovery": {
@@ -5727,5 +5745,33 @@
     "next_ready_tasks": [
       "M7-MAP-TOPOLOGY-CLIENT-001"
     ]
+  },
+  "m7_map_topology_client": {
+    "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+    "status": "IN_PROGRESS",
+    "branch_or_worktree": "codex/m7-map-topology-client",
+    "base_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+    "ready_after_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
+    "ready_after_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+    "owner_role": "client_engineer",
+    "writer_thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
+    "writer_thread_nickname": "Window the 2nd",
+    "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-30T18:25:12.636Z",
+    "product_owner_clarification_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION__product_owner.json",
+    "research_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH-START__lead_orchestrator.json",
+    "client_interrupt_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-INTERRUPT.json",
+    "gameplay_research_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-ANTI-GRID-RESEARCH.json",
+    "art_readability_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-ART-TOPOLOGY-READABILITY.json",
+    "gameplay_research_thread_id": "019f19c9-ae01-7690-b7ac-4f68ac6fe4ae",
+    "gameplay_research_expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+    "gameplay_research_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+    "art_readability_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+    "constraints_forwarded_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json",
+    "client_constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
+    "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+    "next_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence."
   }
 }

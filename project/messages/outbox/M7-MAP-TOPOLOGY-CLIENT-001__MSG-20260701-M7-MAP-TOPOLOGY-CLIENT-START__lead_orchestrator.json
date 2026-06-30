@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Started M7-MAP-TOPOLOGY-CLIENT-001 after M7-MAP-TOPOLOGY-FIXTURE-001 closed in main. The task must make the player-facing map and route decision surface consume explicit topology-backed read models instead of deriving map meaning from rectangular grids, hex/lattice coordinates, sequential ids, centroids, bounding boxes, or renderer-only guessed connections.",
+  "artifacts": [
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CLOSED__lead_orchestrator.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START__lead_orchestrator.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Main was clean before creating branch codex/m7-map-topology-client."
+    },
+    {
+      "command": "taskctl ready",
+      "exit_code": 0,
+      "result": "M7-MAP-TOPOLOGY-CLIENT-001 selected as dependency-ready after fixture closure."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLIENT_TOPOLOGY_START",
+      "decision": "Start client topology task rather than reopening content lock. Content lock remains blocked until client topology and validation complete."
+    },
+    {
+      "id": "NO_PROTOCOL_OR_SIM_CORE_CHANGES",
+      "decision": "Writer is instructed to consume accepted read-model/protocol surfaces only and block if protocol/sim-core/content-source changes become necessary."
+    }
+  ],
+  "risks": [
+    {
+      "id": "HIDDEN_GRID_REGRESSION_RISK",
+      "severity": "R4",
+      "summary": "Client rendering may accidentally reintroduce regular grid authority through hit testing, centroid links, or list/map focus; tests and screenshots must guard against that."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "severity": "R4",
+      "summary": "Formal M7 content lock remains blocked."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement topology-backed player map and route decision surface within allowed paths, then return REVIEW handoff to systems_architect.",
+  "created_at": "2026-06-30T18:25:12.636Z"
+}

@@ -6,97 +6,91 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
   "current_milestone": "M7",
-  "current_task": null,
-  "current_tasks": [],
-  "current_task_status": "IDLE_READY_TO_START_NEXT",
-  "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
-  "last_integrated_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
-  "last_main_commit": "3ab56d888fc8ee344147281fd0b4f05eded4da1f",
-  "ready_tasks": [],
-  "next_ready_tasks": [
+  "current_task": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "current_tasks": [
     "M7-MAP-TOPOLOGY-CLIENT-001"
   ],
+  "current_task_status": "IN_PROGRESS",
+  "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "last_integrated_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "last_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+  "ready_tasks": [],
+  "next_ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
       "task_ids": [
-        "M7-MAP-TOPOLOGY-FIXTURE-001"
+        "M7-MAP-TOPOLOGY-CLIENT-001"
       ],
-      "status": "active_fixture_accepted_ci_fix_pending_pr",
+      "status": "active_map_topology_client_in_progress",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "updated_at": "2026-06-30T18:10:00.168Z",
-      "ready_after_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
-      "ready_after_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
-      "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
-      "ci_fix_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CI-FIX__lead_orchestrator.json",
-      "ci_fix_commit": "0c49451e"
+      "branch_or_worktree": "codex/m7-map-topology-client",
+      "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+      "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json",
+      "product_owner_clarification_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION__product_owner.json",
+      "research_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH-START__lead_orchestrator.json",
+      "research_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+      "art_readability_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+      "constraints_forwarded_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json"
     },
-    "simulation_engineer": {
-      "thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "status": "replaced",
-      "role": "simulation_engineer",
+    "client_engineer": {
+      "thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
+      "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+      "status": "in_progress_with_anti_grid_constraints",
+      "role": "client_engineer",
+      "nickname": "Window the 2nd",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "updated_at": "2026-07-01T00:26:01.3756143+08:00",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-REPLACEMENT-START.json",
-      "route_submission_id": "019f197e-9d7c-7af1-bdbc-036a9cb4c002",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
-      "replaced_by": "019f197c-401c-7231-b47f-bee31d1308af"
+      "branch_or_worktree": "codex/m7-map-topology-client",
+      "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json",
+      "interrupt_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-INTERRUPT.json",
+      "constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
+      "constraints_submission_id": "019f19d5-3c8a-76c2-90e1-7a585700aa5a",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json"
     },
-    "simulation_engineer_replacement": {
-      "thread_id": "019f197c-401c-7231-b47f-bee31d1308af",
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "status": "review_ready",
-      "role": "simulation_engineer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "updated_at": "2026-07-01T01:18:48.5430196+08:00",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
-      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab"
-    },
-    "historical_researcher": {
-      "thread_id": "019f198a-8bd8-7262-9fb2-8ba1710393ca",
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "status": "review_requested",
-      "role": "historical_researcher",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "updated_at": "2026-07-01T01:18:48.5430196+08:00",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-HISTORICAL-REVIEW.json",
-      "route_submission_id": "019f198b-e864-7e03-ad2a-24dc9cac9c63",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json"
-    },
-    "systems_architect": {
-      "thread_id": "019f198a-c3d6-73f3-91f2-0e843f3f5fab",
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "status": "review_requested",
-      "role": "systems_architect",
+    "gameplay_designer": {
+      "thread_id": "019f19c9-ae01-7690-b7ac-4f68ac6fe4ae",
+      "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+      "status": "completed_read_only_topology_research",
+      "role": "gameplay_designer",
+      "nickname": "Court the 2nd",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
       "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "updated_at": "2026-07-01T01:18:48.5430196+08:00",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
-      "route_submission_id": "019f198c-3352-7be3-a915-573277cd5dad",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json"
+      "branch_or_worktree": "codex/m7-map-topology-client",
+      "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-ANTI-GRID-RESEARCH.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json"
+    },
+    "visual_design_reviewer": {
+      "thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+      "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+      "status": "completed_read_only_topology_readability",
+      "role": "visual_design_reviewer",
+      "nickname": "Artist",
+      "configured_model": "unknown",
+      "configured_effort": "unknown",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-client",
+      "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION__product_owner.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-ART-TOPOLOGY-READABILITY.json",
+      "expected_handoff": "Visual design thread final response routed to lead_orchestrator",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json"
     }
   },
   "unresolved_risks": [
@@ -164,7 +158,7 @@
     "note": "Product owner already requested changes. The active path is topology recovery review, not waiting for product-owner Human Gate reconsideration.",
     "recorded_at": "2026-06-30T21:47:04.0374837+08:00"
   },
-  "next_machine_action": "Push CI fix, wait for PR CI, merge to main, then close task after origin/main integration.",
+  "next_machine_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -415,8 +409,8 @@
     "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json",
     "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json"
   ],
-  "branch_or_worktree": "codex/close-m7-map-topology-fixture",
-  "commit": "3ab56d888fc8ee344147281fd0b4f05eded4da1f",
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
   "tests_run": [
     {
       "command": "gh pr checks 189 --watch",
@@ -473,8 +467,8 @@
     }
   ],
   "blockers": [],
-  "route_to": "lead_orchestrator",
-  "requested_action": "Start M7-MAP-TOPOLOGY-CLIENT-001 as the next topology recovery task.",
+  "route_to": "client_engineer",
+  "requested_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence.",
   "created_at": "2026-06-28T16:11:45.503Z",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -566,8 +560,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Start M7-MAP-TOPOLOGY-CLIENT-001 as the next topology recovery task.",
-  "updated_at": "2026-06-30T18:17:24.246Z",
+  "next_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence.",
+  "updated_at": "2026-07-01T02:35:10.0000000+08:00",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1254,5 +1248,33 @@
     "next_ready_tasks": [
       "M7-MAP-TOPOLOGY-CLIENT-001"
     ]
+  },
+  "m7_map_topology_client": {
+    "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+    "status": "IN_PROGRESS",
+    "branch_or_worktree": "codex/m7-map-topology-client",
+    "base_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+    "ready_after_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
+    "ready_after_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
+    "owner_role": "client_engineer",
+    "writer_thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
+    "writer_thread_nickname": "Window the 2nd",
+    "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-06-30T18:25:12.636Z",
+    "product_owner_clarification_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION__product_owner.json",
+    "research_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH-START__lead_orchestrator.json",
+    "client_interrupt_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-INTERRUPT.json",
+    "gameplay_research_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-ANTI-GRID-RESEARCH.json",
+    "art_readability_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-ART-TOPOLOGY-READABILITY.json",
+    "gameplay_research_thread_id": "019f19c9-ae01-7690-b7ac-4f68ac6fe4ae",
+    "gameplay_research_expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+    "gameplay_research_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+    "art_readability_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+    "constraints_forwarded_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CONSTRAINTS-FORWARDED__lead_orchestrator.json",
+    "client_constraints_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-ANTI-GRID-CONSTRAINTS.json",
+    "updated_at": "2026-07-01T02:35:10.0000000+08:00",
+    "next_action": "Await client_engineer writer REVIEW handoff proving topology-backed client map rendering and anti-grid evidence."
   }
 }
