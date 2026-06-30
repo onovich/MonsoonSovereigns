@@ -12,15 +12,15 @@
       "task_ids": [
         "M7-MAP-TOPOLOGY-RECOVERY-001"
       ],
-      "status": "review_pending_systems_architect_r2",
+      "status": "review_pending_qa_reviewer",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-map-topology-recovery",
-      "updated_at": "2026-06-30T21:47:04.0374837+08:00",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-R2__lead_orchestrator.json"
+      "updated_at": "2026-06-30T22:03:17.8498858+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json"
     }
   },
   "last_integrated_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
@@ -1987,7 +1987,7 @@
     ]
   },
   "current_task_status": "REVIEW",
-  "next_machine_action": "Reroute M7-MAP-TOPOLOGY-RECOVERY-001 R2 to systems_architect; no active Human Gate is waiting and M7-EXIT-VALIDATION-001 must not start.",
+  "next_machine_action": "Route M7-MAP-TOPOLOGY-RECOVERY-001 to independent qa_reviewer; no active Human Gate is waiting and M7-EXIT-VALIDATION-001 must not start.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3343,11 +3343,13 @@
       "M7-MAP-TOPOLOGY-CLIENT-001",
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
-    "next_action": "Reroute repaired topology recovery package to systems_architect R2 review.",
-    "updated_at": "2026-06-30T21:47:04.0374837+08:00",
+    "next_action": "Route systems-accepted topology recovery package to independent qa_reviewer.",
+    "updated_at": "2026-06-30T22:03:17.8498858+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "systems_status": "REQUEST_CHANGES",
-    "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-REQUEST-CHANGES__systems_architect.json"
+    "systems_status": "ACCEPT",
+    "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "systems_r3_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R3-TO-SYSTEMS-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
   }
 }
