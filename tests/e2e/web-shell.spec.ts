@@ -124,6 +124,14 @@ test("web shell loads and projects the read model", async ({ page }) => {
   await expect(page.getByText("developer diagnostics")).toHaveCount(0);
   await expect(page.getByText("blockers")).toHaveCount(0);
   await expect(page.getByText("No action has been previewed yet.")).toBeVisible();
+  await expect(page.getByLabel("Core action loop")).toContainText("Current phase");
+  await expect(page.getByLabel("Core action loop")).toContainText("Main unresolved decision");
+  await expect(page.getByLabel("Core action loop")).toContainText("Next primary action");
+  await expect(page.getByLabel("Core action loop")).toContainText("Obligation phase");
+  await expect(page.getByLabel("Selected district context")).toContainText("Handle obligation");
+  await expect(page.getByLabel("Obligation handling panel")).toContainText("Obligation handling");
+  await expect(page.getByLabel("Obligation handling panel")).toContainText("District 1");
+  await expect(page.getByRole("button", { name: "Submit obligation support" })).toBeEnabled();
   await expect(page.getByText("M2 prototype map ready")).toHaveCount(0);
   await expect(page.getByText("Prototype District 001")).toHaveCount(0);
   await expectMountedPixiMapRenderer(page);
@@ -157,6 +165,35 @@ test("web shell loads and projects the read model", async ({ page }) => {
   await expect(page.getByLabel("Map legend")).toContainText("Blocked / capacity");
   await expect(page.locator(".client-shell__dev-overlay")).toHaveCount(0);
   await expect(page.locator(".client-shell__map-revision")).toHaveCount(0);
+});
+
+test("appointment preview and confirmation show durable player feedback", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByRole("button", { name: /Appointments/u }).click();
+  const appointmentFlow = page.getByLabel("Appointment and governance flow");
+  await expect(appointmentFlow).toBeVisible();
+  await expect(appointmentFlow).toHaveAttribute("data-flow-stage", "compare-candidates");
+  await expect(appointmentFlow).toHaveAttribute("data-submission-state", "idle");
+
+  await appointmentFlow.getByRole("button", { name: "Preview appointment" }).click();
+  await expect(appointmentFlow).toHaveAttribute("data-flow-stage", "preview");
+  await expect(appointmentFlow).toHaveAttribute("data-submission-state", "pending");
+  await expect(appointmentFlow).toContainText("Before");
+  await expect(appointmentFlow).toContainText("After");
+  await expect(appointmentFlow).toContainText("Cost");
+  await expect(appointmentFlow).toContainText("Benefit");
+  await expect(appointmentFlow).toContainText("Risk");
+
+  const confirmButton = appointmentFlow.getByRole("button", { name: "Confirm appointment" });
+  await expect(confirmButton).toBeEnabled();
+  await confirmButton.click();
+  await expect(appointmentFlow).toHaveAttribute("data-flow-stage", "result");
+  await expect(appointmentFlow).toHaveAttribute("data-submission-state", "accepted");
+  await expect(appointmentFlow.getByRole("button", { name: "Accepted" })).toBeDisabled();
+  await expect(appointmentFlow.getByRole("status")).toContainText("Accepted");
+  await expect(appointmentFlow.getByRole("status")).toContainText("Appointment request prepared.");
+  await expect(page.getByLabel("Core action loop")).toContainText("Read result");
 });
 
 test("web shell resolves system language, switches language, and persists preference", async ({
@@ -786,7 +823,7 @@ test("M3 appointment player flow previews confirms result and hides raw reason c
   await expect(page.getByLabel("Appointment impact preview")).toContainText("Admin load");
   await flow.getByRole("button", { name: "Confirm appointment" }).click();
   await expect(flow).toHaveAttribute("data-flow-stage", "result");
-  await expect(page.getByLabel("Appointment result feedback")).toContainText("Command submitted");
+  await expect(page.getByLabel("Appointment result feedback")).toContainText("Accepted");
   await expect(page.getByLabel("Appointment result feedback")).toContainText(
     "Appointment request prepared."
   );
@@ -815,7 +852,7 @@ test("M3 appointment player flow localizes Chinese and keeps rejected confirmati
   await flow.getByRole("button", { name: "预览任命" }).click();
   await expect(flow).toHaveAttribute("data-flow-stage", "preview");
   await expect(page.getByLabel("任命影响预览")).toContainText("暂时不能确认任命");
-  await expect(flow.getByRole("button", { name: "确认任命" })).toBeDisabled();
+  await expect(flow.getByRole("button", { name: "已阻止" })).toBeDisabled();
   await expect(page.getByLabel("任命结果反馈")).toContainText("该候选人当前被拒绝");
   await expect(page.getByText("office-eligibility-failed")).toHaveCount(0);
 });

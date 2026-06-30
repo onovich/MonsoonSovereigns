@@ -605,6 +605,74 @@ select:focus-visible,
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.client-shell__selected-context {
+  position: absolute;
+  inset-inline: 14px auto;
+  inset-block-end: 52px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  max-width: min(560px, calc(100% - 28px));
+  border: 1px solid #b8c8c5;
+  border-radius: 4px;
+  background: rgba(248, 252, 250, 0.94);
+  padding: 8px 10px;
+  color: #1f3537;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.client-shell__selected-context span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.client-shell__selected-context button,
+.task-rail__obligation-panel button {
+  min-height: 30px;
+  border: 1px solid var(--ms-color-accent-river);
+  border-radius: var(--ms-radius-control);
+  background: #e7f2ef;
+  color: #1f5c61;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.player-action-loop {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid #b8c8c5;
+  border-radius: 4px;
+  background: #f4fbf8;
+  padding: 10px;
+}
+
+.player-action-loop div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.player-action-loop dt {
+  color: #516069;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.player-action-loop dd {
+  min-width: 0;
+  margin: 0;
+  color: #172126;
+  font-size: 0.82rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
 .district-panel__chips span,
 .district-panel__fact,
 .district-panel__unavailable {
@@ -794,6 +862,41 @@ select:focus-visible,
   gap: 10px;
   min-width: 0;
   margin: 0;
+}
+
+.m3-flow__before-after {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+}
+
+.task-rail__obligation-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid #d8dee2;
+  border-radius: 4px;
+  background: #fbfcfc;
+  padding: 10px;
+}
+
+.task-rail__obligation-panel h4,
+.task-rail__obligation-panel p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.task-rail__obligation-panel h4 {
+  color: #172126;
+  font-size: 0.86rem;
+}
+
+.task-rail__obligation-panel p {
+  color: #53636b;
+  font-size: 0.8rem;
+  line-height: 1.35;
 }
 
 .m3-flow__candidate-list,
