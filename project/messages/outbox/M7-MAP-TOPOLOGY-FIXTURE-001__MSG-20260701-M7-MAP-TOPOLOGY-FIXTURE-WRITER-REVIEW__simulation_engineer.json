@@ -1,0 +1,98 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Migrated the default prototype map fixture to an explicit COMPOSITE topology/route graph with 14 districts, 25 topology route edges, variable route degree, route-node endpoints, river/coast/road modes, an explicit no-known-route isolation, and compiler/runtime/sim-core boot coverage so authority no longer derives from rectangular, hex, sequential-id, or hidden-lattice adjacency.",
+  "artifacts": [
+    "apps/content-tools/src/index.ts",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "packages/content-runtime/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-economy-population.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean immediately after implementation commit 69031120de52949f9ed17289f3b2ef1f258e48ab."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed; m2.prototype-world-30-districts now reports districts=14 settlements=6 routes=25 mapGeometries=20 manifestHash=d474a105."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed, 38 tests passed, including missing endpoint, duplicate id/source id, invalid polygon, route node outside polygon, disconnected graph, and lattice-adjacency leak negative compiler coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed, 198 tests passed; save-load-contract coverage preserves topology hash compatibility behavior."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "INHERITED_PARTIAL_DIFF_REVIEWED",
+      "decision": "Inherited the prior writer's allowed-path partial diff without reverting it, reviewed the full diff, and made only targeted fixes for concrete issues found during validation."
+    },
+    {
+      "id": "DEFAULT_FIXTURE_EXPLICIT_TOPOLOGY",
+      "decision": "Default player-facing prototype content now uses explicit topology.routeEdges and routeNodes as the authoritative movement/adjacency surface; the runtime manifest hash includes topology."
+    },
+    {
+      "id": "LOW_FIDELITY_COMPOSITE_ONLY",
+      "decision": "The fixture remains synthetic COMPOSITE validation content and does not assert exact historical borders, ports, river importance, or route importance."
+    },
+    {
+      "id": "SEASONAL_ROUTE_REGRESSION_REPAIRED",
+      "decision": "Adjusted dry-season river route multipliers on route-004, route-009, and route-020 so route preview demonstrates explicit seasonal road-vs-river path choice without deriving movement from geometry or district id order."
+    }
+  ],
+  "risks": [
+    {
+      "id": "HISTORICAL_REVIEW_REQUIRED_FOR_COMPOSITE_MAP",
+      "severity": "R4",
+      "summary": "District names/geometry/routes are low-fidelity COMPOSITE placeholders and need historical_researcher confirmation that no source-backed historical claims are implied."
+    },
+    {
+      "id": "DOWNSTREAM_CLIENT_SYNC_PENDING",
+      "severity": "R4",
+      "summary": "Client rendering/hit testing is outside this writer scope and must consume the new topology-backed read models in the downstream client task."
+    }
+  ],
+  "blockers": [],
+  "route_to": "historical_researcher",
+  "requested_action": "Review the COMPOSITE prototype topology fixture for historical-claim risk, then route onward to systems_architect and qa_reviewer for authority-boundary and validation review.",
+  "created_at": "2026-07-01T01:15:42.5947979+08:00"
+}
