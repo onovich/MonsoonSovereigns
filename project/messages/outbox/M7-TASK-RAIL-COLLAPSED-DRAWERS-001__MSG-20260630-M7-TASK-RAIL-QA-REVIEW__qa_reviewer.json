@@ -1,0 +1,273 @@
+{
+  "message_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA requests changes. The implementation creates six task rail cards and a single active drawer in DOM, stays within allowed UI/test/process paths, and preserves existing command/read-model boundaries. However, the rail is not first-screen actionable in the required viewports: at 1280x720 the task rail starts at y=2850, and at 1440x900 it starts at y=1880, so all rail cards and drawer primary actions are outside the viewport on default load. The new player-visible appointment rejection copy also exposes implementation jargon: 'read-model reasons' / '只读模型原因'. These are direct acceptance failures for visible primary actions and player-facing copy.",
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "reviewed current HEAD 7fe704f680e821fc44bf3ce886c0d8eb5e1ba639; implementation commit 4ba24238b9cd871ba059b88442e37dd27db15ff7; base main 2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route REQUEST_CHANGES to the original client_engineer writer. Do not integrate or close this task until the first-screen task rail visibility, player-facing jargon, and regression coverage are fixed and rerun.",
+  "artifacts": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json"
+  ],
+  "artifacts_reviewed": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "findings": [
+    {
+      "severity": "P1",
+      "status": "REQUEST_CHANGES",
+      "file": "apps/web/src/styles/shell.css",
+      "symbols": [
+        ".client-shell--beta .client-shell__body",
+        "@media (max-width: 1320px)",
+        ".client-shell--beta .client-shell__map-region",
+        ".task-rail"
+      ],
+      "related_files": [
+        "packages/ui/src/index.tsx:937",
+        "packages/ui/src/index.tsx:951"
+      ],
+      "reproduction": [
+        "Started the local Web preview with `pnpm --dir apps/web exec vite --host 127.0.0.1 --port 4173 --strictPort`.",
+        "Used Playwright against `http://127.0.0.1:4173/` at 1280x720 and 1440x900.",
+        "At 1280x720: viewport height 720, `.task-rail` top=2850 bottom=3804, all `.task-rail button` entries had `intersectsViewport=false`.",
+        "At 1440x900: viewport height 900, `.task-rail` top=1880 bottom=3001, all `.task-rail button` entries had `intersectsViewport=false`."
+      ],
+      "impact": "The default compact task rail and primary actions are hidden below the first viewport in both required sizes. This fails the acceptance criterion that 1280x720 and 1440x900 must not hide primary actions and does not solve the product-owner complaint that the player does not know what to do or where to focus.",
+      "necessary_fix": "Rework the default layout so the compact rail cards and their current primary action are visible in the first screen at 1280x720 and 1440x900. The rail likely needs to move above or beside the long district inspector, use bounded internal scrolling for lower-priority details, and avoid placing the rail after a full-height map/inspector stack. Add Playwright assertions that the six task rail cards and active drawer primary action intersect the viewport and are not clipped at 1280x720 and 1440x900."
+    },
+    {
+      "severity": "P1",
+      "status": "REQUEST_CHANGES",
+      "file": "packages/ui/src/i18n.ts",
+      "symbols": [
+        "shell.taskRail.appointments.reasonRejected"
+      ],
+      "lines": [
+        287,
+        761
+      ],
+      "reproduction": [
+        "Opened `http://127.0.0.1:4173/?fixture=appointment-error`.",
+        "Selected `en-US`; the appointments card displayed `The selected candidate is blocked by read-model reasons.`",
+        "Selected `zh-CN`; the appointments card displayed `已选候选人被只读模型原因阻止。`"
+      ],
+      "impact": "This violates the task requirement that new player-visible copy must not leak raw reason codes or read-model jargon. It also regresses the immediately preceding decision-inspector task, which explicitly removed player-facing read-model wording.",
+      "necessary_fix": "Replace this copy with domain/player language, for example eligibility, trust, succession, local claim, or safety review wording appropriate to the underlying rejected state. Add English and Chinese tests asserting no `read-model`, `只读模型`, raw reason-code, or internal read-model jargon appears in player-mode task rail cards."
+    },
+    {
+      "severity": "P2",
+      "status": "REQUEST_CHANGES",
+      "file": "tests/e2e/web-shell.spec.ts",
+      "symbols": [
+        "M7 player guidance lite supports collapse dismiss and the core appointment path",
+        "M3 appointment player flow has no horizontal overflow across required viewports"
+      ],
+      "lines": [
+        178,
+        179,
+        202,
+        1070
+      ],
+      "reproduction": [
+        "`pnpm --filter @monsoon/ui test` and `pnpm --filter web test` both pass.",
+        "Writer reported full `pnpm test:e2e` passed.",
+        "The custom Playwright viewport check above still finds the default task rail entirely offscreen at both required sizes."
+      ],
+      "impact": "The tests prove six card DOM nodes and drawer state, but they do not fail when the rail is hidden below the fold. Existing viewport checks cover older appointment/M5 overflow paths rather than task rail first-screen visibility at 1440x900 and 1280x720.",
+      "necessary_fix": "Add a dedicated task rail viewport regression that loads the default player shell at 1280x720 and 1440x900 and asserts the task rail cards, active drawer, and primary action are visible/intersecting the viewport with no document-level horizontal overflow. Include negative text assertions for player-facing implementation jargon."
+    }
+  ],
+  "scope_assessment": {
+    "status": "PASS",
+    "changed_files": [
+      ".storybook/WebClientShell.stories.tsx",
+      "apps/web/src/styles/shell.css",
+      "packages/ui/src/i18n.ts",
+      "packages/ui/src/index.tsx",
+      "project/goal-mode-state.json",
+      "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+      "project/tasks/thread-registry.json",
+      "tests/e2e/web-shell.spec.ts",
+      "tests/ui-m2-district-list.test.tsx"
+    ],
+    "forbidden_paths_touched": [],
+    "assessment": "All changed paths are within the task's allowed UI/test/process/message scope. No sim-core, sim-ai, protocol, save-format, content-source, platform, Electron, docs/GATE, roadmap, CI, manifest, or validation-report paths were changed."
+  },
+  "architecture_assessment": {
+    "status": "PASS",
+    "assessment": "The implementation is React/CSS/i18n/test scoped. The diff reuses existing appointment/campaign/obligation callbacks and read-model props. No new WorldState authority, sim-core/protocol/save changes, Pixi authority changes, worker changes, Math.random, Date.now, or direct domain-state mutation were found in the reviewed diff."
+  },
+  "copy_i18n_assessment": {
+    "status": "FAIL",
+    "assessment": "New player-visible task rail strings are routed through en-US and zh-CN i18n catalogs, but the rejected-appointment reason leaks `read-model` / `只读模型` jargon to players."
+  },
+  "experience_assessment": {
+    "status": "FAIL",
+    "assessment": "Although the information wall is decomposed into cards and one drawer, the actionable rail is below long map/inspector content on default load. In the required viewports, a player sees the old map/inspector stack first and must scroll far before seeing the six task cards, so the change does not yet resolve `I do not know what I can do / what to focus on`."
+  },
+  "acceptance_criteria_verdict": [
+    {
+      "criterion": "Default has obligations / appointments / succession / campaign prep / notifications / results compact task cards.",
+      "verdict": "PARTIAL",
+      "evidence": "DOM renders six cards with `data-task-rail-card-kind` values for all required categories, but they are not visible in the first viewport at 1280x720 or 1440x900."
+    },
+    {
+      "criterion": "Only the currently relevant drawer expands; other areas do not swamp map/first screen.",
+      "verdict": "FAIL",
+      "evidence": "The code renders one active drawer, defaulting to obligations. However, the rail appears after the long district inspector and/or below the map stack; default rail top was y=2850 at 1280x720 and y=1880 at 1440x900."
+    },
+    {
+      "criterion": "Each card contains one problem, one reason, one action, severity/urgency via text, shape/icon, and color.",
+      "verdict": "PARTIAL",
+      "evidence": "Cards include problem, reason, action text, urgency text, severity data attribute/color, and ASCII icon/shape. The appointments rejected-state reason fails copy quality by exposing read-model jargon."
+    },
+    {
+      "criterion": "1280x720 and 1440x900 have no text overlap or hidden primary actions.",
+      "verdict": "FAIL",
+      "evidence": "Playwright DOM measurements show all task rail buttons and the drawer action are outside the viewport on default load for both required sizes."
+    }
+  ],
+  "tests_reviewed": [
+    {
+      "source": "writer handoff",
+      "summary": "Writer reported `git status --short`, taskctl validate/list/ready, JSON shape check, git diff --check, @monsoon/ui test, web test, build:web, test:e2e, pnpm check, and handoff validation all passing."
+    },
+    {
+      "source": "test code review",
+      "summary": "Reviewed `tests/e2e/web-shell.spec.ts` and `tests/ui-m2-district-list.test.tsx`. Existing assertions check card count/kinds/drawer state and appointment flow, but do not assert first-screen task rail visibility or player-copy jargon absence for appointment-error task cards."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before QA handoff write: branch codex/m7-task-rail-collapsed-drawers, clean worktree."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "7fe704f680e821fc44bf3ce886c0d8eb5e1ba639."
+    },
+    {
+      "command": "git log --oneline --decorate -5",
+      "exit_code": 0,
+      "result": "HEAD 7fe704f6 is QA route process commit; implementation commit is 4ba24238; base main is 2bd496fe."
+    },
+    {
+      "command": "git diff --name-status main...HEAD",
+      "exit_code": 0,
+      "result": "Only allowed UI, Storybook, tests, task state, and message/route files changed."
+    },
+    {
+      "command": "git diff --check main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 10 tests."
+    },
+    {
+      "command": "Playwright DOM measurement against local Vite preview at 1280x720 and 1440x900",
+      "exit_code": 0,
+      "result": "Failed acceptance evidence: at 1280x720 `.task-rail` top=2850 and all rail buttons did not intersect viewport; at 1440x900 `.task-rail` top=1880 and all rail buttons did not intersect viewport."
+    },
+    {
+      "command": "Playwright text probe against /?fixture=appointment-error in en-US and zh-CN",
+      "exit_code": 0,
+      "result": "Failed copy evidence: appointments card showed `The selected candidate is blocked by read-model reasons.` and `已选候选人被只读模型原因阻止。`"
+    },
+    {
+      "command": "git status --short --branch after tests/probes",
+      "exit_code": 0,
+      "result": "Before writing this QA handoff, worktree remained clean on codex/m7-task-rail-collapsed-drawers."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "REQUEST_CHANGES_FOR_FIRST_SCREEN_VISIBILITY",
+      "decision": "Rejected for current review. The task rail exists in DOM but is offscreen by default at 1280x720 and 1440x900, hiding the primary actions this task is meant to surface."
+    },
+    {
+      "id": "REQUEST_CHANGES_FOR_PLAYER_COPY",
+      "decision": "Rejected for current review. The appointments card exposes `read-model reasons` / `只读模型原因` to players, violating the task's no read-model jargon requirement."
+    },
+    {
+      "id": "SCOPE_BOUNDARY_PASSED",
+      "decision": "Accepted for scope. The diff is limited to allowed UI, Storybook, test, task state, and process message paths; no forbidden paths were changed."
+    },
+    {
+      "id": "ARCHITECTURE_BOUNDARY_PASSED",
+      "decision": "Accepted for architecture. Reviewed diff preserves existing read-model and callback boundaries and does not mutate authoritative WorldState from React/Pixi/renderer code."
+    },
+    {
+      "id": "TEST_COVERAGE_REQUEST_CHANGES",
+      "decision": "Rejected for coverage. Existing tests pass while the rail is hidden below the first viewport and while read-model jargon is visible, so they must be strengthened."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-TASK-RAIL-OFFSCREEN-ACTIONS",
+      "severity": "P1",
+      "summary": "Players cannot see the task rail cards or active drawer primary action on default load in required viewports.",
+      "mitigation": "Rework layout and add viewport assertions before returning to QA."
+    },
+    {
+      "id": "M7-TASK-RAIL-PLAYER-JARGON",
+      "severity": "P1",
+      "summary": "Player-facing task rail copy leaks read-model terminology in English and Chinese.",
+      "mitigation": "Replace with domain-language copy and add raw/jargon leak assertions."
+    }
+  ],
+  "recommendation": "REQUEST_CHANGES. Fix the layout so the six compact cards and active drawer primary action are visible without scrolling at 1280x720 and 1440x900; replace read-model jargon with player-facing domain copy in both languages; add E2E regression assertions that would fail on the current offscreen/jargon implementation; rerun the required affected test matrix before returning to QA.",
+  "blockers": [
+    "Task rail and primary actions are hidden outside the required default viewports.",
+    "Player-visible task rail copy leaks read-model jargon."
+  ],
+  "created_at": "2026-06-30T07:18:00+08:00"
+}

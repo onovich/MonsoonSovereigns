@@ -2175,7 +2175,9 @@ select:focus-visible,
 .client-shell--beta .client-shell__brand h1,
 .client-shell--beta .client-shell__map-heading h2,
 .client-shell--beta .client-shell__objectives h2,
-.client-shell--beta .client-shell__notices h2 {
+.client-shell--beta .client-shell__notices h2,
+.client-shell--beta .task-rail h2,
+.client-shell--beta .task-rail h3 {
   margin: 0;
   letter-spacing: 0;
   line-height: 1.2;
@@ -2369,16 +2371,24 @@ select:focus-visible,
 
 .client-shell--beta .client-shell__side {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 12px;
   align-self: start;
+  max-height: calc(100vh - 132px);
+  overflow: hidden;
+}
+
+.client-shell--beta .client-shell__side > .district-panel {
+  min-height: 0;
+  overflow: auto;
 }
 
 .client-shell--beta .player-orientation-card,
 .client-shell--beta .district-panel,
 .client-shell--beta .client-shell__objectives,
 .client-shell--beta .client-shell__notices,
-.client-shell--beta .client-shell__route-queue {
+.client-shell--beta .client-shell__route-queue,
+.client-shell--beta .task-rail {
   border: var(--ms-border-hairline);
   border-radius: var(--ms-radius-panel, 4px);
   background: var(--ms-color-surface-paper);
@@ -2600,10 +2610,210 @@ select:focus-visible,
   padding-inline-start: 18px;
 }
 
+.task-rail {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+  max-height: calc(100vh - 148px);
+  overflow: hidden;
+}
+
+.task-rail__header {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.task-rail__header p,
+.task-rail__drawer-panel p {
+  margin: 0;
+  color: var(--ms-color-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.task-rail__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.task-rail__card {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  min-width: 0;
+  min-height: 118px;
+  border: 1px solid #cbd4d9;
+  border-inline-start-width: 4px;
+  border-radius: var(--ms-radius-control);
+  background: #ffffff;
+  padding: 8px;
+  color: var(--ms-color-text-primary);
+  text-align: start;
+}
+
+.task-rail__card[data-task-active="true"] {
+  background: #eef7f5;
+  box-shadow: inset 0 0 0 1px rgba(47, 111, 115, 0.32);
+}
+
+.task-rail__card[data-task-severity="danger"] {
+  border-inline-start-color: var(--ms-color-semantic-danger);
+}
+
+.task-rail__card[data-task-severity="warning"] {
+  border-inline-start-color: var(--ms-color-accent-copper);
+}
+
+.task-rail__card[data-task-severity="ready"] {
+  border-inline-start-color: var(--ms-color-accent-river);
+}
+
+.task-rail__card[data-task-severity="info"] {
+  border-inline-start-color: #647681;
+}
+
+.task-rail__card[data-task-severity="success"] {
+  border-inline-start-color: #5f6f42;
+}
+
+.task-rail__icon {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  place-items: center;
+  color: #263238;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.task-rail__copy,
+.task-rail__meta {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.task-rail__copy strong,
+.task-rail__copy span,
+.task-rail__copy small,
+.task-rail__meta span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.task-rail__copy strong {
+  font-size: 0.82rem;
+}
+
+.task-rail__copy span {
+  color: var(--ms-color-text-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.task-rail__copy small {
+  color: var(--ms-color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.task-rail__meta {
+  grid-column: 1 / -1;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  border-block-start: 1px solid #e3e8eb;
+  padding-block-start: 6px;
+  color: var(--ms-color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.task-rail__meta span:last-child {
+  color: #1f5c61;
+  text-align: end;
+  text-transform: none;
+}
+
+.task-rail__drawer {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  border-block-start: 1px solid #d8dee2;
+  padding-block-start: 10px;
+}
+
+.task-rail__drawer-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.task-rail__drawer-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+}
+
 .client-shell--beta .client-shell__route-queue {
   display: grid;
   gap: 10px;
-  margin: 0 16px 16px;
+  margin: 0;
+  padding: 10px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.task-rail__drawer .district-list__toolbar {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.task-rail__drawer .district-list__head,
+.task-rail__drawer .district-list__row {
+  grid-template-columns:
+    minmax(132px, 1.4fr) minmax(74px, 0.8fr) minmax(66px, 0.7fr)
+    minmax(66px, 0.7fr) minmax(66px, 0.7fr) minmax(96px, 0.9fr);
+}
+
+.task-rail__drawer .district-list__head,
+.task-rail__drawer .district-list__viewport {
+  min-width: 620px;
+  height: 220px;
+}
+
+.task-rail__drawer .district-list__head {
+  height: auto;
+}
+
+.task-rail__drawer .m3-flow,
+.task-rail__drawer .m3-flow * {
+  min-width: 0;
+}
+
+.task-rail__drawer .m3-flow__header,
+.task-rail__drawer .m3-flow__grid {
+  grid-template-columns: 1fr;
+}
+
+.task-rail__drawer .m3-flow__steps {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.task-rail__drawer .m3-flow__metrics {
+  grid-template-columns: 1fr;
 }
 
 .client-shell--beta .client-shell__dev-overlay {
@@ -2653,12 +2863,21 @@ select:focus-visible,
     grid-template-columns: 1fr;
   }
 
+  .client-shell--beta .client-shell__side {
+    order: -1;
+    max-height: calc(100vh - 132px);
+  }
+
   .client-shell--beta .map-toolbar {
     grid-template-columns: 1fr;
   }
 
   .client-shell--beta .client-shell__map-region {
-    min-height: 520px;
+    min-height: 0;
+  }
+
+  .task-rail__cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -2674,12 +2893,13 @@ select:focus-visible,
   .client-shell--beta .district-panel__metrics,
   .client-shell--beta .player-orientation-card__facts,
   .client-shell--beta .player-orientation-card__consequences,
-  .client-shell--beta .client-shell__debug-facts {
+  .client-shell--beta .client-shell__debug-facts,
+  .task-rail__cards,
+  .task-rail__drawer-metrics {
     grid-template-columns: 1fr;
   }
 
   .client-shell--beta .client-shell__route-queue {
-    margin: 0 12px 12px;
     overflow-x: auto;
   }
 

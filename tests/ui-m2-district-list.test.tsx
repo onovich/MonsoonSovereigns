@@ -404,7 +404,14 @@ describe("M2 district client UI", () => {
       )
     );
 
-    expect(englishMarkup).toContain('aria-label="Player guidance"');
+    expect(englishMarkup).toContain('aria-label="Task rail"');
+    expect(englishMarkup).toContain('data-task-rail-card-kind="obligations"');
+    expect(englishMarkup).toContain('data-task-rail-card-kind="appointments"');
+    expect(englishMarkup).toContain('data-task-rail-card-kind="succession"');
+    expect(englishMarkup).toContain('data-task-rail-card-kind="campaign"');
+    expect(englishMarkup).toContain('data-task-rail-card-kind="notifications"');
+    expect(englishMarkup).toContain('data-task-rail-card-kind="results"');
+    expect(englishMarkup).toContain('data-task-drawer-expanded="obligations"');
     expect(englishMarkup).toContain('aria-label="First screen orientation"');
     expect(englishMarkup).toContain("Court Brief");
     expect(englishMarkup).toContain("You are stewarding Validation Court.");
@@ -412,25 +419,21 @@ describe("M2 district client UI", () => {
     expect(englishMarkup).toContain("Recommended next action");
     expect(englishMarkup).toContain("Cost");
     expect(englishMarkup).toContain("If ignored");
-    expect(englishMarkup).toContain("Objective");
-    expect(englishMarkup).toContain("Focus");
-    expect(englishMarkup).toContain("Action");
-    expect(englishMarkup).toContain("Safety");
-    expect(englishMarkup).toContain("Preview before confirming");
-    expect(englishMarkup).toContain('data-guidance-evidence="available"');
-    expect(chineseMarkup).toContain('aria-label="玩家指引"');
+    expect(englishMarkup).toContain("Task Rail");
+    expect(englishMarkup).toContain("Compact priorities stay visible");
+    expect(englishMarkup).toContain("Obligations");
+    expect(englishMarkup).toContain("Campaign prep");
+    expect(englishMarkup).toContain("No action has been previewed yet.");
+    expect(chineseMarkup).toContain('aria-label="任务栏"');
     expect(chineseMarkup).toContain('aria-label="首屏导向"');
     expect(chineseMarkup).toContain("宫廷简报");
     expect(chineseMarkup).toContain("玩家身份");
     expect(chineseMarkup).toContain("优先问题");
     expect(chineseMarkup).toContain("建议下一步");
-    expect(chineseMarkup).toContain("确认前先预览");
-    expect(emptyMarkup).toContain('data-guidance-state="empty"');
-    expect(emptyMarkup).toContain("Use the map and district panel to choose your next focus.");
-    expect(errorMarkup).toContain('data-guidance-state="error"');
-    expect(errorMarkup).toContain(
-      "Preview first; confirmation is separate, and unsafe actions stay blocked."
-    );
+    expect(chineseMarkup).toContain("任务栏");
+    expect(chineseMarkup).toContain("义务");
+    expect(emptyMarkup).toContain('data-task-rail-card-kind="notifications"');
+    expect(errorMarkup).toContain("review note needs attention");
     expect(englishMarkup).not.toContain("state hash");
     expect(englishMarkup).not.toContain("Developer Overlay");
     expect(englishMarkup).not.toContain("Developer diagnostics");
@@ -438,6 +441,7 @@ describe("M2 district client UI", () => {
     expect(englishMarkup).not.toContain("Guidance remains under review");
     expect(englishMarkup).not.toContain("blockers");
     expect(englishMarkup).not.toContain("Prototype District 001");
+    expect(englishMarkup).not.toContain("Prototype District 003");
     expect(englishMarkup).not.toContain("route.season.monsoon-risk");
     expect(englishMarkup).not.toContain("m7.guidance");
   });

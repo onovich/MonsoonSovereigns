@@ -54,6 +54,21 @@ type PlatformMatrixFixture = {
 
 const platformMatrix = readPlatformMatrixFixture();
 
+async function expectIntersectsViewport(locator: Locator): Promise<void> {
+  const intersectsViewport = await locator.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.width > 0 &&
+      rect.height > 0 &&
+      rect.bottom > 0 &&
+      rect.right > 0 &&
+      rect.top < window.innerHeight &&
+      rect.left < window.innerWidth
+    );
+  });
+  expect(intersectsViewport).toBe(true);
+}
+
 test("web shell loads and projects the read model", async ({ page }) => {
   await page.goto("/");
 
@@ -118,7 +133,7 @@ test("web shell resolves system language, switches language, and persists prefer
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("heading", { name: "季风诸王" })).toBeVisible();
   await expect(page.getByLabel("语言")).toHaveValue("system");
-  await expect(page.getByLabel("目标与行动")).toContainText("当前目标");
+  await expect(page.getByLabel("任务栏")).toContainText("任务栏");
   await expect(page.getByLabel("虚拟化地区行")).toHaveAttribute("data-row-count", "30");
   await expect(page.getByRole("button", { name: "经济地图模式" })).toBeVisible();
   await expect(page.getByRole("button", { name: "按人口排序" })).toBeVisible();
@@ -148,7 +163,7 @@ test("web shell resolves system language, switches language, and persists prefer
   await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
   await expect(page.getByRole("heading", { name: "Monsoon Sovereigns" })).toBeVisible();
   await expect(page.getByLabel("Language")).toHaveValue("en-US");
-  await expect(page.getByLabel("Objectives and actions")).toContainText("Current Objective");
+  await expect(page.getByLabel("Task rail")).toContainText("Task Rail");
   await expect(page.getByText("route.season.monsoon-risk")).toHaveCount(0);
 
   await page.reload();
@@ -174,6 +189,32 @@ test("M7 player guidance lite supports collapse dismiss and the core appointment
   await expect(orientation).toContainText("Cost");
   await expect(orientation).toContainText("If ignored");
 
+  const taskRail = page.getByRole("region", { name: "Task rail" });
+  await expect(taskRail).toHaveAttribute("data-task-rail-card-count", "6");
+  await expect(taskRail).toHaveAttribute("data-active-drawer", "obligations");
+  await expect(taskRail.locator('[data-task-rail-card-kind="obligations"]')).toContainText(
+    "Obligations"
+  );
+  await expect(taskRail.locator('[data-task-rail-card-kind="appointments"]')).toContainText(
+    "Preview Appointment"
+  );
+  await expect(taskRail.locator('[data-task-rail-card-kind="succession"]')).toContainText(
+    "Succession"
+  );
+  await expect(taskRail.locator('[data-task-rail-card-kind="campaign"]')).toContainText(
+    "Campaign prep"
+  );
+  await expect(taskRail.locator('[data-task-rail-card-kind="notifications"]')).toContainText(
+    "Notifications"
+  );
+  await expect(taskRail.locator('[data-task-rail-card-kind="results"]')).toContainText("Results");
+  await expect(page.getByLabel("Expanded task drawer")).toHaveAttribute(
+    "data-task-drawer-expanded",
+    "obligations"
+  );
+
+  await taskRail.locator('[data-task-rail-card-kind="notifications"]').click();
+  await expect(taskRail).toHaveAttribute("data-active-drawer", "notifications");
   const guidance = page.getByRole("region", { name: "Player guidance" });
   await expect(guidance).toHaveAttribute("data-guidance-state", "error");
   await expect(guidance).toHaveAttribute("data-guidance-evidence", "available");
@@ -204,13 +245,13 @@ test("M7 player guidance lite supports collapse dismiss and the core appointment
 
   await page
     .getByLabel("Player action queue")
-    .getByRole("button", { name: "Preview Appointment" })
+    .locator('[data-task-rail-card-kind="appointments"]')
     .click();
+  await expect(taskRail).toHaveAttribute("data-active-drawer", "appointments");
   await expect(page.getByLabel("Appointment and governance flow")).toHaveAttribute(
     "data-flow-stage",
     "compare-candidates"
   );
-  await expect(guidance).toContainText("Compare candidates and read the projected impact.");
   await expect(orientation).toContainText("Preview appointment");
   await page
     .getByLabel("Appointment and governance flow")
@@ -224,8 +265,10 @@ test("M7 player guidance lite supports collapse dismiss and the core appointment
       name: "Confirm appointment"
     })
     .click();
-  await expect(guidance).toContainText("Appointment request prepared.");
-  await expect(guidance).toContainText("A standard command was submitted after confirmation.");
+  await taskRail.locator('[data-task-rail-card-kind="results"]').click();
+  await expect(page.getByLabel("Expanded task drawer")).toContainText(
+    "Appointment request prepared."
+  );
   await expect(page.getByText("route.season.monsoon-risk")).toHaveCount(0);
   await expect(page.getByText("Prototype District 001")).toHaveCount(0);
   await expect(page.getByText("state hash")).toHaveCount(0);
@@ -243,27 +286,92 @@ test("M7 player guidance lite localizes English Chinese and system fallback", as
     });
   });
   await page.goto("/");
+  await page.locator('[data-task-rail-card-kind="notifications"]').click();
 
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("region", { name: "首屏导向" })).toContainText("宫廷简报");
-  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("目标");
-  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("确认前先预览");
+  await expect(page.locator(".player-guidance-lite")).toContainText("目标");
+  await expect(page.locator(".player-guidance-lite")).toContainText("确认前先预览");
 
   await page.getByLabel("语言").selectOption("en-US");
   await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
   await expect(page.getByRole("region", { name: "First screen orientation" })).toContainText(
     "Court Brief"
   );
-  await expect(page.getByRole("region", { name: "Player guidance" })).toContainText("Objective");
-  await expect(page.getByRole("region", { name: "Player guidance" })).toContainText(
-    "Preview before confirming"
-  );
+  await expect(page.locator(".player-guidance-lite")).toContainText("Objective");
+  await expect(page.locator(".player-guidance-lite")).toContainText("Preview before confirming");
 
   await page.getByLabel("Language").selectOption("zh-CN");
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
-  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("焦点");
-  await expect(page.getByRole("region", { name: "玩家指引" })).toContainText("行动");
+  await expect(page.locator(".player-guidance-lite")).toContainText("焦点");
+  await expect(page.locator(".player-guidance-lite")).toContainText("行动");
   await expect(page.getByText("shell.guidanceLite")).toHaveCount(0);
+});
+
+test("M7 task rail is first-screen actionable at required desktop viewports", async ({ page }) => {
+  const viewports = [
+    { width: 1280, height: 720 },
+    { width: 1440, height: 900 }
+  ];
+  const cardKinds = [
+    "obligations",
+    "appointments",
+    "succession",
+    "campaign",
+    "notifications",
+    "results"
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+
+    const taskRail = page.getByRole("region", { name: "Task rail" });
+    await expect(taskRail).toHaveAttribute("data-task-rail-card-count", "6");
+    await expect(taskRail).toHaveAttribute("data-active-drawer", "obligations");
+    await expectIntersectsViewport(taskRail);
+
+    for (const kind of cardKinds) {
+      await expectIntersectsViewport(taskRail.locator(`[data-task-rail-card-kind="${kind}"]`));
+    }
+
+    const activeDrawer = page.getByLabel("Expanded task drawer");
+    await expect(activeDrawer).toHaveAttribute("data-task-drawer-expanded", "obligations");
+    await expectIntersectsViewport(activeDrawer);
+    await expectIntersectsViewport(
+      activeDrawer.locator('[data-task-drawer-primary-action="true"]')
+    );
+
+    const overflow = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth
+    }));
+    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+  }
+});
+
+test("M7 task rail appointment-error copy hides implementation jargon in English and Chinese", async ({
+  page
+}) => {
+  await page.goto("/?fixture=appointment-error");
+  const englishTaskRail = page.getByRole("region", { name: "Task rail" });
+  await expect(englishTaskRail.locator('[data-task-rail-card-kind="appointments"]')).toContainText(
+    "office eligibility concerns"
+  );
+  await englishTaskRail.locator('[data-task-rail-card-kind="appointments"]').click();
+  const englishText = (await englishTaskRail.textContent()) ?? "";
+  expect(englishText).not.toMatch(
+    /read model|read-model|GameCommand|command path|raw reason|reason-code|internal jargon/i
+  );
+
+  await page.getByLabel("Language").selectOption("zh-CN");
+  const chineseTaskRail = page.getByRole("region", { name: "任务栏" });
+  await expect(chineseTaskRail.locator('[data-task-rail-card-kind="appointments"]')).toContainText(
+    "职位条件疑虑"
+  );
+  await chineseTaskRail.locator('[data-task-rail-card-kind="appointments"]').click();
+  const chineseText = (await chineseTaskRail.textContent()) ?? "";
+  expect(chineseText).not.toMatch(/只读模型|GameCommand|命令路径|内部原因码|内部术语|原始原因码/);
 });
 
 test("M2 map zoom, selection, and mode switching updates read-model UI", async ({ page }) => {
@@ -517,17 +625,14 @@ test("M3 appointment player flow previews confirms result and hides raw reason c
 }) => {
   await page.goto("/");
 
-  const flow = page.getByLabel("Appointment and governance flow");
-  await expect(flow).toHaveAttribute("data-flow-stage", "select-office");
-  await expect(flow).toHaveAttribute("data-debug-raw-reasons", "hidden");
+  await expect(page.getByLabel("Appointment and governance flow")).toHaveCount(0);
   await expect(page.getByLabel("M3 appointment workspace")).toHaveCount(0);
   await expect(page.getByText("office-eligibility-failed")).toHaveCount(0);
   await expect(page.getByText("appointment.local-claimant")).toHaveCount(0);
 
-  await page
-    .getByLabel("Player action queue")
-    .getByRole("button", { name: "Preview Appointment" })
-    .click();
+  await page.locator('[data-task-rail-card-kind="appointments"]').click();
+  const flow = page.getByLabel("Appointment and governance flow");
+  await expect(flow).toHaveAttribute("data-debug-raw-reasons", "hidden");
   await expect(flow).toHaveAttribute("data-flow-stage", "compare-candidates");
   await page.getByLabel("Select office").selectOption("2");
   await expect(flow).toHaveAttribute("data-selected-candidate-status", "eligible");
@@ -549,7 +654,7 @@ test("M3 appointment player flow previews confirms result and hides raw reason c
     "Appointment request prepared."
   );
   await expect(page.getByLabel("Appointment result feedback")).toContainText(
-    "standard appointment GameCommand"
+    "same formal order used by the court systems"
   );
 
   await flow.locator("summary", { hasText: "Bulk preview" }).click();
@@ -564,6 +669,7 @@ test("M3 appointment player flow localizes Chinese and keeps rejected confirmati
 }) => {
   await page.goto("/?fixture=appointment-error");
   await page.getByLabel("Language").selectOption("zh-CN");
+  await page.locator('[data-task-rail-card-kind="appointments"]').click();
 
   const flow = page.getByLabel("任命与治理流程");
   await expect(flow).toHaveAttribute("data-selected-candidate-status", "rejected");
@@ -571,7 +677,7 @@ test("M3 appointment player flow localizes Chinese and keeps rejected confirmati
   await expect(page.getByLabel("候选人比较")).toContainText("不符合职位条件");
   await flow.getByRole("button", { name: "预览任命" }).click();
   await expect(flow).toHaveAttribute("data-flow-stage", "preview");
-  await expect(page.getByLabel("任命影响预览")).toContainText("只读模型拒绝此任命");
+  await expect(page.getByLabel("任命影响预览")).toContainText("暂时不能确认任命");
   await expect(flow.getByRole("button", { name: "确认任命" })).toBeDisabled();
   await expect(page.getByLabel("任命结果反馈")).toContainText("该候选人当前被拒绝");
   await expect(page.getByText("office-eligibility-failed")).toHaveCount(0);
@@ -1054,6 +1160,7 @@ test("M3 appointment player flow has no horizontal overflow across required view
     await page.evaluate(() => {
       document.documentElement.style.fontSize = "20px";
     });
+    await page.locator('[data-task-rail-card-kind="appointments"]').click();
     await expect(page.getByLabel("Appointment and governance flow")).toBeVisible();
     const overflow = await page.evaluate(() => {
       const flow = document.querySelector(".m3-flow");

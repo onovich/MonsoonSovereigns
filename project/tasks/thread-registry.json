@@ -11,10 +11,12 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-29T22:29:07.356Z",
-        "task_id": null,
-        "task_ids": [],
-        "branch_or_worktree": "codex/close-m7-decision-inspector-rewrite"
+        "updated_at": "2026-06-29T23:15:23.353Z",
+        "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+        "task_ids": [
+          "M7-TASK-RAIL-COLLAPSED-DRAWERS-001"
+        ],
+        "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers"
       }
     ],
     "retired_leads": [
@@ -35,7 +37,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-29T21:14:59.495Z"
+      "checked_at": "2026-06-29T23:04:43.891Z"
     }
   },
   "entries": {
@@ -7389,6 +7391,94 @@
       "review_handoff": "project/messages/outbox/M7-DECISION-INSPECTOR-REWRITE-001__MSG-20260630-M7-DECISION-INSPECTOR-QA-REVIEW__qa_reviewer.json",
       "review_status": "ACCEPT",
       "closed_at": "2026-06-29T22:29:07.356Z"
+    },
+    "M7-TASK-RAIL-COLLAPSED-DRAWERS-001:lead_orchestrator": {
+      "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "source_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+      "updated_at": "2026-06-30T03:58:21.945Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-LEAD-ACCEPT__lead_orchestrator.json",
+      "accepted_at": "2026-06-30T03:58:21.945Z",
+      "accepted_implementation_commit": "dd661a14c9d594941dc6ae1e31a9a58851c0378a"
+    },
+    "M7-TASK-RAIL-COLLAPSED-DRAWERS-001:client_engineer": {
+      "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "role": "client_engineer",
+      "thread_id": "019f1587-afd6-7bf3-b40c-a1e0604771b0",
+      "nickname": "Canvas the 2nd",
+      "status": "accepted_by_qa_r3",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-29T22:38:58.254Z",
+      "updated_at": "2026-06-30T03:58:21.945Z",
+      "review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "4ba24238b9cd871ba059b88442e37dd27db15ff7",
+      "request_changes_source": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
+      "request_changes_route": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-REQUEST-CHANGES-TO-CLIENT.json",
+      "expected_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+      "request_changes_submission_id": "019f15a9-c4e4-7b81-b409-1921b42b20d8",
+      "request_changes_sent_at": "2026-06-29T23:15:23.353Z",
+      "review_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+      "review_commit_r2": "2fe29605faf4dee546b5318cb3c4b3f8676e14f2",
+      "request_changes_r2_source": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
+      "request_changes_r2_route": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-R2-REQUEST-CHANGES-TO-CLIENT.json",
+      "expected_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+      "request_changes_r2_submission_id": "019f15b8-4e7f-7fe0-b5cb-4394e7c3ef3a",
+      "request_changes_r2_sent_at": "2026-06-29T23:31:14.100Z",
+      "review_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+      "review_commit_r3": "dd661a14c9d594941dc6ae1e31a9a58851c0378a",
+      "accepted_implementation_commit": "dd661a14c9d594941dc6ae1e31a9a58851c0378a"
+    },
+    "M7-TASK-RAIL-COLLAPSED-DRAWERS-001:qa_reviewer": {
+      "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f159f-d8bf-7142-82a5-81c893657746",
+      "nickname": "Auditor the 2nd",
+      "status": "accepted_r3",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "7fe704f680e821fc44bf3ce886c0d8eb5e1ba639",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-29T23:04:43.891Z",
+      "updated_at": "2026-06-30T03:58:21.945Z",
+      "review_status": "REQUEST_CHANGES",
+      "review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
+      "source_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+      "route_file_r2": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R2-TO-QA-REVIEW.json",
+      "expected_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
+      "review_commit_r2": "2fe29605faf4dee546b5318cb3c4b3f8676e14f2",
+      "route_submission_id_r2": "019f15b2-0cc2-71a0-8c32-df9db92118b7",
+      "route_sent_at_r2": "2026-06-29T23:24:20.038Z",
+      "review_status_r2": "REQUEST_CHANGES",
+      "review_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
+      "source_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+      "route_file_r3": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R3-TO-QA-REVIEW.json",
+      "expected_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json",
+      "review_commit_r3": "dd661a14c9d594941dc6ae1e31a9a58851c0378a",
+      "route_submission_id_r3": "019f16a3-548a-74a1-93b9-da0683bf616e",
+      "route_sent_at_r3": "2026-06-30T03:47:51.134Z",
+      "review_status_r3": "ACCEPT",
+      "review_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json"
     }
   },
   "replaced_threads": [
@@ -7563,7 +7653,7 @@
       "replaced_at": "2026-06-29T11:52:30.907Z"
     }
   ],
-  "updated_at": "2026-06-29T22:29:07.356Z",
+  "updated_at": "2026-06-30T03:58:21.945Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",

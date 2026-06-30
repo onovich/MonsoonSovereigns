@@ -1,0 +1,286 @@
+{
+  "message_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "R2 resolves the first-screen visibility blocker: at 1280x720 and 1440x900 the six task rail cards, active obligations drawer, and drawer primary action now intersect the viewport, with no document-level horizontal overflow in the QA probe. However, R2 still fails the player-copy and regression-test findings once the appointments drawer is opened in the appointment-error fixture. Because appointments render inside the task rail drawer, the task rail still exposes read-model and GameCommand implementation jargon in player mode: English shows `Appointment is rejected by the read model` and `standard appointment GameCommand`; Chinese shows `只读模型拒绝此任命` and `GameCommand`. The new jargon test only inspects the default obligations drawer and misses the expanded appointments drawer.",
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "reviewed current HEAD 2fe29605faf4dee546b5318cb3c4b3f8676e14f2; R2 implementation commit 2fe29605faf4dee546b5318cb3c4b3f8676e14f2; prior QA REQUEST_CHANGES handoff commit 7fe704f680e821fc44bf3ce886c0d8eb5e1ba639; base main 2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route REQUEST_CHANGES back to the original client_engineer writer. Keep this task out of lead acceptance until the appointments drawer player-copy leak and the missing regression coverage are fixed and rerun.",
+  "artifacts": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "findings": [
+    {
+      "severity": "P1",
+      "status": "REQUEST_CHANGES",
+      "file": "packages/ui/src/i18n.ts",
+      "symbols": [
+        "appointment.preview.rejectedTitle",
+        "appointment.result.commandParity"
+      ],
+      "lines": [
+        410,
+        424,
+        882,
+        895
+      ],
+      "related_files": [
+        "packages/ui/src/index.tsx:952",
+        "packages/ui/src/index.tsx:2617"
+      ],
+      "reproduction": [
+        "Started local Web preview with `pnpm --dir apps/web exec vite --host 127.0.0.1 --port 4173 --strictPort`.",
+        "Opened `http://127.0.0.1:4173/?fixture=appointment-error` at 1440x900.",
+        "Selected `en-US`, clicked `[data-task-rail-card-kind=\"appointments\"]`, then read `.task-rail` text.",
+        "Expanded English task rail text contained `Appointment is rejected by the read model` and `Confirmation submits the standard appointment GameCommand; no player-only command path is used.`",
+        "Selected `zh-CN`, clicked the appointments card, then read `.task-rail` text.",
+        "Expanded Chinese task rail text contained `只读模型拒绝此任命` and `确认会提交标准任命 GameCommand，不使用玩家专用命令路径。`"
+      ],
+      "impact": "This still violates the task requirement that task rail player-visible copy must not leak read-model, raw reason, or internal implementation jargon. The leak is inside the task rail's expanded appointments drawer, so players can reach it directly from the compact appointments card.",
+      "necessary_fix": "Replace the player-visible appointment drawer rejection title and command parity copy with domain-language copy that does not use `read model`, `只读模型`, `GameCommand`, or internal command-path wording. Keep command-boundary semantics in code/tests if needed, but do not expose those terms in player-mode UI."
+    },
+    {
+      "severity": "P2",
+      "status": "REQUEST_CHANGES",
+      "file": "tests/e2e/web-shell.spec.ts",
+      "symbols": [
+        "M7 task rail appointment-error copy hides implementation jargon in English and Chinese"
+      ],
+      "lines": [
+        353,
+        357,
+        361,
+        362,
+        369,
+        370
+      ],
+      "related_files": [
+        "tests/e2e/web-shell.spec.ts:653",
+        "tests/e2e/web-shell.spec.ts:676"
+      ],
+      "reproduction": [
+        "Ran `pnpm exec playwright test tests/e2e/web-shell.spec.ts -g \"M7 task rail\"`; both R2 task rail tests passed.",
+        "The R2 jargon test only collects `taskRail.textContent()` before clicking the appointments card, so it only sees the default obligations drawer.",
+        "The test's English regex rejects `read-model` with a hyphen but not `read model` with a space, and it does not reject `GameCommand`.",
+        "Existing tests still assert `standard appointment GameCommand` and `只读模型拒绝此任命`, proving the current suite preserves the leaked drawer copy instead of failing on it."
+      ],
+      "impact": "The new tests would not fail on the remaining player-facing leak in the expanded task rail drawer. This leaves the exact class of R1 copy problem partially unguarded.",
+      "necessary_fix": "Extend the task rail appointment-error regression to click the appointments card in both en-US and zh-CN, then assert the entire `.task-rail` region, including the expanded drawer, contains no `read model`, `read-model`, `只读模型`, raw/reason-code terms, `GameCommand`, command-path wording, or equivalent internal jargon. Update or split older appointment-flow assertions that currently require these implementation terms."
+    }
+  ],
+  "resolved_findings": [
+    {
+      "source_finding": "R1 P1 first-screen task rail and drawer actions were offscreen at 1280x720 and 1440x900.",
+      "status": "RESOLVED",
+      "evidence": "QA Playwright DOM probe at 1280x720 measured rail top=255 bottom=827, all six cards intersecting viewport, and primary action top=626 bottom=660 fully in viewport. At 1440x900 measured rail top=121 bottom=873 fully in viewport, all six cards fully in viewport, and primary action top=659 bottom=693 fully in viewport. Document scrollWidth equaled clientWidth in both probes."
+    },
+    {
+      "source_finding": "R1 default appointment-error card leaked `read-model reasons` / `只读模型原因`.",
+      "status": "PARTIALLY_RESOLVED",
+      "evidence": "The compact appointments card now says `office eligibility concerns` / `职位条件疑虑` and no longer leaks the original text. The expanded appointments drawer still leaks `read model`, `只读模型`, and `GameCommand`."
+    },
+    {
+      "source_finding": "R1 tests checked DOM presence but not first-screen visibility.",
+      "status": "PARTIALLY_RESOLVED",
+      "evidence": "R2 adds real viewport intersection checks for the rail, cards, active drawer, and drawer primary action. The copy regression remains incomplete because it does not open the appointments drawer."
+    }
+  ],
+  "scope_assessment": {
+    "status": "PASS",
+    "changed_files": [
+      ".storybook/WebClientShell.stories.tsx",
+      "apps/web/src/shell/web-client-shell.test.tsx",
+      "apps/web/src/styles/shell.css",
+      "packages/ui/src/i18n.ts",
+      "packages/ui/src/index.tsx",
+      "project/goal-mode-state.json",
+      "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-REQUEST-CHANGES-TO-CLIENT.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+      "project/tasks/thread-registry.json",
+      "tests/e2e/web-shell.spec.ts",
+      "tests/ui-m2-district-list.test.tsx"
+    ],
+    "r2_code_delta_files": [
+      "apps/web/src/shell/web-client-shell.test.tsx",
+      "apps/web/src/styles/shell.css",
+      "packages/ui/src/i18n.ts",
+      "packages/ui/src/index.tsx",
+      "tests/e2e/web-shell.spec.ts"
+    ],
+    "forbidden_paths_touched": [],
+    "assessment": "R2 implementation delta and full branch diff stay inside allowed UI/test/process paths. No sim-core, sim-ai, protocol, save-format, content-source, platform/Electron, apps/desktop, tools, .github, docs/GATE, roadmap, acceptance matrix, MANIFEST, SHA256SUMS, or VALIDATION_REPORT changes were found."
+  },
+  "architecture_assessment": {
+    "status": "PASS",
+    "assessment": "The R2 changes reorder React presentation, adjust CSS bounded scrolling, and reuse existing appointment/campaign/obligation callbacks and read-model props. No direct WorldState mutation, sim/protocol/save changes, Pixi/map authority changes, new GameCommand surface, manual node battle implementation, server, telemetry, cloud-save implementation, content-lock approval, or content/release/commercial scope was found. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`; formal content lock remains not accepted."
+  },
+  "copy_i18n_assessment": {
+    "status": "FAIL",
+    "assessment": "Compact card copy is fixed, but expanded task rail appointment drawer still exposes read-model and GameCommand implementation terms through existing appointment flow i18n strings."
+  },
+  "experience_assessment": {
+    "status": "PARTIAL",
+    "assessment": "The first-screen actionability problem is materially improved: the rail appears before the long inspector and the required cards/actions are visible in the first viewport. The remaining expanded-drawer jargon still undermines player-facing clarity when following the appointments task."
+  },
+  "acceptance_criteria_verdict": [
+    {
+      "criterion": "Default has obligations / appointments / succession / campaign prep / notifications / results compact task cards.",
+      "verdict": "PASS",
+      "evidence": "Six cards remain present and intersect the viewport at 1280x720 and 1440x900 in QA DOM probes."
+    },
+    {
+      "criterion": "Only the currently relevant drawer expands; other areas do not swamp map/first screen.",
+      "verdict": "PASS",
+      "evidence": "Default active drawer is obligations; the rail is first-screen visible and long content is bounded. At 1280x720 the map moves below the rail but this matches R2's first-screen actionability tradeoff."
+    },
+    {
+      "criterion": "Each card contains one problem, one reason, one action, severity/urgency via text, shape/icon, and color.",
+      "verdict": "PASS",
+      "evidence": "Card structure remains intact and compact card appointment rejection copy no longer uses the R1 `read-model reasons` wording."
+    },
+    {
+      "criterion": "1280x720 and 1440x900 have no text overlap or hidden primary actions.",
+      "verdict": "PASS_FOR_VISIBILITY",
+      "evidence": "All six cards, active drawer, and active drawer primary action intersect viewport in QA probes; document-level horizontal overflow was absent."
+    },
+    {
+      "criterion": "New player-visible text uses i18n and does not leak raw reason codes / read-model jargon.",
+      "verdict": "FAIL",
+      "evidence": "Expanded appointments drawer inside task rail still displays `Appointment is rejected by the read model`, `只读模型拒绝此任命`, and `GameCommand`."
+    }
+  ],
+  "tests_reviewed": [
+    {
+      "source": "writer R2 handoff",
+      "summary": "Writer reported taskctl validate/list/ready, JSON shape check, git diff --check, @monsoon/ui test, web test, build:web, test:e2e 25/25, pnpm check, and R2 handoff validation all passing."
+    },
+    {
+      "source": "test code review",
+      "summary": "Reviewed R2 additions in `tests/e2e/web-shell.spec.ts`. Viewport intersection coverage is meaningful and would fail the R1 offscreen layout. The copy test is insufficient because it does not click the appointments card and does not reject spaced `read model` or `GameCommand`."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "At review start, HEAD was `2fe29605` on branch `codex/m7-task-rail-collapsed-drawers`; worktree already had modified process files (`project/goal-mode-state.json`, `project/messages/outbox/GOAL-MODE-CONTINUATION.json`, task JSON, thread registry) and one untracked route file. QA did not modify these."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "2fe29605faf4dee546b5318cb3c4b3f8676e14f2."
+    },
+    {
+      "command": "git show --stat --oneline --decorate 2fe29605faf4dee546b5318cb3c4b3f8676e14f2",
+      "exit_code": 0,
+      "result": "R2 commit `fix(ui): keep M7 task rail visible in first viewport` changed apps/web shell test/CSS, packages/ui i18n/index, R2 writer handoff, and tests/e2e web shell."
+    },
+    {
+      "command": "git diff --name-status 0da728e3..2fe29605faf4dee546b5318cb3c4b3f8676e14f2",
+      "exit_code": 0,
+      "result": "R2 code delta limited to apps/web/src/shell/web-client-shell.test.tsx, apps/web/src/styles/shell.css, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, and R2 writer handoff."
+    },
+    {
+      "command": "git diff --check main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R2 writer handoff JSON."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 10 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 17 tests."
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/web-shell.spec.ts -g \"M7 task rail\"",
+      "exit_code": 0,
+      "result": "R2 focused task rail tests passed: 2/2."
+    },
+    {
+      "command": "QA Playwright DOM measurement against local Vite preview at 1280x720 and 1440x900",
+      "exit_code": 0,
+      "result": "Visibility finding resolved: all six card buttons, active drawer, and obligations primary action intersected viewport; no document horizontal overflow."
+    },
+    {
+      "command": "QA Playwright text probe against /?fixture=appointment-error after clicking the appointments card in en-US and zh-CN",
+      "exit_code": 0,
+      "result": "Copy finding still failing in expanded drawer: English task rail included `Appointment is rejected by the read model` and `standard appointment GameCommand`; Chinese task rail included `只读模型拒绝此任命` and `GameCommand`."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "R2_VISIBILITY_FIX_ACCEPTED",
+      "decision": "Accepted for viewport actionability. The R1 offscreen layout failure is fixed at 1280x720 and 1440x900."
+    },
+    {
+      "id": "R2_COMPACT_CARD_COPY_PARTIAL",
+      "decision": "Accepted only for compact card copy. The R1 exact `read-model reasons` / `只读模型原因` text is gone from the card."
+    },
+    {
+      "id": "R2_EXPANDED_DRAWER_COPY_REJECTED",
+      "decision": "Rejected. The task rail's expanded appointments drawer still exposes read-model and GameCommand jargon in player mode."
+    },
+    {
+      "id": "R2_TEST_COVERAGE_REJECTED",
+      "decision": "Rejected. The new copy regression does not open the appointments drawer and does not reject spaced `read model` or `GameCommand`, while older tests still assert leaked strings."
+    },
+    {
+      "id": "R2_SCOPE_AND_ARCHITECTURE_ACCEPTED",
+      "decision": "Accepted. R2 stays within allowed paths and preserves read-model/GameCommand authority boundaries; no content-lock approval or manual node battle reversal is introduced."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-TASK-RAIL-EXPANDED-DRAWER-JARGON",
+      "severity": "P1",
+      "summary": "Following the appointments task exposes read-model and GameCommand terms inside the task rail drawer.",
+      "mitigation": "Replace strings and extend regression to expanded drawer before returning to QA."
+    },
+    {
+      "id": "M7-TASK-RAIL-COPY-REGRESSION-GAP",
+      "severity": "P2",
+      "summary": "R2 tests pass while expanded task rail still leaks implementation terms.",
+      "mitigation": "Click appointments card in the copy regression and reject `read model`, `read-model`, `GameCommand`, and Chinese equivalents across the whole task rail region."
+    }
+  ],
+  "recommendation": "REQUEST_CHANGES. Keep the R2 layout fix, but replace appointment drawer player-mode jargon and strengthen tests to cover the expanded appointments drawer in both English and Chinese. Do not accept or close the task until the focused task rail tests fail on the current expanded-drawer leak and pass after the copy fix.",
+  "blockers": [
+    "Expanded appointments drawer inside task rail still leaks `read model`, `只读模型`, and `GameCommand` to players.",
+    "R2 copy regression passes without exercising the expanded drawer state that still leaks the terms."
+  ],
+  "created_at": "2026-06-30T07:35:00+08:00"
+}
