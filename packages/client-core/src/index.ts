@@ -2265,6 +2265,10 @@ export function createM7TopologyClientReadModelSnapshot(
         {
           label: "Topology hash",
           value: fixture.topologyResult.topology.topologyHash
+        },
+        {
+          label: "State hash",
+          value: baseSnapshot.simulation.stateHash
         }
       ]
     },
