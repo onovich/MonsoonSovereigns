@@ -11,7 +11,7 @@
     "M7-CONTENT-LOCK-ACCEPTANCE-001",
     "M7-CORE-ACTION-LOOP-UX-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
   "last_integrated_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
   "last_main_commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
@@ -25,14 +25,14 @@
         "M7-CONTENT-LOCK-ACCEPTANCE-001",
         "M7-CORE-ACTION-LOOP-UX-001"
       ],
-      "status": "awaiting_gameplay_review",
+      "status": "awaiting_writer_r2",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-core-action-loop-ux",
-      "updated_at": "2026-06-30T18:47:25.2237866+08:00",
+      "updated_at": "2026-06-30T18:55:50.9479887+08:00",
       "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-CLOSED__lead_orchestrator.json",
       "start_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json"
@@ -41,24 +41,26 @@
       "thread_id": "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
       "nickname": "Canvas",
       "task_id": "M7-CORE-ACTION-LOOP-UX-001",
-      "status": "review",
+      "status": "request_changes_in_progress",
       "role": "client_engineer",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
       "actual_effort": "unknown",
       "branch_or_worktree": "codex/m7-core-action-loop-ux",
-      "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
       "started_at": "2026-06-30T18:15:12.6679256+08:00",
       "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
       "review_commit": "e346153264fa96786613771c865a3576e828d712",
-      "updated_at": "2026-06-30T18:43:17.7035010+08:00"
+      "updated_at": "2026-06-30T18:55:50.9479887+08:00",
+      "request_changes_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "request_changes_route": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json"
     },
     "gameplay_designer": {
       "thread_id": "019f1823-bb3d-76d0-8b32-21eb30541272",
       "nickname": "Ledger",
-      "status": "in_progress",
+      "status": "request_changes",
       "role": "gameplay_designer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -70,7 +72,8 @@
       "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
       "review_commit": "e346153264fa96786613771c865a3576e828d712",
       "started_at": "2026-06-30T18:47:25.2237866+08:00",
-      "updated_at": "2026-06-30T18:47:25.2237866+08:00"
+      "updated_at": "2026-06-30T18:55:50.9479887+08:00",
+      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json"
     }
   },
   "unresolved_risks": [
@@ -131,11 +134,11 @@
     "note": "Product owner gave REQUEST_CHANGES, so there is no active waiting Human Gate. Complete systemic interaction recovery implementation and validation before reopening M7 content-lock reconsideration.",
     "recorded_at": "2026-06-30T18:15:12.6679256+08:00"
   },
-  "next_machine_action": "Await M7-CORE-ACTION-LOOP-UX-001 gameplay_designer review, then route to QA on ACCEPT or back to writer on REQUEST_CHANGES.",
+  "next_machine_action": "Await M7-CORE-ACTION-LOOP-UX-001 client_engineer R2 handoff after gameplay_designer REQUEST_CHANGES.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-30T18:47:25.2237866+08:00",
+  "last_updated_at": "2026-06-30T18:55:50.9479887+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -914,7 +917,7 @@
     ]
   },
   "m7_core_action_loop_ux": {
-    "status": "REVIEW",
+    "status": "IN_PROGRESS",
     "task_id": "M7-CORE-ACTION-LOOP-UX-001",
     "branch_or_worktree": "codex/m7-core-action-loop-ux",
     "base_main_commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
@@ -931,11 +934,17 @@
     "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
     "review_commit": "e346153264fa96786613771c865a3576e828d712",
     "review_ready_at": "2026-06-30T18:43:17.7035010+08:00",
-    "next_action": "Await gameplay_designer review.",
+    "next_action": "Await client_engineer R2 handoff.",
     "gameplay_thread_id": "019f1823-bb3d-76d0-8b32-21eb30541272",
     "gameplay_thread_nickname": "Ledger",
     "gameplay_route": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
     "expected_gameplay_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
-    "routed_to_gameplay_at": "2026-06-30T18:47:25.2237866+08:00"
+    "routed_to_gameplay_at": "2026-06-30T18:47:25.2237866+08:00",
+    "gameplay_status": "REQUEST_CHANGES",
+    "gameplay_review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "request_changes_round": 1,
+    "request_changes_route": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
+    "request_changes_sent_at": "2026-06-30T18:55:50.9479887+08:00"
   }
 }
