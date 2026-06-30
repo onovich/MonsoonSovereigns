@@ -1,0 +1,99 @@
+{
+  "message_id": "MSG-20260630-M7-CORE-ACTION-LEAD-ACCEPT",
+  "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-CORE-ACTION-LOOP-UX-001 after gameplay_designer R2 ACCEPT and independent qa_reviewer ACCEPT. The task now satisfies the systemic interaction recovery slice for the player-facing phase/action loop, direct District 1 obligation handling entry, appointment preview/confirmation feedback, duplicate-submit guard, and no direct authoritative state mutation from UI. The R2 gameplay blockers were closed by removing player-mode engineering wording and adding District 1 troop obligation support feedback after the support action. This acceptance does not approve formal M7 content lock and does not close the task until PR CI passes and the branch enters origin/main.",
+  "artifacts": [
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
+  "accepted_implementation_commits": [
+    "e346153264fa96786613771c865a3576e828d712",
+    "e55b039fa3db907b875bbee0dc2b6097749e07f1"
+  ],
+  "accepted_process_head": "6aee13e09710cfdc155e02e3394db979b370bbd7",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CORE-ACTION-LOOP-UX-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "PASS; task registry listed successfully and M7-CORE-ACTION-LOOP-UX-001 is in REVIEW before lead acceptance."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; no downstream READY task is emitted while this task remains active."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <all M7 core action loop writer/gameplay/QA handoffs>",
+      "exit_code": 0,
+      "result": "PASS; writer R1, gameplay R1 REQUEST_CHANGES, writer R2, gameplay R2 ACCEPT, and QA ACCEPT handoffs are all valid."
+    },
+    {
+      "command": "git diff --check e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..HEAD",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors across the branch before lead acceptance."
+    },
+    {
+      "command": "git diff --name-only e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..HEAD",
+      "exit_code": 0,
+      "result": "PASS; changed paths are limited to allowed UI, Web CSS, tests, project task/message/state, and PROJECT_STATUS paths."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format check, lint, typecheck, and architecture boundary check passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_TASK",
+      "decision": "Accept M7-CORE-ACTION-LOOP-UX-001 for PR integration after gameplay R2 and independent QA both accepted."
+    },
+    {
+      "id": "ROOT_PNPM_TEST_TIMEOUT_NOT_BLOCKING",
+      "decision": "Accept QA's judgment that the writer's single root pnpm test timeout was unrelated to this UI task and is covered by focused Vitest, Playwright, pnpm check, Web build, Storybook build, and diff/handoff validation evidence."
+    },
+    {
+      "id": "NO_CONTENT_LOCK_APPROVAL",
+      "decision": "This task acceptance does not approve formal M7 content lock. The recovery chain must still complete M7-MAP-DECISION-SURFACE-SYNC-001 and M7-SYSTEMIC-INTERACTION-VALIDATION-001 before product-owner reconsideration."
+    },
+    {
+      "id": "NO_SCOPE_EXPANSION",
+      "decision": "No sim-core, protocol, save-format, content-source, Electron, server, telemetry, final art, or manual node battle scope is approved or changed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M4_GENERIC_STATUS_REMAINS_VISIBLE",
+      "severity": "R1",
+      "summary": "The generic campaign status can remain visible because the task intentionally preserves existing command boundaries; R2 adds adjacent obligation-specific District 1 feedback."
+    },
+    {
+      "id": "NEXT_MAP_SYNC_SEPARATE",
+      "severity": "R2",
+      "summary": "Broader map/task rail/inspector synchronization remains for M7-MAP-DECISION-SURFACE-SYNC-001."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR for M7-CORE-ACTION-LOOP-UX-001, wait for PR CI, merge to main, synchronize main, then mark the task CLOSED and continue to M7-MAP-DECISION-SURFACE-SYNC-001.",
+  "created_at": "2026-06-30T19:18:55.2000965+08:00"
+}
