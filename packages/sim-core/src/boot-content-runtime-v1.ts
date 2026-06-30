@@ -1,6 +1,7 @@
 import {
   createM2EconomyPopulationStateV0,
   createM6PolicyEventRuntimeStateV0,
+  createMapTopologyDefinitionV1,
   createWorldStateV0,
   defineDistrict,
   defineRoute,
@@ -39,6 +40,7 @@ interface RuntimeM2WorldBootPackV0 {
   readonly settlements: readonly RuntimeM2SettlementBootDefinitionV0[];
   readonly regionalSeasonalCurves: readonly RuntimeM2CurveBootDefinitionV0[];
   readonly routes: readonly RuntimeM2RouteBootDefinitionV0[];
+  readonly topology: RuntimeM2TopologyBootDefinitionV0;
   readonly m6PolicyEvents?: M6PolicyEventRuntimeStateV0;
 }
 
@@ -83,6 +85,83 @@ interface RuntimeM2MapGeometryBootDefinitionV0 {
   readonly ownerId: number;
 }
 
+interface RuntimeM2TopologyBootDefinitionV0 {
+  readonly explicitIsolations: readonly RuntimeM2TopologyIsolationBootDefinitionV0[];
+  readonly districts: readonly RuntimeM2TopologyDistrictBootDefinitionV0[];
+  readonly routeNodes: readonly RuntimeM2TopologyRouteNodeBootDefinitionV0[];
+  readonly routeEdges: readonly RuntimeM2TopologyRouteEdgeBootDefinitionV0[];
+}
+
+interface RuntimeM2TopologyIsolationBootDefinitionV0 {
+  readonly districtId: number;
+  readonly reasonCode: string;
+}
+
+interface RuntimeM2TopologyPointBootDefinitionV0 {
+  readonly x: number;
+  readonly y: number;
+}
+
+interface RuntimeM2TopologyMetadataBootDefinitionV0 {
+  readonly historicity: "COMPOSITE" | "FICTIONAL";
+  readonly terrainClass:
+    | "coastal"
+    | "lowland"
+    | "pass"
+    | "riverine"
+    | "upland"
+    | "urban"
+    | "unknown";
+  readonly riskClass: "contested" | "hazardous" | "low" | "seasonal" | "unknown";
+}
+
+interface RuntimeM2TopologyDistrictBootDefinitionV0 {
+  readonly districtId: number;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly anchor: RuntimeM2TopologyPointBootDefinitionV0;
+  readonly polygon: readonly RuntimeM2TopologyPointBootDefinitionV0[];
+  readonly metadata: RuntimeM2TopologyMetadataBootDefinitionV0;
+}
+
+interface RuntimeM2TopologyRouteNodeBootDefinitionV0 {
+  readonly nodeId: string;
+  readonly nodeKind: "pass" | "port" | "special" | "warehouse";
+  readonly districtId: number;
+  readonly displayNameKey: string;
+  readonly anchor: RuntimeM2TopologyPointBootDefinitionV0;
+}
+
+type RuntimeM2TopologyRouteEndpointBootDefinitionV0 =
+  | { readonly kind: "district"; readonly districtId: number }
+  | { readonly kind: "route-node"; readonly nodeId: string }
+  | { readonly kind: "settlement"; readonly settlementId: number };
+
+interface RuntimeM2TopologySeasonalityBootDefinitionV0 {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+type RuntimeM2TopologyAvailabilityBootDefinitionV0 =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
+
+interface RuntimeM2TopologyRouteEdgeBootDefinitionV0 {
+  readonly routeId: number;
+  readonly sourceId: string;
+  readonly from: RuntimeM2TopologyRouteEndpointBootDefinitionV0;
+  readonly to: RuntimeM2TopologyRouteEndpointBootDefinitionV0;
+  readonly mode: "coast" | "river" | "road";
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly seasonality: readonly RuntimeM2TopologySeasonalityBootDefinitionV0[];
+  readonly availability: RuntimeM2TopologyAvailabilityBootDefinitionV0;
+  readonly metadata: RuntimeM2TopologyMetadataBootDefinitionV0;
+}
+
 type BootPackParseResult =
   | { readonly ok: true; readonly value: RuntimeM2WorldBootPackV0 }
   | { readonly ok: false; readonly error: ContentBootErrorV1 };
@@ -105,7 +184,7 @@ export function bootWorldStateFromRuntimeContentPackV1(input: {
     return { status: "rejected", error: parsedPack.error };
   }
 
-  const definitions = {
+  const definitionsWithoutTopology = {
     polities: [],
     persons: [],
     districts: parsedPack.value.districts.map((district) =>
@@ -129,6 +208,15 @@ export function bootWorldStateFromRuntimeContentPackV1(input: {
         lengthInMapUnits: route.baseTravelCost
       })
     )
+  };
+  const definitions = {
+    ...definitionsWithoutTopology,
+    topology: createMapTopologyDefinitionV1({
+      contentManifestHash: parsedPack.value.manifest.manifestHash,
+      districts: parsedPack.value.topology.districts,
+      routeNodes: parsedPack.value.topology.routeNodes,
+      routeEdges: parsedPack.value.topology.routeEdges
+    })
   };
   const world = createWorldStateV0({
     seed: seed.value,
@@ -227,6 +315,11 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
     return geometries;
   }
 
+  const topology = parseTopology(readRecord(input, "topology"), "runtimeContentPack.topology");
+  if (!topology.ok) {
+    return topology;
+  }
+
   const semanticError = validateRuntimeM2WorldBootSemantics({
     fixtureId: readString(input, "fixtureId"),
     manifest,
@@ -234,7 +327,8 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
     settlements: settlements.value,
     curves: curves.value,
     routes: routes.value,
-    geometries: geometries.value
+    geometries: geometries.value,
+    topology: topology.value
   });
   if (semanticError !== null) {
     return semanticError;
@@ -257,6 +351,7 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
       settlements: settlements.value,
       regionalSeasonalCurves: curves.value,
       routes: routes.value,
+      topology: topology.value,
       ...(policyEvents === undefined ? {} : { m6PolicyEvents: policyEvents.value })
     }
   };
@@ -299,6 +394,9 @@ function validateRuntimeM2WorldRoot(input: Record<string, unknown>): BootPackErr
     if (!Array.isArray(input[key])) {
       return contentPackError(`runtimeContentPack.${key}`, `${key} must be an array.`);
     }
+  }
+  if (!isRecord(input["topology"])) {
+    return contentPackError("runtimeContentPack.topology", "topology must be an object.");
   }
 
   return null;
@@ -718,10 +816,10 @@ function validateManifest(manifest: Record<string, unknown>): BootPackErrorResul
     );
   }
 
-  if (manifest["historicity"] !== "FICTIONAL") {
+  if (manifest["historicity"] !== "COMPOSITE" && manifest["historicity"] !== "FICTIONAL") {
     return contentPackError(
       "runtimeContentPack.manifest.historicity",
-      "manifest historicity must be FICTIONAL."
+      "manifest historicity must be COMPOSITE or FICTIONAL."
     );
   }
 
@@ -1091,6 +1189,364 @@ function parseMapGeometries(
   return { ok: true, value: geometries };
 }
 
+function parseTopology(
+  input: Record<string, unknown>,
+  path: string
+): { readonly ok: true; readonly value: RuntimeM2TopologyBootDefinitionV0 } | BootPackErrorResult {
+  if (input["adjacencyDerivation"] !== "explicit-route-graph-v1") {
+    return contentPackError(
+      `${path}.adjacencyDerivation`,
+      "adjacencyDerivation must be explicit-route-graph-v1."
+    );
+  }
+
+  const explicitIsolations = parseTopologyIsolations(
+    readArray(input, "explicitIsolations"),
+    `${path}.explicitIsolations`
+  );
+  if (!explicitIsolations.ok) return explicitIsolations;
+
+  const districts = parseTopologyDistricts(readArray(input, "districts"), `${path}.districts`);
+  if (!districts.ok) return districts;
+
+  const routeNodes = parseTopologyRouteNodes(readArray(input, "routeNodes"), `${path}.routeNodes`);
+  if (!routeNodes.ok) return routeNodes;
+
+  const routeEdges = parseTopologyRouteEdges(readArray(input, "routeEdges"), `${path}.routeEdges`);
+  if (!routeEdges.ok) return routeEdges;
+
+  return {
+    ok: true,
+    value: {
+      explicitIsolations: explicitIsolations.value,
+      districts: districts.value,
+      routeNodes: routeNodes.value,
+      routeEdges: routeEdges.value
+    }
+  };
+}
+
+function parseTopologyIsolations(
+  values: readonly unknown[],
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly RuntimeM2TopologyIsolationBootDefinitionV0[] }
+  | BootPackErrorResult {
+  const isolations: RuntimeM2TopologyIsolationBootDefinitionV0[] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index];
+    const entryPath = `${path}[${index}]`;
+    if (!isRecord(value))
+      return contentPackError(entryPath, "Topology isolation must be an object.");
+    const districtId = parsePositiveSafeInteger(value["districtId"], `${entryPath}.districtId`);
+    if (!districtId.ok) return districtId;
+    const reasonCode = parseNonEmptyString(value["reasonCode"], `${entryPath}.reasonCode`);
+    if (!reasonCode.ok) return reasonCode;
+    isolations.push({ districtId: districtId.value, reasonCode: reasonCode.value });
+  }
+  return { ok: true, value: isolations };
+}
+
+function parseTopologyDistricts(
+  values: readonly unknown[],
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly RuntimeM2TopologyDistrictBootDefinitionV0[] }
+  | BootPackErrorResult {
+  const districts: RuntimeM2TopologyDistrictBootDefinitionV0[] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index];
+    const entryPath = `${path}[${index}]`;
+    if (!isRecord(value))
+      return contentPackError(entryPath, "Topology district must be an object.");
+    const districtId = parsePositiveSafeInteger(value["districtId"], `${entryPath}.districtId`);
+    if (!districtId.ok) return districtId;
+    const sourceId = parseNonEmptyString(value["sourceId"], `${entryPath}.sourceId`);
+    if (!sourceId.ok) return sourceId;
+    const displayNameKey = parseNonEmptyString(
+      value["displayNameKey"],
+      `${entryPath}.displayNameKey`
+    );
+    if (!displayNameKey.ok) return displayNameKey;
+    const anchor = parseTopologyPoint(readRecord(value, "anchor"), `${entryPath}.anchor`);
+    if (!anchor.ok) return anchor;
+    const polygon = parseTopologyPoints(readArray(value, "polygon"), `${entryPath}.polygon`);
+    if (!polygon.ok) return polygon;
+    const metadata = parseTopologyMetadata(readRecord(value, "metadata"), `${entryPath}.metadata`);
+    if (!metadata.ok) return metadata;
+    districts.push({
+      districtId: districtId.value,
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      anchor: anchor.value,
+      polygon: polygon.value,
+      metadata: metadata.value
+    });
+  }
+  return { ok: true, value: districts };
+}
+
+function parseTopologyRouteNodes(
+  values: readonly unknown[],
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly RuntimeM2TopologyRouteNodeBootDefinitionV0[] }
+  | BootPackErrorResult {
+  const routeNodes: RuntimeM2TopologyRouteNodeBootDefinitionV0[] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index];
+    const entryPath = `${path}[${index}]`;
+    if (!isRecord(value))
+      return contentPackError(entryPath, "Topology route node must be an object.");
+    const nodeId = parseNonEmptyString(value["nodeId"], `${entryPath}.nodeId`);
+    if (!nodeId.ok) return nodeId;
+    const nodeKind = value["nodeKind"];
+    if (
+      nodeKind !== "pass" &&
+      nodeKind !== "port" &&
+      nodeKind !== "special" &&
+      nodeKind !== "warehouse"
+    ) {
+      return contentPackError(
+        `${entryPath}.nodeKind`,
+        "nodeKind must be pass, port, special, or warehouse."
+      );
+    }
+    const districtId = parsePositiveSafeInteger(value["districtId"], `${entryPath}.districtId`);
+    if (!districtId.ok) return districtId;
+    const displayNameKey = parseNonEmptyString(
+      value["displayNameKey"],
+      `${entryPath}.displayNameKey`
+    );
+    if (!displayNameKey.ok) return displayNameKey;
+    const anchor = parseTopologyPoint(readRecord(value, "anchor"), `${entryPath}.anchor`);
+    if (!anchor.ok) return anchor;
+    routeNodes.push({
+      nodeId: nodeId.value,
+      nodeKind,
+      districtId: districtId.value,
+      displayNameKey: displayNameKey.value,
+      anchor: anchor.value
+    });
+  }
+  return { ok: true, value: routeNodes };
+}
+
+function parseTopologyRouteEdges(
+  values: readonly unknown[],
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly RuntimeM2TopologyRouteEdgeBootDefinitionV0[] }
+  | BootPackErrorResult {
+  const routeEdges: RuntimeM2TopologyRouteEdgeBootDefinitionV0[] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index];
+    const entryPath = `${path}[${index}]`;
+    if (!isRecord(value))
+      return contentPackError(entryPath, "Topology route edge must be an object.");
+    const routeId = parsePositiveSafeInteger(value["routeId"], `${entryPath}.routeId`);
+    if (!routeId.ok) return routeId;
+    const sourceId = parseNonEmptyString(value["sourceId"], `${entryPath}.sourceId`);
+    if (!sourceId.ok) return sourceId;
+    const from = parseTopologyEndpoint(readRecord(value, "from"), `${entryPath}.from`);
+    if (!from.ok) return from;
+    const to = parseTopologyEndpoint(readRecord(value, "to"), `${entryPath}.to`);
+    if (!to.ok) return to;
+    const mode = value["mode"];
+    if (mode !== "coast" && mode !== "river" && mode !== "road") {
+      return contentPackError(`${entryPath}.mode`, "mode must be coast, river, or road.");
+    }
+    const baseTravelCost = parsePositiveSafeInteger(
+      value["baseTravelCost"],
+      `${entryPath}.baseTravelCost`
+    );
+    if (!baseTravelCost.ok) return baseTravelCost;
+    const baseCapacity = parsePositiveSafeInteger(
+      value["baseCapacity"],
+      `${entryPath}.baseCapacity`
+    );
+    if (!baseCapacity.ok) return baseCapacity;
+    const seasonality = parseTopologySeasonality(
+      readArray(value, "seasonality"),
+      `${entryPath}.seasonality`
+    );
+    if (!seasonality.ok) return seasonality;
+    const availability = parseTopologyAvailability(
+      readRecord(value, "availability"),
+      `${entryPath}.availability`
+    );
+    if (!availability.ok) return availability;
+    const metadata = parseTopologyMetadata(readRecord(value, "metadata"), `${entryPath}.metadata`);
+    if (!metadata.ok) return metadata;
+    routeEdges.push({
+      routeId: routeId.value,
+      sourceId: sourceId.value,
+      from: from.value,
+      to: to.value,
+      mode,
+      baseTravelCost: baseTravelCost.value,
+      baseCapacity: baseCapacity.value,
+      seasonality: seasonality.value,
+      availability: availability.value,
+      metadata: metadata.value
+    });
+  }
+  return { ok: true, value: routeEdges };
+}
+
+function parseTopologyEndpoint(
+  input: Record<string, unknown>,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2TopologyRouteEndpointBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (input["kind"] === "district") {
+    const districtId = parsePositiveSafeInteger(input["districtId"], `${path}.districtId`);
+    if (!districtId.ok) return districtId;
+    return { ok: true, value: { kind: "district", districtId: districtId.value } };
+  }
+  if (input["kind"] === "route-node") {
+    const nodeId = parseNonEmptyString(input["nodeId"], `${path}.nodeId`);
+    if (!nodeId.ok) return nodeId;
+    return { ok: true, value: { kind: "route-node", nodeId: nodeId.value } };
+  }
+  if (input["kind"] === "settlement") {
+    const settlementId = parsePositiveSafeInteger(input["settlementId"], `${path}.settlementId`);
+    if (!settlementId.ok) return settlementId;
+    return { ok: true, value: { kind: "settlement", settlementId: settlementId.value } };
+  }
+  return contentPackError(
+    `${path}.kind`,
+    "Topology endpoint kind must be district, route-node, or settlement."
+  );
+}
+
+function parseTopologySeasonality(
+  values: readonly unknown[],
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly RuntimeM2TopologySeasonalityBootDefinitionV0[] }
+  | BootPackErrorResult {
+  const seasonality: RuntimeM2TopologySeasonalityBootDefinitionV0[] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index];
+    const entryPath = `${path}[${index}]`;
+    if (!isRecord(value))
+      return contentPackError(entryPath, "Topology seasonality must be an object.");
+    const month = parseIntegerInRange(value["month"], `${entryPath}.month`, 1, 12);
+    if (!month.ok) return month;
+    const costMultiplierBps = parseIntegerInRange(
+      value["costMultiplierBps"],
+      `${entryPath}.costMultiplierBps`,
+      1,
+      100000
+    );
+    if (!costMultiplierBps.ok) return costMultiplierBps;
+    const capacityMultiplierBps = parseIntegerInRange(
+      value["capacityMultiplierBps"],
+      `${entryPath}.capacityMultiplierBps`,
+      0,
+      100000
+    );
+    if (!capacityMultiplierBps.ok) return capacityMultiplierBps;
+    const reasonCodes = parseStringArray(value["reasonCodes"], `${entryPath}.reasonCodes`);
+    if (!reasonCodes.ok) return reasonCodes;
+    seasonality.push({
+      month: month.value,
+      costMultiplierBps: costMultiplierBps.value,
+      capacityMultiplierBps: capacityMultiplierBps.value,
+      reasonCodes: reasonCodes.value
+    });
+  }
+  return { ok: true, value: seasonality };
+}
+
+function parseTopologyAvailability(
+  input: Record<string, unknown>,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2TopologyAvailabilityBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (input["kind"] === "open") {
+    return { ok: true, value: { kind: "open" } };
+  }
+  if (input["kind"] === "blocked" || input["kind"] === "unknown") {
+    const reasonCode = parseNonEmptyString(input["reasonCode"], `${path}.reasonCode`);
+    if (!reasonCode.ok) return reasonCode;
+    return { ok: true, value: { kind: input["kind"], reasonCode: reasonCode.value } };
+  }
+  return contentPackError(
+    `${path}.kind`,
+    "Topology availability kind must be open, blocked, or unknown."
+  );
+}
+
+function parseTopologyMetadata(
+  input: Record<string, unknown>,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2TopologyMetadataBootDefinitionV0 }
+  | BootPackErrorResult {
+  const historicity = input["historicity"];
+  if (historicity !== "COMPOSITE" && historicity !== "FICTIONAL") {
+    return contentPackError(`${path}.historicity`, "historicity must be COMPOSITE or FICTIONAL.");
+  }
+  const terrainClass = input["terrainClass"];
+  if (
+    terrainClass !== "coastal" &&
+    terrainClass !== "lowland" &&
+    terrainClass !== "pass" &&
+    terrainClass !== "riverine" &&
+    terrainClass !== "upland" &&
+    terrainClass !== "urban" &&
+    terrainClass !== "unknown"
+  ) {
+    return contentPackError(`${path}.terrainClass`, "terrainClass is invalid.");
+  }
+  const riskClass = input["riskClass"];
+  if (
+    riskClass !== "contested" &&
+    riskClass !== "hazardous" &&
+    riskClass !== "low" &&
+    riskClass !== "seasonal" &&
+    riskClass !== "unknown"
+  ) {
+    return contentPackError(`${path}.riskClass`, "riskClass is invalid.");
+  }
+  return { ok: true, value: { historicity, terrainClass, riskClass } };
+}
+
+function parseTopologyPoints(
+  values: readonly unknown[],
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly RuntimeM2TopologyPointBootDefinitionV0[] }
+  | BootPackErrorResult {
+  const points: RuntimeM2TopologyPointBootDefinitionV0[] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const point = values[index];
+    if (!isRecord(point))
+      return contentPackError(`${path}[${index}]`, "Topology point must be an object.");
+    const parsed = parseTopologyPoint(point, `${path}[${index}]`);
+    if (!parsed.ok) return parsed;
+    points.push(parsed.value);
+  }
+  return { ok: true, value: points };
+}
+
+function parseTopologyPoint(
+  input: Record<string, unknown>,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2TopologyPointBootDefinitionV0 }
+  | BootPackErrorResult {
+  const x = parseIntegerInRange(input["x"], `${path}.x`, -1000000, 1000000);
+  if (!x.ok) return x;
+  const y = parseIntegerInRange(input["y"], `${path}.y`, -1000000, 1000000);
+  if (!y.ok) return y;
+  return { ok: true, value: { x: x.value, y: y.value } };
+}
+
 function validateRuntimeM2WorldBootSemantics(input: {
   readonly fixtureId: string;
   readonly manifest: Record<string, unknown>;
@@ -1099,6 +1555,7 @@ function validateRuntimeM2WorldBootSemantics(input: {
   readonly curves: readonly RuntimeM2CurveBootDefinitionV0[];
   readonly routes: readonly RuntimeM2RouteBootDefinitionV0[];
   readonly geometries: readonly RuntimeM2MapGeometryBootDefinitionV0[];
+  readonly topology: RuntimeM2TopologyBootDefinitionV0;
 }): BootPackErrorResult | null {
   if (input.fixtureId !== input.manifest["fixtureId"]) {
     return contentPackError(
@@ -1367,6 +1824,11 @@ function parseStringArray(
 function readArray(record: Record<string, unknown>, key: string): readonly unknown[] {
   const value = record[key];
   return Array.isArray(value) ? value : [];
+}
+
+function readRecord(record: Record<string, unknown>, key: string): Record<string, unknown> {
+  const value = record[key];
+  return isRecord(value) ? value : {};
 }
 
 function readString(record: Record<string, unknown>, key: string): string {

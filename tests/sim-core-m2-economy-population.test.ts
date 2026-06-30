@@ -24,7 +24,7 @@ const m2FixtureUrl = new URL(
 );
 
 describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffolding", () => {
-  test("boots the 30 District/10 Settlement fixture with explicit M2 economy state", async () => {
+  test("boots the explicit 14 District/6 Settlement fixture with explicit M2 economy state", async () => {
     const runtime = await bootM2Runtime();
     const m2 = runtime.world.state.m2;
 
@@ -33,12 +33,14 @@ describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffo
       throw new Error("Expected M2 state.");
     }
 
-    expect(runtime.world.definitions.districts).toHaveLength(30);
-    expect(runtime.world.definitions.settlements).toHaveLength(10);
+    expect(runtime.world.definitions.districts).toHaveLength(14);
+    expect(runtime.world.definitions.settlements).toHaveLength(6);
+    expect(runtime.world.definitions.topology?.districts).toHaveLength(14);
+    expect(runtime.world.definitions.topology?.routeEdges).toHaveLength(25);
     expect(m2.schemaVersion).toBe(1);
-    expect(m2.populationGroups).toHaveLength(30);
-    expect(m2.agriculture.districts).toHaveLength(30);
-    expect(m2.market.districts).toHaveLength(30);
+    expect(m2.populationGroups).toHaveLength(14);
+    expect(m2.agriculture.districts).toHaveLength(14);
+    expect(m2.market.districts).toHaveLength(14);
     expect(m2.populationGroups[0]).toMatchObject({
       id: parsePopulationGroupId(1),
       districtId: 1,
@@ -141,7 +143,7 @@ describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffo
     fc.assert(
       fc.property(
         fc.integer({ min: 0, max: 420 }),
-        fc.integer({ min: 1, max: 30 }),
+        fc.integer({ min: 1, max: 14 }),
         fc.integer({ min: 1, max: 80 }),
         (days, groupId, laborAmount) => {
           const advancedWorld = advanceWorldByGameDays(runtime.world, days);
@@ -200,7 +202,7 @@ describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffo
       throw new Error("Expected M2 economy query to succeed.");
     }
 
-    expect(query.result.districts).toHaveLength(30);
+    expect(query.result.districts).toHaveLength(14);
     expect(query.result.districts[0]).toMatchObject({
       districtId: 1,
       population: 1000,

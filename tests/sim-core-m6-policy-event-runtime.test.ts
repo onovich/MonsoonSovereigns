@@ -518,6 +518,58 @@ function runtimeWorldPack(policyPack: RuntimeM6PolicyEventContentPackV0): Record
       { id: 2, ownerKind: "district", ownerId: 2 },
       { id: 3, ownerKind: "settlement", ownerId: 1 }
     ],
+    topology: {
+      adjacencyDerivation: "explicit-route-graph-v1",
+      explicitIsolations: [],
+      districts: [
+        {
+          districtId: 1,
+          sourceId: "district-001",
+          displayNameKey: "district.m6_policy_event.boot_a",
+          anchor: { x: 0, y: 0 },
+          polygon: [
+            { x: 0, y: 0 },
+            { x: 10, y: 0 },
+            { x: 10, y: 10 },
+            { x: 0, y: 10 }
+          ],
+          metadata: { historicity: "FICTIONAL", terrainClass: "lowland", riskClass: "low" }
+        },
+        {
+          districtId: 2,
+          sourceId: "district-002",
+          displayNameKey: "district.m6_policy_event.boot_b",
+          anchor: { x: 20, y: 0 },
+          polygon: [
+            { x: 15, y: 0 },
+            { x: 25, y: 0 },
+            { x: 25, y: 10 },
+            { x: 15, y: 10 }
+          ],
+          metadata: { historicity: "FICTIONAL", terrainClass: "lowland", riskClass: "low" }
+        }
+      ],
+      routeNodes: [],
+      routeEdges: [
+        {
+          routeId: 1,
+          sourceId: "topology-route-001",
+          from: { kind: "district", districtId: 1 },
+          to: { kind: "district", districtId: 2 },
+          mode: "road",
+          baseTravelCost: 10,
+          baseCapacity: 100,
+          seasonality: Array.from({ length: 12 }, (_value, index) => ({
+            month: index + 1,
+            costMultiplierBps: 10000,
+            capacityMultiplierBps: 10000,
+            reasonCodes: [`topology.test.month.${index + 1}`]
+          })),
+          availability: { kind: "open" },
+          metadata: { historicity: "FICTIONAL", terrainClass: "lowland", riskClass: "low" }
+        }
+      ]
+    },
     m6PolicyEvents: policyPack
   };
 }

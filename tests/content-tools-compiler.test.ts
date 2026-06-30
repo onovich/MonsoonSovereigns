@@ -256,12 +256,24 @@ describe("M2 Content Compiler v0", () => {
     expect(pack.fixtureId).toBe("m2.prototype-world-30-districts");
     expect(pack.manifest.fixtureKind).toBe("prototype-world-fixture");
     expect(pack.manifest.syntheticScope).toBe("m2-prototype-only");
-    expect(pack.manifest.historicity).toBe("FICTIONAL");
-    expect(pack.manifest.districtCount).toBe(30);
-    expect(pack.manifest.settlementCount).toBe(10);
+    expect(pack.manifest.historicity).toBe("COMPOSITE");
+    expect(pack.manifest.districtCount).toBe(14);
+    expect(pack.manifest.settlementCount).toBe(6);
+    expect(pack.manifest.routeCount).toBe(25);
     expect(pack.manifest.regionalSeasonalCurveCount).toBeGreaterThanOrEqual(4);
-    expect(pack.districts).toHaveLength(30);
-    expect(pack.settlements).toHaveLength(10);
+    expect(pack.districts).toHaveLength(14);
+    expect(pack.settlements).toHaveLength(6);
+    expect(pack.topology.adjacencyDerivation).toBe("explicit-route-graph-v1");
+    expect(pack.topology.districts).toHaveLength(14);
+    expect(pack.topology.routeEdges).toHaveLength(25);
+    expect(pack.topology.explicitIsolations).toEqual([
+      { districtId: 14, reasonCode: "topology.no-known-route.synthetic-outer-sound" }
+    ]);
+    expect(new Set(pack.topology.routeEdges.map((edge) => edge.mode))).toEqual(
+      new Set(["road", "river", "coast"])
+    );
+    expect(pack.topology.routeEdges.some((edge) => edge.from.kind === "route-node")).toBe(true);
+    expect(pack.topology.routeEdges.every((edge) => edge.seasonality.length === 12)).toBe(true);
     expect(pack.regionalSeasonalCurves.every((curve) => curve.monthlyValues.length === 12)).toBe(
       true
     );
@@ -323,7 +335,7 @@ describe("M2 Content Compiler v0", () => {
           };
         }
 
-        if (index === 31) {
+        if (index === 14) {
           return {
             ...geometry,
             anchor: { x: 999999, y: 999999 }
@@ -338,27 +350,152 @@ describe("M2 Content Compiler v0", () => {
       expect.arrayContaining([
         expect.objectContaining({ code: "invalid-geometry", path: "mapGeometries[1].points" }),
         expect.objectContaining({ code: "invalid-geometry", path: "mapGeometries[0].anchor" }),
-        expect.objectContaining({ code: "invalid-geometry", path: "mapGeometries[31].anchor" })
+        expect.objectContaining({ code: "invalid-topology", path: "topology.routeNodes[1].anchor" })
       ])
     );
   });
 
-  test("fails duplicate stable M2 IDs and disconnected district route graph parts", async () => {
+  test("fails duplicate stable M2 IDs", async () => {
     const source = await readM2Fixture();
     const badSource = {
       ...source,
       districts: source.districts.map((district, index) =>
         index === 1 ? { ...district, sourceId: "district-001" } : district
-      ),
-      routes: source.routes.filter(
-        (route) => route.fromDistrictId !== "district-030" && route.toDistrictId !== "district-030"
       )
     };
 
     expect(compileContentPackV0(badSource).errors).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ code: "duplicate-id", path: "districts[1].sourceId" }),
-        expect.objectContaining({ code: "isolated-district", path: "districts[29].sourceId" })
+        expect.objectContaining({ code: "duplicate-id", path: "districts[1].sourceId" })
+      ])
+    );
+  });
+
+  test("fails malformed explicit M2 topology graph inputs", async () => {
+    const source = await readM2Fixture();
+    const missingEndpoint = {
+      ...source,
+      topology: {
+        ...source.topology,
+        routeEdges: source.topology.routeEdges.map((edge, index) =>
+          index === 0 ? { ...edge, to: { kind: "district", districtId: "district-999" } } : edge
+        )
+      }
+    };
+    const duplicateTopologyIds = {
+      ...source,
+      topology: {
+        ...source.topology,
+        routeNodes: source.topology.routeNodes.map((node, index) =>
+          index === 1
+            ? { ...node, nodeId: source.topology.routeNodes[0]?.nodeId ?? node.nodeId }
+            : node
+        ),
+        routeEdges: source.topology.routeEdges.map((edge, index) =>
+          index === 1
+            ? { ...edge, sourceId: source.topology.routeEdges[0]?.sourceId ?? edge.sourceId }
+            : edge
+        )
+      }
+    };
+    const routeNodeOutsidePolygon = {
+      ...source,
+      topology: {
+        ...source.topology,
+        routeNodes: source.topology.routeNodes.map((node, index) =>
+          index === 0 ? { ...node, anchor: { x: 999999, y: 999999 } } : node
+        )
+      }
+    };
+    const disconnectedWithoutReason = {
+      ...source,
+      topology: {
+        ...source.topology,
+        routeEdges: source.topology.routeEdges.map((edge) =>
+          edge.routeId === "route-017" ||
+          edge.routeId === "route-019" ||
+          edge.routeId === "route-023"
+            ? {
+                ...edge,
+                availability: {
+                  kind: "blocked",
+                  reasonCode: "topology.blocked.test-disconnect"
+                }
+              }
+            : edge
+        )
+      }
+    };
+
+    expect(compileContentPackV0(missingEndpoint).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "topology.routeEdges[0].to.districtId"
+        })
+      ])
+    );
+    expect(compileContentPackV0(duplicateTopologyIds).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "duplicate-id", path: "topology.routeNodes[1].nodeId" }),
+        expect.objectContaining({ code: "duplicate-id", path: "topology.routeEdges[1].sourceId" })
+      ])
+    );
+    expect(compileContentPackV0(routeNodeOutsidePolygon).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "invalid-topology", path: "topology.routeNodes[0].anchor" })
+      ])
+    );
+    expect(compileContentPackV0(disconnectedWithoutReason).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "isolated-district", path: "districts[12].sourceId" })
+      ])
+    );
+  });
+
+  test("rejects row/column/grid/hex/lattice-only M2 topology leakage", async () => {
+    const source = await readM2Fixture();
+    const gridGeometries = source.mapGeometries.map((geometry) => {
+      if (geometry.ownerKind !== "district") {
+        return geometry;
+      }
+      const ordinal = Number.parseInt(geometry.ownerId.slice("district-".length), 10) - 1;
+      const anchor = { x: (ordinal % 7) * 100 + 10, y: Math.floor(ordinal / 7) * 100 + 10 };
+      return {
+        ...geometry,
+        anchor,
+        points: [
+          { x: anchor.x - 10, y: anchor.y - 10 },
+          { x: anchor.x + 10, y: anchor.y - 10 },
+          { x: anchor.x + 10, y: anchor.y + 10 },
+          { x: anchor.x - 10, y: anchor.y + 10 }
+        ]
+      };
+    });
+    const routeById = new Map(source.routes.map((route) => [route.sourceId, route]));
+    const badSource = {
+      ...source,
+      mapGeometries: gridGeometries,
+      topology: {
+        ...source.topology,
+        routeNodes: [],
+        routeEdges: source.topology.routeEdges.map((edge) => {
+          const route = routeById.get(edge.routeId);
+          if (route === undefined) {
+            return edge;
+          }
+          return {
+            ...edge,
+            from: { kind: "district", districtId: route.fromDistrictId },
+            to: { kind: "district", districtId: route.toDistrictId }
+          };
+        })
+      }
+    };
+
+    expect(compileContentPackV0(badSource).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "lattice-adjacency", path: "topology" })
       ])
     );
   });

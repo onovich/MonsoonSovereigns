@@ -5,6 +5,11 @@ import type {
   M2MapGeometryKind,
   M2MapGeometryOwnerKind,
   M2RouteKind,
+  M2TopologyHistoricity,
+  M2TopologyRiskClass,
+  M2TopologyRouteAvailability,
+  M2TopologyRouteNodeKind,
+  M2TopologyTerrainClass,
   M2WorldFixtureKind,
   M2WorldHistoricity,
   M2WorldSyntheticScope,
@@ -160,6 +165,67 @@ export interface RuntimeM2MapGeometryV0 {
   readonly points: readonly RuntimeM2MapPointV0[];
 }
 
+export interface RuntimeM2TopologyMetadataV0 {
+  readonly historicity: M2TopologyHistoricity;
+  readonly terrainClass: M2TopologyTerrainClass;
+  readonly riskClass: M2TopologyRiskClass;
+}
+
+export interface RuntimeM2TopologyDistrictV0 {
+  readonly districtId: ContentDistrictId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly anchor: RuntimeM2MapPointV0;
+  readonly polygon: readonly RuntimeM2MapPointV0[];
+  readonly metadata: RuntimeM2TopologyMetadataV0;
+}
+
+export interface RuntimeM2TopologyRouteNodeV0 {
+  readonly nodeId: string;
+  readonly nodeKind: M2TopologyRouteNodeKind;
+  readonly districtId: ContentDistrictId;
+  readonly displayNameKey: string;
+  readonly anchor: RuntimeM2MapPointV0;
+}
+
+export type RuntimeM2TopologyRouteEndpointV0 =
+  | { readonly kind: "district"; readonly districtId: ContentDistrictId }
+  | { readonly kind: "route-node"; readonly nodeId: string }
+  | { readonly kind: "settlement"; readonly settlementId: ContentSettlementId };
+
+export interface RuntimeM2TopologySeasonalModifierV0 {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface RuntimeM2TopologyRouteEdgeV0 {
+  readonly routeId: ContentRouteId;
+  readonly sourceId: string;
+  readonly from: RuntimeM2TopologyRouteEndpointV0;
+  readonly to: RuntimeM2TopologyRouteEndpointV0;
+  readonly mode: M2RouteKind;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly seasonality: readonly RuntimeM2TopologySeasonalModifierV0[];
+  readonly availability: M2TopologyRouteAvailability;
+  readonly metadata: RuntimeM2TopologyMetadataV0;
+}
+
+export interface RuntimeM2TopologyExplicitIsolationV0 {
+  readonly districtId: ContentDistrictId;
+  readonly reasonCode: string;
+}
+
+export interface RuntimeM2TopologyV0 {
+  readonly adjacencyDerivation: "explicit-route-graph-v1";
+  readonly explicitIsolations: readonly RuntimeM2TopologyExplicitIsolationV0[];
+  readonly districts: readonly RuntimeM2TopologyDistrictV0[];
+  readonly routeNodes: readonly RuntimeM2TopologyRouteNodeV0[];
+  readonly routeEdges: readonly RuntimeM2TopologyRouteEdgeV0[];
+}
+
 export interface RuntimeM2WorldContentPackV0 {
   readonly schemaVersion: 1;
   readonly kind: "runtime-m2-world-content-pack-v0";
@@ -170,6 +236,7 @@ export interface RuntimeM2WorldContentPackV0 {
   readonly regionalSeasonalCurves: readonly RuntimeM2RegionalSeasonalCurveV0[];
   readonly routes: readonly RuntimeM2RouteDefinitionV0[];
   readonly mapGeometries: readonly RuntimeM2MapGeometryV0[];
+  readonly topology: RuntimeM2TopologyV0;
 }
 
 export interface RuntimeM2WorldContentPackIndexV0 {
@@ -462,7 +529,7 @@ export function parseRuntimeM2WorldContentPackV0(input: unknown): RuntimeM2World
       fixtureId: readString(manifest, "fixtureId"),
       fixtureKind: "prototype-world-fixture",
       syntheticScope: "m2-prototype-only",
-      historicity: "FICTIONAL",
+      historicity: readM2WorldHistoricity(manifest, "historicity"),
       manifestHash: parseContentManifestHash(readString(manifest, "manifestHash")),
       districtCount: readPositiveInteger(manifest, "districtCount"),
       settlementCount: readPositiveInteger(manifest, "settlementCount"),
@@ -476,7 +543,8 @@ export function parseRuntimeM2WorldContentPackV0(input: unknown): RuntimeM2World
       readArray(input, "regionalSeasonalCurves").map(parseRuntimeM2RegionalSeasonalCurve)
     ),
     routes: Object.freeze(readArray(input, "routes").map(parseRuntimeM2Route)),
-    mapGeometries: Object.freeze(readArray(input, "mapGeometries").map(parseRuntimeM2MapGeometry))
+    mapGeometries: Object.freeze(readArray(input, "mapGeometries").map(parseRuntimeM2MapGeometry)),
+    topology: parseRuntimeM2Topology(readRecord(input, "topology"))
   };
 
   return Object.freeze(pack);
@@ -986,6 +1054,9 @@ function validateRuntimeM2Root(
   validateArray(input, "regionalSeasonalCurves", errors);
   validateArray(input, "routes", errors);
   validateArray(input, "mapGeometries", errors);
+  if (!isRecord(input["topology"])) {
+    errors.push({ path: "topology", message: "topology must be an object." });
+  }
 }
 
 function validateRuntimeM3Root(
@@ -1061,10 +1132,10 @@ function validateM2Manifest(
       message: "manifest syntheticScope must be m2-prototype-only."
     });
   }
-  if (manifest["historicity"] !== "FICTIONAL") {
+  if (manifest["historicity"] !== "COMPOSITE" && manifest["historicity"] !== "FICTIONAL") {
     errors.push({
       path: "manifest.historicity",
-      message: "manifest historicity must be FICTIONAL."
+      message: "manifest historicity must be COMPOSITE or FICTIONAL."
     });
   }
   validatePatternString(
@@ -1205,6 +1276,11 @@ function validateRuntimeM2ArrayEntries(
     geometries.forEach((geometry, index) =>
       validateRuntimeM2MapGeometry(geometry, `mapGeometries[${index}]`, errors)
     );
+  }
+
+  const topology = input["topology"];
+  if (isRecord(topology)) {
+    validateRuntimeM2Topology(topology, "topology", errors);
   }
 }
 
@@ -1487,6 +1563,260 @@ function validateRuntimeM2MapGeometry(
       validateRuntimeM2Point(point, `${path}.points[${index}]`, errors)
     );
   }
+}
+
+function validateRuntimeM2Topology(
+  input: Record<string, unknown>,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (input["adjacencyDerivation"] !== "explicit-route-graph-v1") {
+    errors.push({
+      path: `${path}.adjacencyDerivation`,
+      message: "adjacencyDerivation must be explicit-route-graph-v1."
+    });
+  }
+  validateArray(input, "explicitIsolations", errors);
+  validateArray(input, "districts", errors);
+  validateArray(input, "routeNodes", errors);
+  validateArray(input, "routeEdges", errors);
+
+  const explicitIsolations = input["explicitIsolations"];
+  if (Array.isArray(explicitIsolations)) {
+    explicitIsolations.forEach((value, index) =>
+      validateRuntimeM2TopologyIsolation(value, `${path}.explicitIsolations[${index}]`, errors)
+    );
+  }
+
+  const districts = input["districts"];
+  if (Array.isArray(districts)) {
+    districts.forEach((value, index) =>
+      validateRuntimeM2TopologyDistrict(value, `${path}.districts[${index}]`, errors)
+    );
+  }
+
+  const routeNodes = input["routeNodes"];
+  if (Array.isArray(routeNodes)) {
+    routeNodes.forEach((value, index) =>
+      validateRuntimeM2TopologyRouteNode(value, `${path}.routeNodes[${index}]`, errors)
+    );
+  }
+
+  const routeEdges = input["routeEdges"];
+  if (Array.isArray(routeEdges)) {
+    routeEdges.forEach((value, index) =>
+      validateRuntimeM2TopologyRouteEdge(value, `${path}.routeEdges[${index}]`, errors)
+    );
+  }
+}
+
+function validateRuntimeM2TopologyIsolation(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology isolation must be an object." });
+    return;
+  }
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, errors);
+  validateNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors);
+}
+
+function validateRuntimeM2TopologyDistrict(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology district must be an object." });
+    return;
+  }
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, errors);
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^district-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m2\.prototype\.district_\d{3}$/u,
+    errors
+  );
+  if (!isRecord(input["anchor"])) {
+    errors.push({ path: `${path}.anchor`, message: "anchor must be an object." });
+  } else {
+    validateRuntimeM2Point(input["anchor"], `${path}.anchor`, errors);
+  }
+  validateArray(input, "polygon", errors);
+  const polygon = input["polygon"];
+  if (Array.isArray(polygon)) {
+    polygon.forEach((point, index) =>
+      validateRuntimeM2Point(point, `${path}.polygon[${index}]`, errors)
+    );
+  }
+  validateRuntimeM2TopologyMetadata(input["metadata"], `${path}.metadata`, errors);
+}
+
+function validateRuntimeM2TopologyRouteNode(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology route node must be an object." });
+    return;
+  }
+  validateNonEmptyString(input, "nodeId", `${path}.nodeId`, errors);
+  validateStringUnion(
+    input,
+    "nodeKind",
+    `${path}.nodeKind`,
+    ["pass", "port", "special", "warehouse"],
+    errors
+  );
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, errors);
+  validateNonEmptyString(input, "displayNameKey", `${path}.displayNameKey`, errors);
+  if (!isRecord(input["anchor"])) {
+    errors.push({ path: `${path}.anchor`, message: "anchor must be an object." });
+  } else {
+    validateRuntimeM2Point(input["anchor"], `${path}.anchor`, errors);
+  }
+}
+
+function validateRuntimeM2TopologyRouteEdge(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology route edge must be an object." });
+    return;
+  }
+  validatePositiveIntegerField(input, "routeId", `${path}.routeId`, errors);
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^topology-route-\d{3}$/u, errors);
+  validateRuntimeM2TopologyEndpoint(input["from"], `${path}.from`, errors);
+  validateRuntimeM2TopologyEndpoint(input["to"], `${path}.to`, errors);
+  validateStringUnion(input, "mode", `${path}.mode`, ["road", "river", "coast"], errors);
+  validatePositiveIntegerField(input, "baseTravelCost", `${path}.baseTravelCost`, errors);
+  validatePositiveIntegerField(input, "baseCapacity", `${path}.baseCapacity`, errors);
+  validateArray(input, "seasonality", errors);
+  const seasonality = input["seasonality"];
+  if (Array.isArray(seasonality)) {
+    seasonality.forEach((value, index) =>
+      validateRuntimeM2TopologySeasonality(value, `${path}.seasonality[${index}]`, errors)
+    );
+  }
+  validateRuntimeM2TopologyAvailability(input["availability"], `${path}.availability`, errors);
+  validateRuntimeM2TopologyMetadata(input["metadata"], `${path}.metadata`, errors);
+}
+
+function validateRuntimeM2TopologyEndpoint(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology endpoint must be an object." });
+    return;
+  }
+  if (input["kind"] === "district") {
+    validatePositiveIntegerField(input, "districtId", `${path}.districtId`, errors);
+    return;
+  }
+  if (input["kind"] === "route-node") {
+    validateNonEmptyString(input, "nodeId", `${path}.nodeId`, errors);
+    return;
+  }
+  if (input["kind"] === "settlement") {
+    validatePositiveIntegerField(input, "settlementId", `${path}.settlementId`, errors);
+    return;
+  }
+  errors.push({
+    path: `${path}.kind`,
+    message: "Runtime M2 topology endpoint kind must be district, route-node, or settlement."
+  });
+}
+
+function validateRuntimeM2TopologySeasonality(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology seasonality must be an object." });
+    return;
+  }
+  validateIntegerFieldInRange(input, "month", `${path}.month`, 1, 12, errors);
+  validateIntegerFieldInRange(
+    input,
+    "costMultiplierBps",
+    `${path}.costMultiplierBps`,
+    1,
+    100000,
+    errors
+  );
+  validateIntegerFieldInRange(
+    input,
+    "capacityMultiplierBps",
+    `${path}.capacityMultiplierBps`,
+    0,
+    100000,
+    errors
+  );
+  validateRuntimeStringArray(input, "reasonCodes", `${path}.reasonCodes`, errors);
+}
+
+function validateRuntimeM2TopologyAvailability(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology availability must be an object." });
+    return;
+  }
+  if (input["kind"] === "open") {
+    return;
+  }
+  if (input["kind"] === "blocked" || input["kind"] === "unknown") {
+    validateNonEmptyString(input, "reasonCode", `${path}.reasonCode`, errors);
+    return;
+  }
+  errors.push({
+    path: `${path}.kind`,
+    message: "availability kind must be open, blocked, or unknown."
+  });
+}
+
+function validateRuntimeM2TopologyMetadata(
+  input: unknown,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ path, message: "Runtime M2 topology metadata must be an object." });
+    return;
+  }
+  validateStringUnion(
+    input,
+    "historicity",
+    `${path}.historicity`,
+    ["COMPOSITE", "FICTIONAL"],
+    errors
+  );
+  validateStringUnion(
+    input,
+    "terrainClass",
+    `${path}.terrainClass`,
+    ["coastal", "lowland", "pass", "riverine", "upland", "urban", "unknown"],
+    errors
+  );
+  validateStringUnion(
+    input,
+    "riskClass",
+    `${path}.riskClass`,
+    ["contested", "hazardous", "low", "seasonal", "unknown"],
+    errors
+  );
 }
 
 function validateRuntimeM3Polity(
@@ -2012,6 +2342,7 @@ function validateRuntimeM2Semantics(
   const curves = readArray(input, "regionalSeasonalCurves");
   const routes = readArray(input, "routes");
   const geometries = readArray(input, "mapGeometries");
+  const topology = readRecord(input, "topology");
 
   if (readString(input, "fixtureId") !== readString(manifest, "fixtureId")) {
     errors.push({
@@ -2029,7 +2360,7 @@ function validateRuntimeM2Semantics(
   const districtIds = collectOrderedRuntimeIds(districts, "districts", errors);
   const settlementIds = collectOrderedRuntimeIds(settlements, "settlements", errors);
   const curveIds = collectOrderedRuntimeIds(curves, "regionalSeasonalCurves", errors);
-  collectOrderedRuntimeIds(routes, "routes", errors);
+  const routeIds = collectOrderedRuntimeIds(routes, "routes", errors);
   const geometryIds = collectOrderedRuntimeIds(geometries, "mapGeometries", errors);
 
   districts.forEach((district, index) => {
@@ -2129,6 +2460,149 @@ function validateRuntimeM2Semantics(
       });
     }
   });
+
+  validateRuntimeM2TopologySemantics(topology, districtIds, settlementIds, routeIds, errors);
+}
+
+function validateRuntimeM2TopologySemantics(
+  topology: Record<string, unknown>,
+  districtIds: ReadonlySet<number>,
+  settlementIds: ReadonlySet<number>,
+  routeIds: ReadonlySet<number>,
+  errors: RuntimeValidationError[]
+): void {
+  const topologyDistrictIds = new Set<number>();
+  const districts = readArray(topology, "districts");
+  districts.forEach((district, index) => {
+    if (!isRecord(district)) {
+      return;
+    }
+    const districtId = readPositiveInteger(district, "districtId");
+    if (!districtIds.has(districtId)) {
+      errors.push({
+        path: `topology.districts[${index}].districtId`,
+        message: `Missing topology district ${districtId}.`
+      });
+    }
+    if (topologyDistrictIds.has(districtId)) {
+      errors.push({
+        path: `topology.districts[${index}].districtId`,
+        message: `Duplicate topology district ${districtId}.`
+      });
+    }
+    topologyDistrictIds.add(districtId);
+  });
+  if (topologyDistrictIds.size !== districtIds.size) {
+    errors.push({
+      path: "topology.districts",
+      message: "Topology districts must cover every runtime district exactly once."
+    });
+  }
+
+  const nodeDistrictById = new Map<string, number>();
+  const routeNodes = readArray(topology, "routeNodes");
+  routeNodes.forEach((node, index) => {
+    if (!isRecord(node)) {
+      return;
+    }
+    const nodeId = readString(node, "nodeId");
+    const districtId = readPositiveInteger(node, "districtId");
+    if (!districtIds.has(districtId)) {
+      errors.push({
+        path: `topology.routeNodes[${index}].districtId`,
+        message: `Missing route node district ${districtId}.`
+      });
+    }
+    if (nodeDistrictById.has(nodeId)) {
+      errors.push({
+        path: `topology.routeNodes[${index}].nodeId`,
+        message: `Duplicate topology route node ${nodeId}.`
+      });
+    }
+    nodeDistrictById.set(nodeId, districtId);
+  });
+
+  readArray(topology, "explicitIsolations").forEach((isolation, index) => {
+    if (!isRecord(isolation)) {
+      return;
+    }
+    const districtId = readPositiveInteger(isolation, "districtId");
+    if (!districtIds.has(districtId)) {
+      errors.push({
+        path: `topology.explicitIsolations[${index}].districtId`,
+        message: `Missing isolated district ${districtId}.`
+      });
+    }
+  });
+
+  const routeEdges = readArray(topology, "routeEdges");
+  routeEdges.forEach((edge, index) => {
+    if (!isRecord(edge)) {
+      return;
+    }
+    const routeId = readPositiveInteger(edge, "routeId");
+    if (!routeIds.has(routeId)) {
+      errors.push({
+        path: `topology.routeEdges[${index}].routeId`,
+        message: `Missing route edge route ${routeId}.`
+      });
+    }
+    validateRuntimeM2TopologyEndpointReference(
+      edge["from"],
+      `topology.routeEdges[${index}].from`,
+      districtIds,
+      settlementIds,
+      nodeDistrictById,
+      errors
+    );
+    validateRuntimeM2TopologyEndpointReference(
+      edge["to"],
+      `topology.routeEdges[${index}].to`,
+      districtIds,
+      settlementIds,
+      nodeDistrictById,
+      errors
+    );
+  });
+}
+
+function validateRuntimeM2TopologyEndpointReference(
+  input: unknown,
+  path: string,
+  districtIds: ReadonlySet<number>,
+  settlementIds: ReadonlySet<number>,
+  nodeDistrictById: ReadonlyMap<string, number>,
+  errors: RuntimeValidationError[]
+): void {
+  if (!isRecord(input)) {
+    return;
+  }
+  if (input["kind"] === "district") {
+    const districtId = readPositiveInteger(input, "districtId");
+    if (!districtIds.has(districtId)) {
+      errors.push({
+        path: `${path}.districtId`,
+        message: `Missing endpoint district ${districtId}.`
+      });
+    }
+    return;
+  }
+  if (input["kind"] === "settlement") {
+    const settlementId = readPositiveInteger(input, "settlementId");
+    if (!settlementIds.has(settlementId)) {
+      errors.push({
+        path: `${path}.settlementId`,
+        message: `Missing endpoint settlement ${settlementId}.`
+      });
+    }
+    return;
+  }
+  if (input["kind"] === "route-node") {
+    const nodeId = readString(input, "nodeId");
+    if (!nodeDistrictById.has(nodeId)) {
+      errors.push({ path: `${path}.nodeId`, message: `Missing endpoint route node ${nodeId}.` });
+    }
+  }
 }
 
 function validateRuntimeM3Semantics(
@@ -2444,6 +2918,133 @@ function parseRuntimeM2MapGeometry(input: unknown): RuntimeM2MapGeometryV0 {
   });
 }
 
+function parseRuntimeM2Topology(input: Record<string, unknown>): RuntimeM2TopologyV0 {
+  return Object.freeze({
+    adjacencyDerivation: "explicit-route-graph-v1",
+    explicitIsolations: Object.freeze(
+      readArray(input, "explicitIsolations").map(parseRuntimeM2TopologyIsolation)
+    ),
+    districts: Object.freeze(readArray(input, "districts").map(parseRuntimeM2TopologyDistrict)),
+    routeNodes: Object.freeze(readArray(input, "routeNodes").map(parseRuntimeM2TopologyRouteNode)),
+    routeEdges: Object.freeze(readArray(input, "routeEdges").map(parseRuntimeM2TopologyRouteEdge))
+  });
+}
+
+function parseRuntimeM2TopologyIsolation(input: unknown): RuntimeM2TopologyExplicitIsolationV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M2 topology isolation.");
+  }
+
+  return Object.freeze({
+    districtId: parseContentDistrictId(input["districtId"]),
+    reasonCode: readString(input, "reasonCode")
+  });
+}
+
+function parseRuntimeM2TopologyDistrict(input: unknown): RuntimeM2TopologyDistrictV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M2 topology district.");
+  }
+
+  return Object.freeze({
+    districtId: parseContentDistrictId(input["districtId"]),
+    sourceId: readString(input, "sourceId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    anchor: parseRuntimeM2Point(readRecord(input, "anchor")),
+    polygon: Object.freeze(readArray(input, "polygon").map(parseRuntimeM2Point)),
+    metadata: parseRuntimeM2TopologyMetadata(readRecord(input, "metadata"))
+  });
+}
+
+function parseRuntimeM2TopologyRouteNode(input: unknown): RuntimeM2TopologyRouteNodeV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M2 topology route node.");
+  }
+
+  return Object.freeze({
+    nodeId: readString(input, "nodeId"),
+    nodeKind: readM2TopologyNodeKind(input, "nodeKind"),
+    districtId: parseContentDistrictId(input["districtId"]),
+    displayNameKey: readString(input, "displayNameKey"),
+    anchor: parseRuntimeM2Point(readRecord(input, "anchor"))
+  });
+}
+
+function parseRuntimeM2TopologyRouteEdge(input: unknown): RuntimeM2TopologyRouteEdgeV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M2 topology route edge.");
+  }
+
+  return Object.freeze({
+    routeId: parseContentRouteId(input["routeId"]),
+    sourceId: readString(input, "sourceId"),
+    from: parseRuntimeM2TopologyEndpoint(readRecord(input, "from")),
+    to: parseRuntimeM2TopologyEndpoint(readRecord(input, "to")),
+    mode: readM2RouteKind(input, "mode"),
+    baseTravelCost: readPositiveInteger(input, "baseTravelCost"),
+    baseCapacity: readPositiveInteger(input, "baseCapacity"),
+    seasonality: Object.freeze(
+      readArray(input, "seasonality").map(parseRuntimeM2TopologySeasonality)
+    ),
+    availability: parseRuntimeM2TopologyAvailability(readRecord(input, "availability")),
+    metadata: parseRuntimeM2TopologyMetadata(readRecord(input, "metadata"))
+  });
+}
+
+function parseRuntimeM2TopologyEndpoint(
+  input: Record<string, unknown>
+): RuntimeM2TopologyRouteEndpointV0 {
+  const kind = readString(input, "kind");
+  if (kind === "district") {
+    return Object.freeze({ kind, districtId: parseContentDistrictId(input["districtId"]) });
+  }
+  if (kind === "route-node") {
+    return Object.freeze({ kind, nodeId: readString(input, "nodeId") });
+  }
+  if (kind === "settlement") {
+    return Object.freeze({ kind, settlementId: parseContentSettlementId(input["settlementId"]) });
+  }
+
+  throw new Error("Expected valid runtime M2 topology endpoint kind.");
+}
+
+function parseRuntimeM2TopologySeasonality(input: unknown): RuntimeM2TopologySeasonalModifierV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid runtime M2 topology seasonality.");
+  }
+
+  return Object.freeze({
+    month: readIntegerInRange(input, "month", 1, 12),
+    costMultiplierBps: readIntegerInRange(input, "costMultiplierBps", 1, 100000),
+    capacityMultiplierBps: readIntegerInRange(input, "capacityMultiplierBps", 0, 100000),
+    reasonCodes: Object.freeze(readArray(input, "reasonCodes").map(readStringEntry))
+  });
+}
+
+function parseRuntimeM2TopologyAvailability(
+  input: Record<string, unknown>
+): M2TopologyRouteAvailability {
+  const kind = readString(input, "kind");
+  if (kind === "open") {
+    return Object.freeze({ kind });
+  }
+  if (kind === "blocked" || kind === "unknown") {
+    return Object.freeze({ kind, reasonCode: readString(input, "reasonCode") });
+  }
+
+  throw new Error("Expected valid runtime M2 topology availability.");
+}
+
+function parseRuntimeM2TopologyMetadata(
+  input: Record<string, unknown>
+): RuntimeM2TopologyMetadataV0 {
+  return Object.freeze({
+    historicity: readM2TopologyHistoricity(input, "historicity"),
+    terrainClass: readM2TopologyTerrainClass(input, "terrainClass"),
+    riskClass: readM2TopologyRiskClass(input, "riskClass")
+  });
+}
+
 function parseRuntimeM3Polity(input: unknown): RuntimeM3PolityDefinitionV0 {
   if (!isRecord(input)) {
     throw new Error("Expected valid runtime M3 polity.");
@@ -2697,6 +3298,77 @@ function readM2RouteKind(record: Record<string, unknown>, key: string): M2RouteK
   }
 
   throw new Error(`${key} must be a valid M2 route kind.`);
+}
+
+function readM2WorldHistoricity(record: Record<string, unknown>, key: string): M2WorldHistoricity {
+  const value = readString(record, key);
+  if (value === "COMPOSITE" || value === "FICTIONAL") {
+    return value;
+  }
+
+  throw new Error(`${key} must be COMPOSITE or FICTIONAL.`);
+}
+
+function readM2TopologyNodeKind(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyRouteNodeKind {
+  const value = readString(record, key);
+  if (value === "pass" || value === "port" || value === "special" || value === "warehouse") {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M2 topology route node kind.`);
+}
+
+function readM2TopologyHistoricity(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyHistoricity {
+  const value = readString(record, key);
+  if (value === "COMPOSITE" || value === "FICTIONAL") {
+    return value;
+  }
+
+  throw new Error(`${key} must be COMPOSITE or FICTIONAL.`);
+}
+
+function readM2TopologyTerrainClass(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyTerrainClass {
+  const value = readString(record, key);
+  if (
+    value === "coastal" ||
+    value === "lowland" ||
+    value === "pass" ||
+    value === "riverine" ||
+    value === "upland" ||
+    value === "urban" ||
+    value === "unknown"
+  ) {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M2 topology terrain class.`);
+}
+
+function readM2TopologyRiskClass(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyRiskClass {
+  const value = readString(record, key);
+  if (
+    value === "contested" ||
+    value === "hazardous" ||
+    value === "low" ||
+    value === "seasonal" ||
+    value === "unknown"
+  ) {
+    return value;
+  }
+
+  throw new Error(`${key} must be a valid M2 topology risk class.`);
 }
 
 function readM2MapGeometryOwnerKind(
@@ -2993,6 +3665,27 @@ function validateArray(
   errors.push({ path: key, message: `${key} must be an array.` });
 }
 
+function validateRuntimeStringArray(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: RuntimeValidationError[]
+): void {
+  const value = record[key];
+  if (!Array.isArray(value) || value.length === 0) {
+    errors.push({ path, message: `${path} must be a non-empty string array.` });
+    return;
+  }
+  value.forEach((entry, index) => {
+    if (typeof entry !== "string" || entry.length === 0) {
+      errors.push({
+        path: `${path}[${index}]`,
+        message: `${path}[${index}] must be a non-empty string.`
+      });
+    }
+  });
+}
+
 function readRecord(record: Record<string, unknown>, key: string): Record<string, unknown> {
   const value = record[key];
   if (!isRecord(value)) {
@@ -3018,6 +3711,14 @@ function readString(record: Record<string, unknown>, key: string): string {
   }
 
   return value;
+}
+
+function readStringEntry(input: unknown): string {
+  if (typeof input !== "string") {
+    throw new Error("Expected string array entry.");
+  }
+
+  return input;
 }
 
 function readPositiveInteger(record: Record<string, unknown>, key: string): number {
