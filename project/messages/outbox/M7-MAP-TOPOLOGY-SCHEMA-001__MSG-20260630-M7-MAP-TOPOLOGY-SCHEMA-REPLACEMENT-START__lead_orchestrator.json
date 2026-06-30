@@ -1,0 +1,72 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START",
+  "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Replaced the original systems_architect writer after three wait windows and shutdown without a REVIEW/PARTIAL/BLOCKED handoff. The replacement systems_architect must inherit the existing partial diff on codex/m7-map-topology-schema and complete the authoritative topology schema task without reverting prior work.",
+  "artifacts": [
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-schema",
+  "commit": "b05a88fe3300af715d9a62f04ff4dd401a3e669f",
+  "base_commit": "b05a88fe3300af715d9a62f04ff4dd401a3e669f",
+  "replaced_thread": {
+    "thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
+    "nickname": "Meridian",
+    "role": "systems_architect",
+    "previous_status": "running",
+    "closed_status": "shutdown",
+    "reason": "closed_after_three_wait_windows_without_review_partial_or_blocked_handoff",
+    "partial_diff_policy": "inherit_without_reverting"
+  },
+  "replacement_thread": {
+    "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+    "nickname": "Lintel",
+    "role": "systems_architect",
+    "status": "in_progress"
+  },
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Observed partial uncommitted topology schema implementation diff on the task branch before replacement."
+    },
+    {
+      "command": "multi_agent_v1.close_agent 019f18fa-eb5b-7c90-b951-f8416dc8742d",
+      "exit_code": 0,
+      "result": "Previous status was running; no handoff was returned."
+    },
+    {
+      "command": "multi_agent_v1.spawn_agent systems_architect",
+      "exit_code": 0,
+      "result": "Spawned replacement systems_architect thread 019f1917-d4c3-75e1-9fab-d6ddc4b61922."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "REPLACE_STALLED_SCHEMA_WRITER",
+      "decision": "Close the stalled writer and replace it instead of leaving M7 topology recovery blocked indefinitely."
+    },
+    {
+      "id": "INHERIT_PARTIAL_DIFF",
+      "decision": "The replacement writer must continue from the existing partial implementation and must not revert another agent's work unless a later review identifies a concrete defect."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PARTIAL_DIFF_WITHOUT_HANDOFF",
+      "severity": "R4",
+      "summary": "The previous writer produced uncommitted topology schema code without a structured handoff.",
+      "mitigation": "Replacement systems_architect must document inherited work in the final REVIEW handoff and run the required tests before QA routing."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Complete M7-MAP-TOPOLOGY-SCHEMA-001 from the inherited partial diff and return the expected REVIEW handoff to qa_reviewer.",
+  "created_at": "2026-06-30T23:14:02.6327270+08:00"
+}

@@ -24,12 +24,19 @@ import {
   type DecodeSaveEnvelopeV1Options,
   type SaveBuildMetadataV1,
   type SaveEnvelopeV1,
-  type SaveLoadRejectionReasonV1
+  type SaveLoadRejectionReasonV1,
+  type SaveSemanticIssueV1
 } from "@monsoon/save-format";
 
 import { advanceWorldByGameDay, getGameCalendarDate } from "./scheduler-v0.ts";
 import { bootWorldStateFromRuntimeContentPackV1 } from "./boot-content-runtime-v1.ts";
 import { previewM2TransportRouteV0 } from "./m2-route-transport-v0.ts";
+import {
+  listMapTopologyV1,
+  previewMapTopologyPathV1,
+  type MapTopologyPathPreviewV1,
+  type MapTopologyReadModelV1
+} from "./map-topology-v1.ts";
 import { createM4DeterminismReplayWorldStateV0 } from "./m4-determinism-replay-v1.ts";
 import {
   M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH,
@@ -200,6 +207,7 @@ export type DomainErrorCodeV1 =
   | "stale-day"
   | "stale-revision"
   | "siege-state-invalid"
+  | "topology-state-missing"
   | "unknown-command-kind"
   | "unknown-query-kind"
   | "unsupported-command-version"
@@ -705,6 +713,12 @@ export type QueryResultV1 =
             readonly districts: readonly DistrictSummaryReadModelV1[];
           }
         | {
+            readonly kind: "sim.list-map-topology";
+            readonly day: number;
+            readonly revision: number;
+            readonly topology: MapTopologyReadModelV1;
+          }
+        | {
             readonly kind: "sim.list-m2-economy-summaries";
             readonly day: number;
             readonly revision: number;
@@ -736,6 +750,13 @@ export type QueryResultV1 =
             readonly revision: number;
             readonly monthOfYear: number;
             readonly route: M2TransportRoutePreviewReadModelV1;
+          }
+        | {
+            readonly kind: "sim.preview-map-topology-path";
+            readonly day: number;
+            readonly revision: number;
+            readonly monthOfYear: number;
+            readonly route: MapTopologyPathPreviewV1;
           }
         | {
             readonly kind: "sim.preview-m3-postwar-governance";
@@ -1485,6 +1506,10 @@ export function loadSaveV1(
   const decoded = decodeSaveEnvelopeV1(bytes, {
     ...options,
     validateWorldSnapshot: (candidate) => {
+      const topologyIssue = validateSaveTopologyCompatibility(runtime.world, candidate);
+      if (topologyIssue !== null) {
+        return [topologyIssue];
+      }
       if (runtime.world.state.m2 !== undefined && !hasM2RuntimeState(candidate)) {
         return [
           {
@@ -9533,6 +9558,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
           })
         }
       };
+    case "sim.list-map-topology":
+      return executeListMapTopologyQuery(runtime);
     case "sim.list-m2-economy-summaries":
       return executeM2EconomySummariesQuery(runtime);
     case "sim.list-m3-administrative-burden":
@@ -9543,6 +9570,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM3SuccessionCrisesQuery(runtime);
     case "sim.preview-m2-transport-route":
       return executeM2TransportRoutePreviewQuery(runtime, query);
+    case "sim.preview-map-topology-path":
+      return executeMapTopologyPathPreviewQuery(runtime, query);
     case "sim.preview-m3-postwar-governance":
       return executeM3PostwarGovernancePreviewQuery(runtime, query);
     case "sim.compare-m3-postwar-governance-outcomes":
@@ -11793,6 +11822,89 @@ function clampBps(value: number): number {
   return value;
 }
 
+function executeListMapTopologyQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
+  const topology = listMapTopologyV1(runtime.world);
+  if (topology === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "topology-state-missing",
+        path: "definitions.topology",
+        message: "sim.list-map-topology requires an authoritative map topology definition."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-map-topology",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      topology
+    }
+  };
+}
+
+function executeMapTopologyPathPreviewQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.preview-map-topology-path" }>
+): QueryResultV1 {
+  if (runtime.world.definitions.topology === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "topology-state-missing",
+        path: "definitions.topology",
+        message: "sim.preview-map-topology-path requires an authoritative map topology definition."
+      }
+    };
+  }
+
+  const originDistrictId = parseDistrictId(query.payload.originDistrictId);
+  const destinationDistrictId = parseDistrictId(query.payload.destinationDistrictId);
+  if (!runtime.world.definitions.districts.some((district) => district.id === originDistrictId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.originDistrictId",
+        message: "sim.preview-map-topology-path references a missing origin DistrictId."
+      }
+    };
+  }
+  if (
+    !runtime.world.definitions.districts.some((district) => district.id === destinationDistrictId)
+  ) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.destinationDistrictId",
+        message: "sim.preview-map-topology-path references a missing destination DistrictId."
+      }
+    };
+  }
+
+  const preview = previewMapTopologyPathV1(runtime.world, {
+    originDistrictId,
+    destinationDistrictId,
+    stockAmount: query.payload.stockAmount,
+    day: runtime.world.meta.currentDay
+  });
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.preview-map-topology-path",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      monthOfYear: getGameCalendarDate(runtime.world.meta.currentDay).monthOfYear,
+      route: preview
+    }
+  };
+}
+
 function executeM2TransportRoutePreviewQuery(
   runtime: SimulationRuntimeV1,
   query: Extract<GameQueryV1, { readonly kind: "sim.preview-m2-transport-route" }>
@@ -13817,6 +13929,52 @@ function mapProtocolCode(code: ProtocolErrorCodeV1): DomainErrorCodeV1 {
     case "unsupported-message-version":
       return "invalid-payload";
   }
+}
+
+function validateSaveTopologyCompatibility(
+  currentWorld: WorldStateV0,
+  candidate: unknown
+): SaveSemanticIssueV1 | null {
+  const currentTopology = currentWorld.definitions.topology;
+  if (currentTopology === undefined) {
+    return null;
+  }
+
+  const candidateTopologyHash = readCandidateTopologyHash(candidate);
+  if (candidateTopologyHash === undefined) {
+    return {
+      path: "definitions.topology",
+      message: "Save snapshot is missing required map topology for this runtime."
+    };
+  }
+
+  if (candidateTopologyHash !== currentTopology.topologyHash) {
+    return {
+      path: "definitions.topology.topologyHash",
+      message: `Save topology hash ${candidateTopologyHash} does not match runtime topology hash ${currentTopology.topologyHash}.`
+    };
+  }
+
+  return null;
+}
+
+function readCandidateTopologyHash(candidate: unknown): string | undefined {
+  if (!isRecord(candidate)) {
+    return undefined;
+  }
+
+  const definitions = candidate["definitions"];
+  if (!isRecord(definitions)) {
+    return undefined;
+  }
+
+  const topology = definitions["topology"];
+  if (!isRecord(topology)) {
+    return undefined;
+  }
+
+  const topologyHash = topology["topologyHash"];
+  return typeof topologyHash === "string" ? topologyHash : undefined;
 }
 
 function hasM2RuntimeState(candidate: unknown): boolean {

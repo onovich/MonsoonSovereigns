@@ -1985,7 +1985,7 @@
     {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "systems_architect",
-      "thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
+      "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "status": "in_progress",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -1993,9 +1993,10 @@
       "actual_effort": "unknown",
       "responsibility": "Implement authoritative topology definitions and read/query boundaries per ADR-010.",
       "branch_or_worktree": "codex/m7-map-topology-schema",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
+      "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
+      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
     }
   ],
   "task_effects": {
@@ -5556,13 +5557,15 @@
     "branch_or_worktree": "codex/m7-map-topology-schema",
     "ready_after_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
     "ready_after_main_commit": "30779bac55c5192a666aa95611741443c8f3239e",
-    "writer_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
-    "writer_thread_nickname": "Meridian",
+    "writer_thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+    "writer_thread_nickname": "Lintel",
+    "replaced_writer_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
     "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
-    "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
+    "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
+    "replacement_start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
     "started_at": "2026-06-30T22:41:30.6510548+08:00",
-    "updated_at": "2026-06-30T22:41:30.6510548+08:00",
+    "updated_at": "2026-06-30T23:14:02.6327270+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "next_action": "Wait for systems_architect REVIEW handoff, then route to qa_reviewer."

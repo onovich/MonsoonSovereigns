@@ -7815,12 +7815,12 @@
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
       "updated_at": "2026-06-30T22:41:30.6510548+08:00"
     },
-    "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect": {
+    "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect:replaced:019f18fa-eb5b-7c90-b951-f8416dc8742d": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "systems_architect",
       "thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
       "nickname": "Meridian",
-      "status": "in_progress",
+      "status": "closed_stalled_no_handoff_partial_diff_inherited",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7829,10 +7829,47 @@
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
       "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
+      "closed_at": "2026-06-30T23:14:02.6327270+08:00",
+      "previous_status": "running",
+      "replaced_by": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+      "replaced_by_nickname": "Lintel",
+      "reason": "closed_after_three_wait_windows_without_review_partial_or_blocked_handoff",
+      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
+    },
+    "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect": {
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "role": "systems_architect",
+      "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+      "nickname": "Lintel",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
+      "previous_source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
+      "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
     }
   },
   "replaced_threads": [
+    {
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "role": "systems_architect",
+      "thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
+      "nickname": "Meridian",
+      "status": "closed_stalled_no_handoff_partial_diff_inherited",
+      "replaced_by": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+      "replaced_by_nickname": "Lintel",
+      "reason": "closed_after_three_wait_windows_without_review_partial_or_blocked_handoff",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "closed_at": "2026-06-30T23:14:02.6327270+08:00",
+      "replacement_route": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
+      "partial_diff_policy": "inherit_without_reverting"
+    },
     {
       "task_id": "M6-DIPLOMACY-LEGITIMACY-001",
       "role": "simulation_engineer",
@@ -8481,12 +8518,12 @@
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
       "updated_at": "2026-06-30T22:41:30.6510548+08:00"
     },
-    "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect": {
+    "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect:replaced:019f18fa-eb5b-7c90-b951-f8416dc8742d": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "systems_architect",
       "thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
       "nickname": "Meridian",
-      "status": "in_progress",
+      "status": "closed_stalled_no_handoff_partial_diff_inherited",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -8495,7 +8532,30 @@
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
       "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "updated_at": "2026-06-30T22:41:30.6510548+08:00"
+      "closed_at": "2026-06-30T23:14:02.6327270+08:00",
+      "previous_status": "running",
+      "replaced_by": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+      "replaced_by_nickname": "Lintel",
+      "reason": "closed_after_three_wait_windows_without_review_partial_or_blocked_handoff",
+      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
+    },
+    "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect": {
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "role": "systems_architect",
+      "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
+      "nickname": "Lintel",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
+      "previous_source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
+      "replaces_thread_id": "019f18fa-eb5b-7c90-b951-f8416dc8742d",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
+      "updated_at": "2026-06-30T23:14:02.6327270+08:00"
     }
   }
 }
