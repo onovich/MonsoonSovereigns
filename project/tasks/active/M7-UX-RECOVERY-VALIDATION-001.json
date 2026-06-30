@@ -2,7 +2,7 @@
   "id": "M7-UX-RECOVERY-VALIDATION-001",
   "summary": "Validate the recovered M7 first-screen/map UX before content lock is reconsidered",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -74,21 +74,22 @@
     "pnpm test:e2e",
     "pnpm check"
   ],
-  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
-      "branch_or_worktree": "codex/m7-ux-recovery-validation",
+      "status": "closed_after_main_integration_for_task",
+      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
       "start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
-      "updated_at": "2026-06-30T05:32:29.617Z",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "updated_at": "2026-06-30T05:49:02.567Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json"
     },
     "test_engineer": {
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
-      "status": "accepted_by_qa_and_lead",
+      "status": "closed_after_accept_review_and_main_integration",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -118,12 +119,14 @@
       "review_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
       "review_status_r3": "REVIEW",
       "review_commit_r3": "523bd6364a82a2aba0f7a4fed1889792762579eb",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "closed_at": "2026-06-30T05:49:02.567Z",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json"
     },
     "client_engineer": {
       "thread_id": "019f16df-915f-7123-a288-1dd8ec6ce265",
       "nickname": "Window",
-      "status": "accepted_by_qa_and_lead",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -140,12 +143,14 @@
       "review_status": "REVIEW",
       "review_ready_at": "2026-06-30T05:30:00.000Z",
       "updated_at": "2026-06-30T05:32:29.617Z",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "closed_at": "2026-06-30T05:49:02.567Z",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json"
     },
     "qa_reviewer": {
       "thread_id": "019f16fa-a455-7ef3-9267-43bc03777e9c",
       "nickname": "Gate",
-      "status": "accepted",
+      "status": "closed_after_accept_review_and_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -161,10 +166,12 @@
       "updated_at": "2026-06-30T05:32:29.617Z",
       "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-QA-REVIEW__qa_reviewer.json",
       "review_status": "ACCEPT",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "closed_at": "2026-06-30T05:49:02.567Z",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json"
     }
   },
-  "route_to": "lead_orchestrator",
+  "route_to": "product_owner",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -173,10 +180,11 @@
     "Pixi/map presentation is render-cache-only and must remain rebuildable from read models.",
     "No server, multiplayer, telemetry, account, cloud-save implementation, release, commercial, branding, production-art, or paid-service scope is authorized.",
     "All player-visible text must go through existing i18n boundaries.",
-    "Promoted to READY after M7-TASK-RAIL-COLLAPSED-DRAWERS-001 entered origin/main through PR #211."
+    "Promoted to READY after M7-TASK-RAIL-COLLAPSED-DRAWERS-001 entered origin/main through PR #211.",
+    "Closed after PR #213 entered origin/main and independent QA accepted the UX recovery validation. Formal content lock remains a separate Human Gate and is not approved by this closure."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-30T05:32:29.617Z",
+  "updated_at": "2026-06-30T05:49:02.567Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -192,7 +200,7 @@
   "expected_writer_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
   "writer_thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
   "writer_thread_nickname": "Canary",
-  "next_action": "Run integration gates, push branch, open PR, wait for CI, merge to main, then mark CLOSED only after main integration.",
+  "next_action": "Formal M7 content lock remains blocked; route back to M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration after UX recovery validation.",
   "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
   "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
   "replacement_start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-REPLACEMENT-START__lead_orchestrator.json",
@@ -240,5 +248,16 @@
   "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-06-30T05:32:29.617Z",
   "accepted_implementation_commit": "523bd6364a82a2aba0f7a4fed1889792762579eb",
-  "accepted_process_commit": "986342d866d9c995cbf9df5049d9bd7b3965d52a"
+  "accepted_process_commit": "986342d866d9c995cbf9df5049d9bd7b3965d52a",
+  "closed_at": "2026-06-30T05:49:02.567Z",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "integrated_pr": 213,
+  "integrated_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/213",
+  "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
+  "child_threads_closed": [
+    "019f16c8-c1dc-7dc0-9268-1763a59677be",
+    "019f16df-915f-7123-a288-1dd8ec6ce265",
+    "019f16fa-a455-7ef3-9267-43bc03777e9c"
+  ]
 }

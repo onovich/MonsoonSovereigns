@@ -1,0 +1,97 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-CLOSED",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7 UX recovery validation is CLOSED after PR #213 passed CI, merged, and origin/main contains the accepted first-screen/map/decision/task-rail recovery validation. Formal M7 content lock remains unapproved and returns to product-owner Human Gate reconsideration.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-UX-RECOVERY-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/goal-mode-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png"
+  ],
+  "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
+  "commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
+  "integrated_pr": 213,
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/213",
+  "tests_run": [
+    {
+      "command": "gh pr checks 213 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "gh pr merge 213 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #213 merged; origin/main advanced to ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS before PR #213 merge; existing non-blocking large chunk warning only."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "PASS before PR #213 merge; existing non-blocking chunk/plugin timing warnings only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS before PR #213 merge: Chromium suite 26/26."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS before PR #213 merge."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UX-RECOVERY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID before closure update."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Mark M7-UX-RECOVERY-VALIDATION-001 CLOSED only after PR #213 passed CI, merged, and origin/main contained the accepted UX recovery validation."
+    },
+    {
+      "id": "CONTENT_LOCK_NOT_APPROVED",
+      "decision": "This closure does not approve formal M7 content lock and does not set content_lock_accepted=true."
+    },
+    {
+      "id": "HUMAN_GATE_REOPENED_FOR_RECONSIDERATION",
+      "decision": "M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED and now awaits product-owner reconsideration after UX recovery validation."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FORMAL_CONTENT_LOCK_OWNER_DECISION_PENDING",
+      "severity": "R4",
+      "summary": "Autonomous continuation must pause at the content-lock Human Gate until the product owner explicitly decides.",
+      "mitigation": "Route the refreshed Human Gate package to product_owner and do not start M7 exit validation."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE",
+      "owner": "product_owner",
+      "summary": "Choose APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES after UX recovery validation."
+    }
+  ],
+  "child_threads_closed": [
+    "019f16c8-c1dc-7dc0-9268-1763a59677be",
+    "019f16df-915f-7123-a288-1dd8ec6ce265",
+    "019f16fa-a455-7ef3-9267-43bc03777e9c"
+  ],
+  "route_to": "product_owner",
+  "requested_action": "Product-owner Human Gate decision required before M7 exit validation can start.",
+  "created_at": "2026-06-30T05:49:02.567Z"
+}

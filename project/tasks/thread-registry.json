@@ -11,12 +11,13 @@
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-30T04:17:11.565Z",
-        "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+        "updated_at": "2026-06-30T05:49:02.567Z",
+        "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
         "task_ids": [
-          "M7-UX-RECOVERY-VALIDATION-001"
+          "M7-CONTENT-LOCK-ACCEPTANCE-001"
         ],
-        "branch_or_worktree": "codex/m7-ux-recovery-validation"
+        "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
+        "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001"
       }
     ],
     "retired_leads": [
@@ -37,7 +38,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-30T04:17:11.565Z"
+      "checked_at": "2026-06-30T05:49:02.567Z"
     }
   },
   "entries": {
@@ -7057,16 +7058,17 @@
       "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "blocked_on_product_owner_human_gate",
+      "status": "blocked_human_gate_after_ux_recovery_validation",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-content-lock-acceptance",
+      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
       "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
       "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
-      "updated_at": "2026-06-29T14:55:23.348Z",
-      "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json"
+      "updated_at": "2026-06-30T05:49:02.567Z",
+      "product_owner_gate_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-BLOCKED__lead_orchestrator.json",
+      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json"
     },
     "M7-CONTENT-LOCK-ACCEPTANCE-001:qa_reviewer": {
       "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
@@ -7490,22 +7492,26 @@
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router_accepting_integration",
+      "status": "closed_after_main_integration_for_task",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-ux-recovery-validation",
+      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
       "source_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-START__lead_orchestrator.json",
-      "updated_at": "2026-06-30T05:32:29.617Z",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "updated_at": "2026-06-30T05:49:02.567Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "integrated_pr": 213,
+      "integrated_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T05:49:02.567Z"
     },
     "M7-UX-RECOVERY-VALIDATION-001:test_engineer": {
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "test_engineer",
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
-      "status": "accepted_by_qa_and_lead",
+      "status": "closed_after_accept_review_and_main_integration",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7516,7 +7522,7 @@
       "expected_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T04:29:17.193Z",
-      "updated_at": "2026-06-30T04:53:23.690Z",
+      "updated_at": "2026-06-30T05:49:02.567Z",
       "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
       "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
       "route_submission_id": "019f16c9-00e0-7be2-be88-174260c4e269",
@@ -7536,14 +7542,16 @@
       "review_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
       "review_status_r3": "REVIEW",
       "review_commit_r3": "523bd6364a82a2aba0f7a4fed1889792762579eb",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T05:49:02.567Z"
     },
     "M7-UX-RECOVERY-VALIDATION-001:client_engineer": {
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "client_engineer",
       "thread_id": "019f16df-915f-7123-a288-1dd8ec6ce265",
       "nickname": "Window",
-      "status": "accepted_by_qa_and_lead",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7559,15 +7567,17 @@
       "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
       "review_status": "REVIEW",
       "review_ready_at": "2026-06-30T05:30:00.000Z",
-      "updated_at": "2026-06-30T05:32:29.617Z",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "updated_at": "2026-06-30T05:49:02.567Z",
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T05:49:02.567Z"
     },
     "M7-UX-RECOVERY-VALIDATION-001:qa_reviewer": {
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f16fa-a455-7ef3-9267-43bc03777e9c",
       "nickname": "Gate",
-      "status": "accepted",
+      "status": "closed_after_accept_review_and_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7580,10 +7590,12 @@
       "route_created_at": "2026-06-30T05:22:55.356Z",
       "route_submission_id": "019f16fc-a885-7232-bd95-321ec4f35220",
       "route_sent_at": "2026-06-30T05:24:51.452Z",
-      "updated_at": "2026-06-30T05:32:29.617Z",
+      "updated_at": "2026-06-30T05:49:02.567Z",
       "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-QA-REVIEW__qa_reviewer.json",
       "review_status": "ACCEPT",
-      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_close_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T05:49:02.567Z"
     }
   },
   "replaced_threads": [
@@ -7769,7 +7781,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-06-30T05:32:29.617Z",
+  "updated_at": "2026-06-30T05:49:02.567Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -7905,6 +7917,27 @@
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
       "status": "closed_running_no_handoff_clean_worktree",
       "closed_at": "2026-06-30T04:29:17.193Z"
+    },
+    {
+      "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
+      "role": "test_engineer",
+      "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+      "status": "closed_after_accept_review_and_main_integration",
+      "closed_at": "2026-06-30T05:49:02.567Z"
+    },
+    {
+      "thread_id": "019f16df-915f-7123-a288-1dd8ec6ce265",
+      "role": "client_engineer",
+      "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+      "status": "closed_after_task_main_integration",
+      "closed_at": "2026-06-30T05:49:02.567Z"
+    },
+    {
+      "thread_id": "019f16fa-a455-7ef3-9267-43bc03777e9c",
+      "role": "qa_reviewer",
+      "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+      "status": "closed_after_accept_review_and_main_integration",
+      "closed_at": "2026-06-30T05:49:02.567Z"
     }
   ]
 }
