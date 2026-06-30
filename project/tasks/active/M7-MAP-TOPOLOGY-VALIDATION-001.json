@@ -45,10 +45,10 @@
     ]
   },
   "acceptance_criteria": [
-    "Prove the default player-facing map is driven by explicit district polygons and route graph, not rectangular-grid topology or row/column neighbor shortcuts.",
+    "Prove the default player-facing map is driven by explicit district polygons and route graph, not rectangular-grid topology, hex axial/cube coordinates, sequential id order, or row/column/regular-lattice neighbor shortcuts.",
     "Prove map/list/task rail/inspector focus and route preview reason codes remain synchronized across the core playable path.",
     "Prove deterministic path previews, tie-breakers, topology hash, save/load or structured rejection behavior, and browser/node replay remain stable.",
-    "Include negative tests for invalid adjacency, missing route endpoint, blocked route reason, disconnected graph, duplicate route capacity use, and legacy grid leakage.",
+    "Include negative tests for invalid adjacency, missing route endpoint, blocked route reason, disconnected graph, duplicate route capacity use, visual-neighbor-without-route, visually-distant-explicit-route, geometry perturbation without path change, and legacy grid/hex/lattice leakage.",
     "Produce screenshot/manual-smoke evidence at 1440x900 and 1280x720 with clean console output and player-visible route/legend explanation.",
     "After acceptance and main integration, reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration; do not approve content lock autonomously."
   ],
@@ -63,7 +63,7 @@
     "pnpm build:web",
     "pnpm storybook:build",
     "pnpm test:e2e",
-    "focused topology validation negative tests",
+    "focused topology validation negative tests, including anti-grid/lattice leakage tests",
     "manual-smoke notes with screenshots and console-clean assertions"
   ],
   "route_to": "qa_reviewer",

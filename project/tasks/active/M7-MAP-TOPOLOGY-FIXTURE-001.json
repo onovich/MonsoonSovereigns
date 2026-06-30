@@ -49,11 +49,13 @@
     ]
   },
   "acceptance_criteria": [
-    "Replace or migrate the default player-facing prototype topology so district adjacency and route movement are no longer derived from a rectangular row/column grid.",
+    "Replace or migrate the default player-facing prototype topology so district adjacency and route movement are no longer derived from a rectangular row/column grid, hex axial/cube coordinate system, sequential id order, or any hidden regular lattice.",
+    "Default prototype topology uses 12-18 low-fidelity COMPOSITE districts and 25-40 explicit route edges with variable node degree, dead ends, chokepoints, river/coast/road modes, at least one explicit isolated/no-known-route reason, one visual-neighbor pair with no route, and one visually distant pair connected by an explicit route.",
+    "The fixture must not use linear districtId-derived coordinates, uniform polygons, ring-only 1-2-3 route order, or a regular lattice as the player-facing default topology.",
     "Use synthetic/COMPOSITE low-fidelity districts unless historical_researcher has recorded source claims; do not present exact historical borders, route importance, ports, or river claims as fact without source records.",
     "Every district polygon has nonzero area, stable id, stable anchor, no same-layer overlap, and exactly one actual controller or explicit uncontrolled state.",
     "Every route edge references valid endpoints, explicit mode, capacity, seasonal factors, risk/terrain class, and stable tie-break id.",
-    "Content compiler rejects missing endpoints, overlapping invalid polygons, duplicate topology ids, disconnected playable graph without explicit isolated reason, and row/column-only adjacency shortcuts."
+    "Content compiler rejects missing endpoints, overlapping invalid polygons, duplicate topology ids/source ids, disconnected playable graph without explicit isolated reason, route nodes outside their district polygon, and row/column/grid/hex/lattice-only adjacency shortcuts."
   ],
   "required_tests": [
     "git status --short",
@@ -62,7 +64,7 @@
     "pnpm content:validate",
     "pnpm --filter @monsoon/content-runtime test",
     "pnpm --filter @monsoon/sim-core test",
-    "negative content-compiler tests for missing endpoint, duplicate id, invalid polygon, disconnected graph, row/column adjacency leak",
+    "negative content-compiler tests for missing endpoint, duplicate id/source id, invalid polygon, route node outside polygon, disconnected graph, row/column/grid/hex/lattice adjacency leak",
     "save/load round-trip if topology ids or manifest hash affect saves"
   ],
   "route_to": "historical_researcher",

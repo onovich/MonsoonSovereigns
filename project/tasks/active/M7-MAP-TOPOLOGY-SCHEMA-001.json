@@ -37,6 +37,7 @@
   ],
   "scope": {
     "allowed_paths": [
+      "PROJECT_STATUS.md",
       "docs/decisions/ADR-010-map-topology.md",
       "packages/sim-core/**",
       "packages/protocol/**",
@@ -45,6 +46,9 @@
       "apps/content-tools/**",
       "tests/**",
       "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+      "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+      "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+      "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
       "project/tasks/thread-registry.json",
       "project/messages/**",
       "project/goal-mode-state.json",
@@ -68,7 +72,8 @@
   },
   "acceptance_criteria": [
     "Define serializable static topology definitions for District polygon anchors/metadata, route endpoints, explicit route edges, route modes, capacity, seasonality, terrain/risk classes, and stable topology/content hash boundaries.",
-    "No row/column/grid-derived adjacency or authority distance remains in the new topology path; old fixture helpers may remain only as legacy tests or explicit debug inputs.",
+    "No row/column/grid/hex axial/cube/regular-lattice-derived adjacency or authority distance remains in the new topology path; old fixture helpers may remain only as legacy tests or explicit debug inputs.",
+    "Path previews are derived only from explicit topology route edges: visually adjacent polygons without a route remain unreachable, and perturbing polygon coordinates does not change selected route ids unless route-edge data changes.",
     "Expose read/query surfaces that let UI and AI inspect districts, route edges, path preview reason codes, capacity, seasonal cost, blocked/no-known-route states, and deterministic tie-break evidence without mutating WorldState.",
     "Preserve sim-core isolation from React, Pixi, DOM, Electron, Node file IO, Math.random, Date.now, and render-frame timing.",
     "Specify save/load handling for topology hash and old saves: migrate if safe or return structured rejection without corrupting existing saves."
@@ -82,12 +87,14 @@
     "pnpm --filter @monsoon/content-runtime test",
     "pnpm --filter @monsoon/save-format test",
     "pnpm check",
-    "focused deterministic path/tie-break/topology-hash tests"
+    "focused deterministic path/tie-break/topology-hash tests",
+    "focused anti-grid tests for visual-adjacency-without-route and geometry-perturbation-without-path-change"
   ],
   "route_to": "systems_architect",
   "notes": [
     "This task touches public topology, protocol, and save boundaries and must follow ADR-010.",
-    "It must not implement client rendering, final art, historical formal map content, or M8 campaign feature expansion."
+    "It must not implement client rendering, final art, historical formal map content, or M8 campaign feature expansion.",
+    "Product-owner clarification during this task requires a lead-directed anti-grid/lattice scope amendment to ADR-010, PROJECT_STATUS.md, and downstream topology task acceptance criteria before QA review."
   ],
   "ready_after_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
   "ready_after_pr": 223,

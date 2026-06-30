@@ -19,6 +19,82 @@ import {
 } from "../packages/sim-core/src/index";
 
 const CONTENT_HASH = "m7topo1";
+type TopologyGeometryVariant = "base" | "perturbed";
+type TopologyFixtureDistrictId = 1 | 2 | 3 | 4 | 5 | 6;
+
+interface TopologyFixturePoint {
+  readonly x: number;
+  readonly y: number;
+}
+
+interface TopologyFixtureGeometry {
+  readonly anchor: TopologyFixturePoint;
+  readonly polygon: readonly TopologyFixturePoint[];
+}
+
+const BASE_TOPOLOGY_GEOMETRY: Readonly<Record<TopologyFixtureDistrictId, TopologyFixtureGeometry>> =
+  {
+    1: {
+      anchor: { x: 12, y: 18 },
+      polygon: [
+        { x: 5, y: 11 },
+        { x: 18, y: 9 },
+        { x: 24, y: 17 },
+        { x: 16, y: 29 },
+        { x: 7, y: 25 }
+      ]
+    },
+    2: {
+      anchor: { x: 53, y: 31 },
+      polygon: [
+        { x: 42, y: 21 },
+        { x: 59, y: 18 },
+        { x: 68, y: 33 },
+        { x: 55, y: 44 },
+        { x: 39, y: 38 }
+      ]
+    },
+    3: {
+      anchor: { x: 29, y: 67 },
+      polygon: [
+        { x: 17, y: 56 },
+        { x: 34, y: 51 },
+        { x: 44, y: 65 },
+        { x: 32, y: 79 },
+        { x: 19, y: 74 }
+      ]
+    },
+    4: {
+      anchor: { x: 82, y: 73 },
+      polygon: [
+        { x: 70, y: 60 },
+        { x: 89, y: 58 },
+        { x: 99, y: 75 },
+        { x: 85, y: 90 },
+        { x: 68, y: 84 }
+      ]
+    },
+    5: {
+      anchor: { x: 128, y: 24 },
+      polygon: [
+        { x: 116, y: 13 },
+        { x: 134, y: 10 },
+        { x: 146, y: 24 },
+        { x: 136, y: 39 },
+        { x: 119, y: 36 }
+      ]
+    },
+    6: {
+      anchor: { x: 23, y: 22 },
+      polygon: [
+        { x: 21, y: 15 },
+        { x: 31, y: 17 },
+        { x: 33, y: 27 },
+        { x: 24, y: 34 },
+        { x: 18, y: 27 }
+      ]
+    }
+  };
 
 describe("M7-MAP-TOPOLOGY-SCHEMA-001 authoritative topology schema", () => {
   test("computes a stable topology hash independent of input order", () => {
@@ -119,6 +195,72 @@ describe("M7-MAP-TOPOLOGY-SCHEMA-001 authoritative topology schema", () => {
     }
     expect(isolated.result.route.status).toBe("no-known-route");
     expect(isolated.result.route.reasonCodes).toEqual(["topology.path.no-known-route"]);
+  });
+
+  test("does not infer reachability from visual adjacency or polygon geometry", () => {
+    const runtime = createTopologyRuntime();
+    const topology = querySimulationV1(runtime, {
+      schemaVersion: 1,
+      kind: "sim.list-map-topology",
+      payload: { queryId: "m7.topology.anti-grid-list" }
+    });
+
+    expect(topology.status).toBe("ok");
+    if (topology.status !== "ok" || topology.result.kind !== "sim.list-map-topology") {
+      throw new Error("Expected topology read model query to succeed.");
+    }
+
+    const district1 = findTopologyDistrict(topology.result.topology.districts, 1);
+    const district6 = findTopologyDistrict(topology.result.topology.districts, 6);
+    expect(squaredDistance(district1.anchor, district6.anchor)).toBeLessThan(200);
+
+    const visualNeighborWithoutRoute = previewTopologyPath(runtime, 1, 6, 40);
+    expect(visualNeighborWithoutRoute.status).toBe("ok");
+    if (
+      visualNeighborWithoutRoute.status !== "ok" ||
+      visualNeighborWithoutRoute.result.kind !== "sim.preview-map-topology-path"
+    ) {
+      throw new Error("Expected visual-neighbor preview result.");
+    }
+    expect(visualNeighborWithoutRoute.result.route.status).toBe("no-known-route");
+    expect(visualNeighborWithoutRoute.result.route.reasonCodes).toEqual([
+      "topology.path.no-known-route"
+    ]);
+
+    const district5 = findTopologyDistrict(topology.result.topology.districts, 5);
+    expect(squaredDistance(district1.anchor, district5.anchor)).toBeGreaterThan(10_000);
+
+    const distantBlockedRoute = previewTopologyPath(runtime, 1, 5, 40);
+    expect(distantBlockedRoute.status).toBe("ok");
+    if (
+      distantBlockedRoute.status !== "ok" ||
+      distantBlockedRoute.result.kind !== "sim.preview-map-topology-path"
+    ) {
+      throw new Error("Expected visually distant blocked route preview result.");
+    }
+    expect(distantBlockedRoute.result.route.status).toBe("blocked");
+    expect(distantBlockedRoute.result.route.edges.map((edge) => edge.routeId)).toEqual([40]);
+
+    const perturbedRuntime = createTopologyRuntime({ geometryVariant: "perturbed" });
+    const baseRoute = previewTopologyPath(runtime, 1, 4, 40);
+    const perturbedRoute = previewTopologyPath(perturbedRuntime, 1, 4, 40);
+    expect(baseRoute.status).toBe("ok");
+    expect(perturbedRoute.status).toBe("ok");
+    if (
+      baseRoute.status !== "ok" ||
+      perturbedRoute.status !== "ok" ||
+      baseRoute.result.kind !== "sim.preview-map-topology-path" ||
+      perturbedRoute.result.kind !== "sim.preview-map-topology-path" ||
+      baseRoute.result.route.status !== "reachable" ||
+      perturbedRoute.result.route.status !== "reachable"
+    ) {
+      throw new Error("Expected reachable topology routes before and after geometry perturbation.");
+    }
+
+    expect(perturbedRoute.result.route.edges.map((edge) => edge.routeId)).toEqual(
+      baseRoute.result.route.edges.map((edge) => edge.routeId)
+    );
+    expect(perturbedRoute.result.route.totalCost).toBe(baseRoute.result.route.totalCost);
   });
 
   test("rejects malformed topology definitions with path-specific invariant errors", () => {
@@ -223,9 +365,11 @@ describe("M7-MAP-TOPOLOGY-SCHEMA-001 authoritative topology schema", () => {
   });
 });
 
-function createTopologyRuntime(): SimulationRuntimeV1 {
+function createTopologyRuntime(
+  input: { readonly geometryVariant?: TopologyGeometryVariant } = {}
+): SimulationRuntimeV1 {
   return {
-    world: createTopologyWorld(),
+    world: createTopologyWorld(input),
     acceptedCommandIds: [],
     commandTail: [],
     eventTail: []
@@ -233,9 +377,12 @@ function createTopologyRuntime(): SimulationRuntimeV1 {
 }
 
 function createTopologyWorld(
-  input: { readonly reverseTopologyInputOrder?: boolean } = {}
+  input: {
+    readonly geometryVariant?: TopologyGeometryVariant;
+    readonly reverseTopologyInputOrder?: boolean;
+  } = {}
 ): WorldStateV0 {
-  const topology = createTopologyDefinition(input.reverseTopologyInputOrder === true);
+  const topology = createTopologyDefinition(input);
   return createWorldStateV0({
     seed: 1531,
     contentManifestHash: CONTENT_HASH,
@@ -268,8 +415,13 @@ function createBaseDefinitions(
   };
 }
 
-function createTopologyDefinition(reverseInputOrder: boolean): MapTopologyDefinitionV1 {
-  const districts = [1, 2, 3, 4, 5, 6].map(topologyDistrictInput);
+function createTopologyDefinition(input: {
+  readonly geometryVariant?: TopologyGeometryVariant;
+  readonly reverseTopologyInputOrder?: boolean;
+}): MapTopologyDefinitionV1 {
+  const districts = [1, 2, 3, 4, 5, 6].map((districtId) =>
+    topologyDistrictInput(districtId, input.geometryVariant ?? "base")
+  );
   const routeEdges = [
     topologyRouteEdgeInput(10, 1, 3, 5, { kind: "open" }),
     topologyRouteEdgeInput(11, 3, 4, 5, { kind: "open" }),
@@ -283,12 +435,15 @@ function createTopologyDefinition(reverseInputOrder: boolean): MapTopologyDefini
 
   return createMapTopologyDefinitionV1({
     contentManifestHash: CONTENT_HASH,
-    districts: reverseInputOrder ? [...districts].reverse() : districts,
-    routeEdges: reverseInputOrder ? [...routeEdges].reverse() : routeEdges
+    districts: input.reverseTopologyInputOrder === true ? [...districts].reverse() : districts,
+    routeEdges: input.reverseTopologyInputOrder === true ? [...routeEdges].reverse() : routeEdges
   });
 }
 
-function topologyDistrictInput(districtId: number): {
+function topologyDistrictInput(
+  districtId: number,
+  geometryVariant: TopologyGeometryVariant
+): {
   readonly districtId: number;
   readonly sourceId: string;
   readonly displayNameKey: string;
@@ -300,22 +455,56 @@ function topologyDistrictInput(districtId: number): {
     readonly riskClass: "low";
   };
 } {
-  const x = districtId * 10;
+  const geometry = geometryForDistrict(districtId, geometryVariant);
   return {
     districtId,
     sourceId: `m7.synthetic.district.${districtId}`,
     displayNameKey: `district.m7.topology.${districtId}`,
-    anchor: { x, y: 10 },
-    polygon: [
-      { x: x - 2, y: 8 },
-      { x: x + 2, y: 8 },
-      { x, y: 12 }
-    ],
+    anchor: geometry.anchor,
+    polygon: geometry.polygon,
     metadata: {
       historicity: "COMPOSITE",
       terrainClass: "lowland",
       riskClass: "low"
     }
+  };
+}
+
+function geometryForDistrict(
+  districtId: number,
+  geometryVariant: TopologyGeometryVariant
+): TopologyFixtureGeometry {
+  const base = BASE_TOPOLOGY_GEOMETRY[toTopologyFixtureDistrictId(districtId)];
+  if (geometryVariant === "base") {
+    return base;
+  }
+
+  return {
+    anchor: perturbPoint(base.anchor, districtId),
+    polygon: base.polygon.map((point, index) => perturbPoint(point, districtId + index + 1))
+  };
+}
+
+function toTopologyFixtureDistrictId(districtId: number): TopologyFixtureDistrictId {
+  switch (districtId) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+      return districtId;
+  }
+
+  throw new Error(`Unexpected topology fixture DistrictId ${districtId}.`);
+}
+
+function perturbPoint(point: TopologyFixturePoint, salt: number): TopologyFixturePoint {
+  const xOffset = salt % 2 === 0 ? 3 : -2;
+  const yOffset = salt % 3 === 0 ? -3 : 2;
+  return {
+    x: point.x + xOffset,
+    y: point.y + yOffset
   };
 }
 
@@ -396,4 +585,21 @@ function previewTopologyPath(
   };
 
   return querySimulationV1(runtime, query);
+}
+
+function findTopologyDistrict<
+  T extends { readonly anchor: TopologyFixturePoint; readonly districtId: number }
+>(districts: readonly T[], districtId: number): T {
+  const district = districts.find((candidate) => candidate.districtId === districtId);
+  if (district === undefined) {
+    throw new Error(`Missing topology read model DistrictId ${districtId}.`);
+  }
+
+  return district;
+}
+
+function squaredDistance(left: TopologyFixturePoint, right: TopologyFixturePoint): number {
+  const xDelta = left.x - right.x;
+  const yDelta = left.y - right.y;
+  return xDelta * xDelta + yDelta * yDelta;
 }

@@ -51,8 +51,9 @@
     ]
   },
   "acceptance_criteria": [
-    "Default player map uses topology-backed district polygons and explicit route polylines from read models; it must not synthesize player-facing territory from rectangular grid coordinates.",
+    "Default player map uses topology-backed district polygons and explicit route polylines from read models; it must not synthesize player-facing territory from rectangular grid coordinates, hex axial/cube coordinates, sequential ids, or a hidden regular lattice.",
     "Polygon hit-test, district list, task rail, and inspector focus select the same active object and show consistent route/path preview reason codes.",
+    "Player-facing route overlays come from topology edge sequence and route-node polyline data, not from polygon centroid adjacency, bounding boxes, nearest-neighbor geometry, or renderer-only connection guesses.",
     "Default overlays show only current decision-relevant routes; full route/pressure/debug overlays are opt-in and clearly labeled.",
     "Route preview shows edge sequence, mode, estimated days, bottleneck capacity, seasonal variation, known/unknown/blocked reasons, and result feedback in localized text.",
     "UI does not mutate WorldState directly; all state changes still go through existing GameCommand/preview/submit boundaries."
@@ -67,7 +68,8 @@
     "pnpm storybook:build",
     "pnpm test:e2e",
     "pnpm check",
-    "Playwright screenshots at 1440x900 and 1280x720 proving default map no longer reads as a rectangular board"
+    "Playwright screenshots at 1440x900 and 1280x720 proving default map no longer reads as a rectangular board or regular hex/lattice board",
+    "Playwright or component tests proving visual-neighbor-without-route and visually-distant-explicit-route cases display the correct reason codes"
   ],
   "route_to": "systems_architect",
   "notes": [

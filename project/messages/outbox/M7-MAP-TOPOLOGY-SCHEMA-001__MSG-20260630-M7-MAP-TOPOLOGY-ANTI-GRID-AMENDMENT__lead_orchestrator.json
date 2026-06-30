@@ -1,0 +1,108 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-ANTI-GRID-AMENDMENT",
+  "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Recorded the product-owner clarification that the map must not remain a regular topology under irregular visuals, integrated the read-only gameplay design research verdict, and tightened ADR/task/test acceptance before QA review.",
+  "branch_or_worktree": "codex/m7-map-topology-schema",
+  "commit": null,
+  "research_thread": {
+    "thread_id": "019f192d-e3e3-7623-b959-49c3280f134e",
+    "role": "gameplay_designer",
+    "mode": "read_only",
+    "verdict": "ACCEPT_WITH_REQUIRED_AMENDMENTS",
+    "received_at": "2026-06-30T23:45:00+08:00"
+  },
+  "artifacts": [
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "tests/sim-core-map-topology.test.ts"
+  ],
+  "accepted_amendments": [
+    "Authority topology must not depend on row/column/grid/hex axial/cube/sequential id/regular-lattice adjacency.",
+    "Visual coordinates may support rendering and hit testing, but route reachability, cost, tie-breaks, AI reasoning, save compatibility, and player explanations must use explicit topology route edges.",
+    "Default prototype fixture must include irregular COMPOSITE districts, variable route degree, dead ends, chokepoints, river/coast/road modes, explicit isolated/no-known-route reason, visual-neighbor-without-route, and visually-distant-explicit-route cases.",
+    "Content compiler and validation must reject row/column/grid/hex/lattice leakage and invalid topology content rather than silently falling back to legacy route/grid behavior.",
+    "Client rendering must consume topology read models and route edge sequences, not infer routes from polygon centroids, bounding boxes, nearest neighbors, or renderer guesses."
+  ],
+  "tests_added_or_tightened": [
+    "tests/sim-core-map-topology.test.ts now includes anti-grid coverage for visual adjacency without a route.",
+    "tests/sim-core-map-topology.test.ts now checks visually distant explicit routes.",
+    "tests/sim-core-map-topology.test.ts now checks polygon geometry perturbation does not alter selected route ids or total route cost."
+  ],
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed, 198 tests passed, including new anti-grid topology coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 14 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "3 test files passed, 29 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ANTI_GRID_STANDARD",
+      "decision": "Treat hidden rectangular, hex, sequential-id, or regular-lattice topology under irregular visuals as unacceptable for M7 content lock."
+    },
+    {
+      "id": "TASK_SCOPE_AMENDMENT",
+      "decision": "Because the product owner clarified the standard mid-task, amend ADR-010, PROJECT_STATUS.md, and downstream topology task acceptance criteria before routing schema to QA."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-REGULAR-LATTICE-LEAKAGE",
+      "severity": "R4",
+      "summary": "Schema can be correct while fixture/client still present a regular board in disguise.",
+      "mitigation": "Downstream fixture/client/validation task criteria now require explicit anti-grid/lattice cases and screenshot/playwright proof."
+    }
+  ],
+  "blockers": [],
+  "reference_urls": [
+    "https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/7100.html",
+    "https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/4300.html",
+    "https://www.koeitecmoeurope.com/manual/nobunaga/awakening/en/4200.html",
+    "https://academy.totalwar.com/campaign-provinces-and-settlements/",
+    "https://academy.totalwar.com/the-province-system/",
+    "https://hoi4.paradoxwikis.com/Map_modding",
+    "https://eu4.paradoxwikis.com/Map_modding",
+    "https://ck3.paradoxwikis.com/Map_modding",
+    "https://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/",
+    "https://simblob.blogspot.com/2010/09/polygon-map-generation-part-1.html"
+  ],
+  "scope_guard": "No client rendering, content-source migration, final art, manual node battle, server, telemetry, or formal historical map claims are authorized by this amendment.",
+  "route_to": "qa_reviewer",
+  "requested_action": "Review M7-MAP-TOPOLOGY-SCHEMA-001 against the tightened anti-grid/lattice acceptance standard in addition to the original schema requirements.",
+  "created_at": "2026-06-30T23:45:00+08:00"
+}
