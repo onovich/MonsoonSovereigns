@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED",
+  "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-MAP-TOPOLOGY-VALIDATION-001 is closed because PR #231 passed both required CI checks, merged into origin/main, and local main synchronized to 3617115d446a4f234e915abfecf14a367624dc99. The task validates the M7 topology recovery as evidence only: it did not add new test code, and it does not approve formal M7 content lock. M7-CONTENT-LOCK-ACCEPTANCE-001 is now reopened as a Human Gate for product-owner reconsideration.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-map-topology-validation",
+  "commit": "3617115d446a4f234e915abfecf14a367624dc99",
+  "integrated_pr": 231,
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/231",
+  "tests_run": [
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Lead gate passed before PR #231."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "44 root test files / 366 tests and web 11 tests passed before PR #231."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "All listed content fixtures validated before PR #231."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker deterministic hashes matched before PR #231."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web build passed before PR #231 with existing chunk warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed before PR #231 with existing plugin/chunk warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "30 Playwright tests passed before PR #231."
+    },
+    {
+      "command": "gh pr checks 231 --watch --interval 15",
+      "exit_code": 0,
+      "result": "Quality/Web/Browser Smoke passed; Windows Desktop Smoke Artifact passed."
+    },
+    {
+      "command": "gh pr merge 231 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #231 merged into main as 3617115d446a4f234e915abfecf14a367624dc99."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "CLOSED only after PR #231 entered origin/main and local main synchronized to 3617115d446a4f234e915abfecf14a367624dc99."
+    },
+    {
+      "id": "RECONSIDERATION_READY_NOT_APPROVED",
+      "decision": "M7-CONTENT-LOCK-ACCEPTANCE-001 may now be reconsidered by the product owner, but content_lock_accepted remains false."
+    },
+    {
+      "id": "NO_NEW_TEST_CODE_CAVEAT",
+      "decision": "Record that topology validation did not add new test code; it validated already integrated topology tests and evidence."
+    }
+  ],
+  "risks": [
+    {
+      "id": "REGION_SCREENSHOT_DIMENSIONS",
+      "severity": "R2",
+      "summary": "Topology evidence PNGs are map-region screenshots under 1440x900 and 1280x720 viewports, not full-viewport PNGs."
+    },
+    {
+      "id": "LOW_FIDELITY_ROUTE_VISUALS",
+      "severity": "R2",
+      "summary": "Route-node markers and route 24 line validate topology but remain low-fidelity, not final art."
+    },
+    {
+      "id": "HUMAN_GATE_CONTENT_LOCK_PENDING",
+      "severity": "R4",
+      "summary": "Formal M7 content lock still requires explicit product-owner decision."
+    }
+  ],
+  "blockers": [],
+  "route_to": "product_owner",
+  "requested_action": "Product owner must choose APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES for formal M7 content lock. Do not start M7 exit validation until this Human Gate resolves.",
+  "created_at": "2026-06-30T21:18:35.674Z"
+}

@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_map_topology_validation_accepted_pending_pr",
+    "status": "active_human_gate_waiting_content_lock_reconsideration",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -42,15 +42,15 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "updated_at": "2026-06-30T21:09:00.256Z",
+    "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "updated_at": "2026-06-30T21:18:35.674Z",
     "concurrent_task_ids": [
-      "M7-MAP-TOPOLOGY-VALIDATION-001"
+      "M7-CONTENT-LOCK-ACCEPTANCE-001"
     ],
-    "branch_or_worktree": "codex/m7-map-topology-validation",
-    "active_gate_task_id": null,
-    "last_integrated_task": "M7-MAP-TOPOLOGY-CLIENT-001",
-    "last_main_commit": "ad93aab15a95911a493dc8b1d8795595bc5d2684"
+    "branch_or_worktree": "codex/close-m7-map-topology-validation",
+    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "last_integrated_task": "M7-MAP-TOPOLOGY-VALIDATION-001",
+    "last_main_commit": "3617115d446a4f234e915abfecf14a367624dc99"
   },
   "retired_lead_threads": [
     {
@@ -5494,11 +5494,11 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Open PR for M7-MAP-TOPOLOGY-VALIDATION-001, wait for CI, merge, then close.",
-  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Await product-owner Human Gate decision for formal M7 content lock.",
+  "current_task_status": "HUMAN_GATE",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "owner_role": "test_engineer",
     "owner_configured_model": "gpt-5.4-mini",
     "owner_configured_effort": "high",
@@ -5526,6 +5526,28 @@
     "qa_reviewed_at": "2026-06-30T21:09:00.256Z",
     "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-30T21:09:00.256Z",
-    "accepted_branch_head": "4a132ebb4e75fa450521a0156ee08acf810362b6"
+    "accepted_branch_head": "4a132ebb4e75fa450521a0156ee08acf810362b6",
+    "updated_at": "2026-06-30T21:18:35.674Z",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 231,
+    "integrated_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/231",
+    "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T21:18:35.674Z"
+  },
+  "m7_content_lock_reconsideration": {
+    "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "status": "HUMAN_GATE_REQUIRED",
+    "content_lock_accepted": false,
+    "human_gate_state": "TOPOLOGY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+    "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
+    "decision_options": [
+      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+      "DEFER_CONTENT_LOCK",
+      "REQUEST_CHANGES"
+    ],
+    "topology_validation_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
+    "topology_validation_pr": 231,
+    "updated_at": "2026-06-30T21:18:35.674Z"
   }
 }
