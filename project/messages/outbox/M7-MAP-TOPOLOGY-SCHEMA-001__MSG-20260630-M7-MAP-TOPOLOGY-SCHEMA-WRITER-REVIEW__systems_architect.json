@@ -1,0 +1,114 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "Inherited the previous systems_architect partial diff without reverting it, completed the ADR-010 authoritative topology schema/read-query/save boundary for M7, and submitted implementation commit d6c84748fd1209b7d96543cbf2a2d6973613574a for independent QA review.",
+  "artifacts": [
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/map-topology-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/m2-route-transport-v0.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/sim-core/package.json",
+    "packages/protocol/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-REPLACEMENT-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-schema",
+  "commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before commit, only allowed task paths were changed; after implementation commit, branch was ahead by 1 with clean worktree before handoff creation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed, 197 tests passed, including tests/sim-core-map-topology.test.ts focused topology hash/path/tie-break/negative validation and topology save/load contract coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed, 14 tests passed, including sim.list-map-topology and sim.preview-map-topology-path schema coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "3 test files passed, 29 tests passed, including topology DTO save/load preservation and incompatible hash/missing topology rejection coverage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, recursive typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "INHERIT_PARTIAL_DIFF",
+      "decision": "Kept and completed the prior uncommitted topology DTO/hash/validator direction instead of reverting the stalled writer's work."
+    },
+    {
+      "id": "SIM_CORE_AUTHORITATIVE_TOPOLOGY",
+      "decision": "Added MapTopologyDefinitionV1 as serializable static definitions in sim-core world definitions: district polygon anchors/metadata, route endpoints, route nodes, route edges, mode, capacity, seasonality, availability, terrain/risk/historicity, and stable topologyHash."
+    },
+    {
+      "id": "READ_QUERY_BOUNDARY",
+      "decision": "Exposed topology read/query surfaces through sim.list-map-topology and sim.preview-map-topology-path; UI/AI receive read models and deterministic reason/tie-break evidence without mutating WorldState."
+    },
+    {
+      "id": "TOPOLOGY_HASH_AND_SAVE_REJECTION",
+      "decision": "Topology hash is canonical and independent of input order. Runtime save/load preserves topology and rejects missing or mismatched topology hash for topology-backed runtimes instead of silently loading legacy/no-topology saves."
+    },
+    {
+      "id": "NO_FIXTURE_OR_CLIENT_MIGRATION",
+      "decision": "Did not migrate content-source fixtures or implement client/map rendering; tests use local synthetic COMPOSITE topology data only."
+    }
+  ],
+  "risks": [
+    {
+      "id": "CONTENT_MIGRATION_PENDING",
+      "severity": "expected-downstream",
+      "summary": "Prototype content still needs a later M7-MAP-TOPOLOGY-FIXTURE-001 migration before the product-facing map stops depending on old fixture shape."
+    },
+    {
+      "id": "CLIENT_RENDERING_PENDING",
+      "severity": "expected-downstream",
+      "summary": "Client rendering/hit testing is intentionally not changed here and must be handled by M7-MAP-TOPOLOGY-CLIENT-001."
+    },
+    {
+      "id": "M2_COMPAT_ADAPTER",
+      "severity": "review",
+      "summary": "Existing M2 transport preview now delegates to topology when definitions.topology exists, while old no-topology worlds keep legacy route behavior. QA should review this compatibility boundary."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently review M7-MAP-TOPOLOGY-SCHEMA-001 against ADR-010, allowed_paths/forbidden_paths, deterministic topology hash/path behavior, protocol/save compatibility, and the focused test evidence.",
+  "created_at": "2026-06-30T23:31:46.5495120+08:00"
+}
