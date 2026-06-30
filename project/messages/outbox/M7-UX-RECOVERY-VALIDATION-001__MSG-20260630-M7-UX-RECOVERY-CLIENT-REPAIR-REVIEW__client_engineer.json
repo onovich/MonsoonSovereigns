@@ -1,0 +1,136 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Focused client repair resolved the smaller-viewport first-screen UX evidence gap. The 1280x720 and 1440x900 screenshots now show player identity/situation/objective/recommended action, an actionable task rail summary, the map legend, and a visible Pixi map surface in the actual first viewport. This does not approve or reopen M7 content lock.",
+  "artifacts": [
+    "apps/web/src/styles/shell.css",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "commit": null,
+  "changes": [
+    {
+      "path": "apps/web/src/styles/shell.css",
+      "summary": "Kept the beta shell in a compressed two-column layout at 1280-class desktop widths, moved the map legend before the map surface, compacted first-screen orientation and task rail cards, preserved task rail drawer visibility, and corrected low-contrast player guidance copy colors."
+    },
+    {
+      "path": "tests/e2e/web-shell.spec.ts",
+      "summary": "Upgraded UX recovery smoke from DOM-presence checks to viewport-intersection and visible-area assertions for orientation, task rail cards, map surface, and map legend at 1440x900 and 1280x720; retained guidance and decision-assistant behavior checks."
+    }
+  ],
+  "evidence": {
+    "desktop_viewport": "1440x900",
+    "desktop_screenshot": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+    "desktop_first_viewport_contains": [
+      "identity/situation/objective/recommended action",
+      "actionable task rail summary",
+      "map legend",
+      "Pixi map surface"
+    ],
+    "smaller_viewport": "1280x720",
+    "smaller_screenshot": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+    "smaller_first_viewport_contains": [
+      "identity/situation/objective/recommended action",
+      "actionable task rail summary",
+      "map legend",
+      "Pixi map surface"
+    ],
+    "player_mode_debug_labels": "suppressed",
+    "content_lock_approved": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+  },
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Modified files are limited to apps/web/src/styles/shell.css, tests/e2e/web-shell.spec.ts, the two regenerated screenshot evidence PNGs, plus this client handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UX-RECOVERY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-UX-RECOVERY-VALIDATION-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active task registry; M7-UX-RECOVERY-VALIDATION-001 remains IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready tasks were printed."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-UX-RECOVERY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "shape ok"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/web-shell.spec.ts -g \"M7 task rail is first-screen actionable|M7 UX recovery smoke\" --project=chromium",
+      "exit_code": 0,
+      "result": "2 passed; regenerated the 1280x720 and 1440x900 evidence screenshots."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully with the existing non-blocking large chunk warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully with non-blocking Vite chunk-size and plugin timing warnings."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright Chromium suite passed: 26 tests, 26 passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 1,
+      "result": "Initial run failed at format:check for tests/e2e/web-shell.spec.ts after the E2E edit."
+    },
+    {
+      "command": "pnpm exec prettier --write tests/e2e/web-shell.spec.ts apps/web/src/styles/shell.css",
+      "exit_code": 0,
+      "result": "Formatted tests/e2e/web-shell.spec.ts; CSS was unchanged."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format, lint, typecheck, and architecture checks passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "KEEP_1280_DESKTOP_TWO_COLUMN",
+      "decision": "Do not stack the beta shell at 1280-class desktop widths; use a compressed two-column layout so the map and task rail share the first viewport."
+    },
+    {
+      "id": "LEGEND_BEFORE_MAP_SURFACE",
+      "decision": "Place the legend immediately before the map surface so route semantics are visible before the player reads the situation map."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "This repair is validation support only and does not reopen or approve M7-CONTENT-LOCK-ACCEPTANCE-001."
+    }
+  ],
+  "risks": [
+    "The 1280x720 layout is intentionally dense. It now proves the required first-screen elements, but further UX polish may still improve comfort at high text scaling.",
+    "Task rail cards hide some secondary explanatory copy at 1280-class widths to preserve actionable summary and drawer visibility."
+  ],
+  "blockers": [],
+  "route_to": "test_engineer,lead_orchestrator",
+  "requested_action": "test_engineer should review the repaired viewport-visible evidence and rerun/extend validation as needed; lead_orchestrator should keep formal content lock blocked until reviewer acceptance and subsequent content-lock reconsideration.",
+  "created_at": "2026-06-30T05:30:00.000Z"
+}

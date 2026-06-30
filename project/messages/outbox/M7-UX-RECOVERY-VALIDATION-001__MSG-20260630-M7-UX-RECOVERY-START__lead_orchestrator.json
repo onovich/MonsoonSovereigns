@@ -1,0 +1,122 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-START",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7 UX recovery validation after task rail collapsed drawers closed on origin/main. Validate first-screen/map/decision/task-rail player experience before content lock can be reconsidered.",
+  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "base_main_commit": "ade15c64fe69dc25b6ea3a21847fa4145612209f",
+  "owner_role": "test_engineer",
+  "writer_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
+  "writer_thread_nickname": "Gauge",
+  "previous_closed_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "allowed_paths": [
+    "apps/web/**",
+    "packages/client-core/**",
+    "packages/ui/**",
+    "packages/map-renderer/**",
+    "tests/**",
+    ".storybook/**",
+    "playwright.config.ts",
+    "project/tasks/active/*.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/**",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "forbidden_paths": [
+    "packages/sim-core/**",
+    "packages/sim-ai/**",
+    "packages/protocol/**",
+    "packages/save-format/**",
+    "packages/platform-browser/**",
+    "packages/platform-electron/**",
+    "apps/desktop/**",
+    "apps/sim-runner/**",
+    "apps/content-tools/**",
+    "content-source/**",
+    "tools/**",
+    ".github/**",
+    "docs/decisions/**",
+    "docs/GATE-M0.md",
+    "docs/GATE-M1.md",
+    "docs/GATE-M2.md",
+    "docs/GATE-M3.md",
+    "docs/GATE-M4.md",
+    "docs/GATE-M5.md",
+    "docs/GATE-M6.md",
+    "docs/GATE-M7.md",
+    "docs/11-roadmap.md",
+    "docs/13-risk-register-and-test-strategy.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "MANIFEST.md",
+    "SHA256SUMS.txt",
+    "VALIDATION_REPORT.md"
+  ],
+  "acceptance_criteria": [
+    "Add or update product-level UX smoke tests verifying the first screen exposes identity, situation, objective, recommended action, map legend, and no player-mode debug labels.",
+    "Validate that the default map no longer presents as a rectangular grid in player mode and that route semantics are explained before content lock reconsideration.",
+    "Record screenshot evidence for desktop 1440x900 and at least one supported smaller viewport.",
+    "Re-open M7-CONTENT-LOCK-ACCEPTANCE-001 only after QA accepts this validation task."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate <TASK_ID>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for <TASK_ID>",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer-handoff>",
+    "git diff --check",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm check"
+  ],
+  "decisions": [
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "This task validates UX recovery only; it must not approve formal content lock."
+    },
+    {
+      "id": "MANUAL_NODE_BATTLE_DEFERRED",
+      "decision": "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and is out of scope."
+    },
+    {
+      "id": "PLAYER_MODE_EVIDENCE",
+      "decision": "Evidence must focus on player-mode comprehension, default map semantics, task rail visibility, and absence of debug labels."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-UX-VALIDATION-R4",
+      "severity": "R4",
+      "summary": "Product owner previously rejected content lock due player-facing UX confusion; tests must catch understandable first-screen failures rather than only code health."
+    }
+  ],
+  "route_to": "test_engineer",
+  "requested_action": "Implement or update UX smoke tests and screenshot evidence within allowed paths, run required tests, then write the writer REVIEW handoff.",
+  "created_at": "2026-06-30T04:17:11.565Z",
+  "commit": "ade15c64fe69dc25b6ea3a21847fa4145612209f",
+  "artifacts": [
+    "project/tasks/active/M7-UX-RECOVERY-VALIDATION-001.json",
+    "project/goal-mode-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-START__lead_orchestrator.json",
+    "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean main at ade15c64 before creating codex/m7-ux-recovery-validation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-UX-RECOVERY-VALIDATION-001 was the only READY task before start."
+    }
+  ],
+  "blockers": []
+}

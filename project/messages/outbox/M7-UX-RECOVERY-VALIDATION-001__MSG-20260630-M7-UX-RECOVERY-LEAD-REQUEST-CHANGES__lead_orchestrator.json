@@ -1,0 +1,62 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "REQUEST_CHANGES",
+  "summary": "Lead review found that the R1 UX recovery smoke proves DOM state and screenshot creation, but does not prove the required first-screen map/legend visibility. The 1280x720 evidence screenshot shows task rail/guidance but no map or map legend, so the package cannot yet be routed to QA as satisfying the product-owner UX concern.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-REQUEST-CHANGES-TO-TEST.json"
+  ],
+  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "commit": "d327cbed",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "Writer R1 handoff is structurally valid."
+    },
+    {
+      "command": "git diff -- tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Lead reviewed the R1 smoke diff and found it checks DOM/text/attributes but not viewport intersection for first-screen map/legend evidence."
+    },
+    {
+      "command": "view_image project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png and __EVIDENCE-1440x900.png",
+      "exit_code": 0,
+      "result": "1440x900 evidence is nonblank and shows map/task rail; 1280x720 evidence is nonblank but does not show map or map legend in the first viewport."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "NO_QA_ROUTE_UNTIL_VISIBLE_EVIDENCE",
+      "decision": "Do not route R1 to QA because acceptance requires first-screen UX evidence, and R1 uses DOM checks that can pass while the map/legend are below the viewport."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "Do not reopen or approve M7 content lock from this validation task."
+    }
+  ],
+  "requested_changes": [
+    "Update the UX recovery smoke so it verifies actual viewport visibility/intersection, not only DOM presence, for identity, situation/objective/recommended action, task rail, map surface, and map legend at 1440x900 and at the smaller required viewport.",
+    "Regenerate screenshot evidence after the corrected smoke. The smaller-viewport evidence must support the task claim; if the product cannot show all required first-screen elements at 1280x720, write a PARTIAL/BLOCKED handoff rather than REVIEW.",
+    "Address the readability/overlap risk visible around Player Guidance in the R1 screenshots, or add explicit evidence/tests proving no player-facing text is occluded and contrast is readable in the validated viewport path.",
+    "Keep the scope as validation/recovery evidence only: no content-lock approval, no manual node battle work, no forbidden-path edits."
+  ],
+  "risks": [
+    {
+      "id": "M7-UX-VALIDATION-FALSE-POSITIVE",
+      "severity": "R4",
+      "summary": "A DOM-only smoke can pass while the player still cannot see the map/legend on the first screen, recreating the product-owner complaint in a smaller viewport.",
+      "mitigation": "Require viewport intersection assertions and regenerated screenshot evidence before QA routing."
+    }
+  ],
+  "blockers": [],
+  "route_to": "test_engineer",
+  "requested_action": "Revise the R1 UX recovery smoke and evidence, run the required validation commands, and write the R2 writer handoff. If the UI cannot meet first-screen visibility at the required smaller viewport, write PARTIAL/BLOCKED with exact evidence instead of REVIEW.",
+  "created_at": "2026-06-30T04:42:32.128Z"
+}

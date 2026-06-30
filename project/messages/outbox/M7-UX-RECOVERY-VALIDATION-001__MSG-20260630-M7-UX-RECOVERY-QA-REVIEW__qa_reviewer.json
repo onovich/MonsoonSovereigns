@@ -1,0 +1,158 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-QA-REVIEW",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the committed M7 UX recovery validation state. Commit 986342d866d9c995cbf9df5049d9bd7b3965d52a records the QA route and R3 handoff, and source repair commit 523bd6364a82a2aba0f7a4fed1889792762579eb remains its ancestor. The actual repair diff is within the task's allowed paths, the screenshots and Playwright assertions prove first-viewport visibility for the required first-screen orientation, actionable task rail summary, map surface, and map legend at 1440x900 and 1280x720, player-mode debug labels remain suppressed, and formal M7 content lock remains not approved.",
+  "artifacts": [
+    "apps/web/src/styles/shell.css",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+    "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-TEST-R3-TO-QA-REVIEW.json",
+    "project/tasks/active/M7-UX-RECOVERY-VALIDATION-001.json"
+  ],
+  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "commit": "986342d866d9c995cbf9df5049d9bd7b3965d52a",
+  "reviewed_commits": {
+    "committed_state": "986342d866d9c995cbf9df5049d9bd7b3965d52a",
+    "source_repair": "523bd6364a82a2aba0f7a4fed1889792762579eb",
+    "source_repair_is_ancestor_of_committed_state": true
+  },
+  "scope_review": {
+    "allowed_path_result": "PASS",
+    "forbidden_path_result": "PASS",
+    "source_repair_changed_paths": [
+      "apps/web/src/styles/shell.css",
+      "project/goal-mode-state.json",
+      "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+      "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+      "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+      "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-CLIENT-REPAIR-TO-TEST-R3.json",
+      "project/tasks/active/M7-UX-RECOVERY-VALIDATION-001.json",
+      "project/tasks/thread-registry.json",
+      "tests/e2e/web-shell.spec.ts"
+    ],
+    "route_commit_changed_paths": [
+      "project/goal-mode-state.json",
+      "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+      "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-TEST-R3-TO-QA-REVIEW.json",
+      "project/tasks/active/M7-UX-RECOVERY-VALIDATION-001.json",
+      "project/tasks/thread-registry.json"
+    ],
+    "forbidden_scope_notes": [
+      "No packages/sim-core, protocol, save-format, platform, desktop, content-source, tools, CI, gate docs, roadmap, acceptance matrix, manifest, checksum, or validation report changes were found.",
+      "The repair stays in web CSS, E2E evidence/assertions, screenshots, task state, route records, and handoffs."
+    ]
+  },
+  "evidence_assessment": {
+    "screenshots_reviewed": [
+      {
+        "path": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+        "result": "PASS",
+        "observed": "First viewport shows Monsoon Sovereigns identity, season/day/stores/muster context, opening situation, who/when/priority/recommended next action/cost/if ignored, visible map legend, visible strategic map surface, and task rail cards with active obligations drawer."
+      },
+      {
+        "path": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+        "result": "PASS",
+        "observed": "First viewport shows the same identity/situation/objective/recommended action information, a denser but readable task rail summary, map legend, and a visible strategic map surface with non-grid regional presentation."
+      }
+    ],
+    "playwright_assertions": {
+      "result": "PASS",
+      "details": [
+        "The UX smoke checks actual viewport intersection and minimum visible area rather than DOM-only presence.",
+        "The test asserts orientation, task rail cards, map surface, and map legend are in the viewport at 1440x900 and 1280x720.",
+        "The test asserts map mode is situation, map presentation is soft-strategic-regions, player grid is hidden, and the player-facing dev overlay text is absent."
+      ]
+    },
+    "player_mode_debug_labels": "PASS: Developer Overlay, Developer diagnostics, debug mode, map revision, state hash, prototype labels, and read-model/internal jargon remain suppressed in the relevant player-mode checks.",
+    "content_lock_boundary": "PASS: M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED with content_lock_accepted=false and human_gate_state REQUEST_CHANGES_RECEIVED_UX_RECOVERY_IN_PROGRESS; the reviewed handoffs explicitly state this validation does not approve or reopen formal content lock."
+  },
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean branch codex/m7-ux-recovery-validation before writing this QA handoff."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "HEAD is 986342d866d9c995cbf9df5049d9bd7b3965d52a."
+    },
+    {
+      "command": "git merge-base --is-ancestor 523bd6364a82a2aba0f7a4fed1889792762579eb 986342d866d9c995cbf9df5049d9bd7b3965d52a",
+      "exit_code": 0,
+      "result": "Source repair commit 523bd6364a82a2aba0f7a4fed1889792762579eb is an ancestor of committed QA-route state 986342d866d9c995cbf9df5049d9bd7b3965d52a."
+    },
+    {
+      "command": "git diff-tree --no-commit-id --name-status -r 523bd6364a82a2aba0f7a4fed1889792762579eb",
+      "exit_code": 0,
+      "result": "Reviewed source repair paths; changes are limited to allowed web/test/process/evidence paths."
+    },
+    {
+      "command": "git diff-tree --no-commit-id --name-status -r 986342d866d9c995cbf9df5049d9bd7b3965d52a",
+      "exit_code": 0,
+      "result": "Reviewed route commit paths; changes are limited to process route, handoff, task state, registry, and goal state files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UX-RECOVERY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-UX-RECOVERY-VALIDATION-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch-format issues before this QA handoff was written."
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/web-shell.spec.ts -g \"M7 task rail is first-screen actionable|M7 UX recovery smoke\" --project=chromium",
+      "exit_code": 0,
+      "result": "2 passed. This independently reran the task rail and UX recovery viewport/screenshot smoke checks."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, workspace typecheck, and architecture boundary checks passed."
+    }
+  ],
+  "required_test_credibility": {
+    "client_repair_handoff": "PASS: The handoff records taskctl validate/list/ready, JSON shape check, git diff --check, focused Playwright, build:web, storybook:build, full pnpm test:e2e, initial pnpm check failure from formatting, prettier repair, and final pnpm check pass.",
+    "test_engineer_r3_handoff": "PASS: The handoff records git diff --check, focused Playwright rerun, client handoff validation, and source commit stat review.",
+    "qa_independent_rerun": "PASS: QA independently reran task validation, both handoff validators, focused Playwright UX smoke, git diff checks, and pnpm check."
+  },
+  "decisions": [
+    {
+      "id": "ACCEPT_UX_RECOVERY_VALIDATION",
+      "decision": "Accept M7-UX-RECOVERY-VALIDATION-001 as satisfying the scoped recovery validation criteria."
+    },
+    {
+      "id": "DO_NOT_APPROVE_CONTENT_LOCK",
+      "decision": "This QA acceptance validates the UX recovery evidence only. It does not approve, reopen, or close formal M7 content lock."
+    },
+    {
+      "id": "PRESERVE_SCOPE_BOUNDARIES",
+      "decision": "No manual node battle, server, multiplayer, telemetry, account, cloud-save implementation, production art, release/commercial/branding, content-source, simulation, protocol, save-format, or architecture-boundary change is accepted here."
+    }
+  ],
+  "risks": [
+    "The 1280x720 layout remains dense, but the required first-screen elements are materially visible and covered by viewport-area assertions.",
+    "Formal content lock remains a separate product-owner Human Gate and must be reconsidered through M7-CONTENT-LOCK-ACCEPTANCE-001 rather than inferred from this QA handoff."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate this QA ACCEPT for M7-UX-RECOVERY-VALIDATION-001. Keep M7-CONTENT-LOCK-ACCEPTANCE-001 blocked with content_lock_accepted=false until a separate product-owner Human Gate reconsideration is explicitly routed and decided.",
+  "created_at": "2026-06-30T13:29:35+08:00"
+}

@@ -1,0 +1,107 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-START",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Route a focused client_engineer repair after the test_engineer R2 PARTIAL handoff proved the smaller viewport still hides the map and map legend from the first screen.",
+  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "source_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json",
+  "source_status": "PARTIAL",
+  "client_thread_id": "019f16df-915f-7123-a288-1dd8ec6ce265",
+  "client_thread_nickname": "Window",
+  "owner_role": "client_engineer",
+  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+  "allowed_paths": [
+    "apps/web/**",
+    "packages/client-core/**",
+    "packages/ui/**",
+    "packages/map-renderer/**",
+    "tests/**",
+    ".storybook/**",
+    "playwright.config.ts",
+    "project/tasks/active/*.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/**",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "forbidden_paths": [
+    "packages/sim-core/**",
+    "packages/sim-ai/**",
+    "packages/protocol/**",
+    "packages/save-format/**",
+    "packages/platform-browser/**",
+    "packages/platform-electron/**",
+    "apps/desktop/**",
+    "apps/sim-runner/**",
+    "apps/content-tools/**",
+    "content-source/**",
+    "tools/**",
+    ".github/**",
+    "docs/decisions/**",
+    "docs/GATE-M0.md",
+    "docs/GATE-M1.md",
+    "docs/GATE-M2.md",
+    "docs/GATE-M3.md",
+    "docs/GATE-M4.md",
+    "docs/GATE-M5.md",
+    "docs/GATE-M6.md",
+    "docs/GATE-M7.md",
+    "docs/11-roadmap.md",
+    "docs/13-risk-register-and-test-strategy.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/27-autonomous-goal-mode.md",
+    "MANIFEST.md",
+    "SHA256SUMS.txt",
+    "VALIDATION_REPORT.md"
+  ],
+  "acceptance_criteria": [
+    "The smaller supported viewport evidence must show identity/situation/objective/recommended action, actionable task rail summary, map surface, and map legend in the actual first viewport.",
+    "The test must assert viewport intersection or visibility rather than DOM presence only.",
+    "The fix must preserve the accepted task rail intent and must not hide player-critical actions to make the map pass.",
+    "The fix must not approve or reopen M7-CONTENT-LOCK-ACCEPTANCE-001."
+  ],
+  "decisions": [
+    {
+      "id": "R2_PARTIAL_IS_REAL_UX_FAILURE",
+      "decision": "The validation result is not routed to QA as ACCEPT because the 1280x720 and 1280x800 evidence fails the first-screen map/legend claim."
+    },
+    {
+      "id": "CLIENT_REPAIR_WITHIN_VALIDATION_TASK",
+      "decision": "A focused client_engineer support repair is routed inside M7-UX-RECOVERY-VALIDATION-001 because the failing evidence is responsive layout and first-screen visibility, not a new product decision."
+    },
+    {
+      "id": "CONTENT_LOCK_REMAINS_BLOCKED",
+      "decision": "Formal content lock remains not accepted until this validation task is repaired, independently reviewed, integrated, and then content lock is reconsidered."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-UX-SMALL-VIEWPORT-R4",
+      "severity": "R4",
+      "summary": "A layout can technically contain all player UI elements while still hiding the map and legend below the first viewport, reproducing the product-owner complaint."
+    }
+  ],
+  "route_to": "client_engineer",
+  "requested_action": "Repair the responsive first-screen UX evidence gap, update viewport-visible Playwright coverage and screenshots, run required tests, then write the client repair REVIEW or PARTIAL/BLOCKED handoff.",
+  "created_at": "2026-06-30T04:53:23.690Z",
+  "commit": null,
+  "artifacts": [
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-START__lead_orchestrator.json",
+    "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-CLIENT-REPAIR.json"
+  ],
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UX-RECOVERY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID"
+    }
+  ],
+  "blockers": []
+}

@@ -1,0 +1,119 @@
+{
+  "message_id": "MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "test_engineer",
+  "status": "PARTIAL",
+  "summary": "R2 evidence confirms the 1440x900 desktop first screen shows the recovered map and legend, but the smaller viewport evidence does not yet support the same claim. The 1280x720 screenshot still shows task rail and player guidance without the map or map legend in the first viewport, and a follow-up 1280x800 probe timed out waiting for the map legend locator. This remains validation evidence only and does not approve M7 content lock.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+    "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-REQUEST-CHANGES-TO-TEST.json"
+  ],
+  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Shared worktree still contains the R1 task/state JSON updates, the web-shell E2E patch, the replacement-start handoff, and the two screenshot evidence files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-UX-RECOVERY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-UX-RECOVERY-VALIDATION-001.json"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Listed active tasks; M7-UX-RECOVERY-VALIDATION-001 remained the current in-progress replacement task."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Returned no ready tasks."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7-UX-RECOVERY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "shape ok"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting issues."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\messages\\outbox\\M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json"
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build completed successfully with a non-blocking chunk-size warning."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build completed successfully."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright chromium suite passed: 26 tests, 26 passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format, lint, typecheck, and architecture checks all passed."
+    },
+    {
+      "command": "view_image project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1280x720.png",
+      "exit_code": 0,
+      "result": "The smaller-viewport screenshot is nonblank but does not show the map or map legend in the first viewport."
+    },
+    {
+      "command": "view_image project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__EVIDENCE-1440x900.png",
+      "exit_code": 0,
+      "result": "The desktop screenshot is nonblank and shows the map alongside the task rail."
+    },
+    {
+      "command": "pnpm exec node -e viewport probe at 1280x800 against apps/web/dist",
+      "exit_code": 1,
+      "result": "locator.boundingBox timed out waiting for getByLabel('Map legend'), indicating the smaller viewport probe still did not surface the map legend."
+    }
+  ],
+  "decisions": [
+    {
+      "type": "ux_recovery_scope",
+      "result": "Kept the scope limited to validation evidence. No content-lock approval was made."
+    },
+    {
+      "type": "evidence_classification",
+      "result": "Classified the current result as PARTIAL because the smaller viewport evidence cannot yet prove first-screen map and legend visibility."
+    }
+  ],
+  "risks": [
+    "DOM-only checks can pass while the smaller viewport still hides the map and legend below the fold.",
+    "Routing this task as REVIEW would overstate the evidence and repeat the product-owner complaint."
+  ],
+  "blockers": [
+    "The required smaller-viewport first-screen evidence is not satisfied. 1280x720 screenshot evidence shows task rail and player guidance without the map or map legend in view.",
+    "A follow-up 1280x800 probe also failed to surface the map legend locator, so the current UI/layout cannot yet prove the first-screen map claim at a smaller viewport.",
+    "Do not reopen or approve M7-CONTENT-LOCK-ACCEPTANCE-001 from this validation task."
+  ],
+  "evidence": {
+    "desktop_viewport": "1440x900",
+    "desktop_visible_map": true,
+    "smaller_viewport": "1280x720",
+    "smaller_visible_map": false,
+    "smaller_visible_legend": false,
+    "probe_viewport": "1280x800",
+    "probe_result": "map legend locator timeout"
+  },
+  "route_to": "lead_orchestrator,qa_reviewer",
+  "requested_action": "Lead should keep the task in blocked/partial validation state and keep M7-CONTENT-LOCK-ACCEPTANCE-001 closed. QA should not accept this as REVIEW until a smaller viewport can prove actual first-screen map and legend visibility.",
+  "created_at": "2026-06-30T04:46:57.888Z"
+}
