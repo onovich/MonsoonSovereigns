@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-MAP-TOPOLOGY-FIXTURE-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "last_integrated_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "last_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
@@ -414,7 +414,7 @@
     "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json"
   ],
   "branch_or_worktree": "codex/m7-map-topology-fixture",
-  "commit": "a43714068d1abfdb54ba7737f2bada502a0dbec2",
+  "commit": "effaa013429805bffc597e58718e30aed75ae7ab",
   "tests_run": [
     {
       "command": "gh pr checks 189 --watch",
@@ -471,8 +471,8 @@
     }
   ],
   "blockers": [],
-  "route_to": "qa_reviewer",
-  "requested_action": "Await independent qa_reviewer R2 handoff for M7-MAP-TOPOLOGY-FIXTURE-001.",
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR for M7-MAP-TOPOLOGY-FIXTURE-001, wait for CI, merge to main, then close task after origin/main integration.",
   "created_at": "2026-06-28T16:11:45.503Z",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -564,8 +564,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Await independent qa_reviewer R2 handoff for M7-MAP-TOPOLOGY-FIXTURE-001.",
-  "updated_at": "2026-06-30T17:55:02.765Z",
+  "next_action": "Open PR for M7-MAP-TOPOLOGY-FIXTURE-001, wait for CI, merge to main, then close task after origin/main integration.",
+  "updated_at": "2026-06-30T18:02:48.925Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1204,8 +1204,8 @@
     "systems_thread_nickname": "Keystone the 2nd",
     "systems_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
     "expected_systems_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
-    "status": "REVIEW",
-    "updated_at": "2026-06-30T17:55:02.765Z",
+    "status": "ACCEPTED",
+    "updated_at": "2026-06-30T18:02:48.925Z",
     "historical_status": "ACCEPT",
     "historical_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
     "historical_reviewed_at": "2026-06-30T17:36:02.274Z",
@@ -1218,7 +1218,7 @@
     "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
     "routed_to_qa_at": "2026-06-30T17:36:02.274Z",
     "qa_status": "REQUEST_CHANGES",
-    "next_action": "Await independent qa_reviewer R2 handoff after writer fixed the default sim-core test timeout.",
+    "next_action": "Open PR, wait for CI, merge to main, then close M7-MAP-TOPOLOGY-FIXTURE-001 only after origin/main contains the accepted branch.",
     "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
     "request_changes_round": 1,
     "request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
@@ -1226,14 +1226,20 @@
     "request_changes_submission_id": "019f19a4-bd7f-7b73-88b2-02c6b3b7a1c6",
     "request_changes_sent_at": "2026-06-30T17:49:10.220Z",
     "expected_writer_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
-    "route_to": "qa_reviewer",
+    "route_to": "lead_orchestrator",
     "review_handoff_r2": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
     "review_commit_r2": "effaa013429805bffc597e58718e30aed75ae7ab",
     "writer_head_commit_r2": "9046abdc7f1b2e9d0fbf47a55ee636b94a631068",
     "qa_r2_thread_id": "019f1998-24ad-7452-9179-6f3afb1cb252",
     "qa_r2_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-R2-TO-QA-REVIEW.json",
     "expected_qa_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW__qa_reviewer.json",
-    "qa_r2_status": "review_requested",
-    "routed_to_qa_r2_at": "2026-06-30T17:55:02.765Z"
+    "qa_r2_status": "ACCEPT",
+    "routed_to_qa_r2_at": "2026-06-30T17:55:02.765Z",
+    "qa_r2_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-30T18:02:48.925Z",
+    "accepted_implementation_commit": "effaa013429805bffc597e58718e30aed75ae7ab",
+    "accepted_content_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+    "accepted_branch_head": "865865e3"
   }
 }

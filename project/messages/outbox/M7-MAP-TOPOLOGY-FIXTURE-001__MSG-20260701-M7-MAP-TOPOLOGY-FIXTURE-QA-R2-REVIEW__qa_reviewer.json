@@ -1,0 +1,132 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "R2 is accepted. The prior QA blocker is resolved: the checked-in default `pnpm --filter @monsoon/sim-core test` command now passes without reviewer-supplied `--testTimeout`, and focused default execution of `tests/sim-core-m2-economy-population.test.ts` also passes. Diff review confirms R2 only adds a narrow explicit 15000 ms timeout to the expensive property test and does not reduce `numRuns=24`, `seed=1531`, generated ranges, or invariant assertions. This acceptance is limited to M7-MAP-TOPOLOGY-FIXTURE-001 fixture/content/compiler/runtime/sim-core validation; it does not approve M7 content lock and does not approve downstream client map rendering or hit testing.",
+  "artifacts": [
+    "tests/sim-core-m2-economy-population.test.ts",
+    "apps/content-tools/src/index.ts",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "packages/content-runtime/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "effaa013429805bffc597e58718e30aed75ae7ab",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch was codex/m7-map-topology-fixture at HEAD 9046abdc7f1b2e9d0fbf47a55ee636b94a631068 before writing this QA R2 handoff; worktree was clean."
+    },
+    {
+      "command": "git show --stat --oneline --decorate effaa013429805bffc597e58718e30aed75ae7ab",
+      "exit_code": 0,
+      "result": "R2 implementation commit changed only tests/sim-core-m2-economy-population.test.ts: 61 insertions and 48 deletions."
+    },
+    {
+      "command": "git show --unified=100 effaa013429805bffc597e58718e30aed75ae7ab -- tests/sim-core-m2-economy-population.test.ts",
+      "exit_code": 0,
+      "result": "Verified R2 adds M2_ECONOMY_PROPERTY_TIMEOUT_MS = 15000 and passes it as the third Vitest test argument. The property workload remains numRuns=24, seed=1531, days 0-420, group ids 1-14, labor 1-80, and the existing population/labor/grain/cash/world-invariant assertions remain present."
+    },
+    {
+      "command": "git diff --name-status 69031120de52949f9ed17289f3b2ef1f258e48ab...effaa013429805bffc597e58718e30aed75ae7ab",
+      "exit_code": 0,
+      "result": "R2 implementation-scope diff since the accepted content commit touched tests/sim-core-m2-economy-population.test.ts plus project process/handoff files only. No content, compiler, runtime, sim authority code, client, renderer, content-lock, or forbidden production scope changed in R2."
+    },
+    {
+      "command": "git diff --name-only 4c39b829456cc35adca2a56ff9390b32cd651ba8...HEAD -- apps/web/** apps/desktop/** packages/ui/** packages/map-renderer/** .github/** tools/** docs/GATE-M7.md docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md",
+      "exit_code": 0,
+      "result": "No forbidden client/rendering/Electron/CI/tool/gate/roadmap/matrix/manifest/checksum/report path changed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-MAP-TOPOLOGY-FIXTURE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm vitest run --root . tests/sim-core-m2-economy-population.test.ts",
+      "exit_code": 0,
+      "result": "Focused default command passed without CLI timeout override: 1 test file, 6 tests, duration 7.52s."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Default checked-in package command passed without reviewer-supplied timeout flags: 26 test files, 198 tests. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed. The default M2 prototype fixture remained districts=14, settlements=6, regionalSeasonalCurves=4, routes=25, mapGeometries=20, manifestHash=d474a105."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 16 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 38 tests."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed. Architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_R2_ACCEPT_DEFAULT_SIM_CORE_TEST_FIXED",
+      "decision": "ACCEPT. The specific R1 blocker is fixed because the default checked-in sim-core package test passes without manual reviewer timeout flags."
+    },
+    {
+      "id": "PROPERTY_COVERAGE_PRESERVED",
+      "decision": "R2 did not lower property workload or coverage: numRuns, seed, generated ranges, command path, and all non-negative population/labor/grain/cash and validateWorldStateV0 assertions are preserved."
+    },
+    {
+      "id": "SCOPE_ACCEPTED",
+      "decision": "R2 stayed within allowed paths and did not enter apps/web, apps/desktop, packages/ui, packages/map-renderer, content-lock, renderer, client, CI, roadmap, gate, manifest, checksum, or validation-report scope."
+    },
+    {
+      "id": "FIXTURE_STEP_ONLY",
+      "decision": "This acceptance covers only M7-MAP-TOPOLOGY-FIXTURE-001 fixture/content/compiler/runtime/sim-core evidence. It does not approve M7 content lock, downstream client topology rendering, polygon hit testing, or M7-MAP-TOPOLOGY-CLIENT-001."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PROPERTY_RUNTIME_COST_REMAINS",
+      "severity": "R2",
+      "summary": "The property test still advances 24 generated worlds and remains relatively expensive. R2 makes the default command reproducible by setting a narrow test timeout rather than reducing coverage."
+    },
+    {
+      "id": "DOWNSTREAM_CLIENT_TOPOLOGY_PENDING",
+      "severity": "R4",
+      "summary": "Client rendering, polygon hit testing, player-facing route semantics, and map/list/task/inspector synchronization remain downstream work for M7-MAP-TOPOLOGY-CLIENT-001 and later validation."
+    },
+    {
+      "id": "FORMAL_CONTENT_LOCK_NOT_APPROVED",
+      "severity": "R4",
+      "summary": "Formal M7 content lock remains blocked until the full topology recovery chain validates and the product owner explicitly reconsiders it."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Accept M7-MAP-TOPOLOGY-FIXTURE-001 R2 for the fixture/content/compiler/runtime/sim-core step and proceed with lead integration gates. Do not treat this as M7 content-lock approval and do not treat it as downstream client map rendering approval.",
+  "created_at": "2026-07-01T02:00:00+08:00"
+}
