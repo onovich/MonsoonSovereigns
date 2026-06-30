@@ -5114,13 +5114,13 @@
     "M7-MAP-DECISION-SURFACE-SYNC-001": {
       "owner_role": "client_engineer",
       "reviewer_role": "systems_architect",
-      "status": "accepted_pr_pending",
+      "status": "closed",
       "branch_or_worktree": "codex/m7-map-decision-surface-sync",
-      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
+      "updated_at": "2026-06-30T20:25:35.5998964+08:00",
       "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
       "ready_after_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
       "ready_after_pr": 217,
-      "next_action": "Open PR and merge after CI before closing.",
+      "next_action": "Start M7-SYSTEMIC-INTERACTION-VALIDATION-001.",
       "owner_model": "gpt-5.5",
       "owner_effort": "high",
       "owner_thread_id": "019f184d-4a65-7af3-b367-e2b6932de186",
@@ -5144,14 +5144,25 @@
       "qa_review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
       "lead_accept_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-30T20:19:35.2212703+08:00",
-      "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c"
+      "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+      "integrated_pr": 219,
+      "integrated_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+      "lead_close_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T20:25:35.5998964+08:00",
+      "next_ready_tasks": [
+        "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
+      ]
     },
     "M7-SYSTEMIC-INTERACTION-VALIDATION-001": {
       "owner_role": "test_engineer",
       "reviewer_role": "qa_reviewer",
-      "status": "draft",
+      "status": "ready",
       "branch_or_worktree": null,
-      "updated_at": "2026-06-30T09:46:39.564Z"
+      "updated_at": "2026-06-30T20:25:35.5998964+08:00",
+      "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
+      "ready_after_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+      "ready_after_pr": 219,
+      "next_action": "Start with test_engineer writer and qa_reviewer reviewer."
     }
   },
   "m7_systemic_interaction_recovery": {
@@ -5185,13 +5196,13 @@
       "owner_thread_id": "019f184d-4a65-7af3-b367-e2b6932de186",
       "owner_thread_nickname": "Window",
       "reviewer_role": "systems_architect",
-      "status": "accepted_pr_pending",
+      "status": "closed",
       "branch_or_worktree": "codex/m7-map-decision-surface-sync",
       "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "source_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
       "expected_writer_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-30T20:19:35.2212703+08:00",
-      "next_action": "Open PR and merge after CI before closing.",
+      "updated_at": "2026-06-30T20:25:35.5998964+08:00",
+      "next_action": "Start M7-SYSTEMIC-INTERACTION-VALIDATION-001.",
       "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
       "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
       "systems_thread_id": "019f1866-ee1a-7761-84cc-89490117d92b",
@@ -5208,7 +5219,24 @@
       "qa_review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-QA-REVIEW__qa_reviewer.json",
       "lead_accept_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-30T20:19:35.2212703+08:00",
-      "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c"
+      "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+      "integrated_pr": 219,
+      "integrated_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+      "lead_close_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T20:25:35.5998964+08:00",
+      "next_ready_tasks": [
+        "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
+      ]
+    },
+    "M7-SYSTEMIC-INTERACTION-VALIDATION-001": {
+      "status": "ready",
+      "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
+      "ready_after_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+      "ready_after_pr": 219,
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer",
+      "updated_at": "2026-06-30T20:25:35.5998964+08:00",
+      "next_action": "Start with test_engineer writer and qa_reviewer reviewer."
     }
   },
   "m7_core_action_loop_ux": {
@@ -5268,7 +5296,7 @@
     ]
   },
   "m7_map_decision_surface_sync": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
     "owner_role": "client_engineer",
     "reviewer_role": "systems_architect",
@@ -5307,6 +5335,24 @@
     "lead_accept_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-30T20:19:35.2212703+08:00",
     "accepted_implementation_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
-    "accepted_branch_head": "28135e1581476ce6c176964f81b220a50ebc5fd0"
+    "accepted_branch_head": "28135e1581476ce6c176964f81b220a50ebc5fd0",
+    "integrated_pr": 219,
+    "integrated_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+    "lead_close_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T20:25:35.5998964+08:00",
+    "next_ready_tasks": [
+      "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
+    ]
+  },
+  "m7_systemic_interaction_validation": {
+    "status": "READY",
+    "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+    "owner_role": "test_engineer",
+    "reviewer_role": "qa_reviewer",
+    "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
+    "ready_after_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+    "ready_after_pr": 219,
+    "updated_at": "2026-06-30T20:25:35.5998964+08:00",
+    "next_action": "Start with test_engineer writer and qa_reviewer reviewer."
   }
 }
