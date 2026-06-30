@@ -1,0 +1,73 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SYNC-CLOSED",
+  "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-MAP-DECISION-SURFACE-SYNC-001 is CLOSED after PR #219 passed both required CI jobs and entered origin/main at 28ef1a3f5d59fca4dea1be680565c4df988387e1. The accepted implementation synchronized task cards, strategic map surface metadata, route queue/district list focus state, and right inspector as one UI-derived decision surface, while reducing default player overlay clutter and preserving command/query/read-model authority boundaries. The next dependency-ready task is M7-SYSTEMIC-INTERACTION-VALIDATION-001.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-MAP-DECISION-SURFACE-SYNC-001.json",
+    "project/tasks/active/M7-SYSTEMIC-INTERACTION-VALIDATION-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-map-decision-surface-sync",
+  "commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+  "integrated_pr": 219,
+  "integrated_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+  "tests_run": [
+    {
+      "command": "gh pr checks 219 --watch --interval 10",
+      "exit_code": 0,
+      "result": "PASS; Quality, Web, and Browser Smoke passed in 2m42s, and Windows Desktop Smoke Artifact passed in 1m22s."
+    },
+    {
+      "command": "gh pr merge 219 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PASS; PR #219 merged and local main fast-forwarded to origin/main 28ef1a3f5d59fca4dea1be680565c4df988387e1."
+    },
+    {
+      "command": "git status --short --branch; git branch --show-current; git rev-parse HEAD; git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "PASS; local main and origin/main both resolved to 28ef1a3f5d59fca4dea1be680565c4df988387e1 before this closure branch."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-DECISION-SURFACE-SYNC-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON was valid before closure update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; M7-SYSTEMIC-INTERACTION-VALIDATION-001 is the next dependency-ready task once this task is closed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Close M7-MAP-DECISION-SURFACE-SYNC-001 only after the accepted implementation entered origin/main through PR #219 and CI passed."
+    },
+    {
+      "id": "NEXT_READY_TASK",
+      "decision": "Set M7-SYSTEMIC-INTERACTION-VALIDATION-001 to READY as the next systemic interaction recovery task."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_NOT_APPROVED",
+      "decision": "Formal M7 content lock remains unapproved; M7-SYSTEMIC-INTERACTION-VALIDATION-001 must run before product-owner reconsideration."
+    }
+  ],
+  "risks": [
+    {
+      "id": "SYSTEMIC_VALIDATION_REMAINS",
+      "severity": "R2",
+      "summary": "The recovery chain still needs a broad validation pass with screenshots and manual-smoke notes before content-lock reconsideration."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge this closure checkpoint, synchronize main, then start M7-SYSTEMIC-INTERACTION-VALIDATION-001.",
+  "created_at": "2026-06-30T20:25:35.5998964+08:00"
+}
