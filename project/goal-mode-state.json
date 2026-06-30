@@ -4,96 +4,33 @@
   "current_milestone": "M7",
   "current_tasks": [
     "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "M7-CORE-ACTION-LOOP-UX-001"
+    "M7-MAP-DECISION-SURFACE-SYNC-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+      "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
       "task_ids": [
         "M7-CONTENT-LOCK-ACCEPTANCE-001",
-        "M7-CORE-ACTION-LOOP-UX-001"
+        "M7-MAP-DECISION-SURFACE-SYNC-001"
       ],
-      "status": "accepted_pr_pending",
+      "status": "ready_to_start_next_task",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-core-action-loop-ux",
-      "updated_at": "2026-06-30T19:18:55.2000965+08:00",
-      "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-CLOSED__lead_orchestrator.json",
-      "start_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "lead_accept_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-LEAD-ACCEPT__lead_orchestrator.json"
-    },
-    "client_engineer": {
-      "thread_id": "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
-      "nickname": "Canvas",
-      "task_id": "M7-CORE-ACTION-LOOP-UX-001",
-      "status": "accepted",
-      "role": "client_engineer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-core-action-loop-ux",
-      "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
-      "started_at": "2026-06-30T18:15:12.6679256+08:00",
-      "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
-      "review_commit": "e346153264fa96786613771c865a3576e828d712",
-      "updated_at": "2026-06-30T19:18:55.2000965+08:00",
-      "request_changes_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
-      "request_changes_route": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-GAMEPLAY-REQUEST-CHANGES-TO-CLIENT.json",
-      "r2_review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
-      "review_commit_r2": "e55b039fa3db907b875bbee0dc2b6097749e07f1"
-    },
-    "gameplay_designer": {
-      "thread_id": "019f1823-bb3d-76d0-8b32-21eb30541272",
-      "nickname": "Ledger",
-      "status": "accept",
-      "role": "gameplay_designer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-core-action-loop-ux",
-      "source_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
-      "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
-      "review_commit": "e346153264fa96786613771c865a3576e828d712",
-      "started_at": "2026-06-30T18:47:25.2237866+08:00",
-      "updated_at": "2026-06-30T19:18:55.2000965+08:00",
-      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
-      "route_file_r2": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-WRITER-R2-TO-GAMEPLAY-REVIEW.json",
-      "expected_handoff_r2": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
-      "review_commit_r2": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
-      "r2_review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW__gameplay_designer.json"
-    },
-    "qa_reviewer": {
-      "thread_id": "019f1838-adf5-7020-a50d-c21adc594d70",
-      "nickname": "Gate",
-      "task_id": "M7-CORE-ACTION-LOOP-UX-001",
-      "status": "accept",
-      "role": "qa_reviewer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-core-action-loop-ux",
-      "source_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
-      "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-GAMEPLAY-R2-TO-QA-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-QA-REVIEW__qa_reviewer.json",
-      "review_commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
-      "started_at": "2026-06-30T19:09:25.3852952+08:00",
-      "updated_at": "2026-06-30T19:18:55.2000965+08:00",
-      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-QA-REVIEW__qa_reviewer.json"
+      "branch_or_worktree": "codex/close-m7-core-action-loop-ux",
+      "updated_at": "2026-06-30T19:25:37.5986242+08:00",
+      "lead_close_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-CLOSED__lead_orchestrator.json",
+      "previous_closed_task": "M7-CORE-ACTION-LOOP-UX-001"
     }
   },
-  "last_integrated_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
-  "last_main_commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
-  "next_ready_tasks": [],
+  "last_integrated_task": "M7-CORE-ACTION-LOOP-UX-001",
+  "last_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+  "next_ready_tasks": [
+    "M7-MAP-DECISION-SURFACE-SYNC-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -979,7 +916,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-30T19:18:55.2000965+08:00",
+  "last_updated_at": "2026-06-30T19:25:37.5986242+08:00",
   "updated_at": "2026-06-29T22:29:07.356Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1195,7 +1132,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "M7-CORE-ACTION-LOOP-UX-001",
+  "current_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -2049,8 +1986,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "ACCEPTED",
-  "next_machine_action": "Open PR for M7-CORE-ACTION-LOOP-UX-001, wait for CI, merge to main, then close the task after origin/main integration.",
+  "current_task_status": "READY",
+  "next_machine_action": "Start M7-MAP-DECISION-SURFACE-SYNC-001 after this closure checkpoint enters main.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3202,7 +3139,7 @@
     ]
   },
   "m7_core_action_loop_ux": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-CORE-ACTION-LOOP-UX-001",
     "branch_or_worktree": "codex/m7-core-action-loop-ux",
     "base_main_commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
@@ -3248,6 +3185,33 @@
     "lead_accept_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-30T19:18:55.2000965+08:00",
     "accepted_implementation_commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
-    "accepted_branch_head": "6aee13e09710cfdc155e02e3394db979b370bbd7"
+    "accepted_branch_head": "6aee13e09710cfdc155e02e3394db979b370bbd7",
+    "integrated_pr": 217,
+    "integrated_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/217",
+    "lead_close_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T19:25:37.5986242+08:00",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "child_threads_closed": [
+      "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
+      "019f1823-bb3d-76d0-8b32-21eb30541272",
+      "019f1838-adf5-7020-a50d-c21adc594d70"
+    ],
+    "next_ready_tasks": [
+      "M7-MAP-DECISION-SURFACE-SYNC-001"
+    ]
+  },
+  "m7_map_decision_surface_sync": {
+    "status": "READY",
+    "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+    "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
+    "ready_after_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+    "ready_after_pr": 217,
+    "owner_role": "client_engineer",
+    "reviewer_role": "systems_architect",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "next_action": "Start after closure checkpoint enters main.",
+    "updated_at": "2026-06-30T19:25:37.5986242+08:00"
   }
 }
