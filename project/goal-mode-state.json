@@ -23,7 +23,7 @@
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
-      "status": "awaiting_r3_validation_after_client_repair",
+      "status": "review_ready_r3_routed_to_qa",
       "role": "test_engineer",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
@@ -44,7 +44,10 @@
       "expected_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
       "r3_route_status": "SENT",
       "r3_route_submission_id": "019f16f6-5481-75e0-aecb-ca61b107df81",
-      "r3_route_sent_at": "2026-06-30T05:17:57.361Z"
+      "r3_route_sent_at": "2026-06-30T05:17:57.361Z",
+      "review_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+      "review_status_r3": "REVIEW",
+      "review_commit_r3": "523bd6364a82a2aba0f7a4fed1889792762579eb"
     },
     "client_engineer": {
       "thread_id": "019f16df-915f-7123-a288-1dd8ec6ce265",
@@ -67,6 +70,25 @@
       "review_status": "REVIEW",
       "review_ready_at": "2026-06-30T05:30:00.000Z",
       "updated_at": "2026-06-30T05:16:17.702Z"
+    },
+    "qa_reviewer": {
+      "thread_id": "019f16fa-a455-7ef3-9267-43bc03777e9c",
+      "nickname": "Gate",
+      "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+      "status": "review_in_progress",
+      "role": "qa_reviewer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-ux-recovery-validation",
+      "route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-TEST-R3-TO-QA-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-QA-REVIEW__qa_reviewer.json",
+      "source_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+      "route_status": "SENT",
+      "route_submission_id": "019f16fc-a885-7232-bd95-321ec4f35220",
+      "route_sent_at": "2026-06-30T05:24:51.452Z",
+      "updated_at": "2026-06-30T05:24:51.452Z"
     }
   },
   "last_integrated_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
@@ -127,8 +149,8 @@
     "approval_scope": "NONE",
     "approval_source": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-START__lead_orchestrator.json",
     "recommended_result": null,
-    "note": "Client repair is in REVIEW and routed to test_engineer for R3 validation. Formal content lock remains not accepted; no new Human Gate is active.",
-    "recorded_at": "2026-06-30T05:17:57.361Z"
+    "note": "Test R3 validation is in REVIEW and routed to independent QA. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-30T05:24:51.452Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -3057,7 +3079,7 @@
     ]
   },
   "m7_ux_recovery_validation": {
-    "status": "IN_PROGRESS_R3_VALIDATION_AFTER_CLIENT_REPAIR",
+    "status": "IN_REVIEW_QA_AFTER_R3_VALIDATION",
     "task_id": "M7-UX-RECOVERY-VALIDATION-001",
     "previous_closed_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
     "ready_after_main_commit": "483bfa742d57b88d25c30baf0450af6df26d8921",
@@ -3066,8 +3088,8 @@
     "reviewer_role": "qa_reviewer",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await test_engineer R3 validation handoff, then route ACCEPT evidence to QA or return changes as needed.",
-    "updated_at": "2026-06-30T05:17:57.361Z",
+    "next_action": "Await independent QA decision for repaired M7 UX recovery validation.",
+    "updated_at": "2026-06-30T05:24:51.452Z",
     "branch_or_worktree": "codex/m7-ux-recovery-validation",
     "base_main_commit": "ade15c64fe69dc25b6ea3a21847fa4145612209f",
     "writer_thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
@@ -3097,6 +3119,12 @@
     "client_repair_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
     "client_repair_status": "REVIEW",
     "r3_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-CLIENT-REPAIR-TO-TEST-R3.json",
-    "expected_writer_r3_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json"
+    "expected_writer_r3_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+    "writer_r3_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+    "writer_r3_status": "REVIEW",
+    "qa_thread_id": "019f16fa-a455-7ef3-9267-43bc03777e9c",
+    "qa_thread_nickname": "Gate",
+    "qa_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-TEST-R3-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-QA-REVIEW__qa_reviewer.json"
   }
 }

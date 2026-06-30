@@ -7504,7 +7504,7 @@
       "role": "test_engineer",
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
-      "status": "awaiting_r3_validation_after_client_repair",
+      "status": "review_ready_r3_routed_to_qa",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7531,7 +7531,10 @@
       "expected_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
       "r3_route_status": "SENT",
       "r3_route_submission_id": "019f16f6-5481-75e0-aecb-ca61b107df81",
-      "r3_route_sent_at": "2026-06-30T05:17:57.361Z"
+      "r3_route_sent_at": "2026-06-30T05:17:57.361Z",
+      "review_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+      "review_status_r3": "REVIEW",
+      "review_commit_r3": "523bd6364a82a2aba0f7a4fed1889792762579eb"
     },
     "M7-UX-RECOVERY-VALIDATION-001:client_engineer": {
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
@@ -7555,6 +7558,26 @@
       "review_status": "REVIEW",
       "review_ready_at": "2026-06-30T05:30:00.000Z",
       "updated_at": "2026-06-30T05:16:17.702Z"
+    },
+    "M7-UX-RECOVERY-VALIDATION-001:qa_reviewer": {
+      "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f16fa-a455-7ef3-9267-43bc03777e9c",
+      "nickname": "Gate",
+      "status": "review_in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-ux-recovery-validation",
+      "route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-TEST-R3-TO-QA-REVIEW.json",
+      "source_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-QA-REVIEW__qa_reviewer.json",
+      "route_status": "SENT",
+      "route_created_at": "2026-06-30T05:22:55.356Z",
+      "route_submission_id": "019f16fc-a885-7232-bd95-321ec4f35220",
+      "route_sent_at": "2026-06-30T05:24:51.452Z",
+      "updated_at": "2026-06-30T05:24:51.452Z"
     }
   },
   "replaced_threads": [
@@ -7740,7 +7763,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-06-30T05:17:57.361Z",
+  "updated_at": "2026-06-30T05:24:51.452Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
