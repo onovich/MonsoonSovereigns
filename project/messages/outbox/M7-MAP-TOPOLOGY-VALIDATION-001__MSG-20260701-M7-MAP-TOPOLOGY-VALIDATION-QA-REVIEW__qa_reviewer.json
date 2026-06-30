@@ -1,0 +1,101 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent read-only QA accepts M7 topology validation. The validation branch adds process/handoff evidence only, not new test code; focused negative-test claims are accepted as coverage by already integrated schema, fixture, client, save, route, web, and E2E tests. Default player map evidence uses explicit topology-backed district polygons, route-node anchors, route edges/path previews, topology hash, and reason codes, not hidden grid/hex/lattice/sequential-id authority. This does not approve formal M7 content lock.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-validation",
+  "commit": "4a132ebb4e75fa450521a0156ee08acf810362b6",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean on codex/m7-map-topology-validation tracking origin/codex/m7-map-topology-validation."
+    },
+    {
+      "command": "git diff --name-status origin/main...HEAD",
+      "exit_code": 0,
+      "result": "Only process state, routes, task registry, start handoff, and writer REVIEW handoff changed; no production or test code was added by this validation branch."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/sim-core-map-topology.test.ts tests/content-tools-compiler.test.ts tests/map-renderer-m2-map.test.ts tests/save-load-contract.test.ts tests/sim-core-boot-boundary.test.ts tests/sim-core-m2-route-transport.test.ts apps/web/src/shell/web-client-shell.test.tsx",
+      "exit_code": 0,
+      "result": "6 root-config test files passed, 74 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 web test file passed, 11 tests passed."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node and worker-compatible hashes matched for hello, command/query, save/load, M4, M5, and M6 Alpha replay."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "All listed content fixtures validated; M2 prototype fixture reports 14 districts, 25 routes, 20 map geometries, manifestHash d474a105."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/deterministic-hash.test.ts",
+      "exit_code": 0,
+      "result": "1 file passed, 2 tests passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_VALIDATION_AS_EVIDENCE",
+      "decision": "Accept M7-MAP-TOPOLOGY-VALIDATION-001 as evidence sufficient to route to lead_orchestrator for closure handling."
+    },
+    {
+      "id": "NO_NEW_TEST_CODE_IN_THIS_TASK",
+      "decision": "Do not describe this validation branch as adding tests; it relied on existing integrated tests plus handoff evidence and QA spot-checks."
+    },
+    {
+      "id": "CONTENT_LOCK_NOT_APPROVED",
+      "decision": "This ACCEPT does not approve M7 content lock or M7 exit. It only supports reopening product-owner reconsideration after integration."
+    }
+  ],
+  "risks": [
+    {
+      "id": "REGION_SCREENSHOT_DIMENSIONS",
+      "severity": "R2",
+      "summary": "Evidence PNGs are map-region screenshots generated under 1440x900 and 1280x720 viewports, not full-viewport PNGs; actual dimensions observed were 1012x982 and 904x902."
+    },
+    {
+      "id": "LOW_FIDELITY_ROUTE_VISUALS",
+      "severity": "R2",
+      "summary": "Route-node markers and route 24 line are sufficient topology evidence but remain low-fidelity and not final art."
+    },
+    {
+      "id": "LEGACY_M2_NON_DEFAULT_PATH",
+      "severity": "R3",
+      "summary": "Legacy M2 grid helper code remains for non-default fixtures/tests; accepted because default player path asserts topology-region-network and data-player-grid=not-used."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Proceed with lead closure/integration checks for M7-MAP-TOPOLOGY-VALIDATION-001. Reopen M7-CONTENT-LOCK-ACCEPTANCE-001 only for product-owner reconsideration; do not mark content lock accepted autonomously.",
+  "created_at": "2026-07-01T05:05:45.0403726+08:00"
+}

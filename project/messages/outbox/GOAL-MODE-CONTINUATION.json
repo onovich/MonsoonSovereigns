@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-MAP-TOPOLOGY-VALIDATION-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "ACCEPTED",
   "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "last_integrated_task": "M7-MAP-TOPOLOGY-CLIENT-001",
   "last_main_commit": "e7b414271a355b4be7b78cb7c5b43db6a152bc38",
@@ -196,7 +196,7 @@
     "note": "Product owner already requested changes. The active path is topology recovery review, not waiting for product-owner Human Gate reconsideration.",
     "recorded_at": "2026-06-30T21:47:04.0374837+08:00"
   },
-  "next_machine_action": "Wait for M7-MAP-TOPOLOGY-VALIDATION-001 independent qa_reviewer decision.",
+  "next_machine_action": "Open PR for M7-MAP-TOPOLOGY-VALIDATION-001, wait for CI, merge, then close.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -599,7 +599,7 @@
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
   "next_action": "Commit accepted implementation, open PR, wait for CI, merge to main, then close after origin/main integration.",
-  "updated_at": "2026-06-30T20:58:23.832Z",
+  "updated_at": "2026-06-30T21:09:00.256Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1382,7 +1382,7 @@
   "human_gate_required": false,
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "branch_or_worktree": "codex/m7-map-topology-validation",
     "writer_thread_id": "019f1a48-010b-78b3-a682-af32c69fd521",
     "writer_thread_nickname": "Canary the 2nd",
@@ -1395,6 +1395,11 @@
     "qa_thread_nickname": "Witness the 2nd",
     "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
     "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
-    "routed_to_qa_at": "2026-06-30T20:58:23.832Z"
+    "routed_to_qa_at": "2026-06-30T20:58:23.832Z",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-30T21:09:00.256Z",
+    "accepted_branch_head": "4a132ebb4e75fa450521a0156ee08acf810362b6"
   }
 }

@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_map_topology_validation_qa_review",
+    "status": "active_map_topology_validation_accepted_pending_pr",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -43,7 +43,7 @@
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "updated_at": "2026-06-30T20:58:23.832Z",
+    "updated_at": "2026-06-30T21:09:00.256Z",
     "concurrent_task_ids": [
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
@@ -5494,11 +5494,11 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Wait for M7-MAP-TOPOLOGY-VALIDATION-001 independent qa_reviewer decision.",
-  "current_task_status": "REVIEW",
+  "next_machine_action": "Open PR for M7-MAP-TOPOLOGY-VALIDATION-001, wait for CI, merge, then close.",
+  "current_task_status": "ACCEPTED",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "status": "REVIEW",
+    "status": "ACCEPTED",
     "owner_role": "test_engineer",
     "owner_configured_model": "gpt-5.4-mini",
     "owner_configured_effort": "high",
@@ -5513,13 +5513,19 @@
     "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
     "started_at": "2026-06-30T20:47:20.072Z",
-    "next_action": "Wait for independent qa_reviewer decision.",
+    "next_action": "Open PR, wait for CI, merge to main, then close.",
     "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
     "review_ready_at": "2026-06-30T20:58:23.832Z",
     "qa_thread_id": "019f1a52-6f93-7653-bbb0-5f85ba33a507",
     "qa_thread_nickname": "Witness the 2nd",
     "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
     "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
-    "routed_to_qa_at": "2026-06-30T20:58:23.832Z"
+    "routed_to_qa_at": "2026-06-30T20:58:23.832Z",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "qa_reviewed_at": "2026-06-30T21:09:00.256Z",
+    "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-06-30T21:09:00.256Z",
+    "accepted_branch_head": "4a132ebb4e75fa450521a0156ee08acf810362b6"
   }
 }
