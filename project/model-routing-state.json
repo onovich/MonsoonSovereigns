@@ -5070,13 +5070,13 @@
       "owner_thread_id": "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
       "owner_thread_nickname": "Canvas",
       "reviewer_role": "gameplay_designer",
-      "status": "accepted_pr_pending",
+      "status": "closed",
       "branch_or_worktree": "codex/m7-core-action-loop-ux",
       "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "source_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
       "expected_writer_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-30T19:18:55.2000965+08:00",
-      "next_action": "Open PR and merge after CI before closing.",
+      "updated_at": "2026-06-30T19:25:37.5986242+08:00",
+      "next_action": "Start M7-MAP-DECISION-SURFACE-SYNC-001.",
       "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
       "review_commit": "e346153264fa96786613771c865a3576e828d712",
       "gameplay_thread_id": "019f1823-bb3d-76d0-8b32-21eb30541272",
@@ -5102,14 +5102,25 @@
       "qa_review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-QA-REVIEW__qa_reviewer.json",
       "lead_accept_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-LEAD-ACCEPT__lead_orchestrator.json",
       "accepted_at": "2026-06-30T19:18:55.2000965+08:00",
-      "accepted_implementation_commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1"
+      "accepted_implementation_commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
+      "integrated_pr": 217,
+      "integrated_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+      "lead_close_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T19:25:37.5986242+08:00",
+      "next_ready_tasks": [
+        "M7-MAP-DECISION-SURFACE-SYNC-001"
+      ]
     },
     "M7-MAP-DECISION-SURFACE-SYNC-001": {
       "owner_role": "client_engineer",
       "reviewer_role": "systems_architect",
-      "status": "draft",
+      "status": "ready",
       "branch_or_worktree": null,
-      "updated_at": "2026-06-30T09:46:39.564Z"
+      "updated_at": "2026-06-30T19:25:37.5986242+08:00",
+      "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
+      "ready_after_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+      "ready_after_pr": 217,
+      "next_action": "Start with client_engineer writer and systems_architect reviewer."
     },
     "M7-SYSTEMIC-INTERACTION-VALIDATION-001": {
       "owner_role": "test_engineer",
@@ -5145,7 +5156,7 @@
     ]
   },
   "m7_core_action_loop_ux": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-CORE-ACTION-LOOP-UX-001",
     "branch_or_worktree": "codex/m7-core-action-loop-ux",
     "base_main_commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
@@ -5191,6 +5202,24 @@
     "lead_accept_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-30T19:18:55.2000965+08:00",
     "accepted_implementation_commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
-    "accepted_branch_head": "6aee13e09710cfdc155e02e3394db979b370bbd7"
+    "accepted_branch_head": "6aee13e09710cfdc155e02e3394db979b370bbd7",
+    "integrated_pr": 217,
+    "integrated_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+    "lead_close_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T19:25:37.5986242+08:00",
+    "next_ready_tasks": [
+      "M7-MAP-DECISION-SURFACE-SYNC-001"
+    ]
+  },
+  "m7_map_decision_surface_sync": {
+    "status": "READY",
+    "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+    "owner_role": "client_engineer",
+    "reviewer_role": "systems_architect",
+    "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
+    "ready_after_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+    "ready_after_pr": 217,
+    "updated_at": "2026-06-30T19:25:37.5986242+08:00",
+    "next_action": "Start with client_engineer writer and systems_architect reviewer."
   }
 }
