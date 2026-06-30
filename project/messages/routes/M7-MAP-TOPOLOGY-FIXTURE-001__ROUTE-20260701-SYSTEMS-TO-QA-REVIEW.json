@@ -1,0 +1,27 @@
+{
+  "route_id": "ROUTE-20260701-SYSTEMS-TO-QA-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f1998-24ad-7452-9179-6f3afb1cb252",
+  "to_thread_nickname": "Auditor the 2nd",
+  "status": "SENT",
+  "sent_at": "2026-06-30T17:36:02.274Z",
+  "source_handoffs": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+  "writer_head_commit": "a43714068d1abfdb54ba7737f2bada502a0dbec2",
+  "model": "gpt-5.5",
+  "effort": "xhigh",
+  "requested_action": "Perform independent read-only QA review of the explicit topology fixture, anti-grid/lattice proof, compiler negative coverage, topology hash/save behavior, allowed-path scope, and retained downstream client risk.",
+  "notes": [
+    "QA must verify this is a real topology migration, not a rectangular grid visual disguise.",
+    "QA must not approve M7 content lock or downstream client map rendering in this fixture review.",
+    "If QA accepts, route back to lead_orchestrator for integration gates and PR."
+  ]
+}

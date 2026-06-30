@@ -1,0 +1,144 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Accepted the M7 topology fixture from an architecture, determinism, package-boundary, and anti-grid authority perspective. The default prototype fixture now boots through explicit topology districts, route nodes, and route edges; manifest/topology hashes include that graph; M2 transport uses topology preview when topology exists; compiler/runtime/sim-core validations reject malformed topology inputs; and the implementation did not drift into client rendering or forbidden UI/Electron paths.",
+  "artifacts": [
+    "apps/content-tools/src/index.ts",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "packages/content-runtime/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/map-topology-v1.ts",
+    "packages/sim-core/src/m2-route-transport-v0.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-economy-population.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Reviewed branch codex/m7-map-topology-fixture. Pre-existing coordination changes were present in project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json, project/tasks/thread-registry.json, writer-to-review route files, and the historical_researcher handoff. No implementation files were dirty before this systems handoff was written."
+    },
+    {
+      "command": "Read AGENTS.md, PROJECT_STATUS.md, project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json, docs/decisions/ADR-010-map-topology.md, writer handoff, systems route file, historical handoff, project/templates/handoff.md, handoff schema, monsoon-studio-orchestrator message/routing references, docs/11-roadmap.md, and docs/14-multi-agent-operating-model.md.",
+      "exit_code": 0,
+      "result": "Confirmed M7 topology fixture scope, allowed/forbidden paths, anti-grid ADR requirements, reviewer routing protocol, and current content-lock recovery state."
+    },
+    {
+      "command": "git show --stat --oneline --decorate 69031120de52949f9ed17289f3b2ef1f258e48ab",
+      "exit_code": 0,
+      "result": "Implementation commit changed apps/content-tools, content-source M2 fixture, content-runtime, content-schema, sim-core boot, and focused tests only; no apps/web, apps/desktop, packages/ui, or packages/map-renderer drift."
+    },
+    {
+      "command": "git diff --name-status 4c39b829456cc35adca2a56ff9390b32cd651ba8...HEAD",
+      "exit_code": 0,
+      "result": "Branch diff remained within allowed implementation/process paths. Review focus excluded process handoff/status files from architecture acceptance and found no forbidden client rendering scope expansion."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const p='content-source/m2-fixtures/prototype-world-30-districts.json'; const data=JSON.parse(fs.readFileSync(p,'utf8')); const deg=new Map(data.districts.map(d=>[d.sourceId,0])); const nodeDistrict=new Map((data.topology.routeNodes||[]).map(n=>[n.nodeId,n.districtId])); const endpointDistrict=e=>e.kind==='district'?e.districtId:e.kind==='route-node'?nodeDistrict.get(e.nodeId):data.settlements.find(s=>s.sourceId===e.settlementId)?.districtId; const modes={}; let routeNodeEdges=0, blocked=0, unknown=0; for (const e of data.topology.routeEdges){modes[e.mode]=(modes[e.mode]||0)+1; if(e.from.kind==='route-node'||e.to.kind==='route-node') routeNodeEdges++; if(e.availability.kind==='blocked') blocked++; if(e.availability.kind==='unknown') unknown++; const a=endpointDistrict(e.from), b=endpointDistrict(e.to); if(e.availability.kind==='open'&&deg.has(a)&&deg.has(b)){deg.set(a,deg.get(a)+1);deg.set(b,deg.get(b)+1);} } console.log(JSON.stringify({districts:data.districts.length, settlements:data.settlements.length, routes:data.routes.length, mapGeometries:data.mapGeometries.length, topologyAdjacency:data.topology.adjacencyDerivation, routeNodes:data.topology.routeNodes.length, routeEdges:data.topology.routeEdges.length, explicitIsolations:data.topology.explicitIsolations, modes, routeNodeEdges, blocked, unknown, degree:[...deg.entries()].sort()}, null, 2));\"",
+      "exit_code": 0,
+      "result": "Fixture summary: 14 districts, 6 settlements, 25 routes, 20 mapGeometries, adjacencyDerivation explicit-route-graph-v1, 8 routeNodes, 25 routeEdges, one explicit isolation for district-014, modes road=16 river=6 coast=3, 7 route-node endpoint edges, one blocked edge, and variable open degree 2-5 for connected districts."
+    },
+    {
+      "command": "node -e \"const fs=require('fs'); const s=fs.readFileSync('content-source/m2-fixtures/prototype-world-30-districts.json','utf8'); const keys=['row','column','grid','hex','axial','cube','lattice']; for (const k of keys) console.log(k+': '+(new RegExp(k,'i').test(s)));\"",
+      "exit_code": 0,
+      "result": "The default fixture text contained no row, column, grid, hex, axial, cube, or lattice markers."
+    },
+    {
+      "command": "git grep -n -E \"Math\\.random|Date\\.now|new Date\\(|performance\\.now|crypto\\.random|randomUUID\" -- apps/content-tools/src packages/content-runtime/src packages/content-schema/src packages/sim-core/src tests content-source/m2-fixtures/prototype-world-30-districts.json",
+      "exit_code": 0,
+      "result": "No authoritative implementation hit was found. Matches were limited to tests that assert forbidden APIs are rejected and one validation string fixture containing Math.random."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed; m2.prototype-world-30-districts reported districts=14 settlements=6 regionalSeasonalCurves=4 routes=25 mapGeometries=20 manifestHash=d474a105."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 16 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 38 tests, including compiler negative coverage for missing endpoint, duplicate topology ids/source ids, invalid polygon/route node outside polygon, disconnected graph, and lattice adjacency leak."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed: 26 test files, 198 tests. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "SYSTEMS_ACCEPT_EXPLICIT_TOPOLOGY_AUTHORITY",
+      "decision": "ACCEPT. Default prototype authority is now explicit topology/route graph data rather than row/column, hex axial/cube, sequential id, or hidden regular-lattice adjacency. The fixture includes explicit topology.routeEdges, routeNodes, route mode/capacity/seasonality/availability/metadata, one explicit isolated no-known-route reason, variable degree, route-node endpoints, and road/river/coast modes."
+    },
+    {
+      "id": "SIM_CORE_BOUNDARY_ACCEPT",
+      "decision": "sim-core boot consumes runtime topology as unknown input parsed by local boot validators and creates a MapTopologyDefinitionV1 through world-state-v0 domain constructors. The reviewed sim-core implementation imports no React, Pixi, Electron, DOM, Node fs, or real-time authority APIs."
+    },
+    {
+      "id": "TOPOLOGY_HASH_AND_SAVE_COMPATIBILITY_ACCEPT",
+      "decision": "Runtime manifest hashing includes topology; sim-core creates a canonical topologyHash; save/load tests preserve topologyHash and reject missing or mismatched topology snapshots instead of silently accepting incompatible topology."
+    },
+    {
+      "id": "DETERMINISTIC_SORTING_ACCEPT",
+      "decision": "Compiler and sim-core use explicit stable ordering and tie-breakers: sourceId/nodeId ordering for compiler assignment, routeId/sourceId/endpoint sorting for topology canonicalization, and topology path ordering by total cost, edge count, route-id sequence, endpoint-id sequence, then district id."
+    },
+    {
+      "id": "NEGATIVE_COMPILER_TESTS_ACCEPT",
+      "decision": "Compiler negative tests have useful distinguishing power for the required cases: missing topology endpoint, duplicate topology node/edge ids, duplicate source ids, invalid geometry, route node outside polygon, disconnected graph without explicit isolation, and row/column/grid/hex/lattice leakage."
+    },
+    {
+      "id": "CLIENT_SCOPE_NOT_EXPANDED",
+      "decision": "This task did not alter React/Pixi/Electron/client rendering surfaces. Downstream map rendering and hit testing remain for M7-MAP-TOPOLOGY-CLIENT-001 and must consume read models without mutating WorldState."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LEGACY_ROUTE_FALLBACK_COMPATIBILITY_EDGE",
+      "severity": "R2",
+      "summary": "previewM2TransportRouteV0 still retains its pre-existing legacy explicit-route fallback when definitions.topology is absent. This is not a hidden grid/lattice path and default topology-backed runtime takes the topology branch; save/load now rejects missing topology for topology-backed saves. QA should still keep this compatibility edge visible when testing old minimal fixtures."
+    },
+    {
+      "id": "DOWNSTREAM_CLIENT_TOPOLOGY_CONSUMPTION_PENDING",
+      "severity": "R4",
+      "summary": "Client rendering, polygon hit testing, and player-facing route semantics are intentionally outside this fixture task. M7-MAP-TOPOLOGY-CLIENT-001 must prove UI consumes topology read models and does not reintroduce visual/regular-lattice authority."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Perform independent QA review of M7-MAP-TOPOLOGY-FIXTURE-001 using the writer, historical_researcher, and systems_architect handoffs. Verify compiler negative tests, topology fixture evidence, save/load compatibility, and that no forbidden client-rendering scope drift occurred.",
+  "created_at": "2026-07-01T01:27:57.0187087+08:00"
+}

@@ -5,13 +5,13 @@
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
         "role": "lead_orchestrator",
-        "status": "active_map_topology_fixture_in_progress",
+        "status": "active_map_topology_fixture_qa_review",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-07-01T00:26:01.3756143+08:00",
+        "updated_at": "2026-06-30T17:36:02.274Z",
         "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
         "task_ids": [
           "M7-MAP-TOPOLOGY-FIXTURE-001"
@@ -7887,7 +7887,7 @@
       "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -7895,8 +7895,12 @@
       "branch_or_worktree": "codex/m7-map-topology-fixture",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
       "base_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
-      "updated_at": "2026-07-01T00:26:01.3756143+08:00"
+      "updated_at": "2026-06-30T17:36:02.274Z",
+      "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-SYSTEMS-TO-QA-REVIEW.json",
+      "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json"
     },
     "M7-MAP-TOPOLOGY-FIXTURE-001:simulation_engineer:replaced:019f1959-d925-7e83-98f6-5c895c98d41f": {
       "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
@@ -7926,7 +7930,7 @@
       "role": "simulation_engineer",
       "thread_id": "019f197c-401c-7231-b47f-bee31d1308af",
       "nickname": "Engine",
-      "status": "in_progress",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7938,8 +7942,69 @@
       "previous_source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
       "replaces_thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
       "partial_diff_policy": "inherit_without_reverting",
-      "updated_at": "2026-07-01T01:03:44.0642877+08:00"
+      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:historical_researcher": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "historical_researcher",
+      "thread_id": "019f198a-8bd8-7262-9fb2-8ba1710393ca",
+      "nickname": "Chronicle",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-HISTORICAL-REVIEW.json",
+      "route_submission_id": "019f198b-e864-7e03-ad2a-24dc9cac9c63",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+      "updated_at": "2026-06-30T17:36:02.274Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:systems_architect": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "systems_architect",
+      "thread_id": "019f198a-c3d6-73f3-91f2-0e843f3f5fab",
+      "nickname": "Keystone the 2nd",
+      "status": "accepted",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
+      "route_submission_id": "019f198c-3352-7be3-a915-573277cd5dad",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-06-30T17:36:02.274Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:qa_reviewer": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f1998-24ad-7452-9179-6f3afb1cb252",
+      "nickname": "Auditor the 2nd",
+      "status": "review_requested",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "source_handoffs": [
+        "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+        "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+        "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json"
+      ],
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-SYSTEMS-TO-QA-REVIEW.json",
+      "route_status": "SENT",
+      "route_sent_at": "2026-06-30T17:36:02.274Z",
+      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+      "updated_at": "2026-06-30T17:36:02.274Z"
     }
   },
   "replaced_threads": [
@@ -8677,7 +8742,7 @@
       "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -8685,8 +8750,10 @@
       "branch_or_worktree": "codex/m7-map-topology-fixture",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
       "base_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
-      "updated_at": "2026-07-01T00:26:01.3756143+08:00"
+      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
     },
     "M7-MAP-TOPOLOGY-FIXTURE-001:simulation_engineer:replaced:019f1959-d925-7e83-98f6-5c895c98d41f": {
       "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
@@ -8716,7 +8783,7 @@
       "role": "simulation_engineer",
       "thread_id": "019f197c-401c-7231-b47f-bee31d1308af",
       "nickname": "Engine",
-      "status": "in_progress",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -8728,8 +8795,44 @@
       "previous_source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
       "replaces_thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
       "partial_diff_policy": "inherit_without_reverting",
-      "updated_at": "2026-07-01T01:03:44.0642877+08:00"
+      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:historical_researcher": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "historical_researcher",
+      "thread_id": "019f198a-8bd8-7262-9fb2-8ba1710393ca",
+      "nickname": "Chronicle",
+      "status": "review_requested",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-HISTORICAL-REVIEW.json",
+      "route_submission_id": "019f198b-e864-7e03-ad2a-24dc9cac9c63",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:systems_architect": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "systems_architect",
+      "thread_id": "019f198a-c3d6-73f3-91f2-0e843f3f5fab",
+      "nickname": "Keystone the 2nd",
+      "status": "review_requested",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
+      "route_submission_id": "019f198c-3352-7be3-a915-573277cd5dad",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
     }
   }
 }
