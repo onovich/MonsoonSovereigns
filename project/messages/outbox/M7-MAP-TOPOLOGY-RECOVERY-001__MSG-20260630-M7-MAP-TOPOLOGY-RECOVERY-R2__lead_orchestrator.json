@@ -1,0 +1,100 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-R2",
+  "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Applied systems R1 REQUEST_CHANGES: updated stale active routing fields to topology recovery review, removed protocol edits from the client task, and required systems_architect review for fixture work that may touch sim-core/content-runtime authority code.",
+  "artifacts": [
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-RECOVERY-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R2-TO-SYSTEMS-REVIEW.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-recovery",
+  "commit": "f9de13d9812031c069a9c5cb9f68390c5366e2b8",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-RECOVERY-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-R2__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID after object-form tests_run repair"
+    },
+    {
+      "command": "node -e JSON.parse(fs.readFileSync(...)) for goal-mode-state, model-routing-state, GOAL-MODE-CONTINUATION, and thread-registry",
+      "exit_code": 0,
+      "result": "JSON OK for all checked state files"
+    },
+    {
+      "command": "Select-String stale-state search across goal-mode-state, model-routing-state, GOAL-MODE-CONTINUATION, and thread-registry",
+      "exit_code": 0,
+      "result": "No stale product-owner-waiting state strings found"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-MAP-TOPOLOGY-RECOVERY-001 REVIEW; downstream topology tasks DRAFT; content lock BLOCKED"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks while topology recovery is under review"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "STATE_FIELDS_REPAIRED",
+      "decision": "Active routing fields now point to M7-MAP-TOPOLOGY-RECOVERY-001 review instead of old content-lock Human Gate waiting."
+    },
+    {
+      "id": "CLIENT_PROTOCOL_SCOPE_REMOVED",
+      "decision": "M7-MAP-TOPOLOGY-CLIENT-001 no longer allows packages/protocol/**; protocol/schema changes remain owned by M7-MAP-TOPOLOGY-SCHEMA-001."
+    },
+    {
+      "id": "FIXTURE_SYSTEMS_REVIEW_REQUIRED",
+      "decision": "M7-MAP-TOPOLOGY-FIXTURE-001 now requires systems_architect review when touching sim-core/content-runtime authority code."
+    }
+  ],
+  "risks": [],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Read-only R2 review of the REQUEST_CHANGES fixes and return ACCEPT, REQUEST_CHANGES, or BLOCK.",
+  "created_at": "2026-06-30T21:47:04.0374837+08:00"
+}

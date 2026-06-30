@@ -12,7 +12,8 @@
     "M7-PLATFORM-RESOLUTION-LOCALIZATION-MATRIX-001",
     "M7-MANUAL-PLAYTHROUGH-EVIDENCE-001",
     "M7-UI-LOCALIZATION-EXIT-001",
-    "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
+    "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+    "M7-MAP-TOPOLOGY-VALIDATION-001"
   ],
   "scope": {
     "allowed_paths": [
@@ -78,10 +79,11 @@
     "M7-UI-LOCALIZATION-EXIT-001 is a required prerequisite so formal content lock cannot pass while the UI/localization/visual quality track remains unfinished.",
     "UX recovery validation is now closed in main, but this task remains BLOCKED until the product owner explicitly accepts, defers, or requests changes for formal M7 content lock.",
     "Second product-owner REQUEST_CHANGES received after UX recovery validation: obligation handling, appointment feedback, and phase/action loop remain blockers.",
-    "Systemic interaction recovery validation is now closed in main, but this task remains BLOCKED until the product owner explicitly accepts, defers, or requests changes for formal M7 content lock."
+    "Systemic interaction recovery validation is now closed in main, but this task remains BLOCKED until the product owner explicitly accepts, defers, or requests changes for formal M7 content lock.",
+    "Third product-owner REQUEST_CHANGES received after systemic interaction validation: the current map topology is still rectangular/grid-like under visual disguise, so formal content lock cannot be reconsidered until topology recovery validation closes in main."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-30T21:02:21.5067142+08:00",
+  "updated_at": "2026-06-30T21:29:09.7679151+08:00",
   "human_gate_required": true,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -101,9 +103,9 @@
   "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
   "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
   "base_main_commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
-  "recommendation": "RECONSIDER_CONTENT_LOCK_WITH_VALIDATED_SYSTEMIC_INTERACTION_RECOVERY",
+  "recommendation": "AWAIT_MAP_TOPOLOGY_RECOVERY_VALIDATION",
   "content_lock_accepted": false,
-  "human_gate_state": "SYSTEMIC_INTERACTION_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+  "human_gate_state": "REQUEST_CHANGES_MAP_TOPOLOGY_RECOVERY_REQUIRED",
   "qa_route": "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
   "expected_qa_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
   "qa_thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
@@ -127,14 +129,19 @@
     "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
     "M7-CORE-ACTION-LOOP-UX-001",
     "M7-MAP-DECISION-SURFACE-SYNC-001",
-    "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
+    "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+    "M7-MAP-TOPOLOGY-RECOVERY-001",
+    "M7-MAP-TOPOLOGY-SCHEMA-001",
+    "M7-MAP-TOPOLOGY-FIXTURE-001",
+    "M7-MAP-TOPOLOGY-CLIENT-001",
+    "M7-MAP-TOPOLOGY-VALIDATION-001"
   ],
   "ux_recovery_validation_task": "M7-UX-RECOVERY-VALIDATION-001",
   "ux_recovery_validation_pr": 213,
   "ux_recovery_validation_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
   "ux_recovery_validation_closed_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
   "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-INTERACTION-VALIDATED__lead_orchestrator.json",
-  "next_action": "Product-owner Human Gate decision required: choose APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES. Do not start M7-EXIT-VALIDATION-001 until this gate is resolved.",
+  "next_action": "Complete M7-MAP-TOPOLOGY-RECOVERY-001 and downstream topology schema, fixture, client, and validation tasks before product-owner content-lock reconsideration can reopen. Do not start M7-EXIT-VALIDATION-001.",
   "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
   "systemic_interaction_recovery_plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
   "systemic_recovery_tasks": [
@@ -149,10 +156,19 @@
   "systemic_interaction_validation_main_commit": "2adc668bba95724aa2448bd898983fc6d9740178",
   "systemic_interaction_validation_closed_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-CLOSED__lead_orchestrator.json",
   "systemic_interaction_validation_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
-  "reconsideration_ready": true,
+  "reconsideration_ready": false,
   "decision_options": [
     "APPROVE_CONTENT_LOCK_WITH_LIMITS",
     "DEFER_CONTENT_LOCK",
     "REQUEST_CHANGES"
+  ],
+  "product_owner_third_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
+  "map_topology_recovery_plan_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json",
+  "map_topology_recovery_tasks": [
+    "M7-MAP-TOPOLOGY-RECOVERY-001",
+    "M7-MAP-TOPOLOGY-SCHEMA-001",
+    "M7-MAP-TOPOLOGY-FIXTURE-001",
+    "M7-MAP-TOPOLOGY-CLIENT-001",
+    "M7-MAP-TOPOLOGY-VALIDATION-001"
   ]
 }

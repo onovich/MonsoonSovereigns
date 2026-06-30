@@ -334,3 +334,17 @@ The planned recovery chain is: `M7-CORE-ACTION-LOOP-UX-001`, `M7-MAP-DECISION-SU
 `M7-SYSTEMIC-INTERACTION-VALIDATION-001` is CLOSED after PR #221 entered `origin/main` at `2adc668bba95724aa2448bd898983fc6d9740178` with both PR CI jobs passing. The closure checkpoint records the accepted evidence, independent QA ACCEPT, 1440x900 and 1280x720 screenshots, manual-smoke notes, console-clean E2E assertions, Web build, Storybook build, and `pnpm check`.
 
 Formal M7 content lock remains not accepted. `M7-CONTENT-LOCK-ACCEPTANCE-001` is still `BLOCKED` with `content_lock_accepted=false`, now at `SYSTEMIC_INTERACTION_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION`. `M7-EXIT-VALIDATION-001` must not start until the product owner explicitly chooses `APPROVE_CONTENT_LOCK_WITH_LIMITS`, `DEFER_CONTENT_LOCK`, or `REQUEST_CHANGES`. Manual node battle remains `DEFER_MANUAL_NODE_BATTLE`.
+
+## 27. M7 Map Topology Recovery Snapshot
+
+On 2026-06-30 the product owner rejected M7 content-lock reconsideration again, this time specifically because the current map still behaves like a rectangular/grid topology under visual disguise. The blocker is not only presentation quality: adjacency, route meaning, movement/capacity, AI reason codes, hit testing, and save compatibility must not depend on a hidden rectangular row/column substrate.
+
+The lead recorded this as a third `REQUEST_CHANGES` for `M7-CONTENT-LOCK-ACCEPTANCE-001` in `project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json`. Formal M7 content lock remains not accepted with `content_lock_accepted=false` and `human_gate_state=REQUEST_CHANGES_MAP_TOPOLOGY_RECOVERY_REQUIRED`.
+
+Read-only gameplay research thread `019f18ad-576b-7540-9487-817812e3f5b6` recommended a hybrid topology: irregular District/Province polygons as the governance surface plus explicit Route/Transport graph edges as the movement, supply, obligation, campaign, AI, and reason-code surface. This is recorded in `docs/decisions/ADR-010-map-topology.md`, currently `PROPOSED` pending systems and QA review.
+
+The active recovery planning task is `M7-MAP-TOPOLOGY-RECOVERY-001` on branch `codex/m7-map-topology-recovery`. Downstream DRAFT tasks are `M7-MAP-TOPOLOGY-SCHEMA-001`, `M7-MAP-TOPOLOGY-FIXTURE-001`, `M7-MAP-TOPOLOGY-CLIENT-001`, and `M7-MAP-TOPOLOGY-VALIDATION-001`. `M7-EXIT-VALIDATION-001` must not start until topology validation is integrated into `origin/main` and the product owner explicitly reconsiders formal content lock.
+
+Systems R3 review accepted the recovery package through thread `019f18c1-6f85-72d0-abc7-fd9ea283536d`, recorded in `project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json`. This systems acceptance did not approve M7 content lock or make any downstream topology implementation task READY by itself.
+
+Independent `qa_reviewer` thread `019f18dc-5eeb-7690-bd27-c5a7c900ded9` accepted `M7-MAP-TOPOLOGY-RECOVERY-001`, recorded in `project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json`. The task is `ACCEPTED` but not `CLOSED` until PR CI passes and the accepted package enters `origin/main`; `M7-MAP-TOPOLOGY-SCHEMA-001` must remain non-READY until that main integration is complete.

@@ -1,0 +1,74 @@
+{
+  "milestone": "M7",
+  "risk_level": "R4",
+  "branch_or_worktree": null,
+  "threads": {},
+  "created_at": "2026-06-30T21:29:09.7679151+08:00",
+  "updated_at": "2026-06-30T21:47:04.0374837+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "summary": "Migrate prototype map content away from rectangular-grid topology",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "historical_researcher",
+  "required_reviewers": [
+    "historical_researcher",
+    "qa_reviewer",
+    "systems_architect"
+  ],
+  "dependencies": [
+    "M7-MAP-TOPOLOGY-SCHEMA-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "content-source/**",
+      "apps/content-tools/**",
+      "packages/content-runtime/**",
+      "packages/sim-core/**",
+      "tests/**",
+      "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Replace or migrate the default player-facing prototype topology so district adjacency and route movement are no longer derived from a rectangular row/column grid.",
+    "Use synthetic/COMPOSITE low-fidelity districts unless historical_researcher has recorded source claims; do not present exact historical borders, route importance, ports, or river claims as fact without source records.",
+    "Every district polygon has nonzero area, stable id, stable anchor, no same-layer overlap, and exactly one actual controller or explicit uncontrolled state.",
+    "Every route edge references valid endpoints, explicit mode, capacity, seasonal factors, risk/terrain class, and stable tie-break id.",
+    "Content compiler rejects missing endpoints, overlapping invalid polygons, duplicate topology ids, disconnected playable graph without explicit isolated reason, and row/column-only adjacency shortcuts."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+    "git diff --check",
+    "pnpm content:validate",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm --filter @monsoon/sim-core test",
+    "negative content-compiler tests for missing endpoint, duplicate id, invalid polygon, disconnected graph, row/column adjacency leak",
+    "save/load round-trip if topology ids or manifest hash affect saves"
+  ],
+  "route_to": "historical_researcher",
+  "notes": [
+    "This task is allowed to use low-fidelity synthetic map data; it must not sneak in formal production historical map claims.",
+    "Historical/cultural risk escalates to Human Gate if contested real-world claims become unavoidable.",
+    "Because this task may touch sim-core/content-runtime authority code, systems_architect review is required in addition to historical and QA review."
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "milestone": "M7",
+  "risk_level": "R4",
+  "branch_or_worktree": null,
+  "threads": {},
+  "created_at": "2026-06-30T21:29:09.7679151+08:00",
+  "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+  "summary": "Introduce authoritative map topology definitions and read queries",
+  "status": "DRAFT",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "dependencies": [
+    "M7-MAP-TOPOLOGY-RECOVERY-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/decisions/ADR-010-map-topology.md",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/content-runtime/**",
+      "packages/save-format/**",
+      "apps/content-tools/**",
+      "tests/**",
+      "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Define serializable static topology definitions for District polygon anchors/metadata, route endpoints, explicit route edges, route modes, capacity, seasonality, terrain/risk classes, and stable topology/content hash boundaries.",
+    "No row/column/grid-derived adjacency or authority distance remains in the new topology path; old fixture helpers may remain only as legacy tests or explicit debug inputs.",
+    "Expose read/query surfaces that let UI and AI inspect districts, route edges, path preview reason codes, capacity, seasonal cost, blocked/no-known-route states, and deterministic tie-break evidence without mutating WorldState.",
+    "Preserve sim-core isolation from React, Pixi, DOM, Electron, Node file IO, Math.random, Date.now, and render-frame timing.",
+    "Specify save/load handling for topology hash and old saves: migrate if safe or return structured rejection without corrupting existing saves."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-SCHEMA-001",
+    "git diff --check",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm check",
+    "focused deterministic path/tie-break/topology-hash tests"
+  ],
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This task touches public topology, protocol, and save boundaries and must follow ADR-010.",
+    "It must not implement client rendering, final art, historical formal map content, or M8 campaign feature expansion."
+  ]
+}
