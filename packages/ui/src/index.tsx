@@ -2851,7 +2851,11 @@ function renderTaskRailDrawer({
           </section>
         </div>
       );
-    case "results":
+    case "results": {
+      const resultObligation =
+        selectedDistrict === null
+          ? null
+          : findDistrictObligation(selectedDistrict, snapshot.m3Appointment);
       return (
         <div className="task-rail__drawer-panel">
           <h3>{i18n.t("shell.taskRail.results.title")}</h3>
@@ -2861,8 +2865,20 @@ function renderTaskRailDrawer({
             m5CommandStatus={m5CommandStatus}
             m6CommandStatus={m6CommandStatus}
           />
+          {m4CommandStatus === null ||
+          selectedDistrict === null ||
+          resultObligation === null ? null : (
+            <p className="task-rail__obligation-result" role="status">
+              {i18n.t("obligation.result.prepared", {
+                district: formatPlayerDistrictName(selectedDistrict, i18n),
+                kind: formatDistrictObligationKind(resultObligation.obligationKind, i18n),
+                amount: i18n.formatNumber(resultObligation.amount)
+              })}
+            </p>
+          )}
         </div>
       );
+    }
     case "obligations":
       return (
         <div className="task-rail__drawer-panel">

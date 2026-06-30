@@ -131,7 +131,20 @@ test("web shell loads and projects the read model", async ({ page }) => {
   await expect(page.getByLabel("Selected district context")).toContainText("Handle obligation");
   await expect(page.getByLabel("Obligation handling panel")).toContainText("Obligation handling");
   await expect(page.getByLabel("Obligation handling panel")).toContainText("District 1");
-  await expect(page.getByRole("button", { name: "Submit obligation support" })).toBeEnabled();
+  const obligationPanelText =
+    (await page.getByLabel("Obligation handling panel").textContent()) ?? "";
+  expect(obligationPanelText).not.toMatch(
+    /read model|read-model|read-only|GameCommand|command path|raw reason|reason-code|internal jargon/i
+  );
+  await expect(page.getByRole("button", { name: "Prepare obligation support" })).toBeEnabled();
+  await page.getByRole("button", { name: "Prepare obligation support" }).click();
+  await expect(page.getByLabel("Expanded task drawer")).toHaveAttribute(
+    "data-task-drawer-expanded",
+    "results"
+  );
+  await expect(page.getByLabel("Expanded task drawer")).toContainText(
+    "District 1 Troop obligation support prepared"
+  );
   await expect(page.getByText("M2 prototype map ready")).toHaveCount(0);
   await expect(page.getByText("Prototype District 001")).toHaveCount(0);
   await expectMountedPixiMapRenderer(page);

@@ -432,8 +432,12 @@ describe("M2 district client UI", () => {
     expect(englishMarkup).toContain("Handle obligation");
     expect(englishMarkup).toContain('aria-label="Obligation handling panel"');
     expect(englishMarkup).toContain('data-focused-district-id="1"');
-    expect(englishMarkup).toContain("Submit obligation support");
+    expect(englishMarkup).toContain("Prepare obligation support");
     expect(englishMarkup).toContain("Keep this district focused");
+    expect(englishMarkup).toContain("Prepare available muster and campaign support");
+    expect(englishMarkup).not.toMatch(
+      /current read model|read-only|GameCommand|command path|raw reason|reason-code|internal jargon/i
+    );
     expect(englishMarkup).toContain("Campaign prep");
     expect(englishMarkup).toContain("No action has been previewed yet.");
     expect(chineseMarkup).toContain('aria-label="任务栏"');
