@@ -1,0 +1,77 @@
+{
+  "milestone": "M7",
+  "risk_level": "R4",
+  "branch_or_worktree": null,
+  "threads": {},
+  "created_at": "2026-06-30T21:29:09.7679151+08:00",
+  "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "summary": "Render topology-backed strategic map and route decision surface",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "systems_architect",
+  "required_reviewers": [
+    "systems_architect",
+    "qa_reviewer"
+  ],
+  "dependencies": [
+    "M7-MAP-TOPOLOGY-FIXTURE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "packages/protocol/**",
+      "tests/**",
+      ".storybook/**",
+      "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "packages/sim-core/**",
+      "packages/save-format/**",
+      "packages/platform-electron/**",
+      "apps/desktop/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Default player map uses topology-backed district polygons and explicit route polylines from read models; it must not synthesize player-facing territory from rectangular grid coordinates.",
+    "Polygon hit-test, district list, task rail, and inspector focus select the same active object and show consistent route/path preview reason codes.",
+    "Default overlays show only current decision-relevant routes; full route/pressure/debug overlays are opt-in and clearly labeled.",
+    "Route preview shows edge sequence, mode, estimated days, bottleneck capacity, seasonal variation, known/unknown/blocked reasons, and result feedback in localized text.",
+    "UI does not mutate WorldState directly; all state changes still go through existing GameCommand/preview/submit boundaries."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+    "git diff --check",
+    "pnpm --filter @monsoon/map-renderer test",
+    "pnpm --filter web test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm check",
+    "Playwright screenshots at 1440x900 and 1280x720 proving default map no longer reads as a rectangular board"
+  ],
+  "route_to": "systems_architect",
+  "notes": [
+    "This is still low-fidelity product UI, not final art production.",
+    "Use icons/legend/control patterns already accepted by the M7 UI quality track."
+  ]
+}

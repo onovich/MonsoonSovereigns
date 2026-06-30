@@ -3,29 +3,28 @@
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
   "current_tasks": [
-    "M7-CONTENT-LOCK-ACCEPTANCE-001"
+    "M7-MAP-TOPOLOGY-RECOVERY-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
       "task_ids": [
-        "M7-CONTENT-LOCK-ACCEPTANCE-001"
+        "M7-MAP-TOPOLOGY-RECOVERY-001"
       ],
-      "status": "human_gate_waiting_product_owner",
+      "status": "review_pending_systems_architect",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-systemic-interaction-validation",
-      "updated_at": "2026-06-30T21:02:21.5067142+08:00",
-      "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-INTERACTION-VALIDATED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-map-topology-recovery",
+      "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json"
     }
   },
   "last_integrated_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
-  "last_main_commit": "2adc668bba95724aa2448bd898983fc6d9740178",
+  "last_main_commit": "02bf1690f7ef09784984f30ecaa0db19feb5595e",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -68,21 +67,23 @@
       "severity": "R4",
       "status": "validated_awaiting_product_owner_reconsideration",
       "summary": "Systemic interaction recovery validation is closed in main; formal content lock remains blocked until product-owner reconsideration."
+    },
+    {
+      "id": "M7-MAP-TOPOLOGY-RECOVERY-BLOCKS-CONTENT-LOCK",
+      "severity": "R4",
+      "status": "active_repair_planning_review",
+      "summary": "Product owner rejected content lock because the map remains rectangular/grid-like at the topology level; topology recovery must validate before content lock reconsideration."
     }
   ],
   "human_gate": {
-    "required": true,
-    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "approval_scope": "FORMAL_CONTENT_LOCK_ACCEPTANCE_AFTER_SYSTEMIC_INTERACTION_RECOVERY_VALIDATION",
-    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-INTERACTION-VALIDATED__lead_orchestrator.json",
-    "recommended_result": "PRODUCT_OWNER_RECONSIDERATION_REQUIRED",
-    "decision_options": [
-      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
-      "DEFER_CONTENT_LOCK",
-      "REQUEST_CHANGES"
-    ],
-    "note": "Systemic interaction recovery validation is closed in main. Formal M7 content lock remains unapproved and requires explicit product-owner decision before M7 exit validation can start.",
-    "recorded_at": "2026-06-30T21:02:21.5067142+08:00"
+    "required": false,
+    "active_gate_task_id": null,
+    "approval_scope": null,
+    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
+    "recommended_result": "REQUEST_CHANGES_ACCEPTED_FOR_MAP_TOPOLOGY_RECOVERY",
+    "decision_options": [],
+    "note": "Product owner has requested changes. Formal M7 content lock remains unapproved, but the active work is now map topology recovery rather than waiting for a Human Gate answer.",
+    "recorded_at": "2026-06-30T21:29:09.7679151+08:00"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -917,7 +918,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-30T21:02:21.5067142+08:00",
+  "last_updated_at": "2026-06-30T21:29:09.7679151+08:00",
   "updated_at": "2026-06-29T22:29:07.356Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -3099,7 +3100,7 @@
     "status": "BLOCKED",
     "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
     "human_gate_required": true,
-    "human_gate_state": "SYSTEMIC_INTERACTION_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+    "human_gate_state": "REQUEST_CHANGES_MAP_TOPOLOGY_RECOVERY_REQUIRED",
     "content_lock_accepted": false,
     "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
     "systemic_interaction_recovery_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
@@ -3109,14 +3110,24 @@
       "M7-MAP-DECISION-SURFACE-SYNC-001",
       "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
     ],
-    "next_action": "Product-owner Human Gate decision required before M7 exit validation can start.",
-    "updated_at": "2026-06-30T21:02:21.5067142+08:00",
-    "recommendation": "RECONSIDER_CONTENT_LOCK_WITH_VALIDATED_SYSTEMIC_INTERACTION_RECOVERY",
+    "next_action": "Complete topology recovery chain before product-owner content-lock reconsideration can reopen.",
+    "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+    "recommendation": "AWAIT_MAP_TOPOLOGY_RECOVERY_VALIDATION",
     "systemic_interaction_validation_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
     "systemic_interaction_validation_pr": 221,
     "systemic_interaction_validation_main_commit": "2adc668bba95724aa2448bd898983fc6d9740178",
     "systemic_interaction_validation_closed_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-CLOSED__lead_orchestrator.json",
-    "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-INTERACTION-VALIDATED__lead_orchestrator.json"
+    "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-INTERACTION-VALIDATED__lead_orchestrator.json",
+    "product_owner_third_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
+    "map_topology_recovery_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
+    "map_topology_recovery_tasks": [
+      "M7-MAP-TOPOLOGY-RECOVERY-001",
+      "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "M7-MAP-TOPOLOGY-CLIENT-001",
+      "M7-MAP-TOPOLOGY-VALIDATION-001"
+    ],
+    "reconsideration_ready": false
   },
   "m7_systemic_interaction_recovery": {
     "status": "CLOSED",
@@ -3309,5 +3320,32 @@
   },
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
-  "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5"
+  "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+  "m7_map_topology_recovery": {
+    "status": "REVIEW",
+    "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
+    "owner_role": "gameplay_designer",
+    "reviewer_role": "systems_architect",
+    "required_reviewers": [
+      "systems_architect",
+      "qa_reviewer"
+    ],
+    "branch_or_worktree": "codex/m7-map-topology-recovery",
+    "base_main_commit": "02bf1690f7ef09784984f30ecaa0db19feb5595e",
+    "product_owner_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
+    "research_thread_id": "019f18ad-576b-7540-9487-817812e3f5b6",
+    "research_thread_nickname": "Ledger",
+    "plan_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json",
+    "adr": "docs/decisions/ADR-010-map-topology.md",
+    "downstream_tasks": [
+      "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "M7-MAP-TOPOLOGY-CLIENT-001",
+      "M7-MAP-TOPOLOGY-VALIDATION-001"
+    ],
+    "next_action": "Route to systems_architect read-only review, then independent qa_reviewer.",
+    "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+  }
 }

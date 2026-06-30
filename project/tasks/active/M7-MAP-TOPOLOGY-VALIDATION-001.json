@@ -1,0 +1,74 @@
+{
+  "milestone": "M7",
+  "risk_level": "R4",
+  "branch_or_worktree": null,
+  "threads": {},
+  "created_at": "2026-06-30T21:29:09.7679151+08:00",
+  "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+  "summary": "Validate topology-backed map recovery before M7 content-lock reconsideration",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "dependencies": [
+    "M7-MAP-TOPOLOGY-CLIENT-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "tests/**",
+      "apps/web/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/sim-core/**",
+      "packages/content-runtime/**",
+      "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+      "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "content-source/**",
+      "apps/desktop/**",
+      "packages/save-format/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Prove the default player-facing map is driven by explicit district polygons and route graph, not rectangular-grid topology or row/column neighbor shortcuts.",
+    "Prove map/list/task rail/inspector focus and route preview reason codes remain synchronized across the core playable path.",
+    "Prove deterministic path previews, tie-breakers, topology hash, save/load or structured rejection behavior, and browser/node replay remain stable.",
+    "Include negative tests for invalid adjacency, missing route endpoint, blocked route reason, disconnected graph, duplicate route capacity use, and legacy grid leakage.",
+    "Produce screenshot/manual-smoke evidence at 1440x900 and 1280x720 with clean console output and player-visible route/legend explanation.",
+    "After acceptance and main integration, reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration; do not approve content lock autonomously."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-VALIDATION-001",
+    "git diff --check",
+    "pnpm check",
+    "pnpm test",
+    "pnpm content:validate",
+    "pnpm sim:determinism",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "focused topology validation negative tests",
+    "manual-smoke notes with screenshots and console-clean assertions"
+  ],
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This validation blocks formal M7 content lock acceptance after the product-owner topology rejection.",
+    "It must not start M7-EXIT-VALIDATION-001 or claim content lock approval."
+  ]
+}

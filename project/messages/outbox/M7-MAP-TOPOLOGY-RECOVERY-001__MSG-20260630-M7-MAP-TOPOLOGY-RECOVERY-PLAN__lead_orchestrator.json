@@ -1,0 +1,69 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN",
+  "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Recorded the product-owner topology REQUEST_CHANGES, integrated the mature-game topology research recommendation, proposed ADR-010, and created a bounded M7 topology recovery chain before content-lock reconsideration.",
+  "artifacts": [
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-RECOVERY-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-GAMEPLAY-RESEARCH.json",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-recovery",
+  "commit": "02bf1690f7ef09784984f30ecaa0db19feb5595e",
+  "tests_run": [
+    {
+      "command": "git fetch origin --prune; git pull --ff-only origin main; git checkout -b codex/m7-map-topology-recovery",
+      "exit_code": 0,
+      "result": "Branch created from current origin/main."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks before this plan because content lock was blocked awaiting product-owner reconsideration."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "MAP_TOPOLOGY_DIRECTION",
+      "decision": "Adopt irregular District/Province polygon surface plus explicit Route/Transport graph as the project topology direction for M7 recovery."
+    },
+    {
+      "id": "CONTENT_LOCK_STAYS_BLOCKED",
+      "decision": "M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED with content_lock_accepted=false and human_gate_state=REQUEST_CHANGES_MAP_TOPOLOGY_RECOVERY_REQUIRED."
+    },
+    {
+      "id": "DOWNSTREAM_RECOVERY_CHAIN",
+      "decision": "Create DRAFT schema, fixture/content, client, and validation tasks; M7 exit cannot start until topology validation passes and product owner reconsiders content lock."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-MAP-TOPOLOGY-CROSS-PACKAGE-RISK",
+      "severity": "R4",
+      "summary": "Topology recovery touches sim-core/protocol/content/save/client boundaries if implemented unsafely.",
+      "mitigation": "Start with ADR-010 and systems_architect review; split implementation into explicit package-owned tasks with validation."
+    },
+    {
+      "id": "M7-HISTORICAL-MAP-CLAIM-RISK",
+      "severity": "R4",
+      "summary": "Players may read low-fidelity districts as exact historical borders.",
+      "mitigation": "Keep M7 fixtures synthetic/COMPOSITE unless historical_researcher records claims and unresolved cultural risks route to Human Gate."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Read-only review of ADR-010, product-owner REQUEST_CHANGES registration, downstream task scope, content-lock blocker state, and absence of product-code/content-source changes.",
+  "created_at": "2026-06-30T21:29:09.7679151+08:00"
+}

@@ -1,0 +1,41 @@
+{
+  "message_id": "MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "product_owner",
+  "status": "REQUEST_CHANGES",
+  "summary": "Product owner rejects formal M7 content lock because the current map still uses a rectangular/grid-like topology under visual disguise; mature-game topology research and an authoritative map topology recovery plan are required before reconsideration.",
+  "artifacts": [
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-RECOVERY-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-PLAN__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-recovery",
+  "commit": "02bf1690f7ef09784984f30ecaa0db19feb5595e",
+  "tests_run": [],
+  "decisions": [
+    {
+      "id": "CONTENT_LOCK_REQUEST_CHANGES_MAP_TOPOLOGY",
+      "decision": "Formal M7 content lock is not approved; map topology must be researched and replaced with an authoritative non-grid topology plan before reconsideration."
+    },
+    {
+      "id": "VISUAL_DISGUISE_INSUFFICIENT",
+      "decision": "Drawing irregular-looking regions over rectangular/grid topology is not accepted as a strategic map solution."
+    },
+    {
+      "id": "RESEARCH_AGENT_AUTHORIZED",
+      "decision": "A gameplay_designer/research thread is authorized to compare mature game map topology approaches and recommend a project-specific solution."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-MAP-TOPOLOGY-BLOCKS-CONTENT-LOCK",
+      "severity": "R4",
+      "summary": "Current map topology undermines player mental model, AI explanations, route/capacity semantics, and save compatibility if allowed to lock.",
+      "mitigation": "Block content lock and create a reviewed topology recovery task chain before M7 exit."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Record REQUEST_CHANGES, create topology research/recovery plan, and do not start M7 exit validation until recovery validation passes and product owner reconsiders content lock.",
+  "created_at": "2026-06-30T21:29:09.7679151+08:00"
+}
