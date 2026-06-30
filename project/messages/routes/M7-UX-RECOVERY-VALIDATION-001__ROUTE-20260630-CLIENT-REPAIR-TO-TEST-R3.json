@@ -1,0 +1,34 @@
+{
+  "route_id": "ROUTE-20260630-CLIENT-REPAIR-TO-TEST-R3",
+  "task_id": "M7-UX-RECOVERY-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "test_engineer",
+  "target_thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
+  "target_thread_nickname": "Canary",
+  "source_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+  "source_partial_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json",
+  "expected_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+  "branch_or_worktree": "codex/m7-ux-recovery-validation",
+  "route_status": "SENT",
+  "requested_action": "Review the client repair diff and regenerated screenshots, rerun or extend viewport-visible UX validation, and write a R3 validation handoff. Do not approve or reopen formal content lock.",
+  "lead_precheck": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/web-shell.spec.ts -g \"M7 task rail is first-screen actionable|M7 UX recovery smoke\" --project=chromium",
+      "exit_code": 0,
+      "result": "2 passed."
+    }
+  ],
+  "created_at": "2026-06-30T05:16:17.702Z",
+  "route_submission_id": "019f16f6-5481-75e0-aecb-ca61b107df81",
+  "route_sent_at": "2026-06-30T05:17:57.361Z"
+}

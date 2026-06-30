@@ -87,7 +87,7 @@
     "test_engineer": {
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
-      "status": "partial_r2_client_repair_pending",
+      "status": "awaiting_r3_validation_after_client_repair",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -108,12 +108,17 @@
       "review_status_r2": "PARTIAL",
       "r2_received_at": "2026-06-30T04:46:57.888Z",
       "client_repair_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-CLIENT-REPAIR.json",
-      "expected_client_repair_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json"
+      "expected_client_repair_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+      "r3_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-CLIENT-REPAIR-TO-TEST-R3.json",
+      "expected_handoff_r3": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json",
+      "r3_route_status": "SENT",
+      "r3_route_submission_id": "019f16f6-5481-75e0-aecb-ca61b107df81",
+      "r3_route_sent_at": "2026-06-30T05:17:57.361Z"
     },
     "client_engineer": {
       "thread_id": "019f16df-915f-7123-a288-1dd8ec6ce265",
       "nickname": "Window",
-      "status": "active_repair",
+      "status": "review_ready",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -126,10 +131,13 @@
       "route_created_at": "2026-06-30T04:53:23.690Z",
       "route_submission_id": "019f16e3-1bc5-7c30-bf0e-a1bf34478d47",
       "route_sent_at": "2026-06-30T04:57:00.075Z",
-      "updated_at": "2026-06-30T04:57:00.075Z"
+      "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+      "review_status": "REVIEW",
+      "review_ready_at": "2026-06-30T05:30:00.000Z",
+      "updated_at": "2026-06-30T05:16:17.702Z"
     }
   },
-  "route_to": "client_engineer",
+  "route_to": "test_engineer",
   "notes": [
     "This is an M7 product-owner REQUEST_CHANGES recovery task before formal content lock can be reconsidered.",
     "M6_GATE remains PASS_WITH_LIMITS and must not be rewritten as unconditional PASS or release readiness.",
@@ -141,7 +149,7 @@
     "Promoted to READY after M7-TASK-RAIL-COLLAPSED-DRAWERS-001 entered origin/main through PR #211."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-30T04:57:00.075Z",
+  "updated_at": "2026-06-30T05:17:57.361Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -157,7 +165,7 @@
   "expected_writer_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
   "writer_thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
   "writer_thread_nickname": "Canary",
-  "next_action": "Await client_engineer repair handoff after R2 PARTIAL proved smaller-viewport map/legend visibility failure.",
+  "next_action": "Await test_engineer R3 validation handoff after client repair REVIEW.",
   "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
   "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
   "replacement_start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-REPLACEMENT-START__lead_orchestrator.json",
@@ -189,5 +197,9 @@
   "client_thread_nickname": "Window",
   "client_repair_start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-START__lead_orchestrator.json",
   "client_repair_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-CLIENT-REPAIR.json",
-  "expected_client_repair_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json"
+  "expected_client_repair_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+  "client_repair_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLIENT-REPAIR-REVIEW__client_engineer.json",
+  "client_repair_status": "REVIEW",
+  "r3_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-CLIENT-REPAIR-TO-TEST-R3.json",
+  "expected_writer_r3_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R3-REVIEW__test_engineer.json"
 }

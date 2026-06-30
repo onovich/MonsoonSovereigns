@@ -55,18 +55,62 @@ type PlatformMatrixFixture = {
 const platformMatrix = readPlatformMatrixFixture();
 
 async function expectIntersectsViewport(locator: Locator): Promise<void> {
-  const intersectsViewport = await locator.evaluate((element) => {
+  const intersection = await locator.evaluate((element) => {
     const rect = element.getBoundingClientRect();
-    return (
-      rect.width > 0 &&
-      rect.height > 0 &&
-      rect.bottom > 0 &&
-      rect.right > 0 &&
-      rect.top < window.innerHeight &&
-      rect.left < window.innerWidth
-    );
+    const visibleWidth = Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0);
+    const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+    return {
+      height: rect.height,
+      visibleHeight: Math.max(0, visibleHeight),
+      visibleWidth: Math.max(0, visibleWidth),
+      width: rect.width
+    };
   });
-  expect(intersectsViewport).toBe(true);
+  expect(intersection.width).toBeGreaterThan(0);
+  expect(intersection.height).toBeGreaterThan(0);
+  expect(intersection.visibleWidth).toBeGreaterThan(0);
+  expect(intersection.visibleHeight).toBeGreaterThan(0);
+}
+
+async function expectMeaningfulViewportIntersection(
+  locator: Locator,
+  minimumVisibleAreaPx: number
+): Promise<void> {
+  const visibleArea = await locator.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    const visibleWidth = Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0);
+    const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+    return Math.max(0, visibleWidth) * Math.max(0, visibleHeight);
+  });
+  expect(visibleArea).toBeGreaterThanOrEqual(minimumVisibleAreaPx);
+}
+
+async function expectNoViewportOverlap(first: Locator, second: Locator): Promise<void> {
+  const secondHandle = await second.elementHandle();
+  if (secondHandle === null) {
+    throw new Error("Expected an Element for overlap comparison.");
+  }
+
+  try {
+    const overlapArea = await first.evaluate((firstElement, secondElement) => {
+      if (!(secondElement instanceof Element)) {
+        throw new Error("Expected an Element for overlap comparison.");
+      }
+
+      const firstRect = firstElement.getBoundingClientRect();
+      const secondRect = secondElement.getBoundingClientRect();
+      const overlapWidth =
+        Math.min(firstRect.right, secondRect.right, window.innerWidth) -
+        Math.max(firstRect.left, secondRect.left, 0);
+      const overlapHeight =
+        Math.min(firstRect.bottom, secondRect.bottom, window.innerHeight) -
+        Math.max(firstRect.top, secondRect.top, 0);
+      return Math.max(0, overlapWidth) * Math.max(0, overlapHeight);
+    }, secondHandle);
+    expect(overlapArea).toBe(0);
+  } finally {
+    await secondHandle.dispose();
+  }
 }
 
 test("web shell loads and projects the read model", async ({ page }) => {
@@ -379,6 +423,11 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
     const firstScreen = page.getByRole("region", { name: "First screen orientation" });
     const guidance = page.getByRole("region", { name: "Player guidance" });
     const decisionAssistant = page.getByRole("region", { name: "District decision assistant" });
+    const mapRegion = page.locator(".client-shell__map-region");
+    const mapSurface = page.locator(".client-shell__map-surface");
+    const mapLegend = page.getByLabel("Map legend");
+    const taskRail = page.getByRole("region", { name: "Task rail" });
+    const taskRailCards = taskRail.locator(".task-rail__cards");
 
     await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
     await expect(page.locator(".client-shell")).toHaveAttribute("data-debug-mode", "off");
@@ -391,26 +440,17 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
       "aria-pressed",
       "true"
     );
-    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
-      "data-map-mode",
-      "situation"
-    );
-    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
-      "data-map-presentation",
-      "soft-strategic-regions"
-    );
-    await expect(page.locator(".client-shell__map-surface")).toHaveAttribute(
-      "data-player-grid",
-      "hidden"
-    );
+    await expect(mapSurface).toHaveAttribute("data-map-mode", "situation");
+    await expect(mapSurface).toHaveAttribute("data-map-presentation", "soft-strategic-regions");
+    await expect(mapSurface).toHaveAttribute("data-player-grid", "hidden");
     await expect(page.locator(".map-viewport")).toHaveAttribute(
       "aria-roledescription",
       "keyboard navigable map read model"
     );
-    await expect(page.getByLabel("Map legend")).toContainText("Route / supply");
-    await expect(page.getByLabel("Map legend")).toContainText("Obligation / tributary flow");
-    await expect(page.getByLabel("Map legend")).toContainText("Threat / risk");
-    await expect(page.getByLabel("Map legend")).toContainText("Blocked / capacity");
+    await expect(mapLegend).toContainText("Route / supply");
+    await expect(mapLegend).toContainText("Obligation / tributary flow");
+    await expect(mapLegend).toContainText("Threat / risk");
+    await expect(mapLegend).toContainText("Blocked / capacity");
     await expect(page.getByLabel("Map hover details")).toContainText(
       "Hover a district or settlement for route details."
     );
@@ -420,7 +460,20 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
     await expect(firstScreen).toContainText("Recommended next action");
     await expect(firstScreen).toContainText("You are stewarding");
 
-    const taskRail = page.getByRole("region", { name: "Task rail" });
+    await expect(mapCanvas).toHaveAttribute("data-renderer-owner", "map-renderer");
+    await expect(mapCanvas).toBeVisible();
+    await expectIntersectsViewport(mapRegion);
+    await expectIntersectsViewport(firstScreen);
+    await expectMeaningfulViewportIntersection(taskRailCards, 24_000);
+    await expectMeaningfulViewportIntersection(mapSurface, 110_000);
+    await expectMeaningfulViewportIntersection(mapLegend, 8_000);
+    await expectNoViewportOverlap(firstScreen, mapSurface);
+    await expectNoViewportOverlap(mapSurface, mapLegend);
+
+    await page.screenshot({
+      path: resolve(evidenceRoot, scenario.screenshotFile)
+    });
+
     await taskRail.locator('[data-task-rail-card-kind="notifications"]').click();
     await expect(guidance).toHaveAttribute("data-guidance-state", "error");
     await expect(guidance).toContainText("Objective");
@@ -430,12 +483,7 @@ test("M7 UX recovery smoke captures first screen, objective, and map screenshots
     await expect(decisionAssistant).toContainText("Current problem");
     await expect(decisionAssistant).toContainText("Recommendation");
     await expect(decisionAssistant).toContainText("Next action");
-    await expect(mapCanvas).toHaveAttribute("data-renderer-owner", "map-renderer");
-    await expect(mapCanvas).toBeVisible();
-
-    await page.screenshot({
-      path: resolve(evidenceRoot, scenario.screenshotFile)
-    });
+    await expectNoViewportOverlap(taskRailCards, guidance);
   }
 });
 

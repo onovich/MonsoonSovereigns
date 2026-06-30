@@ -2261,7 +2261,7 @@ select:focus-visible,
 
 .client-shell--beta .client-shell__map-region {
   display: grid;
-  grid-template-rows: auto auto minmax(320px, 1fr) auto;
+  grid-template-rows: auto auto auto minmax(240px, 1fr);
   gap: 10px;
   min-height: calc(100vh - 238px);
 }
@@ -2281,6 +2281,7 @@ select:focus-visible,
 
 .client-shell--beta .client-shell__map-surface {
   position: relative;
+  order: 3;
   inset-block-start: auto;
   grid-template-rows: minmax(0, 1fr) auto;
   min-height: 0;
@@ -2310,6 +2311,7 @@ select:focus-visible,
 
 .client-shell--beta .client-shell__map-legend {
   display: flex;
+  order: 2;
   flex-wrap: wrap;
   gap: 8px;
   color: var(--ms-color-text-secondary);
@@ -2397,12 +2399,27 @@ select:focus-visible,
 
 .player-orientation-card {
   display: grid;
+  grid-template-columns: minmax(150px, 0.7fr) repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
 .player-orientation-card__header {
   display: grid;
   gap: 3px;
+  align-content: start;
+}
+
+.player-orientation-card__facts {
+  grid-column: span 2;
+}
+
+.player-orientation-card__problem,
+.player-orientation-card__action {
+  align-content: start;
+}
+
+.player-orientation-card__consequences {
+  grid-column: 1 / -1;
 }
 
 .player-orientation-card__header span,
@@ -2520,7 +2537,7 @@ select:focus-visible,
 
 .player-guidance-lite[data-guidance-state="dismissed"] p {
   margin: 0;
-  color: var(--ms-color-surface-muted);
+  color: var(--ms-color-text-secondary);
 }
 
 .player-guidance-lite__header {
@@ -2538,7 +2555,7 @@ select:focus-visible,
 
 .player-guidance-lite__header span,
 .player-guidance-lite__costs {
-  color: var(--ms-color-surface-muted);
+  color: var(--ms-color-text-secondary);
   line-height: 1.35;
 }
 
@@ -2576,7 +2593,7 @@ select:focus-visible,
 }
 
 .player-guidance-lite__card dt {
-  color: var(--ms-color-surface-muted);
+  color: var(--ms-color-text-muted);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -2856,10 +2873,245 @@ select:focus-visible,
 }
 
 @media (max-width: 1320px) {
+  .client-shell--beta .client-shell__topbar {
+    grid-template-columns: minmax(220px, 0.8fr) minmax(420px, 1.2fr) minmax(190px, 0.48fr);
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .client-shell--beta .client-shell__body {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .client-shell--beta .client-shell__brand h1 {
+    font-size: 1.18rem;
+  }
+
+  .client-shell--beta .client-shell__brand p {
+    font-size: 0.78rem;
+  }
+
+  .client-shell--beta .client-shell__status {
+    gap: 8px;
+  }
+
+  .client-shell--beta .client-shell__topbar .district-panel__metric {
+    gap: 2px;
+    padding-block-start: 7px;
+  }
+
+  .client-shell--beta .client-shell__topbar .district-panel__metric dt {
+    font-size: 0.66rem;
+  }
+
+  .client-shell--beta .client-shell__topbar .district-panel__metric dd {
+    font-size: 0.84rem;
+  }
+
+  .client-shell--beta .client-shell__settings {
+    gap: 5px;
+  }
+
+  .client-shell--beta .client-shell__language span,
+  .client-shell--beta .client-shell__language output {
+    font-size: 0.66rem;
+  }
+
+  .client-shell--beta .client-shell__language select {
+    min-height: 30px;
+    font-size: 0.78rem;
+  }
+
+  .client-shell--beta .client-shell__dev-overlay > header {
+    grid-template-columns: 1fr;
+  }
+
+  .client-shell--beta .client-shell__side {
+    max-height: calc(100vh - 112px);
+  }
+
+  .client-shell--beta .map-toolbar {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 6px;
+  }
+
+  .client-shell--beta .client-shell__map-region {
+    grid-template-rows: auto auto auto minmax(220px, 1fr);
+    gap: 8px;
+    min-height: calc(100vh - 136px);
+  }
+
+  .client-shell--beta .client-shell__map-heading {
+    grid-template-columns: minmax(168px, 0.55fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .client-shell--beta .client-shell__map-heading h2 {
+    font-size: 1rem;
+  }
+
+  .client-shell--beta .client-shell__map-heading p {
+    font-size: 0.76rem;
+  }
+
+  .client-shell--beta .map-mode,
+  .client-shell--beta .map-zoom,
+  .client-shell--beta .map-pan {
+    gap: 4px;
+  }
+
+  .client-shell--beta .map-mode button,
+  .client-shell--beta .map-zoom button,
+  .client-shell--beta .map-zoom output,
+  .client-shell--beta .map-pan button {
+    min-height: 30px;
+    font-size: 0.7rem;
+  }
+
+  .client-shell--beta .map-mode button {
+    min-width: 70px;
+  }
+
+  .client-shell--beta .map-zoom button,
+  .client-shell--beta .map-pan button {
+    width: 30px;
+  }
+
+  .client-shell--beta .map-zoom output {
+    min-width: 48px;
+    padding-inline: 5px;
+  }
+
+  .client-shell--beta .player-orientation-card,
+  .client-shell--beta .district-panel,
+  .client-shell--beta .client-shell__objectives,
+  .client-shell--beta .client-shell__notices,
+  .client-shell--beta .client-shell__route-queue,
+  .client-shell--beta .task-rail {
+    padding: 10px;
+  }
+
+  .player-orientation-card {
+    grid-template-columns: minmax(118px, 0.6fr) repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .player-orientation-card__header h2 {
+    font-size: 0.96rem;
+  }
+
+  .player-orientation-card__header span,
+  .player-orientation-card__problem span,
+  .player-orientation-card__action span,
+  .player-orientation-card dt {
+    font-size: 0.68rem;
+  }
+
+  .player-orientation-card__facts,
+  .player-orientation-card__consequences {
+    gap: 6px;
+  }
+
+  .player-orientation-card__facts > div,
+  .player-orientation-card__consequences > div,
+  .player-orientation-card__problem,
+  .player-orientation-card__action {
+    padding: 6px;
+  }
+
+  .player-orientation-card dd,
+  .player-orientation-card p,
+  .player-orientation-card strong,
+  .player-orientation-card__facts dd {
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
+
+  .client-shell--beta .client-shell__map-legend {
+    gap: 5px;
+    font-size: 0.7rem;
+  }
+
+  .client-shell--beta .client-shell__map-legend-item {
+    gap: 5px;
+    padding: 4px 6px;
+  }
+
+  .task-rail__cards {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .task-rail {
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 8px;
+    max-height: calc(100vh - 112px);
+  }
+
+  .task-rail__header p {
+    display: none;
+  }
+
+  .task-rail__card {
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 5px;
+    min-height: 52px;
+    padding: 5px;
+  }
+
+  .task-rail__icon {
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+  }
+
+  .task-rail__copy,
+  .task-rail__meta {
+    gap: 2px;
+  }
+
+  .task-rail__copy strong {
+    font-size: 0.76rem;
+  }
+
+  .task-rail__copy span {
+    font-size: 0.72rem;
+  }
+
+  .task-rail__copy small,
+  .task-rail__meta {
+    font-size: 0.66rem;
+  }
+
+  .task-rail__copy small,
+  .task-rail__meta span:first-child {
+    display: none;
+  }
+
+  .task-rail__meta {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block-start: 4px;
+  }
+
+  .task-rail__meta span:last-child {
+    text-align: start;
+  }
+
+  .task-rail__drawer {
+    padding-block-start: 8px;
+  }
+
+  .task-rail__drawer .district-list__viewport {
+    height: 160px;
+  }
+}
+
+@media (max-width: 980px) {
   .client-shell--beta .client-shell__topbar,
   .client-shell--beta .client-shell__body,
-  .client-shell--beta .client-shell__map-heading,
-  .client-shell--beta .client-shell__dev-overlay > header {
+  .client-shell--beta .client-shell__map-heading {
     grid-template-columns: 1fr;
   }
 
@@ -2901,6 +3153,17 @@ select:focus-visible,
 
   .client-shell--beta .client-shell__route-queue {
     overflow-x: auto;
+  }
+
+  .player-orientation-card,
+  .player-orientation-card__facts,
+  .player-orientation-card__consequences {
+    grid-template-columns: 1fr;
+  }
+
+  .player-orientation-card__facts,
+  .player-orientation-card__consequences {
+    grid-column: auto;
   }
 
   .client-shell--beta .client-shell__map-region {
