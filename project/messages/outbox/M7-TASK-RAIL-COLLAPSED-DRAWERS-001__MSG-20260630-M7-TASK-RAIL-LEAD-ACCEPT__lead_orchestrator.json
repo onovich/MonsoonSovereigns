@@ -1,0 +1,134 @@
+{
+  "message_id": "MSG-20260630-M7-TASK-RAIL-LEAD-ACCEPT",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7 task rail/collapsed drawer implementation after independent QA R3 ACCEPT. The implementation makes six compact task categories first-screen actionable at 1280x720 and 1440x900, keeps one drawer expanded, removes player-facing implementation jargon from the appointment-error drawer path, and adds regressions that exercise the expanded drawer.",
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+  "accepted_implementation_commit": "dd661a14c9d594941dc6ae1e31a9a58851c0378a",
+  "accepted_branch_head_before_lead_accept": "d77d3710",
+  "artifacts": [
+    ".storybook/WebClientShell.stories.tsx",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json"
+  ],
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs writer R3 handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs QA R3 handoff",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "17 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "10 tests passed."
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/web-shell.spec.ts -g M7 task rail",
+      "exit_code": 0,
+      "result": "2 focused tests passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "25 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture boundaries passed."
+    }
+  ],
+  "acceptance_criteria_mapping": [
+    {
+      "criterion": "Six compact rail cards for obligations, appointments, succession, campaign prep, notifications, and results.",
+      "status": "met",
+      "evidence": "Task rail card DOM and Playwright viewport checks cover all six categories."
+    },
+    {
+      "criterion": "Only the relevant drawer expands and first screen is not swamped.",
+      "status": "met",
+      "evidence": "Default active drawer is obligations; cards/drawer/primary action intersect viewport at 1280x720 and 1440x900."
+    },
+    {
+      "criterion": "Each card states problem, reason, action, severity/urgency with text/icon/color.",
+      "status": "met",
+      "evidence": "ClientTaskRailCard model and CSS severity/icon treatment preserved through R3."
+    },
+    {
+      "criterion": "Responsive coverage and no hidden primary actions at 1280x720/1440x900.",
+      "status": "met",
+      "evidence": "Focused Playwright and QA probe confirm visibility and no horizontal overflow."
+    },
+    {
+      "criterion": "Player-visible copy through i18n without raw/read-model jargon.",
+      "status": "met",
+      "evidence": "R3 replaces appointment drawer jargon and scans expanded task rail in en-US and zh-CN."
+    }
+  ],
+  "reviewer": {
+    "role": "qa_reviewer",
+    "thread_id": "019f159f-d8bf-7142-82a5-81c893657746",
+    "status": "ACCEPT",
+    "handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json"
+  },
+  "risks": [
+    {
+      "id": "WRITER_HANDOFF_COMMIT_FIELD_STALE",
+      "severity": "P3",
+      "status": "accepted_metadata_note",
+      "summary": "Writer R3 handoff commit field names the pre-R3 process commit, but QA reviewed the actual R3 implementation commit and branch diff."
+    },
+    {
+      "id": "M7-CONTENT-LOCK-STILL-BLOCKED",
+      "severity": "R4",
+      "status": "unchanged",
+      "summary": "This task does not approve M7 content lock; UX recovery validation and later content-lock reconsideration remain separate."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "next_action": "Open PR, wait for CI, merge to main, then mark the task CLOSED only after origin/main contains the accepted implementation.",
+  "created_at": "2026-06-30T03:58:21.945Z",
+  "commit": "d77d3710",
+  "requested_action": "Open PR, wait for CI, merge to main, then mark M7-TASK-RAIL-COLLAPSED-DRAWERS-001 CLOSED only after origin/main contains the accepted implementation.",
+  "decisions": [
+    {
+      "id": "ACCEPT_QA_R3",
+      "decision": "Accept the implementation after independent QA R3 ACCEPT and lead verification."
+    },
+    {
+      "id": "NO_CONTENT_LOCK_APPROVAL",
+      "decision": "This task does not approve formal M7 content lock; M7-CONTENT-LOCK-ACCEPTANCE-001 remains blocked."
+    },
+    {
+      "id": "NO_MANUAL_NODE_BATTLE_CHANGE",
+      "decision": "Manual node battle remains DEFER_MANUAL_NODE_BATTLE."
+    }
+  ]
+}

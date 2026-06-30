@@ -1,0 +1,239 @@
+{
+  "message_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "R3 resolves the remaining R2 blockers. The R2 first-screen visibility fix did not regress: at 1280x720 and 1440x900 the six compact task cards, active obligations drawer, and drawer primary action all intersect the viewport, with no document-level horizontal overflow in the QA Playwright probe. In `/?fixture=appointment-error`, after clicking the appointments card, both en-US and zh-CN `.task-rail` text scanned cleanly for the listed implementation-jargon terms. R3 also strengthens the regression test to click the appointments card before scanning the task rail rather than only inspecting the default obligations drawer.",
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "reviewed current HEAD dd661a14c9d594941dc6ae1e31a9a58851c0378a; R3 implementation commit dd661a14c9d594941dc6ae1e31a9a58851c0378a; prior R2 QA REQUEST_CHANGES handoff commit 0684fb3b; base main 2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route ACCEPT to lead_orchestrator. This QA review accepts M7-TASK-RAIL-COLLAPSED-DRAWERS-001 for lead-level processing, without changing the existing content-lock status or manual node battle deferral.",
+  "artifacts": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
+    "packages/ui/src/i18n.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/index.tsx",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json"
+  ],
+  "findings": [],
+  "resolved_findings": [
+    {
+      "source_finding": "R1/R2 first-screen visibility: at 1280x720 and 1440x900 the task rail cards, active drawer, or primary action could be offscreen or unverified.",
+      "status": "RESOLVED",
+      "evidence": "Focused e2e `M7 task rail is first-screen actionable at required desktop viewports` passed. QA DOM probe measured 1280x720: rail top=255 bottom=827 intersects viewport, drawer top=583 bottom=814 intersects viewport, primary action top=626 bottom=660 intersects viewport, all six card boxes intersect viewport, scrollWidth=clientWidth=1280. At 1440x900: rail top=121 bottom=873, drawer top=616 bottom=860, primary action top=659 bottom=693, all six cards intersect viewport, scrollWidth=clientWidth=1440."
+    },
+    {
+      "source_finding": "R2 appointment-error expanded appointments drawer leaked player-visible read-model/GameCommand/internal jargon in en-US and zh-CN.",
+      "status": "RESOLVED",
+      "evidence": "R3 replaces `appointment.preview.rejectedTitle` and `appointment.result.commandParity` in `packages/ui/src/i18n.ts:410`, `packages/ui/src/i18n.ts:424`, `packages/ui/src/i18n.ts:882`, and `packages/ui/src/i18n.ts:895`. QA probe opened `/?fixture=appointment-error`, clicked `[data-task-rail-card-kind=\"appointments\"]`, then scanned the whole `.task-rail`; en-US leaks=[], zh-CN leaks=[] for `read model`, `read-model`, `GameCommand`, `command path`, `internal jargon`, `raw reason`, `reason-code`, `只读模型`, `命令路径`, `内部原因码`, `内部术语`, and `原始原因码`."
+    },
+    {
+      "source_finding": "R2 regression test did not click appointments card and could pass while only scanning the default obligations drawer.",
+      "status": "RESOLVED",
+      "evidence": "`tests/e2e/web-shell.spec.ts:353` now clicks `englishTaskRail.locator('[data-task-rail-card-kind=\"appointments\"]')` before collecting task rail text, selects zh-CN, clicks the Chinese appointments card, and scans the whole task rail again. The English regex at `tests/e2e/web-shell.spec.ts:364` covers spaced `read model`, hyphenated `read-model`, `GameCommand`, command-path, raw-reason, reason-code, and internal-jargon wording; the Chinese regex at `tests/e2e/web-shell.spec.ts:374` covers the requested Chinese terms."
+    }
+  ],
+  "scope_assessment": {
+    "status": "PASS",
+    "changed_files_against_main": [
+      ".storybook/WebClientShell.stories.tsx",
+      "apps/web/src/shell/web-client-shell.test.tsx",
+      "apps/web/src/styles/shell.css",
+      "packages/ui/src/i18n.ts",
+      "packages/ui/src/index.tsx",
+      "project/goal-mode-state.json",
+      "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+      "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-R2-REQUEST-CHANGES-TO-CLIENT.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-REQUEST-CHANGES-TO-CLIENT.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R2-TO-QA-REVIEW.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R3-TO-QA-REVIEW.json",
+      "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+      "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+      "project/tasks/thread-registry.json",
+      "tests/e2e/web-shell.spec.ts",
+      "tests/ui-m2-district-list.test.tsx"
+    ],
+    "r3_code_delta_files": [
+      "packages/ui/src/i18n.ts",
+      "tests/e2e/web-shell.spec.ts"
+    ],
+    "forbidden_paths_touched": [],
+    "assessment": "R3 implementation delta is limited to i18n copy and e2e test coverage, plus the writer handoff. Full branch diff remains in allowed UI/test/process files. No sim-core, protocol, save-format, content-source, docs/GATE, roadmap, CI, acceptance matrix, MANIFEST, SHA256SUMS, or VALIDATION_REPORT changes were found."
+  },
+  "architecture_assessment": {
+    "status": "PASS",
+    "assessment": "R3 does not alter runtime authority boundaries. The code delta changes player-visible copy in the UI i18n table and e2e test behavior only. No React/UI direct WorldState mutation, no new GameCommand/query boundary bypass, no Pixi/map authority change, no content-lock approval, no manual node battle implementation, no protocol/save/content-source mutation, and no release/commercial scope expansion were found. `PROJECT_STATUS.md` still records formal content lock as not accepted and manual node battle as `DEFER_MANUAL_NODE_BATTLE`."
+  },
+  "copy_i18n_assessment": {
+    "status": "PASS",
+    "assessment": "The R3 strings are in `packages/ui/src/i18n.ts` for both en-US and zh-CN. The appointment-error expanded task rail no longer exposes the specified read-model/raw-reason/GameCommand/internal-command wording after user interaction. Remaining `read model` / `只读模型` strings found by grep are outside the reviewed expanded `.task-rail` appointment-error path, such as debug/map/objective copy, and are not a blocker for this task."
+  },
+  "experience_assessment": {
+    "status": "PASS",
+    "assessment": "The task rail now materially improves the original 'I do not know what to do or where to focus' problem. The first viewport presents the six action categories and one expanded drawer with a visible primary action, while the appointment-error path uses player-facing domain language instead of implementation diagnostics. This no longer reads as a smaller version of the old information wall in the tested default desktop states."
+  },
+  "acceptance_criteria_verdict": [
+    {
+      "criterion": "Default has obligations / appointments / succession / campaign prep / notifications / results compact task cards.",
+      "verdict": "PASS",
+      "evidence": "Focused e2e and QA DOM probe found all six `data-task-rail-card-kind` cards at 1280x720 and 1440x900."
+    },
+    {
+      "criterion": "Only the currently relevant drawer expands; other areas do not swamp map/first screen.",
+      "verdict": "PASS",
+      "evidence": "Default `data-active-drawer` and `data-task-drawer-expanded` are `obligations`; the rail/drawer are bounded and primary action is visible in required viewports."
+    },
+    {
+      "criterion": "Each card contains one problem, one reason, one action, severity/urgency, using text, shape/icon, and color.",
+      "verdict": "PASS",
+      "evidence": "R3 does not regress the R2 card structure. The task rail has six compact cards and the appointment-error copy uses player-facing reason/action language."
+    },
+    {
+      "criterion": "1280x720 and 1440x900 have no text overlap or hidden primary actions.",
+      "verdict": "PASS",
+      "evidence": "QA Playwright probe found all cards, active drawer, and drawer primary action intersecting viewport with no horizontal overflow; focused e2e `M7 task rail is first-screen actionable at required desktop viewports` passed."
+    },
+    {
+      "criterion": "New player-visible text goes through i18n and does not leak raw reason codes / read-model jargon; Chinese and English are reasonable.",
+      "verdict": "PASS",
+      "evidence": "R3 changes are in `packages/ui/src/i18n.ts`. After expanding appointments under `/?fixture=appointment-error`, en-US and zh-CN `.task-rail` scans returned no matches for the requested forbidden terms."
+    }
+  ],
+  "tests_reviewed": [
+    {
+      "source": "writer R3 handoff",
+      "summary": "Reviewed the writer handoff. It reports taskctl validate/list/ready, JSON shape check, git diff --check, `pnpm --filter @monsoon/ui test`, `pnpm --filter web test`, `pnpm build:web`, `pnpm test:e2e` 25/25, `pnpm check`, and handoff validation passing. The handoff's commit field is stale, but the reviewed branch HEAD and user-specified R3 commit are `dd661a14c9d594941dc6ae1e31a9a58851c0378a`."
+    },
+    {
+      "source": "R3 diff review",
+      "summary": "Reviewed `dd661a14c9d594941dc6ae1e31a9a58851c0378a`: `packages/ui/src/i18n.ts` replaces the remaining appointment drawer jargon strings; `tests/e2e/web-shell.spec.ts` now opens appointments in both locales before scanning the task rail."
+    },
+    {
+      "source": "test code review",
+      "summary": "The R3 jargon test would fail the R2 implementation because it now clicks appointments before reading `.task-rail`, rejects spaced and hyphenated `read model`, rejects `GameCommand`, and includes the requested Chinese terms."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Before writing this QA handoff, worktree was clean on `codex/m7-task-rail-collapsed-drawers`."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "dd661a14c9d594941dc6ae1e31a9a58851c0378a."
+    },
+    {
+      "command": "git show --stat --oneline --decorate dd661a14c9d594941dc6ae1e31a9a58851c0378a",
+      "exit_code": 0,
+      "result": "R3 commit `fix(ui): remove task rail appointment jargon` modifies `packages/ui/src/i18n.ts`, `tests/e2e/web-shell.spec.ts`, and the R3 writer handoff."
+    },
+    {
+      "command": "git diff --name-status 2fe29605faf4dee546b5318cb3c4b3f8676e14f2..dd661a14c9d594941dc6ae1e31a9a58851c0378a",
+      "exit_code": 0,
+      "result": "R3 code delta limited to `packages/ui/src/i18n.ts` and `tests/e2e/web-shell.spec.ts`, plus the R3 writer handoff."
+    },
+    {
+      "command": "git diff --name-status main...HEAD",
+      "exit_code": 0,
+      "result": "Full branch diff contains UI, Storybook, web shell test/style, UI package, e2e, UI tests, task state, and project message/route files only."
+    },
+    {
+      "command": "git diff --check main...HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "VALID `project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json`."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID R3 writer handoff JSON."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 10 tests."
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/web-shell.spec.ts -g \"M7 task rail\"",
+      "exit_code": 0,
+      "result": "Focused M7 task rail e2e passed: 2/2. This includes both the required viewport visibility test and the R3 appointment-error jargon test that clicks the appointments card before scanning."
+    },
+    {
+      "command": "QA Playwright DOM probe against local Vite preview at 1280x720 and 1440x900",
+      "exit_code": 0,
+      "result": "1280x720 and 1440x900 both had all six cards, active drawer, and drawer primary action intersecting viewport; document scrollWidth equaled clientWidth in both probes."
+    },
+    {
+      "command": "QA Playwright text probe against /?fixture=appointment-error after clicking appointments in en-US and zh-CN",
+      "exit_code": 0,
+      "result": "en-US activeDrawer=`appointments`, leaks=[]; zh-CN activeDrawer=`appointments`, leaks=[] for all requested forbidden terms."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Production web build passed. Existing Vite chunk-size warnings remain."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Format check, lint, typecheck across workspace packages, and architecture boundary check all passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "R3_VISIBILITY_NO_REGRESSION",
+      "decision": "Accepted. The R2 viewport actionability fix remains valid at 1280x720 and 1440x900."
+    },
+    {
+      "id": "R3_APPOINTMENT_JARGON_FIXED",
+      "decision": "Accepted. Expanded appointments drawer copy no longer exposes the requested internal terms in the task rail under `/?fixture=appointment-error`."
+    },
+    {
+      "id": "R3_REGRESSION_COVERAGE_FIXED",
+      "decision": "Accepted. The R3 e2e now clicks the appointments card before scanning both English and Chinese task rail text."
+    },
+    {
+      "id": "R3_SCOPE_AND_ARCHITECTURE_ACCEPTED",
+      "decision": "Accepted. R3 stays within allowed UI/test/process paths and preserves read-model/GameCommand authority boundaries."
+    },
+    {
+      "id": "NO_CONTENT_LOCK_OR_MANUAL_NODE_BATTLE_CHANGE",
+      "decision": "Accepted. This review does not approve content lock and does not reverse the manual node battle deferral."
+    }
+  ],
+  "risks": [
+    {
+      "id": "WRITER_HANDOFF_COMMIT_FIELD_STALE",
+      "severity": "P3",
+      "summary": "The R3 writer handoff commit field still references `6e94d5f0; no commit made`, while the reviewed HEAD is the user-specified R3 commit `dd661a14c9d594941dc6ae1e31a9a58851c0378a`.",
+      "mitigation": "Not an acceptance blocker because the branch HEAD, user request, diff review, and test evidence all identify and validate `dd661a14c9d594941dc6ae1e31a9a58851c0378a`. Lead may correct process metadata if desired."
+    }
+  ],
+  "recommendation": "ACCEPT. Route to lead_orchestrator. R3 satisfies the task rail R2 review requirements, preserves scope and authority boundaries, and leaves content lock/manual node battle status unchanged.",
+  "blockers": [],
+  "created_at": "2026-06-30T11:53:41+08:00"
+}
