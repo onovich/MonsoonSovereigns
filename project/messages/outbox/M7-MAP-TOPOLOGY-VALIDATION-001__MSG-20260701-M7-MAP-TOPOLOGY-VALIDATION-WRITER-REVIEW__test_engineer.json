@@ -1,0 +1,117 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+  "from_role": "test_engineer",
+  "status": "REVIEW",
+  "summary": "Topology-backed map validation passed. The default player-facing shell now resolves through the explicit district-polygon and route-graph topology path, not a hidden rectangular, hex, sequential-id, or regular-lattice authority surface. Map/list/task rail/inspector focus and route-preview reason codes stayed synchronized in the browser path, deterministic path previews and topology hash/save-load behavior remained stable, and focused negative tests covered invalid adjacency, missing route endpoints, blocked routes, disconnected graphs, duplicate capacity use, visual-neighbor-without-route, visually-distant-explicit-route, geometry perturbation invariance, and legacy grid/hex/lattice leakage. Manual smoke review of the 1440x900 and 1280x720 screenshots confirms a readable topology surface with irregular districts, explicit routes, legend copy, and clean console assertions.",
+  "branch_or_worktree": "codex/m7-map-topology-validation",
+  "commit": "e333b3dfe2018da7eee2c3600ed653f609aa2675",
+  "modified_files": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json"
+  ],
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+    "tests/content-tools-compiler.test.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "manual_smoke": [
+    {
+      "viewport": "1440x900",
+      "path": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+      "result": "Readable irregular district polygons, explicit route line, legend copy, District 1 obligation context, and no rectangle/hex/lattice board."
+    },
+    {
+      "viewport": "1280x720",
+      "path": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+      "result": "The smaller viewport still shows topology semantics, route legend, and the same non-grid map shape without a bottom-sliver capture."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree was clean before writing the REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "Vitest and web tests passed. 44 test files, 366 tests, plus 1 web test file and 11 web tests."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for m1, m2, m3, m6, and m7 fixtures."
+    },
+    {
+      "command": "pnpm sim:determinism",
+      "exit_code": 0,
+      "result": "Node/worker hashes matched for hello, command/query, save/load, M4, M5, and M6 Alpha determinism runs."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build succeeded with existing chunk-size warnings only."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build succeeded with existing plugin timing and chunk-size warnings only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "30 Playwright tests passed; screenshot generation and console-clean assertions passed."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/content-tools-compiler.test.ts tests/map-renderer-m2-map.test.ts tests/save-load-contract.test.ts tests/sim-core-boot-boundary.test.ts tests/sim-core-m2-route-transport.test.ts",
+      "exit_code": 0,
+      "result": "Focused topology negative tests passed: 5 files, 68 tests."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEFAULT_MAP_EXPLICIT_TOPOLOGY",
+      "decision": "Accept the validation conclusion that the default player-facing map is driven by explicit district polygons and route graph topology, not by a hidden row/column, hex axial/cube, sequential-id, or regular-lattice shortcut."
+    },
+    {
+      "id": "CONTENT_LOCK_NOT_APPROVED",
+      "decision": "Do not approve formal M7 content lock autonomously; this validation only reopens product-owner reconsideration evidence."
+    }
+  ],
+  "risks": [
+    {
+      "id": "LEGACY_M2_NON_DEFAULT_PATH",
+      "severity": "R4",
+      "summary": "Legacy M2 fixture code still exists for non-default tests, but the default shell path and the verified browser path now resolve through the topology-backed read model."
+    },
+    {
+      "id": "LOW_FIDELITY_ROUTE_NODE_MARKERS",
+      "severity": "R4",
+      "summary": "Route-node markers remain low-fidelity visual dots and are acceptable for current topology validation, but they are not final art."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Review the validation evidence, spot-check the screenshots and targeted negative tests if desired, and route onward for task closure if accepted. Do not treat this as content-lock approval.",
+  "created_at": "2026-07-01T04:54:24.4802028+08:00"
+}
