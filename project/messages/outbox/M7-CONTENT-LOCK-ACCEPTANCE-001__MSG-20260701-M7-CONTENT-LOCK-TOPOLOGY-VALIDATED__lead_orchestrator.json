@@ -1,0 +1,106 @@
+{
+  "message_id": "MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "product_owner",
+  "status": "BLOCKED",
+  "summary": "The map topology recovery chain is now complete in main through M7-MAP-TOPOLOGY-VALIDATION-001. Formal M7 content lock is not approved automatically. Product-owner reconsideration is now reopened with the decision options APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES.",
+  "current_evidence": {
+    "topology_recovery_closed_task": "M7-MAP-TOPOLOGY-VALIDATION-001",
+    "topology_validation_pr": 231,
+    "topology_validation_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
+    "topology_validation_closed_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED__lead_orchestrator.json",
+    "topology_validation_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "caveat": "Validation branch added process/handoff evidence only and did not add new test code; QA accepted coverage from already integrated tests and spot checks."
+  },
+  "decision_options": [
+    {
+      "id": "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+      "meaning": "Approve formal M7 content lock with recorded limits; after integration the project may proceed toward M7 exit validation while preserving all exclusions."
+    },
+    {
+      "id": "DEFER_CONTENT_LOCK",
+      "meaning": "Do not approve content lock yet, but do not request a specific repair task; keep M7 blocked pending further product review."
+    },
+    {
+      "id": "REQUEST_CHANGES",
+      "meaning": "Reject reconsideration again and provide the next specific blocker for a new bounded repair chain."
+    }
+  ],
+  "non_approvals": [
+    "manual node battle remains DEFER_MANUAL_NODE_BATTLE",
+    "no telemetry, server, multiplayer, accounts, cloud-save implementation, arbitrary-code mods, release/commercial/branding approval",
+    "no final art approval; route visuals remain low fidelity",
+    "no M7 exit validation start until this Human Gate resolves"
+  ],
+  "branch_or_worktree": "codex/close-m7-map-topology-validation",
+  "created_at": "2026-06-30T21:18:35.674Z",
+  "commit": "3617115d446a4f234e915abfecf14a367624dc99",
+  "artifacts": [
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json"
+  ],
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-MAP-TOPOLOGY-VALIDATION-001 is CLOSED; M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready task emitted while Human Gate is active."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "HUMAN_GATE_REOPENED",
+      "decision": "Product-owner reconsideration is reopened after topology validation closed in main."
+    },
+    {
+      "id": "CONTENT_LOCK_NOT_ACCEPTED",
+      "decision": "content_lock_accepted remains false until the product owner explicitly approves."
+    },
+    {
+      "id": "M7_EXIT_STILL_BLOCKED",
+      "decision": "Do not start M7-EXIT-VALIDATION-001 until the formal content-lock Human Gate resolves."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FORMAL_CONTENT_LOCK_PENDING",
+      "severity": "R4",
+      "summary": "Formal M7 content lock remains a Human Gate."
+    },
+    {
+      "id": "LOW_FIDELITY_ROUTE_VISUALS",
+      "severity": "R2",
+      "summary": "Topology evidence is sufficient for validation but not final art approval."
+    }
+  ],
+  "blockers": [
+    "HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE"
+  ],
+  "route_to": "product_owner",
+  "requested_action": "Choose APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES for formal M7 content lock."
+}

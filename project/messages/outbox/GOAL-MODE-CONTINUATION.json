@@ -8,12 +8,12 @@
   "current_milestone": "M7",
   "current_task": "M7-MAP-TOPOLOGY-CLIENT-001",
   "current_tasks": [
-    "M7-MAP-TOPOLOGY-VALIDATION-001"
+    "M7-CONTENT-LOCK-ACCEPTANCE-001"
   ],
-  "current_task_status": "ACCEPTED",
+  "current_task_status": "HUMAN_GATE",
   "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
-  "last_integrated_task": "M7-MAP-TOPOLOGY-CLIENT-001",
-  "last_main_commit": "e7b414271a355b4be7b78cb7c5b43db6a152bc38",
+  "last_integrated_task": "M7-MAP-TOPOLOGY-VALIDATION-001",
+  "last_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
   "ready_tasks": [],
   "next_ready_tasks": [],
   "active_threads": {
@@ -187,16 +187,20 @@
     }
   ],
   "human_gate": {
-    "required": false,
-    "active_gate_task_id": null,
-    "approval_scope": null,
-    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
-    "recommended_result": "REQUEST_CHANGES_ACCEPTED_FOR_MAP_TOPOLOGY_RECOVERY",
-    "decision_options": [],
-    "note": "Product owner already requested changes. The active path is topology recovery review, not waiting for product-owner Human Gate reconsideration.",
-    "recorded_at": "2026-06-30T21:47:04.0374837+08:00"
+    "required": true,
+    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "approval_scope": "FORMAL_M7_CONTENT_LOCK_RECONSIDERATION_AFTER_TOPOLOGY_VALIDATION",
+    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
+    "recommended_result": "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+    "decision_options": [
+      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+      "DEFER_CONTENT_LOCK",
+      "REQUEST_CHANGES"
+    ],
+    "note": "Topology recovery validation is closed in main. Formal M7 content lock remains unapproved until product owner decides.",
+    "recorded_at": "2026-06-30T21:18:35.674Z"
   },
-  "next_machine_action": "Open PR for M7-MAP-TOPOLOGY-VALIDATION-001, wait for CI, merge, then close.",
+  "next_machine_action": "Await product-owner Human Gate decision for formal M7 content lock.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -599,7 +603,7 @@
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
   "next_action": "Commit accepted implementation, open PR, wait for CI, merge to main, then close after origin/main integration.",
-  "updated_at": "2026-06-30T21:09:00.256Z",
+  "updated_at": "2026-06-30T21:18:35.674Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1379,10 +1383,10 @@
       "updated_at": "2026-07-01T03:58:21.2993766+08:00"
     }
   },
-  "human_gate_required": false,
+  "human_gate_required": true,
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "branch_or_worktree": "codex/m7-map-topology-validation",
     "writer_thread_id": "019f1a48-010b-78b3-a682-af32c69fd521",
     "writer_thread_nickname": "Canary the 2nd",
@@ -1400,6 +1404,25 @@
     "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
     "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
     "accepted_at": "2026-06-30T21:09:00.256Z",
-    "accepted_branch_head": "4a132ebb4e75fa450521a0156ee08acf810362b6"
+    "accepted_branch_head": "4a132ebb4e75fa450521a0156ee08acf810362b6",
+    "integrated_pr": 231,
+    "integrated_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
+    "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T21:18:35.674Z"
+  },
+  "m7_content_lock_reconsideration": {
+    "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "status": "HUMAN_GATE_REQUIRED",
+    "content_lock_accepted": false,
+    "human_gate_state": "TOPOLOGY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+    "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
+    "decision_options": [
+      "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+      "DEFER_CONTENT_LOCK",
+      "REQUEST_CHANGES"
+    ],
+    "topology_validation_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
+    "topology_validation_pr": 231,
+    "updated_at": "2026-06-30T21:18:35.674Z"
   }
 }

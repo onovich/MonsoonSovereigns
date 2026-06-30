@@ -5,19 +5,19 @@
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
         "role": "lead_orchestrator",
-        "status": "active_map_topology_validation_accepted_pending_pr",
+        "status": "active_human_gate_waiting_content_lock_reconsideration",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-30T21:09:00.256Z",
-        "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+        "updated_at": "2026-06-30T21:18:35.674Z",
+        "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
         "task_ids": [
-          "M7-MAP-TOPOLOGY-VALIDATION-001"
+          "M7-CONTENT-LOCK-ACCEPTANCE-001"
         ],
-        "branch_or_worktree": "codex/m7-map-topology-validation",
-        "active_gate_task_id": null,
+        "branch_or_worktree": "codex/close-m7-map-topology-validation",
+        "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
         "ci_fix_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CI-FIX__lead_orchestrator.json",
         "ci_fix_commit": "0c49451e",
         "last_integrated_task": "M7-MAP-TOPOLOGY-CLIENT-001",
@@ -8125,7 +8125,7 @@
       "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_pr_integration",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -8134,16 +8134,20 @@
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
       "base_main_commit": "e7b414271a355b4be7b78cb7c5b43db6a152bc38",
-      "updated_at": "2026-06-30T21:09:00.256Z",
+      "updated_at": "2026-06-30T21:18:35.674Z",
       "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
-      "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json",
+      "closed_at": "2026-06-30T21:18:35.674Z",
+      "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 231,
+      "integrated_main_commit": "3617115d446a4f234e915abfecf14a367624dc99"
     },
     "M7-MAP-TOPOLOGY-VALIDATION-001:test_engineer": {
       "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
       "role": "test_engineer",
       "thread_id": "019f1a48-010b-78b3-a682-af32c69fd521",
       "nickname": "Canary the 2nd",
-      "status": "accepted_pending_pr_integration",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -8154,15 +8158,16 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T20:47:20.072Z",
-      "updated_at": "2026-06-30T21:09:00.256Z",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json"
+      "updated_at": "2026-06-30T21:18:35.674Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "closed_at": "2026-06-30T21:18:35.674Z"
     },
     "M7-MAP-TOPOLOGY-VALIDATION-001:qa_reviewer": {
       "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f1a52-6f93-7653-bbb0-5f85ba33a507",
       "nickname": "Witness the 2nd",
-      "status": "accepted_pending_pr_integration",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -8173,8 +8178,23 @@
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T20:58:23.832Z",
-      "updated_at": "2026-06-30T21:09:00.256Z",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json"
+      "updated_at": "2026-06-30T21:18:35.674Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-30T21:18:35.674Z"
+    },
+    "M7-CONTENT-LOCK-ACCEPTANCE-001:lead_orchestrator:reconsideration": {
+      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "human_gate_required_after_topology_validation",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/close-m7-map-topology-validation",
+      "source_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
+      "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "updated_at": "2026-06-30T21:18:35.674Z"
     }
   },
   "replaced_threads": [
