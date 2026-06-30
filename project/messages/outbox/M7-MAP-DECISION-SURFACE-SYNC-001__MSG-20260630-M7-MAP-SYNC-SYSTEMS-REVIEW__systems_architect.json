@@ -1,0 +1,136 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW",
+  "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Systems review accepts implementation commit 6b793907fc27308a96b7e2d5fd23da8134b6927c and writer handoff commit 70207269817859dfd48c147a7a92afbe95f2b7fb for M7-MAP-DECISION-SURFACE-SYNC-001. The decision focus is a UI-only derived projection in packages/ui over existing ClientReadModelSnapshot slices, selected entity intent, active task drawer, map mode, and existing command status strings. It does not introduce authoritative client WorldState, new protocol/save/content schema, new command surface, implicit RPC, object graph serialization, or a second writer for simulation state. Task rail, map surface, route queue, district list rows, and right inspector share active-object/current-action presentation metadata through React props and DOM attributes only; command submission still uses existing client-core command DTO builders and onM3/onM4 submit callbacks. Default overlay de-noising is phase/action relevant, with player-language legend labels for focus, supply path, obligation pressure, risk area, blocked/strained path, and settlement; debug/read-model wording remains behind explicit debug mode or covered legacy accessibility labels, not the player legend. The writer implementation commit touches only allowed UI/Web/test paths and no forbidden sim-core, sim-ai, protocol, save-format, content-source, Electron, desktop, tools, docs/ADR, CI, dependency, telemetry, server, manual battle, or final-art paths. Cumulative branch diff includes a lead process PROJECT_STATUS.md start note outside the task allowed_paths list, but it is not part of the writer implementation commit and has no product-code or forbidden-package impact.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+    "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-decision-surface-sync / D:\\WebProjects\\MonsoonSovereigns",
+  "commit": "implementation 6b793907fc27308a96b7e2d5fd23da8134b6927c; writer handoff 70207269817859dfd48c147a7a92afbe95f2b7fb; route checkpoint observed at 1b8b526a777f7e234802366a9b229bbcd42adf78",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean tracked worktree on codex/m7-map-decision-surface-sync before writing this systems handoff."
+    },
+    {
+      "command": "git show --stat 6b793907fc27308a96b7e2d5fd23da8134b6927c",
+      "exit_code": 0,
+      "result": "Implementation commit changes 5 files: apps/web/src/shell/web-client-shell.test.tsx, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, and tests/ui-m2-district-list.test.tsx."
+    },
+    {
+      "command": "git show --stat 70207269817859dfd48c147a7a92afbe95f2b7fb",
+      "exit_code": 0,
+      "result": "Writer handoff commit adds the client_engineer review handoff JSON only."
+    },
+    {
+      "command": "git diff --name-only 26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1..HEAD",
+      "exit_code": 0,
+      "result": "Cumulative branch diff contains UI/Web/test files plus allowed project task/message/route/model state files. PROJECT_STATUS.md is present from the lead start process note; no forbidden package, content, Electron, docs/ADR, CI, dependency, server, telemetry, manual battle, or final-art path appears."
+    },
+    {
+      "command": "git diff --check 26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-DECISION-SURFACE-SYNC-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry lists M7-MAP-DECISION-SURFACE-SYNC-001 as REVIEW/client_engineer; M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED and M7-SYSTEMIC-INTERACTION-VALIDATION-001 remains DRAFT."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready check exited cleanly with no console output."
+    },
+    {
+      "command": "node -e <allowed/forbidden path scanner for 9a8fa0b5..6b793907>",
+      "exit_code": 0,
+      "result": "Implementation commit files: apps/web/src/shell/web-client-shell.test.tsx, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, tests/ui-m2-district-list.test.tsx. notAllowed [], forbiddenHits []."
+    },
+    {
+      "command": "node -e <allowed/forbidden path scanner for 26e5bf68..HEAD>",
+      "exit_code": 0,
+      "result": "Cumulative branch forbiddenHits []; notAllowed contains only PROJECT_STATUS.md from the lead process start note."
+    },
+    {
+      "command": "Select-String architecture scan over packages/ui/src/index.tsx",
+      "exit_code": 0,
+      "result": "No @monsoon/sim-core, @monsoon/protocol, @monsoon/save-format, platform/Electron, node:fs/path/http, Math.random, Date.now, new Date, window.electron, ipcRenderer, server, or new telemetry imports/authority sources found in the changed UI file. Existing manual-node-battle and telemetry text appears only in previously gated/static debug or coverage surfaces."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 10 tests."
+    },
+    {
+      "command": "pnpm test:e2e --grep \"M7 decision surface synchronizes\"",
+      "exit_code": 0,
+      "result": "Focused Playwright passed: 1/1 Chromium test. Only existing NO_COLOR/FORCE_COLOR web-server warnings were printed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_UI_DERIVED_DECISION_FOCUS",
+      "decision": "Accept ClientDecisionSurfaceFocus as a UI-local read-model projection. It is constructed inside packages/ui from ClientReadModelSnapshot, selected entity intent, active task drawer, map mode, and existing command status strings, and is not serialized across protocol/save/content boundaries."
+    },
+    {
+      "id": "ACCEPT_SURFACE_SYNC_AS_PRESENTATION_METADATA",
+      "decision": "Accept data-decision-action, data-decision-object, data-current-action, data-active-object, and data-visible-overlays as presentation/test metadata only. They synchronize task rail, map surface, route queue, district list, and inspector without making React/Pixi authoritative state."
+    },
+    {
+      "id": "COMMAND_BOUNDARY_PRESERVED",
+      "decision": "Player actions still route through existing client-core command DTO builders and submit callbacks. The new focus helpers do not apply commands, mutate WorldState, call simulation services, or bypass preview/confirm/read-model boundaries."
+    },
+    {
+      "id": "OVERLAY_DENOISING_ACCEPTED",
+      "decision": "Accept selectVisibleMapLegendTones as player-facing de-noising. Default obligation focus shows selected/route/obligation/settlement, campaign/notifications opt into risk, route mode or blocked/capacity state opts into blocked-path legend, and post-action results remove route/obligation clutter."
+    },
+    {
+      "id": "NO_ADR_REQUIRED",
+      "decision": "No ADR is required because there is no architecture, package-dependency, protocol, save, content schema, Electron security, deterministic simulation, technology stack, or frozen product decision change."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PROJECT_STATUS_PROCESS_NOTE_OUTSIDE_ALLOWED_PATHS",
+      "severity": "P3",
+      "summary": "The cumulative branch diff includes PROJECT_STATUS.md from the lead start process commit even though the task allowed_paths list does not include it.",
+      "mitigation": "This was not part of the writer implementation commit, changes only the process start snapshot, and has no product-code or forbidden-package impact. Lead/QA may decide whether future task JSON should explicitly allow status checkpoint edits."
+    },
+    {
+      "id": "PIXEL_LEVEL_VISUAL_QA_REMAINS",
+      "severity": "P3",
+      "summary": "Reviewer-side validation confirms DOM/read-model synchronization and legend text/overlay state, but not pixel-level visual composition.",
+      "mitigation": "Route to qa_reviewer for independent UX/smoke acceptance; no systems blocker found."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "qa_reviewer should perform independent acceptance for M7-MAP-DECISION-SURFACE-SYNC-001, including player-facing UX smoke for map/task/inspector synchronization and overlay de-noising. Do not mark formal M7 content lock accepted; this task only advances the systemic interaction recovery chain.",
+  "created_at": "2026-06-30T20:08:48+08:00"
+}
