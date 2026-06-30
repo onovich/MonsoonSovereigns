@@ -1,0 +1,57 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-SYNC-START",
+  "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-MAP-DECISION-SURFACE-SYNC-001 as the next systemic interaction recovery task after M7-CORE-ACTION-LOOP-UX-001 closed through PR #218. The task must synchronize strategic map selection, task rail cards, district list, and right inspector into one decision surface, reduce default route/obligation/risk overlay clutter, and use player-language legends/labels without changing authoritative simulation, protocol, save, content, final art, server, telemetry, or manual node battle scope.",
+  "artifacts": [
+    "project/tasks/active/M7-MAP-DECISION-SURFACE-SYNC-001.json",
+    "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
+    "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-decision-surface-sync",
+  "commit": "26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1",
+  "base_main_commit": "26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1",
+  "tests_run": [
+    {
+      "command": "git status --short --branch; git branch --show-current; git rev-parse HEAD; git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "PASS; local main and origin/main were synchronized at 26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1 before creating the task branch."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-DECISION-SURFACE-SYNC-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; M7-MAP-DECISION-SURFACE-SYNC-001 is READY."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "START_NEXT_READY_TASK",
+      "decision": "Start M7-MAP-DECISION-SURFACE-SYNC-001 immediately after M7-CORE-ACTION-LOOP-UX-001 closure entered main."
+    },
+    {
+      "id": "LOW_FIDELITY_DECISION_MAP",
+      "decision": "The goal is a usable low-fidelity strategic decision map, not final art or high-fidelity prototype work."
+    },
+    {
+      "id": "NO_SCOPE_EXPANSION",
+      "decision": "No sim-core, protocol, save-format, content-source, Electron, server, telemetry, final art, or manual node battle scope is authorized."
+    }
+  ],
+  "risks": [
+    {
+      "id": "MAP_DECISION_SURFACE_RISK",
+      "severity": "R4",
+      "summary": "If task rail, map, district list, and inspector do not share focus/action semantics, the product-owner complaint about not knowing what to do will remain unresolved."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement the map/task rail/inspector decision-surface synchronization and route to systems_architect review.",
+  "created_at": "2026-06-30T19:32:39.6612127+08:00"
+}

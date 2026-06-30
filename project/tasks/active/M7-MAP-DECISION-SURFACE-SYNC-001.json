@@ -2,7 +2,7 @@
   "id": "M7-MAP-DECISION-SURFACE-SYNC-001",
   "summary": "Synchronize strategic map, task rail, and inspector as one decision surface",
   "milestone": "M7",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "client_engineer",
   "reviewer_role": "systems_architect",
   "risk_level": "R4",
@@ -76,8 +76,33 @@
     "pnpm test:e2e",
     "focused Playwright or component coverage for task-card/map/inspector focus synchronization and layer de-noising"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-map-decision-surface-sync",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_started_task",
+      "branch_or_worktree": "codex/m7-map-decision-surface-sync",
+      "start_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "updated_at": "2026-06-30T19:32:39.6612127+08:00"
+    },
+    "client_engineer": {
+      "thread_id": "019f184d-4a65-7af3-b367-e2b6932de186",
+      "nickname": "Window",
+      "status": "in_progress",
+      "role": "client_engineer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-decision-surface-sync",
+      "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+      "started_at": "2026-06-30T19:32:39.6612127+08:00",
+      "updated_at": "2026-06-30T19:32:39.6612127+08:00"
+    }
+  },
   "route_to": "systems_architect",
   "notes": [
     "This is a product-owner REQUEST_CHANGES recovery path. It must not approve formal M7 content lock.",
@@ -88,7 +113,7 @@
     "All player-visible text must pass through existing i18n boundaries."
   ],
   "created_at": "2026-06-30T09:46:39.564Z",
-  "updated_at": "2026-06-30T19:25:37.5986242+08:00",
+  "updated_at": "2026-06-30T19:32:39.6612127+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
@@ -96,7 +121,11 @@
   "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
   "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
   "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
-  "ready_after_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
+  "ready_after_main_commit": "26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1",
   "ready_after_pr": 217,
-  "next_action": "Start with client_engineer writer and systems_architect reviewer after M7-CORE-ACTION-LOOP-UX-001 closure checkpoint is integrated."
+  "next_action": "Await client_engineer writer handoff for systems_architect review.",
+  "started_at": "2026-06-30T19:32:39.6612127+08:00",
+  "start_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+  "expected_writer_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json"
 }
