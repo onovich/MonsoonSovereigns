@@ -2,28 +2,26 @@
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
-  "current_tasks": [
-    "M7-MAP-TOPOLOGY-CLIENT-001"
-  ],
+  "current_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-      "task_ids": [
-        "M7-MAP-TOPOLOGY-CLIENT-001"
-      ],
-      "status": "accepted_pending_pr_integration",
+      "task_id": null,
+      "task_ids": [],
+      "status": "active_ready_for_next_task",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-map-topology-client",
-      "updated_at": "2026-07-01T04:22:23.8080820+08:00",
+      "branch_or_worktree": "codex/close-m7-map-topology-client",
+      "updated_at": "2026-06-30T20:38:43.871Z",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-TO-CLIENT-START.json",
       "base_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
-      "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-ACCEPT__lead_orchestrator.json",
+      "last_integrated_task": "M7-MAP-TOPOLOGY-CLIENT-001",
+      "last_main_commit": "ad93aab15a95911a493dc8b1d8795595bc5d2684"
     },
     "simulation_engineer": {
       "thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
@@ -84,7 +82,7 @@
     "systems_architect": {
       "thread_id": "019f1a09-1933-7713-90d4-5dcec910a2e3",
       "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-      "status": "accept_r3",
+      "status": "closed_after_task_main_integration",
       "role": "systems_architect",
       "nickname": "Lintel the 2nd",
       "configured_model": "gpt-5.5",
@@ -96,13 +94,14 @@
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R3-TO-SYSTEMS-REVIEW.json",
       "previous_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json",
-      "updated_at": "2026-07-01T04:22:23.8080820+08:00",
-      "review_handoff_r3": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json"
+      "updated_at": "2026-06-30T20:38:43.871Z",
+      "review_handoff_r3": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "closed_at": "2026-06-30T20:38:43.871Z"
     },
     "qa_reviewer": {
       "thread_id": "019f1a25-cdf8-7d22-a6ac-7b5980e41ea6",
       "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-      "status": "accept",
+      "status": "closed_after_task_main_integration",
       "role": "qa_reviewer",
       "nickname": "Gate the 2nd",
       "configured_model": "gpt-5.5",
@@ -116,13 +115,14 @@
       ],
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-SYSTEMS-R3-TO-QA-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json",
-      "updated_at": "2026-07-01T04:22:23.8080820+08:00",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json"
+      "updated_at": "2026-06-30T20:38:43.871Z",
+      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-30T20:38:43.871Z"
     },
     "client_engineer": {
       "thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
       "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-      "status": "accepted_pending_pr_integration",
+      "status": "closed_after_task_main_integration",
       "role": "client_engineer",
       "nickname": "Window the 2nd",
       "configured_model": "gpt-5.5",
@@ -135,7 +135,8 @@
       "systems_request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REQUEST-CHANGES-FORWARDED__lead_orchestrator.json",
       "systems_request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-SYSTEMS-REQUEST-CHANGES-TO-CLIENT.json",
       "systems_request_changes_submission_id": "019f1a12-c216-7c70-bb85-8c6634eacbe2",
-      "updated_at": "2026-07-01T04:22:23.8080820+08:00"
+      "updated_at": "2026-06-30T20:38:43.871Z",
+      "closed_at": "2026-06-30T20:38:43.871Z"
     },
     "gameplay_designer": {
       "thread_id": "019f19c9-ae01-7690-b7ac-4f68ac6fe4ae",
@@ -172,9 +173,11 @@
       "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json"
     }
   },
-  "last_integrated_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
-  "last_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
-  "next_ready_tasks": [],
+  "last_integrated_task": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "last_main_commit": "ad93aab15a95911a493dc8b1d8795595bc5d2684",
+  "next_ready_tasks": [
+    "M7-MAP-TOPOLOGY-VALIDATION-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -220,8 +223,8 @@
     {
       "id": "M7-MAP-TOPOLOGY-RECOVERY-BLOCKS-CONTENT-LOCK",
       "severity": "R4",
-      "status": "fixture_closed_client_pending",
-      "summary": "Fixture topology recovery is closed in main; client topology consumption and validation still block content-lock reconsideration."
+      "status": "client_closed_validation_pending",
+      "summary": "Client topology recovery is closed in main; topology validation still blocks content-lock reconsideration."
     }
   ],
   "human_gate": {
@@ -1067,7 +1070,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-01T04:22:23.8080820+08:00",
+  "last_updated_at": "2026-06-30T20:38:43.871Z",
   "updated_at": "2026-07-01T04:22:23.8080820+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2135,8 +2138,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "ACCEPTED",
-  "next_machine_action": "Commit accepted implementation, open PR, wait for CI, merge to main, then close after origin/main integration.",
+  "current_task_status": "IDLE_READY_TO_START_NEXT",
+  "next_machine_action": "Start M7-MAP-TOPOLOGY-VALIDATION-001 as the next topology recovery validation task.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3603,7 +3606,7 @@
   },
   "m7_map_topology_client": {
     "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "branch_or_worktree": "codex/m7-map-topology-client",
     "base_main_commit": "36577deb0a7df37603f8cfa29f57e2c3ff781b1e",
     "ready_after_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
@@ -3629,8 +3632,8 @@
     "lead_request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
     "lead_request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-LEAD-REQUEST-CHANGES-TO-CLIENT.json",
     "expected_writer_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
-    "updated_at": "2026-07-01T04:22:23.8080820+08:00",
-    "next_action": "Commit accepted implementation, open PR, wait for CI, merge to main, then close after origin/main integration.",
+    "updated_at": "2026-06-30T20:38:43.871Z",
+    "next_action": "Start M7-MAP-TOPOLOGY-VALIDATION-001 as the next topology recovery validation task.",
     "writer_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
     "systems_thread_id": "019f1a09-1933-7713-90d4-5dcec910a2e3",
     "systems_thread_nickname": "Lintel the 2nd",
@@ -3655,34 +3658,30 @@
     "qa_status": "ACCEPT",
     "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json",
     "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-ACCEPT__lead_orchestrator.json",
-    "accepted_at": "2026-07-01T04:22:23.8080820+08:00"
+    "accepted_at": "2026-07-01T04:22:23.8080820+08:00",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 229,
+    "integrated_main_commit": "ad93aab15a95911a493dc8b1d8795595bc5d2684",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/229",
+    "implementation_commit": "52a99da1",
+    "ci_fix_commit": "5764849c",
+    "ci_fix_qa_incremental_acceptance": {
+      "thread_id": "019f1a25-cdf8-7d22-a6ac-7b5980e41ea6",
+      "status": "ACCEPT",
+      "source": "multi_agent.wait_agent response after CI fix commit 5764849c; no separate qa_reviewer-authored file was created",
+      "summary": "QA confirmed the post-review CI fix only restores the shell State hash metric, does not weaken tests, does not touch forbidden paths, and does not reintroduce hidden grid/lattice or fake routes.",
+      "commands": [
+        "pnpm exec vitest run --config vitest.config.ts tests/deterministic-hash.test.ts",
+        "git diff --check 52a99da1..5764849c",
+        "taskctl validate M7-MAP-TOPOLOGY-CLIENT-001"
+      ]
+    },
+    "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T20:38:43.871Z",
+    "next_ready_tasks": [
+      "M7-MAP-TOPOLOGY-VALIDATION-001"
+    ]
   },
-  "active_task_routes": {
-    "M7-MAP-TOPOLOGY-CLIENT-001": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R3-TO-SYSTEMS-REVIEW.json"
-  },
-  "active_routes": {
-    "M7-MAP-TOPOLOGY-CLIENT-001": {
-      "owner_role": "client_engineer",
-      "owner_thread_id": "019f19c6-0eab-7043-ba38-a38f22458da1",
-      "owner_nickname": "Window the 2nd",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "reviewer_role": "systems_architect",
-      "reviewer_thread_id": "019f1a09-1933-7713-90d4-5dcec910a2e3",
-      "reviewer_nickname": "Lintel the 2nd",
-      "reviewer_configured_model": "gpt-5.5",
-      "reviewer_configured_effort": "xhigh",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R3-TO-SYSTEMS-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json",
-      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json",
-      "previous_route_file": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R2-TO-SYSTEMS-REVIEW.json",
-      "previous_systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
-      "request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-SYSTEMS-REQUEST-CHANGES-TO-CLIENT.json",
-      "branch_or_worktree": "codex/m7-map-topology-client",
-      "status": "systems_r3_review_requested",
-      "updated_at": "2026-07-01T03:58:21.2993766+08:00"
-    }
-  }
+  "active_task_routes": {},
+  "active_routes": {}
 }
