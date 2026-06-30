@@ -5,18 +5,18 @@
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
         "role": "lead_orchestrator",
-        "status": "active_map_topology_schema_accepted_pending_pr",
+        "status": "active_map_topology_fixture_in_progress",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-        "updated_at": "2026-06-30T23:59:45+08:00",
-        "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+        "updated_at": "2026-07-01T00:26:01.3756143+08:00",
+        "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
         "task_ids": [
-          "M7-MAP-TOPOLOGY-SCHEMA-001"
+          "M7-MAP-TOPOLOGY-FIXTURE-001"
         ],
-        "branch_or_worktree": "codex/m7-map-topology-schema",
+        "branch_or_worktree": "codex/m7-map-topology-fixture",
         "active_gate_task_id": null
       }
     ],
@@ -38,7 +38,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-06-30T22:41:30.6510548+08:00"
+      "checked_at": "2026-07-01T00:26:01.3756143+08:00"
     }
   },
   "entries": {
@@ -7805,15 +7805,17 @@
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_pr",
+      "status": "closed_after_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "branch_or_worktree": "codex/close-m7-map-topology-schema",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
-      "updated_at": "2026-06-30T23:59:45+08:00"
+      "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260701-M7-MAP-TOPOLOGY-SCHEMA-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-07-01T00:12:00+08:00",
+      "updated_at": "2026-07-01T00:12:00+08:00"
     },
     "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect:replaced:019f18fa-eb5b-7c90-b951-f8416dc8742d": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
@@ -7841,7 +7843,7 @@
       "role": "systems_architect",
       "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "nickname": "Lintel",
-      "status": "review_ready",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7854,14 +7856,15 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
       "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
       "review_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
-      "updated_at": "2026-06-30T23:31:46.5495120+08:00"
+      "closed_at": "2026-07-01T00:12:00+08:00",
+      "updated_at": "2026-07-01T00:12:00+08:00"
     },
     "M7-MAP-TOPOLOGY-SCHEMA-001:qa_reviewer": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "qa_reviewer",
       "thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
       "nickname": "Auditor",
-      "status": "accepted",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -7877,7 +7880,40 @@
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T23:55:00+08:00",
       "review_commit": "50540c83",
-      "updated_at": "2026-06-30T23:59:18+08:00"
+      "closed_at": "2026-07-01T00:12:00+08:00",
+      "updated_at": "2026-07-01T00:12:00+08:00"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:lead_orchestrator": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "started",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+      "base_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
+      "updated_at": "2026-07-01T00:26:01.3756143+08:00"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:simulation_engineer": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
+      "nickname": "Clockwork",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+      "route_submission_id": "019f1962-6102-75e0-8a0b-9596eae8cb5a",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "updated_at": "2026-07-01T00:26:01.3756143+08:00"
     }
   },
   "replaced_threads": [
@@ -8077,7 +8113,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-06-30T21:47:04.0374837+08:00",
+  "updated_at": "2026-07-01T00:26:01.3756143+08:00",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
@@ -8533,15 +8569,17 @@
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_pr",
+      "status": "closed_after_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-map-topology-schema",
+      "branch_or_worktree": "codex/close-m7-map-topology-schema",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-SCHEMA-001__ROUTE-20260630-LEAD-TO-SYSTEMS-START.json",
-      "updated_at": "2026-06-30T23:59:45+08:00"
+      "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260701-M7-MAP-TOPOLOGY-SCHEMA-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-07-01T00:12:00+08:00",
+      "updated_at": "2026-07-01T00:12:00+08:00"
     },
     "M7-MAP-TOPOLOGY-SCHEMA-001:systems_architect:replaced:019f18fa-eb5b-7c90-b951-f8416dc8742d": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
@@ -8569,7 +8607,7 @@
       "role": "systems_architect",
       "thread_id": "019f1917-d4c3-75e1-9fab-d6ddc4b61922",
       "nickname": "Lintel",
-      "status": "review_ready",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -8582,14 +8620,15 @@
       "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
       "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-WRITER-REVIEW__systems_architect.json",
       "review_commit": "d6c84748fd1209b7d96543cbf2a2d6973613574a",
-      "updated_at": "2026-06-30T23:31:46.5495120+08:00"
+      "closed_at": "2026-07-01T00:12:00+08:00",
+      "updated_at": "2026-07-01T00:12:00+08:00"
     },
     "M7-MAP-TOPOLOGY-SCHEMA-001:qa_reviewer": {
       "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "role": "qa_reviewer",
       "thread_id": "019f193b-9417-73d0-91e3-f718fea66a30",
       "nickname": "Auditor",
-      "status": "accepted",
+      "status": "closed_after_task_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -8605,7 +8644,40 @@
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T23:55:00+08:00",
       "review_commit": "50540c83",
-      "updated_at": "2026-06-30T23:59:18+08:00"
+      "closed_at": "2026-07-01T00:12:00+08:00",
+      "updated_at": "2026-07-01T00:12:00+08:00"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:lead_orchestrator": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "started",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+      "base_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
+      "updated_at": "2026-07-01T00:26:01.3756143+08:00"
+    },
+    "M7-MAP-TOPOLOGY-FIXTURE-001:simulation_engineer": {
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "role": "simulation_engineer",
+      "thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
+      "nickname": "Clockwork",
+      "status": "in_progress",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+      "route_submission_id": "019f1962-6102-75e0-8a0b-9596eae8cb5a",
+      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+      "updated_at": "2026-07-01T00:26:01.3756143+08:00"
     }
   }
 }

@@ -4,41 +4,52 @@
   "type": "goal_mode_continuation",
   "status": "IN_PROGRESS",
   "project": "Monsoon Sovereigns",
-  "origin_main": "a670d4c462f941ba461869e53a758dc512d8c604",
+  "origin_main": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
   "current_milestone": "M7",
-  "current_task": null,
-  "current_tasks": [],
-  "current_task_status": "NONE",
+  "current_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "current_tasks": [
+    "M7-MAP-TOPOLOGY-FIXTURE-001"
+  ],
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "last_integrated_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
-  "last_main_commit": "a670d4c462f941ba461869e53a758dc512d8c604",
-  "ready_tasks": [
-    "M7-MAP-TOPOLOGY-FIXTURE-001"
-  ],
-  "next_ready_tasks": [
-    "M7-MAP-TOPOLOGY-FIXTURE-001"
-  ],
+  "last_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
+  "ready_tasks": [],
+  "next_ready_tasks": [],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
       "task_ids": [
-        "M7-MAP-TOPOLOGY-SCHEMA-001"
+        "M7-MAP-TOPOLOGY-FIXTURE-001"
       ],
-      "status": "closed_task_next_ready",
+      "status": "active_fixture_in_progress",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-map-topology-schema",
-      "updated_at": "2026-07-01T00:12:00+08:00",
-      "ready_after_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
-      "ready_after_main_commit": "30779bac55c5192a666aa95611741443c8f3239e",
-      "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260630-M7-MAP-TOPOLOGY-SCHEMA-START__lead_orchestrator.json",
-      "closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
-      "closed_main_commit": "a670d4c462f941ba461869e53a758dc512d8c604",
-      "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-SCHEMA-001__MSG-20260701-M7-MAP-TOPOLOGY-SCHEMA-CLOSED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "updated_at": "2026-07-01T00:26:01.3756143+08:00",
+      "ready_after_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
+      "ready_after_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
+      "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json"
+    },
+    "simulation_engineer": {
+      "thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
+      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+      "status": "in_progress",
+      "role": "simulation_engineer",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-topology-fixture",
+      "updated_at": "2026-07-01T00:26:01.3756143+08:00",
+      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+      "route_submission_id": "019f1962-6102-75e0-8a0b-9596eae8cb5a",
+      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json"
     }
   },
   "unresolved_risks": [
@@ -92,8 +103,8 @@
     {
       "id": "M7-MAP-TOPOLOGY-RECOVERY-BLOCKS-CONTENT-LOCK",
       "severity": "R4",
-      "status": "schema_closed_fixture_ready",
-      "summary": "Product owner rejected content lock because the map remains rectangular/grid-like at the topology level; schema recovery is closed and fixture/client/validation recovery must continue before content lock reconsideration."
+      "status": "fixture_in_progress",
+      "summary": "Product owner rejected content lock because the map remains rectangular/grid-like at the topology level; schema recovery is closed and fixture/client/validation recovery is in progress before content lock reconsideration."
     }
   ],
   "human_gate": {
@@ -106,11 +117,11 @@
     "note": "Product owner already requested changes. The active path is topology recovery review, not waiting for product-owner Human Gate reconsideration.",
     "recorded_at": "2026-06-30T21:47:04.0374837+08:00"
   },
-  "next_machine_action": "Start M7-MAP-TOPOLOGY-FIXTURE-001 after closure checkpoint enters origin/main; do not start M7-EXIT-VALIDATION-001 and keep content lock blocked.",
+  "next_machine_action": "Wait for simulation_engineer REVIEW handoff for M7-MAP-TOPOLOGY-FIXTURE-001; do not start M7-EXIT-VALIDATION-001 and keep content lock blocked.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-07-01T00:12:00+08:00",
+  "last_updated_at": "2026-07-01T00:26:01.3756143+08:00",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -1090,8 +1101,8 @@
       "M7-MAP-TOPOLOGY-CLIENT-001",
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
-    "next_action": "M7-MAP-TOPOLOGY-SCHEMA-001 is CLOSED; M7-MAP-TOPOLOGY-FIXTURE-001 is READY.",
-    "updated_at": "2026-07-01T00:12:00+08:00",
+    "next_action": "M7-MAP-TOPOLOGY-FIXTURE-001 is IN_PROGRESS with simulation_engineer thread 019f1959-d925-7e83-98f6-5c895c98d41f.",
+    "updated_at": "2026-07-01T00:26:01.3756143+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "systems_status": "ACCEPT",
@@ -1110,8 +1121,6 @@
     "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/223",
     "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-30T22:29:26.2066820+08:00",
-    "next_ready_tasks": [
-      "M7-MAP-TOPOLOGY-FIXTURE-001"
-    ]
+    "next_ready_tasks": []
   }
 }
