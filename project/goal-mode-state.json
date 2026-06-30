@@ -23,7 +23,7 @@
       "thread_id": "019f1587-afd6-7bf3-b40c-a1e0604771b0",
       "nickname": "Canvas the 2nd",
       "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
-      "status": "active_writer_r3",
+      "status": "review_ready_r3",
       "role": "client_engineer",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
@@ -32,7 +32,7 @@
       "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
       "review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
       "review_commit": "4ba24238b9cd871ba059b88442e37dd27db15ff7",
-      "updated_at": "2026-06-29T23:31:14.100Z",
+      "updated_at": "2026-06-30T03:47:51.134Z",
       "request_changes_source": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
       "request_changes_route": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-REQUEST-CHANGES-TO-CLIENT.json",
       "expected_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
@@ -40,13 +40,15 @@
       "review_commit_r2": "2fe29605faf4dee546b5318cb3c4b3f8676e14f2",
       "request_changes_r2_source": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
       "request_changes_r2_route": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-R2-REQUEST-CHANGES-TO-CLIENT.json",
-      "expected_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json"
+      "expected_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+      "review_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+      "review_commit_r3": "dd661a14c9d594941dc6ae1e31a9a58851c0378a"
     },
     "qa_reviewer": {
       "thread_id": "019f159f-d8bf-7142-82a5-81c893657746",
       "nickname": "Auditor the 2nd",
       "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
-      "status": "request_changes_r2",
+      "status": "active_review_r3",
       "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
@@ -56,14 +58,17 @@
       "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
       "expected_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
       "review_commit": "4ba24238b9cd871ba059b88442e37dd27db15ff7",
-      "updated_at": "2026-06-29T23:31:14.100Z",
+      "updated_at": "2026-06-30T03:47:51.134Z",
       "review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
       "review_status": "REQUEST_CHANGES",
       "route_file_r2": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R2-TO-QA-REVIEW.json",
       "expected_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
       "review_commit_r2": "2fe29605faf4dee546b5318cb3c4b3f8676e14f2",
       "review_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
-      "review_status_r2": "REQUEST_CHANGES"
+      "review_status_r2": "REQUEST_CHANGES",
+      "route_file_r3": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R3-TO-QA-REVIEW.json",
+      "expected_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json",
+      "review_commit_r3": "dd661a14c9d594941dc6ae1e31a9a58851c0378a"
     }
   },
   "last_integrated_task": "M7-DECISION-INSPECTOR-REWRITE-001",
@@ -122,10 +127,10 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R2-REVIEW__qa_reviewer.json",
+    "approval_source": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R3-TO-QA-REVIEW.json",
     "recommended_result": null,
-    "note": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001 returned to IN_PROGRESS after QA R2 REQUEST_CHANGES for expanded appointment drawer implementation jargon. Formal content lock remains not accepted; no new Human Gate is active.",
-    "recorded_at": "2026-06-29T23:31:14.100Z"
+    "note": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001 is back in REVIEW after R3 fixes for expanded appointment drawer jargon. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-30T03:47:51.134Z"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -949,7 +954,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-29T23:31:14.100Z",
+  "last_updated_at": "2026-06-30T03:47:51.134Z",
   "updated_at": "2026-06-29T22:29:07.356Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2947,7 +2952,7 @@
     ]
   },
   "m7_task_rail_collapsed_drawers": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
     "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
     "base_main_commit": "2bd496fef2998ecc750b7b19d7e768e3edcb30dd",
@@ -2964,8 +2969,8 @@
     "route_file": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-29T22:38:58.254Z",
-    "updated_at": "2026-06-29T23:31:14.100Z",
-    "next_action": "Await original client_engineer R3 fix for expanded appointment drawer jargon and regression coverage.",
+    "updated_at": "2026-06-30T03:47:51.134Z",
+    "next_action": "Await independent qa_reviewer R3 verdict for the task rail/collapsed drawer implementation.",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
@@ -2994,6 +2999,12 @@
     "qa_r2_review_commit": "2fe29605faf4dee546b5318cb3c4b3f8676e14f2",
     "request_changes_r2_route": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-QA-R2-REQUEST-CHANGES-TO-CLIENT.json",
     "expected_writer_r3_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
-    "request_changes_r2_sent_at": "2026-06-29T23:31:14.100Z"
+    "request_changes_r2_sent_at": "2026-06-29T23:31:14.100Z",
+    "r3_review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
+    "review_commit_r3": "dd661a14c9d594941dc6ae1e31a9a58851c0378a",
+    "review_ready_r3_at": "2026-06-30T03:47:51.134Z",
+    "qa_r3_route": "project/messages/routes/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__ROUTE-20260630-WRITER-R3-TO-QA-REVIEW.json",
+    "expected_qa_r3_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json",
+    "routed_to_qa_r3_at": "2026-06-30T03:47:51.134Z"
   }
 }
