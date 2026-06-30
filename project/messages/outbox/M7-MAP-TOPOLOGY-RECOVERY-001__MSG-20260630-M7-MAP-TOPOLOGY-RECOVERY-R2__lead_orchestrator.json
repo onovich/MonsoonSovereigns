@@ -15,8 +15,69 @@
     "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-R2-TO-SYSTEMS-REVIEW.json"
   ],
   "branch_or_worktree": "codex/m7-map-topology-recovery",
-  "commit": "d0ec2910",
-  "tests_run": [],
+  "commit": "f9de13d9812031c069a9c5cb9f68390c5366e2b8",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-RECOVERY-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "exit_code": 0,
+      "result": "VALID"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-RECOVERY-R2__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID after object-form tests_run repair"
+    },
+    {
+      "command": "node -e JSON.parse(fs.readFileSync(...)) for goal-mode-state, model-routing-state, GOAL-MODE-CONTINUATION, and thread-registry",
+      "exit_code": 0,
+      "result": "JSON OK for all checked state files"
+    },
+    {
+      "command": "Select-String stale-state search across goal-mode-state, model-routing-state, GOAL-MODE-CONTINUATION, and thread-registry",
+      "exit_code": 0,
+      "result": "No stale product-owner-waiting state strings found"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-MAP-TOPOLOGY-RECOVERY-001 REVIEW; downstream topology tasks DRAFT; content lock BLOCKED"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY tasks while topology recovery is under review"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors"
+    }
+  ],
   "decisions": [
     {
       "id": "STATE_FIELDS_REPAIRED",
