@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -281,6 +281,56 @@ test("M7 decision surface synchronizes task card map list and inspector focus", 
   await expect(mapLegend).not.toContainText("read-model");
   await expect(mapLegend).not.toContainText("debug");
   await expect(mapLegend).not.toContainText("command path");
+});
+
+test("M7 systemic interaction validation captures required viewport evidence", async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      consoleErrors.push(message.text());
+    }
+  });
+  page.on("pageerror", (error) => {
+    consoleErrors.push(error.message);
+  });
+
+  const evidenceDirectory = resolve(process.cwd(), "project/messages/outbox");
+  mkdirSync(evidenceDirectory, { recursive: true });
+
+  const viewportEvidence = [
+    {
+      fileName: "M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1440x900.png",
+      viewport: { width: 1440, height: 900 }
+    },
+    {
+      fileName: "M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1280x720.png",
+      viewport: { width: 1280, height: 720 }
+    }
+  ] as const;
+
+  for (const evidence of viewportEvidence) {
+    await page.setViewportSize(evidence.viewport);
+    await page.goto("/");
+
+    await expect(page.getByRole("heading", { name: "Monsoon Sovereigns" })).toBeVisible();
+    await expect(page.getByLabel("Core action loop")).toContainText("Current phase");
+    await expect(page.getByLabel("Core action loop")).toContainText("Main unresolved decision");
+    await expect(page.getByLabel("Core action loop")).toContainText("Next primary action");
+    await expect(page.getByRole("region", { name: "Task rail" })).toContainText("Obligations");
+    await expect(page.getByRole("region", { name: "Task rail" })).toContainText("Appointments");
+    await expect(page.getByLabel("Selected district context")).toContainText("District 1");
+    await expect(page.getByLabel("Map legend")).toContainText("Supply path for the selected focus");
+    await expect(page.getByLabel("Map legend")).toContainText(
+      "Obligation pressure tied to this focus"
+    );
+    await expect(page.locator(".client-shell__dev-overlay")).toHaveCount(0);
+
+    await page.screenshot({
+      path: resolve(evidenceDirectory, evidence.fileName)
+    });
+  }
+
+  expect(consoleErrors).toEqual([]);
 });
 
 test("web shell resolves system language, switches language, and persists preference", async ({

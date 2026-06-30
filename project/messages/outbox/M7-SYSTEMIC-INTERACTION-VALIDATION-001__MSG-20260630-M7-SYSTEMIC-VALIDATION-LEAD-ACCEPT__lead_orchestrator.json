@@ -1,0 +1,91 @@
+{
+  "message_id": "MSG-20260630-M7-SYSTEMIC-VALIDATION-LEAD-ACCEPT",
+  "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-SYSTEMIC-INTERACTION-VALIDATION-001 after independent qa_reviewer ACCEPT. The validation evidence covers the repaired first viewport, District 1 troop obligation path, appointment preview/confirm feedback, duplicate-submit guard, map/task/inspector synchronization, 1440x900 and 1280x720 screenshots, console cleanliness, and manual-smoke notes. This is sufficient to reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration, but it does not approve formal M7 content lock.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1440x900.png",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1280x720.png",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MANUAL-SMOKE-NOTES.md",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+  "commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+  "accepted_implementation_commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+  "accepted_branch_head": "e6ea8bfaea6510ac608b5061b3552fb43857eef9",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <writer and QA handoffs>",
+      "exit_code": 0,
+      "result": "PASS; writer REVIEW and QA ACCEPT handoffs are valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list; node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS; registry lists this task as REVIEW and ready emits no downstream task while it remains active."
+    },
+    {
+      "command": "git diff --check 88ad6146a9d47bf98e3643a218bce6fc8b17dccd..HEAD",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors across the branch before lead acceptance."
+    },
+    {
+      "command": "git diff --name-only 88ad6146a9d47bf98e3643a218bce6fc8b17dccd..HEAD",
+      "exit_code": 0,
+      "result": "PASS; changed paths are validation test/evidence/manual-smoke and project process/message/state files only."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS; format check, lint, workspace typecheck, and architecture boundary checks passed."
+    },
+    {
+      "command": "visual inspection of screenshot evidence",
+      "exit_code": 0,
+      "result": "PASS; 1440x900 and 1280x720 screenshots show first-screen phase/problem/next-action, task rail obligations/appointments, visible obligation entry, and de-noised player legend."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_VALIDATION",
+      "decision": "Accept M7-SYSTEMIC-INTERACTION-VALIDATION-001 for PR integration after independent QA accepted the evidence package."
+    },
+    {
+      "id": "REOPEN_CONTENT_LOCK_RECONSIDERATION",
+      "decision": "After this task is merged and closed, M7-CONTENT-LOCK-ACCEPTANCE-001 may return to product-owner reconsideration because the systemic interaction repair chain has been validated."
+    },
+    {
+      "id": "CONTENT_LOCK_NOT_APPROVED",
+      "decision": "This acceptance does not approve formal M7 content lock. Product-owner approval remains a Human Gate."
+    },
+    {
+      "id": "NO_SCOPE_EXPANSION",
+      "decision": "No sim-core, protocol, save-format, content-source, Electron, server, telemetry, final art, dependency, or manual node battle scope is approved or changed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "CONTENT_LOCK_HUMAN_GATE_REMAINS",
+      "severity": "R4",
+      "summary": "Formal M7 content lock remains unresolved until the product owner explicitly decides the Human Gate outcome."
+    },
+    {
+      "id": "SMALL_VIEWPORT_DENSITY",
+      "severity": "P3",
+      "summary": "The 1280x720 viewport is still dense, but required phase/task/action, obligation entry, task rail, and map legend elements remain visible and validated."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR for M7-SYSTEMIC-INTERACTION-VALIDATION-001, wait for PR CI, merge to main, then mark the task CLOSED and reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration.",
+  "created_at": "2026-06-30T20:54:07.5697108+08:00"
+}

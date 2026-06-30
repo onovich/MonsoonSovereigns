@@ -1,0 +1,120 @@
+{
+  "message_id": "MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW",
+  "task_id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts the systemic interaction validation evidence. The first viewport, District 1 troop obligation path, appointment preview/confirm feedback, map/task/inspector synchronization, required screenshots, console-clean evidence, and scope boundaries are sufficiently supported to reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration. This does not approve formal M7 content lock.",
+  "artifacts": [
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1440x900.png",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1280x720.png",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MANUAL-SMOKE-NOTES.md",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+    "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-WRITER-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+  "commit": "a0917bbf5f3937fe4b10fa13677bf5e471a1791e validation; 701fb5aa129ec4f1ae25b026cb1908a79cbc8844 writer handoff",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "On codex/m7-systemic-interaction-validation with a clean worktree before writing the QA handoff."
+    },
+    {
+      "command": "git show --stat a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+      "exit_code": 0,
+      "result": "Validation commit added tests/e2e/web-shell.spec.ts, two screenshot evidence PNGs, and manual smoke notes only."
+    },
+    {
+      "command": "git show --stat 701fb5aa129ec4f1ae25b026cb1908a79cbc8844",
+      "exit_code": 0,
+      "result": "Writer handoff commit added only the test_engineer REVIEW handoff."
+    },
+    {
+      "command": "git diff --name-only 88ad6146a9d47bf98e3643a218bce6fc8b17dccd..HEAD",
+      "exit_code": 0,
+      "result": "Branch diff contains process/task/message files plus tests/e2e/web-shell.spec.ts and the validation screenshots; no product code package changes were present."
+    },
+    {
+      "command": "git diff --check 88ad6146a9d47bf98e3643a218bce6fc8b17dccd..HEAD",
+      "exit_code": 0,
+      "result": "No whitespace or patch formatting errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "exit_code": 0,
+      "result": "Writer handoff schema is valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+      "exit_code": 0,
+      "result": "Task JSON is valid and remains in REVIEW for qa_reviewer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list shows M7-SYSTEMIC-INTERACTION-VALIDATION-001 in REVIEW and M7-CONTENT-LOCK-ACCEPTANCE-001 still BLOCKED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Command exited successfully with no ready-task output in this branch state."
+    },
+    {
+      "command": "Add-Type -AssemblyName System.Drawing; inspect screenshot dimensions",
+      "exit_code": 0,
+      "result": "Screenshot dimensions verified: EVIDENCE-1440x900.png is 1440x900 and EVIDENCE-1280x720.png is 1280x720."
+    },
+    {
+      "command": "git diff --name-only 88ad6146a9d47bf98e3643a218bce6fc8b17dccd..a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+      "exit_code": 0,
+      "result": "Validation commit changed only tests/e2e/web-shell.spec.ts, the two evidence screenshots, and manual smoke notes."
+    },
+    {
+      "command": "git diff --name-only 88ad6146a9d47bf98e3643a218bce6fc8b17dccd..701fb5aa129ec4f1ae25b026cb1908a79cbc8844",
+      "exit_code": 0,
+      "result": "Validation plus writer-handoff scope contains no sim-core, protocol, save-format, content-source, Electron, server, telemetry, manual battle, or final art paths."
+    },
+    {
+      "command": "git diff --check a0917bbf5f3937fe4b10fa13677bf5e471a1791e^..a0917bbf5f3937fe4b10fa13677bf5e471a1791e",
+      "exit_code": 0,
+      "result": "Validation commit diff check passed."
+    },
+    {
+      "command": "git diff --check 701fb5aa129ec4f1ae25b026cb1908a79cbc8844^..701fb5aa129ec4f1ae25b026cb1908a79cbc8844",
+      "exit_code": 0,
+      "result": "Writer handoff commit diff check passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPTANCE_CRITERIA_SATISFIED",
+      "decision": "Accepted: screenshots and E2E assertions support first-viewport phase/main task/next action recognition; District 1 troop obligation handling from task and selected district context; appointment before/after, cost, benefit, risk, result feedback, and duplicate-submit guard; and map/task/inspector synchronization."
+    },
+    {
+      "id": "CONSOLE_CLEAN_EVIDENCE_SUFFICIENT",
+      "decision": "Accepted: the evidence-capture Playwright test records console error and pageerror events and asserts an empty error list; the writer reported the focused test and full E2E suite passing."
+    },
+    {
+      "id": "REOPEN_CONTENT_LOCK_RECONSIDERATION",
+      "decision": "Evidence is sufficient to return M7-CONTENT-LOCK-ACCEPTANCE-001 to product-owner reconsideration."
+    },
+    {
+      "id": "CONTENT_LOCK_NOT_APPROVED",
+      "decision": "This QA acceptance does not approve formal M7 content lock. Product-owner approval remains required, and M7-CONTENT-LOCK-ACCEPTANCE-001 remains a separate Human Gate."
+    },
+    {
+      "id": "NO_FORBIDDEN_SCOPE_FOUND",
+      "decision": "No sim-core, protocol, save-format, content-source, Electron, server, telemetry, manual node battle, or final art changes were found in the validation and writer-handoff commits."
+    }
+  ],
+  "risks": [
+    "Formal M7 content lock remains unresolved until the product owner explicitly chooses the Human Gate outcome.",
+    "QA did not rerun the focused Playwright screenshot test because it writes to the committed evidence PNG paths; independent review instead checked the test assertions, writer-reported command results, screenshot dimensions, and screenshot contents."
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration using this evidence package, without marking formal M7 content lock accepted.",
+  "created_at": "2026-06-30T21:05:00+08:00"
+}
