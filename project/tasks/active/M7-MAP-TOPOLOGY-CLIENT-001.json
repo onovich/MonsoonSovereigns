@@ -4,7 +4,7 @@
   "branch_or_worktree": null,
   "threads": {},
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+  "updated_at": "2026-06-30T21:47:04.0374837+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-CLIENT-001",
@@ -25,7 +25,6 @@
       "packages/client-core/**",
       "packages/ui/**",
       "packages/map-renderer/**",
-      "packages/protocol/**",
       "tests/**",
       ".storybook/**",
       "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
@@ -35,6 +34,7 @@
       "project/model-routing-state.json"
     ],
     "forbidden_paths": [
+      "packages/protocol/**",
       "packages/sim-core/**",
       "packages/save-format/**",
       "packages/platform-electron/**",
@@ -72,6 +72,7 @@
   "route_to": "systems_architect",
   "notes": [
     "This is still low-fidelity product UI, not final art production.",
-    "Use icons/legend/control patterns already accepted by the M7 UI quality track."
+    "Use icons/legend/control patterns already accepted by the M7 UI quality track.",
+    "Protocol/schema changes are owned by M7-MAP-TOPOLOGY-SCHEMA-001; client work may only consume accepted read-model/protocol surfaces."
   ]
 }

@@ -4,7 +4,7 @@
   "branch_or_worktree": null,
   "threads": {},
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+  "updated_at": "2026-06-30T21:47:04.0374837+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-FIXTURE-001",
@@ -14,7 +14,8 @@
   "reviewer_role": "historical_researcher",
   "required_reviewers": [
     "historical_researcher",
-    "qa_reviewer"
+    "qa_reviewer",
+    "systems_architect"
   ],
   "dependencies": [
     "M7-MAP-TOPOLOGY-SCHEMA-001"
@@ -67,6 +68,7 @@
   "route_to": "historical_researcher",
   "notes": [
     "This task is allowed to use low-fidelity synthetic map data; it must not sneak in formal production historical map claims.",
-    "Historical/cultural risk escalates to Human Gate if contested real-world claims become unavoidable."
+    "Historical/cultural risk escalates to Human Gate if contested real-world claims become unavoidable.",
+    "Because this task may touch sim-core/content-runtime authority code, systems_architect review is required in addition to historical and QA review."
   ]
 }
