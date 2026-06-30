@@ -87,7 +87,7 @@
     "test_engineer": {
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
-      "status": "in_progress_replacement",
+      "status": "request_changes_sent_pending_r2",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -98,9 +98,12 @@
       "expected_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T04:29:17.193Z",
-      "updated_at": "2026-06-30T04:29:17.193Z",
+      "updated_at": "2026-06-30T04:42:32.128Z",
       "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
-      "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree"
+      "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
+      "request_changes_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-REQUEST-CHANGES-TO-TEST.json",
+      "expected_handoff_r2": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json"
     }
   },
   "route_to": "qa_reviewer",
@@ -115,7 +118,7 @@
     "Promoted to READY after M7-TASK-RAIL-COLLAPSED-DRAWERS-001 entered origin/main through PR #211."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-30T04:29:17.193Z",
+  "updated_at": "2026-06-30T04:42:32.128Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -131,7 +134,7 @@
   "expected_writer_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
   "writer_thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
   "writer_thread_nickname": "Canary",
-  "next_action": "Await test_engineer writer handoff, validate evidence and tests, then route to independent qa_reviewer.",
+  "next_action": "Await R2 test_engineer writer handoff after lead REQUEST_CHANGES.",
   "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
   "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
   "replacement_start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-REPLACEMENT-START__lead_orchestrator.json",
@@ -148,5 +151,12 @@
       "closed_at": "2026-06-30T04:29:17.193Z",
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
-  ]
+  ],
+  "request_changes_round": 1,
+  "request_changes_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+  "request_changes_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-REQUEST-CHANGES-TO-TEST.json",
+  "expected_writer_r2_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json",
+  "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
+  "review_commit": "d327cbed",
+  "review_ready_at": "2026-06-30T04:42:32.128Z"
 }

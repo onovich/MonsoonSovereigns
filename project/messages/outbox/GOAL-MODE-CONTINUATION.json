@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-UX-RECOVERY-VALIDATION-001"
   ],
-  "current_task_status": "IN_PROGRESS",
+  "current_task_status": "IN_PROGRESS_REQUEST_CHANGES_R1",
   "last_closed_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
   "last_integrated_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
   "last_main_commit": "ade15c64fe69dc25b6ea3a21847fa4145612209f",
@@ -34,7 +34,7 @@
       "thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
       "nickname": "Canary",
       "task_id": "M7-UX-RECOVERY-VALIDATION-001",
-      "status": "in_progress_replacement",
+      "status": "request_changes_sent_pending_r2",
       "role": "test_engineer",
       "configured_model": "gpt-5.4-mini",
       "configured_effort": "high",
@@ -44,7 +44,10 @@
       "route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-REPLACEMENT-START.json",
       "expected_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
       "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
-      "updated_at": "2026-06-30T04:29:17.193Z"
+      "updated_at": "2026-06-30T04:42:32.128Z",
+      "request_changes_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+      "request_changes_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-REQUEST-CHANGES-TO-TEST.json",
+      "expected_handoff_r2": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json"
     }
   },
   "unresolved_risks": [
@@ -100,16 +103,16 @@
     "required": false,
     "active_gate_task_id": null,
     "approval_scope": "NONE",
-    "approval_source": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-START__lead_orchestrator.json",
+    "approval_source": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
     "recommended_result": null,
-    "note": "M7-UX-RECOVERY-VALIDATION-001 is IN_PROGRESS. Formal content lock remains not accepted; no new Human Gate is active.",
-    "recorded_at": "2026-06-30T04:17:11.565Z"
+    "note": "Lead requested R2 changes for M7-UX-RECOVERY-VALIDATION-001 before QA routing. Formal content lock remains not accepted; no new Human Gate is active.",
+    "recorded_at": "2026-06-30T04:42:32.128Z"
   },
-  "next_machine_action": "Await replacement test_engineer writer handoff for M7-UX-RECOVERY-VALIDATION-001, then route to independent QA.",
+  "next_machine_action": "Await R2 test_engineer handoff after lead REQUEST_CHANGES for viewport-visible UX evidence.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-30T04:29:17.193Z",
+  "last_updated_at": "2026-06-30T04:42:32.128Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -805,7 +808,7 @@
     ]
   },
   "m7_ux_recovery_validation": {
-    "status": "IN_PROGRESS",
+    "status": "IN_PROGRESS_REQUEST_CHANGES_R1",
     "task_id": "M7-UX-RECOVERY-VALIDATION-001",
     "previous_closed_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
     "ready_after_main_commit": "483bfa742d57b88d25c30baf0450af6df26d8921",
@@ -814,8 +817,8 @@
     "reviewer_role": "qa_reviewer",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await replacement test_engineer writer handoff, then route to independent qa_reviewer.",
-    "updated_at": "2026-06-30T04:29:17.193Z",
+    "next_action": "Await R2 writer handoff with viewport-visible UX recovery evidence.",
+    "updated_at": "2026-06-30T04:42:32.128Z",
     "branch_or_worktree": "codex/m7-ux-recovery-validation",
     "base_main_commit": "ade15c64fe69dc25b6ea3a21847fa4145612209f",
     "writer_thread_id": "019f16c8-c1dc-7dc0-9268-1763a59677be",
@@ -827,6 +830,12 @@
     "replaces_thread_id": "019f16bd-98b9-7c23-a2b6-91c336bfd61a",
     "replacement_reason": "previous_writer_running_no_handoff_after_repeated_waits_and_status_check_clean_worktree",
     "replacement_start_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-REPLACEMENT-START__lead_orchestrator.json",
-    "replacement_route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-REPLACEMENT-START.json"
+    "replacement_route_file": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-REPLACEMENT-START.json",
+    "review_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-REVIEW__test_engineer.json",
+    "review_commit": "d327cbed",
+    "request_changes_round": 1,
+    "request_changes_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-LEAD-REQUEST-CHANGES__lead_orchestrator.json",
+    "request_changes_route": "project/messages/routes/M7-UX-RECOVERY-VALIDATION-001__ROUTE-20260630-LEAD-REQUEST-CHANGES-TO-TEST.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-WRITER-R2-REVIEW__test_engineer.json"
   }
 }
