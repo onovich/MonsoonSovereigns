@@ -14,21 +14,21 @@
         "M7-CONTENT-LOCK-ACCEPTANCE-001",
         "M7-MAP-DECISION-SURFACE-SYNC-001"
       ],
-      "status": "active_m7_map_decision_surface_sync",
+      "status": "awaiting_systems_review",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/m7-map-decision-surface-sync",
-      "updated_at": "2026-06-30T19:32:39.6612127+08:00",
+      "updated_at": "2026-06-30T19:59:35.6875155+08:00",
       "start_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json"
     },
     "client_engineer": {
       "thread_id": "019f184d-4a65-7af3-b367-e2b6932de186",
       "nickname": "Window",
-      "status": "in_progress",
+      "status": "review",
       "role": "client_engineer",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
@@ -39,7 +39,26 @@
       "source_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
       "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
       "started_at": "2026-06-30T19:32:39.6612127+08:00",
-      "updated_at": "2026-06-30T19:32:39.6612127+08:00"
+      "updated_at": "2026-06-30T19:59:35.6875155+08:00",
+      "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c"
+    },
+    "systems_architect": {
+      "thread_id": "019f1866-ee1a-7761-84cc-89490117d92b",
+      "nickname": "Meridian",
+      "status": "in_progress",
+      "role": "systems_architect",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-map-decision-surface-sync",
+      "source_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+      "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+      "started_at": "2026-06-30T19:59:35.6875155+08:00",
+      "updated_at": "2026-06-30T19:59:35.6875155+08:00"
     }
   },
   "last_integrated_task": "M7-CORE-ACTION-LOOP-UX-001",
@@ -930,7 +949,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-30T19:32:39.6612127+08:00",
+  "last_updated_at": "2026-06-30T19:59:35.6875155+08:00",
   "updated_at": "2026-06-29T22:29:07.356Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2000,8 +2019,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "IN_PROGRESS",
-  "next_machine_action": "Wait for M7-MAP-DECISION-SURFACE-SYNC-001 client_engineer writer handoff, then route to systems_architect review.",
+  "current_task_status": "REVIEW",
+  "next_machine_action": "Await M7-MAP-DECISION-SURFACE-SYNC-001 systems_architect review.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3216,7 +3235,7 @@
     ]
   },
   "m7_map_decision_surface_sync": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-MAP-DECISION-SURFACE-SYNC-001",
     "ready_after_task": "M7-CORE-ACTION-LOOP-UX-001",
     "ready_after_main_commit": "3e85ed897a5fae5cda6a1b93cd90558498d1d199",
@@ -3225,7 +3244,7 @@
     "reviewer_role": "systems_architect",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "next_action": "Await client_engineer writer handoff.",
+    "next_action": "Await systems_architect review.",
     "updated_at": "2026-06-30T19:25:37.5986242+08:00",
     "branch_or_worktree": "codex/m7-map-decision-surface-sync",
     "base_main_commit": "26e5bf687e6607bc06a6af345bb0a23b2fcf5ad1",
@@ -3234,6 +3253,14 @@
     "start_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-START__lead_orchestrator.json",
     "route_file": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
     "expected_writer_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
-    "started_at": "2026-06-30T19:32:39.6612127+08:00"
+    "started_at": "2026-06-30T19:32:39.6612127+08:00",
+    "review_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "6b793907fc27308a96b7e2d5fd23da8134b6927c",
+    "review_ready_at": "2026-06-30T19:59:35.6875155+08:00",
+    "systems_thread_id": "019f1866-ee1a-7761-84cc-89490117d92b",
+    "systems_thread_nickname": "Meridian",
+    "systems_route": "project/messages/routes/M7-MAP-DECISION-SURFACE-SYNC-001__ROUTE-20260630-WRITER-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_handoff": "project/messages/outbox/M7-MAP-DECISION-SURFACE-SYNC-001__MSG-20260630-M7-MAP-SYNC-SYSTEMS-REVIEW__systems_architect.json",
+    "routed_to_systems_at": "2026-06-30T19:59:35.6875155+08:00"
   }
 }
