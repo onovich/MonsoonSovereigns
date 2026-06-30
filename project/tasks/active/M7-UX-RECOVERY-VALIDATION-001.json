@@ -2,7 +2,7 @@
   "id": "M7-UX-RECOVERY-VALIDATION-001",
   "summary": "Validate the recovered M7 first-screen/map UX before content lock is reconsidered",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "READY",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -84,12 +84,17 @@
     "UI must use read models and existing GameCommand/query boundaries; do not mutate authoritative WorldState from React, Pixi, or renderer.",
     "Pixi/map presentation is render-cache-only and must remain rebuildable from read models.",
     "No server, multiplayer, telemetry, account, cloud-save implementation, release, commercial, branding, production-art, or paid-service scope is authorized.",
-    "All player-visible text must go through existing i18n boundaries."
+    "All player-visible text must go through existing i18n boundaries.",
+    "Promoted to READY after M7-TASK-RAIL-COLLAPSED-DRAWERS-001 entered origin/main through PR #211."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-29T18:58:16.954Z",
+  "updated_at": "2026-06-30T04:09:46.323Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
-  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db"
+  "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
+  "ready_after_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "ready_after_main_commit": "483bfa742d57b88d25c30baf0450af6df26d8921",
+  "ready_after_pr": 211,
+  "previous_closed_task": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001"
 }
