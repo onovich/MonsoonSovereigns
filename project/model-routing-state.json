@@ -42,13 +42,13 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
-    "updated_at": "2026-06-30T09:46:39.564Z",
+    "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+    "updated_at": "2026-06-30T10:06:55.944Z",
     "concurrent_task_ids": [
       "M7-CONTENT-LOCK-ACCEPTANCE-001",
-      "M7-SYSTEMIC-INTERACTION-RECOVERY-001"
+      "M7-CORE-ACTION-LOOP-UX-001"
     ],
-    "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+    "branch_or_worktree": "codex/close-m7-systemic-interaction-recovery",
     "active_gate_task_id": null
   },
   "retired_lead_threads": [
@@ -1970,18 +1970,17 @@
   ],
   "active_threads": [
     {
-      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "task_id": "M7-CORE-ACTION-LOOP-UX-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_planning_accepted_pending_integration",
+      "status": "active_ready_to_start_core_action_loop",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "Route the second M7 systemic interaction recovery planning package after product-owner REQUEST_CHANGES.",
-      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
-      "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
-      "updated_at": "2026-06-30T10:00:25.039Z"
+      "responsibility": "Start the accepted M7 core action loop UX recovery task after planning closure.",
+      "branch_or_worktree": "codex/close-m7-systemic-interaction-recovery",
+      "updated_at": "2026-06-30T10:06:55.944Z"
     }
   ],
   "task_effects": {
@@ -2578,8 +2577,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package.",
-  "current_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+  "next_action": "Start M7-CORE-ACTION-LOOP-UX-001 with client_engineer writer and gameplay_designer reviewer after closure merge.",
+  "current_task": "M7-CORE-ACTION-LOOP-UX-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2629,7 +2628,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-06-30T10:00:25.039Z",
+  "updated_at": "2026-06-30T10:06:55.944Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2784,7 +2783,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-06-30T10:00:25.039Z",
+  "last_updated_at": "2026-06-30T10:06:55.944Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4975,17 +4974,24 @@
       "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json"
     },
     "M7-SYSTEMIC-INTERACTION-RECOVERY-001": {
-      "status": "ACCEPTED",
+      "status": "CLOSED",
       "owner_role": "lead_orchestrator",
       "reviewer_role": "qa_reviewer",
       "lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
       "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
-      "updated_at": "2026-06-30T10:00:25.039Z",
+      "updated_at": "2026-06-30T10:06:55.944Z",
       "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
       "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
       "accepted_at": "2026-06-30T10:00:25.039Z",
-      "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package."
+      "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package.",
+      "integrated_pr": 215,
+      "integrated_main_commit": "1c86eb860369b7b488a070f55db8efaf76aa05e1",
+      "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T10:06:55.944Z",
+      "next_ready_tasks": [
+        "M7-CORE-ACTION-LOOP-UX-001"
+      ]
     }
   },
   "m7_ux_recovery_validation": {
@@ -5030,15 +5036,19 @@
       "owner_role": "lead_orchestrator",
       "owner_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
       "reviewer_role": "qa_reviewer",
-      "status": "accepted_pending_pr_merge",
+      "status": "closed_integrated",
       "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
       "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
       "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
       "expected_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
-      "updated_at": "2026-06-30T10:00:25.039Z",
+      "updated_at": "2026-06-30T10:06:55.944Z",
       "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
       "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
-      "accepted_at": "2026-06-30T10:00:25.039Z"
+      "accepted_at": "2026-06-30T10:00:25.039Z",
+      "integrated_pr": 215,
+      "integrated_main_commit": "1c86eb860369b7b488a070f55db8efaf76aa05e1",
+      "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-CLOSED__lead_orchestrator.json",
+      "closed_at": "2026-06-30T10:06:55.944Z"
     },
     "M7-CORE-ACTION-LOOP-UX-001": {
       "owner_role": "client_engineer",
@@ -5063,7 +5073,7 @@
     }
   },
   "m7_systemic_interaction_recovery": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
     "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
     "base_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
@@ -5074,10 +5084,17 @@
     "next_ready_after_accept": [
       "M7-CORE-ACTION-LOOP-UX-001"
     ],
-    "updated_at": "2026-06-30T10:00:25.039Z",
+    "updated_at": "2026-06-30T10:06:55.944Z",
     "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
     "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
     "accepted_at": "2026-06-30T10:00:25.039Z",
-    "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package."
+    "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package.",
+    "integrated_pr": 215,
+    "integrated_main_commit": "1c86eb860369b7b488a070f55db8efaf76aa05e1",
+    "lead_close_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T10:06:55.944Z",
+    "next_ready_tasks": [
+      "M7-CORE-ACTION-LOOP-UX-001"
+    ]
   }
 }
