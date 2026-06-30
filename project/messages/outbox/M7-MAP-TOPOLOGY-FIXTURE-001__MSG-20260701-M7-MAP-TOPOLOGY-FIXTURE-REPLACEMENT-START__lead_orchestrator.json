@@ -1,0 +1,51 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-REPLACEMENT-START",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Replace the initial simulation_engineer writer for M7-MAP-TOPOLOGY-FIXTURE-001 after thread 019f1959-d925-7e83-98f6-5c895c98d41f remained running through three wait windows without REVIEW, PARTIAL, or BLOCKED handoff. The existing allowed-path partial diff is inherited and must not be reverted without review.",
+  "artifacts": [
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-REPLACEMENT-START.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "5f5f5af132f6d8558a4446874cc92ad7c9ef2aef",
+  "tests_run": [
+    {
+      "command": "multi_agent_v1.close_agent target=019f1959-d925-7e83-98f6-5c895c98d41f",
+      "exit_code": 0,
+      "result": "Previous status was running; no REVIEW/PARTIAL/BLOCKED handoff was returned."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Allowed-path implementation changes from the prior writer are present and must be inherited by the replacement writer."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "REPLACE_STALLED_WRITER",
+      "decision": "Close Clockwork and assign replacement simulation_engineer Engine as the sole active writer."
+    },
+    {
+      "id": "INHERIT_PARTIAL_DIFF",
+      "decision": "Do not revert the existing allowed-path partial diff; replacement writer must review, complete, test, and document it."
+    }
+  ],
+  "risks": [
+    {
+      "id": "UNHANDOFFED_PARTIAL_DIFF",
+      "severity": "R4",
+      "summary": "The prior writer changed implementation files without a structured handoff.",
+      "mitigation": "Replacement writer must inspect the full diff, finish or correct it, run required tests, and create a valid REVIEW handoff before any reviewer can accept."
+    }
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Inherit the existing partial diff, complete M7-MAP-TOPOLOGY-FIXTURE-001 within allowed paths, and return a valid REVIEW handoff to historical_researcher.",
+  "created_at": "2026-07-01T01:03:44.0642877+08:00"
+}

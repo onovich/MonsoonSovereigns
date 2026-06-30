@@ -1,0 +1,27 @@
+{
+  "route_id": "ROUTE-20260701-LEAD-TO-SIMULATION-REPLACEMENT-START",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "simulation_engineer",
+  "to_thread_id": "019f197c-401c-7231-b47f-bee31d1308af",
+  "to_thread_nickname": "Engine",
+  "status": "SENT",
+  "sent_at": "2026-07-01T01:03:44.0642877+08:00",
+  "route_submission_id": "019f197e-9d7c-7af1-bdbc-036a9cb4c002",
+  "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-REPLACEMENT-START__lead_orchestrator.json",
+  "previous_route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+  "replaces_thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
+  "replaces_thread_nickname": "Clockwork",
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "base_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
+  "requested_action": "Inherit the allowed-path partial diff left by the replaced writer, complete topology fixture migration and tests, and produce the required REVIEW handoff.",
+  "spawned_agent_id": "019f197c-401c-7231-b47f-bee31d1308af",
+  "partial_diff_policy": "inherit_without_reverting",
+  "notes": [
+    "The previous writer left implementation changes in allowed paths but no handoff.",
+    "Do not modify forbidden paths.",
+    "Do not revert the inherited partial diff unless a specific line is proven wrong and the correction remains within task scope.",
+    "Expected next review path after writer REVIEW is historical_researcher, systems_architect, and qa_reviewer."
+  ]
+}
