@@ -2,7 +2,7 @@
   "id": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
   "summary": "Validate the systemic M7 interaction recovery before content lock reconsideration",
   "milestone": "M7",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "owner_role": "test_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R4",
@@ -78,8 +78,33 @@
     "screenshot evidence for 1440x900 and at least one smaller supported viewport",
     "manual-smoke notes that name what the player can do next and how command result feedback appears"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_started_task",
+      "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+      "start_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
+      "updated_at": "2026-06-30T20:32:45.8274835+08:00"
+    },
+    "test_engineer": {
+      "thread_id": "019f1884-3ea6-7672-8235-69d0fb8f9591",
+      "nickname": "Probe",
+      "status": "in_progress",
+      "role": "test_engineer",
+      "configured_model": "gpt-5.4-mini",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/m7-systemic-interaction-validation",
+      "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
+      "source_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json",
+      "started_at": "2026-06-30T20:32:45.8274835+08:00",
+      "updated_at": "2026-06-30T20:32:45.8274835+08:00"
+    }
+  },
   "route_to": "qa_reviewer",
   "notes": [
     "This is a product-owner REQUEST_CHANGES recovery path. It must not approve formal M7 content lock.",
@@ -90,7 +115,7 @@
     "All player-visible text must pass through existing i18n boundaries."
   ],
   "created_at": "2026-06-30T09:46:39.564Z",
-  "updated_at": "2026-06-30T20:25:35.5998964+08:00",
+  "updated_at": "2026-06-30T20:32:45.8274835+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
@@ -98,7 +123,11 @@
   "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
   "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
   "ready_after_task": "M7-MAP-DECISION-SURFACE-SYNC-001",
-  "ready_after_main_commit": "28ef1a3f5d59fca4dea1be680565c4df988387e1",
+  "ready_after_main_commit": "88ad6146a9d47bf98e3643a218bce6fc8b17dccd",
   "ready_after_pr": 219,
-  "next_action": "Start with test_engineer writer and qa_reviewer reviewer after M7-MAP-DECISION-SURFACE-SYNC-001 closure checkpoint is integrated."
+  "next_action": "Await test_engineer writer validation handoff for qa_reviewer review.",
+  "started_at": "2026-06-30T20:32:45.8274835+08:00",
+  "start_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-SYSTEMIC-INTERACTION-VALIDATION-001__ROUTE-20260630-LEAD-TO-TEST-START.json",
+  "expected_writer_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-WRITER-REVIEW__test_engineer.json"
 }
