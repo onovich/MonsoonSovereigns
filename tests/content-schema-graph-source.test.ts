@@ -80,7 +80,12 @@ describe("M2 world fixture source schema", () => {
           sourceId: "district-001",
           displayNameKey: "content.m2.prototype.district_001",
           regionalCurveId: "curve-001",
-          mapGeometryId: "geom-district-001"
+          mapGeometryId: "geom-district-001",
+          topologyMetadata: {
+            historicity: "FICTIONAL",
+            terrainClass: "lowland",
+            riskClass: "low"
+          }
         }
       ],
       settlements: [
@@ -192,6 +197,35 @@ describe("M2 world fixture source schema", () => {
           baseTravelCost: 10
         }
       ],
+      topology: {
+        adjacencyDerivation: "explicit-route-graph-v1",
+        explicitIsolations: [],
+        routeNodes: [],
+        routeEdges: [
+          {
+            routeId: "route-001",
+            sourceId: "topology-route-001",
+            from: { kind: "district", districtId: "district-001" },
+            to: { kind: "district", districtId: "district-001" },
+            mode: "road",
+            baseCapacity: 100,
+            seasonality: [
+              {
+                month: 1,
+                costMultiplierBps: 10000,
+                capacityMultiplierBps: 10000,
+                reasonCodes: ["content.m2.prototype.route.season_neutral"]
+              }
+            ],
+            availability: { kind: "open" },
+            metadata: {
+              historicity: "FICTIONAL",
+              terrainClass: "lowland",
+              riskClass: "low"
+            }
+          }
+        ]
+      },
       mapGeometries: [
         {
           sourceId: "geom-district-001",
