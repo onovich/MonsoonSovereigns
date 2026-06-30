@@ -177,7 +177,46 @@ describe("M2 runtime world content pack", () => {
           anchor: { x: 5, y: 5 },
           points: []
         }
-      ]
+      ],
+      topology: {
+        adjacencyDerivation: "explicit-route-graph-v1",
+        explicitIsolations: [],
+        districts: [
+          {
+            districtId: 1,
+            sourceId: "district-001",
+            displayNameKey: "content.m2.prototype.district_001",
+            anchor: { x: 0, y: 0 },
+            polygon: [
+              { x: 0, y: 0 },
+              { x: 10, y: 0 },
+              { x: 10, y: 10 },
+              { x: 0, y: 10 }
+            ],
+            metadata: { historicity: "COMPOSITE", terrainClass: "lowland", riskClass: "low" }
+          }
+        ],
+        routeNodes: [],
+        routeEdges: [
+          {
+            routeId: 1,
+            sourceId: "topology-route-001",
+            from: { kind: "district", districtId: 1 },
+            to: { kind: "settlement", settlementId: 1 },
+            mode: "road",
+            baseTravelCost: 10,
+            baseCapacity: 100,
+            seasonality: Array.from({ length: 12 }, (_, index) => ({
+              month: index + 1,
+              costMultiplierBps: 10000,
+              capacityMultiplierBps: 10000,
+              reasonCodes: [`runtime.test.month.${index + 1}`]
+            })),
+            availability: { kind: "open" },
+            metadata: { historicity: "COMPOSITE", terrainClass: "lowland", riskClass: "low" }
+          }
+        ]
+      }
     });
     const index = createRuntimeM2WorldContentPackIndexV0(pack);
 

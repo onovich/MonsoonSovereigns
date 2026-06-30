@@ -1,0 +1,25 @@
+{
+  "route_id": "ROUTE-20260701-WRITER-R2-TO-QA-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f1998-24ad-7452-9179-6f3afb1cb252",
+  "to_thread_nickname": "Auditor the 2nd",
+  "status": "SENT",
+  "sent_at": "2026-06-30T17:55:02.765Z",
+  "route_submission_id": "019f19aa-a4b3-74b2-8ea8-239004e10f36",
+  "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+  "previous_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW__qa_reviewer.json",
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "review_commit": "effaa013429805bffc597e58718e30aed75ae7ab",
+  "writer_head_commit": "9046abdc7f1b2e9d0fbf47a55ee636b94a631068",
+  "writer_thread_id": "019f197c-401c-7231-b47f-bee31d1308af",
+  "writer_thread_nickname": "Engine",
+  "requested_action": "Re-review R2 fix for the default sim-core test timeout and either ACCEPT, REQUEST_CHANGES, or BLOCK.",
+  "notes": [
+    "R2 changed only tests/sim-core-m2-economy-population.test.ts according to writer handoff.",
+    "QA should verify the default checked-in pnpm --filter @monsoon/sim-core test passes without manual timeout flags.",
+    "This review does not approve M7 content lock or downstream client map rendering."
+  ]
+}

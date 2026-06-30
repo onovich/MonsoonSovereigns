@@ -1,0 +1,112 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-LEAD-ACCEPT",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Lead accepts M7-MAP-TOPOLOGY-FIXTURE-001 after historical_researcher ACCEPT, systems_architect ACCEPT, independent QA R2 ACCEPT, and lead rerun of the required integration gates. The default prototype fixture now uses explicit COMPOSITE topology and route graph authority rather than rectangular row/column, hex, sequential-id, or hidden-lattice adjacency; R2 stabilized the default sim-core package test without lowering property coverage. This acceptance does not approve M7 content lock and does not approve downstream client map rendering or hit testing.",
+  "artifacts": [
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "apps/content-tools/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-economy-population.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "effaa013429805bffc597e58718e30aed75ae7ab",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-R2-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID QA R2 handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed; m2.prototype-world-30-districts remained districts=14 settlements=6 routes=25 mapGeometries=20 manifestHash=d474a105."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 16 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 38 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed under the checked-in default package command: 26 test files, 198 tests. Existing MODULE_TYPELESS_PACKAGE_JSON warning observed for deterministic-rng-worker fixture."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "LEAD_ACCEPT_EXPLICIT_TOPOLOGY_FIXTURE",
+      "decision": "ACCEPT. Default fixture/content/compiler/runtime/sim-core step now satisfies the anti-grid/lattice topology migration requirements and has independent historical, systems, and QA acceptance."
+    },
+    {
+      "id": "LEAD_ACCEPT_R2_TEST_STABILIZATION",
+      "decision": "ACCEPT. R2 only adds a narrow 15s timeout to the expensive M2 economy property test and preserves numRuns=24, seed=1531, generated ranges, command path, and invariant assertions."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "This task acceptance does not reopen or approve M7 content lock. Full topology recovery still requires downstream client topology consumption and validation before product-owner reconsideration."
+    },
+    {
+      "id": "CLIENT_SCOPE_STILL_PENDING",
+      "decision": "M7-MAP-TOPOLOGY-CLIENT-001 remains required for rendering, polygon hit testing, and player-facing route semantics. This fixture task did not modify client/map-renderer UI scope."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_CLIENT_TOPOLOGY_PENDING",
+      "severity": "R4",
+      "summary": "Client rendering, hit testing, and default route semantics must consume topology read models in M7-MAP-TOPOLOGY-CLIENT-001 before content-lock reconsideration."
+    },
+    {
+      "id": "FORMAL_CONTENT_LOCK_NOT_APPROVED",
+      "severity": "R4",
+      "summary": "M7 content lock remains blocked until the full topology recovery chain validates and the product owner explicitly reconsiders."
+    },
+    {
+      "id": "PROPERTY_RUNTIME_COST_REMAINS",
+      "severity": "R2",
+      "summary": "The M2 economy property test remains intentionally expensive; R2 stabilizes it with local timeout without reducing coverage."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Open PR for M7-MAP-TOPOLOGY-FIXTURE-001, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted branch. Continue to the next topology recovery task after closure.",
+  "created_at": "2026-06-30T18:02:48.925Z"
+}

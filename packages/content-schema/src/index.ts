@@ -16,12 +16,28 @@ export type M1GraphEdgeDirection = "directed" | "bidirectional";
 export type M2WorldFixtureSourceKind = "m2.prototype-world-fixture";
 export type M2WorldFixtureKind = "prototype-world-fixture";
 export type M2WorldSyntheticScope = "m2-prototype-only";
-export type M2WorldHistoricity = "FICTIONAL";
+export type M2WorldHistoricity = "COMPOSITE" | "FICTIONAL";
 export type M2WorldSourceCategory = "validation-only-fixture";
 export type M2WorldConfidence = "LOW";
 export type M2RouteKind = "road" | "river" | "coast";
 export type M2MapGeometryOwnerKind = "district" | "settlement";
 export type M2MapGeometryKind = "polygon" | "point";
+export type M2TopologyAdjacencyDerivation = "explicit-route-graph-v1";
+export type M2TopologyHistoricity = "COMPOSITE" | "FICTIONAL";
+export type M2TopologyTerrainClass =
+  | "coastal"
+  | "lowland"
+  | "pass"
+  | "riverine"
+  | "upland"
+  | "urban"
+  | "unknown";
+export type M2TopologyRiskClass = "contested" | "hazardous" | "low" | "seasonal" | "unknown";
+export type M2TopologyRouteNodeKind = "pass" | "port" | "special" | "warehouse";
+export type M2TopologyRouteAvailability =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
 export type M3PolityVassalageFixtureSourceKind = "m3.polity-vassalage-fixture";
 export type M3PolityVassalageFixtureKind = "polity-vassalage-fixture";
 export type M3PolityVassalageSyntheticScope = "m3-validation-only";
@@ -80,6 +96,28 @@ const M3_ENFEOFFMENT_TRIGGERS: readonly M3EnfeoffmentTrigger[] = [
   "on-vacancy",
   "on-succession-contest"
 ];
+const M2_TOPOLOGY_TERRAIN_CLASSES: readonly M2TopologyTerrainClass[] = [
+  "coastal",
+  "lowland",
+  "pass",
+  "riverine",
+  "upland",
+  "urban",
+  "unknown"
+];
+const M2_TOPOLOGY_RISK_CLASSES: readonly M2TopologyRiskClass[] = [
+  "contested",
+  "hazardous",
+  "low",
+  "seasonal",
+  "unknown"
+];
+const M2_TOPOLOGY_NODE_KINDS: readonly M2TopologyRouteNodeKind[] = [
+  "pass",
+  "port",
+  "special",
+  "warehouse"
+];
 
 export interface ContentSchemaError {
   readonly code: ContentSchemaErrorCode;
@@ -122,6 +160,7 @@ export interface M2WorldDistrictSourceV0 {
   readonly displayNameKey: string;
   readonly regionalCurveId: string;
   readonly mapGeometryId: string;
+  readonly topologyMetadata: M2TopologyMetadataSourceV0;
 }
 
 export interface M2WorldSettlementSourceV0 {
@@ -167,6 +206,56 @@ export interface M2WorldMapGeometrySourceV0 {
   readonly points: readonly M2WorldMapPointSourceV0[];
 }
 
+export interface M2TopologyMetadataSourceV0 {
+  readonly historicity: M2TopologyHistoricity;
+  readonly terrainClass: M2TopologyTerrainClass;
+  readonly riskClass: M2TopologyRiskClass;
+}
+
+export interface M2TopologyExplicitIsolationSourceV0 {
+  readonly districtId: string;
+  readonly reasonCode: string;
+}
+
+export interface M2TopologyRouteNodeSourceV0 {
+  readonly nodeId: string;
+  readonly nodeKind: M2TopologyRouteNodeKind;
+  readonly districtId: string;
+  readonly displayNameKey: string;
+  readonly anchor: M2WorldMapPointSourceV0;
+}
+
+export type M2TopologyRouteEndpointSourceV0 =
+  | { readonly kind: "district"; readonly districtId: string }
+  | { readonly kind: "route-node"; readonly nodeId: string }
+  | { readonly kind: "settlement"; readonly settlementId: string };
+
+export interface M2TopologySeasonalModifierSourceV0 {
+  readonly month: number;
+  readonly costMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface M2TopologyRouteEdgeSourceV0 {
+  readonly routeId: string;
+  readonly sourceId: string;
+  readonly from: M2TopologyRouteEndpointSourceV0;
+  readonly to: M2TopologyRouteEndpointSourceV0;
+  readonly mode: M2RouteKind;
+  readonly baseCapacity: number;
+  readonly seasonality: readonly M2TopologySeasonalModifierSourceV0[];
+  readonly availability: M2TopologyRouteAvailability;
+  readonly metadata: M2TopologyMetadataSourceV0;
+}
+
+export interface M2TopologySourceV0 {
+  readonly adjacencyDerivation: M2TopologyAdjacencyDerivation;
+  readonly explicitIsolations: readonly M2TopologyExplicitIsolationSourceV0[];
+  readonly routeNodes: readonly M2TopologyRouteNodeSourceV0[];
+  readonly routeEdges: readonly M2TopologyRouteEdgeSourceV0[];
+}
+
 export interface M2WorldFixtureSourceV0 {
   readonly schemaVersion: typeof M2_WORLD_FIXTURE_SOURCE_V0_SCHEMA_VERSION;
   readonly kind: M2WorldFixtureSourceKind;
@@ -180,6 +269,7 @@ export interface M2WorldFixtureSourceV0 {
   readonly regionalSeasonalCurves: readonly M2WorldRegionalSeasonalCurveSourceV0[];
   readonly routes: readonly M2WorldRouteSourceV0[];
   readonly mapGeometries: readonly M2WorldMapGeometrySourceV0[];
+  readonly topology: M2TopologySourceV0;
 }
 
 export interface M3PolityVassalageFixtureProvenanceV0 {
@@ -416,6 +506,11 @@ export function validateM2WorldFixtureSourceV0(input: unknown): readonly Content
     );
   }
 
+  const topology = input["topology"];
+  if (isRecord(topology)) {
+    validateM2Topology(topology, errors);
+  }
+
   return errors;
 }
 
@@ -561,13 +656,14 @@ export function parseM2WorldFixtureSourceV0(input: unknown): M2WorldFixtureSourc
     fixtureId: readString(input, "fixtureId"),
     fixtureKind: "prototype-world-fixture",
     syntheticScope: "m2-prototype-only",
-    historicity: "FICTIONAL",
+    historicity: readM2WorldHistoricity(input, "historicity"),
     provenance: parseM2Provenance(readRecord(input, "provenance")),
     districts: readArray(input, "districts").map(parseM2District),
     settlements: readArray(input, "settlements").map(parseM2Settlement),
     regionalSeasonalCurves: readArray(input, "regionalSeasonalCurves").map(parseM2RegionalCurve),
     routes: readArray(input, "routes").map(parseM2Route),
-    mapGeometries: readArray(input, "mapGeometries").map(parseM2MapGeometry)
+    mapGeometries: readArray(input, "mapGeometries").map(parseM2MapGeometry),
+    topology: parseM2Topology(readRecord(input, "topology"))
   };
 }
 
@@ -656,7 +752,7 @@ function validateM2Root(input: Record<string, unknown>, errors: ContentSchemaErr
   validateNonEmptyString(input, "fixtureId", errors);
   validateExactString(input, "fixtureKind", "prototype-world-fixture", errors);
   validateExactString(input, "syntheticScope", "m2-prototype-only", errors);
-  validateExactString(input, "historicity", "FICTIONAL", errors);
+  validateStringUnion(input, "historicity", "historicity", ["COMPOSITE", "FICTIONAL"], errors);
   if (!isRecord(input["provenance"])) {
     errors.push({
       code: "invalid-schema",
@@ -669,6 +765,13 @@ function validateM2Root(input: Record<string, unknown>, errors: ContentSchemaErr
   validateArray(input, "regionalSeasonalCurves", errors);
   validateArray(input, "routes", errors);
   validateArray(input, "mapGeometries", errors);
+  if (!isRecord(input["topology"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: "topology",
+      message: "topology must be an object."
+    });
+  }
 }
 
 function validateM3Root(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
@@ -1203,6 +1306,15 @@ function validateM2District(input: unknown, path: string, errors: ContentSchemaE
     /^geom-district-\d{3}$/u,
     errors
   );
+  if (!isRecord(input["topologyMetadata"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.topologyMetadata`,
+      message: "topologyMetadata must be an object."
+    });
+  } else {
+    validateM2TopologyMetadata(input["topologyMetadata"], `${path}.topologyMetadata`, errors);
+  }
 }
 
 function validateM2Settlement(input: unknown, path: string, errors: ContentSchemaError[]): void {
@@ -1366,6 +1478,225 @@ function validateM2MapGeometry(input: unknown, path: string, errors: ContentSche
   }
 }
 
+function validateM2Topology(input: Record<string, unknown>, errors: ContentSchemaError[]): void {
+  validateExactString(
+    input,
+    "adjacencyDerivation",
+    "explicit-route-graph-v1",
+    errors,
+    "topology.adjacencyDerivation"
+  );
+  validateArray(input, "explicitIsolations", errors, "topology.explicitIsolations");
+  validateArray(input, "routeNodes", errors, "topology.routeNodes");
+  validateArray(input, "routeEdges", errors, "topology.routeEdges");
+
+  const isolations = input["explicitIsolations"];
+  if (Array.isArray(isolations)) {
+    isolations.forEach((entry, index) =>
+      validateM2TopologyIsolation(entry, `topology.explicitIsolations[${index}]`, errors)
+    );
+  }
+
+  const nodes = input["routeNodes"];
+  if (Array.isArray(nodes)) {
+    nodes.forEach((node, index) =>
+      validateM2TopologyRouteNode(node, `topology.routeNodes[${index}]`, errors)
+    );
+  }
+
+  const edges = input["routeEdges"];
+  if (Array.isArray(edges)) {
+    edges.forEach((edge, index) =>
+      validateM2TopologyRouteEdge(edge, `topology.routeEdges[${index}]`, errors)
+    );
+  }
+}
+
+function validateM2TopologyMetadata(
+  input: Record<string, unknown>,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  validateStringUnion(
+    input,
+    "historicity",
+    `${path}.historicity`,
+    ["COMPOSITE", "FICTIONAL"],
+    errors
+  );
+  validateStringUnion(
+    input,
+    "terrainClass",
+    `${path}.terrainClass`,
+    M2_TOPOLOGY_TERRAIN_CLASSES,
+    errors
+  );
+  validateStringUnion(input, "riskClass", `${path}.riskClass`, M2_TOPOLOGY_RISK_CLASSES, errors);
+}
+
+function validateM2TopologyIsolation(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "Topology isolation must be an object." });
+    return;
+  }
+  validatePatternString(input, "districtId", `${path}.districtId`, /^district-\d{3}$/u, errors);
+  validateNonEmptyString(input, "reasonCode", errors, `${path}.reasonCode`);
+}
+
+function validateM2TopologyRouteNode(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "Topology route node must be an object."
+    });
+    return;
+  }
+  validatePatternString(input, "nodeId", `${path}.nodeId`, /^node-[a-z0-9-]+$/u, errors);
+  validateStringUnion(input, "nodeKind", `${path}.nodeKind`, M2_TOPOLOGY_NODE_KINDS, errors);
+  validatePatternString(input, "districtId", `${path}.districtId`, /^district-\d{3}$/u, errors);
+  validatePatternString(
+    input,
+    "displayNameKey",
+    `${path}.displayNameKey`,
+    /^content\.m2\.prototype\.route_node\.[a-z0-9_.-]+$/u,
+    errors
+  );
+  if (!isRecord(input["anchor"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.anchor`,
+      message: "anchor must be an object."
+    });
+  } else {
+    validateM2Point(input["anchor"], `${path}.anchor`, errors);
+  }
+}
+
+function validateM2TopologyRouteEdge(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "Topology route edge must be an object."
+    });
+    return;
+  }
+  validatePatternString(input, "routeId", `${path}.routeId`, /^route-\d{3}$/u, errors);
+  validatePatternString(input, "sourceId", `${path}.sourceId`, /^topology-route-\d{3}$/u, errors);
+  validateM2TopologyEndpoint(input["from"], `${path}.from`, errors);
+  validateM2TopologyEndpoint(input["to"], `${path}.to`, errors);
+  validateStringUnion(input, "mode", `${path}.mode`, ["road", "river", "coast"], errors);
+  validatePositiveInteger(input, "baseCapacity", `${path}.baseCapacity`, errors);
+  validateArray(input, "seasonality", errors, `${path}.seasonality`);
+  const seasonality = input["seasonality"];
+  if (Array.isArray(seasonality)) {
+    seasonality.forEach((entry, index) =>
+      validateM2TopologySeasonality(entry, `${path}.seasonality[${index}]`, errors)
+    );
+  }
+  validateM2TopologyAvailability(input["availability"], `${path}.availability`, errors);
+  if (!isRecord(input["metadata"])) {
+    errors.push({
+      code: "invalid-schema",
+      path: `${path}.metadata`,
+      message: "metadata must be an object."
+    });
+  } else {
+    validateM2TopologyMetadata(input["metadata"], `${path}.metadata`, errors);
+  }
+}
+
+function validateM2TopologyEndpoint(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({ code: "invalid-schema", path, message: "Topology endpoint must be an object." });
+    return;
+  }
+  const kind = input["kind"];
+  validateStringUnion(
+    input,
+    "kind",
+    `${path}.kind`,
+    ["district", "route-node", "settlement"],
+    errors
+  );
+  if (kind === "district") {
+    validatePatternString(input, "districtId", `${path}.districtId`, /^district-\d{3}$/u, errors);
+  } else if (kind === "route-node") {
+    validatePatternString(input, "nodeId", `${path}.nodeId`, /^node-[a-z0-9-]+$/u, errors);
+  } else if (kind === "settlement") {
+    validatePatternString(
+      input,
+      "settlementId",
+      `${path}.settlementId`,
+      /^settlement-\d{3}$/u,
+      errors
+    );
+  }
+}
+
+function validateM2TopologySeasonality(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "Topology seasonality must be an object."
+    });
+    return;
+  }
+  validateIntegerInRange(input, "month", `${path}.month`, 1, 12, errors);
+  validateIntegerInRange(input, "costMultiplierBps", `${path}.costMultiplierBps`, 1, 30000, errors);
+  validateIntegerInRange(
+    input,
+    "capacityMultiplierBps",
+    `${path}.capacityMultiplierBps`,
+    0,
+    30000,
+    errors
+  );
+  validateStringArray(input, "reasonCodes", `${path}.reasonCodes`, errors);
+}
+
+function validateM2TopologyAvailability(
+  input: unknown,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  if (!isRecord(input)) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "Topology availability must be an object."
+    });
+    return;
+  }
+  const kind = input["kind"];
+  validateStringUnion(input, "kind", `${path}.kind`, ["blocked", "open", "unknown"], errors);
+  if (kind === "blocked" || kind === "unknown") {
+    validateNonEmptyString(input, "reasonCode", errors, `${path}.reasonCode`);
+  }
+}
+
 function validateM2Point(input: unknown, path: string, errors: ContentSchemaError[]): void {
   if (!isRecord(input)) {
     errors.push({ code: "invalid-schema", path, message: "Map point must be an object." });
@@ -1499,7 +1830,8 @@ function parseM2District(input: unknown): M2WorldDistrictSourceV0 {
     sourceId: readString(input, "sourceId"),
     displayNameKey: readString(input, "displayNameKey"),
     regionalCurveId: readString(input, "regionalCurveId"),
-    mapGeometryId: readString(input, "mapGeometryId")
+    mapGeometryId: readString(input, "mapGeometryId"),
+    topologyMetadata: parseM2TopologyMetadata(readRecord(input, "topologyMetadata"))
   };
 }
 
@@ -1568,6 +1900,100 @@ function parseM2MapGeometry(input: unknown): M2WorldMapGeometrySourceV0 {
     geometryKind: readM2MapGeometryKind(input, "geometryKind"),
     anchor: parseM2Point(readRecord(input, "anchor")),
     points: readArray(input, "points").map(parseM2Point)
+  };
+}
+
+function parseM2Topology(input: Record<string, unknown>): M2TopologySourceV0 {
+  return {
+    adjacencyDerivation: "explicit-route-graph-v1",
+    explicitIsolations: readArray(input, "explicitIsolations").map(parseM2TopologyIsolation),
+    routeNodes: readArray(input, "routeNodes").map(parseM2TopologyRouteNode),
+    routeEdges: readArray(input, "routeEdges").map(parseM2TopologyRouteEdge)
+  };
+}
+
+function parseM2TopologyIsolation(input: unknown): M2TopologyExplicitIsolationSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid topology isolation entry.");
+  }
+  return {
+    districtId: readString(input, "districtId"),
+    reasonCode: readString(input, "reasonCode")
+  };
+}
+
+function parseM2TopologyRouteNode(input: unknown): M2TopologyRouteNodeSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid topology route node entry.");
+  }
+  return {
+    nodeId: readString(input, "nodeId"),
+    nodeKind: readM2TopologyNodeKind(input, "nodeKind"),
+    districtId: readString(input, "districtId"),
+    displayNameKey: readString(input, "displayNameKey"),
+    anchor: parseM2Point(readRecord(input, "anchor"))
+  };
+}
+
+function parseM2TopologyRouteEdge(input: unknown): M2TopologyRouteEdgeSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid topology route edge entry.");
+  }
+  return {
+    routeId: readString(input, "routeId"),
+    sourceId: readString(input, "sourceId"),
+    from: parseM2TopologyEndpoint(readRecord(input, "from")),
+    to: parseM2TopologyEndpoint(readRecord(input, "to")),
+    mode: readM2RouteKind(input, "mode"),
+    baseCapacity: readPositiveInteger(input, "baseCapacity"),
+    seasonality: readArray(input, "seasonality").map(parseM2TopologySeasonality),
+    availability: parseM2TopologyAvailability(readRecord(input, "availability")),
+    metadata: parseM2TopologyMetadata(readRecord(input, "metadata"))
+  };
+}
+
+function parseM2TopologyEndpoint(input: Record<string, unknown>): M2TopologyRouteEndpointSourceV0 {
+  const kind = readString(input, "kind");
+  if (kind === "district") {
+    return { kind, districtId: readString(input, "districtId") };
+  }
+  if (kind === "route-node") {
+    return { kind, nodeId: readString(input, "nodeId") };
+  }
+  if (kind === "settlement") {
+    return { kind, settlementId: readString(input, "settlementId") };
+  }
+  throw new Error("Expected valid topology endpoint kind.");
+}
+
+function parseM2TopologySeasonality(input: unknown): M2TopologySeasonalModifierSourceV0 {
+  if (!isRecord(input)) {
+    throw new Error("Expected valid topology seasonality entry.");
+  }
+  return {
+    month: readIntegerInRange(input, "month", 1, 12),
+    costMultiplierBps: readIntegerInRange(input, "costMultiplierBps", 1, 30000),
+    capacityMultiplierBps: readIntegerInRange(input, "capacityMultiplierBps", 0, 30000),
+    reasonCodes: readArray(input, "reasonCodes").map(readStringValue)
+  };
+}
+
+function parseM2TopologyAvailability(input: Record<string, unknown>): M2TopologyRouteAvailability {
+  const kind = readString(input, "kind");
+  if (kind === "open") {
+    return { kind };
+  }
+  if (kind === "blocked" || kind === "unknown") {
+    return { kind, reasonCode: readString(input, "reasonCode") };
+  }
+  throw new Error("Expected valid topology availability kind.");
+}
+
+function parseM2TopologyMetadata(input: Record<string, unknown>): M2TopologyMetadataSourceV0 {
+  return {
+    historicity: readM2TopologyHistoricity(input, "historicity"),
+    terrainClass: readM2TopologyTerrainClass(input, "terrainClass"),
+    riskClass: readM2TopologyRiskClass(input, "riskClass")
   };
 }
 
@@ -1875,6 +2301,27 @@ function validateNullableString(
   });
 }
 
+function validateStringArray(
+  record: Record<string, unknown>,
+  key: string,
+  path: string,
+  errors: ContentSchemaError[]
+): void {
+  const value = record[key];
+  if (
+    Array.isArray(value) &&
+    value.every((entry) => typeof entry === "string" && entry.length > 0)
+  ) {
+    return;
+  }
+
+  errors.push({
+    code: "invalid-schema",
+    path,
+    message: `${path} must be an array of non-empty strings.`
+  });
+}
+
 function validateStringUnion(
   record: Record<string, unknown>,
   key: string,
@@ -2061,6 +2508,63 @@ function readM2RouteKind(record: Record<string, unknown>, key: string): M2RouteK
   }
 
   throw new Error(`${key} must be a valid M2 route kind.`);
+}
+
+function readM2WorldHistoricity(record: Record<string, unknown>, key: string): M2WorldHistoricity {
+  const value = readString(record, key);
+  if (value === "COMPOSITE" || value === "FICTIONAL") {
+    return value;
+  }
+
+  throw new Error(`${key} must be COMPOSITE or FICTIONAL.`);
+}
+
+function readM2TopologyNodeKind(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyRouteNodeKind {
+  const value = readString(record, key);
+  if (M2_TOPOLOGY_NODE_KINDS.includes(value as M2TopologyRouteNodeKind)) {
+    return value as M2TopologyRouteNodeKind;
+  }
+
+  throw new Error(`${key} must be a valid M2 topology route node kind.`);
+}
+
+function readM2TopologyHistoricity(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyHistoricity {
+  const value = readString(record, key);
+  if (value === "COMPOSITE" || value === "FICTIONAL") {
+    return value;
+  }
+
+  throw new Error(`${key} must be COMPOSITE or FICTIONAL.`);
+}
+
+function readM2TopologyTerrainClass(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyTerrainClass {
+  const value = readString(record, key);
+  if (M2_TOPOLOGY_TERRAIN_CLASSES.includes(value as M2TopologyTerrainClass)) {
+    return value as M2TopologyTerrainClass;
+  }
+
+  throw new Error(`${key} must be a valid M2 topology terrain class.`);
+}
+
+function readM2TopologyRiskClass(
+  record: Record<string, unknown>,
+  key: string
+): M2TopologyRiskClass {
+  const value = readString(record, key);
+  if (M2_TOPOLOGY_RISK_CLASSES.includes(value as M2TopologyRiskClass)) {
+    return value as M2TopologyRiskClass;
+  }
+
+  throw new Error(`${key} must be a valid M2 topology risk class.`);
 }
 
 function readM2MapGeometryOwnerKind(

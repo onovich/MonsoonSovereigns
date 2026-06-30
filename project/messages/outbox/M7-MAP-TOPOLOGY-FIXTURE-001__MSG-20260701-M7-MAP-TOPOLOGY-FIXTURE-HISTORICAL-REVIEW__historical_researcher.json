@@ -1,0 +1,117 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "historical_researcher",
+  "status": "ACCEPT",
+  "summary": "Accepted the M7 prototype topology fixture from a historical and cultural-risk perspective. The reviewed fixture is clearly marked as low-confidence COMPOSITE validation content, uses generic district/settlement ids and localization keys rather than real historical names, and does not assert exact historical borders, ports, rivers, roads, route importance, ethnic identity, religious claims, or political control facts.",
+  "artifacts": [
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-HISTORICAL-REVIEW.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Reviewed branch codex/m7-map-topology-fixture. Pre-existing coordination changes were present in project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json, and writer-to-review route files. No source/content files were modified by this review."
+    },
+    {
+      "command": "Read AGENTS.md, PROJECT_STATUS.md tail, docs/09-world-history-culture.md, docs/10-historical-research-policy.md, docs/16-research-bibliography.md, docs/19-data-schema-guide.md, docs/decisions/ADR-010-map-topology.md, task JSON, writer handoff, route handoff, fixture JSON, and relevant branch diff/commit metadata.",
+      "exit_code": 0,
+      "result": "Historical review context confirmed: low-fidelity COMPOSITE prototype content is allowed only when it does not masquerade as formal historical geography or cultural content."
+    },
+    {
+      "command": "Select-String real-name scan over content-source/m2-fixtures/prototype-world-30-districts.json for Toungoo, Pegu, Ava, Hanthawaddy, Ayutthaya, Mrauk, Arakan, Irrawaddy, Salween, Mekong, Chao, Lan Na, Lan Xang, Shan, Burman, Thai, Lao, and Bengal.",
+      "exit_code": 0,
+      "result": "No real historical place, polity, ethnic, or regional names were found in the reviewed fixture. Matches in a broader scan were generic terms such as monsoon/month/river/coast/pass or came from unrelated content-source files."
+    },
+    {
+      "command": "Node JSON extraction of fixture metadata, provenance, districts, settlements, route nodes, and topology route edges.",
+      "exit_code": 0,
+      "result": "Confirmed top-level historicity=COMPOSITE, syntheticScope=m2-prototype-only, provenance.sourceCategory=validation-only-fixture, provenance.confidence=LOW, generic district/settlement ids, generic displayNameKey values, and COMPOSITE metadata on district and route-edge records."
+    },
+    {
+      "command": "git show --stat --oneline 69031120de52949f9ed17289f3b2ef1f258e48ab",
+      "exit_code": 0,
+      "result": "Reviewed writer commit scope: content fixture migration plus compiler/runtime/sim-core/test changes. Historical review focused on content-source/m2-fixtures/prototype-world-30-districts.json and source-claim implications."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "HISTORICAL_FIXTURE_ACCEPT",
+      "decision": "ACCEPT for historical/cultural risk review. The fixture's district ids, settlement ids, route ids, display keys, terrain classes, route modes, and route-node labels operate as synthetic gameplay abstractions rather than claims about 16th-century geography."
+    },
+    {
+      "id": "NO_HUMAN_GATE_REQUIRED",
+      "decision": "No Human Gate is required by this review because the change does not introduce contested real-world historical, religious, ethnic, legal, cultural-symbol, forced-migration, slavery, massacre, famine, or production cultural-asset claims."
+    },
+    {
+      "id": "CLAIM-RECORD-HIST-M7-TOPOLOGY-FIXTURE-COMPOSITE-001",
+      "claim": "The reviewed default prototype map fixture is COMPOSITE validation content, not a formal historical map database.",
+      "entity_ids": [
+        "m2.prototype-world-30-districts"
+      ],
+      "time_span": "M7 prototype validation context",
+      "source_ids": [
+        "content-source/m2-fixtures/prototype-world-30-districts.json",
+        "docs/10-historical-research-policy.md",
+        "docs/19-data-schema-guide.md",
+        "docs/decisions/ADR-010-map-topology.md"
+      ],
+      "source_passages": [
+        "content-source/m2-fixtures/prototype-world-30-districts.json lines 3-11: fixture kind, syntheticScope, historicity, provenance category, confidence, and policy id.",
+        "docs/10-historical-research-policy.md sections 3 and 7: claim records and COMPOSITE/FICTIONAL content rules.",
+        "docs/19-data-schema-guide.md sections 6 and 7: source fields and GeoJSON/map authority caution.",
+        "docs/decisions/ADR-010-map-topology.md Implementation Chain and Risks: M7 fixtures remain synthetic/COMPOSITE unless historical claims are reviewed."
+      ],
+      "confidence": "HIGH",
+      "status": "COMPOSITE",
+      "competing_interpretations": [],
+      "game_abstraction": "Allows topology, route, terrain, and route-node validation without implying exact historical borders, ports, rivers, roads, route hierarchy, ethnicity, or political control.",
+      "reviewer": "historical_researcher Chronicle 019f198a-8bd8-7262-9fb2-8ba1710393ca",
+      "last_reviewed": "2026-07-01"
+    },
+    {
+      "id": "CLAIM-RECORD-HIST-M7-TOPOLOGY-FIXTURE-NO-REAL-NAMES-001",
+      "claim": "The reviewed fixture does not use real historical place, polity, ethnic, or religious names for districts, settlements, route nodes, or route edges.",
+      "entity_ids": [
+        "m2.prototype-world-30-districts"
+      ],
+      "time_span": "M7 prototype validation context",
+      "source_ids": [
+        "content-source/m2-fixtures/prototype-world-30-districts.json"
+      ],
+      "source_passages": [
+        "content-source/m2-fixtures/prototype-world-30-districts.json lines 15-202: districts and settlements use district-### / settlement-### ids and content.m2.prototype.* display keys.",
+        "content-source/m2-fixtures/prototype-world-30-districts.json lines 1299-1377: isolated reason and route nodes use synthetic/generic ids and content.m2.prototype.route_node.* display keys."
+      ],
+      "confidence": "HIGH",
+      "status": "COMPOSITE",
+      "competing_interpretations": [],
+      "game_abstraction": "Generic labels such as road, river, coast, pass, warehouse, ford, wharf, lookout, and gate are reviewed as topology roles in a synthetic fixture, not as historical toponyms or infrastructure claims.",
+      "reviewer": "historical_researcher Chronicle 019f198a-8bd8-7262-9fb2-8ba1710393ca",
+      "last_reviewed": "2026-07-01"
+    }
+  ],
+  "risks": [
+    {
+      "id": "FORMAL_MAP_CONTENT_STILL_REQUIRES_RESEARCH",
+      "severity": "R4",
+      "summary": "This acceptance does not approve formal historical borders, ports, rivers, roads, route importance, settlement names, polity control, ethnic labels, cultural symbols, or production map art. Any later conversion from COMPOSITE fixture content to historical content must create page/section-backed claim records and receive historical/cultural review."
+    },
+    {
+      "id": "GENERIC_ROUTE_NODE_TERMS_CAN_BECOME_OVERCLAIMS_IF_LOCALIZED_AS_REAL_NAMES",
+      "severity": "R2",
+      "summary": "Current display keys are generic and acceptable. If downstream localization turns route_node keys such as delta_wharf, coast_light, east_pass, river_gate, north_ford, or south_ford into named real-world places or historically specific infrastructure, route back to historical_researcher before content lock."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Continue systems_architect authority-boundary review for the topology fixture. If systems review also accepts, route the combined accepted evidence to qa_reviewer for independent validation review.",
+  "created_at": "2026-07-01T01:42:00+08:00"
+}

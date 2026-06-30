@@ -1,0 +1,76 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "R2 fixes the QA blocker by giving the M2 economy/population property invariant a narrow explicit 15s test timeout while preserving its workload, seed, input ranges, and assertions. The default checked-in `pnpm --filter @monsoon/sim-core test` command now passes without reviewer-supplied timeout flags.",
+  "artifacts": [
+    "tests/sim-core-m2-economy-population.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "effaa013429805bffc597e58718e30aed75ae7ab",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Clean after R2 implementation commit effaa013429805bffc597e58718e30aed75ae7ab."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed; M2 prototype fixture remained districts=14 settlements=6 routes=25 mapGeometries=20 manifestHash=d474a105."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed, 16 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "1 test file passed, 38 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed, 198 tests passed under the checked-in package command with no added CLI timeout."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "NARROW_TIMEOUT_NOT_WORKLOAD_REDUCTION",
+      "decision": "Kept the property invariant workload unchanged at numRuns=24, seed=1531, days 0-420, group ids 1-14, and labor 1-80; added a 15s timeout only to this test because advancing 24 generated worlds can exceed Vitest's 5s default in this workspace."
+    },
+    {
+      "id": "NO_TOPOLOGY_CONTENT_OR_CLIENT_SCOPE_CHANGE",
+      "decision": "Did not change topology fixture content, compiler/runtime/sim-core authority code, client/rendering paths, M7 content-lock conclusions, or downstream topology-client scope."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PROPERTY_RUNTIME_COST_REMAINS",
+      "severity": "R2",
+      "summary": "The invariant still performs full generated world advancement, so it remains a relatively expensive sim-core test. R2 stabilizes the default command without reducing coverage."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Re-review M7-MAP-TOPOLOGY-FIXTURE-001 R2, focusing on the default sim-core package test now passing without manual timeout flags.",
+  "created_at": "2026-07-01T01:51:23.6921181+08:00"
+}

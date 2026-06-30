@@ -22,9 +22,11 @@ const m2FixtureUrl = new URL(
   "../content-source/m2-fixtures/prototype-world-30-districts.json",
   import.meta.url
 );
+// Keep the full property workload; advancing 24 generated worlds can exceed Vitest's 5s default.
+const M2_ECONOMY_PROPERTY_TIMEOUT_MS = 15_000;
 
 describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffolding", () => {
-  test("boots the 30 District/10 Settlement fixture with explicit M2 economy state", async () => {
+  test("boots the explicit 14 District/6 Settlement fixture with explicit M2 economy state", async () => {
     const runtime = await bootM2Runtime();
     const m2 = runtime.world.state.m2;
 
@@ -33,12 +35,14 @@ describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffo
       throw new Error("Expected M2 state.");
     }
 
-    expect(runtime.world.definitions.districts).toHaveLength(30);
-    expect(runtime.world.definitions.settlements).toHaveLength(10);
+    expect(runtime.world.definitions.districts).toHaveLength(14);
+    expect(runtime.world.definitions.settlements).toHaveLength(6);
+    expect(runtime.world.definitions.topology?.districts).toHaveLength(14);
+    expect(runtime.world.definitions.topology?.routeEdges).toHaveLength(25);
     expect(m2.schemaVersion).toBe(1);
-    expect(m2.populationGroups).toHaveLength(30);
-    expect(m2.agriculture.districts).toHaveLength(30);
-    expect(m2.market.districts).toHaveLength(30);
+    expect(m2.populationGroups).toHaveLength(14);
+    expect(m2.agriculture.districts).toHaveLength(14);
+    expect(m2.market.districts).toHaveLength(14);
     expect(m2.populationGroups[0]).toMatchObject({
       id: parsePopulationGroupId(1),
       districtId: 1,
@@ -135,58 +139,69 @@ describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffo
     expect(validateWorldStateV0(mobilizedWorld)).toEqual([]);
   });
 
-  test("property invariants preserve non-negative population, labor, grain, and cash", async () => {
-    const runtime = await bootM2Runtime();
+  test(
+    "property invariants preserve non-negative population, labor, grain, and cash",
+    async () => {
+      const runtime = await bootM2Runtime();
 
-    fc.assert(
-      fc.property(
-        fc.integer({ min: 0, max: 420 }),
-        fc.integer({ min: 1, max: 30 }),
-        fc.integer({ min: 1, max: 80 }),
-        (days, groupId, laborAmount) => {
-          const advancedWorld = advanceWorldByGameDays(runtime.world, days);
-          const advancedRuntime = {
-            ...runtime,
-            world: advancedWorld,
-            acceptedCommandIds: [],
-            commandTail: [],
-            eventTail: []
-          };
-          const submitted = submitCommandV1(
-            advancedRuntime,
-            commitLaborCommand("m2.labor.property", "ai", advancedRuntime, groupId, laborAmount, 30)
-          );
-          const nextWorld =
-            submitted.result.status === "accepted" ? submitted.runtime.world : advancedWorld;
-          const m2 = nextWorld.state.m2;
-          expect(m2).toBeDefined();
-          if (m2 === undefined) {
-            throw new Error("Expected M2 state.");
-          }
-
-          for (const group of m2.populationGroups) {
-            const committedLabor = group.committedLabor.reduce(
-              (sum, entry) => sum + entry.laborAmount,
-              0
+      fc.assert(
+        fc.property(
+          fc.integer({ min: 0, max: 420 }),
+          fc.integer({ min: 1, max: 14 }),
+          fc.integer({ min: 1, max: 80 }),
+          (days, groupId, laborAmount) => {
+            const advancedWorld = advanceWorldByGameDays(runtime.world, days);
+            const advancedRuntime = {
+              ...runtime,
+              world: advancedWorld,
+              acceptedCommandIds: [],
+              commandTail: [],
+              eventTail: []
+            };
+            const submitted = submitCommandV1(
+              advancedRuntime,
+              commitLaborCommand(
+                "m2.labor.property",
+                "ai",
+                advancedRuntime,
+                groupId,
+                laborAmount,
+                30
+              )
             );
-            expect(group.totalPeople).toBe(group.workingPeople + group.dependentPeople);
-            expect(group.availableLabor + committedLabor).toBe(group.workingPeople);
-            expect(group.availableLabor).toBeGreaterThanOrEqual(0);
-            expect(group.grainStock).toBeGreaterThanOrEqual(0);
-            expect(group.cashStock).toBeGreaterThanOrEqual(0);
-          }
+            const nextWorld =
+              submitted.result.status === "accepted" ? submitted.runtime.world : advancedWorld;
+            const m2 = nextWorld.state.m2;
+            expect(m2).toBeDefined();
+            if (m2 === undefined) {
+              throw new Error("Expected M2 state.");
+            }
 
-          for (const district of m2.market.districts) {
-            expect(district.cashFlow.cumulativeMobilizationCost).toBeGreaterThanOrEqual(0);
-            expect(district.grainFlow.lastHarvestDelta).toBeGreaterThanOrEqual(0);
-          }
+            for (const group of m2.populationGroups) {
+              const committedLabor = group.committedLabor.reduce(
+                (sum, entry) => sum + entry.laborAmount,
+                0
+              );
+              expect(group.totalPeople).toBe(group.workingPeople + group.dependentPeople);
+              expect(group.availableLabor + committedLabor).toBe(group.workingPeople);
+              expect(group.availableLabor).toBeGreaterThanOrEqual(0);
+              expect(group.grainStock).toBeGreaterThanOrEqual(0);
+              expect(group.cashStock).toBeGreaterThanOrEqual(0);
+            }
 
-          expect(validateWorldStateV0(nextWorld)).toEqual([]);
-        }
-      ),
-      { numRuns: 24, seed: 1531 }
-    );
-  });
+            for (const district of m2.market.districts) {
+              expect(district.cashFlow.cumulativeMobilizationCost).toBeGreaterThanOrEqual(0);
+              expect(district.grainFlow.lastHarvestDelta).toBeGreaterThanOrEqual(0);
+            }
+
+            expect(validateWorldStateV0(nextWorld)).toEqual([]);
+          }
+        ),
+        { numRuns: 24, seed: 1531 }
+      );
+    },
+    M2_ECONOMY_PROPERTY_TIMEOUT_MS
+  );
 
   test("M2 economy query returns a read model instead of mutable authoritative state", async () => {
     const runtime = await bootM2Runtime();
@@ -200,7 +215,7 @@ describe("M2-ECON-POP-001 agriculture, population, labor, grain, and cash scaffo
       throw new Error("Expected M2 economy query to succeed.");
     }
 
-    expect(query.result.districts).toHaveLength(30);
+    expect(query.result.districts).toHaveLength(14);
     expect(query.result.districts[0]).toMatchObject({
       districtId: 1,
       population: 1000,

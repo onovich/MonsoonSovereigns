@@ -16,6 +16,8 @@ import {
   type M1GraphFixtureEdgeSourceV0,
   type M1GraphFixtureNodeSourceV0,
   type M1GraphFixtureSourceV0,
+  type M2TopologyRouteEndpointSourceV0,
+  type M2TopologyRouteNodeSourceV0,
   type M2WorldDistrictSourceV0,
   type M2WorldMapGeometrySourceV0,
   type M2WorldMapPointSourceV0,
@@ -60,6 +62,8 @@ import {
   type RuntimeM2RegionalSeasonalCurveV0,
   type RuntimeM2RouteDefinitionV0,
   type RuntimeM2SettlementDefinitionV0,
+  type RuntimeM2TopologyRouteEndpointV0,
+  type RuntimeM2TopologyV0,
   type RuntimeM2WorldContentPackV0
 } from "@monsoon/content-runtime";
 
@@ -79,6 +83,8 @@ export type ContentCompileErrorCode =
   | "invalid-geometry"
   | "invalid-route"
   | "invalid-seasonal-curve"
+  | "invalid-topology"
+  | "lattice-adjacency"
   | "missing-label"
   | "unsourced-claim"
   | "duplicate-scenario-key"
@@ -338,19 +344,35 @@ function validateGraphSemantics(source: M1GraphFixtureSourceV0): readonly Conten
 function validateM2WorldSemantics(source: M2WorldFixtureSourceV0): readonly ContentCompileError[] {
   const errors: ContentCompileError[] = [];
 
-  if (source.districts.length !== 30) {
+  if (source.districts.length < 12 || source.districts.length > 18) {
     errors.push({
       code: "invalid-count",
       path: "districts",
-      message: `M2 prototype fixture must contain exactly 30 districts, received ${source.districts.length}.`
+      message: `M2 prototype fixture must contain 12-18 districts, received ${source.districts.length}.`
     });
   }
 
-  if (source.settlements.length !== 10) {
+  if (source.settlements.length < 4 || source.settlements.length > 10) {
     errors.push({
       code: "invalid-count",
       path: "settlements",
-      message: `M2 prototype fixture must contain exactly 10 settlements, received ${source.settlements.length}.`
+      message: `M2 prototype fixture must contain 4-10 settlements, received ${source.settlements.length}.`
+    });
+  }
+
+  if (source.routes.length < 25 || source.routes.length > 40) {
+    errors.push({
+      code: "invalid-count",
+      path: "routes",
+      message: `M2 prototype fixture must contain 25-40 explicit routes, received ${source.routes.length}.`
+    });
+  }
+
+  if (source.topology.routeEdges.length < 25 || source.topology.routeEdges.length > 40) {
+    errors.push({
+      code: "invalid-count",
+      path: "topology.routeEdges",
+      message: `M2 prototype topology must contain 25-40 explicit route edges, received ${source.topology.routeEdges.length}.`
     });
   }
 
@@ -364,7 +386,7 @@ function validateM2WorldSemantics(source: M2WorldFixtureSourceV0): readonly Cont
   validateM2Routes(source, errors);
   validateM2SeasonalCurves(source, errors);
   validateM2Geometries(source, errors);
-  validateM2Connectivity(source, errors);
+  validateM2Topology(source, errors);
 
   return errors;
 }
@@ -910,28 +932,289 @@ function validateM2Geometries(source: M2WorldFixtureSourceV0, errors: ContentCom
   });
 }
 
-function validateM2Connectivity(
+function validateM2Topology(source: M2WorldFixtureSourceV0, errors: ContentCompileError[]): void {
+  validateStableOrderAndUniqueIds(source.topology.routeEdges, "topology.routeEdges", errors);
+  validateM2TopologyUniqueRouteNodes(source.topology.routeNodes, errors);
+  validateM2TopologyReferences(source, errors);
+  validateM2TopologyGeometry(source, errors);
+  validateM2TopologyConnectivity(source, errors);
+  validateM2AntiGridTopology(source, errors);
+}
+
+function validateM2TopologyUniqueRouteNodes(
+  routeNodes: readonly M2TopologyRouteNodeSourceV0[],
+  errors: ContentCompileError[]
+): void {
+  const seen = new Set<string>();
+  let previousNodeId = "";
+  routeNodes.forEach((node, index) => {
+    if (seen.has(node.nodeId)) {
+      errors.push({
+        code: "duplicate-id",
+        path: `topology.routeNodes[${index}].nodeId`,
+        message: `Duplicate topology route node id ${node.nodeId}.`
+      });
+    }
+    if (index > 0 && compareText(node.nodeId, previousNodeId) <= 0) {
+      errors.push({
+        code: "unstable-order",
+        path: `topology.routeNodes[${index}].nodeId`,
+        message: "topology.routeNodes must be sorted by nodeId for deterministic stable assignment."
+      });
+    }
+    seen.add(node.nodeId);
+    previousNodeId = node.nodeId;
+  });
+}
+
+function validateM2TopologyReferences(
   source: M2WorldFixtureSourceV0,
   errors: ContentCompileError[]
 ): void {
+  const districtIds = new Set(source.districts.map((district) => district.sourceId));
+  const settlementIds = new Set(source.settlements.map((settlement) => settlement.sourceId));
+  const routeBySourceId = new Map(source.routes.map((route) => [route.sourceId, route]));
+  const nodeById = new Map(source.topology.routeNodes.map((node) => [node.nodeId, node]));
+  const isolated = new Set<string>();
+
+  source.topology.explicitIsolations.forEach((isolation, index) => {
+    if (!districtIds.has(isolation.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `topology.explicitIsolations[${index}].districtId`,
+        message: `Explicit isolation references missing district ${isolation.districtId}.`
+      });
+    }
+    if (isolated.has(isolation.districtId)) {
+      errors.push({
+        code: "duplicate-id",
+        path: `topology.explicitIsolations[${index}].districtId`,
+        message: `Duplicate explicit isolation for ${isolation.districtId}.`
+      });
+    }
+    isolated.add(isolation.districtId);
+  });
+
+  source.topology.routeNodes.forEach((node, index) => {
+    if (!districtIds.has(node.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `topology.routeNodes[${index}].districtId`,
+        message: `Topology route node ${node.nodeId} references missing district ${node.districtId}.`
+      });
+    }
+  });
+
+  const usedRouteIds = new Set<string>();
+  source.topology.routeEdges.forEach((edge, index) => {
+    const route = routeBySourceId.get(edge.routeId);
+    if (route === undefined) {
+      errors.push({
+        code: "bad-reference",
+        path: `topology.routeEdges[${index}].routeId`,
+        message: `Topology route edge ${edge.sourceId} references missing route ${edge.routeId}.`
+      });
+    } else {
+      const fromDistrictId = m2TopologyEndpointDistrictId(
+        edge.from,
+        nodeById,
+        settlementIds,
+        source
+      );
+      const toDistrictId = m2TopologyEndpointDistrictId(edge.to, nodeById, settlementIds, source);
+      if (fromDistrictId !== route.fromDistrictId || toDistrictId !== route.toDistrictId) {
+        errors.push({
+          code: "invalid-topology",
+          path: `topology.routeEdges[${index}]`,
+          message: `Topology route edge ${edge.sourceId} endpoints must match route ${edge.routeId}.`
+        });
+      }
+      if (edge.mode !== route.routeKind) {
+        errors.push({
+          code: "invalid-topology",
+          path: `topology.routeEdges[${index}]`,
+          message: `Topology route edge ${edge.sourceId} mode must match route ${edge.routeId}.`
+        });
+      }
+    }
+    validateM2TopologyEndpointReference(
+      edge.from,
+      `topology.routeEdges[${index}].from`,
+      districtIds,
+      settlementIds,
+      nodeById,
+      source,
+      errors
+    );
+    validateM2TopologyEndpointReference(
+      edge.to,
+      `topology.routeEdges[${index}].to`,
+      districtIds,
+      settlementIds,
+      nodeById,
+      source,
+      errors
+    );
+    if (usedRouteIds.has(edge.routeId)) {
+      errors.push({
+        code: "duplicate-id",
+        path: `topology.routeEdges[${index}].routeId`,
+        message: `Duplicate topology route binding for ${edge.routeId}.`
+      });
+    }
+    usedRouteIds.add(edge.routeId);
+    if (edge.seasonality.map((value) => value.month).join(",") !== "1,2,3,4,5,6,7,8,9,10,11,12") {
+      errors.push({
+        code: "invalid-topology",
+        path: `topology.routeEdges[${index}].seasonality`,
+        message: `Topology route edge ${edge.sourceId} seasonality must be ordered from month 1 through 12.`
+      });
+    }
+  });
+}
+
+function validateM2TopologyEndpointReference(
+  endpoint: M2TopologyRouteEndpointSourceV0,
+  path: string,
+  districtIds: ReadonlySet<string>,
+  settlementIds: ReadonlySet<string>,
+  nodeById: ReadonlyMap<string, M2TopologyRouteNodeSourceV0>,
+  source: M2WorldFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  if (endpoint.kind === "district" && !districtIds.has(endpoint.districtId)) {
+    errors.push({
+      code: "bad-reference",
+      path: `${path}.districtId`,
+      message: `Missing endpoint district ${endpoint.districtId}.`
+    });
+  }
+  if (endpoint.kind === "settlement" && !settlementIds.has(endpoint.settlementId)) {
+    errors.push({
+      code: "bad-reference",
+      path: `${path}.settlementId`,
+      message: `Missing endpoint settlement ${endpoint.settlementId}.`
+    });
+  }
+  if (endpoint.kind === "route-node" && !nodeById.has(endpoint.nodeId)) {
+    errors.push({
+      code: "bad-reference",
+      path: `${path}.nodeId`,
+      message: `Missing endpoint route node ${endpoint.nodeId}.`
+    });
+  }
+  const districtId = m2TopologyEndpointDistrictId(endpoint, nodeById, settlementIds, source);
+  if (districtId === undefined) {
+    errors.push({
+      code: "bad-reference",
+      path,
+      message: "Topology endpoint must resolve to a district."
+    });
+  }
+}
+
+function m2TopologyEndpointDistrictId(
+  endpoint: M2TopologyRouteEndpointSourceV0,
+  nodeById: ReadonlyMap<string, M2TopologyRouteNodeSourceV0>,
+  settlementIds: ReadonlySet<string>,
+  source: M2WorldFixtureSourceV0
+): string | undefined {
+  if (endpoint.kind === "district") {
+    return endpoint.districtId;
+  }
+  if (endpoint.kind === "route-node") {
+    return nodeById.get(endpoint.nodeId)?.districtId;
+  }
+  if (!settlementIds.has(endpoint.settlementId)) {
+    return undefined;
+  }
+  return source.settlements.find((settlement) => settlement.sourceId === endpoint.settlementId)
+    ?.districtId;
+}
+
+function validateM2TopologyGeometry(
+  source: M2WorldFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  const districtGeometryByOwnerId = new Map(
+    source.mapGeometries
+      .filter((geometry) => geometry.ownerKind === "district")
+      .map((geometry) => [geometry.ownerId, geometry])
+  );
+
+  source.topology.routeNodes.forEach((node, index) => {
+    const geometry = districtGeometryByOwnerId.get(node.districtId);
+    if (
+      geometry !== undefined &&
+      geometry.geometryKind === "polygon" &&
+      !isPointInOrOnPolygon(node.anchor, geometry.points)
+    ) {
+      errors.push({
+        code: "invalid-topology",
+        path: `topology.routeNodes[${index}].anchor`,
+        message: `Topology route node ${node.nodeId} anchor must be inside its district polygon.`
+      });
+    }
+  });
+
+  const districtGeometries = source.mapGeometries.filter(
+    (geometry) => geometry.ownerKind === "district" && geometry.geometryKind === "polygon"
+  );
+  districtGeometries.forEach((geometry, index) => {
+    if (hasSelfIntersection(geometry.points)) {
+      errors.push({
+        code: "invalid-geometry",
+        path: `mapGeometries[${source.mapGeometries.indexOf(geometry)}].points`,
+        message: `District polygon ${geometry.sourceId} must not self-intersect.`
+      });
+    }
+    for (
+      let compareIndex = index + 1;
+      compareIndex < districtGeometries.length;
+      compareIndex += 1
+    ) {
+      const other = districtGeometries[compareIndex];
+      if (other !== undefined && polygonsOverlap(geometry.points, other.points)) {
+        errors.push({
+          code: "invalid-geometry",
+          path: `mapGeometries[${source.mapGeometries.indexOf(other)}].points`,
+          message: `District polygon ${other.sourceId} must not overlap ${geometry.sourceId}.`
+        });
+      }
+    }
+  });
+}
+
+function validateM2TopologyConnectivity(
+  source: M2WorldFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  const nodeById = new Map(source.topology.routeNodes.map((node) => [node.nodeId, node]));
+  const settlementIds = new Set(source.settlements.map((settlement) => settlement.sourceId));
+  const isolated = new Set(source.topology.explicitIsolations.map((entry) => entry.districtId));
   const adjacency = new Map<string, Set<string>>();
   for (const district of source.districts) {
-    adjacency.set(district.sourceId, new Set<string>());
-  }
-
-  for (const route of source.routes) {
-    const fromNeighbors = adjacency.get(route.fromDistrictId);
-    const toNeighbors = adjacency.get(route.toDistrictId);
-    if (fromNeighbors !== undefined && toNeighbors !== undefined) {
-      fromNeighbors.add(route.toDistrictId);
-      toNeighbors.add(route.fromDistrictId);
+    if (!isolated.has(district.sourceId)) {
+      adjacency.set(district.sourceId, new Set<string>());
     }
   }
 
-  const startDistrict = source.districts[0];
+  source.topology.routeEdges.forEach((edge) => {
+    if (edge.availability.kind !== "open") {
+      return;
+    }
+    const from = m2TopologyEndpointDistrictId(edge.from, nodeById, settlementIds, source);
+    const to = m2TopologyEndpointDistrictId(edge.to, nodeById, settlementIds, source);
+    if (from !== undefined && to !== undefined && adjacency.has(from) && adjacency.has(to)) {
+      adjacency.get(from)?.add(to);
+      adjacency.get(to)?.add(from);
+    }
+  });
+
+  const start = sortText([...adjacency.keys()])[0];
   const visited = new Set<string>();
-  if (startDistrict !== undefined) {
-    const pending = [startDistrict.sourceId];
+  if (start !== undefined) {
+    const pending = [start];
     while (pending.length > 0) {
       const current = pending.shift();
       if (current === undefined || visited.has(current)) {
@@ -948,15 +1231,46 @@ function validateM2Connectivity(
   }
 
   source.districts.forEach((district, index) => {
+    if (isolated.has(district.sourceId)) {
+      return;
+    }
     const degree = adjacency.get(district.sourceId)?.size ?? 0;
     if (degree === 0 || !visited.has(district.sourceId)) {
       errors.push({
         code: "isolated-district",
         path: `districts[${index}].sourceId`,
-        message: `District ${district.sourceId} is isolated or disconnected from the M2 route graph.`
+        message: `District ${district.sourceId} is disconnected without explicit topology isolation.`
       });
     }
   });
+}
+
+function validateM2AntiGridTopology(
+  source: M2WorldFixtureSourceV0,
+  errors: ContentCompileError[]
+): void {
+  const districtGeometries = source.mapGeometries.filter(
+    (geometry) => geometry.ownerKind === "district" && geometry.geometryKind === "polygon"
+  );
+  const uniqueX = new Set(districtGeometries.map((geometry) => geometry.anchor.x));
+  const uniqueY = new Set(districtGeometries.map((geometry) => geometry.anchor.y));
+  const looksLikeRectangularLattice =
+    uniqueX.size * uniqueY.size === districtGeometries.length &&
+    districtGeometries.length === source.districts.length;
+  const routePairs = source.topology.routeEdges.map((edge) => edge.routeId);
+  const sequentialRouteIds = routePairs.every(
+    (routeId, index) => routeId === `route-${String(index + 1).padStart(3, "0")}`
+  );
+  const hasExplicitRouteNodeEndpoint = source.topology.routeEdges.some(
+    (edge) => edge.from.kind === "route-node" || edge.to.kind === "route-node"
+  );
+  if (looksLikeRectangularLattice && sequentialRouteIds && !hasExplicitRouteNodeEndpoint) {
+    errors.push({
+      code: "lattice-adjacency",
+      path: "topology",
+      message: "M2 topology must not derive movement from row/column/grid/hex/lattice order."
+    });
+  }
 }
 
 function polygonTwiceArea(points: readonly M2WorldMapPointSourceV0[]): number {
@@ -1018,6 +1332,95 @@ function isPointOnSegment(
     point.y >= Math.min(start.y, end.y) &&
     point.y <= Math.max(start.y, end.y)
   );
+}
+
+function hasSelfIntersection(polygon: readonly M2WorldMapPointSourceV0[]): boolean {
+  for (let leftIndex = 0; leftIndex < polygon.length; leftIndex += 1) {
+    const leftStart = polygon[leftIndex];
+    const leftEnd = polygon[(leftIndex + 1) % polygon.length];
+    if (leftStart === undefined || leftEnd === undefined) {
+      throw new Error("Expected polygon point.");
+    }
+    for (let rightIndex = leftIndex + 1; rightIndex < polygon.length; rightIndex += 1) {
+      if (Math.abs(leftIndex - rightIndex) <= 1) {
+        continue;
+      }
+      if (leftIndex === 0 && rightIndex === polygon.length - 1) {
+        continue;
+      }
+      const rightStart = polygon[rightIndex];
+      const rightEnd = polygon[(rightIndex + 1) % polygon.length];
+      if (rightStart === undefined || rightEnd === undefined) {
+        throw new Error("Expected polygon point.");
+      }
+      if (segmentsIntersect(leftStart, leftEnd, rightStart, rightEnd)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function polygonsOverlap(
+  left: readonly M2WorldMapPointSourceV0[],
+  right: readonly M2WorldMapPointSourceV0[]
+): boolean {
+  for (let leftIndex = 0; leftIndex < left.length; leftIndex += 1) {
+    const leftStart = left[leftIndex];
+    const leftEnd = left[(leftIndex + 1) % left.length];
+    if (leftStart === undefined || leftEnd === undefined) {
+      throw new Error("Expected polygon point.");
+    }
+    for (let rightIndex = 0; rightIndex < right.length; rightIndex += 1) {
+      const rightStart = right[rightIndex];
+      const rightEnd = right[(rightIndex + 1) % right.length];
+      if (rightStart === undefined || rightEnd === undefined) {
+        throw new Error("Expected polygon point.");
+      }
+      if (segmentsIntersect(leftStart, leftEnd, rightStart, rightEnd)) {
+        return true;
+      }
+    }
+  }
+
+  const leftPoint = left[0];
+  const rightPoint = right[0];
+  if (leftPoint === undefined || rightPoint === undefined) {
+    return false;
+  }
+
+  return isPointInOrOnPolygon(leftPoint, right) || isPointInOrOnPolygon(rightPoint, left);
+}
+
+function segmentsIntersect(
+  leftStart: M2WorldMapPointSourceV0,
+  leftEnd: M2WorldMapPointSourceV0,
+  rightStart: M2WorldMapPointSourceV0,
+  rightEnd: M2WorldMapPointSourceV0
+): boolean {
+  const leftRightStart = orientation(leftStart, leftEnd, rightStart);
+  const leftRightEnd = orientation(leftStart, leftEnd, rightEnd);
+  const rightLeftStart = orientation(rightStart, rightEnd, leftStart);
+  const rightLeftEnd = orientation(rightStart, rightEnd, leftEnd);
+
+  if (leftRightStart === 0 && isPointOnSegment(rightStart, leftStart, leftEnd)) return true;
+  if (leftRightEnd === 0 && isPointOnSegment(rightEnd, leftStart, leftEnd)) return true;
+  if (rightLeftStart === 0 && isPointOnSegment(leftStart, rightStart, rightEnd)) return true;
+  if (rightLeftEnd === 0 && isPointOnSegment(leftEnd, rightStart, rightEnd)) return true;
+
+  return (
+    ((leftRightStart < 0 && leftRightEnd > 0) || (leftRightStart > 0 && leftRightEnd < 0)) &&
+    ((rightLeftStart < 0 && rightLeftEnd > 0) || (rightLeftStart > 0 && rightLeftEnd < 0))
+  );
+}
+
+function orientation(
+  start: M2WorldMapPointSourceV0,
+  end: M2WorldMapPointSourceV0,
+  point: M2WorldMapPointSourceV0
+): number {
+  return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x);
 }
 
 function validateConnectivity(source: M1GraphFixtureSourceV0, errors: ContentCompileError[]): void {
@@ -1134,6 +1537,9 @@ function buildRuntimeM2WorldPack(source: M2WorldFixtureSourceV0): RuntimeM2World
   const geometryIdBySourceId = new Map(
     geometryAssignments.map((assignment) => [assignment.geometry.sourceId, assignment.runtimeId])
   );
+  const routeIdBySourceId = new Map(
+    routeAssignments.map((assignment) => [assignment.route.sourceId, assignment.runtimeId])
+  );
 
   const districts: RuntimeM2DistrictDefinitionV0[] = districtAssignments.map((assignment) => {
     const regionalCurveId = curveIdBySourceId.get(assignment.district.regionalCurveId);
@@ -1220,13 +1626,21 @@ function buildRuntimeM2WorldPack(source: M2WorldFixtureSourceV0): RuntimeM2World
     };
   });
 
+  const topology = buildRuntimeM2Topology({
+    source,
+    districtIdBySourceId,
+    settlementIdBySourceId,
+    routeIdBySourceId
+  });
+
   const manifestHash = hashM2Manifest(
     source.fixtureId,
     districts,
     settlements,
     regionalSeasonalCurves,
     routes,
-    mapGeometries
+    mapGeometries,
+    topology
   );
 
   return {
@@ -1250,8 +1664,118 @@ function buildRuntimeM2WorldPack(source: M2WorldFixtureSourceV0): RuntimeM2World
     settlements,
     regionalSeasonalCurves,
     routes,
-    mapGeometries
+    mapGeometries,
+    topology
   };
+}
+
+function buildRuntimeM2Topology(input: {
+  readonly source: M2WorldFixtureSourceV0;
+  readonly districtIdBySourceId: ReadonlyMap<string, number>;
+  readonly settlementIdBySourceId: ReadonlyMap<string, number>;
+  readonly routeIdBySourceId: ReadonlyMap<string, number>;
+}): RuntimeM2TopologyV0 {
+  const districtGeometryByOwnerId = new Map(
+    input.source.mapGeometries
+      .filter((geometry) => geometry.ownerKind === "district")
+      .map((geometry) => [geometry.ownerId, geometry])
+  );
+
+  return {
+    adjacencyDerivation: "explicit-route-graph-v1",
+    explicitIsolations: input.source.topology.explicitIsolations.map((entry) => {
+      const districtId = input.districtIdBySourceId.get(entry.districtId);
+      if (districtId === undefined) {
+        throw new Error(`Compiler invariant failed for topology isolation ${entry.districtId}.`);
+      }
+      return {
+        districtId: parseContentDistrictId(districtId),
+        reasonCode: entry.reasonCode
+      };
+    }),
+    districts: input.source.districts.map((district) => {
+      const districtId = input.districtIdBySourceId.get(district.sourceId);
+      const geometry = districtGeometryByOwnerId.get(district.sourceId);
+      if (districtId === undefined || geometry === undefined) {
+        throw new Error(`Compiler invariant failed for topology district ${district.sourceId}.`);
+      }
+      return {
+        districtId: parseContentDistrictId(districtId),
+        sourceId: district.sourceId,
+        displayNameKey: district.displayNameKey,
+        anchor: { ...geometry.anchor },
+        polygon: geometry.points.map((point) => ({ ...point })),
+        metadata: { ...district.topologyMetadata }
+      };
+    }),
+    routeNodes: input.source.topology.routeNodes.map((node) => {
+      const districtId = input.districtIdBySourceId.get(node.districtId);
+      if (districtId === undefined) {
+        throw new Error(`Compiler invariant failed for topology route node ${node.nodeId}.`);
+      }
+      return {
+        nodeId: node.nodeId,
+        nodeKind: node.nodeKind,
+        districtId: parseContentDistrictId(districtId),
+        displayNameKey: node.displayNameKey,
+        anchor: { ...node.anchor }
+      };
+    }),
+    routeEdges: input.source.topology.routeEdges.map((edge) => {
+      const routeId = input.routeIdBySourceId.get(edge.routeId);
+      const route = input.source.routes.find((candidate) => candidate.sourceId === edge.routeId);
+      if (routeId === undefined || route === undefined) {
+        throw new Error(`Compiler invariant failed for topology route edge ${edge.sourceId}.`);
+      }
+      return {
+        routeId: parseContentRouteId(routeId),
+        sourceId: edge.sourceId,
+        from: compileM2TopologyEndpoint(
+          edge.from,
+          input.districtIdBySourceId,
+          input.settlementIdBySourceId
+        ),
+        to: compileM2TopologyEndpoint(
+          edge.to,
+          input.districtIdBySourceId,
+          input.settlementIdBySourceId
+        ),
+        mode: edge.mode,
+        baseTravelCost: route.baseTravelCost,
+        baseCapacity: edge.baseCapacity,
+        seasonality: edge.seasonality.map((value) => ({
+          month: value.month,
+          costMultiplierBps: value.costMultiplierBps,
+          capacityMultiplierBps: value.capacityMultiplierBps,
+          reasonCodes: [...value.reasonCodes]
+        })),
+        availability: { ...edge.availability },
+        metadata: { ...edge.metadata }
+      };
+    })
+  };
+}
+
+function compileM2TopologyEndpoint(
+  endpoint: M2TopologyRouteEndpointSourceV0,
+  districtIdBySourceId: ReadonlyMap<string, number>,
+  settlementIdBySourceId: ReadonlyMap<string, number>
+): RuntimeM2TopologyRouteEndpointV0 {
+  if (endpoint.kind === "district") {
+    const districtId = districtIdBySourceId.get(endpoint.districtId);
+    if (districtId === undefined) {
+      throw new Error(`Compiler invariant failed for topology endpoint ${endpoint.districtId}.`);
+    }
+    return { kind: "district", districtId: parseContentDistrictId(districtId) };
+  }
+  if (endpoint.kind === "settlement") {
+    const settlementId = settlementIdBySourceId.get(endpoint.settlementId);
+    if (settlementId === undefined) {
+      throw new Error(`Compiler invariant failed for topology endpoint ${endpoint.settlementId}.`);
+    }
+    return { kind: "settlement", settlementId: parseContentSettlementId(settlementId) };
+  }
+  return { kind: "route-node", nodeId: endpoint.nodeId };
 }
 
 function buildRuntimeM3CharacterOfficePack(
@@ -1585,7 +2109,8 @@ function hashM2Manifest(
   settlements: readonly RuntimeM2SettlementDefinitionV0[],
   regionalSeasonalCurves: readonly RuntimeM2RegionalSeasonalCurveV0[],
   routes: readonly RuntimeM2RouteDefinitionV0[],
-  mapGeometries: readonly RuntimeM2MapGeometryV0[]
+  mapGeometries: readonly RuntimeM2MapGeometryV0[],
+  topology: RuntimeM2TopologyV0
 ): string {
   return toFixedHexHash(
     hashText(
@@ -1628,10 +2153,68 @@ function hashM2Manifest(
                 .map((point) => `${point.x}:${point.y}`)
                 .join("|")}`
           )
-          .join(",")}`
+          .join(",")}`,
+        `topology=${formatRuntimeM2TopologyForHash(topology)}`
       ].join("\n")
     )
   );
+}
+
+function formatRuntimeM2TopologyForHash(topology: RuntimeM2TopologyV0): string {
+  return [
+    topology.adjacencyDerivation,
+    topology.explicitIsolations.map((entry) => `${entry.districtId}:${entry.reasonCode}`).join(","),
+    topology.districts
+      .map(
+        (district) =>
+          `${district.districtId}:${district.sourceId}:${district.displayNameKey}:${district.anchor.x}:${district.anchor.y}:${district.polygon
+            .map((point) => `${point.x}:${point.y}`)
+            .join(
+              "|"
+            )}:${district.metadata.historicity}:${district.metadata.terrainClass}:${district.metadata.riskClass}`
+      )
+      .join(","),
+    topology.routeNodes
+      .map(
+        (node) =>
+          `${node.nodeId}:${node.nodeKind}:${node.districtId}:${node.displayNameKey}:${node.anchor.x}:${node.anchor.y}`
+      )
+      .join(","),
+    topology.routeEdges
+      .map(
+        (edge) =>
+          `${edge.routeId}:${edge.sourceId}:${formatRuntimeM2TopologyEndpointForHash(edge.from)}:${formatRuntimeM2TopologyEndpointForHash(edge.to)}:${edge.mode}:${edge.baseTravelCost}:${edge.baseCapacity}:${edge.seasonality
+            .map(
+              (value) =>
+                `${value.month}:${value.costMultiplierBps}:${value.capacityMultiplierBps}:${value.reasonCodes.join("+")}`
+            )
+            .join(
+              "|"
+            )}:${formatRuntimeM2TopologyAvailabilityForHash(edge.availability)}:${edge.metadata.historicity}:${edge.metadata.terrainClass}:${edge.metadata.riskClass}`
+      )
+      .join(",")
+  ].join("\n");
+}
+
+function formatRuntimeM2TopologyEndpointForHash(
+  endpoint: RuntimeM2TopologyRouteEndpointV0
+): string {
+  if (endpoint.kind === "district") {
+    return `district.${endpoint.districtId}`;
+  }
+  if (endpoint.kind === "settlement") {
+    return `settlement.${endpoint.settlementId}`;
+  }
+  return `route-node.${endpoint.nodeId}`;
+}
+
+function formatRuntimeM2TopologyAvailabilityForHash(
+  availability: RuntimeM2TopologyV0["routeEdges"][number]["availability"]
+): string {
+  if (availability.kind === "open") {
+    return "open";
+  }
+  return `${availability.kind}.${availability.reasonCode}`;
 }
 
 function hashM3CharacterOfficeManifest(

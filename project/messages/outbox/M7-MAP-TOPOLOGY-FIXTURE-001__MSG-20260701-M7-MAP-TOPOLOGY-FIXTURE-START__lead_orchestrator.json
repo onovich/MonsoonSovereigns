@@ -1,0 +1,62 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-MAP-TOPOLOGY-FIXTURE-001 after M7-MAP-TOPOLOGY-SCHEMA-001 closed in origin/main through PR #226. The task must migrate default player-facing prototype content away from hidden rectangular, hex, sequential-id, or regular-lattice topology.",
+  "artifacts": [
+    "project/tasks/active/M7-MAP-TOPOLOGY-FIXTURE-001.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
+  "tests_run": [
+    {
+      "command": "git pull --ff-only origin main",
+      "exit_code": 0,
+      "result": "Local main already up to date with origin/main at 4c39b829456cc35adca2a56ff9390b32cd651ba8."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-MAP-TOPOLOGY-FIXTURE-001 READY."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "START_FIXTURE_AFTER_SCHEMA_CLOSED",
+      "decision": "Start fixture migration only after schema closure entered origin/main."
+    },
+    {
+      "id": "NO_GRID_DISGUISE",
+      "decision": "The default player-facing fixture must use explicit topology and route graph data, not row/column, hex axial/cube, sequential-id, or regular-lattice adjacency hidden behind irregular drawing."
+    },
+    {
+      "id": "KEEP_CONTENT_LOCK_BLOCKED",
+      "decision": "Do not start M7 exit or approve content lock during fixture work."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-FIXTURE-HISTORICAL-CLAIM-RISK",
+      "severity": "R4",
+      "summary": "Prototype map content may be mistaken for formal historical borders or routes.",
+      "mitigation": "Use low-fidelity COMPOSITE districts unless historical_researcher records source-backed claims; route review to historical_researcher."
+    },
+    {
+      "id": "M7-HIDDEN-LATTICE-REGRESSION",
+      "severity": "R4",
+      "summary": "A fixture can look irregular while still deriving authority from a grid or sequential id order.",
+      "mitigation": "Add content compiler negatives and fixture tests for visual-neighbor-without-route, visually-distant-explicit-route, no grid/hex/lattice shortcuts, and stable explicit route tie-break ids."
+    }
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Implement M7-MAP-TOPOLOGY-FIXTURE-001 within allowed paths and return a REVIEW handoff to historical_researcher with required tests and diff evidence.",
+  "created_at": "2026-07-01T00:26:01.3756143+08:00"
+}

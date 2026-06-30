@@ -45,15 +45,16 @@ describe("M2-BOOT-BOUNDARY-001 sim-core/content-runtime boot boundary", () => {
     }
 
     expect(firstBoot.stateHash).toBe(secondBoot.stateHash);
-    expect(firstBoot.runtime.world.meta.stateHash).toBe("92903cba");
+    expect(firstBoot.runtime.world.meta.stateHash).toBe("4d0e1f47");
     expect(firstBoot.runtime.world.meta.contentManifestHash).toBe(
       runtimeContentPack.manifest.manifestHash
     );
-    expect(firstBoot.runtime.world.definitions.districts).toHaveLength(30);
-    expect(firstBoot.runtime.world.definitions.settlements).toHaveLength(10);
+    expect(firstBoot.runtime.world.definitions.districts).toHaveLength(14);
+    expect(firstBoot.runtime.world.definitions.settlements).toHaveLength(6);
     expect(firstBoot.runtime.world.definitions.routes).toHaveLength(
       runtimeContentPack.routes.length
     );
+    expect(firstBoot.runtime.world.definitions.topology?.routeEdges).toHaveLength(25);
     expect(validateWorldStateV0(firstBoot.runtime.world)).toEqual([]);
 
     const hashQuery = querySimulationV1(firstBoot.runtime, {

@@ -30,9 +30,9 @@ describe("M2-ROUTE-TRANSPORT-001 route, transport, and seasonal route choice", (
       throw new Error("Expected M2 transport state.");
     }
 
-    expect(transport.routes).toHaveLength(42);
+    expect(transport.routes).toHaveLength(25);
     expect(transport.regionalCurves).toHaveLength(4);
-    expect(transport.districtSeasonality).toHaveLength(30);
+    expect(transport.districtSeasonality).toHaveLength(14);
     expect(transport.routes[0]).toMatchObject({
       routeId: 1,
       fromDistrictId: 1,
@@ -41,14 +41,7 @@ describe("M2-ROUTE-TRANSPORT-001 route, transport, and seasonal route choice", (
       baseTravelCost: 10,
       baseCapacity: 100
     });
-    expect(transport.routes[30]).toMatchObject({
-      routeId: 31,
-      fromDistrictId: 1,
-      toDistrictId: 6,
-      routeKind: "river",
-      baseTravelCost: 8,
-      baseCapacity: 180
-    });
+    expect(runtime.world.definitions.topology?.routeEdges).toHaveLength(25);
     expect(validateWorldStateV0(runtime.world)).toEqual([]);
   });
 
@@ -59,8 +52,8 @@ describe("M2-ROUTE-TRANSPORT-001 route, transport, and seasonal route choice", (
       world: advanceWorldByGameDays((await bootM2Runtime()).world, 180)
     };
 
-    const dryRoute = previewRoute(dryRuntime, "m2.route.dry", 1, 6, 40);
-    const wetRoute = previewRoute(wetRuntime, "m2.route.wet", 1, 6, 40);
+    const dryRoute = previewRoute(dryRuntime, "m2.route.dry", 1, 8, 40);
+    const wetRoute = previewRoute(wetRuntime, "m2.route.wet", 1, 8, 40);
 
     expect(dryRoute.status).toBe("ok");
     expect(wetRoute.status).toBe("ok");
@@ -85,8 +78,6 @@ describe("M2-ROUTE-TRANSPORT-001 route, transport, and seasonal route choice", (
     }
 
     expect(dryRoute.result.route.edges.map((edge) => edge.routeKind)).toEqual([
-      "road",
-      "road",
       "road",
       "road",
       "road"
