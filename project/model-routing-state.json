@@ -18,7 +18,7 @@
   "current_lead_thread": {
     "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_ready_for_m7_map_topology_validation",
+    "status": "active_map_topology_validation_in_progress",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "configured_model": "gpt-5.5",
@@ -42,10 +42,12 @@
     },
     "operational_state_after_transition_integration": "active",
     "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
-    "task_id": null,
-    "updated_at": "2026-06-30T20:38:43.871Z",
-    "concurrent_task_ids": [],
-    "branch_or_worktree": "codex/close-m7-map-topology-client",
+    "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+    "updated_at": "2026-06-30T20:47:20.072Z",
+    "concurrent_task_ids": [
+      "M7-MAP-TOPOLOGY-VALIDATION-001"
+    ],
+    "branch_or_worktree": "codex/m7-map-topology-validation",
     "active_gate_task_id": null,
     "last_integrated_task": "M7-MAP-TOPOLOGY-CLIENT-001",
     "last_main_commit": "ad93aab15a95911a493dc8b1d8795595bc5d2684"
@@ -5492,6 +5494,25 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Start M7-MAP-TOPOLOGY-VALIDATION-001 as the next topology recovery validation task.",
-  "current_task_status": "IDLE_READY_TO_START_NEXT"
+  "next_machine_action": "Wait for M7-MAP-TOPOLOGY-VALIDATION-001 test_engineer REVIEW handoff.",
+  "current_task_status": "IN_PROGRESS",
+  "m7_map_topology_validation": {
+    "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+    "status": "IN_PROGRESS",
+    "owner_role": "test_engineer",
+    "owner_configured_model": "gpt-5.4-mini",
+    "owner_configured_effort": "high",
+    "writer_thread_id": "019f1a48-010b-78b3-a682-af32c69fd521",
+    "writer_thread_nickname": "Canary the 2nd",
+    "reviewer_role": "qa_reviewer",
+    "reviewer_configured_model": "gpt-5.5",
+    "reviewer_configured_effort": "xhigh",
+    "branch_or_worktree": "codex/m7-map-topology-validation",
+    "base_main_commit": "e7b414271a355b4be7b78cb7c5b43db6a152bc38",
+    "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+    "started_at": "2026-06-30T20:47:20.072Z",
+    "next_action": "Wait for test_engineer REVIEW handoff."
+  }
 }

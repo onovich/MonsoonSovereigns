@@ -1,0 +1,66 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-START",
+  "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "test_engineer",
+  "status": "INFO",
+  "summary": "Start end-to-end validation of the topology-backed map recovery before M7 content-lock reconsideration. This task validates explicit district polygon and route graph authority, anti-grid/lattice evidence, deterministic path behavior, screenshots, manual smoke, and console cleanliness. It does not approve M7 content lock.",
+  "branch_or_worktree": "codex/m7-map-topology-validation",
+  "base_main_commit": "e7b414271a355b4be7b78cb7c5b43db6a152bc38",
+  "owner_thread_id": "019f1a48-010b-78b3-a682-af32c69fd521",
+  "owner_thread_nickname": "Canary the 2nd",
+  "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
+  "expected_writer_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
+  "allowed_paths": [
+    "tests/**",
+    "apps/web/**",
+    "packages/client-core/**",
+    "packages/map-renderer/**",
+    "packages/sim-core/**",
+    "packages/content-runtime/**",
+    "project/tasks/active/M7-MAP-TOPOLOGY-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/**",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json"
+  ],
+  "forbidden_paths": [
+    "content-source/**",
+    "apps/desktop/**",
+    "packages/save-format/**",
+    ".github/**",
+    "tools/**",
+    "docs/GATE-M7.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "MANIFEST.md",
+    "SHA256SUMS.txt",
+    "VALIDATION_REPORT.md"
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-VALIDATION-001",
+    "git diff --check",
+    "pnpm check",
+    "pnpm test",
+    "pnpm content:validate",
+    "pnpm sim:determinism",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "focused topology validation negative tests",
+    "manual-smoke notes with screenshots and console-clean assertions"
+  ],
+  "decisions": [
+    {
+      "id": "CONTENT_LOCK_NOT_APPROVED",
+      "decision": "This validation may reopen product-owner reconsideration evidence only; it must not approve content lock autonomously."
+    },
+    {
+      "id": "ANTI_GRID_PRIMARY_RISK",
+      "decision": "Validation must prove no hidden rectangular/grid/hex/lattice/sequential-id shortcut remains in default player-facing map behavior."
+    }
+  ],
+  "created_at": "2026-06-30T20:47:20.072Z"
+}
