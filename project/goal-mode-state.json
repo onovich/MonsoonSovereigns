@@ -3,29 +3,32 @@
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
   "current_tasks": [
-    "M7-MAP-TOPOLOGY-RECOVERY-001"
+    "M7-MAP-TOPOLOGY-SCHEMA-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
+      "task_id": "M7-MAP-TOPOLOGY-SCHEMA-001",
       "task_ids": [
-        "M7-MAP-TOPOLOGY-RECOVERY-001"
+        "M7-MAP-TOPOLOGY-SCHEMA-001"
       ],
-      "status": "accepted_pr_pending",
+      "status": "ready_to_start",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-map-topology-recovery",
-      "updated_at": "2026-06-30T22:15:34.3326087+08:00",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
+      "branch_or_worktree": "codex/close-m7-map-topology-recovery",
+      "updated_at": "2026-06-30T22:29:26.2066820+08:00",
+      "ready_after_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
+      "ready_after_main_commit": "6249dd4a69a355722d575efdda71304f12197fdd"
     }
   },
-  "last_integrated_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
-  "last_main_commit": "02bf1690f7ef09784984f30ecaa0db19feb5595e",
-  "next_ready_tasks": [],
+  "last_integrated_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
+  "last_main_commit": "6249dd4a69a355722d575efdda71304f12197fdd",
+  "next_ready_tasks": [
+    "M7-MAP-TOPOLOGY-SCHEMA-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -1132,7 +1135,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
+  "current_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -1986,8 +1989,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "ACCEPTED",
-  "next_machine_action": "Open and merge M7-MAP-TOPOLOGY-RECOVERY-001 PR; do not start M7-EXIT-VALIDATION-001 and do not make downstream topology tasks READY until main integration.",
+  "current_task_status": "READY",
+  "next_machine_action": "Start M7-MAP-TOPOLOGY-SCHEMA-001 from origin/main; do not start M7-EXIT-VALIDATION-001 and keep content lock blocked.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3322,7 +3325,7 @@
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
   "m7_map_topology_recovery": {
-    "status": "ACCEPTED",
+    "status": "CLOSED",
     "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
     "owner_role": "gameplay_designer",
     "reviewer_role": "systems_architect",
@@ -3343,8 +3346,8 @@
       "M7-MAP-TOPOLOGY-CLIENT-001",
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
-    "next_action": "Open PR, wait for CI, merge to main, then make M7-MAP-TOPOLOGY-SCHEMA-001 READY.",
-    "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+    "next_action": "M7-MAP-TOPOLOGY-SCHEMA-001 is READY and should start next.",
+    "updated_at": "2026-06-30T22:29:26.2066820+08:00",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "systems_status": "ACCEPT",
@@ -3357,6 +3360,14 @@
     "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
     "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
     "accepted_at": "2026-06-30T22:15:34.3326087+08:00",
-    "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c"
+    "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c",
+    "integrated_pr": 223,
+    "integrated_main_commit": "6249dd4a69a355722d575efdda71304f12197fdd",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/223",
+    "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T22:29:26.2066820+08:00",
+    "next_ready_tasks": [
+      "M7-MAP-TOPOLOGY-SCHEMA-001"
+    ]
   }
 }

@@ -1,15 +1,20 @@
 {
   "milestone": "M7",
   "risk_level": "R4",
-  "branch_or_worktree": "codex/m7-map-topology-recovery",
+  "branch_or_worktree": "codex/close-m7-map-topology-recovery",
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pr_pending",
-      "branch_or_worktree": "codex/m7-map-topology-recovery",
-      "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+      "status": "closed_after_main_integration",
+      "branch_or_worktree": "codex/close-m7-map-topology-recovery",
+      "updated_at": "2026-06-30T22:29:26.2066820+08:00",
       "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json",
-      "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json"
+      "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
+      "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 223,
+      "integrated_main_commit": "6249dd4a69a355722d575efdda71304f12197fdd",
+      "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/223",
+      "closed_at": "2026-06-30T22:29:26.2066820+08:00"
     },
     "gameplay_designer": {
       "thread_id": "019f18ad-576b-7540-9487-817812e3f5b6",
@@ -29,12 +34,12 @@
     }
   },
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T22:15:34.3326087+08:00",
+  "updated_at": "2026-06-30T22:29:26.2066820+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-RECOVERY-001",
   "summary": "Plan authoritative map topology recovery after product-owner rejection of grid-like map substrate",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "required_reviewers": [
@@ -130,7 +135,7 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_action": "Open PR, wait for CI, merge to main, then close M7-MAP-TOPOLOGY-RECOVERY-001 and make M7-MAP-TOPOLOGY-SCHEMA-001 READY.",
+  "next_action": "Start M7-MAP-TOPOLOGY-SCHEMA-001 as the next READY M7 task.",
   "request_changes_round": 1,
   "systems_status": "ACCEPT",
   "systems_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-REQUEST-CHANGES__systems_architect.json",
@@ -147,5 +152,19 @@
   "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-RECOVERY-001__ROUTE-20260630-LEAD-TO-QA-REVIEW.json",
   "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json",
   "accepted_at": "2026-06-30T22:15:34.3326087+08:00",
-  "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c"
+  "accepted_branch_head": "3f9cd7f5a2c25b315889bd88cc90b0585ab2bd3c",
+  "integrated_pr": 223,
+  "integrated_main_commit": "6249dd4a69a355722d575efdda71304f12197fdd",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/223",
+  "closed_at": "2026-06-30T22:29:26.2066820+08:00",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-CLOSED__lead_orchestrator.json",
+  "child_threads_closed": [
+    "019f18ad-576b-7540-9487-817812e3f5b6",
+    "019f18c1-6f85-72d0-abc7-fd9ea283536d",
+    "019f18dc-5eeb-7690-bd27-c5a7c900ded9"
+  ],
+  "next_ready_tasks": [
+    "M7-MAP-TOPOLOGY-SCHEMA-001"
+  ]
 }

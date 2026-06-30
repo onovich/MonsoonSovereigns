@@ -1,0 +1,63 @@
+{
+  "message_id": "MSG-20260630-M7-MAP-TOPOLOGY-CLOSED",
+  "task_id": "M7-MAP-TOPOLOGY-RECOVERY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "Closed M7-MAP-TOPOLOGY-RECOVERY-001 after PR #223 passed CI and entered origin/main at 6249dd4a69a355722d575efdda71304f12197fdd. The accepted planning package records the product-owner topology REQUEST_CHANGES, ADR-010, downstream topology task chain, systems_architect ACCEPT, and independent qa_reviewer ACCEPT. Formal M7 content lock remains blocked; M7-EXIT-VALIDATION-001 must not start.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-RECOVERY-001.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-SCHEMA-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-map-topology-recovery",
+  "commit": "6249dd4a69a355722d575efdda71304f12197fdd",
+  "tests_run": [
+    {
+      "command": "gh pr checks 223 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke PASS; Windows Desktop Smoke Artifact PASS."
+    },
+    {
+      "command": "gh pr merge 223 --squash --delete-branch --subject \"chore(process): accept M7 map topology recovery plan\"",
+      "exit_code": 0,
+      "result": "PR #223 merged; origin/main advanced to 6249dd4a69a355722d575efdda71304f12197fdd."
+    },
+    {
+      "command": "git status --short --branch && git rev-parse HEAD && git rev-parse origin/main",
+      "exit_code": 0,
+      "result": "Local main and origin/main both at 6249dd4a69a355722d575efdda71304f12197fdd before closure branch was created."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLOSE_AFTER_MAIN_INTEGRATION",
+      "decision": "M7-MAP-TOPOLOGY-RECOVERY-001 is CLOSED only after PR #223 entered origin/main."
+    },
+    {
+      "id": "START_SCHEMA_NEXT",
+      "decision": "M7-MAP-TOPOLOGY-SCHEMA-001 is now the next READY task and must implement authoritative topology definitions before fixture/client/validation tasks proceed."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "Formal M7 content lock remains blocked until the full topology recovery chain validates and product-owner reconsideration reopens."
+    }
+  ],
+  "risks": [
+    {
+      "id": "ADR_010_PROPOSED_IMPLEMENTATION_PENDING",
+      "severity": "R4",
+      "summary": "ADR-010 is accepted for planning but the schema, fixture, client, and validation tasks are not yet implemented.",
+      "mitigation": "Start M7-MAP-TOPOLOGY-SCHEMA-001 next; keep content lock and M7 exit blocked."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Start M7-MAP-TOPOLOGY-SCHEMA-001 from main with systems_architect ownership and preserve ADR-010 boundaries.",
+  "created_at": "2026-06-30T22:29:26.2066820+08:00"
+}

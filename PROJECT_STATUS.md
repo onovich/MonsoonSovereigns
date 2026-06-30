@@ -347,4 +347,6 @@ The active recovery planning task is `M7-MAP-TOPOLOGY-RECOVERY-001` on branch `c
 
 Systems R3 review accepted the recovery package through thread `019f18c1-6f85-72d0-abc7-fd9ea283536d`, recorded in `project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-SYSTEMS-R3-REVIEW__systems_architect.json`. This systems acceptance did not approve M7 content lock or make any downstream topology implementation task READY by itself.
 
-Independent `qa_reviewer` thread `019f18dc-5eeb-7690-bd27-c5a7c900ded9` accepted `M7-MAP-TOPOLOGY-RECOVERY-001`, recorded in `project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json`. The task is `ACCEPTED` but not `CLOSED` until PR CI passes and the accepted package enters `origin/main`; `M7-MAP-TOPOLOGY-SCHEMA-001` must remain non-READY until that main integration is complete.
+Independent `qa_reviewer` thread `019f18dc-5eeb-7690-bd27-c5a7c900ded9` accepted `M7-MAP-TOPOLOGY-RECOVERY-001`, recorded in `project/messages/outbox/M7-MAP-TOPOLOGY-RECOVERY-001__MSG-20260630-M7-MAP-TOPOLOGY-QA-REVIEW__qa_reviewer.json`.
+
+`M7-MAP-TOPOLOGY-RECOVERY-001` entered `origin/main` through PR #223 at `6249dd4a69a355722d575efdda71304f12197fdd` after both CI checks passed. The task is now CLOSED in the closure checkpoint, and `M7-MAP-TOPOLOGY-SCHEMA-001` is the next READY task. Formal content lock remains blocked and `M7-EXIT-VALIDATION-001` must not start until the full topology recovery chain validates.
