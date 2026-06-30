@@ -1,0 +1,30 @@
+{
+  "route_id": "ROUTE-20260701-QA-REQUEST-CHANGES-TO-SIMULATION",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "simulation_engineer",
+  "to_thread_id": "019f197c-401c-7231-b47f-bee31d1308af",
+  "to_thread_nickname": "Engine",
+  "status": "SENT",
+  "sent_at": "2026-06-30T17:49:10.220Z",
+  "route_submission_id": "019f19a4-bd7f-7b73-88b2-02c6b3b7a1c6",
+  "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+  "process_head_commit": "58fbd49e",
+  "requested_action": "Repair QA blocker: pnpm --filter @monsoon/sim-core test times out in tests/sim-core-m2-economy-population.test.ts under the default 5000 ms budget, then rerun required matrix and return R2 REVIEW handoff.",
+  "blockers": [
+    {
+      "id": "SIM_CORE_PACKAGE_TEST_TIMEOUT",
+      "file": "tests/sim-core-m2-economy-population.test.ts",
+      "symbol": "property invariants preserve non-negative population, labor, grain, and cash",
+      "required_fix": "Make the checked-in default sim-core test command pass deterministically without requiring reviewers to add --testTimeout manually."
+    }
+  ],
+  "notes": [
+    "This request does not reject the topology fixture substance; QA found topology evidence broadly aligned.",
+    "Do not mark the task ACCEPTED until R2 QA accepts after the default sim-core command passes.",
+    "Do not start M7-MAP-TOPOLOGY-CLIENT-001 or reopen M7 content lock from this request."
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA cannot accept M7-MAP-TOPOLOGY-FIXTURE-001 because the required affected-package command `pnpm --filter @monsoon/sim-core test` fails reproducibly in this workspace: `tests/sim-core-m2-economy-population.test.ts` times out its property invariant at the default 5000 ms budget. The fixture/content/compiler/runtime/sim-core topology evidence is otherwise largely aligned with the task: the default fixture has 14 COMPOSITE districts, 25 explicit topology route edges, explicit-route-graph-v1 adjacency, variable degree, route-node endpoints, road/river/coast modes, one explicit no-known-route isolation, a visual-neighbor-without-route case, visually distant explicit routes, topology hash participation, and no forbidden client/rendering path drift. This is not an ACCEPT; it does not approve M7 content lock and does not cover downstream client map rendering.",
+  "artifacts": [
+    "apps/content-tools/src/index.ts",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "packages/content-runtime/src/index.ts",
+    "packages/content-schema/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "tests/sim-core-m2-economy-population.test.ts",
+    "tests/sim-core-m2-route-transport.test.ts",
+    "tests/sim-core-m6-policy-event-runtime.test.ts",
+    "tests/save-load-contract.test.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-map-topology-fixture",
+  "commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Branch was codex/m7-map-topology-fixture at HEAD a43714068d1abfdb54ba7737f2bada502a0dbec2 with implementation commit 69031120de52949f9ed17289f3b2ef1f258e48ab underneath. Pre-existing dirty/untracked coordination files were present before QA handoff creation; no implementation files were dirty."
+    },
+    {
+      "command": "git diff --name-status 4c39b829456cc35adca2a56ff9390b32cd651ba8...HEAD",
+      "exit_code": 0,
+      "result": "Diff touched allowed implementation/process paths: apps/content-tools, content-source M2 fixture, packages/content-runtime, packages/content-schema, packages/sim-core boot, focused tests, and project process files. A forbidden-path diff scan for apps/web, apps/desktop, packages/ui, packages/map-renderer, .github, tools, M7 gate/roadmap/matrix/manifests/reports returned no files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID D:\\WebProjects\\MonsoonSovereigns\\project\\tasks\\active\\M7-MAP-TOPOLOGY-FIXTURE-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed. The default M2 prototype fixture reported districts=14, settlements=6, regionalSeasonalCurves=4, routes=25, mapGeometries=20, manifestHash=d474a105."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 16 tests."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 38 tests, including topology fixture compile assertions and negative coverage for missing endpoint, duplicate topology id/source id, invalid geometry, route-node-outside-polygon, disconnected graph without explicit isolation, and row/column/grid/hex/lattice leakage."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 1,
+      "result": "FAILED. 25 test files passed and 197 tests passed, but `tests/sim-core-m2-economy-population.test.ts` failed: `property invariants preserve non-negative population, labor, grain, and cash` timed out at 5000 ms."
+    },
+    {
+      "command": "pnpm vitest run --root . tests/sim-core-m2-economy-population.test.ts",
+      "exit_code": 1,
+      "result": "FAILED again in focused reproduction. The same property invariant timed out at the default 5000 ms budget after 5709 ms."
+    },
+    {
+      "command": "pnpm vitest run --root . tests/sim-core-m2-economy-population.test.ts --testTimeout 15000",
+      "exit_code": 0,
+      "result": "Passed with increased timeout: 1 test file, 6 tests. This suggests the invariant assertions are not failing, but the checked-in default test command is not currently reproducible within its timeout."
+    },
+    {
+      "command": "pnpm vitest run --root . <same 26 sim-core test files as package script> --testTimeout 15000",
+      "exit_code": 0,
+      "result": "Passed with increased timeout: 26 test files, 198 tests. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for tests/fixtures/deterministic-rng-worker.ts."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed. Architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "Node fixture topology summary and geometry/controller inspection",
+      "exit_code": 0,
+      "result": "Confirmed 14 COMPOSITE districts, 25 topology routeEdges, 8 routeNodes, explicit-route-graph-v1 adjacency, modes road=16 river=6 coast=3, availability open=24 blocked=1, one explicit isolation for district-014, variable open degree 0/2-5, route-node endpoint edges=7, all district polygons have anchors and nonzero area, and runtime boot initializes 14/14 district states as explicit uncontrolled."
+    },
+    {
+      "command": "Node visual-neighbor/no-route and distant-explicit-route check",
+      "exit_code": 0,
+      "result": "Confirmed nearest no-route visual pair district-013|district-014 with polygon distance 25.5 and explicit isolation for district-014; confirmed visually distant explicit routes including district-005|district-013 via route-023 road with anchor distance 294.48 and district-004|district-012 via route-022 road with anchor distance 281.89."
+    },
+    {
+      "command": "Node word-boundary scan for row/column/grid/hex/axial/cube/lattice in changed authority/content/test files",
+      "exit_code": 0,
+      "result": "Hits were limited to compiler rejection code/messages, test names/assertions, and the unrelated manifest hash phrase 'hex string'. The fixture and authority paths did not contain hidden row/column/grid/hex/axial/cube/lattice data markers."
+    },
+    {
+      "command": "git grep -n -E \"Math\\.random|Date\\.now|new Date\\(|performance\\.now|crypto\\.random|randomUUID\" -- apps/content-tools/src packages/content-runtime/src packages/content-schema/src packages/sim-core/src tests content-source/m2-fixtures/prototype-world-30-districts.json",
+      "exit_code": 0,
+      "result": "No authoritative implementation hit was found. Matches were limited to tests that assert forbidden APIs are rejected and one validation string fixture containing Math.random."
+    },
+    {
+      "command": "node --experimental-strip-types --input-type=module <compile default fixture and boot runtime>",
+      "exit_code": 0,
+      "result": "Booted runtime-content-pack with manifestHash d474a105, topologyHash 1ba53651, stateHash 4d0e1f47, 14 districts, 0 controlled, and 14 explicit uncontrolled district states."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_REQUEST_CHANGES_REQUIRED_SIM_CORE_SCRIPT_FAILS",
+      "decision": "REQUEST_CHANGES. The required `pnpm --filter @monsoon/sim-core test` command fails reproducibly under the checked-in default timeout, so QA cannot accept even though increased-timeout runs pass."
+    },
+    {
+      "id": "TOPOLOGY_FIXTURE_SUBSTANTIVE_EVIDENCE_OK",
+      "decision": "The fixture/content side appears to satisfy the anti-grid substance of the task: explicit topology.routeEdges, routeNodes, variable degree, dead ends/chokepoints, road/river/coast modes, one explicit no-known-route isolation, visual-neighbor-without-route, visually distant explicit routes, COMPOSITE provenance, and no hidden lattice markers in fixture data."
+    },
+    {
+      "id": "COMPILER_RUNTIME_HASH_EVIDENCE_OK",
+      "decision": "Compiler/runtime evidence shows topology enters the runtime pack and manifest hash; boot creates topologyHash 1ba53651; save/load tests contain topology hash preservation and mismatch rejection coverage."
+    },
+    {
+      "id": "PACKAGE_BOUNDARIES_OK",
+      "decision": "No forbidden client, desktop, UI, map-renderer, CI, tool, gate, roadmap, matrix, manifest, checksum, or validation-report paths changed in the reviewed diff."
+    },
+    {
+      "id": "HISTORICAL_RISK_OK_FOR_FIXTURE_ONLY",
+      "decision": "Accepted historical_researcher conclusion for this fixture step: content is COMPOSITE validation-only placeholder data and does not assert exact historical borders, infrastructure, routes, ports, polity control, ethnic identity, or cultural assets."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_CLIENT_TOPOLOGY_PENDING",
+      "severity": "R4",
+      "summary": "Client rendering, polygon hit testing, default route semantics, and map/list/task/inspector synchronization remain for M7-MAP-TOPOLOGY-CLIENT-001. This QA review does not approve client map rendering."
+    },
+    {
+      "id": "LEGACY_ROUTE_FALLBACK_VISIBLE",
+      "severity": "R2",
+      "summary": "M2 transport retains a legacy explicit-route fallback when definitions.topology is absent. Reviewed evidence indicates this is not a hidden grid/lattice fallback and default runtime takes the topology branch, but future compatibility testing should keep it explicit."
+    },
+    {
+      "id": "FORMAL_HISTORY_CONTENT_NOT_APPROVED",
+      "severity": "R4",
+      "summary": "This review does not approve formal historical map content, real route importance, real place names, production cultural assets, or M7 content lock."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "SIM_CORE_PACKAGE_TEST_TIMEOUT",
+      "severity": "R4",
+      "file": "tests/sim-core-m2-economy-population.test.ts",
+      "symbol": "property invariants preserve non-negative population, labor, grain, and cash",
+      "repro": "`pnpm --filter @monsoon/sim-core test` exits 1. Focused repro `pnpm vitest run --root . tests/sim-core-m2-economy-population.test.ts` also exits 1 with the same 5000 ms timeout.",
+      "impact": "The required affected-package test command is not reproducible on the review branch, so task completion cannot be accepted under AGENTS.md completion rules. Writer handoff's claim that sim-core tests passed is not valid in this workspace.",
+      "necessary_fix": "Make the checked-in default sim-core test command pass deterministically without weakening invariant coverage. Acceptable repairs include reducing the property workload, optimizing the fixture/test path, or setting a narrowly justified explicit timeout for this property test/package script, then rerunning the full required matrix."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Route this REQUEST_CHANGES back to the simulation_engineer to repair the reproducible sim-core default test timeout, then return to qa_reviewer with the exact required commands rerun. Do not mark M7-MAP-TOPOLOGY-FIXTURE-001 accepted, do not close the task, and do not reopen M7 content lock from this review.",
+  "created_at": "2026-07-01T01:46:00+08:00"
+}

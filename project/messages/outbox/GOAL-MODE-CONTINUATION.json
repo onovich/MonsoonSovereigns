@@ -10,7 +10,7 @@
   "current_tasks": [
     "M7-MAP-TOPOLOGY-FIXTURE-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "last_integrated_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "last_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
@@ -471,8 +471,8 @@
     }
   ],
   "blockers": [],
-  "route_to": "qa_reviewer",
-  "requested_action": "Await independent qa_reviewer handoff for M7-MAP-TOPOLOGY-FIXTURE-001; if ACCEPT, run lead integration gates and open PR.",
+  "route_to": "simulation_engineer",
+  "requested_action": "Await simulation_engineer R2 handoff after QA REQUEST_CHANGES for default sim-core test timeout.",
   "created_at": "2026-06-28T16:11:45.503Z",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -564,8 +564,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Await independent qa_reviewer handoff for M7-MAP-TOPOLOGY-FIXTURE-001; if ACCEPT, run lead integration gates and open PR.",
-  "updated_at": "2026-06-30T17:36:02.274Z",
+  "next_action": "Await simulation_engineer R2 handoff after QA REQUEST_CHANGES for default sim-core test timeout.",
+  "updated_at": "2026-06-30T17:49:10.220Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1204,8 +1204,8 @@
     "systems_thread_nickname": "Keystone the 2nd",
     "systems_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
     "expected_systems_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
-    "status": "REVIEW",
-    "updated_at": "2026-06-30T17:36:02.274Z",
+    "status": "IN_PROGRESS",
+    "updated_at": "2026-06-30T17:49:10.220Z",
     "historical_status": "ACCEPT",
     "historical_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
     "historical_reviewed_at": "2026-06-30T17:36:02.274Z",
@@ -1217,7 +1217,15 @@
     "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-SYSTEMS-TO-QA-REVIEW.json",
     "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
     "routed_to_qa_at": "2026-06-30T17:36:02.274Z",
-    "qa_status": "review_requested",
-    "next_action": "Await independent qa_reviewer handoff for M7-MAP-TOPOLOGY-FIXTURE-001; if ACCEPT, run lead integration gates and open PR."
+    "qa_status": "REQUEST_CHANGES",
+    "next_action": "Await simulation_engineer R2 handoff after fixing the default sim-core test timeout reported by QA.",
+    "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
+    "request_changes_round": 1,
+    "request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
+    "request_changes_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-QA-REQUEST-CHANGES-TO-SIMULATION.json",
+    "request_changes_submission_id": "019f19a4-bd7f-7b73-88b2-02c6b3b7a1c6",
+    "request_changes_sent_at": "2026-06-30T17:49:10.220Z",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "route_to": "simulation_engineer"
   }
 }
