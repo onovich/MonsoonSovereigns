@@ -2,7 +2,7 @@
   "id": "M7-CORE-ACTION-LOOP-UX-001",
   "summary": "Implement the M7 phase-driven core action loop, obligation entry, and appointment feedback recovery",
   "milestone": "M7",
-  "status": "DRAFT",
+  "status": "IN_PROGRESS",
   "owner_role": "client_engineer",
   "reviewer_role": "gameplay_designer",
   "risk_level": "R4",
@@ -78,8 +78,31 @@
     "focused React/Vitest coverage for task-card to obligation entry and appointment confirmation state",
     "focused Playwright path covering first phase, obligation entry discoverability, appointment preview, confirm feedback, and no duplicate submission affordance"
   ],
-  "branch_or_worktree": null,
-  "threads": {},
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "threads": {
+    "lead_orchestrator": {
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "active_started_task",
+      "branch_or_worktree": "codex/m7-core-action-loop-ux",
+      "start_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
+      "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "updated_at": "2026-06-30T18:15:12.6679256+08:00"
+    },
+    "client_engineer": {
+      "thread_id": "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
+      "nickname": "Canvas",
+      "status": "in_progress",
+      "branch_or_worktree": "codex/m7-core-action-loop-ux",
+      "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+      "source_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
+      "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "started_at": "2026-06-30T18:15:12.6679256+08:00"
+    }
+  },
   "route_to": "gameplay_designer",
   "notes": [
     "This is a product-owner REQUEST_CHANGES recovery path. It must not approve formal M7 content lock.",
@@ -91,11 +114,17 @@
     "This is the first implementation task after the planning task is CLOSED; the lead should start it before any content-lock reconsideration."
   ],
   "created_at": "2026-06-30T09:46:39.564Z",
-  "updated_at": "2026-06-30T09:46:39.564Z",
+  "updated_at": "2026-06-30T18:15:12.6679256+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
   "visual_feedback_thread_id": "019f05b0-7e7e-71e3-b18f-e41c938a38db",
   "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
-  "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d"
+  "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+  "started_at": "2026-06-30T18:15:12.6679256+08:00",
+  "ready_after_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+  "ready_after_main_commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
+  "start_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
+  "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
+  "expected_writer_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json"
 }
