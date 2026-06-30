@@ -1,0 +1,26 @@
+{
+  "route_id": "M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R3-TO-SYSTEMS-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "to_thread_id": "019f1a09-1933-7713-90d4-5dcec910a2e3",
+  "to_thread_nickname": "Lintel the 2nd",
+  "status": "SENT",
+  "sent_at": "2026-07-01T03:58:21.2993766+08:00",
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "source_handoffs": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REQUEST-CHANGES-FORWARDED__lead_orchestrator.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json"
+  ],
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json",
+  "review_scope": [
+    "Verify F1 browser route-node anchor rendering is real, non-authoritative, and test-backed.",
+    "Verify F2 regenerated screenshots visibly show irregular districts, route-node markers, explicit route 24, selected/control/action affordances, and no rectangular/hex/regular lattice board.",
+    "Verify F3 geometry perturbation test now reprojects a perturbed topology DTO and asserts path preview and drawable route invariants.",
+    "Re-check allowed/forbidden paths and no fake district endpoint route inference."
+  ],
+  "requested_action": "Return ACCEPT, REQUEST_CHANGES, or BLOCKED. If ACCEPT, route to qa_reviewer for independent acceptance.",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+}

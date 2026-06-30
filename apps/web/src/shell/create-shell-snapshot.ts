@@ -2,7 +2,7 @@ import {
   applyClientReadModelDelta,
   createClientDistrictId,
   createInitialClientReadModelSnapshot,
-  createM2PrototypeClientReadModelSnapshot,
+  createM7TopologyClientReadModelSnapshot,
   createM6AlphaEmptyReadModelFixture,
   createM6AlphaErrorReadModelFixture,
   createM6AlphaExtremeReadModelFixture,
@@ -27,7 +27,7 @@ export function createBootstrappedShellSnapshot(): ClientReadModelSnapshot {
     result
   });
 
-  return createM2PrototypeClientReadModelSnapshot(snapshotWithSimulation);
+  return createM7TopologyClientReadModelSnapshot(snapshotWithSimulation);
 }
 
 export function createWebClientShellSnapshot(search = ""): ClientReadModelSnapshot {

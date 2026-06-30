@@ -1,0 +1,119 @@
+{
+  "message_id": "M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R3 repairs systems_architect REQUEST_CHANGES F1-F3. Browser Pixi now renders route-node anchors from the existing MapAnchorRenderInstruction/read-model surface, exposes data-anchor-count=8 on the real canvas, and keeps anchors visual-only with eventMode none. Evidence screenshots were regenerated at 1440x900 and 1280x720 after route-node rendering; both show irregular topology districts, route-node markers, explicit route 24, legend, current focus/action affordances, and no rectangular/hex/regular lattice board. The geometry perturbation regression now reprojects a perturbed topology DTO through projectM7TopologyClientReadModels with the same accepted path-preview DTOs and asserts unchanged path preview edge sequences/reason codes, drawable route ids, route-source count, and district-endpoint non-drawing.",
+  "branch_or_worktree": "D:\\WebProjects\\MonsoonSovereigns / codex/m7-map-topology-client",
+  "commit": "HEAD 374c2813; working tree contains uncommitted R3 review changes",
+  "artifacts": [
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/tasks/thread-registry.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json"
+  ],
+  "source_reviews": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REQUEST-CHANGES-FORWARDED__lead_orchestrator.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-SYSTEMS-REQUEST-CHANGES-TO-CLIENT.json"
+  ],
+  "fixes": [
+    {
+      "id": "F1_BROWSER_ROUTE_NODES_NOT_RENDERED",
+      "result": "Fixed in packages/map-renderer/src/index.ts. BrowserPixiMapRenderer now owns an anchorLayer, clears/destroys it with the other Pixi layers, renders every plan.anchors entry through createAnchorMarker, and sets data-anchor-count on the mounted canvas. The marker is non-authoritative: it is drawn from MapAnchorRenderInstruction only, has eventMode none, and is not used to infer routes, hit tests, adjacency, reachability, or command behavior."
+    },
+    {
+      "id": "F2_SCREENSHOT_EVIDENCE_INSUFFICIENT",
+      "result": "Regenerated task evidence screenshots with the browser Pixi route-node markers visible. The 1440x900 and 1280x720 captures show a framed map region with irregular district polygons, visible route-node dots, explicit route 24, current focus/action card, map legend, and no regular grid, hex, or lattice board. Screenshot styling only increases map-row capture height; it does not add or fake topology semantics."
+    },
+    {
+      "id": "F3_GEOMETRY_PERTURBATION_TEST_TOO_WEAK",
+      "result": "Strengthened in tests/map-renderer-m2-map.test.ts. The test now creates a perturbed topologyResult DTO by changing district polygon points, keeps the same accepted pathPreviewResults DTOs, re-runs projectM7TopologyClientReadModels, and asserts unchanged path preview signatures, drawable route ids [24], topology route-source count 25, exactly one drawable route-source with points, route 1/14 district-endpoint legs remain non-drawing, and geometryPerturbationInvariantPath keeps edge sequence [3,22,19] with topology.path.reachable."
+    }
+  ],
+  "anti_grid_evidence": {
+    "m2_grid_default_path": "M2_PROTOTYPE_GRID_COLUMNS remains off the player-facing default path. The default path is createBootstrappedShellSnapshot -> createM7TopologyClientReadModelSnapshot -> createM7TopologyReadModelFixture/projectM7TopologyClientReadModels using accepted topology/path-preview DTO surfaces.",
+    "route_points_source": "Drawable route points come only from explicit topology route-node endpoint anchors exposed through the accepted topology read model. In the current DTO, only route 24 has route-node to route-node endpoints, so only route 24 is drawable. District endpoint edges remain in routeEdges/pathPreviews/reason copy but are not drawn without explicit route-node/polyline points.",
+    "no_fake_route_lines": "Renderer and projection do not draw district centroid, district anchor, bounding-box, nearest-neighbor, visual-adjacency, sequential-id, grid, or hidden-lattice route lines. Edges with any district endpoint project to an empty points array for drawing.",
+    "perturbation_invariant": "Polygon perturbation does not change path because path preview edgeSequence/reasonCodes are consumed from accepted path-preview DTOs. The R3 regression perturbs topology DTO district polygons before projection and verifies path preview signatures and AI/player reason codes remain unchanged.",
+    "visual_neighbor_without_route": "Covered by topology antiGridEvidence for districts 13 -> 14: edge sequence is empty and reasonCodes include topology.path.no-known-route. E2E verifies the player copy: No known topology route / Outer sound has no known explicit route.",
+    "visually_distant_explicit_route": "Covered by topology antiGridEvidence for districts 2 -> 9: edge sequence [24] and reasonCodes include topology.path.reachable. E2E and map-renderer tests verify route 24 is the visible/drawable explicit route.",
+    "blocked_capacity_no_known_copy": "Map-renderer tests cover capacity-exceeded reason code for 2 -> 9. E2E covers no-known-route and blocked route copy, including blocked edge sequence 25 and the Pass survey blocks this explicit route localized feedback."
+  },
+  "evidence_screenshots": [
+    {
+      "viewport": "1440x900",
+      "path": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+      "result": "Shows irregular district polygons, route-node markers, explicit route 24, legend, hover/details strip, selected District 1 action affordance, and no regular board."
+    },
+    {
+      "viewport": "1280x720",
+      "path": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+      "result": "Shows enough map area to identify irregular districts, route-node markers, explicit route 24, legend semantics, and selected/current-action affordance; not a bottom sliver."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Reviewed before and after e2e. Modified/untracked paths are allowed client/test/process/evidence paths. After e2e, old M7-SYSTEMIC-INTERACTION-VALIDATION evidence PNGs were restored to HEAD and no longer appear in git status."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 9 tests. R3 assertions cover anchor render-plan count, visual-neighbor/no-route, visually-distant route 24, capacity, variable degree/dead-end/chokepoint/modes, and reprojected polygon perturbation invariance."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 11 tests."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 30 tests. Regenerated the two M7-MAP-TOPOLOGY-CLIENT-001 evidence screenshots and asserted browser canvas data-anchor-count=8, data-route-count=1, and data-route-source-count=25."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    }
+  ],
+  "old_evidence_png_status": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1280x720.png and project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__EVIDENCE-1440x900.png were restored to HEAD after pnpm test:e2e and are not modified in final git status.",
+  "scope_compliance": {
+    "allowed_paths_only": true,
+    "forbidden_paths_touched": [],
+    "worldstate_mutation": "No UI or Pixi WorldState mutation added. React consumes read-model slices; Pixi renders plan instructions; command/preview/submit boundaries remain unchanged.",
+    "full_worldstate_in_redux": "No complete WorldState was placed into React/Redux."
+  },
+  "remaining_risks": [
+    "The accepted DTO still only gives route-node drawable geometry for route 24. Richer visible geometry for district-endpoint edges still requires a future explicit route-edge polyline read-model/schema surface; this R3 intentionally does not synthesize those lines in client code.",
+    "Route-node markers are low-fidelity visual dots, not final art. They satisfy current topology readability and anti-grid evidence without expanding art-production scope."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R3 repairs for F1-F3. If accepted, route onward to test_engineer/qa_reviewer per task requirements.",
+  "created_at": "2026-07-01T03:55:29.6864926+08:00"
+}

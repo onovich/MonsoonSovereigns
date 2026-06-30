@@ -1,0 +1,28 @@
+{
+  "route_id": "M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R2-TO-SYSTEMS-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "to_thread_id": "019f1a09-1933-7713-90d4-5dcec910a2e3",
+  "to_thread_nickname": "Lintel the 2nd",
+  "status": "SENT",
+  "sent_at": "2026-07-01T03:40:53.5040294+08:00",
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "source_handoffs": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json"
+  ],
+  "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
+  "review_scope": [
+    "allowed and forbidden path compliance",
+    "default player path does not use M2 grid fixture or hidden grid/lattice authority",
+    "no row/column, hex, sequential-id, centroid, bbox, nearest-neighbor, visual adjacency, or renderer guess driving route authority",
+    "route-node-only drawable route policy for route 24 versus district endpoint path preview legs",
+    "screenshot evidence and tests prove anti-grid topology rather than visual disguise",
+    "UI/read-model/renderer boundaries and no direct WorldState mutation"
+  ],
+  "requested_action": "Return ACCEPT, REQUEST_CHANGES, or BLOCKED with precise findings and route to qa_reviewer only if systems review accepts.",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+}

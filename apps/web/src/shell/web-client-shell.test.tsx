@@ -28,9 +28,12 @@ describe("web client shell", () => {
 
     expect(snapshot.status).toBe("ready");
     expect(snapshot.simulation.daysSimulated).toBe(30);
-    expect(snapshot.map.districts).toHaveLength(30);
-    expect(snapshot.map.settlements).toHaveLength(10);
-    expect(snapshot.districtList.rows).toHaveLength(30);
+    expect(snapshot.map.topology?.topologyHash).toBe("1ba53651");
+    expect(snapshot.map.districts).toHaveLength(14);
+    expect(snapshot.map.settlements).toHaveLength(0);
+    expect(snapshot.map.routes).toHaveLength(1);
+    expect(snapshot.map.topology?.routeEdges).toHaveLength(25);
+    expect(snapshot.districtList.rows).toHaveLength(14);
     expect(snapshot.m3Appointment.offices).toHaveLength(3);
     expect(snapshot.m3Appointment.bulkPreview.eligibleCount).toBe(2);
     expect(snapshot.m4Campaign.plans).toHaveLength(2);
@@ -229,8 +232,11 @@ describe("web client shell", () => {
     expect(markup).toContain('data-decision-action="obligations"');
     expect(markup).toContain('data-current-action="obligations"');
     expect(markup).toContain('data-active-object="District 1"');
-    expect(markup).toContain('data-map-presentation="soft-strategic-regions"');
-    expect(markup).toContain('data-player-grid="hidden"');
+    expect(markup).toContain('data-map-presentation="topology-region-network"');
+    expect(markup).toContain('data-player-grid="not-used"');
+    expect(markup).toContain('data-topology-hash="1ba53651"');
+    expect(markup).toContain("Path Preview");
+    expect(markup).toContain("edge sequence Route 1 -&gt; Route 24 -&gt; Route 14");
     expect(markup).toContain("Recommended target: District 1");
     expect(markup).not.toContain("Prototype District 001");
     expect(markup).not.toContain(snapshot.simulation.stateHash);
@@ -247,11 +253,64 @@ describe("web client shell", () => {
     expect(markup).not.toContain("blockers");
     expect(markup).not.toContain('aria-label="M3 appointment workspace"');
     expect(markup).toContain('data-renderer-owner="map-renderer"');
-    expect(markup).toContain('data-district-count="30"');
-    expect(markup).toContain('data-settlement-count="10"');
-    expect(markup).toContain('data-row-count="30"');
+    expect(markup).toContain('data-district-count="14"');
+    expect(markup).toContain('data-settlement-count="0"');
+    expect(markup).toContain('data-route-source-count="25"');
+    expect(markup).toContain('data-route-policy="selection-preview-only"');
+    expect(markup).toContain('data-row-count="14"');
     expect(markup).toContain("District 1");
     expect(markup).toContain("Monsoon route risk");
+  });
+
+  it("renders topology no-known and blocked path preview reason copy for selected districts", () => {
+    const snapshot = createBootstrappedShellSnapshot();
+    const noKnownMarkup = renderToStaticMarkup(
+      <ClientShellView
+        snapshot={snapshot}
+        mapMode="situation"
+        zoomLevel={1}
+        selectedEntity={{ kind: "district", districtId: createClientDistrictId(13) }}
+        onMapModeChange={() => undefined}
+        onZoomLevelChange={() => undefined}
+        onSelectedEntityChange={() => undefined}
+        onM3CommandSubmit={() => undefined}
+        m3CommandStatus={null}
+        onM4CommandSubmit={() => undefined}
+        m4CommandStatus={null}
+        onM5CommandSubmit={() => undefined}
+        m5CommandStatus={null}
+        onM6CommandSubmit={() => undefined}
+        m6CommandStatus={null}
+        mapSurface={<div aria-label="Map region" data-renderer-owner="map-renderer" />}
+      />
+    );
+    const blockedMarkup = renderToStaticMarkup(
+      <ClientShellView
+        snapshot={snapshot}
+        mapMode="situation"
+        zoomLevel={1}
+        selectedEntity={{ kind: "district", districtId: createClientDistrictId(6) }}
+        onMapModeChange={() => undefined}
+        onZoomLevelChange={() => undefined}
+        onSelectedEntityChange={() => undefined}
+        onM3CommandSubmit={() => undefined}
+        m3CommandStatus={null}
+        onM4CommandSubmit={() => undefined}
+        m4CommandStatus={null}
+        onM5CommandSubmit={() => undefined}
+        m5CommandStatus={null}
+        onM6CommandSubmit={() => undefined}
+        m6CommandStatus={null}
+        mapSurface={<div aria-label="Map region" data-renderer-owner="map-renderer" />}
+      />
+    );
+
+    expect(noKnownMarkup).toContain("No known topology route");
+    expect(noKnownMarkup).toContain("Outer sound has no known explicit route");
+    expect(noKnownMarkup).toContain('data-route-preview-edge-sequence=""');
+    expect(blockedMarkup).toContain("Topology path is blocked");
+    expect(blockedMarkup).toContain("Pass survey blocks this explicit route");
+    expect(blockedMarkup).toContain('data-route-preview-edge-sequence="25"');
   });
 
   it("localizes player shell accessible names for Simplified Chinese", () => {
@@ -404,7 +463,7 @@ describe("web client shell", () => {
       }
     });
     expect(getChildLayer(stage, 0).children.length).toBe(2);
-    expect(getChildLayer(stage, 2).children.length).toBe(1);
+    expect(getChildLayer(stage, 2).children.length).toBe(0);
     expect(anchorLayer.children.length).toBe(1);
 
     scene.destroy();

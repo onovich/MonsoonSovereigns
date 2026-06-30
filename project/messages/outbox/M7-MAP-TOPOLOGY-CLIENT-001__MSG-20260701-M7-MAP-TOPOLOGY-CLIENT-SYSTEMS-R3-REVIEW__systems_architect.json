@@ -1,0 +1,164 @@
+{
+  "message_id": "MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "created_at": "2026-07-01T04:05:53.1780856+08:00",
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "commit": null,
+  "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json",
+  "review_route": "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R3-TO-SYSTEMS-REVIEW.json",
+  "previous_systems_review": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
+  "summary": "R3 closes the prior systems findings. The default player shell now enters the topology-backed snapshot path, the browser Pixi renderer consumes read-model anchor instructions, the regenerated screenshots visibly show irregular districts plus route-node markers and route 24, and the perturbation regression now reprojects a changed topology DTO while holding path preview/reason-code/drawable-route invariants. No forbidden package/schema paths were modified.",
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "info",
+      "status": "resolved",
+      "summary": "Browser route-node anchors are rendered from MapAnchorRenderInstruction/read-model data, not inferred by the renderer.",
+      "evidence": [
+        "packages/map-renderer/src/index.ts:365 builds plan.anchors from snapshot.anchors",
+        "packages/map-renderer/src/index.ts:735 adds anchor markers to the Pixi anchor layer",
+        "packages/map-renderer/src/index.ts:832 creates visual-only anchor markers with eventMode none",
+        "tests/e2e/web-shell.spec.ts:682 asserts data-anchor-count=8"
+      ]
+    },
+    {
+      "id": "F2",
+      "severity": "info",
+      "status": "resolved",
+      "summary": "R3 screenshots are sufficient systems evidence that the default map no longer reads as a rectangular, hex, or regular lattice board.",
+      "evidence": [
+        "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+        "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+        "tests/e2e/web-shell.spec.ts:704 captures the map region after forcing a readable 420px evidence surface"
+      ]
+    },
+    {
+      "id": "F3",
+      "severity": "info",
+      "status": "resolved",
+      "summary": "The geometry perturbation test now changes topology DTO polygon coordinates, reprojects through projectM7TopologyClientReadModels, and asserts route/path invariants against the reprojected result.",
+      "evidence": [
+        "tests/map-renderer-m2-map.test.ts:210 constructs a perturbed topology DTO",
+        "tests/map-renderer-m2-map.test.ts:223 reprojects with projectM7TopologyClientReadModels",
+        "tests/map-renderer-m2-map.test.ts:234 asserts path preview signature stability",
+        "tests/map-renderer-m2-map.test.ts:241 asserts 25 source route edges, one drawable route, and route 24 as the drawable route"
+      ]
+    }
+  ],
+  "files_reviewed": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/messages/routes/M7-MAP-TOPOLOGY-CLIENT-001__ROUTE-20260701-WRITER-R3-TO-SYSTEMS-REVIEW.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect.json",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png"
+  ],
+  "tests_reviewed": [
+    {
+      "command": "git diff --name-status",
+      "result": "PASS",
+      "notes": "Changed tracked paths are limited to allowed apps/web, packages/client-core, packages/map-renderer, packages/ui, tests, project/messages, project/tasks, and project state files. No packages/protocol, packages/sim-core, packages/save-format, content-source, docs gate/roadmap, tools, .github, manifest, or validation-report changes were present."
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "result": "PASS",
+      "notes": "Task file valid."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "result": "PASS",
+      "notes": "1 file, 9 tests passed."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "result": "PASS",
+      "notes": "1 file, 11 tests passed."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "result": "PASS",
+      "notes": "30 Playwright tests passed; regenerated default topology evidence screenshots and asserted data-anchor-count=8, data-route-count=1, and data-route-source-count=25."
+    },
+    {
+      "command": "pnpm check",
+      "result": "PASS",
+      "notes": "format:check, lint, workspace typecheck, and architecture boundary check passed."
+    },
+    {
+      "command": "manual screenshot inspection",
+      "result": "PASS",
+      "notes": "Both evidence screenshots show irregular district polygons, route-node markers, a single explicit route 24 line, current/control/action affordances, and no rectangular/hex/regular lattice board."
+    },
+    {
+      "command": "Select-String forbidden-inference scan",
+      "result": "PASS",
+      "notes": "Default topology path did not introduce centroid/bbox/nearest/hex/axial/cube/WorldState inference. M2_PROTOTYPE_GRID_COLUMNS hits are confined to the legacy M2 fixture path, not createBootstrappedShellSnapshot."
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Accept the route-node-only route rendering boundary for this client task.",
+      "rationale": "The current accepted DTO surface provides explicit drawable route-node endpoints only for route 24. The client keeps all 25 topology routeEdges and all district endpoint legs in path preview/reason copy, but only draws route-node-to-route-node polylines. Drawing district endpoint legs without an explicit per-edge polyline DTO would require centroid/bbox/visual-neighbor guessing and would violate the product anti-grid constraint. This task forbids protocol/schema changes, so richer per-edge drawable geometry belongs in a future schema/read-model task if product wants those legs visualized."
+    },
+    {
+      "decision": "Accept the default player path.",
+      "rationale": "apps/web/src/shell/create-shell-snapshot.ts now routes createBootstrappedShellSnapshot through createM7TopologyClientReadModelSnapshot. The default browser evidence reports topology-region-network, player-grid not-used, topology hash 1ba53651, 14 districts, 8 anchors, 25 topology route sources, and 1 drawable route."
+    },
+    {
+      "decision": "Accept the React/renderer/read-model boundary.",
+      "rationale": "UI consumes ClientReadModelSnapshot fields and localized reason-code copy. Pixi renders from MapRenderPlan instructions and reports test attributes. No UI or renderer code writes WorldState or imports sim-core."
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Only route 24 is visually drawn in this milestone because explicit per-edge polylines are not present for district endpoint edges.",
+      "boundary": "Accepted for M7-MAP-TOPOLOGY-CLIENT-001. Future work that needs all path legs visible must add/consume an explicit schema/read-model polyline surface in a protocol-owned task, not synthesize geometry in the client."
+    },
+    {
+      "risk": "Route-node markers are functional low-fidelity dots, not final map art.",
+      "boundary": "Acceptable for systems review; visual/product polish remains a later art/readability concern."
+    },
+    {
+      "risk": "Legacy M2 fixture code still exists for non-default tests and fixtures.",
+      "boundary": "Accepted because createBootstrappedShellSnapshot no longer uses it and tests assert no M2 default player path."
+    }
+  ],
+  "allowed_forbidden_paths": {
+    "status": "PASS",
+    "allowed_modified_paths": [
+      "apps/web/src/shell/create-shell-snapshot.ts",
+      "apps/web/src/shell/web-client-shell.test.tsx",
+      "packages/client-core/src/index.ts",
+      "packages/map-renderer/src/index.ts",
+      "packages/ui/src/i18n.ts",
+      "packages/ui/src/index.tsx",
+      "project/goal-mode-state.json",
+      "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+      "project/model-routing-state.json",
+      "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+      "project/tasks/thread-registry.json",
+      "tests/e2e/web-shell.spec.ts",
+      "tests/map-renderer-m2-map.test.ts",
+      "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png",
+      "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png"
+    ],
+    "forbidden_modified_paths": []
+  },
+  "route_to": "qa_reviewer",
+  "requested_action": "QA reviewer should continue with functional/visual QA and required release validation from the R3 writer handoff. Systems architecture accepts R3."
+}

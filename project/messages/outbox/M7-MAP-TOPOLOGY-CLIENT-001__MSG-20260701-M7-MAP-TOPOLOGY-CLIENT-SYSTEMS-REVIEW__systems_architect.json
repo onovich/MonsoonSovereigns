@@ -1,0 +1,183 @@
+{
+  "message_id": "M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-REVIEW__systems_architect",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Architecture review rejects R2 for client-side evidence/readability gaps, not for a protocol/schema blocker. The implementation stays inside allowed paths, moves the default shell off the M2 grid path, projects accepted topology/path-preview DTOs, and correctly refuses to draw district-endpoint fake route lines. However, the browser Pixi renderer still does not draw the route-node anchors exposed by the topology read model, so the default evidence screenshots do not show the required node/route/control/action hierarchy. The geometry perturbation test is also too weak because it only shallow-copies the map while reusing the same topology evidence object.",
+  "artifacts": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png"
+  ],
+  "branch_or_worktree": "D:\\WebProjects\\MonsoonSovereigns / codex/m7-map-topology-client",
+  "commit": "HEAD 374c2813; working tree contains uncommitted R2 changes and this systems review handoff",
+  "findings": [
+    {
+      "id": "F1_BROWSER_ROUTE_NODES_NOT_RENDERED",
+      "severity": "R4",
+      "file": "packages/map-renderer/src/index.ts:701",
+      "summary": "BrowserPixiMapRenderer consumes districts, routes, settlements, and labels, but it never renders plan.anchors. The M7 topology projection exposes route nodes through snapshot.map.anchors, and the memory scene has an anchor layer, but the actual browser evidence does not show route-node markers.",
+      "impact": "The default player map still reads as small abstract polygons plus one line. It does not satisfy the forwarded visual/design requirement that the default map read as districts, nodes, routes, control, and action rather than low-semantic abstract geometry.",
+      "requested_change": "Render route-node anchors in the browser renderer from the existing MapAnchorRenderInstruction/read-model surface, add a data-anchor-count or equivalent assertion, and keep anchor rendering non-authoritative. Do not infer routes or reachability from anchor positions."
+    },
+    {
+      "id": "F2_SCREENSHOT_EVIDENCE_INSUFFICIENT",
+      "severity": "R4",
+      "file": "tests/e2e/web-shell.spec.ts:687",
+      "summary": "The Playwright evidence screenshots use a temporary screenshot-only map height and show the topology cluster small in the map region. Because route nodes are absent and only one route line is visible, the screenshots are not enough to prove the default map is no longer a disguised regular lattice.",
+      "impact": "The evidence relies too much on labels/data attributes and not enough on visible topology semantics. This is the false-positive mode called out by the product owner and visual_design_reviewer.",
+      "requested_change": "After rendering route nodes, regenerate 1440x900 and 1280x720 evidence so the visible default map clearly shows irregular district polygons, route-node markers, explicit route 24, selected/control/action affordances, and no regular rectangular/hex/lattice board. Keep screenshot-only styling limited to capture framing, not semantics."
+    },
+    {
+      "id": "F3_GEOMETRY_PERTURBATION_TEST_TOO_WEAK",
+      "severity": "R3",
+      "file": "tests/map-renderer-m2-map.test.ts:200",
+      "summary": "The perturbation test creates a shallow copy of fixture.map with changed district polygons, then asserts perturbed.topology.antiGridEvidence. That topology object is the original nested object, so the test would pass even if projection or rendering later coupled path display to geometry.",
+      "impact": "The test does not provide enough evidence for the required geometry-perturbation-without-path-change invariant at the client projection/rendering boundary.",
+      "requested_change": "Exercise projectM7TopologyClientReadModels with a perturbed topology DTO and the same accepted path-preview DTOs, then assert path preview edge sequences/reason codes, drawable route ids, route-source count, and district-endpoint non-drawing remain unchanged."
+    }
+  ],
+  "files_reviewed": [
+    "AGENTS.md",
+    "PROJECT_STATUS.md",
+    "project/templates/handoff.md",
+    "project/schemas/handoff.schema.json",
+    "project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-CLARIFICATION__product_owner.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ANTI-GRID-RESEARCH__gameplay_designer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-ART-READABILITY-REVIEW__visual_design_reviewer.json",
+    "docs/decisions/ADR-010-map-topology.md",
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png"
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Reviewed branch codex/m7-map-topology-client. Modified/untracked paths are allowed client/test/process/evidence paths; no packages/protocol, packages/sim-core, packages/save-format, content-source, docs gate/roadmap, Electron, tools, or CI path was modified."
+    },
+    {
+      "command": "git diff --name-status origin/main",
+      "exit_code": 0,
+      "result": "Branch/worktree diff is limited to apps/web, packages/client-core, packages/map-renderer, packages/ui, tests, project task/status/message files, and task-specific evidence."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-MAP-TOPOLOGY-CLIENT-001.json."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 9 tests. Passing result does not resolve findings F1-F3."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 file, 11 tests. Passing result does not resolve findings F1-F3."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, typecheck, and architecture:check passed; architecture self-test produced 15 expected violations."
+    },
+    {
+      "command": "Viewed task evidence screenshots at 1440x900 and 1280x720",
+      "exit_code": 0,
+      "result": "Evidence shows irregular low-fidelity polygons and route 24, but route nodes are not visible and the topology cluster is too small/low-semantic to satisfy the anti-grid visual evidence standard."
+    }
+  ],
+  "tests_reviewed": [
+    {
+      "name": "writer-reported pnpm test:e2e",
+      "result": "Writer reports 30 Playwright tests passed and screenshots were regenerated. I inspected the evidence images and still found the default-map evidence insufficient because route nodes are absent and the map cluster remains visually weak."
+    },
+    {
+      "name": "visual-neighbor-without-route and visually-distant-explicit-route",
+      "result": "Coverage exists through topology antiGridEvidence and reason-code assertions; keep it, but pair it with stronger visible-node/evidence assertions after F1 is fixed."
+    },
+    {
+      "name": "route source count vs drawable route count",
+      "result": "Coverage exists and is useful: topology routeEdges=25 while drawable map routes=1. This supports the deliberate non-rendering of district-endpoint legs."
+    },
+    {
+      "name": "localized route preview/reason code",
+      "result": "English and Simplified Chinese copy mappings exist; E2E covers reachable/no-known/blocked route copy."
+    },
+    {
+      "name": "geometry perturbation invariant",
+      "result": "Current test is not discriminating enough; see F3."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ALLOWED_PATHS_OK",
+      "decision": "No forbidden implementation path was modified. The diff does not touch protocol, sim-core, save-format, content-source, Electron/desktop, CI, roadmap/gate docs, or validation reports."
+    },
+    {
+      "id": "DEFAULT_PATH_OFF_M2_GRID",
+      "decision": "The default player shell now routes createBootstrappedShellSnapshot -> createM7TopologyClientReadModelSnapshot -> createM7TopologyReadModelFixture/projectM7TopologyClientReadModels. The M2_PROTOTYPE_GRID_COLUMNS and legacy M2 fixture remain only on legacy/non-default fixture paths."
+    },
+    {
+      "id": "ROUTE_24_ONLY_RENDERING_ACCEPTABLE_FOR_THIS_TASK",
+      "decision": "Accept the R2 architectural choice to draw only explicit route-node to route-node route 24 and not draw district endpoint legs. The current accepted DTO does not expose per-edge arbitrary polylines for district endpoint legs, and this task forbids protocol/schema changes. Drawing centroid, bbox, nearest-neighbor, district-anchor, or visual-adjacency fake lines would violate ADR-010."
+    },
+    {
+      "id": "NO_SCHEMA_BLOCKER",
+      "decision": "Do not block this client task on a protocol/schema addition. If richer visible route geometry is required later, it belongs in a follow-up schema/read-model task for explicit per-edge polyline DTOs."
+    },
+    {
+      "id": "NO_WORLDSTATE_UI_MUTATION_FOUND",
+      "decision": "The reviewed UI changes consume read models and existing command submit callbacks. I did not find direct WorldState mutation or renderer-owned authority state."
+    },
+    {
+      "id": "REQUEST_CHANGES_BEFORE_QA",
+      "decision": "Route back to client_engineer before independent QA because the default browser map lacks visible route nodes and the anti-grid evidence/tests are not yet strong enough."
+    }
+  ],
+  "risks": [
+    {
+      "id": "FUTURE_POLYLINE_DTO_RISK",
+      "severity": "R3",
+      "summary": "Rendering only route 24 is acceptable now, but it leaves most topology route edges visible only in path preview text. If future UX requires all current decision-relevant legs to be visible, add an explicit route-edge polyline DTO in a schema task rather than renderer inference."
+    },
+    {
+      "id": "LOW_SEMANTIC_MAP_RISK",
+      "severity": "R4",
+      "summary": "Without route-node markers, the map can still pass data-attribute tests while failing the product owner's player-facing topology readability bar."
+    },
+    {
+      "id": "LEGACY_M2_FIXTURE_REMAINS",
+      "severity": "R2",
+      "summary": "The legacy M2 prototype fixture remains for old tests and stress paths. This is acceptable only while it stays off the default player path and is clearly not used for topology authority."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Repair F1-F3 inside allowed client/test paths only. Specifically: render existing topology route-node anchors in the browser Pixi renderer without making them authoritative; regenerate 1440x900 and 1280x720 evidence where irregular districts, route nodes, explicit route 24, selected/control/action affordances, and no grid/lattice board are visible; strengthen the geometry-perturbation test to reproject perturbed topology DTOs and assert unchanged path previews/reason codes/drawable route ids/source counts; keep the current no-fake-line rule for district endpoint legs. After repair, send R3 back to systems_architect before qa_reviewer.",
+  "created_at": "2026-07-01T03:44:26.4882501+08:00"
+}

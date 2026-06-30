@@ -1,0 +1,88 @@
+{
+  "message_id": "M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-ACCEPT",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPTED",
+  "summary": "Lead accepts M7 map topology client implementation after systems_architect R3 ACCEPT and independent qa_reviewer ACCEPT. The player-facing default map now consumes topology-backed district polygons, explicit route-node anchors, and topology path-preview reason codes instead of the legacy M2 grid path. Browser Pixi renders route-node markers as visual-only anchors, renders only explicit route 24, and continues to avoid fake district-endpoint lines from centroid, bounding box, nearest-neighbor, visual adjacency, row/column, hex, or hidden-lattice inference.",
+  "branch_or_worktree": "codex/m7-map-topology-client",
+  "source_handoffs": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R3-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-SYSTEMS-R3-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-QA-REVIEW__qa_reviewer.json"
+  ],
+  "accepted_changes": [
+    "Default bootstrapped Web shell now uses createM7TopologyClientReadModelSnapshot and topology/path-preview DTO projection.",
+    "Client read model projects 14 irregular topology districts, 8 route-node anchors, 25 topology route sources, path previews, anti-grid evidence, and one drawable explicit route 24.",
+    "Browser Pixi renderer now renders anchor markers from MapAnchorRenderInstruction and exposes data-anchor-count without using anchors for authority, hit testing, route inference, adjacency, reachability, or commands.",
+    "UI exposes localized topology route preview copy, reason-code explanations, route source counts, District 1 obligation action context, and synchronized map/task/list/inspector state.",
+    "Tests cover no default M2 grid path, visual-neighbor-without-route, visually-distant explicit route, blocked/capacity reason copy, route-node anchor count, route source count, and perturbed topology DTO re-projection invariants.",
+    "Task evidence screenshots at 1440x900 and 1280x720 show irregular districts, visible route-node markers, explicit route 24, legend/context affordances, and no rectangular, hex, or regular-lattice board."
+  ],
+  "integration_gates": [
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "result": "PASS",
+      "details": "1 file, 9 tests passed"
+    },
+    {
+      "command": "pnpm --filter web test",
+      "result": "PASS",
+      "details": "1 file, 11 tests passed"
+    },
+    {
+      "command": "pnpm build:web",
+      "result": "PASS",
+      "details": "Vite build passed with existing chunk-size warnings"
+    },
+    {
+      "command": "pnpm storybook:build",
+      "result": "PASS",
+      "details": "Storybook build passed with existing Vite chunk/plugin timing warnings"
+    },
+    {
+      "command": "pnpm test:e2e",
+      "result": "PASS",
+      "details": "30 Chromium tests passed"
+    },
+    {
+      "command": "pnpm check",
+      "result": "PASS",
+      "details": "format, lint, typecheck, and architecture boundaries passed"
+    },
+    {
+      "command": "git diff -- forbidden path set --name-status",
+      "result": "PASS",
+      "details": "No forbidden path, dependency, lockfile, protocol, sim-core, save-format, content-source, gate/roadmap, tools, CI, manifest, or validation report diff"
+    }
+  ],
+  "evidence": [
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png"
+  ],
+  "remaining_risks": [
+    {
+      "id": "M7-TOPOLOGY-ROUTE-POLYLINE-FUTURE",
+      "severity": "R3",
+      "summary": "Only route 24 has drawable route-node-to-route-node geometry in the accepted DTO surface.",
+      "boundary": "Accepted for this task. Future full-route visualization must add explicit per-edge polyline DTO/read-model support in a schema-owned task, not infer geometry in the client."
+    },
+    {
+      "id": "M7-LOW-FIDELITY-NODE-MARKERS",
+      "severity": "R2",
+      "summary": "Route-node markers are low-fidelity visual dots.",
+      "boundary": "Accepted for topology recovery; final art production remains out of this task."
+    }
+  ],
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "next_action": "Commit accepted implementation, open PR, wait for CI, merge to main, sync main, then mark task CLOSED and start M7-MAP-TOPOLOGY-VALIDATION-001.",
+  "created_at": "2026-07-01T04:22:23.8080820+08:00"
+}

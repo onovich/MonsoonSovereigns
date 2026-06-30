@@ -1,0 +1,84 @@
+{
+  "message_id": "M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-WRITER-R2-REVIEW",
+  "task_id": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R2 resolves REQUEST_CHANGES: restored old systemic evidence PNGs to HEAD, regenerated task-specific topology evidence with map-region capture visible at 1280x720, and removed district-anchor route drawing from the topology default. Default player map now has 14 topology district polygons, topology hash 1ba53651, 25 topology route-edge sources in preview/read-model data, and exactly one drawable route overlay: route 24, whose points come from explicit route-node endpoints node-delta-wharf and node-river-gate. Edges involving district endpoints remain available to path preview edge sequences and reason copy, but are not drawn as map routes because the accepted DTO does not expose explicit per-edge polyline points for those legs.",
+  "artifacts": [
+    "apps/web/src/shell/create-shell-snapshot.ts",
+    "apps/web/src/shell/web-client-shell.test.tsx",
+    "packages/client-core/src/index.ts",
+    "packages/map-renderer/src/index.ts",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/map-renderer-m2-map.test.ts",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1440x900.png",
+    "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__EVIDENCE-DEFAULT-TOPOLOGY-1280x720.png"
+  ],
+  "branch_or_worktree": "D:\\WebProjects\\MonsoonSovereigns / codex/m7-map-topology-client",
+  "commit": "HEAD 374c2813; working tree contains uncommitted R2 review changes",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only allowed code/test files plus task-specific topology evidence and R2 handoff are modified/untracked; old M7-SYSTEMIC evidence PNGs are not modified."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-MAP-TOPOLOGY-CLIENT-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/map-renderer test",
+      "exit_code": 0,
+      "result": "1 file, 9 tests passed. Tests assert topology route sources remain 25 while drawable route overlays are limited to explicit route-node polyline route 24."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "1 file, 11 tests passed. Tests cover topology default shell, localized route preview copy, no-known path, and blocked path copy."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite web build succeeded; existing large chunk warnings only."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build succeeded; existing Vite chunk/plugin timing warnings only."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "30 Playwright tests passed. Regenerated M7-MAP-TOPOLOGY-CLIENT-001 evidence screenshots from map-region capture; old systemic evidence PNGs were restored afterward."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format, lint, typecheck, and architecture boundaries passed."
+    }
+  ],
+  "decisions": [
+    "M2_PROTOTYPE_GRID_COLUMNS remains only inside the legacy createM2PrototypeReadModelFixture path. The player-facing default path is createBootstrappedShellSnapshot -> createM7TopologyClientReadModelSnapshot -> createM7TopologyReadModelFixture, and does not call createM2PrototypeClientReadModelSnapshot or M2_PROTOTYPE_GRID_COLUMNS.",
+    "Route points source: drawable map route points come only from explicit topology route-node endpoint anchors in accepted topology read-model data. Currently only topology route 24 has both endpoints as route nodes, so it is the only rendered route polyline. District endpoint edges do not resolve to district anchors for drawing.",
+    "Route preview source: inspector/district list/task rail copy consumes topology path preview edgeSequence and reasonCodes. It can list district endpoint legs by routeId/mode/reason, but renderer does not draw those legs without explicit route-node/polyline points.",
+    "Polygon perturbation does not change path because path preview edgeSequence/reasonCodes are projected from topology path preview read models, not from polygon geometry. The test perturbs rendered polygons and asserts invariant [3,22,19] edge sequence and topology.path.reachable reason.",
+    "Default overlay remains scoped to current selection/path preview. Full/debug route display is opt-in via routes mode and still only draws routes with explicit drawable points."
+  ],
+  "risks": [
+    "Accepted protocol topology DTO still lacks per-edge arbitrary polyline arrays for district endpoint legs. R2 therefore refuses to draw those legs instead of synthesizing anchor/centroid straight lines. Systems architecture should decide whether a future protocol/read-model addition is required for richer visible route geometry.",
+    "The task-specific screenshots are captured from the map-region element at 1440x900 and 1280x720 viewports with a temporary screenshot-only map-row height so the evidence can show map semantics clearly. Product UI behavior is unchanged.",
+    "Legacy M2 prototype fixture remains for legacy tests, but it is not on the default player-facing path."
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review R2 anti-grid client implementation, especially the deliberate non-rendering of district-endpoint route legs without explicit route-node/polyline points, and route to test_engineer/qa_reviewer if accepted.",
+  "created_at": "2026-07-01T03:32:05.4952234+08:00"
+}

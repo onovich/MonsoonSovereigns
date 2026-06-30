@@ -157,6 +157,8 @@ export interface MapRouteRenderInstruction {
   readonly routeStatus: ClientDistrictRouteStatus;
   readonly presentationState: "default" | "reachable" | "overloaded" | "blocked" | "selected";
   readonly isSelected: boolean;
+  readonly routeId?: number;
+  readonly sourceId?: string;
 }
 
 export interface MapLabelRenderInstruction extends MapPointRenderInstruction {
@@ -391,9 +393,6 @@ export function createM6AlphaMapCandidateReadModelSnapshot(
   const districts = sortRuntimeDistrictsForRender(candidate.districts)
     .map((district) => buildCandidateDistrictReadModel(district))
     .sort((left, right) => Number(left.districtId) - Number(right.districtId));
-  const districtById = new Map(
-    districts.map((district) => [Number(district.districtId), district])
-  );
   const settlements = [...candidate.settlements]
     .sort(
       (left, right) => left.renderOrder - right.renderOrder || Number(left.id) - Number(right.id)
@@ -408,7 +407,7 @@ export function createM6AlphaMapCandidateReadModelSnapshot(
       }
     }));
   const routes = sortRuntimeRoutesForRender(candidate.routes)
-    .map((route) => buildCandidateRouteReadModel(route, districtById))
+    .map((route) => buildCandidateRouteReadModel(route))
     .sort((left, right) => Number(left.originDistrictId) - Number(right.originDistrictId));
 
   return {
@@ -652,6 +651,7 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
   private readonly rootLayer: PixiContainer;
   private readonly districtLayer: PixiContainer;
   private readonly routeLayer: PixiContainer;
+  private readonly anchorLayer: PixiContainer;
   private readonly settlementLayer: PixiContainer;
   private readonly labelLayer: PixiContainer;
   private readonly onSelectEntity: (selection: ClientMapEntitySelection) => void;
@@ -671,10 +671,12 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     this.rootLayer = new this.pixi.Container();
     this.districtLayer = new this.pixi.Container();
     this.routeLayer = new this.pixi.Container();
+    this.anchorLayer = new this.pixi.Container();
     this.settlementLayer = new this.pixi.Container();
     this.labelLayer = new this.pixi.Container();
     this.rootLayer.addChild(this.districtLayer);
     this.rootLayer.addChild(this.routeLayer);
+    this.rootLayer.addChild(this.anchorLayer);
     this.rootLayer.addChild(this.settlementLayer);
     this.rootLayer.addChild(this.labelLayer);
     this.app.stage.addChild(this.rootLayer);
@@ -694,6 +696,7 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
   public destroy(): void {
     this.clearLayer(this.districtLayer);
     this.clearLayer(this.routeLayer);
+    this.clearLayer(this.anchorLayer);
     this.clearLayer(this.settlementLayer);
     this.clearLayer(this.labelLayer);
     this.app.destroy({ removeView: true }, { children: true });
@@ -702,6 +705,7 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
   private applyPlan(plan: MapRenderPlan, snapshot: ClientMapReadModelSnapshot): void {
     this.clearLayer(this.districtLayer);
     this.clearLayer(this.routeLayer);
+    this.clearLayer(this.anchorLayer);
     this.clearLayer(this.settlementLayer);
     this.clearLayer(this.labelLayer);
 
@@ -728,6 +732,9 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     for (const route of plan.routes) {
       this.routeLayer.addChild(this.createRouteSegment(route));
     }
+    for (const anchor of plan.anchors) {
+      this.anchorLayer.addChild(this.createAnchorMarker(anchor));
+    }
     for (let index = 0; index < plan.settlements.length; index += 1) {
       const instruction = plan.settlements[index];
       const readModel = snapshot.settlements[index];
@@ -750,7 +757,11 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
     this.canvas.setAttribute("data-district-count", plan.districts.length.toString());
     this.canvas.setAttribute("data-settlement-count", plan.settlements.length.toString());
     this.canvas.setAttribute("data-route-count", plan.routes.length.toString());
-    this.canvas.setAttribute("data-route-source-count", snapshot.routes.length.toString());
+    this.canvas.setAttribute("data-anchor-count", plan.anchors.length.toString());
+    this.canvas.setAttribute(
+      "data-route-source-count",
+      (snapshot.topology?.routeEdges.length ?? snapshot.routes.length).toString()
+    );
     this.canvas.setAttribute(
       "data-route-policy",
       plan.mode === "situation" ? "denoised" : "complete"
@@ -814,6 +825,18 @@ class BrowserPixiMapRenderer implements MountedPixiMapRenderer {
         : MAP_RENDER_TOKENS.routes.alphaDefault,
       width: instruction.widthInMapUnits
     });
+    graphics.eventMode = "none";
+    return graphics;
+  }
+
+  private createAnchorMarker(instruction: MapAnchorRenderInstruction): PixiGraphics {
+    const graphics = new this.pixi.Graphics()
+      .circle(instruction.xInMapUnits, instruction.yInMapUnits, instruction.radiusInMapUnits)
+      .fill({ color: instruction.fillColor })
+      .stroke({
+        color: MAP_RENDER_TOKENS.districts.strokeDefault,
+        width: MAP_RENDER_TOKENS.routes.widthDefaultInMapUnits
+      });
     graphics.eventMode = "none";
     return graphics;
   }
@@ -1060,7 +1083,10 @@ function buildRouteInstruction(
       selectedDistrictId === route.destinationDistrictId);
 
   return {
-    id: `route-${route.originDistrictId}-${route.destinationDistrictId}`,
+    id:
+      route.routeId === undefined
+        ? `route-${route.originDistrictId}-${route.destinationDistrictId}`
+        : `route-${route.routeId}`,
     points: route.points,
     strokeColor: routeStrokeColor(route.status),
     widthInMapUnits:
@@ -1069,7 +1095,9 @@ function buildRouteInstruction(
         : MAP_RENDER_TOKENS.routes.widthDefaultInMapUnits,
     routeStatus: route.status,
     presentationState: routePresentationState(route.status, isSelected),
-    isSelected
+    isSelected,
+    ...(route.routeId === undefined ? {} : { routeId: route.routeId }),
+    ...(route.sourceId === undefined ? {} : { sourceId: route.sourceId })
   };
 }
 
@@ -1097,7 +1125,7 @@ function isSituationRouteVisible(
     return true;
   }
 
-  return route.status !== "reachable";
+  return route.isDecisionRelevant === true;
 }
 
 function buildLabelInstructions(
@@ -1168,20 +1196,17 @@ function buildCandidateDistrictReadModel(
 }
 
 function buildCandidateRouteReadModel(
-  route: M6AlphaMapCandidateReadRouteV0,
-  districtById: ReadonlyMap<number, ClientMapDistrictReadModel>
+  route: M6AlphaMapCandidateReadRouteV0
 ): ClientMapRouteReadModel {
   const originDistrictId = createClientDistrictId(Number(route.fromDistrictId));
   const destinationDistrictId = createClientDistrictId(Number(route.toDistrictId));
-  const origin = districtById.get(Number(route.fromDistrictId));
-  const destination = districtById.get(Number(route.toDistrictId));
   const points =
     route.points.length > 0
       ? route.points.map((point) => ({
           xInMapUnits: point.x,
           yInMapUnits: point.y
         }))
-      : [origin?.anchor, destination?.anchor].filter(isMapPoint);
+      : [];
   const status = mapCandidateRouteStatus(route);
 
   return {
@@ -1250,12 +1275,6 @@ function sortRuntimeRoutesForRender(
   return [...routes].sort(
     (left, right) => left.renderOrder - right.renderOrder || Number(left.id) - Number(right.id)
   );
-}
-
-function isMapPoint(
-  value: ClientMapDistrictReadModel["anchor"] | undefined
-): value is ClientMapDistrictReadModel["anchor"] {
-  return value !== undefined;
 }
 
 function districtFillColor(district: ClientMapDistrictReadModel, mode: ClientMapMode): number {
