@@ -1,0 +1,107 @@
+{
+  "message_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R3 fixes QA R2 copy leakage by replacing player-visible appointments drawer read-model/GameCommand wording with court-facing language and strengthening the appointment-error task rail regression to open the appointments drawer in both English and Chinese before scanning the full task rail text for implementation jargon.",
+  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+  "commit": "6e94d5f0; no commit made, review the working tree diff",
+  "route_to": "qa_reviewer",
+  "next_route_to": "qa_reviewer",
+  "requested_action": "Review the R3 copy and regression fixes for M7-TASK-RAIL-COLLAPSED-DRAWERS-001.",
+  "created_at": "2026-06-30T07:33:20.6874253+08:00",
+  "artifacts": [
+    "packages/ui/src/i18n.ts",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json"
+  ],
+  "changed_files": [
+    "packages/ui/src/i18n.ts",
+    "tests/e2e/web-shell.spec.ts"
+  ],
+  "qa_r2_findings_response": [
+    {
+      "finding": "Expanded appointments drawer exposed `Appointment is rejected by the read model` / `只读模型拒绝此任命`.",
+      "response": "Fixed. `appointment.preview.rejectedTitle` now uses player-facing language: `Appointment cannot be confirmed yet` / `暂时不能确认任命`."
+    },
+    {
+      "finding": "Expanded appointments drawer exposed `standard appointment GameCommand` and command-path wording.",
+      "response": "Fixed. `appointment.result.commandParity` now says `Confirmation sends the same formal order used by the court systems.` / `确认会提交宫廷系统采用的同一类正式命令。`"
+    },
+    {
+      "finding": "Task rail appointment-error regression did not open the appointments drawer and did not reject all requested terms.",
+      "response": "Fixed. The e2e regression now clicks `[data-task-rail-card-kind=\"appointments\"]` for both en-US and zh-CN, reads the full task rail text, and rejects `read model`, `read-model`, `GameCommand`, `command path`, `internal jargon`, `raw reason`, `reason-code`, `只读模型`, `命令路径`, `内部原因码`, `内部术语`, and `原始原因码`."
+    },
+    {
+      "finding": "Older tests still required leaked terms.",
+      "response": "Fixed. Existing appointment e2e assertions now expect the new court-facing formal-order copy and the new rejected preview title."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree has modified R3 files only: packages/ui/src/i18n.ts and tests/e2e/web-shell.spec.ts. No commit made."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list loaded; M7-TASK-RAIL-COLLAPSED-DRAWERS-001 remains IN_PROGRESS for client_engineer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Command completed with no ready-task output."
+    },
+    {
+      "command": "node -e JSON parse/shape check for project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+      "exit_code": 0,
+      "result": "TASK_JSON_SHAPE_OK M7-TASK-RAIL-COLLAPSED-DRAWERS-001 IN_PROGRESS."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 17 tests."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "Vitest passed: 1 test file, 10 tests."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Vite production build passed. Existing chunk-size warnings for lib/main chunks over 500 kB remain."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "Playwright passed: 25/25 tests, including expanded appointments drawer task rail jargon checks in en-US and zh-CN."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format:check, lint, typecheck, and architecture:check."
+    }
+  ],
+  "decisions": [
+    "Kept the R2 first-screen layout unchanged because QA R2 marked it resolved.",
+    "Limited R3 implementation to player-facing appointment drawer copy and e2e regression coverage.",
+    "Preserved existing read-model and command/query architecture in code while removing implementation terms from player-mode task rail text."
+  ],
+  "risks": [
+    "Other debug/map surfaces still contain read-model terminology by design; the R3 regression is scoped to the player-facing task rail requested by QA.",
+    "Build still reports pre-existing chunk-size warnings over 500 kB; this task did not address bundling."
+  ],
+  "blockers": []
+}

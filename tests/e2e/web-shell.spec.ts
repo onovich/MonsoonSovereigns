@@ -358,16 +358,20 @@ test("M7 task rail appointment-error copy hides implementation jargon in English
   await expect(englishTaskRail.locator('[data-task-rail-card-kind="appointments"]')).toContainText(
     "office eligibility concerns"
   );
+  await englishTaskRail.locator('[data-task-rail-card-kind="appointments"]').click();
   const englishText = (await englishTaskRail.textContent()) ?? "";
-  expect(englishText).not.toMatch(/read-model|raw reason|reason-code|internal jargon/i);
+  expect(englishText).not.toMatch(
+    /read model|read-model|GameCommand|command path|raw reason|reason-code|internal jargon/i
+  );
 
   await page.getByLabel("Language").selectOption("zh-CN");
   const chineseTaskRail = page.getByRole("region", { name: "任务栏" });
   await expect(chineseTaskRail.locator('[data-task-rail-card-kind="appointments"]')).toContainText(
     "职位条件疑虑"
   );
+  await chineseTaskRail.locator('[data-task-rail-card-kind="appointments"]').click();
   const chineseText = (await chineseTaskRail.textContent()) ?? "";
-  expect(chineseText).not.toMatch(/只读模型|内部原因码|内部术语|原始原因码/);
+  expect(chineseText).not.toMatch(/只读模型|GameCommand|命令路径|内部原因码|内部术语|原始原因码/);
 });
 
 test("M2 map zoom, selection, and mode switching updates read-model UI", async ({ page }) => {
@@ -650,7 +654,7 @@ test("M3 appointment player flow previews confirms result and hides raw reason c
     "Appointment request prepared."
   );
   await expect(page.getByLabel("Appointment result feedback")).toContainText(
-    "standard appointment GameCommand"
+    "same formal order used by the court systems"
   );
 
   await flow.locator("summary", { hasText: "Bulk preview" }).click();
@@ -673,7 +677,7 @@ test("M3 appointment player flow localizes Chinese and keeps rejected confirmati
   await expect(page.getByLabel("候选人比较")).toContainText("不符合职位条件");
   await flow.getByRole("button", { name: "预览任命" }).click();
   await expect(flow).toHaveAttribute("data-flow-stage", "preview");
-  await expect(page.getByLabel("任命影响预览")).toContainText("只读模型拒绝此任命");
+  await expect(page.getByLabel("任命影响预览")).toContainText("暂时不能确认任命");
   await expect(flow.getByRole("button", { name: "确认任命" })).toBeDisabled();
   await expect(page.getByLabel("任命结果反馈")).toContainText("该候选人当前被拒绝");
   await expect(page.getByText("office-eligibility-failed")).toHaveCount(0);
