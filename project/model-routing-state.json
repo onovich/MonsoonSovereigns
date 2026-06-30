@@ -4998,13 +4998,15 @@
       "owner_thread_id": "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
       "owner_thread_nickname": "Canvas",
       "reviewer_role": "gameplay_designer",
-      "status": "in_progress",
+      "status": "review_ready_for_gameplay",
       "branch_or_worktree": "codex/m7-core-action-loop-ux",
       "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "source_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
       "expected_writer_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-30T18:15:12.6679256+08:00",
-      "next_action": "Await client_engineer writer handoff for gameplay_designer review."
+      "updated_at": "2026-06-30T18:43:17.7035010+08:00",
+      "next_action": "Send writer handoff to gameplay_designer.",
+      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "e346153264fa96786613771c865a3576e828d712"
     }
   },
   "m7_ux_recovery_validation": {
@@ -5068,13 +5070,15 @@
       "owner_thread_id": "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
       "owner_thread_nickname": "Canvas",
       "reviewer_role": "gameplay_designer",
-      "status": "in_progress",
+      "status": "review_ready_for_gameplay",
       "branch_or_worktree": "codex/m7-core-action-loop-ux",
       "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
       "source_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
       "expected_writer_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
-      "updated_at": "2026-06-30T18:15:12.6679256+08:00",
-      "next_action": "Await client_engineer writer handoff for gameplay_designer review."
+      "updated_at": "2026-06-30T18:43:17.7035010+08:00",
+      "next_action": "Send writer handoff to gameplay_designer.",
+      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "e346153264fa96786613771c865a3576e828d712"
     },
     "M7-MAP-DECISION-SURFACE-SYNC-001": {
       "owner_role": "client_engineer",
@@ -5117,7 +5121,7 @@
     ]
   },
   "m7_core_action_loop_ux": {
-    "status": "IN_PROGRESS",
+    "status": "REVIEW",
     "task_id": "M7-CORE-ACTION-LOOP-UX-001",
     "branch_or_worktree": "codex/m7-core-action-loop-ux",
     "base_main_commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
@@ -5130,6 +5134,10 @@
     "expected_writer_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
     "started_at": "2026-06-30T18:15:12.6679256+08:00",
     "human_gate_required": false,
-    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+    "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+    "review_commit": "e346153264fa96786613771c865a3576e828d712",
+    "review_ready_at": "2026-06-30T18:43:17.7035010+08:00",
+    "next_action": "Route writer handoff to gameplay_designer review."
   }
 }

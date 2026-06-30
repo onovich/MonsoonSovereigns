@@ -7656,7 +7656,7 @@
       "task_id": "M7-CORE-ACTION-LOOP-UX-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "started_writer",
+      "status": "routing_to_gameplay_review",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
@@ -7664,14 +7664,16 @@
       "branch_or_worktree": "codex/m7-core-action-loop-ux",
       "source_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json",
-      "updated_at": "2026-06-30T18:15:12.6679256+08:00"
+      "updated_at": "2026-06-30T18:43:17.7035010+08:00",
+      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "e346153264fa96786613771c865a3576e828d712"
     },
     "M7-CORE-ACTION-LOOP-UX-001:client_engineer": {
       "task_id": "M7-CORE-ACTION-LOOP-UX-001",
       "role": "client_engineer",
       "thread_id": "019f1806-4fbc-75d2-a62c-51e1a2a6d8ea",
       "nickname": "Canvas",
-      "status": "in_progress",
+      "status": "review",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -7682,7 +7684,9 @@
       "expected_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-30T18:15:12.6679256+08:00",
-      "updated_at": "2026-06-30T18:15:12.6679256+08:00"
+      "updated_at": "2026-06-30T18:43:17.7035010+08:00",
+      "review_handoff": "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "review_commit": "e346153264fa96786613771c865a3576e828d712"
     }
   },
   "replaced_threads": [
