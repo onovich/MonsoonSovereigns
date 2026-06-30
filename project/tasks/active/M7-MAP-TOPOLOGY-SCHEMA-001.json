@@ -4,12 +4,12 @@
   "branch_or_worktree": null,
   "threads": {},
   "created_at": "2026-06-30T21:29:09.7679151+08:00",
-  "updated_at": "2026-06-30T21:29:09.7679151+08:00",
+  "updated_at": "2026-06-30T22:29:26.2066820+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "id": "M7-MAP-TOPOLOGY-SCHEMA-001",
   "summary": "Introduce authoritative map topology definitions and read queries",
-  "status": "DRAFT",
+  "status": "READY",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "dependencies": [
@@ -64,9 +64,13 @@
     "pnpm check",
     "focused deterministic path/tie-break/topology-hash tests"
   ],
-  "route_to": "qa_reviewer",
+  "route_to": "systems_architect",
   "notes": [
     "This task touches public topology, protocol, and save boundaries and must follow ADR-010.",
     "It must not implement client rendering, final art, historical formal map content, or M8 campaign feature expansion."
-  ]
+  ],
+  "ready_after_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
+  "ready_after_pr": 223,
+  "ready_after_main_commit": "6249dd4a69a355722d575efdda71304f12197fdd",
+  "next_action": "Spawn systems_architect owner to implement authoritative topology schema and read/query boundaries."
 }
