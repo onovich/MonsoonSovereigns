@@ -1,0 +1,117 @@
+{
+  "message_id": "MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW",
+  "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "R2 addresses gameplay REQUEST_CHANGES by removing player-facing engineering wording from the obligation panel, relabeling the action as preparing obligation support, and adding visible District 1 troop obligation support feedback in the Results drawer after the existing command boundary is used.",
+  "artifacts": [
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
+  "tests_run": [
+    {
+      "command": "pnpm test -- tests/ui-m2-district-list.test.tsx",
+      "exit_code": 1,
+      "result": "This repository script ran the full root Vitest suite before the target file; two unrelated long-running sim tests timed out at the default 5000 ms: tests/sim-ai-multiyear-ai-run.test.ts and tests/sim-core-m2-economy-population.test.ts. The direct focused UI command below was used for the intended coverage."
+    },
+    {
+      "command": "pnpm exec prettier --write packages/ui/src/index.tsx packages/ui/src/i18n.ts tests/e2e/web-shell.spec.ts tests/ui-m2-district-list.test.tsx apps/web/src/styles/shell.css",
+      "exit_code": 0,
+      "result": "Formatted changed UI/test files; tests/ui-m2-district-list.test.tsx and apps/web/src/styles/shell.css were unchanged by Prettier."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "Focused React/Vitest coverage passed: 1 file, 17 tests. It asserts the obligation panel uses player-facing support wording and excludes read-model/read-only/command-path/GameCommand-style jargon."
+    },
+    {
+      "command": "pnpm test:e2e -- tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "Focused Playwright web shell regression passed: 27 tests. The first shell smoke now asserts the obligation drawer has no implementation jargon, the action is Prepare obligation support, and the post-click Results drawer mentions District 1 Troop obligation support prepared."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "Passed format check, lint, typecheck, and architecture boundary check."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CORE-ACTION-LOOP-UX-001",
+      "exit_code": 0,
+      "result": "Task JSON valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task registry listed successfully; M7-CORE-ACTION-LOOP-UX-001 is IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No dependency-ready next task was printed while this task remains active."
+    },
+    {
+      "command": "node -e \"JSON.parse(require('fs').readFileSync('project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json','utf8')); console.log('TASK_JSON_OK')\"",
+      "exit_code": 0,
+      "result": "TASK_JSON_OK."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "Web production build passed. Vite reported existing chunk-size warnings."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "Storybook build passed and removed .tmp/storybook-static. Vite reported existing chunk-size warnings."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Clean after committing R2 implementation, before writing this handoff."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "OBLIGATION_COPY_IN_WORLD_ONLY",
+      "decision": "Replaced obligation panel copy that mentioned read models, read-only preview data, and command paths with in-world language about preparing available muster and campaign support."
+    },
+    {
+      "id": "OBLIGATION_RESULT_CONTEXT",
+      "decision": "Kept the existing M4 command boundary, but added Results drawer feedback tied to the focused District 1 troop obligation so the player is not left with only generic campaign feedback."
+    },
+    {
+      "id": "NO_NEW_OBLIGATION_SYSTEM",
+      "decision": "Did not claim the obligation is fully settled by a new mechanic; the UI says support/order is prepared and asks the player to review it before wider commitments."
+    },
+    {
+      "id": "NO_SCOPE_EXPANSION",
+      "decision": "No sim-core, protocol, save-format, content-source, Electron, server, telemetry, manual node battle, final art, or broader map-sync scope was changed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M4_STATUS_STILL_VISIBLE",
+      "severity": "R2",
+      "summary": "The generic Campaign request prepared status remains visible because the UI still uses the existing M4 command submission boundary. R2 adds adjacent obligation-specific feedback to resolve the player comprehension issue without changing protocol or simulation authority."
+    },
+    {
+      "id": "FULL_PNPM_TEST_TIMEOUT",
+      "severity": "R2",
+      "summary": "A root pnpm test attempt failed on unrelated long-running sim tests timing out at 5000 ms before the focused UI file; pnpm check, direct focused Vitest, Playwright, Web build, and Storybook build passed."
+    }
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Review the R2 obligation wording and post-click feedback changes. If accepted, route onward per the task chain.",
+  "created_at": "2026-06-30T19:03:05.0507200+08:00"
+}

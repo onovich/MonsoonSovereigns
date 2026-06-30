@@ -1,0 +1,66 @@
+{
+  "message_id": "MSG-20260630-M7-CORE-ACTION-START",
+  "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7 core action-loop UX recovery after systemic interaction recovery planning and closure entered origin/main. The task repairs the playable loop by making phase, obligation handling, and appointment preview/confirmation feedback explicit.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-LEAD-TO-CLIENT-START.json"
+  ],
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "commit": "e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-CORE-ACTION-LOOP-UX-001 dependency-ready after M7-SYSTEMIC-INTERACTION-RECOVERY-001 closure."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CORE-ACTION-LOOP-UX-001",
+      "exit_code": 0,
+      "result": "Task file valid before start."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Started from clean main after PR #216 closure merge, then created codex/m7-core-action-loop-ux."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "PLAYER_CONFUSION_IS_CORE_SCOPE",
+      "decision": "Treat the product-owner feedback as systemic interaction failure, not copy-only or art-only polish."
+    },
+    {
+      "id": "COURT_PHASE_LOOP",
+      "decision": "Implement a visible phase/action loop: current phase, main unresolved decision, direct action entry, preview, confirm, and result feedback."
+    },
+    {
+      "id": "NO_AUTHORITY_EXPANSION",
+      "decision": "Do not change authoritative simulation, protocol, save, content-source, final art, or manual node battle scope."
+    }
+  ],
+  "risks": [
+    {
+      "id": "UI_FLOW_CAN_DUPLICATE_DOMAIN_RULES",
+      "severity": "R4",
+      "summary": "A richer action loop can accidentally encode domain logic in React instead of reading existing command/query/preview surfaces.",
+      "mitigation": "Writer must use existing read models and command submission boundaries; gameplay review checks product clarity before acceptance."
+    },
+    {
+      "id": "CONFIRM_FEEDBACK_CAN_HIDE_COMMAND_RESULT",
+      "severity": "R3",
+      "summary": "If confirmation only changes text, players still cannot tell whether the command succeeded.",
+      "mitigation": "Acceptance requires explicit submitted/accepted/rejected or pending states and disabled/changed duplicate-submission affordance."
+    }
+  ],
+  "blockers": [],
+  "route_to": "client_engineer",
+  "requested_action": "Implement the bounded core action-loop UX recovery and return a validated writer handoff for gameplay review.",
+  "created_at": "2026-06-30T18:15:12.6679256+08:00"
+}

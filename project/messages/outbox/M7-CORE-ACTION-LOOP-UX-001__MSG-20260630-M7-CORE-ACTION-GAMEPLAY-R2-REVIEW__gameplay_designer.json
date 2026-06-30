@@ -1,0 +1,129 @@
+{
+  "message_id": "MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW",
+  "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+  "from_role": "gameplay_designer",
+  "status": "ACCEPT",
+  "summary": "R2 gameplay review accepts the core action-loop UX recovery. The prior REQUEST_CHANGES items are resolved: the player-mode obligation panel no longer exposes read-model/read-only/command-path/GameCommand jargon, the post-click Results drawer now ties feedback to the focused District 1 troop obligation support context, focused tests cover the wording and feedback, and the reviewed implementation commit does not expand scope into forbidden systems.",
+  "artifacts": [
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/styles/shell.css",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
+  "reviewed_commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "review_scope": [
+    "R2 read-only gameplay review of the prior gameplay REQUEST_CHANGES.",
+    "Checked player-mode obligation panel wording, District 1 troop obligation support feedback after click, regression coverage, and scope boundaries.",
+    "Inspected commit e55b039fa3db907b875bbee0dc2b6097749e07f1 and the R2 writer handoff."
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS; current branch is codex/m7-core-action-loop-ux. Before writing this handoff, the worktree was restored to clean after Playwright regenerated unrelated screenshot evidence files."
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "PASS; HEAD is e55b039fa3db907b875bbee0dc2b6097749e07f1."
+    },
+    {
+      "command": "git show --stat e55b039fa3db907b875bbee0dc2b6097749e07f1",
+      "exit_code": 0,
+      "result": "PASS; commit modifies only apps/web/src/styles/shell.css, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, and tests/ui-m2-district-list.test.tsx."
+    },
+    {
+      "command": "git show --name-status --format=fuller e55b039fa3db907b875bbee0dc2b6097749e07f1",
+      "exit_code": 0,
+      "result": "PASS; reviewed commit has no sim-core, protocol, save-format, content-source, manual battle, final art, server, telemetry, or platform changes."
+    },
+    {
+      "command": "git diff --check e346153264fa96786613771c865a3576e828d712..e55b039fa3db907b875bbee0dc2b6097749e07f1",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors in the R2 diff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; R2 writer handoff is VALID."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/i18n.ts,packages/ui/src/index.tsx,tests/e2e/web-shell.spec.ts,tests/ui-m2-district-list.test.tsx -Pattern \"obligation.panel|obligation.result|Prepare obligation support|read model|read-model|read-only|GameCommand|command path|raw reason|reason-code|internal jargon\" -Context 1,1",
+      "exit_code": 0,
+      "result": "PASS for review inspection; obligation.panel and obligation.result player strings use in-world support wording, while remaining read-model mentions are outside the obligation panel path or inside tests/debug/workspace surfaces."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/ui-m2-district-list.test.tsx",
+      "exit_code": 0,
+      "result": "PASS; 1 file and 17 tests passed, including the obligation panel wording/jargon assertions."
+    },
+    {
+      "command": "pnpm test:e2e -- tests/e2e/web-shell.spec.ts -g \"web shell loads and projects the read model\"",
+      "exit_code": 0,
+      "result": "PASS; script executed the web-shell Playwright suite and 27 Chromium tests passed. The first shell smoke covers Prepare obligation support and District 1 Troop obligation support prepared feedback."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_R2_GAMEPLAY",
+      "decision": "Accept R2 because both prior gameplay blockers are closed in player-facing UX."
+    },
+    {
+      "id": "OBLIGATION_COPY_CLOSED",
+      "decision": "The obligation panel now uses in-world wording: court support, muster, campaign support, wider plan, and focused district context. It no longer exposes read-model/read-only/command-path/GameCommand terminology in the player-mode obligation panel."
+    },
+    {
+      "id": "OBLIGATION_FEEDBACK_CLOSED",
+      "decision": "After Prepare obligation support, the Results drawer shows obligation-specific status tied to the selected district and obligation kind: District 1 Troop obligation support prepared, while preserving the existing command boundary."
+    },
+    {
+      "id": "NO_SCOPE_EXPANSION",
+      "decision": "No new obligation mechanic, sim-core/protocol/save/content change, manual node battle, final art, server, telemetry, or platform scope was introduced."
+    }
+  ],
+  "evidence": {
+    "context_read": [
+      "AGENTS.md",
+      "PROJECT_STATUS.md",
+      "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+      "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
+      "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json"
+    ],
+    "prior_request_changes_closed": [
+      {
+        "id": "CR-001",
+        "result": "Closed. obligation.panel.none and obligation.panel.effect no longer mention current read model, read-only data, command path, GameCommand, raw reason, or internal jargon."
+      },
+      {
+        "id": "CR-002",
+        "result": "Closed. The action is now Prepare obligation support and post-click feedback names District 1 Troop obligation support prepared."
+      },
+      {
+        "id": "CR-003",
+        "result": "Closed. Vitest static markup assertions and Playwright web-shell assertions cover the obligation drawer jargon exclusion and post-click obligation-specific result."
+      }
+    ],
+    "scope_boundary": "Commit e55b039fa3db907b875bbee0dc2b6097749e07f1 touches only UI, i18n, CSS, and tests. No forbidden package or product-scope expansion was found."
+  },
+  "risks": [
+    {
+      "id": "M4_GENERIC_STATUS_REMAINS_VISIBLE",
+      "severity": "R2",
+      "summary": "The generic Campaign request prepared status can still appear because the implementation correctly preserves the existing M4 command boundary. This is acceptable for gameplay R2 because it now sits beside obligation-specific District 1 support feedback."
+    },
+    {
+      "id": "NEXT_MAP_SYNC_SEPARATE",
+      "severity": "R2",
+      "summary": "Broader map/decision-surface sync remains a separate downstream task and is not approved here."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Proceed to independent QA review of M7-CORE-ACTION-LOOP-UX-001 R2.",
+  "created_at": "2026-06-30T19:07:21.1602857+08:00"
+}

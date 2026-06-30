@@ -1,0 +1,155 @@
+{
+  "message_id": "MSG-20260630-M7-CORE-ACTION-QA-REVIEW",
+  "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M7-CORE-ACTION-LOOP-UX-001 after reviewing implementation commit e346153264fa96786613771c865a3576e828d712, R2 implementation commit e55b039fa3db907b875bbee0dc2b6097749e07f1, the writer/gameplay handoffs, scope boundaries, and focused implementation evidence. The phase/action loop, obligation entry path, District 1 obligation discoverability, appointment preview/confirmation feedback, duplicate-submit guard, and command/read-model authority boundary satisfy the task acceptance criteria. The gameplay REQUEST_CHANGES items are closed in R2: player-mode obligation handling no longer exposes read-model/read-only/command-path/GameCommand wording, and post-click feedback is tied to District 1 troop obligation support.",
+  "artifacts": [
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-QA-REVIEW__qa_reviewer.json",
+    "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+    "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-GAMEPLAY-R2-TO-QA-REVIEW.json",
+    "apps/web/src/styles/shell.css",
+    "packages/ui/src/i18n.ts",
+    "packages/ui/src/index.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "commit": "e55b039fa3db907b875bbee0dc2b6097749e07f1",
+  "reviewed_commits": [
+    "e346153264fa96786613771c865a3576e828d712",
+    "e55b039fa3db907b875bbee0dc2b6097749e07f1"
+  ],
+  "current_head_during_review": "6aee13e09710cfdc155e02e3394db979b370bbd7",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "PASS before QA handoff write; current branch was codex/m7-core-action-loop-ux with no working-tree changes."
+    },
+    {
+      "command": "git show --stat e346153264fa96786613771c865a3576e828d712",
+      "exit_code": 0,
+      "result": "PASS scope check; R1 implementation touched only apps/web styling, packages/ui UI/i18n, and focused UI/E2E tests."
+    },
+    {
+      "command": "git show --stat e55b039fa3db907b875bbee0dc2b6097749e07f1",
+      "exit_code": 0,
+      "result": "PASS scope check; R2 implementation touched only apps/web styling, packages/ui UI/i18n, and focused UI/E2E tests."
+    },
+    {
+      "command": "git diff --name-only e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..e55b039fa3db907b875bbee0dc2b6097749e07f1",
+      "exit_code": 0,
+      "result": "PASS for reviewed implementation range; no forbidden sim-core, protocol, save-format, content-source, Electron, desktop, server, telemetry, final-art, or manual-battle paths were present."
+    },
+    {
+      "command": "git diff --check e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..e55b039fa3db907b875bbee0dc2b6097749e07f1",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors in the reviewed implementation range."
+    },
+    {
+      "command": "git diff --name-only e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..HEAD",
+      "exit_code": 0,
+      "result": "PASS for current review branch; additional files after e55 are process handoffs/routes and task state within allowed project paths."
+    },
+    {
+      "command": "git diff --check e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..HEAD",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors through current review HEAD before QA handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; writer R1 handoff is VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "PASS; gameplay R1 REQUEST_CHANGES handoff is VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-R2-REVIEW__client_engineer.json",
+      "exit_code": 0,
+      "result": "PASS; writer R2 handoff is VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-R2-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "PASS; gameplay R2 ACCEPT handoff is VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-CORE-ACTION-LOOP-UX-001",
+      "exit_code": 0,
+      "result": "PASS; task JSON is VALID."
+    },
+    {
+      "command": "Select-String -Path packages/ui/src/index.tsx,packages/ui/src/i18n.ts,tests/e2e/web-shell.spec.ts,tests/ui-m2-district-list.test.tsx -Pattern \"Core action loop|handleOpenObligations|ObligationHandlingPanel|handleConfirmObligationSupport|AppointmentImpactPreview|AppointmentResultFeedback|read model|read-only|GameCommand|command path\" -Context 2,2",
+      "exit_code": 0,
+      "result": "PASS review inspection; relevant implementation paths and tests are present. R2 obligation panel/result strings use player-facing support wording. Remaining read-model mentions are preexisting map/debug/test/workspace context or negative test assertions, not the repaired obligation player flow."
+    }
+  ],
+  "decisions": [
+    "ACCEPT: The first-screen core action loop exposes current phase, main unresolved decision, and next primary action, with the District 1 obligation prioritized by default unless the player intentionally enters appointment flow.",
+    "ACCEPT: Task rail, selected district context, and district inspector paths route to the same obligation handling surface and focus the relevant district.",
+    "ACCEPT: Appointment preview shows before/after, cost, benefit, risk, and will-change information; confirmation moves to result state with submitted/accepted/rejected or pending semantics.",
+    "ACCEPT: Duplicate appointment confirmation is guarded by submitted appointment key and disabled/relabelled accepted/submitted states.",
+    "ACCEPT: UI changes preserve existing command/query/read-model boundaries. The obligation support affordance calls the existing M4 command submission path and does not mutate authoritative WorldState directly.",
+    "ACCEPT: R2 closes gameplay REQUEST_CHANGES by removing player-mode obligation engineering wording and adding District 1 troop obligation support feedback after click.",
+    "ACCEPT: The R2 writer's root pnpm test timeout is acceptable evidence-wise because the failed command hit unrelated long-running sim tests at the default Vitest timeout, while direct focused Vitest, Playwright web-shell coverage, pnpm check, build:web, storybook:build, diff checks, and handoff/task validation passed. No lead rerun is required for this QA decision."
+  ],
+  "evidence": {
+    "acceptance_criteria": [
+      {
+        "criterion": "phase/problem/next action",
+        "result": "Satisfied by PlayerFirstScreenBrief/core action-loop i18n and Playwright/static assertions for Current phase, Main unresolved decision, Next primary action, and Obligation phase."
+      },
+      {
+        "criterion": "obligation entry direct path",
+        "result": "Satisfied by handleOpenObligations, task rail obligation card/drawer, selected district context, and DistrictPanel onReviewObligations using the same obligation drawer."
+      },
+      {
+        "criterion": "District 1 obligation discoverability",
+        "result": "Satisfied by focused District 1 obligation panel, selected context Handle obligation action, and tests asserting District 1 plus Prepare obligation support."
+      },
+      {
+        "criterion": "appointment before/after and cost/benefit/risk",
+        "result": "Satisfied by AppointmentImpactPreview and Playwright assertions for Before, After, Cost, Benefit, and Risk."
+      },
+      {
+        "criterion": "post-confirm submitted/accepted/rejected/pending feedback and duplicate guard",
+        "result": "Satisfied by deriveM3AppointmentSubmissionState, formatAppointmentConfirmAction, AppointmentResultFeedback, data-submission-state assertions, disabled Accepted button, and status role feedback."
+      },
+      {
+        "criterion": "no direct authoritative state mutation",
+        "result": "Satisfied by code inspection showing UI submits existing created command DTOs via onM3CommandSubmit/onM4CommandSubmit and only updates local UI state for drawer/flow/selection."
+      }
+    ],
+    "scope_boundary": "Reviewed implementation commits and current branch process commits stay within allowed Web/UI/tests/project message/task paths. No sim-core, sim-ai, protocol, save-format, platform, Electron, desktop, content-source, tools, docs gate/roadmap, telemetry, server, final art, or manual node battle scope expansion was found.",
+    "route_evidence": "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-GAMEPLAY-R2-TO-QA-REVIEW.json exists and records qa_reviewer route to thread 019f1838-adf5-7020-a50d-c21adc594d70 for review commit e55b039fa3db907b875bbee0dc2b6097749e07f1."
+  },
+  "risks": [
+    {
+      "id": "ROOT_PNPM_TEST_TIMEOUT",
+      "severity": "R1",
+      "summary": "Writer R2 recorded one failed root pnpm test attempt caused by unrelated long-running sim tests timing out at 5000 ms before the targeted UI file. Focused UI Vitest, Playwright, pnpm check, build:web, storybook:build, and diff checks passed, so this is not a blocking QA risk and does not require lead rerun."
+    },
+    {
+      "id": "M4_GENERIC_STATUS_REMAINS_VISIBLE",
+      "severity": "R1",
+      "summary": "The existing generic Campaign request prepared status may remain visible because the task correctly avoided protocol/sim changes. R2 adds adjacent District 1 troop obligation support feedback, which is sufficient for this low-fidelity UX recovery."
+    },
+    {
+      "id": "NEXT_MAP_SYNC_SEPARATE",
+      "severity": "R1",
+      "summary": "Broader map/decision-surface synchronization remains intentionally out of scope for M7-MAP-DECISION-SURFACE-SYNC-001."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may close M7-CORE-ACTION-LOOP-UX-001 as accepted and continue the systemic interaction recovery chain. Do not treat this as formal M7 content-lock approval.",
+  "created_at": "2026-06-30T19:15:12.3286176+08:00"
+}

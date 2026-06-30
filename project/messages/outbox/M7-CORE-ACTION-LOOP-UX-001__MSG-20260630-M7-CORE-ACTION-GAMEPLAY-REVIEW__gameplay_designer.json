@@ -1,0 +1,165 @@
+{
+  "message_id": "MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW",
+  "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+  "from_role": "gameplay_designer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Gameplay review remains REQUEST_CHANGES. The implementation substantially improves the first-screen action loop, District 1 obligation discoverability, and appointment preview/confirmation feedback, but player-mode obligation handling still exposes engineering/read-model wording and the obligation support click resolves into generic campaign feedback rather than clear District 1 troop obligation feedback.",
+  "artifacts": [
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json",
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/styles/shell.css",
+    "tests/e2e/web-shell.spec.ts",
+    "tests/ui-m2-district-list.test.tsx"
+  ],
+  "commit": "e346153264fa96786613771c865a3576e828d712",
+  "reviewed_commit": "e346153264fa96786613771c865a3576e828d712",
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "PASS before handoff write; worktree had no unexpected product-code changes."
+    },
+    {
+      "command": "git show --stat e346153264fa96786613771c865a3576e828d712",
+      "exit_code": 0,
+      "result": "PASS scope check; implementation commit modifies only apps/web/src/styles/shell.css, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, and tests/ui-m2-district-list.test.tsx."
+    },
+    {
+      "command": "git show --name-status --format=fuller e346153264fa96786613771c865a3576e828d712",
+      "exit_code": 0,
+      "result": "PASS commit identity/scope check; no sim-core, protocol, save-format, content-source, Electron, server, telemetry, or manual-node-battle files are touched."
+    },
+    {
+      "command": "git diff --check e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..e346153264fa96786613771c865a3576e828d712 -- packages/ui/src/index.tsx packages/ui/src/i18n.ts apps/web/src/styles/shell.css tests/ui-m2-district-list.test.tsx tests/e2e/web-shell.spec.ts",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors in reviewed diff."
+    },
+    {
+      "command": "node -e \"JSON.parse(require('fs').readFileSync('project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-GAMEPLAY-REVIEW__gameplay_designer.json','utf8')); console.log('JSON_OK')\"",
+      "exit_code": 0,
+      "result": "PASS; handoff JSON parsed after creation."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "GAMEPLAY_REVIEW_REQUEST_CHANGES",
+      "decision": "Keep REQUEST_CHANGES because the obligation handling wording and result feedback still leave the product-owner District 1 troop obligation blocker only partially resolved."
+    },
+    {
+      "id": "ACTION_LOOP_AND_APPOINTMENT_PARTIAL_PASS",
+      "decision": "Treat the first-screen action loop, task-card/district obligation entry, and appointment preview/confirmation state work as substantially improved and not the reason for rejection."
+    },
+    {
+      "id": "NO_PRODUCT_CODE_SCOPE_EXPANSION",
+      "decision": "Do not request new sim-core/protocol/save/content mechanics; requested fixes are limited to player-facing wording, obligation-context feedback, and focused UI/E2E coverage."
+    }
+  ],
+  "review_scope": [
+    "Read-only gameplay review of the player-facing M7 core action-loop recovery.",
+    "Checked the product-owner systemic interaction blockers: District 1 obligation entry, appointment preview meaning, confirmation feedback, first-screen phase/problem/action rhythm, player-facing wording, and task boundary.",
+    "Inspected the implementation diff for packages/ui/src/index.tsx, packages/ui/src/i18n.ts, apps/web/src/styles/shell.css, tests/ui-m2-district-list.test.tsx, and tests/e2e/web-shell.spec.ts."
+  ],
+  "evidence": {
+    "context_read": [
+      "AGENTS.md",
+      "PROJECT_STATUS.md",
+      "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+      "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json",
+      "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+      "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+      "project/messages/routes/M7-CORE-ACTION-LOOP-UX-001__ROUTE-20260630-WRITER-TO-GAMEPLAY-REVIEW.json"
+    ],
+    "commands_run": [
+      {
+        "command": "git status --short",
+        "result": "PASS before handoff write; worktree had no unexpected product-code changes."
+      },
+      {
+        "command": "git show --stat e346153264fa96786613771c865a3576e828d712",
+        "result": "PASS scope check; implementation commit modifies only apps/web/src/styles/shell.css, packages/ui/src/i18n.ts, packages/ui/src/index.tsx, tests/e2e/web-shell.spec.ts, and tests/ui-m2-district-list.test.tsx."
+      },
+      {
+        "command": "git show --name-status --format=fuller e346153264fa96786613771c865a3576e828d712",
+        "result": "PASS commit identity/scope check; no sim-core, protocol, save-format, content-source, Electron, server, telemetry, or manual-node-battle files are touched."
+      },
+      {
+        "command": "git diff --check e8520f61e8d8a81f9d1e17c6a9b0e0edabe4283e..e346153264fa96786613771c865a3576e828d712 -- packages/ui/src/index.tsx packages/ui/src/i18n.ts apps/web/src/styles/shell.css tests/ui-m2-district-list.test.tsx tests/e2e/web-shell.spec.ts",
+        "result": "PASS; no whitespace errors in reviewed diff."
+      }
+    ],
+    "passes": [
+      {
+        "criterion": "District 1 obligation discoverability",
+        "evidence": "packages/ui/src/index.tsx adds handleOpenObligations, SelectedDistrictActionContext, TaskRail obligation card behavior, DistrictPanel onReviewObligations, and ObligationHandlingPanel. tests/e2e/web-shell.spec.ts asserts Core action loop, Selected district context, Obligation handling panel, District 1, and enabled Submit obligation support."
+      },
+      {
+        "criterion": "Appointment preview meaning",
+        "evidence": "AppointmentImpactPreview now shows Before, After, Cost, Benefit, Risk, reliability, and will-change copy; tests/e2e/web-shell.spec.ts asserts these labels before confirmation."
+      },
+      {
+        "criterion": "Appointment confirmation feedback",
+        "evidence": "deriveM3AppointmentSubmissionState, formatAppointmentConfirmAction, and AppointmentResultFeedback produce idle/pending/submitted/accepted/rejected states; focused E2E asserts Accepted status and disabled Accepted button after confirm, and blocked rejected candidate copy in zh-CN."
+      },
+      {
+        "criterion": "First-screen phase/problem/action rhythm",
+        "evidence": "PlayerFirstScreenBrief adds a Core action loop with Current phase, Main unresolved decision, and Next primary action; createPlayerFirstScreenBriefContent prioritizes route/obligation before appointment unless the appointment flow is intentionally open."
+      },
+      {
+        "criterion": "Task boundary",
+        "evidence": "The reviewed implementation commit touches only UI styling, UI/i18n, and UI/E2E tests. It does not change sim-core, protocol, save-format, content-source, manual node battle, final art, server, telemetry, or platform scope."
+      }
+    ],
+    "blocking_findings": [
+      {
+        "id": "M7-CORE-ACTION-LOOP-UX-GD-001",
+        "severity": "R4",
+        "criterion": "Player-facing wording must avoid read-model/engineering terms and must not imply full new M7 obligation mechanics.",
+        "evidence": "packages/ui/src/i18n.ts adds obligation.panel.effect as: \"Submitting support uses the existing campaign and muster command path; preview data remains read-only here.\" The zh-CN copy likewise says the support uses an existing campaign/muster command path and that preview data remains read-only. obligation.panel.none also says \"current read model\" / \"当前只读模型\". These strings are inside ObligationHandlingPanel, which is normal player-mode task rail content, not the developer overlay.",
+        "impact": "This directly violates the product-owner recovery criterion to avoid read-model/engineering language. It also explains implementation plumbing instead of the in-world obligation decision, so the District 1 troop obligation remains less understandable to the player than the new UX structure suggests."
+      },
+      {
+        "id": "M7-CORE-ACTION-LOOP-UX-GD-002",
+        "severity": "R4",
+        "criterion": "The District 1 obligation handling entry must make the submitted/accepted outcome understandable without implying a separate unimplemented obligation system.",
+        "evidence": "packages/ui/src/index.tsx handleConfirmObligationSupport calls handleSubmitM4StartMarch() and switches to the Results drawer. The button label is \"Submit obligation support\", while the status shown by the reused command path is the generic M4 result \"Campaign request prepared.\" The writer handoff also flags this as a risk: the action currently uses the existing M4 start-march command path because M7 scope forbids new authoritative obligation mechanics.",
+        "impact": "The player can now find an obligation button, but after clicking it the feedback does not clearly say what happened to the troop obligation. The wording may lead players to believe a new obligation-support mechanic exists, while the result reads like a campaign request. This leaves the original Product Owner blocker only partially resolved."
+      }
+    ]
+  },
+  "change_requests": [
+    {
+      "id": "CR-001",
+      "summary": "Replace player-mode obligation panel wording with in-world, low-scope copy.",
+      "required_change": "Remove read-model, read-only, command path, and similar engineering terms from obligation.panel.effect and obligation.panel.none in both English and Chinese. The copy should explain that the player is preparing available muster/campaign support for the obligation without claiming the obligation is fully settled by a new M7 mechanic."
+    },
+    {
+      "id": "CR-002",
+      "summary": "Align the obligation action label and post-click feedback with the actual reused command.",
+      "required_change": "Either relabel the action to match the current command surface, or add a visible obligation-context result after click such as support order prepared/accepted for the focused District 1 troop obligation. Do not leave the player with only the generic \"Campaign request prepared\" result after pressing \"Submit obligation support\"."
+    },
+    {
+      "id": "CR-003",
+      "summary": "Add focused coverage for the obligation drawer wording and feedback.",
+      "required_change": "Extend the existing focused UI/E2E coverage so the obligations drawer text does not contain read model, read-only, command path, GameCommand, raw reason, or comparable implementation jargon, and so the post-click result mentions the obligation/support context."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-LOW-FIDELITY-UX-STILL-OK",
+      "summary": "The requested changes do not require new sim-core mechanics, protocol changes, final art, or manual node battle. They are player-facing wording/feedback alignment inside the existing UI command boundary."
+    },
+    {
+      "id": "M7-MAP-SYNC-REMAINS-SEPARATE",
+      "summary": "Broader map/inspector synchronization remains correctly deferred to M7-MAP-DECISION-SURFACE-SYNC-001."
+    }
+  ],
+  "blockers": [
+    "Player-mode obligation panel exposes engineering/read-model wording.",
+    "Obligation support click result is not clearly tied back to the District 1 troop obligation and may imply an unimplemented separate obligation-support mechanic."
+  ],
+  "route_to": "client_engineer",
+  "requested_action": "Revise the obligation handling wording, action/result feedback, and focused coverage, then route the updated commit back to gameplay_designer review.",
+  "created_at": "2026-06-30T18:52:33.3901590+08:00"
+}

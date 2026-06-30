@@ -1,0 +1,95 @@
+{
+  "message_id": "MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW",
+  "task_id": "M7-CORE-ACTION-LOOP-UX-001",
+  "from_role": "client_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented the M7 core action-loop UX recovery. The default first screen now exposes a core action loop and correctly prioritizes the District 1 obligation before appointment work; when the player intentionally opens the appointment flow, the same loop follows appointment preview, confirmation, and result states. The selected map district now has a direct obligation handling context, the task rail obligation drawer shows a concrete handling panel, and the district inspector routes to the same entry. Appointment preview now shows before/after, cost, benefit, risk, and will-change copy; confirmation produces durable accepted/submitted/rejected state, disables or relabels repeated confirmation, and makes success/failure visible beyond a small status sentence.",
+  "artifacts": [
+    "packages/ui/src/index.tsx",
+    "packages/ui/src/i18n.ts",
+    "apps/web/src/styles/shell.css",
+    "tests/ui-m2-district-list.test.tsx",
+    "tests/e2e/web-shell.spec.ts",
+    "project/messages/outbox/M7-CORE-ACTION-LOOP-UX-001__MSG-20260630-M7-CORE-ACTION-WRITER-REVIEW__client_engineer.json"
+  ],
+  "branch_or_worktree": "codex/m7-core-action-loop-ux",
+  "commit": "e346153264fa96786613771c865a3576e828d712",
+  "tests_run": [
+    {
+      "command": "pnpm --filter @monsoon/ui typecheck",
+      "exit_code": 0,
+      "result": "PASS; TypeScript accepted the UI prop/state changes."
+    },
+    {
+      "command": "pnpm --filter @monsoon/ui test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 17 tests passed, including static core action loop and obligation entry assertions."
+    },
+    {
+      "command": "pnpm --filter web test",
+      "exit_code": 0,
+      "result": "PASS; 1 file / 10 tests passed."
+    },
+    {
+      "command": "pnpm --filter web typecheck",
+      "exit_code": 0,
+      "result": "PASS; Web shell typecheck passed."
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/web-shell.spec.ts -g \"appointment preview|M7 player guidance lite supports|M3 appointment player flow\"",
+      "exit_code": 0,
+      "result": "PASS; 5 focused Chromium tests passed for appointment preview/confirm and existing appointment flow regressions."
+    },
+    {
+      "command": "pnpm test:e2e",
+      "exit_code": 0,
+      "result": "PASS; 27 Chromium tests passed."
+    },
+    {
+      "command": "pnpm build:web",
+      "exit_code": 0,
+      "result": "PASS; Vite build completed with the existing chunk-size warning only."
+    },
+    {
+      "command": "pnpm --filter web check",
+      "exit_code": 0,
+      "result": "PASS; web format, lint, typecheck, and test all passed."
+    },
+    {
+      "command": "pnpm storybook:build",
+      "exit_code": 0,
+      "result": "PASS; Storybook build completed with existing bundle-size/plugin timing warnings only."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "PASS after Prettier write; format, lint, typecheck, and architecture checks passed."
+    },
+    {
+      "command": "pnpm test",
+      "exit_code": 0,
+      "result": "PASS; architecture, deterministic canary, 43 repo test files / 353 tests, and web vitest passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS; no whitespace errors."
+    }
+  ],
+  "decisions": [
+    "Default first-screen phase now prioritizes selected-district obligations over appointment suggestions, so District 1 troop obligation is no longer hidden by appointment affordances.",
+    "Once the player opens the appointment drawer, the action loop intentionally follows appointment compare, preview, confirm, and result states until that flow resolves.",
+    "The task rail obligation drawer no longer uses Review obligations as the only ambiguous action; it shows an obligation handling panel and a separate Submit obligation support command path that still reuses existing command boundaries.",
+    "Appointment confirmation now changes visible state and relabels/blocks duplicate confirmation instead of leaving a normal-looking confirm button.",
+    "No authoritative simulation state, sim-core, protocol, save schema, content-source, Electron, final art, telemetry, server, multiplayer, or manual node battle behavior was changed."
+  ],
+  "risks": [
+    "This remains a low-fidelity interaction recovery, not final strategic-map art direction or final Nobunaga-like presentation polish.",
+    "Submit obligation support currently uses the existing M4 start-march command path because M7 scope forbids new authoritative obligation mechanics; gameplay review should confirm the wording is acceptable as a minimal obligation handling abstraction.",
+    "The map still needs the next planned task M7-MAP-DECISION-SURFACE-SYNC-001 for broader map/inspector synchronization and strategic readability."
+  ],
+  "blockers": [],
+  "route_to": "gameplay_designer",
+  "requested_action": "Review the player-facing interaction recovery: default obligation priority, task rail/district/map obligation entry discoverability, appointment preview/confirm/result clarity, and phase/action loop readability. If accepted, route to independent QA; if not, request changes back to the same branch.",
+  "created_at": "2026-06-30T18:43:17.7035010+08:00"
+}

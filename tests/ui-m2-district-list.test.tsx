@@ -417,11 +417,27 @@ describe("M2 district client UI", () => {
     expect(englishMarkup).toContain("You are stewarding Validation Court.");
     expect(englishMarkup).toContain("Priority problem");
     expect(englishMarkup).toContain("Recommended next action");
+    expect(englishMarkup).toContain('aria-label="Core action loop"');
+    expect(englishMarkup).toContain("Current phase");
+    expect(englishMarkup).toContain("Main unresolved decision");
+    expect(englishMarkup).toContain("Next primary action");
+    expect(englishMarkup).toContain("Obligation phase");
     expect(englishMarkup).toContain("Cost");
     expect(englishMarkup).toContain("If ignored");
     expect(englishMarkup).toContain("Task Rail");
     expect(englishMarkup).toContain("Compact priorities stay visible");
     expect(englishMarkup).toContain("Obligations");
+    expect(englishMarkup).toContain('aria-label="Selected district context"');
+    expect(englishMarkup).toContain('data-selected-context-obligation="true"');
+    expect(englishMarkup).toContain("Handle obligation");
+    expect(englishMarkup).toContain('aria-label="Obligation handling panel"');
+    expect(englishMarkup).toContain('data-focused-district-id="1"');
+    expect(englishMarkup).toContain("Prepare obligation support");
+    expect(englishMarkup).toContain("Keep this district focused");
+    expect(englishMarkup).toContain("Prepare available muster and campaign support");
+    expect(englishMarkup).not.toMatch(
+      /current read model|read-only|GameCommand|command path|raw reason|reason-code|internal jargon/i
+    );
     expect(englishMarkup).toContain("Campaign prep");
     expect(englishMarkup).toContain("No action has been previewed yet.");
     expect(chineseMarkup).toContain('aria-label="任务栏"');

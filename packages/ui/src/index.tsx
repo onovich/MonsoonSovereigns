@@ -177,6 +177,7 @@ const ZERO_MAP_PAN_OFFSET: ClientMapPanOffset = {
 };
 const ClientI18nContext = createContext<ClientI18n>(DEFAULT_CLIENT_I18N);
 type M3AppointmentFlowStage = "select-office" | "compare-candidates" | "preview" | "result";
+type M3AppointmentSubmissionState = "idle" | "pending" | "submitted" | "accepted" | "rejected";
 type DistrictRouteStatusFilter = ClientDistrictRowReadModel["route"]["status"] | "all";
 type ClientTaskRailDrawerId =
   | "obligations"
@@ -244,6 +245,7 @@ export function ClientShellView({
   const [showRejectedM3Candidates, setShowRejectedM3Candidates] = useState(true);
   const [m3SubmitSequence, setM3SubmitSequence] = useState(0);
   const [m3FlowStage, setM3FlowStage] = useState<M3AppointmentFlowStage>("select-office");
+  const [submittedM3AppointmentKey, setSubmittedM3AppointmentKey] = useState<string | null>(null);
   const [selectedM4CampaignPlanId, setSelectedM4CampaignPlanId] =
     useState<ClientCampaignPlanId | null>(snapshot.m4Campaign.selectedCampaignPlanId);
   const [selectedM4SiegeChoice, setSelectedM4SiegeChoice] =
@@ -345,6 +347,18 @@ export function ClientShellView({
     ) ??
     firstEligibleM3Candidate ??
     firstM3Candidate;
+  const selectedM3AppointmentKey = getM3AppointmentSelectionKey(
+    selectedM3Office,
+    selectedM3Eligibility,
+    snapshot.m3Appointment.revision
+  );
+  const m3AppointmentSubmissionState = deriveM3AppointmentSubmissionState({
+    commandStatus: m3CommandStatus,
+    flowStage: m3FlowStage,
+    selectedEligibility: selectedM3Eligibility,
+    selectedKey: selectedM3AppointmentKey,
+    submittedKey: submittedM3AppointmentKey
+  });
   const selectedM4Campaign =
     selectedM4CampaignPlanId === null
       ? (snapshot.m4Campaign.plans[0] ?? null)
@@ -410,8 +424,17 @@ export function ClientShellView({
     if (selectedM3Office === null || selectedM3Eligibility === null) {
       return;
     }
+    const selectedKey = getM3AppointmentSelectionKey(
+      selectedM3Office,
+      selectedM3Eligibility,
+      snapshot.m3Appointment.revision
+    );
+    if (selectedKey !== null && submittedM3AppointmentKey === selectedKey) {
+      return;
+    }
     const nextSequence = m3SubmitSequence + 1;
     setM3SubmitSequence(nextSequence);
+    setSubmittedM3AppointmentKey(selectedKey);
     onM3CommandSubmit(
       createM3AppointmentCommand({
         snapshot: snapshot.m3Appointment,
@@ -431,8 +454,32 @@ export function ClientShellView({
   }
 
   function handleConfirmM3Appointment(): void {
+    if (
+      m3AppointmentSubmissionState === "submitted" ||
+      m3AppointmentSubmissionState === "accepted"
+    ) {
+      return;
+    }
     handleSubmitM3Appointment();
     setM3FlowStage("result");
+  }
+
+  function handleOpenObligations(): void {
+    const focusDistrict =
+      selectedDistrict !== null && findDistrictObligation(selectedDistrict, snapshot.m3Appointment)
+        ? selectedDistrict
+        : findFirstDistrictWithObligation(snapshot.districtList.rows, snapshot.m3Appointment);
+    if (focusDistrict !== null) {
+      onSelectedEntityChange({ kind: "district", districtId: focusDistrict.districtId });
+    }
+    setRouteStatusFilter("all");
+    setDistrictBrowserCollapsed(false);
+    setActiveTaskDrawer("obligations");
+  }
+
+  function handleConfirmObligationSupport(): void {
+    handleSubmitM4StartMarch();
+    setActiveTaskDrawer("results");
   }
 
   function handleSubmitM3BulkAppointments(): void {
@@ -887,6 +934,8 @@ export function ClientShellView({
               selectedCampaign={selectedM4Campaign}
               canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
               canPreviewCampaign={selectedM4Campaign !== null}
+              m3FlowStage={m3FlowStage}
+              appointmentSubmissionState={m3AppointmentSubmissionState}
             />
 
             <div
@@ -915,6 +964,15 @@ export function ClientShellView({
                   })}
                 </span>
               )}
+              <SelectedDistrictActionContext
+                selectedDistrict={selectedDistrict}
+                obligation={
+                  selectedDistrict === null
+                    ? null
+                    : findDistrictObligation(selectedDistrict, snapshot.m3Appointment)
+                }
+                onOpenObligations={handleOpenObligations}
+              />
               <output
                 className="client-shell__map-tooltip"
                 aria-label={i18n.t("shell.mapHover.label")}
@@ -957,6 +1015,7 @@ export function ClientShellView({
                   selectedEligibility={selectedM3Eligibility}
                   flowStage={m3FlowStage}
                   commandStatus={m3CommandStatus}
+                  submissionState={m3AppointmentSubmissionState}
                   onOfficeChange={handleM3OfficeChange}
                   onCandidateChange={handleM3CandidateChange}
                   onCandidateKeyChange={handleM3CandidateKeyChange}
@@ -999,14 +1058,12 @@ export function ClientShellView({
                 handleOpenM3AppointmentFlow();
                 setActiveTaskDrawer("appointments");
               }}
+              onOpenObligations={handleOpenObligations}
               onPreviewCampaign={() => {
                 handleSubmitM4Plan();
                 setActiveTaskDrawer("campaign");
               }}
-              onReviewObligations={() => {
-                handleSubmitM4StartMarch();
-                setActiveTaskDrawer("obligations");
-              }}
+              onConfirmObligation={handleConfirmObligationSupport}
               onDismissGuidance={() => setGuidanceDismissed(true)}
               onRestoreGuidance={() => setGuidanceDismissed(false)}
               onToggleGuidanceCollapse={() => setGuidanceCollapsed(!isGuidanceCollapsed)}
@@ -1020,9 +1077,12 @@ export function ClientShellView({
               canPreviewAppointment={selectedM3Office !== null && selectedM3Eligibility !== null}
               canPreviewCampaign={selectedM4Campaign !== null}
               provenanceNote={debugMode ? snapshot.districtList.provenance.note : ""}
-              onPreviewAppointment={handleOpenM3AppointmentFlow}
+              onPreviewAppointment={() => {
+                handleOpenM3AppointmentFlow();
+                setActiveTaskDrawer("appointments");
+              }}
               onPreviewCampaign={handleSubmitM4Plan}
-              onReviewObligations={handleSubmitM4StartMarch}
+              onReviewObligations={handleOpenObligations}
             />
           </aside>
         </section>
@@ -1245,6 +1305,41 @@ function MapLegendItem({ tone, label }: MapLegendItemProps): ReactElement {
       <span aria-hidden="true" />
       {label}
     </span>
+  );
+}
+
+function SelectedDistrictActionContext({
+  selectedDistrict,
+  obligation,
+  onOpenObligations
+}: {
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly obligation: ClientM3ObligationReadModel | null;
+  readonly onOpenObligations: () => void;
+}): ReactElement | null {
+  const i18n = useContext(ClientI18nContext);
+  if (selectedDistrict === null || obligation === null) {
+    return null;
+  }
+
+  const district = formatPlayerDistrictName(selectedDistrict, i18n);
+  return (
+    <div
+      className="client-shell__selected-context"
+      aria-label={i18n.t("shell.selectedContext.label")}
+      data-selected-context-obligation="true"
+    >
+      <span>
+        {i18n.t("shell.selectedContext.obligation", {
+          district,
+          kind: formatDistrictObligationKind(obligation.obligationKind, i18n),
+          amount: i18n.formatNumber(obligation.amount)
+        })}
+      </span>
+      <button type="button" onClick={onOpenObligations}>
+        {i18n.t("shell.selectedContext.openObligation")}
+      </button>
+    </div>
   );
 }
 
@@ -1921,6 +2016,8 @@ interface PlayerFirstScreenBriefProps {
   readonly selectedCampaign: ClientM4CampaignPlanReadModel | null;
   readonly canPreviewAppointment: boolean;
   readonly canPreviewCampaign: boolean;
+  readonly m3FlowStage: M3AppointmentFlowStage;
+  readonly appointmentSubmissionState: M3AppointmentSubmissionState;
 }
 
 interface PlayerFirstScreenBriefContent {
@@ -1931,6 +2028,7 @@ interface PlayerFirstScreenBriefContent {
   readonly action: string;
   readonly cost: string;
   readonly ignored: string;
+  readonly phase: string;
 }
 
 function PlayerFirstScreenBrief({
@@ -1939,7 +2037,9 @@ function PlayerFirstScreenBrief({
   selectedOffice,
   selectedCampaign,
   canPreviewAppointment,
-  canPreviewCampaign
+  canPreviewCampaign,
+  m3FlowStage,
+  appointmentSubmissionState
 }: PlayerFirstScreenBriefProps): ReactElement {
   const i18n = useContext(ClientI18nContext);
   const content = createPlayerFirstScreenBriefContent({
@@ -1949,6 +2049,8 @@ function PlayerFirstScreenBrief({
     selectedCampaign,
     canPreviewAppointment,
     canPreviewCampaign,
+    m3FlowStage,
+    appointmentSubmissionState,
     i18n
   });
 
@@ -1977,6 +2079,20 @@ function PlayerFirstScreenBrief({
         <span>{i18n.t("shell.firstScreen.actionLabel")}</span>
         <strong>{content.action}</strong>
       </div>
+      <dl className="player-action-loop" aria-label={i18n.t("shell.actionLoop.label")}>
+        <div>
+          <dt>{i18n.t("shell.actionLoop.phase")}</dt>
+          <dd>{content.phase}</dd>
+        </div>
+        <div>
+          <dt>{i18n.t("shell.actionLoop.unresolved")}</dt>
+          <dd>{content.problem}</dd>
+        </div>
+        <div>
+          <dt>{i18n.t("shell.actionLoop.next")}</dt>
+          <dd>{content.action}</dd>
+        </div>
+      </dl>
       <dl className="player-orientation-card__consequences">
         <div>
           <dt>{i18n.t("shell.firstScreen.costLabel")}</dt>
@@ -1998,6 +2114,8 @@ function createPlayerFirstScreenBriefContent({
   selectedCampaign,
   canPreviewAppointment,
   canPreviewCampaign,
+  m3FlowStage,
+  appointmentSubmissionState,
   i18n
 }: PlayerFirstScreenBriefProps & { readonly i18n: ClientI18n }): PlayerFirstScreenBriefContent {
   const court = formatPlayerCourtIdentity(snapshot.m3Appointment, i18n);
@@ -2007,15 +2125,10 @@ function createPlayerFirstScreenBriefContent({
   });
   const districtName =
     selectedDistrict === null ? "" : formatPlayerDistrictName(selectedDistrict, i18n);
-  const relevantObligations =
+  const selectedDistrictObligation =
     selectedDistrict === null
-      ? []
-      : snapshot.m3Appointment.obligations.filter((obligation) =>
-          obligation.obligationId.endsWith(`.${Number(selectedDistrict.districtId)}`)
-        );
-  const breachedOrPendingObligation = relevantObligations.find(
-    (obligation) => obligation.status === "breached" || obligation.status === "pending"
-  );
+      ? null
+      : findDistrictObligation(selectedDistrict, snapshot.m3Appointment);
   const routeForecast =
     selectedDistrict === null
       ? undefined
@@ -2033,7 +2146,8 @@ function createPlayerFirstScreenBriefContent({
       why: i18n.t("shell.firstScreen.why.noDistrict"),
       action: i18n.t("shell.firstScreen.action.selectDistrict"),
       cost: i18n.t("shell.firstScreen.cost.noDistrict"),
-      ignored: i18n.t("shell.firstScreen.ignored.noDistrict")
+      ignored: i18n.t("shell.firstScreen.ignored.noDistrict"),
+      phase: i18n.t("shell.actionLoop.phase.selection")
     };
   }
 
@@ -2045,22 +2159,49 @@ function createPlayerFirstScreenBriefContent({
       why: i18n.t("shell.firstScreen.why.blockedRoute"),
       action: i18n.t("shell.firstScreen.action.reviewObligations"),
       cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
-      ignored: i18n.t("shell.firstScreen.ignored.blockedRoute")
+      ignored: i18n.t("shell.firstScreen.ignored.blockedRoute"),
+      phase: i18n.t("shell.actionLoop.phase.route")
     };
   }
 
-  if (breachedOrPendingObligation !== undefined) {
+  if (
+    canPreviewAppointment &&
+    selectedOffice !== null &&
+    (m3FlowStage !== "select-office" || appointmentSubmissionState !== "idle")
+  ) {
+    const phase =
+      appointmentSubmissionState === "accepted" || appointmentSubmissionState === "submitted"
+        ? i18n.t("shell.actionLoop.phase.result")
+        : m3FlowStage === "preview"
+          ? i18n.t("shell.actionLoop.phase.confirm")
+          : i18n.t("shell.actionLoop.phase.appointment");
+    return {
+      identity: i18n.t("shell.firstScreen.identity", { court }),
+      situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
+      problem: i18n.t("shell.firstScreen.problem.governance", { district: districtName }),
+      why: i18n.t("shell.firstScreen.why.governance"),
+      action: i18n.t("shell.firstScreen.action.previewAppointment", {
+        office: selectedOffice.displayName
+      }),
+      cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
+      ignored: i18n.t("shell.firstScreen.ignored.governance"),
+      phase
+    };
+  }
+
+  if (selectedDistrictObligation !== null) {
     return {
       identity: i18n.t("shell.firstScreen.identity", { court }),
       situation: i18n.t("shell.firstScreen.situation", { season, day, district: districtName }),
       problem: i18n.t("shell.firstScreen.problem.obligation", {
         district: districtName,
-        kind: formatDistrictObligationKind(breachedOrPendingObligation.obligationKind, i18n)
+        kind: formatDistrictObligationKind(selectedDistrictObligation.obligationKind, i18n)
       }),
       why: i18n.t("shell.firstScreen.why.obligation"),
       action: i18n.t("shell.firstScreen.action.reviewObligations"),
       cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
-      ignored: i18n.t("shell.firstScreen.ignored.obligation")
+      ignored: i18n.t("shell.firstScreen.ignored.obligation"),
+      phase: i18n.t("shell.actionLoop.phase.obligation")
     };
   }
 
@@ -2074,7 +2215,8 @@ function createPlayerFirstScreenBriefContent({
         office: selectedOffice.displayName
       }),
       cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
-      ignored: i18n.t("shell.firstScreen.ignored.governance")
+      ignored: i18n.t("shell.firstScreen.ignored.governance"),
+      phase: i18n.t("shell.actionLoop.phase.appointment")
     };
   }
 
@@ -2088,7 +2230,8 @@ function createPlayerFirstScreenBriefContent({
       why: i18n.t("shell.firstScreen.why.campaign"),
       action: i18n.t("shell.firstScreen.action.previewCampaign"),
       cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
-      ignored: i18n.t("shell.firstScreen.ignored.campaign")
+      ignored: i18n.t("shell.firstScreen.ignored.campaign"),
+      phase: i18n.t("shell.actionLoop.phase.campaign")
     };
   }
 
@@ -2099,7 +2242,8 @@ function createPlayerFirstScreenBriefContent({
     why: i18n.t("shell.firstScreen.why.supply"),
     action: i18n.t("shell.firstScreen.action.reviewObligations"),
     cost: formatFirstScreenSelectedCost(selectedDistrict, routeForecast, i18n),
-    ignored: i18n.t("shell.firstScreen.ignored.supply")
+    ignored: i18n.t("shell.firstScreen.ignored.supply"),
+    phase: i18n.t("shell.actionLoop.phase.supply")
   };
 }
 
@@ -2305,8 +2449,9 @@ interface TaskRailProps {
   readonly routeQueue: ReactElement;
   readonly onDrawerChange: (drawerId: ClientTaskRailDrawerId) => void;
   readonly onOpenAppointment: () => void;
+  readonly onOpenObligations: () => void;
   readonly onPreviewCampaign: () => void;
-  readonly onReviewObligations: () => void;
+  readonly onConfirmObligation: () => void;
   readonly onDismissGuidance: () => void;
   readonly onRestoreGuidance: () => void;
   readonly onToggleGuidanceCollapse: () => void;
@@ -2330,8 +2475,9 @@ function TaskRail({
   routeQueue,
   onDrawerChange,
   onOpenAppointment,
+  onOpenObligations,
   onPreviewCampaign,
-  onReviewObligations,
+  onConfirmObligation,
   onDismissGuidance,
   onRestoreGuidance,
   onToggleGuidanceCollapse
@@ -2378,6 +2524,9 @@ function TaskRail({
               if (card.id === "appointments") {
                 onOpenAppointment();
               }
+              if (card.id === "obligations") {
+                onOpenObligations();
+              }
             }}
           >
             <span className="task-rail__icon" aria-hidden="true">
@@ -2416,7 +2565,8 @@ function TaskRail({
           appointmentFlow,
           routeQueue,
           onPreviewCampaign,
-          onReviewObligations,
+          onOpenObligations,
+          onConfirmObligation,
           onDismissGuidance,
           onRestoreGuidance,
           onToggleGuidanceCollapse,
@@ -2601,7 +2751,8 @@ function renderTaskRailDrawer({
   appointmentFlow,
   routeQueue,
   onPreviewCampaign,
-  onReviewObligations,
+  onOpenObligations,
+  onConfirmObligation,
   onDismissGuidance,
   onRestoreGuidance,
   onToggleGuidanceCollapse,
@@ -2700,7 +2851,11 @@ function renderTaskRailDrawer({
           </section>
         </div>
       );
-    case "results":
+    case "results": {
+      const resultObligation =
+        selectedDistrict === null
+          ? null
+          : findDistrictObligation(selectedDistrict, snapshot.m3Appointment);
       return (
         <div className="task-rail__drawer-panel">
           <h3>{i18n.t("shell.taskRail.results.title")}</h3>
@@ -2710,8 +2865,20 @@ function renderTaskRailDrawer({
             m5CommandStatus={m5CommandStatus}
             m6CommandStatus={m6CommandStatus}
           />
+          {m4CommandStatus === null ||
+          selectedDistrict === null ||
+          resultObligation === null ? null : (
+            <p className="task-rail__obligation-result" role="status">
+              {i18n.t("obligation.result.prepared", {
+                district: formatPlayerDistrictName(selectedDistrict, i18n),
+                kind: formatDistrictObligationKind(resultObligation.obligationKind, i18n),
+                amount: i18n.formatNumber(resultObligation.amount)
+              })}
+            </p>
+          )}
         </div>
       );
+    }
     case "obligations":
       return (
         <div className="task-rail__drawer-panel">
@@ -2721,15 +2888,97 @@ function renderTaskRailDrawer({
               type="button"
               data-task-drawer-primary-action="true"
               disabled={selectedDistrict?.route.status === "unreachable"}
-              onClick={onReviewObligations}
+              onClick={onConfirmObligation}
             >
-              {i18n.t("shell.actions.reviewObligations")}
+              {i18n.t("shell.actions.submitObligation")}
             </button>
           </div>
+          <ObligationHandlingPanel
+            snapshot={snapshot}
+            selectedDistrict={selectedDistrict}
+            onOpenObligations={onOpenObligations}
+          />
           {routeQueue}
         </div>
       );
   }
+}
+
+function ObligationHandlingPanel({
+  snapshot,
+  selectedDistrict,
+  onOpenObligations
+}: {
+  readonly snapshot: ClientReadModelSnapshot;
+  readonly selectedDistrict: ClientDistrictRowReadModel | null;
+  readonly onOpenObligations: () => void;
+}): ReactElement {
+  const i18n = useContext(ClientI18nContext);
+  const obligation =
+    selectedDistrict === null
+      ? null
+      : findDistrictObligation(selectedDistrict, snapshot.m3Appointment);
+  if (selectedDistrict === null) {
+    return (
+      <section
+        className="task-rail__obligation-panel"
+        aria-label={i18n.t("obligation.panel.label")}
+      >
+        <h4>{i18n.t("obligation.panel.title")}</h4>
+        <p>{i18n.t("obligation.panel.noDistrict")}</p>
+      </section>
+    );
+  }
+
+  const district = formatPlayerDistrictName(selectedDistrict, i18n);
+  return (
+    <section
+      className="task-rail__obligation-panel"
+      aria-label={i18n.t("obligation.panel.label")}
+      data-focused-district-id={selectedDistrict.districtId}
+      data-obligation-state={obligation?.status ?? "none"}
+    >
+      <h4>{i18n.t("obligation.panel.title")}</h4>
+      {obligation === null ? (
+        <p>{i18n.t("obligation.panel.none", { district })}</p>
+      ) : (
+        <>
+          <dl className="task-rail__drawer-metrics">
+            <Metric label={i18n.t("obligation.panel.district")} value={district} />
+            <Metric
+              label={i18n.t("obligation.panel.kind")}
+              value={formatDistrictObligationKind(obligation.obligationKind, i18n)}
+            />
+            <Metric
+              label={i18n.t("obligation.panel.amount")}
+              value={i18n.formatNumber(obligation.amount)}
+            />
+            <Metric
+              label={i18n.t("obligation.panel.due")}
+              value={formatDistrictObligationDueLabel(obligation.dueLabel, i18n)}
+            />
+            <Metric
+              label={i18n.t("obligation.panel.route")}
+              value={formatPlayerRouteSummary(selectedDistrict, i18n)}
+            />
+            <Metric
+              label={i18n.t("obligation.panel.muster")}
+              value={i18n.t("shell.inspector.routeCampaign.musterValue", {
+                readiness: i18n.formatReasonCode(snapshot.m4Campaign.muster.readiness),
+                assembled: i18n.formatNumber(snapshot.m4Campaign.muster.assembledTroops),
+                promised: i18n.formatNumber(snapshot.m4Campaign.muster.promisedTroops)
+              })}
+            />
+          </dl>
+          <p>{i18n.t("obligation.panel.effect")}</p>
+          <ReasonChips reasonCodes={obligation.reasonCodes} />
+          <button type="button" onClick={onOpenObligations}>
+            {i18n.t("obligation.panel.refocus")}
+          </button>
+        </>
+      )}
+    </section>
+  );
 }
 
 interface DistrictRouteQueueProps {
@@ -2946,6 +3195,7 @@ interface M3AppointmentFlowProps {
   readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
   readonly flowStage: M3AppointmentFlowStage;
   readonly commandStatus: string | null;
+  readonly submissionState: M3AppointmentSubmissionState;
   readonly onOfficeChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   readonly onCandidateChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   readonly onCandidateKeyChange: (characterKey: string) => void;
@@ -2960,6 +3210,7 @@ function M3AppointmentFlow({
   selectedEligibility,
   flowStage,
   commandStatus,
+  submissionState,
   onOfficeChange,
   onCandidateChange,
   onCandidateKeyChange,
@@ -2976,7 +3227,9 @@ function M3AppointmentFlow({
     selectedOffice !== null &&
     selectedEligibility !== null &&
     selectedEligibility.status === "eligible" &&
-    (flowStage === "preview" || flowStage === "result");
+    (flowStage === "preview" || flowStage === "result") &&
+    submissionState !== "submitted" &&
+    submissionState !== "accepted";
 
   if (snapshot.offices.length === 0) {
     return (
@@ -3003,6 +3256,9 @@ function M3AppointmentFlow({
       data-office-count={snapshot.offices.length}
       data-candidate-count={candidateEligibilities.length}
       data-selected-candidate-status={selectedEligibility?.status ?? "none"}
+      data-focused-office-id={selectedOffice?.officeId ?? "none"}
+      data-focused-candidate-id={selectedEligibility?.characterId ?? "none"}
+      data-submission-state={submissionState}
       data-debug-raw-reasons="hidden"
     >
       <header className="m3-flow__header">
@@ -3100,6 +3356,7 @@ function M3AppointmentFlow({
           <h3>{i18n.t("appointment.preview.title")}</h3>
           <AppointmentImpactPreview
             office={selectedOffice}
+            selectedCharacter={selectedCharacter}
             selectedEligibility={selectedEligibility}
           />
           <div className="m3-flow__actions">
@@ -3112,12 +3369,13 @@ function M3AppointmentFlow({
               onClick={onConfirm}
               data-command-kind="sim.appoint-office"
             >
-              {i18n.t("appointment.action.confirm")}
+              {formatAppointmentConfirmAction(submissionState, i18n)}
             </button>
           </div>
           <AppointmentResultFeedback
             commandStatus={commandStatus}
             flowStage={flowStage}
+            submissionState={submissionState}
             selectedEligibility={selectedEligibility}
           />
         </section>
@@ -5260,9 +5518,11 @@ function OfficePlayerDetail({ office, selectedCharacter }: OfficeDetailProps): R
 
 function AppointmentImpactPreview({
   office,
+  selectedCharacter,
   selectedEligibility
 }: {
   readonly office: ClientM3OfficeReadModel | null;
+  readonly selectedCharacter: ClientM3CharacterReadModel | null;
   readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
 }): ReactElement {
   const i18n = useContext(ClientI18nContext);
@@ -5282,28 +5542,60 @@ function AppointmentImpactPreview({
           : i18n.t("appointment.preview.rejectedTitle")}
       </strong>
       <span>{formatM3EligibilityStatus(selectedEligibility.status, i18n)}</span>
+      <dl className="m3-flow__before-after">
+        <Metric
+          label={i18n.t("appointment.preview.before")}
+          value={i18n.t("appointment.preview.beforeValue", {
+            office: office.displayName,
+            holder: formatNullableCharacterPlayer(office.holderCharacterId, i18n)
+          })}
+        />
+        <Metric
+          label={i18n.t("appointment.preview.after")}
+          value={i18n.t("appointment.preview.afterValue", {
+            office: office.displayName,
+            candidate: selectedCharacter?.displayName ?? i18n.t("appointment.character.unknown")
+          })}
+        />
+      </dl>
       {office.administrativePreview === null ? (
         <span>{i18n.t("appointment.preview.noAdministrativePreview")}</span>
       ) : (
         <dl className="m3-flow__metrics">
           <Metric
-            label={i18n.t("appointment.preview.load")}
-            value={i18n.formatNumber(office.administrativePreview.administrativeLoad)}
+            label={i18n.t("appointment.preview.cost")}
+            value={i18n.t("appointment.preview.costValue", {
+              load: i18n.formatNumber(office.administrativePreview.administrativeLoad),
+              continuity: i18n.t("appointment.policy.continuity")
+            })}
           />
           <Metric
-            label={i18n.t("appointment.preview.efficiency")}
-            value={formatBps(office.administrativePreview.efficiencyBps)}
+            label={i18n.t("appointment.preview.benefit")}
+            value={i18n.t("appointment.preview.benefitValue", {
+              efficiency: formatBps(office.administrativePreview.efficiencyBps),
+              readiness: formatBps(office.administrativePreview.readinessBps)
+            })}
           />
           <Metric
             label={i18n.t("appointment.preview.reliability")}
             value={formatBps(office.administrativePreview.obligationReliabilityBps)}
           />
           <Metric
-            label={i18n.t("appointment.preview.readiness")}
-            value={formatBps(office.administrativePreview.readinessBps)}
+            label={i18n.t("appointment.preview.risk")}
+            value={
+              selectedEligibility.status === "eligible"
+                ? i18n.t("appointment.preview.riskEligible")
+                : i18n.t("appointment.preview.riskRejected")
+            }
           />
         </dl>
       )}
+      <p>
+        {i18n.t("appointment.preview.willChange", {
+          office: office.displayName,
+          candidate: selectedCharacter?.displayName ?? i18n.t("appointment.character.unknown")
+        })}
+      </p>
       <ReasonChips
         reasonCodes={[
           ...selectedEligibility.reasonCodes,
@@ -5317,10 +5609,12 @@ function AppointmentImpactPreview({
 function AppointmentResultFeedback({
   commandStatus,
   flowStage,
+  submissionState,
   selectedEligibility
 }: {
   readonly commandStatus: string | null;
   readonly flowStage: M3AppointmentFlowStage;
+  readonly submissionState: M3AppointmentSubmissionState;
   readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
 }): ReactElement {
   const i18n = useContext(ClientI18nContext);
@@ -5334,13 +5628,10 @@ function AppointmentResultFeedback({
       className="m3-flow__result"
       aria-label={i18n.t("appointment.result.label")}
       data-result-stage={flowStage}
+      data-submission-state={submissionState}
       role="status"
     >
-      <strong>
-        {flowStage === "result"
-          ? i18n.t("appointment.result.submitted")
-          : i18n.t("appointment.result.pending")}
-      </strong>
+      <strong>{formatAppointmentSubmissionState(submissionState, i18n)}</strong>
       <span>{status}</span>
       <span>{i18n.t("appointment.result.commandParity")}</span>
     </output>
@@ -5555,6 +5846,84 @@ function formatNullableCharacterPlayer(characterId: number | null, i18n: ClientI
     return i18n.t("appointment.office.vacant");
   }
   return i18n.t("appointment.office.held");
+}
+
+function getM3AppointmentSelectionKey(
+  office: ClientM3OfficeReadModel | null,
+  eligibility: ClientM3AppointmentEligibilityReadModel | null,
+  revision: ClientM3AppointmentReadModelSnapshot["revision"]
+): string | null {
+  if (office === null || eligibility === null) {
+    return null;
+  }
+  return `${revision}:${Number(office.officeId)}:${Number(eligibility.characterId)}`;
+}
+
+function deriveM3AppointmentSubmissionState({
+  commandStatus,
+  flowStage,
+  selectedEligibility,
+  selectedKey,
+  submittedKey
+}: {
+  readonly commandStatus: string | null;
+  readonly flowStage: M3AppointmentFlowStage;
+  readonly selectedEligibility: ClientM3AppointmentEligibilityReadModel | null;
+  readonly selectedKey: string | null;
+  readonly submittedKey: string | null;
+}): M3AppointmentSubmissionState {
+  if (selectedEligibility?.status === "rejected") {
+    return "rejected";
+  }
+  if (selectedKey !== null && submittedKey === selectedKey) {
+    return commandStatus === null ? "submitted" : "accepted";
+  }
+  if (flowStage === "preview") {
+    return "pending";
+  }
+  return "idle";
+}
+
+function formatAppointmentSubmissionState(
+  state: M3AppointmentSubmissionState,
+  i18n: ClientI18n
+): string {
+  switch (state) {
+    case "accepted":
+      return i18n.t("appointment.result.accepted");
+    case "idle":
+      return i18n.t("appointment.result.idle");
+    case "pending":
+      return i18n.t("appointment.result.pending");
+    case "rejected":
+      return i18n.t("appointment.result.rejectedState");
+    case "submitted":
+      return i18n.t("appointment.result.submitted");
+  }
+}
+
+function formatAppointmentConfirmAction(
+  state: M3AppointmentSubmissionState,
+  i18n: ClientI18n
+): string {
+  switch (state) {
+    case "accepted":
+      return i18n.t("appointment.action.accepted");
+    case "rejected":
+      return i18n.t("appointment.action.rejected");
+    case "submitted":
+      return i18n.t("appointment.action.submitted");
+    case "idle":
+    case "pending":
+      return i18n.t("appointment.action.confirm");
+  }
+}
+
+function findFirstDistrictWithObligation(
+  rows: readonly ClientDistrictRowReadModel[],
+  appointment: ClientM3AppointmentReadModelSnapshot
+): ClientDistrictRowReadModel | null {
+  return rows.find((row) => findDistrictObligation(row, appointment) !== null) ?? null;
 }
 
 function formatM4Window(window: {
