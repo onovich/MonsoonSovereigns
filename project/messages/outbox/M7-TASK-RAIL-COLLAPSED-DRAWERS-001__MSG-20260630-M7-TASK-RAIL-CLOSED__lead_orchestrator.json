@@ -1,0 +1,65 @@
+{
+  "message_id": "MSG-20260630-M7-TASK-RAIL-CLOSED",
+  "task_id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7 task rail collapsed drawers is CLOSED after PR #211 passed CI, merged, and origin/main contains the accepted task rail/drawer implementation. UX recovery continues with M7-UX-RECOVERY-VALIDATION-001 before formal content lock can be reconsidered.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-TASK-RAIL-COLLAPSED-DRAWERS-001.json",
+    "project/tasks/active/M7-UX-RECOVERY-VALIDATION-001.json",
+    "project/goal-mode-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-task-rail-collapsed-drawers",
+  "commit": "483bfa742d57b88d25c30baf0450af6df26d8921",
+  "tests_run": [
+    {
+      "command": "gh pr checks 211 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 2m44s; Windows Desktop Smoke Artifact passed in 48s."
+    },
+    {
+      "command": "gh pr merge 211 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #211 merged; origin/main advanced to 483bfa742d57b88d25c30baf0450af6df26d8921."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "PASS before closure update."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TASK_CLOSED_AFTER_MAIN_INTEGRATION",
+      "decision": "Mark M7-TASK-RAIL-COLLAPSED-DRAWERS-001 CLOSED only after PR #211 passed CI, merged, and origin/main contained the accepted changes."
+    },
+    {
+      "id": "NEXT_READY_SELECTION",
+      "decision": "Promote M7-UX-RECOVERY-VALIDATION-001 to READY because its dependency is now integrated."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "Do not reopen or approve M7 content lock from this task; UX recovery validation must pass before content lock reconsideration."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-UX-RECOVERY-VALIDATION-REMAINING",
+      "severity": "R4",
+      "summary": "The map, first screen, decision inspector, and task rail recovery tasks are closed, but the integrated first-screen UX still needs end-to-end validation evidence before content lock reconsideration.",
+      "mitigation": "Start M7-UX-RECOVERY-VALIDATION-001 next."
+    }
+  ],
+  "blockers": [],
+  "child_threads_closed": [
+    "019f1587-afd6-7bf3-b40c-a1e0604771b0",
+    "019f159f-d8bf-7142-82a5-81c893657746"
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Merge this closure checkpoint, sync main, then start M7-UX-RECOVERY-VALIDATION-001 without asking for continuation unless a Human Gate appears.",
+  "created_at": "2026-06-30T04:09:46.323Z"
+}

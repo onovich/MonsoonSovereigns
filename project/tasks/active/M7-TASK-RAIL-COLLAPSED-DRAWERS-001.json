@@ -2,7 +2,7 @@
   "id": "M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
   "summary": "Replace bottom information walls with an actionable task rail and collapsed drawers",
   "milestone": "M7",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "client_engineer",
   "reviewer_role": "qa_reviewer",
   "risk_level": "R3",
@@ -74,19 +74,21 @@
     "pnpm test:e2e",
     "pnpm check"
   ],
-  "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+  "branch_or_worktree": "codex/close-m7-task-rail-collapsed-drawers",
   "threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_router",
-      "branch_or_worktree": "codex/m7-task-rail-collapsed-drawers",
+      "status": "closed_integrated",
+      "branch_or_worktree": "codex/close-m7-task-rail-collapsed-drawers",
       "start_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-START__lead_orchestrator.json",
-      "updated_at": "2026-06-29T22:38:58.254Z"
+      "updated_at": "2026-06-30T04:09:46.323Z",
+      "closed_at": "2026-06-30T04:09:46.323Z",
+      "lead_close_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-CLOSED__lead_orchestrator.json"
     },
     "client_engineer": {
       "thread_id": "019f1587-afd6-7bf3-b40c-a1e0604771b0",
       "nickname": "Canvas the 2nd",
-      "status": "accepted_by_qa_r3",
+      "status": "closed_after_accept_review_and_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "high",
       "actual_model": "unknown",
@@ -97,7 +99,7 @@
       "expected_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T22:38:58.254Z",
-      "updated_at": "2026-06-30T03:58:21.945Z",
+      "updated_at": "2026-06-30T04:09:46.323Z",
       "review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-REVIEW__client_engineer.json",
       "review_commit": "4ba24238b9cd871ba059b88442e37dd27db15ff7",
       "request_changes_source": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
@@ -111,12 +113,14 @@
       "expected_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
       "request_changes_r2_sent_at": "2026-06-29T23:31:14.100Z",
       "review_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R3-REVIEW__client_engineer.json",
-      "review_commit_r3": "dd661a14c9d594941dc6ae1e31a9a58851c0378a"
+      "review_commit_r3": "dd661a14c9d594941dc6ae1e31a9a58851c0378a",
+      "closed_at": "2026-06-30T04:09:46.323Z",
+      "accepted_implementation_commit": "dd661a14c9d594941dc6ae1e31a9a58851c0378a"
     },
     "qa_reviewer": {
       "thread_id": "019f159f-d8bf-7142-82a5-81c893657746",
       "nickname": "Auditor the 2nd",
-      "status": "accepted_r3",
+      "status": "closed_after_accept_review_and_main_integration",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -128,7 +132,7 @@
       "review_commit": "7fe704f680e821fc44bf3ce886c0d8eb5e1ba639",
       "route_status": "SENT",
       "route_sent_at": "2026-06-29T23:04:43.891Z",
-      "updated_at": "2026-06-30T03:58:21.945Z",
+      "updated_at": "2026-06-30T04:09:46.323Z",
       "review_status": "REQUEST_CHANGES",
       "review_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-REVIEW__qa_reviewer.json",
       "source_handoff_r2": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-WRITER-R2-REVIEW__client_engineer.json",
@@ -146,7 +150,8 @@
       "route_submission_id_r3": "019f16a3-548a-74a1-93b9-da0683bf616e",
       "route_sent_at_r3": "2026-06-30T03:47:51.134Z",
       "review_status_r3": "ACCEPT",
-      "review_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json"
+      "review_handoff_r3": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-QA-R3-REVIEW__qa_reviewer.json",
+      "closed_at": "2026-06-30T04:09:46.323Z"
     }
   },
   "route_to": "lead_orchestrator",
@@ -161,7 +166,7 @@
     "Promoted to READY after M7-DECISION-INSPECTOR-REWRITE-001 entered origin/main through PR #209."
   ],
   "created_at": "2026-06-29T18:58:16.954Z",
-  "updated_at": "2026-06-30T03:58:21.945Z",
+  "updated_at": "2026-06-30T04:09:46.323Z",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-REQUEST-CHANGES__product_owner.json",
@@ -215,5 +220,36 @@
   "accepted_at": "2026-06-30T03:58:21.945Z",
   "accepted_implementation_commit": "dd661a14c9d594941dc6ae1e31a9a58851c0378a",
   "accepted_branch_head": "d77d3710",
-  "lead_accept_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-LEAD-ACCEPT__lead_orchestrator.json"
+  "lead_accept_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-LEAD-ACCEPT__lead_orchestrator.json",
+  "closed_at": "2026-06-30T04:09:46.323Z",
+  "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "integrated_pr": 211,
+  "integrated_main_commit": "483bfa742d57b88d25c30baf0450af6df26d8921",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/211",
+  "lead_close_handoff": "project/messages/outbox/M7-TASK-RAIL-COLLAPSED-DRAWERS-001__MSG-20260630-M7-TASK-RAIL-CLOSED__lead_orchestrator.json",
+  "next_ready_tasks": [
+    "M7-UX-RECOVERY-VALIDATION-001"
+  ],
+  "tests_run_after_merge": [
+    {
+      "command": "gh pr checks 211 --watch --interval 10",
+      "exit_code": 0,
+      "result": "Quality, Web, and Browser Smoke passed in 2m44s; Windows Desktop Smoke Artifact passed in 48s."
+    },
+    {
+      "command": "gh pr merge 211 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #211 merged and origin/main advanced to 483bfa742d57b88d25c30baf0450af6df26d8921."
+    },
+    {
+      "command": "git status --short --branch; git rev-parse origin/main; git log -1 --oneline --decorate",
+      "exit_code": 0,
+      "result": "Local main synchronized to 483bfa742d57b88d25c30baf0450af6df26d8921 before closure branch was created."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-TASK-RAIL-COLLAPSED-DRAWERS-001",
+      "exit_code": 0,
+      "result": "PASS before closure update."
+    }
+  ]
 }
