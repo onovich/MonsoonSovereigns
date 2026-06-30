@@ -6,16 +6,16 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
   "current_milestone": "M7",
-  "current_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
-  "current_tasks": [
-    "M7-MAP-TOPOLOGY-FIXTURE-001"
-  ],
-  "current_task_status": "ACCEPTED",
+  "current_task": null,
+  "current_tasks": [],
+  "current_task_status": "IDLE_READY_TO_START_NEXT",
   "last_closed_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
-  "last_integrated_task": "M7-MAP-TOPOLOGY-SCHEMA-001",
-  "last_main_commit": "4c39b829456cc35adca2a56ff9390b32cd651ba8",
+  "last_integrated_task": "M7-MAP-TOPOLOGY-FIXTURE-001",
+  "last_main_commit": "3ab56d888fc8ee344147281fd0b4f05eded4da1f",
   "ready_tasks": [],
-  "next_ready_tasks": [],
+  "next_ready_tasks": [
+    "M7-MAP-TOPOLOGY-CLIENT-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -415,8 +415,8 @@
     "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-QA-R2-REVIEW__qa_reviewer.json",
     "project/messages/outbox/M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001__MSG-20260629-M7-SAVE-MIGRATION-SECURITY-REVIEW__security_reviewer.json"
   ],
-  "branch_or_worktree": "codex/m7-map-topology-fixture",
-  "commit": "effaa013429805bffc597e58718e30aed75ae7ab",
+  "branch_or_worktree": "codex/close-m7-map-topology-fixture",
+  "commit": "3ab56d888fc8ee344147281fd0b4f05eded4da1f",
   "tests_run": [
     {
       "command": "gh pr checks 189 --watch",
@@ -474,7 +474,7 @@
   ],
   "blockers": [],
   "route_to": "lead_orchestrator",
-  "requested_action": "Open PR for M7-MAP-TOPOLOGY-FIXTURE-001, wait for CI, merge to main, then close task after origin/main integration.",
+  "requested_action": "Start M7-MAP-TOPOLOGY-CLIENT-001 as the next topology recovery task.",
   "created_at": "2026-06-28T16:11:45.503Z",
   "m7_district_inspector_quality": {
     "status": "CLOSED",
@@ -566,8 +566,8 @@
     "systems_route_sent_at": "2026-06-28T22:43:36.568Z",
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
-  "next_action": "Push CI fix, wait for PR CI, merge to main, then close task after origin/main integration.",
-  "updated_at": "2026-06-30T18:10:00.168Z",
+  "next_action": "Start M7-MAP-TOPOLOGY-CLIENT-001 as the next topology recovery task.",
+  "updated_at": "2026-06-30T18:17:24.246Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
@@ -1206,8 +1206,8 @@
     "systems_thread_nickname": "Keystone the 2nd",
     "systems_route": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
     "expected_systems_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
-    "status": "ACCEPTED",
-    "updated_at": "2026-06-30T18:10:00.168Z",
+    "status": "CLOSED",
+    "updated_at": "2026-06-30T18:17:24.246Z",
     "historical_status": "ACCEPT",
     "historical_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
     "historical_reviewed_at": "2026-06-30T17:36:02.274Z",
@@ -1220,7 +1220,7 @@
     "expected_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
     "routed_to_qa_at": "2026-06-30T17:36:02.274Z",
     "qa_status": "REQUEST_CHANGES",
-    "next_action": "Push CI fix and process record, wait for PR CI, merge to main, then close after origin/main integration.",
+    "next_action": "Start M7-MAP-TOPOLOGY-CLIENT-001 as the next topology recovery task.",
     "qa_review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
     "request_changes_round": 1,
     "request_changes_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-QA-REVIEW__qa_reviewer.json",
@@ -1244,6 +1244,15 @@
     "accepted_content_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
     "accepted_branch_head": "0c49451e",
     "ci_fix_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CI-FIX__lead_orchestrator.json",
-    "ci_fix_commit": "0c49451e"
+    "ci_fix_commit": "0c49451e",
+    "close_reason": "TASK_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+    "integrated_pr": 227,
+    "integrated_main_commit": "3ab56d888fc8ee344147281fd0b4f05eded4da1f",
+    "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/227",
+    "lead_close_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-06-30T18:17:24.246Z",
+    "next_ready_tasks": [
+      "M7-MAP-TOPOLOGY-CLIENT-001"
+    ]
   }
 }
