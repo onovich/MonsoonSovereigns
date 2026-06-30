@@ -6,29 +6,38 @@
   "project": "Monsoon Sovereigns",
   "origin_main": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
   "current_milestone": "M7",
-  "current_task": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "current_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
   "current_tasks": [
-    "M7-CONTENT-LOCK-ACCEPTANCE-001"
+    "M7-CONTENT-LOCK-ACCEPTANCE-001",
+    "M7-SYSTEMIC-INTERACTION-RECOVERY-001"
   ],
-  "current_task_status": "BLOCKED_HUMAN_GATE_FORMAL_CONTENT_LOCK_ACCEPTANCE_AFTER_UX_RECOVERY_VALIDATION",
+  "current_task_status": "ACCEPTED_PENDING_PR_MERGE",
   "last_closed_task": "M7-UX-RECOVERY-VALIDATION-001",
   "last_integrated_task": "M7-UX-RECOVERY-VALIDATION-001",
   "last_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
-  "ready_tasks": [],
-  "next_ready_tasks": [],
+  "ready_tasks": [
+    "M7-CORE-ACTION-LOOP-UX-001"
+  ],
+  "next_ready_tasks": [
+    "M7-CORE-ACTION-LOOP-UX-001"
+  ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-      "status": "active_human_gate_router",
+      "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "task_ids": [
+        "M7-CONTENT-LOCK-ACCEPTANCE-001",
+        "M7-SYSTEMIC-INTERACTION-RECOVERY-001"
+      ],
+      "status": "active_planning_accepted_pending_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-ux-recovery-validation",
-      "updated_at": "2026-06-30T05:49:02.567Z",
-      "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json"
+      "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+      "updated_at": "2026-06-30T10:00:25.039Z",
+      "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json"
     }
   },
   "unresolved_risks": [
@@ -48,12 +57,6 @@
       "status": "accepted_limit",
       "summary": "M4 gate is PASS_WITH_LIMITS because systems_architect handoff is absent after three real writer stalls; QA accepted the explicit lead reconciliation process exception.",
       "source": "project/messages/outbox/M4-EXIT-VALIDATION-001__MSG-20260626-M4-GATE-QA-REVIEW__qa_reviewer.json"
-    },
-    {
-      "id": "M7-CONTENT-LOCK-HUMAN-GATE-PENDING",
-      "severity": "R4",
-      "status": "active_human_gate",
-      "summary": "Formal M7 content lock awaits product-owner decision."
     },
     {
       "id": "M7-PLATFORM-EDGE-FIREFOX-UNRESOLVED",
@@ -78,22 +81,28 @@
       "severity": "R4",
       "status": "active_repair",
       "summary": "Default player map must stop reading as rectangular grid/debug visualization."
+    },
+    {
+      "id": "M7-SYSTEMIC-INTERACTION-RECOVERY-BLOCKS-CONTENT-LOCK",
+      "severity": "R4",
+      "status": "active_repair",
+      "summary": "Product owner rejected content lock again because obligation handling, appointment feedback, phase/action rhythm, and strategic readability remain unresolved."
     }
   ],
   "human_gate": {
-    "required": true,
-    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "approval_scope": "FORMAL_CONTENT_LOCK_ACCEPTANCE_AFTER_UX_RECOVERY_VALIDATION",
-    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
+    "required": false,
+    "active_gate_task_id": null,
+    "approval_scope": null,
+    "approval_source": null,
     "recommended_result": null,
-    "note": "UX recovery validation is closed in origin/main. Content lock remains not accepted until the product owner explicitly decides.",
-    "recorded_at": "2026-06-30T05:49:02.567Z"
+    "note": "Product owner gave REQUEST_CHANGES, so there is no active waiting Human Gate. Complete systemic interaction recovery before reopening M7 content-lock reconsideration.",
+    "recorded_at": "2026-06-30T09:55:51.879Z"
   },
-  "next_machine_action": "Wait for product-owner Human Gate decision on M7 content lock; do not start M7-EXIT-VALIDATION-001 while content lock remains BLOCKED.",
+  "next_machine_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-06-30T05:49:02.567Z",
+  "last_updated_at": "2026-06-30T10:00:56.347Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -833,12 +842,35 @@
     "status": "BLOCKED",
     "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
     "human_gate_required": true,
-    "human_gate_state": "UX_RECOVERY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+    "human_gate_state": "REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED",
     "content_lock_accepted": false,
-    "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-UX-RECOVERY-VALIDATED__lead_orchestrator.json",
-    "ux_recovery_validation_task": "M7-UX-RECOVERY-VALIDATION-001",
-    "ux_recovery_validation_pr": 213,
-    "ux_recovery_validation_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
-    "next_action": "Product owner decision required."
+    "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+    "systemic_interaction_recovery_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+    "systemic_recovery_tasks": [
+      "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+      "M7-CORE-ACTION-LOOP-UX-001",
+      "M7-MAP-DECISION-SURFACE-SYNC-001",
+      "M7-SYSTEMIC-INTERACTION-VALIDATION-001"
+    ],
+    "next_action": "Complete the systemic interaction recovery task graph and independent validation before product-owner content-lock reconsideration can reopen.",
+    "updated_at": "2026-06-30T09:46:39.564Z"
+  },
+  "m7_systemic_interaction_recovery": {
+    "status": "ACCEPTED",
+    "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+    "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+    "base_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
+    "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+    "plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+    "gameplay_design_thread_id": "019f17da-4fb8-7980-95e0-f5dace70eb30",
+    "nobunaga_research_thread_id": "019f17da-70e2-7d13-b8cb-2814bfaa196d",
+    "next_ready_after_accept": [
+      "M7-CORE-ACTION-LOOP-UX-001"
+    ],
+    "updated_at": "2026-06-30T10:00:25.039Z",
+    "qa_thread_id": "019f17ed-840e-79b2-97a8-e4129a6e6b6b",
+    "qa_review_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW__qa_reviewer.json",
+    "accepted_at": "2026-06-30T10:00:25.039Z",
+    "next_action": "Open PR, wait for CI, merge to main, then mark CLOSED only after origin/main contains the accepted planning package."
   }
 }

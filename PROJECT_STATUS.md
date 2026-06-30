@@ -303,3 +303,12 @@ Current milestone remains **M7 / Beta: Content And Quality**. Formal content loc
 `M7-UX-RECOVERY-VALIDATION-001` is CLOSED after PR #213 entered `origin/main` at `ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8`. The accepted validation records independent QA ACCEPT, 1440x900 and 1280x720 screenshot evidence, first-screen identity/situation/objective/recommended-action visibility, actionable task rail visibility, visible map surface and map legend, and suppressed player-mode debug labels.
 
 Formal M7 content lock remains not accepted. `M7-CONTENT-LOCK-ACCEPTANCE-001` is still `BLOCKED` with `content_lock_accepted=false`, now at `UX_RECOVERY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION`. `M7-EXIT-VALIDATION-001` must not start until the product owner explicitly chooses `APPROVE_CONTENT_LOCK_WITH_LIMITS`, `DEFER_CONTENT_LOCK`, or `REQUEST_CHANGES`.
+
+
+## 26. M7 Systemic Interaction Recovery Snapshot
+
+On 2026-06-30 the product owner rejected M7 content lock again after live preview. The blocker is now recorded as systemic interaction recovery rather than only visual/map recovery: the player cannot find how to handle the District 1 troop obligation, appointment preview/confirm lacks clear before/after and post-submit feedback, and the screen lacks a recognizable turn/phase/action loop comparable to the strategic readability expected from Nobunaga no Yabou references.
+
+The lead created planning task `M7-SYSTEMIC-INTERACTION-RECOVERY-001` on branch `codex/m7-systemic-interaction-recovery-plan` to route this second REQUEST_CHANGES through independent QA review. Formal content lock remains unapproved: `M7-CONTENT-LOCK-ACCEPTANCE-001` stays BLOCKED with `content_lock_accepted=false` and `human_gate_state=REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED`. There is no active waiting Human Gate while the repair tasks are in progress.
+
+The planned recovery chain is: `M7-CORE-ACTION-LOOP-UX-001`, `M7-MAP-DECISION-SURFACE-SYNC-001`, and `M7-SYSTEMIC-INTERACTION-VALIDATION-001`. M7 exit validation must not start until this chain passes, QA accepts, and the product owner reconsiders formal content lock. This recovery does not authorize final art production, manual node battle, server/multiplayer, telemetry, accounts, cloud-save implementation, release/commercial/branding decisions, production cultural assets, or arbitrary-code mods.

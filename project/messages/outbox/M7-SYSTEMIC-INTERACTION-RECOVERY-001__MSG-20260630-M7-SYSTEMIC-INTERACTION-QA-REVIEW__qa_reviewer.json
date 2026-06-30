@@ -1,0 +1,74 @@
+{
+  "message_id": "MSG-20260630-M7-SYSTEMIC-INTERACTION-QA-REVIEW",
+  "task_id": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Read-only QA accepts the M7 systemic interaction recovery planning package after one request-changes round. The task graph is bounded, content lock remains blocked, no product code scope is included, and current-state files now consistently route to M7-SYSTEMIC-INTERACTION-RECOVERY-001 with no active waiting Human Gate.",
+  "artifacts": [
+    "project/tasks/active/M7-SYSTEMIC-INTERACTION-RECOVERY-001.json",
+    "project/tasks/active/M7-CORE-ACTION-LOOP-UX-001.json",
+    "project/tasks/active/M7-MAP-DECISION-SURFACE-SYNC-001.json",
+    "project/tasks/active/M7-SYSTEMIC-INTERACTION-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
+    "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/m7-systemic-interaction-recovery-plan",
+  "commit": "WORKTREE_REVIEW",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Only process/status/task/message files changed; no apps, packages, content-source, tools, CI, gate, roadmap, or acceptance-matrix changes."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-SYSTEMIC-INTERACTION-RECOVERY-001 && validate downstream recovery tasks",
+      "exit_code": 0,
+      "result": "PASS: all four recovery tasks plus M7-CONTENT-LOCK-ACCEPTANCE-001 are VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "PASS: no output; no implementation task is accidentally READY before planning integration."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <two new outbox JSONs>",
+      "exit_code": 0,
+      "result": "PASS: both handoff files are VALID."
+    },
+    {
+      "command": "stale pattern search in model-routing-state, GOAL-MODE-CONTINUATION, and goal-mode-state",
+      "exit_code": 0,
+      "result": "PASS: no active stale Human Gate strings remain as current state."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPTS_RECOVERY_TASK_GRAPH",
+      "decision": "Accept the recovery task graph sequence: M7-SYSTEMIC-INTERACTION-RECOVERY-001 -> M7-CORE-ACTION-LOOP-UX-001 -> M7-MAP-DECISION-SURFACE-SYNC-001 -> M7-SYSTEMIC-INTERACTION-VALIDATION-001."
+    },
+    {
+      "id": "CONTENT_LOCK_REMAINS_BLOCKED",
+      "decision": "M7 content lock remains BLOCKED with content_lock_accepted=false and human_gate_state=REQUEST_CHANGES_SYSTEMIC_INTERACTION_RECOVERY_REQUIRED."
+    },
+    {
+      "id": "NO_ACTIVE_HUMAN_GATE_DURING_REPAIR",
+      "decision": "The product owner has already returned REQUEST_CHANGES, so repair work can proceed; no active waiting Human Gate exists until recovery validation returns content lock for reconsideration."
+    }
+  ],
+  "risks": [],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate the accepted planning package, close M7-SYSTEMIC-INTERACTION-RECOVERY-001 after main integration, then start M7-CORE-ACTION-LOOP-UX-001.",
+  "created_at": "2026-06-30T09:58:00.000Z"
+}
