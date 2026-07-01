@@ -1,0 +1,22 @@
+{
+  "route_id": "ROUTE-20260701-WRITER-TO-QA-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+  "from_role": "systems_architect",
+  "from_thread_id": "019f1dcb-dfb7-7e22-8e26-7be906522f91",
+  "from_thread_nickname": "Keystone",
+  "to_role": "qa_reviewer",
+  "to_thread_id": "019f1de1-4212-7850-b63f-5cc9305ba180",
+  "to_thread_nickname": "Auditor",
+  "status": "SENT",
+  "sent_at": "2026-07-01T21:32:32.1092584+08:00",
+  "source_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
+  "expected_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW__qa_reviewer.json",
+  "branch_or_worktree": "codex/m7-strategic-terrain-schema",
+  "base_main_commit": "f69985f9369ba3c7e6615a99ff9a87160249ac8c",
+  "requested_action": "Perform independent read-only QA review of the strategic terrain schema implementation and return ACCEPT, REQUEST_CHANGES, or BLOCKED handoff.",
+  "notes": [
+    "No additional subagents should be spawned for this QA review.",
+    "Do not modify files, commit, merge, start downstream tasks, or approve M7 content lock.",
+    "If changes are required, route back to the original systems_architect writer thread."
+  ]
+}

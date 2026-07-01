@@ -34,6 +34,12 @@ export type WorldRevision = Brand<number, "WorldRevision">;
 export type SimulationSeed = Brand<number, "SimulationSeed">;
 export type ContentManifestHash = Brand<string, "ContentManifestHash">;
 export type MapTopologyHash = Brand<string, "MapTopologyHash">;
+export type StrategicTerrainHash = Brand<string, "StrategicTerrainHash">;
+export type TerrainPatchId = Brand<string, "TerrainPatchId">;
+export type BarrierChannelId = Brand<string, "BarrierChannelId">;
+export type StrategicNodeId = Brand<string, "StrategicNodeId">;
+export type RouteCorridorId = Brand<string, "RouteCorridorId">;
+export type DistrictGovernanceFootprintId = Brand<string, "DistrictGovernanceFootprintId">;
 
 export const WORLD_STATE_V0_SCHEMA_VERSION = 0;
 export const GAME_DAY_SCHEDULER_VERSION = 1;
@@ -154,6 +160,152 @@ export interface MapTopologyDefinitionV1 {
   readonly routeEdges: readonly MapTopologyRouteEdgeDefinitionV1[];
 }
 
+export type StrategicTerrainHistoricityTagV1 =
+  | "COMPOSITE"
+  | "FICTIONAL"
+  | "HISTORICAL"
+  | "INFERRED";
+export type StrategicTerrainClassV1 =
+  | "coastal"
+  | "lowland"
+  | "pass"
+  | "ridge"
+  | "river-basin"
+  | "riverine"
+  | "upland"
+  | "urban"
+  | "wetland"
+  | "unknown";
+export type StrategicTerrainRiskClassV1 =
+  | "contested"
+  | "hazardous"
+  | "low"
+  | "seasonal"
+  | "unknown";
+export type StrategicTerrainSeasonStateV1 = "dry" | "monsoon" | "transition" | "unknown";
+export type BarrierChannelKindV1 = "coast" | "major-river" | "ridge" | "strait" | "wetland";
+export type StrategicNodeKindV1 =
+  | "castle"
+  | "crossing"
+  | "objective"
+  | "pass"
+  | "port"
+  | "staging-area"
+  | "town"
+  | "warehouse";
+export type StrategicNodeKnownStateV1 = "known" | "rumored" | "unknown";
+export type RouteCorridorModeV1 = "coast" | "mixed" | "pass" | "river" | "road";
+export type RouteCorridorWidthClassV1 = "narrow" | "standard" | "wide";
+export type RouteCorridorAvailabilityV1 =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
+export type StrategicTerrainAuthorityProhibitionV1 =
+  | "bounding-box-adjacency"
+  | "centroid-proximity"
+  | "hidden-grid"
+  | "hidden-lattice"
+  | "hex-axial-or-cube"
+  | "renderer-only-line-reachability"
+  | "sequential-id-reachability";
+
+export interface StrategicTerrainPointV1 {
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface TerrainPatchDefinitionV1 {
+  readonly patchId: TerrainPatchId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly terrainClass: StrategicTerrainClassV1;
+  readonly seasonSensitivity: StrategicTerrainSeasonStateV1;
+  readonly historicity: StrategicTerrainHistoricityTagV1;
+  readonly polygon: readonly StrategicTerrainPointV1[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface BarrierChannelDefinitionV1 {
+  readonly channelId: BarrierChannelId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly channelKind: BarrierChannelKindV1;
+  readonly traversalRule: "blocks-without-explicit-corridor" | "channels-explicit-corridors";
+  readonly historicity: StrategicTerrainHistoricityTagV1;
+  readonly points: readonly StrategicTerrainPointV1[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface StrategicNodeDefinitionV1 {
+  readonly nodeId: StrategicNodeId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly nodeKind: StrategicNodeKindV1;
+  readonly districtId: DistrictId;
+  readonly anchor: StrategicTerrainPointV1;
+  readonly localCapacity: number;
+  readonly knownState: StrategicNodeKnownStateV1;
+  readonly terrainPatchIds: readonly TerrainPatchId[];
+  readonly barrierChannelIds: readonly BarrierChannelId[];
+  readonly governanceFootprintIds: readonly DistrictGovernanceFootprintId[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface RouteCorridorSeasonalModifierV1 {
+  readonly month: number;
+  readonly seasonState: StrategicTerrainSeasonStateV1;
+  readonly travelCostMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly riskBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface RouteCorridorDefinitionV1 {
+  readonly corridorId: RouteCorridorId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly fromNodeId: StrategicNodeId;
+  readonly toNodeId: StrategicNodeId;
+  readonly mode: RouteCorridorModeV1;
+  readonly widthClass: RouteCorridorWidthClassV1;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly riskClass: StrategicTerrainRiskClassV1;
+  readonly terrainPatchIds: readonly TerrainPatchId[];
+  readonly barrierChannelIds: readonly BarrierChannelId[];
+  readonly governanceFootprintIds: readonly DistrictGovernanceFootprintId[];
+  readonly seasonality: readonly RouteCorridorSeasonalModifierV1[];
+  readonly availability: RouteCorridorAvailabilityV1;
+  readonly polyline: readonly StrategicTerrainPointV1[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface DistrictGovernanceFootprintDefinitionV1 {
+  readonly footprintId: DistrictGovernanceFootprintId;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly districtId: DistrictId;
+  readonly overlayOnly: true;
+  readonly polygon: readonly StrategicTerrainPointV1[];
+  readonly governanceTags: readonly string[];
+  readonly consequenceTags: readonly string[];
+}
+
+export interface StrategicTerrainDefinitionV1 {
+  readonly schemaVersion: 1;
+  readonly hashAlgorithm: "fnv1a32-canonical-strategic-terrain-v1";
+  readonly strategicTerrainHash: StrategicTerrainHash;
+  readonly contentManifestHash: ContentManifestHash;
+  readonly authority: "terrain-route-node-v1";
+  readonly governanceFootprintRole: "overlay-only";
+  readonly authorityProhibitions: readonly StrategicTerrainAuthorityProhibitionV1[];
+  readonly terrainPatches: readonly TerrainPatchDefinitionV1[];
+  readonly barrierChannels: readonly BarrierChannelDefinitionV1[];
+  readonly strategicNodes: readonly StrategicNodeDefinitionV1[];
+  readonly routeCorridors: readonly RouteCorridorDefinitionV1[];
+  readonly districtGovernanceFootprints: readonly DistrictGovernanceFootprintDefinitionV1[];
+}
+
 export interface WorldDefinitionsV0 {
   readonly polities: readonly PolityDefinition[];
   readonly persons: readonly PersonDefinition[];
@@ -161,6 +313,7 @@ export interface WorldDefinitionsV0 {
   readonly settlements: readonly SettlementDefinition[];
   readonly routes: readonly RouteDefinition[];
   readonly topology?: MapTopologyDefinitionV1;
+  readonly strategicTerrain?: StrategicTerrainDefinitionV1;
 }
 
 export interface PolityState {
@@ -1322,6 +1475,73 @@ export interface CreateMapTopologyDefinitionV1Input {
   }[];
 }
 
+export interface CreateStrategicTerrainDefinitionV1Input {
+  readonly contentManifestHash: unknown;
+  readonly terrainPatches: readonly {
+    readonly patchId: unknown;
+    readonly sourceId: unknown;
+    readonly displayNameKey: unknown;
+    readonly terrainClass: unknown;
+    readonly seasonSensitivity: unknown;
+    readonly historicity: unknown;
+    readonly polygon: readonly unknown[];
+    readonly explanationTags: readonly unknown[];
+  }[];
+  readonly barrierChannels: readonly {
+    readonly channelId: unknown;
+    readonly sourceId: unknown;
+    readonly displayNameKey: unknown;
+    readonly channelKind: unknown;
+    readonly traversalRule: unknown;
+    readonly historicity: unknown;
+    readonly points: readonly unknown[];
+    readonly explanationTags: readonly unknown[];
+  }[];
+  readonly strategicNodes: readonly {
+    readonly nodeId: unknown;
+    readonly sourceId: unknown;
+    readonly displayNameKey: unknown;
+    readonly nodeKind: unknown;
+    readonly districtId: unknown;
+    readonly anchor: unknown;
+    readonly localCapacity: unknown;
+    readonly knownState: unknown;
+    readonly terrainPatchIds: readonly unknown[];
+    readonly barrierChannelIds: readonly unknown[];
+    readonly governanceFootprintIds: readonly unknown[];
+    readonly explanationTags: readonly unknown[];
+  }[];
+  readonly routeCorridors: readonly {
+    readonly corridorId: unknown;
+    readonly sourceId: unknown;
+    readonly displayNameKey: unknown;
+    readonly fromNodeId: unknown;
+    readonly toNodeId: unknown;
+    readonly mode: unknown;
+    readonly widthClass: unknown;
+    readonly baseTravelCost: unknown;
+    readonly baseCapacity: unknown;
+    readonly riskClass: unknown;
+    readonly terrainPatchIds: readonly unknown[];
+    readonly barrierChannelIds: readonly unknown[];
+    readonly governanceFootprintIds: readonly unknown[];
+    readonly seasonality: readonly unknown[];
+    readonly availability: unknown;
+    readonly polyline: readonly unknown[];
+    readonly explanationTags: readonly unknown[];
+  }[];
+  readonly districtGovernanceFootprints: readonly {
+    readonly footprintId: unknown;
+    readonly sourceId: unknown;
+    readonly displayNameKey: unknown;
+    readonly districtId: unknown;
+    readonly overlayOnly: unknown;
+    readonly polygon: readonly unknown[];
+    readonly governanceTags: readonly unknown[];
+    readonly consequenceTags: readonly unknown[];
+  }[];
+}
+
 export interface CreateM2TransportStateV0Input {
   readonly routes: readonly {
     readonly routeId: unknown;
@@ -1363,6 +1583,16 @@ export interface CreateWorldStateV0Input {
 
 const INITIAL_HASH_OFFSET = 2_166_136_261;
 const HASH_PRIME = 16_777_619;
+export const STRATEGIC_TERRAIN_AUTHORITY_PROHIBITIONS: readonly StrategicTerrainAuthorityProhibitionV1[] =
+  [
+    "bounding-box-adjacency",
+    "centroid-proximity",
+    "hidden-grid",
+    "hidden-lattice",
+    "hex-axial-or-cube",
+    "renderer-only-line-reachability",
+    "sequential-id-reachability"
+  ];
 
 export function parsePersonId(value: unknown): PersonId {
   return parsePositiveInteger(value, "PersonId") as PersonId;
@@ -1508,6 +1738,14 @@ export function parseMapTopologyHash(value: unknown): MapTopologyHash {
   return value as MapTopologyHash;
 }
 
+export function parseStrategicTerrainHash(value: unknown): StrategicTerrainHash {
+  if (typeof value !== "string" || !/^[0-9a-f]{8}$/u.test(value)) {
+    throw new Error("StrategicTerrainHash must be an 8-character lowercase hex string.");
+  }
+
+  return value as StrategicTerrainHash;
+}
+
 export function definePolity(input: DefinePolityInput): PolityDefinition {
   return {
     id: parsePolityId(input.id),
@@ -1597,6 +1835,119 @@ export function createMapTopologyDefinitionV1(
   return {
     ...topologyWithoutHash,
     topologyHash: hashMapTopologyDefinitionV1(topologyWithoutHash)
+  };
+}
+
+export function createStrategicTerrainDefinitionV1(
+  input: CreateStrategicTerrainDefinitionV1Input
+): StrategicTerrainDefinitionV1 {
+  const terrainWithoutHash = canonicalizeStrategicTerrainDefinitionV1({
+    schemaVersion: 1,
+    hashAlgorithm: "fnv1a32-canonical-strategic-terrain-v1",
+    strategicTerrainHash: parseStrategicTerrainHash("00000000"),
+    contentManifestHash: parseContentManifestHash(input.contentManifestHash),
+    authority: "terrain-route-node-v1",
+    governanceFootprintRole: "overlay-only",
+    authorityProhibitions: STRATEGIC_TERRAIN_AUTHORITY_PROHIBITIONS,
+    terrainPatches: input.terrainPatches.map((patch) => ({
+      patchId: parseTerrainPatchId(patch.patchId),
+      sourceId: parseNonEmptyString(patch.sourceId, "TerrainPatch sourceId"),
+      displayNameKey: parseDisplayNameKey(patch.displayNameKey, "TerrainPatch displayNameKey"),
+      terrainClass: parseStrategicTerrainClass(patch.terrainClass),
+      seasonSensitivity: parseStrategicTerrainSeasonState(patch.seasonSensitivity),
+      historicity: parseStrategicTerrainHistoricityTag(patch.historicity),
+      polygon: patch.polygon.map((point) =>
+        parseStrategicTerrainPoint(point, "TerrainPatch polygon point")
+      ),
+      explanationTags: parseStrategicTerrainTextArray(
+        patch.explanationTags,
+        "TerrainPatch explanationTags"
+      )
+    })),
+    barrierChannels: input.barrierChannels.map((channel) => ({
+      channelId: parseBarrierChannelId(channel.channelId),
+      sourceId: parseNonEmptyString(channel.sourceId, "BarrierChannel sourceId"),
+      displayNameKey: parseDisplayNameKey(channel.displayNameKey, "BarrierChannel displayNameKey"),
+      channelKind: parseBarrierChannelKind(channel.channelKind),
+      traversalRule: parseBarrierChannelTraversalRule(channel.traversalRule),
+      historicity: parseStrategicTerrainHistoricityTag(channel.historicity),
+      points: channel.points.map((point) =>
+        parseStrategicTerrainPoint(point, "BarrierChannel point")
+      ),
+      explanationTags: parseStrategicTerrainTextArray(
+        channel.explanationTags,
+        "BarrierChannel explanationTags"
+      )
+    })),
+    strategicNodes: input.strategicNodes.map((node) => ({
+      nodeId: parseStrategicNodeId(node.nodeId),
+      sourceId: parseNonEmptyString(node.sourceId, "StrategicNode sourceId"),
+      displayNameKey: parseDisplayNameKey(node.displayNameKey, "StrategicNode displayNameKey"),
+      nodeKind: parseStrategicNodeKind(node.nodeKind),
+      districtId: parseDistrictId(node.districtId),
+      anchor: parseStrategicTerrainPoint(node.anchor, "StrategicNode anchor"),
+      localCapacity: parsePositiveInteger(node.localCapacity, "StrategicNode localCapacity"),
+      knownState: parseStrategicNodeKnownState(node.knownState),
+      terrainPatchIds: node.terrainPatchIds.map(parseTerrainPatchId),
+      barrierChannelIds: node.barrierChannelIds.map(parseBarrierChannelId),
+      governanceFootprintIds: node.governanceFootprintIds.map(parseDistrictGovernanceFootprintId),
+      explanationTags: parseStrategicTerrainTextArray(
+        node.explanationTags,
+        "StrategicNode explanationTags"
+      )
+    })),
+    routeCorridors: input.routeCorridors.map((corridor) => ({
+      corridorId: parseRouteCorridorId(corridor.corridorId),
+      sourceId: parseNonEmptyString(corridor.sourceId, "RouteCorridor sourceId"),
+      displayNameKey: parseDisplayNameKey(corridor.displayNameKey, "RouteCorridor displayNameKey"),
+      fromNodeId: parseStrategicNodeId(corridor.fromNodeId),
+      toNodeId: parseStrategicNodeId(corridor.toNodeId),
+      mode: parseRouteCorridorMode(corridor.mode),
+      widthClass: parseRouteCorridorWidthClass(corridor.widthClass),
+      baseTravelCost: parsePositiveInteger(corridor.baseTravelCost, "RouteCorridor baseTravelCost"),
+      baseCapacity: parsePositiveInteger(corridor.baseCapacity, "RouteCorridor baseCapacity"),
+      riskClass: parseStrategicTerrainRiskClass(corridor.riskClass),
+      terrainPatchIds: corridor.terrainPatchIds.map(parseTerrainPatchId),
+      barrierChannelIds: corridor.barrierChannelIds.map(parseBarrierChannelId),
+      governanceFootprintIds: corridor.governanceFootprintIds.map(
+        parseDistrictGovernanceFootprintId
+      ),
+      seasonality: corridor.seasonality.map(parseRouteCorridorSeasonalModifier),
+      availability: parseRouteCorridorAvailability(corridor.availability),
+      polyline: corridor.polyline.map((point) =>
+        parseStrategicTerrainPoint(point, "RouteCorridor polyline point")
+      ),
+      explanationTags: parseStrategicTerrainTextArray(
+        corridor.explanationTags,
+        "RouteCorridor explanationTags"
+      )
+    })),
+    districtGovernanceFootprints: input.districtGovernanceFootprints.map((footprint) => ({
+      footprintId: parseDistrictGovernanceFootprintId(footprint.footprintId),
+      sourceId: parseNonEmptyString(footprint.sourceId, "DistrictGovernanceFootprint sourceId"),
+      displayNameKey: parseDisplayNameKey(
+        footprint.displayNameKey,
+        "DistrictGovernanceFootprint displayNameKey"
+      ),
+      districtId: parseDistrictId(footprint.districtId),
+      overlayOnly: parseGovernanceOverlayOnly(footprint.overlayOnly),
+      polygon: footprint.polygon.map((point) =>
+        parseStrategicTerrainPoint(point, "DistrictGovernanceFootprint polygon point")
+      ),
+      governanceTags: parseStrategicTerrainTextArray(
+        footprint.governanceTags,
+        "DistrictGovernanceFootprint governanceTags"
+      ),
+      consequenceTags: parseStrategicTerrainTextArray(
+        footprint.consequenceTags,
+        "DistrictGovernanceFootprint consequenceTags"
+      )
+    }))
+  });
+
+  return {
+    ...terrainWithoutHash,
+    strategicTerrainHash: hashStrategicTerrainDefinitionV1(terrainWithoutHash)
   };
 }
 
@@ -1851,6 +2202,7 @@ function canonicalWorldStateV0CandidateText(world: WorldStateV0Candidate): strin
     `definitions.settlements=${formatSettlementDefinitions(world.definitions.settlements)}`,
     `definitions.routes=${formatRouteDefinitions(world.definitions.routes)}`,
     ...formatMapTopologyCanonicalLines(world.definitions.topology),
+    ...formatStrategicTerrainCanonicalLines(world.definitions.strategicTerrain),
     `state.polities=${formatPolityStates(world.state.polities)}`,
     `state.persons=${formatPersonStates(world.state.persons)}`,
     `state.districts=${formatDistrictStates(world.state.districts)}`,
@@ -2086,6 +2438,9 @@ function validateDefinitionEntryShapes(
   if (definitions.topology !== undefined) {
     validateMapTopologyEntryShapes(definitions.topology, errors);
   }
+  if (definitions.strategicTerrain !== undefined) {
+    validateStrategicTerrainEntryShapes(definitions.strategicTerrain, errors);
+  }
 }
 
 const MAP_TOPOLOGY_ROUTE_MODES: readonly MapTopologyRouteModeV1[] = ["coast", "river", "road"];
@@ -2116,6 +2471,71 @@ const MAP_TOPOLOGY_ROUTE_NODE_KINDS: readonly MapTopologyRouteNodeKindV1[] = [
   "port",
   "special",
   "warehouse"
+];
+const STRATEGIC_TERRAIN_CLASSES: readonly StrategicTerrainClassV1[] = [
+  "coastal",
+  "lowland",
+  "pass",
+  "ridge",
+  "river-basin",
+  "riverine",
+  "upland",
+  "urban",
+  "wetland",
+  "unknown"
+];
+const STRATEGIC_TERRAIN_RISK_CLASSES: readonly StrategicTerrainRiskClassV1[] = [
+  "contested",
+  "hazardous",
+  "low",
+  "seasonal",
+  "unknown"
+];
+const STRATEGIC_TERRAIN_HISTORICITY_TAGS: readonly StrategicTerrainHistoricityTagV1[] = [
+  "COMPOSITE",
+  "FICTIONAL",
+  "HISTORICAL",
+  "INFERRED"
+];
+const STRATEGIC_TERRAIN_SEASON_STATES: readonly StrategicTerrainSeasonStateV1[] = [
+  "dry",
+  "monsoon",
+  "transition",
+  "unknown"
+];
+const BARRIER_CHANNEL_KINDS: readonly BarrierChannelKindV1[] = [
+  "coast",
+  "major-river",
+  "ridge",
+  "strait",
+  "wetland"
+];
+const STRATEGIC_NODE_KINDS: readonly StrategicNodeKindV1[] = [
+  "castle",
+  "crossing",
+  "objective",
+  "pass",
+  "port",
+  "staging-area",
+  "town",
+  "warehouse"
+];
+const STRATEGIC_NODE_KNOWN_STATES: readonly StrategicNodeKnownStateV1[] = [
+  "known",
+  "rumored",
+  "unknown"
+];
+const ROUTE_CORRIDOR_MODES: readonly RouteCorridorModeV1[] = [
+  "coast",
+  "mixed",
+  "pass",
+  "river",
+  "road"
+];
+const ROUTE_CORRIDOR_WIDTH_CLASSES: readonly RouteCorridorWidthClassV1[] = [
+  "narrow",
+  "standard",
+  "wide"
 ];
 
 function validateMapTopologyEntryShapes(topology: unknown, errors: WorldInvariantError[]): void {
@@ -2417,6 +2837,374 @@ function validateMapTopologyRouteAvailabilityEntry(
   validateStringUnionField(input, "kind", `${path}.kind`, ["blocked", "open", "unknown"], errors);
   if (input["kind"] === "blocked" || input["kind"] === "unknown") {
     validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  }
+}
+
+function validateStrategicTerrainEntryShapes(
+  terrain: unknown,
+  errors: WorldInvariantError[]
+): void {
+  if (
+    !validateRecordEntry(
+      terrain,
+      "definitions.strategicTerrain",
+      "StrategicTerrainDefinitionV1",
+      errors
+    )
+  ) {
+    return;
+  }
+
+  if (terrain["schemaVersion"] !== 1) {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.strategicTerrain.schemaVersion",
+      message: "StrategicTerrainDefinition schemaVersion must be 1."
+    });
+  }
+  if (terrain["hashAlgorithm"] !== "fnv1a32-canonical-strategic-terrain-v1") {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.strategicTerrain.hashAlgorithm",
+      message:
+        "StrategicTerrainDefinition hashAlgorithm must be fnv1a32-canonical-strategic-terrain-v1."
+    });
+  }
+  validateMapTopologyHashField(
+    terrain,
+    "strategicTerrainHash",
+    "definitions.strategicTerrain.strategicTerrainHash",
+    errors
+  );
+  validateNonEmptyStringField(
+    terrain,
+    "contentManifestHash",
+    "definitions.strategicTerrain.contentManifestHash",
+    errors
+  );
+  validateStringUnionField(
+    terrain,
+    "authority",
+    "definitions.strategicTerrain.authority",
+    ["terrain-route-node-v1"],
+    errors
+  );
+  validateStringUnionField(
+    terrain,
+    "governanceFootprintRole",
+    "definitions.strategicTerrain.governanceFootprintRole",
+    ["overlay-only"],
+    errors
+  );
+  validateStrategicTerrainAuthorityProhibitions(
+    terrain["authorityProhibitions"],
+    "definitions.strategicTerrain.authorityProhibitions",
+    errors
+  );
+  validateMapTopologyArray(
+    terrain["terrainPatches"],
+    "definitions.strategicTerrain.terrainPatches",
+    errors,
+    (entry, path) => validateTerrainPatchEntry(entry, path, errors)
+  );
+  validateMapTopologyArray(
+    terrain["barrierChannels"],
+    "definitions.strategicTerrain.barrierChannels",
+    errors,
+    (entry, path) => validateBarrierChannelEntry(entry, path, errors)
+  );
+  validateMapTopologyArray(
+    terrain["strategicNodes"],
+    "definitions.strategicTerrain.strategicNodes",
+    errors,
+    (entry, path) => validateStrategicNodeEntry(entry, path, errors)
+  );
+  validateMapTopologyArray(
+    terrain["routeCorridors"],
+    "definitions.strategicTerrain.routeCorridors",
+    errors,
+    (entry, path) => validateRouteCorridorEntry(entry, path, errors)
+  );
+  validateMapTopologyArray(
+    terrain["districtGovernanceFootprints"],
+    "definitions.strategicTerrain.districtGovernanceFootprints",
+    errors,
+    (entry, path) => validateDistrictGovernanceFootprintEntry(entry, path, errors)
+  );
+}
+
+function validateTerrainPatchEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "TerrainPatch", errors)) {
+    return;
+  }
+  validateNonEmptyStringField(input, "patchId", `${path}.patchId`, errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateDisplayNameKeyField(input, `${path}.displayNameKey`, "TerrainPatch", errors);
+  validateStringUnionField(
+    input,
+    "terrainClass",
+    `${path}.terrainClass`,
+    STRATEGIC_TERRAIN_CLASSES,
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "seasonSensitivity",
+    `${path}.seasonSensitivity`,
+    STRATEGIC_TERRAIN_SEASON_STATES,
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "historicity",
+    `${path}.historicity`,
+    STRATEGIC_TERRAIN_HISTORICITY_TAGS,
+    errors
+  );
+  validateMapTopologyArray(input["polygon"], `${path}.polygon`, errors, (entry, entryPath) =>
+    validateStrategicTerrainPointEntry(entry, entryPath, errors)
+  );
+  validateStringArray(input["explanationTags"], `${path}.explanationTags`, errors);
+}
+
+function validateBarrierChannelEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "BarrierChannel", errors)) {
+    return;
+  }
+  validateNonEmptyStringField(input, "channelId", `${path}.channelId`, errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateDisplayNameKeyField(input, `${path}.displayNameKey`, "BarrierChannel", errors);
+  validateStringUnionField(
+    input,
+    "channelKind",
+    `${path}.channelKind`,
+    BARRIER_CHANNEL_KINDS,
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "traversalRule",
+    `${path}.traversalRule`,
+    ["blocks-without-explicit-corridor", "channels-explicit-corridors"],
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "historicity",
+    `${path}.historicity`,
+    STRATEGIC_TERRAIN_HISTORICITY_TAGS,
+    errors
+  );
+  validateMapTopologyArray(input["points"], `${path}.points`, errors, (entry, entryPath) =>
+    validateStrategicTerrainPointEntry(entry, entryPath, errors)
+  );
+  validateStringArray(input["explanationTags"], `${path}.explanationTags`, errors);
+}
+
+function validateStrategicNodeEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "StrategicNode", errors)) {
+    return;
+  }
+  validateNonEmptyStringField(input, "nodeId", `${path}.nodeId`, errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateDisplayNameKeyField(input, `${path}.displayNameKey`, "StrategicNode", errors);
+  validateStringUnionField(input, "nodeKind", `${path}.nodeKind`, STRATEGIC_NODE_KINDS, errors);
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validateStrategicTerrainPointEntry(input["anchor"], `${path}.anchor`, errors);
+  validatePositiveIntegerField(
+    input,
+    "localCapacity",
+    `${path}.localCapacity`,
+    "localCapacity",
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "knownState",
+    `${path}.knownState`,
+    STRATEGIC_NODE_KNOWN_STATES,
+    errors
+  );
+  validateStringArray(input["terrainPatchIds"], `${path}.terrainPatchIds`, errors);
+  validateStringArray(input["barrierChannelIds"], `${path}.barrierChannelIds`, errors);
+  validateStringArray(input["governanceFootprintIds"], `${path}.governanceFootprintIds`, errors);
+  validateStringArray(input["explanationTags"], `${path}.explanationTags`, errors);
+}
+
+function validateRouteCorridorEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "RouteCorridor", errors)) {
+    return;
+  }
+  validateNonEmptyStringField(input, "corridorId", `${path}.corridorId`, errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateDisplayNameKeyField(input, `${path}.displayNameKey`, "RouteCorridor", errors);
+  validateNonEmptyStringField(input, "fromNodeId", `${path}.fromNodeId`, errors);
+  validateNonEmptyStringField(input, "toNodeId", `${path}.toNodeId`, errors);
+  validateStringUnionField(input, "mode", `${path}.mode`, ROUTE_CORRIDOR_MODES, errors);
+  validateStringUnionField(
+    input,
+    "widthClass",
+    `${path}.widthClass`,
+    ROUTE_CORRIDOR_WIDTH_CLASSES,
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "baseTravelCost",
+    `${path}.baseTravelCost`,
+    "baseTravelCost",
+    errors
+  );
+  validatePositiveIntegerField(
+    input,
+    "baseCapacity",
+    `${path}.baseCapacity`,
+    "baseCapacity",
+    errors
+  );
+  validateStringUnionField(
+    input,
+    "riskClass",
+    `${path}.riskClass`,
+    STRATEGIC_TERRAIN_RISK_CLASSES,
+    errors
+  );
+  validateStringArray(input["terrainPatchIds"], `${path}.terrainPatchIds`, errors);
+  validateStringArray(input["barrierChannelIds"], `${path}.barrierChannelIds`, errors);
+  validateStringArray(input["governanceFootprintIds"], `${path}.governanceFootprintIds`, errors);
+  validateMapTopologyArray(
+    input["seasonality"],
+    `${path}.seasonality`,
+    errors,
+    (entry, entryPath) => validateRouteCorridorSeasonalModifierEntry(entry, entryPath, errors)
+  );
+  validateRouteCorridorAvailabilityEntry(input["availability"], `${path}.availability`, errors);
+  validateMapTopologyArray(input["polyline"], `${path}.polyline`, errors, (entry, entryPath) =>
+    validateStrategicTerrainPointEntry(entry, entryPath, errors)
+  );
+  validateStringArray(input["explanationTags"], `${path}.explanationTags`, errors);
+}
+
+function validateRouteCorridorSeasonalModifierEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "RouteCorridorSeasonalModifier", errors)) {
+    return;
+  }
+  validateIntegerFieldInRange(input, "month", `${path}.month`, 1, 12, errors);
+  validateStringUnionField(
+    input,
+    "seasonState",
+    `${path}.seasonState`,
+    STRATEGIC_TERRAIN_SEASON_STATES,
+    errors
+  );
+  validateIntegerFieldInRange(
+    input,
+    "travelCostMultiplierBps",
+    `${path}.travelCostMultiplierBps`,
+    1,
+    30_000,
+    errors
+  );
+  validateIntegerFieldInRange(
+    input,
+    "capacityMultiplierBps",
+    `${path}.capacityMultiplierBps`,
+    0,
+    30_000,
+    errors
+  );
+  validateIntegerFieldInRange(input, "riskBps", `${path}.riskBps`, 0, 10_000, errors);
+  validateStringArray(input["reasonCodes"], `${path}.reasonCodes`, errors);
+}
+
+function validateRouteCorridorAvailabilityEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "RouteCorridorAvailability", errors)) {
+    return;
+  }
+  validateStringUnionField(input, "kind", `${path}.kind`, ["blocked", "open", "unknown"], errors);
+  if (input["kind"] === "blocked" || input["kind"] === "unknown") {
+    validateNonEmptyStringField(input, "reasonCode", `${path}.reasonCode`, errors);
+  }
+}
+
+function validateDistrictGovernanceFootprintEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "DistrictGovernanceFootprint", errors)) {
+    return;
+  }
+  validateNonEmptyStringField(input, "footprintId", `${path}.footprintId`, errors);
+  validateNonEmptyStringField(input, "sourceId", `${path}.sourceId`, errors);
+  validateDisplayNameKeyField(
+    input,
+    `${path}.displayNameKey`,
+    "DistrictGovernanceFootprint",
+    errors
+  );
+  validatePositiveIntegerField(input, "districtId", `${path}.districtId`, "DistrictId", errors);
+  validateBooleanField(input, "overlayOnly", `${path}.overlayOnly`, errors);
+  validateMapTopologyArray(input["polygon"], `${path}.polygon`, errors, (entry, entryPath) =>
+    validateStrategicTerrainPointEntry(entry, entryPath, errors)
+  );
+  validateStringArray(input["governanceTags"], `${path}.governanceTags`, errors);
+  validateStringArray(input["consequenceTags"], `${path}.consequenceTags`, errors);
+}
+
+function validateStrategicTerrainPointEntry(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!validateRecordEntry(input, path, "StrategicTerrainPoint", errors)) {
+    return;
+  }
+  validateSafeIntegerField(input, "x", `${path}.x`, errors);
+  validateSafeIntegerField(input, "y", `${path}.y`, errors);
+}
+
+function validateStrategicTerrainAuthorityProhibitions(
+  input: unknown,
+  path: string,
+  errors: WorldInvariantError[]
+): void {
+  if (!Array.isArray(input)) {
+    errors.push({ code: "invalid-schema", path, message: `${path} must be an array.` });
+    return;
+  }
+  const actual = sortText(input.filter((value): value is string => typeof value === "string"));
+  const expected = sortText(STRATEGIC_TERRAIN_AUTHORITY_PROHIBITIONS);
+  if (actual.length !== input.length || actual.join("|") !== expected.join("|")) {
+    errors.push({
+      code: "invalid-schema",
+      path,
+      message: "Strategic terrain authorityProhibitions must record the fixed ADR-011 bans."
+    });
   }
 }
 
@@ -6357,7 +7145,12 @@ function canonicalizeDefinitions(definitions: WorldDefinitionsV0): WorldDefiniti
     routes: sortByNumericId(definitions.routes),
     ...(definitions.topology === undefined
       ? {}
-      : { topology: canonicalizeMapTopologyDefinitionV1(definitions.topology) })
+      : { topology: canonicalizeMapTopologyDefinitionV1(definitions.topology) }),
+    ...(definitions.strategicTerrain === undefined
+      ? {}
+      : {
+          strategicTerrain: canonicalizeStrategicTerrainDefinitionV1(definitions.strategicTerrain)
+        })
   };
 }
 
@@ -6416,6 +7209,101 @@ export function hashMapTopologyDefinitionV1(topology: MapTopologyDefinitionV1): 
   const canonicalTopology = canonicalizeMapTopologyDefinitionV1(topology);
   return parseMapTopologyHash(
     toFixedHexHash(hashText(formatMapTopologyDefinitionForHash(canonicalTopology)))
+  );
+}
+
+export function canonicalizeStrategicTerrainDefinitionV1(
+  terrain: StrategicTerrainDefinitionV1
+): StrategicTerrainDefinitionV1 {
+  return {
+    schemaVersion: 1,
+    hashAlgorithm: "fnv1a32-canonical-strategic-terrain-v1",
+    strategicTerrainHash: terrain.strategicTerrainHash,
+    contentManifestHash: terrain.contentManifestHash,
+    authority: "terrain-route-node-v1",
+    governanceFootprintRole: "overlay-only",
+    authorityProhibitions: sortStrategicTerrainAuthorityProhibitions(terrain.authorityProhibitions),
+    terrainPatches: sortTerrainPatches(terrain.terrainPatches).map((patch) => ({
+      patchId: patch.patchId,
+      sourceId: patch.sourceId,
+      displayNameKey: patch.displayNameKey,
+      terrainClass: patch.terrainClass,
+      seasonSensitivity: patch.seasonSensitivity,
+      historicity: patch.historicity,
+      polygon: patch.polygon.map(copyStrategicTerrainPoint),
+      explanationTags: sortText(patch.explanationTags)
+    })),
+    barrierChannels: sortBarrierChannels(terrain.barrierChannels).map((channel) => ({
+      channelId: channel.channelId,
+      sourceId: channel.sourceId,
+      displayNameKey: channel.displayNameKey,
+      channelKind: channel.channelKind,
+      traversalRule: channel.traversalRule,
+      historicity: channel.historicity,
+      points: channel.points.map(copyStrategicTerrainPoint),
+      explanationTags: sortText(channel.explanationTags)
+    })),
+    strategicNodes: sortStrategicNodes(terrain.strategicNodes).map((node) => ({
+      nodeId: node.nodeId,
+      sourceId: node.sourceId,
+      displayNameKey: node.displayNameKey,
+      nodeKind: node.nodeKind,
+      districtId: node.districtId,
+      anchor: copyStrategicTerrainPoint(node.anchor),
+      localCapacity: node.localCapacity,
+      knownState: node.knownState,
+      terrainPatchIds: sortText(node.terrainPatchIds),
+      barrierChannelIds: sortText(node.barrierChannelIds),
+      governanceFootprintIds: sortText(node.governanceFootprintIds),
+      explanationTags: sortText(node.explanationTags)
+    })),
+    routeCorridors: sortRouteCorridors(terrain.routeCorridors).map((corridor) => ({
+      corridorId: corridor.corridorId,
+      sourceId: corridor.sourceId,
+      displayNameKey: corridor.displayNameKey,
+      fromNodeId: corridor.fromNodeId,
+      toNodeId: corridor.toNodeId,
+      mode: corridor.mode,
+      widthClass: corridor.widthClass,
+      baseTravelCost: corridor.baseTravelCost,
+      baseCapacity: corridor.baseCapacity,
+      riskClass: corridor.riskClass,
+      terrainPatchIds: sortText(corridor.terrainPatchIds),
+      barrierChannelIds: sortText(corridor.barrierChannelIds),
+      governanceFootprintIds: sortText(corridor.governanceFootprintIds),
+      seasonality: sortRouteCorridorSeasonalModifiers(corridor.seasonality).map((season) => ({
+        month: season.month,
+        seasonState: season.seasonState,
+        travelCostMultiplierBps: season.travelCostMultiplierBps,
+        capacityMultiplierBps: season.capacityMultiplierBps,
+        riskBps: season.riskBps,
+        reasonCodes: sortText(season.reasonCodes)
+      })),
+      availability: copyRouteCorridorAvailability(corridor.availability),
+      polyline: corridor.polyline.map(copyStrategicTerrainPoint),
+      explanationTags: sortText(corridor.explanationTags)
+    })),
+    districtGovernanceFootprints: sortDistrictGovernanceFootprints(
+      terrain.districtGovernanceFootprints
+    ).map((footprint) => ({
+      footprintId: footprint.footprintId,
+      sourceId: footprint.sourceId,
+      displayNameKey: footprint.displayNameKey,
+      districtId: footprint.districtId,
+      overlayOnly: true,
+      polygon: footprint.polygon.map(copyStrategicTerrainPoint),
+      governanceTags: sortText(footprint.governanceTags),
+      consequenceTags: sortText(footprint.consequenceTags)
+    }))
+  };
+}
+
+export function hashStrategicTerrainDefinitionV1(
+  terrain: StrategicTerrainDefinitionV1
+): StrategicTerrainHash {
+  const canonicalTerrain = canonicalizeStrategicTerrainDefinitionV1(terrain);
+  return parseStrategicTerrainHash(
+    toFixedHexHash(hashText(formatStrategicTerrainDefinitionForHash(canonicalTerrain)))
   );
 }
 
@@ -7585,6 +8473,195 @@ function parseMapTopologyRouteAvailability(value: unknown): MapTopologyRouteAvai
   throw new Error("MapTopology route availability kind is invalid.");
 }
 
+function parseTerrainPatchId(value: unknown): TerrainPatchId {
+  return parseStrategicTerrainId(value, "TerrainPatchId") as TerrainPatchId;
+}
+
+function parseBarrierChannelId(value: unknown): BarrierChannelId {
+  return parseStrategicTerrainId(value, "BarrierChannelId") as BarrierChannelId;
+}
+
+function parseStrategicNodeId(value: unknown): StrategicNodeId {
+  return parseStrategicTerrainId(value, "StrategicNodeId") as StrategicNodeId;
+}
+
+function parseRouteCorridorId(value: unknown): RouteCorridorId {
+  return parseStrategicTerrainId(value, "RouteCorridorId") as RouteCorridorId;
+}
+
+function parseDistrictGovernanceFootprintId(value: unknown): DistrictGovernanceFootprintId {
+  return parseStrategicTerrainId(
+    value,
+    "DistrictGovernanceFootprintId"
+  ) as DistrictGovernanceFootprintId;
+}
+
+function parseStrategicTerrainId(value: unknown, label: string): string {
+  if (typeof value !== "string" || !/^[A-Za-z][A-Za-z0-9._:-]{0,95}$/u.test(value)) {
+    throw new Error(`${label} must be a stable non-empty string id.`);
+  }
+  if (/^(?:\d+|row[-.:]?\d+|col[-.:]?\d+|hex[-.:]?\d+|cell[-.:]?\d+)$/iu.test(value)) {
+    throw new Error(`${label} must not be a hidden grid, lattice, hex, or sequential id.`);
+  }
+
+  return value;
+}
+
+function parseStrategicTerrainClass(value: unknown): StrategicTerrainClassV1 {
+  if (STRATEGIC_TERRAIN_CLASSES.includes(value as StrategicTerrainClassV1)) {
+    return value as StrategicTerrainClassV1;
+  }
+  throw new Error("Strategic terrain terrainClass is invalid.");
+}
+
+function parseStrategicTerrainRiskClass(value: unknown): StrategicTerrainRiskClassV1 {
+  if (STRATEGIC_TERRAIN_RISK_CLASSES.includes(value as StrategicTerrainRiskClassV1)) {
+    return value as StrategicTerrainRiskClassV1;
+  }
+  throw new Error("Strategic terrain riskClass is invalid.");
+}
+
+function parseStrategicTerrainHistoricityTag(value: unknown): StrategicTerrainHistoricityTagV1 {
+  if (STRATEGIC_TERRAIN_HISTORICITY_TAGS.includes(value as StrategicTerrainHistoricityTagV1)) {
+    return value as StrategicTerrainHistoricityTagV1;
+  }
+  throw new Error("Strategic terrain historicity tag is invalid.");
+}
+
+function parseStrategicTerrainSeasonState(value: unknown): StrategicTerrainSeasonStateV1 {
+  if (STRATEGIC_TERRAIN_SEASON_STATES.includes(value as StrategicTerrainSeasonStateV1)) {
+    return value as StrategicTerrainSeasonStateV1;
+  }
+  throw new Error("Strategic terrain season state is invalid.");
+}
+
+function parseBarrierChannelKind(value: unknown): BarrierChannelKindV1 {
+  if (BARRIER_CHANNEL_KINDS.includes(value as BarrierChannelKindV1)) {
+    return value as BarrierChannelKindV1;
+  }
+  throw new Error("BarrierChannel channelKind is invalid.");
+}
+
+function parseBarrierChannelTraversalRule(
+  value: unknown
+): BarrierChannelDefinitionV1["traversalRule"] {
+  if (value === "blocks-without-explicit-corridor" || value === "channels-explicit-corridors") {
+    return value;
+  }
+  throw new Error("BarrierChannel traversalRule is invalid.");
+}
+
+function parseStrategicNodeKind(value: unknown): StrategicNodeKindV1 {
+  if (STRATEGIC_NODE_KINDS.includes(value as StrategicNodeKindV1)) {
+    return value as StrategicNodeKindV1;
+  }
+  throw new Error("StrategicNode nodeKind is invalid.");
+}
+
+function parseStrategicNodeKnownState(value: unknown): StrategicNodeKnownStateV1 {
+  if (STRATEGIC_NODE_KNOWN_STATES.includes(value as StrategicNodeKnownStateV1)) {
+    return value as StrategicNodeKnownStateV1;
+  }
+  throw new Error("StrategicNode knownState is invalid.");
+}
+
+function parseRouteCorridorMode(value: unknown): RouteCorridorModeV1 {
+  if (ROUTE_CORRIDOR_MODES.includes(value as RouteCorridorModeV1)) {
+    return value as RouteCorridorModeV1;
+  }
+  throw new Error("RouteCorridor mode is invalid.");
+}
+
+function parseRouteCorridorWidthClass(value: unknown): RouteCorridorWidthClassV1 {
+  if (ROUTE_CORRIDOR_WIDTH_CLASSES.includes(value as RouteCorridorWidthClassV1)) {
+    return value as RouteCorridorWidthClassV1;
+  }
+  throw new Error("RouteCorridor widthClass is invalid.");
+}
+
+function parseRouteCorridorSeasonalModifier(value: unknown): RouteCorridorSeasonalModifierV1 {
+  if (!isRecord(value)) {
+    throw new Error("RouteCorridor seasonal modifier must be an object.");
+  }
+  if (!Array.isArray(value["reasonCodes"])) {
+    throw new Error("RouteCorridor seasonal modifier reasonCodes must be an array.");
+  }
+
+  return {
+    month: parseIntegerInRange(value["month"], "RouteCorridor seasonal modifier month", 1, 12),
+    seasonState: parseStrategicTerrainSeasonState(value["seasonState"]),
+    travelCostMultiplierBps: parseIntegerInRange(
+      value["travelCostMultiplierBps"],
+      "RouteCorridor seasonal modifier travelCostMultiplierBps",
+      1,
+      30_000
+    ),
+    capacityMultiplierBps: parseIntegerInRange(
+      value["capacityMultiplierBps"],
+      "RouteCorridor seasonal modifier capacityMultiplierBps",
+      0,
+      30_000
+    ),
+    riskBps: parseIntegerInRange(
+      value["riskBps"],
+      "RouteCorridor seasonal modifier riskBps",
+      0,
+      10_000
+    ),
+    reasonCodes: value["reasonCodes"].map((reasonCode) =>
+      parseNonEmptyString(reasonCode, "RouteCorridor seasonal modifier reasonCode")
+    )
+  };
+}
+
+function parseRouteCorridorAvailability(value: unknown): RouteCorridorAvailabilityV1 {
+  if (!isRecord(value)) {
+    throw new Error("RouteCorridor availability must be an object.");
+  }
+  if (value["kind"] === "open") {
+    return { kind: "open" };
+  }
+  if (value["kind"] === "blocked") {
+    return {
+      kind: "blocked",
+      reasonCode: parseNonEmptyString(value["reasonCode"], "RouteCorridor blocked reasonCode")
+    };
+  }
+  if (value["kind"] === "unknown") {
+    return {
+      kind: "unknown",
+      reasonCode: parseNonEmptyString(value["reasonCode"], "RouteCorridor unknown reasonCode")
+    };
+  }
+
+  throw new Error("RouteCorridor availability kind is invalid.");
+}
+
+function parseStrategicTerrainPoint(value: unknown, label: string): StrategicTerrainPointV1 {
+  if (!isRecord(value)) {
+    throw new Error(`${label} must be an object.`);
+  }
+
+  return {
+    x: parseIntegerInRange(value["x"], `${label}.x`, -1_000_000, 1_000_000),
+    y: parseIntegerInRange(value["y"], `${label}.y`, -1_000_000, 1_000_000)
+  };
+}
+
+function parseStrategicTerrainTextArray(
+  values: readonly unknown[],
+  label: string
+): readonly string[] {
+  return values.map((value) => parseNonEmptyString(value, label));
+}
+
+function parseGovernanceOverlayOnly(value: unknown): true {
+  if (value !== true) {
+    throw new Error("DistrictGovernanceFootprint overlayOnly must be true.");
+  }
+  return true;
+}
+
 const M3_ADMINISTRATIVE_CONTROL_MODES: readonly M3AdministrativeControlModeV0[] = [
   "direct",
   "vassal",
@@ -8181,6 +9258,100 @@ function copyMapTopologyRouteEndpoint(
 function copyMapTopologyRouteAvailability(
   availability: MapTopologyRouteAvailabilityV1
 ): MapTopologyRouteAvailabilityV1 {
+  switch (availability.kind) {
+    case "open":
+      return { kind: "open" };
+    case "blocked":
+      return {
+        kind: "blocked",
+        reasonCode: availability.reasonCode
+      };
+    case "unknown":
+      return {
+        kind: "unknown",
+        reasonCode: availability.reasonCode
+      };
+  }
+}
+
+function sortStrategicTerrainAuthorityProhibitions(
+  values: readonly StrategicTerrainAuthorityProhibitionV1[]
+): readonly StrategicTerrainAuthorityProhibitionV1[] {
+  return [...values].sort(compareText);
+}
+
+function sortTerrainPatches(
+  values: readonly TerrainPatchDefinitionV1[]
+): readonly TerrainPatchDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      compareText(left.patchId, right.patchId) ||
+      compareText(left.sourceId, right.sourceId) ||
+      compareText(left.displayNameKey, right.displayNameKey)
+  );
+}
+
+function sortBarrierChannels(
+  values: readonly BarrierChannelDefinitionV1[]
+): readonly BarrierChannelDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      compareText(left.channelId, right.channelId) ||
+      compareText(left.sourceId, right.sourceId) ||
+      compareText(left.displayNameKey, right.displayNameKey)
+  );
+}
+
+function sortStrategicNodes(
+  values: readonly StrategicNodeDefinitionV1[]
+): readonly StrategicNodeDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      compareText(left.nodeId, right.nodeId) ||
+      left.districtId - right.districtId ||
+      compareText(left.displayNameKey, right.displayNameKey)
+  );
+}
+
+function sortRouteCorridors(
+  values: readonly RouteCorridorDefinitionV1[]
+): readonly RouteCorridorDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      compareText(left.corridorId, right.corridorId) ||
+      compareText(left.fromNodeId, right.fromNodeId) ||
+      compareText(left.toNodeId, right.toNodeId) ||
+      compareText(left.displayNameKey, right.displayNameKey)
+  );
+}
+
+function sortDistrictGovernanceFootprints(
+  values: readonly DistrictGovernanceFootprintDefinitionV1[]
+): readonly DistrictGovernanceFootprintDefinitionV1[] {
+  return [...values].sort(
+    (left, right) =>
+      compareText(left.footprintId, right.footprintId) ||
+      left.districtId - right.districtId ||
+      compareText(left.displayNameKey, right.displayNameKey)
+  );
+}
+
+function sortRouteCorridorSeasonalModifiers(
+  values: readonly RouteCorridorSeasonalModifierV1[]
+): readonly RouteCorridorSeasonalModifierV1[] {
+  return [...values].sort((left, right) => left.month - right.month);
+}
+
+function copyStrategicTerrainPoint(point: StrategicTerrainPointV1): StrategicTerrainPointV1 {
+  return {
+    x: point.x,
+    y: point.y
+  };
+}
+
+function copyRouteCorridorAvailability(
+  availability: RouteCorridorAvailabilityV1
+): RouteCorridorAvailabilityV1 {
   switch (availability.kind) {
     case "open":
       return { kind: "open" };
@@ -8854,7 +10025,7 @@ function m4TargetId(target: M4CampaignTargetV0): number {
   }
 }
 
-function sortText(values: readonly string[]): readonly string[] {
+function sortText<TValue extends string>(values: readonly TValue[]): readonly TValue[] {
   return [...values].sort(compareText);
 }
 
@@ -10245,6 +11416,159 @@ export function formatMapTopologyEndpoint(endpoint: MapTopologyRouteEndpointV1):
   }
 }
 
+function formatStrategicTerrainDefinition(
+  terrain: StrategicTerrainDefinitionV1 | undefined
+): string {
+  if (terrain === undefined) {
+    return "none";
+  }
+
+  const canonicalTerrain = canonicalizeStrategicTerrainDefinitionV1(terrain);
+  return `hash=${canonicalTerrain.strategicTerrainHash};${formatStrategicTerrainDefinitionForHash(
+    canonicalTerrain
+  )}`;
+}
+
+function formatStrategicTerrainCanonicalLines(
+  terrain: StrategicTerrainDefinitionV1 | undefined
+): readonly string[] {
+  if (terrain === undefined) {
+    return [];
+  }
+
+  return [`definitions.strategicTerrain=${formatStrategicTerrainDefinition(terrain)}`];
+}
+
+function formatStrategicTerrainDefinitionForHash(terrain: StrategicTerrainDefinitionV1): string {
+  const canonicalTerrain = canonicalizeStrategicTerrainDefinitionV1(terrain);
+  return [
+    "strategic-terrain-v1",
+    `schemaVersion=${canonicalTerrain.schemaVersion}`,
+    `hashAlgorithm=${canonicalTerrain.hashAlgorithm}`,
+    `contentManifestHash=${canonicalTerrain.contentManifestHash}`,
+    `authority=${canonicalTerrain.authority}`,
+    `governanceFootprintRole=${canonicalTerrain.governanceFootprintRole}`,
+    `authorityProhibitions=${canonicalTerrain.authorityProhibitions.join("+")}`,
+    `terrainPatches=${canonicalTerrain.terrainPatches.map(formatStrategicTerrainPatch).join(",")}`,
+    `barrierChannels=${canonicalTerrain.barrierChannels
+      .map(formatStrategicTerrainBarrierChannel)
+      .join(",")}`,
+    `strategicNodes=${canonicalTerrain.strategicNodes.map(formatStrategicTerrainNode).join(",")}`,
+    `routeCorridors=${canonicalTerrain.routeCorridors
+      .map(formatStrategicTerrainRouteCorridor)
+      .join(",")}`,
+    `districtGovernanceFootprints=${canonicalTerrain.districtGovernanceFootprints
+      .map(formatStrategicTerrainGovernanceFootprint)
+      .join(",")}`
+  ].join("|");
+}
+
+function formatStrategicTerrainPatch(patch: TerrainPatchDefinitionV1): string {
+  return [
+    patch.patchId,
+    patch.sourceId,
+    patch.displayNameKey,
+    patch.terrainClass,
+    patch.seasonSensitivity,
+    patch.historicity,
+    patch.polygon.map(formatStrategicTerrainPoint).join("+"),
+    patch.explanationTags.join("+")
+  ].join(":");
+}
+
+function formatStrategicTerrainBarrierChannel(channel: BarrierChannelDefinitionV1): string {
+  return [
+    channel.channelId,
+    channel.sourceId,
+    channel.displayNameKey,
+    channel.channelKind,
+    channel.traversalRule,
+    channel.historicity,
+    channel.points.map(formatStrategicTerrainPoint).join("+"),
+    channel.explanationTags.join("+")
+  ].join(":");
+}
+
+function formatStrategicTerrainNode(node: StrategicNodeDefinitionV1): string {
+  return [
+    node.nodeId,
+    node.sourceId,
+    node.displayNameKey,
+    node.nodeKind,
+    node.districtId,
+    formatStrategicTerrainPoint(node.anchor),
+    node.localCapacity,
+    node.knownState,
+    node.terrainPatchIds.join("+"),
+    node.barrierChannelIds.join("+"),
+    node.governanceFootprintIds.join("+"),
+    node.explanationTags.join("+")
+  ].join(":");
+}
+
+function formatStrategicTerrainRouteCorridor(corridor: RouteCorridorDefinitionV1): string {
+  return [
+    corridor.corridorId,
+    corridor.sourceId,
+    corridor.displayNameKey,
+    corridor.fromNodeId,
+    corridor.toNodeId,
+    corridor.mode,
+    corridor.widthClass,
+    corridor.baseTravelCost,
+    corridor.baseCapacity,
+    corridor.riskClass,
+    corridor.terrainPatchIds.join("+"),
+    corridor.barrierChannelIds.join("+"),
+    corridor.governanceFootprintIds.join("+"),
+    corridor.seasonality.map(formatRouteCorridorSeasonalModifier).join("+"),
+    formatRouteCorridorAvailability(corridor.availability),
+    corridor.polyline.map(formatStrategicTerrainPoint).join("+"),
+    corridor.explanationTags.join("+")
+  ].join(":");
+}
+
+function formatRouteCorridorSeasonalModifier(season: RouteCorridorSeasonalModifierV1): string {
+  return [
+    season.month,
+    season.seasonState,
+    season.travelCostMultiplierBps,
+    season.capacityMultiplierBps,
+    season.riskBps,
+    season.reasonCodes.join("/")
+  ].join(".");
+}
+
+function formatRouteCorridorAvailability(availability: RouteCorridorAvailabilityV1): string {
+  switch (availability.kind) {
+    case "open":
+      return "open";
+    case "blocked":
+      return `blocked.${availability.reasonCode}`;
+    case "unknown":
+      return `unknown.${availability.reasonCode}`;
+  }
+}
+
+function formatStrategicTerrainGovernanceFootprint(
+  footprint: DistrictGovernanceFootprintDefinitionV1
+): string {
+  return [
+    footprint.footprintId,
+    footprint.sourceId,
+    footprint.displayNameKey,
+    footprint.districtId,
+    footprint.overlayOnly ? "overlay-only" : "authority-error",
+    footprint.polygon.map(formatStrategicTerrainPoint).join("+"),
+    footprint.governanceTags.join("+"),
+    footprint.consequenceTags.join("+")
+  ].join(":");
+}
+
+function formatStrategicTerrainPoint(point: StrategicTerrainPointV1): string {
+  return `${point.x}.${point.y}`;
+}
+
 function formatDistrictControl(control: DistrictControlState): string {
   switch (control.kind) {
     case "controlled":
@@ -10398,6 +11722,24 @@ function validateMeta(world: WorldStateV0Candidate, errors: WorldInvariantError[
     });
   }
 
+  const strategicTerrainContentManifestHash = getRecordPath(world, [
+    "definitions",
+    "strategicTerrain",
+    "contentManifestHash"
+  ]);
+  if (
+    typeof contentManifestHash === "string" &&
+    strategicTerrainContentManifestHash !== undefined &&
+    strategicTerrainContentManifestHash !== contentManifestHash
+  ) {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.strategicTerrain.contentManifestHash",
+      message:
+        "Strategic terrain contentManifestHash must match WorldState meta.contentManifestHash."
+    });
+  }
+
   if (!isNonnegativeInteger(getRecordPath(world, ["meta", "currentDay"]))) {
     errors.push({
       code: "invalid-day",
@@ -10439,6 +11781,9 @@ function validateDefinitions(definitions: WorldDefinitionsV0, errors: WorldInvar
   validateDuplicateIds(definitions.routes, "RouteId", "definitions.routes", errors);
   if (definitions.topology !== undefined) {
     validateMapTopologyDefinitions(definitions.topology, errors);
+  }
+  if (definitions.strategicTerrain !== undefined) {
+    validateStrategicTerrainDefinitions(definitions.strategicTerrain, errors);
   }
 }
 
@@ -10509,6 +11854,9 @@ function validateDefinitionReferences(
 
   if (definitions.topology !== undefined) {
     validateMapTopologyReferences(definitions, definitions.topology, errors);
+  }
+  if (definitions.strategicTerrain !== undefined) {
+    validateStrategicTerrainReferences(definitions, definitions.strategicTerrain, errors);
   }
 }
 
@@ -10780,6 +12128,267 @@ function validateMapTopologyReferences(
         code: "bad-reference",
         path: `definitions.topology.routeEdges[${index}].to.settlementId`,
         message: `Map topology route edge references missing SettlementId ${edge.to.settlementId}.`
+      });
+    }
+  });
+}
+
+function validateStrategicTerrainDefinitions(
+  terrain: StrategicTerrainDefinitionV1,
+  errors: WorldInvariantError[]
+): void {
+  validateMapTopologyDuplicateStrings(
+    terrain.terrainPatches.map((patch) => patch.patchId),
+    "terrain patchId",
+    "definitions.strategicTerrain.terrainPatches",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    terrain.terrainPatches.map((patch) => patch.sourceId),
+    "terrain patch sourceId",
+    "definitions.strategicTerrain.terrainPatches",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    terrain.barrierChannels.map((channel) => channel.channelId),
+    "barrier channelId",
+    "definitions.strategicTerrain.barrierChannels",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    terrain.strategicNodes.map((node) => node.nodeId),
+    "strategic nodeId",
+    "definitions.strategicTerrain.strategicNodes",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    terrain.routeCorridors.map((corridor) => corridor.corridorId),
+    "route corridorId",
+    "definitions.strategicTerrain.routeCorridors",
+    errors
+  );
+  validateMapTopologyDuplicateStrings(
+    terrain.districtGovernanceFootprints.map((footprint) => footprint.footprintId),
+    "district governance footprintId",
+    "definitions.strategicTerrain.districtGovernanceFootprints",
+    errors
+  );
+
+  if (terrain.governanceFootprintRole !== "overlay-only") {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.strategicTerrain.governanceFootprintRole",
+      message: "Strategic terrain governance footprints must be overlay-only."
+    });
+  }
+
+  const expectedHash = hashStrategicTerrainDefinitionV1(terrain);
+  if (terrain.strategicTerrainHash !== expectedHash) {
+    errors.push({
+      code: "invalid-schema",
+      path: "definitions.strategicTerrain.strategicTerrainHash",
+      message: `StrategicTerrainDefinition strategicTerrainHash ${terrain.strategicTerrainHash} does not match canonical hash ${expectedHash}.`
+    });
+  }
+
+  terrain.terrainPatches.forEach((patch, index) => {
+    if (patch.polygon.length < 3) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.strategicTerrain.terrainPatches[${index}].polygon`,
+        message: "Strategic terrain patch polygon must contain at least 3 points."
+      });
+    }
+  });
+
+  terrain.barrierChannels.forEach((channel, index) => {
+    if (channel.points.length < 2) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.strategicTerrain.barrierChannels[${index}].points`,
+        message: "Strategic terrain barrier/channel must contain at least 2 points."
+      });
+    }
+  });
+
+  terrain.routeCorridors.forEach((corridor, index) => {
+    validateRouteCorridorSeasonality(corridor.seasonality, index, errors);
+    if (corridor.fromNodeId === corridor.toNodeId) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.strategicTerrain.routeCorridors[${index}].toNodeId`,
+        message: "Strategic terrain route corridor endpoints must be different."
+      });
+    }
+    if (corridor.polyline.length < 2) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.strategicTerrain.routeCorridors[${index}].polyline`,
+        message: "Strategic terrain route corridor polyline must contain at least 2 points."
+      });
+    }
+  });
+
+  terrain.districtGovernanceFootprints.forEach((footprint, index) => {
+    if (footprint.overlayOnly !== true) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.strategicTerrain.districtGovernanceFootprints[${index}].overlayOnly`,
+        message: "District governance footprint must remain overlayOnly."
+      });
+    }
+    if (footprint.polygon.length < 3) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.strategicTerrain.districtGovernanceFootprints[${index}].polygon`,
+        message: "District governance footprint polygon must contain at least 3 points."
+      });
+    }
+  });
+}
+
+function validateRouteCorridorSeasonality(
+  seasonality: readonly RouteCorridorSeasonalModifierV1[],
+  corridorIndex: number,
+  errors: WorldInvariantError[]
+): void {
+  if (seasonality.length !== 12) {
+    errors.push({
+      code: "invalid-schema",
+      path: `definitions.strategicTerrain.routeCorridors[${corridorIndex}].seasonality`,
+      message: "Strategic terrain route corridor seasonality must contain exactly 12 months."
+    });
+  }
+
+  const months = new Set<number>();
+  seasonality.forEach((season, seasonIndex) => {
+    if (months.has(season.month)) {
+      errors.push({
+        code: "duplicate-runtime-state-row",
+        path: `definitions.strategicTerrain.routeCorridors[${corridorIndex}].seasonality[${seasonIndex}].month`,
+        message: `Duplicate strategic terrain seasonal month ${season.month}.`
+      });
+    }
+    months.add(season.month);
+  });
+
+  for (let month = 1; month <= 12; month += 1) {
+    if (!months.has(month)) {
+      errors.push({
+        code: "invalid-schema",
+        path: `definitions.strategicTerrain.routeCorridors[${corridorIndex}].seasonality`,
+        message: `Strategic terrain route corridor seasonality is missing month ${month}.`
+      });
+    }
+  }
+}
+
+function validateStrategicTerrainReferences(
+  definitions: WorldDefinitionsV0,
+  terrain: StrategicTerrainDefinitionV1,
+  errors: WorldInvariantError[]
+): void {
+  const districtIds = idsOf(definitions.districts);
+  const patchIds = new Set<string>(terrain.terrainPatches.map((patch) => patch.patchId));
+  const channelIds = new Set<string>(terrain.barrierChannels.map((channel) => channel.channelId));
+  const nodeIds = new Set<string>(terrain.strategicNodes.map((node) => node.nodeId));
+  const footprintIds = new Set<string>(
+    terrain.districtGovernanceFootprints.map((footprint) => footprint.footprintId)
+  );
+
+  terrain.strategicNodes.forEach((node, index) => {
+    if (!districtIds.has(node.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.strategicTerrain.strategicNodes[${index}].districtId`,
+        message: `Strategic terrain node references missing DistrictId ${node.districtId}.`
+      });
+    }
+    validateStrategicTerrainIdReferences(
+      node.terrainPatchIds,
+      patchIds,
+      `definitions.strategicTerrain.strategicNodes[${index}].terrainPatchIds`,
+      "TerrainPatch",
+      errors
+    );
+    validateStrategicTerrainIdReferences(
+      node.barrierChannelIds,
+      channelIds,
+      `definitions.strategicTerrain.strategicNodes[${index}].barrierChannelIds`,
+      "BarrierChannel",
+      errors
+    );
+    validateStrategicTerrainIdReferences(
+      node.governanceFootprintIds,
+      footprintIds,
+      `definitions.strategicTerrain.strategicNodes[${index}].governanceFootprintIds`,
+      "DistrictGovernanceFootprint",
+      errors
+    );
+  });
+
+  terrain.routeCorridors.forEach((corridor, index) => {
+    if (!nodeIds.has(corridor.fromNodeId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.strategicTerrain.routeCorridors[${index}].fromNodeId`,
+        message: `Strategic terrain corridor references missing from StrategicNode ${corridor.fromNodeId}.`
+      });
+    }
+    if (!nodeIds.has(corridor.toNodeId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.strategicTerrain.routeCorridors[${index}].toNodeId`,
+        message: `Strategic terrain corridor references missing to StrategicNode ${corridor.toNodeId}.`
+      });
+    }
+    validateStrategicTerrainIdReferences(
+      corridor.terrainPatchIds,
+      patchIds,
+      `definitions.strategicTerrain.routeCorridors[${index}].terrainPatchIds`,
+      "TerrainPatch",
+      errors
+    );
+    validateStrategicTerrainIdReferences(
+      corridor.barrierChannelIds,
+      channelIds,
+      `definitions.strategicTerrain.routeCorridors[${index}].barrierChannelIds`,
+      "BarrierChannel",
+      errors
+    );
+    validateStrategicTerrainIdReferences(
+      corridor.governanceFootprintIds,
+      footprintIds,
+      `definitions.strategicTerrain.routeCorridors[${index}].governanceFootprintIds`,
+      "DistrictGovernanceFootprint",
+      errors
+    );
+  });
+
+  terrain.districtGovernanceFootprints.forEach((footprint, index) => {
+    if (!districtIds.has(footprint.districtId)) {
+      errors.push({
+        code: "bad-reference",
+        path: `definitions.strategicTerrain.districtGovernanceFootprints[${index}].districtId`,
+        message: `District governance footprint references missing DistrictId ${footprint.districtId}.`
+      });
+    }
+  });
+}
+
+function validateStrategicTerrainIdReferences(
+  values: readonly string[],
+  allowed: ReadonlySet<string>,
+  path: string,
+  label: string,
+  errors: WorldInvariantError[]
+): void {
+  values.forEach((value, index) => {
+    if (!allowed.has(value)) {
+      errors.push({
+        code: "bad-reference",
+        path: `${path}[${index}]`,
+        message: `Strategic terrain reference ${value} does not match a ${label}.`
       });
     }
   });

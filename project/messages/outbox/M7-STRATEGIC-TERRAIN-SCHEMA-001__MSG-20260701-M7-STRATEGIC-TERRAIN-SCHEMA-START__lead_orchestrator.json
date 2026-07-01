@@ -1,0 +1,38 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-START",
+  "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "status": "INFO",
+  "summary": "Start the strategic terrain schema task after M7-STRATEGIC-TERRAIN-RECOVERY-001 closed in main. This task defines terrain-route-node authority, query, save/content hash, deterministic spatial semantics, and negative anti-grid/spatial-index tests.",
+  "artifacts": [
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-schema",
+  "commit": "f69985f9369ba3c7e6615a99ff9a87160249ac8c",
+  "tests_run": [],
+  "decisions": [
+    {
+      "id": "START_SCHEMA_TASK",
+      "decision": "Start M7-STRATEGIC-TERRAIN-SCHEMA-001 with systems_architect writer after recovery planning entered main and closed."
+    },
+    {
+      "id": "LIMIT_ACTIVE_SUBAGENTS",
+      "decision": "Open only the required systems_architect writer for this task; avoid extra research agents unless a blocker appears."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-STRATEGIC-TERRAIN-SCHEMA-R4",
+      "severity": "R4",
+      "summary": "Schema/query/save boundaries determine whether the rejected map/spatial-index direction is truly replaced.",
+      "mitigation": "Require deterministic negative tests, QA review, and strict allowed-path enforcement."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Systems writer should implement the schema/query/save-boundary package and return REVIEW handoff routed to qa_reviewer.",
+  "created_at": "2026-07-01T20:15:16.6104190+08:00"
+}

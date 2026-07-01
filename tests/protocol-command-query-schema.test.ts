@@ -1271,6 +1271,106 @@ describe("SIM-003 protocol command/query schemas", () => {
         message: "payload.stockAmount must be a positive safe integer."
       }
     });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.list-strategic-terrain",
+        payload: {
+          queryId: "strategic.terrain.list.1"
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.list-strategic-terrain",
+        payload: {
+          queryId: "strategic.terrain.list.1"
+        }
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.hit-test-strategic-terrain",
+        payload: {
+          queryId: "strategic.terrain.hit.1",
+          point: { x: 10, y: 20 }
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.hit-test-strategic-terrain",
+        payload: {
+          queryId: "strategic.terrain.hit.1",
+          point: { x: 10, y: 20 }
+        }
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-strategic-terrain-route",
+        payload: {
+          queryId: "strategic.terrain.route.1",
+          originNodeId: "node.river-port",
+          destinationNodeId: "node.upland-fort",
+          stockAmount: 40
+        }
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 1,
+        kind: "sim.preview-strategic-terrain-route",
+        payload: {
+          queryId: "strategic.terrain.route.1",
+          originNodeId: "node.river-port",
+          destinationNodeId: "node.upland-fort",
+          stockAmount: 40
+        }
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-strategic-terrain-route",
+        payload: {
+          queryId: "strategic.terrain.route.bad-id",
+          originNodeId: "row1",
+          destinationNodeId: "node.upland-fort",
+          stockAmount: 40
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.originNodeId",
+        message: "payload.originNodeId must not be a hidden grid, lattice, hex, or sequential id."
+      }
+    });
+    expect(
+      parseGameQueryV1({
+        schemaVersion: 1,
+        kind: "sim.preview-strategic-terrain-route",
+        payload: {
+          queryId: "strategic.terrain.route.bad-stock",
+          originNodeId: "node.river-port",
+          destinationNodeId: "node.upland-fort",
+          stockAmount: 0
+        }
+      })
+    ).toEqual({
+      ok: false,
+      error: {
+        code: "invalid-payload",
+        path: "payload.stockAmount",
+        message: "payload.stockAmount must be a positive safe integer."
+      }
+    });
   });
 
   test("accepts and rejects M4 campaign AI decision trace schema", () => {

@@ -1,0 +1,168 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA review accepted the M7 strategic terrain schema/query/save/content-hash implementation. The reviewed diff stays inside allowed paths, adds StrategicTerrainDefinitionV1 as terrain-route-node authority with DistrictGovernanceFootprint overlay-only semantics, exposes deterministic list/hit-test/route-preview query surfaces, rejects missing or mismatched strategic terrain saves without fallback, and includes focused negative tests against governance adjacency, centroid proximity, hidden grid/lattice ids, and renderer-only lines creating reachability.",
+  "artifacts": [
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "packages/sim-core/src/strategic-terrain-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/index.ts",
+    "packages/protocol/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPT_STRATEGIC_TERRAIN_SCHEMA",
+      "decision": "Accept the M7 strategic terrain schema/query/save/content-hash implementation for lead integration."
+    },
+    {
+      "id": "QA_CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "This acceptance does not approve M7 content lock, M7 exit, renderer interaction, fixture migration, final art, GIS, server/multiplayer, telemetry, Rust/WASM, or manual node battle."
+    }
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-schema",
+  "commit": null,
+  "reviewed_head": "f69985f9369ba3c7e6615a99ff9a87160249ac8c",
+  "reviewed_diff_base": "f69985f9369ba3c7e6615a99ff9a87160249ac8c",
+  "source_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
+  "artifacts_reviewed": [
+    "PROJECT_STATUS.md",
+    "AGENTS.md",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "packages/sim-core/src/strategic-terrain-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/protocol/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json"
+  ],
+  "scope_review": {
+    "allowed_paths_result": "PASS",
+    "forbidden_paths_result": "PASS",
+    "notes": [
+      "git status --short showed only allowed task, package, tests, project state, and project/messages changes.",
+      "No apps/web, apps/desktop, packages/ui, packages/map-renderer, content-source, .github, tools, gate, roadmap, manifest, checksum, or validation-report paths were changed."
+    ]
+  },
+  "acceptance_evidence": [
+    {
+      "id": "TERRAIN_ROUTE_NODE_AUTHORITY",
+      "result": "PASS",
+      "evidence": "StrategicTerrainDefinitionV1 contains TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint arrays with authority='terrain-route-node-v1' and governanceFootprintRole='overlay-only'."
+    },
+    {
+      "id": "GOVERNANCE_OVERLAY_ONLY",
+      "result": "PASS",
+      "evidence": "Hit testing sorts district-governance-footprint after route blockers, nodes, corridors, barriers, and terrain patches; route preview reachability and cost traverse only explicit RouteCorridor links between StrategicNode ids, while governanceFootprintIds appear only as consequence/read-model explanation fields."
+    },
+    {
+      "id": "DETERMINISTIC_QUERIES",
+      "result": "PASS",
+      "evidence": "Route preview tie-break order is total cost, corridor count, corridor id sequence, endpoint node id sequence, then destination node id. Hash canonicalization sorts terrain arrays and text fields. No Math.random or Date.now authority use was found in the strategic terrain implementation."
+    },
+    {
+      "id": "PROTOCOL_AND_RUNTIME_SCHEMA",
+      "result": "PASS",
+      "evidence": "Protocol parses list, hit-test, and route-preview strategic terrain queries with stable id and point validation. content-runtime and boot runtime require terrain-route-node-v1 authority, overlay-only governance role, manifest hash match, complete authorityProhibitions, valid references, and 12 unique seasonal months."
+    },
+    {
+      "id": "SAVE_LOAD_HASH",
+      "result": "PASS",
+      "evidence": "Save snapshots preserve definitions.strategicTerrain.strategicTerrainHash; load rejects missing or mismatched strategic terrain for runtimes that require it with structured semantic-invariant reasons."
+    },
+    {
+      "id": "NEGATIVE_TESTS",
+      "result": "PASS",
+      "evidence": "Focused tests prove governance-adjacent/near-centroid nodes, renderer-only-looking barrier lines, and row/hex-style hidden ids cannot create route reachability; missing terrain queries and stale hashes reject instead of falling back to topology or polygons."
+    },
+    {
+      "id": "OUT_OF_SCOPE_GUARDS",
+      "result": "PASS",
+      "evidence": "No client renderer, fixture migration, M7 content lock, M7 exit, final art, GIS, server/multiplayer, telemetry, Rust/WASM, or manual node battle implementation was introduced."
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree contains expected implementation files under allowed paths plus the QA handoff file after review."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed; 204 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/protocol test",
+      "exit_code": 0,
+      "result": "1 test file passed; 14 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "1 test file passed; 17 tests passed."
+    },
+    {
+      "command": "pnpm --filter @monsoon/save-format test",
+      "exit_code": 0,
+      "result": "3 test files passed; 30 tests passed."
+    },
+    {
+      "command": "pnpm check",
+      "exit_code": 0,
+      "result": "format:check, lint, workspace typecheck, and architecture:check passed; architecture self-test reported 15 expected violations."
+    },
+    {
+      "command": ".\\node_modules\\.bin\\vitest.CMD run --config vitest.config.ts tests\\sim-core-map-topology.test.ts tests\\protocol-command-query-schema.test.ts tests\\content-runtime-pack.test.ts tests\\save-load-contract.test.ts",
+      "exit_code": 0,
+      "result": "Focused deterministic and negative strategic terrain tests passed; 4 test files passed; 57 tests passed."
+    }
+  ],
+  "blockers": [],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_NOT_DONE_BY_DESIGN",
+      "severity": "R1",
+      "summary": "Fixture migration, renderer interaction, validation screenshots, content lock, and M7 exit remain out of scope for this schema task.",
+      "mitigation": "Keep downstream tasks gated by the accepted strategic terrain recovery chain."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate the accepted schema branch and keep downstream strategic terrain fixture, renderer-interaction, validation, content-lock, and M7 exit gates blocked until their own reviewed tasks complete.",
+  "created_at": "2026-07-01T21:40:40.9660523+08:00"
+}

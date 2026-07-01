@@ -1,0 +1,22 @@
+{
+  "route_id": "ROUTE-20260701-LEAD-TO-SYSTEMS-REPLACEMENT-START",
+  "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+  "from_role": "lead_orchestrator",
+  "to_role": "systems_architect",
+  "to_thread_id": "019f1dcb-dfb7-7e22-8e26-7be906522f91",
+  "to_thread_nickname": "Keystone",
+  "status": "SENT",
+  "sent_at": "2026-07-01T21:09:01.9374004+08:00",
+  "source_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
+  "previous_writer_thread_id": "019f1d9a-a51e-7101-8a6d-cf6dce788353",
+  "previous_writer_status": "shutdown_after_repeated_timeouts",
+  "expected_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
+  "branch_or_worktree": "codex/m7-strategic-terrain-schema",
+  "base_main_commit": "f69985f9369ba3c7e6615a99ff9a87160249ac8c",
+  "requested_action": "Continue M7 strategic terrain schema work as the only active writer and return REVIEW handoff.",
+  "notes": [
+    "Do not rely on uncommitted memory from the previous writer.",
+    "Use repository facts and the task file as source of truth.",
+    "Do not open downstream fixture, renderer, validation, content-lock, or exit tasks."
+  ]
+}
