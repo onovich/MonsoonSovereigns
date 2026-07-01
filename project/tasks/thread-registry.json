@@ -4,25 +4,24 @@
     "active_leads": [
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-        "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+        "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
         "task_ids": [
-          "M7-STRATEGIC-TERRAIN-SCHEMA-001"
+          "M7-STRATEGIC-TERRAIN-FIXTURE-001"
         ],
-        "status": "accepted_pending_pr_integration",
+        "status": "active_ready_for_strategic_terrain_fixture_start",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
-        "branch_or_worktree": "codex/m7-strategic-terrain-schema",
-        "updated_at": "2026-07-01T21:42:35.1583272+08:00",
-        "review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
-        "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW__qa_reviewer.json",
-        "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-LEAD-ACCEPT__lead_orchestrator.json",
-        "base_main_commit": "f69985f9369ba3c7e6615a99ff9a87160249ac8c",
-        "next_action": "Open PR, wait for CI, merge to main, then close M7 strategic terrain schema.",
-        "last_integrated_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
-        "last_main_commit": "f69985f9369ba3c7e6615a99ff9a87160249ac8c"
+        "branch_or_worktree": "codex/close-m7-strategic-terrain-schema",
+        "updated_at": "2026-07-01T21:53:51.5402735+08:00",
+        "last_integrated_task": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+        "last_main_commit": "e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b",
+        "next_ready_tasks": [
+          "M7-STRATEGIC-TERRAIN-FIXTURE-001"
+        ],
+        "next_action": "Start M7-STRATEGIC-TERRAIN-FIXTURE-001 as the next READY M7 task."
       }
     ],
     "retired_leads": [
@@ -43,7 +42,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-07-01T21:42:35.1583272+08:00"
+      "checked_at": "2026-07-01T21:53:51.5402735+08:00"
     }
   },
   "entries": {
@@ -8282,14 +8281,14 @@
       "task_ids": [
         "M7-STRATEGIC-TERRAIN-SCHEMA-001"
       ],
-      "status": "accepted_pending_pr_integration",
+      "status": "closed_after_main_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-strategic-terrain-schema",
-      "updated_at": "2026-07-01T21:42:35.1583272+08:00",
+      "branch_or_worktree": "codex/close-m7-strategic-terrain-schema",
+      "updated_at": "2026-07-01T21:53:51.5402735+08:00",
       "replacement_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
       "replacement_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-SCHEMA-001__ROUTE-20260701-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
       "expected_writer_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
@@ -8299,7 +8298,11 @@
       "qa_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-SCHEMA-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
       "expected_qa_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW__qa_reviewer.json",
       "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW__qa_reviewer.json",
-      "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-LEAD-ACCEPT__lead_orchestrator.json"
+      "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-LEAD-ACCEPT__lead_orchestrator.json",
+      "lead_close_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-CLOSED__lead_orchestrator.json",
+      "integrated_pr": 237,
+      "integrated_main_commit": "e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b",
+      "closed_at": "2026-07-01T21:53:51.5402735+08:00"
     },
     "M7-STRATEGIC-TERRAIN-SCHEMA-001:systems_architect": {
       "thread_id": "019f1dcb-dfb7-7e22-8e26-7be906522f91",
@@ -8348,6 +8351,20 @@
       "updated_at": "2026-07-01T21:42:35.1583272+08:00",
       "review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW__qa_reviewer.json",
       "closed_at": "2026-07-01T21:42:35.1583272+08:00"
+    },
+    "M7-STRATEGIC-TERRAIN-FIXTURE-001:lead_orchestrator": {
+      "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "ready_to_start",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "gpt-5.5",
+      "actual_effort": "xhigh",
+      "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+      "ready_after_task": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+      "ready_after_main_commit": "e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b",
+      "updated_at": "2026-07-01T21:53:51.5402735+08:00"
     }
   },
   "replaced_threads": [
