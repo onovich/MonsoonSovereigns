@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { compileContentPackV0OrThrow } from "../apps/content-tools/src/index";
-import { parseM2WorldFixtureSourceV0 } from "../packages/content-schema/src/index";
 import { parseRuntimeM2WorldContentPackV0 } from "../packages/content-runtime/src/index";
 import {
   bootSimulationV1,
@@ -45,7 +44,7 @@ describe("M2-BOOT-BOUNDARY-001 sim-core/content-runtime boot boundary", () => {
     }
 
     expect(firstBoot.stateHash).toBe(secondBoot.stateHash);
-    expect(firstBoot.runtime.world.meta.stateHash).toBe("4d0e1f47");
+    expect(firstBoot.runtime.world.meta.stateHash).toBe("11b384ec");
     expect(firstBoot.runtime.world.meta.contentManifestHash).toBe(
       runtimeContentPack.manifest.manifestHash
     );
@@ -55,6 +54,8 @@ describe("M2-BOOT-BOUNDARY-001 sim-core/content-runtime boot boundary", () => {
       runtimeContentPack.routes.length
     );
     expect(firstBoot.runtime.world.definitions.topology?.routeEdges).toHaveLength(25);
+    expect(runtimeContentPack.strategicTerrain?.routeCorridors).toHaveLength(28);
+    expect(firstBoot.runtime.world.definitions.strategicTerrain?.routeCorridors).toHaveLength(28);
     expect(validateWorldStateV0(firstBoot.runtime.world)).toEqual([]);
 
     const hashQuery = querySimulationV1(firstBoot.runtime, {
@@ -66,6 +67,40 @@ describe("M2-BOOT-BOUNDARY-001 sim-core/content-runtime boot boundary", () => {
       throw new Error("Expected hash query to succeed.");
     }
     expect(hashQuery.result.stateHash).toBe(firstBoot.stateHash);
+
+    const terrainQuery = querySimulationV1(firstBoot.runtime, {
+      schemaVersion: 1,
+      kind: "sim.list-strategic-terrain",
+      payload: { queryId: "m7.fixture.boot.strategic-terrain" }
+    });
+    expect(terrainQuery.status).toBe("ok");
+    if (terrainQuery.status !== "ok" || terrainQuery.result.kind !== "sim.list-strategic-terrain") {
+      throw new Error("Expected strategic terrain list query to succeed.");
+    }
+    expect(terrainQuery.result.terrain.governanceFootprintRole).toBe("overlay-only");
+    expect(terrainQuery.result.terrain.routeCorridors).toHaveLength(28);
+
+    const routePreview = querySimulationV1(firstBoot.runtime, {
+      schemaVersion: 1,
+      kind: "sim.preview-strategic-terrain-route",
+      payload: {
+        queryId: "m7.fixture.boot.route-preview",
+        originNodeId: "node.delta-port",
+        destinationNodeId: "node.outer-island-port",
+        stockAmount: 40
+      }
+    });
+    expect(routePreview.status).toBe("ok");
+    if (
+      routePreview.status !== "ok" ||
+      routePreview.result.kind !== "sim.preview-strategic-terrain-route" ||
+      routePreview.result.route.status !== "reachable"
+    ) {
+      throw new Error("Expected strategic terrain route preview to be reachable.");
+    }
+    expect(routePreview.result.route.routeExplanation.governanceConsequenceCodes).toContain(
+      "strategic-terrain.governance-consequence.footprint.district-014"
+    );
   });
 
   test("rejects mismatched or invalid runtime content packs without returning a runtime", async () => {
@@ -170,7 +205,7 @@ async function compileRuntimeM2WorldPack(): Promise<
   ReturnType<typeof parseRuntimeM2WorldContentPackV0>
 > {
   const sourceText = await readFile(m2FixtureUrl, "utf8");
-  const source = parseM2WorldFixtureSourceV0(JSON.parse(sourceText) as unknown);
+  const source = JSON.parse(sourceText) as unknown;
   const compiled = compileContentPackV0OrThrow(source);
   if (compiled.kind !== "runtime-m2-world-content-pack-v0") {
     throw new Error("Expected compiled M2 runtime world content pack.");

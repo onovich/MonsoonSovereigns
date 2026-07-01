@@ -1,0 +1,134 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-QA-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts M7-STRATEGIC-TERRAIN-FIXTURE-001. The changed paths remain inside the task allowed scope; no forbidden renderer, web, desktop, UI, map-renderer, CI, gate, roadmap, manifest, report, server, telemetry, Rust/WASM, final-art, GIS, content-lock, M7-exit, or manual-node-battle scope was implemented. The fixture contains low-fidelity COMPOSITE TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint overlay records in the required count bands. Governance footprints remain overlay-only, and route/query authority is carried by terrain patches, barriers, nodes, and corridors. Historical ACCEPT remains valid because R2 changed only structural barrier validation and fixture barrier references, not historicity wording or source claims. The systems R1 blocker is fixed: every corridor reference to a blocking barrier now requires that same corridor to have a pass, crossing, or port endpoint carrying the same barrierChannelId, and the R2 ordinary-corridor masking regression would fail the old barrier-level .some() implementation.",
+  "artifacts": [
+    "apps/content-tools/src/index.ts",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+    "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-SYSTEMS-R2-TO-QA-REVIEW.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before writing this QA handoff, workspace showed modified allowed implementation/content/test/project-state files and task message/route evidence files. No forbidden paths were present; the expected QA handoff did not yet exist."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json."
+    },
+    {
+      "command": "cmd /c pnpm.cmd content:validate",
+      "exit_code": 0,
+      "result": "All configured content validation passed. M2 prototype manifestHash is 78cdb864."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 40 tests, including M7 strategic terrain fixture counts and malformed strategic terrain cases for historical overclaim, barrier crossing without explicit node, R2 ordinary-corridor blocking-barrier masking, governance-as-route shortcut, hidden grid/lattice id leakage, duplicate ids, and missing endpoint rejection."
+    },
+    {
+      "command": "cmd /c pnpm.cmd exec vitest run tests/sim-core-boot-boundary.test.ts",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 3 tests. The compiled fixture boots into sim-core, preserves deterministic boot hash 11b384ec, exposes strategic terrain list query, and returns a reachable strategic route preview."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 17 tests."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed 26 files / 204 tests. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "TypeScript typecheck passed."
+    },
+    {
+      "command": "Read-only fixture audit with node over content-source/m2-fixtures/prototype-world-30-districts.json",
+      "exit_code": 0,
+      "result": "Confirmed authority=terrain-route-node-v1, governanceFootprintRole=overlay-only, counts terrainPatches=12 barrierChannels=8 strategicNodes=20 routeCorridors=28 districtGovernanceFootprints=14, terrain/barrier historicity COMPOSITE only, all governance footprints overlayOnly, all route modes present, narrow/wide capacity classes present, one blocked wetland corridor, one unknown node, no global duplicate strategic terrain ids, no hidden-grid-like ids in the fixture, and all 13 blocking-barrier corridor references have a valid same-corridor pass/crossing/port endpoint with the same barrierChannelId."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPT_SCOPE",
+      "decision": "The diff is limited to allowed paths: content-source, apps/content-tools, tests, task JSON, thread registry, goal/model state, and project messages/routes. Forbidden renderer/client/desktop/UI/map-renderer/docs gate/roadmap/manifest/report paths were not changed."
+    },
+    {
+      "id": "QA_ACCEPT_FIXTURE_CONTENT",
+      "decision": "The fixture satisfies the low-fidelity COMPOSITE terrain content requirement with distinct terrain patches, barriers/channels, strategic nodes, route corridors, and governance overlays in the accepted count bands."
+    },
+    {
+      "id": "QA_ACCEPT_GOVERNANCE_OVERLAY_ONLY",
+      "decision": "Governance footprints are overlayOnly and compiler validation rejects route corridors that try to rely on governance overlay instead of terrain patch authority. Route preview still returns governance consequences only after terrain-route-node routing is established."
+    },
+    {
+      "id": "QA_ACCEPT_R2_BARRIER_FIX",
+      "decision": "The systems R1 masking bug is fixed. validateM2StrategicTerrainBarrierCrossings now validates each RouteCorridor/barrier reference independently and the new ordinaryCorridorBarrierShortcut regression exercises the masking case."
+    },
+    {
+      "id": "QA_ACCEPT_HISTORICAL_BOUNDARY",
+      "decision": "Historical reviewer ACCEPT is preserved. R2 did not promote any real port, river, pass, road, polity, culture, language, or border claim, and terrain/barrier historicity remains COMPOSITE-only."
+    },
+    {
+      "id": "QA_ACCEPT_NEGATIVE_COVERAGE",
+      "decision": "Negative coverage is credible for this task. The content-tools fixture test covers historical overclaim, barrier crossing without explicit node, governance-as-route shortcut, row/grid id leakage, duplicate id, missing endpoint, and R2 ordinary-corridor masking. Existing schema/runtime/sim-core tests continue to cover strategic terrain authorityProhibitions, row/hex hidden-id rejection, save/hash rejection, no topology fallback, route preview, blocker, unknown, no-known-route, and governance-neighbor-without-route behavior."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_COMPOSITE_LABEL_PRESERVATION",
+      "severity": "R3",
+      "summary": "Downstream renderer/localization work could still turn abstract displayNameKey labels such as delta-port, north-pass, or outer-island-port into verified historical claims.",
+      "mitigation": "Carry the historical reviewer COMPOSITE-only restriction into renderer-interaction and validation tasks; require future source review before any HISTORICAL/INFERRED promotion."
+    },
+    {
+      "id": "COMPILER_DEFAULT_SEASONALITY",
+      "severity": "R2",
+      "summary": "Route corridors still rely on deterministic compiler defaults for 12-month seasonality.",
+      "mitigation": "Non-blocking for this fixture task because runtime/hash/query output is explicit; future content hardening can require authored source seasonality."
+    },
+    {
+      "id": "SEQUENTIAL_ID_NEGATIVE_GRANULARITY",
+      "severity": "R2",
+      "summary": "The focused content-tools malformed fixture test uses row1 for hidden grid/lattice leakage, while pure numeric sequential ids are rejected by the stable-id parser and fixed authorityProhibitions rather than by a separate named fixture subcase.",
+      "mitigation": "Accepted as non-blocking because content validation, content-runtime, protocol, and sim-core boundaries reject hidden grid/lattice/hex/sequential authority and the fixture itself contains no hidden-grid-like or duplicate ids. A later content-hardening pass can split row/grid/lattice/sequential negatives into separate named cases."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead orchestrator may integrate this ACCEPT review, run any lead gates, and proceed according to the M7 strategic terrain recovery chain. Do not treat this as M7 content lock, M7 exit validation, renderer interaction acceptance, final art approval, GIS approval, or manual node battle approval.",
+  "created_at": "2026-07-01T23:10:05.0787405+08:00"
+}
