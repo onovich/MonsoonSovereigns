@@ -385,3 +385,9 @@ The required recovery direction is a low-fidelity but legible strategic terrain 
 `M7-STRATEGIC-TERRAIN-SCHEMA-001` is CLOSED after PR #237 entered `origin/main` at `e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b` with both PR Gate jobs passing. The task added the accepted terrain-route-node strategic map authority schema, deterministic query surfaces, content-runtime/protocol/save hash boundaries, and negative tests proving that governance adjacency, centroid proximity, hidden grid/lattice ids, and renderer-only lines cannot create route reachability.
 
 Formal M7 content lock remains rejected. `M7-EXIT-VALIDATION-001` remains disabled until the strategic terrain fixture, renderer-interaction, validation chain, and product-owner reconsideration complete. The next dependency-ready task is `M7-STRATEGIC-TERRAIN-FIXTURE-001`, focused on low-fidelity COMPOSITE terrain patches, barriers/channels, strategic nodes, route corridors, and governance overlays.
+
+## 30. M7 Strategic Terrain Fixture Snapshot
+
+`M7-STRATEGIC-TERRAIN-FIXTURE-001` is CLOSED after PR #239 entered `origin/main` at `851d36d9192b77be15e236da386e8c01f053c22f` with both PR Gate jobs passing. The task added low-fidelity COMPOSITE strategic terrain fixture content, compiler validation, boot-boundary coverage, and a per-corridor blocking-barrier regression after systems_architect requested and accepted the R2 fix.
+
+Formal M7 content lock remains rejected. The accepted fixture is still not a player-facing renderer replacement. The next dependency-ready task is `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001`, focused on replacing the rejected polygon-first map drawing and spatial index with terrain-route-node-first rendering and interaction.
