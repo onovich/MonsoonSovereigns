@@ -1,0 +1,189 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "Read-only systems architecture review ACCEPTS the M7 strategic terrain recovery planning package for independent QA review. ADR-011 treats the current polygon-first player-facing map and spatial-index direction as superseded, not as a visual-polish target. The downstream schema, fixture/content, renderer-interaction, and validation tasks remain DRAFT and must not start from this review alone. This ACCEPT does not approve M7 content lock and does not start M7 exit validation.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "docs/decisions/ADR-010-map-topology.md",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION__product_owner.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+  "commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Before writing this systems handoff, dirty state was limited to planning/process files and untracked ADR/task/message/route files for M7 strategic terrain recovery; no apps/**, packages/**, content-source/**, tools/**, .github/**, gate docs, roadmap, acceptance matrix, manifest, checksums, or validation report paths appeared."
+    },
+    {
+      "command": "git diff --name-only",
+      "exit_code": 0,
+      "result": "Tracked diff only: PROJECT_STATUS.md, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json, project/tasks/thread-registry.json."
+    },
+    {
+      "command": "taskctl validate M7-STRATEGIC-TERRAIN-RECOVERY-001",
+      "exit_code": 1,
+      "result": "PowerShell did not have a taskctl executable in PATH: CommandNotFoundException. Equivalent repository Node script validation is recorded separately below."
+    },
+    {
+      "command": "taskctl validate M7-STRATEGIC-TERRAIN-SCHEMA-001",
+      "exit_code": 1,
+      "result": "PowerShell did not have a taskctl executable in PATH: CommandNotFoundException. Equivalent repository Node script validation is recorded separately below."
+    },
+    {
+      "command": "taskctl validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 1,
+      "result": "PowerShell did not have a taskctl executable in PATH: CommandNotFoundException. Equivalent repository Node script validation is recorded separately below."
+    },
+    {
+      "command": "taskctl validate M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "exit_code": 1,
+      "result": "PowerShell did not have a taskctl executable in PATH: CommandNotFoundException. Equivalent repository Node script validation is recorded separately below."
+    },
+    {
+      "command": "taskctl validate M7-STRATEGIC-TERRAIN-VALIDATION-001",
+      "exit_code": 1,
+      "result": "PowerShell did not have a taskctl executable in PATH: CommandNotFoundException. Equivalent repository Node script validation is recorded separately below."
+    },
+    {
+      "command": "validate-handoff writer REVIEW handoff",
+      "exit_code": 1,
+      "result": "PowerShell did not have a validate-handoff executable in PATH: CommandNotFoundException. Equivalent repository Node script validation of the writer handoff is recorded separately below."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-RECOVERY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No READY task output. Downstream strategic terrain tasks remain DRAFT while recovery planning is in REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "M7-STRATEGIC-TERRAIN-RECOVERY-001 is REVIEW; M7-STRATEGIC-TERRAIN-SCHEMA-001, FIXTURE-001, RENDERER-INTERACTION-001, and VALIDATION-001 are DRAFT."
+    },
+    {
+      "command": "git branch --show-current && git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "Current branch codex/m7-strategic-terrain-recovery at HEAD 9724faf6857004db84f54e10c7a7ba00689f9e9b."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors after writing the systems handoff."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_PLANNING_PACKAGE_FOR_QA_ONLY",
+      "decision": "Accept the recovery planning package for independent qa_reviewer review only. This does not approve content lock, does not mark M7-CONTENT-LOCK-ACCEPTANCE-001 accepted, and does not start downstream implementation."
+    },
+    {
+      "id": "ADR_011_SUPERSEDES_REJECTED_POLYGON_FIRST_DIRECTION",
+      "decision": "ADR-011 explicitly says the latest product-owner clarification rejects the current drawing and spatial-index direction at root level, rejects visual polish/texture replacement/renderer-only terrain art, and supersedes the polygon-first player-facing map direction."
+    },
+    {
+      "id": "TYPED_LAYER_BOUNDARIES_ARE_CLEAR_ENOUGH_FOR_PLANNING",
+      "decision": "TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint are separated by responsibility: terrain readability, movement constraints/enablers, action anchors, explicit corridor authority, and governance overlay respectively."
+    },
+    {
+      "id": "DOWNSTREAM_SPLIT_AND_DEPENDENCIES_ACCEPTED",
+      "decision": "The proposed chain correctly separates schema/query/save authority, COMPOSITE fixture/content, renderer-interaction replacement, and validation. Dependencies are sequential and status remains DRAFT for all downstream tasks."
+    },
+    {
+      "id": "FORBIDDEN_AUTHORITY_SOURCES_BLOCKED",
+      "decision": "ADR/task criteria prohibit hidden grid/lattice/hex, sequential-id order, centroid or bbox adjacency, geometry-only route inference, renderer-only fake routes, and governance adjacency as reachability/cost authority."
+    },
+    {
+      "id": "DETERMINISM_AND_PARITY_GATES_PRESENT",
+      "decision": "The plan requires explicit schema, save/content hash behavior, structured rejection or migration, deterministic tie-breaks, same query model for AI and player explanations, and hit-test priority from actionable nodes/corridors/blockers before governance overlays."
+    },
+    {
+      "id": "SCOPE_BOUNDARIES_ACCEPTED",
+      "decision": "Allowed/forbidden paths are planning-bounded for recovery and explicitly do not authorize high-fidelity final art, formal GIS historical data, production cultural assets, server/multiplayer, telemetry/accounts/cloud saves, Rust/WASM, release/commercial/branding scope, or manual node battle reversal."
+    },
+    {
+      "id": "REQUIRED_TESTS_ADEQUATE_FOR_ARCHITECTURE_GATE",
+      "decision": "The downstream required_tests are adequate planning gates: they include package-specific tests, pnpm check, content validation, deterministic query/hash/save tests, anti-grid/lattice negative cases, hit-test priority, query parity, screenshots, E2E, and manual-smoke/console-clean evidence."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PATH_ALIAS_MISSING",
+      "severity": "R2",
+      "summary": "The requested short commands taskctl and validate-handoff are not available in this PowerShell PATH.",
+      "mitigation": "Repository-local Node scripts validated the same task and handoff files successfully; QA should continue using the repository script paths unless the global aliases are restored."
+    },
+    {
+      "id": "CROSS_PACKAGE_REPLACEMENT_RISK",
+      "severity": "R4",
+      "summary": "Replacing the rejected terrain drawing/spatial-index direction will touch schema/query/save, content/runtime, renderer/UI, AI/player explanations, and validation evidence across later tasks.",
+      "mitigation": "Keep the proposed task split and reviewer gates; do not collapse schema, fixture, renderer, and validation into one implementation task."
+    },
+    {
+      "id": "HISTORICAL_OVERCLAIM_RISK",
+      "severity": "R4",
+      "summary": "Terrain, port, river, pass, route, polity, label, or cultural-symbol claims can become false historical assertions if COMPOSITE fixture data is presented as verified history.",
+      "mitigation": "Fixture task routes real-world claims to historical_researcher and requires HISTORICAL/INFERRED/COMPOSITE/FICTIONAL tagging before formal content use."
+    },
+    {
+      "id": "VISUAL_EVIDENCE_SUBJECTIVITY",
+      "severity": "R3",
+      "summary": "The validation bar includes screenshot judgment that the map no longer reads as a disguised cell board.",
+      "mitigation": "Pair screenshots with concrete hit-test/query/route-preview/AI-reason parity tests and require QA review before product-owner reconsideration reopens."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "qa_reviewer should perform independent read-only review of ADR-011 and the DRAFT downstream task chain. Treat this as systems acceptance of the recovery planning package only: do not approve M7 content lock, do not start M7-STRATEGIC-TERRAIN-SCHEMA-001 or any downstream implementation, and do not start M7-EXIT-VALIDATION-001.",
+  "created_at": "2026-07-01T18:28:33.2565883+08:00"
+}

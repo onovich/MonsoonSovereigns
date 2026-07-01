@@ -1,0 +1,86 @@
+{
+  "id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+  "summary": "Define terrain-route-node strategic map authority and query boundaries",
+  "milestone": "M7",
+  "status": "DRAFT",
+  "owner_role": "systems_architect",
+  "reviewer_role": "qa_reviewer",
+  "required_reviewers": [
+    "systems_architect",
+    "qa_reviewer"
+  ],
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-STRATEGIC-TERRAIN-RECOVERY-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/decisions/ADR-011-strategic-terrain-map.md",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "packages/content-runtime/**",
+      "packages/save-format/**",
+      "apps/content-tools/**",
+      "tests/**",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Define serializable strategic terrain authority types for TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint overlay.",
+    "Explicitly supersede polygon-first governance cells as the player-facing spatial substrate; governance footprints remain overlays for control, obligations, appointments, taxation, legitimacy, and postwar governance.",
+    "Define deterministic terrain-route-node query surfaces for hit testing, path preview, route explanation, AI reasons, blockers, unknown state, capacity, bottleneck, season, terrain, risk, and governance consequences.",
+    "Define spatial-query priority from actionable corridors/nodes/crossings/blockers to terrain explanation layers and only then district governance overlays.",
+    "Permit replacement of the rejected drawing/spatial-index model in later renderer work; do not require compatibility with polygon-first hit testing except as an explicit migration bridge.",
+    "No authoritative reachability, route cost, AI reason, save compatibility, or default UI behavior may derive from hidden grid, hidden lattice, hex axial/cube coordinates, sequential ids, centroid guesses, bounding-box adjacency, or renderer-only lines.",
+    "Define save/content hash behavior for strategic terrain schema changes: migrate only when explicit and safe, otherwise structured rejection without silent fallback.",
+    "Keep formulas at intent level: every advantage must carry local cost/dependency/counter and no hidden global penalty, fixed culture/ethnicity buff, or person total-stat shortcut."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-SCHEMA-001",
+    "git diff --check",
+    "pnpm --filter @monsoon/sim-core test",
+    "pnpm --filter @monsoon/protocol test",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm --filter @monsoon/save-format test",
+    "pnpm check",
+    "focused deterministic query tests for layer priority, terrain-route-node path reasons, stable tie-breaks, and strategic terrain hash behavior",
+    "negative tests proving district governance adjacency, polygon centroid proximity, hidden grid/lattice ids, and renderer-only lines cannot create route reachability"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-schema",
+  "threads": {},
+  "route_to": "systems_architect",
+  "notes": [
+    "This task becomes eligible only after M7-STRATEGIC-TERRAIN-RECOVERY-001 receives systems/QA acceptance.",
+    "ADR-010 remains anti-grid negative proof; ADR-011 is the player-facing strategic terrain target.",
+    "This task must not implement client rendering, content fixture migration, high-fidelity art, formal GIS data, production cultural assets, server/multiplayer, telemetry, Rust/WASM, or manual node battle scope."
+  ],
+  "created_at": "2026-07-01T18:20:00+08:00",
+  "updated_at": "2026-07-01T18:20:00+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "ready_after_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "next_action": "Await recovery-plan review before starting schema work."
+}

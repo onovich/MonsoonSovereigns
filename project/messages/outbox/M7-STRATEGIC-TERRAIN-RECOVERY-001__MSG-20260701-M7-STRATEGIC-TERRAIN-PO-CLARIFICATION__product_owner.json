@@ -1,0 +1,77 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION",
+  "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "from_role": "product_owner",
+  "to_role": "lead_orchestrator",
+  "status": "REQUEST_CHANGES",
+  "summary": "Product owner explicitly rejects the current map drawing direction and spatial indexing direction at the root level. The recovery must not treat the current topology-backed polygon map as a strategy-game terrain foundation that only needs visual polish.",
+  "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+  "commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+  "artifacts": [
+    "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION__product_owner.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json",
+    "PROJECT_STATUS.md"
+  ],
+  "tests_run": [],
+  "decisions": [
+    {
+      "id": "STRATEGIC_TERRAIN_DRAWING_MODEL_REJECTED",
+      "decision": "The current player-facing strategic terrain drawing direction is rejected at the root level; downstream work must replace it rather than polish it."
+    },
+    {
+      "id": "STRATEGIC_TERRAIN_SPATIAL_INDEX_REJECTED",
+      "decision": "The current spatial indexing and interaction direction is rejected at the root level; downstream work must define a new authoritative terrain-route-node query model."
+    },
+    {
+      "id": "ADR_010_NOT_CONTENT_LOCK_TARGET",
+      "decision": "ADR-010 remains useful as anti-hidden-grid proof, but ADR-011 must supersede it for player-facing strategic terrain and spatial interaction."
+    }
+  ],
+  "clarifications": [
+    {
+      "id": "NOT_A_VISUAL_POLISH_ISSUE",
+      "decision": "The current result is not accepted as a low-fidelity strategic terrain map. It does not resemble the terrain readability expected from mature grand-strategy references."
+    },
+    {
+      "id": "DRAWING_MODEL_REJECTED",
+      "decision": "The current terrain drawing approach is rejected. Replacing rectangular tiles with irregular-looking polygon shapes is not enough if the map still reads as abstract cells instead of terrain, routes, barriers, nodes, and strategic places."
+    },
+    {
+      "id": "SPATIAL_INDEX_REJECTED",
+      "decision": "The current spatial indexing and interaction direction is rejected. The next plan must define a new authoritative strategic terrain surface and hit-test/pathing model instead of preserving polygon-first governance footprints as the main spatial substrate."
+    },
+    {
+      "id": "ADR_010_LIMIT",
+      "decision": "ADR-010 remains useful as anti-hidden-grid proof, but it is not an acceptable target architecture for content lock. ADR-011 must supersede it for player-facing strategic terrain and spatial interaction."
+    }
+  ],
+  "required_next_plan_properties": [
+    "Start from mature strategy-game map practice: continuous terrain readability, named strategic places, roads/river/coast/pass corridors, chokepoints, and route capacity/risk, not from a district-cell board.",
+    "Separate governance boundaries from terrain patches, barriers/channels, strategic nodes, route corridors, and player action targets.",
+    "Define hit testing and spatial queries around actionable terrain/route/node layers first, with governance districts as an overlay, not the core map substrate.",
+    "Require validation evidence that the map no longer behaves like a disguised rectangular/grid/lattice/cell board.",
+    "Require player-facing route and terrain reasons to come from the same query model used by AI and previews."
+  ],
+  "non_authorized_scope": [
+    "high_fidelity_final_art",
+    "formal_gis_historical_database",
+    "server_or_multiplayer",
+    "telemetry_or_accounts",
+    "manual_node_battle_reversal",
+    "release_or_commercial_decisions"
+  ],
+  "risks": [
+    {
+      "id": "M7-STRATEGIC-TERRAIN-ROOT-REWORK",
+      "severity": "R4",
+      "summary": "If the rejected drawing and spatial-index direction is preserved, M7 will harden a map that does not read as a mature strategic terrain game.",
+      "mitigation": "Require ADR-011 and downstream recovery tasks to replace the player-facing terrain/spatial model before content-lock reconsideration."
+    }
+  ],
+  "blockers": [],
+  "source_user_statement": "你也没做得像战略游戏地形。我对你目前地图绘制的方案、地图空间索引方案，从根本上就是彻底否定的态度",
+  "route_to": "lead_orchestrator",
+  "requested_action": "Interrupt or amend the active M7-STRATEGIC-TERRAIN-RECOVERY-001 planning writer so ADR-011 and downstream tasks replace the rejected map/spatial-index direction rather than polishing it.",
+  "created_at": "2026-07-01T18:10:33.6637785+08:00"
+}

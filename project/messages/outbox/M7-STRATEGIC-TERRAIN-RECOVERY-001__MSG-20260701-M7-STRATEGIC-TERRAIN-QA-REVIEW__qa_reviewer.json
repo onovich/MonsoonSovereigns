@@ -1,0 +1,143 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Independent QA accepts only the M7 strategic terrain recovery planning package. ADR-011 records the product-owner root-level rejection of the current map drawing and spatial indexing direction, supersedes the polygon-first player-facing terrain/spatial model for content-lock purposes, and defines a bounded DRAFT downstream chain. This acceptance does not approve M7 content lock, does not start downstream implementation, and does not start M7 exit validation.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION__product_owner.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-EXIT-VALIDATION-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+  "commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Dirty state before QA handoff creation was limited to PROJECT_STATUS.md, project state/message/task files, ADR-011, M7 strategic terrain task files, and message route/outbox files. No apps/**, packages/**, content-source/**, tools/**, CI, gate docs, roadmap, acceptance matrix, manifest, checksums, or validation report paths appeared."
+    },
+    {
+      "command": "git diff --name-only",
+      "exit_code": 0,
+      "result": "Tracked diff only: PROJECT_STATUS.md, project/goal-mode-state.json, project/messages/outbox/GOAL-MODE-CONTINUATION.json, project/model-routing-state.json, project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json, project/tasks/thread-registry.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-RECOVERY-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-SCHEMA-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID writer handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID systems_architect handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output; no dependency-ready task is exposed while M7-STRATEGIC-TERRAIN-RECOVERY-001 remains in REVIEW."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "VALID qa_reviewer handoff."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ACCEPT_RECOVERY_PLANNING_PACKAGE_ONLY",
+      "decision": "QA accepts only the recovery planning package for lead integration. This does not approve M7 content lock, does not start M7-STRATEGIC-TERRAIN-SCHEMA-001 or any downstream implementation, and does not start M7-EXIT-VALIDATION-001."
+    },
+    {
+      "id": "PO_ROOT_REJECTION_RECORDED",
+      "decision": "The package records the product owner's root-level rejection of both current map drawing and current spatial indexing, not merely a visual polish request."
+    },
+    {
+      "id": "ADR_011_SUPERSEDES_POLYGON_FIRST_PLAYER_MAP",
+      "decision": "ADR-011 clearly supersedes the rejected polygon-first player-facing map/spatial model for M7 content-lock recovery and makes district governance footprints overlays rather than hit-test, route-cost, path-preview, or AI-reason authority."
+    },
+    {
+      "id": "DOWNSTREAM_TASKS_REMAIN_DRAFT",
+      "decision": "M7-STRATEGIC-TERRAIN-SCHEMA-001, FIXTURE-001, RENDERER-INTERACTION-001, and VALIDATION-001 are DRAFT with sequential dependencies and ready_after_task fields, so they cannot start from this QA acceptance alone."
+    },
+    {
+      "id": "CONTENT_LOCK_AND_EXIT_REMAIN_BLOCKED",
+      "decision": "M7-CONTENT-LOCK-ACCEPTANCE-001 remains BLOCKED with content_lock_accepted=false and human_gate_state REQUEST_CHANGES_STRATEGIC_TERRAIN_MAP_AND_SPATIAL_INDEX_REQUIRED. M7-EXIT-VALIDATION-001 remains DRAFT with no branch/worktree."
+    },
+    {
+      "id": "NEGATIVE_VALIDATION_COVERAGE_ACCEPTED_FOR_PLANNING",
+      "decision": "ADR-011 and downstream tasks require negative coverage for hidden grid/lattice/cell leakage, visual-neighbor-without-route, visually-distant-explicit-route, barrier-without-crossing, governance-adjacent-but-route-blocked, geometry perturbation without route change, and renderer-only fake routes."
+    },
+    {
+      "id": "HISTORICAL_AND_SCOPE_BOUNDARIES_PRESERVED",
+      "decision": "The package preserves historical/cultural overclaim boundaries and does not authorize high-fidelity final art, formal GIS, production cultural assets, server/multiplayer, telemetry/accounts/cloud save, Rust/WASM, release/commercial/branding decisions, or manual node battle reversal."
+    }
+  ],
+  "risks": [
+    {
+      "id": "CROSS_SURFACE_REPLACEMENT_RISK",
+      "severity": "R4",
+      "summary": "The accepted plan will require later changes across schema, fixture/content, renderer/interaction, AI/player explanation, save/query boundaries, and validation.",
+      "mitigation": "Keep the downstream chain sequential and DRAFT until each task receives its own start, implementation, review, and validation."
+    },
+    {
+      "id": "VISUAL_JUDGMENT_RISK",
+      "severity": "R3",
+      "summary": "Validation includes screenshot judgment that the map no longer reads as a disguised cell board.",
+      "mitigation": "Pair screenshot review with concrete query parity, route-preview, hit-test priority, anti-grid/lattice/cell, and renderer-only fake route tests."
+    },
+    {
+      "id": "HISTORICAL_OVERCLAIM_RISK",
+      "severity": "R4",
+      "summary": "Low-fidelity terrain, port, river, pass, route, polity, or label content can become false historical assertion if not tagged and reviewed.",
+      "mitigation": "Fixture work requires historical_researcher review and HISTORICAL/INFERRED/COMPOSITE/FICTIONAL tagging before formal content claims."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Lead may integrate the accepted recovery planning package only. Keep M7 content lock unapproved, keep downstream strategic terrain implementation tasks unstarted until separately routed, and keep M7-EXIT-VALIDATION-001 disabled until strategic terrain validation enters main and product owner explicitly reconsiders content lock.",
+  "created_at": "2026-07-01T19:07:50.5599129+08:00"
+}

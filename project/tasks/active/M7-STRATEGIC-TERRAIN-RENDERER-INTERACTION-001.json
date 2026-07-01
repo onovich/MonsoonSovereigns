@@ -1,0 +1,83 @@
+{
+  "id": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+  "summary": "Replace rejected polygon-first map drawing and spatial index with terrain-route-node-first rendering and interaction",
+  "milestone": "M7",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "systems_architect",
+  "required_reviewers": [
+    "systems_architect",
+    "qa_reviewer"
+  ],
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-STRATEGIC-TERRAIN-FIXTURE-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/**",
+      "packages/client-core/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      "tests/**",
+      ".storybook/**",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "packages/protocol/**",
+      "packages/sim-core/**",
+      "packages/save-format/**",
+      "packages/content-runtime/**",
+      "content-source/**",
+      "apps/desktop/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Replace or bypass the rejected current map drawing direction and polygon-first spatial index where needed; do not treat this as visual polish over the old topology-backed polygon map.",
+    "Default player map renders terrain patches/bands, barriers/channels, strategic nodes, route corridors, and governance footprints as distinct layers, with governance as overlay rather than primary board cells.",
+    "Hit testing prioritizes route corridors, strategic nodes, crossings/ports/passes/blockers, and terrain explanation layers before district governance footprints.",
+    "Route previews are drawn from accepted terrain-route-node query results, not from polygon centroids, bounding boxes, nearest-neighbor geometry, hidden grid/lattice ids, or renderer-only fake lines.",
+    "Player-facing route preview shows node/corridor sequence, mode, estimated days, bottleneck capacity, season state, terrain reason, blocker state, risk, and governance consequences when relevant.",
+    "The map/task rail/district list/inspector stay synchronized when the active object is a strategic node, route corridor, terrain feature, blocker, or governance overlay.",
+    "The UI remains low-fidelity and does not introduce production art, final GIS assets, production cultural symbols, or manual node battle UI."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+    "git diff --check",
+    "pnpm --filter @monsoon/map-renderer test",
+    "pnpm --filter web test",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "pnpm check",
+    "Playwright screenshots at 1440x900 and 1280x720 proving the map reads as strategic terrain rather than a disguised cell board",
+    "Playwright or component tests proving node/corridor hit priority over governance overlays and route preview reason parity with query output"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-renderer-interaction",
+  "threads": {},
+  "route_to": "client_engineer",
+  "notes": [
+    "This task is intentionally allowed to replace the old renderer/spatial-index direction inside its allowed paths after schema and fixture acceptance.",
+    "Protocol/schema/content changes belong to earlier tasks; this task consumes accepted read/query surfaces.",
+    "Default player text should explain decisions, not implementation terms or debug ids."
+  ],
+  "created_at": "2026-07-01T18:20:00+08:00",
+  "updated_at": "2026-07-01T18:20:00+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "ready_after_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "next_action": "Await accepted fixture/content work before renderer and interaction replacement starts."
+}

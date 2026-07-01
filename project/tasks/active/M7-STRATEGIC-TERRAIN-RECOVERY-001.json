@@ -2,7 +2,7 @@
   "id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
   "summary": "Plan strategic terrain map recovery after product-owner rejection of current map rendering and spatial indexing direction",
   "milestone": "M7",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "gameplay_designer",
   "reviewer_role": "systems_architect",
   "required_reviewers": [
@@ -74,7 +74,12 @@
     "git diff --check"
   ],
   "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
-  "threads": {},
+  "threads": {
+    "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "gameplay_designer": "019f1d25-5ee0-73a3-90bd-e856e187fa30",
+    "systems_architect": "019f1d34-65ac-7620-8a52-a84d2c8e9ea1",
+    "qa_reviewer": "019f1d59-52cc-7d51-a4dd-fc66d0b62804"
+  },
   "route_to": "lead_orchestrator",
   "notes": [
     "This task is created from a product-owner REQUEST_CHANGES during formal M7 content-lock reconsideration.",
@@ -82,7 +87,8 @@
     "ADR-010 anti-grid work remains useful as negative proof, but it is insufficient for content lock because it does not model terrain readability, route embodiment, node priority, or mature strategy-game map semantics.",
     "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and is not reopened by this map recovery work.",
     "Historical Southeast Asia district borders, ports, river importance, passes, route claims, and cultural map labels remain RESEARCH REQUIRED before formal historical content is asserted.",
-    "No GIS, server, Rust/WASM, multiplayer, telemetry, account, paid service, production art, or commercial/release decision is authorized."
+    "No GIS, server, Rust/WASM, multiplayer, telemetry, account, paid service, production art, or commercial/release decision is authorized.",
+    "Latest product-owner clarification rejects both the current strategic map drawing model and the current spatial indexing direction at the root level; ADR-011 must supersede the player-facing map/spatial model rather than polish the existing polygon-first direction."
   ],
   "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
   "gameplay_design_thread_id": "019f1cfc-1ea9-7f10-a488-7df16413177c",
@@ -100,8 +106,38 @@
     "M7-STRATEGIC-TERRAIN-VALIDATION-001"
   ],
   "created_at": "2026-07-01T17:27:48.7511210+08:00",
-  "updated_at": "2026-07-01T17:27:48.7511210+08:00",
+  "updated_at": "2026-07-01T19:10:48.4719566+08:00",
   "human_gate_required": false,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-  "next_action": "Start this planning task with gameplay_designer output, route the ADR/task-chain package to systems_architect and independent qa_reviewer, then continue only after ACCEPT."
+  "start_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-START__lead_orchestrator.json",
+  "writer_thread_id": "019f1d25-5ee0-73a3-90bd-e856e187fa30",
+  "expected_writer_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+  "started_at": "2026-07-01T18:06:20.6631359+08:00",
+  "next_action": "Open PR, wait for CI, merge to main, then close M7-STRATEGIC-TERRAIN-RECOVERY-001. Downstream strategic terrain tasks remain DRAFT until this task enters main.",
+  "route_file": "project/messages/routes/M7-STRATEGIC-TERRAIN-RECOVERY-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-START.json",
+  "product_owner_clarification_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION__product_owner.json",
+  "product_owner_clarification_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-RECOVERY-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-PO-CLARIFICATION.json",
+  "review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+  "systems_status": "ACCEPT",
+  "downstream_task_chain": [
+    "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+    "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+    "M7-STRATEGIC-TERRAIN-VALIDATION-001"
+  ],
+  "route_submission_id": "019f1d29-e2a6-7642-a979-e6f246f46986",
+  "systems_thread_id": "019f1d34-65ac-7620-8a52-a84d2c8e9ea1",
+  "systems_thread_nickname": "Meridian",
+  "systems_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-RECOVERY-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
+  "expected_systems_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+  "systems_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+  "qa_thread_id": "019f1d59-52cc-7d51-a4dd-fc66d0b62804",
+  "qa_thread_nickname": "Gate",
+  "qa_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-RECOVERY-001__ROUTE-20260701-SYSTEMS-TO-QA-REVIEW.json",
+  "expected_qa_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json",
+  "qa_status": "ACCEPT",
+  "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json",
+  "qa_closed_at": "2026-07-01T19:10:48.4719566+08:00",
+  "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-07-01T19:10:48.4719566+08:00"
 }
