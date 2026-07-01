@@ -1,0 +1,95 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-CLOSED",
+  "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "M7-STRATEGIC-TERRAIN-SCHEMA-001 is closed after PR #237 passed both required PR Gate jobs, merged into origin/main, and the accepted strategic terrain schema commit entered main at e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b. The next dependency-ready M7 task is M7-STRATEGIC-TERRAIN-FIXTURE-001.",
+  "artifacts": [
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "packages/sim-core/src/strategic-terrain-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/protocol/src/index.ts",
+    "packages/content-runtime/src/index.ts",
+    "packages/save-format/src/index.ts",
+    "tests/sim-core-map-topology.test.ts",
+    "tests/protocol-command-query-schema.test.ts",
+    "tests/content-runtime-pack.test.ts",
+    "tests/save-load-contract.test.ts",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json"
+  ],
+  "branch_or_worktree": "codex/close-m7-strategic-terrain-schema",
+  "commit": null,
+  "integrated_pr": 237,
+  "integrated_main_commit": "e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/237",
+  "implementation_commit": "e8e2255c",
+  "ci": [
+    {
+      "name": "Quality, Web, and Browser Smoke",
+      "status": "PASS",
+      "duration": "2m52s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28522469504/job/84550027036"
+    },
+    {
+      "name": "Windows Desktop Smoke Artifact",
+      "status": "PASS",
+      "duration": "53s",
+      "url": "https://github.com/onovich/MonsoonSovereigns/actions/runs/28522469504/job/84550026894"
+    }
+  ],
+  "tests_run": [
+    {
+      "command": "cmd /c pnpm.cmd check",
+      "exit_code": 0,
+      "result": "format:check, lint, workspace typecheck, and architecture:check passed before PR creation; architecture self-test reported 15 expected violations."
+    },
+    {
+      "command": ".\\node_modules\\.bin\\vitest.CMD run --config vitest.config.ts tests\\sim-core-map-topology.test.ts tests\\protocol-command-query-schema.test.ts tests\\content-runtime-pack.test.ts tests\\save-load-contract.test.ts",
+      "exit_code": 0,
+      "result": "Focused deterministic and negative strategic terrain tests passed before PR creation; 4 test files passed; 57 tests passed."
+    },
+    {
+      "command": "gh pr checks 237 --watch",
+      "exit_code": 0,
+      "result": "Both PR Gate jobs passed."
+    },
+    {
+      "command": "gh pr merge 237 --squash --delete-branch",
+      "exit_code": 0,
+      "result": "PR #237 merged and local main fast-forwarded to e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CLOSE_SCHEMA_AFTER_MAIN",
+      "decision": "Mark M7-STRATEGIC-TERRAIN-SCHEMA-001 CLOSED only after PR CI passed and origin/main contained the accepted schema changes."
+    },
+    {
+      "id": "PROMOTE_FIXTURE_READY",
+      "decision": "Promote M7-STRATEGIC-TERRAIN-FIXTURE-001 to READY because its dependency M7-STRATEGIC-TERRAIN-SCHEMA-001 is now integrated in main."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_REJECTED",
+      "decision": "M7 content lock remains rejected until fixture, renderer-interaction, validation, and product-owner reconsideration complete."
+    }
+  ],
+  "risks": [
+    {
+      "id": "STRATEGIC_TERRAIN_CHAIN_NOT_DONE",
+      "severity": "R2",
+      "summary": "Schema work alone does not make the player-facing map acceptable.",
+      "mitigation": "Continue immediately to M7-STRATEGIC-TERRAIN-FIXTURE-001, then renderer-interaction and validation."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Start M7-STRATEGIC-TERRAIN-FIXTURE-001 as the next READY M7 task.",
+  "created_at": "2026-07-01T21:53:51.5402735+08:00"
+}
