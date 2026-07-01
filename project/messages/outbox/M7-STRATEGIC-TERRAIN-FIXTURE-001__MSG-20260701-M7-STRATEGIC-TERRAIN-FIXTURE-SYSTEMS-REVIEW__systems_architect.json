@@ -1,0 +1,149 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "from_role": "systems_architect",
+  "status": "REQUEST_CHANGES",
+  "summary": "Systems review cannot accept this pass yet. The branch stays within the task allowed paths and the compiler-local strategicTerrain source extension is reasonable for this task because it maps into the already accepted runtime StrategicTerrainDefinitionV1/query/save/hash boundary without changing renderer, Electron, web, or map-renderer packages. The default fixture compiles, boots into WorldState, exposes list/route-preview queries, preserves governance as overlayOnly, and historical review has accepted it only as COMPOSITE validation content. However, the content compiler's barrier crossing validation is too weak: validateM2StrategicTerrainBarrierCrossings validates each blocking barrier with referencingCorridors.some(...), so one valid crossing/pass/port node on a barrier can mask another corridor that references the same blocking barrier without either endpoint being an explicit pass, crossing, or port for that barrier. This does not satisfy the acceptance criterion that barrier crossing without explicit node/corridor is rejected.",
+  "artifacts": [
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "apps/content-tools/src/index.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "packages/content-runtime/src/index.ts",
+    "packages/sim-core/src/boot-content-runtime-v1.ts",
+    "packages/sim-core/src/world-state-v0.ts",
+    "packages/sim-core/src/strategic-terrain-v1.ts",
+    "packages/sim-core/src/command-query-v1.ts",
+    "docs/decisions/ADR-010-map-topology.md",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+    "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-HISTORICAL-TO-SYSTEMS-REVIEW.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Only allowed-path implementation/test/content/project-message files were modified or added before this systems handoff; no forbidden app/web, desktop, ui, map-renderer, docs gate, roadmap, manifest, report, or CI paths were changed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json."
+    },
+    {
+      "command": "cmd /c pnpm.cmd content:validate",
+      "exit_code": 0,
+      "result": "All configured content validation passed. The M2 prototype fixture compiled with manifestHash 89a8db54."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 40 tests, including current strategic terrain fixture and malformed fixture checks."
+    },
+    {
+      "command": "cmd /c pnpm.cmd exec vitest run tests/sim-core-boot-boundary.test.ts",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 3 tests. The default compiled fixture boots into sim-core, exposes strategic terrain list query, and returns a reachable strategic route preview."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 17 tests."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "Vitest passed 26 files / 204 tests. Node emitted the existing MODULE_TYPELESS_PACKAGE_JSON warning for deterministic-rng-worker.ts."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd exec tsx -e <ad-hoc strategic terrain mutation check>",
+      "exit_code": 1,
+      "result": "Diagnostic-only attempt did not run because tsx is not installed. The barrier validation issue was therefore confirmed by direct code review of validateM2StrategicTerrainBarrierCrossings rather than by this command."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "SCOPE_PATHS_OK",
+      "decision": "The changed implementation/content/test/project-state files are within allowed_paths. Forbidden renderer, web, desktop, ui, map-renderer, docs gate/roadmap/matrix, manifest, report, and CI paths were not modified."
+    },
+    {
+      "id": "COMPILER_LOCAL_SOURCE_EXTENSION_ACCEPTABLE",
+      "decision": "Leaving packages/content-schema unchanged is acceptable for this task because the raw-source strategicTerrain extension is parsed and validated in apps/content-tools, then materialized into the pre-existing content-runtime and sim-core StrategicTerrainDefinitionV1 boundary. This remains a compiler-local extension, not an implicit runtime RPC or renderer authority path."
+    },
+    {
+      "id": "RUNTIME_QUERY_SAVE_HASH_BOUNDARY_OK",
+      "decision": "The compiled strategic terrain enters runtime content with contentManifestHash, then sim-core creates a canonical strategicTerrainHash. Existing runtime/content/save/query validation rejects missing or mismatched strategic terrain instead of silently falling back to topology, district polygons, or renderer lines."
+    },
+    {
+      "id": "COMPOSITE_ONLY_HISTORICAL_BOUNDARY_PRESERVED",
+      "decision": "Historical ACCEPT is valid only for COMPOSITE validation content. Do not promote any port, river, pass, road, polity, culture, language, or exact border claim without a future historical source review."
+    },
+    {
+      "id": "FIXTURE_LAYER_SEPARATION_PARTIAL_ACCEPT",
+      "decision": "The fixture contains distinct TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint overlay records. Governance footprints are overlayOnly and are not used as route authority in the current compiled/query path."
+    }
+  ],
+  "risks": [
+    {
+      "id": "PER_CORRIDOR_BARRIER_CROSSING_VALIDATION_GAP",
+      "severity": "R4",
+      "summary": "A blocking barrier can be considered valid if any referencing corridor has an explicit pass/crossing/port endpoint, even when another corridor referencing the same barrier has no explicit crossing endpoint.",
+      "mitigation": "Require per-corridor validation and add a negative test that mutates one otherwise ordinary corridor to reference an existing blocks-without-explicit-corridor barrier while neither endpoint is a pass, crossing, or port node tied to that barrier."
+    },
+    {
+      "id": "SEQUENTIAL_ID_NEGATIVE_COVERAGE_GAP",
+      "severity": "R3",
+      "summary": "Current content-tools negative coverage proves row/grid leakage via row1, but it does not explicitly prove sequential-id leakage on the strategic terrain compiler path.",
+      "mitigation": "Add or document focused negative coverage for sequential-id leakage on strategic terrain IDs, consistent with the accepted authorityProhibitions contract."
+    },
+    {
+      "id": "COMPILER_DEFAULT_SEASONALITY",
+      "severity": "R2",
+      "summary": "The source fixture omits per-corridor seasonality and the compiler emits deterministic 12-month defaults. The compiled runtime/hash/query boundary is explicit, but future balance/content work should not treat compiler defaults as reviewed local terrain balance.",
+      "mitigation": "Non-blocking for this systems review if the per-corridor barrier fix lands; keep route explanation tags explicit and consider making source seasonality required in a later content-hardening task."
+    },
+    {
+      "id": "COMPOSITE_UI_LOCALIZATION",
+      "severity": "R3",
+      "summary": "Downstream UI/localization could accidentally turn abstract displayNameKey labels such as delta-port, north-pass, or outer-island-port into verified historical claims.",
+      "mitigation": "Preserve historical review's COMPOSITE-only restriction through renderer/localization and validation tasks."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "BLOCKER_PER_CORRIDOR_BARRIER_CROSSING",
+      "summary": "Tighten apps/content-tools/src/index.ts so every RouteCorridor that references a BarrierChannel with traversalRule blocks-without-explicit-corridor is rejected unless that specific corridor has a from or to StrategicNode whose nodeKind is pass, crossing, or port and whose barrierChannelIds include the same barrier id.",
+      "required_tests": [
+        "Add a content-tools negative test where one corridor such as corridor.basin-coast-watch is mutated to include barrier.b-ridge-spine while neither endpoint is an explicit crossing/pass/port node for that barrier; expect invalid-route at that corridor or barrier path.",
+        "Keep the existing historical-overclaim, governance shortcut, hidden grid/lattice/sequential-id, duplicate id, and missing endpoint negative tests passing.",
+        "Rerun git diff --check, taskctl validate, content:validate, @monsoon/content-tools test, sim-core boot-boundary, content-runtime test, sim-core test, and affected typechecks."
+      ]
+    }
+  ],
+  "route_to": "simulation_engineer",
+  "requested_action": "Please fix the per-corridor blocking-barrier validation gap, add the focused negative regression, and preserve the historical review constraint that this remains COMPOSITE validation content. After repair, route back through historical_researcher only if wording/historicity changes; otherwise route directly to systems_architect for R2 systems review with updated test evidence.",
+  "created_at": "2026-07-01T22:50:00+08:00"
+}

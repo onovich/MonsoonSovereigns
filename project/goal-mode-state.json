@@ -12,27 +12,22 @@
       "task_ids": [
         "M7-STRATEGIC-TERRAIN-FIXTURE-001"
       ],
-      "status": "active_ready_for_strategic_terrain_fixture_start",
+      "status": "accepted_pending_pr_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-strategic-terrain-schema",
-      "updated_at": "2026-07-01T21:53:51.5402735+08:00",
-      "last_integrated_task": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
-      "last_main_commit": "e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b",
-      "next_ready_tasks": [
-        "M7-STRATEGIC-TERRAIN-FIXTURE-001"
-      ],
-      "next_action": "Start M7-STRATEGIC-TERRAIN-FIXTURE-001 as the next READY M7 task."
+      "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+      "updated_at": "2026-07-01T23:12:49.7993343+08:00",
+      "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-LEAD-ACCEPT__lead_orchestrator.json",
+      "next_action": "Open PR, wait for CI, merge to main, then close M7 strategic terrain fixture."
     }
   },
   "last_integrated_task": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
-  "last_main_commit": "e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b",
-  "next_ready_tasks": [
-    "M7-STRATEGIC-TERRAIN-FIXTURE-001"
-  ],
+  "last_main_commit": "524e8d13",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -576,7 +571,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M7-STRATEGIC-TERRAIN-FIXTURE-001 as the next READY M7 task.",
+  "next_action": "Open PR, wait for CI, merge to main, then close M7 strategic terrain fixture.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -939,8 +934,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-01T21:53:51.5402735+08:00",
-  "updated_at": "2026-07-01T21:53:51.5402735+08:00",
+  "last_updated_at": "2026-07-01T23:12:49.7993343+08:00",
+  "updated_at": "2026-07-01T23:12:49.7993343+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2007,8 +2002,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "READY",
-  "next_machine_action": "Start M7-STRATEGIC-TERRAIN-FIXTURE-001 as the next READY M7 task.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Open PR, wait for CI, merge to main, then close M7 strategic terrain fixture.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3738,7 +3733,7 @@
   },
   "m7_strategic_terrain_fixture": {
     "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-    "status": "READY",
+    "status": "ACCEPTED",
     "owner_role": "simulation_engineer",
     "reviewer_role": "historical_researcher",
     "required_reviewers": [
@@ -3752,7 +3747,58 @@
     "ready_after_main_commit": "e7807efe1494a6a844dfe74dd6e5f75dd1e7ab3b",
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
-    "updated_at": "2026-07-01T21:53:51.5402735+08:00",
-    "next_action": "Start fixture/content work with historical, systems, and QA review gates."
+    "updated_at": "2026-07-01T23:12:49.7993343+08:00",
+    "next_action": "Open PR, wait for CI, merge to main, then close M7 strategic terrain fixture.",
+    "base_main_commit": "524e8d13",
+    "writer_thread_id": "019f1dfe-410b-75e3-ab4f-63c1867db32f",
+    "writer_thread_nickname": "Engine",
+    "start_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-START.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "started_at": "2026-07-01T22:04:06.6127217+08:00",
+    "review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "historical_thread_id": "019f1e17-60ae-7e92-a8d1-d5ce7d762666",
+    "historical_thread_nickname": "Estuary",
+    "historical_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-WRITER-TO-HISTORICAL-REVIEW.json",
+    "expected_historical_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+    "routed_to_historical_at": "2026-07-01T22:31:41.4150076+08:00",
+    "historical_status": "ACCEPT",
+    "historical_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
+    "historical_reviewed_at": "2026-07-01T22:38:17.4347927+08:00",
+    "systems_thread_id": "019f1e1d-93cb-7911-88a4-61ddfcba4d6e",
+    "systems_thread_nickname": "Meridian",
+    "systems_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-HISTORICAL-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
+    "routed_to_systems_at": "2026-07-01T22:38:17.4347927+08:00",
+    "systems_status": "REQUEST_CHANGES",
+    "systems_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_reviewed_at": "2026-07-01T22:48:51.4775066+08:00",
+    "request_changes_round": 1,
+    "request_changes_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-SYSTEMS-REQUEST-CHANGES-TO-SIMULATION.json",
+    "expected_writer_r2_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "request_changes_sent_at": "2026-07-01T22:48:51.4775066+08:00",
+    "review_handoff_r2": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "systems_r2_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_r2_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "routed_to_systems_r2_at": "2026-07-01T22:58:56.3713491+08:00",
+    "systems_status_r2": "ACCEPT",
+    "systems_r2_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "systems_r2_reviewed_at": "2026-07-01T23:04:58.8260541+08:00",
+    "qa_thread_id": "019f1e35-fc1f-7333-b0fd-02e2a4d5d8c8",
+    "qa_thread_nickname": "Witness",
+    "qa_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-SYSTEMS-R2-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-QA-REVIEW__qa_reviewer.json",
+    "routed_to_qa_at": "2026-07-01T23:04:58.8260541+08:00",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-QA-REVIEW__qa_reviewer.json",
+    "qa_reviewed_at": "2026-07-01T23:12:49.7993343+08:00",
+    "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-07-01T23:12:49.7993343+08:00",
+    "child_threads_closed": [
+      "019f1dfe-410b-75e3-ab4f-63c1867db32f",
+      "019f1e17-60ae-7e92-a8d1-d5ce7d762666",
+      "019f1e1d-93cb-7911-88a4-61ddfcba4d6e",
+      "019f1e35-fc1f-7333-b0fd-02e2a4d5d8c8"
+    ]
   }
 }

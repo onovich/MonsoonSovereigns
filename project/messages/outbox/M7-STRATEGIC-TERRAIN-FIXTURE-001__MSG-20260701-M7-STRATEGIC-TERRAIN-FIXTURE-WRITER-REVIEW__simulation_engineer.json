@@ -1,0 +1,115 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Implemented low-fidelity COMPOSITE strategic terrain fixture content and compiler validation for TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint overlay separation. The default M2 prototype fixture now compiles strategic terrain into runtime content and boots into sim-core WorldState with strategic terrain query coverage. All historical terrain and route claims remain COMPOSITE validation content pending historical_researcher review.",
+  "artifacts": [
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "apps/content-tools/src/index.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed modified allowed implementation/test/content files plus pre-existing task/route state files and new route evidence files."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "tests/content-tools-compiler.test.ts passed: 40 tests. Covers fixture layer counts and negative historical overclaim, barrier crossing, governance shortcut, hidden lattice id, duplicate id, and missing endpoint cases."
+    },
+    {
+      "command": "cmd /c pnpm.cmd exec vitest run tests/sim-core-boot-boundary.test.ts",
+      "exit_code": 0,
+      "result": "tests/sim-core-boot-boundary.test.ts passed: 3 tests. Confirms compiled strategic terrain boots into WorldState and responds to list/route-preview queries."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "content-tools TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd content:validate",
+      "exit_code": 0,
+      "result": "All default content validation passed. M2 prototype manifestHash is 89a8db54."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "tests/content-runtime-pack.test.ts passed: 17 tests."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed, 204 tests passed. Includes updated boot-boundary strategic terrain coverage."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "content-runtime TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "sim-core TypeScript typecheck passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "SOURCE_EXTENSION_WITHOUT_CONTENT_SCHEMA_SCOPE_EXPANSION",
+      "decision": "Kept packages/content-schema unchanged because it is outside this task's allowed_paths. The M2 compiler reads a local strategicTerrain extension from the raw source object and compiles it into the already accepted runtime strategic terrain DTO."
+    },
+    {
+      "id": "COMPOSITE_ONLY_FIXTURE",
+      "decision": "All new terrain patches and barrier channels are tagged COMPOSITE. Compiler validation rejects HISTORICAL or INFERRED strategic terrain labels until historical_researcher review records source approval."
+    },
+    {
+      "id": "GOVERNANCE_OVERLAY_ONLY",
+      "decision": "DistrictGovernanceFootprint records remain overlayOnly and compiler validation rejects route corridors with no terrainPatchIds, preventing governance adjacency from becoming route authority."
+    },
+    {
+      "id": "NO_GRID_LATTICE_AUTHORITY",
+      "decision": "Strategic terrain IDs are named, non-sequential stable strings; compiler validation rejects row/column/hex/cell/sequential id leakage."
+    }
+  ],
+  "risks": [
+    {
+      "id": "HISTORICAL_OVERCLAIM",
+      "severity": "R4",
+      "summary": "The fixture uses low-fidelity COMPOSITE geography and must not be interpreted as exact historical terrain, ports, passes, roads, rivers, polities, cultures, or language labels.",
+      "mitigation": "Routed first to historical_researcher; compiler rejects HISTORICAL/INFERRED labels before review."
+    },
+    {
+      "id": "CLIENT_RENDERER_NOT_UPDATED",
+      "severity": "R4",
+      "summary": "This task intentionally does not implement renderer/hit-test UI changes.",
+      "mitigation": "Left apps/web, packages/map-renderer, packages/ui, and apps/desktop untouched. Renderer-interaction remains a downstream task."
+    },
+    {
+      "id": "SOURCE_SCHEMA_EXTENSION_LOCAL_TO_COMPILER",
+      "severity": "R3",
+      "summary": "The content-source strategicTerrain field is compiler-local rather than part of packages/content-schema source types.",
+      "mitigation": "Kept this within allowed_paths and validated the extension in apps/content-tools with explicit parser and negative tests."
+    }
+  ],
+  "blockers": [],
+  "route_to": "historical_researcher",
+  "requested_action": "Review the COMPOSITE strategic terrain fixture for historical overclaim risk, label adequacy, and whether any terrain/river/pass/road/port/governance wording needs stronger HISTORICAL/INFERRED/COMPOSITE/FICTIONAL qualification before systems_architect review.",
+  "created_at": "2026-07-01T22:31:00+08:00"
+}

@@ -1,0 +1,105 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-R2-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "from_role": "simulation_engineer",
+  "status": "REVIEW",
+  "summary": "Addressed systems_architect REQUEST_CHANGES by tightening blocking-barrier validation to evaluate every RouteCorridor/barrier reference independently. A corridor that references a BarrierChannel with traversalRule=blocks-without-explicit-corridor is now rejected unless that same corridor has a from/to StrategicNode with nodeKind pass, crossing, or port and that endpoint lists the same barrierChannelId. Added a focused negative test that mutates corridor.basin-coast-watch to reference barrier.b-ridge-spine without a valid explicit endpoint. Existing malformed-fixture negatives remain covered.",
+  "artifacts": [
+    "apps/content-tools/src/index.ts",
+    "tests/content-tools-compiler.test.ts",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Showed modified allowed implementation/test/content/project-state files and task message/route evidence files; no commit was made."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "tests/content-tools-compiler.test.ts passed: 40 tests. Includes the new ordinary corridor blocking-barrier negative and existing historical-overclaim, barrier-without-crossing, governance shortcut, hidden grid/lattice/sequential-id, duplicate id, and missing endpoint tests."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "content-tools TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd content:validate",
+      "exit_code": 0,
+      "result": "All default content validation passed. M2 prototype manifestHash is 78cdb864."
+    },
+    {
+      "command": "cmd /c pnpm.cmd exec vitest run tests/sim-core-boot-boundary.test.ts",
+      "exit_code": 0,
+      "result": "tests/sim-core-boot-boundary.test.ts passed: 3 tests. Deterministic boot hash updated to 11b384ec after removing an invalid blocking-barrier reference from the fixture."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime test",
+      "exit_code": 0,
+      "result": "tests/content-runtime-pack.test.ts passed: 17 tests."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core test",
+      "exit_code": 0,
+      "result": "26 test files passed, 204 tests passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-runtime typecheck",
+      "exit_code": 0,
+      "result": "content-runtime TypeScript typecheck passed."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/sim-core typecheck",
+      "exit_code": 0,
+      "result": "sim-core TypeScript typecheck passed."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "PER_CORRIDOR_BLOCKING_BARRIER_VALIDATION",
+      "decision": "Changed validation from barrier-level existence of any valid crossing corridor to per RouteCorridor/barrier evaluation, so one valid crossing no longer masks another invalid corridor referencing the same blocking barrier."
+    },
+    {
+      "id": "FIXTURE_CORRECTION_FOR_NEW_INVARIANT",
+      "decision": "Removed barrier.h-west-ridge from corridor.anchorage-east-ridge because neither endpoint is an explicit pass/crossing/port endpoint for that barrier under the tightened invariant."
+    },
+    {
+      "id": "NO_HISTORICAL_WORDING_CHANGE",
+      "decision": "Did not change historical wording, historicity labels, source assertions, culture/language labels, road/port/pass importance claims, or historical specificity. This R2 is routed directly back to systems_architect as requested."
+    }
+  ],
+  "risks": [
+    {
+      "id": "STRUCTURAL_FIXTURE_HASH_CHANGED",
+      "severity": "R3",
+      "summary": "Removing the invalid barrier reference changed the M2 content manifest hash and deterministic boot state hash.",
+      "mitigation": "Updated only the sim-core boot boundary expected hash after rerunning content validation and sim-core tests."
+    },
+    {
+      "id": "CONTENT_SCHEMA_EXTENSION_LOCAL_TO_COMPILER",
+      "severity": "R3",
+      "summary": "The strategicTerrain source field remains compiler-local because packages/content-schema changes were outside the accepted implementation approach for this task.",
+      "mitigation": "Explicit parser, compiler validation, runtime DTO compilation, and focused tests remain in allowed paths."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review the R2 per-corridor blocking-barrier validation fix and focused negative test. If accepted, route onward according to the M7 task reviewer sequence.",
+  "created_at": "2026-07-01T22:56:15.4474578+08:00"
+}

@@ -1,0 +1,61 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-START",
+  "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "from_role": "lead_orchestrator",
+  "status": "INFO",
+  "summary": "Start M7-STRATEGIC-TERRAIN-FIXTURE-001 after M7-STRATEGIC-TERRAIN-SCHEMA-001 closed in origin/main. The writer must create low-fidelity COMPOSITE strategic terrain fixture content using accepted terrain-route-node schema boundaries while keeping historical claims explicitly tagged and reviewed.",
+  "artifacts": [
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "docs/decisions/ADR-010-map-topology.md",
+    "packages/sim-core/src/strategic-terrain-v1.ts",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-CLOSED__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "commit": null,
+  "base_main_commit": "524e8d13",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "main was clean before creating fixture branch."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "M7-STRATEGIC-TERRAIN-FIXTURE-001 was the only READY task."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "START_FIXTURE_AFTER_SCHEMA",
+      "decision": "Start fixture/content work only after the accepted strategic terrain schema entered main and was closed."
+    },
+    {
+      "id": "LOW_FIDELITY_COMPOSITE_ONLY",
+      "decision": "Fixture work may use low-fidelity COMPOSITE data but must not overclaim exact historical geography, formal GIS data, final art, production cultural assets, or content lock acceptance."
+    },
+    {
+      "id": "REVIEW_CHAIN_REQUIRED",
+      "decision": "The task requires historical_researcher, systems_architect, and independent qa_reviewer acceptance before integration."
+    }
+  ],
+  "risks": [
+    {
+      "id": "HISTORICAL_OVERCLAIM",
+      "severity": "R4",
+      "summary": "Terrain, pass, river, road, polity, culture, or language claims could be mistaken for exact historical fact.",
+      "mitigation": "Use HISTORICAL/INFERRED/COMPOSITE/FICTIONAL tagging and route to historical_researcher before acceptance."
+    },
+    {
+      "id": "GRID_LEAKAGE",
+      "severity": "R4",
+      "summary": "Fixture content could accidentally reintroduce hidden grid/lattice/sequential-id shortcuts.",
+      "mitigation": "Add compiler/runtime negative tests for hidden grid/lattice leakage, governance-as-route shortcuts, missing endpoints, duplicate ids, and barrier crossings without explicit nodes/corridors."
+    }
+  ],
+  "blockers": [],
+  "route_to": "simulation_engineer",
+  "requested_action": "Implement only the allowed fixture/content and validation scope, then return REVIEW handoff routed first to historical_researcher.",
+  "created_at": "2026-07-01T22:02:45.4604046+08:00"
+}

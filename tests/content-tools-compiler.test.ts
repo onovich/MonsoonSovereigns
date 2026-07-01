@@ -286,6 +286,160 @@ describe("M2 Content Compiler v0", () => {
     });
   });
 
+  test("compiles the M7 strategic terrain fixture as COMPOSITE terrain-route-node content", async () => {
+    const source = await readM2FixtureRecord();
+    const pack = compileContentPackV0OrThrow(source);
+
+    expect(pack.kind).toBe("runtime-m2-world-content-pack-v0");
+    if (pack.kind !== "runtime-m2-world-content-pack-v0") {
+      throw new Error("Expected M2 world runtime pack.");
+    }
+    expect(pack.strategicTerrain).toMatchObject({
+      authority: "terrain-route-node-v1",
+      governanceFootprintRole: "overlay-only",
+      contentManifestHash: pack.manifest.manifestHash
+    });
+    if (pack.strategicTerrain === undefined) {
+      throw new Error("Expected M7 strategic terrain fixture content.");
+    }
+    expect(pack.strategicTerrain.terrainPatches).toHaveLength(12);
+    expect(pack.strategicTerrain.barrierChannels).toHaveLength(8);
+    expect(pack.strategicTerrain.strategicNodes).toHaveLength(20);
+    expect(pack.strategicTerrain.routeCorridors).toHaveLength(28);
+    expect(pack.strategicTerrain.districtGovernanceFootprints).toHaveLength(14);
+    expect(new Set(pack.strategicTerrain.terrainPatches.map((patch) => patch.historicity))).toEqual(
+      new Set(["COMPOSITE"])
+    );
+    expect(new Set(pack.strategicTerrain.routeCorridors.map((corridor) => corridor.mode))).toEqual(
+      new Set(["coast", "mixed", "pass", "river", "road"])
+    );
+    expect(
+      pack.strategicTerrain.routeCorridors.some((corridor) => corridor.widthClass === "narrow")
+    ).toBe(true);
+    expect(
+      pack.strategicTerrain.barrierChannels.some(
+        (channel) => channel.traversalRule === "blocks-without-explicit-corridor"
+      )
+    ).toBe(true);
+    expect(pack.strategicTerrain.strategicNodes.some((node) => node.nodeKind === "pass")).toBe(
+      true
+    );
+    expect(pack.strategicTerrain.strategicNodes.some((node) => node.nodeKind === "crossing")).toBe(
+      true
+    );
+    expect(
+      pack.strategicTerrain.routeCorridors.every((corridor) => corridor.seasonality.length === 12)
+    ).toBe(true);
+    expect(
+      pack.strategicTerrain.districtGovernanceFootprints.every(
+        (footprint) => footprint.overlayOnly === true
+      )
+    ).toBe(true);
+  });
+
+  test("rejects malformed M7 strategic terrain fixture content", async () => {
+    const source = await readM2FixtureRecord();
+
+    const overclaim = mutateStrategicTerrain(source, (terrain) => {
+      const patches = requireMutableRecordArray(terrain, "terrainPatches");
+      patches[0] = { ...requireMutableRecord(patches[0]), historicity: "HISTORICAL" };
+    });
+    const barrierWithoutCrossing = mutateStrategicTerrain(source, (terrain) => {
+      const nodes = requireMutableRecordArray(terrain, "strategicNodes");
+      for (const node of nodes) {
+        const barrierIds = node["barrierChannelIds"];
+        if (Array.isArray(barrierIds)) {
+          node["barrierChannelIds"] = barrierIds.filter(
+            (barrierId) => barrierId !== "barrier.b-ridge-spine"
+          );
+        }
+      }
+    });
+    const ordinaryCorridorBarrierShortcut = mutateStrategicTerrain(source, (terrain) => {
+      const corridors = requireMutableRecordArray(terrain, "routeCorridors");
+      corridors[1] = {
+        ...requireMutableRecord(corridors[1]),
+        barrierChannelIds: ["barrier.b-ridge-spine"]
+      };
+    });
+    const governanceShortcut = mutateStrategicTerrain(source, (terrain) => {
+      const corridors = requireMutableRecordArray(terrain, "routeCorridors");
+      corridors[0] = { ...requireMutableRecord(corridors[0]), terrainPatchIds: [] };
+    });
+    const hiddenGridNode = mutateStrategicTerrain(source, (terrain) => {
+      const nodes = requireMutableRecordArray(terrain, "strategicNodes");
+      nodes[0] = { ...requireMutableRecord(nodes[0]), nodeId: "row1" };
+    });
+    const duplicatePatch = mutateStrategicTerrain(source, (terrain) => {
+      const patches = requireMutableRecordArray(terrain, "terrainPatches");
+      patches[1] = {
+        ...requireMutableRecord(patches[1]),
+        patchId: requireMutableRecord(patches[0])["patchId"]
+      };
+    });
+    const missingEndpoint = mutateStrategicTerrain(source, (terrain) => {
+      const corridors = requireMutableRecordArray(terrain, "routeCorridors");
+      corridors[0] = { ...requireMutableRecord(corridors[0]), toNodeId: "node.missing" };
+    });
+
+    expect(compileContentPackV0(overclaim).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "historical-overclaim",
+          path: "strategicTerrain.terrainPatches[0].historicity"
+        })
+      ])
+    );
+    expect(compileContentPackV0(barrierWithoutCrossing).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "invalid-route",
+          path: "strategicTerrain.routeCorridors[14].barrierChannelIds[0]"
+        })
+      ])
+    );
+    expect(compileContentPackV0(ordinaryCorridorBarrierShortcut).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "invalid-route",
+          path: "strategicTerrain.routeCorridors[1].barrierChannelIds[0]"
+        })
+      ])
+    );
+    expect(compileContentPackV0(governanceShortcut).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "invalid-route",
+          path: "strategicTerrain.routeCorridors[0].terrainPatchIds"
+        })
+      ])
+    );
+    expect(compileContentPackV0(hiddenGridNode).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "lattice-adjacency",
+          path: "strategicTerrain.strategicNodes[0].nodeId"
+        })
+      ])
+    );
+    expect(compileContentPackV0(duplicatePatch).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "duplicate-id",
+          path: "strategicTerrain.terrainPatches[1].patchId"
+        })
+      ])
+    );
+    expect(compileContentPackV0(missingEndpoint).errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "bad-reference",
+          path: "strategicTerrain.routeCorridors[0].toNodeId"
+        })
+      ])
+    );
+  });
+
   test("fails M2 district, settlement, route, curve, and map-geometry references at compile time", async () => {
     const source = await readM2Fixture();
     const badSource = {
@@ -597,6 +751,15 @@ describe("M2 Content Compiler v0", () => {
 async function readM2Fixture(): Promise<M2WorldFixtureSourceV0> {
   const text = await readFile(m2FixtureUrl, "utf8");
   return parseM2WorldFixtureSourceV0(JSON.parse(text) as unknown);
+}
+
+async function readM2FixtureRecord(): Promise<Record<string, unknown>> {
+  const text = await readFile(m2FixtureUrl, "utf8");
+  const parsed = JSON.parse(text) as unknown;
+  if (!isRecord(parsed)) {
+    throw new Error("Expected M2 fixture root record.");
+  }
+  return parsed;
 }
 
 async function readM2BadFixtureManifest(): Promise<M2BadFixtureManifest> {
@@ -1221,4 +1384,37 @@ function isStringArray(input: unknown): input is readonly string[] {
 
 function isRecord(input: unknown): input is Record<string, unknown> {
   return typeof input === "object" && input !== null && !Array.isArray(input);
+}
+
+function mutateStrategicTerrain(
+  source: Record<string, unknown>,
+  mutate: (terrain: Record<string, unknown>) => void
+): Record<string, unknown> {
+  const clone = cloneAsMutableRecord(source);
+  const terrain = requireMutableRecord(clone["strategicTerrain"]);
+  mutate(terrain);
+  return clone;
+}
+
+function cloneAsMutableRecord(input: unknown): Record<string, unknown> {
+  const parsed = JSON.parse(JSON.stringify(input)) as unknown;
+  return requireMutableRecord(parsed);
+}
+
+function requireMutableRecord(input: unknown): Record<string, unknown> {
+  if (!isRecord(input)) {
+    throw new Error("Expected mutable record.");
+  }
+  return input;
+}
+
+function requireMutableRecordArray(
+  record: Record<string, unknown>,
+  key: string
+): Record<string, unknown>[] {
+  const value = record[key];
+  if (!Array.isArray(value) || !value.every(isRecord)) {
+    throw new Error(`Expected ${key} to be a mutable record array.`);
+  }
+  return value;
 }

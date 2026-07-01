@@ -1,0 +1,91 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-R2-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "from_role": "systems_architect",
+  "status": "ACCEPT",
+  "summary": "R2 systems review accepts the per-corridor blocking-barrier fix. validateM2StrategicTerrainBarrierCrossings now evaluates each RouteCorridor/barrier reference independently and requires that the same corridor has a from or to StrategicNode whose nodeKind is pass, crossing, or port and whose barrierChannelIds include the same blocking barrier id. This closes the R1 masking bug where one valid crossing on a barrier could hide another invalid corridor referencing that barrier. The focused regression is adequate: it mutates an ordinary corridor to reference barrier.b-ridge-spine and expects invalid-route at that corridor's barrierChannelIds entry. The fixture correction for corridor.anchorage-east-ridge is consistent with the tightened invariant. No historical wording or historicity labels changed in R2, so the historical ACCEPT remains bounded to COMPOSITE validation content.",
+  "artifacts": [
+    "apps/content-tools/src/index.ts",
+    "tests/content-tools-compiler.test.ts",
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-R2-REVIEW__simulation_engineer.json",
+    "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-WRITER-R2-TO-SYSTEMS-REVIEW.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Workspace contains modified allowed-path implementation/test/content/project-state files and task message/route evidence files. No forbidden renderer, web, desktop, ui, map-renderer, CI, gate, roadmap, manifest, or report paths were modified."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 40 tests. This includes the new ordinary-corridor blocking-barrier regression plus the existing malformed strategic terrain cases."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json."
+    },
+    {
+      "command": "cmd /c pnpm.cmd content:validate",
+      "exit_code": 0,
+      "result": "All configured content validation passed. M2 prototype manifestHash is 78cdb864."
+    },
+    {
+      "command": "cmd /c pnpm.cmd exec vitest run tests/sim-core-boot-boundary.test.ts",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 3 tests. The compiled fixture still boots and strategic terrain query/route-preview coverage remains green."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools typecheck",
+      "exit_code": 0,
+      "result": "TypeScript typecheck passed."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "R2_PER_CORRIDOR_BARRIER_FIX_ACCEPTED",
+      "decision": "The R1 blocker is fixed. Validation is now per RouteCorridor/barrier reference instead of barrier-level existence of any valid crossing."
+    },
+    {
+      "id": "R2_REGRESSION_ADEQUATE",
+      "decision": "The new ordinaryCorridorBarrierShortcut regression covers the precise masking failure: a normal corridor references a blocking barrier that has valid crossings elsewhere, and the compiler now rejects that specific corridor."
+    },
+    {
+      "id": "FIXTURE_HASH_CHANGE_ACCEPTED",
+      "decision": "The fixture hash and boot state hash changed because an invalid barrier reference was removed from the fixture. That is an expected consequence of enforcing the corrected invariant."
+    },
+    {
+      "id": "HISTORICAL_REVIEW_SCOPE_UNCHANGED",
+      "decision": "R2 did not change historical wording, historicity labels, or source assertions. The previous historical ACCEPT remains valid only for COMPOSITE validation content."
+    }
+  ],
+  "risks": [
+    {
+      "id": "DOWNSTREAM_COMPOSITE_LABEL_PRESERVATION",
+      "severity": "R3",
+      "summary": "Downstream renderer/localization work must not promote abstract node/corridor labels into verified historical ports, passes, roads, rivers, polity, culture, language, or border claims.",
+      "mitigation": "Carry the historical reviewer constraint forward to QA and later renderer-interaction/validation tasks."
+    },
+    {
+      "id": "COMPILER_DEFAULT_SEASONALITY_REMAINS_CONTENT_HARDENING_ITEM",
+      "severity": "R2",
+      "summary": "Route corridor source records still rely on deterministic compiler defaults for 12-month seasonality. Runtime/hash/query output is explicit, but future balance hardening may want authored source seasonality.",
+      "mitigation": "Non-blocking for M7-STRATEGIC-TERRAIN-FIXTURE-001; keep as a future content-hardening consideration."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Proceed with independent QA review of M7-STRATEGIC-TERRAIN-FIXTURE-001. Please verify the R2 per-corridor blocking-barrier regression, content validation evidence, boot-boundary strategic terrain query/route-preview coverage, and preservation of COMPOSITE-only historical constraints.",
+  "created_at": "2026-07-01T23:05:00+08:00"
+}

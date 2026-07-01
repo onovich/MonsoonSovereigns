@@ -1,0 +1,87 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-HISTORICAL-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "from_role": "historical_researcher",
+  "status": "ACCEPT",
+  "summary": "Historical review accepts the low-fidelity M7 strategic terrain fixture for systems review. The added TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint records remain COMPOSITE validation content and do not present exact historical borders, port importance, river importance, pass claims, road claims, polity labels, cultural labels, language labels, or real-world identities as verified fact.",
+  "artifacts": [
+    "content-source/m2-fixtures/prototype-world-30-districts.json",
+    "apps/content-tools/src/index.ts",
+    "tests/content-tools-compiler.test.ts",
+    "tests/sim-core-boot-boundary.test.ts",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-FIXTURE-001__MSG-20260701-M7-STRATEGIC-TERRAIN-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
+    "project/messages/routes/M7-STRATEGIC-TERRAIN-FIXTURE-001__ROUTE-20260701-WRITER-TO-HISTORICAL-REVIEW.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Reviewed workspace status; only writer implementation/test/task/route files were modified or added before this historical review handoff."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "exit_code": 0,
+      "result": "VALID project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json."
+    },
+    {
+      "command": "cmd /c pnpm.cmd content:validate",
+      "exit_code": 0,
+      "result": "Content validation passed for all default content fixtures; M2 prototype manifestHash is 89a8db54."
+    },
+    {
+      "command": "cmd /c pnpm.cmd --filter @monsoon/content-tools test",
+      "exit_code": 0,
+      "result": "Vitest passed 1 file / 40 tests, including the M7 strategic terrain COMPOSITE fixture and historical-overclaim negative rejection."
+    },
+    {
+      "command": "Focused read-only source review",
+      "exit_code": 0,
+      "result": "Read AGENTS.md, PROJECT_STATUS.md, task JSON, docs/09, docs/10, docs/16, docs/19, ADR-010, ADR-011, writer handoff, route evidence, fixture strategicTerrain records, compiler validation logic, and focused negative tests."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "HISTORICAL_REVIEW_ACCEPT_COMPOSITE_ONLY",
+      "decision": "Accept for systems_architect review because all new terrain patches and barrier channels are COMPOSITE, node/corridor/governance labels are abstract stable ids/display keys, and the fixture remains validation-only rather than a formal historical geography database."
+    },
+    {
+      "id": "NO_FORMAL_CLAIM_RECORD_REQUIRED_FOR_THIS_FIXTURE_PASS",
+      "decision": "No new HISTORICAL claim record is required for this pass because the implementation makes no verified historical claim; future promotion of any real-world port, river, pass, road, polity, culture, language, or border claim must add source records with page or section evidence."
+    },
+    {
+      "id": "NEGATIVE_HISTORICAL_OVERCLAIM_TEST_ACCEPTED",
+      "decision": "The compiler negative test and validation text are sufficient for this task: HISTORICAL and INFERRED strategic terrain labels are rejected before historical_researcher approval."
+    }
+  ],
+  "risks": [
+    {
+      "id": "COMPOSITE_LABEL_MUST_SURVIVE_UI_LOCALIZATION",
+      "severity": "R3",
+      "summary": "Downstream renderer/localization work must not turn abstract displayNameKey labels such as delta-port, north-pass, or outer-island-port into real historical place claims without source review.",
+      "mitigation": "Keep player-facing copy explicitly low-fidelity/COMPOSITE unless later historical claim records support a specific real-world assertion."
+    },
+    {
+      "id": "PASS_PORT_RIVER_IMPORTANCE_REMAINS_ABSTRACT",
+      "severity": "R3",
+      "summary": "The fixture uses strategic abstractions for ports, passes, rivers, roads, warehouses, and castles; these are acceptable only as game abstractions, not as statements about actual 16th-century importance or exact locations.",
+      "mitigation": "Current compiler rejects HISTORICAL/INFERRED terrain labels and fixture ids avoid real place, polity, culture, religion, or language names."
+    },
+    {
+      "id": "VIOLENCE_COST_POLICY_NOT_TRIGGERED",
+      "severity": "R2",
+      "summary": "No forced migration, slavery, massacre, famine, religious conflict, or wartime population-loss content is introduced in this fixture.",
+      "mitigation": "If later route/terrain content adds labor extraction, forced movement, famine, or conflict effects, it must record victims and long-term consequences under docs/10 policy before acceptance."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Proceed to systems_architect review of schema/runtime/query/content-compiler boundaries, preserving the historical constraint that this is COMPOSITE validation content and not formal historical geography.",
+  "created_at": "2026-07-01T22:55:00+08:00"
+}
