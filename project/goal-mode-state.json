@@ -3,31 +3,32 @@
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "M7",
   "current_tasks": [
-    "M7-CONTENT-LOCK-ACCEPTANCE-001"
+    "M7-STRATEGIC-TERRAIN-RECOVERY-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+      "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
       "task_ids": [
-        "M7-CONTENT-LOCK-ACCEPTANCE-001"
+        "M7-STRATEGIC-TERRAIN-RECOVERY-001"
       ],
-      "status": "active_human_gate_waiting_content_lock_reconsideration",
+      "status": "active_strategic_terrain_recovery_ready",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-m7-map-topology-validation",
-      "updated_at": "2026-06-30T21:26:12.461Z",
+      "branch_or_worktree": "codex/m7-strategic-terrain-request-changes",
+      "updated_at": "2026-07-01T17:27:48.7511210+08:00",
       "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-START__lead_orchestrator.json",
       "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-LEAD-TO-TEST-START.json",
       "base_main_commit": "e7b414271a355b4be7b78cb7c5b43db6a152bc38",
       "lead_accept_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-CLIENT-001__MSG-20260701-M7-MAP-TOPOLOGY-CLIENT-LEAD-ACCEPT__lead_orchestrator.json",
       "last_integrated_task": "M7-MAP-TOPOLOGY-VALIDATION-001",
-      "last_main_commit": "3dffadd1c5fcf4c040c963621a144c0886c90476",
+      "last_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
       "qa_route": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
-      "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001"
+      "product_owner_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
+      "next_ready_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001"
     },
     "simulation_engineer": {
       "thread_id": "019f1959-d925-7e83-98f6-5c895c98d41f",
@@ -195,8 +196,10 @@
     }
   },
   "last_integrated_task": "M7-MAP-TOPOLOGY-VALIDATION-001",
-  "last_main_commit": "3dffadd1c5fcf4c040c963621a144c0886c90476",
-  "next_ready_tasks": [],
+  "last_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
+  "next_ready_tasks": [
+    "M7-STRATEGIC-TERRAIN-RECOVERY-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -242,26 +245,33 @@
     {
       "id": "M7-MAP-TOPOLOGY-RECOVERY-BLOCKS-CONTENT-LOCK",
       "severity": "R4",
-      "status": "validated_awaiting_product_owner_reconsideration",
-      "summary": "Topology recovery validation is closed in main; formal content lock is awaiting product-owner reconsideration."
+      "status": "validated_but_insufficient_for_content_lock",
+      "summary": "Topology recovery validation is closed in main, but the product owner rejected the resulting map as insufficient strategic terrain, so formal content lock remains blocked."
+    },
+    {
+      "id": "M7-STRATEGIC-TERRAIN-MAP-BLOCKS-CONTENT-LOCK",
+      "severity": "R4",
+      "status": "request_changes_recovery_ready",
+      "summary": "Product owner rejected the current map rendering and spatial indexing direction; M7 must plan and validate a strategic terrain map recovery before content lock reconsideration."
     }
   ],
   "human_gate": {
-    "required": true,
-    "active_gate_task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "approval_scope": "FORMAL_M7_CONTENT_LOCK_RECONSIDERATION_AFTER_TOPOLOGY_VALIDATION",
-    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
-    "recommended_result": "APPROVE_CONTENT_LOCK_WITH_LIMITS",
+    "required": false,
+    "active_gate_task_id": null,
+    "approval_scope": "FORMAL_M7_CONTENT_LOCK_REJECTED_STRATEGIC_TERRAIN_RECOVERY_REQUIRED",
+    "approval_source": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
+    "decision_result": "REQUEST_CHANGES",
     "decision_options": [
       "APPROVE_CONTENT_LOCK_WITH_LIMITS",
       "DEFER_CONTENT_LOCK",
       "REQUEST_CHANGES"
     ],
-    "note": "Topology recovery validation is closed in main. Formal M7 content lock remains unapproved until product owner decides.",
-    "recorded_at": "2026-06-30T21:18:35.674Z",
-    "last_main_commit": "3dffadd1c5fcf4c040c963621a144c0886c90476",
+    "note": "Product owner rejected content lock after topology validation. Strategic terrain recovery planning is now required; M7 exit validation remains disabled.",
+    "recorded_at": "2026-07-01T17:27:48.7511210+08:00",
+    "last_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
     "topology_validation_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
-    "closure_main_commit": "3dffadd1c5fcf4c040c963621a144c0886c90476"
+    "closure_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
+    "next_ready_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001"
   },
   "leadership": {
     "active_lead_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
@@ -733,7 +743,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Commit accepted implementation, open PR, wait for CI, merge to main, then close after origin/main integration.",
+  "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001 as the next READY M7 planning task; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -1096,8 +1106,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-06-30T21:18:35.674Z",
-  "updated_at": "2026-06-30T21:26:12.461Z",
+  "last_updated_at": "2026-07-01T17:27:48.7511210+08:00",
+  "updated_at": "2026-07-01T17:27:48.7511210+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1310,7 +1320,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "M7-MAP-TOPOLOGY-CLIENT-001",
+  "current_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -2164,8 +2174,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "HUMAN_GATE",
-  "next_machine_action": "Await product-owner Human Gate decision for formal M7 content lock: APPROVE_CONTENT_LOCK_WITH_LIMITS, DEFER_CONTENT_LOCK, or REQUEST_CHANGES.",
+  "current_task_status": "READY",
+  "next_machine_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3277,9 +3287,10 @@
   "m7_content_lock_acceptance": {
     "status": "BLOCKED",
     "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "human_gate_required": true,
-    "human_gate_state": "REQUEST_CHANGES_MAP_TOPOLOGY_RECOVERY_REQUIRED",
+    "human_gate_required": false,
+    "human_gate_state": "REQUEST_CHANGES_STRATEGIC_TERRAIN_MAP_AND_SPATIAL_INDEX_REQUIRED",
     "content_lock_accepted": false,
+    "product_owner_fourth_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
     "product_owner_third_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-MAP-TOPOLOGY-REQUEST-CHANGES__product_owner.json",
     "map_topology_recovery_task": "M7-MAP-TOPOLOGY-RECOVERY-001",
     "map_topology_recovery_tasks": [
@@ -3289,10 +3300,11 @@
       "M7-MAP-TOPOLOGY-CLIENT-001",
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ],
-    "recommendation": "AWAIT_MAP_TOPOLOGY_RECOVERY_VALIDATION",
+    "strategic_terrain_recovery_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+    "recommendation": "REQUEST_CHANGES_STRATEGIC_TERRAIN_RECOVERY_REQUIRED",
     "reconsideration_ready": false,
-    "updated_at": "2026-06-30T21:29:09.7679151+08:00",
-    "next_action": "Complete topology recovery chain before product-owner content-lock reconsideration can reopen.",
+    "updated_at": "2026-07-01T17:27:48.7511210+08:00",
+    "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001 as the next READY M7 planning task; content-lock reconsideration cannot reopen until strategic terrain recovery validation closes.",
     "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
     "systemic_interaction_recovery_task": "M7-SYSTEMIC-INTERACTION-RECOVERY-001",
     "systemic_recovery_tasks": [
@@ -3708,27 +3720,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "active_task_routes": {
-    "M7-MAP-TOPOLOGY-VALIDATION-001": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json"
-  },
-  "active_routes": {
-    "M7-MAP-TOPOLOGY-VALIDATION-001": {
-      "owner_role": "test_engineer",
-      "owner_thread_id": "019f1a48-010b-78b3-a682-af32c69fd521",
-      "owner_nickname": "Canary the 2nd",
-      "reviewer_role": "qa_reviewer",
-      "reviewer_thread_id": "019f1a52-6f93-7653-bbb0-5f85ba33a507",
-      "reviewer_nickname": "Witness the 2nd",
-      "reviewer_configured_model": "gpt-5.5",
-      "reviewer_configured_effort": "xhigh",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-VALIDATION-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
-      "source_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-WRITER-REVIEW__test_engineer.json",
-      "branch_or_worktree": "codex/m7-map-topology-validation",
-      "status": "qa_review_requested",
-      "updated_at": "2026-06-30T20:58:23.832Z"
-    }
-  },
+  "active_task_routes": {},
+  "active_routes": {},
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -3770,10 +3763,11 @@
   },
   "m7_content_lock_reconsideration": {
     "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
-    "status": "HUMAN_GATE_REQUIRED",
+    "status": "REQUEST_CHANGES_RECORDED",
     "content_lock_accepted": false,
-    "human_gate_state": "TOPOLOGY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+    "human_gate_state": "REQUEST_CHANGES_STRATEGIC_TERRAIN_MAP_AND_SPATIAL_INDEX_REQUIRED",
     "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
+    "product_owner_fourth_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
     "decision_options": [
       "APPROVE_CONTENT_LOCK_WITH_LIMITS",
       "DEFER_CONTENT_LOCK",
@@ -3781,7 +3775,26 @@
     ],
     "topology_validation_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
     "topology_validation_pr": 231,
-    "updated_at": "2026-06-30T21:26:12.461Z",
-    "closure_main_commit": "3dffadd1c5fcf4c040c963621a144c0886c90476"
+    "updated_at": "2026-07-01T17:27:48.7511210+08:00",
+    "closure_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
+    "strategic_terrain_recovery_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+    "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
+  },
+  "m7_strategic_terrain_recovery": {
+    "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+    "status": "READY",
+    "owner_role": "gameplay_designer",
+    "reviewer_role": "systems_architect",
+    "required_reviewers": [
+      "systems_architect",
+      "qa_reviewer"
+    ],
+    "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+    "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
+    "gameplay_design_thread_id": "019f1cfc-1ea9-7f10-a488-7df16413177c",
+    "created_at": "2026-07-01T17:27:48.7511210+08:00",
+    "next_action": "Create a reviewed strategic terrain ADR and downstream schema/fixture/renderer-validation task chain before M7 content-lock reconsideration can reopen.",
+    "human_gate_required": false,
+    "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE"
   }
 }

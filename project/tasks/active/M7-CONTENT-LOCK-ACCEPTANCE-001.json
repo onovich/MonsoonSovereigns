@@ -81,10 +81,11 @@
     "Second product-owner REQUEST_CHANGES received after UX recovery validation: obligation handling, appointment feedback, and phase/action loop remain blockers.",
     "Systemic interaction recovery validation is now closed in main, but this task remains BLOCKED until the product owner explicitly accepts, defers, or requests changes for formal M7 content lock.",
     "Third product-owner REQUEST_CHANGES received after systemic interaction validation: the current map topology is still rectangular/grid-like under visual disguise, so formal content lock cannot be reconsidered until topology recovery validation closes in main.",
-    "Map topology recovery validation is now closed in main; this task is reopened for product-owner reconsideration, not automatically accepted."
+    "Map topology recovery validation is now closed in main; this task is reopened for product-owner reconsideration, not automatically accepted.",
+    "Fourth product-owner REQUEST_CHANGES received after topology validation: the current map rendering and spatial indexing direction are rejected because they do not read as mature RTK/Nobunaga-like strategic terrain. ADR-010 anti-grid work is necessary but insufficient for content lock."
   ],
   "created_at": "2026-06-28T03:55:00+08:00",
-  "updated_at": "2026-06-30T21:18:35.674Z",
+  "updated_at": "2026-07-01T17:27:48.7511210+08:00",
   "human_gate_required": true,
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "human_gates": [
@@ -104,9 +105,9 @@
   "start_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-START__lead_orchestrator.json",
   "review_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-HUMAN-GATE-REVIEW__lead_orchestrator.json",
   "base_main_commit": "62e3c756199f50302ff3b0a5ee087da1fd0bffbe",
-  "recommendation": "READY_FOR_PRODUCT_OWNER_RECONSIDERATION_AFTER_TOPOLOGY_VALIDATION",
+  "recommendation": "REQUEST_CHANGES_STRATEGIC_TERRAIN_RECOVERY_REQUIRED",
   "content_lock_accepted": false,
-  "human_gate_state": "TOPOLOGY_VALIDATED_AWAITING_PRODUCT_OWNER_RECONSIDERATION",
+  "human_gate_state": "REQUEST_CHANGES_STRATEGIC_TERRAIN_MAP_AND_SPATIAL_INDEX_REQUIRED",
   "qa_route": "project/messages/routes/M7-CONTENT-LOCK-ACCEPTANCE-001__ROUTE-20260629-LEAD-TO-QA-REVIEW.json",
   "expected_qa_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260629-M7-CONTENT-LOCK-ACCEPTANCE-QA-REVIEW__qa_reviewer.json",
   "qa_thread_id": "019f13d7-d3e3-7f92-b115-73d8deabff3a",
@@ -142,7 +143,7 @@
   "ux_recovery_validation_main_commit": "ea1540eb16d0f92622e9f21a5e09a4b946b0ecd8",
   "ux_recovery_validation_closed_handoff": "project/messages/outbox/M7-UX-RECOVERY-VALIDATION-001__MSG-20260630-M7-UX-RECOVERY-CLOSED__lead_orchestrator.json",
   "product_owner_reconsideration_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-TOPOLOGY-VALIDATED__lead_orchestrator.json",
-  "next_action": "Await product-owner Human Gate decision for formal M7 content lock. Do not start M7-EXIT-VALIDATION-001 until APPROVE_CONTENT_LOCK_WITH_LIMITS is explicitly received.",
+  "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001 as the next READY M7 planning task. Do not start M7-EXIT-VALIDATION-001 until strategic terrain recovery validation enters main and the product owner explicitly reconsiders formal content lock.",
   "product_owner_second_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260630-M7-CONTENT-LOCK-SYSTEMIC-UX-REQUEST-CHANGES__product_owner.json",
   "systemic_interaction_recovery_plan_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-RECOVERY-001__MSG-20260630-M7-SYSTEMIC-INTERACTION-RECOVERY-PLAN__lead_orchestrator.json",
   "systemic_recovery_tasks": [
@@ -157,7 +158,7 @@
   "systemic_interaction_validation_main_commit": "2adc668bba95724aa2448bd898983fc6d9740178",
   "systemic_interaction_validation_closed_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-CLOSED__lead_orchestrator.json",
   "systemic_interaction_validation_qa_handoff": "project/messages/outbox/M7-SYSTEMIC-INTERACTION-VALIDATION-001__MSG-20260630-M7-SYSTEMIC-VALIDATION-QA-REVIEW__qa_reviewer.json",
-  "reconsideration_ready": true,
+  "reconsideration_ready": false,
   "decision_options": [
     "APPROVE_CONTENT_LOCK_WITH_LIMITS",
     "DEFER_CONTENT_LOCK",
@@ -176,5 +177,17 @@
   "map_topology_validation_pr": 231,
   "map_topology_validation_main_commit": "3617115d446a4f234e915abfecf14a367624dc99",
   "map_topology_validation_closed_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-CLOSED__lead_orchestrator.json",
-  "map_topology_validation_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json"
+  "map_topology_validation_qa_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-VALIDATION-001__MSG-20260701-M7-MAP-TOPOLOGY-VALIDATION-QA-REVIEW__qa_reviewer.json",
+  "product_owner_fourth_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
+  "strategic_terrain_recovery_required": true,
+  "strategic_terrain_recovery_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "strategic_terrain_recovery_tasks": [
+    "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+    "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+    "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+    "M7-STRATEGIC-TERRAIN-VALIDATION-001"
+  ],
+  "strategic_terrain_recovery_source_thread": "019f1cfc-1ea9-7f10-a488-7df16413177c",
+  "content_lock_blocker": "CURRENT_MAP_RENDERING_AND_SPATIAL_INDEX_DIRECTION_REJECTED"
 }
