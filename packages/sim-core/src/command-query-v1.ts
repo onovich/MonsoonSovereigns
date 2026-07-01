@@ -37,6 +37,14 @@ import {
   type MapTopologyPathPreviewV1,
   type MapTopologyReadModelV1
 } from "./map-topology-v1.ts";
+import {
+  hitTestStrategicTerrainV1,
+  listStrategicTerrainV1,
+  previewStrategicTerrainRouteV1,
+  type StrategicTerrainHitTestV1,
+  type StrategicTerrainReadModelV1,
+  type StrategicTerrainRoutePreviewV1
+} from "./strategic-terrain-v1.ts";
 import { createM4DeterminismReplayWorldStateV0 } from "./m4-determinism-replay-v1.ts";
 import {
   M1_ABSTRACT_GRAPH_30_CONTENT_MANIFEST_HASH,
@@ -207,6 +215,7 @@ export type DomainErrorCodeV1 =
   | "stale-day"
   | "stale-revision"
   | "siege-state-invalid"
+  | "strategic-terrain-state-missing"
   | "topology-state-missing"
   | "unknown-command-kind"
   | "unknown-query-kind"
@@ -719,6 +728,18 @@ export type QueryResultV1 =
             readonly topology: MapTopologyReadModelV1;
           }
         | {
+            readonly kind: "sim.list-strategic-terrain";
+            readonly day: number;
+            readonly revision: number;
+            readonly terrain: StrategicTerrainReadModelV1;
+          }
+        | {
+            readonly kind: "sim.hit-test-strategic-terrain";
+            readonly day: number;
+            readonly revision: number;
+            readonly hit: StrategicTerrainHitTestV1;
+          }
+        | {
             readonly kind: "sim.list-m2-economy-summaries";
             readonly day: number;
             readonly revision: number;
@@ -757,6 +778,13 @@ export type QueryResultV1 =
             readonly revision: number;
             readonly monthOfYear: number;
             readonly route: MapTopologyPathPreviewV1;
+          }
+        | {
+            readonly kind: "sim.preview-strategic-terrain-route";
+            readonly day: number;
+            readonly revision: number;
+            readonly monthOfYear: number;
+            readonly route: StrategicTerrainRoutePreviewV1;
           }
         | {
             readonly kind: "sim.preview-m3-postwar-governance";
@@ -1509,6 +1537,13 @@ export function loadSaveV1(
       const topologyIssue = validateSaveTopologyCompatibility(runtime.world, candidate);
       if (topologyIssue !== null) {
         return [topologyIssue];
+      }
+      const strategicTerrainIssue = validateSaveStrategicTerrainCompatibility(
+        runtime.world,
+        candidate
+      );
+      if (strategicTerrainIssue !== null) {
+        return [strategicTerrainIssue];
       }
       if (runtime.world.state.m2 !== undefined && !hasM2RuntimeState(candidate)) {
         return [
@@ -9560,6 +9595,10 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       };
     case "sim.list-map-topology":
       return executeListMapTopologyQuery(runtime);
+    case "sim.list-strategic-terrain":
+      return executeListStrategicTerrainQuery(runtime);
+    case "sim.hit-test-strategic-terrain":
+      return executeStrategicTerrainHitTestQuery(runtime, query);
     case "sim.list-m2-economy-summaries":
       return executeM2EconomySummariesQuery(runtime);
     case "sim.list-m3-administrative-burden":
@@ -9572,6 +9611,8 @@ function executeQuery(runtime: SimulationRuntimeV1, query: GameQueryV1): QueryRe
       return executeM2TransportRoutePreviewQuery(runtime, query);
     case "sim.preview-map-topology-path":
       return executeMapTopologyPathPreviewQuery(runtime, query);
+    case "sim.preview-strategic-terrain-route":
+      return executeStrategicTerrainRoutePreviewQuery(runtime, query);
     case "sim.preview-m3-postwar-governance":
       return executeM3PostwarGovernancePreviewQuery(runtime, query);
     case "sim.compare-m3-postwar-governance-outcomes":
@@ -11905,6 +11946,119 @@ function executeMapTopologyPathPreviewQuery(
   };
 }
 
+function executeListStrategicTerrainQuery(runtime: SimulationRuntimeV1): QueryResultV1 {
+  const terrain = listStrategicTerrainV1(runtime.world);
+  if (terrain === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "strategic-terrain-state-missing",
+        path: "definitions.strategicTerrain",
+        message:
+          "sim.list-strategic-terrain requires an authoritative strategic terrain definition."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.list-strategic-terrain",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      terrain
+    }
+  };
+}
+
+function executeStrategicTerrainHitTestQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.hit-test-strategic-terrain" }>
+): QueryResultV1 {
+  const hit = hitTestStrategicTerrainV1(runtime.world, {
+    point: query.payload.point
+  });
+  if (hit === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "strategic-terrain-state-missing",
+        path: "definitions.strategicTerrain",
+        message:
+          "sim.hit-test-strategic-terrain requires an authoritative strategic terrain definition."
+      }
+    };
+  }
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.hit-test-strategic-terrain",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      hit
+    }
+  };
+}
+
+function executeStrategicTerrainRoutePreviewQuery(
+  runtime: SimulationRuntimeV1,
+  query: Extract<GameQueryV1, { readonly kind: "sim.preview-strategic-terrain-route" }>
+): QueryResultV1 {
+  const terrain = runtime.world.definitions.strategicTerrain;
+  if (terrain === undefined) {
+    return {
+      status: "rejected",
+      error: {
+        code: "strategic-terrain-state-missing",
+        path: "definitions.strategicTerrain",
+        message:
+          "sim.preview-strategic-terrain-route requires an authoritative strategic terrain definition."
+      }
+    };
+  }
+
+  if (!terrain.strategicNodes.some((node) => node.nodeId === query.payload.originNodeId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.originNodeId",
+        message: "sim.preview-strategic-terrain-route references a missing origin StrategicNode."
+      }
+    };
+  }
+  if (!terrain.strategicNodes.some((node) => node.nodeId === query.payload.destinationNodeId)) {
+    return {
+      status: "rejected",
+      error: {
+        code: "bad-id",
+        path: "payload.destinationNodeId",
+        message:
+          "sim.preview-strategic-terrain-route references a missing destination StrategicNode."
+      }
+    };
+  }
+
+  const preview = previewStrategicTerrainRouteV1(runtime.world, {
+    originNodeId: query.payload.originNodeId,
+    destinationNodeId: query.payload.destinationNodeId,
+    stockAmount: query.payload.stockAmount,
+    day: runtime.world.meta.currentDay
+  });
+
+  return {
+    status: "ok",
+    result: {
+      kind: "sim.preview-strategic-terrain-route",
+      day: runtime.world.meta.currentDay,
+      revision: runtime.world.meta.revision,
+      monthOfYear: getGameCalendarDate(runtime.world.meta.currentDay).monthOfYear,
+      route: preview
+    }
+  };
+}
+
 function executeM2TransportRoutePreviewQuery(
   runtime: SimulationRuntimeV1,
   query: Extract<GameQueryV1, { readonly kind: "sim.preview-m2-transport-route" }>
@@ -13958,6 +14112,33 @@ function validateSaveTopologyCompatibility(
   return null;
 }
 
+function validateSaveStrategicTerrainCompatibility(
+  currentWorld: WorldStateV0,
+  candidate: unknown
+): SaveSemanticIssueV1 | null {
+  const currentStrategicTerrain = currentWorld.definitions.strategicTerrain;
+  if (currentStrategicTerrain === undefined) {
+    return null;
+  }
+
+  const candidateStrategicTerrainHash = readCandidateStrategicTerrainHash(candidate);
+  if (candidateStrategicTerrainHash === undefined) {
+    return {
+      path: "definitions.strategicTerrain",
+      message: "Save snapshot is missing required strategic terrain for this runtime."
+    };
+  }
+
+  if (candidateStrategicTerrainHash !== currentStrategicTerrain.strategicTerrainHash) {
+    return {
+      path: "definitions.strategicTerrain.strategicTerrainHash",
+      message: `Save strategic terrain hash ${candidateStrategicTerrainHash} does not match runtime strategic terrain hash ${currentStrategicTerrain.strategicTerrainHash}.`
+    };
+  }
+
+  return null;
+}
+
 function readCandidateTopologyHash(candidate: unknown): string | undefined {
   if (!isRecord(candidate)) {
     return undefined;
@@ -13975,6 +14156,25 @@ function readCandidateTopologyHash(candidate: unknown): string | undefined {
 
   const topologyHash = topology["topologyHash"];
   return typeof topologyHash === "string" ? topologyHash : undefined;
+}
+
+function readCandidateStrategicTerrainHash(candidate: unknown): string | undefined {
+  if (!isRecord(candidate)) {
+    return undefined;
+  }
+
+  const definitions = candidate["definitions"];
+  if (!isRecord(definitions)) {
+    return undefined;
+  }
+
+  const strategicTerrain = definitions["strategicTerrain"];
+  if (!isRecord(strategicTerrain)) {
+    return undefined;
+  }
+
+  const strategicTerrainHash = strategicTerrain["strategicTerrainHash"];
+  return typeof strategicTerrainHash === "string" ? strategicTerrainHash : undefined;
 }
 
 function hasM2RuntimeState(candidate: unknown): boolean {

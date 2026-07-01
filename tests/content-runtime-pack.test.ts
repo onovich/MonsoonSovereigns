@@ -226,6 +226,58 @@ describe("M2 runtime world content pack", () => {
     expect(index).not.toHaveProperty("getDistrictByDisplayName");
     expect(index).not.toHaveProperty("getSettlementByDisplayName");
   });
+
+  test("parses strategic terrain authority and rejects content hash or hidden-id fallback", () => {
+    const input = makeRuntimeM2WorldPackWithStrategicTerrain();
+    const pack = parseRuntimeM2WorldContentPackV0(input);
+
+    expect(pack.strategicTerrain).toMatchObject({
+      authority: "terrain-route-node-v1",
+      governanceFootprintRole: "overlay-only",
+      contentManifestHash: "ab12cd34"
+    });
+    expect(pack.strategicTerrain?.authorityProhibitions).toEqual([
+      "bounding-box-adjacency",
+      "centroid-proximity",
+      "hidden-grid",
+      "hidden-lattice",
+      "hex-axial-or-cube",
+      "renderer-only-line-reachability",
+      "sequential-id-reachability"
+    ]);
+
+    expect(() =>
+      parseRuntimeM2WorldContentPackV0({
+        ...input,
+        strategicTerrain: {
+          ...input.strategicTerrain,
+          contentManifestHash: "00000000"
+        }
+      })
+    ).toThrow("Strategic terrain contentManifestHash must match manifest manifestHash");
+
+    expect(() =>
+      parseRuntimeM2WorldContentPackV0({
+        ...input,
+        strategicTerrain: {
+          ...input.strategicTerrain,
+          authorityProhibitions: input.strategicTerrain.authorityProhibitions.filter(
+            (prohibition) => prohibition !== "hidden-grid"
+          )
+        }
+      })
+    ).toThrow("Strategic terrain authorityProhibitions must include hidden-grid");
+
+    expect(() =>
+      parseRuntimeM2WorldContentPackV0({
+        ...input,
+        strategicTerrain: {
+          ...input.strategicTerrain,
+          strategicNodes: [withRuntimeStrategicNodeId(input, "row1")]
+        }
+      })
+    ).toThrow("hidden grid, lattice, hex, or sequential id");
+  });
 });
 
 describe("M3 runtime polity vassalage content pack", () => {
@@ -997,6 +1049,320 @@ function makeRuntimeM7BetaPack() {
       }
     ],
     knownGaps: ["RESEARCH REQUIRED runtime gap."]
+  };
+}
+
+function makeRuntimeM2WorldPackWithStrategicTerrain() {
+  return {
+    schemaVersion: 1,
+    kind: "runtime-m2-world-content-pack-v0",
+    fixtureId: "m2.runtime-strategic-terrain",
+    manifest: {
+      schemaVersion: 1,
+      fixtureId: "m2.runtime-strategic-terrain",
+      fixtureKind: "prototype-world-fixture",
+      syntheticScope: "m2-prototype-only",
+      historicity: "FICTIONAL",
+      manifestHash: "ab12cd34",
+      districtCount: 2,
+      settlementCount: 1,
+      regionalSeasonalCurveCount: 1,
+      routeCount: 1,
+      mapGeometryCount: 3
+    },
+    districts: [
+      {
+        id: 1,
+        sourceId: "district-001",
+        displayNameKey: "content.m2.prototype.district_001",
+        regionalCurveId: 1,
+        mapGeometryId: 1
+      },
+      {
+        id: 2,
+        sourceId: "district-002",
+        displayNameKey: "content.m2.prototype.district_002",
+        regionalCurveId: 1,
+        mapGeometryId: 2
+      }
+    ],
+    settlements: [
+      {
+        id: 1,
+        sourceId: "settlement-001",
+        displayNameKey: "content.m2.prototype.settlement_001",
+        districtId: 1,
+        mapGeometryId: 3
+      }
+    ],
+    regionalSeasonalCurves: [
+      {
+        id: 1,
+        sourceId: "curve-001",
+        displayNameKey: "content.m2.prototype.curve_001",
+        monthlyValues: Array.from({ length: 12 }, (_unused, index) => ({
+          month: index + 1,
+          monsoonIntensityBps: 1000,
+          agricultureWorkBps: 9000,
+          riverNavigabilityBps: 5000,
+          roadTravelCostBps: 10000
+        }))
+      }
+    ],
+    routes: [
+      {
+        id: 1,
+        sourceId: "route-001",
+        fromDistrictId: 1,
+        toDistrictId: 2,
+        routeKind: "road",
+        baseTravelCost: 5
+      }
+    ],
+    mapGeometries: [
+      {
+        id: 1,
+        sourceId: "geom-district-001",
+        ownerKind: "district",
+        ownerId: 1,
+        geometryKind: "polygon",
+        anchor: { x: 10, y: 10 },
+        points: [
+          { x: 0, y: 0 },
+          { x: 20, y: 0 },
+          { x: 20, y: 20 },
+          { x: 0, y: 20 }
+        ]
+      },
+      {
+        id: 2,
+        sourceId: "geom-district-002",
+        ownerKind: "district",
+        ownerId: 2,
+        geometryKind: "polygon",
+        anchor: { x: 30, y: 10 },
+        points: [
+          { x: 20, y: 0 },
+          { x: 40, y: 0 },
+          { x: 40, y: 20 },
+          { x: 20, y: 20 }
+        ]
+      },
+      {
+        id: 3,
+        sourceId: "geom-settlement-001",
+        ownerKind: "settlement",
+        ownerId: 1,
+        geometryKind: "point",
+        anchor: { x: 10, y: 10 },
+        points: []
+      }
+    ],
+    topology: {
+      adjacencyDerivation: "explicit-route-graph-v1",
+      explicitIsolations: [],
+      districts: [
+        {
+          districtId: 1,
+          sourceId: "district-001",
+          displayNameKey: "content.m2.prototype.district_001",
+          anchor: { x: 10, y: 10 },
+          polygon: [
+            { x: 0, y: 0 },
+            { x: 20, y: 0 },
+            { x: 20, y: 20 }
+          ],
+          metadata: { historicity: "COMPOSITE", terrainClass: "lowland", riskClass: "low" }
+        },
+        {
+          districtId: 2,
+          sourceId: "district-002",
+          displayNameKey: "content.m2.prototype.district_002",
+          anchor: { x: 30, y: 10 },
+          polygon: [
+            { x: 20, y: 0 },
+            { x: 40, y: 0 },
+            { x: 40, y: 20 }
+          ],
+          metadata: { historicity: "COMPOSITE", terrainClass: "upland", riskClass: "low" }
+        }
+      ],
+      routeNodes: [],
+      routeEdges: [
+        {
+          routeId: 1,
+          sourceId: "topology-route-001",
+          from: { kind: "district", districtId: 1 },
+          to: { kind: "district", districtId: 2 },
+          mode: "road",
+          baseTravelCost: 5,
+          baseCapacity: 100,
+          seasonality: Array.from({ length: 12 }, (_unused, index) => ({
+            month: index + 1,
+            costMultiplierBps: 10000,
+            capacityMultiplierBps: 10000,
+            reasonCodes: [`runtime.test.month.${index + 1}`]
+          })),
+          availability: { kind: "open" },
+          metadata: { historicity: "COMPOSITE", terrainClass: "lowland", riskClass: "low" }
+        }
+      ]
+    },
+    strategicTerrain: {
+      schemaVersion: 1,
+      hashAlgorithm: "fnv1a32-canonical-strategic-terrain-v1",
+      contentManifestHash: "ab12cd34",
+      authority: "terrain-route-node-v1",
+      governanceFootprintRole: "overlay-only",
+      authorityProhibitions: [
+        "bounding-box-adjacency",
+        "centroid-proximity",
+        "hidden-grid",
+        "hidden-lattice",
+        "hex-axial-or-cube",
+        "renderer-only-line-reachability",
+        "sequential-id-reachability"
+      ],
+      terrainPatches: [
+        {
+          patchId: "patch.runtime-lowland",
+          sourceId: "runtime.patch.lowland",
+          displayNameKey: "content.m2.prototype.terrain.lowland",
+          terrainClass: "lowland",
+          seasonSensitivity: "monsoon",
+          historicity: "COMPOSITE",
+          polygon: [
+            { x: 0, y: 0 },
+            { x: 40, y: 0 },
+            { x: 40, y: 20 }
+          ],
+          explanationTags: ["runtime.terrain.lowland"]
+        }
+      ],
+      barrierChannels: [
+        {
+          channelId: "channel.runtime-ridge",
+          sourceId: "runtime.channel.ridge",
+          displayNameKey: "content.m2.prototype.channel.ridge",
+          channelKind: "ridge",
+          traversalRule: "blocks-without-explicit-corridor",
+          historicity: "COMPOSITE",
+          points: [
+            { x: 20, y: 0 },
+            { x: 20, y: 20 }
+          ],
+          explanationTags: ["runtime.channel.ridge"]
+        }
+      ],
+      strategicNodes: [
+        {
+          nodeId: "node.runtime-port",
+          sourceId: "runtime.node.port",
+          displayNameKey: "content.m2.prototype.node.port",
+          nodeKind: "port",
+          districtId: 1,
+          anchor: { x: 10, y: 10 },
+          localCapacity: 100,
+          knownState: "known",
+          terrainPatchIds: ["patch.runtime-lowland"],
+          barrierChannelIds: [],
+          governanceFootprintIds: ["footprint.runtime-capital"],
+          explanationTags: ["runtime.node.port"]
+        },
+        {
+          nodeId: "node.runtime-fort",
+          sourceId: "runtime.node.fort",
+          displayNameKey: "content.m2.prototype.node.fort",
+          nodeKind: "castle",
+          districtId: 2,
+          anchor: { x: 30, y: 10 },
+          localCapacity: 80,
+          knownState: "known",
+          terrainPatchIds: ["patch.runtime-lowland"],
+          barrierChannelIds: ["channel.runtime-ridge"],
+          governanceFootprintIds: ["footprint.runtime-upland"],
+          explanationTags: ["runtime.node.fort"]
+        }
+      ],
+      routeCorridors: [
+        {
+          corridorId: "corridor.runtime-road",
+          sourceId: "runtime.corridor.road",
+          displayNameKey: "content.m2.prototype.corridor.road",
+          fromNodeId: "node.runtime-port",
+          toNodeId: "node.runtime-fort",
+          mode: "road",
+          widthClass: "standard",
+          baseTravelCost: 5,
+          baseCapacity: 100,
+          riskClass: "low",
+          terrainPatchIds: ["patch.runtime-lowland"],
+          barrierChannelIds: ["channel.runtime-ridge"],
+          governanceFootprintIds: ["footprint.runtime-capital", "footprint.runtime-upland"],
+          seasonality: Array.from({ length: 12 }, (_unused, index) => ({
+            month: index + 1,
+            seasonState: "dry",
+            travelCostMultiplierBps: 10000,
+            capacityMultiplierBps: 10000,
+            riskBps: 100,
+            reasonCodes: [`runtime.strategic.month.${index + 1}`]
+          })),
+          availability: { kind: "open" },
+          polyline: [
+            { x: 10, y: 10 },
+            { x: 30, y: 10 }
+          ],
+          explanationTags: ["runtime.corridor.road"]
+        }
+      ],
+      districtGovernanceFootprints: [
+        {
+          footprintId: "footprint.runtime-capital",
+          sourceId: "runtime.footprint.capital",
+          displayNameKey: "content.m2.prototype.footprint.capital",
+          districtId: 1,
+          overlayOnly: true,
+          polygon: [
+            { x: 0, y: 0 },
+            { x: 20, y: 0 },
+            { x: 20, y: 20 }
+          ],
+          governanceTags: ["runtime.governance.control"],
+          consequenceTags: ["runtime.governance.obligation"]
+        },
+        {
+          footprintId: "footprint.runtime-upland",
+          sourceId: "runtime.footprint.upland",
+          displayNameKey: "content.m2.prototype.footprint.upland",
+          districtId: 2,
+          overlayOnly: true,
+          polygon: [
+            { x: 20, y: 0 },
+            { x: 40, y: 0 },
+            { x: 40, y: 20 }
+          ],
+          governanceTags: ["runtime.governance.appointment"],
+          consequenceTags: ["runtime.governance.postwar"]
+        }
+      ]
+    }
+  };
+}
+
+function withRuntimeStrategicNodeId(
+  input: ReturnType<typeof makeRuntimeM2WorldPackWithStrategicTerrain>,
+  nodeId: string
+): ReturnType<
+  typeof makeRuntimeM2WorldPackWithStrategicTerrain
+>["strategicTerrain"]["strategicNodes"][number] {
+  const firstNode = input.strategicTerrain.strategicNodes[0];
+  if (firstNode === undefined) {
+    throw new Error("Expected runtime strategic terrain node.");
+  }
+
+  return {
+    ...firstNode,
+    nodeId
   };
 }
 

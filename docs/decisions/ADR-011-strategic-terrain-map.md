@@ -31,6 +31,43 @@ Adopt a new player-facing strategic terrain authority for M7 recovery:
 
 This supersedes the rejected polygon-first player-facing map direction. It does not authorize high-fidelity final art, a formal GIS historical database, production cultural assets, server/multiplayer, telemetry, Rust/WASM, accounts, commercial/release decisions, or manual node battle reversal.
 
+## M7 Schema Implementation Amendment
+
+### Context
+
+`M7-STRATEGIC-TERRAIN-SCHEMA-001` implements the first schema/query/save boundary for this ADR. The existing topology schema remains useful as an anti-grid proof and as a compatibility bridge, but it must not be the new player-facing terrain authority. The rejected polygon-first model must not re-enter through hit testing, path preview, route cost, AI reason, save fallback, content hash fallback, or renderer-only route geometry.
+
+### Options
+
+- Extend the existing map topology DTOs only: rejected because district polygons would still appear to be the primary spatial substrate.
+- Add renderer-only terrain lines and labels: rejected because renderer geometry would not drive authoritative queries.
+- Add a full tile, hex, or lattice schema: rejected because it would violate ADR-010 and shift the game toward tile economics.
+- Add a versioned terrain-route-node authority alongside the old topology bridge: accepted for this milestone because it gives explicit terrain, barrier/channel, node, corridor, and governance-overlay boundaries without expanding fixture or renderer scope.
+
+### Decision
+
+Introduce a versioned `StrategicTerrainDefinitionV1` with these serializable authority layers:
+
+- `TerrainPatch`
+- `BarrierChannel`
+- `StrategicNode`
+- `RouteCorridor`
+- `DistrictGovernanceFootprint`
+
+The first four layers are the terrain-route-node authority. `DistrictGovernanceFootprint` is an overlay only. It may explain control, obligation, appointment, taxation, legitimacy, and postwar consequences after a route/node/terrain decision is known, but it must not create hit-test authority before nodes/corridors/blockers/terrain, route reachability, route cost, path preview, or AI reason authority.
+
+The query surface must expose deterministic read models for listing terrain authority, hit-testing priority intent, path preview, route explanation, AI reasons, blockers, unknown state, capacity, bottleneck, season, terrain, risk, and governance overlay consequences. Stable route selection tie-breakers are total travel cost, corridor count, corridor id sequence, endpoint id sequence, then destination node id. Hidden grid/lattice/hex coordinates, sequential ids, centroid guesses, bounding-box adjacency, and renderer-only lines are prohibited as authority.
+
+### Consequences
+
+Sim-core remains the authority boundary and does not import React, Pixi, Electron, DOM, Node IO, or real time. Player and AI consumers use the same query surface. Renderer and client tasks may consume read models later, but they cannot mutate or replace authoritative terrain-route-node state.
+
+The old topology definition can continue to exist as a compatibility bridge while downstream tasks migrate fixture and client behavior. It is not the accepted M7 strategic-terrain target.
+
+### Migration
+
+Strategic terrain schema changes are content and save compatibility changes. Runtime content must carry a strategic terrain content hash tied to the manifest hash. Saves produced for a runtime with `StrategicTerrainDefinitionV1` must preserve `strategicTerrainHash`; loading a save with missing or mismatched strategic terrain must be rejected with a structured semantic issue. Silent fallback to topology, district polygons, grids, renderer lines, or legacy routes is forbidden.
+
 ## Rejected Options
 
 - Visual polish over the current map: rejected because the product issue is direction and spatial model, not cosmetics.

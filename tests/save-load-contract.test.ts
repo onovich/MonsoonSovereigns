@@ -16,6 +16,7 @@ import {
   createM2EconomyPopulationStateV0,
   createM3PolityVassalageStateV0,
   createMapTopologyDefinitionV1,
+  createStrategicTerrainDefinitionV1,
   createWorldStateV0,
   bootSimulationV1,
   defineDistrict,
@@ -451,6 +452,89 @@ describe("SIM-005 Node runner and Worker save/load contract", () => {
       code: "semantic-invariant",
       path: "definitions.topology.topologyHash",
       message: `Save topology hash 00000000 does not match runtime topology hash ${topologyHash}.`
+    });
+  });
+
+  test("strategic terrain save/load preserves terrain hash and rejects incompatible terrain snapshots", () => {
+    const runtime = createStrategicTerrainSaveRuntime();
+    const strategicTerrainHash = runtime.world.definitions.strategicTerrain?.strategicTerrainHash;
+    if (strategicTerrainHash === undefined) {
+      throw new Error("Expected strategic terrain hash.");
+    }
+
+    const saved = requestSaveV1(runtime, {
+      appVersion: "0.0.0",
+      source: "test",
+      codecVersion: "save-envelope-v1"
+    });
+
+    expect(
+      saved.envelope.body.authoritativeSnapshot.definitions.strategicTerrain?.strategicTerrainHash
+    ).toBe(strategicTerrainHash);
+
+    const loaded = loadSaveV1(runtime, saved.bytes, {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+    expect(loaded.status).toBe("loaded");
+    if (loaded.status !== "loaded") {
+      throw new Error("Expected strategic terrain save to load.");
+    }
+    expect(loaded.runtime.world.definitions.strategicTerrain?.strategicTerrainHash).toBe(
+      strategicTerrainHash
+    );
+
+    const missingStrategicTerrain = createSaveEnvelopeV1({
+      build: saved.envelope.header.build,
+      scenarioId: saved.envelope.header.scenarioId,
+      authoritativeSnapshot: withoutSavedStrategicTerrain(
+        saved.envelope.body.authoritativeSnapshot
+      ),
+      scheduler: saved.envelope.body.scheduler,
+      rng: saved.envelope.body.rng,
+      commandTail: saved.envelope.body.commandTail,
+      eventTail: saved.envelope.body.eventTail
+    });
+    const missingResult = loadSaveV1(runtime, encodeSaveEnvelopeV1(missingStrategicTerrain), {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+    expect(missingResult.status).toBe("rejected");
+    if (missingResult.status !== "rejected") {
+      throw new Error("Expected missing strategic terrain save to reject.");
+    }
+    expect(missingResult.runtime.world.meta.stateHash).toBe(runtime.world.meta.stateHash);
+    expect(missingResult.reasons).toContainEqual({
+      code: "semantic-invariant",
+      path: "definitions.strategicTerrain",
+      message: "Save snapshot is missing required strategic terrain for this runtime."
+    });
+
+    const mismatchedStrategicTerrain = createSaveEnvelopeV1({
+      build: saved.envelope.header.build,
+      scenarioId: saved.envelope.header.scenarioId,
+      authoritativeSnapshot: withSavedStrategicTerrainHash(
+        saved.envelope.body.authoritativeSnapshot,
+        "00000000"
+      ),
+      scheduler: saved.envelope.body.scheduler,
+      rng: saved.envelope.body.rng,
+      commandTail: saved.envelope.body.commandTail,
+      eventTail: saved.envelope.body.eventTail
+    });
+    const mismatchedResult = loadSaveV1(runtime, encodeSaveEnvelopeV1(mismatchedStrategicTerrain), {
+      expectedContentManifestHash: saved.envelope.header.contentManifestHash,
+      expectedScenarioId: saved.envelope.header.scenarioId
+    });
+    expect(mismatchedResult.status).toBe("rejected");
+    if (mismatchedResult.status !== "rejected") {
+      throw new Error("Expected strategic terrain hash mismatch to reject.");
+    }
+    expect(mismatchedResult.runtime.world.meta.stateHash).toBe(runtime.world.meta.stateHash);
+    expect(mismatchedResult.reasons).toContainEqual({
+      code: "semantic-invariant",
+      path: "definitions.strategicTerrain.strategicTerrainHash",
+      message: `Save strategic terrain hash 00000000 does not match runtime strategic terrain hash ${strategicTerrainHash}.`
     });
   });
 
@@ -927,6 +1011,153 @@ function createTopologySaveRuntime(): SimulationRuntimeV1 {
   };
 }
 
+function createStrategicTerrainSaveRuntime(): SimulationRuntimeV1 {
+  const contentManifestHash = "m7.strategic.save";
+  const districts = [
+    defineDistrict({ id: 1, displayNameKey: "strategic.save.origin" }),
+    defineDistrict({ id: 2, displayNameKey: "strategic.save.destination" })
+  ];
+  const strategicTerrain = createStrategicTerrainDefinitionV1({
+    contentManifestHash,
+    terrainPatches: [
+      {
+        patchId: "patch.save-lowland",
+        sourceId: "strategic.save.patch.lowland",
+        displayNameKey: "strategic.save.patch.lowland",
+        terrainClass: "lowland",
+        seasonSensitivity: "monsoon",
+        historicity: "COMPOSITE",
+        polygon: [
+          { x: 0, y: 0 },
+          { x: 40, y: 0 },
+          { x: 40, y: 20 }
+        ],
+        explanationTags: ["strategic.save.patch.lowland"]
+      }
+    ],
+    barrierChannels: [
+      {
+        channelId: "channel.save-ridge",
+        sourceId: "strategic.save.channel.ridge",
+        displayNameKey: "strategic.save.channel.ridge",
+        channelKind: "ridge",
+        traversalRule: "blocks-without-explicit-corridor",
+        historicity: "COMPOSITE",
+        points: [
+          { x: 20, y: 0 },
+          { x: 20, y: 20 }
+        ],
+        explanationTags: ["strategic.save.channel.ridge"]
+      }
+    ],
+    strategicNodes: [
+      {
+        nodeId: "node.save-origin",
+        sourceId: "strategic.save.node.origin",
+        displayNameKey: "strategic.save.node.origin",
+        nodeKind: "port",
+        districtId: 1,
+        anchor: { x: 10, y: 10 },
+        localCapacity: 100,
+        knownState: "known",
+        terrainPatchIds: ["patch.save-lowland"],
+        barrierChannelIds: [],
+        governanceFootprintIds: ["footprint.save-origin"],
+        explanationTags: ["strategic.save.node.origin"]
+      },
+      {
+        nodeId: "node.save-destination",
+        sourceId: "strategic.save.node.destination",
+        displayNameKey: "strategic.save.node.destination",
+        nodeKind: "castle",
+        districtId: 2,
+        anchor: { x: 30, y: 10 },
+        localCapacity: 80,
+        knownState: "known",
+        terrainPatchIds: ["patch.save-lowland"],
+        barrierChannelIds: ["channel.save-ridge"],
+        governanceFootprintIds: ["footprint.save-destination"],
+        explanationTags: ["strategic.save.node.destination"]
+      }
+    ],
+    routeCorridors: [
+      {
+        corridorId: "corridor.save-road",
+        sourceId: "strategic.save.corridor.road",
+        displayNameKey: "strategic.save.corridor.road",
+        fromNodeId: "node.save-origin",
+        toNodeId: "node.save-destination",
+        mode: "road",
+        widthClass: "standard",
+        baseTravelCost: 5,
+        baseCapacity: 100,
+        riskClass: "low",
+        terrainPatchIds: ["patch.save-lowland"],
+        barrierChannelIds: ["channel.save-ridge"],
+        governanceFootprintIds: ["footprint.save-origin", "footprint.save-destination"],
+        seasonality: strategicTerrainSaveSeasonality(),
+        availability: { kind: "open" },
+        polyline: [
+          { x: 10, y: 10 },
+          { x: 30, y: 10 }
+        ],
+        explanationTags: ["strategic.save.corridor.road"]
+      }
+    ],
+    districtGovernanceFootprints: [
+      {
+        footprintId: "footprint.save-origin",
+        sourceId: "strategic.save.footprint.origin",
+        displayNameKey: "strategic.save.footprint.origin",
+        districtId: 1,
+        overlayOnly: true,
+        polygon: [
+          { x: 0, y: 0 },
+          { x: 20, y: 0 },
+          { x: 20, y: 20 }
+        ],
+        governanceTags: ["strategic.save.governance.origin"],
+        consequenceTags: ["strategic.save.consequence.origin"]
+      },
+      {
+        footprintId: "footprint.save-destination",
+        sourceId: "strategic.save.footprint.destination",
+        displayNameKey: "strategic.save.footprint.destination",
+        districtId: 2,
+        overlayOnly: true,
+        polygon: [
+          { x: 20, y: 0 },
+          { x: 40, y: 0 },
+          { x: 40, y: 20 }
+        ],
+        governanceTags: ["strategic.save.governance.destination"],
+        consequenceTags: ["strategic.save.consequence.destination"]
+      }
+    ]
+  });
+  const world = createWorldStateV0({
+    seed: 1531,
+    contentManifestHash,
+    currentDay: 0,
+    revision: 0,
+    definitions: {
+      polities: [],
+      persons: [],
+      districts,
+      settlements: [],
+      routes: [],
+      strategicTerrain
+    }
+  });
+
+  return {
+    world,
+    acceptedCommandIds: [],
+    commandTail: [],
+    eventTail: []
+  };
+}
+
 function topologySaveDistrict(
   districtId: number,
   displayNameKey: string
@@ -973,6 +1204,61 @@ function topologySaveSeasonality(): readonly {
     capacityMultiplierBps: 10_000,
     reasonCodes: []
   }));
+}
+
+function strategicTerrainSaveSeasonality(): readonly {
+  readonly month: number;
+  readonly seasonState: "dry";
+  readonly travelCostMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly riskBps: number;
+  readonly reasonCodes: readonly string[];
+}[] {
+  return Array.from({ length: 12 }, (_unused, index) => ({
+    month: index + 1,
+    seasonState: "dry",
+    travelCostMultiplierBps: 10_000,
+    capacityMultiplierBps: 10_000,
+    riskBps: 100,
+    reasonCodes: [`strategic.save.month.${index + 1}`]
+  }));
+}
+
+function withoutSavedStrategicTerrain(snapshot: SaveWorldSnapshotV0Dto): SaveWorldSnapshotV0Dto {
+  return {
+    ...snapshot,
+    definitions: {
+      polities: snapshot.definitions.polities,
+      persons: snapshot.definitions.persons,
+      districts: snapshot.definitions.districts,
+      settlements: snapshot.definitions.settlements,
+      routes: snapshot.definitions.routes,
+      ...(snapshot.definitions.topology === undefined
+        ? {}
+        : { topology: snapshot.definitions.topology })
+    }
+  };
+}
+
+function withSavedStrategicTerrainHash(
+  snapshot: SaveWorldSnapshotV0Dto,
+  strategicTerrainHash: string
+): SaveWorldSnapshotV0Dto {
+  const strategicTerrain = snapshot.definitions.strategicTerrain;
+  if (strategicTerrain === undefined) {
+    throw new Error("Expected saved strategic terrain.");
+  }
+
+  return {
+    ...snapshot,
+    definitions: {
+      ...snapshot.definitions,
+      strategicTerrain: {
+        ...strategicTerrain,
+        strategicTerrainHash
+      }
+    }
+  };
 }
 
 function validateReplayWorld(world: WorldStateV0): boolean {

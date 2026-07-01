@@ -811,6 +811,26 @@ export interface ListMapTopologyQueryV1 {
   };
 }
 
+export interface ListStrategicTerrainQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.list-strategic-terrain";
+  readonly payload: {
+    readonly queryId: string;
+  };
+}
+
+export interface HitTestStrategicTerrainQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.hit-test-strategic-terrain";
+  readonly payload: {
+    readonly queryId: string;
+    readonly point: {
+      readonly x: number;
+      readonly y: number;
+    };
+  };
+}
+
 export interface ListM2EconomySummariesQueryV1 {
   readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
   readonly kind: "sim.list-m2-economy-summaries";
@@ -849,6 +869,17 @@ export interface PreviewMapTopologyPathQueryV1 {
     readonly queryId: string;
     readonly originDistrictId: number;
     readonly destinationDistrictId: number;
+    readonly stockAmount: number;
+  };
+}
+
+export interface PreviewStrategicTerrainRouteQueryV1 {
+  readonly schemaVersion: typeof GAME_QUERY_SCHEMA_VERSION;
+  readonly kind: "sim.preview-strategic-terrain-route";
+  readonly payload: {
+    readonly queryId: string;
+    readonly originNodeId: string;
+    readonly destinationNodeId: string;
     readonly stockAmount: number;
   };
 }
@@ -989,12 +1020,15 @@ export type GameQueryV1 =
   | GetCalendarQueryV1
   | ListDistrictSummariesQueryV1
   | ListMapTopologyQueryV1
+  | ListStrategicTerrainQueryV1
+  | HitTestStrategicTerrainQueryV1
   | ListM2EconomySummariesQueryV1
   | ListM3AdministrativeBurdenQueryV1
   | ListM3DecisionScaffoldsQueryV1
   | ListM3SuccessionCrisesQueryV1
   | PreviewM2TransportRouteQueryV1
   | PreviewMapTopologyPathQueryV1
+  | PreviewStrategicTerrainRouteQueryV1
   | PreviewM3PostwarGovernanceQueryV1
   | CompareM3PostwarGovernanceOutcomesQueryV1
   | ListM4CampaignPlansQueryV1
@@ -1333,6 +1367,254 @@ export interface PreviewMapTopologyPathResultV1 {
   readonly revision: number;
   readonly monthOfYear: number;
   readonly route: MapTopologyPathPreviewReadModelV1;
+}
+
+export interface StrategicTerrainPointReadModelV1 {
+  readonly x: number;
+  readonly y: number;
+}
+
+export type StrategicTerrainAvailabilityReadModelV1 =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
+
+export interface TerrainPatchReadModelV1 {
+  readonly patchId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly terrainClass:
+    | "coastal"
+    | "lowland"
+    | "pass"
+    | "ridge"
+    | "river-basin"
+    | "riverine"
+    | "upland"
+    | "urban"
+    | "wetland"
+    | "unknown";
+  readonly seasonSensitivity: "dry" | "monsoon" | "transition" | "unknown";
+  readonly historicity: "COMPOSITE" | "FICTIONAL" | "HISTORICAL" | "INFERRED";
+  readonly polygon: readonly StrategicTerrainPointReadModelV1[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface BarrierChannelReadModelV1 {
+  readonly channelId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly channelKind: "coast" | "major-river" | "ridge" | "strait" | "wetland";
+  readonly traversalRule: "blocks-without-explicit-corridor" | "channels-explicit-corridors";
+  readonly historicity: "COMPOSITE" | "FICTIONAL" | "HISTORICAL" | "INFERRED";
+  readonly points: readonly StrategicTerrainPointReadModelV1[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface StrategicNodeReadModelV1 {
+  readonly nodeId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly nodeKind:
+    | "castle"
+    | "crossing"
+    | "objective"
+    | "pass"
+    | "port"
+    | "staging-area"
+    | "town"
+    | "warehouse";
+  readonly districtId: number;
+  readonly anchor: StrategicTerrainPointReadModelV1;
+  readonly localCapacity: number;
+  readonly knownState: "known" | "rumored" | "unknown";
+  readonly terrainPatchIds: readonly string[];
+  readonly barrierChannelIds: readonly string[];
+  readonly governanceFootprintIds: readonly string[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface RouteCorridorSeasonalModifierReadModelV1 {
+  readonly month: number;
+  readonly seasonState: "dry" | "monsoon" | "transition" | "unknown";
+  readonly travelCostMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly riskBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface RouteCorridorReadModelV1 {
+  readonly corridorId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly fromNodeId: string;
+  readonly toNodeId: string;
+  readonly mode: "coast" | "mixed" | "pass" | "river" | "road";
+  readonly widthClass: "narrow" | "standard" | "wide";
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly riskClass: "contested" | "hazardous" | "low" | "seasonal" | "unknown";
+  readonly terrainPatchIds: readonly string[];
+  readonly barrierChannelIds: readonly string[];
+  readonly governanceFootprintIds: readonly string[];
+  readonly seasonality: readonly RouteCorridorSeasonalModifierReadModelV1[];
+  readonly availability: StrategicTerrainAvailabilityReadModelV1;
+  readonly polyline: readonly StrategicTerrainPointReadModelV1[];
+  readonly explanationTags: readonly string[];
+}
+
+export interface DistrictGovernanceFootprintReadModelV1 {
+  readonly footprintId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly districtId: number;
+  readonly overlayOnly: true;
+  readonly polygon: readonly StrategicTerrainPointReadModelV1[];
+  readonly governanceTags: readonly string[];
+  readonly consequenceTags: readonly string[];
+}
+
+export interface StrategicTerrainReadModelV1 {
+  readonly schemaVersion: 1;
+  readonly strategicTerrainHash: string;
+  readonly contentManifestHash: string;
+  readonly authority: "terrain-route-node-v1";
+  readonly governanceFootprintRole: "overlay-only";
+  readonly authorityProhibitions: readonly string[];
+  readonly terrainPatches: readonly TerrainPatchReadModelV1[];
+  readonly barrierChannels: readonly BarrierChannelReadModelV1[];
+  readonly strategicNodes: readonly StrategicNodeReadModelV1[];
+  readonly routeCorridors: readonly RouteCorridorReadModelV1[];
+  readonly districtGovernanceFootprints: readonly DistrictGovernanceFootprintReadModelV1[];
+}
+
+export interface ListStrategicTerrainResultV1 {
+  readonly kind: "sim.list-strategic-terrain";
+  readonly day: number;
+  readonly revision: number;
+  readonly terrain: StrategicTerrainReadModelV1;
+}
+
+export interface StrategicTerrainHitCandidateReadModelV1 {
+  readonly kind:
+    | "barrier-channel"
+    | "district-governance-footprint"
+    | "route-corridor"
+    | "strategic-node"
+    | "terrain-patch";
+  readonly id: string;
+  readonly priority: number;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface HitTestStrategicTerrainResultV1 {
+  readonly kind: "sim.hit-test-strategic-terrain";
+  readonly day: number;
+  readonly revision: number;
+  readonly hit: {
+    readonly strategicTerrainHash: string;
+    readonly point: StrategicTerrainPointReadModelV1;
+    readonly selected: StrategicTerrainHitCandidateReadModelV1 | null;
+    readonly candidates: readonly StrategicTerrainHitCandidateReadModelV1[];
+    readonly priorityIntent: readonly string[];
+    readonly reasonCodes: readonly string[];
+  };
+}
+
+export interface StrategicTerrainRoutePreviewCorridorReadModelV1 {
+  readonly corridorId: string;
+  readonly sourceId: string;
+  readonly fromNodeId: string;
+  readonly toNodeId: string;
+  readonly mode: "coast" | "mixed" | "pass" | "river" | "road";
+  readonly widthClass: "narrow" | "standard" | "wide";
+  readonly baseTravelCost: number;
+  readonly seasonalTravelCost: number;
+  readonly baseCapacity: number;
+  readonly seasonalCapacity: number;
+  readonly stockAmount: number;
+  readonly remainingCapacityAfterStock: number;
+  readonly seasonState: "dry" | "monsoon" | "transition" | "unknown";
+  readonly riskBps: number;
+  readonly riskClass: "contested" | "hazardous" | "low" | "seasonal" | "unknown";
+  readonly availability: StrategicTerrainAvailabilityReadModelV1;
+  readonly terrainPatchIds: readonly string[];
+  readonly barrierChannelIds: readonly string[];
+  readonly governanceFootprintIds: readonly string[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface StrategicTerrainRouteExplanationReadModelV1 {
+  readonly estimatedTravelCost: number | null;
+  readonly bottleneckCapacity: number | null;
+  readonly bottleneckCorridorId: string | null;
+  readonly terrainReasonCodes: readonly string[];
+  readonly seasonReasonCodes: readonly string[];
+  readonly riskReasonCodes: readonly string[];
+  readonly blockerReasonCodes: readonly string[];
+  readonly unknownReasonCodes: readonly string[];
+  readonly capacityReasonCodes: readonly string[];
+  readonly governanceConsequenceCodes: readonly string[];
+}
+
+export interface StrategicTerrainAiRouteReasonReadModelV1 {
+  readonly reasonCodes: readonly string[];
+  readonly corridorIds: readonly string[];
+  readonly blockerReasonCodes: readonly string[];
+  readonly unknownReasonCodes: readonly string[];
+  readonly governanceConsequenceCodes: readonly string[];
+}
+
+export interface StrategicTerrainTieBreakEvidenceReadModelV1 {
+  readonly orderedBy: readonly [
+    "total-cost",
+    "corridor-count",
+    "corridor-id-sequence",
+    "endpoint-node-id-sequence",
+    "destination-node-id"
+  ];
+  readonly candidateCount: number;
+  readonly selectedCorridorIds: readonly string[];
+  readonly selectedEndpointKeys: readonly string[];
+}
+
+export type StrategicTerrainRoutePreviewReadModelV1 =
+  | {
+      readonly status: "blocked" | "no-known-route" | "unknown";
+      readonly strategicTerrainHash: string | null;
+      readonly originNodeId: string;
+      readonly destinationNodeId: string;
+      readonly stockAmount: number;
+      readonly monthOfYear: number;
+      readonly corridors: readonly StrategicTerrainRoutePreviewCorridorReadModelV1[];
+      readonly routeExplanation: StrategicTerrainRouteExplanationReadModelV1;
+      readonly aiReasons: StrategicTerrainAiRouteReasonReadModelV1;
+      readonly reasonCodes: readonly string[];
+      readonly tieBreakEvidence: StrategicTerrainTieBreakEvidenceReadModelV1;
+    }
+  | {
+      readonly status: "capacity-exceeded" | "reachable";
+      readonly strategicTerrainHash: string;
+      readonly originNodeId: string;
+      readonly destinationNodeId: string;
+      readonly stockAmount: number;
+      readonly monthOfYear: number;
+      readonly totalCost: number;
+      readonly bottleneckCapacity: number;
+      readonly bottleneckCorridorId: string | null;
+      readonly corridors: readonly StrategicTerrainRoutePreviewCorridorReadModelV1[];
+      readonly routeExplanation: StrategicTerrainRouteExplanationReadModelV1;
+      readonly aiReasons: StrategicTerrainAiRouteReasonReadModelV1;
+      readonly reasonCodes: readonly string[];
+      readonly tieBreakEvidence: StrategicTerrainTieBreakEvidenceReadModelV1;
+    };
+
+export interface PreviewStrategicTerrainRouteResultV1 {
+  readonly kind: "sim.preview-strategic-terrain-route";
+  readonly day: number;
+  readonly revision: number;
+  readonly monthOfYear: number;
+  readonly route: StrategicTerrainRoutePreviewReadModelV1;
 }
 
 export interface M3PostwarGovernanceObligationShapeReadModelV1 {
@@ -2725,6 +3007,36 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
         }
       };
     }
+    case "sim.list-strategic-terrain": {
+      const payload = parseListStrategicTerrainPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.hit-test-strategic-terrain": {
+      const payload = parseHitTestStrategicTerrainPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
     case "sim.preview-m2-transport-route": {
       const payload = parsePreviewM2TransportRoutePayload(input["payload"]);
       if (!payload.ok) {
@@ -2742,6 +3054,21 @@ export function parseGameQueryV1(input: unknown): ProtocolParseResult<GameQueryV
     }
     case "sim.preview-map-topology-path": {
       const payload = parsePreviewMapTopologyPathPayload(input["payload"]);
+      if (!payload.ok) {
+        return payload;
+      }
+
+      return {
+        ok: true,
+        value: {
+          schemaVersion: GAME_QUERY_SCHEMA_VERSION,
+          kind,
+          payload: payload.value
+        }
+      };
+    }
+    case "sim.preview-strategic-terrain-route": {
+      const payload = parsePreviewStrategicTerrainRoutePayload(input["payload"]);
       if (!payload.ok) {
         return payload;
       }
@@ -5088,6 +5415,59 @@ function parseListMapTopologyPayload(
   };
 }
 
+function parseListStrategicTerrainPayload(
+  input: unknown
+): ProtocolParseResult<ListStrategicTerrainQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.list-strategic-terrain payload must be an object."
+    );
+  }
+
+  const queryId = parseQueryId(input["queryId"]);
+  if (!queryId.ok) {
+    return queryId;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId: queryId.value
+    }
+  };
+}
+
+function parseHitTestStrategicTerrainPayload(
+  input: unknown
+): ProtocolParseResult<HitTestStrategicTerrainQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.hit-test-strategic-terrain payload must be an object."
+    );
+  }
+
+  const queryId = parseQueryId(input["queryId"]);
+  if (!queryId.ok) {
+    return queryId;
+  }
+  const point = parseStrategicTerrainPointPayload(input["point"], "payload.point");
+  if (!point.ok) {
+    return point;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId: queryId.value,
+      point: point.value
+    }
+  };
+}
+
 function parsePreviewMapTopologyPathPayload(
   input: unknown
 ): ProtocolParseResult<PreviewMapTopologyPathQueryV1["payload"]> {
@@ -5132,6 +5512,72 @@ function parsePreviewMapTopologyPathPayload(
       originDistrictId: originDistrictId.value,
       destinationDistrictId: destinationDistrictId.value,
       stockAmount: stockAmount.value
+    }
+  };
+}
+
+function parsePreviewStrategicTerrainRoutePayload(
+  input: unknown
+): ProtocolParseResult<PreviewStrategicTerrainRouteQueryV1["payload"]> {
+  if (!isRecord(input)) {
+    return protocolError(
+      "invalid-payload",
+      "payload",
+      "sim.preview-strategic-terrain-route payload must be an object."
+    );
+  }
+
+  const queryId = parseQueryId(input["queryId"]);
+  if (!queryId.ok) {
+    return queryId;
+  }
+  const originNodeId = parseStrategicTerrainStableId(input["originNodeId"], "payload.originNodeId");
+  if (!originNodeId.ok) {
+    return originNodeId;
+  }
+  const destinationNodeId = parseStrategicTerrainStableId(
+    input["destinationNodeId"],
+    "payload.destinationNodeId"
+  );
+  if (!destinationNodeId.ok) {
+    return destinationNodeId;
+  }
+  const stockAmount = parsePositiveSafeInteger(input["stockAmount"], "payload.stockAmount");
+  if (!stockAmount.ok) {
+    return stockAmount;
+  }
+
+  return {
+    ok: true,
+    value: {
+      queryId: queryId.value,
+      originNodeId: originNodeId.value,
+      destinationNodeId: destinationNodeId.value,
+      stockAmount: stockAmount.value
+    }
+  };
+}
+
+function parseStrategicTerrainPointPayload(
+  input: unknown,
+  path: string
+): ProtocolParseResult<{ readonly x: number; readonly y: number }> {
+  if (!isRecord(input)) {
+    return protocolError("invalid-payload", path, `${path} must be an object.`);
+  }
+  const x = parseSafeInteger(input["x"], `${path}.x`);
+  if (!x.ok) {
+    return x;
+  }
+  const y = parseSafeInteger(input["y"], `${path}.y`);
+  if (!y.ok) {
+    return y;
+  }
+  return {
+    ok: true,
+    value: {
+      x: x.value,
+      y: y.value
     }
   };
 }
@@ -5856,6 +6302,14 @@ function parseNonnegativeSafeInteger(value: unknown, path: string): ProtocolPars
   return protocolError("invalid-payload", path, `${path} must be a nonnegative safe integer.`);
 }
 
+function parseSafeInteger(value: unknown, path: string): ProtocolParseResult<number> {
+  if (typeof value === "number" && Number.isSafeInteger(value)) {
+    return { ok: true, value };
+  }
+
+  return protocolError("invalid-payload", path, `${path} must be a safe integer.`);
+}
+
 function parseBps(value: unknown, path: string): ProtocolParseResult<number> {
   if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0 && value <= 10_000) {
     return { ok: true, value };
@@ -5900,6 +6354,20 @@ function parseNonEmptyProtocolString(value: unknown, path: string): ProtocolPars
   }
 
   return protocolError("invalid-payload", path, `${path} must be a non-empty string.`);
+}
+
+function parseStrategicTerrainStableId(value: unknown, path: string): ProtocolParseResult<string> {
+  if (typeof value !== "string" || !/^[A-Za-z][A-Za-z0-9._:-]{0,95}$/u.test(value)) {
+    return protocolError("invalid-payload", path, `${path} must be a stable string id.`);
+  }
+  if (/^(?:\d+|row[-.:]?\d+|col[-.:]?\d+|hex[-.:]?\d+|cell[-.:]?\d+)$/iu.test(value)) {
+    return protocolError(
+      "invalid-payload",
+      path,
+      `${path} must not be a hidden grid, lattice, hex, or sequential id.`
+    );
+  }
+  return { ok: true, value };
 }
 
 function isPositiveSafeInteger(value: unknown): value is number {

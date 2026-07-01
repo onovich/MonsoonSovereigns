@@ -2,6 +2,7 @@ import {
   createM2EconomyPopulationStateV0,
   createM6PolicyEventRuntimeStateV0,
   createMapTopologyDefinitionV1,
+  createStrategicTerrainDefinitionV1,
   createWorldStateV0,
   defineDistrict,
   defineRoute,
@@ -41,6 +42,7 @@ interface RuntimeM2WorldBootPackV0 {
   readonly regionalSeasonalCurves: readonly RuntimeM2CurveBootDefinitionV0[];
   readonly routes: readonly RuntimeM2RouteBootDefinitionV0[];
   readonly topology: RuntimeM2TopologyBootDefinitionV0;
+  readonly strategicTerrain?: RuntimeM2StrategicTerrainBootDefinitionV0;
   readonly m6PolicyEvents?: M6PolicyEventRuntimeStateV0;
 }
 
@@ -162,6 +164,171 @@ interface RuntimeM2TopologyRouteEdgeBootDefinitionV0 {
   readonly metadata: RuntimeM2TopologyMetadataBootDefinitionV0;
 }
 
+type RuntimeM2StrategicTerrainHistoricityBootDefinitionV0 =
+  | "COMPOSITE"
+  | "FICTIONAL"
+  | "HISTORICAL"
+  | "INFERRED";
+type RuntimeM2StrategicTerrainClassBootDefinitionV0 =
+  | "coastal"
+  | "lowland"
+  | "pass"
+  | "ridge"
+  | "river-basin"
+  | "riverine"
+  | "upland"
+  | "urban"
+  | "wetland"
+  | "unknown";
+type RuntimeM2StrategicTerrainRiskClassBootDefinitionV0 =
+  | "contested"
+  | "hazardous"
+  | "low"
+  | "seasonal"
+  | "unknown";
+type RuntimeM2StrategicTerrainSeasonStateBootDefinitionV0 =
+  | "dry"
+  | "monsoon"
+  | "transition"
+  | "unknown";
+type RuntimeM2BarrierChannelKindBootDefinitionV0 =
+  | "coast"
+  | "major-river"
+  | "ridge"
+  | "strait"
+  | "wetland";
+type RuntimeM2BarrierTraversalRuleBootDefinitionV0 =
+  | "blocks-without-explicit-corridor"
+  | "channels-explicit-corridors";
+type RuntimeM2StrategicNodeKindBootDefinitionV0 =
+  | "castle"
+  | "crossing"
+  | "objective"
+  | "pass"
+  | "port"
+  | "staging-area"
+  | "town"
+  | "warehouse";
+type RuntimeM2StrategicNodeKnownStateBootDefinitionV0 = "known" | "rumored" | "unknown";
+type RuntimeM2RouteCorridorModeBootDefinitionV0 = "coast" | "mixed" | "pass" | "river" | "road";
+type RuntimeM2RouteCorridorWidthClassBootDefinitionV0 = "narrow" | "standard" | "wide";
+type RuntimeM2StrategicTerrainAuthorityProhibitionBootDefinitionV0 =
+  | "bounding-box-adjacency"
+  | "centroid-proximity"
+  | "hidden-grid"
+  | "hidden-lattice"
+  | "hex-axial-or-cube"
+  | "renderer-only-line-reachability"
+  | "sequential-id-reachability";
+
+interface RuntimeM2StrategicTerrainPointBootDefinitionV0 {
+  readonly x: number;
+  readonly y: number;
+}
+
+interface RuntimeM2TerrainPatchBootDefinitionV0 {
+  readonly patchId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly terrainClass: RuntimeM2StrategicTerrainClassBootDefinitionV0;
+  readonly seasonSensitivity: RuntimeM2StrategicTerrainSeasonStateBootDefinitionV0;
+  readonly historicity: RuntimeM2StrategicTerrainHistoricityBootDefinitionV0;
+  readonly polygon: readonly RuntimeM2StrategicTerrainPointBootDefinitionV0[];
+  readonly explanationTags: readonly string[];
+}
+
+interface RuntimeM2BarrierChannelBootDefinitionV0 {
+  readonly channelId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly channelKind: RuntimeM2BarrierChannelKindBootDefinitionV0;
+  readonly traversalRule: RuntimeM2BarrierTraversalRuleBootDefinitionV0;
+  readonly historicity: RuntimeM2StrategicTerrainHistoricityBootDefinitionV0;
+  readonly points: readonly RuntimeM2StrategicTerrainPointBootDefinitionV0[];
+  readonly explanationTags: readonly string[];
+}
+
+interface RuntimeM2StrategicNodeBootDefinitionV0 {
+  readonly nodeId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly nodeKind: RuntimeM2StrategicNodeKindBootDefinitionV0;
+  readonly districtId: number;
+  readonly anchor: RuntimeM2StrategicTerrainPointBootDefinitionV0;
+  readonly localCapacity: number;
+  readonly knownState: RuntimeM2StrategicNodeKnownStateBootDefinitionV0;
+  readonly terrainPatchIds: readonly string[];
+  readonly barrierChannelIds: readonly string[];
+  readonly governanceFootprintIds: readonly string[];
+  readonly explanationTags: readonly string[];
+}
+
+interface RuntimeM2RouteCorridorSeasonalModifierBootDefinitionV0 {
+  readonly month: number;
+  readonly seasonState: RuntimeM2StrategicTerrainSeasonStateBootDefinitionV0;
+  readonly travelCostMultiplierBps: number;
+  readonly capacityMultiplierBps: number;
+  readonly riskBps: number;
+  readonly reasonCodes: readonly string[];
+}
+
+type RuntimeM2RouteCorridorAvailabilityBootDefinitionV0 =
+  | { readonly kind: "blocked"; readonly reasonCode: string }
+  | { readonly kind: "open" }
+  | { readonly kind: "unknown"; readonly reasonCode: string };
+
+interface RuntimeM2RouteCorridorBootDefinitionV0 {
+  readonly corridorId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly fromNodeId: string;
+  readonly toNodeId: string;
+  readonly mode: RuntimeM2RouteCorridorModeBootDefinitionV0;
+  readonly widthClass: RuntimeM2RouteCorridorWidthClassBootDefinitionV0;
+  readonly baseTravelCost: number;
+  readonly baseCapacity: number;
+  readonly riskClass: RuntimeM2StrategicTerrainRiskClassBootDefinitionV0;
+  readonly terrainPatchIds: readonly string[];
+  readonly barrierChannelIds: readonly string[];
+  readonly governanceFootprintIds: readonly string[];
+  readonly seasonality: readonly RuntimeM2RouteCorridorSeasonalModifierBootDefinitionV0[];
+  readonly availability: RuntimeM2RouteCorridorAvailabilityBootDefinitionV0;
+  readonly polyline: readonly RuntimeM2StrategicTerrainPointBootDefinitionV0[];
+  readonly explanationTags: readonly string[];
+}
+
+interface RuntimeM2DistrictGovernanceFootprintBootDefinitionV0 {
+  readonly footprintId: string;
+  readonly sourceId: string;
+  readonly displayNameKey: string;
+  readonly districtId: number;
+  readonly overlayOnly: true;
+  readonly polygon: readonly RuntimeM2StrategicTerrainPointBootDefinitionV0[];
+  readonly governanceTags: readonly string[];
+  readonly consequenceTags: readonly string[];
+}
+
+interface RuntimeM2StrategicTerrainBootDefinitionV0 {
+  readonly contentManifestHash: string;
+  readonly authorityProhibitions: readonly RuntimeM2StrategicTerrainAuthorityProhibitionBootDefinitionV0[];
+  readonly terrainPatches: readonly RuntimeM2TerrainPatchBootDefinitionV0[];
+  readonly barrierChannels: readonly RuntimeM2BarrierChannelBootDefinitionV0[];
+  readonly strategicNodes: readonly RuntimeM2StrategicNodeBootDefinitionV0[];
+  readonly routeCorridors: readonly RuntimeM2RouteCorridorBootDefinitionV0[];
+  readonly districtGovernanceFootprints: readonly RuntimeM2DistrictGovernanceFootprintBootDefinitionV0[];
+}
+
+const STRATEGIC_TERRAIN_AUTHORITY_PROHIBITIONS: readonly RuntimeM2StrategicTerrainAuthorityProhibitionBootDefinitionV0[] =
+  [
+    "bounding-box-adjacency",
+    "centroid-proximity",
+    "hidden-grid",
+    "hidden-lattice",
+    "hex-axial-or-cube",
+    "renderer-only-line-reachability",
+    "sequential-id-reachability"
+  ];
+
 type BootPackParseResult =
   | { readonly ok: true; readonly value: RuntimeM2WorldBootPackV0 }
   | { readonly ok: false; readonly error: ContentBootErrorV1 };
@@ -216,7 +383,12 @@ export function bootWorldStateFromRuntimeContentPackV1(input: {
       districts: parsedPack.value.topology.districts,
       routeNodes: parsedPack.value.topology.routeNodes,
       routeEdges: parsedPack.value.topology.routeEdges
-    })
+    }),
+    ...(parsedPack.value.strategicTerrain === undefined
+      ? {}
+      : {
+          strategicTerrain: createStrategicTerrainDefinitionV1(parsedPack.value.strategicTerrain)
+        })
   };
   const world = createWorldStateV0({
     seed: seed.value,
@@ -320,6 +492,17 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
     return topology;
   }
 
+  const strategicTerrain =
+    input["strategicTerrain"] === undefined
+      ? undefined
+      : parseStrategicTerrain(
+          readRecord(input, "strategicTerrain"),
+          "runtimeContentPack.strategicTerrain"
+        );
+  if (strategicTerrain !== undefined && !strategicTerrain.ok) {
+    return strategicTerrain;
+  }
+
   const semanticError = validateRuntimeM2WorldBootSemantics({
     fixtureId: readString(input, "fixtureId"),
     manifest,
@@ -328,7 +511,8 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
     curves: curves.value,
     routes: routes.value,
     geometries: geometries.value,
-    topology: topology.value
+    topology: topology.value,
+    ...(strategicTerrain === undefined ? {} : { strategicTerrain: strategicTerrain.value })
   });
   if (semanticError !== null) {
     return semanticError;
@@ -352,6 +536,7 @@ function parseRuntimeM2WorldBootPackV0(input: unknown): BootPackParseResult {
       regionalSeasonalCurves: curves.value,
       routes: routes.value,
       topology: topology.value,
+      ...(strategicTerrain === undefined ? {} : { strategicTerrain: strategicTerrain.value }),
       ...(policyEvents === undefined ? {} : { m6PolicyEvents: policyEvents.value })
     }
   };
@@ -397,6 +582,12 @@ function validateRuntimeM2WorldRoot(input: Record<string, unknown>): BootPackErr
   }
   if (!isRecord(input["topology"])) {
     return contentPackError("runtimeContentPack.topology", "topology must be an object.");
+  }
+  if (input["strategicTerrain"] !== undefined && !isRecord(input["strategicTerrain"])) {
+    return contentPackError(
+      "runtimeContentPack.strategicTerrain",
+      "strategicTerrain must be an object."
+    );
   }
 
   return null;
@@ -1547,6 +1738,548 @@ function parseTopologyPoint(
   return { ok: true, value: { x: x.value, y: y.value } };
 }
 
+function parseStrategicTerrain(
+  input: Record<string, unknown>,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicTerrainBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (input["schemaVersion"] !== 1) {
+    return contentPackError(`${path}.schemaVersion`, "schemaVersion must be 1.");
+  }
+  if (input["hashAlgorithm"] !== "fnv1a32-canonical-strategic-terrain-v1") {
+    return contentPackError(
+      `${path}.hashAlgorithm`,
+      "hashAlgorithm must be fnv1a32-canonical-strategic-terrain-v1."
+    );
+  }
+  const contentManifestHash = parseHashString(
+    input["contentManifestHash"],
+    `${path}.contentManifestHash`
+  );
+  if (!contentManifestHash.ok) return contentManifestHash;
+  if (input["authority"] !== "terrain-route-node-v1") {
+    return contentPackError(`${path}.authority`, "authority must be terrain-route-node-v1.");
+  }
+  if (input["governanceFootprintRole"] !== "overlay-only") {
+    return contentPackError(
+      `${path}.governanceFootprintRole`,
+      "governanceFootprintRole must be overlay-only."
+    );
+  }
+
+  const authorityProhibitions = parseStrategicTerrainAuthorityProhibitions(
+    input["authorityProhibitions"],
+    `${path}.authorityProhibitions`
+  );
+  if (!authorityProhibitions.ok) return authorityProhibitions;
+  const terrainPatches = parseStrategicTerrainArrayField(
+    input,
+    "terrainPatches",
+    `${path}.terrainPatches`,
+    "Terrain patch",
+    parseTerrainPatch
+  );
+  if (!terrainPatches.ok) return terrainPatches;
+  const barrierChannels = parseStrategicTerrainArrayField(
+    input,
+    "barrierChannels",
+    `${path}.barrierChannels`,
+    "Barrier channel",
+    parseBarrierChannel
+  );
+  if (!barrierChannels.ok) return barrierChannels;
+  const strategicNodes = parseStrategicTerrainArrayField(
+    input,
+    "strategicNodes",
+    `${path}.strategicNodes`,
+    "Strategic node",
+    parseStrategicNode
+  );
+  if (!strategicNodes.ok) return strategicNodes;
+  const routeCorridors = parseStrategicTerrainArrayField(
+    input,
+    "routeCorridors",
+    `${path}.routeCorridors`,
+    "Route corridor",
+    parseRouteCorridor
+  );
+  if (!routeCorridors.ok) return routeCorridors;
+  const districtGovernanceFootprints = parseStrategicTerrainArrayField(
+    input,
+    "districtGovernanceFootprints",
+    `${path}.districtGovernanceFootprints`,
+    "District governance footprint",
+    parseDistrictGovernanceFootprint
+  );
+  if (!districtGovernanceFootprints.ok) return districtGovernanceFootprints;
+
+  return {
+    ok: true,
+    value: {
+      contentManifestHash: contentManifestHash.value,
+      authorityProhibitions: authorityProhibitions.value,
+      terrainPatches: terrainPatches.value,
+      barrierChannels: barrierChannels.value,
+      strategicNodes: strategicNodes.value,
+      routeCorridors: routeCorridors.value,
+      districtGovernanceFootprints: districtGovernanceFootprints.value
+    }
+  };
+}
+
+function parseTerrainPatch(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2TerrainPatchBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "Terrain patch must be an object.");
+  }
+  const patchId = parseStrategicTerrainId(input["patchId"], `${path}.patchId`);
+  if (!patchId.ok) return patchId;
+  const sourceId = parseNonEmptyString(input["sourceId"], `${path}.sourceId`);
+  if (!sourceId.ok) return sourceId;
+  const displayNameKey = parseNonEmptyString(input["displayNameKey"], `${path}.displayNameKey`);
+  if (!displayNameKey.ok) return displayNameKey;
+  const terrainClass = parseStrategicTerrainClass(input["terrainClass"], `${path}.terrainClass`);
+  if (!terrainClass.ok) return terrainClass;
+  const seasonSensitivity = parseStrategicTerrainSeasonState(
+    input["seasonSensitivity"],
+    `${path}.seasonSensitivity`
+  );
+  if (!seasonSensitivity.ok) return seasonSensitivity;
+  const historicity = parseStrategicTerrainHistoricity(input["historicity"], `${path}.historicity`);
+  if (!historicity.ok) return historicity;
+  const polygon = parseStrategicTerrainPointArray(input["polygon"], `${path}.polygon`);
+  if (!polygon.ok) return polygon;
+  const explanationTags = parseStringArrayAllowEmpty(
+    input["explanationTags"],
+    `${path}.explanationTags`
+  );
+  if (!explanationTags.ok) return explanationTags;
+  return {
+    ok: true,
+    value: {
+      patchId: patchId.value,
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      terrainClass: terrainClass.value,
+      seasonSensitivity: seasonSensitivity.value,
+      historicity: historicity.value,
+      polygon: polygon.value,
+      explanationTags: explanationTags.value
+    }
+  };
+}
+
+function parseBarrierChannel(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2BarrierChannelBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "Barrier channel must be an object.");
+  }
+  const channelId = parseStrategicTerrainId(input["channelId"], `${path}.channelId`);
+  if (!channelId.ok) return channelId;
+  const sourceId = parseNonEmptyString(input["sourceId"], `${path}.sourceId`);
+  if (!sourceId.ok) return sourceId;
+  const displayNameKey = parseNonEmptyString(input["displayNameKey"], `${path}.displayNameKey`);
+  if (!displayNameKey.ok) return displayNameKey;
+  const channelKind = parseBarrierChannelKind(input["channelKind"], `${path}.channelKind`);
+  if (!channelKind.ok) return channelKind;
+  const traversalRule = parseBarrierTraversalRule(input["traversalRule"], `${path}.traversalRule`);
+  if (!traversalRule.ok) return traversalRule;
+  const historicity = parseStrategicTerrainHistoricity(input["historicity"], `${path}.historicity`);
+  if (!historicity.ok) return historicity;
+  const points = parseStrategicTerrainPointArray(input["points"], `${path}.points`);
+  if (!points.ok) return points;
+  const explanationTags = parseStringArrayAllowEmpty(
+    input["explanationTags"],
+    `${path}.explanationTags`
+  );
+  if (!explanationTags.ok) return explanationTags;
+  return {
+    ok: true,
+    value: {
+      channelId: channelId.value,
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      channelKind: channelKind.value,
+      traversalRule: traversalRule.value,
+      historicity: historicity.value,
+      points: points.value,
+      explanationTags: explanationTags.value
+    }
+  };
+}
+
+function parseStrategicNode(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicNodeBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "Strategic node must be an object.");
+  }
+  const nodeId = parseStrategicTerrainId(input["nodeId"], `${path}.nodeId`);
+  if (!nodeId.ok) return nodeId;
+  const sourceId = parseNonEmptyString(input["sourceId"], `${path}.sourceId`);
+  if (!sourceId.ok) return sourceId;
+  const displayNameKey = parseNonEmptyString(input["displayNameKey"], `${path}.displayNameKey`);
+  if (!displayNameKey.ok) return displayNameKey;
+  const nodeKind = parseStrategicNodeKind(input["nodeKind"], `${path}.nodeKind`);
+  if (!nodeKind.ok) return nodeKind;
+  const districtId = parsePositiveSafeInteger(input["districtId"], `${path}.districtId`);
+  if (!districtId.ok) return districtId;
+  const anchor = parseStrategicTerrainPoint(readRecord(input, "anchor"), `${path}.anchor`);
+  if (!anchor.ok) return anchor;
+  const localCapacity = parsePositiveSafeInteger(input["localCapacity"], `${path}.localCapacity`);
+  if (!localCapacity.ok) return localCapacity;
+  const knownState = parseStrategicNodeKnownState(input["knownState"], `${path}.knownState`);
+  if (!knownState.ok) return knownState;
+  const terrainPatchIds = parseStrategicTerrainIdArray(
+    input["terrainPatchIds"],
+    `${path}.terrainPatchIds`
+  );
+  if (!terrainPatchIds.ok) return terrainPatchIds;
+  const barrierChannelIds = parseStrategicTerrainIdArray(
+    input["barrierChannelIds"],
+    `${path}.barrierChannelIds`
+  );
+  if (!barrierChannelIds.ok) return barrierChannelIds;
+  const governanceFootprintIds = parseStrategicTerrainIdArray(
+    input["governanceFootprintIds"],
+    `${path}.governanceFootprintIds`
+  );
+  if (!governanceFootprintIds.ok) return governanceFootprintIds;
+  const explanationTags = parseStringArrayAllowEmpty(
+    input["explanationTags"],
+    `${path}.explanationTags`
+  );
+  if (!explanationTags.ok) return explanationTags;
+  return {
+    ok: true,
+    value: {
+      nodeId: nodeId.value,
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      nodeKind: nodeKind.value,
+      districtId: districtId.value,
+      anchor: anchor.value,
+      localCapacity: localCapacity.value,
+      knownState: knownState.value,
+      terrainPatchIds: terrainPatchIds.value,
+      barrierChannelIds: barrierChannelIds.value,
+      governanceFootprintIds: governanceFootprintIds.value,
+      explanationTags: explanationTags.value
+    }
+  };
+}
+
+function parseRouteCorridor(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2RouteCorridorBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "Route corridor must be an object.");
+  }
+  const corridorId = parseStrategicTerrainId(input["corridorId"], `${path}.corridorId`);
+  if (!corridorId.ok) return corridorId;
+  const sourceId = parseNonEmptyString(input["sourceId"], `${path}.sourceId`);
+  if (!sourceId.ok) return sourceId;
+  const displayNameKey = parseNonEmptyString(input["displayNameKey"], `${path}.displayNameKey`);
+  if (!displayNameKey.ok) return displayNameKey;
+  const fromNodeId = parseStrategicTerrainId(input["fromNodeId"], `${path}.fromNodeId`);
+  if (!fromNodeId.ok) return fromNodeId;
+  const toNodeId = parseStrategicTerrainId(input["toNodeId"], `${path}.toNodeId`);
+  if (!toNodeId.ok) return toNodeId;
+  const mode = parseRouteCorridorMode(input["mode"], `${path}.mode`);
+  if (!mode.ok) return mode;
+  const widthClass = parseRouteCorridorWidthClass(input["widthClass"], `${path}.widthClass`);
+  if (!widthClass.ok) return widthClass;
+  const baseTravelCost = parsePositiveSafeInteger(
+    input["baseTravelCost"],
+    `${path}.baseTravelCost`
+  );
+  if (!baseTravelCost.ok) return baseTravelCost;
+  const baseCapacity = parsePositiveSafeInteger(input["baseCapacity"], `${path}.baseCapacity`);
+  if (!baseCapacity.ok) return baseCapacity;
+  const riskClass = parseStrategicTerrainRiskClass(input["riskClass"], `${path}.riskClass`);
+  if (!riskClass.ok) return riskClass;
+  const terrainPatchIds = parseStrategicTerrainIdArray(
+    input["terrainPatchIds"],
+    `${path}.terrainPatchIds`
+  );
+  if (!terrainPatchIds.ok) return terrainPatchIds;
+  const barrierChannelIds = parseStrategicTerrainIdArray(
+    input["barrierChannelIds"],
+    `${path}.barrierChannelIds`
+  );
+  if (!barrierChannelIds.ok) return barrierChannelIds;
+  const governanceFootprintIds = parseStrategicTerrainIdArray(
+    input["governanceFootprintIds"],
+    `${path}.governanceFootprintIds`
+  );
+  if (!governanceFootprintIds.ok) return governanceFootprintIds;
+  const seasonality = parseStrategicTerrainArrayValue(
+    input["seasonality"],
+    `${path}.seasonality`,
+    "Route corridor seasonality",
+    parseRouteCorridorSeasonality
+  );
+  if (!seasonality.ok) return seasonality;
+  const availability = parseRouteCorridorAvailability(
+    readRecord(input, "availability"),
+    `${path}.availability`
+  );
+  if (!availability.ok) return availability;
+  const polyline = parseStrategicTerrainPointArray(input["polyline"], `${path}.polyline`);
+  if (!polyline.ok) return polyline;
+  const explanationTags = parseStringArrayAllowEmpty(
+    input["explanationTags"],
+    `${path}.explanationTags`
+  );
+  if (!explanationTags.ok) return explanationTags;
+  return {
+    ok: true,
+    value: {
+      corridorId: corridorId.value,
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      fromNodeId: fromNodeId.value,
+      toNodeId: toNodeId.value,
+      mode: mode.value,
+      widthClass: widthClass.value,
+      baseTravelCost: baseTravelCost.value,
+      baseCapacity: baseCapacity.value,
+      riskClass: riskClass.value,
+      terrainPatchIds: terrainPatchIds.value,
+      barrierChannelIds: barrierChannelIds.value,
+      governanceFootprintIds: governanceFootprintIds.value,
+      seasonality: seasonality.value,
+      availability: availability.value,
+      polyline: polyline.value,
+      explanationTags: explanationTags.value
+    }
+  };
+}
+
+function parseRouteCorridorSeasonality(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2RouteCorridorSeasonalModifierBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "Route corridor seasonality must be an object.");
+  }
+  const month = parseIntegerInRange(input["month"], `${path}.month`, 1, 12);
+  if (!month.ok) return month;
+  const seasonState = parseStrategicTerrainSeasonState(input["seasonState"], `${path}.seasonState`);
+  if (!seasonState.ok) return seasonState;
+  const travelCostMultiplierBps = parseIntegerInRange(
+    input["travelCostMultiplierBps"],
+    `${path}.travelCostMultiplierBps`,
+    1,
+    30000
+  );
+  if (!travelCostMultiplierBps.ok) return travelCostMultiplierBps;
+  const capacityMultiplierBps = parseIntegerInRange(
+    input["capacityMultiplierBps"],
+    `${path}.capacityMultiplierBps`,
+    0,
+    30000
+  );
+  if (!capacityMultiplierBps.ok) return capacityMultiplierBps;
+  const riskBps = parseIntegerInRange(input["riskBps"], `${path}.riskBps`, 0, 10000);
+  if (!riskBps.ok) return riskBps;
+  const reasonCodes = parseStringArrayAllowEmpty(input["reasonCodes"], `${path}.reasonCodes`);
+  if (!reasonCodes.ok) return reasonCodes;
+  return {
+    ok: true,
+    value: {
+      month: month.value,
+      seasonState: seasonState.value,
+      travelCostMultiplierBps: travelCostMultiplierBps.value,
+      capacityMultiplierBps: capacityMultiplierBps.value,
+      riskBps: riskBps.value,
+      reasonCodes: reasonCodes.value
+    }
+  };
+}
+
+function parseRouteCorridorAvailability(
+  input: Record<string, unknown>,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2RouteCorridorAvailabilityBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (input["kind"] === "open") {
+    return { ok: true, value: { kind: "open" } };
+  }
+  if (input["kind"] === "blocked" || input["kind"] === "unknown") {
+    const reasonCode = parseNonEmptyString(input["reasonCode"], `${path}.reasonCode`);
+    if (!reasonCode.ok) return reasonCode;
+    return { ok: true, value: { kind: input["kind"], reasonCode: reasonCode.value } };
+  }
+  return contentPackError(
+    `${path}.kind`,
+    "Route corridor availability kind must be open, blocked, or unknown."
+  );
+}
+
+function parseDistrictGovernanceFootprint(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2DistrictGovernanceFootprintBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "District governance footprint must be an object.");
+  }
+  const footprintId = parseStrategicTerrainId(input["footprintId"], `${path}.footprintId`);
+  if (!footprintId.ok) return footprintId;
+  const sourceId = parseNonEmptyString(input["sourceId"], `${path}.sourceId`);
+  if (!sourceId.ok) return sourceId;
+  const displayNameKey = parseNonEmptyString(input["displayNameKey"], `${path}.displayNameKey`);
+  if (!displayNameKey.ok) return displayNameKey;
+  const districtId = parsePositiveSafeInteger(input["districtId"], `${path}.districtId`);
+  if (!districtId.ok) return districtId;
+  if (input["overlayOnly"] !== true) {
+    return contentPackError(`${path}.overlayOnly`, "overlayOnly must be true.");
+  }
+  const polygon = parseStrategicTerrainPointArray(input["polygon"], `${path}.polygon`);
+  if (!polygon.ok) return polygon;
+  const governanceTags = parseStringArrayAllowEmpty(
+    input["governanceTags"],
+    `${path}.governanceTags`
+  );
+  if (!governanceTags.ok) return governanceTags;
+  const consequenceTags = parseStringArrayAllowEmpty(
+    input["consequenceTags"],
+    `${path}.consequenceTags`
+  );
+  if (!consequenceTags.ok) return consequenceTags;
+  return {
+    ok: true,
+    value: {
+      footprintId: footprintId.value,
+      sourceId: sourceId.value,
+      displayNameKey: displayNameKey.value,
+      districtId: districtId.value,
+      overlayOnly: true,
+      polygon: polygon.value,
+      governanceTags: governanceTags.value,
+      consequenceTags: consequenceTags.value
+    }
+  };
+}
+
+function parseStrategicTerrainArrayField<TValue>(
+  input: Record<string, unknown>,
+  key: string,
+  path: string,
+  label: string,
+  parseEntry: (
+    entry: unknown,
+    entryPath: string
+  ) => { readonly ok: true; readonly value: TValue } | BootPackErrorResult
+): { readonly ok: true; readonly value: readonly TValue[] } | BootPackErrorResult {
+  return parseStrategicTerrainArrayValue(input[key], path, label, parseEntry);
+}
+
+function parseStrategicTerrainArrayValue<TValue>(
+  input: unknown,
+  path: string,
+  label: string,
+  parseEntry: (
+    entry: unknown,
+    entryPath: string
+  ) => { readonly ok: true; readonly value: TValue } | BootPackErrorResult
+): { readonly ok: true; readonly value: readonly TValue[] } | BootPackErrorResult {
+  if (!Array.isArray(input)) {
+    return contentPackError(path, `${label} must be an array.`);
+  }
+  const result: TValue[] = [];
+  for (let index = 0; index < input.length; index += 1) {
+    const parsed = parseEntry(input[index], `${path}[${index}]`);
+    if (!parsed.ok) return parsed;
+    result.push(parsed.value);
+  }
+  return { ok: true, value: result };
+}
+
+function parseStrategicTerrainPointArray(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: readonly RuntimeM2StrategicTerrainPointBootDefinitionV0[] }
+  | BootPackErrorResult {
+  return parseStrategicTerrainArrayValue(
+    input,
+    path,
+    "Strategic terrain point array",
+    parseStrategicTerrainPoint
+  );
+}
+
+function parseStrategicTerrainPoint(
+  input: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicTerrainPointBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (!isRecord(input)) {
+    return contentPackError(path, "Strategic terrain point must be an object.");
+  }
+  const x = parseIntegerInRange(input["x"], `${path}.x`, -1000000, 1000000);
+  if (!x.ok) return x;
+  const y = parseIntegerInRange(input["y"], `${path}.y`, -1000000, 1000000);
+  if (!y.ok) return y;
+  return { ok: true, value: { x: x.value, y: y.value } };
+}
+
+function parseStrategicTerrainAuthorityProhibitions(
+  input: unknown,
+  path: string
+):
+  | {
+      readonly ok: true;
+      readonly value: readonly RuntimeM2StrategicTerrainAuthorityProhibitionBootDefinitionV0[];
+    }
+  | BootPackErrorResult {
+  if (!Array.isArray(input)) {
+    return contentPackError(path, "authorityProhibitions must be an array.");
+  }
+  const result: RuntimeM2StrategicTerrainAuthorityProhibitionBootDefinitionV0[] = [];
+  for (let index = 0; index < input.length; index += 1) {
+    const value = input[index];
+    if (
+      value !== "bounding-box-adjacency" &&
+      value !== "centroid-proximity" &&
+      value !== "hidden-grid" &&
+      value !== "hidden-lattice" &&
+      value !== "hex-axial-or-cube" &&
+      value !== "renderer-only-line-reachability" &&
+      value !== "sequential-id-reachability"
+    ) {
+      return contentPackError(
+        `${path}[${index}]`,
+        "Strategic terrain authority prohibition is invalid."
+      );
+    }
+    result.push(value);
+  }
+  return { ok: true, value: result };
+}
+
 function validateRuntimeM2WorldBootSemantics(input: {
   readonly fixtureId: string;
   readonly manifest: Record<string, unknown>;
@@ -1556,6 +2289,7 @@ function validateRuntimeM2WorldBootSemantics(input: {
   readonly routes: readonly RuntimeM2RouteBootDefinitionV0[];
   readonly geometries: readonly RuntimeM2MapGeometryBootDefinitionV0[];
   readonly topology: RuntimeM2TopologyBootDefinitionV0;
+  readonly strategicTerrain?: RuntimeM2StrategicTerrainBootDefinitionV0;
 }): BootPackErrorResult | null {
   if (input.fixtureId !== input.manifest["fixtureId"]) {
     return contentPackError(
@@ -1681,6 +2415,242 @@ function validateRuntimeM2WorldBootSemantics(input: {
     }
   }
 
+  if (input.strategicTerrain !== undefined) {
+    const strategicTerrainError = validateStrategicTerrainBootSemantics(
+      input.strategicTerrain,
+      readString(input.manifest, "manifestHash"),
+      districtIds
+    );
+    if (strategicTerrainError !== null) {
+      return strategicTerrainError;
+    }
+  }
+
+  return null;
+}
+
+function validateStrategicTerrainBootSemantics(
+  terrain: RuntimeM2StrategicTerrainBootDefinitionV0,
+  manifestHash: string,
+  districtIds: ReadonlySet<number>
+): BootPackErrorResult | null {
+  if (terrain.contentManifestHash !== manifestHash) {
+    return contentPackError(
+      "runtimeContentPack.strategicTerrain.contentManifestHash",
+      "Strategic terrain contentManifestHash must match manifest manifestHash."
+    );
+  }
+  for (const prohibition of STRATEGIC_TERRAIN_AUTHORITY_PROHIBITIONS) {
+    if (!terrain.authorityProhibitions.includes(prohibition)) {
+      return contentPackError(
+        "runtimeContentPack.strategicTerrain.authorityProhibitions",
+        `Strategic terrain authorityProhibitions must include ${prohibition}.`
+      );
+    }
+  }
+
+  const terrainPatchIds = collectStrategicTerrainBootIds(
+    terrain.terrainPatches,
+    "runtimeContentPack.strategicTerrain.terrainPatches",
+    (patch) => patch.patchId
+  );
+  if (!terrainPatchIds.ok) return terrainPatchIds;
+  const barrierChannelIds = collectStrategicTerrainBootIds(
+    terrain.barrierChannels,
+    "runtimeContentPack.strategicTerrain.barrierChannels",
+    (channel) => channel.channelId
+  );
+  if (!barrierChannelIds.ok) return barrierChannelIds;
+  const strategicNodeIds = collectStrategicTerrainBootIds(
+    terrain.strategicNodes,
+    "runtimeContentPack.strategicTerrain.strategicNodes",
+    (node) => node.nodeId
+  );
+  if (!strategicNodeIds.ok) return strategicNodeIds;
+  const routeCorridorIds = collectStrategicTerrainBootIds(
+    terrain.routeCorridors,
+    "runtimeContentPack.strategicTerrain.routeCorridors",
+    (corridor) => corridor.corridorId
+  );
+  if (!routeCorridorIds.ok) return routeCorridorIds;
+  const governanceFootprintIds = collectStrategicTerrainBootIds(
+    terrain.districtGovernanceFootprints,
+    "runtimeContentPack.strategicTerrain.districtGovernanceFootprints",
+    (footprint) => footprint.footprintId
+  );
+  if (!governanceFootprintIds.ok) return governanceFootprintIds;
+
+  for (let index = 0; index < terrain.strategicNodes.length; index += 1) {
+    const node = terrain.strategicNodes[index];
+    if (node === undefined) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.strategicNodes[${index}]`,
+        "Strategic node is missing."
+      );
+    }
+    if (!districtIds.has(node.districtId)) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.strategicNodes[${index}].districtId`,
+        `Missing strategic node district ${node.districtId}.`
+      );
+    }
+    const nodeReferenceError = validateStrategicTerrainBootReferences(
+      node.terrainPatchIds,
+      terrainPatchIds.value,
+      `runtimeContentPack.strategicTerrain.strategicNodes[${index}].terrainPatchIds`,
+      "terrain patch"
+    );
+    if (nodeReferenceError !== null) return nodeReferenceError;
+    const nodeBarrierError = validateStrategicTerrainBootReferences(
+      node.barrierChannelIds,
+      barrierChannelIds.value,
+      `runtimeContentPack.strategicTerrain.strategicNodes[${index}].barrierChannelIds`,
+      "barrier channel"
+    );
+    if (nodeBarrierError !== null) return nodeBarrierError;
+    const nodeGovernanceError = validateStrategicTerrainBootReferences(
+      node.governanceFootprintIds,
+      governanceFootprintIds.value,
+      `runtimeContentPack.strategicTerrain.strategicNodes[${index}].governanceFootprintIds`,
+      "district governance footprint"
+    );
+    if (nodeGovernanceError !== null) return nodeGovernanceError;
+  }
+
+  for (let index = 0; index < terrain.routeCorridors.length; index += 1) {
+    const corridor = terrain.routeCorridors[index];
+    if (corridor === undefined) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.routeCorridors[${index}]`,
+        "Route corridor is missing."
+      );
+    }
+    if (!strategicNodeIds.value.has(corridor.fromNodeId)) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.routeCorridors[${index}].fromNodeId`,
+        `Missing route corridor from node ${corridor.fromNodeId}.`
+      );
+    }
+    if (!strategicNodeIds.value.has(corridor.toNodeId)) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.routeCorridors[${index}].toNodeId`,
+        `Missing route corridor to node ${corridor.toNodeId}.`
+      );
+    }
+    if (corridor.fromNodeId === corridor.toNodeId) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.routeCorridors[${index}].toNodeId`,
+        "Route corridor endpoints must be distinct strategic nodes."
+      );
+    }
+    const terrainReferenceError = validateStrategicTerrainBootReferences(
+      corridor.terrainPatchIds,
+      terrainPatchIds.value,
+      `runtimeContentPack.strategicTerrain.routeCorridors[${index}].terrainPatchIds`,
+      "terrain patch"
+    );
+    if (terrainReferenceError !== null) return terrainReferenceError;
+    const barrierReferenceError = validateStrategicTerrainBootReferences(
+      corridor.barrierChannelIds,
+      barrierChannelIds.value,
+      `runtimeContentPack.strategicTerrain.routeCorridors[${index}].barrierChannelIds`,
+      "barrier channel"
+    );
+    if (barrierReferenceError !== null) return barrierReferenceError;
+    const governanceReferenceError = validateStrategicTerrainBootReferences(
+      corridor.governanceFootprintIds,
+      governanceFootprintIds.value,
+      `runtimeContentPack.strategicTerrain.routeCorridors[${index}].governanceFootprintIds`,
+      "district governance footprint"
+    );
+    if (governanceReferenceError !== null) return governanceReferenceError;
+    const seasonalityError = validateStrategicTerrainSeasonality(corridor, index);
+    if (seasonalityError !== null) return seasonalityError;
+  }
+
+  for (let index = 0; index < terrain.districtGovernanceFootprints.length; index += 1) {
+    const footprint = terrain.districtGovernanceFootprints[index];
+    if (footprint === undefined) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.districtGovernanceFootprints[${index}]`,
+        "District governance footprint is missing."
+      );
+    }
+    if (!districtIds.has(footprint.districtId)) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.districtGovernanceFootprints[${index}].districtId`,
+        `Missing district governance footprint district ${footprint.districtId}.`
+      );
+    }
+  }
+
+  return null;
+}
+
+function collectStrategicTerrainBootIds<TValue>(
+  entries: readonly TValue[],
+  path: string,
+  readId: (entry: TValue) => string
+):
+  | { readonly ok: true; readonly value: ReadonlySet<string> }
+  | {
+      readonly ok: false;
+      readonly error: ContentBootErrorV1;
+    } {
+  const ids = new Set<string>();
+  for (let index = 0; index < entries.length; index += 1) {
+    const entry = entries[index];
+    if (entry === undefined) {
+      return contentPackError(`${path}[${index}]`, "Strategic terrain entry is missing.");
+    }
+    const id = readId(entry);
+    if (ids.has(id)) {
+      return contentPackError(`${path}[${index}]`, `Duplicate strategic terrain id ${id}.`);
+    }
+    ids.add(id);
+  }
+  return { ok: true, value: ids };
+}
+
+function validateStrategicTerrainBootReferences(
+  values: readonly string[],
+  allowedIds: ReadonlySet<string>,
+  path: string,
+  label: string
+): BootPackErrorResult | null {
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index];
+    if (value === undefined) {
+      return contentPackError(`${path}[${index}]`, "Strategic terrain reference is missing.");
+    }
+    if (!allowedIds.has(value)) {
+      return contentPackError(`${path}[${index}]`, `Missing strategic terrain ${label} ${value}.`);
+    }
+  }
+  return null;
+}
+
+function validateStrategicTerrainSeasonality(
+  corridor: RuntimeM2RouteCorridorBootDefinitionV0,
+  corridorIndex: number
+): BootPackErrorResult | null {
+  const months = new Set<number>();
+  for (let index = 0; index < corridor.seasonality.length; index += 1) {
+    const season = corridor.seasonality[index];
+    if (season === undefined) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.routeCorridors[${corridorIndex}].seasonality[${index}]`,
+        "Route corridor seasonality is missing."
+      );
+    }
+    if (months.has(season.month)) {
+      return contentPackError(
+        `runtimeContentPack.strategicTerrain.routeCorridors[${corridorIndex}].seasonality[${index}].month`,
+        `Duplicate route corridor month ${season.month}.`
+      );
+    }
+    months.add(season.month);
+  }
   return null;
 }
 
@@ -1697,6 +2667,239 @@ function validateManifestCount(
     `runtimeContentPack.manifest.${key}`,
     `manifest ${key} must match runtime array length.`
   );
+}
+
+function parseHashString(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: string }
+  | {
+      readonly ok: false;
+      readonly error: ContentBootErrorV1;
+    } {
+  if (typeof value === "string" && /^[0-9a-f]{8}$/u.test(value)) {
+    return { ok: true, value };
+  }
+  return contentPackError(path, `${path} must be an 8-character lowercase hex hash.`);
+}
+
+function parseStrategicTerrainId(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: string }
+  | {
+      readonly ok: false;
+      readonly error: ContentBootErrorV1;
+    } {
+  if (typeof value !== "string" || !/^[A-Za-z][A-Za-z0-9._:-]{0,95}$/u.test(value)) {
+    return contentPackError(path, `${path} must be a stable strategic terrain id.`);
+  }
+  if (/^(?:\d+|row[-.:]?\d+|col[-.:]?\d+|hex[-.:]?\d+|cell[-.:]?\d+)$/iu.test(value)) {
+    return contentPackError(
+      path,
+      `${path} must not be a hidden grid, lattice, hex, or sequential id.`
+    );
+  }
+  return { ok: true, value };
+}
+
+function parseStrategicTerrainIdArray(
+  value: unknown,
+  path: string
+): { readonly ok: true; readonly value: readonly string[] } | BootPackErrorResult {
+  if (!Array.isArray(value)) {
+    return contentPackError(path, `${path} must be an array.`);
+  }
+  const result: string[] = [];
+  for (let index = 0; index < value.length; index += 1) {
+    const parsed = parseStrategicTerrainId(value[index], `${path}[${index}]`);
+    if (!parsed.ok) return parsed;
+    result.push(parsed.value);
+  }
+  return { ok: true, value: result };
+}
+
+function parseStringArrayAllowEmpty(
+  value: unknown,
+  path: string
+): { readonly ok: true; readonly value: readonly string[] } | BootPackErrorResult {
+  if (!Array.isArray(value)) {
+    return contentPackError(path, `${path} must be an array.`);
+  }
+  const result: string[] = [];
+  for (let index = 0; index < value.length; index += 1) {
+    const entry = value[index];
+    if (typeof entry !== "string" || entry.length === 0) {
+      return contentPackError(`${path}[${index}]`, `${path}[${index}] must be a non-empty string.`);
+    }
+    result.push(entry);
+  }
+  return { ok: true, value: result };
+}
+
+function parseStrategicTerrainClass(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicTerrainClassBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (
+    value === "coastal" ||
+    value === "lowland" ||
+    value === "pass" ||
+    value === "ridge" ||
+    value === "river-basin" ||
+    value === "riverine" ||
+    value === "upland" ||
+    value === "urban" ||
+    value === "wetland" ||
+    value === "unknown"
+  ) {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Strategic terrain class is invalid.");
+}
+
+function parseStrategicTerrainRiskClass(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicTerrainRiskClassBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (
+    value === "contested" ||
+    value === "hazardous" ||
+    value === "low" ||
+    value === "seasonal" ||
+    value === "unknown"
+  ) {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Strategic terrain risk class is invalid.");
+}
+
+function parseStrategicTerrainSeasonState(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicTerrainSeasonStateBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (value === "dry" || value === "monsoon" || value === "transition" || value === "unknown") {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Strategic terrain season state is invalid.");
+}
+
+function parseStrategicTerrainHistoricity(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicTerrainHistoricityBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (
+    value === "COMPOSITE" ||
+    value === "FICTIONAL" ||
+    value === "HISTORICAL" ||
+    value === "INFERRED"
+  ) {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Strategic terrain historicity is invalid.");
+}
+
+function parseBarrierChannelKind(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2BarrierChannelKindBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (
+    value === "coast" ||
+    value === "major-river" ||
+    value === "ridge" ||
+    value === "strait" ||
+    value === "wetland"
+  ) {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Barrier channel kind is invalid.");
+}
+
+function parseBarrierTraversalRule(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2BarrierTraversalRuleBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (value === "blocks-without-explicit-corridor" || value === "channels-explicit-corridors") {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Barrier traversalRule is invalid.");
+}
+
+function parseStrategicNodeKind(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicNodeKindBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (
+    value === "castle" ||
+    value === "crossing" ||
+    value === "objective" ||
+    value === "pass" ||
+    value === "port" ||
+    value === "staging-area" ||
+    value === "town" ||
+    value === "warehouse"
+  ) {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Strategic node kind is invalid.");
+}
+
+function parseStrategicNodeKnownState(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2StrategicNodeKnownStateBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (value === "known" || value === "rumored" || value === "unknown") {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Strategic node known state is invalid.");
+}
+
+function parseRouteCorridorMode(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2RouteCorridorModeBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (
+    value === "coast" ||
+    value === "mixed" ||
+    value === "pass" ||
+    value === "river" ||
+    value === "road"
+  ) {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Route corridor mode is invalid.");
+}
+
+function parseRouteCorridorWidthClass(
+  value: unknown,
+  path: string
+):
+  | { readonly ok: true; readonly value: RuntimeM2RouteCorridorWidthClassBootDefinitionV0 }
+  | BootPackErrorResult {
+  if (value === "narrow" || value === "standard" || value === "wide") {
+    return { ok: true, value };
+  }
+  return contentPackError(path, "Route corridor widthClass is invalid.");
 }
 
 function parseOrderedUniqueId(
