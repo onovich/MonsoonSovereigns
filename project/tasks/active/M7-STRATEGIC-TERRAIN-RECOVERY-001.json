@@ -1,0 +1,107 @@
+{
+  "id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "summary": "Plan strategic terrain map recovery after product-owner rejection of current map rendering and spatial indexing direction",
+  "milestone": "M7",
+  "status": "READY",
+  "owner_role": "gameplay_designer",
+  "reviewer_role": "systems_architect",
+  "required_reviewers": [
+    "systems_architect",
+    "qa_reviewer"
+  ],
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-MAP-TOPOLOGY-VALIDATION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "docs/decisions/ADR-010-map-topology.md",
+      "docs/decisions/ADR-011-strategic-terrain-map.md",
+      "PROJECT_STATUS.md",
+      "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/**",
+      "packages/**",
+      "content-source/**",
+      "tools/**",
+      ".github/**",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/13-risk-register-and-test-strategy.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "docs/27-autonomous-goal-mode.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Record the product-owner fourth REQUEST_CHANGES: current map rendering and spatial indexing direction are rejected, and formal M7 content lock remains blocked.",
+    "Use official RTK14 and Nobunaga's Ambition reference research to explain why the current abstract district polygons plus route graph fail as a mature strategic terrain map.",
+    "Explicitly limit or supersede ADR-010: anti-grid topology is necessary but not sufficient for M7 content lock because strategic terrain readability requires terrain layers, barriers/channels, nodes, routes, and district footprints as separate typed concepts.",
+    "Recommend the project-specific route: Nobunaga-like continuous terrain basemap plus castle/county/strategic-node/road network, assisted by RTK14-like readable terrain units or terrain bands, without adopting full authoritative hex-tile economy.",
+    "Create a bounded downstream recovery chain for terrain schema, fixture/content, renderer and interaction, and validation.",
+    "Keep governance district footprints separate from terrain patches, terrain barriers/channels, strategic nodes, and route edges.",
+    "Require route previews and AI/player explanations to expose distance, estimated days, capacity, season, terrain, bottleneck, blocker, and risk sources from the same query surface.",
+    "Require hit testing to prioritize actionable routes and strategic nodes before district footprints and terrain explanation layers.",
+    "Keep M7-CONTENT-LOCK-ACCEPTANCE-001 blocked with content_lock_accepted=false and prevent M7-EXIT-VALIDATION-001 from starting until the recovery chain validates and the product owner reconsiders content lock.",
+    "Do not modify product code, package code, content-source data, tools, CI, prior gate docs, roadmap, acceptance matrix, production art, server/multiplayer, telemetry, cloud save, manual node battle, or release/commercial scope in this planning task."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-RECOVERY-001",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+    "node -e JSON parse/shape check for M7 strategic terrain recovery files",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs <planning-handoff>",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This task is created from a product-owner REQUEST_CHANGES during formal M7 content-lock reconsideration.",
+    "The accepted recovery target is not high-fidelity art. It is a low-fidelity but legible and systemically grounded strategic terrain map.",
+    "ADR-010 anti-grid work remains useful as negative proof, but it is insufficient for content lock because it does not model terrain readability, route embodiment, node priority, or mature strategy-game map semantics.",
+    "Manual node battle remains DEFER_MANUAL_NODE_BATTLE and is not reopened by this map recovery work.",
+    "Historical Southeast Asia district borders, ports, river importance, passes, route claims, and cultural map labels remain RESEARCH REQUIRED before formal historical content is asserted.",
+    "No GIS, server, Rust/WASM, multiplayer, telemetry, account, paid service, production art, or commercial/release decision is authorized."
+  ],
+  "source_feedback": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
+  "gameplay_design_thread_id": "019f1cfc-1ea9-7f10-a488-7df16413177c",
+  "official_reference_urls": [
+    "https://www.koeitecmoamerica.com/manual/rtk14/en/3300.html",
+    "https://www.koeitecmoamerica.com/manual/rtk14/en/5100.html",
+    "https://www.koeitecmoeurope.com/manual/nobunaga/awakening/en/3200.html",
+    "https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/7100.html",
+    "https://www.koeitecmoeurope.com/manual/nobunaga/awakening/en/4200.html"
+  ],
+  "proposed_downstream_tasks": [
+    "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+    "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+    "M7-STRATEGIC-TERRAIN-VALIDATION-001"
+  ],
+  "created_at": "2026-07-01T17:27:48.7511210+08:00",
+  "updated_at": "2026-07-01T17:27:48.7511210+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "next_action": "Start this planning task with gameplay_designer output, route the ADR/task-chain package to systems_architect and independent qa_reviewer, then continue only after ACCEPT."
+}

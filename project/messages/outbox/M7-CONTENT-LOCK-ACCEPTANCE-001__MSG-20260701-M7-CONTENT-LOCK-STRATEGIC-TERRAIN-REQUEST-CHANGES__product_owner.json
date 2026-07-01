@@ -1,0 +1,68 @@
+{
+  "message_id": "MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES",
+  "task_id": "M7-CONTENT-LOCK-ACCEPTANCE-001",
+  "from_role": "product_owner",
+  "status": "REQUEST_CHANGES",
+  "summary": "Product owner rejects formal M7 content lock because the current strategic map still does not read as a mature grand-strategy terrain map. The current map rendering approach and spatial indexing approach are rejected at the product direction level, not merely marked for visual polish.",
+  "artifacts": [
+    "C:/Users/ADMINI~1/AppData/Local/Temp/codex-clipboard-80cea110-7ecd-46cb-a30d-cc36a6fc65b9.png",
+    "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json",
+    "project/goal-mode-state.json",
+    "PROJECT_STATUS.md"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-request-changes",
+  "commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
+  "tests_run": [],
+  "decisions": [
+    {
+      "id": "CONTENT_LOCK_REQUEST_CHANGES_STRATEGIC_TERRAIN",
+      "decision": "Formal M7 content lock is not approved. M7 must not enter exit validation until the strategic terrain map and spatial indexing direction is replanned, reviewed, implemented, and validated."
+    },
+    {
+      "id": "ADR_010_INSUFFICIENT_FOR_CONTENT_LOCK",
+      "decision": "ADR-010 solved the hidden rectangular/regular-lattice topology failure but is insufficient for content lock because polygon footprints plus abstract route graph do not create RTK/Nobunaga-like strategic terrain readability."
+    },
+    {
+      "id": "CURRENT_MAP_RENDERING_AND_SPATIAL_INDEX_REJECTED",
+      "decision": "The current district-polygon rendering, abstract route drawing, and polygon-first hit testing/spatial indexing direction must be replaced or substantially reworked, not incrementally beautified."
+    },
+    {
+      "id": "RECOVERY_ROUTE",
+      "decision": "Create an M7 strategic terrain recovery planning task that researches mature game references and routes a new ADR/schema/fixture/renderer-interaction/validation chain before reopening content-lock reconsideration."
+    }
+  ],
+  "supporting_research": {
+    "gameplay_designer_thread_id": "019f1cfc-1ea9-7f10-a488-7df16413177c",
+    "gameplay_designer_result": "Current abstract polygon plus route graph direction is wrong for M7 content lock. Recommend a hybrid route: Nobunaga-like continuous terrain basemap plus castle/county/node/road network, assisted by RTK14-like readable terrain units or bands, without turning the game into a full hex-tile economy.",
+    "official_reference_urls": [
+      "https://www.koeitecmoamerica.com/manual/rtk14/en/3300.html",
+      "https://www.koeitecmoamerica.com/manual/rtk14/en/5100.html",
+      "https://www.koeitecmoeurope.com/manual/nobunaga/awakening/en/3200.html",
+      "https://www.koeitecmoamerica.com/manual/nobunaga/awakening/en/7100.html",
+      "https://www.koeitecmoeurope.com/manual/nobunaga/awakening/en/4200.html"
+    ],
+    "failed_scout_thread_id": "019f1cf6-f4aa-7472-b57d-b3eedf886386",
+    "failed_scout_note": "The first read-only scout attempt returned a model-at-capacity error and is not used as evidence."
+  },
+  "required_recovery_characteristics": [
+    "Terrain must be player-readable as valleys, ridges, rivers, passes, coasts, ports, road grades, seasonal bottlenecks, and strategic nodes rather than colored abstract polygons.",
+    "Governance district footprints must be separated from terrain patches/barriers/channels and route/node surfaces.",
+    "Spatial hit testing must prioritize actionable routes and nodes before district footprints and terrain explanation layers.",
+    "Route rendering must show embedded roads, river/coastal movement, pass/port nodes, width/capacity, season, risk, and blockers instead of centerline abstractions.",
+    "AI and player explanations must query the same terrain/route/path surfaces.",
+    "No high-fidelity final art, server, multiplayer, telemetry, Rust/WASM, paid service, account, formal GIS historical database, production cultural asset, or manual node battle reversal is authorized by this recovery."
+  ],
+  "risks": [
+    {
+      "id": "M7-STRATEGIC-TERRAIN-MAP-BLOCKS-CONTENT-LOCK",
+      "severity": "R4",
+      "summary": "If the current abstract polygon/route map locks into M7, the player-facing product will not read as a mature strategy game and the wrong spatial model will harden into schema, save, UI, AI, and content debt.",
+      "mitigation": "Block content lock, seed a reviewed strategic terrain recovery planning task, and keep M7 exit validation disabled until the recovery chain is integrated and the product owner reconsiders content lock."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Record REQUEST_CHANGES, keep M7-CONTENT-LOCK-ACCEPTANCE-001 blocked, seed M7-STRATEGIC-TERRAIN-RECOVERY-001, and do not start M7-EXIT-VALIDATION-001 until the strategic terrain recovery chain passes and product owner reconsiders content lock.",
+  "created_at": "2026-07-01T17:27:48.7511210+08:00"
+}
