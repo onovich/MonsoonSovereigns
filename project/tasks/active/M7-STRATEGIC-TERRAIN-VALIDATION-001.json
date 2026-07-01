@@ -1,0 +1,83 @@
+{
+  "id": "M7-STRATEGIC-TERRAIN-VALIDATION-001",
+  "summary": "Validate strategic terrain recovery before M7 content-lock reconsideration",
+  "milestone": "M7",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "required_reviewers": [
+    "qa_reviewer",
+    "systems_architect"
+  ],
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "tests/**",
+      "apps/web/**",
+      "packages/client-core/**",
+      "packages/map-renderer/**",
+      "packages/sim-core/**",
+      "packages/content-runtime/**",
+      "packages/protocol/**",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json",
+      "project/tasks/active/M7-CONTENT-LOCK-ACCEPTANCE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "content-source/**",
+      "apps/desktop/**",
+      "packages/save-format/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Prove the default player-facing map no longer uses the rejected drawing or polygon-first spatial-index direction.",
+    "Prove terrain patches, barriers/channels, strategic nodes, route corridors, and district governance footprints are distinct in data, interaction, explanation, and screenshots.",
+    "Prove hit testing starts from actionable terrain-route-node layers and reaches governance overlays only after node/corridor/blocker/terrain priorities.",
+    "Prove route preview and AI reasons use the same query model and expose estimated days, capacity, season, terrain, bottleneck, blocker, unknown state, risk, and governance consequences when relevant.",
+    "Include negative tests for disguised grid/lattice/cell leakage, visual-neighbor-without-route, visually-distant-explicit-route, barrier-without-crossing, governance-adjacent-but-route-blocked, geometry perturbation without path change, and renderer-only fake route lines.",
+    "Produce screenshot/manual-smoke evidence at 1440x900 and 1280x720 with clean console output and player-visible terrain/node/corridor/overlay explanation.",
+    "After acceptance and main integration, reopen M7-CONTENT-LOCK-ACCEPTANCE-001 for product-owner reconsideration; do not approve content lock or start M7-EXIT-VALIDATION-001 autonomously."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-VALIDATION-001",
+    "git diff --check",
+    "pnpm check",
+    "pnpm test",
+    "pnpm content:validate",
+    "pnpm sim:determinism",
+    "pnpm build:web",
+    "pnpm storybook:build",
+    "pnpm test:e2e",
+    "focused strategic terrain validation tests including query parity, hit-test priority, and anti-grid/lattice/cell leakage tests",
+    "manual-smoke notes with screenshots and console-clean assertions"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-validation",
+  "threads": {},
+  "route_to": "qa_reviewer",
+  "notes": [
+    "This validation blocks formal M7 content lock after the strategic terrain rejection.",
+    "It must not start M7-EXIT-VALIDATION-001 or claim content lock approval.",
+    "If historical claims appear during validation, route them to historical_researcher instead of treating them as accepted facts."
+  ],
+  "created_at": "2026-07-01T18:20:00+08:00",
+  "updated_at": "2026-07-01T18:20:00+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "ready_after_task": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+  "next_action": "Await renderer/interaction acceptance before validation starts."
+}

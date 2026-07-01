@@ -1,0 +1,79 @@
+{
+  "id": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "summary": "Create low-fidelity COMPOSITE terrain patches, barriers/channels, strategic nodes, route corridors, and governance overlays",
+  "milestone": "M7",
+  "status": "DRAFT",
+  "owner_role": "simulation_engineer",
+  "reviewer_role": "historical_researcher",
+  "required_reviewers": [
+    "historical_researcher",
+    "systems_architect",
+    "qa_reviewer"
+  ],
+  "risk_level": "R4",
+  "dependencies": [
+    "M7-STRATEGIC-TERRAIN-SCHEMA-001"
+  ],
+  "scope": {
+    "allowed_paths": [
+      "content-source/**",
+      "apps/content-tools/**",
+      "packages/content-runtime/**",
+      "packages/sim-core/**",
+      "packages/protocol/**",
+      "tests/**",
+      "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+      "project/tasks/thread-registry.json",
+      "project/messages/**",
+      "project/goal-mode-state.json",
+      "project/model-routing-state.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/**",
+      "apps/desktop/**",
+      "packages/ui/**",
+      "packages/map-renderer/**",
+      ".github/**",
+      "tools/**",
+      "docs/GATE-M7.md",
+      "docs/11-roadmap.md",
+      "docs/23-milestone-acceptance-matrix.md",
+      "MANIFEST.md",
+      "SHA256SUMS.txt",
+      "VALIDATION_REPORT.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Create low-fidelity COMPOSITE strategic terrain fixture content using distinct TerrainPatch, BarrierChannel, StrategicNode, RouteCorridor, and DistrictGovernanceFootprint overlay records.",
+    "Do not present exact historical borders, port importance, river importance, pass claims, road claims, polity labels, cultural labels, or language labels as fact unless historical_researcher records source review with HISTORICAL/INFERRED/COMPOSITE/FICTIONAL tagging.",
+    "Starting assumptions only: 12-18 governance footprints, 18-30 strategic nodes, 25-45 route corridors, 12-24 terrain patches or bands, and 6-14 barriers/channels.",
+    "The fixture must show valleys or terrain bands, at least one barrier-without-crossing, at least one pass or crossing bottleneck, at least one river/coastal corridor, at least one road-width/capacity bottleneck, one visual-neighbor-without-route case, and one visually-distant-explicit-route case.",
+    "Governance footprints must visibly overlap or group terrain and route features without becoming route authority or hit-test priority.",
+    "Every advantage has a cost/dependency/counter in explicit local data or reason text: for example pass control requires the pass node/corridor, river movement depends on channel/port/season, and wide roads expose capacity targets.",
+    "Content validation rejects missing endpoints, duplicate terrain/node/corridor ids, route nodes outside valid strategic placement rules, barrier crossings without explicit nodes/corridors, governance adjacency used as reachability, hidden grid/lattice/sequential-id shortcuts, and disconnected playable graphs without explicit reason codes."
+  ],
+  "required_tests": [
+    "git status --short",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-FIXTURE-001",
+    "git diff --check",
+    "pnpm content:validate",
+    "pnpm --filter @monsoon/content-runtime test",
+    "pnpm --filter @monsoon/sim-core test",
+    "focused content compiler tests for terrain patch, barrier/channel, strategic node, route corridor, and governance overlay separation",
+    "negative fixture tests for historical overclaim, barrier-without-crossing, governance-as-route shortcut, hidden grid/lattice leakage, duplicate ids, and missing endpoint rejection"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-fixture",
+  "threads": {},
+  "route_to": "historical_researcher",
+  "notes": [
+    "This task must route historical details to historical_researcher before formal content claims are accepted.",
+    "Low-fidelity COMPOSITE data is allowed; high-fidelity final art and formal GIS historical data are not.",
+    "No forced migration, labor extraction, famine, enslavement, massacre, or religious conflict may be represented as a cost-free terrain or route reward."
+  ],
+  "created_at": "2026-07-01T18:20:00+08:00",
+  "updated_at": "2026-07-01T18:20:00+08:00",
+  "human_gate_required": false,
+  "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
+  "ready_after_task": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+  "next_action": "Await accepted strategic terrain schema before fixture/content work starts."
+}

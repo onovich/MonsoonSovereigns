@@ -1,0 +1,86 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW",
+  "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "from_role": "gameplay_designer",
+  "status": "REVIEW",
+  "summary": "Drafted ADR-011 and a bounded DRAFT downstream chain after product-owner root-level rejection of the current map drawing and spatial-index direction. The plan treats ADR-010 only as anti-grid negative proof and proposes a new player-facing terrain-route-node authority where governance footprints are overlays.",
+  "artifacts": [
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-FIXTURE-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-VALIDATION-001.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+  "commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+  "tests_run": [
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "Working tree includes existing lead/product clarification state changes plus this writer package; no forbidden code/content/app paths were modified by this writer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate M7-STRATEGIC-TERRAIN-RECOVERY-001 && validate M7-STRATEGIC-TERRAIN-SCHEMA-001 && validate M7-STRATEGIC-TERRAIN-FIXTURE-001 && validate M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 && validate M7-STRATEGIC-TERRAIN-VALIDATION-001",
+      "exit_code": 0,
+      "result": "All five strategic terrain task JSON files are VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+      "exit_code": 0,
+      "result": "VALID handoff after tests_run update."
+    },
+    {
+      "command": "node -e JSON parse/shape check for M7 strategic terrain recovery files",
+      "exit_code": 0,
+      "result": "Recovery task, four downstream tasks, and writer handoff parsed as valid JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list && node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Strategic terrain tasks are listed; downstream strategic terrain tasks do not appear READY while recovery remains REVIEW."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CURRENT_MAP_DIRECTION_REJECTED",
+      "decision": "Treat the current map drawing and polygon-first spatial-index direction as rejected, not as a surface needing polish."
+    },
+    {
+      "id": "ADR_010_LIMITED_TO_NEGATIVE_PROOF",
+      "decision": "ADR-010 remains anti-grid/lattice negative proof but is not the content-lock target architecture."
+    },
+    {
+      "id": "ADR_011_TERRAIN_ROUTE_NODE_AUTHORITY",
+      "decision": "ADR-011 proposes player-facing authority based on terrain patches, barriers/channels, strategic nodes, route corridors, and district governance overlays."
+    },
+    {
+      "id": "DOWNSTREAM_CHAIN_DRAFT_ONLY",
+      "decision": "The schema, fixture, renderer/interaction, and validation tasks are DRAFT and do not authorize implementation until reviewed and started separately."
+    }
+  ],
+  "risks": [
+    {
+      "id": "CROSS_SURFACE_REPLACEMENT",
+      "severity": "R4",
+      "summary": "Replacing the rejected renderer/spatial index affects schema, content, UI, AI reasons, path preview, saves, and validation.",
+      "mitigation": "Split work into schema, fixture, renderer/interaction, and validation tasks with systems, historical, and QA review gates."
+    },
+    {
+      "id": "HISTORICAL_OVERCLAIM",
+      "severity": "R4",
+      "summary": "Terrain, port, river, road, pass, and polity claims can become cultural or historical overclaims if fixture work stops being COMPOSITE.",
+      "mitigation": "Fixture task routes real-world claims to historical_researcher and requires HISTORICAL/INFERRED/COMPOSITE/FICTIONAL tagging."
+    }
+  ],
+  "blockers": [],
+  "route_to": "systems_architect",
+  "requested_action": "Review ADR-011 and the DRAFT downstream task chain. Do not approve M7 content lock or downstream implementation from this writer handoff alone.",
+  "created_at": "2026-07-01T18:20:00+08:00"
+}

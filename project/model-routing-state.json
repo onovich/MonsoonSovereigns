@@ -16,42 +16,27 @@
     "fallback": null
   },
   "current_lead_thread": {
-    "role": "lead_orchestrator",
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "status": "active_strategic_terrain_recovery_ready",
-    "actual_model": "gpt-5.5",
-    "actual_effort": "xhigh",
-    "configured_model": "gpt-5.5",
-    "configured_effort": "xhigh",
-    "migration_status": "SUCCESSOR_ACCEPTED",
-    "accepted_transition": "LEAD-TRANSITION-ACCEPT-001",
-    "accepted_at": "2026-06-25T23:12:37.3024877+08:00",
-    "predecessor": {
-      "thread_id": null,
-      "status": "retired_closed",
-      "reason": "SUCCESSOR_ACCEPTED",
-      "prepared_file": "project/messages/outbox/LEAD-TRANSITION-PREPARE-001.json",
-      "note": "Outgoing lead did not expose a reliable self-observed thread id in the prepared handoff; no thread id is fabricated."
-    },
-    "unique_active_lead_check": {
-      "result": "PASS",
-      "active_lead_thread_ids": [
-        "019eff50-c69d-7612-a90b-7024a47e0af5"
-      ],
-      "source": "M7 map topology schema task start"
-    },
-    "operational_state_after_transition_integration": "active",
-    "note": "Successor lead accepted the prepared transition after verifying origin/main, task graph, goal-mode state, model routing state, thread registry, Human Gate state, and handoff evidence. Actual model and effort are recorded only because request metadata exposed them.",
     "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
-    "updated_at": "2026-07-01T17:27:48.7511210+08:00",
-    "concurrent_task_ids": [
+    "task_ids": [
       "M7-STRATEGIC-TERRAIN-RECOVERY-001"
     ],
-    "branch_or_worktree": "codex/m7-strategic-terrain-request-changes",
-    "last_integrated_task": "M7-MAP-TOPOLOGY-VALIDATION-001",
-    "last_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
-    "product_owner_request_changes_handoff": "project/messages/outbox/M7-CONTENT-LOCK-ACCEPTANCE-001__MSG-20260701-M7-CONTENT-LOCK-STRATEGIC-TERRAIN-REQUEST-CHANGES__product_owner.json",
-    "next_ready_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001"
+    "status": "active_strategic_terrain_recovery_accepted_pending_pr",
+    "role": "lead_orchestrator",
+    "configured_model": "gpt-5.5",
+    "configured_effort": "xhigh",
+    "actual_model": "gpt-5.5",
+    "actual_effort": "xhigh",
+    "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+    "updated_at": "2026-07-01T19:10:48.4719566+08:00",
+    "start_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-START__lead_orchestrator.json",
+    "writer_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+    "systems_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-LEAD-ACCEPT__lead_orchestrator.json",
+    "product_owner_clarification_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION__product_owner.json",
+    "base_main_commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+    "next_action": "Open PR, wait for CI, merge to main, then close M7-STRATEGIC-TERRAIN-RECOVERY-001."
   },
   "retired_lead_threads": [
     {
@@ -1972,72 +1957,28 @@
   ],
   "active_threads": [
     {
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "role": "lead_orchestrator",
+      "responsibility": "Integrate accepted M7 strategic terrain recovery planning package through PR.",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "active_fixture_review",
+      "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+      "task_ids": [
+        "M7-STRATEGIC-TERRAIN-RECOVERY-001"
+      ],
+      "status": "active_strategic_terrain_recovery_accepted_pending_pr",
+      "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "responsibility": "Coordinate M7 map topology fixture migration and route writer REVIEW to historical_researcher, systems_architect, and qa_reviewer.",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "active_gate_task_id": null,
-      "updated_at": "2026-07-01T01:18:48.5430196+08:00",
-      "start_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-START__lead_orchestrator.json",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
-      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab"
-    },
-    {
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "role": "simulation_engineer",
-      "thread_id": "019f197c-401c-7231-b47f-bee31d1308af",
-      "nickname": "Engine",
-      "status": "review_ready",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "responsibility": "Migrate prototype map content and content compiler validation away from hidden grid/lattice topology.",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-LEAD-TO-SIMULATION-REPLACEMENT-START.json",
-      "route_submission_id": "019f197e-9d7c-7af1-bdbc-036a9cb4c002",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
-      "review_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-WRITER-REVIEW__simulation_engineer.json",
-      "review_commit": "69031120de52949f9ed17289f3b2ef1f258e48ab",
-      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
-    },
-    {
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "role": "historical_researcher",
-      "thread_id": "019f198a-8bd8-7262-9fb2-8ba1710393ca",
-      "nickname": "Chronicle",
-      "status": "review_requested",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "high",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-HISTORICAL-REVIEW.json",
-      "route_submission_id": "019f198b-e864-7e03-ad2a-24dc9cac9c63",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-HISTORICAL-REVIEW__historical_researcher.json",
-      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
-    },
-    {
-      "task_id": "M7-MAP-TOPOLOGY-FIXTURE-001",
-      "role": "systems_architect",
-      "thread_id": "019f198a-c3d6-73f3-91f2-0e843f3f5fab",
-      "nickname": "Keystone the 2nd",
-      "status": "review_requested",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-map-topology-fixture",
-      "route_file": "project/messages/routes/M7-MAP-TOPOLOGY-FIXTURE-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
-      "route_submission_id": "019f198c-3352-7be3-a915-573277cd5dad",
-      "expected_handoff": "project/messages/outbox/M7-MAP-TOPOLOGY-FIXTURE-001__MSG-20260701-M7-MAP-TOPOLOGY-FIXTURE-SYSTEMS-REVIEW__systems_architect.json",
-      "updated_at": "2026-07-01T01:18:48.5430196+08:00"
+      "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+      "updated_at": "2026-07-01T19:10:48.4719566+08:00",
+      "start_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-START__lead_orchestrator.json",
+      "writer_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+      "systems_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+      "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json",
+      "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-LEAD-ACCEPT__lead_orchestrator.json",
+      "product_owner_clarification_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION__product_owner.json",
+      "base_main_commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+      "next_action": "Open PR, wait for CI, merge to main, then close M7-STRATEGIC-TERRAIN-RECOVERY-001."
     }
   ],
   "task_effects": {
@@ -2275,7 +2216,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001 as the next READY M7 planning task; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock.",
+  "next_action": "Open PR for accepted M7 strategic terrain recovery planning package; after merge, close task and select next READY task.",
   "current_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2326,7 +2267,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-07-01T04:22:23.8080820+08:00",
+  "updated_at": "2026-07-01T19:10:48.4719566+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -5082,8 +5023,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock.",
-  "current_task_status": "READY",
+  "next_machine_action": "Open PR for accepted M7 strategic terrain recovery planning package; after merge, close task and select next READY task.",
+  "current_task_status": "ACCEPTED",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5141,5 +5082,33 @@
     "closure_main_commit": "0510016f50dc9b49701333f61fbdde212fa61d34",
     "strategic_terrain_recovery_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
+  },
+  "current_milestone": "M7",
+  "last_main_commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+  "next_ready_tasks": [],
+  "m7_strategic_terrain_recovery": {
+    "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+    "status": "ACCEPTED",
+    "branch_or_worktree": "codex/m7-strategic-terrain-recovery",
+    "base_main_commit": "9724faf6857004db84f54e10c7a7ba00689f9e9b",
+    "writer_thread_id": "019f1d25-5ee0-73a3-90bd-e856e187fa30",
+    "product_owner_clarification_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-PO-CLARIFICATION__product_owner.json",
+    "product_owner_clarification_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-RECOVERY-001__ROUTE-20260701-LEAD-TO-GAMEPLAY-PO-CLARIFICATION.json",
+    "expected_writer_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+    "updated_at": "2026-07-01T19:10:48.4719566+08:00",
+    "next_action": "Open PR, wait for CI, merge to main, then close recovery planning task.",
+    "review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-RECOVERY-WRITER-REVIEW__gameplay_designer.json",
+    "systems_thread_id": "019f1d34-65ac-7620-8a52-a84d2c8e9ea1",
+    "systems_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-RECOVERY-001__ROUTE-20260701-WRITER-TO-SYSTEMS-REVIEW.json",
+    "expected_systems_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+    "systems_status": "ACCEPT",
+    "systems_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SYSTEMS-REVIEW__systems_architect.json",
+    "qa_thread_id": "019f1d59-52cc-7d51-a4dd-fc66d0b62804",
+    "qa_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-RECOVERY-001__ROUTE-20260701-SYSTEMS-TO-QA-REVIEW.json",
+    "expected_qa_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json",
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-QA-REVIEW__qa_reviewer.json",
+    "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_at": "2026-07-01T19:10:48.4719566+08:00"
   }
 }
