@@ -1,0 +1,54 @@
+{
+  "message_id": "MSG-20260701-M7-STRATEGIC-TERRAIN-CLOSED",
+  "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
+  "from_role": "lead_orchestrator",
+  "status": "ACCEPT",
+  "summary": "M7 strategic terrain recovery planning is closed after PR #235 entered origin/main. The project has accepted ADR-011 and the downstream DRAFT strategic terrain task chain as the replacement direction after the product-owner rejection of the current map drawing and spatial indexing model.",
+  "artifacts": [
+    "https://github.com/onovich/MonsoonSovereigns/pull/235",
+    "docs/decisions/ADR-011-strategic-terrain-map.md",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RECOVERY-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "project/messages/outbox/M7-STRATEGIC-TERRAIN-RECOVERY-001__MSG-20260701-M7-STRATEGIC-TERRAIN-LEAD-ACCEPT__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "codex/m7-strategic-terrain-close",
+  "commit": "2ee0a3282ebb6cfbf07d34d57e476f60eea46eb7",
+  "tests_run": [
+    {
+      "command": "gh run watch 28515981983 --exit-status",
+      "exit_code": 0,
+      "result": "PR Gate passed: Windows Desktop Smoke Artifact and Quality, Web, and Browser Smoke both succeeded."
+    },
+    {
+      "command": "gh pr merge 235 --squash --delete-branch --admin",
+      "exit_code": 0,
+      "result": "PR #235 merged; local main fast-forwarded to origin/main 2ee0a3282ebb6cfbf07d34d57e476f60eea46eb7."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "RECOVERY_PLANNING_CLOSED",
+      "decision": "Close M7-STRATEGIC-TERRAIN-RECOVERY-001 after accepted planning package entered origin/main through PR #235."
+    },
+    {
+      "id": "NEXT_READY_SCHEMA",
+      "decision": "Promote M7-STRATEGIC-TERRAIN-SCHEMA-001 to READY as the next sequential strategic terrain recovery task."
+    },
+    {
+      "id": "CONTENT_LOCK_STILL_BLOCKED",
+      "decision": "M7 content lock remains unapproved and M7 exit validation remains disabled until the full strategic terrain recovery chain validates and the product owner reconsiders content lock."
+    }
+  ],
+  "risks": [
+    {
+      "id": "M7-STRATEGIC-TERRAIN-IMPLEMENTATION-RISK",
+      "severity": "R4",
+      "summary": "The next work replaces the rejected map drawing and spatial index across schema, content, renderer, AI/player reasons, and validation.",
+      "mitigation": "Proceed through the accepted sequential task chain with independent systems and QA review."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Start M7-STRATEGIC-TERRAIN-SCHEMA-001 as the next READY task on a new branch/worktree with systems_architect owner and independent qa_reviewer.",
+  "created_at": "2026-07-01T20:07:23.8111463+08:00"
+}
