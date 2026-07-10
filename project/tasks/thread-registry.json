@@ -8,18 +8,18 @@
         "task_ids": [
           "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
         ],
-        "status": "active_r0_production_fixture_audit_in_progress",
+        "status": "active_r0_production_fixture_audit_review",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-        "updated_at": "2026-07-10T10:45:06.128Z",
+        "updated_at": "2026-07-10T11:02:43.279Z",
         "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
         "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
         "next_ready_tasks_after_acceptance": [],
-        "next_action": "Track the systems_architect writer; the read-only scout is closed after its candidate evidence was routed. Route the validated writer handoff to independent QA."
+        "next_action": "Track independent qa_reviewer inspection of writer commit 3391fdbc; retain the systems_architect thread only for a possible REQUEST_CHANGES loop."
       }
     ],
     "retired_leads": [
@@ -8546,10 +8546,10 @@
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "in_progress_writer_active_scout_closed",
+      "status": "review_qa_active_writer_waiting",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "base_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
-      "updated_at": "2026-07-10T10:45:06.128Z"
+      "updated_at": "2026-07-10T11:02:43.279Z"
     },
     "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:systems_architect:attempt-1": {
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
@@ -8565,10 +8565,12 @@
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
       "role": "systems_architect",
       "thread_id": "019f4b98-80d7-7623-a6f3-86205e788366",
-      "status": "active_writer",
+      "status": "review_waiting",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "started_at": "2026-07-10T10:35:34.390Z",
-      "updated_at": "2026-07-10T10:35:34.390Z"
+      "writer_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
+      "writer_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-WRITER-REVIEW__systems_architect.json",
+      "updated_at": "2026-07-10T11:02:43.279Z"
     },
     "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:research_scout": {
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
@@ -8581,6 +8583,16 @@
       "useful_handoff": false,
       "route_submission_id": "019f4ba0-fee5-76f2-8d6f-7fadd79ec642",
       "updated_at": "2026-07-10T10:45:06.128Z"
+    },
+    "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:qa_reviewer": {
+      "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f4bb1-6e0f-75f0-967e-05f3da603f5f",
+      "status": "active_read_only_review",
+      "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
+      "review_target_commit": "3391fdbcfe50448f0b41cc98b3b786969af9671d",
+      "started_at": "2026-07-10T11:02:43.279Z",
+      "updated_at": "2026-07-10T11:02:43.283Z"
     }
   },
   "replaced_threads": [
@@ -8780,7 +8792,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-10T10:35:34.390Z",
+  "updated_at": "2026-07-10T11:02:43.283Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
