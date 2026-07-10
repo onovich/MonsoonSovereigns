@@ -2,7 +2,7 @@
   "id": "RR0-STATUS-LEDGER-COMPACTION-001",
   "summary": "Compact current status while preserving M0-M7 historical ledger evidence",
   "milestone": "R0",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": [
@@ -73,14 +73,14 @@
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T12:14:48.826Z",
+  "updated_at": "2026-07-10T12:23:25.225Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
   "ready_after_pr": 245,
   "ready_after_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-  "next_action": "Push the accepted branch, merge only after required CI succeeds, synchronize origin/main, and close this task only after the accepted evidence is present in main.",
+  "next_action": "RR0-EXIT-VALIDATION-001 is the only next R0 task; keep R1 frozen until the R0 Gate passes.",
   "started_at": "2026-07-10T11:46:41.437Z",
   "base_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
   "start_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-START__lead_orchestrator.json",
@@ -134,5 +134,10 @@
   "qa_metadata_correction_commit": "975485dc305e72e304d0d10816d38414446fc3dc",
   "qa_result": "ACCEPT",
   "lead_accept_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-ACCEPT__lead_orchestrator.json",
-  "accepted_at": "2026-07-10T12:14:48.826Z"
+  "accepted_at": "2026-07-10T12:14:48.826Z",
+  "integrated_pr": 247,
+  "integrated_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+  "merged_at": "2026-07-10T12:22:19.000Z",
+  "lead_close_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-CLOSED__lead_orchestrator.json",
+  "closed_at": "2026-07-10T12:23:25.225Z"
 }

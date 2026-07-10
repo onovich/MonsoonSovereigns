@@ -2,7 +2,7 @@
   "id": "RR0-EXIT-VALIDATION-001",
   "summary": "Validate R0 recovery baseline exit gate",
   "milestone": "R0",
-  "status": "DRAFT",
+  "status": "READY",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": ["qa_reviewer"],
@@ -66,8 +66,12 @@
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T07:30:00.000Z",
+  "updated_at": "2026-07-10T12:23:25.225Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
-  "no_r1_implementation_authorized": true
+  "no_r1_implementation_authorized": true,
+  "ready_after_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "ready_after_pr": 247,
+  "ready_after_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+  "next_action": "After this closure record enters main, start the systems_architect-owned R0 exit validation on codex/rr0-exit-validation-001 and route its REVIEW handoff to an independent qa_reviewer."
 }

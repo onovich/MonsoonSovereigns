@@ -3,32 +3,36 @@
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
   "current_milestone": "R0",
   "current_tasks": [
-    "RR0-STATUS-LEDGER-COMPACTION-001"
+    "RR0-EXIT-VALIDATION-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+      "task_id": "RR0-EXIT-VALIDATION-001",
       "task_ids": [
-        "RR0-STATUS-LEDGER-COMPACTION-001"
+        "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_status_ledger_compaction_accepted_pending_pr",
+      "status": "active_r0_exit_ready_pending_closure_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-      "updated_at": "2026-07-10T12:14:48.826Z",
-      "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
-      "next_ready_tasks_after_acceptance": [],
-      "next_action": "Push accepted status-ledger compaction, wait for required CI, merge to main, and only then close the task."
+      "branch_or_worktree": "codex/close-rr0-status-ledger-compaction-001",
+      "updated_at": "2026-07-10T12:23:25.225Z",
+      "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+      "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+      "next_ready_tasks_after_acceptance": [
+        "RR0-EXIT-VALIDATION-001"
+      ],
+      "next_action": "Integrate the status-ledger closure record, then start RR0-EXIT-VALIDATION-001 without creating an R1 task."
     }
   },
-  "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-  "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
-  "next_ready_tasks": [],
+  "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+  "next_ready_tasks": [
+    "RR0-EXIT-VALIDATION-001"
+  ],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -87,12 +91,12 @@
   "human_gate": {
     "required": false,
     "active_gate_task_id": null,
-    "approval_scope": "ROADMAP_ACCEPTED_R0_ADOPTION_ACCEPTED_PENDING_INTEGRATION",
+    "approval_scope": "ROADMAP_ACCEPTED_R0_EXECUTION",
     "approval_source": "Product owner message on 2026-07-10: 可以，接受。",
     "decision_result": "ACCEPT_ROADMAP",
-    "note": "Independent QA accepted the R0 adoption at 45b9a439; no downstream R0 task starts until PR/CI/main integration and task closure.",
+    "note": "The accepted recovery roadmap authorizes R0 execution. No active Human Gate exists; R1 remains frozen until RR0-EXIT-VALIDATION-001 passes.",
     "recorded_at": "2026-07-10T07:30:00.000Z",
-    "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
+    "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
     "accepted_roadmap_commit": "d7da7f61a71695211a664c6a13a5cfc533174b27"
   },
   "leadership": {
@@ -106,8 +110,8 @@
     "outgoing_thread_id": null,
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS",
-    "current_task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
-    "updated_at": "2026-07-10T12:14:48.826Z"
+    "current_task_id": "RR0-EXIT-VALIDATION-001",
+    "updated_at": "2026-07-10T12:23:25.225Z"
   },
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
@@ -930,7 +934,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-10T12:14:48.826Z",
+  "last_updated_at": "2026-07-10T12:23:25.225Z",
   "updated_at": "2026-07-01T23:21:47.0897812+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -1144,7 +1148,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "current_task": "RR0-EXIT-VALIDATION-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
