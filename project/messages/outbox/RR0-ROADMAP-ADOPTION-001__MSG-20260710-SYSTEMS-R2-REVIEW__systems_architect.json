@@ -1,0 +1,108 @@
+{
+  "message_id": "MSG-20260710-SYSTEMS-R2-REVIEW",
+  "task_id": "RR0-ROADMAP-ADOPTION-001",
+  "from_role": "systems_architect",
+  "status": "REVIEW",
+  "summary": "R2 fixes the independent QA REQUEST_CHANGES by making parsed goal-mode and model-routing canonical current state consistently point to RR0-ROADMAP-ADOPTION-001 REVIEW, preserving the real active lead thread, keeping downstream RR0 work DRAFT, and retaining the M7 renderer task only as non-active PARTIAL evidence.",
+  "artifacts": [
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/active/RR0-ROADMAP-ADOPTION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption on codex/rr0-roadmap-adoption",
+  "commit": "d6d883d564e9d536a111bc6cff853219a591f76b",
+  "tests_run": [
+    {
+      "command": "git rev-parse --show-toplevel",
+      "exit_code": 0,
+      "result": "Output: D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption."
+    },
+    {
+      "command": "git status --short --branch before fix commit",
+      "exit_code": 0,
+      "result": "Only RR0 allowed process/state files and the QA REQUEST_CHANGES handoff were dirty/untracked before commit."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001 RR0-REPOSITORY-STATE-RECONCILIATION-001 RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001 RR0-STATUS-LEDGER-COMPACTION-001 RR0-EXIT-VALIDATION-001 M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "exit_code": 0,
+      "result": "Each of the six task JSON files validated; taskctl emits one VALID line per explicit invocation."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "RR0-ROADMAP-ADOPTION-001 is REVIEW; the four downstream RR0 tasks are DRAFT; M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 is PARTIAL."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output, matching the dependency design: downstream R0 tasks are not READY until RR0-ROADMAP-ADOPTION-001 is accepted."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "pnpm exec prettier --check docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/29-product-recovery-roadmap.md project/tasks/active/RR0-*.json",
+      "exit_code": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "node -e parse all changed JSON files",
+      "exit_code": 0,
+      "result": "Parsed goal-mode-state, model-routing-state, thread-registry, RR0 task files, M7 renderer task, and QA handoff; 10 JSON files parsed."
+    },
+    {
+      "command": "PowerShell here-string Node semantic assertion for goal/model current R0 state",
+      "exit_code": 0,
+      "result": "semantic assertion passed: RR0 REVIEW current state, active lead, downstream DRAFT tasks, non-active M7 renderer."
+    },
+    {
+      "command": "git diff --name-only and git ls-files --others allowed-path assertion",
+      "exit_code": 0,
+      "result": "Changed/untracked files were limited to project/goal-mode-state.json, project/model-routing-state.json, project/tasks/active/RR0-ROADMAP-ADOPTION-001.json, project/tasks/thread-registry.json, and the QA handoff before the fix commit."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "VALID after this R2 handoff file was written."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "CANONICAL_R0_CURRENT_STATE",
+      "decision": "goal-mode-state.json and model-routing-state.json now parse to current_milestone=R0, current_task=RR0-ROADMAP-ADOPTION-001, current_tasks=[RR0-ROADMAP-ADOPTION-001], current_task_status=REVIEW, and a QA rereview next_machine_action."
+    },
+    {
+      "id": "ACTIVE_THREAD_CONSTRAINT",
+      "decision": "The only operationally active lead remains 019eff50-c69d-7612-a90b-7024a47e0af5; model active_threads no longer exposes old M7 schema/client work. The real QA reviewer thread 019f4adb-1530-75a2-a801-a16b640793bf is preserved in the task file and thread registry without fabricating model or effort."
+    },
+    {
+      "id": "DOWNSTREAM_AND_M7_STATE",
+      "decision": "All four RR0 downstream tasks remain DRAFT behind RR0-ROADMAP-ADOPTION-001, and M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 remains PARTIAL non-active retained evidence."
+    },
+    {
+      "id": "QA_HANDOFF_PRESERVED",
+      "decision": "The QA REQUEST_CHANGES handoff is included as an artifact and was committed with the R2 state fix for audit continuity."
+    }
+  ],
+  "risks": [
+    {
+      "id": "HISTORICAL_M7_TEXT_REMAINS",
+      "severity": "R2",
+      "summary": "The large state ledgers intentionally retain historical M7 entries and text; the semantic assertion scopes the contract to parsed canonical current/current_tasks/current_status/action and active_threads rather than deleting history."
+    },
+    {
+      "id": "HANDOFF_COMMIT_REFERENCE",
+      "severity": "R1",
+      "summary": "This handoff references the R2 fix commit d6d883d564e9d536a111bc6cff853219a591f76b. If the handoff file itself is committed afterward, that later commit is handoff-only."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Please perform independent QA re-review of RR0-ROADMAP-ADOPTION-001 R2 and either ACCEPT or return REQUEST_CHANGES with concrete parsed-state evidence.",
+  "created_at": "2026-07-10T15:45:00+08:00"
+}
