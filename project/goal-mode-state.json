@@ -1,33 +1,49 @@
 {
   "enabled": true,
   "long_term_goal": "Continuously advance Monsoon Sovereigns from Foundation Ready through the M0 engineering baseline and toward vertical-slice readiness by selecting dependency-ready tasks, enforcing review/test/Human Gate controls, and preserving frozen product, platform, architecture, determinism, security, and historical-policy decisions.",
-  "current_milestone": "R0",
+  "current_milestone": "R1",
   "current_tasks": [
-    "RR0-EXIT-VALIDATION-001"
+    "RR1-TASK-GRAPH-001"
   ],
   "active_threads": {
     "lead_orchestrator": {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-EXIT-VALIDATION-001",
+      "task_id": "RR1-TASK-GRAPH-001",
       "task_ids": [
-        "RR0-EXIT-VALIDATION-001"
+        "RR1-TASK-GRAPH-001"
       ],
-      "status": "active_r1_task_graph_pending",
+      "status": "active_r1_task_graph_coordination",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T17:31:57.269Z",
+      "branch_or_worktree": "codex/rr1-task-graph-001",
+      "updated_at": "2026-07-10T17:52:51.634Z",
       "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-      "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+      "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
       "next_ready_tasks_after_acceptance": [],
-      "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
+      "next_action": "Coordinate systems_architect drafting and independent QA review of RR1-TASK-GRAPH-001; do not start product implementation before graph integration."
+    },
+    "systems_architect": {
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "task_id": "RR1-TASK-GRAPH-001",
+      "task_ids": [
+        "RR1-TASK-GRAPH-001"
+      ],
+      "status": "active_writing_task_graph",
+      "role": "systems_architect",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/rr1-task-graph-001",
+      "updated_at": "2026-07-10T17:52:51.634Z",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json"
     }
   },
   "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-  "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+  "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
   "next_ready_tasks": [],
   "unresolved_risks": [
     {
@@ -90,9 +106,9 @@
     "approval_scope": "ROADMAP_ACCEPTED_R0_EXECUTION",
     "approval_source": "Product owner message on 2026-07-10: 可以，接受。",
     "decision_result": "ACCEPT_ROADMAP",
-    "note": "The accepted recovery roadmap authorizes R0 execution. No active Human Gate exists; R1 remains frozen until RR0-EXIT-VALIDATION-001 passes.",
+    "note": "R0_GATE=PASS. The accepted recovery roadmap authorizes controlled R1 task-graph planning; no R1 product implementation starts before the reviewed graph enters origin/main.",
     "recorded_at": "2026-07-10T07:30:00.000Z",
-    "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+    "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
     "accepted_roadmap_commit": "d7da7f61a71695211a664c6a13a5cfc533174b27"
   },
   "leadership": {
@@ -106,8 +122,8 @@
     "outgoing_thread_id": null,
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS",
-    "current_task_id": "RR0-EXIT-VALIDATION-001",
-    "updated_at": "2026-07-10T12:31:59.515Z"
+    "current_task_id": "RR1-TASK-GRAPH-001",
+    "updated_at": "2026-07-10T17:52:51.634Z"
   },
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
@@ -930,8 +946,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-10T17:31:57.269Z",
-  "updated_at": "2026-07-10T17:31:57.269Z",
+  "last_updated_at": "2026-07-10T17:52:51.634Z",
+  "updated_at": "2026-07-10T17:52:51.634Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1144,7 +1160,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "RR0-EXIT-VALIDATION-001",
+  "current_task": "RR1-TASK-GRAPH-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -1998,8 +2014,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "CLOSED",
-  "next_machine_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
+  "current_task_status": "IN_PROGRESS",
+  "next_machine_action": "Route RR1-TASK-GRAPH-001 to the resumed systems_architect, then independently review it with qa_reviewer before any R1 product implementation.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3544,8 +3560,26 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "active_task_routes": {},
-  "active_routes": {},
+  "active_task_routes": {
+    "RR1-TASK-GRAPH-001": {
+      "role": "systems_architect",
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "status": "START_ROUTE_PREPARED",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-07-10T17:52:51.634Z"
+    }
+  },
+  "active_routes": {
+    "RR1-TASK-GRAPH-001": {
+      "role": "systems_architect",
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "status": "START_ROUTE_PREPARED",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-07-10T17:52:51.634Z"
+    }
+  },
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",

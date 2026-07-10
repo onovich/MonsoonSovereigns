@@ -17,22 +17,22 @@
   },
   "current_lead_thread": {
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "task_id": "RR0-EXIT-VALIDATION-001",
+    "task_id": "RR1-TASK-GRAPH-001",
     "task_ids": [
-      "RR0-EXIT-VALIDATION-001"
+      "RR1-TASK-GRAPH-001"
     ],
-    "status": "active_r1_task_graph_pending",
+    "status": "active_r1_task_graph_coordination",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
-    "branch_or_worktree": "codex/rr0-exit-validation-001",
-    "updated_at": "2026-07-10T17:31:57.269Z",
+    "branch_or_worktree": "codex/rr1-task-graph-001",
+    "updated_at": "2026-07-10T17:52:51.634Z",
     "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-    "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+    "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
     "next_ready_tasks_after_acceptance": [],
-    "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
+    "next_action": "Coordinate systems_architect drafting and independent QA review of RR1-TASK-GRAPH-001; do not start product implementation before graph integration."
   },
   "retired_lead_threads": [
     {
@@ -1964,22 +1964,38 @@
   "active_threads": [
     {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-EXIT-VALIDATION-001",
+      "task_id": "RR1-TASK-GRAPH-001",
       "task_ids": [
-        "RR0-EXIT-VALIDATION-001"
+        "RR1-TASK-GRAPH-001"
       ],
-      "status": "active_r1_task_graph_pending",
+      "status": "active_r1_task_graph_coordination",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T17:31:57.269Z",
+      "branch_or_worktree": "codex/rr1-task-graph-001",
+      "updated_at": "2026-07-10T17:52:51.634Z",
       "last_integrated_task": "RR0-EXIT-VALIDATION-001",
-      "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+      "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
       "next_ready_tasks_after_acceptance": [],
-      "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main."
+      "next_action": "Coordinate systems_architect drafting and independent QA review of RR1-TASK-GRAPH-001; do not start product implementation before graph integration."
+    },
+    {
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "task_id": "RR1-TASK-GRAPH-001",
+      "task_ids": [
+        "RR1-TASK-GRAPH-001"
+      ],
+      "status": "active_writing_task_graph",
+      "role": "systems_architect",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/rr1-task-graph-001",
+      "updated_at": "2026-07-10T17:52:51.634Z",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json"
     }
   ],
   "task_effects": {
@@ -2061,7 +2077,7 @@
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
   "current_tasks": [
-    "RR0-EXIT-VALIDATION-001"
+    "RR1-TASK-GRAPH-001"
   ],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
@@ -2217,8 +2233,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
-  "current_task": "RR0-EXIT-VALIDATION-001",
+  "next_action": "Route RR1-TASK-GRAPH-001 to the resumed systems_architect, then independently review it with qa_reviewer before any R1 product implementation.",
+  "current_task": "RR1-TASK-GRAPH-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2423,7 +2439,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T17:31:57.269Z",
+  "last_updated_at": "2026-07-10T17:52:51.634Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4194,8 +4210,34 @@
       "M7-UI-REGRESSION-MATRIX-001"
     ]
   },
-  "active_task_routes": {},
-  "active_routes": {},
+  "active_task_routes": {
+    "RR1-TASK-GRAPH-001": {
+      "role": "systems_architect",
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "status": "START_ROUTE_PREPARED",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-07-10T17:52:51.634Z"
+    }
+  },
+  "active_routes": {
+    "RR1-TASK-GRAPH-001": {
+      "role": "systems_architect",
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "status": "START_ROUTE_PREPARED",
+      "route_file": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+      "updated_at": "2026-07-10T17:52:51.634Z"
+    }
+  },
   "tasks": {
     "M7-PLAYER-FIRST-SCREEN-ORIENTATION-001": {
       "owner_role": "client_engineer",
@@ -5024,8 +5066,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Create and independently review the controlled R1 task graph; do not start R1 implementation before that graph enters origin/main.",
-  "current_task_status": "CLOSED",
+  "next_machine_action": "Route RR1-TASK-GRAPH-001 to the resumed systems_architect, then independently review it with qa_reviewer before any R1 product implementation.",
+  "current_task_status": "IN_PROGRESS",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5084,8 +5126,8 @@
     "strategic_terrain_recovery_task": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
-  "current_milestone": "R0",
-  "last_main_commit": "81b11f1a7a0210591cd266b8fcf6a47edd6da554",
+  "current_milestone": "R1",
+  "last_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
   "ready_tasks": [],
   "next_ready_tasks": [],
   "m7_strategic_terrain_recovery": {
