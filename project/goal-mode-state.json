@@ -12,32 +12,34 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_validation",
+      "status": "active_r0_exit_qa_review",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T12:31:59.515Z",
+      "updated_at": "2026-07-10T12:56:38.240Z",
       "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
       "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
       "next_ready_tasks_after_acceptance": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "next_action": "Track systems_architect 019f4c06-5c8f-7552-9baf-47c1e609b024; reserve the independent QA slot and do not create R1 tasks."
+      "next_action": "Track independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 reviewing systems commit d88cc56b and metadata correction ed4f447c; do not create R1 tasks."
     },
-    "systems_architect": {
-      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+    "qa_reviewer": {
+      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
       "task_id": "RR0-EXIT-VALIDATION-001",
-      "status": "active_r0_exit_gate_writer",
-      "role": "systems_architect",
+      "status": "active_read_only_r0_exit_review",
+      "role": "qa_reviewer",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-START__lead_orchestrator.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
-      "updated_at": "2026-07-10T12:35:28.451Z"
+      "review_target_commit": "d88cc56bdbcb7402b088aee4af51223c38ee9500",
+      "review_metadata_commit": "ed4f447c46512ad6ad18a7213a92cce1ba31847a",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "updated_at": "2026-07-10T12:56:38.240Z"
     }
   },
   "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
@@ -946,7 +948,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-10T12:35:28.451Z",
+  "last_updated_at": "2026-07-10T12:56:38.240Z",
   "updated_at": "2026-07-01T23:21:47.0897812+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",

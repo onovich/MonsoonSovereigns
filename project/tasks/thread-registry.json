@@ -8,20 +8,20 @@
         "task_ids": [
           "RR0-EXIT-VALIDATION-001"
         ],
-        "status": "active_r0_exit_validation",
+        "status": "active_r0_exit_qa_review",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-exit-validation-001",
-        "updated_at": "2026-07-10T12:31:59.515Z",
+        "updated_at": "2026-07-10T12:56:38.240Z",
         "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
         "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
         "next_ready_tasks_after_acceptance": [
           "RR0-EXIT-VALIDATION-001"
         ],
-        "next_action": "Track systems_architect 019f4c06-5c8f-7552-9baf-47c1e609b024; reserve the independent QA slot and do not create R1 tasks."
+        "next_action": "Track independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 reviewing systems commit d88cc56b and metadata correction ed4f447c; do not create R1 tasks."
       }
     ],
     "retired_leads": [
@@ -42,7 +42,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-07-10T12:31:59.515Z"
+      "checked_at": "2026-07-10T12:56:38.240Z"
     }
   },
   "entries": {
@@ -8642,7 +8642,7 @@
       "role": "systems_architect",
       "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
       "nickname": "Meridian",
-      "status": "active_r0_exit_gate_writer",
+      "status": "closed_after_review_handoff",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -8653,8 +8653,33 @@
       "route_submission_id": "019f4c08-5d72-7003-98e3-b12759df20c3",
       "route_sent_at": "2026-07-10T12:37:32.961Z",
       "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+      "review_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+      "review_commit": "d88cc56bdbcb7402b088aee4af51223c38ee9500",
+      "metadata_correction_commit": "ed4f447c46512ad6ad18a7213a92cce1ba31847a",
       "started_at": "2026-07-10T12:35:28.451Z",
-      "updated_at": "2026-07-10T12:35:28.451Z"
+      "closed_at": "2026-07-10T12:56:38.240Z",
+      "updated_at": "2026-07-10T12:56:38.240Z"
+    },
+    "RR0-EXIT-VALIDATION-001:qa_reviewer": {
+      "task_id": "RR0-EXIT-VALIDATION-001",
+      "role": "qa_reviewer",
+      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "nickname": "Auditor",
+      "status": "active_read_only_r0_exit_review",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "xhigh",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/rr0-exit-validation-001",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-TO-QA-REVIEW.json",
+      "route_submission_id": "019f4c1c-477e-7920-9341-f0491ee21d73",
+      "route_sent_at": "2026-07-10T12:59:18.056Z",
+      "review_target_commit": "d88cc56bdbcb7402b088aee4af51223c38ee9500",
+      "review_metadata_commit": "ed4f447c46512ad6ad18a7213a92cce1ba31847a",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "started_at": "2026-07-10T12:56:38.240Z",
+      "updated_at": "2026-07-10T12:56:38.240Z"
     }
   },
   "replaced_threads": [
@@ -8854,7 +8879,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-10T12:35:28.451Z",
+  "updated_at": "2026-07-10T12:56:38.240Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
