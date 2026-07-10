@@ -10,7 +10,7 @@
   "current_tasks": [
     "RR0-EXIT-VALIDATION-001"
   ],
-  "current_task_status": "REVIEW",
+  "current_task_status": "IN_PROGRESS",
   "last_closed_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
@@ -27,34 +27,32 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_qa_review",
+      "status": "active_r0_exit_request_changes_fix",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T12:56:38.240Z",
+      "updated_at": "2026-07-10T13:13:00.962Z",
       "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
       "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
       "next_ready_tasks": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "next_action": "Track independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 reviewing systems commit d88cc56b and metadata correction ed4f447c."
+      "next_action": "Track original systems_architect 019f4c06-5c8f-7552-9baf-47c1e609b024 fixing QA REQUEST_CHANGES from edf959d3."
     },
-    "qa_reviewer": {
-      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+    "systems_architect": {
+      "thread_id": "019f4c06-5c8f-7552-9baf-47c1e609b024",
       "task_id": "RR0-EXIT-VALIDATION-001",
-      "status": "active_read_only_r0_exit_review",
-      "role": "qa_reviewer",
+      "status": "active_r0_exit_r2_state_repair",
+      "role": "systems_architect",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "review_target_commit": "d88cc56bdbcb7402b088aee4af51223c38ee9500",
-      "review_metadata_commit": "ed4f447c46512ad6ad18a7213a92cce1ba31847a",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
-      "updated_at": "2026-07-10T12:56:38.240Z"
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "updated_at": "2026-07-10T13:13:00.962Z"
     }
   },
   "unresolved_risks": [
@@ -89,11 +87,11 @@
     "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
     "next_ready_task": "RR0-EXIT-VALIDATION-001"
   },
-  "next_machine_action": "Track the independent qa_reviewer; on ACCEPT run Lead integration gates, otherwise return exact changes to the same systems_architect.",
+  "next_machine_action": "Track the original systems_architect R2 state repair, then restore the same independent QA reviewer for R2 verification.",
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-07-10T12:56:38.240Z",
+  "last_updated_at": "2026-07-10T13:13:00.962Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",

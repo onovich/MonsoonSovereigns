@@ -9,7 +9,7 @@
 ## 当前阶段
 
 - 当前前向阶段：**R0 / Recovery Baseline**。
-- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `REVIEW`。
+- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `IN_PROGRESS`（QA `REQUEST_CHANGES` R2 修复）。
 - 当前分支：`codex/rr0-exit-validation-001`。
 - 任务基线：`origin/main@e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0`。
 - Autonomous Goal Mode：enabled；`human_gate.required=false`。
@@ -39,7 +39,7 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 - 受控 worktree 共 2 个：当前 RR0 worktree，以及保留 M7 renderer 部分成果的原工作区。
 - `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001` 为 `PARTIAL` 历史证据，不是 operational active work；原工作区保持 20 条既有 status entry，未清理、未覆盖。
-- R0 Exit `systems_architect` 已提交 `R0_GATE=PASS` 建议并关闭；当前仅有一名独立 `qa_reviewer` active。
+- R0 Exit 独立 QA 已提交 `REQUEST_CHANGES` 并关闭；原 `systems_architect` 已恢复，当前仅它 active 执行 R2 状态修复。
 - 任务图、leadership、模型路由和恢复状态分别以 `project/tasks/active`、`project/tasks/thread-registry.json`、`project/model-routing-state.json` 与 `project/goal-mode-state.json` 为准。
 
 ## 决定与边界
@@ -57,6 +57,6 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 ## 下一动作
 
-1. 由独立 `qa_reviewer` 复核 systems commit `d88cc56b` 与 metadata correction `ed4f447c` 的实际 diff 和 R0 Gate 证据。
-2. 若 QA `ACCEPT`，Lead 执行最终集成门禁、PR 与 CI；若 `REQUEST_CHANGES`，退回原 systems writer。
+1. 原 `systems_architect` 修复 `edf959d3` 报告的 model-routing 顶层陈旧字段与三个恢复源的 stale M7 active route。
+2. 产出 R2 systems REVIEW handoff 后，恢复同一独立 QA 复核。
 3. 只有 Gate 与 CI 都通过后才关闭 R0；此前保持 R1 冻结。
