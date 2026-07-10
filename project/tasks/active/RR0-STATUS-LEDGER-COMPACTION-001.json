@@ -2,7 +2,7 @@
   "id": "RR0-STATUS-LEDGER-COMPACTION-001",
   "summary": "Compact current status while preserving M0-M7 historical ledger evidence",
   "milestone": "R0",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": [
@@ -64,26 +64,67 @@
   ],
   "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
   "threads": {},
-  "route_to": "lead_orchestrator",
+  "route_to": "qa_reviewer",
   "notes": [
     "This task may compact process/status documentation only.",
     "No product code, Gate document rewrite, ADR rewrite, or historical fact reinterpretation is authorized.",
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T11:46:41.437Z",
+  "updated_at": "2026-07-10T11:52:41.759Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
   "ready_after_pr": 245,
   "ready_after_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-  "next_action": "Move the full pre-compaction status into the exact independent history ledger path, rebuild a concise current PROJECT_STATUS snapshot, preserve roadmap references, then route to independent QA.",
+  "next_action": "Independent qa_reviewer verifies exact historical preservation, concise current status, roadmap-reference synchronization, and write scope.",
   "started_at": "2026-07-10T11:46:41.437Z",
   "base_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
   "start_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-START__lead_orchestrator.json",
   "scope_reconciliation": {
     "added_path": "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
     "reason": "docs/29-product-recovery-roadmap.md requires historical milestone records to move into an independent history/ledger; the original task allowed_paths omitted the destination path."
-  }
+  },
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json"
+  ],
+  "tests": [
+    {
+      "command": "node exact ledger preservation assertion against d058cb88:PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "The archived ledger reproduces the complete pre-compaction status byte-for-byte after removing the added archive banner and restoring the original title."
+    },
+    {
+      "command": "node current and historical status byte/line count",
+      "exit_code": 0,
+      "result": "Current PROJECT_STATUS is 3978 bytes / 63 lines; historical ledger is 64028 bytes / 414 lines."
+    },
+    {
+      "command": "rg roadmap and current-status references plus old snapshot-heading exclusion",
+      "exit_code": 0,
+      "result": "Current status and both roadmap matrices reference the independent ledger; no historical numbered snapshot sections remain in current PROJECT_STATUS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "Task schema valid in REVIEW."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git -C D:/WebProjects/MonsoonSovereigns status --short",
+      "exit_code": 0,
+      "result": "Retained M7 worktree still has exactly 20 pre-existing status entries."
+    }
+  ],
+  "review_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json",
+  "review_ready_at": "2026-07-10T11:52:41.759Z"
 }

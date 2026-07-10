@@ -8,18 +8,18 @@
         "task_ids": [
           "RR0-STATUS-LEDGER-COMPACTION-001"
         ],
-        "status": "active_r0_status_ledger_compaction_in_progress",
+        "status": "active_r0_status_ledger_compaction_review",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-        "updated_at": "2026-07-10T11:46:41.437Z",
+        "updated_at": "2026-07-10T11:52:41.759Z",
         "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
         "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
         "next_ready_tasks_after_acceptance": [],
-        "next_action": "Compact current status into a concise snapshot and an independent historical ledger, then route to independent QA."
+        "next_action": "Route the status/history compaction diff to independent QA and preserve the lead-owned implementation unchanged during review."
       }
     ],
     "retired_leads": [
@@ -8561,10 +8561,11 @@
       "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "in_progress_lead_owner",
+      "status": "review_pending_independent_qa",
       "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
       "base_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
-      "updated_at": "2026-07-10T11:46:41.437Z"
+      "review_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json",
+      "updated_at": "2026-07-10T11:52:41.759Z"
     },
     "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:systems_architect:attempt-1": {
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
