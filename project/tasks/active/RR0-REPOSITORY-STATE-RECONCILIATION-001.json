@@ -2,7 +2,7 @@
   "id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
   "summary": "Reconcile repository, worktree, branch, task graph, and thread state after roadmap adoption",
   "milestone": "R0",
-  "status": "READY",
+  "status": "ACCEPTED",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": ["qa_reviewer"],
@@ -57,7 +57,8 @@
   ],
   "branch_or_worktree": "codex/rr0-repository-state-reconciliation-001",
   "threads": {
-    "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5"
+    "lead_orchestrator": "019eff50-c69d-7612-a90b-7024a47e0af5",
+    "qa_reviewer": "019f4b26-98a9-7f51-8273-2da6c0408563"
   },
   "route_to": "lead_orchestrator",
   "notes": [
@@ -66,12 +67,33 @@
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T08:11:51.937Z",
+  "updated_at": "2026-07-10T08:37:40.001Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-ROADMAP-ADOPTION-001",
   "ready_after_pr": 241,
   "ready_after_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36",
-  "next_action": "Start repository-state reconciliation in the existing RR0 worktree; preserve the original M7 renderer partial diff and create no R1 tasks."
+  "next_action": "Open PR, wait for required CI, merge to main, then close the task before starting downstream R0 work.",
+  "started_at": "2026-07-10T08:22:46.513Z",
+  "base_main_commit": "23f9e0870304c1af70ec9e652dff17788259db59",
+  "start_handoff": "project/messages/outbox/RR0-REPOSITORY-STATE-RECONCILIATION-001__MSG-20260710-START__lead_orchestrator.json",
+  "inventory": "project/messages/outbox/RR0-REPOSITORY-STATE-RECONCILIATION-001__INVENTORY.json",
+  "review_handoff": "project/messages/outbox/RR0-REPOSITORY-STATE-RECONCILIATION-001__MSG-20260710-REVIEW__lead_orchestrator.json",
+  "review_ready_at": "2026-07-10T08:27:58.870Z",
+  "qa_review_handoff": "project/messages/outbox/RR0-REPOSITORY-STATE-RECONCILIATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+  "qa_review_result": "ACCEPT",
+  "accepted_at": "2026-07-10T08:37:40.001Z",
+  "reconciliation_evidence": {
+    "origin_main": "23f9e0870304c1af70ec9e652dff17788259db59",
+    "worktree_count": 2,
+    "active_lead_count": 1,
+    "rr1_task_file_count": 0,
+    "m7_renderer_status": "PARTIAL retained_non_active_evidence",
+    "m7_writer_handoff_schema_valid": false,
+    "m7_dirty_entries": 20,
+    "local_branch_count": 29,
+    "unmerged_local_branch_count": 21,
+    "deleted_worktrees_or_branches": false
+  }
 }
