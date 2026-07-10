@@ -85,7 +85,7 @@
   "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
   "unique_active_lead_check": "PASS",
   "successor_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-  "last_updated_at": "2026-07-10T15:07:18.476Z",
+  "last_updated_at": "2026-07-10T15:37:30.690Z",
   "m7_ui_localization_art_coordination": {
     "id": "M7-UI-LOCALIZATION-ART-COORDINATION-001",
     "source_path": "project/messages/inbox/M7-UI-LOCALIZATION-ART-COORDINATION-001__product-owner.md",
@@ -333,8 +333,89 @@
     "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json"
   ],
   "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-exit-validation-001",
-  "commit": null,
-  "tests_run": [],
+  "commit": "55677e64e55aea8c8d3c07f7939bdfe67517874d",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID; status REVIEW and route_to qa_reviewer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "The first four RR0 tasks are CLOSED; RR0-EXIT-VALIDATION-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output; no task is READY and no R1 task is exposed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "QA R2 REQUEST_CHANGES handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Applied systems R3 PARTIAL handoff is schema-valid before final calibration."
+    },
+    {
+      "command": "PowerShell here-string Node parser over git ls-files '*.json'",
+      "exit_code": 0,
+      "result": "Parsed 1445 tracked repository JSON files with zero failures."
+    },
+    {
+      "command": "git diff --check; git diff --check 804eb2d3717cbedae7a095d96367126edc0ee825..55677e64e55aea8c8d3c07f7939bdfe67517874d",
+      "exit_code": 0,
+      "result": "No worktree or reviewed-range whitespace errors."
+    },
+    {
+      "command": "Node exact scope assertion for 804eb2d3717cbedae7a095d96367126edc0ee825..55677e64e55aea8c8d3c07f7939bdfe67517874d",
+      "exit_code": 0,
+      "result": "Exactly seven authorized coordination paths changed; unexpected=0 and missing=0."
+    },
+    {
+      "command": "Node forbidden-path assertions for 38ad1906ed90fc5084b2010fb3c680daba14bbf6..origin/main and origin/main..55677e64e55aea8c8d3c07f7939bdfe67517874d",
+      "exit_code": 0,
+      "result": "The ranges changed 40 and 17 paths respectively; forbidden product/package/test/content/CI/tool/dependency/Gate/R1 path count is 0."
+    },
+    {
+      "command": "Node ASCII-only PROJECT_STATUS and cross-state lifecycle/readiness/baseline/thread/route/continuation assertions",
+      "exit_code": 0,
+      "result": "Lifecycle=REVIEW; ready_tasks and next_ready_tasks are empty; baseline is RR0-STATUS-LEDGER-COMPACTION-001; unique Lead=1; operational roles are Lead plus qa_reviewer; systems is closed; route is REVIEW_READY_QA_R3 with pending_lead_route_registration; continuation targets RR0 Exit QA R3."
+    },
+    {
+      "command": "git worktree list --porcelain; git -c safe.directory=D:/WebProjects/MonsoonSovereigns -C D:/WebProjects/MonsoonSovereigns status --short --untracked-files=all; Node R1/RR1 task count",
+      "exit_code": 0,
+      "result": "worktrees=2; protected M7 status entries=20; R1/RR1 task files=0."
+    },
+    {
+      "command": "Node ledger reconstruction, roadmap-authority, R0/R1-boundary, and audit-category assertions",
+      "exit_code": 0,
+      "result": "Historical ledger reconstructs the prior 409-line PROJECT_STATUS; current status remains 62 lines; docs/29 is ACCEPTED forward authority with R0_GATE and R1 boundary; audit retains Web/Electron, Worker/protocol/sim-core, M3-M7, save/load, time, Storybook, Playwright, Node, and canary evidence."
+    }
+  ],
   "decisions": [
     {
       "id": "R3_ROOT_STATE_RECONCILIATION",
@@ -359,12 +440,7 @@
       "summary": "The protected M7 worktree retains 20 pre-existing status entries and must remain untouched."
     }
   ],
-  "blockers": [
-    {
-      "id": "R3-VALIDATION-PENDING",
-      "summary": "The complete R0 Gate matrix must be rerun after Lead applies this draft."
-    }
-  ],
+  "blockers": [],
   "route_to": "qa_reviewer",
   "requested_action": "Independently review the systems R3 coordination repair after its commit and test evidence are bound. Re-run lifecycle, ready/next, root action, continuation, route/thread, forbidden-path, worktree, M7, R1, JSON, taskctl, and handoff assertions.",
   "created_at": "2026-07-10T23:07:18+08:00",
@@ -459,7 +535,7 @@
     "systems_route_submission_id": "019f1066-9544-7cd2-b9db-ddde19eeb4f6"
   },
   "next_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen.",
-  "updated_at": "2026-07-10T15:07:18.476Z",
+  "updated_at": "2026-07-10T15:37:30.690Z",
   "replaced_threads": [
     {
       "task_id": "M7-PLAYER-GUIDANCE-LITE-001",
