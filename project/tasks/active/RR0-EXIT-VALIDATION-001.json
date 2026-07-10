@@ -2,7 +2,7 @@
   "id": "RR0-EXIT-VALIDATION-001",
   "summary": "Validate R0 recovery baseline exit gate",
   "milestone": "R0",
-  "status": "REVIEW",
+  "status": "IN_PROGRESS",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": ["qa_reviewer"],
@@ -62,21 +62,21 @@
     "systems_architect": "019f4c06-5c8f-7552-9baf-47c1e609b024",
     "qa_reviewer": "019f4c19-c265-7653-9490-63922b40cb89"
   },
-  "route_to": "qa_reviewer",
+  "route_to": "systems_architect",
   "notes": [
     "R0 exit validation must not start R1 work.",
     "If any required check cannot run, status must be PARTIAL or BLOCKED rather than DONE.",
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T13:36:26.045Z",
+  "updated_at": "2026-07-10T14:51:03.780Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "ready_after_pr": 247,
   "ready_after_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
-  "next_action": "Independent QA reviews the R2 systems REVIEW handoff and its bound systems_r2_review_commit, reruns the coordination-state assertions, and either accepts to Lead or returns exact REQUEST_CHANGES evidence.",
+  "next_action": "The same systems_architect performs the R3 coordination-only repair requested by independent QA, reruns the R0 state matrix, and returns a REVIEW handoff to the same qa_reviewer.",
   "started_at": "2026-07-10T12:31:59.515Z",
   "base_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
   "start_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-START__lead_orchestrator.json",
@@ -90,7 +90,8 @@
     "project/goal-mode-state.json",
     "project/model-routing-state.json",
     "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
-    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json"
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json"
   ],
   "tests": [
     {
@@ -345,5 +346,11 @@
   "qa_r2_route": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R2-TO-QA-R2-REVIEW.json",
   "qa_r2_route_submission_id": "019f4c5a-0a00-7ab0-b388-299e9083dcea",
   "expected_qa_r2_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
-  "routed_to_qa_r2_at": "2026-07-10T14:06:54.254Z"
+  "routed_to_qa_r2_at": "2026-07-10T14:06:54.254Z",
+  "qa_r2_review_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+  "qa_r2_review_commit": "e53184eb36bb2cd224cec93878eb2561076c73c5",
+  "qa_r2_result": "REQUEST_CHANGES",
+  "request_changes_round": 2,
+  "systems_r3_route": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-QA-R2-REQUEST-CHANGES-TO-SYSTEMS-R3.json",
+  "expected_systems_r3_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json"
 }
