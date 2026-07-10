@@ -17,24 +17,24 @@
   },
   "current_lead_thread": {
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "task_id": "RR0-ROADMAP-ADOPTION-001",
+    "task_id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
     "task_ids": [
-      "RR0-ROADMAP-ADOPTION-001"
+      "RR0-REPOSITORY-STATE-RECONCILIATION-001"
     ],
-    "status": "active_r0_roadmap_adoption_accepted_pending_integration",
+    "status": "active_r0_reconciliation_ready",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
-    "branch_or_worktree": "codex/rr0-roadmap-adoption",
-    "updated_at": "2026-07-10T08:03:07.031Z",
-    "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-    "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+    "branch_or_worktree": "codex/close-rr0-roadmap-adoption",
+    "updated_at": "2026-07-10T08:11:51.937Z",
+    "last_integrated_task": "RR0-ROADMAP-ADOPTION-001",
+    "last_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36",
     "next_ready_tasks_after_acceptance": [
       "RR0-REPOSITORY-STATE-RECONCILIATION-001"
     ],
-    "next_action": "Open RR0 roadmap adoption PR, wait for required CI, merge to main, then close the task before starting downstream R0 work."
+    "next_action": "Integrate the adoption closure record, then start RR0-REPOSITORY-STATE-RECONCILIATION-001."
   },
   "retired_lead_threads": [
     {
@@ -1966,24 +1966,24 @@
   "active_threads": [
     {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-ROADMAP-ADOPTION-001",
+      "task_id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
       "task_ids": [
-        "RR0-ROADMAP-ADOPTION-001"
+        "RR0-REPOSITORY-STATE-RECONCILIATION-001"
       ],
-      "status": "active_r0_roadmap_adoption_accepted_pending_integration",
+      "status": "active_r0_reconciliation_ready",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-roadmap-adoption",
-      "updated_at": "2026-07-10T08:03:07.031Z",
-      "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
-      "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+      "branch_or_worktree": "codex/close-rr0-roadmap-adoption",
+      "updated_at": "2026-07-10T08:11:51.937Z",
+      "last_integrated_task": "RR0-ROADMAP-ADOPTION-001",
+      "last_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36",
       "next_ready_tasks_after_acceptance": [
         "RR0-REPOSITORY-STATE-RECONCILIATION-001"
       ],
-      "next_action": "Open RR0 roadmap adoption PR, wait for required CI, merge to main, then close the task before starting downstream R0 work."
+      "next_action": "Integrate the adoption closure record, then start RR0-REPOSITORY-STATE-RECONCILIATION-001."
     }
   ],
   "task_effects": {
@@ -2065,7 +2065,7 @@
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
   "current_tasks": [
-    "RR0-ROADMAP-ADOPTION-001"
+    "RR0-REPOSITORY-STATE-RECONCILIATION-001"
   ],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
@@ -2221,8 +2221,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "创建并合并 RR0 Roadmap adoption PR；进入 main 并 CLOSED 后才启动下游 R0 任务。",
-  "current_task": "RR0-ROADMAP-ADOPTION-001",
+  "next_action": "集成 adoption 关闭记录，然后启动 RR0-REPOSITORY-STATE-RECONCILIATION-001。",
+  "current_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2427,7 +2427,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T08:03:07.031Z",
+  "last_updated_at": "2026-07-10T08:11:51.937Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5050,8 +5050,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Open RR0 roadmap adoption PR, wait for CI, merge to main, then close RR0-ROADMAP-ADOPTION-001 before starting downstream R0 work.",
-  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Integrate the RR0 adoption closure record, then start RR0-REPOSITORY-STATE-RECONCILIATION-001 without creating another worktree.",
+  "current_task_status": "READY",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5111,8 +5111,10 @@
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
   "current_milestone": "R0",
-  "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
-  "next_ready_tasks": [],
+  "last_main_commit": "bcaa1acda247f41aaa9cc41029270a1cfb02ed36",
+  "next_ready_tasks": [
+    "RR0-REPOSITORY-STATE-RECONCILIATION-001"
+  ],
   "m7_strategic_terrain_recovery": {
     "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "status": "CLOSED",
@@ -5146,7 +5148,7 @@
       "M7-STRATEGIC-TERRAIN-SCHEMA-001"
     ]
   },
-  "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+  "last_integrated_task": "RR0-ROADMAP-ADOPTION-001",
   "m7_strategic_terrain_schema": {
     "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
     "status": "CLOSED",
