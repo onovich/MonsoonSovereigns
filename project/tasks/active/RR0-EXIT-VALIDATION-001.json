@@ -2,7 +2,7 @@
   "id": "RR0-EXIT-VALIDATION-001",
   "summary": "Validate R0 recovery baseline exit gate",
   "milestone": "R0",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": ["qa_reviewer"],
@@ -62,21 +62,21 @@
     "systems_architect": "019f4c06-5c8f-7552-9baf-47c1e609b024",
     "qa_reviewer": "019f4c19-c265-7653-9490-63922b40cb89"
   },
-  "route_to": "systems_architect",
+  "route_to": "qa_reviewer",
   "notes": [
     "R0 exit validation must not start R1 work.",
     "If any required check cannot run, status must be PARTIAL or BLOCKED rather than DONE.",
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T13:13:00.962Z",
+  "updated_at": "2026-07-10T13:24:15.669Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "ready_after_pr": 247,
   "ready_after_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
-  "next_action": "Original systems_architect fixes only the QA-reported R0 coordination-state inconsistencies, reruns Gate checks, and emits an R2 REVIEW handoff for the same independent QA reviewer.",
+  "next_action": "Independent QA reviews the R2 systems REVIEW handoff and its bound systems_r2_review_commit, reruns the coordination-state assertions, and either accepts to Lead or returns exact REQUEST_CHANGES evidence.",
   "started_at": "2026-07-10T12:31:59.515Z",
   "base_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
   "start_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-START__lead_orchestrator.json",
@@ -86,7 +86,11 @@
   "routed_to_systems_at": "2026-07-10T12:37:32.961Z",
   "artifacts": [
     "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
-    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json"
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json"
   ],
   "tests": [
     {
@@ -223,6 +227,86 @@
       "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
       "exit_code": 0,
       "result": "Ready command emits no R1 work while Exit awaits QA review."
+    },
+    {
+      "command": "node R2 state consistency assertions across PROJECT_STATUS, goal-mode, model-routing, registry, continuation, route, task, and QA handoff",
+      "exit_code": 0,
+      "result": "Current task is RR0-EXIT-VALIDATION-001; model baseline is origin/main e8f0050a with RR0-STATUS-LEDGER-COMPACTION-001 and no ready task; all three route maps contain only the current REQUEST_CHANGES_ROUTED_R2 record; human_gate.required=false; unique active lead and Lead plus systems operational participants remain consistent."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "VALID; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID; status REVIEW and route_to qa_reviewer."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "First four RR0 tasks are CLOSED; RR0-EXIT-VALIDATION-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No task is ready; R1 remains frozen."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "QA REQUEST_CHANGES handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "R2 systems REVIEW handoff is schema-valid."
+    },
+    {
+      "command": "PowerShell here-string Node parser over git ls-files --cached --others --exclude-standard '*.json'",
+      "exit_code": 0,
+      "result": "Parsed 1441 repository JSON files with zero failures."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node forbidden-path assertions for 38ad1906..origin/main and origin/main..HEAD",
+      "exit_code": 0,
+      "result": "38ad1906..origin/main changed 40 paths and origin/main..HEAD changed 12 paths; both ranges contain 0 forbidden apps, packages, tests, content-source, CI, tools, dependency lock/manifest, MANIFEST/SHA, historical Gate, or R1 task paths."
+    },
+    {
+      "command": "git worktree list --porcelain; git -C D:/WebProjects/MonsoonSovereigns status --short",
+      "exit_code": 0,
+      "result": "Exactly two worktrees remain registered; protected M7 worktree still has exactly 20 existing status entries."
+    },
+    {
+      "command": "node R1 task zero-count and stale M7 active-route zero-count assertions",
+      "exit_code": 0,
+      "result": "R1/RR1 task file count is 0; stale M7 keys in active_routes and active_task_routes across all three coordination sources total 0."
+    },
+    {
+      "command": "git status --short --untracked-files=all allowed-scope assertion",
+      "exit_code": 0,
+      "result": "Only the three authorized coordination-state JSON files, RR0 Exit task JSON, and new R2 systems handoff are changed."
     }
   ],
   "gate_recommendation": {
@@ -253,5 +337,7 @@
   "systems_r2_route": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-QA-REQUEST-CHANGES-TO-SYSTEMS-R2.json",
   "systems_r2_route_submission_id": "019f4c2b-9efc-7d83-bcd9-99b47a10c125",
   "expected_systems_r2_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
-  "request_changes_routed_at": "2026-07-10T13:16:19.217Z"
+  "request_changes_routed_at": "2026-07-10T13:16:19.217Z",
+  "systems_r2_review_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+  "systems_r2_review_ready_at": "2026-07-10T21:24:15+08:00"
 }
