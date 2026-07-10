@@ -2,7 +2,7 @@
   "id": "RR0-EXIT-VALIDATION-001",
   "summary": "Validate R0 recovery baseline exit gate",
   "milestone": "R0",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": ["qa_reviewer"],
@@ -61,7 +61,7 @@
   "threads": {
     "systems_architect": "019f4c06-5c8f-7552-9baf-47c1e609b024"
   },
-  "route_to": "systems_architect",
+  "route_to": "qa_reviewer",
   "notes": [
     "R0 exit validation must not start R1 work.",
     "If any required check cannot run, status must be PARTIAL or BLOCKED rather than DONE.",
@@ -82,5 +82,161 @@
   "systems_route": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-LEAD-TO-SYSTEMS-START.json",
   "systems_route_submission_id": "019f4c08-5d72-7003-98e3-b12759df20c3",
   "expected_systems_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
-  "routed_to_systems_at": "2026-07-10T12:37:32.961Z"
+  "routed_to_systems_at": "2026-07-10T12:37:32.961Z",
+  "artifacts": [
+    "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "tests": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Final pre-write status was clean on codex/rr0-exit-validation-001, ahead of origin/main by the two Lead process commits."
+    },
+    {
+      "command": "git branch --show-current; git rev-parse HEAD; git rev-parse origin/main; git merge-base --is-ancestor origin/main HEAD; git merge-base --is-ancestor origin/main 923885b4",
+      "exit_code": 0,
+      "result": "Branch is codex/rr0-exit-validation-001. origin/main is e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0. Kickoff 923885b4 and current branch head f340caf65d8648b23601b220bde45a54e9291d0a are descendants of origin/main."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001",
+      "exit_code": 0,
+      "result": "RR0-ROADMAP-ADOPTION-001 task JSON validated; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "exit_code": 0,
+      "result": "RR0-REPOSITORY-STATE-RECONCILIATION-001 task JSON validated; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "exit_code": 0,
+      "result": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001 task JSON validated; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "RR0-STATUS-LEDGER-COMPACTION-001 task JSON validated; status CLOSED."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "RR0-EXIT-VALIDATION-001 task JSON validated; status IN_PROGRESS before this review update."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "Task list emitted. RR0-ROADMAP-ADOPTION-001, RR0-REPOSITORY-STATE-RECONCILIATION-001, RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001, and RR0-STATUS-LEDGER-COMPACTION-001 are CLOSED; RR0-EXIT-VALIDATION-001 is IN_PROGRESS."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready command emitted no next implementation task while RR0-EXIT-VALIDATION-001 is operationally active."
+    },
+    {
+      "command": "git worktree list --porcelain; git -C D:/WebProjects/MonsoonSovereigns status --short",
+      "exit_code": 0,
+      "result": "Exactly two worktrees are registered. The protected M7 worktree remains on codex/m7-strategic-terrain-renderer-interaction with exactly 20 pre-existing status entries."
+    },
+    {
+      "command": "git diff --name-only 38ad1906ed90fc5084b2010fb3c680daba14bbf6 origin/main forbidden-path scope proof",
+      "exit_code": 0,
+      "result": "R0 changed 40 process/docs/audit/task/message/history paths from the Roadmap adoption baseline to origin/main and 0 forbidden product/dependency/CI/Gate paths."
+    },
+    {
+      "command": "git diff --name-only d7da7f61a71695211a664c6a13a5cfc533174b27 origin/main forbidden-path scope proof",
+      "exit_code": 0,
+      "result": "R0 changed 39 process/docs/audit/task/message/history paths from accepted roadmap commit to origin/main and 0 forbidden product/dependency/CI/Gate paths."
+    },
+    {
+      "command": "git diff --name-only origin/main...HEAD forbidden-path scope proof",
+      "exit_code": 0,
+      "result": "Current branch changed only PROJECT_STATUS, goal-mode, model-routing, continuation, thread-registry, RR0 exit task, START handoff, and route files before this systems review; forbidden path count was 0."
+    },
+    {
+      "command": "rg audit category rows in project/audits/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.md",
+      "exit_code": 0,
+      "result": "Audit records normal Web/Electron, Worker/protocol/sim-core, M3-M7 commands, save/load, time control, Storybook, Playwright, Node runner, and canary categories with evidence."
+    },
+    {
+      "command": "rg roadmap/current-status/ledger authority references",
+      "exit_code": 0,
+      "result": "PROJECT_STATUS is concise, docs/11 and docs/23 point forward authority to docs/29, and the historical ledger is linked as non-current evidence."
+    },
+    {
+      "command": "node normalized ledger reconstruction against d058cb88:PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "After removing the archive banner, restoring the original title, and normalizing line endings, the ledger reconstructs the old PROJECT_STATUS content exactly."
+    },
+    {
+      "command": "rg --files project/tasks/active | rg '(^|/)RR1-|\\\\RR1-'",
+      "exit_code": 0,
+      "result": "No RR1 task files exist; the no-match rg exit 1 was converted into a passing zero-count assertion."
+    },
+    {
+      "command": "node parse all repository JSON files",
+      "exit_code": 0,
+      "result": "Parsed 1433 JSON files successfully."
+    },
+    {
+      "command": "node current status / goal-mode / model-routing / registry / continuation consistency assertions",
+      "exit_code": 0,
+      "result": "All top-level R0 Exit state files agree: human_gate.required=false, unique active lead is 019eff50-c69d-7612-a90b-7024a47e0af5, and the only operationally active route participants are Lead and systems_architect 019f4c06-5c8f-7552-9baf-47c1e609b024."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors before systems review writes."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "Updated task JSON validates in REVIEW state."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems REVIEW handoff validates against project/schemas/handoff.schema.json."
+    },
+    {
+      "command": "node parse changed JSON files",
+      "exit_code": 0,
+      "result": "Parsed the updated task JSON and systems REVIEW handoff JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors after systems review writes."
+    },
+    {
+      "command": "git status --short --untracked-files=all scope proof",
+      "exit_code": 0,
+      "result": "Only two allowed paths are changed: the RR0 Exit task JSON and the systems REVIEW handoff."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list | rg RR0 task rows",
+      "exit_code": 0,
+      "result": "RR0 first four tasks remain CLOSED and RR0-EXIT-VALIDATION-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "Ready command emits no R1 work while Exit awaits QA review."
+    }
+  ],
+  "gate_recommendation": {
+    "R0_GATE": "PASS",
+    "basis": [
+      "origin/main, current branch, task graph, status files, thread registry, goal-mode, model-routing, continuation, and route files are internally consistent for R0 Exit.",
+      "R0 audit evidence fully records production, fixture, test/demo, no-op, client-local success, and missing-authoritative-runtime paths without hiding the R1 gap.",
+      "No forbidden product, dependency, CI, content-source, MANIFEST/SHA, or historical Gate file changes were found in R0 scope.",
+      "No RR1 task files exist and no R1 work is authorized before QA review and Lead synchronization."
+    ],
+    "limitations": [
+      "This is a process and evidence Gate; the authoritative client runtime gap remains a recorded R1 risk, not an R0 blocker.",
+      "The protected M7 renderer worktree still has 20 retained partial entries and must remain untouched until an approved follow-up task."
+    ]
+  },
+  "review_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+  "review_ready_at": "2026-07-10T20:45:45+08:00"
 }
