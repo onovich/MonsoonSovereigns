@@ -17,22 +17,24 @@
   },
   "current_lead_thread": {
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+    "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
     "task_ids": [
-      "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
+      "RR0-STATUS-LEDGER-COMPACTION-001"
     ],
-    "status": "active_r0_production_fixture_audit_accepted_pending_integration",
+    "status": "active_r0_status_ledger_compaction_ready",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
-    "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-    "updated_at": "2026-07-10T11:26:53.533Z",
-    "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
-    "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
-    "next_ready_tasks_after_acceptance": [],
-    "next_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable status ledger compaction."
+    "branch_or_worktree": "codex/close-rr0-production-fixture-noop-audit-001",
+    "updated_at": "2026-07-10T11:35:38.276Z",
+    "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+    "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
+    "next_ready_tasks_after_acceptance": [
+      "RR0-STATUS-LEDGER-COMPACTION-001"
+    ],
+    "next_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree."
   },
   "retired_lead_threads": [
     {
@@ -1964,22 +1966,24 @@
   "active_threads": [
     {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
       "task_ids": [
-        "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
+        "RR0-STATUS-LEDGER-COMPACTION-001"
       ],
-      "status": "active_r0_production_fixture_audit_accepted_pending_integration",
+      "status": "active_r0_status_ledger_compaction_ready",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-      "updated_at": "2026-07-10T11:26:53.533Z",
-      "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
-      "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
-      "next_ready_tasks_after_acceptance": [],
-      "next_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable status ledger compaction."
+      "branch_or_worktree": "codex/close-rr0-production-fixture-noop-audit-001",
+      "updated_at": "2026-07-10T11:35:38.276Z",
+      "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
+      "next_ready_tasks_after_acceptance": [
+        "RR0-STATUS-LEDGER-COMPACTION-001"
+      ],
+      "next_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree."
     }
   ],
   "task_effects": {
@@ -2061,7 +2065,7 @@
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
   "current_tasks": [
-    "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
+    "RR0-STATUS-LEDGER-COMPACTION-001"
   ],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
@@ -2217,8 +2221,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "跟踪一名 systems_architect 完成 production/fixture/no-op 只读审计，再路由独立 QA。",
-  "current_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+  "next_action": "集成 production/fixture/no-op audit 关闭记录，然后启动 status ledger compaction。",
+  "current_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2423,7 +2427,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T11:26:53.533Z",
+  "last_updated_at": "2026-07-10T11:35:38.276Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -5046,8 +5050,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable RR0-STATUS-LEDGER-COMPACTION-001.",
-  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree.",
+  "current_task_status": "READY",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",
@@ -5107,8 +5111,10 @@
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
   "current_milestone": "R0",
-  "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
-  "next_ready_tasks": [],
+  "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
+  "next_ready_tasks": [
+    "RR0-STATUS-LEDGER-COMPACTION-001"
+  ],
   "m7_strategic_terrain_recovery": {
     "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "status": "CLOSED",
@@ -5142,7 +5148,7 @@
       "M7-STRATEGIC-TERRAIN-SCHEMA-001"
     ]
   },
-  "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
+  "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
   "m7_strategic_terrain_schema": {
     "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
     "status": "CLOSED",

@@ -2,12 +2,16 @@
   "id": "RR0-STATUS-LEDGER-COMPACTION-001",
   "summary": "Compact current status while preserving M0-M7 historical ledger evidence",
   "milestone": "R0",
-  "status": "DRAFT",
+  "status": "READY",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
-  "required_reviewers": ["qa_reviewer"],
+  "required_reviewers": [
+    "qa_reviewer"
+  ],
   "risk_level": "R4",
-  "dependencies": ["RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"],
+  "dependencies": [
+    "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
+  ],
   "scope": {
     "allowed_paths": [
       "project/tasks/active/RR0-STATUS-LEDGER-COMPACTION-001.json",
@@ -66,8 +70,12 @@
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T07:30:00.000Z",
+  "updated_at": "2026-07-10T11:35:38.276Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
-  "no_r1_implementation_authorized": true
+  "no_r1_implementation_authorized": true,
+  "ready_after_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+  "ready_after_pr": 245,
+  "ready_after_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
+  "next_action": "After the audit closure record enters main, compact PROJECT_STATUS current state while preserving M0-M7 historical ledger evidence, then route to independent QA."
 }

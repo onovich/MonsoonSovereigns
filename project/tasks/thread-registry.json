@@ -4,22 +4,24 @@
     "active_leads": [
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-        "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+        "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
         "task_ids": [
-          "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001"
+          "RR0-STATUS-LEDGER-COMPACTION-001"
         ],
-        "status": "active_r0_production_fixture_audit_accepted_pending_integration",
+        "status": "active_r0_status_ledger_compaction_ready",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
-        "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
-        "updated_at": "2026-07-10T11:26:53.533Z",
-        "last_integrated_task": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
-        "last_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
-        "next_ready_tasks_after_acceptance": [],
-        "next_action": "Open the accepted audit PR, wait for required CI, merge to main, then close the task and enable status ledger compaction."
+        "branch_or_worktree": "codex/close-rr0-production-fixture-noop-audit-001",
+        "updated_at": "2026-07-10T11:35:38.276Z",
+        "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+        "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
+        "next_ready_tasks_after_acceptance": [
+          "RR0-STATUS-LEDGER-COMPACTION-001"
+        ],
+        "next_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree."
       }
     ],
     "retired_leads": [
@@ -8546,13 +8548,25 @@
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "accepted_pending_pr_integration",
+      "status": "closed_after_pr_ci_and_main_integration",
       "branch_or_worktree": "codex/rr0-production-fixture-noop-audit-001",
       "base_main_commit": "7878027f2211cc2421e1cee56a8b2dae2deb8f0b",
       "qa_r2_review_commit": "255f5b19e5011f89607f471a9f332bb2e16b469f",
       "qa_r2_review_handoff": "project/messages/outbox/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
       "accepted_at": "2026-07-10T11:26:53.533Z",
-      "updated_at": "2026-07-10T11:26:53.533Z"
+      "integrated_pr": 245,
+      "integrated_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
+      "closed_at": "2026-07-10T11:35:38.276Z",
+      "updated_at": "2026-07-10T11:35:38.276Z"
+    },
+    "RR0-STATUS-LEDGER-COMPACTION-001:lead_orchestrator": {
+      "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+      "role": "lead_orchestrator",
+      "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "status": "ready_after_audit_main_integration",
+      "branch_or_worktree": "codex/close-rr0-production-fixture-noop-audit-001",
+      "base_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
+      "updated_at": "2026-07-10T11:35:38.276Z"
     },
     "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001:systems_architect:attempt-1": {
       "task_id": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
