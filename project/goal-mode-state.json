@@ -12,27 +12,23 @@
       "task_ids": [
         "RR0-STATUS-LEDGER-COMPACTION-001"
       ],
-      "status": "active_r0_status_ledger_compaction_ready",
+      "status": "active_r0_status_ledger_compaction_accepted_pending_pr",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-rr0-production-fixture-noop-audit-001",
-      "updated_at": "2026-07-10T11:35:38.276Z",
+      "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
+      "updated_at": "2026-07-10T12:14:48.826Z",
       "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-      "next_ready_tasks_after_acceptance": [
-        "RR0-STATUS-LEDGER-COMPACTION-001"
-      ],
-      "next_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree."
+      "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
+      "next_ready_tasks_after_acceptance": [],
+      "next_action": "Push accepted status-ledger compaction, wait for required CI, merge to main, and only then close the task."
     }
   },
   "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-  "last_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-  "next_ready_tasks": [
-    "RR0-STATUS-LEDGER-COMPACTION-001"
-  ],
+  "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -110,8 +106,8 @@
     "outgoing_thread_id": null,
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS",
-    "current_task_id": "RR0-ROADMAP-ADOPTION-001",
-    "updated_at": "2026-07-10T07:30:00.000Z"
+    "current_task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+    "updated_at": "2026-07-10T12:14:48.826Z"
   },
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
@@ -571,7 +567,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "集成 production/fixture/no-op audit 关闭记录，然后启动 status ledger compaction。",
+  "next_action": "由独立 QA 验收当前状态与历史 ledger 分离结果。",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -934,7 +930,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-10T11:35:38.276Z",
+  "last_updated_at": "2026-07-10T12:14:48.826Z",
   "updated_at": "2026-07-01T23:21:47.0897812+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
@@ -2002,8 +1998,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "READY",
-  "next_machine_action": "Integrate the audit closure record, then start RR0-STATUS-LEDGER-COMPACTION-001 in the reused RR0 worktree.",
+  "current_task_status": "REVIEW",
+  "next_machine_action": "Route the status/history compaction diff to independent QA; accept or return exact changes without starting R1.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",

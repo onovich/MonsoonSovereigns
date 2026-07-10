@@ -6,7 +6,7 @@
 
 `docs/29-product-recovery-roadmap.md` 已在 2026-07-10 由产品所有者明确接受，现为前向产品成熟度 Roadmap。
 
-本文件保留旧 M0-M8 路线作为历史工程 ledger，但自 R0 起，项目成熟度只按 R0-R8 Gate 判断。M0-M6 Gate 结论不被重写；它们继续作为历史工程证据保留在 `docs/GATE-M0.md` 至 `docs/GATE-M6.md` 与 `PROJECT_STATUS.md` 的历史 ledger 中。
+本文件保留旧 M0-M8 路线作为历史工程 ledger，但自 R0 起，项目成熟度只按 R0-R8 Gate 判断。M0-M6 Gate 结论不被重写；它们继续作为历史工程证据保留在 `docs/GATE-M0.md` 至 `docs/GATE-M6.md` 与 `project/history/PROJECT_STATUS-M0-M7-LEDGER.md` 中。当前执行状态只见 `PROJECT_STATUS.md`。
 
 ## R0-R8 前向阶段
 

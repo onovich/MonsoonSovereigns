@@ -1,0 +1,70 @@
+{
+  "message_id": "MSG-20260710-LEAD-REVIEW",
+  "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "from_role": "lead_orchestrator",
+  "status": "REVIEW",
+  "summary": "Compacted PROJECT_STATUS from a 63 KB mixed current/history file into a 63-line current R0 snapshot and an independent 414-line historical ledger. The complete pre-compaction content is preserved exactly behind an archive banner; roadmap and acceptance-matrix references now point to the independent ledger.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "project/tasks/active/RR0-STATUS-LEDGER-COMPACTION-001.json",
+    "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-status-ledger-compaction-001",
+  "commit": null,
+  "tests_run": [
+    {
+      "command": "node exact ledger preservation assertion against d058cb88:PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "After removing the added archive banner and restoring the original title, the ledger exactly equals d058cb88:PROJECT_STATUS.md. Original blob 77d8f6189dcc940009c5b1d24c98bdab3abb6e3a; archived ledger blob 939d03491983be27b02de2f9668a787f6cadac65."
+    },
+    {
+      "command": "node current and historical status byte/line count",
+      "exit_code": 0,
+      "result": "Current PROJECT_STATUS.md is 3978 bytes / 63 lines; historical ledger is 64028 bytes / 414 lines."
+    },
+    {
+      "command": "rg roadmap and current-status references plus old snapshot-heading exclusion",
+      "exit_code": 0,
+      "result": "PROJECT_STATUS and both roadmap matrices reference project/history/PROJECT_STATUS-M0-M7-LEDGER.md; no old numbered M3-M7 snapshot sections remain in current status."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "Task schema valid in REVIEW."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "git -C D:/WebProjects/MonsoonSovereigns status --short",
+      "exit_code": 0,
+      "result": "Retained M7 worktree still has exactly 20 pre-existing status entries."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "INDEPENDENT_HISTORY_LEDGER",
+      "decision": "Use project/history/PROJECT_STATUS-M0-M7-LEDGER.md as the non-current historical archive required by docs/29, while keeping PROJECT_STATUS.md as the sole concise current snapshot."
+    },
+    {
+      "id": "PRESERVE_FULL_SOURCE",
+      "decision": "Preserve the complete pre-compaction source verbatim beneath an archive banner rather than summarizing or deleting historical PR, commit, Gate, Human Gate, and product-rejection evidence."
+    }
+  ],
+  "risks": [
+    {
+      "id": "HISTORICAL_LANGUAGE_STALENESS",
+      "severity": "R3",
+      "summary": "The independent ledger intentionally contains stale historical 'current/next' wording; its archive banner and current-status link prevent it from being treated as operational state."
+    }
+  ],
+  "blockers": [],
+  "route_to": "qa_reviewer",
+  "requested_action": "Independently verify exact historical preservation, concise current-state accuracy, reference synchronization, task scope reconciliation, and absence of product/R1 changes; ACCEPT to lead or REQUEST_CHANGES with exact evidence.",
+  "created_at": "2026-07-10T11:52:41.759Z"
+}
