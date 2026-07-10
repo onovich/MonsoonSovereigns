@@ -12,27 +12,23 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_ready_pending_closure_integration",
+      "status": "active_r0_exit_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/close-rr0-status-ledger-compaction-001",
-      "updated_at": "2026-07-10T12:23:25.225Z",
+      "branch_or_worktree": "codex/rr0-exit-validation-001",
+      "updated_at": "2026-07-10T17:10:42.745Z",
       "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
-      "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
-      "next_ready_tasks_after_acceptance": [
-        "RR0-EXIT-VALIDATION-001"
-      ],
-      "next_action": "Integrate the status-ledger closure record, then start RR0-EXIT-VALIDATION-001 without creating an R1 task."
+      "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+      "next_ready_tasks_after_acceptance": [],
+      "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence."
     }
   },
   "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
-  "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
-  "next_ready_tasks": [
-    "RR0-EXIT-VALIDATION-001"
-  ],
+  "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
+  "next_ready_tasks": [],
   "unresolved_risks": [
     {
       "id": "GOAL-MODE-RISK-001",
@@ -96,7 +92,7 @@
     "decision_result": "ACCEPT_ROADMAP",
     "note": "The accepted recovery roadmap authorizes R0 execution. No active Human Gate exists; R1 remains frozen until RR0-EXIT-VALIDATION-001 passes.",
     "recorded_at": "2026-07-10T07:30:00.000Z",
-    "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+    "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
     "accepted_roadmap_commit": "d7da7f61a71695211a664c6a13a5cfc533174b27"
   },
   "leadership": {
@@ -111,7 +107,7 @@
     "outgoing_status": "retired_closed",
     "unique_active_lead_check": "PASS",
     "current_task_id": "RR0-EXIT-VALIDATION-001",
-    "updated_at": "2026-07-10T12:23:25.225Z"
+    "updated_at": "2026-07-10T12:31:59.515Z"
   },
   "m4_gate": {
     "result": "PASS_WITH_LIMITS",
@@ -571,7 +567,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "由独立 QA 验收当前状态与历史 ledger 分离结果。",
+  "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -934,8 +930,8 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "last_updated_at": "2026-07-10T12:23:25.225Z",
-  "updated_at": "2026-07-01T23:21:47.0897812+08:00",
+  "last_updated_at": "2026-07-10T17:10:42.745Z",
+  "updated_at": "2026-07-10T17:10:42.745Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -1224,7 +1220,7 @@
       "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001"
     ]
   },
-  "last_closed_task": "M7-SYSTEMIC-INTERACTION-VALIDATION-001",
+  "last_closed_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "m6_batch_autorun_balance_dashboard": {
     "status": "CLOSED",
     "task_id": "M6-BATCH-AUTORUN-BALANCE-DASHBOARD-001",
@@ -2002,8 +1998,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "REVIEW",
-  "next_machine_action": "Route the status/history compaction diff to independent QA; accept or return exact changes without starting R1.",
+  "current_task_status": "ACCEPTED",
+  "next_machine_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3549,29 +3545,33 @@
     ]
   },
   "active_task_routes": {
-    "M7-STRATEGIC-TERRAIN-SCHEMA-001": {
-      "status": "ACCEPTED_PENDING_PR_INTEGRATION",
-      "route_file": "project/messages/routes/M7-STRATEGIC-TERRAIN-SCHEMA-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
+    "RR0-EXIT-VALIDATION-001": {
+      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
       "from_role": "qa_reviewer",
-      "from_thread_id": "019f1de1-4212-7850-b63f-5cc9305ba180",
+      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
       "to_role": "lead_orchestrator",
       "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "source_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW__qa_reviewer.json",
-      "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-LEAD-ACCEPT__lead_orchestrator.json",
-      "updated_at": "2026-07-01T21:42:35.1583272+08:00"
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
+      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
+      "delivery_status": "recorded_same_lead_thread"
     }
   },
   "active_routes": {
-    "M7-STRATEGIC-TERRAIN-SCHEMA-001": {
-      "status": "ACCEPTED_PENDING_PR_INTEGRATION",
-      "route_file": "project/messages/routes/M7-STRATEGIC-TERRAIN-SCHEMA-001__ROUTE-20260701-WRITER-TO-QA-REVIEW.json",
+    "RR0-EXIT-VALIDATION-001": {
+      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
       "from_role": "qa_reviewer",
-      "from_thread_id": "019f1de1-4212-7850-b63f-5cc9305ba180",
+      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
       "to_role": "lead_orchestrator",
       "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "source_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-QA-REVIEW__qa_reviewer.json",
-      "lead_accept_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-LEAD-ACCEPT__lead_orchestrator.json",
-      "updated_at": "2026-07-01T21:42:35.1583272+08:00"
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
+      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
+      "delivery_status": "recorded_same_lead_thread"
     }
   },
   "m7_map_topology_validation": {

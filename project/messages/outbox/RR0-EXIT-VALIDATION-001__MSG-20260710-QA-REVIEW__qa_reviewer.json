@@ -1,0 +1,153 @@
+{
+  "message_id": "MSG-20260710-QA-REVIEW",
+  "task_id": "RR0-EXIT-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA re-ran the R0 Exit validation and cannot accept R0_GATE=PASS yet. Core R0 scope, JSON parsing, worktree count, protected M7 status count, R1 freeze, audit coverage, roadmap acceptance, ledger restoration, forbidden-path proof, taskctl checks, and systems handoff schema validation pass. However, authoritative coordination state is not internally consistent: goal-mode, continuation, and model-routing still expose stale M7 active route records, and model-routing top-level integration fields lag behind the R0 Exit branch state. This directly contradicts the R0 exit condition that task/status/goal/model/registry/continuation/route state be trustworthy.",
+  "artifacts": [
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+    "project/model-routing-state.json",
+    "project/goal-mode-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json",
+    "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-TO-QA-REVIEW.json",
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-exit-validation-001",
+  "commit": "4c20fe827938a0805caa01f3347a2fcca88176f2",
+  "tests_run": [
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Target worktree clean on codex/rr0-exit-validation-001, ahead of origin/main by 5 before QA handoff write."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-REPOSITORY-STATE-RECONCILIATION-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "VALID task JSON."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-EXIT-VALIDATION-001",
+      "exit_code": 0,
+      "result": "VALID task JSON; status REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "RR0-ROADMAP-ADOPTION-001, RR0-REPOSITORY-STATE-RECONCILIATION-001, RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001, and RR0-STATUS-LEDGER-COMPACTION-001 are CLOSED; RR0-EXIT-VALIDATION-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No ready task output; no R1 task is exposed as ready."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems REVIEW handoff is schema-valid."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "node -e parse all repository JSON files",
+      "exit_code": 0,
+      "result": "Parsed 1438 JSON files with 0 failures."
+    },
+    {
+      "command": "node forbidden-path filter for 38ad1906ed90fc5084b2010fb3c680daba14bbf6..origin/main and origin/main..HEAD",
+      "exit_code": 0,
+      "result": "38ad1906..origin/main changed 40 files and origin/main..HEAD changed 10 files; forbidden product/dependency/CI/content/Gate/R1 path count was 0 for both ranges."
+    },
+    {
+      "command": "git worktree list --porcelain; git -C D:/WebProjects/MonsoonSovereigns status --short; count status lines",
+      "exit_code": 0,
+      "result": "Exactly two registered worktrees. Protected M7 worktree remains on codex/m7-strategic-terrain-renderer-interaction and has exactly 20 existing status entries."
+    },
+    {
+      "command": "node count project/tasks/active files matching ^(R1|RR1)-",
+      "exit_code": 0,
+      "result": "R1/RR1 task file count is 0."
+    },
+    {
+      "command": "node normalized ledger reconstruction against d058cb88:PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "After removing the archive banner, restoring the original title, and normalizing line endings, project/history/PROJECT_STATUS-M0-M7-LEDGER.md reconstructs old PROJECT_STATUS.md exactly."
+    },
+    {
+      "command": "node audit coverage keyword assertion for Web/Electron, Worker/protocol/sim-core, M3-M7 command, save/load, time control, Storybook/Playwright/Node/canary",
+      "exit_code": 0,
+      "result": "All required audit coverage categories were present."
+    },
+    {
+      "command": "node docs/29 roadmap acceptance and R0/R1 gate-boundary keyword assertion",
+      "exit_code": 0,
+      "result": "Roadmap is ACCEPTED, records product owner acceptance, defines R0_GATE, preserves R1 runtime gap, and freezes pre-R1 expansion."
+    },
+    {
+      "command": "node current status / goal-mode / model-routing / registry / continuation / route consistency assertions",
+      "exit_code": 1,
+      "result": "Failed: project/model-routing-state.json top-level last_main_commit is 3164c9a5a20794aa4d82300baaa6ac5aa10b31c8 while goal-mode/continuation/current lead route use e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0. Further inspection also found stale active_routes in goal-mode, continuation, and model-routing pointing to M7-STRATEGIC-TERRAIN-SCHEMA-001."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "VERDICT",
+      "decision": "REQUEST_CHANGES. Do not close R0 or create R1 tasks until authoritative coordination state is corrected and revalidated."
+    },
+    {
+      "id": "R1_RUNTIME_GAP_CLASSIFICATION",
+      "decision": "The missing authoritative Web/Electron runtime remains correctly recorded as an R1 R4 risk, not an R0 baseline failure."
+    },
+    {
+      "id": "SCOPE_RESULT",
+      "decision": "No product code, dependency, content-source, CI, old Gate document, or R1 implementation drift was found in the reviewed diff."
+    }
+  ],
+  "risks": [
+    {
+      "id": "STATE-CONSISTENCY-001",
+      "severity": "R4",
+      "file": "project/model-routing-state.json",
+      "symbol": "top-level last_main_commit / last_integrated_task / next_ready_tasks",
+      "reproduce": "Run a consistency assertion comparing model-routing top-level fields with goal-mode, continuation, route, and current lead fields. Actual model top-level last_main_commit is 3164c9a5a20794aa4d82300baaa6ac5aa10b31c8 and last_integrated_task is RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001, while current R0 Exit state uses origin/main e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0 and RR0-STATUS-LEDGER-COMPACTION-001.",
+      "impact": "A recovery or routing consumer using model-routing-state as a source of truth can resume from the wrong integrated baseline and miss the status-ledger closure, undermining the R0 requirement that repository/task/status/model state be trustworthy.",
+      "necessary_fix": "Update or explicitly de-authorize the stale top-level model-routing fields so the current authoritative baseline, last integrated task, and ready/current task fields agree with PROJECT_STATUS, goal-mode, continuation, route, and taskctl output."
+    },
+    {
+      "id": "STATE-CONSISTENCY-002",
+      "severity": "R4",
+      "file": "project/goal-mode-state.json; project/messages/outbox/GOAL-MODE-CONTINUATION.json; project/model-routing-state.json",
+      "symbol": "active_task_routes / active_routes",
+      "reproduce": "Read active_task_routes or active_routes in those files: they still point to M7-STRATEGIC-TERRAIN-SCHEMA-001 with ACCEPTED_PENDING_PR_INTEGRATION or SENT_REPLACEMENT. taskctl list and project/tasks/active/M7-STRATEGIC-TERRAIN-SCHEMA-001.json show that task is CLOSED.",
+      "impact": "These stale active route records contradict the claim that the only operational child is the current QA reviewer and can direct automation back into a closed M7 route during R0 recovery.",
+      "necessary_fix": "Clear, archive, or mark these route records as historical/non-operational in all authoritative state files, and ensure the active route surface points only to the current RR0 Exit QA review or is empty by design."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "R0-GATE-BLOCKER-STATE-CONSISTENCY",
+      "summary": "R0 cannot be accepted while active route and model-routing source-of-truth fields conflict with taskctl, PROJECT_STATUS, route files, goal-mode, and continuation state."
+    }
+  ],
+  "route_to": "systems_architect",
+  "requested_action": "Fix only the R0 coordination-state inconsistencies: align or de-authorize stale model-routing top-level fields, clear/archive stale M7 active route records in goal-mode/continuation/model-routing, keep R1 frozen, rerun the RR0 taskctl validate/list/ready, handoff validator, JSON parse, diff checks, forbidden-path proof, worktree/R1 assertions, and return a corrected systems REVIEW handoff for QA.",
+  "created_at": "2026-07-10T21:43:00+08:00"
+}

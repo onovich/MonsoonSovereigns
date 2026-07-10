@@ -9,9 +9,9 @@
 ## 当前阶段
 
 - 当前前向阶段：**R0 / Recovery Baseline**。
-- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `READY`，等待 closure 记录进入 main 后启动。
-- 当前分支：`codex/close-rr0-status-ledger-compaction-001`。
-- 任务基线：`origin/main@92f5800143a7987128898526d20ee2df13f48c67`。
+- 当前任务：`RR0-EXIT-VALIDATION-001`，状态 `ACCEPTED`（systems R3 与独立 QA R3 均通过，等待 PR、CI 与 main 集成）。
+- 当前分支：`codex/rr0-exit-validation-001`。
+- 任务基线：`origin/main@e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0`。
 - Autonomous Goal Mode：enabled；`human_gate.required=false`。
 - 唯一 active lead：`019eff50-c69d-7612-a90b-7024a47e0af5`。
 - 未创建、未启动任何 R1 实现任务。
@@ -39,7 +39,7 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 - 受控 worktree 共 2 个：当前 RR0 worktree，以及保留 M7 renderer 部分成果的原工作区。
 - `M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001` 为 `PARTIAL` 历史证据，不是 operational active work；原工作区保持 20 条既有 status entry，未清理、未覆盖。
-- R0 runtime-path audit 的 systems writer、research scout 与 QA reviewer 均已关闭；当前没有 active child agent。
+- R0 Exit systems 与 QA 线程均已关闭；当前仅唯一 Lead 执行最终 PR、CI 与 main 集成。
 - 任务图、leadership、模型路由和恢复状态分别以 `project/tasks/active`、`project/tasks/thread-registry.json`、`project/model-routing-state.json` 与 `project/goal-mode-state.json` 为准。
 
 ## 决定与边界
@@ -57,6 +57,6 @@ R0 剩余任务仅有 `RR0-EXIT-VALIDATION-001`。只有 R0 Gate 通过后才允
 
 ## 下一动作
 
-1. 合并 `RR0-STATUS-LEDGER-COMPACTION-001` 的最小 closure 记录。
-2. 基于同步后的 main 启动 `RR0-EXIT-VALIDATION-001`，由 `systems_architect` 执行并路由给独立 `qa_reviewer`。
-3. R0 Gate 通过前保持 R1 冻结。
+1. Lead 推送 `codex/rr0-exit-validation-001`，创建 PR 并等待全部必需 CI。
+2. CI 通过后合并；只有 `origin/main` 包含 accepted evidence 后才把任务置为 `CLOSED` 并记录 `R0_GATE=PASS`。
+3. 只有 Gate 与 CI 都通过后才关闭 R0；此前保持 R1 冻结。

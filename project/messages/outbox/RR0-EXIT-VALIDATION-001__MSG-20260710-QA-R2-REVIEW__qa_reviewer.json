@@ -1,0 +1,158 @@
+{
+  "message_id": "MSG-20260710-QA-R2-REVIEW",
+  "task_id": "RR0-EXIT-VALIDATION-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA reviewed the actual e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0..16f07b823d8b14d84c5febaccf56494dd829ed43 diff and reran the complete R0 evidence matrix. The R2 repair correctly aligns model-routing last_main_commit, last_integrated_task, current task fields, and all six active route surfaces; those surfaces contain only the current RR0 Exit QA R2 route, with one Lead, this QA reviewer, and the systems registry entry closed. Scope, JSON, taskctl, handoff schemas, worktrees, protected M7 count, R1 freeze, ledger restoration, roadmap, and runtime audit evidence pass. Acceptance is withheld because active top-level recovery fields remain contradictory: PROJECT_STATUS reports IN_PROGRESS while task/current_task_status report REVIEW; goal/model next-machine fields still direct completed status-ledger compaction; GOAL-MODE-CONTINUATION still exposes an M7 task_id, M7 next_action, and Lead route; and ready/next arrays disagree with taskctl ready and model-routing. These are R0 recovery-source defects, not a reclassification of the documented R1 authoritative runtime gap as an R0 product failure.",
+  "artifacts": [
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R2-REVIEW__qa_reviewer.json",
+    "PROJECT_STATUS.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+    "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R2-TO-QA-R2-REVIEW.json",
+    "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+    "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+    "docs/29-product-recovery-roadmap.md",
+    "project/audits/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.md"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-exit-validation-001",
+  "commit": "16f07b823d8b14d84c5febaccf56494dd829ed43",
+  "tests_run": [
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate <each of five RR0 task IDs>",
+      "exit_code": 0,
+      "result": "All five RR0 task files are VALID."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "The first four RR0 tasks are CLOSED; RR0-EXIT-VALIDATION-001 is REVIEW."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output; no task is currently ready and no R1 task is exposed."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "exit_code": 0,
+      "result": "Original QA handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Original systems handoff is schema-valid."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R2-REVIEW__systems_architect.json",
+      "exit_code": 0,
+      "result": "Systems R2 handoff is schema-valid."
+    },
+    {
+      "command": "PowerShell here-string Node parser over all repository JSON files",
+      "exit_code": 0,
+      "result": "Parsed 1442 JSON files with zero failures."
+    },
+    {
+      "command": "git diff --check; git diff --check e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0..16f07b823d8b14d84c5febaccf56494dd829ed43",
+      "exit_code": 0,
+      "result": "No whitespace errors."
+    },
+    {
+      "command": "Node forbidden-path assertions for 38ad1906ed90fc5084b2010fb3c680daba14bbf6..origin/main and origin/main..HEAD",
+      "exit_code": 0,
+      "result": "The ranges changed 40 and 14 paths respectively; forbidden path count was zero."
+    },
+    {
+      "command": "Node exact allowed-scope assertion for e8f0050a..16f07b82 and origin/main..HEAD",
+      "exit_code": 0,
+      "result": "Only the 14 expected RR0 Exit coordination/status paths changed."
+    },
+    {
+      "command": "git worktree list --porcelain; protected M7 status count; Node R1 task count",
+      "exit_code": 0,
+      "result": "Exactly two worktrees; protected M7 status count is 20; R1/RR1 task count is zero."
+    },
+    {
+      "command": "Node ledger reconstruction against d058cb8842d30a2b93de6af37cec515447fcf7ab:PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "The archived ledger reconstructs the prior 409-line PROJECT_STATUS exactly; current PROJECT_STATUS is compact at 62 lines."
+    },
+    {
+      "command": "Node docs/29 roadmap acceptance and R0/R1 boundary assertions",
+      "exit_code": 0,
+      "result": "Roadmap acceptance, R0 Gate conditions, no-fixture rule, R1 authoritative-runtime gap, and pre-R1 freeze are explicit."
+    },
+    {
+      "command": "Node production/fixture/no-op audit coverage assertions",
+      "exit_code": 0,
+      "result": "Coverage includes Web/Electron, Worker/protocol/sim-core, M3-M7 commands, save/load, time controls, Storybook, Playwright, Node runner, and canary paths."
+    },
+    {
+      "command": "Node 16f07b82 active-route, model integration, registry, task, and route assertions",
+      "exit_code": 0,
+      "result": "All six active route surfaces are equal and contain only RR0-EXIT-VALIDATION-001 routed to QA R2. Operational roles are Lead plus qa_reviewer; systems is closed."
+    },
+    {
+      "command": "Node 16f07b82 top-level recovery-state consistency assertion cross-checked with taskctl ready",
+      "exit_code": 1,
+      "result": "PROJECT_STATUS lifecycle, goal last-closed/actions, model next-machine action, continuation task/commit/route/action, and ready/next arrays remain inconsistent."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "VERDICT",
+      "decision": "REQUEST_CHANGES. Do not accept or close R0 while top-level recovery sources can resume stale status-ledger or M7 work and disagree about current task lifecycle/readiness."
+    },
+    {
+      "id": "R2_REPAIR_PARTIAL_PASS",
+      "decision": "The prior defects in model-routing integration baseline fields and all active route maps are fixed at 16f07b82. Remaining failures are additional top-level recovery/lifecycle fields."
+    },
+    {
+      "id": "R1_RUNTIME_GAP_CLASSIFICATION",
+      "decision": "Normal Web/Electron authoritative runtime wiring remains a visible R1 R4 risk. Lack of R1 implementation is not treated as an R0 baseline failure."
+    },
+    {
+      "id": "SCOPE_RESULT",
+      "decision": "No product code, package, dependency, content, CI, historical Gate, R1 implementation, or unrelated scope drift was found."
+    }
+  ],
+  "risks": [
+    {
+      "id": "STATE-CONSISTENCY-R2-ROOT-ACTIONS",
+      "severity": "R4",
+      "file": "project/goal-mode-state.json; project/model-routing-state.json; project/messages/outbox/GOAL-MODE-CONTINUATION.json",
+      "symbol": "last_closed_task / next_machine_action / next_action / task_id / commit / route_to",
+      "reproduce": "At 16f07b82, goal/model still route completed status/history compaction. Continuation reports task_id M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001, commit 36577deb0a7df37603f8cfa29f57e2c3ff781b1e, route_to lead_orchestrator, and next_action to start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.",
+      "impact": "A recovery consumer can resume completed R0 work or stale M7 work, contradicting the recovery baseline and R1 freeze.",
+      "necessary_fix": "Synchronize or explicitly de-authorize/remove these root fields so every recovery entrypoint targets the current RR0 Exit QA review."
+    },
+    {
+      "id": "STATE-CONSISTENCY-R2-LIFECYCLE",
+      "severity": "R4",
+      "file": "PROJECT_STATUS.md; project/goal-mode-state.json; project/model-routing-state.json; project/messages/outbox/GOAL-MODE-CONTINUATION.json; project/tasks/active/RR0-EXIT-VALIDATION-001.json",
+      "symbol": "current task status / ready_tasks / next_ready_tasks",
+      "reproduce": "PROJECT_STATUS says IN_PROGRESS while task/current_task_status say REVIEW. taskctl ready is empty and model next_ready_tasks is empty, while continuation.ready_tasks and goal/continuation next_ready_tasks contain RR0-EXIT-VALIDATION-001.",
+      "impact": "Gate and resume consumers disagree whether the task is under repair, under review, or ready to start.",
+      "necessary_fix": "Set the concise status lifecycle to REVIEW and reconcile ready/next arrays with taskctl semantics."
+    },
+    {
+      "id": "R1-AUTHORITATIVE-CLIENT-RUNTIME-GAP",
+      "severity": "R4",
+      "status": "recorded_for_r1_non_blocking_for_r0_product_scope",
+      "summary": "Normal Web/Electron lacks authoritative Worker command/query/save/load/time-control wiring. Keep this visible for R1 without implementing it in this metadata repair."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "R0-GATE-BLOCKER-TOP-LEVEL-RECOVERY-STATE",
+      "summary": "R0 cannot be accepted while top-level status, action, continuation target, and readiness fields conflict with corrected active routes, task JSON, and taskctl output."
+    }
+  ],
+  "route_to": "systems_architect",
+  "requested_action": "Fix only the remaining R0 coordination metadata: align PROJECT_STATUS current task status with REVIEW; synchronize or de-authorize goal/model/continuation root last-closed, ready/next, next-machine, task_id, commit, route_to, and next_action fields; remove all active-looking M7 or completed status-ledger continuation targets; preserve the correct QA R2 active route, R1 freeze, product-risk wording, ledger, audit, and all non-process scope. Rerun the full R0 matrix and return a corrected systems REVIEW handoff to the same independent QA reviewer.",
+  "created_at": "2026-07-10T22:23:17+08:00"
+}
