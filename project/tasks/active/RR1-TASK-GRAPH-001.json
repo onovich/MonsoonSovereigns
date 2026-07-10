@@ -2,7 +2,7 @@
   "id": "RR1-TASK-GRAPH-001",
   "summary": "Design and validate the controlled R1 authoritative client runtime task graph",
   "milestone": "R1",
-  "status": "ACCEPTED",
+  "status": "CLOSED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": [
@@ -79,7 +79,7 @@
     "All seven child tasks remain DRAFT in this branch. After this graph is CLOSED on origin/main, only RR1-WEB-WORKER-RUNTIME-001 satisfies taskctl dependencies."
   ],
   "created_at": "2026-07-10T18:00:00.000Z",
-  "updated_at": "2026-07-11T03:24:31.0522178+08:00",
+  "updated_at": "2026-07-11T03:42:00.0000000+08:00",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "base_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
@@ -88,7 +88,7 @@
   "start_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-START__lead_orchestrator.json",
   "systems_route": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
   "expected_systems_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
-  "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
+  "next_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle.",
   "review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
   "review_ready_at": "2026-07-10T18:36:08.168Z",
   "gate_recommendation": "PASS_RECOMMENDATION_FOR_QA_REVIEW",
@@ -105,7 +105,8 @@
     "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
     "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-SYSTEMS-TO-QA-REVIEW.json",
     "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
-    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json"
+    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-CLOSED__lead_orchestrator.json"
   ],
   "validation_evidence": {
     "taskctl_validate_count": 8,
@@ -132,7 +133,14 @@
     "next_ready_tasks_after_graph_closure": [
       "RR1-WEB-WORKER-RUNTIME-001"
     ],
-    "coordination_state_reconciled_at": "2026-07-11T03:24:31.0522178+08:00"
+    "coordination_state_reconciled_at": "2026-07-11T03:24:31.0522178+08:00",
+    "closure_pr": 251,
+    "closure_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
+    "lead_close_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-CLOSED__lead_orchestrator.json",
+    "closed_at": "2026-07-11T03:42:00.0000000+08:00",
+    "next_ready_tasks_after_closure": [
+      "RR1-WEB-WORKER-RUNTIME-001"
+    ]
   },
   "downstream_tasks": [
     {
@@ -207,5 +215,14 @@
   "qa_reviewed_at": "2026-07-11T03:24:31.0522178+08:00",
   "lead_accept_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
   "accepted_at": "2026-07-11T03:24:31.0522178+08:00",
-  "accepted_source_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682"
+  "accepted_source_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+  "closed_at": "2026-07-11T03:42:00.0000000+08:00",
+  "close_reason": "TASK_GRAPH_CLOSED_AFTER_PR_CI_AND_MAIN_INTEGRATION",
+  "integrated_pr": 251,
+  "integrated_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
+  "merged_pr_url": "https://github.com/onovich/MonsoonSovereigns/pull/251",
+  "lead_close_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-CLOSED__lead_orchestrator.json",
+  "next_ready_tasks": [
+    "RR1-WEB-WORKER-RUNTIME-001"
+  ]
 }

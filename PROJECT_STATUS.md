@@ -9,9 +9,9 @@
 ## 当前阶段
 
 - 当前前向阶段：**R1 / Authoritative Client Runtime**；R0 已完成且 `R0_GATE=PASS`。
-- 当前任务：`RR1-TASK-GRAPH-001`，状态 `ACCEPTED`；systems REVIEW 与独立 QA ACCEPT 已记录，Lead 正在执行 PR 集成门，尚未启动产品实现。
-- 当前分支：`codex/rr1-task-graph-001`。
-- 当前 main：`origin/main@7582d0fd1e54fd51683b99214dbff15e8a030a4c`（R0 closure PR #250）。
+- 当前任务：`RR1-TASK-GRAPH-001`，状态 `CLOSED`；PR #251 已进入 `origin/main@b5228d2e8a6f4d11897475552b8a142ba52270d5`，下一 READY 为 `RR1-WEB-WORKER-RUNTIME-001`。
+- 当前分支：`codex/close-rr1-task-graph-001`。
+- 当前 main：`origin/main@b5228d2e8a6f4d11897475552b8a142ba52270d5`（RR1 task graph PR #251）。
 - Autonomous Goal Mode：enabled；`human_gate.required=false`。
 - 唯一 active lead：`019f4d4f-3856-7d63-8b33-e1bf1b9be9ca`；原 Lead `019eff50-c69d-7612-a90b-7024a47e0af5` 已按用户要求完成线程交接并停止推进。
 - systems architect 与 QA reviewer 均已完成终端 handoff 并从 active 槽位关闭；未创建新 agent，未启动任何 R1 产品实现任务。
@@ -25,8 +25,9 @@
 | `RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001` | CLOSED | PR #245，closure PR #246，`3164c9a5a20794aa4d82300baaa6ac5aa10b31c8` |
 | `RR0-STATUS-LEDGER-COMPACTION-001` | CLOSED | PR #247，`92f5800143a7987128898526d20ee2df13f48c67` |
 | `RR0-EXIT-VALIDATION-001` | CLOSED | PR #249，closure PR #250，`7582d0fd1e54fd51683b99214dbff15e8a030a4c`，systems PASS recommendation，独立 QA ACCEPT |
+| `RR1-TASK-GRAPH-001` | CLOSED | PR #251，`b5228d2e8a6f4d11897475552b8a142ba52270d5`，systems REVIEW，独立 QA ACCEPT，Lead CLOSED handoff |
 
-R0 全部任务已 CLOSED，`R0_GATE=PASS`。受控 R1 task graph 已经 systems/QA 复核并由 Lead 接受；在 PR 合并、父任务关闭进入 `origin/main` 前不得启动 R1 实现。
+R0 全部任务已 CLOSED，`R0_GATE=PASS`。受控 R1 task graph 已经 systems/QA/Lead 接受并通过 PR #251 进入 `origin/main`；父任务 closure 完成后可按路由启动唯一 READY 的 R1 Worker foundation。
 
 ## 产品运行时事实
 
@@ -58,6 +59,6 @@ R0 全部任务已 CLOSED，`R0_GATE=PASS`。受控 R1 task graph 已经 systems
 
 ## 下一动作
 
-1. Lead 运行最终集成门，提交并推送受控 R1 task graph PR。
-2. 等待 CI 通过并合并到 `origin/main`，随后关闭 `RR1-TASK-GRAPH-001`。
-3. 只有父图谱关闭进入 main 后，才可启动最高优先级 READY 的 `RR1-WEB-WORKER-RUNTIME-001`。
+1. 合并 RR1 task graph closure PR 后，同步 `origin/main`。
+2. 通过正式 handoff 路由启动 `RR1-WEB-WORKER-RUNTIME-001`，建立生产 Web simulation Worker runtime foundation。
+3. 继续保持保护根 M7 脏工作树不变，并禁止未路由的 R1 产品实现。
