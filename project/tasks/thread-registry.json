@@ -4,22 +4,24 @@
     "active_leads": [
       {
         "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-        "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+        "task_id": "RR0-EXIT-VALIDATION-001",
         "task_ids": [
-          "RR0-STATUS-LEDGER-COMPACTION-001"
+          "RR0-EXIT-VALIDATION-001"
         ],
-        "status": "active_r0_status_ledger_compaction_accepted_pending_pr",
+        "status": "active_r0_exit_ready_pending_closure_integration",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
-        "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-        "updated_at": "2026-07-10T12:14:48.826Z",
-        "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-        "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
-        "next_ready_tasks_after_acceptance": [],
-        "next_action": "Push accepted status-ledger compaction, wait for required CI, merge to main, and only then close the task."
+        "branch_or_worktree": "codex/close-rr0-status-ledger-compaction-001",
+        "updated_at": "2026-07-10T12:23:25.225Z",
+        "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+        "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+        "next_ready_tasks_after_acceptance": [
+          "RR0-EXIT-VALIDATION-001"
+        ],
+        "next_action": "Integrate the status-ledger closure record, then start RR0-EXIT-VALIDATION-001 without creating an R1 task."
       }
     ],
     "retired_leads": [
@@ -40,7 +42,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-07-10T12:14:48.826Z"
+      "checked_at": "2026-07-10T12:23:25.225Z"
     }
   },
   "entries": {
@@ -8833,7 +8835,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-10T12:14:48.826Z",
+  "updated_at": "2026-07-10T12:23:25.225Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",

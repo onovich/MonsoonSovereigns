@@ -17,22 +17,24 @@
   },
   "current_lead_thread": {
     "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-    "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+    "task_id": "RR0-EXIT-VALIDATION-001",
     "task_ids": [
-      "RR0-STATUS-LEDGER-COMPACTION-001"
+      "RR0-EXIT-VALIDATION-001"
     ],
-    "status": "active_r0_status_ledger_compaction_accepted_pending_pr",
+    "status": "active_r0_exit_ready_pending_closure_integration",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
-    "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-    "updated_at": "2026-07-10T12:14:48.826Z",
-    "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-    "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
-    "next_ready_tasks_after_acceptance": [],
-    "next_action": "Push accepted status-ledger compaction, wait for required CI, merge to main, and only then close the task."
+    "branch_or_worktree": "codex/close-rr0-status-ledger-compaction-001",
+    "updated_at": "2026-07-10T12:23:25.225Z",
+    "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+    "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+    "next_ready_tasks_after_acceptance": [
+      "RR0-EXIT-VALIDATION-001"
+    ],
+    "next_action": "Integrate the status-ledger closure record, then start RR0-EXIT-VALIDATION-001 without creating an R1 task."
   },
   "retired_lead_threads": [
     {
@@ -1964,22 +1966,24 @@
   "active_threads": [
     {
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+      "task_id": "RR0-EXIT-VALIDATION-001",
       "task_ids": [
-        "RR0-STATUS-LEDGER-COMPACTION-001"
+        "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_status_ledger_compaction_accepted_pending_pr",
+      "status": "active_r0_exit_ready_pending_closure_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-      "updated_at": "2026-07-10T12:14:48.826Z",
-      "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
-      "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
-      "next_ready_tasks_after_acceptance": [],
-      "next_action": "Push accepted status-ledger compaction, wait for required CI, merge to main, and only then close the task."
+      "branch_or_worktree": "codex/close-rr0-status-ledger-compaction-001",
+      "updated_at": "2026-07-10T12:23:25.225Z",
+      "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+      "last_main_commit": "92f5800143a7987128898526d20ee2df13f48c67",
+      "next_ready_tasks_after_acceptance": [
+        "RR0-EXIT-VALIDATION-001"
+      ],
+      "next_action": "Integrate the status-ledger closure record, then start RR0-EXIT-VALIDATION-001 without creating an R1 task."
     }
   ],
   "task_effects": {
@@ -2061,7 +2065,7 @@
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
   "current_tasks": [
-    "RR0-STATUS-LEDGER-COMPACTION-001"
+    "RR0-EXIT-VALIDATION-001"
   ],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
@@ -2217,8 +2221,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "推送已验收的状态账本压缩分支；required CI 成功后合并，进入 main 后再关闭任务。",
-  "current_task": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "next_action": "集成状态账本关闭记录，然后启动 RR0-EXIT-VALIDATION-001；R0 Gate 通过前不得创建 R1 任务。",
+  "current_task": "RR0-EXIT-VALIDATION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -2423,7 +2427,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T12:14:48.826Z",
+  "last_updated_at": "2026-07-10T12:23:25.225Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
