@@ -34,7 +34,7 @@
     "next_ready_tasks_after_acceptance": [
       "RR0-REPOSITORY-STATE-RECONCILIATION-001"
     ],
-    "next_action": "Route RR0-ROADMAP-ADOPTION-001 REVIEW handoff to qa_reviewer."
+    "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动 downstream R0 任务。"
   },
   "retired_lead_threads": [
     {
@@ -1965,43 +1965,25 @@
   ],
   "active_threads": [
     {
-      "responsibility": "Coordinate replacement M7 strategic terrain schema writer.",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
+      "task_id": "RR0-ROADMAP-ADOPTION-001",
       "task_ids": [
-        "M7-STRATEGIC-TERRAIN-SCHEMA-001"
+        "RR0-ROADMAP-ADOPTION-001"
       ],
-      "status": "active_strategic_terrain_schema_replacement_in_progress",
+      "status": "active_r0_roadmap_adoption_review",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/m7-strategic-terrain-schema",
-      "updated_at": "2026-07-01T21:09:01.9374004+08:00",
-      "replacement_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
-      "replacement_route": "project/messages/routes/M7-STRATEGIC-TERRAIN-SCHEMA-001__ROUTE-20260701-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
-      "expected_writer_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "base_main_commit": "f69985f9369ba3c7e6615a99ff9a87160249ac8c",
-      "next_action": "Await replacement systems_architect REVIEW handoff for strategic terrain schema."
-    },
-    {
-      "responsibility": "Replacement writer for terrain-route-node schema/query/save-boundary work.",
-      "thread_id": "019f1dcb-dfb7-7e22-8e26-7be906522f91",
-      "task_id": "M7-STRATEGIC-TERRAIN-SCHEMA-001",
-      "status": "in_progress_replacement",
-      "role": "systems_architect",
-      "nickname": "Keystone",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "actual_model": "unknown",
-      "actual_effort": "unknown",
-      "branch_or_worktree": "codex/m7-strategic-terrain-schema",
-      "source_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-REPLACEMENT-START__lead_orchestrator.json",
-      "route_file": "project/messages/routes/M7-STRATEGIC-TERRAIN-SCHEMA-001__ROUTE-20260701-LEAD-TO-SYSTEMS-REPLACEMENT-START.json",
-      "expected_handoff": "project/messages/outbox/M7-STRATEGIC-TERRAIN-SCHEMA-001__MSG-20260701-M7-STRATEGIC-TERRAIN-SCHEMA-WRITER-REVIEW__systems_architect.json",
-      "previous_writer_thread_id": "019f1d9a-a51e-7101-8a6d-cf6dce788353",
-      "updated_at": "2026-07-01T21:09:01.9374004+08:00"
+      "branch_or_worktree": "codex/rr0-roadmap-adoption",
+      "updated_at": "2026-07-10T07:30:00.000Z",
+      "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
+      "last_main_commit": "38ad1906ed90fc5084b2010fb3c680daba14bbf6",
+      "next_ready_tasks_after_acceptance": [
+        "RR0-REPOSITORY-STATE-RECONCILIATION-001"
+      ],
+      "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动 downstream R0 任务。"
     }
   ],
   "task_effects": {
@@ -2083,7 +2065,7 @@
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
   "current_tasks": [
-    "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001"
+    "RR0-ROADMAP-ADOPTION-001"
   ],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
@@ -2239,8 +2221,8 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Await replacement systems_architect REVIEW handoff for M7 strategic terrain schema.",
-  "current_task": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+  "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动下游 R0 任务。",
+  "current_task": "RR0-ROADMAP-ADOPTION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
     "owner_role": "simulation_engineer",
@@ -5068,7 +5050,7 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Route RR0-ROADMAP-ADOPTION-001 to qa_reviewer; after acceptance start RR0-REPOSITORY-STATE-RECONCILIATION-001.",
+  "next_machine_action": "等待/执行独立 QA 复审：RR0-ROADMAP-ADOPTION-001 维持 REVIEW，修复 QA REQUEST_CHANGES 后重新路由给 qa_reviewer；验收前不启动下游 R0 任务。",
   "current_task_status": "REVIEW",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
@@ -5307,7 +5289,7 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "updated_at": "2026-07-10T07:30:00.000Z",
-    "next_action": "Start renderer/interaction replacement work using accepted terrain-route-node schema and fixture.",
+    "next_action": "Retain partial renderer evidence as historical/non-active M7 record; no autonomous continuation from this task during R0 roadmap adoption review.",
     "operational_active": false,
     "superseded_by_task": "RR0-ROADMAP-ADOPTION-001",
     "stale_client_thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",

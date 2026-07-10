@@ -25,7 +25,7 @@
       "next_ready_tasks_after_acceptance": [
         "RR0-REPOSITORY-STATE-RECONCILIATION-001"
       ],
-      "next_action": "Route RR0-ROADMAP-ADOPTION-001 REVIEW handoff to qa_reviewer before starting downstream R0 work."
+      "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动 downstream R0 任务。"
     }
   },
   "last_integrated_task": "M7-STRATEGIC-TERRAIN-FIXTURE-001",
@@ -569,7 +569,7 @@
     },
     "updated_at": "2026-06-27T04:18:00+08:00"
   },
-  "next_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task.",
+  "next_action": "等待/执行独立 QA 复审；RR0-ROADMAP-ADOPTION-001 接受前不启动下游 R0 任务。",
   "m5_exit_human_gate": {
     "status": "CLOSED",
     "task_id": "M5-EXIT-HUMAN-GATE-001",
@@ -1146,7 +1146,7 @@
     "lead_close_handoff": "project/messages/outbox/M6-LAYERED-AI-001__MSG-20260627-M6-LAYERED-AI-CLOSED__lead_orchestrator.json",
     "closed_at": "2026-06-27T23:17:59.059+08:00"
   },
-  "current_task": "M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+  "current_task": "RR0-ROADMAP-ADOPTION-001",
   "m6_accessibility_core_flows": {
     "status": "CLOSED",
     "task_id": "M6-ACCESSIBILITY-CORE-FLOWS-001",
@@ -2000,8 +2000,8 @@
       "M7-SAVE-MIGRATION-CLOUD-BOUNDARIES-001"
     ]
   },
-  "current_task_status": "READY",
-  "next_machine_action": "Start M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 as the next READY M7 task.",
+  "current_task_status": "REVIEW",
+  "next_machine_action": "等待/执行独立 QA 复审：RR0-ROADMAP-ADOPTION-001 维持 REVIEW，修复 QA REQUEST_CHANGES 后重新路由给 qa_reviewer；验收前不启动下游 R0 任务。",
   "closed_child_threads": [
     "019f0ecc-d9cf-7d41-873f-57cace1de6c1",
     "019f0ee5-dc21-73a0-a1a6-5c2dabdeb20a",
@@ -3824,7 +3824,7 @@
     "human_gate_required": false,
     "manual_node_battle_decision": "DEFER_MANUAL_NODE_BATTLE",
     "updated_at": "2026-07-10T07:30:00.000Z",
-    "next_action": "Start renderer/interaction replacement work using accepted terrain-route-node schema and fixture.",
+    "next_action": "Retain partial renderer evidence as historical/non-active M7 record; no autonomous continuation from this task during R0 roadmap adoption review.",
     "operational_active": false,
     "superseded_by_task": "RR0-ROADMAP-ADOPTION-001",
     "stale_client_thread_id": "019f1f02-6d7b-72a0-86db-8945be6b0606",

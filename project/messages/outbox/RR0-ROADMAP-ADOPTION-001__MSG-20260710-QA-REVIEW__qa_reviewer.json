@@ -1,0 +1,161 @@
+{
+  "message_id": "MSG-20260710-QA-REVIEW",
+  "task_id": "RR0-ROADMAP-ADOPTION-001",
+  "from_role": "qa_reviewer",
+  "status": "REQUEST_CHANGES",
+  "summary": "Independent QA rejects RR0 roadmap adoption until goal-mode and model-routing current-task state is made internally consistent with the accepted R0 roadmap. Roadmap docs, R0 downstream graph, thread-registry lead identity, stale client not_found evidence, scope boundaries, and original-worktree restoration mostly check out, but parsed state still exposes stale M7 current-task fields that can route autonomous continuation back to the non-active renderer task.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "docs/29-product-recovery-roadmap.md",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/tasks/active/RR0-ROADMAP-ADOPTION-001.json",
+    "project/tasks/active/RR0-REPOSITORY-STATE-RECONCILIATION-001.json",
+    "project/tasks/active/RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001.json",
+    "project/tasks/active/RR0-STATUS-LEDGER-COMPACTION-001.json",
+    "project/tasks/active/RR0-EXIT-VALIDATION-001.json",
+    "project/tasks/active/M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001.json",
+    "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/outbox/RR0-ROADMAP-ADOPTION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption on codex/rr0-roadmap-adoption; lead QA thread registration remains as uncommitted input",
+  "commit": "921db19803ca1719ba29a723377f6da774879b70",
+  "tests_run": [
+    {
+      "command": "git log --oneline --decorate -n 8",
+      "exit_code": 0,
+      "result": "HEAD is 921db19803ca1719ba29a723377f6da774879b70, parent d7da7f61a71695211a664c6a13a5cfc533174b27; branch is ahead of origin/main by the roadmap acceptance commit and the adoption commit."
+    },
+    {
+      "command": "git diff --name-status --no-renames origin/main...921db19803ca1719ba29a723377f6da774879b70",
+      "exit_code": 0,
+      "result": "Diff is limited to PROJECT_STATUS, docs/11, docs/23, docs/29, goal/model/thread state, M7 retained-evidence task, RR0 task JSONs, and the systems handoff. No apps/packages/tests/content/dependency/GATE-M0-M6 paths are included."
+    },
+    {
+      "command": "git status --short --branch",
+      "exit_code": 0,
+      "result": "Target worktree is codex/rr0-roadmap-adoption ahead 2, with uncommitted lead set-thread edits to RR0-ROADMAP-ADOPTION-001.json and thread-registry.json."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-ROADMAP-ADOPTION-001 RR0-REPOSITORY-STATE-RECONCILIATION-001 RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001 RR0-STATUS-LEDGER-COMPACTION-001 RR0-EXIT-VALIDATION-001 M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001",
+      "exit_code": 0,
+      "result": "All six task JSON files validate structurally."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list",
+      "exit_code": 0,
+      "result": "RR0-ROADMAP-ADOPTION-001 is REVIEW; the four RR0 downstream tasks are DRAFT; M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 is PARTIAL."
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready",
+      "exit_code": 0,
+      "result": "No output. This is expected from the dependency design because all downstream RR0 work depends on RR0-ROADMAP-ADOPTION-001 acceptance."
+    },
+    {
+      "command": "node -e parse selected changed JSON files",
+      "exit_code": 0,
+      "result": "Parsed goal-mode-state, model-routing-state, thread-registry, M7 task, five RR0 task files, and the systems handoff; JSON syntax alone does not catch the stale current-task semantics."
+    },
+    {
+      "command": "node -e semantic consistency check for current R0 task fields",
+      "exit_code": 1,
+      "result": "Failed with goal current_task=M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001, goal current_task_status=READY, routing current_task=M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001, routing current_tasks=[\"M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001\"]."
+    },
+    {
+      "command": "rg -n '\"current_milestone\"|\"current_task\"|\"current_tasks\"|\"current_task_status\"|\"next_machine_action\"' project/goal-mode-state.json project/model-routing-state.json",
+      "exit_code": 0,
+      "result": "Confirmed stale top-level late keys: goal-mode-state line 1149 current_task=M7 and lines 2003-2004 current_task_status=READY / next_machine_action=Start M7 renderer; model-routing-state line 2243 current_task=M7 and line 2085 current_tasks=[M7], while later R0 fields only partially override status/action."
+    },
+    {
+      "command": "pnpm exec prettier --check docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/29-product-recovery-roadmap.md project/tasks/active/RR0-*.json",
+      "exit_code": 1,
+      "result": "The writer's required Prettier check is no longer reproducible after the lead set-thread edit: project/tasks/active/RR0-ROADMAP-ADOPTION-001.json is not formatted."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD && git diff --check",
+      "exit_code": 0,
+      "result": "No whitespace errors in committed diff or current uncommitted diff."
+    },
+    {
+      "command": "rg --files project/tasks | rg 'RR1|R1-|R1_'",
+      "exit_code": 1,
+      "result": "No RR1/R1 task files found."
+    },
+    {
+      "command": "git status --short -- PROJECT_STATUS.md docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/29-product-recovery-roadmap.md in D:/WebProjects/MonsoonSovereigns",
+      "exit_code": 0,
+      "result": "No output; the original-worktree roadmap/status document accident is clean."
+    },
+    {
+      "command": "git status --short --branch in D:/WebProjects/MonsoonSovereigns",
+      "exit_code": 0,
+      "result": "Original worktree remains on codex/m7-strategic-terrain-renderer-interaction with dirty M7 apps/packages/tests/state diffs and untracked M7 renderer evidence/handoff files preserved."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ROADMAP_DOCS_CHECKED",
+      "decision": "docs/29 is accepted as forward R0-R8 roadmap; docs/11 and docs/23 preserve old M0-M6/M0-M8 material as historical ledger rather than rewriting gate outcomes."
+    },
+    {
+      "id": "R0_GRAPH_SCOPE_CHECKED",
+      "decision": "The RR0 graph contains exactly four downstream tasks, all DRAFT and dependency-ordered after RR0-ROADMAP-ADOPTION-001; no R1/RR1 task files were created."
+    },
+    {
+      "id": "THREAD_REALITY_CHECKED",
+      "decision": "Thread registry records exactly one active lead thread, 019eff50-c69d-7612-a90b-7024a47e0af5. The lead-added QA thread 019f4adb-1530-75a2-a801-a16b640793bf is treated as real. Stale client thread 019f1f02-6d7b-72a0-86db-8945be6b0606 records close_agent not_found without fabricated close success."
+    },
+    {
+      "id": "ORIGINAL_WORKTREE_CHECKED",
+      "decision": "The original worktree roadmap/status documents are clean and the unrelated M7 renderer dirty work remains preserved."
+    }
+  ],
+  "risks": [
+    {
+      "id": "TASKCTL_READY_LIMITATION",
+      "severity": "R3",
+      "summary": "taskctl ready being empty is correct for task dependencies but has no semantic coverage for goal-mode/model-routing current-task fields."
+    },
+    {
+      "id": "PRETTIER_REPRO_LIMIT",
+      "severity": "R2",
+      "summary": "The lead set-thread edit introduced formatting drift in RR0-ROADMAP-ADOPTION-001.json; required validation is no longer reproducible until formatted."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "BLOCKER-RR0-STATE-CURRENT-TASK-MISMATCH",
+      "severity": "R4",
+      "file": "project/goal-mode-state.json and project/model-routing-state.json",
+      "symbols": [
+        "goal-mode-state.current_task",
+        "goal-mode-state.current_task_status",
+        "goal-mode-state.next_machine_action",
+        "model-routing-state.current_task",
+        "model-routing-state.current_tasks",
+        "model-routing-state.active_threads"
+      ],
+      "repro": "Parse both JSON files with Node and print current_milestone/current_task/current_tasks/current_task_status/next_machine_action. goal-mode parses as current_milestone=R0 but current_task=M7-STRATEGIC-TERRAIN-RENDERER-INTERACTION-001 and current_task_status=READY. model-routing parses as current_milestone=R0 but current_task/current_tasks still M7, and active_threads still lists stale M7 schema threads.",
+      "impact": "This directly contradicts PROJECT_STATUS and taskctl list, which say RR0-ROADMAP-ADOPTION-001 is the REVIEW task and M7 renderer is PARTIAL non-active evidence. Autonomous Goal Mode or any state consumer can resume the rejected M7 renderer path despite the accepted R0 roadmap.",
+      "required_fix": "Make goal-mode and model-routing canonical current-task fields agree with RR0-ROADMAP-ADOPTION-001 REVIEW and the four RR0-after-acceptance dependency design. Remove or archive stale top-level M7 current_task/current_tasks/current_task_status/next_machine_action/active_threads fields so JSON.parse cannot expose M7 renderer as operational READY/active."
+    },
+    {
+      "id": "BLOCKER-RR0-REQUIRED-PRETTIER-NOT-REPRODUCIBLE",
+      "severity": "R2",
+      "file": "project/tasks/active/RR0-ROADMAP-ADOPTION-001.json",
+      "symbols": [
+        "threads.qa_reviewer",
+        "updated_at"
+      ],
+      "repro": "Run the writer-listed command: pnpm exec prettier --check docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md docs/29-product-recovery-roadmap.md project/tasks/active/RR0-*.json",
+      "impact": "The required validation command now fails after the accepted lead set-thread change, so the submitted review state is not reproducibly formatted.",
+      "required_fix": "Format the lead thread-registration edit without dropping it, then rerun the required Prettier check."
+    }
+  ],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Do not accept RR0-ROADMAP-ADOPTION-001 yet. Route changes to the original writer/lead as appropriate to repair state consistency and formatting, then return for independent QA re-review.",
+  "created_at": "2026-07-10T15:15:26.4477259+08:00"
+}
