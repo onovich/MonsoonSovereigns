@@ -21,18 +21,18 @@
     "task_ids": [
       "RR0-STATUS-LEDGER-COMPACTION-001"
     ],
-    "status": "active_r0_status_ledger_compaction_review",
+    "status": "active_r0_status_ledger_compaction_accepted_pending_pr",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-    "updated_at": "2026-07-10T11:57:31.920Z",
+    "updated_at": "2026-07-10T12:14:48.826Z",
     "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
     "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
     "next_ready_tasks_after_acceptance": [],
-    "next_action": "Track independent QA review of status/history compaction commit 8c5bf0fe."
+    "next_action": "Push accepted status-ledger compaction, wait for required CI, merge to main, and only then close the task."
   },
   "retired_lead_threads": [
     {
@@ -1968,29 +1968,18 @@
       "task_ids": [
         "RR0-STATUS-LEDGER-COMPACTION-001"
       ],
-      "status": "active_r0_status_ledger_compaction_review",
+      "status": "active_r0_status_ledger_compaction_accepted_pending_pr",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-      "updated_at": "2026-07-10T11:57:31.920Z",
+      "updated_at": "2026-07-10T12:14:48.826Z",
       "last_integrated_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
       "last_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
       "next_ready_tasks_after_acceptance": [],
-      "next_action": "Track independent QA review of status/history compaction commit 8c5bf0fe."
-    },
-    {
-      "thread_id": "019f4be3-8fcf-7ca0-89d6-1c135efc5d37",
-      "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
-      "status": "active_read_only_review",
-      "role": "qa_reviewer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-status-ledger-compaction-001",
-      "review_target_commit": "8c5bf0fe",
-      "updated_at": "2026-07-10T11:57:31.920Z"
+      "next_action": "Push accepted status-ledger compaction, wait for required CI, merge to main, and only then close the task."
     }
   ],
   "task_effects": {
@@ -2228,7 +2217,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "由独立 QA 验收当前状态与历史 ledger 分离结果。",
+  "next_action": "推送已验收的状态账本压缩分支；required CI 成功后合并，进入 main 后再关闭任务。",
   "current_task": "RR0-STATUS-LEDGER-COMPACTION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2434,7 +2423,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T11:57:31.920Z",
+  "last_updated_at": "2026-07-10T12:14:48.826Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",

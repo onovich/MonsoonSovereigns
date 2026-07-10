@@ -2,7 +2,7 @@
   "id": "RR0-STATUS-LEDGER-COMPACTION-001",
   "summary": "Compact current status while preserving M0-M7 historical ledger evidence",
   "milestone": "R0",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "lead_orchestrator",
   "reviewer_role": "qa_reviewer",
   "required_reviewers": [
@@ -66,21 +66,21 @@
   "threads": {
     "qa_reviewer": "019f4be3-8fcf-7ca0-89d6-1c135efc5d37"
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task may compact process/status documentation only.",
     "No product code, Gate document rewrite, ADR rewrite, or historical fact reinterpretation is authorized.",
     "Route REVIEW handoff to qa_reviewer."
   ],
   "created_at": "2026-07-10T07:30:00.000Z",
-  "updated_at": "2026-07-10T11:57:31.906Z",
+  "updated_at": "2026-07-10T12:14:48.826Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "no_r1_implementation_authorized": true,
   "ready_after_task": "RR0-PRODUCTION-FIXTURE-NOOP-AUDIT-001",
   "ready_after_pr": 245,
   "ready_after_main_commit": "4723351085856a44f726ba5472481873ad62e8eb",
-  "next_action": "Independent qa_reviewer verifies exact historical preservation, concise current status, roadmap-reference synchronization, and write scope.",
+  "next_action": "Push the accepted branch, merge only after required CI succeeds, synchronize origin/main, and close this task only after the accepted evidence is present in main.",
   "started_at": "2026-07-10T11:46:41.437Z",
   "base_main_commit": "3164c9a5a20794aa4d82300baaa6ac5aa10b31c8",
   "start_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-START__lead_orchestrator.json",
@@ -128,5 +128,11 @@
     }
   ],
   "review_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json",
-  "review_ready_at": "2026-07-10T11:52:41.759Z"
+  "review_ready_at": "2026-07-10T11:52:41.759Z",
+  "qa_review_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+  "qa_review_commit": "bd78a08664159ec90ef83d17073072cbfe1bb6eb",
+  "qa_metadata_correction_commit": "975485dc305e72e304d0d10816d38414446fc3dc",
+  "qa_result": "ACCEPT",
+  "lead_accept_handoff": "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-07-10T12:14:48.826Z"
 }
