@@ -2000,27 +2000,40 @@
   "active_threads": [
     {
       "thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
-      "task_id": "RR1-TASK-GRAPH-001",
+      "task_id": "RR1-WEB-WORKER-RUNTIME-001",
       "task_ids": [
-        "RR1-TASK-GRAPH-001"
+        "RR1-WEB-WORKER-RUNTIME-001"
       ],
-      "status": "active_selecting_next_r1_ready_task",
+      "status": "active_monitoring_rr1_web_worker_runtime",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
-      "branch_or_worktree": "codex/rr1-task-graph-001",
-      "updated_at": "2026-07-11T03:42:00.0000000+08:00",
+      "branch_or_worktree": "codex/rr1-web-worker-runtime-001",
+      "updated_at": "2026-07-11T04:42:30.5858352+08:00",
       "last_integrated_task": "RR1-TASK-GRAPH-001",
-      "last_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
-      "next_ready_tasks": [
+      "last_main_commit": "e6e81419e626f4146b1e54aeea69016db5d20027",
+      "next_ready_tasks": [],
+      "next_action": "Await Lantern/client_engineer writer REVIEW handoff for RR1-WEB-WORKER-RUNTIME-001, then route to systems_architect and qa_reviewer; do not start other R1 tasks in parallel."
+    },
+    {
+      "thread_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
+      "task_id": "RR1-WEB-WORKER-RUNTIME-001",
+      "task_ids": [
         "RR1-WEB-WORKER-RUNTIME-001"
       ],
-      "next_ready_tasks_after_graph_closure": [
-        "RR1-WEB-WORKER-RUNTIME-001"
-      ],
-      "next_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle."
+      "status": "active_writing_worker_runtime_foundation",
+      "role": "client_engineer",
+      "nickname": "Lantern",
+      "configured_model": "gpt-5.5",
+      "configured_effort": "high",
+      "actual_model": "unknown",
+      "actual_effort": "unknown",
+      "branch_or_worktree": "codex/rr1-web-worker-runtime-001",
+      "updated_at": "2026-07-11T04:42:30.5858352+08:00",
+      "route_file": "project/messages/routes/RR1-WEB-WORKER-RUNTIME-001__ROUTE-20260711-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-WEB-WORKER-RUNTIME-001__MSG-20260711-WRITER-REVIEW__client_engineer.json"
     }
   ],
   "task_effects": {
@@ -2101,7 +2114,9 @@
     "M6-SCENARIO-DATA-PIPELINE-001": "CLOSED after PR #135 entered main at 7f83cd4da1dcd7fdc77be922225bef43c9127c74. Next READY M6 tasks are M6-MAP-CANDIDATE-PIPELINE-001 and M6-SUCCESSION-COMPLETION-001.",
     "M6-MAP-CANDIDATE-PIPELINE-001": "IN_PROGRESS after lead start handoff routed to client_engineer thread 019f07f7-2cfb-7753-b583-283d8542501b on feat/m6-map-candidate-pipeline."
   },
-  "current_tasks": [],
+  "current_tasks": [
+    "RR1-WEB-WORKER-RUNTIME-001"
+  ],
   "m6_scenario_data_pipeline": {
     "status": "CLOSED",
     "task_id": "M6-SCENARIO-DATA-PIPELINE-001",
@@ -2256,7 +2271,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle.",
+  "next_action": "Await Lantern/client_engineer writer REVIEW handoff for RR1-WEB-WORKER-RUNTIME-001, then route to systems_architect and qa_reviewer; do not start other R1 tasks in parallel.",
   "current_task": "RR1-TASK-GRAPH-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2307,7 +2322,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-07-11T03:42:00.0000000+08:00",
+  "updated_at": "2026-07-11T04:42:30.5858352+08:00",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2462,7 +2477,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-11T03:42:00.0000000+08:00",
+  "last_updated_at": "2026-07-11T04:42:30.5858352+08:00",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4233,7 +4248,18 @@
       "M7-UI-REGRESSION-MATRIX-001"
     ]
   },
-  "active_task_routes": {},
+  "active_task_routes": {
+    "RR1-WEB-WORKER-RUNTIME-001": {
+      "role": "client_engineer",
+      "thread_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
+      "thread_nickname": "Lantern",
+      "status": "START_ROUTE_SENT",
+      "route_file": "project/messages/routes/RR1-WEB-WORKER-RUNTIME-001__ROUTE-20260711-LEAD-TO-CLIENT-START.json",
+      "expected_handoff": "project/messages/outbox/RR1-WEB-WORKER-RUNTIME-001__MSG-20260711-WRITER-REVIEW__client_engineer.json",
+      "submission_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
+      "updated_at": "2026-07-11T04:42:30.5858352+08:00"
+    }
+  },
   "active_routes": {
     "RR1-TASK-GRAPH-001": {
       "role": "systems_architect",
@@ -5077,7 +5103,7 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "RR1-TASK-GRAPH-001 is closed after PR #251 entered origin/main; start RR1-WEB-WORKER-RUNTIME-001 as the only dependency-ready R1 implementation task through a new routed writer/reviewer cycle.",
+  "next_machine_action": "Await Lantern/client_engineer writer REVIEW handoff for RR1-WEB-WORKER-RUNTIME-001, then route to systems_architect and qa_reviewer; do not start other R1 tasks in parallel.",
   "current_task_status": "IN_PROGRESS",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
@@ -5138,13 +5164,9 @@
     "next_action": "Start M7-STRATEGIC-TERRAIN-RECOVERY-001; keep M7-EXIT-VALIDATION-001 disabled until strategic terrain recovery validation closes and product owner reconsiders content lock."
   },
   "current_milestone": "R1",
-  "last_main_commit": "b5228d2e8a6f4d11897475552b8a142ba52270d5",
-  "ready_tasks": [
-    "RR1-WEB-WORKER-RUNTIME-001"
-  ],
-  "next_ready_tasks": [
-    "RR1-WEB-WORKER-RUNTIME-001"
-  ],
+  "last_main_commit": "e6e81419e626f4146b1e54aeea69016db5d20027",
+  "ready_tasks": [],
+  "next_ready_tasks": [],
   "m7_strategic_terrain_recovery": {
     "task_id": "M7-STRATEGIC-TERRAIN-RECOVERY-001",
     "status": "CLOSED",
@@ -5384,5 +5406,20 @@
       "RR1-WEB-WORKER-RUNTIME-001"
     ]
   },
-  "last_closed_task": "RR1-TASK-GRAPH-001"
+  "last_closed_task": "RR1-TASK-GRAPH-001",
+  "rr1_web_worker_runtime": {
+    "status": "IN_PROGRESS",
+    "task_id": "RR1-WEB-WORKER-RUNTIME-001",
+    "owner_role": "client_engineer",
+    "writer_thread_id": "019f4dc4-40d7-77b2-96d3-0319ca51a714",
+    "writer_thread_nickname": "Lantern",
+    "branch_or_worktree": "codex/rr1-web-worker-runtime-001",
+    "base_main_commit": "e6e81419e626f4146b1e54aeea69016db5d20027",
+    "start_handoff": "project/messages/outbox/RR1-WEB-WORKER-RUNTIME-001__MSG-20260711-START__lead_orchestrator.json",
+    "route_file": "project/messages/routes/RR1-WEB-WORKER-RUNTIME-001__ROUTE-20260711-LEAD-TO-CLIENT-START.json",
+    "expected_writer_handoff": "project/messages/outbox/RR1-WEB-WORKER-RUNTIME-001__MSG-20260711-WRITER-REVIEW__client_engineer.json",
+    "started_at": "2026-07-11T04:42:30.5858352+08:00",
+    "next_action": "Await Lantern/client_engineer writer REVIEW handoff for RR1-WEB-WORKER-RUNTIME-001, then route to systems_architect and qa_reviewer; do not start other R1 tasks in parallel.",
+    "human_gate_required": false
+  }
 }
