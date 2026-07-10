@@ -22,6 +22,8 @@
 | R7   | Beta Content Lock            | 系统、体验、内容和平台是否允许锁定       | `R7_GATE = HUMAN_PASS` |
 | R8   | Release Candidate / 1.0      | 构建是否达到真实发布标准                 | `R8_GATE = HUMAN_PASS` |
 
+当前结论：`R0_GATE=PASS`。证据为 `RR0-EXIT-VALIDATION-001`、PR #249、`origin/main@81b11f1a7a0210591cd266b8fcf6a47edd6da554`、systems PASS recommendation 与独立 QA ACCEPT。R1 task graph 尚未建立。
+
 ## 执行边界
 
 - R0 只做恢复基线、状态对齐、生产入口/fixture/no-op 清点和 R0 Gate 验证；不制作新地图、美术、内容或 R1 实现。
