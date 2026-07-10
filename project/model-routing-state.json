@@ -21,18 +21,18 @@
     "task_ids": [
       "RR0-EXIT-VALIDATION-001"
     ],
-    "status": "active_r0_exit_qa_r3_review",
+    "status": "active_r0_exit_integration",
     "role": "lead_orchestrator",
     "configured_model": "gpt-5.5",
     "configured_effort": "xhigh",
     "actual_model": "gpt-5.5",
     "actual_effort": "xhigh",
     "branch_or_worktree": "codex/rr0-exit-validation-001",
-    "updated_at": "2026-07-10T15:07:18.476Z",
+    "updated_at": "2026-07-10T17:10:42.745Z",
     "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
     "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
     "next_ready_tasks_after_acceptance": [],
-    "next_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen."
+    "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence."
   },
   "retired_lead_threads": [
     {
@@ -1968,30 +1968,18 @@
       "task_ids": [
         "RR0-EXIT-VALIDATION-001"
       ],
-      "status": "active_r0_exit_qa_r3_review",
+      "status": "active_r0_exit_integration",
       "role": "lead_orchestrator",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "gpt-5.5",
       "actual_effort": "xhigh",
       "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "updated_at": "2026-07-10T15:07:18.476Z",
+      "updated_at": "2026-07-10T17:10:42.745Z",
       "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
       "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
       "next_ready_tasks_after_acceptance": [],
-      "next_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen."
-    },
-    {
-      "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
-      "task_id": "RR0-EXIT-VALIDATION-001",
-      "status": "active_r0_exit_qa_r3_review",
-      "role": "qa_reviewer",
-      "configured_model": "gpt-5.5",
-      "configured_effort": "xhigh",
-      "branch_or_worktree": "codex/rr0-exit-validation-001",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
-      "updated_at": "2026-07-10T15:07:18.476Z"
+      "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence."
     }
   ],
   "task_effects": {
@@ -2229,7 +2217,7 @@
     ],
     "next_action": "Start M6-SUCCESSION-COMPLETION-001 as the highest-priority READY M6 task."
   },
-  "next_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen.",
+  "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
   "current_task": "RR0-EXIT-VALIDATION-001",
   "m6_succession_completion": {
     "status": "CLOSED",
@@ -2280,7 +2268,7 @@
       "M6-POLICY-EVENT-RUNTIME-001"
     ]
   },
-  "updated_at": "2026-07-10T15:48:34.218Z",
+  "updated_at": "2026-07-10T17:10:42.745Z",
   "m6_policy_event_runtime": {
     "status": "CLOSED",
     "task_id": "M6-POLICY-EVENT-RUNTIME-001",
@@ -2435,7 +2423,7 @@
       "M6-ACCESSIBILITY-CORE-FLOWS-001"
     ]
   },
-  "last_updated_at": "2026-07-10T15:48:34.218Z",
+  "last_updated_at": "2026-07-10T17:10:42.745Z",
   "m6_layered_ai": {
     "status": "CLOSED",
     "task_id": "M6-LAYERED-AI-001",
@@ -4208,36 +4196,32 @@
   },
   "active_task_routes": {
     "RR0-EXIT-VALIDATION-001": {
-      "status": "REVIEW_ROUTED_QA_R3",
-      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
-      "from_role": "lead_orchestrator",
-      "from_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "to_role": "qa_reviewer",
-      "to_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
-      "review_target_commit": "55677e64e55aea8c8d3c07f7939bdfe67517874d",
-      "review_metadata_commit": "78f2a52da165ec8b4ea4c4c31922fe3ce0b6c9fe",
-      "delivery_status": "sent",
-      "submission_id": "019f4cb7-1ef6-7f30-854c-4c3df478c243",
-      "sent_at": "2026-07-10T15:48:34.218Z"
+      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
+      "from_role": "qa_reviewer",
+      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "to_role": "lead_orchestrator",
+      "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
+      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
+      "delivery_status": "recorded_same_lead_thread"
     }
   },
   "active_routes": {
     "RR0-EXIT-VALIDATION-001": {
-      "status": "REVIEW_ROUTED_QA_R3",
-      "route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
-      "from_role": "lead_orchestrator",
-      "from_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "to_role": "qa_reviewer",
-      "to_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
-      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-SYSTEMS-R3-REVIEW__systems_architect.json",
-      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
-      "review_target_commit": "55677e64e55aea8c8d3c07f7939bdfe67517874d",
-      "review_metadata_commit": "78f2a52da165ec8b4ea4c4c31922fe3ce0b6c9fe",
-      "delivery_status": "sent",
-      "submission_id": "019f4cb7-1ef6-7f30-854c-4c3df478c243",
-      "sent_at": "2026-07-10T15:48:34.218Z"
+      "status": "QA_ACCEPTED_PENDING_MAIN_INTEGRATION",
+      "from_role": "qa_reviewer",
+      "from_thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
+      "to_role": "lead_orchestrator",
+      "to_thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
+      "source_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "source_route_file": "project/messages/routes/RR0-EXIT-VALIDATION-001__ROUTE-20260710-SYSTEMS-R3-TO-QA-R3-REVIEW.json",
+      "expected_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+      "reviewed_commit": "9b5ea4659d79ff9676cdb6d6c4417d6cd3742979",
+      "qa_handoff_commit": "352c822405202072b46548e5826242e966db6817",
+      "delivery_status": "recorded_same_lead_thread"
     }
   },
   "tasks": {
@@ -5068,8 +5052,8 @@
       "M7-MAP-TOPOLOGY-VALIDATION-001"
     ]
   },
-  "next_machine_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen.",
-  "current_task_status": "REVIEW",
+  "next_machine_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence.",
+  "current_task_status": "ACCEPTED",
   "m7_map_topology_validation": {
     "task_id": "M7-MAP-TOPOLOGY-VALIDATION-001",
     "status": "CLOSED",

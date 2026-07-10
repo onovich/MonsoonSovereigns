@@ -8,18 +8,18 @@
         "task_ids": [
           "RR0-EXIT-VALIDATION-001"
         ],
-        "status": "active_r0_exit_qa_r3_review",
+        "status": "active_r0_exit_integration",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-exit-validation-001",
-        "updated_at": "2026-07-10T15:07:18.476Z",
+        "updated_at": "2026-07-10T17:10:42.745Z",
         "last_integrated_task": "RR0-STATUS-LEDGER-COMPACTION-001",
         "last_main_commit": "e8f0050a109d7ade398c63b6950bf3d1a4c9e5b0",
         "next_ready_tasks_after_acceptance": [],
-        "next_action": "Route the systems R3 REVIEW handoff to the same independent qa_reviewer 019f4c19-c265-7653-9490-63922b40cb89 for R3 verification; keep R1 frozen."
+        "next_action": "Run final integration gates, push the R0 Exit branch, open the PR, wait for required CI, merge, and close only after origin/main contains the accepted evidence."
       }
     ],
     "retired_leads": [
@@ -40,7 +40,7 @@
       "active_thread_ids": [
         "019eff50-c69d-7612-a90b-7024a47e0af5"
       ],
-      "checked_at": "2026-07-10T15:07:18.476Z"
+      "checked_at": "2026-07-10T17:10:42.745Z"
     }
   },
   "entries": {
@@ -8684,7 +8684,7 @@
       "role": "qa_reviewer",
       "thread_id": "019f4c19-c265-7653-9490-63922b40cb89",
       "nickname": "Auditor",
-      "status": "active_r0_exit_qa_r3_review",
+      "status": "closed_after_r3_accept_handoff",
       "configured_model": "gpt-5.5",
       "configured_effort": "xhigh",
       "actual_model": "unknown",
@@ -8721,7 +8721,11 @@
       "r3_route_submission_id": "019f4cb7-1ef6-7f30-854c-4c3df478c243",
       "r3_route_sent_at": "2026-07-10T15:48:34.218Z",
       "r3_resumed_at": "2026-07-10T15:07:18.476Z",
-      "updated_at": "2026-07-10T15:48:34.218Z"
+      "r3_review_handoff": "project/messages/outbox/RR0-EXIT-VALIDATION-001__MSG-20260710-QA-R3-REVIEW__qa_reviewer.json",
+      "r3_review_commit": "352c822405202072b46548e5826242e966db6817",
+      "r3_review_result": "ACCEPT",
+      "r3_closed_at": "2026-07-10T17:10:42.745Z",
+      "updated_at": "2026-07-10T17:10:42.745Z"
     }
   },
   "replaced_threads": [
@@ -8921,7 +8925,7 @@
       "replaced_at": "2026-06-30T04:29:17.193Z"
     }
   ],
-  "updated_at": "2026-07-10T15:48:34.218Z",
+  "updated_at": "2026-07-10T17:10:42.745Z",
   "closed_threads": [
     "019f100e-9a22-7793-a953-a41b9a948703",
     "019f1025-36fc-70d1-92bb-5858b2c7a74f",
