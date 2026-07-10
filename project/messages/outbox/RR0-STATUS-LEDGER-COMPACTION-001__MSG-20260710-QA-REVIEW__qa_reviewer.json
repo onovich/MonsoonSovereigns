@@ -1,0 +1,124 @@
+{
+  "message_id": "MSG-20260710-QA-REVIEW",
+  "task_id": "RR0-STATUS-LEDGER-COMPACTION-001",
+  "from_role": "qa_reviewer",
+  "status": "ACCEPT",
+  "summary": "Accepted the lead-owned R0 status/history compaction. The historical ledger preserves d058cb88:PROJECT_STATUS.md exactly after removing the archive banner and restoring the original title; the new current status is concise and accurate; roadmap references point to the independent ledger; scope is limited to status/process files with no product, package, test, content, Gate, or R1 implementation changes.",
+  "artifacts": [
+    "PROJECT_STATUS.md",
+    "project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+    "docs/11-roadmap.md",
+    "docs/23-milestone-acceptance-matrix.md",
+    "project/tasks/active/RR0-STATUS-LEDGER-COMPACTION-001.json",
+    "project/goal-mode-state.json",
+    "project/model-routing-state.json",
+    "project/tasks/thread-registry.json",
+    "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json",
+    "project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json"
+  ],
+  "branch_or_worktree": "D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption @ codex/rr0-status-ledger-compaction-001",
+  "commit": "8c5bf0fe",
+  "tests_run": [
+    {
+      "command": "node -e preservation assertion comparing d058cb8842d30a2b93de6af37cec515447fcf7ab:PROJECT_STATUS.md to transformed 8c5bf0fe:project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+      "exit_code": 0,
+      "result": "PASS restored_bytes=63560"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR0-STATUS-LEDGER-COMPACTION-001",
+      "exit_code": 0,
+      "result": "VALID task JSON in REVIEW"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs list > $null",
+      "exit_code": 0,
+      "result": "Task listing command completed"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs ready > $null",
+      "exit_code": 0,
+      "result": "Ready-task command completed"
+    },
+    {
+      "command": "node .agents/skills/monsoon-studio-orchestrator/scripts/validate-handoff.mjs project/messages/outbox/RR0-STATUS-LEDGER-COMPACTION-001__MSG-20260710-LEAD-REVIEW__lead_orchestrator.json",
+      "exit_code": 0,
+      "result": "VALID lead REVIEW handoff"
+    },
+    {
+      "command": "node -e parse all JSON files changed in 3164c9a5a20794aa4d82300baaa6ac5aa10b31c8..8c5bf0fe from git blobs",
+      "exit_code": 0,
+      "result": "PASS changed_json=6"
+    },
+    {
+      "command": "git diff --check 3164c9a5a20794aa4d82300baaa6ac5aa10b31c8..8c5bf0fe",
+      "exit_code": 0,
+      "result": "No whitespace errors"
+    },
+    {
+      "command": "node -e full commit scope proof for 3164c9a5a20794aa4d82300baaa6ac5aa10b31c8..8c5bf0fe",
+      "exit_code": 0,
+      "result": "PASS files=10; only non-message added file is project/history/PROJECT_STATUS-M0-M7-LEDGER.md; docs/29 contains independent history/ledger requirement"
+    },
+    {
+      "command": "node -e current status line and byte count from 8c5bf0fe:PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "PASS PROJECT_STATUS bytes=3978 lines=62"
+    },
+    {
+      "command": "node -e historical evidence string spot-check in 8c5bf0fe:project/history/PROJECT_STATUS-M0-M7-LEDGER.md",
+      "exit_code": 0,
+      "result": "PASS needles=10 covering old PRs, commits, Gate, Human Gate, and product-owner rejection evidence"
+    },
+    {
+      "command": "node -e state semantic assertion across task, goal-mode, model-routing, registry, and PROJECT_STATUS at 8c5bf0fe",
+      "exit_code": 0,
+      "result": "PASS task=REVIEW; active_leads=1; active_threads=lead_orchestrator; human_gate=false; R1 frozen; M7 partial non-active"
+    },
+    {
+      "command": "node -e count git -C D:/WebProjects/MonsoonSovereigns status --short entries",
+      "exit_code": 0,
+      "result": "PASS m7_status_entries=20"
+    },
+    {
+      "command": "node -e writer commit ancestor and current HEAD checks",
+      "exit_code": 0,
+      "result": "PASS base<kickoff<review<=HEAD head=2707f4e1 parent=8c5bf0fe"
+    },
+    {
+      "command": "node -e git worktree list --porcelain count and path check",
+      "exit_code": 0,
+      "result": "PASS worktrees=2 paths=D:/WebProjects/MonsoonSovereigns,D:/WebProjects/MonsoonSovereigns-rr0-roadmap-adoption"
+    },
+    {
+      "command": "rg -n PROJECT_STATUS-M0-M7-LEDGER docs/11-roadmap.md docs/23-milestone-acceptance-matrix.md PROJECT_STATUS.md",
+      "exit_code": 0,
+      "result": "References point to the independent ledger and current PROJECT_STATUS remains the execution snapshot"
+    },
+    {
+      "command": "git diff --name-status 3164c9a5a20794aa4d82300baaa6ac5aa10b31c8..8c5bf0fe -- apps packages tests content-source .github tools package.json pnpm-lock.yaml MANIFEST.md SHA256SUMS.txt VALIDATION_REPORT.md docs/GATE-M0.md docs/GATE-M1.md docs/GATE-M2.md docs/GATE-M3.md docs/GATE-M4.md docs/GATE-M5.md docs/GATE-M6.md",
+      "exit_code": 0,
+      "result": "No forbidden product/package/test/content/Gate/dependency paths changed"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "QA_ACCEPT_STATUS_LEDGER_COMPACTION",
+      "decision": "ACCEPT RR0-STATUS-LEDGER-COMPACTION-001 at review commit 8c5bf0fe."
+    },
+    {
+      "id": "REVIEW_SCOPE",
+      "decision": "Implementation review is scoped to 3164c9a5a20794aa4d82300baaa6ac5aa10b31c8..8c5bf0fe. Current HEAD 2707f4e1 was checked as a routing-only follow-up whose parent is 8c5bf0fe."
+    }
+  ],
+  "risks": [
+    {
+      "id": "R0_EXIT_PENDING",
+      "severity": "R2",
+      "summary": "R0 exit validation remains pending by design and must run after this accepted compaction integrates."
+    }
+  ],
+  "blockers": [],
+  "route_to": "lead_orchestrator",
+  "requested_action": "Integrate the accepted status/history compaction, close RR0-STATUS-LEDGER-COMPACTION-001 after PR/CI/main, and proceed only to RR0-EXIT-VALIDATION-001 without starting R1 work.",
+  "created_at": "2026-07-10T12:20:00.000Z"
+}
