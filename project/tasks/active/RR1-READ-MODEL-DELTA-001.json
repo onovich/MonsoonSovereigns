@@ -1,0 +1,76 @@
+{
+  "id": "RR1-READ-MODEL-DELTA-001",
+  "summary": "Deliver revisioned Worker snapshots and read-model deltas to the client",
+  "milestone": "R1",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "systems_architect",
+  "required_reviewers": ["systems_architect", "qa_reviewer"],
+  "risk_level": "R4",
+  "dependencies": ["RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001"],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/src/read-model/**",
+      "packages/client-core/src/read-model/**",
+      "tests/rr1-read-model-delta*.test.ts",
+      "tests/rr1-read-model-delta/**",
+      "project/tasks/active/RR1-READ-MODEL-DELTA-001.json",
+      "project/messages/outbox/RR1-READ-MODEL-DELTA-001__*.json",
+      "project/messages/routes/RR1-READ-MODEL-DELTA-001__*.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/src/worker/**",
+      "apps/web/src/commands/**",
+      "apps/desktop/**",
+      "packages/protocol/**",
+      "packages/sim-core/**",
+      "packages/ui/**",
+      "packages/save-format/**",
+      "packages/platform/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "docs/29-product-recovery-roadmap.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Boot supplies a schema-versioned read-model snapshot and each accepted authoritative change supplies monotonically revisioned deltas from the Worker.",
+    "Rejected commands, previews, local selection, animation, and renderer interaction never create authoritative deltas.",
+    "The client applies a delta only when session, schema version, base revision, and next revision match; duplicates and stale deltas are ignored deterministically.",
+    "A revision gap, reconnect, incompatible schema, or invalid delta triggers an explicit full-snapshot resynchronization rather than local repair or silent success.",
+    "Client state contains bounded serializable read models, pending request metadata, and UI state only; it never retains full WorldState or grants Pixi/React mutation authority.",
+    "Applying the same snapshot and ordered delta stream yields identical read-model hashes in browser and Node contract tests."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/client-core typecheck",
+    "pnpm --filter web typecheck",
+    "pnpm --filter web test",
+    "pnpm --filter web build",
+    "pnpm architecture:check",
+    "pnpm exec vitest run tests/rr1-read-model-delta*.test.ts",
+    "property tests cover ordered deltas, duplicate delivery, stale session, revision gaps, schema mismatch, snapshot recovery, and browser/Node hash parity",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR1-READ-MODEL-DELTA-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "codex/rr1-read-model-delta-001",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "Read models are purpose-built protocol views, not serialized WorldState aliases.",
+    "Shared shell and Worker transport files remain owned by their dependency tasks."
+  ],
+  "created_at": "2026-07-10T18:20:58.343Z",
+  "updated_at": "2026-07-10T18:20:58.343Z",
+  "human_gate_required": false,
+  "roadmap_source": "docs/29-product-recovery-roadmap.md"
+}

@@ -2,16 +2,12 @@
   "id": "RR1-TASK-GRAPH-001",
   "summary": "Design and validate the controlled R1 authoritative client runtime task graph",
   "milestone": "R1",
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
-  "required_reviewers": [
-    "qa_reviewer"
-  ],
+  "required_reviewers": ["qa_reviewer"],
   "risk_level": "R4",
-  "dependencies": [
-    "RR0-EXIT-VALIDATION-001"
-  ],
+  "dependencies": ["RR0-EXIT-VALIDATION-001"],
   "scope": {
     "allowed_paths": [
       "project/tasks/active/RR1-TASK-GRAPH-001.json",
@@ -68,14 +64,16 @@
   "threads": {
     "systems_architect": "019f4c06-5c8f-7552-9baf-47c1e609b024"
   },
-  "route_to": "lead_orchestrator",
+  "route_to": "qa_reviewer",
   "notes": [
     "This task authorizes task-graph and coordination evidence only; it does not authorize R1 product implementation.",
     "The accepted forward authority is docs/29-product-recovery-roadmap.md.",
-    "Route systems REVIEW to an independent qa_reviewer before Lead integration."
+    "Route systems REVIEW to an independent qa_reviewer before Lead integration.",
+    "Dependency order is Task Graph -> Web Worker Runtime -> Command Roundtrip -> Read Model Delta -> Time Controls and Save/Load/Restart -> Hermetic E2E -> Exit Validation.",
+    "All seven child tasks remain DRAFT in this branch. After this graph is CLOSED on origin/main, only RR1-WEB-WORKER-RUNTIME-001 satisfies taskctl dependencies."
   ],
   "created_at": "2026-07-10T18:00:00.000Z",
-  "updated_at": "2026-07-10T17:52:51.634Z",
+  "updated_at": "2026-07-10T18:54:24.582Z",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "base_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
@@ -84,5 +82,86 @@
   "start_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-START__lead_orchestrator.json",
   "systems_route": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
   "expected_systems_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
-  "next_action": "Route the task-graph draft to systems_architect, then independent qa_reviewer; integrate the accepted graph before starting the first READY R1 implementation task."
+  "next_action": "Independent qa_reviewer validates this seven-task R1 graph and either returns ACCEPT to Lead or exact REQUEST_CHANGES evidence; no R1 implementation starts before graph closure on origin/main.",
+  "review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+  "review_ready_at": "2026-07-10T18:36:08.168Z",
+  "gate_recommendation": "PASS_RECOMMENDATION_FOR_QA_REVIEW",
+  "systems_review_commit": null,
+  "artifacts": [
+    "project/tasks/active/RR1-TASK-GRAPH-001.json",
+    "project/tasks/active/RR1-WEB-WORKER-RUNTIME-001.json",
+    "project/tasks/active/RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001.json",
+    "project/tasks/active/RR1-READ-MODEL-DELTA-001.json",
+    "project/tasks/active/RR1-AUTHORITATIVE-TIME-CONTROLS-001.json",
+    "project/tasks/active/RR1-SAVE-LOAD-RESTART-001.json",
+    "project/tasks/active/RR1-HERMETIC-E2E-001.json",
+    "project/tasks/active/RR1-EXIT-VALIDATION-001.json",
+    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json"
+  ],
+  "validation_evidence": {
+    "taskctl_validate_count": 8,
+    "taskctl_validate_failures": 0,
+    "taskctl_ready_current": [],
+    "taskctl_ready_after_graph_closed": ["RR1-WEB-WORKER-RUNTIME-001"],
+    "all_child_statuses": "DRAFT",
+    "allowed_path_overlap_count": 0,
+    "forbidden_changed_path_count": 0,
+    "r1_product_files_changed": false,
+    "handoff_schema_valid": true,
+    "validated_base_head": "24a93d9cc536b3563afce0a0344438308eeb7962",
+    "successor_lead_thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
+    "staged_owned_path_count": 9,
+    "staged_forbidden_path_count": 0
+  },
+  "downstream_tasks": [
+    {
+      "id": "RR1-WEB-WORKER-RUNTIME-001",
+      "status": "DRAFT",
+      "dependencies": ["RR1-TASK-GRAPH-001"],
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect"
+    },
+    {
+      "id": "RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001",
+      "status": "DRAFT",
+      "dependencies": ["RR1-WEB-WORKER-RUNTIME-001"],
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect"
+    },
+    {
+      "id": "RR1-READ-MODEL-DELTA-001",
+      "status": "DRAFT",
+      "dependencies": ["RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001"],
+      "owner_role": "client_engineer",
+      "reviewer_role": "systems_architect"
+    },
+    {
+      "id": "RR1-AUTHORITATIVE-TIME-CONTROLS-001",
+      "status": "DRAFT",
+      "dependencies": ["RR1-READ-MODEL-DELTA-001"],
+      "owner_role": "simulation_engineer",
+      "reviewer_role": "systems_architect"
+    },
+    {
+      "id": "RR1-SAVE-LOAD-RESTART-001",
+      "status": "DRAFT",
+      "dependencies": ["RR1-READ-MODEL-DELTA-001"],
+      "owner_role": "client_engineer",
+      "reviewer_role": "security_reviewer"
+    },
+    {
+      "id": "RR1-HERMETIC-E2E-001",
+      "status": "DRAFT",
+      "dependencies": ["RR1-AUTHORITATIVE-TIME-CONTROLS-001", "RR1-SAVE-LOAD-RESTART-001"],
+      "owner_role": "test_engineer",
+      "reviewer_role": "qa_reviewer"
+    },
+    {
+      "id": "RR1-EXIT-VALIDATION-001",
+      "status": "DRAFT",
+      "dependencies": ["RR1-HERMETIC-E2E-001"],
+      "owner_role": "systems_architect",
+      "reviewer_role": "qa_reviewer"
+    }
+  ]
 }

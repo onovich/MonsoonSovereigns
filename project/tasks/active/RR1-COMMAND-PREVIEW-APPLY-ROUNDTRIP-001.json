@@ -1,0 +1,79 @@
+{
+  "id": "RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001",
+  "summary": "Wire production Command, Query, Preview, and Submit roundtrips to Worker authority",
+  "milestone": "R1",
+  "status": "DRAFT",
+  "owner_role": "client_engineer",
+  "reviewer_role": "systems_architect",
+  "required_reviewers": ["systems_architect", "qa_reviewer"],
+  "risk_level": "R4",
+  "dependencies": ["RR1-WEB-WORKER-RUNTIME-001"],
+  "scope": {
+    "allowed_paths": [
+      "apps/web/src/commands/**",
+      "apps/web/src/shell/web-client-shell.tsx",
+      "apps/web/src/shell/web-client-shell.test.tsx",
+      "packages/client-core/src/command-runtime/**",
+      "packages/ui/src/command-feedback/**",
+      "tests/rr1-command-preview-apply*.test.ts",
+      "tests/rr1-command-preview-apply/**",
+      "project/tasks/active/RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001.json",
+      "project/messages/outbox/RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001__*.json",
+      "project/messages/routes/RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001__*.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/src/worker/**",
+      "apps/desktop/**",
+      "packages/protocol/**",
+      "packages/sim-core/**",
+      "packages/save-format/**",
+      "packages/platform/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "docs/29-product-recovery-roadmap.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Every normal Web M3-M7 action uses the production Worker Boot, Query, Preview, and Submit contract; no command handler may discard a command, update only local React state, or fabricate success.",
+    "Player and AI actions use the same serializable GameCommand schemas and authoritative submission path.",
+    "Preview returns authoritative cost, eligibility, expiry/revision, and bounded reason data without mutating WorldState.",
+    "A valid Submit produces an accepted Worker result and an authoritative state-hash transition; UI success state is driven only by that accepted response and associated revision.",
+    "Invalid, stale, expired, duplicate, or unauthorized commands are rejected with stable reason codes, do not change the state hash, and drive visible rejected UI state.",
+    "Out-of-order responses, superseded previews, reconnect generations, and repeated user input cannot acknowledge the wrong action or apply a result twice.",
+    "The shell exposes integration seams for read-model, time-control, and save modules without importing sim-core or retaining WorldState in client state."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm --filter @monsoon/client-core typecheck",
+    "pnpm --filter @monsoon/ui typecheck",
+    "pnpm --filter web typecheck",
+    "pnpm --filter web test",
+    "pnpm --filter web build",
+    "pnpm architecture:check",
+    "pnpm exec vitest run tests/rr1-command-preview-apply*.test.ts apps/web/src/shell/web-client-shell.test.tsx",
+    "pnpm storybook:build",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "codex/rr1-command-preview-apply-roundtrip-001",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "Worker and protocol foundations are owned by RR1-WEB-WORKER-RUNTIME-001 and must not be reopened here without a routed scope change.",
+    "Fixture snapshots may remain test inputs but cannot be the normal product success path."
+  ],
+  "created_at": "2026-07-10T18:20:58.343Z",
+  "updated_at": "2026-07-10T18:20:58.343Z",
+  "human_gate_required": false,
+  "roadmap_source": "docs/29-product-recovery-roadmap.md"
+}

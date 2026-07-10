@@ -1,0 +1,77 @@
+{
+  "id": "RR1-HERMETIC-E2E-001",
+  "summary": "Prove the authoritative R1 runtime through hermetic production-path end-to-end evidence",
+  "milestone": "R1",
+  "status": "DRAFT",
+  "owner_role": "test_engineer",
+  "reviewer_role": "qa_reviewer",
+  "required_reviewers": ["qa_reviewer", "systems_architect"],
+  "risk_level": "R3",
+  "dependencies": ["RR1-AUTHORITATIVE-TIME-CONTROLS-001", "RR1-SAVE-LOAD-RESTART-001"],
+  "scope": {
+    "allowed_paths": [
+      "tests/e2e/rr1-authoritative-runtime*.spec.ts",
+      "tests/e2e/rr1-authoritative-runtime/**",
+      "tests/rr1-hermetic-e2e*.test.ts",
+      "tests/rr1-hermetic-e2e/**",
+      "apps/sim-runner/src/rr1-runtime-evidence/**",
+      "playwright.config.ts",
+      "project/audits/RR1-HERMETIC-E2E-001/**",
+      "project/tasks/active/RR1-HERMETIC-E2E-001.json",
+      "project/messages/outbox/RR1-HERMETIC-E2E-001__*.json",
+      "project/messages/routes/RR1-HERMETIC-E2E-001__*.json"
+    ],
+    "forbidden_paths": [
+      "apps/web/src/**",
+      "apps/desktop/src/**",
+      "packages/**",
+      "content-source/**",
+      ".github/**",
+      "tools/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "docs/29-product-recovery-roadmap.md",
+      "docs/GATE-M0.md",
+      "docs/GATE-M1.md",
+      "docs/GATE-M2.md",
+      "docs/GATE-M3.md",
+      "docs/GATE-M4.md",
+      "docs/GATE-M5.md",
+      "docs/GATE-M6.md"
+    ]
+  },
+  "acceptance_criteria": [
+    "Playwright starts the normal production Web entry without fixture injection, fake transport, Storybook-only state, canary substitution, or test-only in-process simulation and proves a real Worker boot.",
+    "The browser scenario reads the initial model, previews a real cost, submits a legal command, observes Worker acceptance and a changed authoritative state hash, then observes its revisioned read-model delta.",
+    "Invalid and expired commands produce stable rejection reasons, unchanged authoritative hashes, and rejected UI state.",
+    "The scenario exercises pause, 1x, 2x, 4x, deterministic auto-pause, and at least one complete in-game month with scheduled settlement.",
+    "The scenario saves, closes the browser/runtime, starts a fresh Worker, loads the save, and proves identical hash, calendar, scheduler tail, and visible read model.",
+    "A forced Worker crash proves reconnect and recovery behavior without silent fixture boot or no-op success.",
+    "The same seed, content, command log, save, and replay tail produce matching browser Worker and Node hashes with artifacted command, revision, lifecycle, and save evidence.",
+    "Evidence distinguishes normal Web, Electron security/save smoke, Node runner, Storybook, Playwright, and canary categories; test/demo evidence is never relabeled as production behavior."
+  ],
+  "required_tests": [
+    "git status --short",
+    "pnpm build:web",
+    "pnpm exec playwright test tests/e2e/rr1-authoritative-runtime*.spec.ts",
+    "pnpm exec vitest run tests/rr1-hermetic-e2e*.test.ts",
+    "pnpm sim:determinism",
+    "pnpm --filter @monsoon/sim-runner sim:determinism",
+    "pnpm desktop:security-check",
+    "pnpm architecture:check",
+    "artifact assertion proving a real Worker URL/session, accepted and rejected commands, state hashes, revisions, one-month advance, save/restart/load, crash recovery, and browser/Node parity",
+    "node .agents/skills/monsoon-studio-orchestrator/scripts/taskctl.mjs validate RR1-HERMETIC-E2E-001",
+    "git diff --check"
+  ],
+  "branch_or_worktree": "codex/rr1-hermetic-e2e-001",
+  "threads": {},
+  "route_to": "lead_orchestrator",
+  "notes": [
+    "This task may add hermetic harnesses and evidence only; it must route product defects back to the owning implementation task rather than patch product code.",
+    "No test may pass by detecting test mode and replacing the production Worker path."
+  ],
+  "created_at": "2026-07-10T18:20:58.343Z",
+  "updated_at": "2026-07-10T18:20:58.343Z",
+  "human_gate_required": false,
+  "roadmap_source": "docs/29-product-recovery-roadmap.md"
+}
