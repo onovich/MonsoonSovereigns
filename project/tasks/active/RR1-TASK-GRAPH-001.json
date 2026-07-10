@@ -2,12 +2,16 @@
   "id": "RR1-TASK-GRAPH-001",
   "summary": "Design and validate the controlled R1 authoritative client runtime task graph",
   "milestone": "R1",
-  "status": "REVIEW",
+  "status": "ACCEPTED",
   "owner_role": "systems_architect",
   "reviewer_role": "qa_reviewer",
-  "required_reviewers": ["qa_reviewer"],
+  "required_reviewers": [
+    "qa_reviewer"
+  ],
   "risk_level": "R4",
-  "dependencies": ["RR0-EXIT-VALIDATION-001"],
+  "dependencies": [
+    "RR0-EXIT-VALIDATION-001"
+  ],
   "scope": {
     "allowed_paths": [
       "project/tasks/active/RR1-TASK-GRAPH-001.json",
@@ -62,9 +66,11 @@
   ],
   "branch_or_worktree": "codex/rr1-task-graph-001",
   "threads": {
-    "systems_architect": "019f4c06-5c8f-7552-9baf-47c1e609b024"
+    "systems_architect": "019f4c06-5c8f-7552-9baf-47c1e609b024",
+    "lead_orchestrator": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
+    "qa_reviewer": "019f4c19-c265-7653-9490-63922b40cb89"
   },
-  "route_to": "qa_reviewer",
+  "route_to": "lead_orchestrator",
   "notes": [
     "This task authorizes task-graph and coordination evidence only; it does not authorize R1 product implementation.",
     "The accepted forward authority is docs/29-product-recovery-roadmap.md.",
@@ -73,7 +79,7 @@
     "All seven child tasks remain DRAFT in this branch. After this graph is CLOSED on origin/main, only RR1-WEB-WORKER-RUNTIME-001 satisfies taskctl dependencies."
   ],
   "created_at": "2026-07-10T18:00:00.000Z",
-  "updated_at": "2026-07-10T18:56:42.520Z",
+  "updated_at": "2026-07-11T03:24:31.0522178+08:00",
   "human_gate_required": false,
   "roadmap_source": "docs/29-product-recovery-roadmap.md",
   "base_main_commit": "7582d0fd1e54fd51683b99214dbff15e8a030a4c",
@@ -82,7 +88,7 @@
   "start_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-START__lead_orchestrator.json",
   "systems_route": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-LEAD-TO-SYSTEMS-START.json",
   "expected_systems_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
-  "next_action": "Independent qa_reviewer validates this seven-task R1 graph and either returns ACCEPT to Lead or exact REQUEST_CHANGES evidence; no R1 implementation starts before graph closure on origin/main.",
+  "next_action": "Run final Lead integration gates, push the accepted RR1 task graph PR, wait for CI, merge it into origin/main, and only then close RR1-TASK-GRAPH-001 before dispatching RR1-WEB-WORKER-RUNTIME-001. No R1 product implementation is authorized yet.",
   "review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
   "review_ready_at": "2026-07-10T18:36:08.168Z",
   "gate_recommendation": "PASS_RECOMMENDATION_FOR_QA_REVIEW",
@@ -96,13 +102,18 @@
     "project/tasks/active/RR1-SAVE-LOAD-RESTART-001.json",
     "project/tasks/active/RR1-HERMETIC-E2E-001.json",
     "project/tasks/active/RR1-EXIT-VALIDATION-001.json",
-    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json"
+    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-SYSTEMS-REVIEW__systems_architect.json",
+    "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-SYSTEMS-TO-QA-REVIEW.json",
+    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
+    "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json"
   ],
   "validation_evidence": {
     "taskctl_validate_count": 8,
     "taskctl_validate_failures": 0,
     "taskctl_ready_current": [],
-    "taskctl_ready_after_graph_closed": ["RR1-WEB-WORKER-RUNTIME-001"],
+    "taskctl_ready_after_graph_closed": [
+      "RR1-WEB-WORKER-RUNTIME-001"
+    ],
     "all_child_statuses": "DRAFT",
     "allowed_path_overlap_count": 0,
     "forbidden_changed_path_count": 0,
@@ -111,57 +122,90 @@
     "validated_base_head": "24a93d9cc536b3563afce0a0344438308eeb7962",
     "successor_lead_thread_id": "019f4d4f-3856-7d63-8b33-e1bf1b9be9ca",
     "staged_owned_path_count": 9,
-    "staged_forbidden_path_count": 0
+    "staged_forbidden_path_count": 0,
+    "qa_status": "ACCEPT",
+    "qa_review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
+    "qa_review_submission_id": "019f4d6a-75bc-7c00-b2c4-3514df9ecd84",
+    "lead_accept_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+    "accepted_source_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682",
+    "r1_implementation_authorized": false,
+    "next_ready_tasks_after_graph_closure": [
+      "RR1-WEB-WORKER-RUNTIME-001"
+    ],
+    "coordination_state_reconciled_at": "2026-07-11T03:24:31.0522178+08:00"
   },
   "downstream_tasks": [
     {
       "id": "RR1-WEB-WORKER-RUNTIME-001",
       "status": "DRAFT",
-      "dependencies": ["RR1-TASK-GRAPH-001"],
+      "dependencies": [
+        "RR1-TASK-GRAPH-001"
+      ],
       "owner_role": "client_engineer",
       "reviewer_role": "systems_architect"
     },
     {
       "id": "RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001",
       "status": "DRAFT",
-      "dependencies": ["RR1-WEB-WORKER-RUNTIME-001"],
+      "dependencies": [
+        "RR1-WEB-WORKER-RUNTIME-001"
+      ],
       "owner_role": "client_engineer",
       "reviewer_role": "systems_architect"
     },
     {
       "id": "RR1-READ-MODEL-DELTA-001",
       "status": "DRAFT",
-      "dependencies": ["RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001"],
+      "dependencies": [
+        "RR1-COMMAND-PREVIEW-APPLY-ROUNDTRIP-001"
+      ],
       "owner_role": "client_engineer",
       "reviewer_role": "systems_architect"
     },
     {
       "id": "RR1-AUTHORITATIVE-TIME-CONTROLS-001",
       "status": "DRAFT",
-      "dependencies": ["RR1-READ-MODEL-DELTA-001"],
+      "dependencies": [
+        "RR1-READ-MODEL-DELTA-001"
+      ],
       "owner_role": "simulation_engineer",
       "reviewer_role": "systems_architect"
     },
     {
       "id": "RR1-SAVE-LOAD-RESTART-001",
       "status": "DRAFT",
-      "dependencies": ["RR1-READ-MODEL-DELTA-001"],
+      "dependencies": [
+        "RR1-READ-MODEL-DELTA-001"
+      ],
       "owner_role": "client_engineer",
       "reviewer_role": "security_reviewer"
     },
     {
       "id": "RR1-HERMETIC-E2E-001",
       "status": "DRAFT",
-      "dependencies": ["RR1-AUTHORITATIVE-TIME-CONTROLS-001", "RR1-SAVE-LOAD-RESTART-001"],
+      "dependencies": [
+        "RR1-AUTHORITATIVE-TIME-CONTROLS-001",
+        "RR1-SAVE-LOAD-RESTART-001"
+      ],
       "owner_role": "test_engineer",
       "reviewer_role": "qa_reviewer"
     },
     {
       "id": "RR1-EXIT-VALIDATION-001",
       "status": "DRAFT",
-      "dependencies": ["RR1-HERMETIC-E2E-001"],
+      "dependencies": [
+        "RR1-HERMETIC-E2E-001"
+      ],
       "owner_role": "systems_architect",
       "reviewer_role": "qa_reviewer"
     }
-  ]
+  ],
+  "qa_route": "project/messages/routes/RR1-TASK-GRAPH-001__ROUTE-20260711-SYSTEMS-TO-QA-REVIEW.json",
+  "qa_submission_id": "019f4d6a-75bc-7c00-b2c4-3514df9ecd84",
+  "qa_review_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-QA-REVIEW__qa_reviewer.json",
+  "qa_status": "ACCEPT",
+  "qa_reviewed_at": "2026-07-11T03:24:31.0522178+08:00",
+  "lead_accept_handoff": "project/messages/outbox/RR1-TASK-GRAPH-001__MSG-20260711-LEAD-ACCEPT__lead_orchestrator.json",
+  "accepted_at": "2026-07-11T03:24:31.0522178+08:00",
+  "accepted_source_commit": "030e5315cb04a967b1ae89b494f31e733a4b5682"
 }
