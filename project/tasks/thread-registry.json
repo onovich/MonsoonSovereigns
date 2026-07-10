@@ -8,20 +8,20 @@
         "task_ids": [
           "RR0-REPOSITORY-STATE-RECONCILIATION-001"
         ],
-        "status": "active_r0_reconciliation_review",
+        "status": "active_r0_reconciliation_accepted_pending_integration",
         "role": "lead_orchestrator",
         "configured_model": "gpt-5.5",
         "configured_effort": "xhigh",
         "actual_model": "gpt-5.5",
         "actual_effort": "xhigh",
         "branch_or_worktree": "codex/rr0-repository-state-reconciliation-001",
-        "updated_at": "2026-07-10T08:27:58.870Z",
+        "updated_at": "2026-07-10T08:37:40.001Z",
         "last_integrated_task": "RR0-ROADMAP-ADOPTION-001",
         "last_main_commit": "23f9e0870304c1af70ec9e652dff17788259db59",
         "next_ready_tasks_after_acceptance": [
           "RR0-REPOSITORY-STATE-RECONCILIATION-001"
         ],
-        "next_action": "Route reconciliation REVIEW handoff and inventory to one independent QA reviewer."
+        "next_action": "Open reconciliation PR, wait for required CI, merge to main, then close the task."
       }
     ],
     "retired_leads": [
@@ -8527,15 +8527,19 @@
       "task_id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
       "role": "lead_orchestrator",
       "thread_id": "019eff50-c69d-7612-a90b-7024a47e0af5",
-      "status": "review_ready",
+      "status": "accepted_pending_pr_integration",
       "branch_or_worktree": "codex/rr0-repository-state-reconciliation-001",
-      "updated_at": "2026-07-10T08:27:58.870Z"
+      "updated_at": "2026-07-10T08:37:40.001Z"
     },
     "RR0-REPOSITORY-STATE-RECONCILIATION-001:qa_reviewer": {
       "task_id": "RR0-REPOSITORY-STATE-RECONCILIATION-001",
       "role": "qa_reviewer",
       "thread_id": "019f4b26-98a9-7f51-8273-2da6c0408563",
-      "updated_at": "2026-07-10T08:31:03.083Z"
+      "status": "closed_after_accept_review",
+      "review_handoff": "project/messages/outbox/RR0-REPOSITORY-STATE-RECONCILIATION-001__MSG-20260710-QA-REVIEW__qa_reviewer.json",
+      "review_commit": "d50bc6a7de0872222026f4d41ba953295a9b6891",
+      "closed_at": "2026-07-10T08:37:40.001Z",
+      "updated_at": "2026-07-10T08:37:40.001Z"
     }
   },
   "replaced_threads": [
